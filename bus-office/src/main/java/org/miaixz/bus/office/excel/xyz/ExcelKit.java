@@ -1,21 +1,21 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- ~                                                                               ~
- ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
- ~                                                                               ~
- ~ Licensed under the Apache License, Version 2.0 (the "License");               ~
- ~ you may not use this file except in compliance with the License.              ~
- ~ You may obtain a copy of the License at                                       ~
- ~                                                                               ~
- ~      https://www.apache.org/licenses/LICENSE-2.0                              ~
- ~                                                                               ~
- ~ Unless required by applicable law or agreed to in writing, software           ~
- ~ distributed under the License is distributed on an "AS IS" BASIS,             ~
- ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.      ~
- ~ See the License for the specific language governing permissions and           ~
- ~ limitations under the License.                                                ~
- ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 package org.miaixz.bus.office.excel.xyz;
 
@@ -709,7 +709,8 @@ public class ExcelKit {
      * @return Created writer instance.
      */
     public static ExcelWriter write(final File dest, final Iterable<?> data, final ExcelWriteConfig config) {
-        final ExcelWriteConfig effectiveConfig = optimizeBigWriterDefaults(null == config ? new ExcelWriteConfig() : config);
+        final ExcelWriteConfig effectiveConfig = optimizeBigWriterDefaults(
+                null == config ? new ExcelWriteConfig() : config);
         final boolean useBigWriter = effectiveConfig.isAutoSplitSheet()
                 || effectiveConfig.getExpectedRows() >= 1_000_000;
 
@@ -737,9 +738,9 @@ public class ExcelKit {
     /**
      * Transfers rows from source Excel to destination Excel using a bounded producer-consumer pipeline.
      *
-     * @param source     Source Excel file.
-     * @param dest       Destination Excel file.
-     * @param readConfig Read config controlling row filtering and transfer pipeline parameters.
+     * @param source      Source Excel file.
+     * @param dest        Destination Excel file.
+     * @param readConfig  Read config controlling row filtering and transfer pipeline parameters.
      * @param writeConfig Write config controlling big-writer behavior and sheet splitting.
      */
     public static void transfer(
@@ -759,19 +760,17 @@ public class ExcelKit {
                 null);
         writer.setConfig(effectiveWriteConfig);
 
-        final int includeColumnCount = null == effectiveReadConfig.getIncludeColumns()
-                ? 0
+        final int includeColumnCount = null == effectiveReadConfig.getIncludeColumns() ? 0
                 : effectiveReadConfig.getIncludeColumns().length;
         final int inferredColumnCount = inferColumnCount(effectiveReadConfig, includeColumnCount);
         final int batchSize = resolveTransferBatchSize(effectiveReadConfig, inferredColumnCount);
         final int queueCapacity = resolveTransferQueueCapacity(effectiveReadConfig, inferredColumnCount);
         final long pollTimeoutMs = resolveTransferPollTimeoutMs(effectiveReadConfig);
         final BlockingQueue<List<List<Object>>> queue = new ArrayBlockingQueue<>(queueCapacity);
-        final List<List<Object>> poison = java.util.Collections.emptyList();
+        final List<List<Object>> poison = ListKit.empty();
         final AtomicReference<Throwable> error = new AtomicReference<>();
 
-        final Thread writerThread = new Thread(
-                () -> consumeBatches(writer, queue, poison, error, pollTimeoutMs),
+        final Thread writerThread = new Thread(() -> consumeBatches(writer, queue, poison, error, pollTimeoutMs),
                 "excel-transfer-writer");
         writerThread.start();
 
@@ -801,8 +800,7 @@ public class ExcelKit {
 
         final Throwable transferError = error.get();
         if (null != transferError) {
-            throw transferError instanceof RuntimeException
-                    ? (RuntimeException) transferError
+            throw transferError instanceof RuntimeException ? (RuntimeException) transferError
                     : new IllegalStateException("Excel transfer failed", transferError);
         }
     }
@@ -810,8 +808,8 @@ public class ExcelKit {
     /**
      * Resolves effective column count used for transfer tuning.
      *
-     * @param readConfig           read config.
-     * @param includeColumnCount   include-column count inferred from projection.
+     * @param readConfig         read config.
+     * @param includeColumnCount include-column count inferred from projection.
      * @return effective column count used by adaptive transfer sizing.
      */
     private static int inferColumnCount(final ExcelReadConfig readConfig, final int includeColumnCount) {
@@ -824,8 +822,8 @@ public class ExcelKit {
     /**
      * Resolves transfer batch size.
      *
-     * @param readConfig        read config.
-     * @param effectiveColumns  effective column count.
+     * @param readConfig       read config.
+     * @param effectiveColumns effective column count.
      * @return transfer batch size.
      */
     private static int resolveTransferBatchSize(final ExcelReadConfig readConfig, final int effectiveColumns) {
@@ -839,8 +837,8 @@ public class ExcelKit {
     /**
      * Resolves transfer queue capacity.
      *
-     * @param readConfig        read config.
-     * @param effectiveColumns  effective column count.
+     * @param readConfig       read config.
+     * @param effectiveColumns effective column count.
      * @return transfer queue capacity.
      */
     private static int resolveTransferQueueCapacity(final ExcelReadConfig readConfig, final int effectiveColumns) {
@@ -858,8 +856,7 @@ public class ExcelKit {
      * @return transfer queue poll timeout in milliseconds.
      */
     private static long resolveTransferPollTimeoutMs(final ExcelReadConfig readConfig) {
-        return readConfig.getTransferPollTimeoutMs() > 0
-                ? readConfig.getTransferPollTimeoutMs()
+        return readConfig.getTransferPollTimeoutMs() > 0 ? readConfig.getTransferPollTimeoutMs()
                 : TRANSFER_POLL_TIMEOUT_MS_DEFAULT;
     }
 
@@ -944,7 +941,7 @@ public class ExcelKit {
             return;
         }
 
-        final int[] includeColumns = normalizeIncludeColumns(config.getIncludeColumns());
+        final int[] includeColumns = RowKit.normalizeIncludeColumns(config.getIncludeColumns());
         final boolean hasIncludeColumns = null != includeColumns && includeColumns.length > 0;
         final int sheetCount = reader.getSheetCount();
 
@@ -975,7 +972,9 @@ public class ExcelKit {
                 }
 
                 final java.util.List<Object> row = RowKit.readRow(poiRow, cellEditor);
-                final java.util.List<Object> projected = hasIncludeColumns ? projectColumns(row, includeColumns) : row;
+                final java.util.List<Object> projected = hasIncludeColumns
+                        ? RowKit.projectColumns(row, includeColumns)
+                        : row;
                 if (isSkippedRow(config, projected)) {
                     globalRowIndex++;
                     continue;
@@ -994,80 +993,13 @@ public class ExcelKit {
     }
 
     /**
-     * Normalizes included column indexes.
-     *
-     * @param includeColumns included column indexes.
-     * @return normalized column indexes.
-     */
-    private static int[] normalizeIncludeColumns(final int[] includeColumns) {
-        if (null == includeColumns || includeColumns.length == 0) {
-            return includeColumns;
-        }
-        return java.util.Arrays.stream(includeColumns).filter(value -> value >= 0).distinct().sorted().toArray();
-    }
-
-    /**
-     * Projects row cells by include columns.
-     *
-     * @param rowCells       source row.
-     * @param includeColumns include columns.
-     * @return projected row.
-     */
-    private static java.util.List<Object> projectColumns(
-            final java.util.List<Object> rowCells,
-            final int[] includeColumns) {
-        final java.util.List<Object> projected = new java.util.ArrayList<>(includeColumns.length);
-        for (final int columnIndex : includeColumns) {
-            projected.add(columnIndex >= 0 && columnIndex < rowCells.size() ? rowCells.get(columnIndex) : null);
-        }
-        return projected;
-    }
-
-    /**
-     * Checks whether current row should be skipped.
-     *
-     * @param config read config.
-     * @param row    row data.
-     * @return {@code true} if skipped, {@code false} otherwise.
-     */
-    private static boolean isSkippedRow(final ExcelReadConfig config, final java.util.List<Object> row) {
-        return config.isIgnoreEmptyRow() && isEmptyRow(row);
-    }
-
-    /**
-     * Checks whether row is empty.
-     *
-     * @param row row data.
-     * @return {@code true} if empty, {@code false} otherwise.
-     */
-    private static boolean isEmptyRow(final java.util.List<Object> row) {
-        if (null == row || row.isEmpty()) {
-            return true;
-        }
-        for (int i = 0; i < row.size(); i++) {
-            final Object cell = row.get(i);
-            if (null == cell) {
-                continue;
-            }
-            if (cell instanceof CharSequence) {
-                if (StringKit.isNotBlank((CharSequence) cell)) {
-                    return false;
-                }
-                continue;
-            }
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * Checks whether include columns are configured.
      *
      * @param includeColumns include columns.
      * @return {@code true} if at least one valid include column exists.
      */
     private static boolean hasIncludeColumns(final int[] includeColumns) {
-        final int[] normalized = normalizeIncludeColumns(includeColumns);
+        final int[] normalized = RowKit.normalizeIncludeColumns(includeColumns);
         return null != normalized && normalized.length > 0;
     }
 
@@ -1087,11 +1019,11 @@ public class ExcelKit {
     /**
      * Consumes row batches and writes them into the target writer.
      *
-     * @param writer         Big writer consuming row batches.
-     * @param queue          Shared queue carrying row batches.
-     * @param poison         Poison marker batch used to stop the consumer.
-     * @param error          Shared error reference for producer-consumer propagation.
-     * @param pollTimeoutMs  Queue poll timeout in milliseconds.
+     * @param writer        Big writer consuming row batches.
+     * @param queue         Shared queue carrying row batches.
+     * @param poison        Poison marker batch used to stop the consumer.
+     * @param error         Shared error reference for producer-consumer propagation.
+     * @param pollTimeoutMs Queue poll timeout in milliseconds.
      */
     private static void consumeBatches(
             final BigExcelWriter writer,
@@ -1167,7 +1099,10 @@ public class ExcelKit {
      * @param inputStream Source stream, optional.
      * @return Resolved read mode.
      */
-    private static ReadMode resolveReadMode(final ExcelReadConfig config, final File file, final InputStream inputStream) {
+    private static ReadMode resolveReadMode(
+            final ExcelReadConfig config,
+            final File file,
+            final InputStream inputStream) {
         if (ReadMode.AUTO != config.getReadMode()) {
             return config.getReadMode();
         }

@@ -1,38 +1,37 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- ~                                                                               ~
- ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
- ~                                                                               ~
- ~ Licensed under the Apache License, Version 2.0 (the "License");               ~
- ~ you may not use this file except in compliance with the License.              ~
- ~ You may obtain a copy of the License at                                       ~
- ~                                                                               ~
- ~      https://www.apache.org/licenses/LICENSE-2.0                              ~
- ~                                                                               ~
- ~ Unless required by applicable law or agreed to in writing, software           ~
- ~ distributed under the License is distributed on an "AS IS" BASIS,             ~
- ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.      ~
- ~ See the License for the specific language governing permissions and           ~
- ~ limitations under the License.                                                ~
- ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 package org.miaixz.bus.office.excel.reader;
 
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.office.Builder;
 import org.miaixz.bus.office.excel.sax.ExcelSaxReader;
 import org.miaixz.bus.office.excel.sax.handler.RowHandler;
 import org.miaixz.bus.office.excel.xyz.ExcelSaxKit;
+import org.miaixz.bus.office.excel.xyz.RowKit;
 
 /**
  * Streaming Excel reader for large datasets.
@@ -285,13 +284,11 @@ public class BigExcelReader implements AutoCloseable {
             }
             return;
         }
-        final int[] projectedColumns = normalizeIncludeColumns(includeColumns);
+        final int[] projectedColumns = RowKit.normalizeIncludeColumns(includeColumns);
         final boolean isXlsx = isXlsx();
         final int[] saxIncludeColumns = isXlsx ? projectedColumns : null;
         final boolean hasProjectedColumns = !isXlsx && null != projectedColumns && projectedColumns.length > 0;
-        final List<List<Object>>[] batchRowsHolder = batchSize > 0
-                ? new List[] { new ArrayList<>(batchSize) }
-                : null;
+        final List<List<Object>>[] batchRowsHolder = batchSize > 0 ? new List[] { new ArrayList<>(batchSize) } : null;
         final long[] globalRowCursor = new long[] { 0L };
         final boolean[] terminated = new boolean[] { false };
         final boolean[] afterAllDone = new boolean[] { false };
@@ -310,10 +307,10 @@ public class BigExcelReader implements AutoCloseable {
 
                 List<Object> projected = rowCells;
                 if (hasProjectedColumns) {
-                    projected = projectColumns(rowCells, projectedColumns);
+                    projected = RowKit.projectColumns(rowCells, projectedColumns);
                 }
 
-                if (config.isIgnoreEmptyRow() && isEmptyRow(projected)) {
+                if (config.isIgnoreEmptyRow() && RowKit.isEmptyRow(projected)) {
                     return;
                 }
 
@@ -347,11 +344,8 @@ public class BigExcelReader implements AutoCloseable {
             }
         };
 
-        final ExcelSaxReader<?> saxReader = ExcelSaxKit.createSaxReader(
-                isXlsx,
-                filterHandler,
-                this.config.isPadCellAtEndOfRow(),
-                saxIncludeColumns);
+        final ExcelSaxReader<?> saxReader = ExcelSaxKit
+                .createSaxReader(isXlsx, filterHandler, this.config.isPadCellAtEndOfRow(), saxIncludeColumns);
         try {
             if (null != this.sourceFile) {
                 saxReader.read(this.sourceFile, this.idOrRidOrSheetName);
@@ -378,47 +372,6 @@ public class BigExcelReader implements AutoCloseable {
         }
         this.sourceStream = IoKit.toMarkSupport(this.sourceStream);
         return Builder.isXlsx(this.sourceStream);
-    }
-
-    /**
-     * Projects row columns by configured indexes.
-     *
-     * @param rowCells       Source row.
-     * @param includeColumns Included column indexes.
-     * @return Projected row.
-     */
-    private List<Object> projectColumns(final List<Object> rowCells, final int[] includeColumns) {
-        final List<Object> projected = new ArrayList<>(includeColumns.length);
-        for (final int columnIndex : includeColumns) {
-            projected.add(columnIndex >= 0 && columnIndex < rowCells.size() ? rowCells.get(columnIndex) : null);
-        }
-        return projected;
-    }
-
-    /**
-     * Checks whether row is empty.
-     *
-     * @param rowCells Row values.
-     * @return {@code true} if row is empty, {@code false} otherwise.
-     */
-    private boolean isEmptyRow(final List<Object> rowCells) {
-        if (null == rowCells || rowCells.isEmpty()) {
-            return true;
-        }
-        for (int i = 0; i < rowCells.size(); i++) {
-            final Object cell = rowCells.get(i);
-            if (null == cell) {
-                continue;
-            }
-            if (cell instanceof CharSequence) {
-                if (StringKit.isNotBlank((CharSequence) cell)) {
-                    return false;
-                }
-                continue;
-            }
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -449,20 +402,6 @@ public class BigExcelReader implements AutoCloseable {
         if (null != rowHandler) {
             rowHandler.doAfterAllAnalysed();
         }
-    }
-
-    /**
-     * Normalizes included column indexes.
-     *
-     * @param includeColumns Included column indexes.
-     * @return Normalized included column indexes.
-     */
-    private int[] normalizeIncludeColumns(final int[] includeColumns) {
-        if (null == includeColumns || includeColumns.length == 0) {
-            return includeColumns;
-        }
-
-        return Arrays.stream(includeColumns).filter(value -> value >= 0).distinct().sorted().toArray();
     }
 
     /**

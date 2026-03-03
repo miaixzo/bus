@@ -1,21 +1,21 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- ~                                                                               ~
- ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
- ~                                                                               ~
- ~ Licensed under the Apache License, Version 2.0 (the "License");               ~
- ~ you may not use this file except in compliance with the License.              ~
- ~ You may obtain a copy of the License at                                       ~
- ~                                                                               ~
- ~      https://www.apache.org/licenses/LICENSE-2.0                              ~
- ~                                                                               ~
- ~ Unless required by applicable law or agreed to in writing, software           ~
- ~ distributed under the License is distributed on an "AS IS" BASIS,             ~
- ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.      ~
- ~ See the License for the specific language governing permissions and           ~
- ~ limitations under the License.                                                ~
- ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 package org.miaixz.bus.core.center.date.format.parser;
 
@@ -35,8 +35,10 @@ import org.miaixz.bus.core.center.date.printer.FastDatePrinter;
 import org.miaixz.bus.core.center.date.printer.SimpleDatePrinter;
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.ZoneId;
 import org.miaixz.bus.core.lang.exception.DateException;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.ZoneKit;
 
 /**
  * Thread-safe date parser, replacing {@link java.text.SimpleDateFormat}, used to convert date strings to {@link Date}
@@ -855,6 +857,29 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     }
 
     /**
+     * Tests whether to skip the given time zone, true if ZoneUtil.getTimeZone().
+     * <p>
+     * On Java 25 and up, skips short IDs if {@code ignoreTimeZoneShortIDs} is true.
+     * </p>
+     * <p>
+     * This method is package private only for testing.
+     * </p>
+     *
+     * @param tzId the ID to test.
+     * @return Whether to skip the given time zone ID.
+     */
+    static boolean skipTimeZone(final String tzId) {
+        if (Keys.IS_AT_LEAST_JDK25) {
+            // In JDK25+, all three-letter abbreviations are invalid
+            // See: https://stackoverflow.com/questions/41672825/which-three-letter-time-zone-ids-are-not-deprecated
+            if (tzId.length() == 3) {
+                return true;
+            }
+        }
+        return ZoneId.GMT.name().equalsIgnoreCase(tzId);
+    }
+
+    /**
      * Strategy for parsing time zone fields.
      */
     static class TimeZoneStrategy extends PatternStrategy {
@@ -896,18 +921,15 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
             final Set<String> sorted = new TreeSet<>(LONGER_FIRST_LOWERCASE);
             final String[][] zones = DateFormatSymbols.getInstance(locale).getZoneStrings();
             for (final String[] zoneNames : zones) {
+                // offset 0 is the time zone ID and is not localized
                 final String tzId = zoneNames[ID];
-                if (Keys.IS_AT_LEAST_JDK25) {
-                    // In JDK25+, all three-letter abbreviations are invalid
-                    // See:
-                    // https://stackoverflow.com/questions/41672825/which-three-letter-time-zone-ids-are-not-deprecated
-                    if (tzId.length() == 3) {
-                        continue;
-                    }
-                } else if ("GMT".equalsIgnoreCase(tzId)) {
+                if (skipTimeZone(tzId)) {
                     continue;
                 }
-                final TimeZone tz = TimeZone.getTimeZone(tzId);
+                final TimeZone tz = ZoneKit.getTimeZone(tzId);
+                // offset 1 is long standard name
+                // offset 2 is short standard name
+
                 final TzInfo standard = new TzInfo(tz, false);
                 TzInfo tzInfo = standard;
                 for (int i = 1; i < zoneNames.length; ++i) {
@@ -941,10 +963,10 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         @Override
         void setCalendar(final FastDateParser parser, final Calendar cal, final String value) {
             if (value.charAt(0) == Symbol.C_PLUS || value.charAt(0) == Symbol.C_MINUS) {
-                final TimeZone tz = TimeZone.getTimeZone("GMT" + value);
+                final TimeZone tz = ZoneKit.getTimeZone("GMT" + value);
                 cal.setTimeZone(tz);
             } else if (value.regionMatches(true, 0, "GMT", 0, 3)) {
-                final TimeZone tz = TimeZone.getTimeZone(value.toUpperCase());
+                final TimeZone tz = ZoneKit.getTimeZone(value.toUpperCase());
                 cal.setTimeZone(tz);
             } else {
                 final TzInfo tzInfo = tzNames.get(value.toLowerCase(locale));
@@ -1034,9 +1056,9 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         @Override
         void setCalendar(final FastDateParser parser, final Calendar cal, final String value) {
             if (Objects.equals(value, "Z")) {
-                cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+                cal.setTimeZone(ZoneKit.getTimeZone("UTC"));
             } else {
-                cal.setTimeZone(TimeZone.getTimeZone("GMT" + value));
+                cal.setTimeZone(ZoneKit.getTimeZone("GMT" + value));
             }
         }
     }

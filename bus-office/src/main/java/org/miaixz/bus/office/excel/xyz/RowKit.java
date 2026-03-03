@@ -1,25 +1,26 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- ~                                                                               ~
- ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
- ~                                                                               ~
- ~ Licensed under the Apache License, Version 2.0 (the "License");               ~
- ~ you may not use this file except in compliance with the License.              ~
- ~ You may obtain a copy of the License at                                       ~
- ~                                                                               ~
- ~      https://www.apache.org/licenses/LICENSE-2.0                              ~
- ~                                                                               ~
- ~ Unless required by applicable law or agreed to in writing, software           ~
- ~ distributed under the License is distributed on an "AS IS" BASIS,             ~
- ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.      ~
- ~ See the License for the specific language governing permissions and           ~
- ~ limitations under the License.                                                ~
- ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 package org.miaixz.bus.office.excel.xyz;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -29,8 +30,10 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeUtil;
+import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.office.excel.cell.editors.CellEditor;
 import org.miaixz.bus.office.excel.style.StyleSet;
 
@@ -105,6 +108,63 @@ public class RowKit {
             return ListKit.empty();
         }
         return cellValues;
+    }
+
+    /**
+     * Normalizes included column indexes.
+     *
+     * @param includeColumns Included column indexes.
+     * @return Normalized included column indexes.
+     */
+    public static int[] normalizeIncludeColumns(final int[] includeColumns) {
+        if (null == includeColumns || includeColumns.length == 0) {
+            return includeColumns;
+        }
+        return Arrays.stream(includeColumns).filter(value -> value >= 0).distinct().sorted().toArray();
+    }
+
+    /**
+     * Projects row values using the specified column indexes.
+     *
+     * @param rowCells       Source row values.
+     * @param includeColumns Included column indexes.
+     * @return Projected row values.
+     */
+    public static List<Object> projectColumns(final List<Object> rowCells, final int[] includeColumns) {
+        final List<Object> projected = new ArrayList<>(includeColumns.length);
+        for (final int columnIndex : includeColumns) {
+            projected.add(columnIndex >= 0 && columnIndex < rowCells.size() ? rowCells.get(columnIndex) : null);
+        }
+        return projected;
+    }
+
+    /**
+     * Checks whether row values are empty.
+     *
+     * @param rowCells Row values.
+     * @return {@code true} if row values are empty, {@code false} otherwise.
+     */
+    public static boolean isEmptyRow(final List<Object> rowCells) {
+        if (CollKit.isEmpty(rowCells)) {
+            return true;
+        }
+        return !CollKit.contains(rowCells, RowKit::hasNonEmptyCell);
+    }
+
+    /**
+     * Checks whether a cell value should be treated as non-empty.
+     *
+     * @param cell Cell value.
+     * @return {@code true} if non-empty, {@code false} otherwise.
+     */
+    private static boolean hasNonEmptyCell(final Object cell) {
+        if (null == cell) {
+            return false;
+        }
+        if (cell instanceof CharSequence) {
+            return StringKit.isNotBlank((CharSequence) cell);
+        }
+        return true;
     }
 
     /**

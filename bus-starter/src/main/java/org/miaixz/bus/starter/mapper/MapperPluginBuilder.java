@@ -1,21 +1,21 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- ~                                                                               ~
- ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
- ~                                                                               ~
- ~ Licensed under the Apache License, Version 2.0 (the "License");               ~
- ~ you may not use this file except in compliance with the License.              ~
- ~ You may obtain a copy of the License at                                       ~
- ~                                                                               ~
- ~      https://www.apache.org/licenses/LICENSE-2.0                              ~
- ~                                                                               ~
- ~ Unless required by applicable law or agreed to in writing, software           ~
- ~ distributed under the License is distributed on an "AS IS" BASIS,             ~
- ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.      ~
- ~ See the License for the specific language governing permissions and           ~
- ~ limitations under the License.                                                ~
- ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 package org.miaixz.bus.starter.mapper;
 
@@ -77,10 +77,10 @@ public class MapperPluginBuilder {
         // Execution order: Operation Check → Table Prefix → Tenant Filter → Visible Filter → Populate → Pagination →
         // Audit
 
-        // 1. SQL safety check (must be first to block dangerous operations)
-        handlers.add(new OperationHandler());
-
         if (ObjectKit.isNotEmpty(environment)) {
+            // 1. SQL safety check (must be first to block dangerous operations)
+            configureOperation(environment, handlers);
+
             // 2. Table prefix (modify table names before adding WHERE conditions)
             configurePrefix(environment, handlers);
 
@@ -103,6 +103,38 @@ public class MapperPluginBuilder {
         MybatisInterceptor interceptor = new MybatisInterceptor();
         interceptor.setHandlers(handlers);
         return interceptor;
+    }
+
+    /**
+     * Configures SQL operation safety checks and adds the {@link OperationHandler}.
+     * <p>
+     * This handler can be enabled or disabled through simplified YAML configuration:
+     * {@code bus.mapper.operation.enabled}. It is enabled by default.
+     * </p>
+     *
+     * @param environment The Spring environment.
+     * @param handlers    The list of handlers to add the operation handler to.
+     */
+    private static void configureOperation(Environment environment, List<MapperHandler> handlers) {
+        if (ObjectKit.isEmpty(environment)) {
+            handlers.add(new OperationHandler());
+            return;
+        }
+
+        MapperProperties properties = PlaceHolderBinder.bind(environment, MapperProperties.class, GeniusBuilder.MAPPER);
+        MapperProperties.OperationProperties operationProps = properties != null ? properties.getOperation() : null;
+
+        if (operationProps != null && !operationProps.isEnabled()) {
+            Logger.info(false, "Mapper", "Operation handler is disabled by configuration");
+            return;
+        }
+
+        OperationHandler<?> handler = new OperationHandler<>();
+        if (operationProps != null) {
+            handler.setStrictMode(operationProps.isStrictMode());
+        }
+        handlers.add(handler);
+        Logger.info(false, "Mapper", "Operation handler configured successfully");
     }
 
     /**
