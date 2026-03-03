@@ -68,7 +68,22 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
      *                          {@code false} otherwise.
      */
     public Excel07SaxReader(final RowHandler rowHandler, final boolean padCellAtEndOfRow) {
-        this.handler = new SheetDataSaxHandler(rowHandler, padCellAtEndOfRow);
+        this(rowHandler, padCellAtEndOfRow, null);
+    }
+
+    /**
+     * Constructs a new {@code Excel07SaxReader}.
+     *
+     * @param rowHandler        The row handler to process each row.
+     * @param padCellAtEndOfRow {@code true} to pad missing cells at the end of a row with {@code null} values,
+     *                          {@code false} otherwise.
+     * @param includeColumns    Optional included columns (sorted unique indexes).
+     */
+    public Excel07SaxReader(
+            final RowHandler rowHandler,
+            final boolean padCellAtEndOfRow,
+            final int[] includeColumns) {
+        this.handler = new SheetDataSaxHandler(rowHandler, padCellAtEndOfRow, includeColumns);
     }
 
     /**
@@ -83,12 +98,12 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Reads an Excel file from a file source.
      *
-     * @param file               the Excel file to read
-     * @param idOrRidOrSheetName the sheet identifier (sheet ID, rID, or sheet name)
-     * @return this reader instance for chaining
-     * @throws InternalException if an InvalidFormatException or IOException occurs
+     * @param file               Excel file to read.
+     * @param idOrRidOrSheetName Sheet identifier (sheet ID, rId, or sheet name).
+     * @return This reader instance, for chaining.
+     * @throws InternalException If an {@link InvalidFormatException} or {@link IOException} occurs.
      */
     @Override
     public Excel07SaxReader read(final File file, final String idOrRidOrSheetName) throws InternalException {
@@ -100,7 +115,7 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @param in                 the input stream containing the Excel data
      * @param idOrRidOrSheetName the sheet identifier (sheet ID, rID, or sheet name)

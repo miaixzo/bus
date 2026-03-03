@@ -115,7 +115,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @return the x coordinate in EMU within the top-left cell
      */
@@ -125,7 +125,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @param dx1 the x coordinate in EMU within the top-left cell
      */
@@ -135,7 +135,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @return the y coordinate in EMU within the top-left cell
      */
@@ -145,7 +145,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @param dy1 the y coordinate in EMU within the top-left cell
      */
@@ -155,7 +155,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @return the x coordinate in EMU within the bottom-right cell
      */
@@ -165,7 +165,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @param dx2 the x coordinate in EMU within the bottom-right cell
      */
@@ -175,7 +175,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @return the y coordinate in EMU within the bottom-right cell
      */
@@ -185,7 +185,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @param dy2 the y coordinate in EMU within the bottom-right cell
      */
@@ -195,7 +195,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @return the column (0 based) of the first cell
      */
@@ -205,7 +205,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @param col1 the column (0 based) of the first cell
      */
@@ -215,7 +215,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @return the row (0 based) of the first cell
      */
@@ -225,7 +225,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @param row1 the row (0 based) of the first cell
      */
@@ -235,7 +235,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @return the column (0 based) of the second cell
      */
@@ -245,7 +245,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @param col2 the column (0 based) of the second cell
      */
@@ -255,7 +255,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @return the row (0 based) of the second cell.
      */
@@ -265,7 +265,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @param row2 the row (0 based) of the second cell
      */
@@ -275,7 +275,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @return the anchor type
      */
@@ -285,7 +285,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @param anchorType the anchor type
      */

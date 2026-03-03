@@ -45,7 +45,7 @@ public class NumberCellSetter implements CellSetter {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @param cell the cell to set the number value in
      */

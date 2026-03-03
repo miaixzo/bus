@@ -32,7 +32,7 @@ import java.io.InputStream;
 public class LocalOfficeProvider extends AbstractProvider {
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @param source the source file to convert
      * @return null (not implemented in this version)
@@ -43,7 +43,7 @@ public class LocalOfficeProvider extends AbstractProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @param source the input stream to convert
      * @return null (not implemented in this version)
@@ -54,7 +54,7 @@ public class LocalOfficeProvider extends AbstractProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @param source      the input stream to convert
      * @param closeStream whether to close the stream after conversion

@@ -41,6 +41,11 @@ import org.miaixz.bus.office.excel.ExcelConfig;
 public class ExcelWriteConfig extends ExcelConfig {
 
     /**
+     * Maximum rows allowed per XLSX sheet.
+     */
+    public static final int XLSX_MAX_ROWS_PER_SHEET = 1_048_576;
+
+    /**
      * Whether to retain only fields corresponding to aliases. If {@code true}, fields without aliases will not be
      * output.
      */
@@ -54,6 +59,38 @@ public class ExcelWriteConfig extends ExcelConfig {
      * Comparator for sorting header names.
      */
     protected Comparator<String> aliasComparator;
+    /**
+     * Whether to automatically split into multiple sheets when row limit is reached.
+     */
+    protected boolean autoSplitSheet = true;
+    /**
+     * Maximum rows allowed in each sheet when auto split is enabled.
+     */
+    protected int maxRowsPerSheet = 1_000_000;
+    /**
+     * Name pattern for newly split sheets.
+     */
+    protected String sheetNamePattern = "sheet_%03d";
+    /**
+     * Expected total rows for routing decisions.
+     */
+    protected long expectedRows;
+    /**
+     * SXSSF row access window size used by big writer.
+     */
+    protected int bigWriterRowAccessWindowSize = 1024;
+    /**
+     * Whether to compress SXSSF temporary files.
+     */
+    protected boolean bigWriterCompressTmpFiles;
+    /**
+     * Whether to enable SXSSF shared strings table.
+     */
+    protected boolean bigWriterUseSharedStringsTable;
+    /**
+     * Big data mode flag.
+     */
+    protected boolean bigDataMode;
 
     /**
      * Sets the header alias mapping and resets the alias comparator.
@@ -116,6 +153,170 @@ public class ExcelWriteConfig extends ExcelConfig {
      */
     public ExcelWriteConfig setInsertRow(final boolean insertRow) {
         this.insertRow = insertRow;
+        return this;
+    }
+
+    /**
+     * Checks whether auto sheet splitting is enabled.
+     *
+     * @return {@code true} if auto split is enabled, {@code false} otherwise.
+     */
+    public boolean isAutoSplitSheet() {
+        return this.autoSplitSheet;
+    }
+
+    /**
+     * Sets whether to auto split sheets when row limit is reached.
+     *
+     * @param autoSplitSheet {@code true} to enable auto split, {@code false} otherwise.
+     * @return This {@code ExcelWriteConfig} instance, for chaining.
+     */
+    public ExcelWriteConfig setAutoSplitSheet(final boolean autoSplitSheet) {
+        this.autoSplitSheet = autoSplitSheet;
+        return this;
+    }
+
+    /**
+     * Gets maximum rows per sheet for auto splitting.
+     *
+     * @return Maximum rows per sheet.
+     */
+    public int getMaxRowsPerSheet() {
+        return this.maxRowsPerSheet;
+    }
+
+    /**
+     * Sets maximum rows per sheet for auto splitting.
+     *
+     * @param maxRowsPerSheet maximum rows, must be in range [1, 1_048_576].
+     * @return This {@code ExcelWriteConfig} instance, for chaining.
+     */
+    public ExcelWriteConfig setMaxRowsPerSheet(final int maxRowsPerSheet) {
+        if (maxRowsPerSheet < 1 || maxRowsPerSheet > XLSX_MAX_ROWS_PER_SHEET) {
+            throw new IllegalArgumentException("maxRowsPerSheet must be between 1 and " + XLSX_MAX_ROWS_PER_SHEET
+                    + ", but was " + maxRowsPerSheet);
+        }
+        this.maxRowsPerSheet = maxRowsPerSheet;
+        return this;
+    }
+
+    /**
+     * Gets sheet name pattern for split sheets.
+     *
+     * @return Sheet name pattern.
+     */
+    public String getSheetNamePattern() {
+        return this.sheetNamePattern;
+    }
+
+    /**
+     * Sets sheet name pattern for split sheets.
+     *
+     * @param sheetNamePattern pattern used with {@link String#format(String, Object...)}.
+     * @return This {@code ExcelWriteConfig} instance, for chaining.
+     */
+    public ExcelWriteConfig setSheetNamePattern(final String sheetNamePattern) {
+        this.sheetNamePattern = StringKit.isBlank(sheetNamePattern) ? "sheet_%03d" : sheetNamePattern;
+        return this;
+    }
+
+    /**
+     * Gets expected total rows for write routing.
+     *
+     * @return Expected row count.
+     */
+    public long getExpectedRows() {
+        return this.expectedRows;
+    }
+
+    /**
+     * Sets expected total rows for write routing.
+     *
+     * @param expectedRows expected row count.
+     * @return This {@code ExcelWriteConfig} instance, for chaining.
+     */
+    public ExcelWriteConfig setExpectedRows(final long expectedRows) {
+        this.expectedRows = Math.max(expectedRows, 0);
+        return this;
+    }
+
+    /**
+     * Gets SXSSF row access window size.
+     *
+     * @return Row access window size.
+     */
+    public int getBigWriterRowAccessWindowSize() {
+        return this.bigWriterRowAccessWindowSize;
+    }
+
+    /**
+     * Sets SXSSF row access window size.
+     *
+     * @param bigWriterRowAccessWindowSize row access window size.
+     * @return This {@code ExcelWriteConfig} instance, for chaining.
+     */
+    public ExcelWriteConfig setBigWriterRowAccessWindowSize(final int bigWriterRowAccessWindowSize) {
+        this.bigWriterRowAccessWindowSize = bigWriterRowAccessWindowSize;
+        return this;
+    }
+
+    /**
+     * Checks whether SXSSF temp files are compressed.
+     *
+     * @return {@code true} if compressed, {@code false} otherwise.
+     */
+    public boolean isBigWriterCompressTmpFiles() {
+        return this.bigWriterCompressTmpFiles;
+    }
+
+    /**
+     * Sets whether SXSSF temp files are compressed.
+     *
+     * @param bigWriterCompressTmpFiles {@code true} to compress temp files, {@code false} otherwise.
+     * @return This {@code ExcelWriteConfig} instance, for chaining.
+     */
+    public ExcelWriteConfig setBigWriterCompressTmpFiles(final boolean bigWriterCompressTmpFiles) {
+        this.bigWriterCompressTmpFiles = bigWriterCompressTmpFiles;
+        return this;
+    }
+
+    /**
+     * Checks whether SXSSF shared strings table is enabled.
+     *
+     * @return {@code true} if enabled, {@code false} otherwise.
+     */
+    public boolean isBigWriterUseSharedStringsTable() {
+        return this.bigWriterUseSharedStringsTable;
+    }
+
+    /**
+     * Sets whether SXSSF shared strings table is enabled.
+     *
+     * @param bigWriterUseSharedStringsTable {@code true} to enable shared strings, {@code false} otherwise.
+     * @return This {@code ExcelWriteConfig} instance, for chaining.
+     */
+    public ExcelWriteConfig setBigWriterUseSharedStringsTable(final boolean bigWriterUseSharedStringsTable) {
+        this.bigWriterUseSharedStringsTable = bigWriterUseSharedStringsTable;
+        return this;
+    }
+
+    /**
+     * Checks whether big data mode is enabled.
+     *
+     * @return {@code true} if enabled, {@code false} otherwise.
+     */
+    public boolean isBigDataMode() {
+        return this.bigDataMode;
+    }
+
+    /**
+     * Sets big data mode.
+     *
+     * @param bigDataMode {@code true} to enable big data mode, {@code false} otherwise.
+     * @return This {@code ExcelWriteConfig} instance, for chaining.
+     */
+    public ExcelWriteConfig setBigDataMode(final boolean bigDataMode) {
+        this.bigDataMode = bigDataMode;
         return this;
     }
 

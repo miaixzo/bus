@@ -151,7 +151,7 @@ public class SheetRidReader extends DefaultHandler {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @param uri        the namespace URI
      * @param localName  the local name

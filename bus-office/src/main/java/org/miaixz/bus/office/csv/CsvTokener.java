@@ -99,7 +99,7 @@ public class CsvTokener extends SimpleWrapper<Reader> implements Closeable {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @throws IOException if an I/O error occurs
      */

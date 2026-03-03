@@ -50,7 +50,7 @@ public class NumericCellValue implements CellValue<Object> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @return the cell value as Long, Double, LocalDateTime, or LocalTime
      */

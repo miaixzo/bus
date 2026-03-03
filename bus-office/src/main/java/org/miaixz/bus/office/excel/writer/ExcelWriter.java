@@ -209,7 +209,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @param config the Excel write configuration
      * @return this writer instance for chaining
@@ -235,7 +235,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      */
     @Override
     public void close() {
@@ -257,7 +257,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @param sheetIndex the zero-based sheet index
      * @return this writer instance for chaining
@@ -270,7 +270,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @param sheetName the sheet name
      * @return this writer instance for chaining
@@ -1292,6 +1292,15 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
             }
         }
         return this;
+    }
+
+    /**
+     * Gets whether this writer works in template mode.
+     *
+     * @return {@code true} if template mode is enabled, {@code false} otherwise.
+     */
+    protected boolean isTemplateMode() {
+        return null != this.sheetTemplateWriter;
     }
 
     /**

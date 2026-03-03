@@ -46,7 +46,7 @@ public class ErrorCellValue implements CellValue<String> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @return the error string, or empty string if error code is invalid
      */

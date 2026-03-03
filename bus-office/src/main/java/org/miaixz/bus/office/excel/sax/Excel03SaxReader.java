@@ -113,7 +113,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @param file               the Excel file to read
      * @param idOrRidOrSheetName the sheet identifier (sheet ID, rID, or sheet name)
@@ -130,7 +130,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @param excelStream        the input stream containing the Excel data
      * @param idOrRidOrSheetName the sheet identifier (sheet ID, rID, or sheet name)

@@ -68,7 +68,41 @@ public class ExcelSaxKit {
      * @return An {@link ExcelSaxReader} instance.
      */
     public static ExcelSaxReader<?> createSaxReader(final boolean isXlsx, final RowHandler rowHandler) {
-        return isXlsx ? new Excel07SaxReader(rowHandler) : new Excel03SaxReader(rowHandler);
+        return createSaxReader(isXlsx, rowHandler, false);
+    }
+
+    /**
+     * Creates an {@link ExcelSaxReader} instance.
+     *
+     * @param isXlsx            {@code true} if the Excel file is in XLSX format (07 format), {@code false} otherwise.
+     * @param rowHandler        The row handler to process each row.
+     * @param padCellAtEndOfRow {@code true} to pad missing cells at the end of each row, {@code false} otherwise.
+     * @return An {@link ExcelSaxReader} instance.
+     */
+    public static ExcelSaxReader<?> createSaxReader(
+            final boolean isXlsx,
+            final RowHandler rowHandler,
+            final boolean padCellAtEndOfRow) {
+        return createSaxReader(isXlsx, rowHandler, padCellAtEndOfRow, null);
+    }
+
+    /**
+     * Creates an {@link ExcelSaxReader} instance.
+     *
+     * @param isXlsx            {@code true} if the Excel file is in XLSX format (07 format), {@code false} otherwise.
+     * @param rowHandler        The row handler to process each row.
+     * @param padCellAtEndOfRow {@code true} to pad missing cells at the end of each row, {@code false} otherwise.
+     * @param includeColumns    Optional included columns (sorted unique indexes).
+     * @return An {@link ExcelSaxReader} instance.
+     */
+    public static ExcelSaxReader<?> createSaxReader(
+            final boolean isXlsx,
+            final RowHandler rowHandler,
+            final boolean padCellAtEndOfRow,
+            final int[] includeColumns) {
+        return isXlsx
+                ? new Excel07SaxReader(rowHandler, padCellAtEndOfRow, includeColumns)
+                : new Excel03SaxReader(rowHandler);
     }
 
     /**

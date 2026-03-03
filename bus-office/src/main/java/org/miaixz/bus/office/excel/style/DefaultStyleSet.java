@@ -96,7 +96,7 @@ public class DefaultStyleSet implements StyleSet, Serializable {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Implements the behavior defined by the supertype.
      *
      * @param reference the cell reference
      * @param cellValue the cell value
