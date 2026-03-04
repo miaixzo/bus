@@ -32,8 +32,8 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.office.excel.cell.VirtualCell;
-import org.miaixz.bus.office.excel.xyz.CellKit;
-import org.miaixz.bus.office.excel.xyz.SheetKit;
+import org.miaixz.bus.office.excel.CellKit;
+import org.miaixz.bus.office.excel.SheetKit;
 
 /**
  * Template context, which records the cells where variables are located in the template.

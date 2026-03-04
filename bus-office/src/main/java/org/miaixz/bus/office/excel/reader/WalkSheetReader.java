@@ -24,7 +24,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.miaixz.bus.core.center.function.BiConsumerX;
 import org.miaixz.bus.office.excel.cell.editors.CellEditor;
-import org.miaixz.bus.office.excel.xyz.CellKit;
+import org.miaixz.bus.office.excel.CellKit;
 
 /**
  * Reads an Excel {@link Sheet} and processes cells using a {@link BiConsumerX}.

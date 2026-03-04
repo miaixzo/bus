@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.MapKit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class DocxTable {
+public class WordTable {
 
     /**
      * Creates an empty table with a single row.

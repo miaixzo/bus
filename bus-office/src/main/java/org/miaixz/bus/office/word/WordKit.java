@@ -36,7 +36,7 @@ import org.miaixz.bus.core.xyz.FileKit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class DocxKit {
+public class WordKit {
 
     /**
      * Creates an {@link XWPFDocument} instance. If the file already exists, it will be opened; otherwise, a new

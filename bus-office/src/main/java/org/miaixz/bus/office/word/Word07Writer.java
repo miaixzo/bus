@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.office.word;
 
-import java.awt.*;
 import java.io.*;
 
 import org.apache.poi.common.usermodel.PictureType;
@@ -70,7 +69,7 @@ public class Word07Writer implements Closeable {
      * @param targetFile The file to write the document to.
      */
     public Word07Writer(final File targetFile) {
-        this(DocxKit.create(targetFile), targetFile);
+        this(WordKit.create(targetFile), targetFile);
     }
 
     /**
@@ -156,10 +155,10 @@ public class Word07Writer implements Closeable {
      * @param data Table data, representing multiple rows. Each element can be a collection or array for a row, or a
      *             Map/Bean where keys represent headers and values are data.
      * @return This {@code Word07Writer} instance, for chaining.
-     * @see DocxTable#createTable(XWPFDocument, Iterable)
+     * @see WordTable#createTable(XWPFDocument, Iterable)
      */
     public Word07Writer addTable(final Iterable<?> data) {
-        DocxTable.createTable(this.doc, data);
+        WordTable.createTable(this.doc, data);
         return this;
     }
 
@@ -173,7 +172,7 @@ public class Word07Writer implements Closeable {
      */
     public Word07Writer addPicture(final File picFile, final int width, final int height) {
         final String fileName = picFile.getName();
-        return addPicture(FileKit.getInputStream(picFile), DocxKit.getType(fileName), fileName, width, height);
+        return addPicture(FileKit.getInputStream(picFile), WordKit.getType(fileName), fileName, width, height);
     }
 
     /**
@@ -247,7 +246,7 @@ public class Word07Writer implements Closeable {
                 run = paragraph.createRun();
                 final String name = picFile.getName();
                 try (final BufferedInputStream in = FileKit.getInputStream(picFile)) {
-                    run.addPicture(in, DocxKit.getType(name), name, Units.toEMU(width), Units.toEMU(height));
+                    run.addPicture(in, WordKit.getType(name), name, Units.toEMU(width), Units.toEMU(height));
                 }
             }
         } catch (final InvalidFormatException | IOException e) {

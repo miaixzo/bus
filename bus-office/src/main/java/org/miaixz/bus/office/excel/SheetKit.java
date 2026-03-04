@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.office.excel.xyz;
+package org.miaixz.bus.office.excel;
 
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.usermodel.Sheet;

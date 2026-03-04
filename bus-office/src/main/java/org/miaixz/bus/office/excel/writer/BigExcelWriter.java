@@ -30,8 +30,8 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.office.excel.xyz.SheetKit;
-import org.miaixz.bus.office.excel.xyz.WorkbookKit;
+import org.miaixz.bus.office.excel.SheetKit;
+import org.miaixz.bus.office.excel.WorkbookKit;
 
 /**
  * Excel writer for large datasets, supporting only XLSX (Excel 07+ version). By encapsulating {@link SXSSFWorkbook}, it

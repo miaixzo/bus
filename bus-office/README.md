@@ -308,49 +308,76 @@ writer.close();
 ### 5. OFD/PDF Conversion
 
 ```java
-import org.miaixz.bus.office.ofd.DocConverter;
+
+
 import java.nio.file.Paths;
 
 // PDF to OFD
 DocConverter.pdfToOfd(
-    Paths.get("input.pdf"),
-    Paths.get("output.ofd")
+        Paths.get("input.pdf"),
+    Paths.
+
+get("output.ofd")
 );
 
 // OFD to PDF
-DocConverter.odfToPdf(
-    Paths.get("input.ofd"),
-    Paths.get("output.pdf")
+        DocConverter.
+
+odfToPdf(
+        Paths.get("input.ofd"),
+    Paths.
+
+get("output.pdf")
 );
 
 // OFD to Images (PNG)
-DocConverter.odfToImage(
-    Paths.get("input.ofd"),
-    Paths.get("output_dir"),
+        DocConverter.
+
+odfToImage(
+        Paths.get("input.ofd"),
+    Paths.
+
+get("output_dir"),
     "png",
-    10.0  // Pixels per millimeter (quality)
-);
+            10.0  // Pixels per millimeter (quality)
+            );
 
 // OFD to HTML
-DocConverter.odfToHtml(
-    Paths.get("input.ofd"),
-    Paths.get("output.html")
+            DocConverter.
+
+odfToHtml(
+        Paths.get("input.ofd"),
+    Paths.
+
+get("output.html")
 );
 
 // Images to OFD
-DocConverter.imgToOfd(
-    Paths.get("output.ofd"),
-    Paths.get("page1.png"),
-    Paths.get("page2.png"),
-    Paths.get("page3.png")
+        DocConverter.
+
+imgToOfd(
+        Paths.get("output.ofd"),
+    Paths.
+
+get("page1.png"),
+    Paths.
+
+get("page2.png"),
+    Paths.
+
+get("page3.png")
 );
 
 // Text to OFD
-DocConverter.textToOfd(
-    Paths.get("input.txt"),
-    Paths.get("output.ofd"),
+        DocConverter.
+
+textToOfd(
+        Paths.get("input.txt"),
+    Paths.
+
+get("output.ofd"),
     12.0  // Font size
-);
+            );
 ```
 
 -----

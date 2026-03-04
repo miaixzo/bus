@@ -27,7 +27,7 @@ import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.miaixz.bus.office.excel.cell.values.FormulaCellValue;
-import org.miaixz.bus.office.excel.xyz.CellKit;
+import org.miaixz.bus.office.excel.CellKit;
 
 /**
  * A virtual cell representing a cell's position, value, and style, but not an actually created cell. Note: Setting

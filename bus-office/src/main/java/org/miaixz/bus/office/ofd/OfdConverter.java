@@ -44,7 +44,7 @@ import org.ofdrw.converter.ofdconverter.TextConverter;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class DocConverter {
+public class OfdConverter {
 
     /**
      * Converts a PDF file to an OFD file.

@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.office.excel.xyz;
+package org.miaixz.bus.office.excel;
 
 import java.util.ArrayList;
 import java.util.Arrays;

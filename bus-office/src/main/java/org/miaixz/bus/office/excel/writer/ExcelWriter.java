@@ -47,9 +47,9 @@ import org.miaixz.bus.office.excel.style.DefaultStyleSet;
 import org.miaixz.bus.office.excel.style.LineStyle;
 import org.miaixz.bus.office.excel.style.ShapeConfig;
 import org.miaixz.bus.office.excel.style.StyleSet;
-import org.miaixz.bus.office.excel.xyz.CellKit;
-import org.miaixz.bus.office.excel.xyz.SheetKit;
-import org.miaixz.bus.office.excel.xyz.WorkbookKit;
+import org.miaixz.bus.office.excel.CellKit;
+import org.miaixz.bus.office.excel.SheetKit;
+import org.miaixz.bus.office.excel.WorkbookKit;
 
 /**
  * Excel Writer. This utility is used to write data to Excel through POI. This object can accomplish the following two

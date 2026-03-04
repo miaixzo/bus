@@ -52,7 +52,6 @@ module bus.office {
     exports org.miaixz.bus.office.excel.shape;
     exports org.miaixz.bus.office.excel.style;
     exports org.miaixz.bus.office.excel.writer;
-    exports org.miaixz.bus.office.excel.xyz;
     exports org.miaixz.bus.office.ofd;
     exports org.miaixz.bus.office.ppt;
     exports org.miaixz.bus.office.word;

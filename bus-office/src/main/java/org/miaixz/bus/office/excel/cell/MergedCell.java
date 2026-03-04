@@ -22,7 +22,7 @@ package org.miaixz.bus.office.excel.cell;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.miaixz.bus.office.excel.xyz.CellKit;
+import org.miaixz.bus.office.excel.CellKit;
 
 /**
  * Merged cell wrapper.

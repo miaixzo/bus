@@ -25,7 +25,7 @@ import java.util.List;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.miaixz.bus.office.excel.cell.editors.CellEditor;
-import org.miaixz.bus.office.excel.xyz.CellKit;
+import org.miaixz.bus.office.excel.CellKit;
 
 /**
  * Reads a single column from an Excel sheet.
