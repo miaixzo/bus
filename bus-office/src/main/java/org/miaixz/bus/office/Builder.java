@@ -88,6 +88,9 @@ public class Builder {
      * @return {@code true} if the number format is a date format, {@code false} otherwise.
      */
     public static boolean isDateFormat(final ExcelNumberFormat numFmt) {
+        if (null == numFmt) {
+            return false;
+        }
         return isDateFormat(numFmt.getIdx(), numFmt.getFormat());
     }
 

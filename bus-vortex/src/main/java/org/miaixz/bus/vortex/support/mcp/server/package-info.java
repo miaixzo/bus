@@ -20,9 +20,12 @@
 /**
  * Provides concrete implementations of the {@link org.miaixz.bus.vortex.provider.ProcessProvider} interface.
  * <p>
- * This package contains different strategies for managing the lifecycle of external processes. The default
+ * This package contains strategies for managing the lifecycle of external processes.
+ * </p>
+ * <ul>
  * <li>{@link org.miaixz.bus.vortex.support.mcp.server.ManageProvider}: Manages local processes and exposes process
  * metrics for MCP runtimes.</li>
+ * </ul>
  *
  * @author Kimi Liu
  * @since Java 17+

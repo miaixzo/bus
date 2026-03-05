@@ -20,8 +20,8 @@
 /**
  * Provides lock striping utilities used by the Vortex gateway to reduce lock contention in concurrent scenarios.
  * <p>
- * This package contains components that map many keys to a fixed number of lock stripes, allowing unrelated keys
- * to proceed concurrently while preserving per-stripe mutual exclusion.
+ * This package contains components that map many keys to a fixed number of lock stripes, allowing unrelated keys to
+ * proceed concurrently while preserving per-stripe mutual exclusion.
  *
  * @author Kimi Liu
  * @since Java 17+

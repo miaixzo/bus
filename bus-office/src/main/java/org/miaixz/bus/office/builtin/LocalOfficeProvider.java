@@ -39,7 +39,7 @@ public class LocalOfficeProvider extends AbstractProvider {
      */
     @Override
     public Object convert(File source) {
-        return null;
+        throw new UnsupportedOperationException("Local office conversion is not implemented yet");
     }
 
     /**
@@ -50,7 +50,7 @@ public class LocalOfficeProvider extends AbstractProvider {
      */
     @Override
     public Object convert(InputStream source) {
-        return null;
+        throw new UnsupportedOperationException("Local office conversion is not implemented yet");
     }
 
     /**
@@ -62,7 +62,7 @@ public class LocalOfficeProvider extends AbstractProvider {
      */
     @Override
     public Object convert(InputStream source, boolean closeStream) {
-        return null;
+        throw new UnsupportedOperationException("Local office conversion is not implemented yet");
     }
 
 }

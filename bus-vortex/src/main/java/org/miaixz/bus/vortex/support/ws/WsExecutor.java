@@ -278,6 +278,14 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
         private final String upstreamTarget;
         private final String method;
 
+        /**
+         * Creates session metadata.
+         *
+         * @param sessionId      The session identifier.
+         * @param connectedAt    The connection timestamp in milliseconds since epoch.
+         * @param upstreamTarget The upstream target URI.
+         * @param method         The upstream method.
+         */
         public SessionMetadata(String sessionId, long connectedAt, String upstreamTarget, String method) {
             this.sessionId = sessionId;
             this.connectedAt = connectedAt;
@@ -285,18 +293,38 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
             this.method = method;
         }
 
+        /**
+         * Returns the session identifier.
+         *
+         * @return The session identifier.
+         */
         public String getSessionId() {
             return sessionId;
         }
 
+        /**
+         * Returns the connection timestamp.
+         *
+         * @return The connection timestamp in milliseconds since epoch.
+         */
         public long getConnectedAt() {
             return connectedAt;
         }
 
+        /**
+         * Returns the upstream target URI.
+         *
+         * @return The upstream target URI.
+         */
         public String getUpstreamTarget() {
             return upstreamTarget;
         }
 
+        /**
+         * Returns the upstream method.
+         *
+         * @return The upstream method.
+         */
         public String getMethod() {
             return method;
         }

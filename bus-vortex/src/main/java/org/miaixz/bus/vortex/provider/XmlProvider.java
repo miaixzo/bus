@@ -44,6 +44,12 @@ import reactor.core.scheduler.Schedulers;
 public class XmlProvider implements Provider<Object, String> {
 
     /**
+     * Creates an XML provider instance.
+     */
+    public XmlProvider() {
+    }
+
+    /**
      * Asynchronously serializes the given Java object into its XML string representation.
      * <p>
      * This method first constructs a standard XML header. It then converts the input object into a {@code Map} and

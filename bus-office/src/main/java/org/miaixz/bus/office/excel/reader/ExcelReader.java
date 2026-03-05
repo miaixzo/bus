@@ -150,10 +150,17 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
      */
     private static Sheet getSheetOrCloseWorkbook(final Workbook workbook, String name) throws IllegalArgumentException {
         Assert.notNull(workbook);
+        final Sheet sheet;
         if (null == name) {
-            name = "sheet1";
+            try {
+                sheet = workbook.getSheetAt(0);
+            } catch (final IllegalArgumentException e) {
+                IoKit.closeQuietly(workbook);
+                throw new IllegalArgumentException("No sheet found in workbook", e);
+            }
+        } else {
+            sheet = workbook.getSheet(name);
         }
-        final Sheet sheet = workbook.getSheet(name);
         if (null == sheet) {
             IoKit.closeQuietly(workbook);
             throw new IllegalArgumentException("Sheet [" + name + "] not exist!");

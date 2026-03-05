@@ -46,7 +46,7 @@ public class Registry {
     /**
      * Cache for storing registered service providers, mapped by name or simple class name.
      */
-    private static Map<Object, Object> COMPLEX_CACHE = new ConcurrentHashMap<>();
+    private static final Map<String, Object> COMPLEX_CACHE = new ConcurrentHashMap<>();
     /**
      * Singleton instance of the Registry.
      */
