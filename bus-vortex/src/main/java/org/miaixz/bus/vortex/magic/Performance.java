@@ -1,29 +1,21 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- ~                                                                               ~
- ~ The MIT License (MIT)                                                         ~
- ~                                                                               ~
- ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
- ~                                                                               ~
- ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
- ~ of this software and associated documentation files (the "Software"), to deal ~
- ~ in the Software without restriction, including without limitation the rights  ~
- ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
- ~ copies of the Software, and to permit persons to whom the Software is         ~
- ~ furnished to do so, subject to the following conditions:                      ~
- ~                                                                               ~
- ~ The above copyright notice and this permission notice shall be included in    ~
- ~ all copies or substantial portions of the Software.                           ~
- ~                                                                               ~
- ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
- ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
- ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
- ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
- ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
- ~ THE SOFTWARE.                                                                 ~
- ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 package org.miaixz.bus.vortex.magic;
 
@@ -53,8 +45,8 @@ import lombok.NoArgsConstructor;
  * <ul>
  * <li>streamingRequestThreshold: 10 MB</li>
  * <li>maxRequestSize: 100 MB</li>
- * <li>maxMultipartRequestSize: 512 MB</li>
- * <li>maxConnections: 500</li>
+ * <li>maxMultipartRequestSize: 1024 MB</li>
+ * <li>maxConnections: 5000</li>
  * <li>maxProducerCacheSize: 100</li>
  * <li>registryL2CacheSize: 10,000 (assets)</li>
  * <li>registryL2CacheExpireMs: 300,000 (5 minutes)</li>
@@ -93,19 +85,19 @@ public class Performance {
      * Maximum size in bytes for multipart/form-data requests (file uploads).
      */
     @Builder.Default
-    private long maxMultipartRequestSize = 512 * 1024 * 1024;
+    private long maxMultipartRequestSize = 1024 * 1024 * 1024;
 
     /**
      * Maximum number of HTTP connections in the connection pool.
      */
     @Builder.Default
-    private int maxConnections = 500;
+    private int maxConnections = 5000;
 
     /**
      * Maximum number of MQ producer instances to cache.
      */
     @Builder.Default
-    private int maxProducerCacheSize = 100;
+    private int maxProducerCacheSize = 1000;
 
     /**
      * Registry L2 cache maximum size (number of assets).
@@ -154,5 +146,14 @@ public class Performance {
      */
     @Builder.Default
     private int startupDelaySeconds = 10;
+
+    /**
+     * The maximum allowed time difference (in minutes) between the client timestamp and the server time.
+     * <p>
+     * Requests with a timestamp outside this window will be rejected to prevent replay attacks. Default: 30 minutes.
+     * </p>
+     */
+    @Builder.Default
+    private int timestampToleranceMinutes = 30;
 
 }

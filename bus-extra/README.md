@@ -743,7 +743,7 @@ Contributions are welcome! Please feel free to submit issues or pull requests.
 
 ## 📄 License
 
-The MIT License (MIT)
+[Apache License Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 -----
 

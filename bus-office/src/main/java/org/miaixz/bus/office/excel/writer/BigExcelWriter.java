@@ -1,34 +1,27 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- ~                                                                               ~
- ~ The MIT License (MIT)                                                         ~
- ~                                                                               ~
- ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
- ~                                                                               ~
- ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
- ~ of this software and associated documentation files (the "Software"), to deal ~
- ~ in the Software without restriction, including without limitation the rights  ~
- ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
- ~ copies of the Software, and to permit persons to whom the Software is         ~
- ~ furnished to do so, subject to the following conditions:                      ~
- ~                                                                               ~
- ~ The above copyright notice and this permission notice shall be included in    ~
- ~ all copies or substantial portions of the Software.                           ~
- ~                                                                               ~
- ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
- ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
- ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
- ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
- ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
- ~ THE SOFTWARE.                                                                 ~
- ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 package org.miaixz.bus.office.excel.writer;
 
 import java.io.File;
 import java.io.OutputStream;
+import java.util.IllegalFormatException;
 
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -36,8 +29,9 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.office.excel.xyz.SheetKit;
-import org.miaixz.bus.office.excel.xyz.WorkbookKit;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.office.excel.SheetKit;
+import org.miaixz.bus.office.excel.WorkbookKit;
 
 /**
  * Excel writer for large datasets, supporting only XLSX (Excel 07+ version). By encapsulating {@link SXSSFWorkbook}, it
@@ -59,6 +53,10 @@ public class BigExcelWriter extends ExcelWriter {
      * BigExcelWriter can only be flushed once, so it will not write again after the first call.
      */
     private boolean isFlushed;
+    /**
+     * Auto-splitting sheet sequence.
+     */
+    private int autoSplitSheetSeq;
 
     /**
      * Constructs a new {@code BigExcelWriter}, generating an XLSX format Excel file by default. This constructor does
@@ -149,6 +147,22 @@ public class BigExcelWriter extends ExcelWriter {
     }
 
     /**
+     * Constructs a new {@code BigExcelWriter} with SXSSF tuning options.
+     *
+     * @param destFile              The target file.
+     * @param rowAccessWindowSize   The number of rows to keep in memory.
+     * @param compressTmpFiles      Whether to compress SXSSF temp files.
+     * @param useSharedStringsTable Whether to use shared strings table.
+     * @param sheetName             The sheet name.
+     */
+    public BigExcelWriter(final File destFile, final int rowAccessWindowSize, final boolean compressTmpFiles,
+            final boolean useSharedStringsTable, final String sheetName) {
+        this(destFile.exists() ? WorkbookKit.createSXSSFBook(destFile)
+                : WorkbookKit.createSXSSFBook(rowAccessWindowSize, compressTmpFiles, useSharedStringsTable), sheetName);
+        this.targetFile = destFile;
+    }
+
+    /**
      * Constructs a new {@code BigExcelWriter}. This constructor does not take an Excel file path for writing; only the
      * {@link #flush(OutputStream)} method can be called to write to a stream. To write to a file, you must first call
      * {@link #setTargetFile(File)} to customize the output file, and then call {@link #flush()} to write to the file.
@@ -169,6 +183,97 @@ public class BigExcelWriter extends ExcelWriter {
      */
     public BigExcelWriter(final Sheet sheet) {
         super(sheet);
+    }
+
+    /**
+     * Implements the behavior defined by the supertype.
+     *
+     * @param config the Excel write configuration
+     * @return this writer instance for chaining
+     */
+    @Override
+    public BigExcelWriter setConfig(final ExcelWriteConfig config) {
+        super.setConfig(config);
+        if (config.isBigDataMode()) {
+            disableDefaultStyle();
+        }
+        return this;
+    }
+
+    /**
+     * Implements the behavior defined by the supertype.
+     *
+     * @param rowData data of a row.
+     * @return this.
+     */
+    @Override
+    public BigExcelWriter writeHeaderRow(final Iterable<?> rowData) {
+        ensureCapacityForNextRows(1);
+        super.writeHeaderRow(rowData);
+        return this;
+    }
+
+    /**
+     * Implements the behavior defined by the supertype.
+     *
+     * @param rowBean          the Bean to be written, can be Map, Bean or Iterable.
+     * @param isWriteKeyAsHead when true, write two rows, otherwise one row.
+     * @return this.
+     */
+    @Override
+    public BigExcelWriter writeRow(final Object rowBean, final boolean isWriteKeyAsHead) {
+        ensureCapacityForNextRows(estimateRowsForWriteRow(rowBean, isWriteKeyAsHead));
+        super.writeRow(rowBean, isWriteKeyAsHead);
+        return this;
+    }
+
+    /**
+     * Implements the behavior defined by the supertype.
+     *
+     * @param rowData data of a row.
+     * @return this.
+     */
+    @Override
+    public BigExcelWriter writeRow(final Iterable<?> rowData) {
+        ensureCapacityForNextRows(1);
+        super.writeRow(rowData);
+        return this;
+    }
+
+    /**
+     * Implements the behavior defined by the supertype.
+     *
+     * @param sheetIndex the zero-based sheet index
+     * @return this writer instance for chaining
+     */
+    @Override
+    public BigExcelWriter setSheet(final int sheetIndex) {
+        super.setSheet(sheetIndex);
+        return this;
+    }
+
+    /**
+     * Implements the behavior defined by the supertype.
+     *
+     * @param sheetName the sheet name
+     * @return this writer instance for chaining
+     */
+    @Override
+    public BigExcelWriter setSheet(final String sheetName) {
+        super.setSheet(sheetName);
+        return this;
+    }
+
+    /**
+     * Implements the behavior defined by the supertype.
+     *
+     * @param rowIndex row number.
+     * @return this.
+     */
+    @Override
+    public BigExcelWriter setCurrentRow(final int rowIndex) {
+        super.setCurrentRow(rowIndex);
+        return this;
     }
 
     /**
@@ -233,6 +338,91 @@ public class BigExcelWriter extends ExcelWriter {
         // Clean up temporary files.
         IoKit.close(this.workbook);
         super.closeWithoutFlush();
+    }
+
+    /**
+     * Ensures there is enough capacity for the next rows.
+     *
+     * @param rowsToWrite rows that will be written next.
+     */
+    private void ensureCapacityForNextRows(final int rowsToWrite) {
+        if (rowsToWrite <= 0 || !isAutoSplitEnabled()) {
+            return;
+        }
+        if (rowsToWrite > getMaxRowsPerSheet()) {
+            throw new IllegalArgumentException("rowsToWrite exceeds maxRowsPerSheet: " + rowsToWrite);
+        }
+        if (isTemplateMode()) {
+            throw new IllegalStateException("autoSplitSheet is not supported in template mode");
+        }
+        switchToNextSheetIfNeeded(rowsToWrite);
+    }
+
+    /**
+     * Switches to next sheet if current sheet has no remaining row capacity.
+     *
+     * @param rowsToWrite rows that will be written next.
+     */
+    private void switchToNextSheetIfNeeded(final int rowsToWrite) {
+        if (getCurrentRow() + rowsToWrite <= getMaxRowsPerSheet()) {
+            return;
+        }
+
+        String nextSheetName;
+        do {
+            this.autoSplitSheetSeq++;
+            nextSheetName = formatSheetName(this.autoSplitSheetSeq);
+        } while (null != this.workbook.getSheet(nextSheetName));
+
+        super.setSheet(nextSheetName);
+        super.setCurrentRow(0);
+    }
+
+    /**
+     * Formats sheet name by configured pattern.
+     *
+     * @param sheetSeq sheet sequence.
+     * @return Formatted sheet name.
+     */
+    private String formatSheetName(final int sheetSeq) {
+        final String pattern = this.config.getSheetNamePattern();
+        try {
+            return String.format(pattern, sheetSeq);
+        } catch (final IllegalFormatException e) {
+            return StringKit.format("sheet_{}", sheetSeq);
+        }
+    }
+
+    /**
+     * Returns whether auto split is enabled.
+     *
+     * @return {@code true} if auto split enabled, {@code false} otherwise.
+     */
+    private boolean isAutoSplitEnabled() {
+        return this.config.isAutoSplitSheet();
+    }
+
+    /**
+     * Gets configured max rows per sheet.
+     *
+     * @return max rows per sheet.
+     */
+    private int getMaxRowsPerSheet() {
+        return this.config.getMaxRowsPerSheet();
+    }
+
+    /**
+     * Estimates how many rows a writeRow call will consume.
+     *
+     * @param rowBean          row object.
+     * @param isWriteKeyAsHead whether map/bean header row is written.
+     * @return estimated rows to write.
+     */
+    private int estimateRowsForWriteRow(final Object rowBean, final boolean isWriteKeyAsHead) {
+        if (!isWriteKeyAsHead || null == rowBean) {
+            return 1;
+        }
+        return rowBean instanceof Iterable ? 1 : 2;
     }
 
 }

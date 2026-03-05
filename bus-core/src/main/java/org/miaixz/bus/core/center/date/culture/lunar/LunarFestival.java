@@ -1,29 +1,21 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- ~                                                                               ~
- ~ The MIT License (MIT)                                                         ~
- ~                                                                               ~
- ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
- ~                                                                               ~
- ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
- ~ of this software and associated documentation files (the "Software"), to deal ~
- ~ in the Software without restriction, including without limitation the rights  ~
- ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
- ~ copies of the Software, and to permit persons to whom the Software is         ~
- ~ furnished to do so, subject to the following conditions:                      ~
- ~                                                                               ~
- ~ The above copyright notice and this permission notice shall be included in    ~
- ~ all copies or substantial portions of the Software.                           ~
- ~                                                                               ~
- ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
- ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
- ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
- ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
- ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
- ~ THE SOFTWARE.                                                                 ~
- ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 package org.miaixz.bus.core.center.date.culture.lunar;
 
@@ -31,6 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.center.date.culture.Loops;
+import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.lang.EnumValue;
 
@@ -147,24 +140,29 @@ public class LunarFestival extends Loops {
         if (matcher.find()) {
             return new LunarFestival(EnumValue.Festival.DAY, LunarDay.fromYmd(year, month, day), null, matcher.group());
         }
+        LunarDay lunarDay = LunarDay.fromYmd(year, month, day);
+        SolarDay solarDay = lunarDay.getSolarDay();
         matcher = Pattern.compile("@\\d{2}1\\d{2}").matcher(DATA);
         while (matcher.find()) {
             String data = matcher.group();
-            SolarTerms solarTerms = SolarTerms.fromIndex(year, Integer.parseInt(data.substring(4), 10));
-            LunarDay lunarDay = solarTerms.getSolarDay().getLunarDay();
-            if (lunarDay.getYear() == year && lunarDay.getMonth() == month && lunarDay.getDay() == day) {
-                return new LunarFestival(EnumValue.Festival.TERM, lunarDay, solarTerms, data);
+            SolarTerms term = SolarTerms.fromIndex(year, Integer.parseInt(data.substring(4), 10));
+            SolarDay termDay = term.getSolarDay();
+            if (termDay.getYear() == solarDay.getYear() && termDay.getMonth() == solarDay.getMonth()
+                    && termDay.getDay() == solarDay.getDay()) {
+                return new LunarFestival(EnumValue.Festival.TERM, lunarDay, term, data);
             }
         }
-        matcher = Pattern.compile("@\\d{2}2").matcher(DATA);
-        if (!matcher.find()) {
-            return null;
+        if (month == 12 && day > 28) {
+            matcher = Pattern.compile("@\\d{2}2").matcher(DATA);
+            if (!matcher.find()) {
+                return null;
+            }
+            LunarDay nextDay = lunarDay.next(1);
+            if (nextDay.getMonth() == 1 && nextDay.getDay() == 1) {
+                return new LunarFestival(EnumValue.Festival.EVE, lunarDay, null, matcher.group());
+            }
         }
-        LunarDay lunarDay = LunarDay.fromYmd(year, month, day);
-        LunarDay nextDay = lunarDay.next(1);
-        return nextDay.getMonth() == 1 && nextDay.getDay() == 1
-                ? new LunarFestival(EnumValue.Festival.EVE, lunarDay, null, matcher.group())
-                : null;
+        return null;
     }
 
     /**

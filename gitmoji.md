@@ -1,7 +1,7 @@
 * 🎨 `:art:` 改进代码的结构/格式 (Improve structure / format of the code.)
 * ⚡ `:zap:` 提高性能 (Improve performance.)
 * 🔥 `:fire:` 删除代码或文件 (Remove code or files.)
-* 🐛 `:bug:` 修复一个错误 (Fix a bug.)
+* 🐛 `:bug:` 修复错误 (Fix a bug.)
 * 🚑️ `:ambulance:` 关键修补程序 (Critical hotfix.)
 * ✨ `:sparkles:` 引入新功能 (Introduce new features.)
 * 📝 `:memo:` 添加或更新文档 (Add or update documentation.)

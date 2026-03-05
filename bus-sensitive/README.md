@@ -668,7 +668,7 @@ public class SensitiveConfig {
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/818000/bus/blob/main/LICENSE) file for details.
+[Apache License Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 -----
 

@@ -1,29 +1,21 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- ~                                                                               ~
- ~ The MIT License (MIT)                                                         ~
- ~                                                                               ~
- ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
- ~                                                                               ~
- ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
- ~ of this software and associated documentation files (the "Software"), to deal ~
- ~ in the Software without restriction, including without limitation the rights  ~
- ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
- ~ copies of the Software, and to permit persons to whom the Software is         ~
- ~ furnished to do so, subject to the following conditions:                      ~
- ~                                                                               ~
- ~ The above copyright notice and this permission notice shall be included in    ~
- ~ all copies or substantial portions of the Software.                           ~
- ~                                                                               ~
- ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
- ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
- ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
- ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
- ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
- ~ THE SOFTWARE.                                                                 ~
- ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 package org.miaixz.bus.core.center.date;
 
@@ -48,6 +40,7 @@ import org.miaixz.bus.core.center.date.format.FormatManager;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.ZoneId;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.LambdaKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -228,7 +221,7 @@ public class Formatter {
      * HTTP header date and time format {@link FormatBuilder}: EEE, dd MMM yyyy HH:mm:ss GMT
      */
     public static final FormatBuilder HTTP_DATETIME_FORMAT_GMT = FormatBuilder
-            .getInstance(Fields.HTTP_DATETIME, TimeZone.getTimeZone("GMT"), Locale.US);
+            .getInstance(Fields.HTTP_DATETIME, ZoneKit.getTimeZone("GMT"), Locale.US);
     /**
      * HTTP header date and time format {@link FormatBuilder}: EEE, dd MMM yyyy HH:mm:ss z
      */
@@ -248,7 +241,8 @@ public class Formatter {
     /**
      * ISO8601 time {@link FormatBuilder}: yyyy-MM-dd'T'HH:mm:ss'Z'
      */
-    public static final FormatBuilder UTC_FORMAT = FormatBuilder.getInstance(Fields.UTC, ZoneKit.ZONE_UTC);
+    public static final FormatBuilder UTC_FORMAT = FormatBuilder
+            .getInstance(Fields.UTC, ZoneKit.getTimeZone(ZoneId.UTC.name()));
     /**
      * ISO8601 time {@link FormatBuilder}: yyyy-MM-dd'T'HH:mm:ssZ, where Z indicates a time offset, e.g., +0800
      */
@@ -262,7 +256,8 @@ public class Formatter {
     /**
      * ISO8601 time {@link FormatBuilder}: yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
      */
-    public static final FormatBuilder UTC_MS_FORMAT = FormatBuilder.getInstance(Fields.UTC_MS, ZoneKit.ZONE_UTC);
+    public static final FormatBuilder UTC_MS_FORMAT = FormatBuilder
+            .getInstance(Fields.UTC_MS, ZoneKit.getTimeZone(ZoneId.UTC.name()));
     /**
      * ISO8601 time {@link FormatBuilder}: yyyy-MM-dd'T'HH:mm:ss.SSSZ
      */
@@ -381,7 +376,7 @@ public class Formatter {
                 return formatter.format(((LocalTime) time).atDate(LocalDate.now()));
             } else if (time instanceof Instant) {
                 // Instant has no time zone information, assign default time zone
-                return formatter.format(((Instant) time).atZone(ZoneId.systemDefault()));
+                return formatter.format(((Instant) time).atZone(java.time.ZoneId.systemDefault()));
             }
             throw e;
         }

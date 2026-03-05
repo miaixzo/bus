@@ -18,11 +18,11 @@ bus-storage 是一个全面的云存储组件，提供与多个云存储提供�
 ### Maven 依赖
 
 ```xml
-<dependency>
-    <groupId>org.miaixz</groupId>
-    <artifactId>bus-storage</artifactId>
-    <latestVersion>8.x.x</latestVersion>
-</dependency>
+  <dependency>
+      <groupId>org.miaixz</groupId>
+      <artifactId>bus-storage</artifactId>
+      <latestVersion>8.x.x</latestVersion>
+  </dependency>
 ```
 
 ### 提供商依赖
@@ -30,71 +30,13 @@ bus-storage 是一个全面的云存储组件，提供与多个云存储提供�
 添加所需的云提供商 SDK:
 
 ```xml
-<properties>
-    <aliyun.oss.version>3.4.2</aliyun.oss.version>
-    <baidu.bos.version>0.10.48</baidu.bos.version>
-    <huawei.oss.version>3.0.5</huawei.oss.version>
-    <jd.oss.version>1.11.136</jd.oss.version>
-    <qiniu.oss.version>[7.2.0, 7.2.99]</qiniu.oss.version>
-    <tencent.oss.version>5.5.9</tencent.oss.version>
-    <upyun.oss.version>4.0.1</upyun.oss.version>
-</properties>
-
-<!-- 阿里云 OSS -->
-<dependency>
-    <groupId>com.aliyun.oss</groupId>
-    <artifactId>aliyun-sdk-oss</artifactId>
-    <version>${aliyun.oss.version}</version>
-    <optional>true</optional>
-</dependency>
-
-<!-- 百度云 BOS -->
-<dependency>
-    <groupId>com.baidubce</groupId>
-    <artifactId>bce-java-sdk</artifactId>
-    <version>${baidu.bos.version}</version>
-    <optional>true</optional>
-</dependency>
-
-<!-- 华为云 OBS -->
-<dependency>
-    <groupId>com.huawei.storage</groupId>
-    <artifactId>esdk-obs-java</artifactId>
-    <version>${huawei.oss.version}</version>
-    <optional>true</optional>
-</dependency>
-
-<!-- 京东云 OSS -->
-<dependency>
-    <groupId>com.amazonaws</groupId>
-    <artifactId>aws-java-sdk</artifactId>
-    <version>${jd.oss.version}</version>
-    <optional>true</optional>
-</dependency>
-
-<!-- 七牛云 -->
-<dependency>
-    <groupId>com.qiniu</groupId>
-    <artifactId>qiniu-java-sdk</artifactId>
-    <version>${qiniu.oss.version}</version>
-    <optional>true</optional>
-</dependency>
-
-<!-- 腾讯云 COS -->
-<dependency>
-    <groupId>com.qcloud</groupId>
-    <artifactId>cos_api</artifactId>
-    <version>${tencent.oss.version}</version>
-    <optional>true</optional>
-</dependency>
-
-<!-- 又拍云 -->
-<dependency>
-    <groupId>com.upyun</groupId>
-    <artifactId>java-sdk</artifactId>
-    <version>${upyun.oss.version}</version>
-    <optional>true</optional>
-</dependency>
+  <properties>
+    <amazon.s3.version>2.40.15</amazon.s3.version>
+    <jackson.version>2.21.0</jackson.version>
+    <sardine.version>5.13</sardine.version>
+    <jsch.version>2.27.7</jsch.version>
+    <smbj.version>0.14.0</smbj.version>
+  </properties>
 ```
 
 ## 📝 使用示例

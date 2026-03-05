@@ -1,33 +1,24 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- ~                                                                               ~
- ~ The MIT License (MIT)                                                         ~
- ~                                                                               ~
- ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
- ~                                                                               ~
- ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
- ~ of this software and associated documentation files (the "Software"), to deal ~
- ~ in the Software without restriction, including without limitation the rights  ~
- ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
- ~ copies of the Software, and to permit persons to whom the Software is         ~
- ~ furnished to do so, subject to the following conditions:                      ~
- ~                                                                               ~
- ~ The above copyright notice and this permission notice shall be included in    ~
- ~ all copies or substantial portions of the Software.                           ~
- ~                                                                               ~
- ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
- ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
- ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
- ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
- ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
- ~ THE SOFTWARE.                                                                 ~
- ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 package org.miaixz.bus.office.word;
 
-import java.awt.*;
 import java.io.*;
 
 import org.apache.poi.common.usermodel.PictureType;
@@ -78,7 +69,7 @@ public class Word07Writer implements Closeable {
      * @param targetFile The file to write the document to.
      */
     public Word07Writer(final File targetFile) {
-        this(DocxKit.create(targetFile), targetFile);
+        this(WordKit.create(targetFile), targetFile);
     }
 
     /**
@@ -164,10 +155,10 @@ public class Word07Writer implements Closeable {
      * @param data Table data, representing multiple rows. Each element can be a collection or array for a row, or a
      *             Map/Bean where keys represent headers and values are data.
      * @return This {@code Word07Writer} instance, for chaining.
-     * @see DocxTable#createTable(XWPFDocument, Iterable)
+     * @see WordTable#createTable(XWPFDocument, Iterable)
      */
     public Word07Writer addTable(final Iterable<?> data) {
-        DocxTable.createTable(this.doc, data);
+        WordTable.createTable(this.doc, data);
         return this;
     }
 
@@ -181,7 +172,7 @@ public class Word07Writer implements Closeable {
      */
     public Word07Writer addPicture(final File picFile, final int width, final int height) {
         final String fileName = picFile.getName();
-        return addPicture(FileKit.getInputStream(picFile), DocxKit.getType(fileName), fileName, width, height);
+        return addPicture(FileKit.getInputStream(picFile), WordKit.getType(fileName), fileName, width, height);
     }
 
     /**
@@ -255,7 +246,7 @@ public class Word07Writer implements Closeable {
                 run = paragraph.createRun();
                 final String name = picFile.getName();
                 try (final BufferedInputStream in = FileKit.getInputStream(picFile)) {
-                    run.addPicture(in, DocxKit.getType(name), name, Units.toEMU(width), Units.toEMU(height));
+                    run.addPicture(in, WordKit.getType(name), name, Units.toEMU(width), Units.toEMU(height));
                 }
             }
         } catch (final InvalidFormatException | IOException e) {

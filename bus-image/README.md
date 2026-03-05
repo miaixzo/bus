@@ -886,7 +886,7 @@ String charset = attrs.getSpecificCharacterSet();
 
 ## License
 
-**Bus Image** is open-source software licensed under the [MIT License](https://github.com/818000/bus/blob/main/LICENSE).
+[Apache License Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 -----
 

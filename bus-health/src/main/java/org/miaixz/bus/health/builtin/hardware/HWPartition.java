@@ -1,35 +1,26 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- ~                                                                               ~
- ~ The MIT License (MIT)                                                         ~
- ~                                                                               ~
- ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.               ~
- ~                                                                               ~
- ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
- ~ of this software and associated documentation files (the "Software"), to deal ~
- ~ in the Software without restriction, including without limitation the rights  ~
- ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
- ~ copies of the Software, and to permit persons to whom the Software is         ~
- ~ furnished to do so, subject to the following conditions:                      ~
- ~                                                                               ~
- ~ The above copyright notice and this permission notice shall be included in    ~
- ~ all copies or substantial portions of the Software.                           ~
- ~                                                                               ~
- ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
- ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
- ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
- ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
- ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
- ~ THE SOFTWARE.                                                                 ~
- ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 package org.miaixz.bus.health.builtin.hardware;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Formats;
 
 /**
@@ -47,6 +38,7 @@ public class HWPartition {
     private final String name;
     private final String type;
     private final String uuid;
+    private final String label;
     private final long size;
     private final int major;
     private final int minor;
@@ -66,10 +58,29 @@ public class HWPartition {
      */
     public HWPartition(String identification, String name, String type, String uuid, long size, int major, int minor,
             String mountPoint) {
+        this(identification, name, type, uuid, "", size, major, minor, mountPoint);
+    }
+
+    /**
+     * Creates a new HWPartition
+     *
+     * @param identification The unique partition id
+     * @param name           Friendly name of the partition
+     * @param type           Type or description of the partition
+     * @param uuid           UUID
+     * @param label          Partition label
+     * @param size           Size in bytes
+     * @param major          Device ID (Major)
+     * @param minor          Device ID (Minor)
+     * @param mountPoint     Where the partition is mounted
+     */
+    public HWPartition(String identification, String name, String type, String uuid, String label, long size, int major,
+            int minor, String mountPoint) {
         this.identification = identification;
         this.name = name;
         this.type = type;
         this.uuid = uuid;
+        this.label = label;
         this.size = size;
         this.major = major;
         this.minor = minor;
@@ -122,6 +133,17 @@ public class HWPartition {
 
     /**
      * <p>
+     * Getter for the field <code>label</code>.
+     * </p>
+     *
+     * @return Returns the label.
+     */
+    public String getLabel() {
+        return this.label;
+    }
+
+    /**
+     * <p>
      * Getter for the field <code>size</code>.
      * </p>
      *
@@ -168,11 +190,12 @@ public class HWPartition {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getIdentification()).append(": ");
-        sb.append(getName()).append(Symbol.SPACE);
-        sb.append(Symbol.PARENTHESE_LEFT).append(getType()).append(") ");
-        sb.append("Maj:Min=").append(getMajor()).append(Symbol.COLON).append(getMinor()).append(", ");
+        sb.append(getName()).append(" ");
+        sb.append("(").append(getType()).append(") ");
+        sb.append(StringKit.isBlank(getLabel()) ? "" : "[" + getLabel() + "] ");
+        sb.append("Maj:Min=").append(getMajor()).append(":").append(getMinor()).append(", ");
         sb.append("size: ").append(Formats.formatBytesDecimal(getSize()));
-        sb.append(getMountPoint().isEmpty() ? Normal.EMPTY : " @ " + getMountPoint());
+        sb.append(getMountPoint().isEmpty() ? "" : " @ " + getMountPoint());
         return sb.toString();
     }
 

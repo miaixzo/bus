@@ -972,7 +972,7 @@ Based on benchmark tests (10,000 operations):
 
 ## 📄 License
 
-[The MIT License (MIT)](https://github.com/818000/bus/blob/main/LICENSE)
+[Apache License Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 -----
 

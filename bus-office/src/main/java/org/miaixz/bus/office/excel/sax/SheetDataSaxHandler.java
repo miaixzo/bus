@@ -1,33 +1,26 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- ~                                                                               ~
- ~ The MIT License (MIT)                                                         ~
- ~                                                                               ~
- ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
- ~                                                                               ~
- ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
- ~ of this software and associated documentation files (the "Software"), to deal ~
- ~ in the Software without restriction, including without limitation the rights  ~
- ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
- ~ copies of the Software, and to permit persons to whom the Software is         ~
- ~ furnished to do so, subject to the following conditions:                      ~
- ~                                                                               ~
- ~ The above copyright notice and this permission notice shall be included in    ~
- ~ all copies or substantial portions of the Software.                           ~
- ~                                                                               ~
- ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
- ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
- ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
- ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
- ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
- ~ THE SOFTWARE.                                                                 ~
- ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 package org.miaixz.bus.office.excel.sax;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.BuiltinFormats;
@@ -40,7 +33,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.office.excel.cell.values.FormulaCellValue;
 import org.miaixz.bus.office.excel.sax.handler.RowHandler;
-import org.miaixz.bus.office.excel.xyz.ExcelSaxKit;
+import org.miaixz.bus.office.excel.ExcelSaxKit;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -69,6 +62,16 @@ public class SheetDataSaxHandler extends DefaultHandler {
      * Configuration item: whether to align data by padding with null cells at the end of a row.
      */
     private final boolean padCellAtEndOfRow;
+
+    /**
+     * Include column marks for quick O(1) lookup by column index.
+     */
+    private final boolean[] includeColumnMarks;
+
+    /**
+     * Maximum included column index.
+     */
+    private final int maxIncludeColumn;
 
     /**
      * The content of the last parsed formula element.
@@ -106,6 +109,11 @@ public class SheetDataSaxHandler extends DefaultHandler {
     private int curCell;
 
     /**
+     * Cursor of includeColumns for current row.
+     */
+    private int includeColumnCursor;
+
+    /**
      * The data type of the current cell.
      */
     private CellDataType cellDataType;
@@ -136,14 +144,34 @@ public class SheetDataSaxHandler extends DefaultHandler {
     private String maxCellCoordinate;
 
     /**
-     * The style associated with the current cell.
+     * Cached current cell style (may be null).
      */
     private XSSFCellStyle xssfCellStyle;
 
     /**
-     * The format string stored in the cell, derived from the {@code formatCode} attribute of {@code numFmt}.
+     * Cached current cell format string.
      */
-    private String numFmtString;
+    private String numFmtString = Normal.EMPTY;
+
+    /**
+     * Cached style index to avoid repeated style lookups for adjacent cells.
+     */
+    private int cachedXfIndex = Integer.MIN_VALUE;
+
+    /**
+     * Cached style object for {@link #cachedXfIndex}.
+     */
+    private XSSFCellStyle cachedXssfCellStyle;
+
+    /**
+     * Cached format index for {@link #cachedXfIndex}.
+     */
+    private int cachedNumFmtIndex = -1;
+
+    /**
+     * Cached format string for {@link #cachedXfIndex}.
+     */
+    private String cachedNumFmtString = Normal.EMPTY;
 
     /**
      * Flag indicating whether the parser is currently inside a {@code <sheetData>} tag. The SAX parser only processes
@@ -163,8 +191,39 @@ public class SheetDataSaxHandler extends DefaultHandler {
      * @param padCellAtEndOfRow Whether to align data by padding with null cells at the end of a row.
      */
     public SheetDataSaxHandler(final RowHandler rowHandler, final boolean padCellAtEndOfRow) {
+        this(rowHandler, padCellAtEndOfRow, null);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param rowHandler        The row handler for processing data.
+     * @param padCellAtEndOfRow Whether to align data by padding with null cells at the end of a row.
+     * @param includeColumns    Optional included columns (sorted unique indexes).
+     */
+    public SheetDataSaxHandler(final RowHandler rowHandler, final boolean padCellAtEndOfRow,
+            final int[] includeColumns) {
         this.rowHandler = rowHandler;
         this.padCellAtEndOfRow = padCellAtEndOfRow;
+        if (null == includeColumns || includeColumns.length == 0) {
+            this.includeColumnMarks = null;
+            this.maxIncludeColumn = -1;
+        } else {
+            int max = -1;
+            for (final int column : includeColumns) {
+                if (column > max) {
+                    max = column;
+                }
+            }
+            this.maxIncludeColumn = max;
+            this.includeColumnMarks = new boolean[max + 1];
+            Arrays.fill(this.includeColumnMarks, false);
+            for (final int column : includeColumns) {
+                if (column >= 0) {
+                    this.includeColumnMarks[column] = true;
+                }
+            }
+        }
     }
 
     /**
@@ -289,6 +348,7 @@ public class SheetDataSaxHandler extends DefaultHandler {
     private void startRow(final Attributes attributes) {
         final String rValue = AttributeName.r.getValue(attributes);
         this.rowNumber = (null == rValue) ? -1 : Long.parseLong(rValue) - 1;
+        this.includeColumnCursor = 0;
     }
 
     /**
@@ -331,6 +391,15 @@ public class SheetDataSaxHandler extends DefaultHandler {
             padCell(curCoordinate, maxCellCoordinate, true);
         }
 
+        if (null != this.includeColumnMarks) {
+            while (includeColumnCursor <= this.maxIncludeColumn) {
+                if (isIncludedColumn(includeColumnCursor)) {
+                    this.rowCellList.add(null);
+                }
+                includeColumnCursor++;
+            }
+        }
+
         rowHandler.handle(rid, rowNumber, rowCellList);
 
         // End of a row.
@@ -352,6 +421,11 @@ public class SheetDataSaxHandler extends DefaultHandler {
         // Pad any empty cells between the previous and current cell.
         padCell(preCoordinate, curCoordinate, false);
 
+        final int cellIndex = curCell++;
+        if (!isIncludedColumn(cellIndex)) {
+            return;
+        }
+
         final String contentStr = StringKit.trim(lastContent);
         final Object value;
         if (!this.lastFormula.isEmpty()) {
@@ -365,18 +439,34 @@ public class SheetDataSaxHandler extends DefaultHandler {
             // The default cellDataType is NULL, not NUMBER.
             value = ExcelSaxKit.getDataValue(this.cellDataType, contentStr, this.sharedStrings, this.numFmtString);
         }
-        addCellValue(curCell++, value);
+        addCellValue(cellIndex, value);
     }
 
     /**
-     * Adds a value to a specified column in the row.
+     * Adds a value to current row with include-column projection applied when configured.
      *
      * @param index The column index (0-based).
      * @param value The value to add.
      */
     private void addCellValue(final int index, final Object value) {
-        this.rowCellList.add(index, value);
-        this.rowHandler.handleCell(this.rid, this.rowNumber, index, value, this.xssfCellStyle);
+        if (null == this.includeColumnMarks) {
+            this.rowCellList.add(value);
+            this.rowHandler.handleCell(this.rid, this.rowNumber, index, value, this.xssfCellStyle);
+            return;
+        }
+
+        while (includeColumnCursor <= this.maxIncludeColumn && includeColumnCursor < index) {
+            if (isIncludedColumn(includeColumnCursor)) {
+                this.rowCellList.add(null);
+            }
+            includeColumnCursor++;
+        }
+
+        if (isIncludedColumn(index)) {
+            this.rowCellList.add(value);
+            this.rowHandler.handleCell(this.rid, this.rowNumber, index, value, this.xssfCellStyle);
+            includeColumnCursor = index + 1;
+        }
     }
 
     /**
@@ -406,28 +496,52 @@ public class SheetDataSaxHandler extends DefaultHandler {
      */
     private void setCellType(final Attributes attributes) {
         // Value of numFmtString
-        numFmtString = Normal.EMPTY;
+        this.numFmtString = Normal.EMPTY;
+        this.xssfCellStyle = null;
         this.cellDataType = CellDataType.of(AttributeName.t.getValue(attributes));
 
         // Get the xf index of the cell, corresponding to the xf sub-element of cellXfs in style.xml.
         if (null != this.stylesTable) {
             final String xfIndexStr = AttributeName.s.getValue(attributes);
             if (null != xfIndexStr) {
-                this.xssfCellStyle = stylesTable.getStyleAt(Integer.parseInt(xfIndexStr));
-                // The index of the cell's storage format, corresponding to the sub-element index of numFmts in
-                // style.xml.
-                final int numFmtIndex = xssfCellStyle.getDataFormat();
-                this.numFmtString = ObjectKit.defaultIfNull(
-                        xssfCellStyle.getDataFormatString(),
-                        () -> BuiltinFormats.getBuiltinFormat(numFmtIndex));
+                final int xfIndex = Integer.parseInt(xfIndexStr);
+                final int numFmtIndex;
+                if (xfIndex == this.cachedXfIndex) {
+                    this.xssfCellStyle = this.cachedXssfCellStyle;
+                    numFmtIndex = this.cachedNumFmtIndex;
+                    this.numFmtString = this.cachedNumFmtString;
+                } else {
+                    this.xssfCellStyle = stylesTable.getStyleAt(xfIndex);
+                    numFmtIndex = this.xssfCellStyle.getDataFormat();
+                    this.numFmtString = ObjectKit.defaultIfNull(
+                            this.xssfCellStyle.getDataFormatString(),
+                            () -> BuiltinFormats.getBuiltinFormat(numFmtIndex));
+                    this.cachedXfIndex = xfIndex;
+                    this.cachedXssfCellStyle = this.xssfCellStyle;
+                    this.cachedNumFmtIndex = numFmtIndex;
+                    this.cachedNumFmtString = this.numFmtString;
+                }
 
                 // Date-formatted cells may not have a 't' element.
                 if ((CellDataType.NUMBER == this.cellDataType || CellDataType.NULL == this.cellDataType)
-                        && ExcelSaxKit.isDateFormat(numFmtIndex, numFmtString)) {
+                        && ExcelSaxKit.isDateFormat(numFmtIndex, this.numFmtString)) {
                     cellDataType = CellDataType.DATE;
                 }
             }
         }
+    }
+
+    /**
+     * Checks whether a column index is included when projection is configured.
+     *
+     * @param columnIndex Column index (0-based).
+     * @return {@code true} if the column is included, {@code false} otherwise.
+     */
+    private boolean isIncludedColumn(final int columnIndex) {
+        if (null == this.includeColumnMarks) {
+            return true;
+        }
+        return columnIndex >= 0 && columnIndex <= this.maxIncludeColumn && this.includeColumnMarks[columnIndex];
     }
 
 }

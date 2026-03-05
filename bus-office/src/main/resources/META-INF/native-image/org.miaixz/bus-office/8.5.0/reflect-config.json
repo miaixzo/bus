@@ -957,7 +957,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.office.excel.xyz.CellKit",
+    "name": "org.miaixz.bus.office.excel.CellKit",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -968,7 +968,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.office.excel.xyz.ExcelKit",
+    "name": "org.miaixz.bus.office.excel.ExcelKit",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -979,7 +979,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.office.excel.xyz.ExcelSaxKit",
+    "name": "org.miaixz.bus.office.excel.ExcelSaxKit",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -990,7 +990,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.office.excel.xyz.RowKit",
+    "name": "org.miaixz.bus.office.excel.RowKit",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1001,7 +1001,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.office.excel.xyz.SheetKit",
+    "name": "org.miaixz.bus.office.excel.SheetKit",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1012,7 +1012,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.office.excel.xyz.StyleKit",
+    "name": "org.miaixz.bus.office.excel.StyleKit",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1023,7 +1023,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.office.excel.xyz.WorkbookKit",
+    "name": "org.miaixz.bus.office.excel.WorkbookKit",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1034,7 +1034,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.office.ofd.DocConverter",
+    "name": "org.miaixz.bus.office.ofd.OfdConverter",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1056,7 +1056,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.office.word.DocxKit",
+    "name": "org.miaixz.bus.office.ppt.PptKit",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1067,7 +1067,73 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.office.word.DocxTable",
+    "name": "org.miaixz.bus.office.ppt.PptReader",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.office.ppt.PptShape",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.office.ppt.PptSlide",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.office.ppt.PptStyle",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.office.ppt.PptWriter",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.office.word.WordKit",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.office.word.WordTable",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,

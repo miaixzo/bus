@@ -1,30 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- ~                                                                               ~
- ~ The MIT License (MIT)                                                         ~
- ~                                                                               ~
- ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
- ~                                                                               ~
- ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
- ~ of this software and associated documentation files (the "Software"), to deal ~
- ~ in the Software without restriction, including without limitation the rights  ~
- ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
- ~ copies of the Software, and to permit persons to whom the Software is         ~
- ~ furnished to do so, subject to the following conditions:                      ~
- ~                                                                               ~
- ~ The above copyright notice and this permission notice shall be included in    ~
- ~ all copies or substantial portions of the Software.                           ~
- ~                                                                               ~
- ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
- ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
- ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
- ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
- ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
- ~ THE SOFTWARE.                                                                 ~
- ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -33,12 +25,12 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>3.5.9</version>
+        <version>3.5.11</version>
     </parent>
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-parent</artifactId>
-    <version>8.5.6</version>
+    <version>8.5.8</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
@@ -48,8 +40,8 @@
 
     <licenses>
         <license>
-            <name>The MIT License (MIT)</name>
-            <url>https://github.com/818000/bus/blob/main/LICENSE</url>
+            <name>Apache License Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
         </license>
     </licenses>
 
@@ -91,9 +83,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.5.6</bus.version>
+        <bus.version>8.5.8</bus.version>
         <lombok.version>1.18.42</lombok.version>
-        <spring.boot.version>3.5.9</spring.boot.version>
+        <spring.boot.version>3.5.11</spring.boot.version>
         <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
         <jakarta.mail.version>2.1.3</jakarta.mail.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
@@ -101,8 +93,8 @@
         <jakarta.xml.bind.version>4.0.2</jakarta.xml.bind.version>
         <jakarta.json.api.version>2.1.3</jakarta.json.api.version>
         <commons.logging.version>1.3.5</commons.logging.version>
-        <jboss.version>3.6.1.Final</jboss.version>
-        <logback.version>1.5.18</logback.version>
+        <jboss.version>3.6.2.Final</jboss.version>
+        <logback.version>1.5.27</logback.version>
         <log4j.version>2.25.3</log4j.version>
         <slf4j.version>2.0.17</slf4j.version>
         <tinylog.version>2.7.0</tinylog.version>
@@ -118,10 +110,11 @@
         <tiny.version>2.0.3.RELEASE</tiny.version>
         <bopomofo4j.version>1.0.1</bopomofo4j.version>
         <houbb.version>0.4.0</houbb.version>
-        <jsch.version>2.27.2</jsch.version>
+        <jsch.version>2.27.7</jsch.version>
         <sshj.version>0.40.0</sshj.version>
         <smbj.version>0.14.0</smbj.version>
-        <zxing.version>3.5.3</zxing.version>
+        <sshd.version>2.17.1</sshd.version>
+        <zxing.version>3.5.4</zxing.version>
         <net.version>3.11.1</net.version>
         <emoji.java.version>5.1.1</emoji.java.version>
         <compress.version>1.28.0</compress.version>
@@ -129,7 +122,7 @@
         <freemarker.version>2.3.34</freemarker.version>
         <thymeleaf.version>3.1.3.RELEASE</thymeleaf.version>
         <kafka.version>4.1.1</kafka.version>
-        <rabbitmq.version>5.26.0</rabbitmq.version>
+        <rabbitmq.version>5.28.0</rabbitmq.version>
         <rocketmq.version>5.4.0</rocketmq.version>
         <activemq.version>6.2.0</activemq.version>
         <guice.version>7.0.0</guice.version>
@@ -138,16 +131,16 @@
         <caffeine.version>3.2.2</caffeine.version>
         <guava.version>33.5.0-jre</guava.version>
         <hessian.version>4.0.66</hessian.version>
-        <postgresql.version>42.7.8</postgresql.version>
-        <mysql.version>9.4.0</mysql.version>
-        <h2.version>2.3.232</h2.version>
+        <postgresql.version>42.7.9</postgresql.version>
+        <mysql.version>9.6.0</mysql.version>
+        <h2.version>2.4.240</h2.version>
         <jersey.version>3.1.10</jersey.version>
         <jna.version>5.18.0</jna.version>
         <sentinel.version>1.8.8</sentinel.version>
         <bytebuddy.version>1.17.7</bytebuddy.version>
         <mybatis.version>3.5.19</mybatis.version>
         <mybatis.spring.version>3.0.5</mybatis.spring.version>
-        <poi.version>5.4.1</poi.version>
+        <poi.version>5.5.1</poi.version>
         <ofdrw.version>2.3.7</ofdrw.version>
         <hikaricp.version>7.0.2</hikaricp.version>
         <druid.version>1.2.27</druid.version>
@@ -502,7 +495,7 @@
             <dependency>
                 <groupId>org.apache.sshd</groupId>
                 <artifactId>sshd-core</artifactId>
-                <version>2.12.0</version>
+                <version>${sshd.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.slf4j</groupId>
@@ -1236,7 +1229,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.14.1</version>
+                <version>3.15.0</version>
                 <configuration>
                     <annotationProcessorPaths>
                         <path>
@@ -1306,7 +1299,7 @@
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.2.1</version>
                 <configuration>
                     <upToDateChecking>
                         <enabled>false</enabled>

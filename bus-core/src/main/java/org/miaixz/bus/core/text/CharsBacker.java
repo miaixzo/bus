@@ -1,29 +1,21 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- ~                                                                               ~
- ~ The MIT License (MIT)                                                         ~
- ~                                                                               ~
- ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
- ~                                                                               ~
- ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
- ~ of this software and associated documentation files (the "Software"), to deal ~
- ~ in the Software without restriction, including without limitation the rights  ~
- ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
- ~ copies of the Software, and to permit persons to whom the Software is         ~
- ~ furnished to do so, subject to the following conditions:                      ~
- ~                                                                               ~
- ~ The above copyright notice and this permission notice shall be included in    ~
- ~ all copies or substantial portions of the Software.                           ~
- ~                                                                               ~
- ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
- ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
- ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
- ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
- ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
- ~ THE SOFTWARE.                                                                 ~
- ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 package org.miaixz.bus.core.text;
 
@@ -4522,6 +4514,51 @@ public class CharsBacker extends CharsValidator {
      */
     public static Function<String, String> trimFunc(final boolean isTrim) {
         return isTrim ? CharsBacker::trim : Function.identity();
+    }
+
+    /**
+     * Converts a {@link CharSequence} to a {@code char} array. *
+     * <p>
+     * This method provides a centralized way to extract characters from any CharSequence implementation. It includes
+     * specific optimizations for common types like {@link String}, {@link StringBuilder}, and {@link StringBuffer} to
+     * ensure high-performance execution.
+     * </p>
+     *
+     * @param cs the {@code CharSequence} to convert, may be {@code null}
+     * @return a new {@code char} array containing the characters, or {@code null} if the input is {@code null}
+     */
+    public static char[] toCharArray(final CharSequence cs) {
+        if (cs == null) {
+            return null;
+        }
+
+        final int length = cs.length();
+        if (length == 0) {
+            return new char[0];
+        }
+
+        // Performance optimization: Prioritize String implementation
+        // using the native toCharArray() method for maximum efficiency.
+        if (cs instanceof String) {
+            return ((String) cs).toCharArray();
+        }
+
+        // Handle other CharSequence implementations via manual or bulk copying
+        final char[] resultArray = new char[length];
+
+        if (cs instanceof StringBuilder) {
+            // Bulk copy: from source index 0 to length into destination array at index 0
+            ((StringBuilder) cs).getChars(0, length, resultArray, 0);
+        } else if (cs instanceof StringBuffer) {
+            // Bulk copy: from source index 0 to length into destination array at index 0
+            ((StringBuffer) cs).getChars(0, length, resultArray, 0);
+        } else {
+            // Fallback for generic CharSequence types (e.g., CharBuffer, custom implementations)
+            for (int i = 0; i < length; i++) {
+                resultArray[i] = cs.charAt(i);
+            }
+        }
+        return resultArray;
     }
 
     /**

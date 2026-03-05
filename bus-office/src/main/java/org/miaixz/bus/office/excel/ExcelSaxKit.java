@@ -1,31 +1,23 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- ~                                                                               ~
- ~ The MIT License (MIT)                                                         ~
- ~                                                                               ~
- ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
- ~                                                                               ~
- ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
- ~ of this software and associated documentation files (the "Software"), to deal ~
- ~ in the Software without restriction, including without limitation the rights  ~
- ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
- ~ copies of the Software, and to permit persons to whom the Software is         ~
- ~ furnished to do so, subject to the following conditions:                      ~
- ~                                                                               ~
- ~ The above copyright notice and this permission notice shall be included in    ~
- ~ all copies or substantial portions of the Software.                           ~
- ~                                                                               ~
- ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
- ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
- ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
- ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
- ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
- ~ THE SOFTWARE.                                                                 ~
- ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.office.excel.xyz;
+package org.miaixz.bus.office.excel;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -76,7 +68,40 @@ public class ExcelSaxKit {
      * @return An {@link ExcelSaxReader} instance.
      */
     public static ExcelSaxReader<?> createSaxReader(final boolean isXlsx, final RowHandler rowHandler) {
-        return isXlsx ? new Excel07SaxReader(rowHandler) : new Excel03SaxReader(rowHandler);
+        return createSaxReader(isXlsx, rowHandler, false);
+    }
+
+    /**
+     * Creates an {@link ExcelSaxReader} instance.
+     *
+     * @param isXlsx            {@code true} if the Excel file is in XLSX format (07 format), {@code false} otherwise.
+     * @param rowHandler        The row handler to process each row.
+     * @param padCellAtEndOfRow {@code true} to pad missing cells at the end of each row, {@code false} otherwise.
+     * @return An {@link ExcelSaxReader} instance.
+     */
+    public static ExcelSaxReader<?> createSaxReader(
+            final boolean isXlsx,
+            final RowHandler rowHandler,
+            final boolean padCellAtEndOfRow) {
+        return createSaxReader(isXlsx, rowHandler, padCellAtEndOfRow, null);
+    }
+
+    /**
+     * Creates an {@link ExcelSaxReader} instance.
+     *
+     * @param isXlsx            {@code true} if the Excel file is in XLSX format (07 format), {@code false} otherwise.
+     * @param rowHandler        The row handler to process each row.
+     * @param padCellAtEndOfRow {@code true} to pad missing cells at the end of each row, {@code false} otherwise.
+     * @param includeColumns    Optional included columns (sorted unique indexes).
+     * @return An {@link ExcelSaxReader} instance.
+     */
+    public static ExcelSaxReader<?> createSaxReader(
+            final boolean isXlsx,
+            final RowHandler rowHandler,
+            final boolean padCellAtEndOfRow,
+            final int[] includeColumns) {
+        return isXlsx ? new Excel07SaxReader(rowHandler, padCellAtEndOfRow, includeColumns)
+                : new Excel03SaxReader(rowHandler);
     }
 
     /**
