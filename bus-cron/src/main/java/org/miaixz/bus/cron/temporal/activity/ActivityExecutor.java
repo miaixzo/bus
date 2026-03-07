@@ -17,13 +17,34 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
+package org.miaixz.bus.cron.temporal.activity;
+
 /**
- * Provides time-related utilities for the scheduling system.
+ * Executes an activity for a supported input type.
  * <p>
- * This package contains classes for representing and manipulating time values used in task scheduling and cron
- * expressions.
+ * Implementations encapsulate the business-specific execution logic for a particular category of activity inputs.
  *
- * @author Kimi Liu
- * @since Java 17+
+ * @param <R> the activity input type
+ * @param <C> the activity context type
  */
-package org.miaixz.bus.cron.tempus;
+public interface ActivityExecutor<R, C> {
+
+    /**
+     * Returns whether this executor supports the specified input.
+     *
+     * @param request the activity input
+     * @return {@code true} if this executor supports the input; {@code false} otherwise
+     */
+    boolean supports(R request);
+
+    /**
+     * Executes the activity.
+     *
+     * @param request the activity input
+     * @param context the execution context
+     * @return the execution result
+     * @throws Exception if activity execution fails
+     */
+    Object execute(R request, C context) throws Exception;
+
+}

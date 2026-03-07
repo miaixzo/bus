@@ -19,7 +19,7 @@
 */
 /**
  * bus.cron
- * 
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -30,14 +30,19 @@ module bus.cron {
     requires bus.setting;
 
     requires lombok;
+    requires temporal.sdk;
 
     exports org.miaixz.bus.cron;
     exports org.miaixz.bus.cron.crontab;
     exports org.miaixz.bus.cron.listener;
     exports org.miaixz.bus.cron.pattern;
-    exports org.miaixz.bus.cron.tempus;
     exports org.miaixz.bus.cron.pattern.matcher;
     exports org.miaixz.bus.cron.pattern.parser;
     exports org.miaixz.bus.cron.timings;
+    exports org.miaixz.bus.cron.temporal;
+    exports org.miaixz.bus.cron.temporal.activity;
+    exports org.miaixz.bus.cron.temporal.notifier;
+    exports org.miaixz.bus.cron.temporal.worker;
+    exports org.miaixz.bus.cron.temporal.workflow;
 
 }
