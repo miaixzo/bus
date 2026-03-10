@@ -65,9 +65,9 @@ public class Limiter {
     private String version;
 
     /**
-     * The rate at which tokens are generated per second (requests per second).
+     * The maximum number of complete requests allowed per minute.
      */
-    private int tokenCount;
+    private Integer throttle;
 
     /**
      * The underlying Guava RateLimiter instance. It is volatile and lazily initialized to ensure thread safety.
@@ -84,7 +84,7 @@ public class Limiter {
         if (null == rateLimiter) {
             synchronized (this) {
                 if (null == rateLimiter) {
-                    rateLimiter = RateLimiter.create(tokenCount);
+                    rateLimiter = RateLimiter.create(throttle / 60D);
                 }
             }
         }
@@ -97,11 +97,11 @@ public class Limiter {
      * This method uses {@code tryAcquire()}, which returns immediately. If no permit is available, it does not wait.
      * Instead, it throws a {@link ValidateException}, signaling that the request has been rate-limited.
      *
-     * @throws ValidateException with error code {@link ErrorCode#_100505} if no permit is available.
+     * @throws ValidateException with error code {@link ErrorCode#_LIMITER} if no permit is available.
      */
     public void acquire() {
         if (!fetchRateLimiter().tryAcquire()) {
-            throw new ValidateException(ErrorCode._100505);
+            throw new ValidateException(ErrorCode._LIMITER);
         }
     }
 

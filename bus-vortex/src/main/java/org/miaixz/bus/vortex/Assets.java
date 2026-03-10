@@ -220,6 +220,15 @@ public class Assets {
     private Integer timeout = 60;
 
     /**
+     * Per-minute request limit.
+     * <p>
+     * A value of {@code null} or {@code 0} disables rate limiting. A positive value specifies the maximum number of
+     * complete requests allowed per minute.
+     * </p>
+     */
+    private Integer throttle;
+
+    /**
      * Load Balancing Strategy.
      * <p>
      * Specifies the algorithm for distributing traffic among upstream instances. (e.g., Round-Robin, Least-Connections,
