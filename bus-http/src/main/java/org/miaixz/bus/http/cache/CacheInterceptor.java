@@ -79,7 +79,7 @@ public class CacheInterceptor implements Interceptor {
         for (int i = 0, size = cachedHeaders.size(); i < size; i++) {
             String fieldName = cachedHeaders.name(i);
             String value = cachedHeaders.value(i);
-            if ("Warning".equalsIgnoreCase(fieldName) && value.startsWith(Symbol.ONE)) {
+            if (HTTP.WARNING.equalsIgnoreCase(fieldName) && value.startsWith(Symbol.ONE)) {
                 continue; // Drop 100-level freshness warnings.
             }
             if (isContentSpecificHeader(fieldName) || !isEndToEnd(fieldName) || networkHeaders.get(fieldName) == null) {
@@ -308,7 +308,7 @@ public class CacheInterceptor implements Interceptor {
             }
         };
 
-        String contentType = response.header("Content-Type");
+        String contentType = response.header(HTTP.CONTENT_TYPE);
         long contentLength = response.body().contentLength();
         return response.newBuilder()
                 .body(new RealResponseBody(contentType, contentLength, IoKit.buffer(cacheWritingSource))).build();

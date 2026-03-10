@@ -78,9 +78,9 @@ public class WechatPayBuilder {
                 VERSION == null ? "Unknown" : VERSION);
 
         Map<String, String> headers = new HashMap<>(5);
-        headers.put("Accept", MediaType.APPLICATION_JSON);
+        headers.put(HTTP.ACCEPT, MediaType.APPLICATION_JSON);
         headers.put(HTTP.AUTHORIZATION, authorization);
-        headers.put("User-Agent", userAgent);
+        headers.put(HTTP.USER_AGENT, userAgent);
         return headers;
     }
 

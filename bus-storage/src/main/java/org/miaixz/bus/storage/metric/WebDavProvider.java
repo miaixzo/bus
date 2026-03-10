@@ -29,6 +29,7 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.io.file.PathResolve;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Builder;
@@ -119,7 +120,7 @@ public class WebDavProvider extends AbstractProvider {
         try {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String objectKey = Builder.buildObjectKey(prefix, Normal.EMPTY, fileName);
-            String url = getUrl(bucket + "/" + objectKey);
+            String url = getUrl(bucket + Symbol.SLASH + objectKey);
 
             // Use try-with-resources to automatically close the InputStream
             try (InputStream inputStream = client.get(url)) {
@@ -169,7 +170,7 @@ public class WebDavProvider extends AbstractProvider {
         try {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String objectKey = Builder.buildObjectKey(prefix, Normal.EMPTY, fileName);
-            String url = getUrl(bucket + "/" + objectKey);
+            String url = getUrl(bucket + Symbol.SLASH + objectKey);
 
             // Use try-with-resources to automatically close both streams
             try (InputStream inputStream = client.get(url); OutputStream outputStream = new FileOutputStream(file)) {
@@ -199,7 +200,8 @@ public class WebDavProvider extends AbstractProvider {
     public Message list() {
         try {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
-            String url = getUrl(this.context.getBucket() + "/" + (StringKit.isBlank(prefix) ? "" : prefix + "/"));
+            String url = getUrl(this.context.getBucket() + Symbol.SLASH
+                    + (StringKit.isBlank(prefix) ? Normal.EMPTY : prefix + Symbol.SLASH));
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(client.list(url).stream().filter(resource -> !resource.isDirectory()).map(resource -> {
                         Map<String, Object> extend = new HashMap<>();
@@ -258,8 +260,8 @@ public class WebDavProvider extends AbstractProvider {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String oldObjectKey = Builder.buildObjectKey(prefix, path, oldName);
             String newObjectKey = Builder.buildObjectKey(prefix, path, newName);
-            String sourceUrl = getUrl(bucket + "/" + oldObjectKey);
-            String destinationUrl = getUrl(bucket + "/" + newObjectKey);
+            String sourceUrl = getUrl(bucket + Symbol.SLASH + oldObjectKey);
+            String destinationUrl = getUrl(bucket + Symbol.SLASH + newObjectKey);
             client.move(sourceUrl, destinationUrl);
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
@@ -353,12 +355,12 @@ public class WebDavProvider extends AbstractProvider {
         try {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String objectKey = Builder.buildObjectKey(prefix, path, fileName);
-            String url = getUrl(bucket + "/" + objectKey);
+            String url = getUrl(bucket + Symbol.SLASH + objectKey);
 
             // Create parent directories if they do not exist
             String parentUrl = getUrl(
-                    bucket + "/" + (StringKit.isBlank(prefix) ? "" : prefix)
-                            + (StringKit.isBlank(path) ? "" : "/" + path));
+                    bucket + Symbol.SLASH + (StringKit.isBlank(prefix) ? Normal.EMPTY : prefix)
+                            + (StringKit.isBlank(path) ? Normal.EMPTY : Symbol.SLASH + path));
             client.createDirectory(parentUrl);
 
             client.put(url, content);
@@ -413,7 +415,7 @@ public class WebDavProvider extends AbstractProvider {
         try {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String objectKey = Builder.buildObjectKey(prefix, path, fileName);
-            String url = getUrl(bucket + "/" + objectKey);
+            String url = getUrl(bucket + Symbol.SLASH + objectKey);
             client.delete(url);
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {

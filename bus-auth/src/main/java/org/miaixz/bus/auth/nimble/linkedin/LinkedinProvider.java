@@ -91,8 +91,8 @@ public class LinkedinProvider extends AbstractProvider {
     public Message userInfo(Authorization authorization) {
         String token = authorization.getToken();
         Map<String, String> header = new HashMap<>();
-        header.put("Host", "api.linkedin.com");
-        header.put("Connection", "Keep-Alive");
+        header.put(HTTP.HOST, "api.linkedin.com");
+        header.put(HTTP.CONNECTION, "Keep-Alive");
         header.put(HTTP.AUTHORIZATION, HTTP.BEARER + token);
 
         String response = Httpx.get(userInfoUrl(authorization), null, header);
@@ -187,8 +187,8 @@ public class LinkedinProvider extends AbstractProvider {
      */
     private String getUserEmail(String token) {
         Map<String, String> header = new HashMap<>();
-        header.put("Host", "api.linkedin.com");
-        header.put("Connection", "Keep-Alive");
+        header.put(HTTP.HOST, "api.linkedin.com");
+        header.put(HTTP.CONNECTION, "Keep-Alive");
         header.put(HTTP.AUTHORIZATION, HTTP.BEARER + token);
 
         String emailResponse = Httpx.get(
@@ -263,7 +263,7 @@ public class LinkedinProvider extends AbstractProvider {
      */
     private Authorization getToken(String tokenUrl) {
         Map<String, String> header = new HashMap<>();
-        header.put("Host", "www.linkedin.com");
+        header.put(HTTP.HOST, "www.linkedin.com");
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
 
         String response = Httpx.post(tokenUrl, null, header);

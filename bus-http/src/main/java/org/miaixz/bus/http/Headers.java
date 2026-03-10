@@ -204,7 +204,7 @@ public class Headers {
      * @return The Content-Length value, or -1 if invalid.
      */
     public static long contentLength(Headers headers) {
-        return stringToLong(headers.get("Content-Length"));
+        return stringToLong(headers.get(HTTP.CONTENT_LENGTH));
     }
 
     /**
@@ -278,7 +278,7 @@ public class Headers {
     public static Set<String> varyFields(Headers responseHeaders) {
         Set<String> result = Collections.emptySet();
         for (int i = 0, size = responseHeaders.size(); i < size; i++) {
-            if (!"Vary".equalsIgnoreCase(responseHeaders.name(i)))
+            if (!HTTP.VARY.equalsIgnoreCase(responseHeaders.name(i)))
                 continue;
 
             String value = responseHeaders.value(i);
@@ -548,7 +548,7 @@ public class Headers {
             return true;
         }
 
-        if (contentLength(response) != -1 || "chunked".equalsIgnoreCase(response.header("Transfer-Encoding"))) {
+        if (contentLength(response) != -1 || "chunked".equalsIgnoreCase(response.header(HTTP.TRANSFER_ENCODING))) {
             return true;
         }
 

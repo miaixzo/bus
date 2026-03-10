@@ -137,7 +137,7 @@ public class Http1Codec implements HttpCodec {
             throw new ProtocolException("Duplex connections are not supported for HTTP/1");
         }
 
-        if ("chunked".equalsIgnoreCase(request.header("Transfer-Encoding"))) {
+        if ("chunked".equalsIgnoreCase(request.header(HTTP.TRANSFER_ENCODING))) {
             // Stream a request body of unknown length.
             return newChunkedSink();
         }
@@ -187,7 +187,7 @@ public class Http1Codec implements HttpCodec {
             return 0L;
         }
 
-        if ("chunked".equalsIgnoreCase(response.header("Transfer-Encoding"))) {
+        if ("chunked".equalsIgnoreCase(response.header(HTTP.TRANSFER_ENCODING))) {
             return -1L;
         }
 
@@ -206,7 +206,7 @@ public class Http1Codec implements HttpCodec {
             return newFixedLengthSource(0);
         }
 
-        if ("chunked".equalsIgnoreCase(response.header("Transfer-Encoding"))) {
+        if ("chunked".equalsIgnoreCase(response.header(HTTP.TRANSFER_ENCODING))) {
             return newChunkedSource(response.request().url());
         }
 

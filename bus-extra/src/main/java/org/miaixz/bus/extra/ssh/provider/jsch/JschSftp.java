@@ -338,7 +338,7 @@ public class JschSftp extends AbstractFtp {
         try {
             getClient().ls(path, entry -> {
                 final String fileName = entry.getFilename();
-                if (!StringKit.equals(".", fileName) && !StringKit.equals("..", fileName)) {
+                if (!StringKit.equals(Symbol.DOT, fileName) && !StringKit.equals(Symbol.DOUBLE_DOT, fileName)) {
                     if (null == predicate || predicate.test(entry)) {
                         entryList.add(entry);
                     }
@@ -494,7 +494,7 @@ public class JschSftp extends AbstractFtp {
         String fileName;
         for (final LsEntry entry : list) {
             fileName = entry.getFilename();
-            if (!".".equals(fileName) && !"..".equals(fileName)) {
+            if (!Symbol.DOT.equals(fileName) && !Symbol.DOUBLE_DOT.equals(fileName)) {
                 if (entry.getAttrs().isDir()) {
                     delDir(fileName);
                 } else {
@@ -532,7 +532,7 @@ public class JschSftp extends AbstractFtp {
             }
             for (final File fileItem : files) {
                 if (fileItem.isDirectory()) {
-                    final String mkdir = FileKit.normalize(remotePath + "/" + fileItem.getName());
+                    final String mkdir = FileKit.normalize(remotePath + Symbol.SLASH + fileItem.getName());
                     this.upload(mkdir, fileItem);
                 } else {
                     this.uploadFile(remotePath, fileItem);

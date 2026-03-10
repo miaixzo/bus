@@ -150,7 +150,7 @@ public class TwitterProvider extends AbstractProvider {
 
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.AUTHORIZATION, buildHeader(form));
-        header.put("User-Agent", "'Httpx' HTTP Client Simple-Http");
+        header.put(HTTP.USER_AGENT, "'Httpx' HTTP Client Simple-Http");
         String requestToken = Httpx.post(baseUrl, null, header);
 
         Map<String, String> res = Builder.parseStringToMap(requestToken);

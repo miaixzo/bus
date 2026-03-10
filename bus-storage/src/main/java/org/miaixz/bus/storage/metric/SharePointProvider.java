@@ -177,7 +177,7 @@ public class SharePointProvider extends AbstractProvider {
             String apiPath = buildApiPath(bucket, objectKey);
             String url = context.getEndpoint() + apiPath + ":/content";
 
-            Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, "Bearer " + getAccessToken())
+            Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken())
                     .get().build();
 
             try (Response response = client.newCall(request).execute()) {
@@ -234,7 +234,7 @@ public class SharePointProvider extends AbstractProvider {
             String apiPath = buildApiPath(bucket, objectKey);
             String url = context.getEndpoint() + apiPath + ":/content";
 
-            Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, "Bearer " + getAccessToken())
+            Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken())
                     .get().build();
 
             try (Response response = client.newCall(request).execute()) {
@@ -279,7 +279,7 @@ public class SharePointProvider extends AbstractProvider {
             String apiPath = buildApiPath(context.getBucket(), prefix);
             String url = context.getEndpoint() + apiPath + ":/children";
 
-            Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, "Bearer " + getAccessToken())
+            Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken())
                     .get().build();
 
             try (Response response = client.newCall(request).execute()) {
@@ -375,7 +375,7 @@ public class SharePointProvider extends AbstractProvider {
 
             String requestBody = String.format("{\"name\":\"%s\"}", newName);
 
-            Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, "Bearer " + getAccessToken())
+            Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken())
                     .addHeader(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                     .patch(RequestBody.of(MediaType.valueOf(MediaType.APPLICATION_JSON), requestBody)).build();
 
@@ -551,7 +551,7 @@ public class SharePointProvider extends AbstractProvider {
             String apiPath = buildApiPath(bucket, objectKey);
             String url = context.getEndpoint() + apiPath;
 
-            Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, "Bearer " + getAccessToken())
+            Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken())
                     .delete().build();
 
             try (Response response = client.newCall(request).execute()) {
@@ -707,7 +707,7 @@ public class SharePointProvider extends AbstractProvider {
 
         String sessionBody = "{\"item\":{\"@microsoft.graph.conflictBehavior\":\"replace\"}}";
         Request createSessionRequest = new Request.Builder().url(createSessionUrl)
-                .addHeader(HTTP.AUTHORIZATION, "Bearer " + getAccessToken())
+                .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken())
                 .addHeader(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .post(RequestBody.of(MediaType.valueOf(MediaType.APPLICATION_JSON), sessionBody)).build();
 

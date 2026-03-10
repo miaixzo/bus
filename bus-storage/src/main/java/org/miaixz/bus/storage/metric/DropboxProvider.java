@@ -30,6 +30,7 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -142,7 +143,7 @@ public class DropboxProvider extends AbstractProvider {
             args.put("path", path);
 
             Request request = new Request.Builder().url(url)
-                    .addHeader(HTTP.AUTHORIZATION, "Bearer " + context.getExtension())
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension())
                     .addHeader("Dropbox-API-Arg", JsonKit.toJsonString(args))
                     .post(RequestBody.of(MediaType.valueOf(MediaType.APPLICATION_OCTET_STREAM), new byte[0])).build();
 
@@ -191,7 +192,7 @@ public class DropboxProvider extends AbstractProvider {
             args.put("path", path);
 
             Request request = new Request.Builder().url(url)
-                    .addHeader(HTTP.AUTHORIZATION, "Bearer " + context.getExtension())
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension())
                     .addHeader("Dropbox-API-Arg", JsonKit.toJsonString(args))
                     .post(RequestBody.of(MediaType.valueOf(MediaType.APPLICATION_OCTET_STREAM), new byte[0])).build();
 
@@ -238,8 +239,8 @@ public class DropboxProvider extends AbstractProvider {
             requestBody.put("include_deleted", false);
 
             Request request = new Request.Builder().url(url)
-                    .addHeader(HTTP.AUTHORIZATION, "Bearer " + context.getExtension())
-                    .addHeader("Content-Type", MediaType.APPLICATION_JSON)
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension())
+                    .addHeader(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                     .post(
                             RequestBody.of(
                                     MediaType.valueOf(MediaType.APPLICATION_JSON),
@@ -331,8 +332,8 @@ public class DropboxProvider extends AbstractProvider {
             requestBody.put("autorename", false);
 
             Request request = new Request.Builder().url(url)
-                    .addHeader(HTTP.AUTHORIZATION, "Bearer " + context.getExtension())
-                    .addHeader("Content-Type", MediaType.APPLICATION_JSON)
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension())
+                    .addHeader(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                     .post(
                             RequestBody.of(
                                     MediaType.valueOf(MediaType.APPLICATION_JSON),
@@ -406,7 +407,7 @@ public class DropboxProvider extends AbstractProvider {
             args.put("mute", false);
 
             Request request = new Request.Builder().url(url)
-                    .addHeader(HTTP.AUTHORIZATION, "Bearer " + context.getExtension())
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension())
                     .addHeader("Dropbox-API-Arg", JsonKit.toJsonString(args))
                     .addHeader(HTTP.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM)
                     .post(RequestBody.of(MediaType.valueOf(MediaType.APPLICATION_OCTET_STREAM), content)).build();
@@ -514,8 +515,8 @@ public class DropboxProvider extends AbstractProvider {
             requestBody.put("path", filePath);
 
             Request request = new Request.Builder().url(url)
-                    .addHeader(HTTP.AUTHORIZATION, "Bearer " + context.getExtension())
-                    .addHeader("Content-Type", MediaType.APPLICATION_JSON)
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension())
+                    .addHeader(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                     .post(
                             RequestBody.of(
                                     MediaType.valueOf(MediaType.APPLICATION_JSON),
@@ -556,11 +557,11 @@ public class DropboxProvider extends AbstractProvider {
      * @return The complete file path in Dropbox format.
      */
     private String buildPath(String bucket, String fileName) {
-        if (StringKit.isBlank(bucket) || "/".equals(bucket)) {
-            return "/" + fileName;
+        if (StringKit.isBlank(bucket) || Symbol.SLASH.equals(bucket)) {
+            return Symbol.SLASH + fileName;
         }
-        String normalizedBucket = bucket.startsWith("/") ? bucket : "/" + bucket;
-        return normalizedBucket + "/" + fileName;
+        String normalizedBucket = bucket.startsWith(Symbol.SLASH) ? bucket : Symbol.SLASH + bucket;
+        return normalizedBucket + Symbol.SLASH + fileName;
     }
 
 }

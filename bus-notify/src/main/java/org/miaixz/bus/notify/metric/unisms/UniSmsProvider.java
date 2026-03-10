@@ -90,9 +90,9 @@ public class UniSmsProvider extends AbstractProvider<UniNotice, Context> {
      */
     public Message request(final UniNotice entity, final String action, final Map<String, Object> bodys) {
         Map<String, String> headers = new HashMap<>();
-        headers.put("User-Agent", "uni-java-sdk" + "/" + "0.0.4");
+        headers.put(HTTP.USER_AGENT, "uni-java-sdk" + "/" + "0.0.4");
         headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-        headers.put("Accept", MediaType.APPLICATION_JSON);
+        headers.put(HTTP.ACCEPT, MediaType.APPLICATION_JSON);
         String url;
         if (entity.isSimple()) {
             url = this.getUrl(entity) + "?action=" + action + "&accessKeyId=" + this.context.getAppKey();

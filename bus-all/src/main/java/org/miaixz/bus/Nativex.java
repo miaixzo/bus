@@ -29,6 +29,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * GraalVM Native Image Configuration Consolidator
  *
@@ -98,7 +100,8 @@ public class Nativex {
     public Nativex() throws IOException {
         Metadata metadata = detectProjectMetadata();
         this.moduleIdentifier = metadata.getGroupId() + ":" + metadata.getArtifactId();
-        this.outputBaseDirectory = "target/classes/META-INF/native-image/" + this.moduleIdentifier.replace(":", "/");
+        this.outputBaseDirectory = "target/classes/META-INF/native-image/"
+                + this.moduleIdentifier.replace(Symbol.COLON, Symbol.SLASH);
     }
 
     /**

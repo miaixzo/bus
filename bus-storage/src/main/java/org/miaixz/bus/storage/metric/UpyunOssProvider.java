@@ -32,6 +32,7 @@ import org.miaixz.bus.core.center.date.Formatter;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.Httpd;
 import org.miaixz.bus.http.Request;
@@ -137,13 +138,13 @@ public class UpyunOssProvider extends AbstractProvider {
         try {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String objectKey = Builder.buildObjectKey(prefix, Normal.EMPTY, fileName);
-            String path = "/" + bucket + "/" + objectKey;
+            String path = Symbol.SLASH + bucket + Symbol.SLASH + objectKey;
             String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
             String signature = generateSignature("GET", path, date, 0);
 
             Request request = new Request.Builder().url(this.context.getEndpoint() + path)
                     .addHeader(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature)
-                    .addHeader("Date", date).get().build();
+                    .addHeader(HTTP.DATE, date).get().build();
 
             try (Response response = this.client.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
@@ -197,13 +198,13 @@ public class UpyunOssProvider extends AbstractProvider {
         try {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String objectKey = Builder.buildObjectKey(prefix, Normal.EMPTY, fileName);
-            String path = "/" + bucket + "/" + objectKey;
+            String path = Symbol.SLASH + bucket + Symbol.SLASH + objectKey;
             String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
             String signature = generateSignature("GET", path, date, 0);
 
             Request request = new Request.Builder().url(this.context.getEndpoint() + path)
                     .addHeader(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature)
-                    .addHeader("Date", date).get().build();
+                    .addHeader(HTTP.DATE, date).get().build();
 
             try (Response response = this.client.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
@@ -241,13 +242,13 @@ public class UpyunOssProvider extends AbstractProvider {
     public Message list() {
         try {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
-            String path = "/" + context.getBucket() + "/" + prefix;
+            String path = Symbol.SLASH + context.getBucket() + Symbol.SLASH + prefix;
             String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
             String signature = generateSignature("GET", path, date, 0);
 
             Request request = new Request.Builder().url(this.context.getEndpoint() + path)
                     .addHeader(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature)
-                    .addHeader("Date", date).addHeader("x-upyun-list-limit", "100").get().build();
+                    .addHeader(HTTP.DATE, date).addHeader("x-upyun-list-limit", "100").get().build();
 
             try (Response response = this.client.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
@@ -320,15 +321,15 @@ public class UpyunOssProvider extends AbstractProvider {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String oldObjectKey = Builder.buildObjectKey(prefix, path, oldName);
             String newObjectKey = Builder.buildObjectKey(prefix, path, newName);
-            String oldPath = "/" + bucket + "/" + oldObjectKey;
-            String newPath = "/" + bucket + "/" + newObjectKey;
+            String oldPath = Symbol.SLASH + bucket + Symbol.SLASH + oldObjectKey;
+            String newPath = Symbol.SLASH + bucket + Symbol.SLASH + newObjectKey;
 
             // Download original file content
             String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
             String getSignature = generateSignature("GET", oldPath, date, 0);
             Request getRequest = new Request.Builder().url(this.context.getEndpoint() + oldPath)
                     .addHeader(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + getSignature)
-                    .addHeader("Date", date).get().build();
+                    .addHeader(HTTP.DATE, date).get().build();
 
             byte[] content;
             try (Response response = this.client.newCall(getRequest).execute()) {
@@ -343,8 +344,8 @@ public class UpyunOssProvider extends AbstractProvider {
             String putSignature = generateSignature("PUT", newPath, putDate, content.length);
             Request putRequest = new Request.Builder().url(this.context.getEndpoint() + newPath)
                     .addHeader(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + putSignature)
-                    .addHeader("Date", putDate).addHeader("Content-Length", String.valueOf(content.length))
-                    .addHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM)
+                    .addHeader(HTTP.DATE, putDate).addHeader(HTTP.CONTENT_LENGTH, String.valueOf(content.length))
+                    .addHeader(HTTP.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM)
                     .put(RequestBody.of(MediaType.valueOf(MediaType.APPLICATION_OCTET_STREAM), content)).build();
 
             try (Response response = this.client.newCall(putRequest).execute()) {
@@ -358,7 +359,7 @@ public class UpyunOssProvider extends AbstractProvider {
             String deleteSignature = generateSignature("DELETE", oldPath, deleteDate, 0);
             Request deleteRequest = new Request.Builder().url(this.context.getEndpoint() + oldPath)
                     .addHeader(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + deleteSignature)
-                    .addHeader("Date", deleteDate).delete().build();
+                    .addHeader(HTTP.DATE, deleteDate).delete().build();
 
             try (Response response = this.client.newCall(deleteRequest).execute()) {
                 if (!response.isSuccessful()) {
@@ -420,14 +421,14 @@ public class UpyunOssProvider extends AbstractProvider {
         try {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String objectKey = Builder.buildObjectKey(prefix, path, fileName);
-            String requestPath = "/" + bucket + "/" + objectKey;
+            String requestPath = Symbol.SLASH + bucket + Symbol.SLASH + objectKey;
             String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
-            String signature = generateSignature("PUT", requestPath, date, content.length);
+            String signature = generateSignature(HTTP.PUT, requestPath, date, content.length);
 
             Request request = new Request.Builder().url(this.context.getEndpoint() + requestPath)
                     .addHeader(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature)
-                    .addHeader("Date", date).addHeader("Content-Length", String.valueOf(content.length))
-                    .addHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM)
+                    .addHeader(HTTP.DATE, date).addHeader(HTTP.CONTENT_LENGTH, String.valueOf(content.length))
+                    .addHeader(HTTP.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM)
                     .put(RequestBody.of(MediaType.valueOf(MediaType.APPLICATION_OCTET_STREAM), content)).build();
 
             try (Response response = this.client.newCall(request).execute()) {
@@ -537,13 +538,13 @@ public class UpyunOssProvider extends AbstractProvider {
         try {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String objectKey = Builder.buildObjectKey(prefix, path, fileName);
-            String requestPath = "/" + bucket + "/" + objectKey;
+            String requestPath = Symbol.SLASH + bucket + Symbol.SLASH + objectKey;
             String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
             String signature = generateSignature("DELETE", requestPath, date, 0);
 
             Request request = new Request.Builder().url(this.context.getEndpoint() + requestPath)
                     .addHeader(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature)
-                    .addHeader("Date", date).delete().build();
+                    .addHeader(HTTP.DATE, date).delete().build();
 
             try (Response response = this.client.newCall(request).execute()) {
                 if (!response.isSuccessful()) {

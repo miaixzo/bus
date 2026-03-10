@@ -154,17 +154,17 @@ public class CacheStrategy {
                 for (int i = 0, size = headers.size(); i < size; i++) {
                     String fieldName = headers.name(i);
                     String value = headers.value(i);
-                    if ("Date".equalsIgnoreCase(fieldName)) {
+                    if (HTTP.DATE.equalsIgnoreCase(fieldName)) {
                         servedDate = Builder.parse(value);
                         servedDateString = value;
-                    } else if ("Expires".equalsIgnoreCase(fieldName)) {
+                    } else if (HTTP.EXPIRES.equalsIgnoreCase(fieldName)) {
                         expires = Builder.parse(value);
-                    } else if ("Last-Modified".equalsIgnoreCase(fieldName)) {
+                    } else if (HTTP.LAST_MODIFIED.equalsIgnoreCase(fieldName)) {
                         lastModified = Builder.parse(value);
                         lastModifiedString = value;
-                    } else if ("ETag".equalsIgnoreCase(fieldName)) {
+                    } else if (HTTP.ETAG.equalsIgnoreCase(fieldName)) {
                         etag = value;
-                    } else if ("Age".equalsIgnoreCase(fieldName)) {
+                    } else if (HTTP.AGE.equalsIgnoreCase(fieldName)) {
                         ageSeconds = Headers.parseSeconds(value, -1);
                     }
                 }
@@ -249,11 +249,11 @@ public class CacheStrategy {
             if (!responseCaching.noCache() && ageMillis + minFreshMillis < freshMillis + maxStaleMillis) {
                 Response.Builder builder = cacheResponse.newBuilder();
                 if (ageMillis + minFreshMillis >= freshMillis) {
-                    builder.addHeader("Warning", "110 HttpURLConnection \"Response is stale\"");
+                    builder.addHeader(HTTP.WARNING, "110 HttpURLConnection \"Response is stale\"");
                 }
                 long oneDayMillis = 24 * 60 * 60 * 1000L;
                 if (ageMillis > oneDayMillis && isFreshnessLifetimeHeuristic()) {
-                    builder.addHeader("Warning", "113 HttpURLConnection \"Heuristic expiration\"");
+                    builder.addHeader(HTTP.WARNING, "113 HttpURLConnection \"Heuristic expiration\"");
                 }
                 return new CacheStrategy(null, builder.build());
             }
@@ -263,13 +263,13 @@ public class CacheStrategy {
             String conditionName;
             String conditionValue;
             if (etag != null) {
-                conditionName = "If-None-Match";
+                conditionName = HTTP.IF_NONE_MATCH;
                 conditionValue = etag;
             } else if (lastModified != null) {
-                conditionName = "If-Modified-Since";
+                conditionName = HTTP.IF_MODIFIED_SINCE;
                 conditionValue = lastModifiedString;
             } else if (servedDate != null) {
-                conditionName = "If-Modified-Since";
+                conditionName = HTTP.IF_MODIFIED_SINCE;
                 conditionValue = servedDateString;
             } else {
                 return new CacheStrategy(request, null); // No condition! Make a regular request.

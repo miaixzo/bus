@@ -258,7 +258,7 @@ public class VKProvider extends AbstractProvider {
      * @return a map of HTTP headers
      */
     private Map<String, String> buildHeader() {
-        return Map.of("Content-Type", MediaType.APPLICATION_FORM_URLENCODED);
+        return Map.of(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
     }
 
     /**

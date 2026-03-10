@@ -98,7 +98,7 @@ public final class BridgeInterceptor implements Interceptor {
         // If we add an "Accept-Encoding: gzip" header field we're responsible for also decompressing
         // the transfer stream.
         boolean transparentGzip = false;
-        if (userRequest.header(HTTP.ACCEPT_ENCODING) == null && userRequest.header("Range") == null) {
+        if (userRequest.header(HTTP.ACCEPT_ENCODING) == null && userRequest.header(HTTP.RANGE) == null) {
             transparentGzip = true;
             requestBuilder.header(HTTP.ACCEPT_ENCODING, "gzip");
         }

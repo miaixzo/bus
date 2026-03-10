@@ -24,6 +24,7 @@ import org.miaixz.bus.core.io.sink.AssignSink;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.AssignSource;
 import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.Headers;
 import org.miaixz.bus.http.NewCall;
@@ -212,7 +213,7 @@ public final class Exchange {
     public ResponseBody openResponseBody(Response response) throws IOException {
         try {
             eventListener.responseBodyStart(call);
-            String contentType = response.header("Content-Type");
+            String contentType = response.header(HTTP.CONTENT_TYPE);
             long contentLength = codec.reportedContentLength(response);
             Source rawSource = codec.openResponseBodySource(response);
             ResponseBodySource source = new ResponseBodySource(rawSource, contentLength);

@@ -19,16 +19,6 @@
 */
 package org.miaixz.bus.image.plugin;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.image.galaxy.media.MultipartParser;
-import org.miaixz.bus.logger.Logger;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,6 +34,17 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.image.galaxy.media.MultipartParser;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * The {@code WadoRS} class provides a client for retrieving DICOM objects via the DICOMweb WADO-RS (Web Access to DICOM
@@ -93,12 +94,12 @@ public class WadoRS {
     private static Map<String, String> requestProperties(String[] httpHeaders) {
         Map<String, String> requestProperties = new HashMap<>();
         if (header)
-            requestProperties.put("Accept", accept);
+            requestProperties.put(HTTP.ACCEPT, accept);
         if (authorization != null)
             requestProperties.put(HTTP.AUTHORIZATION, authorization);
         if (httpHeaders != null)
             for (String httpHeader : httpHeaders) {
-                int delim = httpHeader.indexOf(':');
+                int delim = httpHeader.indexOf(Symbol.C_COLON);
                 requestProperties.put(httpHeader.substring(0, delim), httpHeader.substring(delim + 1).trim());
             }
         return requestProperties;
@@ -339,7 +340,7 @@ public class WadoRS {
                             String fileName = fileName(
                                     partNumber,
                                     uid,
-                                    partExtension(headerParams.get("Content-Type").get(0)));
+                                    partExtension(headerParams.get(HTTP.CONTENT_TYPE).get(0)));
                             Logger.info("Extract Part #{} {} \n{}", partNumber, fileName, headerParams);
                             write(multipartInputStream, fileName);
                         } catch (Exception e) {

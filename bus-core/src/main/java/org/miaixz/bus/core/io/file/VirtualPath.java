@@ -252,7 +252,7 @@ public class VirtualPath implements Path {
         if (other.toString().isEmpty()) {
             return this;
         }
-        final String newPath = this.path + "/" + other;
+        final String newPath = this.path + Symbol.SLASH + other;
         return new VirtualPath(newPath, other instanceof VirtualPath ? ((VirtualPath) other).content : null);
     }
 
@@ -303,7 +303,7 @@ public class VirtualPath implements Path {
         if (this.path.isEmpty()) {
             return otherPath;
         }
-        if (otherPath.path.startsWith(this.path + "/")) {
+        if (otherPath.path.startsWith(this.path + Symbol.SLASH)) {
             return new VirtualPath(otherPath.path.substring(this.path.length() + 1), otherPath.content);
         }
         return otherPath;

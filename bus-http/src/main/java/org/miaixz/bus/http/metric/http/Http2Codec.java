@@ -107,7 +107,7 @@ public class Http2Codec implements HttpCodec {
         List<Http2Header> result = new ArrayList<>(headers.size() + 4);
         result.add(new Http2Header(Http2Header.TARGET_METHOD, request.method()));
         result.add(new Http2Header(Http2Header.TARGET_PATH, RequestLine.requestPath(request.url())));
-        String host = request.header("Host");
+        String host = request.header(HTTP.HOST);
         if (host != null) {
             result.add(new Http2Header(Http2Header.TARGET_AUTHORITY, host)); // Optional.
         }

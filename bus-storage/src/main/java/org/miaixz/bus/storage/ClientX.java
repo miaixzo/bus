@@ -21,6 +21,7 @@ package org.miaixz.bus.storage;
 
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.accord.ConnectionPool;
 import org.miaixz.bus.http.bodys.RequestBody;
@@ -358,7 +359,7 @@ public class ClientX implements SdkHttpClient {
         @Override
         public MediaType contentType() {
             // Get Content-Type from request headers, or use a default value if not present.
-            Optional<String> contentTypeOpt = httpRequest.firstMatchingHeader("Content-Type");
+            Optional<String> contentTypeOpt = httpRequest.firstMatchingHeader(HTTP.CONTENT_TYPE);
             return contentTypeOpt.map(MediaType::valueOf).orElse(MediaType.valueOf("application/octet-stream"));
         }
 
@@ -407,7 +408,7 @@ public class ClientX implements SdkHttpClient {
          */
         private long calculateContentLength() throws IOException {
             // Attempt to get content length from request headers
-            Optional<String> contentLengthOpt = httpRequest.firstMatchingHeader("Content-Length");
+            Optional<String> contentLengthOpt = httpRequest.firstMatchingHeader(HTTP.CONTENT_LENGTH);
             if (contentLengthOpt.isPresent()) {
                 try {
                     return Long.parseLong(contentLengthOpt.get());
@@ -467,7 +468,7 @@ public class ClientX implements SdkHttpClient {
         @Override
         public MediaType contentType() {
             // Get Content-Type from request headers, or use a default value if not present.
-            Optional<String> contentTypeOpt = httpRequest.firstMatchingHeader("Content-Type");
+            Optional<String> contentTypeOpt = httpRequest.firstMatchingHeader(HTTP.CONTENT_TYPE);
             return contentTypeOpt.map(MediaType::valueOf).orElse(MediaType.valueOf("application/octet-stream"));
         }
 
@@ -552,7 +553,7 @@ public class ClientX implements SdkHttpClient {
                 synchronized (this) {
                     if (contentLength == null) {
                         // Attempt to get content length from request headers
-                        Optional<String> contentLengthOpt = httpRequest.firstMatchingHeader("Content-Length");
+                        Optional<String> contentLengthOpt = httpRequest.firstMatchingHeader(HTTP.CONTENT_LENGTH);
                         if (contentLengthOpt.isPresent()) {
                             try {
                                 contentLength = Long.parseLong(contentLengthOpt.get());
@@ -872,17 +873,17 @@ public class ClientX implements SdkHttpClient {
             Request.Builder requestBuilder = request.newBuilder();
 
             // Ensure Content-Type header exists
-            if (request.header("Content-Type") == null) {
-                requestBuilder.addHeader("Content-Type", "application/octet-stream");
+            if (request.header(HTTP.CONTENT_TYPE) == null) {
+                requestBuilder.addHeader(HTTP.CONTENT_TYPE, "application/octet-stream");
             }
 
             // Ensure Content-Length header exists
-            if (request.body() != null && request.header("Content-Length") == null) {
+            if (request.body() != null && request.header(HTTP.CONTENT_LENGTH) == null) {
                 try {
                     // For custom RequestBody, we have already implemented the contentLength() method
                     long length = request.body().contentLength();
                     if (length != -1) {
-                        requestBuilder.addHeader("Content-Length", String.valueOf(length));
+                        requestBuilder.addHeader(HTTP.CONTENT_LENGTH, String.valueOf(length));
                     }
                 } catch (IOException e) {
                     // If content length cannot be obtained, ignore the error
@@ -907,14 +908,14 @@ public class ClientX implements SdkHttpClient {
          */
         private void addS3ProtocolHeaders(Request.Builder requestBuilder, Request request) {
             // Ensure Host header is correct
-            if (request.header("Host") == null) {
-                requestBuilder.addHeader("Host", request.url().host());
+            if (request.header(HTTP.HOST) == null) {
+                requestBuilder.addHeader(HTTP.HOST, request.url().host());
             }
 
             // Ensure Date header exists
-            if (request.header("Date") == null) {
+            if (request.header(HTTP.DATE) == null) {
                 requestBuilder.addHeader(
-                        "Date",
+                        HTTP.DATE,
                         DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneOffset.UTC)));
             }
 

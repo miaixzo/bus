@@ -172,7 +172,7 @@ public class GoogleDriveProvider extends AbstractProvider {
 
             String url = context.getEndpoint() + "/files/" + fileId + "?alt=media";
 
-            Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, "Bearer " + getAccessToken())
+            Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken())
                     .get().build();
 
             try (Response response = client.newCall(request).execute()) {
@@ -228,7 +228,7 @@ public class GoogleDriveProvider extends AbstractProvider {
 
             String url = context.getEndpoint() + "/files/" + fileId + "?alt=media";
 
-            Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, "Bearer " + getAccessToken())
+            Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken())
                     .get().build();
 
             try (Response response = client.newCall(request).execute()) {
@@ -275,7 +275,7 @@ public class GoogleDriveProvider extends AbstractProvider {
             String url = context.getEndpoint() + "/files?q=" + URLEncoder.encode(query, StandardCharsets.UTF_8)
                     + "&fields=files(id,name,size,mimeType,modifiedTime)&pageSize=100";
 
-            Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, "Bearer " + getAccessToken())
+            Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken())
                     .get().build();
 
             try (Response response = client.newCall(request).execute()) {
@@ -361,7 +361,7 @@ public class GoogleDriveProvider extends AbstractProvider {
             String url = context.getEndpoint() + "/files/" + fileId;
             String requestBody = String.format("{\"name\":\"%s\"}", newName);
 
-            Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, "Bearer " + getAccessToken())
+            Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken())
                     .addHeader(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                     .patch(RequestBody.of(MediaType.valueOf(MediaType.APPLICATION_JSON), requestBody)).build();
 
@@ -435,7 +435,7 @@ public class GoogleDriveProvider extends AbstractProvider {
             String url = UPLOAD_API_BASE + "/files?uploadType=resumable";
 
             Request createSessionRequest = new Request.Builder().url(url)
-                    .addHeader(HTTP.AUTHORIZATION, "Bearer " + getAccessToken())
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken())
                     .addHeader(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                     .addHeader("X-Upload-Content-Length", String.valueOf(content.length))
                     .post(RequestBody.of(MediaType.valueOf(MediaType.APPLICATION_JSON), metadata)).build();
@@ -450,7 +450,7 @@ public class GoogleDriveProvider extends AbstractProvider {
                     throw new IOException("Failed to create upload session: " + response.code());
                 }
 
-                uploadUrl = response.header("Location");
+                uploadUrl = response.header(HTTP.LOCATION);
             }
 
             // Upload file content
@@ -564,7 +564,7 @@ public class GoogleDriveProvider extends AbstractProvider {
 
             String url = context.getEndpoint() + "/files/" + fileId;
 
-            Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, "Bearer " + getAccessToken())
+            Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken())
                     .delete().build();
 
             try (Response response = client.newCall(request).execute()) {
@@ -684,7 +684,7 @@ public class GoogleDriveProvider extends AbstractProvider {
         String url = context.getEndpoint() + "/files?q=" + URLEncoder.encode(query, StandardCharsets.UTF_8)
                 + "&fields=files(id,name)";
 
-        Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, "Bearer " + getAccessToken())
+        Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken())
                 .get().build();
 
         try (Response response = client.newCall(request).execute()) {

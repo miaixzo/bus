@@ -339,7 +339,7 @@ public class RetryAndFollowUp implements Interceptor {
      * @return The retry-after delay in seconds.
      */
     private int retryAfter(Response userResponse, int defaultDelay) {
-        String header = userResponse.header("Retry-After");
+        String header = userResponse.header(HTTP.RETRY_AFTER);
 
         if (header == null) {
             return defaultDelay;

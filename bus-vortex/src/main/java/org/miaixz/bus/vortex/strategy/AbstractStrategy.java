@@ -99,7 +99,7 @@ public abstract class AbstractStrategy implements Strategy {
         }
 
         // Priority 3: Try to parse 'Host'
-        String hostHeader = headers.getFirst("Host");
+        String hostHeader = headers.getFirst(HTTP.HOST);
         if (StringKit.hasText(hostHeader)) {
             Logger.debug(true, "Strategy", "{} found in 'Host' header", hostHeader);
             return Optional.of(appendPortIfMissing(hostHeader, protocol));
@@ -322,8 +322,12 @@ public abstract class AbstractStrategy implements Strategy {
     protected String getToken(Context context) {
         // 1. Prioritize the standard `Authorization` header with the `Bearer` scheme.
         String authorization = context.getHeaders().get(HTTP.AUTHORIZATION);
-        if (StringKit.isNotEmpty(authorization) && authorization.startsWith(HTTP.BEARER)) {
-            return authorization.substring(7);
+        if (StringKit.isNotEmpty(authorization)) {
+            authorization = authorization.trim();
+            if (authorization.startsWith(HTTP.BEARER)) {
+                return authorization.substring(HTTP.BEARER.length()).trim();
+            }
+            return authorization;
         }
 
         // 2. Check for a custom `X-Access-Token` header for backward compatibility.

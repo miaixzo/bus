@@ -28,6 +28,7 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -351,7 +352,7 @@ public class ICloudDriveProvider extends AbstractProvider {
             String jsonBody = JsonKit.toJsonString(query);
             RequestBody body = RequestBody.of(MediaType.valueOf(MediaType.APPLICATION_JSON), jsonBody);
             Request request = new Request.Builder().url(url).post(body)
-                    .addHeader(HTTP.AUTHORIZATION, "Bearer " + apiToken).build();
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + apiToken).build();
 
             try (Response response = client.newCall(request).execute()) {
                 if (response.isSuccessful()) {
@@ -387,7 +388,7 @@ public class ICloudDriveProvider extends AbstractProvider {
             String jsonBody = JsonKit.toJsonString(query);
             RequestBody body = RequestBody.of(MediaType.valueOf(MediaType.APPLICATION_JSON), jsonBody);
             Request request = new Request.Builder().url(url).post(body)
-                    .addHeader(HTTP.AUTHORIZATION, "Bearer " + apiToken).build();
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + apiToken).build();
 
             try (Response response = client.newCall(request).execute()) {
                 if (response.isSuccessful()) {
@@ -430,7 +431,7 @@ public class ICloudDriveProvider extends AbstractProvider {
             String jsonBody = JsonKit.toJsonString(request);
             RequestBody body = RequestBody.of(MediaType.valueOf(MediaType.APPLICATION_JSON), jsonBody);
             Request httpRequest = new Request.Builder().url(url).post(body)
-                    .addHeader(HTTP.AUTHORIZATION, "Bearer " + apiToken).build();
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + apiToken).build();
 
             try (Response response = client.newCall(httpRequest).execute()) {
                 if (response.isSuccessful()) {
@@ -502,7 +503,7 @@ public class ICloudDriveProvider extends AbstractProvider {
             String jsonBody = JsonKit.toJsonString(request);
             RequestBody body = RequestBody.of(MediaType.valueOf(MediaType.APPLICATION_JSON), jsonBody);
             Request httpRequest = new Request.Builder().url(url).post(body)
-                    .addHeader(HTTP.AUTHORIZATION, "Bearer " + apiToken).build();
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + apiToken).build();
 
             try (Response response = client.newCall(httpRequest).execute()) {
                 return response.isSuccessful();
@@ -537,7 +538,7 @@ public class ICloudDriveProvider extends AbstractProvider {
             String jsonBody = JsonKit.toJsonString(request);
             RequestBody body = RequestBody.of(MediaType.valueOf(MediaType.APPLICATION_JSON), jsonBody);
             Request httpRequest = new Request.Builder().url(url).post(body)
-                    .addHeader(HTTP.AUTHORIZATION, "Bearer " + apiToken).build();
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + apiToken).build();
 
             try (Response response = client.newCall(httpRequest).execute()) {
                 return response.isSuccessful();
@@ -564,7 +565,7 @@ public class ICloudDriveProvider extends AbstractProvider {
             String jsonBody = JsonKit.toJsonString(request);
             RequestBody body = RequestBody.of(MediaType.valueOf(MediaType.APPLICATION_JSON), jsonBody);
             Request httpRequest = new Request.Builder().url(url).post(body)
-                    .addHeader(HTTP.AUTHORIZATION, "Bearer " + apiToken).build();
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + apiToken).build();
 
             try (Response response = client.newCall(httpRequest).execute()) {
                 return response.isSuccessful();
@@ -600,10 +601,10 @@ public class ICloudDriveProvider extends AbstractProvider {
     }
 
     private String buildPath(String bucket, String fileName) {
-        if (StringKit.isBlank(bucket) || "/".equals(bucket)) {
-            return "/" + fileName;
+        if (StringKit.isBlank(bucket) || Symbol.SLASH.equals(bucket)) {
+            return Symbol.SLASH + fileName;
         }
-        return bucket.endsWith("/") ? bucket + fileName : bucket + "/" + fileName;
+        return bucket.endsWith(Symbol.SLASH) ? bucket + fileName : bucket + Symbol.SLASH + fileName;
     }
 
 }

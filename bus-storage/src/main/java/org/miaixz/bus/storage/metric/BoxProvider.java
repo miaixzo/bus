@@ -143,7 +143,7 @@ public class BoxProvider extends AbstractProvider {
             String url = API_BASE + "/files/" + fileId + "/content";
 
             Request request = new Request.Builder().url(url)
-                    .addHeader(HTTP.AUTHORIZATION, "Bearer " + context.getExtension()).get().build();
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()).get().build();
 
             try (Response response = client.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
@@ -192,7 +192,7 @@ public class BoxProvider extends AbstractProvider {
             String url = API_BASE + "/files/" + fileId + "/content";
 
             Request request = new Request.Builder().url(url)
-                    .addHeader(HTTP.AUTHORIZATION, "Bearer " + context.getExtension()).get().build();
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()).get().build();
 
             try (Response response = client.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
@@ -232,7 +232,7 @@ public class BoxProvider extends AbstractProvider {
             String url = API_BASE + "/folders/" + folderId + "/items?fields=id,name,size,modified_at,type";
 
             Request request = new Request.Builder().url(url)
-                    .addHeader(HTTP.AUTHORIZATION, "Bearer " + context.getExtension()).get().build();
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()).get().build();
 
             try (Response response = client.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
@@ -319,8 +319,8 @@ public class BoxProvider extends AbstractProvider {
             requestBody.put("name", newName);
 
             Request request = new Request.Builder().url(url)
-                    .addHeader(HTTP.AUTHORIZATION, "Bearer " + context.getExtension())
-                    .addHeader("Content-Type", MediaType.APPLICATION_JSON)
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension())
+                    .addHeader(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                     .put(
                             RequestBody.of(
                                     MediaType.valueOf(MediaType.APPLICATION_JSON),
@@ -408,8 +408,8 @@ public class BoxProvider extends AbstractProvider {
             System.arraycopy(footer, 0, body, header.length + content.length, footer.length);
 
             Request request = new Request.Builder().url(url)
-                    .addHeader(HTTP.AUTHORIZATION, "Bearer " + context.getExtension())
-                    .addHeader("Content-Type", "multipart/form-data; boundary=" + boundary)
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension())
+                    .addHeader(HTTP.CONTENT_TYPE, "multipart/form-data; boundary=" + boundary)
                     .post(RequestBody.of(MediaType.valueOf("multipart/form-data"), body)).build();
 
             try (Response response = client.newCall(request).execute()) {
@@ -518,7 +518,7 @@ public class BoxProvider extends AbstractProvider {
             String url = API_BASE + "/files/" + fileId;
 
             Request request = new Request.Builder().url(url)
-                    .addHeader(HTTP.AUTHORIZATION, "Bearer " + context.getExtension()).delete().build();
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()).delete().build();
 
             try (Response response = client.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
@@ -558,7 +558,7 @@ public class BoxProvider extends AbstractProvider {
         String url = API_BASE + "/folders/" + folderId + "/items?fields=id,name,type";
 
         Request request = new Request.Builder().url(url)
-                .addHeader(HTTP.AUTHORIZATION, "Bearer " + context.getExtension()).get().build();
+                .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + context.getExtension()).get().build();
 
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {

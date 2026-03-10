@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -124,7 +125,7 @@ public class OpenAIProvider implements LlmProvider {
         // Build WebClient with API key authentication
         this.webClient = WebClient.builder().baseUrl(this.endpoint)
                 .defaultHeader(HTTP.AUTHORIZATION, HTTP.BEARER + this.apiKey)
-                .defaultHeader(HTTP.CONTENT_TYPE, "application/json").build();
+                .defaultHeader(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON).build();
 
         Logger.info(true, "LLM", "Initialized {} provider: endpoint={}", type, endpoint);
     }

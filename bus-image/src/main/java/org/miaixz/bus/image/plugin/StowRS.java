@@ -694,10 +694,10 @@ public class StowRS {
     private Map<String, String> requestProperties(String[] httpHeaders) {
         Map<String, String> requestProperties = new HashMap<>();
         requestProperties.put(
-                "Content-Type",
+                HTTP.CONTENT_TYPE,
                 MediaType.MULTIPART_RELATED + "; type=\"" + requestContentType + "\"; boundary=" + boundary);
-        requestProperties.put("Accept", requestAccept);
-        requestProperties.put("Connection", "keep-alive");
+        requestProperties.put(HTTP.ACCEPT, requestAccept);
+        requestProperties.put(HTTP.CONNECTION, "keep-alive");
         if (authorization != null)
             requestProperties.put(HTTP.AUTHORIZATION, authorization);
         if (httpHeaders != null)
@@ -720,7 +720,7 @@ public class StowRS {
         connection.setDoOutput(true);
         connection.setDoInput(true);
         connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Length", String.valueOf(tmpFile.length()));
+        connection.setRequestProperty(HTTP.CONTENT_LENGTH, String.valueOf(tmpFile.length()));
         requestProperties.forEach(connection::setRequestProperty);
         logOutgoing(connection.getURL(), connection.getRequestProperties());
         try (OutputStream out = connection.getOutputStream()) {
@@ -772,7 +772,7 @@ public class StowRS {
         connection.setRequestMethod("POST");
         if (disableTM)
             connection.setSSLSocketFactory(sslContext().getSocketFactory());
-        connection.setRequestProperty("Content-Length", String.valueOf(tmpFile.length()));
+        connection.setRequestProperty(HTTP.CONTENT_LENGTH, String.valueOf(tmpFile.length()));
         requestProperties.forEach(connection::setRequestProperty);
         connection.setHostnameVerifier((hostname, session) -> allowAnyHost);
         logOutgoing(connection.getURL(), connection.getRequestProperties());

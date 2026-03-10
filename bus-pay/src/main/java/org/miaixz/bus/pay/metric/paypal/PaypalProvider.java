@@ -149,13 +149,13 @@ public class PaypalProvider extends AbstractProvider<Voucher, Context> {
      */
     public Message getToken() {
         Map<String, String> headers = new HashMap<>(3);
-        headers.put("Accept", MediaType.APPLICATION_JSON);
+        headers.put(HTTP.ACCEPT, MediaType.APPLICATION_JSON);
         headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         headers.put(
                 HTTP.AUTHORIZATION,
                 "Basic ".concat(
                         Base64.encode(
-                                (this.context.getAppKey().concat(":").concat(this.context.getAppSecret()))
+                                (this.context.getAppKey().concat(Symbol.COLON).concat(this.context.getAppSecret()))
                                         .getBytes(Charset.UTF_8))));
         Map<String, String> params = new HashMap<>(1);
         params.put("grant_type", "client_credentials");
@@ -182,7 +182,7 @@ public class PaypalProvider extends AbstractProvider<Voucher, Context> {
      */
     public Message updateOrder(String id, String data) {
         AccessToken accessToken = getAccessToken(false);
-        String url = getUrl(PayPalApi.CHECKOUT_ORDERS).concat("/").concat(id);
+        String url = getUrl(PayPalApi.CHECKOUT_ORDERS).concat(Symbol.SLASH).concat(id);
         return post(url, data, getBaseHeaders(accessToken));
     }
 
@@ -194,7 +194,7 @@ public class PaypalProvider extends AbstractProvider<Voucher, Context> {
      */
     public Message queryOrder(String orderId) {
         AccessToken accessToken = getAccessToken(false);
-        String url = getUrl(PayPalApi.CHECKOUT_ORDERS).concat("/").concat(orderId);
+        String url = getUrl(PayPalApi.CHECKOUT_ORDERS).concat(Symbol.SLASH).concat(orderId);
         return get(url, null, getBaseHeaders(accessToken));
     }
 

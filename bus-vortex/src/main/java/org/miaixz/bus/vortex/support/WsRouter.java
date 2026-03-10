@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.vortex.support;
 
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Router;
@@ -96,7 +97,7 @@ public class WsRouter implements Router<ServerRequest, ServerResponse> {
                     context.getAssets().getMethod());
 
             // Check if this is a WebSocket upgrade request
-            boolean isWebSocketUpgrade = input.headers().header("Upgrade").stream()
+            boolean isWebSocketUpgrade = input.headers().header(HTTP.UPGRADE).stream()
                     .anyMatch(h -> h.equalsIgnoreCase("websocket"));
 
             if (!isWebSocketUpgrade) {

@@ -35,6 +35,7 @@ import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.net.PORT;
 import org.miaixz.bus.core.xyz.*;
@@ -373,7 +374,7 @@ public class CommonsFtp extends AbstractFtp {
         String fileName;
         for (final FTPFile ftpFile : ftpFiles) {
             fileName = ftpFile.getName();
-            if (!StringKit.equals(".", fileName) && !StringKit.equals("..", fileName)) {
+            if (!StringKit.equals(Symbol.DOT, fileName) && !StringKit.equals(Symbol.DOUBLE_DOT, fileName)) {
                 if (null == predicate || predicate.test(ftpFile)) {
                     result.add(ftpFile);
                 }
@@ -540,7 +541,7 @@ public class CommonsFtp extends AbstractFtp {
             childPath = StringKit.format("{}/{}", dirPath, name);
             if (ftpFile.isDirectory()) {
                 // Exclude parent and current directories
-                if (!".".equals(name) && !"..".equals(name)) {
+                if (!Symbol.DOT.equals(name) && !Symbol.DOUBLE_DOT.equals(name)) {
                     delDir(childPath);
                 }
             } else {
@@ -666,7 +667,7 @@ public class CommonsFtp extends AbstractFtp {
         }
         // Second, process only directories
         for (final File f : dirs) {
-            final String dir = FileKit.normalize(remotePath + "/" + f.getName());
+            final String dir = FileKit.normalize(remotePath + Symbol.SLASH + f.getName());
             upload(dir, f);
         }
     }

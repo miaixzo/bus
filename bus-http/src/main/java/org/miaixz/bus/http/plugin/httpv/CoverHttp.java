@@ -359,7 +359,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      * @return This instance for chaining.
      */
     public C setRange(long rangeStart) {
-        return addHeader("Range", "bytes=" + rangeStart + Symbol.MINUS);
+        return addHeader(HTTP.RANGE, "bytes=" + rangeStart + Symbol.MINUS);
     }
 
     /**
@@ -370,7 +370,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      * @return This instance for chaining.
      */
     public C setRange(long rangeStart, long rangeEnd) {
-        return addHeader("Range", "bytes=" + rangeStart + Symbol.MINUS + rangeEnd);
+        return addHeader(HTTP.RANGE, "bytes=" + rangeStart + Symbol.MINUS + rangeEnd);
     }
 
     /**
