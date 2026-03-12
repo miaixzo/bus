@@ -84,6 +84,10 @@ public class RequestStrategy extends AbstractStrategy {
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
             context.setX_request_ipv4(this.getClientIp(exchange.getRequest()));
+
+            // Extract original URL query parameters to context.query (unified for all request types)
+            context.getQuery().putAll(exchange.getRequest().getQueryParams().toSingleValueMap());
+
             // 1. Set default Content-Type if missing and record the request start time.
             // This setup logic is synchronous but acceptable as it's part of
             // building the reactive chain, not executing it.
@@ -129,7 +133,8 @@ public class RequestStrategy extends AbstractStrategy {
         // Wrap synchronous context mutation and logging in fromRunnable
         // to defer execution until subscription.
         return Mono.fromRunnable(() -> {
-            context.getParameters().putAll(exchange.getRequest().getQueryParams().toSingleValueMap());
+            // For GET requests, also copy query parameters to parameters map
+            context.getParameters().putAll(context.getQuery());
             Logger.info(
                     true,
                     "Request",

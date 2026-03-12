@@ -114,13 +114,12 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * {@code input} parameter is typed as {@link ServerRequest} for compile-time type safety.
      *
      * @param context The request context
-     * @param input   The ServerRequest object (strongly typed)
+     * @param request The ServerRequest object (strongly typed)
      * @return A Mono emitting the ServerResponse, or error if validation fails
      */
     @NonNull
     @Override
-    public Mono<ServerResponse> execute(Context context, ServerRequest input) {
-        ServerRequest request = input;
+    public Mono<ServerResponse> execute(Context context, ServerRequest request) {
         Assets assets = context.getAssets();
 
         final String method = request.methodName();
@@ -379,19 +378,35 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
      *
      * @param assets  The configured assets for the target executor.
      * @param context The request context.
-     * @return The constructed target URI string, including query parameters for GET requests.
+     * @return The constructed target URI string, including query parameters.
      */
     private String buildTargetUri(Assets assets, Context context) {
-        // This is fast, non-blocking URI building.
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(assets.getUrl());
+
+        // Start with query parameters
+        Map<String, String> query = context.getQuery();
+        MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
+
+        if (!query.isEmpty()) {
+            query.forEach(multiValueMap::add);
+        }
+
+        // For GET requests, parameters should override query
         if (HttpMethod.GET.equals(context.getHttpMethod())) {
-            Map<String, Object> params = context.getParameters();
-            if (!params.isEmpty()) {
-                MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>(params.size());
-                params.forEach((k, v) -> multiValueMap.add(k, String.valueOf(v)));
-                builder.queryParams(multiValueMap);
+            Map<String, Object> parameters = context.getParameters();
+            if (!parameters.isEmpty()) {
+                parameters.forEach((k, v) -> {
+                    // Remove existing value and add new one (override)
+                    multiValueMap.remove(k);
+                    multiValueMap.add(k, String.valueOf(v));
+                });
             }
         }
+
+        if (!multiValueMap.isEmpty()) {
+            builder.queryParams(multiValueMap);
+        }
+
         return builder.build().toUriString();
     }
 
