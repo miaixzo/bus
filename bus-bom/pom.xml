@@ -103,11 +103,6 @@
         </dependency>
         <dependency>
             <groupId>org.miaixz</groupId>
-            <artifactId>bus-cron</artifactId>
-            <version>${bus.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
             <artifactId>bus-crypto</artifactId>
             <version>${bus.version}</version>
         </dependency>
@@ -199,6 +194,11 @@
         <dependency>
             <groupId>org.miaixz</groupId>
             <artifactId>bus-storage</artifactId>
+            <version>${bus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
+            <artifactId>bus-tempus</artifactId>
             <version>${bus.version}</version>
         </dependency>
         <dependency>

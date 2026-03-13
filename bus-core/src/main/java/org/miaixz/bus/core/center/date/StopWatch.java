@@ -326,6 +326,16 @@ public class StopWatch {
     }
 
     /**
+     * Gets the elapsed time from start to now (in milliseconds), formatted as: XX days XX hours XX minutes XX seconds
+     * XX milliseconds.
+     *
+     * @return The elapsed time from start to now (in milliseconds).
+     */
+    public String getTotalTimePretty() {
+        return DateKit.formatBetween(getTotalTimeMillis());
+    }
+
+    /**
      * Gets the number of tasks recorded.
      *
      * @return The number of tasks.

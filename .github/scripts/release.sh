@@ -308,7 +308,7 @@ main() {
 
     # Phase 4: Other independent modules
     log_info "=== Phase 4: Other Independent Modules ==="
-    build_module "bus-cron" "$phase"
+    build_module "bus-tempus" "$phase"
     build_module "bus-gitlab" "$phase"
     build_module "bus-health" "$phase"
     build_module "bus-image" "$phase"

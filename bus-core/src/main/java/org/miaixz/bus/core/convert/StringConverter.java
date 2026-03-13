@@ -28,6 +28,7 @@ import java.util.function.Function;
 
 import org.miaixz.bus.core.convert.stringer.BlobStringer;
 import org.miaixz.bus.core.convert.stringer.ClobStringer;
+import org.miaixz.bus.core.lang.Wrapper;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.XmlKit;
 
@@ -65,13 +66,17 @@ public class StringConverter extends AbstractConverter {
      * @return the String value
      */
     @Override
-    protected String convertInternal(final Class<?> targetClass, final Object value) {
+    protected String convertInternal(final Class<?> targetClass, Object value) {
         // Custom toString
         if (MapKit.isNotEmpty(stringer)) {
             final Function<Object, String> stringFunction = stringer.get(targetClass);
             if (null != stringFunction) {
                 return stringFunction.apply(value);
             }
+        }
+
+        if (value instanceof Wrapper<?>) {
+            value = ((Wrapper<?>) value).getRaw();
         }
 
         if (value instanceof TimeZone) {
