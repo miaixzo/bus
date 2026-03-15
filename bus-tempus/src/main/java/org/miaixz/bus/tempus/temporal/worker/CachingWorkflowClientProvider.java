@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.tempus.temporal.Binding;
 
 import io.temporal.client.WorkflowClient;
 
@@ -48,7 +49,7 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
     private final Map<String, Object> serviceStubsCache = new ConcurrentHashMap<>();
 
     /**
-     * Cache of Temporal workflow clients keyed by endpoint.
+     * Cache of Temporal workflow clients keyed by endpoint + namespace + identity.
      */
     private final Map<String, WorkflowClient> clientCache = new ConcurrentHashMap<>();
 
@@ -73,7 +74,31 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
         if (endpoint == null) {
             throw new IllegalArgumentException("temporal.endpoint must not be null");
         }
-        return clientCache.computeIfAbsent(endpoint, this::createAndCacheClient);
+
+        String cacheKey = toClientCacheKey(endpoint, null, null);
+        return clientCache.computeIfAbsent(cacheKey, key -> createAndCacheClient(endpoint));
+    }
+
+    /**
+     * Returns a cached workflow client for the specified binding, creating one if necessary.
+     * <p>
+     * Client cache is keyed by endpoint + namespace + identity to ensure different clients do not accidentally share
+     * the same underlying configuration.
+     *
+     * @param binding temporal configuration
+     * @return the workflow client
+     */
+    @Override
+    public WorkflowClient createWorkflowClient(Binding binding) {
+        if (binding == null) {
+            throw new IllegalArgumentException("binding must not be null");
+        }
+        if (binding.getEndpoint() == null) {
+            throw new IllegalArgumentException("temporal.endpoint must not be null");
+        }
+
+        String cacheKey = toClientCacheKey(binding.getEndpoint(), binding.getNamespace(), binding.getIdentity());
+        return clientCache.computeIfAbsent(cacheKey, key -> createAndCacheClient(binding));
     }
 
     /**
@@ -99,6 +124,37 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
     }
 
     /**
+     * Creates and caches a workflow client for the specified binding.
+     *
+     * @param binding temporal configuration
+     * @return the workflow client
+     */
+    private WorkflowClient createAndCacheClient(Binding binding) {
+        String endpoint = binding.getEndpoint();
+        Object serviceStubs = serviceStubsCache.computeIfAbsent(endpoint, this::createServiceStubs);
+        Logger.info(
+                "[{}] Creating workflow client for endpoint: {}, namespace: {}, identity: {}",
+                getClass().getSimpleName(),
+                endpoint,
+                binding.getNamespace(),
+                binding.getIdentity());
+
+        try {
+            return stubsProvider.createWorkflowClient(serviceStubs, binding);
+        } catch (Exception e) {
+            Logger.error(
+                    "[{}] Failed to create workflow client for endpoint: {}, namespace: {}, identity: {}, error: {}",
+                    getClass().getSimpleName(),
+                    endpoint,
+                    binding.getNamespace(),
+                    binding.getIdentity(),
+                    e.getMessage(),
+                    e);
+            throw e;
+        }
+    }
+
+    /**
      * Creates a service stub handle for the specified endpoint.
      *
      * @param endpoint the Temporal server endpoint
@@ -117,6 +173,12 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
                     e);
             throw e;
         }
+    }
+
+    private static String toClientCacheKey(String endpoint, String namespace, String identity) {
+        String ns = namespace == null ? "" : namespace;
+        String id = identity == null ? "" : identity;
+        return endpoint + "|" + ns + "|" + id;
     }
 
     /**

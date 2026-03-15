@@ -23,10 +23,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.tempus.temporal.Binding;
 
 import io.temporal.client.WorkflowClient;
+import io.temporal.client.WorkflowClientOptions;
 
 /**
  * Creates Temporal service stub handles for specific endpoints.
@@ -125,23 +127,52 @@ public interface WorkflowServiceStubsProvider {
 
     /**
      * Creates a workflow client backed by the specified service stub handle and temporal configuration.
-     * <p>
-     * Default implementation delegates to {@link #createWorkflowClient(Object)}.
      *
      * @param serviceStubs the opaque service stub handle
-     * @param binding      temporal configuration
+     * @param binding      temporal configuration (optional)
      * @return the workflow client
      */
     default WorkflowClient createWorkflowClient(Object serviceStubs, Binding binding) {
-        if (binding == null) {
-            throw new IllegalArgumentException("binding must not be null");
+        if (serviceStubs == null) {
+            throw new IllegalArgumentException("serviceStubs must not be null");
         }
+
         Logger.debug(
                 "[{}] Creating workflow client, endpoint: {}, namespace: {}, identity: {}",
                 getClass().getSimpleName(),
-                binding.getEndpoint(),
-                binding.getNamespace(),
-                binding.getIdentity());
+                binding != null ? binding.getEndpoint() : null,
+                binding != null ? binding.getNamespace() : null,
+                binding != null ? binding.getIdentity() : null);
+
+        // Avoid direct dependency on Temporal serviceclient/grpc. If the runtime type supports a
+        // WorkflowClient.newInstance(stubs, options) overload, use it; otherwise fall back to the
+        // 1-arg overload.
+        if (binding != null && StringKit.hasText(binding.getNamespace())) {
+            try {
+                WorkflowClientOptions.Builder builder = WorkflowClientOptions.newBuilder();
+                builder.setNamespace(binding.getNamespace());
+                if (StringKit.hasText(binding.getIdentity())) {
+                    builder.setIdentity(binding.getIdentity());
+                }
+
+                Method factoryMethod = findWorkflowClientFactoryWithOptions(serviceStubs.getClass());
+                WorkflowClient client = (WorkflowClient) factoryMethod
+                        .invoke(null, serviceStubs, builder.validateAndBuildWithDefaults());
+                Logger.debug("[{}] Created workflow client with options successfully", getClass().getSimpleName());
+                return client;
+            } catch (IllegalStateException ignore) {
+                // No compatible 2-arg overload; fall back to the 1-arg variant.
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                Logger.error(
+                        "[{}] Failed to create WorkflowClient with options, stubsType: {}, error: {}",
+                        getClass().getSimpleName(),
+                        serviceStubs.getClass().getName(),
+                        e.getMessage(),
+                        e);
+                throw new IllegalStateException("Failed to create WorkflowClient with options", e);
+            }
+        }
+
         return createWorkflowClient(serviceStubs);
     }
 
@@ -201,6 +232,21 @@ public interface WorkflowServiceStubsProvider {
             }
         }
         throw new IllegalStateException("No WorkflowClient.newInstance method accepts " + serviceStubsType.getName());
+    }
+
+    private static Method findWorkflowClientFactoryWithOptions(Class<?> serviceStubsType) {
+        for (Method method : WorkflowClient.class.getMethods()) {
+            if (!"newInstance".equals(method.getName()) || method.getParameterCount() != 2) {
+                continue;
+            }
+            Class<?>[] parameterTypes = method.getParameterTypes();
+            if (parameterTypes[0].isAssignableFrom(serviceStubsType)
+                    && WorkflowClientOptions.class.isAssignableFrom(parameterTypes[1])) {
+                return method;
+            }
+        }
+        throw new IllegalStateException(
+                "No WorkflowClient.newInstance(stubs, options) method accepts " + serviceStubsType.getName());
     }
 
     /**
