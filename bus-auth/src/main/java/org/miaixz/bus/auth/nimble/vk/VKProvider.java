@@ -37,6 +37,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 

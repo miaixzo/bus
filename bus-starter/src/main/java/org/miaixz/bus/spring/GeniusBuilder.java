@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.spring;
 
+import java.io.File;
+
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ClassKit;
@@ -27,8 +29,6 @@ import org.springframework.boot.SpringApplicationRunListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
-
-import java.io.File;
 
 /**
  * Global constant configuration for the Bus Spring Starter.
@@ -258,6 +258,11 @@ public class GeniusBuilder {
      * Property key for Bus distributed tracing configuration.
      */
     public static final String TRACER = Keys.BUS + Symbol.DOT + "tracer";
+
+    /**
+     * Property key for Bus distributed tempus configuration.
+     */
+    public static final String TEMPUS = Keys.BUS + Symbol.DOT + "tempus";
 
     /**
      * Property key for Bus validation configuration.

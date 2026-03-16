@@ -55,7 +55,7 @@ public class Version implements Comparable<Version>, Serializable {
     /**
      * The current version of the bus-core library.
      */
-    public static final String _VERSION = "8.5.8";
+    public static final String _VERSION = "8.5.9";
 
     /**
      * The original, unparsed version string.

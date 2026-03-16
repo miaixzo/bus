@@ -194,7 +194,7 @@ Update all Bus modules simultaneously by changing the BOM version:
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-bom</artifactId>
-    <version>8.6.0</version> <!-- Update this version -->
+    <version>8.5.9</version> <!-- Update this version -->
     <type>pom</type>
     <scope>import</scope>
 </dependency>

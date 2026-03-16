@@ -50,6 +50,8 @@ module bus.starter {
     requires bus.setting;
     requires bus.socket;
     requires bus.storage;
+    requires bus.tempus;
+    requires bus.tracer;
     requires bus.validate;
     requires bus.vortex;
 
@@ -126,6 +128,7 @@ module bus.starter {
     exports org.miaixz.bus.starter.sensitive;
     exports org.miaixz.bus.starter.socket;
     exports org.miaixz.bus.starter.storage;
+    exports org.miaixz.bus.starter.tempus;
     exports org.miaixz.bus.starter.tracer;
     exports org.miaixz.bus.starter.validate;
     exports org.miaixz.bus.starter.wrapper;

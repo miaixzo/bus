@@ -194,7 +194,7 @@ Bus BOM 管理所有 Bus 框架模块的版本:
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-bom</artifactId>
-    <version>8.6.0</version> <!-- 更新此版本 -->
+    <version>8.5.9</version> <!-- 更新此版本 -->
     <type>pom</type>
     <scope>import</scope>
 </dependency>

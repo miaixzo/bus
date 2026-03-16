@@ -44,12 +44,28 @@ public class WorkflowPublisherOptionsFactory implements WorkflowOptionsFactory {
     private final WorkflowIdGenerator generator;
 
     /**
-     * Creates a workflow options factory.
+     * Workflow task timeout in minutes.
+     */
+    private final int workflowTaskTimeoutMinutes;
+
+    /**
+     * Creates a workflow options factory with default task timeout (3 minutes).
      *
      * @param generator the workflow identifier generator
      */
     public WorkflowPublisherOptionsFactory(WorkflowIdGenerator generator) {
+        this(generator, 3);
+    }
+
+    /**
+     * Creates a workflow options factory.
+     *
+     * @param generator                  the workflow identifier generator
+     * @param workflowTaskTimeoutMinutes workflow task timeout in minutes
+     */
+    public WorkflowPublisherOptionsFactory(WorkflowIdGenerator generator, int workflowTaskTimeoutMinutes) {
         this.generator = generator;
+        this.workflowTaskTimeoutMinutes = workflowTaskTimeoutMinutes;
     }
 
     /**
@@ -63,7 +79,7 @@ public class WorkflowPublisherOptionsFactory implements WorkflowOptionsFactory {
     public WorkflowOptions createWorkflowOptions(String taskQueue, String workflowType) {
         return WorkflowOptions.newBuilder().setTaskQueue(taskQueue).setWorkflowId(generator.workflowId(workflowType))
                 .setWorkflowExecutionTimeout(Duration.ofDays(1)).setWorkflowRunTimeout(Duration.ofHours(1))
-                .setWorkflowTaskTimeout(Duration.ofMinutes(1)).build();
+                .setWorkflowTaskTimeout(Duration.ofMinutes(workflowTaskTimeoutMinutes)).build();
     }
 
     /**
@@ -84,7 +100,7 @@ public class WorkflowPublisherOptionsFactory implements WorkflowOptionsFactory {
 
         return WorkflowOptions.newBuilder().setTaskQueue(spec.taskQueue()).setWorkflowId(workflowId)
                 .setWorkflowExecutionTimeout(Duration.ofDays(1)).setWorkflowRunTimeout(Duration.ofHours(1))
-                .setWorkflowTaskTimeout(Duration.ofMinutes(1)).build();
+                .setWorkflowTaskTimeout(Duration.ofMinutes(workflowTaskTimeoutMinutes)).build();
     }
 
 }

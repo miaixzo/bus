@@ -27,6 +27,8 @@ module bus.gitlab {
 
     requires java.logging;
 
+    requires bus.core;
+
     requires jakarta.ws.rs;
     requires jakarta.servlet;
     requires jakarta.annotation;
