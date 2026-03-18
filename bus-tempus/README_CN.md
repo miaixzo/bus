@@ -1,4 +1,4 @@
-# ⏰ Bus Cron: 轻量级定时任务框架
+# ⏰ Bus Tempus: 轻量级定时任务框架
 
 <p align="center">
 <strong>高性能、灵活的定时任务调度框架</strong>
@@ -8,7 +8,7 @@
 
 ## 📖 项目介绍
 
-**Bus Cron** 是一个基于 cron 表达式的轻量级、高性能定时任务框架。它为任务调度提供了简单而强大的 API，支持标准 Linux crontab 风格的语法，同时提供企业级特性，如任务监听器、灵活的调度模式和线程池管理。
+**Bus Tempus** 是一个基于 cron 表达式的轻量级、高性能定时任务框架。它为任务调度提供了简单而强大的 API，支持标准 Linux crontab 风格的语法，同时提供企业级特性，如任务监听器、灵活的调度模式和线程池管理。
 
 -----
 
@@ -86,7 +86,7 @@
 ```java
 import org.miaixz.bus.tempus.Builder;
 
-// 启动调度器（如果存在则加载 config/cron.setting）
+// 启动调度器（如果存在则加载 config/tempus.setting）
 Builder.start();
 
 // 调度每 5 分钟运行的任务
@@ -231,7 +231,7 @@ scheduler.start();
 
 ### 5. 配置文件调度
 
-创建 `config/cron.setting`:
+创建 `tempus/tempus.setting`:
 
 ```properties
 # 使用 class.method 语法调度任务
@@ -250,11 +250,11 @@ reportGeneration = 0 9 * * 1-5
 import org.miaixz.bus.tempus.Builder;
 import org.miaixz.bus.setting.Setting;
 
-// 从默认位置加载（config/cron.setting 或 cron.setting）
+// 从默认位置加载（config/tempus.setting 或 tempus.setting）
 Builder.start();
 
 // 或从自定义路径加载
-Setting cronSetting = new Setting("path/to/custom-cron.setting");
+Setting cronSetting = new Setting("path/to/custom-tempus.setting");
 Scheduler scheduler = new Scheduler();
 scheduler.schedule(cronSetting).start();
 ```

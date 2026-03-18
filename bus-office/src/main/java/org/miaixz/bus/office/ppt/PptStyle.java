@@ -29,13 +29,36 @@ import org.apache.poi.xslf.usermodel.XSLFTextRun;
  * Represents a font and paragraph style configuration for PowerPoint documents. Similar to
  * {@link org.miaixz.bus.office.word.FontStyle} but adapted for XSLF (PowerPoint) text runs.
  *
- * @param font  The font information (family, style, size).
- * @param color The font color.
- * @param align The text alignment.
  * @author Kimi Liu
  * @since Java 17+
  */
-public record PptStyle(Font font, Color color, TextParagraph.TextAlign align) {
+public class PptStyle {
+
+    /**
+     * Font object containing font name, style, and size.
+     */
+    private final Font font;
+    /**
+     * Font color; if {@code null}, no color is applied.
+     */
+    private final Color color;
+    /**
+     * Paragraph text alignment; if {@code null}, no alignment is applied.
+     */
+    private final TextParagraph.TextAlign align;
+
+    /**
+     * Constructs a new {@code PptStyle} with font, color, and alignment.
+     *
+     * @param font  the font object
+     * @param color the font color, may be {@code null}
+     * @param align the text alignment, may be {@code null}
+     */
+    public PptStyle(final Font font, final Color color, final TextParagraph.TextAlign align) {
+        this.font = font;
+        this.color = color;
+        this.align = align;
+    }
 
     /**
      * Constructs a new {@code PptStyle} with font only.
@@ -72,6 +95,33 @@ public record PptStyle(Font font, Color color, TextParagraph.TextAlign align) {
     public PptStyle(final String name, final int style, final int size, final Color color,
             final TextParagraph.TextAlign align) {
         this(new Font(name, style, size), color, align);
+    }
+
+    /**
+     * Returns the font object.
+     *
+     * @return the {@link Font}
+     */
+    public Font font() {
+        return font;
+    }
+
+    /**
+     * Returns the font color.
+     *
+     * @return the {@link Color}, or {@code null} if not set
+     */
+    public Color color() {
+        return color;
+    }
+
+    /**
+     * Returns the text alignment.
+     *
+     * @return the {@link TextParagraph.TextAlign}, or {@code null} if not set
+     */
+    public TextParagraph.TextAlign align() {
+        return align;
     }
 
     /**

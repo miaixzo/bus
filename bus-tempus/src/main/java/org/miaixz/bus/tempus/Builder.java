@@ -41,11 +41,11 @@ public class Builder {
     /**
      * The path to the Crontab configuration file.
      */
-    public static final String CRONTAB_CONFIG_PATH = "config/cron.setting";
+    public static final String CRONTAB_CONFIG_PATH = "config/tempus.setting";
     /**
      * An alternative path to the Crontab configuration file.
      */
-    public static final String CRONTAB_CONFIG_PATH2 = "cron.setting";
+    public static final String CRONTAB_CONFIG_PATH2 = "tempus.setting";
 
     /**
      * Lock for thread-safe operations on the scheduler.
@@ -178,10 +178,10 @@ public class Builder {
         lock.lock();
         try {
             if (null == crontabSetting) {
-                // Try to find config/cron.setting
+                // Try to find config/tempus.setting
                 setCronSetting(CRONTAB_CONFIG_PATH);
             }
-            // Try to find cron.setting
+            // Try to find tempus.setting
             if (null == crontabSetting) {
                 setCronSetting(CRONTAB_CONFIG_PATH2);
             }

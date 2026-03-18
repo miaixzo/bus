@@ -2,7 +2,7 @@
   "resources": {
     "includes": [
       {
-        "pattern": "META-INF/cron/.*"
+        "pattern": "META-INF/tempus/.*"
       }
     ]
   }

@@ -86,7 +86,7 @@
 ```java
 import org.miaixz.bus.tempus.Builder;
 
-// Start the scheduler (loads config/cron.setting if present)
+// Start the scheduler (loads config/tempus.setting if present)
 Builder.start();
 
 // Schedule a task to run every 5 minutes
@@ -231,7 +231,7 @@ scheduler.start();
 
 ### 5. Configuration File Scheduling
 
-Create `config/cron.setting`:
+Create `config/tempus.setting`:
 
 ```properties
 # Schedule tasks using class.method syntax
@@ -250,11 +250,11 @@ Load and execute:
 import org.miaixz.bus.tempus.Builder;
 import org.miaixz.bus.setting.Setting;
 
-// Load from default locations (config/cron.setting or cron.setting)
+// Load from default locations (config/tempus.setting or tempus.setting)
 Builder.start();
 
 // Or load from custom path
-Setting cronSetting = new Setting("path/to/custom-cron.setting");
+Setting cronSetting = new Setting("path/to/custom-tempus.setting");
 Scheduler scheduler = new Scheduler();
 scheduler.schedule(cronSetting).start();
 ```

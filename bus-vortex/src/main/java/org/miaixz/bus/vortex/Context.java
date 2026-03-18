@@ -70,9 +70,9 @@ public class Context extends Tracer {
     private Map<String, Object> parameters = new HashMap<>();
 
     /**
-     * A map of the original URL query parameters. This map stores only the query parameters from the original request URL
-     * (e.g., ?task_id=123456), separate from request body parameters. This allows POST requests to preserve URL query
-     * parameters while keeping body parameters in the request body.
+     * A map of the original URL query parameters. This map stores only the query parameters from the original request
+     * URL (e.g., ?task_id=123456), separate from request body parameters. This allows POST requests to preserve URL
+     * query parameters while keeping body parameters in the request body.
      * <p>
      * These parameters can be modified during processing and will be used when building the target URI.
      */

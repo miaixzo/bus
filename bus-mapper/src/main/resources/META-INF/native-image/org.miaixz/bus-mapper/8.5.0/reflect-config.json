@@ -2128,6 +2128,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.mapper.parsing.AidedSqlScript",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.mapper.parsing.ClassColumn",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -2151,17 +2162,6 @@
   },
   {
     "name": "org.miaixz.bus.mapper.parsing.ColumnMeta",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.mapper.parsing.AidedSqlScript",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
