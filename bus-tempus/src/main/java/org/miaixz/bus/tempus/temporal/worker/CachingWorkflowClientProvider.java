@@ -109,16 +109,11 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
      */
     private WorkflowClient createAndCacheClient(String endpoint) {
         Object serviceStubs = serviceStubsCache.computeIfAbsent(endpoint, this::createServiceStubs);
-        Logger.info("[{}] Creating workflow client for endpoint: {}", getClass().getSimpleName(), endpoint);
+        Logger.info("Creating workflow client for endpoint: {}", endpoint);
         try {
             return stubsProvider.createWorkflowClient(serviceStubs);
         } catch (Exception e) {
-            Logger.error(
-                    "[{}] Failed to create workflow client for endpoint: {}, error: {}",
-                    getClass().getSimpleName(),
-                    endpoint,
-                    e.getMessage(),
-                    e);
+            Logger.error("Failed to create workflow client for endpoint: {}, error: {}", endpoint, e.getMessage(), e);
             throw e;
         }
     }
@@ -133,8 +128,7 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
         String endpoint = binding.getEndpoint();
         Object serviceStubs = serviceStubsCache.computeIfAbsent(endpoint, this::createServiceStubs);
         Logger.info(
-                "[{}] Creating workflow client for endpoint: {}, namespace: {}, identity: {}",
-                getClass().getSimpleName(),
+                "Creating workflow client for endpoint: {}, namespace: {}, identity: {}",
                 endpoint,
                 binding.getNamespace(),
                 binding.getIdentity());
@@ -143,8 +137,7 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
             return stubsProvider.createWorkflowClient(serviceStubs, binding);
         } catch (Exception e) {
             Logger.error(
-                    "[{}] Failed to create workflow client for endpoint: {}, namespace: {}, identity: {}, error: {}",
-                    getClass().getSimpleName(),
+                    "Failed to create workflow client for endpoint: {}, namespace: {}, identity: {}, error: {}",
                     endpoint,
                     binding.getNamespace(),
                     binding.getIdentity(),
@@ -161,13 +154,12 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
      * @return the created service stub handle
      */
     private Object createServiceStubs(String endpoint) {
-        Logger.info("[{}] Creating workflow service stubs for endpoint: {}", getClass().getSimpleName(), endpoint);
+        Logger.info("Creating workflow service stubs for endpoint: {}", endpoint);
         try {
             return stubsProvider.createServiceStubs(endpoint);
         } catch (Exception e) {
             Logger.error(
-                    "[{}] Failed to create workflow service stubs for endpoint: {}, error: {}",
-                    getClass().getSimpleName(),
+                    "Failed to create workflow service stubs for endpoint: {}, error: {}",
                     endpoint,
                     e.getMessage(),
                     e);
@@ -191,14 +183,10 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
             Object serviceStubs = entry.getValue();
             try {
                 stubsProvider.shutdownServiceStubs(serviceStubs);
-                Logger.debug(
-                        "[{}] Closed workflow service stubs for endpoint: {}",
-                        getClass().getSimpleName(),
-                        endpoint);
+                Logger.debug("Closed workflow service stubs for endpoint: {}", endpoint);
             } catch (Exception e) {
                 Logger.warn(
-                        "[{}] Failed to close workflow service stubs for endpoint: {}, error: {}",
-                        getClass().getSimpleName(),
+                        "Failed to close workflow service stubs for endpoint: {}, error: {}",
                         endpoint,
                         e.getMessage(),
                         e);

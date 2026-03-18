@@ -103,7 +103,7 @@ public class StringMessage implements Message<String> {
         // Read message content
         byte[] data = new byte[length];
         readBuffer.get(data);
-        return new String(data, StandardCharsets.UTF_8);
+        return new String(data, Charset.UTF_8);
     }
 }
 ```
@@ -119,7 +119,7 @@ public class ServerHandler implements Handler<String> {
 
         // Echo response
         String response = "Echo: " + message;
-        byte[] data = response.getBytes(StandardCharsets.UTF_8);
+        byte[] data = response.getBytes(Charset.UTF_8);
 
         try {
             // Write length prefix
@@ -191,7 +191,7 @@ public class SimpleClient {
 
         // Send message
         String message = "Hello, Server!";
-        byte[] data = message.getBytes(StandardCharsets.UTF_8);
+        byte[] data = message.getBytes(Charset.UTF_8);
 
         session.writeBuffer().writeInt(data.length);
         session.writeBuffer().write(data);
@@ -389,7 +389,7 @@ public class DelimiterMessage implements Message<String> {
     private final byte[] delimiter;
 
     public DelimiterMessage(String delimiter) {
-        this.delimiter = delimiter.getBytes(StandardCharsets.UTF_8);
+        this.delimiter = delimiter.getBytes(Charset.UTF_8);
     }
 
     @Override
@@ -769,7 +769,7 @@ public String decode(ByteBuffer readBuffer, Session session) {
     byte[] data = new byte[length];
     readBuffer.get(data);
 
-    return new String(data, StandardCharsets.UTF_8);
+    return new String(data, Charset.UTF_8);
 }
 ```
 

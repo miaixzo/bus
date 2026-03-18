@@ -106,7 +106,7 @@ public class WorkflowSubscriberManager implements Subscriber {
     @Override
     public void start() {
         if (!binding.isEnabled()) {
-            Logger.info("[{}] Worker is disabled, skipping initialization", getClass().getSimpleName());
+            Logger.info("Worker is disabled, skipping initialization");
             return;
         }
 
@@ -119,42 +119,34 @@ public class WorkflowSubscriberManager implements Subscriber {
 
         try {
             Logger.info(
-                    "[{}] Initializing worker, endpoint: {}, queue: {}, maxConcurrent: {}",
-                    getClass().getSimpleName(),
+                    "Initializing worker, endpoint: {}, queue: {}, maxConcurrent: {}",
                     binding.getEndpoint(),
                     binding.getTaskQueue(),
                     binding.getMaxConcurrent());
 
             serviceStubs = provider.createServiceStubs(binding);
-            Logger.debug(
-                    "[{}] Created service stubs for endpoint: {}",
-                    getClass().getSimpleName(),
-                    binding.getEndpoint());
+            Logger.debug("Created service stubs for endpoint: {}", binding.getEndpoint());
 
             WorkflowClient client = provider.createWorkflowClient(serviceStubs, binding);
-            Logger.debug("[{}] Created workflow client", getClass().getSimpleName());
+            Logger.debug("Created workflow client");
 
             workerFactory = WorkerFactory.newInstance(client);
-            Logger.debug("[{}] Created worker factory", getClass().getSimpleName());
+            Logger.debug("Created worker factory");
 
             WorkerOptions workerOptions = factory.createWorkerOptions(binding.getMaxConcurrent());
             Worker worker = workerFactory.newWorker(binding.getTaskQueue(), workerOptions);
-            Logger.debug("[{}] Created worker for queue: {}", getClass().getSimpleName(), binding.getTaskQueue());
+            Logger.debug("Created worker for queue: {}", binding.getTaskQueue());
 
             binding.registerWorkflowsAndActivities(worker);
-            Logger.debug("[{}] Registered workflows and activities", getClass().getSimpleName());
+            Logger.debug("Registered workflows and activities");
 
             workerFactory.start();
 
-            Logger.info(
-                    "[{}] Worker started successfully, listening on queue: {}",
-                    getClass().getSimpleName(),
-                    binding.getTaskQueue());
+            Logger.info("Worker started successfully, listening on queue: {}", binding.getTaskQueue());
 
         } catch (Exception e) {
             Logger.error(
-                    "[{}] Failed to start worker, endpoint: {}, queue: {}, error: {}",
-                    getClass().getSimpleName(),
+                    "Failed to start worker, endpoint: {}, queue: {}, error: {}",
                     binding.getEndpoint(),
                     binding.getTaskQueue(),
                     e.getMessage(),
@@ -174,13 +166,13 @@ public class WorkflowSubscriberManager implements Subscriber {
 
         try {
             if (workerFactory != null) {
-                Logger.info("[{}] Shutting down worker...", getClass().getSimpleName());
+                Logger.info("Shutting down worker...");
                 workerFactory.shutdown();
                 workerFactory.awaitTermination(10, TimeUnit.SECONDS);
-                Logger.info("[{}] Worker shutdown completed", getClass().getSimpleName());
+                Logger.info("Worker shutdown completed");
             }
         } catch (Exception e) {
-            Logger.warn("[{}] Worker shutdown encountered an error: {}", getClass().getSimpleName(), e.getMessage(), e);
+            Logger.warn("Worker shutdown encountered an error: {}", e.getMessage(), e);
         } finally {
             workerFactory = null;
             if (serviceStubs != null) {

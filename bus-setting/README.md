@@ -601,7 +601,7 @@ By default, UTF-8 encoding is used. For legacy ISO-8859-1 files:
 Properties props = new Properties();
 props.load(new InputStreamReader(
     new FileInputStream("config.properties"),
-    StandardCharsets.ISO_8859_1
+    Charset.ISO_8859_1
 ));
 ```
 

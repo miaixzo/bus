@@ -67,8 +67,7 @@ public interface WorkflowServiceStubsProvider {
         }
 
         Logger.debug(
-                "[{}] Creating service stubs, endpoint: {}, namespace: {}, identity: {}",
-                getClass().getSimpleName(),
+                "Creating service stubs, endpoint: {}, namespace: {}, identity: {}",
                 binding.getEndpoint(),
                 binding.getNamespace(),
                 binding.getIdentity());
@@ -76,15 +75,13 @@ public interface WorkflowServiceStubsProvider {
         try {
             Object stubs = createServiceStubs(binding.getEndpoint());
             Logger.debug(
-                    "[{}] Created service stubs successfully, endpoint: {}, stubsType: {}",
-                    getClass().getSimpleName(),
+                    "Created service stubs successfully, endpoint: {}, stubsType: {}",
                     binding.getEndpoint(),
                     stubs != null ? stubs.getClass().getName() : null);
             return stubs;
         } catch (Exception e) {
             Logger.error(
-                    "[{}] Failed to create service stubs, endpoint: {}, namespace: {}, identity: {}, error: {}",
-                    getClass().getSimpleName(),
+                    "Failed to create service stubs, endpoint: {}, namespace: {}, identity: {}, error: {}",
                     binding.getEndpoint(),
                     binding.getNamespace(),
                     binding.getIdentity(),
@@ -104,20 +101,16 @@ public interface WorkflowServiceStubsProvider {
         if (serviceStubs == null) {
             throw new IllegalArgumentException("serviceStubs must not be null");
         }
-        Logger.debug(
-                "[{}] Creating workflow client from service stubs, stubsType: {}",
-                getClass().getSimpleName(),
-                serviceStubs.getClass().getName());
+        Logger.debug("Creating workflow client from service stubs, stubsType: {}", serviceStubs.getClass().getName());
 
         try {
             Method factoryMethod = findWorkflowClientFactory(serviceStubs.getClass());
             WorkflowClient client = (WorkflowClient) factoryMethod.invoke(null, serviceStubs);
-            Logger.debug("[{}] Created workflow client from service stubs successfully", getClass().getSimpleName());
+            Logger.debug("Created workflow client from service stubs successfully");
             return client;
         } catch (IllegalAccessException | InvocationTargetException e) {
             Logger.error(
-                    "[{}] Failed to create WorkflowClient from service stubs, stubsType: {}, error: {}",
-                    getClass().getSimpleName(),
+                    "Failed to create WorkflowClient from service stubs, stubsType: {}, error: {}",
                     serviceStubs.getClass().getName(),
                     e.getMessage(),
                     e);
@@ -138,8 +131,7 @@ public interface WorkflowServiceStubsProvider {
         }
 
         Logger.debug(
-                "[{}] Creating workflow client, endpoint: {}, namespace: {}, identity: {}",
-                getClass().getSimpleName(),
+                "Creating workflow client, endpoint: {}, namespace: {}, identity: {}",
                 binding != null ? binding.getEndpoint() : null,
                 binding != null ? binding.getNamespace() : null,
                 binding != null ? binding.getIdentity() : null);
@@ -158,14 +150,13 @@ public interface WorkflowServiceStubsProvider {
                 Method factoryMethod = findWorkflowClientFactoryWithOptions(serviceStubs.getClass());
                 WorkflowClient client = (WorkflowClient) factoryMethod
                         .invoke(null, serviceStubs, builder.validateAndBuildWithDefaults());
-                Logger.debug("[{}] Created workflow client with options successfully", getClass().getSimpleName());
+                Logger.debug("Created workflow client with options successfully");
                 return client;
             } catch (IllegalStateException ignore) {
                 // No compatible 2-arg overload; fall back to the 1-arg variant.
             } catch (IllegalAccessException | InvocationTargetException e) {
                 Logger.error(
-                        "[{}] Failed to create WorkflowClient with options, stubsType: {}, error: {}",
-                        getClass().getSimpleName(),
+                        "Failed to create WorkflowClient with options, stubsType: {}, error: {}",
                         serviceStubs.getClass().getName(),
                         e.getMessage(),
                         e);
@@ -186,10 +177,7 @@ public interface WorkflowServiceStubsProvider {
             return;
         }
 
-        Logger.debug(
-                "[{}] Shutting down service stubs, stubsType: {}",
-                getClass().getSimpleName(),
-                serviceStubs.getClass().getName());
+        Logger.debug("Shutting down service stubs, stubsType: {}", serviceStubs.getClass().getName());
 
         try {
             invokeNoArg(serviceStubs, "shutdown");
@@ -200,14 +188,10 @@ public interface WorkflowServiceStubsProvider {
                     5L,
                     TimeUnit.SECONDS);
 
-            Logger.debug(
-                    "[{}] Service stubs shutdown completed, stubsType: {}",
-                    getClass().getSimpleName(),
-                    serviceStubs.getClass().getName());
+            Logger.debug("Service stubs shutdown completed, stubsType: {}", serviceStubs.getClass().getName());
         } catch (IllegalAccessException | InvocationTargetException e) {
             Logger.error(
-                    "[{}] Failed to shut down WorkflowServiceStubs, stubsType: {}, error: {}",
-                    getClass().getSimpleName(),
+                    "Failed to shut down WorkflowServiceStubs, stubsType: {}, error: {}",
                     serviceStubs.getClass().getName(),
                     e.getMessage(),
                     e);

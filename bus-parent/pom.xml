@@ -101,7 +101,7 @@
         <yaml.version>2.5</yaml.version>
         <aspectj.version>1.9.24</aspectj.version>
         <bcpkix.version>1.83</bcpkix.version>
-        <temporal.version>1.31.0</temporal.version>
+        <temporal.version>1.33.0</temporal.version>
         <fastjson.version>2.0.60</fastjson.version>
         <gson.version>2.13.2</gson.version>
         <jackson.version>2.21.0</jackson.version>
@@ -389,7 +389,27 @@
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>2.21</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jdk8</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
             <dependency>

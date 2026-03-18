@@ -60,7 +60,7 @@ public abstract class AbstractActivityHandler<R, C>
         String taskId = getTaskId(request);
 
         try {
-            Logger.info("[{}] Starting task, taskId: {}", getClass().getSimpleName(), taskId);
+            Logger.info("Starting task, taskId: {}", taskId);
             heartbeat("processing", taskId);
 
             C context = create(request);
@@ -77,16 +77,11 @@ public abstract class AbstractActivityHandler<R, C>
                 notifier.success(request, result);
             }
 
-            Logger.info("[{}] Task completed, taskId: {}", getClass().getSimpleName(), taskId);
+            Logger.info("Task completed, taskId: {}", taskId);
             return buildSuccessResponse(taskId, result);
 
         } catch (Exception e) {
-            Logger.error(
-                    "[{}] Task failed, taskId: {}, error: {}",
-                    getClass().getSimpleName(),
-                    taskId,
-                    e.getMessage(),
-                    e);
+            Logger.error("Task failed, taskId: {}, error: {}", taskId, e.getMessage(), e);
 
             CallbackNotifier<R> notifier = getCallbackNotifier();
             if (notifier != null) {
@@ -122,7 +117,7 @@ public abstract class AbstractActivityHandler<R, C>
             details.put("taskId", taskId);
             Activity.getExecutionContext().heartbeat(details);
         } catch (Exception e) {
-            Logger.warn("[{}] Heartbeat failed: {}", getClass().getSimpleName(), e.getMessage());
+            Logger.warn("Heartbeat failed: {}", e.getMessage());
         }
     }
 

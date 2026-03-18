@@ -255,7 +255,7 @@ writer.flush(FileKit.file("document.docx"));
 
 ```java
 // 读取 CSV 文件
-CsvReader reader = CsvKit.getReader(FileKit.file("data.csv"), StandardCharsets.UTF_8);
+CsvReader reader = CsvKit.getReader(FileKit.file("data.csv"), Charset.UTF_8);
 CsvRow row;
 while ((row = reader.read()) != null) {
     List<String> fields = row.getRawList();
@@ -270,14 +270,14 @@ CsvReadConfig config = CsvReadConfig.builder()
     .ignoreEmptyRows(true)
     .build();
 
-CsvReader reader = CsvKit.getReader(FileKit.file("data.csv"), StandardCharsets.UTF_8, config);
+CsvReader reader = CsvKit.getReader(FileKit.file("data.csv"), Charset.UTF_8, config);
 ```
 
 #### 写入 CSV
 
 ```java
 // 写入 CSV 文件
-CsvWriter writer = CsvKit.getWriter("output.csv", StandardCharsets.UTF_8);
+CsvWriter writer = CsvKit.getWriter("output.csv", Charset.UTF_8);
 
 writer.writeRow(Arrays.asList("姓名", "年龄", "邮箱"));
 writer.writeRow(Arrays.asList("张三", "25", "zhangsan@example.com"));
@@ -286,7 +286,7 @@ writer.writeRow(Arrays.asList("李四", "30", "lisi@example.com"));
 writer.close();
 
 // 追加到现有文件
-CsvWriter writer = CsvKit.getWriter("output.csv", StandardCharsets.UTF_8, true);
+CsvWriter writer = CsvKit.getWriter("output.csv", Charset.UTF_8, true);
 writer.writeRow(Arrays.asList("王五", "35", "wangwu@example.com"));
 writer.close();
 ```
@@ -443,8 +443,8 @@ for (List<Object> row : rows) {
 
 ```java
 // ✅ 推荐: 明确指定编码
-CsvReader reader = CsvKit.getReader(file, StandardCharsets.UTF_8);
-CsvWriter writer = CsvKit.getWriter(file, StandardCharsets.UTF_8);
+CsvReader reader = CsvKit.getReader(file, Charset.UTF_8);
+CsvWriter writer = CsvKit.getWriter(file, Charset.UTF_8);
 
 // ❌ 不推荐: 依赖平台默认编码
 CsvReader reader = CsvKit.getReader(file);
@@ -619,7 +619,7 @@ ExcelKit.readBySax("large.xlsx", 0, new RowHandler() { ... });
 **解决方案**: 明确指定 UTF-8 编码
 
 ```java
-CsvWriter writer = CsvKit.getWriter("file.csv", StandardCharsets.UTF_8);
+CsvWriter writer = CsvKit.getWriter("file.csv", Charset.UTF_8);
 ```
 
 ### 问题: OFD 转换失败

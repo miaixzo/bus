@@ -21,7 +21,6 @@ package org.miaixz.bus.storage.metric;
 
 import java.io.*;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +29,7 @@ import java.util.Map;
 
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.net.HTTP;
@@ -177,8 +177,8 @@ public class SharePointProvider extends AbstractProvider {
             String apiPath = buildApiPath(bucket, objectKey);
             String url = context.getEndpoint() + apiPath + ":/content";
 
-            Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken())
-                    .get().build();
+            Request request = new Request.Builder().url(url)
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()).get().build();
 
             try (Response response = client.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
@@ -234,8 +234,8 @@ public class SharePointProvider extends AbstractProvider {
             String apiPath = buildApiPath(bucket, objectKey);
             String url = context.getEndpoint() + apiPath + ":/content";
 
-            Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken())
-                    .get().build();
+            Request request = new Request.Builder().url(url)
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()).get().build();
 
             try (Response response = client.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
@@ -279,8 +279,8 @@ public class SharePointProvider extends AbstractProvider {
             String apiPath = buildApiPath(context.getBucket(), prefix);
             String url = context.getEndpoint() + apiPath + ":/children";
 
-            Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken())
-                    .get().build();
+            Request request = new Request.Builder().url(url)
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()).get().build();
 
             try (Response response = client.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
@@ -375,7 +375,8 @@ public class SharePointProvider extends AbstractProvider {
 
             String requestBody = String.format("{\"name\":\"%s\"}", newName);
 
-            Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken())
+            Request request = new Request.Builder().url(url)
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken())
                     .addHeader(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                     .patch(RequestBody.of(MediaType.valueOf(MediaType.APPLICATION_JSON), requestBody)).build();
 
@@ -551,8 +552,8 @@ public class SharePointProvider extends AbstractProvider {
             String apiPath = buildApiPath(bucket, objectKey);
             String url = context.getEndpoint() + apiPath;
 
-            Request request = new Request.Builder().url(url).addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken())
-                    .delete().build();
+            Request request = new Request.Builder().url(url)
+                    .addHeader(HTTP.AUTHORIZATION, HTTP.BEARER + getAccessToken()).delete().build();
 
             try (Response response = client.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
@@ -613,9 +614,9 @@ public class SharePointProvider extends AbstractProvider {
 
         String requestBody = String.format(
                 "client_id=%s&client_secret=%s&scope=%s&grant_type=client_credentials",
-                URLEncoder.encode(context.getAccessKey(), StandardCharsets.UTF_8),
-                URLEncoder.encode(context.getSecretKey(), StandardCharsets.UTF_8),
-                URLEncoder.encode("https://graph.microsoft.com/.default", StandardCharsets.UTF_8));
+                URLEncoder.encode(context.getAccessKey(), Charset.UTF_8),
+                URLEncoder.encode(context.getSecretKey(), Charset.UTF_8),
+                URLEncoder.encode("https://graph.microsoft.com/.default", Charset.UTF_8));
 
         Request request = new Request.Builder().url(tokenUrl)
                 .addHeader(HTTP.CONTENT_TYPE, "application/x-www-form-urlencoded")

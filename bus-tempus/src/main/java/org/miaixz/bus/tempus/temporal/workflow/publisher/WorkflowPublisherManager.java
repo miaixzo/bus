@@ -96,8 +96,7 @@ public class WorkflowPublisherManager implements Publisher {
     @Override
     public String publish(Object... args) {
         Logger.debug(
-                "[{}] Publishing workflow, type: {}, endpoint: {}, queue: {}, args: {}",
-                getClass().getSimpleName(),
+                "Publishing workflow, type: {}, endpoint: {}, queue: {}, args: {}",
                 binding.getWorkflowType(),
                 binding.getEndpoint(),
                 binding.getTaskQueue(),
@@ -105,19 +104,13 @@ public class WorkflowPublisherManager implements Publisher {
 
         try {
             WorkflowClient client = provider.createWorkflowClient(binding);
-            Logger.debug(
-                    "[{}] Created workflow client for endpoint: {}",
-                    getClass().getSimpleName(),
-                    binding.getEndpoint());
+            Logger.debug("Created workflow client for endpoint: {}", binding.getEndpoint());
 
             WorkflowStub workflow = client.newUntypedWorkflowStub(
                     binding.getWorkflowType(),
                     factory.createWorkflowOptions(
                             WorkflowOptionsSpec.of(binding.getTaskQueue(), binding.getWorkflowType())));
-            Logger.debug(
-                    "[{}] Created workflow stub for type: {}",
-                    getClass().getSimpleName(),
-                    binding.getWorkflowType());
+            Logger.debug("Created workflow stub for type: {}", binding.getWorkflowType());
 
             Object execution = workflow.start(args);
 
@@ -125,16 +118,14 @@ public class WorkflowPublisherManager implements Publisher {
             String runId = extractRunId(execution);
 
             Logger.info(
-                    "[{}] Published workflow successfully, type: {}, workflowId: {}, runId: {}",
-                    getClass().getSimpleName(),
+                    "Published workflow successfully, type: {}, workflowId: {}, runId: {}",
                     binding.getWorkflowType(),
                     workflowId,
                     runId);
             return runId;
         } catch (Exception e) {
             Logger.error(
-                    "[{}] Failed to publish workflow, type: {}, endpoint: {}, queue: {}, error: {}",
-                    getClass().getSimpleName(),
+                    "Failed to publish workflow, type: {}, endpoint: {}, queue: {}, error: {}",
                     binding.getWorkflowType(),
                     binding.getEndpoint(),
                     binding.getTaskQueue(),
@@ -155,11 +146,7 @@ public class WorkflowPublisherManager implements Publisher {
             Method method = execution.getClass().getMethod("getWorkflowId");
             return (String) method.invoke(execution);
         } catch (Exception e) {
-            Logger.error(
-                    "[{}] Failed to extract workflow ID from execution object: {}",
-                    getClass().getSimpleName(),
-                    e.getMessage(),
-                    e);
+            Logger.error("Failed to extract workflow ID from execution object: {}", e.getMessage(), e);
             throw new IllegalStateException("Failed to extract workflow ID from execution", e);
         }
     }
@@ -175,11 +162,7 @@ public class WorkflowPublisherManager implements Publisher {
             Method method = execution.getClass().getMethod("getRunId");
             return (String) method.invoke(execution);
         } catch (Exception e) {
-            Logger.error(
-                    "[{}] Failed to extract run ID from execution object: {}",
-                    getClass().getSimpleName(),
-                    e.getMessage(),
-                    e);
+            Logger.error("Failed to extract run ID from execution object: {}", e.getMessage(), e);
             throw new IllegalStateException("Failed to extract run ID from execution", e);
         }
     }

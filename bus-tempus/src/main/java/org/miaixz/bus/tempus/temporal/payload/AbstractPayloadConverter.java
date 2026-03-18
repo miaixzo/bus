@@ -19,9 +19,10 @@
 */
 package org.miaixz.bus.tempus.temporal.payload;
 
+import org.miaixz.bus.core.lang.Charset;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -191,15 +192,13 @@ public abstract class AbstractPayloadConverter implements PayloadConverter {
 
                 @Override
                 public byte[] toBytes(Object value) throws Exception {
-                    return ((String) toJson.invoke(gson, value)).getBytes(StandardCharsets.UTF_8);
+                    return ((String) toJson.invoke(gson, value)).getBytes(Charset.UTF_8);
                 }
 
                 @Override
                 public <T> T fromBytes(byte[] bytes, Class<T> valueClass, Type valueType) throws Exception {
-                    return (T) fromJson.invoke(
-                            gson,
-                            new String(bytes, StandardCharsets.UTF_8),
-                            valueType == null ? valueClass : valueType);
+                    return (T) fromJson
+                            .invoke(gson, new String(bytes, Charset.UTF_8), valueType == null ? valueClass : valueType);
                 }
             };
         } catch (Throwable ignored) {

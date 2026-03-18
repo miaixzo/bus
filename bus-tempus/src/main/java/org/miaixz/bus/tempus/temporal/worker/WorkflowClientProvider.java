@@ -60,23 +60,18 @@ public interface WorkflowClientProvider {
         }
 
         Logger.debug(
-                "[{}] Creating workflow client, endpoint: {}, namespace: {}, identity: {}",
-                getClass().getSimpleName(),
+                "Creating workflow client, endpoint: {}, namespace: {}, identity: {}",
                 binding.getEndpoint(),
                 binding.getNamespace(),
                 binding.getIdentity());
 
         try {
             WorkflowClient client = createWorkflowClient(binding.getEndpoint());
-            Logger.debug(
-                    "[{}] Created workflow client successfully, endpoint: {}",
-                    getClass().getSimpleName(),
-                    binding.getEndpoint());
+            Logger.debug("Created workflow client successfully, endpoint: {}", binding.getEndpoint());
             return client;
         } catch (Exception e) {
             Logger.error(
-                    "[{}] Failed to create workflow client, endpoint: {}, namespace: {}, identity: {}, error: {}",
-                    getClass().getSimpleName(),
+                    "Failed to create workflow client, endpoint: {}, namespace: {}, identity: {}, error: {}",
                     binding.getEndpoint(),
                     binding.getNamespace(),
                     binding.getIdentity(),

@@ -76,7 +76,7 @@ public abstract class AbstractWorkflowHandler<A, R> {
      */
     public String execute(R request) {
         try {
-            Logger.info("[{}] Starting workflow, request: {}", getClass().getSimpleName(), request);
+            Logger.info("Starting workflow, request: {}", request);
 
             Integer maxDurationHours = getMaxDurationHours(request);
             if (maxDurationHours != null && maxDurationHours > 0) {
@@ -86,11 +86,11 @@ public abstract class AbstractWorkflowHandler<A, R> {
             }
 
             String result = invokeActivity(activity, request);
-            Logger.info("[{}] Workflow completed, request: {}", getClass().getSimpleName(), request);
+            Logger.info("Workflow completed, request: {}", request);
             return result;
 
         } catch (Exception e) {
-            Logger.error("[{}] Workflow failed: {}", getClass().getSimpleName(), e.getMessage(), e);
+            Logger.error("Workflow failed: {}", e.getMessage(), e);
             throw e;
         }
     }

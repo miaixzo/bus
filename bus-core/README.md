@@ -322,7 +322,6 @@ import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.io.resource.ResourceKit;
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
 // File operations

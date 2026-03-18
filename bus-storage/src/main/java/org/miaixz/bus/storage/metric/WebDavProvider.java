@@ -200,8 +200,9 @@ public class WebDavProvider extends AbstractProvider {
     public Message list() {
         try {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
-            String url = getUrl(this.context.getBucket() + Symbol.SLASH
-                    + (StringKit.isBlank(prefix) ? Normal.EMPTY : prefix + Symbol.SLASH));
+            String url = getUrl(
+                    this.context.getBucket() + Symbol.SLASH
+                            + (StringKit.isBlank(prefix) ? Normal.EMPTY : prefix + Symbol.SLASH));
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(client.list(url).stream().filter(resource -> !resource.isDirectory()).map(resource -> {
                         Map<String, Object> extend = new HashMap<>();

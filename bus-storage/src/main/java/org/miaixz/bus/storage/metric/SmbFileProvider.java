@@ -300,8 +300,9 @@ public class SmbFileProvider extends AbstractProvider {
         try {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             List<String> files = share.list(prefix).stream()
-                    .filter(fileInfo -> !fileInfo.getFileName().equals(Symbol.DOT)
-                            && !fileInfo.getFileName().equals(Symbol.DOUBLE_DOT))
+                    .filter(
+                            fileInfo -> !fileInfo.getFileName().equals(Symbol.DOT)
+                                    && !fileInfo.getFileName().equals(Symbol.DOUBLE_DOT))
                     .map(fileInfo -> fileInfo.getFileName()).collect(Collectors.toList());
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
