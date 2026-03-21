@@ -103,6 +103,11 @@
         </dependency>
         <dependency>
             <groupId>org.miaixz</groupId>
+            <artifactId>bus-cortex</artifactId>
+            <version>${bus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-crypto</artifactId>
             <version>${bus.version}</version>
         </dependency>
@@ -194,6 +199,11 @@
         <dependency>
             <groupId>org.miaixz</groupId>
             <artifactId>bus-storage</artifactId>
+            <version>${bus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
+            <artifactId>bus-metrics</artifactId>
             <version>${bus.version}</version>
         </dependency>
         <dependency>

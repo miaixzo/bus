@@ -44,17 +44,27 @@ public class WorkflowPublisherOptionsFactory implements WorkflowOptionsFactory {
     private final WorkflowIdGenerator generator;
 
     /**
+     * Workflow execution timeout in days.
+     */
+    private final int workflowExecutionTimeoutDays;
+
+    /**
+     * Workflow run timeout in hours.
+     */
+    private final int workflowRunTimeoutHours;
+
+    /**
      * Workflow task timeout in minutes.
      */
     private final int workflowTaskTimeoutMinutes;
 
     /**
-     * Creates a workflow options factory with default task timeout (3 minutes).
+     * Creates a workflow options factory with default timeouts.
      *
      * @param generator the workflow identifier generator
      */
     public WorkflowPublisherOptionsFactory(WorkflowIdGenerator generator) {
-        this(generator, 3);
+        this(generator, 1, 12, 3);
     }
 
     /**
@@ -64,7 +74,22 @@ public class WorkflowPublisherOptionsFactory implements WorkflowOptionsFactory {
      * @param workflowTaskTimeoutMinutes workflow task timeout in minutes
      */
     public WorkflowPublisherOptionsFactory(WorkflowIdGenerator generator, int workflowTaskTimeoutMinutes) {
+        this(generator, 1, 12, workflowTaskTimeoutMinutes);
+    }
+
+    /**
+     * Creates a workflow options factory with full timeout configuration.
+     *
+     * @param generator                    the workflow identifier generator
+     * @param workflowExecutionTimeoutDays workflow execution timeout in days
+     * @param workflowRunTimeoutHours      workflow run timeout in hours
+     * @param workflowTaskTimeoutMinutes   workflow task timeout in minutes
+     */
+    public WorkflowPublisherOptionsFactory(WorkflowIdGenerator generator, int workflowExecutionTimeoutDays,
+            int workflowRunTimeoutHours, int workflowTaskTimeoutMinutes) {
         this.generator = generator;
+        this.workflowExecutionTimeoutDays = workflowExecutionTimeoutDays;
+        this.workflowRunTimeoutHours = workflowRunTimeoutHours;
         this.workflowTaskTimeoutMinutes = workflowTaskTimeoutMinutes;
     }
 
@@ -78,7 +103,8 @@ public class WorkflowPublisherOptionsFactory implements WorkflowOptionsFactory {
     @Override
     public WorkflowOptions createWorkflowOptions(String taskQueue, String workflowType) {
         return WorkflowOptions.newBuilder().setTaskQueue(taskQueue).setWorkflowId(generator.workflowId(workflowType))
-                .setWorkflowExecutionTimeout(Duration.ofDays(1)).setWorkflowRunTimeout(Duration.ofHours(1))
+                .setWorkflowExecutionTimeout(Duration.ofDays(workflowExecutionTimeoutDays))
+                .setWorkflowRunTimeout(Duration.ofHours(workflowRunTimeoutHours))
                 .setWorkflowTaskTimeout(Duration.ofMinutes(workflowTaskTimeoutMinutes)).build();
     }
 
@@ -99,7 +125,8 @@ public class WorkflowPublisherOptionsFactory implements WorkflowOptionsFactory {
         }
 
         return WorkflowOptions.newBuilder().setTaskQueue(spec.taskQueue()).setWorkflowId(workflowId)
-                .setWorkflowExecutionTimeout(Duration.ofDays(1)).setWorkflowRunTimeout(Duration.ofHours(1))
+                .setWorkflowExecutionTimeout(Duration.ofDays(workflowExecutionTimeoutDays))
+                .setWorkflowRunTimeout(Duration.ofHours(workflowRunTimeoutHours))
                 .setWorkflowTaskTimeout(Duration.ofMinutes(workflowTaskTimeoutMinutes)).build();
     }
 

@@ -29,7 +29,7 @@
  * <ul>
  * <li>{@code bus.core}, {@code bus.extra}, etc.: The foundational libraries of the Bus ecosystem, required
  * transitively.</li>
- * <li>{@code spring.webflux}, {@code reactor.core}: The reactive foundation for the entire gateway, marked as static as
+ * <li>{@code spring.webflux}, {@code reactor.core}: The reactive foundation for the entire gateway, marked as as
  * this is a framework.</li>
  * <li>{@code com.google.common}: Used for utilities like the {@code RateLimiter}.</li>
  * </ul>
@@ -50,28 +50,28 @@
  */
 module bus.vortex {
 
-    requires transitive bus.core;
-    requires transitive bus.crypto;
-    requires transitive bus.extra;
-    requires transitive bus.health;
-    requires transitive bus.http;
-    requires transitive bus.logger;
-
-    requires static lombok;
-    requires static jakarta.annotation;
-    requires static jakarta.servlet;
-    requires static spring.core;
-    requires static spring.beans;
-    requires static spring.context;
-    requires static spring.web;
-    requires static spring.webflux;
-    requires static reactor.core;
-    requires static reactor.netty.http;
-    requires static reactor.netty.core;
-    requires static io.netty.handler;
-    requires static org.reactivestreams;
-    requires static com.google.common;
+    requires bus.core;
     requires bus.cache;
+    requires bus.crypto;
+    requires bus.extra;
+    requires bus.health;
+    requires bus.http;
+    requires bus.logger;
+
+    requires lombok;
+    requires jakarta.annotation;
+    requires jakarta.servlet;
+    requires spring.core;
+    requires spring.beans;
+    requires spring.context;
+    requires spring.web;
+    requires spring.webflux;
+    requires reactor.core;
+    requires reactor.netty.http;
+    requires reactor.netty.core;
+    requires io.netty.handler;
+    requires org.reactivestreams;
+    requires com.google.common;
 
     exports org.miaixz.bus.vortex;
     exports org.miaixz.bus.vortex.filter;

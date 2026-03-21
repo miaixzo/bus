@@ -165,9 +165,19 @@ public class GeniusBuilder {
     public static final String BANNER = Keys.BUS + Symbol.DOT + "banner";
 
     /**
+     * Property key for Bus authentication configuration.
+     */
+    public static final String AUTH = Keys.BUS + Symbol.DOT + "auth";
+
+    /**
      * Property key for Bus cache configuration.
      */
     public static final String CACHE = Keys.BUS + Symbol.DOT + "cache";
+
+    /**
+     * Property key for Bus Cortex registry and configuration center.
+     */
+    public static final String CORTEX = Keys.BUS + Symbol.DOT + "cortex";
 
     /**
      * Property key for Bus CORS configuration.
@@ -183,11 +193,6 @@ public class GeniusBuilder {
      * Property key for Bus Elasticsearch configuration.
      */
     public static final String ELASTIC = Keys.BUS + Symbol.DOT + "elastic";
-
-    /**
-     * Property key for Bus Vortex gateway configuration.
-     */
-    public static final String VORTEX = Keys.BUS + Symbol.DOT + "vortex";
 
     /**
      * Property key for Bus health configuration.
@@ -220,14 +225,14 @@ public class GeniusBuilder {
     public static final String MAPPER = Keys.BUS + Symbol.DOT + "mapper";
 
     /**
+     * Property key for Bus metrics configuration.
+     */
+    public static final String METRICS = Keys.BUS + Symbol.DOT + "metrics";
+
+    /**
      * Property key for Bus notify configuration.
      */
     public static final String NOTIFY = Keys.BUS + Symbol.DOT + "notify";
-
-    /**
-     * Property key for Bus authentication configuration.
-     */
-    public static final String AUTH = Keys.BUS + Symbol.DOT + "auth";
 
     /**
      * Property key for Bus office document processing configuration.
@@ -268,6 +273,11 @@ public class GeniusBuilder {
      * Property key for Bus validation configuration.
      */
     public static final String VALIDATE = Keys.BUS + Symbol.DOT + "validate";
+
+    /**
+     * Property key for Bus Vortex gateway configuration.
+     */
+    public static final String VORTEX = Keys.BUS + Symbol.DOT + "vortex";
 
     /**
      * Property key for Bus request/response wrapper configuration.

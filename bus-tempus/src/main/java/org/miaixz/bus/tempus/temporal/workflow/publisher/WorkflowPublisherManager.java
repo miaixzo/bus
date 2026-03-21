@@ -20,9 +20,13 @@
 package org.miaixz.bus.tempus.temporal.workflow.publisher;
 
 import java.lang.reflect.Method;
+import java.time.Duration;
+import java.util.function.Supplier;
 
+import org.miaixz.bus.core.xyz.RetryKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.tempus.temporal.Publisher;
+import org.miaixz.bus.tempus.temporal.worker.CachingWorkflowClientProvider;
 import org.miaixz.bus.tempus.temporal.worker.WorkflowClientProvider;
 import org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsFactory;
 import org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsSpec;
@@ -89,6 +93,8 @@ public class WorkflowPublisherManager implements Publisher {
 
     /**
      * Publishes a workflow execution with the specified arguments.
+     * <p>
+     * On transient connection errors, the cached client is invalidated and the publish is retried once.
      *
      * @param args the workflow arguments
      * @return the Temporal run identifier
@@ -102,6 +108,32 @@ public class WorkflowPublisherManager implements Publisher {
                 binding.getTaskQueue(),
                 args != null ? args.length : 0);
 
+        Supplier<String> recover = () -> {
+            throw new RuntimeException("Publish failed after retry, type: " + binding.getWorkflowType());
+        };
+        return RetryKit.ofPredicate(() -> doPublish(args), 1, Duration.ZERO, recover, (result, ex) -> {
+            if (ex != null && isConnectionError(ex)) {
+                Logger.warn(
+                        "Connection error detected, invalidating cached client and retrying. type: {}, endpoint: {}, error: {}",
+                        binding.getWorkflowType(),
+                        binding.getEndpoint(),
+                        ex.getMessage());
+                if (provider instanceof CachingWorkflowClientProvider c) {
+                    c.invalidate(binding.getEndpoint());
+                }
+                return true;
+            }
+            return false;
+        });
+    }
+
+    /**
+     * Executes a single publish attempt.
+     *
+     * @param args the workflow arguments
+     * @return the Temporal run identifier
+     */
+    private String doPublish(Object[] args) {
         try {
             WorkflowClient client = provider.createWorkflowClient(binding);
             Logger.debug("Created workflow client for endpoint: {}", binding.getEndpoint());
@@ -114,8 +146,8 @@ public class WorkflowPublisherManager implements Publisher {
 
             Object execution = workflow.start(args);
 
-            String workflowId = extractWorkflowId(execution);
-            String runId = extractRunId(execution);
+            String workflowId = extractString(execution, "getWorkflowId");
+            String runId = extractString(execution, "getRunId");
 
             Logger.info(
                     "Published workflow successfully, type: {}, workflowId: {}, runId: {}",
@@ -136,34 +168,27 @@ public class WorkflowPublisherManager implements Publisher {
     }
 
     /**
-     * Extracts the workflow ID from a WorkflowExecution object using reflection.
+     * Returns {@code true} if the exception indicates a transient connection error.
      *
-     * @param execution the workflow execution object
-     * @return the workflow ID
+     * @param ex the throwable to inspect
+     * @return {@code true} if the error is connection-related
      */
-    private String extractWorkflowId(Object execution) {
-        try {
-            Method method = execution.getClass().getMethod("getWorkflowId");
-            return (String) method.invoke(execution);
-        } catch (Exception e) {
-            Logger.error("Failed to extract workflow ID from execution object: {}", e.getMessage(), e);
-            throw new IllegalStateException("Failed to extract workflow ID from execution", e);
+    private boolean isConnectionError(Throwable ex) {
+        String msg = ex.getMessage();
+        if (msg != null
+                && (msg.contains("UNAVAILABLE") || msg.contains("DEADLINE_EXCEEDED") || msg.contains("CANCELLED"))) {
+            return true;
         }
+        return ex.getCause() instanceof java.io.IOException;
     }
 
-    /**
-     * Extracts the run ID from a WorkflowExecution object using reflection.
-     *
-     * @param execution the workflow execution object
-     * @return the run ID
-     */
-    private String extractRunId(Object execution) {
+    private String extractString(Object obj, String methodName) {
         try {
-            Method method = execution.getClass().getMethod("getRunId");
-            return (String) method.invoke(execution);
+            Method m = obj.getClass().getMethod(methodName);
+            return (String) m.invoke(obj);
         } catch (Exception e) {
-            Logger.error("Failed to extract run ID from execution object: {}", e.getMessage(), e);
-            throw new IllegalStateException("Failed to extract run ID from execution", e);
+            Logger.warn("Failed to extract {} from {}: {}", methodName, obj.getClass().getSimpleName(), e.getMessage());
+            return null;
         }
     }
 

@@ -108,13 +108,25 @@ public abstract class AbstractWorkflowHandler<A, R> {
     }
 
     /**
+     * Returns the heartbeat timeout in seconds used when building default activity options.
+     * <p>
+     * Subclasses may override to link this value with configuration.
+     *
+     * @return heartbeat timeout in seconds, default is 30
+     */
+    protected long getHeartbeatTimeoutSeconds() {
+        return 60;
+    }
+
+    /**
      * Creates the default Temporal activity options used by this workflow.
      *
      * @return the default activity options
      */
     protected ActivityOptions createDefaultActivityOptions() {
         return ActivityOptions.newBuilder().setStartToCloseTimeout(Duration.ofHours(12))
-                .setScheduleToStartTimeout(Duration.ofMinutes(5)).setHeartbeatTimeout(Duration.ofSeconds(30))
+                .setScheduleToStartTimeout(Duration.ofMinutes(5))
+                .setHeartbeatTimeout(Duration.ofSeconds(getHeartbeatTimeoutSeconds()))
                 .setRetryOptions(createDefaultRetryOptions()).build();
     }
 
@@ -126,7 +138,8 @@ public abstract class AbstractWorkflowHandler<A, R> {
      */
     protected ActivityOptions createDynamicActivityOptions(int maxDurationHours) {
         return ActivityOptions.newBuilder().setStartToCloseTimeout(Duration.ofHours(maxDurationHours))
-                .setScheduleToStartTimeout(Duration.ofMinutes(5)).setHeartbeatTimeout(Duration.ofSeconds(30))
+                .setScheduleToStartTimeout(Duration.ofMinutes(5))
+                .setHeartbeatTimeout(Duration.ofSeconds(getHeartbeatTimeoutSeconds()))
                 .setRetryOptions(createDefaultRetryOptions()).build();
     }
 
@@ -166,8 +179,9 @@ public abstract class AbstractWorkflowHandler<A, R> {
 
         if (retryOptions != null) {
             return ActivityOptions.newBuilder().setStartToCloseTimeout(Duration.ofHours(12))
-                    .setScheduleToStartTimeout(Duration.ofMinutes(5)).setHeartbeatTimeout(Duration.ofSeconds(30))
-                    .setRetryOptions(retryOptions).build();
+                    .setScheduleToStartTimeout(Duration.ofMinutes(5))
+                    .setHeartbeatTimeout(Duration.ofSeconds(getHeartbeatTimeoutSeconds())).setRetryOptions(retryOptions)
+                    .build();
         }
 
         return createDefaultActivityOptions();

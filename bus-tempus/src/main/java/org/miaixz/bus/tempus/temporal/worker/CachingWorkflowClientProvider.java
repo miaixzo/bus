@@ -174,6 +174,32 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
     }
 
     /**
+     * Invalidates all cached clients and service stubs for the specified endpoint.
+     * <p>
+     * Called on transient connection errors to force re-creation of stale connections on the next publish attempt.
+     *
+     * @param endpoint the Temporal server endpoint to invalidate
+     */
+    public void invalidate(String endpoint) {
+        if (endpoint == null) {
+            return;
+        }
+        clientCache.keySet().removeIf(key -> key.startsWith(endpoint + "|"));
+        Object stubs = serviceStubsCache.remove(endpoint);
+        if (stubs != null) {
+            try {
+                stubsProvider.shutdownServiceStubs(stubs);
+            } catch (Exception e) {
+                Logger.warn(
+                        "Failed to shutdown service stubs during invalidation, endpoint: {}, error: {}",
+                        endpoint,
+                        e.getMessage());
+            }
+        }
+        Logger.info("Invalidated cached client and service stubs for endpoint: {}", endpoint);
+    }
+
+    /**
      * Closes all cached service stub handles and clears the internal caches maintained by this provider.
      */
     @Override

@@ -87,6 +87,11 @@
     <dependencies>
         <dependency>
             <groupId>org.miaixz</groupId>
+            <artifactId>bus-cache</artifactId>
+            <version>${bus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-crypto</artifactId>
             <version>${bus.version}</version>
         </dependency>
@@ -127,12 +132,6 @@
             <artifactId>spring-boot-starter-webflux</artifactId>
             <version>${spring.boot.version}</version>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-cache</artifactId>
-            <version>8.5.9</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 

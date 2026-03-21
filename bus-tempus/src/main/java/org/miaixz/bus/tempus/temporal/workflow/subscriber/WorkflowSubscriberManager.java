@@ -42,7 +42,7 @@ import io.temporal.worker.WorkerOptions;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class WorkflowSubscriberManager implements Subscriber {
+public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
 
     /**
      * Factory used to create worker options.
@@ -156,6 +156,23 @@ public class WorkflowSubscriberManager implements Subscriber {
     }
 
     /**
+     * Returns {@code true} if the worker is currently running.
+     *
+     * @return {@code true} if running
+     */
+    public boolean isRunning() {
+        return workerFactory != null && !shutdown.get();
+    }
+
+    /**
+     * Closes this manager by delegating to {@link #shutdown()}.
+     */
+    @Override
+    public void close() {
+        shutdown();
+    }
+
+    /**
      * Shuts down the worker factory and service stubs created by this manager.
      */
     @Override
@@ -177,7 +194,9 @@ public class WorkflowSubscriberManager implements Subscriber {
             workerFactory = null;
             if (serviceStubs != null) {
                 try {
+                    Logger.info("Shutting down service stubs for endpoint: {}", binding.getEndpoint());
                     provider.shutdownServiceStubs(serviceStubs);
+                    Logger.info("Service stubs shutdown completed");
                 } finally {
                     serviceStubs = null;
                 }

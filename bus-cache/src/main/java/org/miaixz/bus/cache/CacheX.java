@@ -20,7 +20,11 @@
 package org.miaixz.bus.cache;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+
+import org.miaixz.bus.core.xyz.ListKit;
+import org.miaixz.bus.core.xyz.MapKit;
 
 /**
  * Cache Interface.
@@ -182,12 +186,47 @@ public interface CacheX<K, V> {
      * <p>
      * Removes all key-value pairs from the cache, making it empty. Example code:
      * </p>
-     * 
+     *
      * <pre>{@code
      * CacheX<String, User> cache = new SomeCacheImpl<>();
      * cache.clear();
      * }</pre>
      */
     void clear();
+
+    /**
+     * Scans and returns all key-value pairs whose keys start with the given prefix.
+     * <p>
+     * Implementations that support prefix-based storage (e.g., memory, Redis, JDBC) should override this method to
+     * provide efficient scanning. The default implementation returns an empty map. Example code:
+     * </p>
+     *
+     * <pre>{@code
+     * CacheX<String, String> store = new MemoryCache<>();
+     * store.write("registry:default:API:001", "{}");
+     * store.write("registry:default:API:002", "{}");
+     * Map<String, String> entries = store.scan("registry:default:API:");
+     * }</pre>
+     *
+     * @param prefix the key prefix to match
+     * @return a map of all matching key-value pairs; returns an empty map if not supported or no matches found
+     */
+    default Map<K, V> scan(K prefix) {
+        return MapKit.empty();
+    }
+
+    /**
+     * Returns all keys that start with the given prefix, without loading values.
+     * <p>
+     * This is a lightweight alternative to {@link #scan(Object)} when only keys are needed. The default implementation
+     * delegates to {@link #scan(Object)} and extracts the key set.
+     * </p>
+     *
+     * @param prefix the key prefix to match
+     * @return a list of matching keys; returns an empty list if not supported or no matches found
+     */
+    default List<K> keys(K prefix) {
+        return ListKit.of(scan(prefix).keySet());
+    }
 
 }

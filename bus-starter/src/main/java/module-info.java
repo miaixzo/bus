@@ -41,6 +41,7 @@ module bus.starter {
     requires bus.image;
     requires bus.limiter;
     requires bus.logger;
+    requires bus.metrics;
     requires bus.mapper;
     requires bus.notify;
     requires bus.office;
@@ -97,6 +98,7 @@ module bus.starter {
     requires org.apache.httpcomponents.httpclient;
     requires org.apache.httpcomponents.httpcore;
     requires org.apache.httpcomponents.httpasyncclient;
+    requires bus.cortex;
 
     exports org.miaixz.bus.spring;
     exports org.miaixz.bus.spring.annotation;
@@ -119,6 +121,7 @@ module bus.starter {
     exports org.miaixz.bus.starter.image;
     exports org.miaixz.bus.starter.jdbc;
     exports org.miaixz.bus.starter.limiter;
+    exports org.miaixz.bus.starter.metrics;
     exports org.miaixz.bus.starter.mapper;
     exports org.miaixz.bus.starter.mongo;
     exports org.miaixz.bus.starter.notify;

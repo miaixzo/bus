@@ -79,31 +79,6 @@ public abstract class AbstractPayloadConverter implements PayloadConverter {
     }
 
     /**
-     * Backward-compatible static detection method.
-     * <p>
-     * Use {@link #resolveAdapter()} in new implementations.
-     *
-     * @return the resolved adapter
-     * @throws IllegalStateException if no supported JSON framework is available
-     */
-    protected static PayloadAdapter detect() {
-        PayloadAdapter fastjson = tryCreateFastjsonAdapter();
-        if (fastjson != null) {
-            return fastjson;
-        }
-        PayloadAdapter jackson = tryCreateJacksonAdapter();
-        if (jackson != null) {
-            return jackson;
-        }
-        PayloadAdapter gson = tryCreateGsonAdapter();
-        if (gson != null) {
-            return gson;
-        }
-        throw new IllegalStateException(
-                "No supported JSON framework found for Temporal payload conversion. Expected fastjson2, Jackson, or Gson.");
-    }
-
-    /**
      * Attempts to create a fastjson2 adapter.
      *
      * @return the fastjson2 adapter, or {@code null} if fastjson2 is not available

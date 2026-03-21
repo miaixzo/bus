@@ -79,6 +79,16 @@ public class TempusProperties {
     // -------------------------------------------------------------------------
 
     /**
+     * Maximum workflow execution timeout in days. Maps to setWorkflowExecutionTimeout.
+     */
+    private int workflowExecutionTimeoutDays = 1;
+
+    /**
+     * Maximum workflow run timeout in hours. Maps to setWorkflowRunTimeout.
+     */
+    private int workflowRunTimeoutHours = 12;
+
+    /**
      * Workflow task timeout in minutes. Maps to setWorkflowTaskTimeout.
      */
     private int workflowTaskTimeoutMinutes = 6;

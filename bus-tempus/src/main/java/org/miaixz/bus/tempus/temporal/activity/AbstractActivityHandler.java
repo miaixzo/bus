@@ -22,9 +22,13 @@ package org.miaixz.bus.tempus.temporal.activity;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
-import org.miaixz.bus.tempus.temporal.notifier.CallbackNotifier;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.tempus.temporal.notifier.CallbackNotifier;
 
 import io.temporal.activity.Activity;
 
@@ -56,11 +60,9 @@ public abstract class AbstractActivityHandler<R, C>
         if (request == null) {
             throw new IllegalArgumentException("request must not be null");
         }
-
         String taskId = getTaskId(request);
-
+        Logger.info("Activity started. taskId: {}", taskId);
         try {
-            Logger.info("Starting task, taskId: {}", taskId);
             heartbeat("processing", taskId);
 
             C context = create(request);
@@ -68,26 +70,25 @@ public abstract class AbstractActivityHandler<R, C>
             if (executor == null) {
                 throw new IllegalStateException("No executor found for request: " + request);
             }
+            Logger.debug("Executor resolved. taskId: {}, executor: {}", taskId, executor.getClass().getSimpleName());
 
             Object result = executor.execute(request, context);
             heartbeat("completed", taskId);
+            Logger.info("Activity execution completed. taskId: {}", taskId);
 
             CallbackNotifier<R> notifier = getCallbackNotifier();
             if (notifier != null) {
-                notifier.success(request, result);
+                Logger.debug("Notifier started. taskId: {}", taskId);
+                heartbeatDuring(() -> notifier.success(request, result), "notifying", taskId);
+                Logger.debug("Notifier completed. taskId: {}", taskId);
             }
-
-            Logger.info("Task completed, taskId: {}", taskId);
             return buildSuccessResponse(taskId, result);
-
         } catch (Exception e) {
             Logger.error("Task failed, taskId: {}, error: {}", taskId, e.getMessage(), e);
-
             CallbackNotifier<R> notifier = getCallbackNotifier();
             if (notifier != null) {
                 notifier.failure(request, e.getMessage());
             }
-
             throw new RuntimeException("Task execution failed: " + e.getMessage(), e);
         }
     }
@@ -102,6 +103,44 @@ public abstract class AbstractActivityHandler<R, C>
      */
     protected String getTaskId(R request) {
         return null;
+    }
+
+    /**
+     * Executes the given action while periodically sending heartbeats to Temporal.
+     * <p>
+     * A background scheduler sends a heartbeat every 30 seconds during the action execution, preventing heartbeat
+     * timeout for long-running post-processing steps such as callback notifications.
+     *
+     * @param action the action to execute
+     * @param status the heartbeat status label
+     * @param taskId the logical task identifier
+     */
+    protected void heartbeatDuring(Runnable action, String status, String taskId) {
+        io.temporal.activity.ActivityExecutionContext ctx;
+        try {
+            ctx = Activity.getExecutionContext();
+        } catch (Exception e) {
+            action.run();
+            return;
+        }
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        long interval = heartbeatIntervalSeconds();
+        ScheduledFuture<?> future = scheduler.scheduleAtFixedRate(() -> {
+            try {
+                Map<String, Object> details = new HashMap<>();
+                details.put("status", status);
+                details.put("taskId", taskId);
+                ctx.heartbeat(details);
+            } catch (Exception e) {
+                Logger.warn("Heartbeat failed: {}", e.getMessage());
+            }
+        }, interval, interval, TimeUnit.SECONDS);
+        try {
+            action.run();
+        } finally {
+            future.cancel(false);
+            scheduler.shutdownNow();
+        }
     }
 
     /**
@@ -129,7 +168,8 @@ public abstract class AbstractActivityHandler<R, C>
      * @return the serialized success response
      */
     protected String buildSuccessResponse(String taskId, Object result) {
-        return String.format("{\"success\":true,\"taskId\":\"%s\",\"result\":%s}", taskId, serialize(result));
+        String taskIdJson = taskId != null ? "\"" + taskId + "\"" : "null";
+        return String.format("{\"success\":true,\"taskId\":%s,\"result\":%s}", taskIdJson, serialize(result));
     }
 
     /**
@@ -139,6 +179,17 @@ public abstract class AbstractActivityHandler<R, C>
      */
     protected CallbackNotifier<R> getCallbackNotifier() {
         return null;
+    }
+
+    /**
+     * Returns the heartbeat interval in seconds.
+     * <p>
+     * Subclasses may override to link this value with configuration.
+     *
+     * @return heartbeat interval in seconds, default is 30
+     */
+    protected long heartbeatIntervalSeconds() {
+        return 60;
     }
 
     /**

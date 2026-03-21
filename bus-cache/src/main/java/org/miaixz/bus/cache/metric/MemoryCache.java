@@ -311,6 +311,29 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
     }
 
     /**
+     * Scans and returns all non-expired entries whose keys start with the given prefix.
+     *
+     * @param prefix the key prefix to match
+     * @return a map of matching key-value pairs
+     */
+    @Override
+    public Map<K, V> scan(K prefix) {
+        readLock.lock();
+        try {
+            Map<K, V> result = new HashMap<>();
+            map.forEach((k, state) -> {
+                if (k.toString().startsWith(prefix.toString())
+                        && !state.isExpired(expireAfterWrite, expireAfterAccess)) {
+                    result.put(k, (V) state.getState());
+                }
+            });
+            return result;
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    /**
      * Schedules a periodic task to prune expired entries from the cache.
      *
      * @param delay The interval in milliseconds at which to run the pruning task.

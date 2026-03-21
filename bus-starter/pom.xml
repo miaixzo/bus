@@ -206,7 +206,19 @@
         </dependency>
         <dependency>
             <groupId>org.miaixz</groupId>
+            <artifactId>bus-metrics</artifactId>
+            <version>${bus.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-vortex</artifactId>
+            <version>${bus.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
+            <artifactId>bus-cortex</artifactId>
             <version>${bus.version}</version>
             <optional>true</optional>
         </dependency>
