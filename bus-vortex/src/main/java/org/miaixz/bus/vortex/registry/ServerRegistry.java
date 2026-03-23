@@ -20,7 +20,7 @@
 package org.miaixz.bus.vortex.registry;
 
 import org.miaixz.bus.core.lang.EnumValue;
-import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.vortex.magic.Metrics;
 import org.miaixz.bus.vortex.magic.Transmit;
 import org.miaixz.bus.vortex.provider.MetricsProvider;

@@ -102,14 +102,14 @@ public class DubboProperties {
     }
 
     /**
-     * Creates the Dubbo {@link RegistryConfig} bean.
+     * Creates the Dubbo {@link RegistrarConfig} bean.
      *
      * @return The registry configuration bean, bound to properties at {@code bus.dubbo.registry}.
      */
     @Bean
     @ConfigurationProperties(prefix = GeniusBuilder.DUBBO + ".registry")
-    public RegistryConfig registryConfig() {
-        return new RegistryConfig();
+    public RegistrarConfig registryConfig() {
+        return new RegistrarConfig();
     }
 
     /**

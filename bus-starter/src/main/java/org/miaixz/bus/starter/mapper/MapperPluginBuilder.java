@@ -74,7 +74,7 @@ public class MapperPluginBuilder {
         List<MapperHandler> handlers = new ArrayList<>();
 
         // Handler execution order is critical! The order determines SQL modification sequence.
-        // Execution order: Operation Check → Table Prefix → Tenant Filter → Visible Filter → Populate → Pagination →
+        // Execution order: Operation Check → Table Prefix → Tenant Vector → Visible Vector → Populate → Pagination →
         // Audit
 
         if (ObjectKit.isNotEmpty(environment)) {

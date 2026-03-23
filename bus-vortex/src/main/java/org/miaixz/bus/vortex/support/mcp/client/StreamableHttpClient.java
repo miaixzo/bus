@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.vortex.support.mcp.client;
 
-import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.cortex.Assets;
 
 /**
  * An {@link McpClient} implementation for services that provide responses over a generic, streamable HTTP connection.

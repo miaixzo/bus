@@ -130,7 +130,7 @@ public class CompositeArgumentResolver implements HandlerMethodArgumentResolver 
         if (contentType != null && contentType.startsWith(MediaType.APPLICATION_FORM_URLENCODED)) {
             String bodyString = new String(body, Charset.UTF_8);
             if (!StringKit.isEmpty(bodyString)) {
-                mpvs.addPropertyValues(UrlKit.decodeQuery(bodyString, Charset.UTF_8));
+                mpvs.addPropertyValues(UrlKit.decodeFilter(bodyString, Charset.UTF_8));
             }
         }
 

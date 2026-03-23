@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.handler.ErrorsHandler;
 import org.miaixz.bus.vortex.magic.ErrorCode;

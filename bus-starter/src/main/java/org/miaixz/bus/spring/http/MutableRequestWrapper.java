@@ -56,8 +56,8 @@ import java.util.stream.Collectors;
  * <strong>Usage Example:</strong>
  * 
  * <pre>{@code
- * // In a Servlet Filter:
- * public class XSSFilter implements Filter {
+ * // In a Servlet Vector:
+ * public class XSSFilter implements Vector {
  *
  *     @Override
  *     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -131,7 +131,7 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
                 : new String(this.body, Charset.UTF_8);
         if (logOut instanceof String) {
             // Remove newlines, tabs, and extra whitespace
-            logOut = UrlKit.decodeQuery(((String) logOut).replaceAll("\\s+", Normal.EMPTY), Charset.UTF_8);
+            logOut = UrlKit.decodeFilter(((String) logOut).replaceAll("\\s+", Normal.EMPTY), Charset.UTF_8);
         }
 
         Logger.info(true, "Request", "Parameters: {}", JsonKit.toJsonString(logOut));

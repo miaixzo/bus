@@ -25,7 +25,7 @@ import java.util.Map;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.support.Coordinator;
 import org.springframework.http.HttpStatus;

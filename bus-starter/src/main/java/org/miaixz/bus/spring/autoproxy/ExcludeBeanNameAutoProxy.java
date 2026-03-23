@@ -43,7 +43,7 @@ public class ExcludeBeanNameAutoProxy extends BeanNameAutoProxyCreator {
     /**
      * Sets the names of beans that should NOT be automatically wrapped with a proxy.
      * <p>
-     * Names can be specified using a wildcard at the end (e.g., "myBean,tx*") to match beans named "myBean" and all
+     * Scope can be specified using a wildcard at the end (e.g., "myBean,tx*") to match beans named "myBean" and all
      * beans whose names start with "tx".
      * </p>
      *

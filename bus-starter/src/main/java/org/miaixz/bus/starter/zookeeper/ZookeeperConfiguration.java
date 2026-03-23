@@ -60,7 +60,7 @@ public class ZookeeperConfiguration {
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(this.properties.getBaseSleepTimeMs(),
                 this.properties.getMaxRetries());
         return CuratorFrameworkFactory.builder().connectString(this.properties.getConnectString())
-                .namespace(this.properties.getNamespace()).sessionTimeoutMs(this.properties.getSessionTimeoutMs())
+                .namespace(this.properties.getScope()).sessionTimeoutMs(this.properties.getSessionTimeoutMs())
                 .connectionTimeoutMs(this.properties.getConnectionTimeoutMs()).retryPolicy(retryPolicy).build();
     }
 

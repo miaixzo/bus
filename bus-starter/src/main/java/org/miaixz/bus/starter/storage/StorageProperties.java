@@ -24,7 +24,7 @@ import lombok.Setter;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.starter.cache.CacheProperties;
 import org.miaixz.bus.storage.Context;
-import org.miaixz.bus.storage.Registry;
+import org.miaixz.bus.storage.Registrar;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
@@ -45,10 +45,10 @@ import java.util.Map;
 public class StorageProperties {
 
     /**
-     * A map of storage provider configurations, where the key is the provider {@link Registry} type and the value is
+     * A map of storage provider configurations, where the key is the provider {@link Registrar} type and the value is
      * the {@link Context} containing the specific configuration for that provider.
      */
-    private Map<Registry, Context> type;
+    private Map<Registrar, Context> type;
 
     /**
      * Nested configuration for caching options related to the storage service.

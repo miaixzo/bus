@@ -22,7 +22,7 @@ package org.miaixz.bus.vortex.support.ws;
 import jakarta.annotation.PreDestroy;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.support.Coordinator;
 import org.springframework.http.MediaType;

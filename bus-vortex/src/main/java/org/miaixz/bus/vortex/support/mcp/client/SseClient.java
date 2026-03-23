@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.vortex.support.mcp.client;
 
-import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.cortex.Assets;
 
 /**
  * MCP Client implementation for the SSE (Server-Sent Events) protocol. It extends HttpClient and uses WebClient for

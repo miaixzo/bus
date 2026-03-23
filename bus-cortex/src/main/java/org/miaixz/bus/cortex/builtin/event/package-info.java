@@ -1,0 +1,32 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
+/**
+ * Ready-to-use implementations for registry watch notification and lightweight configuration publishing.
+ * <p>
+ * {@code LoggingWatchListener} implements the {@link org.miaixz.bus.cortex.Listener} contract and logs every registry
+ * change event — added, removed and updated entries — at INFO level via the standard logger. It is suitable as a
+ * diagnostic listener during development or as a no-op placeholder when no other listener is wired.
+ * {@code SimpleConfigPublisher} writes configuration content directly to a CacheX key without creating a versioned
+ * history record; use {@code ConfigPublisher} instead when full versioned change history is required.
+ *
+ * @author Kimi Liu
+ * @since Java 17+
+ */
+package org.miaixz.bus.cortex.builtin.event;

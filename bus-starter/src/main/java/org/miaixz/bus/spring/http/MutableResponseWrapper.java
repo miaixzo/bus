@@ -46,8 +46,8 @@ import java.io.PrintWriter;
  * <strong>Usage Example:</strong>
  * 
  * <pre>{@code
- * // In a Servlet Filter:
- * public class ResponseCacheFilter implements Filter {
+ * // In a Servlet Vector:
+ * public class ResponseCacheFilter implements Vector {
  *
  *     @Override
  *     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

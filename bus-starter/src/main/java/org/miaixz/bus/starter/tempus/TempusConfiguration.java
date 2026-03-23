@@ -97,8 +97,7 @@ public class TempusConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public WorkflowOptionsFactory workflowOptionsFactory(WorkflowIdGenerator generator) {
-        return new WorkflowPublisherOptionsFactory(generator, properties.getWorkflowExecutionTimeoutDays(),
-                properties.getWorkflowRunTimeoutHours(), properties.getWorkflowTaskTimeoutMinutes());
+        return new WorkflowPublisherOptionsFactory(generator, properties.getWorkflowTaskTimeoutMinutes());
     }
 
     /**

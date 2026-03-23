@@ -396,8 +396,7 @@ public class PrometheusProvider implements Provider {
              */
             @Override
             public long count() {
-                return (long) s.labelValues(labelValues(finalTags)).get().getDataPoints().stream()
-                        .mapToLong(dp -> dp.getCount()).sum();
+                return s.collect().getDataPoints().stream().mapToLong(dp -> dp.getCount()).sum();
             }
 
             /**
@@ -431,8 +430,12 @@ public class PrometheusProvider implements Provider {
              */
             @Override
             public double percentile(double p, TimeUnit unit) {
-                return s.labelValues(labelValues(finalTags)).get().getDataPoints().stream()
-                        .mapToDouble(dp -> dp.getQuantile(p)).findFirst().orElse(0) * unit.toNanos(1) / 1e9;
+                return s.collect().getDataPoints().stream()
+                        .flatMap(dp -> java.util.stream.StreamSupport.stream(dp.getQuantiles().spliterator(), false))
+                        .filter(q -> Double.compare(q.getQuantile(), p) == 0)
+                        .mapToDouble(q -> q.getValue() * unit.toNanos(1) / 1e9)
+                        .findFirst()
+                        .orElse(0);
             }
 
             /**
@@ -511,8 +514,7 @@ public class PrometheusProvider implements Provider {
              */
             @Override
             public long count() {
-                return (long) h.labelValues(labelValues(finalTags)).get().getDataPoints().stream()
-                        .mapToLong(dp -> dp.getCount()).sum();
+                return h.collect().getDataPoints().stream().mapToLong(dp -> dp.getCount()).sum();
             }
 
             /**
@@ -522,8 +524,7 @@ public class PrometheusProvider implements Provider {
              */
             @Override
             public double totalAmount() {
-                return h.labelValues(labelValues(finalTags)).get().getDataPoints().stream()
-                        .mapToDouble(dp -> dp.getSum()).sum();
+                return h.collect().getDataPoints().stream().mapToDouble(dp -> dp.getSum()).sum();
             }
 
             /**

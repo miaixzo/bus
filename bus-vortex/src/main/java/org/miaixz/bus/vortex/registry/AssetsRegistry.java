@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.vortex.registry;
 
-import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.cortex.Assets;
 
 /**
  * A specialized, in-memory registry for managing API {@link Assets}.

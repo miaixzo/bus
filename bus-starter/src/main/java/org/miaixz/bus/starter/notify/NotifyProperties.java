@@ -22,7 +22,7 @@ package org.miaixz.bus.starter.notify;
 import lombok.Getter;
 import lombok.Setter;
 import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.Registry;
+import org.miaixz.bus.notify.Registrar;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -43,9 +43,9 @@ import java.util.Map;
 public class NotifyProperties {
 
     /**
-     * A map of notification provider configurations, where the key is the provider {@link Registry} type and the value
+     * A map of notification provider configurations, where the key is the provider {@link Registrar} type and the value
      * is the {@link Context} containing the specific configuration for that provider.
      */
-    private Map<Registry, Context> type;
+    private Map<Registrar, Context> type;
 
 }

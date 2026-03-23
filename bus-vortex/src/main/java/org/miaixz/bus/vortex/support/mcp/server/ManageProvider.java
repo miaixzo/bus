@@ -34,7 +34,7 @@ import org.miaixz.bus.health.Platform;
 import org.miaixz.bus.health.builtin.software.OSProcess;
 import org.miaixz.bus.health.builtin.software.OperatingSystem;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.vortex.magic.Metrics;
 import org.miaixz.bus.vortex.provider.MetricsProvider;
 import org.miaixz.bus.vortex.provider.ProcessProvider;

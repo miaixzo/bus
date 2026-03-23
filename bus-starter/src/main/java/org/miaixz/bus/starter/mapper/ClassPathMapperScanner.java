@@ -27,7 +27,7 @@ import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.BeanDefinitionRegistrar;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
@@ -93,7 +93,7 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
      *
      * @param registry The Spring bean definition registry.
      */
-    public ClassPathMapperScanner(BeanDefinitionRegistry registry) {
+    public ClassPathMapperScanner(BeanDefinitionRegistrar registry) {
         super(registry, false);
     }
 

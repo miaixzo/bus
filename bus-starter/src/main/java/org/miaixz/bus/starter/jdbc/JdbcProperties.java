@@ -90,7 +90,7 @@ public class JdbcProperties {
     /**
      * The SQL query used to validate connections.
      */
-    private String validationQuery;
+    private String validationFilter;
 
     /**
      * Whether to cache PreparedStatements.
@@ -129,12 +129,12 @@ public class JdbcProperties {
     private boolean testWhileIdle;
 
     /**
-     * Whether to validate the connection with validationQuery when borrowing it from the pool. Can impact performance.
+     * Whether to validate the connection with validationFilter when borrowing it from the pool. Can impact performance.
      */
     private boolean testOnBorrow;
 
     /**
-     * Whether to validate the connection with validationQuery when returning it to the pool. Can impact performance.
+     * Whether to validate the connection with validationFilter when returning it to the pool. Can impact performance.
      */
     private boolean testOnReturn;
 

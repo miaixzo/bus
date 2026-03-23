@@ -580,7 +580,8 @@ public class OpenTelemetryProvider implements Provider {
                 }
 
                 /**
-                 * Stops the sample and records duration, TTFT, ITL, and token counts using OTel GenAI SIG 2025 conventions.
+                 * Stops the sample and records duration, TTFT, ITL, and token counts using OTel GenAI SIG 2025
+                 * conventions.
                  *
                  * @param inputTokens  number of input tokens consumed
                  * @param outputTokens number of output tokens generated

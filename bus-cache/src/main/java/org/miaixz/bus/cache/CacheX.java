@@ -229,4 +229,23 @@ public interface CacheX<K, V> {
         return ListKit.of(scan(prefix).keySet());
     }
 
+    /**
+     * Atomically increments the numeric value stored at the given key and returns the new value.
+     * <p>
+     * If the key does not exist it is created with an initial value of {@code 1}. Implementations must guarantee
+     * atomicity:
+     * <ul>
+     * <li>Memory: backed by {@code AtomicLong}</li>
+     * <li>Redis: uses the {@code INCR} command</li>
+     * <li>JDBC: uses {@code UPDATE … SET val = val + 1 RETURNING val} (or equivalent)</li>
+     * </ul>
+     * Used by {@code Sequence} (config version numbers) and {@code IdGenerator} (Snowflake worker-id allocation).
+     *
+     * @param key the cache key holding the counter
+     * @return the new value after increment
+     */
+    default long increment(K key) {
+        throw new UnsupportedOperationException("increment() is not supported by this CacheX implementation");
+    }
+
 }

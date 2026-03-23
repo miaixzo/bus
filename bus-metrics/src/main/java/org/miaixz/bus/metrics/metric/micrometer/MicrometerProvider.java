@@ -393,7 +393,8 @@ public class MicrometerProvider implements Provider {
             }
 
             /**
-             * Returns the percentile value; rolling window is not supported by Micrometer, delegates to global percentile.
+             * Returns the percentile value; rolling window is not supported by Micrometer, delegates to global
+             * percentile.
              *
              * @param p      percentile between 0.0 and 1.0
              * @param unit   the time unit for the result

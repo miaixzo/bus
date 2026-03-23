@@ -240,12 +240,12 @@ public class VortexConfiguration {
     /**
      * Provides the McpExecutor bean. This executor manages the lifecycle and operations of MCP clients.
      *
-     * @param assetsRegistry The AssetsRegistry instance used to access asset configurations.
+     * @param assetsRegistrar The AssetsRegistry instance used to access asset configurations.
      * @return A new instance of McpExecutor.
      */
     @Bean
-    public McpExecutor mcpExecutor(AssetsRegistry assetsRegistry, ProcessProvider processProvider) {
-        return new McpExecutor(assetsRegistry, processProvider);
+    public McpExecutor mcpExecutor(AssetsRegistry assetsRegistrar, ProcessProvider processProvider) {
+        return new McpExecutor(assetsRegistrar, processProvider);
     }
 
     /**
@@ -344,23 +344,23 @@ public class VortexConfiguration {
      * configurations.
      *
      * @param authorizeProvider The AuthorizeProvider for handling authorization logic.
-     * @param assetsRegistry    The AssetsRegistry for accessing API asset information.
+     * @param assetsRegistrar    The AssetsRegistry for accessing API asset information.
      * @return A new instance of QualifierStrategy.
      */
     @Bean
-    public QualifierStrategy qualiferStrategy(AuthorizeProvider authorizeProvider, AssetsRegistry assetsRegistry) {
-        return new QualifierStrategy(authorizeProvider, assetsRegistry);
+    public QualifierStrategy qualiferStrategy(AuthorizeProvider authorizeProvider, AssetsRegistry assetsRegistrar) {
+        return new QualifierStrategy(authorizeProvider, assetsRegistrar);
     }
 
     /**
      * Provides the LimitStrategy bean. This strategy applies rate limiting to requests.
      *
-     * @param limiterRegistry The LimiterRegistry for managing rate limiter configurations.
+     * @param limiterRegistrar The LimiterRegistry for managing rate limiter configurations.
      * @return A new instance of LimitStrategy.
      */
     @Bean
-    public LimiterStrategy limitStrategy(LimiterRegistry limiterRegistry) {
-        return new LimiterStrategy(limiterRegistry);
+    public LimiterStrategy limitStrategy(LimiterRegistry limiterRegistrar) {
+        return new LimiterStrategy(limiterRegistrar);
     }
 
     /**

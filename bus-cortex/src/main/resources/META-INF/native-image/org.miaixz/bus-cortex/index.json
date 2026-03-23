@@ -1,0 +1,19 @@
+[
+  {
+    "latest": true,
+    "override": true,
+    "module": "org.miaixz:bus-cortex",
+    "default-for": "8\\.5\\.[0-9]+",
+    "metadata-version": "8.5.0",
+    "tested-versions": [
+      "8.5.0",
+      "8.5.1",
+      "8.5.2",
+      "8.5.3",
+      "8.5.5",
+      "8.5.6",
+      "8.5.8",
+      "8.5.9"
+    ]
+  }
+]

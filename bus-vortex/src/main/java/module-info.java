@@ -29,8 +29,8 @@
  * <ul>
  * <li>{@code bus.core}, {@code bus.extra}, etc.: The foundational libraries of the Bus ecosystem, required
  * transitively.</li>
- * <li>{@code spring.webflux}, {@code reactor.core}: The reactive foundation for the entire gateway, marked as as
- * this is a framework.</li>
+ * <li>{@code spring.webflux}, {@code reactor.core}: The reactive foundation for the entire gateway, marked as as this
+ * is a framework.</li>
  * <li>{@code com.google.common}: Used for utilities like the {@code RateLimiter}.</li>
  * </ul>
  * <p>
@@ -52,6 +52,7 @@ module bus.vortex {
 
     requires bus.core;
     requires bus.cache;
+    requires bus.cortex;
     requires bus.crypto;
     requires bus.extra;
     requires bus.health;

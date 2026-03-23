@@ -167,11 +167,9 @@ public class NativeProvider implements Provider {
      * @return the gauge instance
      */
     @Override
-    @SuppressWarnings("unchecked")
     public <T> Gauge gauge(String name, T stateObj, ToDoubleFunction<T> fn, Tag... tags) {
         tags = CardinalityGuard.enforce(name, tags);
-        Tag[] finalTags = tags;
-        return (Gauge) gauges.computeIfAbsent(key(name, tags), k -> new NativeGauge<>(stateObj, fn));
+        return gauges.computeIfAbsent(key(name, tags), k -> new NativeGauge<>(stateObj, fn));
     }
 
     /**

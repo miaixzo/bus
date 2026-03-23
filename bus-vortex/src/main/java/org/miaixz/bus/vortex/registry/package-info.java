@@ -26,7 +26,7 @@
  * </p>
  * <ul>
  * <li>{@link org.miaixz.bus.vortex.registry.AssetsRegistry}: Manages all API metadata
- * ({@link org.miaixz.bus.vortex.Assets}).</li>
+ * ({@link org.miaixz.bus.cortex.Assets}).</li>
  * <li>{@link org.miaixz.bus.vortex.registry.LimiterRegistry}: Manages all rate limiter
  * ({@link org.miaixz.bus.vortex.magic.Limiter}) instances.</li>
  * <li>{@link org.miaixz.bus.vortex.registry.ServerRegistry}: Manages server connection information and health

@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.vortex.strategy;
 
+import org.miaixz.bus.cortex.Assets;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;

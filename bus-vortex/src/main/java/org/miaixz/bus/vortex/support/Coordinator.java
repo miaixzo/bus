@@ -20,7 +20,7 @@
 package org.miaixz.bus.vortex.support;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Executor;
 

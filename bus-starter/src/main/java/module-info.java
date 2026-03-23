@@ -87,6 +87,7 @@ module bus.starter {
     requires elasticsearch.rest.client;
     requires io.vertx.core;
     requires io.vertx.web;
+    requires micrometer.core;
     requires org.aspectj.weaver;
     requires org.jboss.logging;
     requires org.mongodb.driver.core;
@@ -113,6 +114,7 @@ module bus.starter {
     exports org.miaixz.bus.starter.annotation;
     exports org.miaixz.bus.starter.cache;
     exports org.miaixz.bus.starter.cors;
+    exports org.miaixz.bus.starter.cortex;
     exports org.miaixz.bus.starter.dubbo;
     exports org.miaixz.bus.starter.elastic;
     exports org.miaixz.bus.starter.vortex;

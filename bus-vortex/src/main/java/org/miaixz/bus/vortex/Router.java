@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.vortex;
 
+import org.miaixz.bus.cortex.Assets;
+
 import org.miaixz.bus.vortex.handler.VortexHandler;
 import reactor.core.publisher.Mono;
 

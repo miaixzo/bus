@@ -22,7 +22,7 @@ package org.miaixz.bus.starter.auth;
 import lombok.Getter;
 import lombok.Setter;
 import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Registry;
+import org.miaixz.bus.auth.Registrar;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.starter.cache.CacheProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -46,10 +46,10 @@ import java.util.Map;
 public class AuthProperties {
 
     /**
-     * A map of authorization provider configurations, where the key is the provider {@link Registry} type and the value
+     * A map of authorization provider configurations, where the key is the provider {@link Registrar} type and the value
      * is the {@link Context} containing the specific configuration for that provider.
      */
-    private Map<Registry, Context> type;
+    private Map<Registrar, Context> type;
 
     /**
      * Nested configuration for caching options.

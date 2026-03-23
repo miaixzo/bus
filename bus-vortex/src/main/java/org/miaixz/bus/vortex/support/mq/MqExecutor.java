@@ -31,7 +31,7 @@ import org.miaixz.bus.extra.mq.MQFactory;
 import org.miaixz.bus.extra.mq.Message;
 import org.miaixz.bus.extra.mq.Producer;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Holder;
 import org.miaixz.bus.vortex.magic.Performance;

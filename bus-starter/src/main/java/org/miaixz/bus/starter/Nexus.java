@@ -67,7 +67,7 @@ public class Nexus implements Condition {
             Map.entry(GeniusBuilder.DUBBO, EnableDubbo.class),
             // Elasticsearch
             Map.entry(GeniusBuilder.ELASTIC, EnableElastic.class),
-            // Health Check
+            // HealthStatus Check
             Map.entry(GeniusBuilder.HEALTH, EnableHealth.class),
             // Internationalization (i18n)
             Map.entry(GeniusBuilder.I18N, EnableI18n.class),

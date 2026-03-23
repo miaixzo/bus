@@ -20,7 +20,7 @@
 package org.miaixz.bus.vortex.provider;
 
 import org.miaixz.bus.core.lang.EnumValue;
-import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.cortex.Assets;
 import reactor.core.publisher.Mono;
 
 /**

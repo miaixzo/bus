@@ -23,7 +23,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.Provider;
-import org.miaixz.bus.notify.Registry;
+import org.miaixz.bus.notify.Registrar;
 import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.aliyun.AliyunEmailProvider;
 import org.miaixz.bus.notify.metric.aliyun.AliyunSmsProvider;
@@ -82,7 +82,7 @@ public class NotifyService {
     /**
      * Cache for storing registered notification components. Uses {@link ConcurrentHashMap} for thread safety.
      */
-    private static final Map<Registry, Context> CACHE = new ConcurrentHashMap<>();
+    private static final Map<Registrar, Context> CACHE = new ConcurrentHashMap<>();
 
     /**
      * Notification configuration properties, containing settings for various notification components.
@@ -106,7 +106,7 @@ public class NotifyService {
      * @param context  The context of the notification component (must not be null).
      * @throws InternalException if a component of the same type already exists.
      */
-    public static void register(Registry registry, Context context) {
+    public static void register(Registrar registry, Context context) {
         if (CACHE.containsKey(registry)) {
             throw new InternalException("A component with the same name is already registered: " + registry.name());
         }
@@ -121,7 +121,7 @@ public class NotifyService {
      * @return The corresponding notification service provider instance.
      * @throws InternalException if the corresponding notification component cannot be found.
      */
-    public Provider require(Registry registry) {
+    public Provider require(Registrar registry) {
         // Get the notification component context from the cache
         Context context = CACHE.get(registry);
         // If not in the cache, get it from the properties

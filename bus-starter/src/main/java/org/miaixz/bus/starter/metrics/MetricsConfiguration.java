@@ -60,11 +60,11 @@ public class MetricsConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(name = "metricsProvider")
-    @ConditionalOnClass(name = "io.micrometer.core.instrument.MeterRegistry")
+    @ConditionalOnClass(name = "io.micrometer.core.instrument.MeterRegistrar")
     @ConditionalOnProperty(prefix = "bus.metrics", name = "provider", havingValue = "micrometer")
     public Provider micrometerProvider(
             MetricsProperties props,
-            io.micrometer.core.instrument.MeterRegistry registry) {
+            io.micrometer.core.instrument.MeterRegistrar registry) {
         applyCardinalityGuard(props.getCardinality());
         Provider provider = new MicrometerProvider(registry);
         Metrics.setProvider(provider);

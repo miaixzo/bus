@@ -27,7 +27,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.Provider;
-import org.miaixz.bus.storage.Registry;
+import org.miaixz.bus.storage.Registrar;
 import org.miaixz.bus.storage.cache.StorageCache;
 import org.miaixz.bus.storage.magic.ErrorCode;
 import org.miaixz.bus.storage.metric.*;
@@ -73,7 +73,7 @@ public class StorageService {
     /**
      * Cache for storing registered storage component contexts. Uses {@link ConcurrentHashMap} for thread safety.
      */
-    private static final Map<Registry, Context> CACHE = new ConcurrentHashMap<>();
+    private static final Map<Registrar, Context> CACHE = new ConcurrentHashMap<>();
 
     /**
      * Storage configuration properties, containing settings for various storage components.
@@ -113,7 +113,7 @@ public class StorageService {
      * @param context  The context of the storage component (must not be null).
      * @throws InternalException if a component of the same type already exists.
      */
-    public static void register(Registry registry, Context context) {
+    public static void register(Registrar registry, Context context) {
         if (CACHE.containsKey(registry)) {
             throw new InternalException("A component with the same name is already registered: " + registry.name());
         }
@@ -128,7 +128,7 @@ public class StorageService {
      * @return The corresponding storage service provider instance.
      * @throws InternalException if the corresponding storage component cannot be found.
      */
-    public Provider require(Registry registry) {
+    public Provider require(Registrar registry) {
         // Get the storage component context from the cache
         Context context = CACHE.get(registry);
         // If not in the cache, get it from the properties

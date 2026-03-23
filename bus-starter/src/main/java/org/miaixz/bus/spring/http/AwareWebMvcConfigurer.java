@@ -32,7 +32,7 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistrar;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 
 /**
@@ -90,7 +90,7 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
      * @param registry The interceptor registry.
      */
     @Override
-    public void addInterceptors(InterceptorRegistry registry) {
+    public void addInterceptors(InterceptorRegistrar registry) {
         // Ensure the interceptor is correctly registered to intercept all paths, excluding static resources, error
         // pages, and favicon.
         registry.addInterceptor(this.handler).addPathPatterns("/**")

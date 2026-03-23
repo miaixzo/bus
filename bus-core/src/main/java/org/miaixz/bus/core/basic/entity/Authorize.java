@@ -39,7 +39,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Authorize extends Entity {
+public class Authorize extends Query {
 
     @Serial
     private static final long serialVersionUID = 2852290950589L;

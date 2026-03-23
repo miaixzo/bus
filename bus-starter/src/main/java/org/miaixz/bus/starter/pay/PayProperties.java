@@ -22,7 +22,7 @@ package org.miaixz.bus.starter.pay;
 import lombok.Getter;
 import lombok.Setter;
 import org.miaixz.bus.pay.Context;
-import org.miaixz.bus.pay.Registry;
+import org.miaixz.bus.pay.Registrar;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -43,9 +43,9 @@ import java.util.Map;
 public class PayProperties {
 
     /**
-     * A map of payment provider configurations, where the key is the payment provider {@link Registry} type and the
+     * A map of payment provider configurations, where the key is the payment provider {@link Registrar} type and the
      * value is the {@link Context} containing the specific configuration for that provider.
      */
-    private Map<Registry, Context> type;
+    private Map<Registrar, Context> type;
 
 }

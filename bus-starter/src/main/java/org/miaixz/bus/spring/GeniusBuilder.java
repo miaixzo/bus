@@ -359,7 +359,7 @@ public class GeniusBuilder {
     public static final String SPRING_BEANS_SMART_INSTANTIATE = "spring.beans.smart-initialize";
 
     /**
-     * Startup step name for Spring context BeanDefinitionRegistry post-processing.
+     * Startup step name for Spring context BeanDefinitionRegistrar post-processing.
      */
     public static final String SPRING_CONTEXT_BEANDEF_REGISTRY_POST_PROCESSOR = "spring.context.beandef-registry.post-process";
 
