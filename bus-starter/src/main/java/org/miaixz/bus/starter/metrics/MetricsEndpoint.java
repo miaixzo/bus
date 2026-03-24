@@ -44,8 +44,7 @@ public class MetricsEndpoint {
         this.properties = properties;
     }
 
-    @GetMapping(path = "${bus.metrics.path:/metricz}",
-            produces = MediaType.TEXT_PLAIN_VALUE)
+    @GetMapping(path = "${bus.metrics.path:/metricz}", produces = MediaType.TEXT_PLAIN_VALUE)
     public String scrape() {
         PrometheusExporter exporter = new PrometheusExporter(Metrics.getProvider());
         return exporter.scrape();

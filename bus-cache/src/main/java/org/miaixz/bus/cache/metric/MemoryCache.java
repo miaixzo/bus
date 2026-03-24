@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import org.miaixz.bus.cache.magic.CacheExpire;
 import lombok.Getter;
 import lombok.Setter;
 import org.miaixz.bus.cache.CacheX;
@@ -68,6 +69,15 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
      * The underlying map for storing cache entries.
      */
     private final Map<K, CacheState> map;
+
+    /**
+     * Independent counter map for {@link #increment(Object)} operations.
+     * <p>
+     * Kept separate from {@link #map} because the value type is generic {@code V} and cannot hold {@link AtomicLong}.
+     * Counters are not subject to TTL expiry: they persist until {@link #remove(Object[])} is called explicitly.
+     * </p>
+     */
+    private final ConcurrentHashMap<K, AtomicLong> counters = new ConcurrentHashMap<>();
 
     /**
      * A read-write lock to ensure thread-safe access to the cache.
@@ -195,7 +205,25 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
         try {
             requestCount.incrementAndGet();
             CacheState cacheState = map.get(key);
-            if (cacheState == null || cacheState.isExpired(expireAfterWrite, expireAfterAccess)) {
+            if (cacheState == null) {
+                return null;
+            }
+            if (cacheState.isExpired(expireAfterWrite, expireAfterAccess)) {
+                // Lazy eviction: remove the stale entry on first access rather than waiting for the background pruner.
+                // Upgrade to write lock is not supported by ReentrantReadWriteLock, so release read lock first.
+                readLock.unlock();
+                writeLock.lock();
+                try {
+                    // Re-check under write lock to avoid race with another thread that may have already evicted.
+                    CacheState recheck = map.get(key);
+                    if (recheck != null && recheck.isExpired(expireAfterWrite, expireAfterAccess)) {
+                        map.remove(key);
+                    }
+                } finally {
+                    // Downgrade: re-acquire read lock before releasing write lock so caller stays within a lock.
+                    readLock.lock();
+                    writeLock.unlock();
+                }
                 return null;
             }
             cacheState.updateAccessTime();
@@ -208,16 +236,54 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
 
     /**
      * Reads multiple values from the cache in a batch.
+     * <p>
+     * Acquires the read lock once for the entire batch to avoid N repeated lock/unlock cycles that would occur if each
+     * key were looked up via the single-key {@link #read(Object)} method. Expired keys detected during the scan are
+     * collected and lazily removed under a write lock after the read phase completes.
+     * </p>
      *
      * @param keys A collection of keys to retrieve.
-     * @return A map of keys to their corresponding values. If a key is not found or has expired, its value in the map
-     *         will be {@code null}.
+     * @return A map of keys to their corresponding values. Missing or expired entries are omitted.
      */
     @Override
     public Map<K, V> read(Collection<K> keys) {
         Map<K, V> subCache = new HashMap<>(keys.size());
-        for (K key : keys) {
-            subCache.put(key, read(key));
+        List<K> expiredKeys = null;
+        readLock.lock();
+        try {
+            for (K key : keys) {
+                requestCount.incrementAndGet();
+                CacheState cacheState = map.get(key);
+                if (cacheState == null) {
+                    continue;
+                }
+                if (cacheState.isExpired(expireAfterWrite, expireAfterAccess)) {
+                    if (expiredKeys == null) {
+                        expiredKeys = new ArrayList<>();
+                    }
+                    expiredKeys.add(key);
+                } else {
+                    cacheState.updateAccessTime();
+                    hitCount.incrementAndGet();
+                    subCache.put(key, (V) cacheState.getState());
+                }
+            }
+        } finally {
+            readLock.unlock();
+        }
+        // Lazily evict expired keys collected during the read pass.
+        if (expiredKeys != null) {
+            writeLock.lock();
+            try {
+                for (K key : expiredKeys) {
+                    CacheState recheck = map.get(key);
+                    if (recheck != null && recheck.isExpired(expireAfterWrite, expireAfterAccess)) {
+                        map.remove(key);
+                    }
+                }
+            } finally {
+                writeLock.unlock();
+            }
         }
         return subCache;
     }
@@ -304,6 +370,7 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
         try {
             for (K key : keys) {
                 map.remove(key);
+                counters.remove(key);
             }
         } finally {
             writeLock.unlock();
@@ -334,9 +401,23 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
     }
 
     /**
-     * Schedules a periodic task to prune expired entries from the cache.
+     * Atomically increments the counter stored at the given key and returns the new value.
+     * <p>
+     * The counter is maintained in a separate {@link ConcurrentHashMap} of {@link AtomicLong} values and is not subject
+     * to TTL expiry. If the key does not exist the counter is initialised to {@code 0} and then incremented, returning
+     * {@code 1}.
+     * </p>
      *
-     * @param delay The interval in milliseconds at which to run the pruning task.
+     * @param key the counter key
+     * @return the new counter value after increment
+     */
+    @Override
+    public long increment(K key) {
+        return counters.computeIfAbsent(key, k -> new AtomicLong(0)).incrementAndGet();
+    }
+
+    /**
+     * Schedules a periodic task to prune expired entries from the cache.
      */
     public void schedulePrune(long delay) {
         CacheScheduler.INSTANCE.schedule(this::clear, delay);
@@ -379,15 +460,13 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
 
     /**
      * Evicts the oldest entry from the cache, determined by its write time.
+     * <p>
+     * Must be called while the caller already holds {@link #writeLock}.
+     * </p>
      */
     private void evictOldest() {
-        writeLock.lock();
-        try {
-            map.entrySet().stream().min(Comparator.comparingLong(entry -> entry.getValue().getWriteTime()))
-                    .ifPresent(oldest -> map.remove(oldest.getKey()));
-        } finally {
-            writeLock.unlock();
-        }
+        map.entrySet().stream().min(Comparator.comparingLong(entry -> entry.getValue().getWriteTime()))
+                .ifPresent(oldest -> map.remove(oldest.getKey()));
     }
 
     /**
@@ -416,13 +495,21 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
 
         private void of() {
             this.shutdown();
-            this.scheduler = new ScheduledThreadPoolExecutor(10,
+            this.scheduler = new ScheduledThreadPoolExecutor(1,
                     r -> new Thread(r, String.format("Cache-Task-%s", cacheTaskNumber.getAndIncrement())));
         }
 
         public void shutdown() {
             if (scheduler != null) {
                 scheduler.shutdown();
+                try {
+                    if (!scheduler.awaitTermination(2, TimeUnit.SECONDS)) {
+                        scheduler.shutdownNow();
+                    }
+                } catch (InterruptedException e) {
+                    scheduler.shutdownNow();
+                    Thread.currentThread().interrupt();
+                }
             }
         }
 
@@ -454,15 +541,21 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
         private long lastAccessTime;
 
         /**
-         * The expiration timestamp calculated as write time + expire after write duration.
+         * The absolute expiration timestamp. Set to {@link Long#MAX_VALUE} for FOREVER entries.
          */
         private final long expireAfterWrite;
+
+        /**
+         * True when the entry was written with {@code expire == CacheExpire.FOREVER} and must never be evicted.
+         */
+        private final boolean forever;
 
         CacheState(Object state, long expire) {
             this.state = state;
             this.writeTime = System.currentTimeMillis();
             this.lastAccessTime = this.writeTime;
-            this.expireAfterWrite = this.writeTime + expire;
+            this.forever = (expire == CacheExpire.FOREVER);
+            this.expireAfterWrite = forever ? Long.MAX_VALUE : this.writeTime + expire;
         }
 
         void updateAccessTime() {
@@ -470,12 +563,13 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
         }
 
         boolean isExpired(long globalExpireAfterWrite, long globalExpireAfterAccess) {
+            if (this.forever) {
+                return false;
+            }
             long currentTime = System.currentTimeMillis();
-            // Check entry-specific expiration
-            if (this.expireAfterWrite > this.writeTime && currentTime > this.expireAfterWrite) {
+            if (currentTime > this.expireAfterWrite) {
                 return true;
             }
-            // Check global expiration policies
             if (globalExpireAfterWrite > 0 && currentTime > this.writeTime + globalExpireAfterWrite) {
                 return true;
             }

@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cache.support.serialize;
+package org.miaixz.bus.cache.serialize;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -41,6 +41,11 @@ public class JdkGzipSerializer extends AbstractSerializer {
 
     /**
      * Performs serialization by first using Java serialization and then GZIP compressing the result.
+     * <p>
+     * The {@link ByteArrayOutputStream} is intentionally kept outside the try-with-resources block so that
+     * {@link ByteArrayOutputStream#toByteArray()} is called only after the {@link java.util.zip.GZIPOutputStream} has
+     * been fully closed and the GZIP trailer has been written.
+     * </p>
      *
      * @param object The object to be serialized.
      * @return The serialized and compressed byte array.
@@ -48,12 +53,12 @@ public class JdkGzipSerializer extends AbstractSerializer {
      */
     @Override
     protected byte[] doSerialize(Object object) throws Throwable {
-        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                GZIPOutputStream gzout = new GZIPOutputStream(bos);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try (GZIPOutputStream gzout = new GZIPOutputStream(bos);
                 ObjectOutputStream out = new ObjectOutputStream(gzout)) {
             out.writeObject(object);
-            return bos.toByteArray();
-        }
+        } // out and gzout are closed here; GZIP trailer is written before bos.toByteArray()
+        return bos.toByteArray();
     }
 
     /**

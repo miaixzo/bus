@@ -94,15 +94,9 @@ public class CortexContext {
      * @param promptRegistry prompt registry handle
      * @param config         config center handle
      */
-    public CortexContext(
-            CortexProperties properties,
-            String serverAddr,
-            String namespace,
-            CacheX<String, Object> cacheX,
-            ApiRegistry apiRegistry,
-            McpRegistry mcpRegistry,
-            PromptRegistry promptRegistry,
-            Config config) {
+    public CortexContext(CortexProperties properties, String serverAddr, String namespace,
+            CacheX<String, Object> cacheX, ApiRegistry apiRegistry, McpRegistry mcpRegistry,
+            PromptRegistry promptRegistry, Config config) {
         this.properties = properties;
         this.serverAddr = serverAddr;
         this.namespace = namespace;

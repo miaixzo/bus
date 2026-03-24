@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.ReflectKit;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
 import org.miaixz.bus.starter.annotation.EnableMapper;
-import org.springframework.beans.factory.support.BeanDefinitionRegistrar;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanNameGenerator;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
@@ -77,7 +77,7 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
     @Override
     public void registerBeanDefinitions(
             AnnotationMetadata importingClassMetadata,
-            BeanDefinitionRegistrar registry,
+            BeanDefinitionRegistry registry,
             BeanNameGenerator importBeanNameGenerator) {
         ImportBeanDefinitionRegistrar.super.registerBeanDefinitions(
                 importingClassMetadata,
@@ -98,7 +98,7 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
      * @param registry           The bean definition registry.
      */
     @Override
-    public void registerBeanDefinitions(AnnotationMetadata annotationMetadata, BeanDefinitionRegistrar registry) {
+    public void registerBeanDefinitions(AnnotationMetadata annotationMetadata, BeanDefinitionRegistry registry) {
         AnnotationAttributes annoAttrs = AnnotationAttributes
                 .fromMap(annotationMetadata.getAnnotationAttributes(EnableMapper.class.getName()));
         ClassPathMapperScanner scanner = new ClassPathMapperScanner(registry);

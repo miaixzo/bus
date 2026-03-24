@@ -17,17 +17,17 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cache.support.metrics;
+package org.miaixz.bus.cache.collect;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
-import org.miaixz.bus.cache.Metrics;
+import org.miaixz.bus.cache.Collector;
 
 /**
- * An in-memory implementation of {@link Metrics} for cache hit rate statistics.
+ * An in-memory implementation of {@link Collector} for cache hit rate statistics.
  * <p>
  * This class uses {@link ConcurrentHashMap} to store hit and request counts, making it suitable for concurrent updates
  * in a single-node or testing environment.
@@ -35,7 +35,7 @@ import org.miaixz.bus.cache.Metrics;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MemoryMetrics implements Metrics {
+public class MemoryCollector implements Collector {
 
     /**
      * A thread-safe map to store the hit counts for each cache pattern.
@@ -80,20 +80,23 @@ public class MemoryMetrics implements Metrics {
     @Override
     public Map<String, Snapshot> getHitting() {
         Map<String, Snapshot> result = new LinkedHashMap<>();
-        AtomicLong statisticsHit = new AtomicLong(0);
-        AtomicLong statisticsRequired = new AtomicLong(0);
+        long totalHit = 0;
+        long totalRequired = 0;
 
-        // Iterate over the request map to calculate the hit rate for each pattern.
-        requireMap.forEach((pattern, count) -> {
-            long hit = hitMap.computeIfAbsent(pattern, (key) -> new AtomicLong(0)).get();
-            long require = count.get();
-            statisticsHit.addAndGet(hit);
-            statisticsRequired.addAndGet(require);
+        // Snapshot requireMap first, then read the corresponding hit counter.
+        // New entries added concurrently after this point are simply not included in this snapshot.
+        for (Map.Entry<String, AtomicLong> entry : requireMap.entrySet()) {
+            String pattern = entry.getKey();
+            long require = entry.getValue().get();
+            AtomicLong hitCounter = hitMap.get(pattern);
+            long hit = hitCounter != null ? hitCounter.get() : 0L;
+            totalHit += hit;
+            totalRequired += require;
             result.put(pattern, Snapshot.newInstance(hit, require));
-        });
+        }
 
         // Add the global hit rate statistics.
-        result.put(summaryName(), Snapshot.newInstance(statisticsHit.get(), statisticsRequired.get()));
+        result.put(summaryName(), Snapshot.newInstance(totalHit, totalRequired));
         return result;
     }
 

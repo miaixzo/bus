@@ -20,13 +20,13 @@
 /**
  * Provides various serialization implementations for use within the caching framework.
  * <p>
- * This package contains the {@link org.miaixz.bus.cache.support.serialize.BaseSerializer} interface and several
- * concrete implementations for converting objects to and from byte arrays. These are essential for storing objects in
- * distributed caches like Redis or Memcached. Supported mechanisms include standard Java serialization, GZIP-compressed
- * Java serialization, FastJson, and Hessian.
+ * This package contains the {@link org.miaixz.bus.cache.Serializer} interface and several concrete implementations for
+ * converting objects to and from byte arrays. These are essential for storing objects in distributed caches like Redis
+ * or Memcached. Supported mechanisms include standard Java serialization, GZIP-compressed Java serialization, FastJson,
+ * and Hessian.
  * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-package org.miaixz.bus.cache.support.serialize;
+package org.miaixz.bus.cache.serialize;

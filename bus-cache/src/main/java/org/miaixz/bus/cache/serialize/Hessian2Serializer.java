@@ -17,36 +17,55 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cache.support.serialize;
+package org.miaixz.bus.cache.serialize;
+
+import com.caucho.hessian.io.Hessian2Input;
+import com.caucho.hessian.io.Hessian2Output;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
 /**
- * Defines the basic operations for serialization and deserialization in the cache system.
+ * A serializer that uses the Hessian 2 binary web service protocol.
  * <p>
- * Implementations of this interface provide the specific logic for converting objects to and from byte arrays for
- * storage and retrieval from a cache.
+ * This implementation provides efficient, cross-language binary serialization. Hessian is a lightweight RPC protocol
+ * that is well-suited for performance-critical applications.
  * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface BaseSerializer {
+public class Hessian2Serializer extends AbstractSerializer {
 
     /**
-     * Serializes an object into a byte array.
+     * Performs serialization using Hessian 2.
      *
-     * @param <T>    The type of the object.
      * @param object The object to be serialized.
-     * @return The resulting byte array.
+     * @return The serialized byte array.
+     * @throws Throwable if an I/O or serialization error occurs.
      */
-    <T> byte[] serialize(T object);
+    @Override
+    protected byte[] doSerialize(Object object) throws Throwable {
+        try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+            Hessian2Output out = new Hessian2Output(os);
+            out.writeObject(object);
+            out.flush(); // Ensure all data is written to the underlying stream
+            return os.toByteArray();
+        }
+    }
 
     /**
-     * Deserializes a byte array back into an object.
+     * Performs deserialization using Hessian 2.
      *
-     * @param <T>   The expected type of the deserialized object.
      * @param bytes The byte array to be deserialized.
      * @return The deserialized object.
+     * @throws Throwable if an I/O or deserialization error occurs.
      */
-    <T> T deserialize(byte[] bytes);
+    @Override
+    protected Object doDeserialize(byte[] bytes) throws Throwable {
+        try (ByteArrayInputStream is = new ByteArrayInputStream(bytes)) {
+            Hessian2Input in = new Hessian2Input(is);
+            return in.readObject();
+        }
+    }
 
 }

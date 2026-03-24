@@ -26,7 +26,7 @@ import java.util.Map;
 /**
  * Represents the global configuration for the cache system.
  * <p>
- * This class holds settings such as the cache implementations, metrics component, and global feature switches like
+ * This class holds settings such as the cache implementations, collector component, and global feature switches like
  * cache enabling and penetration prevention.
  * </p>
  *
@@ -42,9 +42,9 @@ public class Context {
     private Map<String, CacheX> caches;
 
     /**
-     * The component responsible for tracking cache metrics, such as hit and miss rates.
+     * The component responsible for tracking cache statistics, such as hit and miss rates.
      */
-    private Metrics metrics;
+    private Collector collector;
 
     /**
      * The global switch to enable or disable all caching operations.
@@ -60,7 +60,7 @@ public class Context {
      * Creates a new {@link Context} instance with default settings.
      * <p>
      * By default, caching is enabled ({@code Switch.ON}), and penetration prevention is disabled ({@code Switch.OFF}).
-     * The metrics component is initially null.
+     * The collector component is initially null.
      * </p>
      *
      * @param caches A map of cache names to {@link CacheX} instances.
@@ -68,10 +68,9 @@ public class Context {
      */
     public static Context newConfig(Map<String, CacheX> caches) {
         Context config = new Context();
-        config.caches = caches;
-        config.cache = EnumValue.Switch.ON;
-        config.prevent = EnumValue.Switch.OFF;
-        config.metrics = null;
+        config.setCaches(caches);
+        config.setCache(EnumValue.Switch.ON);
+        config.setPrevent(EnumValue.Switch.OFF);
         return config;
     }
 
@@ -103,21 +102,21 @@ public class Context {
     }
 
     /**
-     * Gets the cache metrics component.
+     * Gets the cache collector component.
      *
-     * @return The {@link Metrics} component, or {@code null} if not configured.
+     * @return The {@link Collector} component, or {@code null} if not configured.
      */
-    public Metrics getMetrics() {
-        return metrics;
+    public Collector getCollector() {
+        return collector;
     }
 
     /**
-     * Sets the cache metrics component.
+     * Sets the cache collector component.
      *
-     * @param metrics The {@link Metrics} component to be used for tracking statistics.
+     * @param collector The {@link Collector} component to be used for tracking statistics.
      */
-    public void setMetrics(Metrics metrics) {
-        this.metrics = metrics;
+    public void setCollector(Collector collector) {
+        this.collector = collector;
     }
 
     /**

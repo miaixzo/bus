@@ -22,27 +22,27 @@ package org.miaixz.bus.cache;
 import java.util.Map;
 
 /**
- * An interface for tracking cache hit rate statistics.
+ * An interface for collecting and tracking cache hit rate statistics.
  * <p>
- * This defines the core operations for cache metrics, including recording request counts, hit counts, retrieving
- * statistics, and resetting counters. It provides hit rate statistics for cache patterns or groups, suitable for
- * monitoring cache performance.
+ * This defines the core operations for the cache statistics collector, including recording request counts, hit counts,
+ * retrieving statistics, and resetting counters. It provides hit rate statistics for cache patterns or groups, suitable
+ * for monitoring cache performance.
  * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Metrics {
+public interface Collector {
 
     /**
      * Increments the total number of requests for a specific cache pattern.
      * <p>
      * This is used to track how frequently a cached method or group is accessed. Example code:
      * </p>
-     * 
+     *
      * <pre>{@code
-     * Metrics metrics = new SomeMetricsImpl();
-     * metrics.reqIncr("userCache", 1);
+     * Collector collector = new SomeCollectorImpl();
+     * collector.reqIncr("userCache", 1);
      * }</pre>
      *
      * @param pattern The name of the cache pattern or group.
@@ -55,10 +55,10 @@ public interface Metrics {
      * <p>
      * This is used to track how often a request results in a cache hit. Example code:
      * </p>
-     * 
+     *
      * <pre>{@code
-     * Metrics metrics = new SomeMetricsImpl();
-     * metrics.hitIncr("userCache", 1);
+     * Collector collector = new SomeCollectorImpl();
+     * collector.hitIncr("userCache", 1);
      * }</pre>
      *
      * @param pattern The name of the cache pattern or group.
@@ -72,10 +72,10 @@ public interface Metrics {
      * Returns a map where the keys are the cache pattern names and the values are {@link Snapshot} objects containing
      * the statistics for that pattern. Example code:
      * </p>
-     * 
+     *
      * <pre>{@code
-     * Metrics metrics = new SomeMetricsImpl();
-     * Map<String, Snapshot> stats = metrics.getHitting();
+     * Collector collector = new SomeCollectorImpl();
+     * Map<String, Snapshot> stats = collector.getHitting();
      * stats.forEach((pattern, snapshot) -> System.out.println(pattern + ": Hit Rate " + snapshot.getRate()));
      * }</pre>
      *
@@ -89,10 +89,10 @@ public interface Metrics {
      * This clears the hit and request counts for the given pattern, effectively restarting the statistics collection.
      * Example code:
      * </p>
-     * 
+     *
      * <pre>{@code
-     * Metrics metrics = new SomeMetricsImpl();
-     * metrics.reset("userCache");
+     * Collector collector = new SomeCollectorImpl();
+     * collector.reset("userCache");
      * }</pre>
      *
      * @param pattern The name of the cache pattern or group to reset.
@@ -102,12 +102,12 @@ public interface Metrics {
     /**
      * Resets the statistics for all cache patterns.
      * <p>
-     * This clears all hit and request counts tracked by this metrics instance. Example code:
+     * This clears all hit and request counts tracked by this collector instance. Example code:
      * </p>
-     * 
+     *
      * <pre>{@code
-     * Metrics metrics = new SomeMetricsImpl();
-     * metrics.resetAll();
+     * Collector collector = new SomeCollectorImpl();
+     * collector.resetAll();
      * }</pre>
      */
     void resetAll();
@@ -119,8 +119,8 @@ public interface Metrics {
      * </p>
      *
      * <pre>{@code
-     * Metrics metrics = new SomeMetricsImpl();
-     * String summary = metrics.summaryName();
+     * Collector collector = new SomeCollectorImpl();
+     * String summary = collector.summaryName();
      * System.out.println("Summary Name: " + summary);
      * }</pre>
      *
@@ -171,7 +171,7 @@ public interface Metrics {
          * <p>
          * This factory method calculates the hit rate and formats it as a string. Example code:
          * </p>
-         * 
+         *
          * <pre>{@code
          * Snapshot snapshot = Snapshot.newInstance(50, 100);
          * System.out.println("Hit Rate: " + snapshot.getRate());
@@ -192,22 +192,28 @@ public interface Metrics {
          * <p>
          * The hit and request counts from both snapshots are summed up to create a combined snapshot. Example code:
          * </p>
-         * 
+         *
          * <pre>{@code
          * Snapshot snapshot1 = Snapshot.newInstance(50, 100);
          * Snapshot snapshot2 = Snapshot.newInstance(30, 50);
-         * Snapshot merged = Snapshot.mergeShootingDO(snapshot1, snapshot2);
+         * Snapshot merged = Snapshot.merge(snapshot1, snapshot2);
          * System.out.println("Merged Hit Rate: " + merged.getRate());
          * }</pre>
          *
-         * @param do1 The first snapshot to merge.
-         * @param do2 The second snapshot to merge.
+         * @param s1 The first snapshot to merge.
+         * @param s2 The second snapshot to merge.
          * @return A new {@link Snapshot} representing the merged statistics.
          */
-        public static Snapshot mergeShootingDO(Snapshot do1, Snapshot do2) {
-            long hit = do1.getHit() + do2.getHit();
-            long required = do1.getRequired() + do2.getRequired();
-            return newInstance(hit, required);
+        public static Snapshot merge(Snapshot s1, Snapshot s2) {
+            return newInstance(s1.getHit() + s2.getHit(), s1.getRequired() + s2.getRequired());
+        }
+
+        /**
+         * @deprecated Use {@link #merge(Snapshot, Snapshot)} instead.
+         */
+        @Deprecated
+        public static Snapshot mergeShootingDO(Snapshot s1, Snapshot s2) {
+            return merge(s1, s2);
         }
 
         /**

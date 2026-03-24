@@ -21,8 +21,8 @@ package org.miaixz.bus.cache;
 
 import org.miaixz.bus.cache.magic.AnnoHolder;
 import org.miaixz.bus.cache.magic.annotation.CacheKey;
-import org.miaixz.bus.cache.support.PreventObjects;
-import org.miaixz.bus.cache.support.SpelCalculator;
+import org.miaixz.bus.cache.builtin.PreventObjects;
+import org.miaixz.bus.cache.builtin.SpelCalculator;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -33,6 +33,7 @@ import java.lang.reflect.Parameter;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 /**
@@ -40,7 +41,7 @@ import java.util.stream.Collectors;
  * <p>
  * This class provides static methods to handle the generation of cache keys from method arguments and annotations,
  * supporting both single and multi-key scenarios. It also includes helpers for processing results for batch operations
- * and generating patterns for metrics.
+ * and generating patterns for statistics.
  * </p>
  *
  * @author Kimi Liu
@@ -54,17 +55,17 @@ public class Builder {
     private static final String X_ARGS_PREFIX = "args";
 
     /**
-     * A cache mapping methods to their generated pattern strings for metrics.
+     * A cache mapping methods to their generated pattern strings for statistics.
      */
     private static final ConcurrentMap<Method, String> patterns = new ConcurrentHashMap<>();
 
     /**
      * A pre-defined array of synthetic argument names for quick access.
      */
-    private static String[] X_ARGS = { X_ARGS_PREFIX + 0, X_ARGS_PREFIX + 1, X_ARGS_PREFIX + 2, X_ARGS_PREFIX + 3,
+    private static final String[] X_ARGS = { X_ARGS_PREFIX + 0, X_ARGS_PREFIX + 1, X_ARGS_PREFIX + 2, X_ARGS_PREFIX + 3,
             X_ARGS_PREFIX + 4, X_ARGS_PREFIX + 5, X_ARGS_PREFIX + 6, X_ARGS_PREFIX + 7, X_ARGS_PREFIX + 8,
             X_ARGS_PREFIX + 9, X_ARGS_PREFIX + 10, X_ARGS_PREFIX + 11, X_ARGS_PREFIX + 12, X_ARGS_PREFIX + 13,
-            X_ARGS_PREFIX + 14, X_ARGS_PREFIX + 15, X_ARGS_PREFIX + Normal._16, X_ARGS_PREFIX + 17, X_ARGS_PREFIX + 18,
+            X_ARGS_PREFIX + 14, X_ARGS_PREFIX + 15, X_ARGS_PREFIX + 16, X_ARGS_PREFIX + 17, X_ARGS_PREFIX + 18,
             X_ARGS_PREFIX + 19 };
 
     /**
@@ -73,9 +74,10 @@ public class Builder {
     private static final ConcurrentMap<Method, String[]> methodParameterNames = new ConcurrentHashMap<>();
 
     /**
-     * A flag to ensure the warning about missing compiler parameters is logged only once.
+     * A flag to ensure the warning about missing compiler parameters is logged only once. Uses {@link AtomicBoolean} to
+     * guarantee thread-safe one-shot semantics.
      */
-    private static boolean isFirst = true;
+    private static final AtomicBoolean isFirst = new AtomicBoolean(true);
 
     /**
      * Retrieves the parameter names for a given method.
@@ -121,9 +123,8 @@ public class Builder {
     private static String[] doGetArgNamesWithJava8(Method method) {
         Parameter[] parameters = method.getParameters();
         String[] argNames = Arrays.stream(parameters).map(Parameter::getName).toArray(String[]::new);
-        if (isFirst && argNames.length != 0 && argNames[0].equals("arg0")) {
+        if (isFirst.compareAndSet(true, false) && argNames.length != 0 && argNames[0].equals("arg0")) {
             Logger.warn("compile not set '–parameters', used default method parameter names");
-            isFirst = false;
         }
         return argNames;
     }
@@ -313,7 +314,7 @@ public class Builder {
         for (Object value : proceedCollection) {
             Object id = SpelCalculator.calcSpelWithNoContext(idSpel, value);
             String key = id2Key.get(id);
-            if (StringKit.isEmpty(key)) {
+            if (StringKit.isNotEmpty(key)) {
                 missKeys.remove(key);
                 keyValueMap.put(key, value);
             }
@@ -326,7 +327,63 @@ public class Builder {
     }
 
     /**
-     * Generates and caches a pattern string for a method, used for metrics.
+     * Converts a map of string keys and object values into a flat byte array for Redis {@code MSET}.
+     *
+     * @param keyValueMap The map to convert.
+     * @param serializer  The serializer to use for values.
+     * @return A byte array of interleaved keys and serialized values.
+     */
+    public static byte[][] toByteArray(Map<String, Object> keyValueMap, Serializer serializer) {
+        byte[][] kvs = new byte[keyValueMap.size() * 2][];
+        int index = 0;
+        for (Map.Entry<String, Object> entry : keyValueMap.entrySet()) {
+            kvs[index++] = entry.getKey().getBytes();
+            kvs[index++] = serializer.serialize(entry.getValue());
+        }
+        return kvs;
+    }
+
+    /**
+     * Converts a collection of string keys into a 2D byte array for Redis commands.
+     *
+     * @param keys The collection of keys.
+     * @return A 2D byte array where each inner array is the byte representation of a key.
+     */
+    public static byte[][] toByteArray(Collection<String> keys) {
+        byte[][] array = new byte[keys.size()][];
+        int index = 0;
+        for (String text : keys) {
+            array[index++] = text.getBytes();
+        }
+        return array;
+    }
+
+    /**
+     * Converts a list of byte array values back into a map of string keys to objects.
+     *
+     * @param keys        The original collection of keys, used for mapping.
+     * @param bytesValues The list of serialized values returned from Redis.
+     * @param serializer  The serializer to use for deserialization.
+     * @return A map of keys to their deserialized object values.
+     */
+    public static Map<String, Object> toObjectMap(
+            Collection<String> keys,
+            List<byte[]> bytesValues,
+            Serializer serializer) {
+        int index = 0;
+        Map<String, Object> result = new HashMap<>(keys.size());
+        for (String key : keys) {
+            byte[] valueBytes = bytesValues.get(index++);
+            if (valueBytes != null) {
+                Object value = serializer.deserialize(valueBytes);
+                result.put(key, value);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Generates and caches a pattern string for a method, used for statistics.
      * <p>
      * The pattern is created by combining the key prefix and the SpEL expressions from {@link CacheKey} annotations.
      * </p>
@@ -335,7 +392,12 @@ public class Builder {
      * @return The generated (or cached) pattern string.
      */
     public static String generatePattern(AnnoHolder annoHolder) {
-        return patterns.computeIfAbsent(annoHolder.getMethod(), (method) -> doPatternCombiner(annoHolder));
+        // The pattern depends only on the annotation metadata (prefix + key expressions), not on runtime
+        // argument values, so it is safe to cache by Method. However, to avoid stale captures when the
+        // same Method could theoretically appear in multiple annotation configurations, compute the value
+        // from the holder directly and use computeIfAbsent only when the pattern for this exact holder
+        // has not been stored yet. We derive a stable key from the method and store the full pattern.
+        return patterns.computeIfAbsent(annoHolder.getMethod(), method -> doPatternCombiner(annoHolder));
     }
 
     /**

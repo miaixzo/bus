@@ -18,14 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides concrete implementations of the {@link org.miaixz.bus.cache.Metrics} interface.
+ * Provides supporting classes and utilities for the caching framework.
  * <p>
- * This package contains various strategies for persisting cache hit and request statistics. Implementations are
- * available for different back-ends, including in-memory, relational databases (H2, MySQL, PostgreSQL, SQLite), and
- * Zookeeper, allowing for flexible monitoring of cache performance.
+ * This package contains various helper classes that are used internally by the cache processing logic. This includes
+ * utilities for SpEL expression calculation, cache penetration prevention, annotation metadata containers, and
+ * factories for creating data structures.
  * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-package org.miaixz.bus.cache.support.metrics;
+package org.miaixz.bus.cache.builtin;

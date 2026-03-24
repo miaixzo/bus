@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.starter.pay;
 
+import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.pay.Complex;
 import org.miaixz.bus.pay.Context;
 import org.miaixz.bus.pay.Provider;
-import org.miaixz.bus.pay.Registrar;
 import org.miaixz.bus.pay.magic.ErrorCode;
 import org.miaixz.bus.pay.metric.alipay.AliPayProvider;
 import org.miaixz.bus.pay.metric.jdpay.JdPayProvider;
@@ -49,7 +49,7 @@ public class PayService {
     /**
      * A cache to store payment provider contexts, keyed by their registry type.
      */
-    private static final Map<Registrar, Context> CACHE = new ConcurrentHashMap<>();
+    private static final Map<Registry, Context> CACHE = new ConcurrentHashMap<>();
 
     /**
      * Payment configuration properties.
@@ -106,7 +106,7 @@ public class PayService {
      * @param context  The context object for the payment provider.
      * @throws InternalException if a provider with the same registry name is already registered.
      */
-    public static void register(Registrar registry, Context context) {
+    public static void register(Registry registry, Context context) {
         if (CACHE.containsKey(registry)) {
             throw new InternalException("A component with the same name is already registered: " + registry.name());
         }
@@ -117,11 +117,11 @@ public class PayService {
      * Retrieves a payment provider instance based on the registry type. It first checks the local cache, then falls
      * back to the properties.
      *
-     * @param registry The {@link Registrar} type of the required provider.
+     * @param registry The {@link Registry} type of the required provider.
      * @return The {@link Provider} instance.
      * @throws InternalException if the requested provider is not supported or cannot be found.
      */
-    public Provider require(Registrar registry) {
+    public Provider require(Registry registry) {
         Context context = CACHE.get(registry);
         if (ObjectKit.isEmpty(context)) {
             context = this.properties.getType().get(registry);

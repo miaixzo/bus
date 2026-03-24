@@ -19,6 +19,9 @@
 */
 package org.miaixz.bus.starter.cache;
 
+import java.lang.reflect.Method;
+import java.util.Map;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -34,9 +37,6 @@ import org.miaixz.bus.cache.magic.annotation.CachedGet;
 import org.miaixz.bus.cache.magic.annotation.Invalid;
 import org.miaixz.bus.proxy.invoker.InvocationInvoker;
 
-import java.lang.reflect.Method;
-import java.util.Map;
-
 /**
  * An AOP aspect that provides caching functionality by intercepting method calls annotated with {@link CachedGet},
  * {@link Cached}, and {@link Invalid}.
@@ -51,7 +51,7 @@ import java.util.Map;
 @Aspect
 public class AspectjCacheProxy {
 
-    private final Complex core;
+    private final Complex complex;
 
     /**
      * Constructs a new cache proxy with a map of cache configurations.
@@ -68,7 +68,7 @@ public class AspectjCacheProxy {
      * @param context The caching {@link Context} to be used.
      */
     public AspectjCacheProxy(Context context) {
-        this.core = Module.instance(context);
+        this.complex = Module.instance(context);
     }
 
     /**
@@ -86,7 +86,7 @@ public class AspectjCacheProxy {
     public Object read(ProceedingJoinPoint point) throws Throwable {
         Method method = getMethod(point);
         CachedGet cachedGet = method.getAnnotation(CachedGet.class);
-        return core.read(cachedGet, method, new InvocationInvoker(point));
+        return this.complex.read(cachedGet, method, new InvocationInvoker(point));
     }
 
     /**
@@ -105,7 +105,7 @@ public class AspectjCacheProxy {
     public Object readWrite(ProceedingJoinPoint point) throws Throwable {
         Method method = getMethod(point);
         Cached cached = method.getAnnotation(Cached.class);
-        return core.readWrite(cached, method, new InvocationInvoker(point));
+        return this.complex.readWrite(cached, method, new InvocationInvoker(point));
     }
 
     /**
@@ -122,7 +122,7 @@ public class AspectjCacheProxy {
     public void remove(JoinPoint point) throws Throwable {
         Method method = getMethod(point);
         Invalid invalid = method.getAnnotation(Invalid.class);
-        core.remove(invalid, method, point.getArgs());
+        this.complex.remove(invalid, method, point.getArgs());
     }
 
     /**

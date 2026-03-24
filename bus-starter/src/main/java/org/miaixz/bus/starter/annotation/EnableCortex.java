@@ -27,16 +27,20 @@ import java.lang.annotation.*;
 /**
  * Enables Bus Cortex — unified service registry and configuration center.
  * <p>
- * Importing this annotation bootstraps all Cortex beans: registry, health checking,
- * config center, cluster, audit log, and the client-side SDK beans.
+ * Importing this annotation bootstraps all Cortex beans: registry, health checking, config center, cluster, audit log,
+ * and the client-side SDK beans.
  * </p>
  * <p>
  * Minimal setup — add to a Spring Boot application class:
- * <pre>{@code
- * @SpringBootApplication
- * @EnableCortex
+ * 
+ * <pre>
+ * {@code
+ * &#64;SpringBootApplication
+ * &#64;EnableCortex
  * public class Application { ... }
- * }</pre>
+ * }
+ * </pre>
+ * 
  * Then configure {@code bus.cortex.server-addr} in {@code application.yml}.
  * </p>
  *

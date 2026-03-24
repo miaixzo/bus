@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cache.support.metrics;
+package org.miaixz.bus.cache.collect;
 
 import jakarta.annotation.PreDestroy;
 import java.io.InputStream;
@@ -29,42 +29,51 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.miaixz.bus.cache.Metrics;
+import org.miaixz.bus.cache.Collector;
 import org.miaixz.bus.cache.magic.CachePair;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.setting.Builder;
-import org.springframework.jdbc.core.JdbcOperations;
 
 /**
- * An abstract base class for database-backed cache metrics implementations.
+ * An abstract base class for database-backed cache statistics implementations.
  * <p>
  * This class provides a framework for storing cache hit rate statistics in a relational database. It uses a
- * non-blocking queue to asynchronously write metrics to the database, minimizing performance impact on the application
- * threads. It also employs an optimistic locking strategy to handle concurrent updates and ensure data consistency.
+ * non-blocking queue to asynchronously write statistics to the database, minimizing performance impact on the
+ * application threads. It also employs an optimistic locking strategy to handle concurrent updates and ensure data
+ * consistency.
  * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class AbstractMetrics implements Metrics {
+public abstract class AbstractCollector implements Collector, AutoCloseable {
 
     /**
-     * A single-threaded executor for asynchronously writing metrics to the database.
+     * A single-threaded executor for asynchronously writing statistics to the database.
+     * <p>
+     * Instance-level so that each collector subclass owns its own writer thread, avoiding cross-instance interference
+     * and ensuring correct lifecycle management via {@link #close()}.
+     * </p>
      */
-    private static final ExecutorService executor = Executors.newSingleThreadExecutor(r -> {
+    private final ExecutorService executor = Executors.newSingleThreadExecutor(r -> {
         Thread thread = new Thread(r);
-        thread.setName("cache:db-writer");
+        thread.setName("cache:db-writer-" + System.identityHashCode(this));
         thread.setDaemon(true);
         return thread;
     });
 
     /**
      * A lock to ensure consistency during the initial insertion of a new pattern record.
+     * <p>
+     * Instance-level to avoid cross-instance contention when multiple collector implementations are used
+     * simultaneously.
+     * </p>
      */
-    private static final Lock lock = new ReentrantLock();
+    private final Lock lock = new ReentrantLock();
 
     /**
-     * A flag to indicate whether the metrics service has been shut down.
+     * A flag to indicate whether the collector service has been shut down.
      */
     private volatile boolean isShutdown = false;
 
@@ -79,9 +88,9 @@ public abstract class AbstractMetrics implements Metrics {
     private final BlockingQueue<CachePair<String, Integer>> requireQueue = new LinkedTransferQueue<>();
 
     /**
-     * The Spring JDBC template for database operations.
+     * The plain-JDBC runner for database operations.
      */
-    private final JdbcOperations jdbcOperations;
+    private final JdbcRunner jdbcRunner;
 
     /**
      * A collection of SQL statements loaded from a configuration file.
@@ -89,18 +98,34 @@ public abstract class AbstractMetrics implements Metrics {
     private final Properties sqls;
 
     /**
-     * Initializes the metrics service with database connection details.
+     * Initializes the collector with database connection details.
      *
      * @param context A map containing database connection parameters.
      */
-    protected AbstractMetrics(Map<String, Object> context) {
+    protected AbstractCollector(Map<String, Object> context) {
         InputStream in = this.getClass().getClassLoader()
                 .getResourceAsStream(Normal.META_INF + "/cache/bus.cache.yaml");
         this.sqls = Builder.loadYaml(in, Properties.class);
-        this.jdbcOperations = jdbcOperationsSupplier(context).get();
+        this.jdbcRunner = jdbcRunnerSupplier(context).get();
         executor.submit(() -> {
             while (!isShutdown) {
+                if (hitQueue.isEmpty() && requireQueue.isEmpty()) {
+                    // Both queues are empty; pause briefly to avoid busy-spinning.
+                    try {
+                        TimeUnit.MILLISECONDS.sleep(100);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                } else {
+                    dumpToDB(hitQueue, "hit_count");
+                    dumpToDB(requireQueue, "require_count");
+                }
+            }
+            // Final drain after shutdown signal: loop until both queues are fully empty.
+            while (!hitQueue.isEmpty()) {
                 dumpToDB(hitQueue, "hit_count");
+            }
+            while (!requireQueue.isEmpty()) {
                 dumpToDB(requireQueue, "require_count");
             }
         });
@@ -113,7 +138,7 @@ public abstract class AbstractMetrics implements Metrics {
      * @param username The database username.
      * @param password The database password.
      */
-    public AbstractMetrics(String url, String username, String password) {
+    public AbstractCollector(String url, String username, String password) {
         this(newHashMap("url", url, "username", username, "password", password));
     }
 
@@ -123,7 +148,7 @@ public abstract class AbstractMetrics implements Metrics {
      * @param keyValues An array of alternating keys and values.
      * @return A new {@link HashMap} instance.
      */
-    public static Map<String, Object> newHashMap(Object... keyValues) {
+    private static Map<String, Object> newHashMap(Object... keyValues) {
         Map<String, Object> map = new HashMap<>(keyValues.length / 2);
         for (int i = 0; i < keyValues.length; i += 2) {
             String key = (String) keyValues[i];
@@ -134,27 +159,27 @@ public abstract class AbstractMetrics implements Metrics {
     }
 
     /**
-     * Creates a {@link JdbcOperations} instance and initializes the database.
+     * Creates a {@link JdbcRunner} instance and initializes the database.
      * <p>
-     * Subclasses must implement this method to provide a configured {@code JdbcOperations} instance and to perform any
-     * necessary database initialization (e.g., creating tables).
+     * Subclasses must implement this method to provide a configured {@code JdbcRunner} and to perform any necessary
+     * database initialization (e.g., creating tables).
      * </p>
      *
      * @param context A map of configuration parameters.
-     * @return A supplier that provides the initialized {@link JdbcOperations} object.
+     * @return A supplier that provides the initialized {@link JdbcRunner} object.
      */
-    protected abstract Supplier<JdbcOperations> jdbcOperationsSupplier(Map<String, Object> context);
+    protected abstract Supplier<JdbcRunner> jdbcRunnerSupplier(Map<String, Object> context);
 
     /**
-     * Transforms a list of database query results into a stream of {@link DataDO} objects.
+     * Transforms a list of database query results into a stream of {@link Tally} objects.
      *
      * @param map A list of maps, where each map represents a row from the database.
-     * @return A stream of {@link DataDO} objects.
+     * @return A stream of {@link Tally} objects.
      */
-    protected abstract Stream<DataDO> transferResults(List<Map<String, Object>> map);
+    protected abstract Stream<Tally> transferResults(List<Map<String, Object>> map);
 
     /**
-     * Drains the metrics queue and writes the aggregated counts to the database.
+     * Drains the statistics queue and writes the aggregated counts to the database.
      *
      * @param queue  The queue to drain (either hit or request queue).
      * @param column The name of the database column to update (e.g., "hit_count").
@@ -164,7 +189,7 @@ public abstract class AbstractMetrics implements Metrics {
         CachePair<String, Integer> head;
         // Collect up to 100 items from the queue into an aggregated map.
         Map<String, AtomicLong> holdMap = new HashMap<>();
-        while (null != (head = queue.poll()) && times <= 100) {
+        while (null != (head = queue.poll()) && times < 100) {
             holdMap.computeIfAbsent(head.getLeft(), (key) -> new AtomicLong(0L)).addAndGet(head.getRight());
             ++times;
         }
@@ -205,16 +230,16 @@ public abstract class AbstractMetrics implements Metrics {
      */
     @Override
     public Map<String, Snapshot> getHitting() {
-        List<DataDO> dataDOS = queryAll();
+        List<Tally> tally = queryAll();
         AtomicLong statisticsHit = new AtomicLong(0);
         AtomicLong statisticsRequired = new AtomicLong(0);
 
         // Collect hit rates for each pattern.
-        Map<String, Snapshot> result = dataDOS.stream().collect(Collectors.toMap(DataDO::getPattern, (dataDO) -> {
-            statisticsHit.addAndGet(dataDO.hitCount);
-            statisticsRequired.addAndGet(dataDO.requireCount);
-            return Snapshot.newInstance(dataDO.hitCount, dataDO.requireCount);
-        }, Snapshot::mergeShootingDO, LinkedHashMap::new));
+        Map<String, Snapshot> result = tally.stream().collect(Collectors.toMap(Tally::getPattern, (dataDO) -> {
+            statisticsHit.addAndGet(dataDO.getHitCount());
+            statisticsRequired.addAndGet(dataDO.getRequireCount());
+            return Snapshot.newInstance(dataDO.getHitCount(), dataDO.getRequireCount());
+        }, Snapshot::merge, LinkedHashMap::new));
 
         // Add a summary for all patterns.
         result.put(summaryName(), Snapshot.newInstance(statisticsHit.get(), statisticsRequired.get()));
@@ -228,7 +253,7 @@ public abstract class AbstractMetrics implements Metrics {
      */
     @Override
     public void reset(String pattern) {
-        jdbcOperations.update(sqls.getProperty("delete"), pattern);
+        jdbcRunner.update(sqls.getProperty("delete"), pattern);
     }
 
     /**
@@ -236,7 +261,7 @@ public abstract class AbstractMetrics implements Metrics {
      */
     @Override
     public void resetAll() {
-        jdbcOperations.update(sqls.getProperty("truncate"));
+        jdbcRunner.update(sqls.getProperty("truncate"));
     }
 
     /**
@@ -247,12 +272,21 @@ public abstract class AbstractMetrics implements Metrics {
      * @param count   The value to add to the counter.
      */
     private void countAddCas(String column, String pattern, long count) {
-        Optional<DataDO> dataOptional = queryObject(pattern);
+        Optional<Tally> dataOptional = queryObject(pattern);
         if (dataOptional.isPresent()) {
             // If the record exists, attempt to update it in a loop until the CAS operation succeeds.
-            DataDO dataDO = dataOptional.get();
-            while (update(column, pattern, getObjectCount(dataDO, column, count), dataDO.version) <= 0) {
-                dataDO = queryObject(pattern).get(); // Re-fetch the latest version
+            Tally tally = dataOptional.get();
+            int retries = 0;
+            while (update(column, pattern, getObjectCount(tally, column, count), tally.getVersion()) <= 0) {
+                if (++retries > 10) {
+                    Logger.warn("CAS update gave up after 10 retries, pattern: {}, column: {}", pattern, column);
+                    break;
+                }
+                // Re-fetch the latest version; abort if the record disappears concurrently.
+                tally = queryObject(pattern).orElse(null);
+                if (tally == null) {
+                    break;
+                }
             }
         } else {
             // If the record does not exist, insert it.
@@ -261,7 +295,7 @@ public abstract class AbstractMetrics implements Metrics {
                 // Double-check to prevent race conditions.
                 dataOptional = queryObject(pattern);
                 if (dataOptional.isPresent()) {
-                    update(column, pattern, count, dataOptional.get().version);
+                    update(column, pattern, count, dataOptional.get().getVersion());
                 } else {
                     insert(column, pattern, count);
                 }
@@ -275,22 +309,22 @@ public abstract class AbstractMetrics implements Metrics {
      * Queries the database for a single statistics record.
      *
      * @param pattern The cache pattern name.
-     * @return An {@link Optional} containing the {@link DataDO} if found.
+     * @return An {@link Optional} containing the {@link Tally} if found.
      */
-    private Optional<DataDO> queryObject(String pattern) {
+    private Optional<Tally> queryObject(String pattern) {
         String selectSql = sqls.getProperty("select");
-        List<Map<String, Object>> mapResults = jdbcOperations.queryForList(selectSql, pattern);
+        List<Map<String, Object>> mapResults = jdbcRunner.queryForList(selectSql, pattern);
         return transferResults(mapResults).findFirst();
     }
 
     /**
      * Queries the database for all statistics records.
      *
-     * @return A list of all {@link DataDO} records.
+     * @return A list of all {@link Tally} records.
      */
-    private List<DataDO> queryAll() {
+    private List<Tally> queryAll() {
         String selectAllQuery = sqls.getProperty("select_all");
-        List<Map<String, Object>> mapResults = jdbcOperations.queryForList(selectAllQuery);
+        List<Map<String, Object>> mapResults = jdbcRunner.queryForList(selectAllQuery);
         return transferResults(mapResults).collect(Collectors.toList());
     }
 
@@ -304,7 +338,7 @@ public abstract class AbstractMetrics implements Metrics {
      */
     private int insert(String column, String pattern, long count) {
         String insertSql = String.format(sqls.getProperty("insert"), column);
-        return jdbcOperations.update(insertSql, pattern, count);
+        return jdbcRunner.update(insertSql, pattern, count);
     }
 
     /**
@@ -318,7 +352,7 @@ public abstract class AbstractMetrics implements Metrics {
      */
     private int update(String column, String pattern, long count, long version) {
         String updateSql = String.format(sqls.getProperty("update"), column);
-        return jdbcOperations.update(updateSql, count, pattern, version);
+        return jdbcRunner.update(updateSql, count, pattern, version);
     }
 
     /**
@@ -329,33 +363,43 @@ public abstract class AbstractMetrics implements Metrics {
      * @param countOffset The value to add.
      * @return The new total count.
      */
-    private long getObjectCount(DataDO data, String column, long countOffset) {
-        long lastCount = "hit_count".equals(column) ? data.hitCount : data.requireCount;
+    private long getObjectCount(Tally data, String column, long countOffset) {
+        long lastCount = "hit_count".equals(column) ? data.getHitCount() : data.getRequireCount();
         return lastCount + countOffset;
     }
 
     /**
-     * A lifecycle method to gracefully shut down the metrics service.
+     * Gracefully shuts down the collector service, flushing all pending statistics to the database.
      * <p>
-     * This method waits for the processing queues to be empty before stopping the background thread.
+     * Implements {@link AutoCloseable} so this collector can be used in try-with-resources blocks. Also annotated with
+     * {@link PreDestroy} so Spring invokes it automatically on bean destruction. Sets the shutdown flag first so the
+     * background thread exits its loop, then waits up to 5 seconds for the final drain to complete before forcing a
+     * halt.
      * </p>
      */
+    @Override
     @PreDestroy
-    public void tearDown() {
-        while (hitQueue.size() > 0 || requireQueue.size() > 0) {
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException ignored) {
-                Thread.currentThread().interrupt();
-            }
-        }
+    public void close() {
         isShutdown = true;
+        executor.shutdown();
+        try {
+            if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            executor.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
     }
 
     /**
-     * An internal Data Transfer Object (DTO) for storing cache statistics.
+     * An internal record for persisting and retrieving per-pattern cache statistics from the database.
+     * <p>
+     * Each {@code Tally} maps one cache pattern to its cumulative hit and request counts, plus an optimistic-locking
+     * {@code version} field used by the CAS update loop.
+     * </p>
      */
-    protected static final class DataDO {
+    protected static final class Tally {
 
         /**
          * The cache pattern name (e.g., cache name).
@@ -377,22 +421,74 @@ public abstract class AbstractMetrics implements Metrics {
          */
         private long version;
 
+        /**
+         * Returns the cache pattern name.
+         *
+         * @return the pattern name
+         */
         public String getPattern() {
             return pattern;
         }
 
+        /**
+         * Sets the cache pattern name.
+         *
+         * @param pattern the pattern name to set
+         */
         public void setPattern(String pattern) {
             this.pattern = pattern;
         }
 
+        /**
+         * Returns the number of cache hits.
+         *
+         * @return the hit count
+         */
+        public long getHitCount() {
+            return hitCount;
+        }
+
+        /**
+         * Sets the number of cache hits.
+         *
+         * @param hitCount the hit count to set
+         */
         public void setHitCount(long hitCount) {
             this.hitCount = hitCount;
         }
 
+        /**
+         * Returns the number of cache requests.
+         *
+         * @return the request count
+         */
+        public long getRequireCount() {
+            return requireCount;
+        }
+
+        /**
+         * Sets the number of cache requests.
+         *
+         * @param requireCount the request count to set
+         */
         public void setRequireCount(long requireCount) {
             this.requireCount = requireCount;
         }
 
+        /**
+         * Returns the version number used for optimistic locking.
+         *
+         * @return the version value
+         */
+        public long getVersion() {
+            return version;
+        }
+
+        /**
+         * Sets the version number used for optimistic locking.
+         *
+         * @param version the version value to set
+         */
         public void setVersion(long version) {
             this.version = version;
         }

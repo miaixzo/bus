@@ -59,9 +59,9 @@ public class Module {
     private Map<String, CacheX> caches;
 
     /**
-     * The component for tracking cache performance metrics.
+     * The component for tracking cache performance statistics.
      */
-    private Metrics metrics;
+    private Collector collector;
 
     /**
      * The reader responsible for handling single-key cache lookups.
@@ -111,19 +111,22 @@ public class Module {
      * @throws IllegalArgumentException if the configuration is null or contains no cache instances.
      */
     public static synchronized Complex instance(Context config) {
+        Assert.isTrue(null != config, "context param can not be null.");
         Module module = getInstance();
-        if (!module.initialized) {
-            module.initialize(config);
-            module.initialized = true;
-            Logger.info("Cache factory initialized successfully");
+        if (module.initialized) {
+            Logger.warn("Cache module already initialized; ignoring new context and returning existing Complex.");
+            return module.complex;
         }
+        module.initialize(config);
+        module.initialized = true;
+        Logger.info("Cache factory initialized successfully");
         return module.complex;
     }
 
     /**
      * Performs the one-time initialization of all cache components.
      * <p>
-     * This method sets up the cache map, metrics, readers, manager, and the main {@code Complex} object. It is called
+     * This method sets up the cache map, collector, readers, manager, and the main {@code Complex} object. It is called
      * internally by the {@link #instance(Context)} method.
      * </p>
      *
@@ -139,18 +142,24 @@ public class Module {
         caches = Collections.unmodifiableMap(new HashMap<>(config.getCaches()));
         Logger.debug("Initialized caches with size: {}", caches.size());
 
-        // Initialize Metrics
-        metrics = config.getMetrics();
-        Logger.debug("Initialized metrics: {}", metrics != null ? metrics.getClass().getSimpleName() : "null");
+        // Initialize Collector
+        collector = config.getCollector();
+        Logger.debug("Initialized collector: {}", collector != null ? collector.getClass().getSimpleName() : "null");
+
+        // Initialize Manage instance
+        manage = new Manage(caches, collector);
+        Logger.debug("Initialized manage");
 
         // Initialize Reader instances
         singleCacheReader = new SingleCacheReader();
+        singleCacheReader.setManage(manage);
+        singleCacheReader.setContext(context);
+        singleCacheReader.setCollector(collector);
         multiCacheReader = new MultiCacheReader();
+        multiCacheReader.setManage(manage);
+        multiCacheReader.setContext(context);
+        multiCacheReader.setCollector(collector);
         Logger.debug("Initialized singleCacheReader and multiCacheReader");
-
-        // Initialize Manage instance
-        manage = new Manage(caches, metrics);
-        Logger.debug("Initialized manage");
 
         // Create Complex instance
         complex = new Complex();
@@ -183,14 +192,14 @@ public class Module {
     }
 
     /**
-     * Retrieves the cache metrics component.
+     * Retrieves the cache collector component.
      *
-     * @return An {@link Optional} containing the {@link Metrics} instance, or an empty Optional if it is not
+     * @return An {@link Optional} containing the {@link Collector} instance, or an empty Optional if it is not
      *         configured.
      */
-    public Optional<Metrics> getHitting() {
-        Logger.debug("Retrieved metrics: {}", metrics != null ? metrics.getClass().getSimpleName() : "null");
-        return Optional.ofNullable(metrics);
+    public Optional<Collector> getCollector() {
+        Logger.debug("Retrieved collector: {}", collector != null ? collector.getClass().getSimpleName() : "null");
+        return Optional.ofNullable(collector);
     }
 
     /**

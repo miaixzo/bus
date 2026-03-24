@@ -18,14 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides supporting classes and utilities for the caching framework.
+ * Provides concrete implementations of the {@link org.miaixz.bus.cache.Collector} interface.
  * <p>
- * This package contains various helper classes that are used internally by the cache processing logic. This includes
- * utilities for SpEL expression calculation, cache penetration prevention, annotation metadata containers, and
- * factories for creating data structures.
+ * This package contains various strategies for persisting cache hit and request statistics. Implementations are
+ * available for different back-ends, including in-memory, relational databases (H2, MySQL, PostgreSQL, SQLite), and
+ * Zookeeper, allowing for flexible monitoring of cache performance.
  * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-package org.miaixz.bus.cache.support;
+package org.miaixz.bus.cache.collect;

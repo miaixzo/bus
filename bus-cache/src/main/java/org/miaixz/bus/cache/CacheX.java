@@ -105,18 +105,23 @@ public interface CacheX<K, V> {
      * Writes an object to the cache with a specified expiration time.
      * <p>
      * Writes a key-value pair to the cache and sets a specified expiration time in milliseconds. If the key already
-     * exists, its value is updated and the expiration time is reset. Example code:
+     * exists, its value is updated and the expiration time is reset.
      * </p>
-     * 
+     * <p>
+     * <strong>Contract:</strong> when {@code expire == 0} (i.e. {@code CacheExpire.FOREVER}), the entry must never
+     * expire. All implementations are required to honour this convention. Example code:
+     * </p>
+     *
      * <pre>{@code
      * CacheX<String, User> cache = new SomeCacheImpl<>();
      * User user = new User("user123", "John Doe");
      * cache.write(user.getId(), user, 30 * 60 * 1000); // 30 minutes
+     * cache.write(user.getId(), user, CacheExpire.FOREVER); // never expires
      * }</pre>
      *
      * @param key    the cache key
      * @param value  the cache value
-     * @param expire the expiration time in milliseconds
+     * @param expire the expiration time in milliseconds; {@code 0} means never expire
      */
     void write(K key, V value, long expire);
 
@@ -239,13 +244,43 @@ public interface CacheX<K, V> {
      * <li>Redis: uses the {@code INCR} command</li>
      * <li>JDBC: uses {@code UPDATE … SET val = val + 1 RETURNING val} (or equivalent)</li>
      * </ul>
-     * Used by {@code Sequence} (config version numbers) and {@code IdGenerator} (Snowflake worker-id allocation).
+     * Counters are not subject to TTL expiry and persist until explicitly removed. Used by {@code Sequence} for config
+     * version numbers.
      *
      * @param key the cache key holding the counter
-     * @return the new value after increment
+     * @return the new value after increment; starts at {@code 1} when the key did not exist
      */
     default long increment(K key) {
         throw new UnsupportedOperationException("increment() is not supported by this CacheX implementation");
+    }
+
+    /**
+     * Refreshes the TTL of an existing entry without changing its value.
+     * <p>
+     * Returns {@code false} if the key does not exist or has already expired. The default implementation performs a
+     * read then write, which is functionally correct but not atomic. Implementations backed by Redis should override
+     * this with a single {@code PEXPIRE} command for efficiency and atomicity. Used by service-instance heartbeat
+     * renewal in the Cortex registry. Example code:
+     * </p>
+     *
+     * <pre>{@code
+     * boolean refreshed = cache.renew("reg:default:api:001", 60_000);
+     * if (!refreshed) {
+     *     // entry expired between heartbeats — re-register
+     * }
+     * }</pre>
+     *
+     * @param key    the cache key whose TTL to refresh
+     * @param expire the new expiration time in milliseconds; {@code 0} means never expire
+     * @return {@code true} if the TTL was refreshed; {@code false} if the key was not found
+     */
+    default boolean renew(K key, long expire) {
+        V value = read(key);
+        if (value == null) {
+            return false;
+        }
+        write(key, value, expire);
+        return true;
     }
 
 }

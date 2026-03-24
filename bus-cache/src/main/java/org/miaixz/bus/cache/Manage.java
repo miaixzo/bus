@@ -50,20 +50,20 @@ public class Manage {
     private Map<String, CachePair<String, CacheX>> cachePool = new ConcurrentHashMap<>();
 
     /**
-     * The component responsible for tracking cache metrics, such as hit and miss rates.
+     * The component responsible for tracking cache statistics, such as hit and miss rates.
      */
-    private Metrics metrics;
+    private Collector collector;
 
     /**
-     * Constructs a new cache manager with a given set of cache instances and a metrics tracker.
+     * Constructs a new cache manager with a given set of cache instances and a collector tracker.
      *
-     * @param caches  A map where keys are cache names and values are the corresponding {@link CacheX} instances. The
-     *                first entry in the map will be set as the default cache.
-     * @param metrics The {@link Metrics} instance for tracking cache statistics.
+     * @param caches    A map where keys are cache names and values are the corresponding {@link CacheX} instances. The
+     *                  first entry in the map will be set as the default cache.
+     * @param collector The {@link Collector} instance for tracking cache statistics.
      * @throws IllegalArgumentException if the {@code caches} map is null or empty.
      */
-    public Manage(Map<String, CacheX> caches, Metrics metrics) {
-        this.metrics = metrics;
+    public Manage(Map<String, CacheX> caches, Collector collector) {
+        this.collector = collector;
         setCachePool(caches);
     }
 
@@ -109,7 +109,7 @@ public class Manage {
             CachePair<String, CacheX> cacheImpl = getCacheImpl(cache);
             long start = System.currentTimeMillis();
             Object result = cacheImpl.getRight().read(key);
-            Logger.info(
+            Logger.debug(
                     "cache [{}] read single cost: [{}] ms",
                     cacheImpl.getLeft(),
                     (System.currentTimeMillis() - start));
@@ -138,7 +138,7 @@ public class Manage {
                 CachePair<String, CacheX> cacheImpl = getCacheImpl(cache);
                 long start = System.currentTimeMillis();
                 cacheImpl.getRight().write(key, value, expire);
-                Logger.info(
+                Logger.debug(
                         "cache [{}] write single cost: [{}] ms",
                         cacheImpl.getLeft(),
                         (System.currentTimeMillis() - start));
@@ -169,7 +169,7 @@ public class Manage {
                 CachePair<String, CacheX> cacheImpl = getCacheImpl(cache);
                 long start = System.currentTimeMillis();
                 Map<String, Object> cacheMap = cacheImpl.getRight().read(keys);
-                Logger.info(
+                Logger.debug(
                         "cache [{}] read batch cost: [{}] ms",
                         cacheImpl.getLeft(),
                         (System.currentTimeMillis() - start));
@@ -212,7 +212,7 @@ public class Manage {
             CachePair<String, CacheX> cacheImpl = getCacheImpl(cache);
             long start = System.currentTimeMillis();
             cacheImpl.getRight().write(keyValueMap, expire);
-            Logger.info(
+            Logger.debug(
                     "cache [{}] write batch cost: [{}] ms",
                     cacheImpl.getLeft(),
                     (System.currentTimeMillis() - start));
@@ -237,7 +237,7 @@ public class Manage {
                 CachePair<String, CacheX> cacheImpl = getCacheImpl(cache);
                 long start = System.currentTimeMillis();
                 cacheImpl.getRight().remove(keys);
-                Logger.info(
+                Logger.debug(
                         "cache [{}] remove cost: [{}] ms",
                         cacheImpl.getLeft(),
                         (System.currentTimeMillis() - start));
@@ -268,21 +268,21 @@ public class Manage {
     }
 
     /**
-     * Gets the metrics component used for tracking cache statistics.
+     * Gets the collector component used for tracking cache statistics.
      *
-     * @return The current {@link Metrics} instance.
+     * @return The current {@link Collector} instance.
      */
-    public Metrics getHitting() {
-        return metrics;
+    public Collector getCollector() {
+        return collector;
     }
 
     /**
-     * Sets the metrics component for tracking cache statistics.
+     * Sets the collector component for tracking cache statistics.
      *
-     * @param metrics The {@link Metrics} instance to be used.
+     * @param collector The {@link Collector} instance to be used.
      */
-    public void setHitting(Metrics metrics) {
-        this.metrics = metrics;
+    public void setCollector(Collector collector) {
+        this.collector = collector;
     }
 
 }

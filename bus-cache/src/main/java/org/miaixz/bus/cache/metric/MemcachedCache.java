@@ -30,8 +30,8 @@ import net.rubyeye.xmemcached.XMemcachedClientBuilder;
 import net.rubyeye.xmemcached.exception.MemcachedException;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.magic.CacheExpire;
-import org.miaixz.bus.cache.support.serialize.BaseSerializer;
-import org.miaixz.bus.cache.support.serialize.Hessian2Serializer;
+import org.miaixz.bus.cache.Serializer;
+import org.miaixz.bus.cache.serialize.Hessian2Serializer;
 
 /**
  * A Memcached-based implementation of {@link CacheX} using the XMemcached client.
@@ -46,7 +46,7 @@ import org.miaixz.bus.cache.support.serialize.Hessian2Serializer;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MemcachedCache<K, V> implements CacheX<K, V> {
+public class MemcachedCache<K, V> implements CacheX<K, V>, AutoCloseable {
 
     /**
      * The maximum expiration time supported by Memcached, in seconds (30 days). Memcached does not support a true
@@ -62,7 +62,7 @@ public class MemcachedCache<K, V> implements CacheX<K, V> {
     /**
      * The serializer used for converting values to and from byte arrays.
      */
-    private final BaseSerializer serializer;
+    private final Serializer serializer;
 
     /**
      * Constructs a {@code MemcachedCache} with specified server addresses and a default {@link Hessian2Serializer}.
@@ -78,10 +78,10 @@ public class MemcachedCache<K, V> implements CacheX<K, V> {
      * Constructs a {@code MemcachedCache} with specified server addresses and a custom serializer.
      *
      * @param addressList A comma-separated string of server addresses.
-     * @param serializer  The {@link BaseSerializer} to use for value serialization.
+     * @param serializer  The {@link Serializer} to use for value serialization.
      * @throws IOException if the client cannot be initialized.
      */
-    public MemcachedCache(String addressList, BaseSerializer serializer) throws IOException {
+    public MemcachedCache(String addressList, Serializer serializer) throws IOException {
         this.client = new XMemcachedClientBuilder(addressList).build();
         this.serializer = serializer;
     }
@@ -97,7 +97,7 @@ public class MemcachedCache<K, V> implements CacheX<K, V> {
     public V read(K key) {
         try {
             byte[] bytes = client.get(key.toString());
-            return this.serializer.deserialize(bytes);
+            return bytes != null ? this.serializer.deserialize(bytes) : null;
         } catch (TimeoutException | InterruptedException | MemcachedException e) {
             throw new RuntimeException(e);
         }
@@ -200,14 +200,15 @@ public class MemcachedCache<K, V> implements CacheX<K, V> {
     }
 
     /**
-     * A lifecycle method to shut down the {@link MemcachedClient}.
+     * Shuts down the {@link MemcachedClient}, releasing all connections.
      * <p>
-     * Annotated with {@link PreDestroy}, this method is typically invoked by a dependency injection container when the
-     * bean is being destroyed.
+     * Annotated with {@link PreDestroy} so a DI container invokes it automatically on bean destruction. Also implements
+     * {@link AutoCloseable} so the cache can be used in a try-with-resources block.
      * </p>
      */
     @PreDestroy
-    public void tearDown() {
+    @Override
+    public void close() {
         if (null != this.client && !this.client.isShutdown()) {
             try {
                 this.client.shutdown();

@@ -19,18 +19,24 @@
 */
 package org.miaixz.bus.cache.metric;
 
-import jakarta.annotation.PreDestroy;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.miaixz.bus.cache.Builder;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.magic.CacheExpire;
-import org.miaixz.bus.cache.support.serialize.BaseSerializer;
-import org.miaixz.bus.cache.support.serialize.Hessian2Serializer;
+import org.miaixz.bus.cache.Serializer;
+import org.miaixz.bus.cache.serialize.Hessian2Serializer;
+import org.miaixz.bus.core.lang.Symbol;
+
+import jakarta.annotation.PreDestroy;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Pipeline;
+import redis.clients.jedis.params.ScanParams;
+import redis.clients.jedis.resps.ScanResult;
 
 /**
  * A Redis-based implementation of {@link CacheX} for a single-node setup.
@@ -45,12 +51,12 @@ import redis.clients.jedis.Pipeline;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class RedisCache<K, V> implements CacheX<K, V> {
+public class RedisCache<K, V> implements CacheX<K, V>, AutoCloseable {
 
     /**
      * The serializer used for converting values to and from byte arrays.
      */
-    private final BaseSerializer serializer;
+    private final Serializer serializer;
 
     /**
      * The connection pool for Jedis instances.
@@ -70,67 +76,11 @@ public class RedisCache<K, V> implements CacheX<K, V> {
      * Constructs a {@code RedisCache} with a given Jedis pool and a custom serializer.
      *
      * @param jedisPool  The configured {@link JedisPool}.
-     * @param serializer The {@link BaseSerializer} to use for value serialization.
+     * @param serializer The {@link Serializer} to use for value serialization.
      */
-    public RedisCache(JedisPool jedisPool, BaseSerializer serializer) {
+    public RedisCache(JedisPool jedisPool, Serializer serializer) {
         this.jedisPool = jedisPool;
         this.serializer = serializer;
-    }
-
-    /**
-     * Converts a map of string keys and object values into a flat byte array for Redis `MSET`.
-     *
-     * @param keyValueMap The map to convert.
-     * @param serializer  The serializer to use for values.
-     * @return A byte array of interleaved keys and serialized values.
-     */
-    static byte[][] toByteArray(Map<String, Object> keyValueMap, BaseSerializer serializer) {
-        byte[][] kvs = new byte[keyValueMap.size() * 2][];
-        int index = 0;
-        for (Map.Entry<String, Object> entry : keyValueMap.entrySet()) {
-            kvs[index++] = entry.getKey().getBytes();
-            kvs[index++] = serializer.serialize(entry.getValue());
-        }
-        return kvs;
-    }
-
-    /**
-     * Converts a collection of string keys into a 2D byte array for Redis commands.
-     *
-     * @param keys The collection of keys.
-     * @return A 2D byte array where each inner array is the byte representation of a key.
-     */
-    static byte[][] toByteArray(Collection<String> keys) {
-        byte[][] array = new byte[keys.size()][];
-        int index = 0;
-        for (String text : keys) {
-            array[index++] = text.getBytes();
-        }
-        return array;
-    }
-
-    /**
-     * Converts a list of byte array values back into a map of string keys to objects.
-     *
-     * @param keys        The original collection of keys, used for mapping.
-     * @param bytesValues The list of serialized values returned from Redis.
-     * @param serializer  The serializer to use for deserialization.
-     * @return A map of keys to their deserialized object values.
-     */
-    static Map<String, Object> toObjectMap(
-            Collection<String> keys,
-            List<byte[]> bytesValues,
-            BaseSerializer serializer) {
-        int index = 0;
-        Map<String, Object> result = new HashMap<>(keys.size());
-        for (String key : keys) {
-            byte[] valueBytes = bytesValues.get(index++);
-            if (valueBytes != null) {
-                Object value = serializer.deserialize(valueBytes);
-                result.put(key, value);
-            }
-        }
-        return result;
     }
 
     /**
@@ -143,7 +93,7 @@ public class RedisCache<K, V> implements CacheX<K, V> {
     public V read(K key) {
         try (Jedis client = jedisPool.getResource()) {
             byte[] bytes = client.get(key.toString().getBytes());
-            return serializer.deserialize(bytes);
+            return bytes != null ? serializer.deserialize(bytes) : null;
         }
     }
 
@@ -175,8 +125,8 @@ public class RedisCache<K, V> implements CacheX<K, V> {
     @Override
     public Map<K, V> read(Collection<K> keys) {
         try (Jedis client = jedisPool.getResource()) {
-            List<byte[]> bytesValues = client.mget(toByteArray((Collection<String>) keys));
-            return (Map<K, V>) toObjectMap((Collection<String>) keys, bytesValues, this.serializer);
+            List<byte[]> bytesValues = client.mget(Builder.toByteArray((Collection<String>) keys));
+            return (Map<K, V>) Builder.toObjectMap((Collection<String>) keys, bytesValues, this.serializer);
         }
     }
 
@@ -187,9 +137,10 @@ public class RedisCache<K, V> implements CacheX<K, V> {
      * @param expire      The expiration time in milliseconds. If {@link CacheExpire#FOREVER}, `MSET` is used.
      *                    Otherwise, a pipeline of `PSETEX` commands is used.
      */
+    @Override
     public void write(Map<K, V> keyValueMap, long expire) {
         try (Jedis client = jedisPool.getResource()) {
-            byte[][] kvs = toByteArray((Map<String, Object>) keyValueMap, serializer);
+            byte[][] kvs = Builder.toByteArray((Map<String, Object>) keyValueMap, serializer);
             if (expire == CacheExpire.FOREVER) {
                 client.mset(kvs);
             } else {
@@ -205,43 +156,117 @@ public class RedisCache<K, V> implements CacheX<K, V> {
 
     /**
      * Removes entries from the cache.
-     * <p>
-     * <strong>Note:</strong> This implementation has a flaw. It attempts to delete a single key that is the string
-     * representation of the entire key array (e.g., "[Ljava.lang.String;@12345") instead of deleting each key within
-     * the array.
-     * </p>
      *
      * @param keys The keys to remove.
      */
     @Override
     public void remove(K... keys) {
+        if (keys.length == 0) {
+            return;
+        }
         try (Jedis client = jedisPool.getResource()) {
-            client.del(keys.toString());
+            byte[][] rawKeys = new byte[keys.length][];
+            for (int i = 0; i < keys.length; i++) {
+                rawKeys[i] = keys[i].toString().getBytes();
+            }
+            client.del(rawKeys);
         }
     }
 
     /**
-     * Destroys the underlying connection pool.
+     * Flushes all data from the current Redis database.
      * <p>
-     * <strong>Warning:</strong> This is a destructive operation that permanently closes the {@link JedisPool},
-     * rendering this cache instance unusable. It does not clear the data from Redis, but rather shuts down the
-     * connection manager.
+     * <strong>Warning:</strong> This clears every key in the current DB. Use {@code scan() + remove()} if only a
+     * specific key prefix should be removed. To shut down the connection pool use {@link #close()}.
      * </p>
      */
     @Override
     public void clear() {
-        tearDown();
+        try (Jedis client = jedisPool.getResource()) {
+            client.flushDB();
+        }
     }
 
     /**
-     * A lifecycle method to destroy the {@link JedisPool}.
+     * Atomically increments the counter stored at the given key and returns the new value.
      * <p>
-     * Annotated with {@link PreDestroy}, this method is typically invoked by a dependency injection container when the
-     * bean is being destroyed.
+     * Uses the Redis {@code INCR} command. If the key does not exist it is created with value {@code 0} and then
+     * incremented, returning {@code 1}. The counter has no TTL and persists until explicitly removed.
+     * </p>
+     *
+     * @param key the counter key
+     * @return the new counter value after increment
+     */
+    @Override
+    public long increment(K key) {
+        try (Jedis client = jedisPool.getResource()) {
+            return client.incr(key.toString());
+        }
+    }
+
+    /**
+     * Scans and returns all key-value pairs whose keys start with the given prefix.
+     * <p>
+     * Uses the non-blocking Redis {@code SCAN} cursor command followed by a batched {@code MGET} to retrieve values in
+     * minimal round-trips. {@code count(200)} is a hint to the server about scan granularity per cursor step.
+     * </p>
+     *
+     * @param prefix the key prefix to match
+     * @return a map of all matching key-value pairs
+     */
+    @Override
+    public Map<K, V> scan(K prefix) {
+        Map<K, V> result = new LinkedHashMap<>();
+        String pattern = prefix.toString() + Symbol.STAR;
+        try (Jedis client = jedisPool.getResource()) {
+            String cursor = Symbol.ZERO;
+            ScanParams params = new ScanParams().match(pattern).count(200);
+            do {
+                ScanResult<String> batch = client.scan(cursor, params);
+                cursor = batch.getCursor();
+                List<String> batchKeys = batch.getResult();
+                if (!batchKeys.isEmpty()) {
+                    byte[][] rawKeys = batchKeys.stream().map(String::getBytes).toArray(byte[][]::new);
+                    List<byte[]> values = client.mget(rawKeys);
+                    for (int i = 0; i < batchKeys.size(); i++) {
+                        if (values.get(i) != null) {
+                            result.put((K) batchKeys.get(i), serializer.deserialize(values.get(i)));
+                        }
+                    }
+                }
+            } while (!Symbol.ZERO.equals(cursor));
+        }
+        return result;
+    }
+
+    /**
+     * Refreshes the TTL of an existing entry using the Redis {@code PEXPIRE} command.
+     * <p>
+     * More efficient than the default read-then-write approach as it issues a single command without touching the
+     * value.
+     * </p>
+     *
+     * @param key    the key whose TTL to refresh
+     * @param expire the new expiration time in milliseconds
+     * @return {@code true} if the TTL was set; {@code false} if the key does not exist
+     */
+    @Override
+    public boolean renew(K key, long expire) {
+        try (Jedis client = jedisPool.getResource()) {
+            return client.pexpire(key.toString(), expire) == 1L;
+        }
+    }
+
+    /**
+     * Closes and destroys the {@link JedisPool}, releasing all pooled connections.
+     * <p>
+     * Annotated with {@link PreDestroy} so a DI container invokes it automatically on bean destruction. Also implements
+     * {@link AutoCloseable} so the cache can be used in a try-with-resources block.
      * </p>
      */
     @PreDestroy
-    public void tearDown() {
+    @Override
+    public void close() {
         if (null != jedisPool && !jedisPool.isClosed()) {
             jedisPool.destroy();
         }

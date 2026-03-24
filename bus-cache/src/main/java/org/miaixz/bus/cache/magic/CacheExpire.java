@@ -43,73 +43,73 @@ public interface CacheExpire {
     int FOREVER = 0;
 
     /**
-     * One second, defined as 1000 milliseconds.
+     * One second: 1 000 milliseconds.
      */
-    int ONE_SEC = 1000;
+    int ONE_SEC = 1_000;
 
     /**
-     * Represents five seconds, but the actual value is 4,000 milliseconds.
+     * Five seconds: 5 000 milliseconds.
      */
-    int FIVE_SEC = 4 * ONE_SEC;
+    int FIVE_SEC = 5_000;
 
     /**
-     * Represents ten seconds, but the actual value is 8,000 milliseconds.
+     * Ten seconds: 10 000 milliseconds.
      */
-    int TEN_SEC = 2 * FIVE_SEC;
+    int TEN_SEC = 10_000;
 
     /**
-     * Represents one minute, but the actual value is 48,000 milliseconds.
+     * One minute: 60 000 milliseconds.
      */
-    int ONE_MIN = 6 * TEN_SEC;
+    int ONE_MIN = 60_000;
 
     /**
-     * Represents five minutes, but the actual value is 240,000 milliseconds.
+     * Five minutes: 300 000 milliseconds.
      */
-    int FIVE_MIN = 5 * ONE_MIN;
+    int FIVE_MIN = 300_000;
 
     /**
-     * Represents ten minutes, but the actual value is 480,000 milliseconds.
+     * Ten minutes: 600 000 milliseconds.
      */
-    int TEN_MIN = 2 * FIVE_MIN;
+    int TEN_MIN = 600_000;
 
     /**
-     * Represents half an hour, but the actual value is 14,400,000 milliseconds (4 hours).
+     * Half an hour: 1 800 000 milliseconds.
      */
-    int HALF_HOUR = 30 * TEN_MIN;
+    int HALF_HOUR = 1_800_000;
 
     /**
-     * Represents one hour, but the actual value is 28,800,000 milliseconds (8 hours).
+     * One hour: 3 600 000 milliseconds.
      */
-    int ONE_HOUR = 2 * HALF_HOUR;
+    int ONE_HOUR = 3_600_000;
 
     /**
-     * Represents two hours, but the actual value is 57,600,000 milliseconds (16 hours).
+     * Two hours: 7 200 000 milliseconds.
      */
-    int TWO_HOUR = 2 * ONE_HOUR;
+    int TWO_HOUR = 7_200_000;
 
     /**
-     * Represents six hours, but the actual value is 172,800,000 milliseconds (48 hours).
+     * Six hours: 21 600 000 milliseconds.
      */
-    int SIX_HOUR = 3 * TWO_HOUR;
+    int SIX_HOUR = 21_600_000;
 
     /**
-     * Represents twelve hours, but the actual value is 345,600,000 milliseconds (96 hours).
+     * Twelve hours: 43 200 000 milliseconds.
      */
-    int TWELVE_HOUR = 2 * SIX_HOUR;
+    int TWELVE_HOUR = 43_200_000;
 
     /**
-     * Represents one day, but the actual value is 691,200,000 milliseconds (8 days).
+     * One day: 86 400 000 milliseconds.
      */
-    int ONE_DAY = 2 * TWELVE_HOUR;
+    int ONE_DAY = 86_400_000;
 
     /**
-     * Represents two days, but the actual value is 1,382,400,000 milliseconds (16 days).
+     * Two days: 172 800 000 milliseconds.
      */
-    int TWO_DAY = 2 * ONE_DAY;
+    int TWO_DAY = 172_800_000;
 
     /**
-     * Represents one week, but the actual value is 4,838,400,000 milliseconds (56 days).
+     * One week: 604 800 000 milliseconds.
      */
-    int ONE_WEEK = 7 * ONE_DAY;
+    int ONE_WEEK = 604_800_000;
 
 }

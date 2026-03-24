@@ -34,6 +34,7 @@ module bus.starter {
     requires bus.base;
     requires bus.cache;
     requires bus.core;
+    requires bus.cortex;
     requires bus.crypto;
     requires bus.extra;
     requires bus.health;
@@ -99,7 +100,7 @@ module bus.starter {
     requires org.apache.httpcomponents.httpclient;
     requires org.apache.httpcomponents.httpcore;
     requires org.apache.httpcomponents.httpasyncclient;
-    requires bus.cortex;
+    requires redis.clients.jedis;
 
     exports org.miaixz.bus.spring;
     exports org.miaixz.bus.spring.annotation;

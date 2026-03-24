@@ -152,9 +152,9 @@ public class CortexConfiguration {
      *
      * @param properties     bound Cortex properties
      * @param cacheX         shared starter cache
-     * @param apiRegistry     API registry bean
-     * @param mcpRegistry     MCP registry bean
-     * @param promptRegistry  prompt registry bean
+     * @param apiRegistry    API registry bean
+     * @param mcpRegistry    MCP registry bean
+     * @param promptRegistry prompt registry bean
      * @param config         config center bean
      * @return initialized starter context
      */

@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cache.support;
+package org.miaixz.bus.cache.builtin;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -37,35 +37,36 @@ import java.io.Serializable;
 public class PreventObjects {
 
     /**
-     * Returns the singleton object used for cache penetration prevention.
+     * Returns the singleton marker object used for cache penetration prevention.
      * <p>
      * This object serves as a placeholder in the cache for keys that correspond to non-existent data.
      * </p>
      *
-     * @return The singleton penetration prevention object.
+     * @return The singleton {@link NullMarker} instance.
      */
     public static Object getPreventObject() {
-        return PreventObject.INSTANCE;
+        return NullMarker.INSTANCE;
     }
 
     /**
-     * Checks if a given object is the special penetration prevention object.
+     * Checks if a given object is the special penetration prevention marker.
      *
      * @param object The object to check.
-     * @return {@code true} if the object is the penetration prevention instance, otherwise {@code false}.
+     * @return {@code true} if the object is the {@link NullMarker} instance, otherwise {@code false}.
      */
     public static boolean isPrevent(Object object) {
-        return object == PreventObject.INSTANCE || object instanceof PreventObject;
+        return object == NullMarker.INSTANCE || object instanceof NullMarker;
     }
 
     /**
-     * The internal singleton class for the penetration prevention object.
+     * A serializable singleton marker used to represent a cached null value.
      * <p>
-     * It is implemented as a serializable singleton to ensure it can be stored in various distributed cache
-     * implementations and that only one instance exists globally.
+     * Stored in the cache in place of a missing entry to prevent repeated cache-miss lookups against the underlying
+     * data source. Implements {@link Serializable} so it survives round-trips through distributed caches;
+     * {@link #readResolve()} guarantees that deserialization always returns the single canonical instance.
      * </p>
      */
-    private static final class PreventObject implements Serializable {
+    private static final class NullMarker implements Serializable {
 
         /**
          * The serialization version UID.
@@ -76,7 +77,15 @@ public class PreventObjects {
         /**
          * The singleton instance.
          */
-        private static final PreventObject INSTANCE = new PreventObject();
+        private static final NullMarker INSTANCE = new NullMarker();
+
+        private NullMarker() {
+        }
+
+        @Serial
+        private Object readResolve() {
+            return INSTANCE;
+        }
     }
 
 }

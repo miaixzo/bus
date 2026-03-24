@@ -20,7 +20,7 @@
 package org.miaixz.bus.cache.reader;
 
 import org.miaixz.bus.cache.Context;
-import org.miaixz.bus.cache.Metrics;
+import org.miaixz.bus.cache.Collector;
 import org.miaixz.bus.cache.Manage;
 import org.miaixz.bus.cache.magic.AnnoHolder;
 import org.miaixz.bus.cache.magic.MethodHolder;
@@ -51,9 +51,9 @@ public abstract class AbstractReader {
     protected Context context;
 
     /**
-     * The component for tracking cache performance metrics.
+     * The component for tracking cache performance statistics.
      */
-    protected Metrics metrics;
+    protected Collector collector;
 
     /**
      * Executes the cache read operation.
@@ -114,12 +114,12 @@ public abstract class AbstractReader {
     }
 
     /**
-     * Sets the cache metrics component.
+     * Sets the cache collector component.
      *
-     * @param metrics The cache metrics component.
+     * @param collector The cache collector component.
      */
-    public void setHitting(Metrics metrics) {
-        this.metrics = metrics;
+    public void setCollector(Collector collector) {
+        this.collector = collector;
     }
 
     /**

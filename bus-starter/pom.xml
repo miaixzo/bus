@@ -93,6 +93,8 @@
         <elastic.version>8.19.0</elastic.version>
         <mongo.version>5.5.1</mongo.version>
         <curator.version>5.8.0</curator.version>
+        <jedis.version>6.0.0</jedis.version>
+        <micrometer.version>1.16.4</micrometer.version>
     </properties>
 
     <dependencies>
@@ -111,6 +113,12 @@
         <dependency>
             <groupId>org.miaixz</groupId>
             <artifactId>bus-cache</artifactId>
+            <version>${bus.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
+            <artifactId>bus-cortex</artifactId>
             <version>${bus.version}</version>
             <optional>true</optional>
         </dependency>
@@ -194,6 +202,12 @@
         </dependency>
         <dependency>
             <groupId>org.miaixz</groupId>
+            <artifactId>bus-tempus</artifactId>
+            <version>${bus.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-tracer</artifactId>
             <version>${bus.version}</version>
             <optional>true</optional>
@@ -213,12 +227,6 @@
         <dependency>
             <groupId>org.miaixz</groupId>
             <artifactId>bus-vortex</artifactId>
-            <version>${bus.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-cortex</artifactId>
             <version>${bus.version}</version>
             <optional>true</optional>
         </dependency>
@@ -355,8 +363,28 @@
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-core</artifactId>
-            <version>1.16.4</version>
+            <version>${micrometer.version}</version>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>${jedis.version}</version>
+            <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.json</groupId>
+                    <artifactId>json</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.code.gson</groupId>
+                    <artifactId>gson</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -429,12 +457,6 @@
                     <artifactId>tomcat-embed-el</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-tempus</artifactId>
-            <version>8.5.9</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 

@@ -19,6 +19,10 @@
 */
 package org.miaixz.bus.starter.mapper;
 
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.Set;
+
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
@@ -27,15 +31,11 @@ import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
-import org.springframework.beans.factory.support.BeanDefinitionRegistrar;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.AssignableTypeFilter;
-
-import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.Set;
 
 /**
  * A {@link ClassPathBeanDefinitionScanner} that scans for and registers MyBatis mapper interfaces.
@@ -93,7 +93,7 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
      *
      * @param registry The Spring bean definition registry.
      */
-    public ClassPathMapperScanner(BeanDefinitionRegistrar registry) {
+    public ClassPathMapperScanner(BeanDefinitionRegistry registry) {
         super(registry, false);
     }
 

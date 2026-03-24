@@ -21,6 +21,7 @@ package org.miaixz.bus.starter.metrics;
 
 import org.miaixz.bus.metrics.Metrics;
 import org.miaixz.bus.metrics.Provider;
+import org.miaixz.bus.metrics.builtin.CacheMetricsAdapter;
 import org.miaixz.bus.metrics.builtin.JvmMetrics;
 import org.miaixz.bus.metrics.builtin.SystemMetrics;
 import org.miaixz.bus.metrics.guard.CardinalityGuard;
@@ -35,12 +36,11 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 
 /**
- * Spring Boot auto-configuration for bus-metrics.
- * Imported via {@link org.miaixz.bus.starter.annotation.EnableMetrics} through {@code @Import}.
+ * Spring Boot auto-configuration for bus-metrics. Imported via {@link org.miaixz.bus.starter.annotation.EnableMetrics}
+ * through {@code @Import}.
  * <p>
- * When {@code bus-health} is on the classpath, {@link HealthMetrics} is used for system/JVM
- * metrics (JNA-backed, hardware-accurate). Otherwise falls back to {@link JvmMetrics} and
- * {@link SystemMetrics} (JVM MXBean-backed).
+ * When {@code bus-health} is on the classpath, {@link HealthMetrics} is used for system/JVM metrics (JNA-backed,
+ * hardware-accurate). Otherwise falls back to {@link JvmMetrics} and {@link SystemMetrics} (JVM MXBean-backed).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -60,11 +60,9 @@ public class MetricsConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(name = "metricsProvider")
-    @ConditionalOnClass(name = "io.micrometer.core.instrument.MeterRegistrar")
+    @ConditionalOnClass(name = "io.micrometer.core.instrument.MeterRegistry")
     @ConditionalOnProperty(prefix = "bus.metrics", name = "provider", havingValue = "micrometer")
-    public Provider micrometerProvider(
-            MetricsProperties props,
-            io.micrometer.core.instrument.MeterRegistrar registry) {
+    public Provider micrometerProvider(MetricsProperties props, io.micrometer.core.instrument.MeterRegistry registry) {
         applyCardinalityGuard(props.getCardinality());
         Provider provider = new MicrometerProvider(registry);
         Metrics.setProvider(provider);
@@ -73,9 +71,23 @@ public class MetricsConfiguration {
     }
 
     /**
-     * Registers system/JVM builtin metrics.
-     * Prefers bus-health (JNA-backed, more accurate) when available on the classpath.
-     * Falls back to MXBean-based metrics when bus-health is absent.
+     * Exposes a {@link CacheMetricsAdapter} bean that bridges bus-cache hit/miss statistics into the bus-metrics
+     * observability backend (Prometheus, Micrometer, OTel).
+     * <p>
+     * Inject this bean into the bus-cache {@code Context} via {@code Context.newBuilder().hitting(adapter)} to activate
+     * automatic hit-rate tracking for all {@code @Cached} methods. Skipped when the application provides its own
+     * {@link org.miaixz.bus.cache.Collector} bean.
+     */
+    @Bean
+    @ConditionalOnClass(name = "org.miaixz.bus.cache.Collector")
+    @ConditionalOnMissingBean(org.miaixz.bus.cache.Collector.class)
+    public CacheMetricsAdapter cacheMetricsAdapter() {
+        return new CacheMetricsAdapter();
+    }
+
+    /**
+     * Registers system/JVM builtin metrics. Prefers bus-health (JNA-backed, more accurate) when available on the
+     * classpath. Falls back to MXBean-based metrics when bus-health is absent.
      */
     private void registerBuiltinMetrics(MetricsProperties props) {
         boolean healthOnClasspath = isHealthAvailable();

@@ -25,8 +25,8 @@ import org.miaixz.bus.cache.Builder;
 import org.miaixz.bus.cache.magic.AnnoHolder;
 import org.miaixz.bus.cache.magic.CacheKeys;
 import org.miaixz.bus.cache.magic.MethodHolder;
-import org.miaixz.bus.cache.support.Addables;
-import org.miaixz.bus.cache.support.PreventObjects;
+import org.miaixz.bus.cache.builtin.Addables;
+import org.miaixz.bus.cache.builtin.PreventObjects;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.proxy.invoker.ProxyChain;
 
@@ -35,7 +35,7 @@ import org.miaixz.bus.proxy.invoker.ProxyChain;
  * <p>
  * This class implements the logic for batch reads, handling scenarios involving partial hits, full hits, and full
  * misses. It is capable of processing methods that return either a {@link Map} or a {@link Collection}, and it
- * integrates with the metrics component to record hit rates.
+ * integrates with the collector component to record hit rates.
  * </p>
  *
  * @author Kimi Liu
@@ -222,6 +222,9 @@ public class MultiCacheReader extends AbstractReader {
             methodHolder.setReturnType(returnType);
 
             if (Map.class.isAssignableFrom(returnType)) {
+                if (!(proceed instanceof Map)) {
+                    throw new IllegalStateException("Expected Map return type but got: " + returnType.getName());
+                }
                 Map<Object, Object> proceedEntryValueMap = (Map<Object, Object>) proceed;
                 if (needWrite) {
                     Map<String, Object> keyValueMap = Builder
@@ -314,23 +317,28 @@ public class MultiCacheReader extends AbstractReader {
 
     /**
      * Creates a new arguments array for re-invoking the original method with only the missed keys.
+     * <p>
+     * A defensive copy of the original {@code args} array is made so that the caller's reference is not mutated; only
+     * the collection at {@code multiIndex} is replaced in the copy.
+     * </p>
      *
      * @param missKeys   The set of keys that were not found in the cache.
      * @param keyIdMap   A map from cache key to its source entry.
      * @param args       The original method arguments.
      * @param multiIndex The index of the argument that contains the collection of keys.
-     * @return A new arguments array.
+     * @return A new arguments array with the multi-key argument replaced by the missed entries only.
      */
     private Object[] toMissArgs(Set<String> missKeys, Map<String, Object> keyIdMap, Object[] args, int multiIndex) {
         List<Object> missedMultiEntries = missKeys.stream().map(keyIdMap::get).collect(Collectors.toList());
         Class<?> multiArgType = args[multiIndex].getClass();
         Addables.Addable addable = Addables.newAddable(multiArgType, missedMultiEntries.size());
-        args[multiIndex] = addable.addAll(missedMultiEntries).get();
-        return args;
+        Object[] copiedArgs = Arrays.copyOf(args, args.length);
+        copiedArgs[multiIndex] = addable.addAll(missedMultiEntries).get();
+        return copiedArgs;
     }
 
     /**
-     * Records cache hit and request counts for metrics.
+     * Records cache hit and request counts for statistics.
      *
      * @param cacheKeys  The results from the cache read.
      * @param annoHolder The annotation metadata.
@@ -340,10 +348,10 @@ public class MultiCacheReader extends AbstractReader {
         int hitCount = cacheKeys.getHitKeyMap().size();
         int totalCount = hitCount + missKeys.size();
         Logger.info("multi cache hit rate: {}/{}, missed keys: {}", hitCount, totalCount, missKeys);
-        if (null != this.metrics) {
+        if (null != this.collector) {
             String pattern = Builder.generatePattern(annoHolder);
-            this.metrics.hitIncr(pattern, hitCount);
-            this.metrics.reqIncr(pattern, totalCount);
+            this.collector.hitIncr(pattern, hitCount);
+            this.collector.reqIncr(pattern, totalCount);
         }
     }
 

@@ -47,8 +47,10 @@ The framework features declarative caching through annotations, automatic cache 
 * **Cache Penetration Prevention**: Automatic placeholder insertion for null results
 * **SpEL Support**: Dynamic cache key generation using Spring Expression Language
 * **Conditional Caching**: Cache based on runtime conditions with SpEL
-* **Flexible Expiration**: Per-entry or global TTL configuration
-* **Metrics Integration**: Built-in cache hit rate statistics and monitoring
+* **Flexible Expiration**: Per-entry or global TTL configuration, with `CacheExpire.FOREVER` (`0`) meaning never expire
+* **TTL Refresh**: `renew(key, expire)` extends the TTL of an existing entry without changing the key
+* **Atomic Counters**: `increment(key)` provides monotonic counters for rate limits, sequences, and lightweight metrics
+* **Statistics Integration**: Built-in cache hit rate statistics and monitoring
 * **Multi-Key Caching**: Batch operations with collection-based cache keys
 
 -----
@@ -79,52 +81,49 @@ The framework features declarative caching through annotations, automatic cache 
 
 #### 2. Configure Cache
 
+`CacheProperties` (`bus.cache.*`) supports the following fields:
+
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| `type` | `String` | Fully-qualified class name of the `Collector` implementation |
+| `prefix` | `String` | Global cache key prefix applied to all keys |
+| `timeout` | `String` | Default expiration timeout (e.g. `"3600000"`, mainly used by Redis) |
+| `provider.url` | `String` | JDBC URL for database-backed Collector (MySQL, H2, SQLite, etc.) |
+| `provider.username` | `String` | Database username |
+| `provider.password` | `String` | Database password |
+
+Cache instances (`MemoryCache`, `CaffeineCache`, `RedisCache`, etc.) are **interface types** and must
+be registered as Spring Beans — they cannot be bound from YAML.
+
+**Example: in-memory collector (no persistence)**
+
 ```yaml
-# application.yml
 bus:
   cache:
-    # Enable/disable caching globally
-    enable: true
+    type: org.miaixz.bus.cache.collect.MemoryCollector
+    prefix: myapp
+```
 
-    # Default cache expiration (milliseconds)
-    expire: 3600000  # 1 hour
+**Example: MySQL-backed collector (survives restarts)**
 
-    # Cache penetration prevention
-    prevent: true
+```yaml
+bus:
+  cache:
+    type: org.miaixz.bus.cache.collect.MySQLCollector
+    prefix: myapp
+    provider:
+      url: jdbc:mysql://localhost:3306/mydb
+      username: root
+      password: secret
+```
 
-    # Cache configurations
-    caches:
-      # Local memory cache
-      - name: memory
-        type: memory
-        maximumSize: 1000
-        expireAfterWrite: 180000  # 3 minutes
-        expireAfterAccess: 0
+**Example: bus-metrics adapter (Prometheus / Micrometer / OTel)**
 
-      # Caffeine cache
-      - name: caffeine
-        type: caffeine
-        maximumSize: 10000
-        expireAfterWrite: 3600000
-        expireAfterAccess: 600000
-        initialCapacity: 100
-
-      # Redis cache
-      - name: redis
-        type: redis
-        host: localhost
-        port: 6379
-        timeout: 2000
-        expire: 3600000
-
-      # Redis cluster
-      - name: redisCluster
-        type: redis-cluster
-        nodes:
-          - localhost:7000
-          - localhost:7001
-          - localhost:7002
-        expire: 3600000
+```yaml
+bus:
+  cache:
+    type: org.miaixz.bus.metrics.builtin.CacheMetricsAdapter
+    prefix: myapp
 ```
 
 #### 3. Enable Caching
@@ -384,6 +383,9 @@ public class RedisCacheConfig {
 }
 ```
 
+`RedisCache` implements `AutoCloseable`.  Call `close()` (or use try-with-resources) to return all
+pool connections.  The `@PreDestroy` annotation ensures automatic shutdown in Spring containers.
+
 #### Redis Cluster
 
 ```java
@@ -407,7 +409,74 @@ public class RedisClusterConfig {
 }
 ```
 
-### 5. Cache Metrics and Monitoring
+`RedisClusterCache` also implements `AutoCloseable`.
+
+> **Cluster scan limitation**: Redis Cluster does not support cross-slot `SCAN` through a single
+> cursor.  `RedisClusterCache.scan(prefix)` performs a best-effort scan reachable from cursor `"0"`.
+> For complete coverage across all shards, route all keys to the same slot using a hash tag
+> (e.g. `{ns}:key`).
+
+### 5. Advanced CacheX Operations
+
+#### Permanent (Never-Expire) Entries
+
+Pass `CacheExpire.FOREVER` (`0`) as the expiry argument to persist an entry indefinitely:
+
+```java
+// Store configuration that must never expire
+cache.write("global:config", config, CacheExpire.FOREVER);
+```
+
+All implementations honour this contract:
+- `MemoryCache` — entry is never evicted by TTL checks
+- `RedisCache` / `RedisClusterCache` — issues a plain `SET` without `PX`
+- `MemcachedCache` — falls back to Memcached's maximum TTL of 30 days (protocol limitation)
+
+#### TTL Refresh (`renew`)
+
+Extend the lifetime of an existing entry without rewriting its value:
+
+```java
+// Extend session TTL on each user interaction
+boolean refreshed = cache.renew(sessionKey, CacheExpire.HALF_HOUR);
+if (!refreshed) {
+    // Key has already expired — recreate the session
+}
+```
+
+`RedisCache` and `RedisClusterCache` implement `renew` via a single `PEXPIRE` command.
+`MemoryCache` and other implementations use a read-then-write fallback.
+
+#### Atomic Counters (`increment`)
+
+Atomically increment a counter and retrieve the new value:
+
+```java
+// Rate limiting: track requests per client per minute
+long count = cache.increment("ratelimit:" + clientId + ":" + minute);
+if (count > MAX_REQUESTS_PER_MINUTE) {
+    throw new RateLimitException();
+}
+```
+
+- Redis: backed by the native `INCR` command — atomicity guaranteed even under concurrency.
+- MemoryCache: backed by `AtomicLong` — also thread-safe.
+- Counters start at `1` on first call (key created with value `0`, then incremented).
+- Counter keys share no TTL by default; call `remove()` explicitly to reset.
+
+#### Prefix Scan (`scan`)
+
+Retrieve all entries whose key begins with a given prefix:
+
+```java
+// Fetch all cached items under a namespace
+Map<String, Object> items = cache.scan("product:category:electronics:");
+```
+
+> **Note**: For `RedisClusterCache`, cross-shard scan is not fully supported.  See the cluster
+> scan limitation note above.
+
+### 6. Cache Statistics and Monitoring
 
 #### Accessing Cache Statistics
 
@@ -416,10 +485,10 @@ public class RedisClusterConfig {
 public class CacheMonitorService {
 
     @Autowired
-    private Metrics cacheMetrics;
+    private Collector cacheCollector;
 
     public void printCacheStats() {
-        Map<String, Snapshot> stats = cacheMetrics.getHitting();
+        Map<String, Snapshot> stats = cacheCollector.getHitting();
 
         stats.forEach((pattern, snapshot) -> {
             System.out.println("Cache Pattern: " + pattern);
@@ -430,7 +499,7 @@ public class CacheMonitorService {
     }
 
     public void resetCacheStats(String pattern) {
-        cacheMetrics.reset(pattern);
+        cacheCollector.reset(pattern);
     }
 }
 ```
@@ -483,7 +552,7 @@ public class CaffeineCacheService {
 }
 ```
 
-### 6. Cache Penetration Prevention
+### 7. Cache Penetration Prevention
 
 ```java
 @Service
@@ -510,7 +579,7 @@ public class SecureUserService {
 }
 ```
 
-### 7. Conditional Caching
+### 8. Conditional Caching
 
 ```java
 @Service
@@ -548,7 +617,7 @@ public class ConditionalCacheService {
 }
 ```
 
-### 8. Custom Serializer
+### 9. Custom Serializer
 
 ```java
 @Configuration
@@ -614,7 +683,7 @@ public Config getConfig(String key) {
 // ❌ Not Recommended: No expiration for dynamic data
 @Cached(name = "redis", prefix = "price:", expire = CacheExpire.FOREVER)
 public Price getPrice(String productId) {
-    // Stale data will be served forever
+    // FOREVER = 0: entry persists until explicitly removed — stale data served indefinitely
 }
 ```
 
@@ -674,7 +743,7 @@ public Product getProduct(String productId) {
 // ✅ Recommended: Regular monitoring and alerting
 @Scheduled(fixedRate = 60000)  // Every minute
 public void monitorCache() {
-    Map<String, Snapshot> stats = cacheMetrics.getHitting();
+    Map<String, Snapshot> stats = cacheCollector.getHitting();
 
     stats.forEach((pattern, snapshot) -> {
         double hitRate = Double.parseDouble(snapshot.getRate().replace("%", ""));
@@ -706,6 +775,27 @@ public UserSettings getUserSettings(String userId) {
 public Object getData(String type, String id) {
     // Easy conflicts, hard to invalidate
 }
+```
+
+### 7. Always Close Cache Resources
+
+All cache implementations that hold external connections (`RedisCache`, `RedisClusterCache`,
+`MemcachedCache`) implement `AutoCloseable`.  Release resources when they are no longer needed:
+
+```java
+// ✅ Spring beans: @PreDestroy is triggered automatically — no manual close() required
+@Bean
+public CacheX<String, Object> redisCache(JedisPool jedisPool) {
+    return new RedisCache<>(jedisPool);  // closed automatically on context shutdown
+}
+
+// ✅ Non-Spring usage: use try-with-resources
+try (RedisCache<String, Object> cache = new RedisCache<>(jedisPool)) {
+    cache.write("key", value, CacheExpire.ONE_HOUR);
+}
+
+// ✅ Prefer renew() over read+write when only the TTL needs extending
+boolean extended = cache.renew(sessionKey, CacheExpire.HALF_HOUR);
 ```
 
 -----

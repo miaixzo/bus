@@ -17,8 +17,9 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cache.support.serialize;
+package org.miaixz.bus.cache.serialize;
 
+import org.miaixz.bus.cache.Serializer;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -32,7 +33,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class AbstractSerializer implements BaseSerializer {
+public abstract class AbstractSerializer implements Serializer {
 
     /**
      * Performs the actual serialization of the object.

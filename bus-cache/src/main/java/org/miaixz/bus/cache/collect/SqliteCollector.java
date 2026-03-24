@@ -17,96 +17,90 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cache.support.metrics;
+package org.miaixz.bus.cache.collect;
 
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-import org.springframework.jdbc.core.JdbcOperations;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
 /**
  * SQLite database implementation for cache hit rate statistics.
  * <p>
- * This class provides a metrics solution using a lightweight, embedded SQLite database. It is suitable for single-node
- * or testing environments. It uses a {@link SingleConnectionDataSource} and {@link JdbcTemplate} for database
- * operations and automatically creates the necessary table for storing statistics.
+ * Suitable for single-node or testing environments. A single persistent connection is held via
+ * {@link JdbcRunner#forSingleConnection} to prevent the connection from being closed between statement executions. The
+ * {@code t_cache_rate} table is created automatically on startup if it does not already exist.
  * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class SqliteMetrics extends AbstractMetrics {
+public class SqliteCollector extends AbstractCollector {
 
     /**
-     * Constructs an {@code SqliteMetrics} instance using a context map for database configuration.
+     * Constructs an {@code SqliteCollector} instance using a context map for database configuration.
      *
      * @param context A map containing the database JDBC URL (e.g., "url").
      */
-    public SqliteMetrics(Map<String, Object> context) {
+    public SqliteCollector(Map<String, Object> context) {
         super(context);
     }
 
     /**
-     * Constructs an {@code SqliteMetrics} instance with explicit database connection details.
+     * Constructs an {@code SqliteCollector} instance with explicit database connection details.
      *
      * @param url      The JDBC URL for the SQLite database.
      * @param username The username (typically ignored by SQLite).
      * @param password The password (typically ignored by SQLite).
      */
-    public SqliteMetrics(String url, String username, String password) {
+    public SqliteCollector(String url, String username, String password) {
         super(url, username, password);
     }
 
     /**
-     * Provides a {@link Supplier} for {@link JdbcOperations} configured for an SQLite database.
+     * Provides a {@link Supplier} for a {@link JdbcRunner} configured for an SQLite database.
      * <p>
-     * This method sets up a {@link SingleConnectionDataSource} and a {@link JdbcTemplate}. It then ensures that the
-     * {@code t_cache_rate} table exists, creating it if necessary. Note: The DDL uses `IDENTITY`, which may not be
-     * standard for all SQLite versions; `INTEGER PRIMARY KEY AUTOINCREMENT` is more common.
+     * Uses {@link JdbcRunner#forSingleConnection} so the file-based or in-memory SQLite connection is not closed
+     * between statement executions.
      * </p>
      *
      * @param context A map containing the database JDBC URL under the "url" key.
-     * @return A supplier that provides an initialized {@link JdbcOperations} object.
+     * @return A supplier that provides an initialized {@link JdbcRunner} object.
      */
     @Override
-    protected Supplier<JdbcOperations> jdbcOperationsSupplier(Map<String, Object> context) {
+    protected Supplier<JdbcRunner> jdbcRunnerSupplier(Map<String, Object> context) {
         return () -> {
-            SingleConnectionDataSource dataSource = new SingleConnectionDataSource();
-            dataSource.setDriverClassName("org.sqlite.JDBC");
-            dataSource.setUrl((String) context.get("url"));
-            JdbcTemplate template = new JdbcTemplate(dataSource);
-            template.execute(
+            JdbcRunner runner = JdbcRunner
+                    .forSingleConnection("org.sqlite.JDBC", (String) context.get("url"), null, null);
+            runner.execute(
                     "CREATE TABLE IF NOT EXISTS t_cache_rate(" + "id INTEGER     PRIMARY KEY AUTOINCREMENT,"
                             + "pattern       VARCHAR(64) NOT NULL UNIQUE,"
                             + "hit_count     BIGINT      NOT NULL     DEFAULT 0,"
                             + "require_count BIGINT      NOT NULL     DEFAULT 0,"
                             + "version       BIGINT      NOT NULL     DEFAULT 0)");
-            return template;
+            return runner;
         };
     }
 
     /**
-     * Transforms a list of database query results (maps) into a stream of {@link DataDO} objects.
+     * Transforms a list of database query results (maps) into a stream of {@link Tally} objects.
      * <p>
      * Note: This implementation casts the numeric types from the result map to {@link Integer}, which is a common
      * behavior for the SQLite JDBC driver when dealing with BIGINT columns.
      * </p>
      *
      * @param mapResults A list of maps, where each map represents a row from the database query.
-     * @return A {@link Stream} of {@link DataDO} objects, populated from the query results.
+     * @return A {@link Stream} of {@link Tally} objects, populated from the query results.
      */
     @Override
-    protected Stream<DataDO> transferResults(List<Map<String, Object>> mapResults) {
+    protected Stream<Tally> transferResults(List<Map<String, Object>> mapResults) {
         return mapResults.stream().map(result -> {
-            DataDO dataDO = new DataDO();
-            dataDO.setHitCount(((Number) result.get("hit_count")).longValue());
-            dataDO.setPattern((String) result.get("pattern"));
-            dataDO.setRequireCount(((Number) result.get("require_count")).longValue());
-            dataDO.setVersion(((Number) result.get("version")).longValue());
-            return dataDO;
+            Tally tally = new Tally();
+            tally.setHitCount(((Number) result.get("hit_count")).longValue());
+            tally.setPattern((String) result.get("pattern"));
+            tally.setRequireCount(((Number) result.get("require_count")).longValue());
+            tally.setVersion(((Number) result.get("version")).longValue());
+            return tally;
         });
     }
 

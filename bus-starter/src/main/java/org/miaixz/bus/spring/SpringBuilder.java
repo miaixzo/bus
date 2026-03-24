@@ -260,14 +260,14 @@ public class SpringBuilder implements ApplicationContextAware {
      * Unregisters a singleton bean from the Spring container.
      *
      * @param beanName The name of the bean to unregister.
-     * @throws InternalException if the BeanFactory is not a {@link DefaultSingletonBeanRegistrar}.
+     * @throws InternalException if the BeanFactory is not a {@link DefaultSingletonBeanRegistry}.
      */
     public static void unRegisterSingleton(String beanName) {
         ConfigurableListableBeanFactory factory = (ConfigurableListableBeanFactory) getBeanFactory();
-        if (factory instanceof DefaultSingletonBeanRegistrar registry) {
+        if (factory instanceof DefaultSingletonBeanRegistry registry) {
             registry.destroySingleton(beanName);
         } else {
-            throw new InternalException("Cannot unregister bean: Factory is not DefaultSingletonBeanRegistrar.");
+            throw new InternalException("Cannot unregister bean: Factory is not DefaultSingletonBeanRegistry.");
         }
     }
 

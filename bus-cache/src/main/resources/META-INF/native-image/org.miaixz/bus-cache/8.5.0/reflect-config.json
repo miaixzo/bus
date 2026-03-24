@@ -81,7 +81,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.cache.Metrics",
+    "name": "org.miaixz.bus.cache.Collector",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -92,7 +92,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.cache.Metrics$Snapshot",
+    "name": "org.miaixz.bus.cache.Collector$Snapshot",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -378,7 +378,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.cache.support.Addables",
+    "name": "org.miaixz.bus.cache.builtin.Addables",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -389,7 +389,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.cache.support.Addables$Addable",
+    "name": "org.miaixz.bus.cache.builtin.Addables$Addable",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -400,7 +400,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.cache.support.Addables$ArrayAddable",
+    "name": "org.miaixz.bus.cache.builtin.Addables$ArrayAddable",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -411,7 +411,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.cache.support.Addables$CollectionAddable",
+    "name": "org.miaixz.bus.cache.builtin.Addables$CollectionAddable",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -422,7 +422,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.cache.support.Addables$MapAddable",
+    "name": "org.miaixz.bus.cache.builtin.Addables$MapAddable",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -433,7 +433,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.cache.support.CacheInfoContainer",
+    "name": "org.miaixz.bus.cache.builtin.CacheInfoContainer",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -444,7 +444,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.cache.support.PreventObjects",
+    "name": "org.miaixz.bus.cache.builtin.PreventObjects",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -455,7 +455,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.cache.support.PreventObjects$PreventObject",
+    "name": "org.miaixz.bus.cache.builtin.PreventObjects$NullMarker",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -466,7 +466,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.cache.support.SpelCalculator",
+    "name": "org.miaixz.bus.cache.builtin.SpelCalculator",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -477,7 +477,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.cache.support.metrics.AbstractMetrics",
+    "name": "org.miaixz.bus.cache.collect.AbstractCollector",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -488,7 +488,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.cache.support.metrics.AbstractMetrics$DataDO",
+    "name": "org.miaixz.bus.cache.collect.AbstractCollector$Tally",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -499,7 +499,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.cache.support.metrics.H2Metrics",
+    "name": "org.miaixz.bus.cache.collect.H2Collector",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -510,7 +510,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.cache.support.metrics.MemoryMetrics",
+    "name": "org.miaixz.bus.cache.collect.MemoryCollector",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -521,7 +521,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.cache.support.metrics.MySQLMetrics",
+    "name": "org.miaixz.bus.cache.collect.MySQLCollector",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -532,7 +532,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.cache.support.metrics.PostgreSQLMetrics",
+    "name": "org.miaixz.bus.cache.collect.PostgreSQLCollector",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -543,7 +543,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.cache.support.metrics.SqliteMetrics",
+    "name": "org.miaixz.bus.cache.collect.SqliteCollector",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -554,7 +554,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.cache.support.metrics.ZookeeperMetrics",
+    "name": "org.miaixz.bus.cache.collect.JdbcRunner",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -565,7 +565,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.cache.support.serialize.AbstractSerializer",
+    "name": "org.miaixz.bus.cache.collect.JdbcRunner$SingleConnectionSource",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -576,7 +576,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.cache.support.serialize.BaseSerializer",
+    "name": "org.miaixz.bus.cache.serialize.AbstractSerializer",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -587,7 +587,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.cache.support.serialize.FastJsonSerializer",
+    "name": "org.miaixz.bus.cache.serialize.JsonSerializer",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -598,7 +598,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.cache.support.serialize.Hessian2Serializer",
+    "name": "org.miaixz.bus.cache.serialize.Hessian2Serializer",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -609,7 +609,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.cache.support.serialize.JdkGzipSerializer",
+    "name": "org.miaixz.bus.cache.serialize.JdkGzipSerializer",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -620,7 +620,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.cache.support.serialize.JdkSerializer",
+    "name": "org.miaixz.bus.cache.serialize.JdkSerializer",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,

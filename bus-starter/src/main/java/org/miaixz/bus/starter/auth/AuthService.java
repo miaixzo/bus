@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Provider;
-import org.miaixz.bus.auth.Registrar;
+import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.cache.AuthCache;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.nimble.afdian.AfDianProvider;
@@ -108,7 +108,7 @@ public class AuthService {
     /**
      * Cache for storing registered authorization components. Uses {@link ConcurrentHashMap} for thread safety.
      */
-    private static final Map<Registrar, Context> CACHE = new ConcurrentHashMap<>();
+    private static final Map<Registry, Context> CACHE = new ConcurrentHashMap<>();
 
     /**
      * Authorization configuration properties, containing settings for various authorization components.
@@ -148,7 +148,7 @@ public class AuthService {
      * @param context  The context of the authorization component (must not be null).
      * @throws InternalException if a component of the same type already exists.
      */
-    public static void register(Registrar registry, Context context) {
+    public static void register(Registry registry, Context context) {
         if (CACHE.containsKey(registry)) {
             throw new InternalException("A component with the same name is already registered: " + registry.name());
         }
@@ -163,7 +163,7 @@ public class AuthService {
      * @return The corresponding authorization service provider instance.
      * @throws InternalException if the corresponding authorization component cannot be found.
      */
-    public Provider require(Registrar registry) {
+    public Provider require(Registry registry) {
         // Get the authorization component context from the cache
         Context context = CACHE.get(registry);
         // If not in the cache, get it from the properties

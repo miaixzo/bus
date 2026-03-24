@@ -22,7 +22,7 @@ package org.miaixz.bus.cache.reader;
 import org.miaixz.bus.cache.Builder;
 import org.miaixz.bus.cache.magic.AnnoHolder;
 import org.miaixz.bus.cache.magic.MethodHolder;
-import org.miaixz.bus.cache.support.PreventObjects;
+import org.miaixz.bus.cache.builtin.PreventObjects;
 import org.miaixz.bus.core.lang.annotation.Singleton;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.proxy.invoker.ProxyChain;
@@ -100,7 +100,7 @@ public class SingleCacheReader extends AbstractReader {
     }
 
     /**
-     * Records cache hit and request counts for metrics.
+     * Records cache hit and request counts for statistics.
      *
      * @param result     The result from the cache read (can be null for a miss).
      * @param key        The cache key.
@@ -108,12 +108,12 @@ public class SingleCacheReader extends AbstractReader {
      */
     private void doRecord(Object result, String key, AnnoHolder annoHolder) {
         Logger.info("single cache hit rate: {}/1, key: {}", null == result ? 0 : 1, key);
-        if (null != this.metrics) {
+        if (null != this.collector) {
             String pattern = Builder.generatePattern(annoHolder);
             if (null != result) {
-                this.metrics.hitIncr(pattern, 1);
+                this.collector.hitIncr(pattern, 1);
             }
-            this.metrics.reqIncr(pattern, 1);
+            this.collector.reqIncr(pattern, 1);
         }
     }
 
