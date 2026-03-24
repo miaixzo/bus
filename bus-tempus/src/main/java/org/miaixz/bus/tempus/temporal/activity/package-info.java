@@ -24,6 +24,6 @@
  * serialization contracts, and the shared activity handler template used by framework consumers.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.tempus.temporal.activity;

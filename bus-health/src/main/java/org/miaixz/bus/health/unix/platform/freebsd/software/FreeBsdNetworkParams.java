@@ -35,7 +35,7 @@ import com.sun.jna.platform.unix.LibCAPI;
  * FreeBsdNetworkParams class.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 final class FreeBsdNetworkParams extends AbstractNetworkParams {

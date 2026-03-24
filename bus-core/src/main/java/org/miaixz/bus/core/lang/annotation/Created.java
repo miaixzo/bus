@@ -28,7 +28,7 @@ import java.lang.annotation.Target;
  * Annotation for fields that should be automatically filled with the creation timestamp.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

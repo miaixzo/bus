@@ -24,7 +24,7 @@ package org.miaixz.bus.tempus.crontab;
  * {@link Runnable} to be used as a cron job.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RunnableCrontab implements Crontab {
 

@@ -44,7 +44,7 @@ import com.google.gson.reflect.TypeToken;
  * {@link AbstractHttpMessageConverter} base class.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Component
 @ConditionalOnClass({ Gson.class })

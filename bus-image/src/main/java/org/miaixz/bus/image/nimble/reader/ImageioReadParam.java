@@ -26,8 +26,8 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 /**
  * @author Kimi Liu
  * @author Kimi Liu
- * @since Java 17+
- * @since Java 17+
+ * @since Java 21+
+ * @since Java 21+
  */
 public class ImageioReadParam extends ImageReadParam {
 

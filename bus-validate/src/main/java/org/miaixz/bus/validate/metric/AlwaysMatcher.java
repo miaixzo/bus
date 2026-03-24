@@ -27,7 +27,7 @@ import org.miaixz.bus.validate.magic.Matcher;
  * certain branch should always pass.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class AlwaysMatcher implements Matcher<Object, Object> {
 

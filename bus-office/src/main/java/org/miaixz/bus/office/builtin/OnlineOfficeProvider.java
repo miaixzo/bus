@@ -27,7 +27,7 @@ import java.io.InputStream;
  * used with an online office manager.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class OnlineOfficeProvider extends AbstractProvider {
 

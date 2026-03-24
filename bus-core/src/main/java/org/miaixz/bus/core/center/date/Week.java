@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @see #THURSDAY
  * @see #FRIDAY
  * @see #SATURDAY
- * @since Java 17+
+ * @since Java 21+
  */
 public enum Week {
 

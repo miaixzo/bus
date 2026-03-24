@@ -28,7 +28,7 @@ import org.miaixz.bus.http.Httpx;
  * MCP JSON-RPC ping prober.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class McpPingProber implements Prober {
 

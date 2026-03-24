@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.*;
  * Machine, Java class information, operating system, and user details.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Keys {
 

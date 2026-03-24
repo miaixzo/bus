@@ -29,7 +29,7 @@ import org.miaixz.bus.image.metric.pdu.AAssociateRQ;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum State {
 

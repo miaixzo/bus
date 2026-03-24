@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.ReflectKit;
  * </ul>
  * <p>
  * For interfaces or abstract types, it constructs their default implementations:
- * 
+ *
  * <pre>
  *     Map       - HashMap
  *     Collection - ArrayList
@@ -51,29 +51,29 @@ import org.miaixz.bus.core.xyz.ReflectKit;
  * @param <T>   The type of the object to be created.
  * @param clazz The class to create an instance of.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
-public record PossibleObjectCreator<T>(Class<T> clazz) implements ObjectCreator<T> {
+public record AdaptiveObjectCreator<T>(Class<T> clazz) implements ObjectCreator<T> {
 
     /**
-     * Constructs a new {@code PossibleObjectCreator} for the given class.
+     * Constructs a new {@code AdaptiveObjectCreator} for the given class.
      *
      * @param clazz The class to be instantiated. Must not be {@code null}.
      * @throws IllegalArgumentException if {@code clazz} is {@code null}.
      */
-    public PossibleObjectCreator(final Class<T> clazz) {
+    public AdaptiveObjectCreator(final Class<T> clazz) {
         this.clazz = Assert.notNull(clazz);
     }
 
     /**
-     * Creates a new {@code PossibleObjectCreator} instance for the given class.
+     * Creates a new {@code AdaptiveObjectCreator} instance for the given class.
      *
      * @param clazz The class to be instantiated.
      * @param <T>   The type of the object to be created.
-     * @return A new {@code PossibleObjectCreator} instance.
+     * @return A new {@code AdaptiveObjectCreator} instance.
      */
-    public static <T> PossibleObjectCreator<T> of(final Class<T> clazz) {
-        return new PossibleObjectCreator<>(clazz);
+    public static <T> AdaptiveObjectCreator<T> of(final Class<T> clazz) {
+        return new AdaptiveObjectCreator<>(clazz);
     }
 
     /**

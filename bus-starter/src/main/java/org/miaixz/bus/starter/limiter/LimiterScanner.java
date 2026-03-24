@@ -49,7 +49,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * {@link Downgrade}, the bean is wrapped in a ByteBuddy proxy to enforce the specified strategies.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LimiterScanner implements InstantiationAwareBeanPostProcessor {
 

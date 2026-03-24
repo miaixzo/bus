@@ -40,7 +40,7 @@ import java.util.*;
  * Instances are immutable and support encoding and decoding of URL components.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class UnoUrl {
 

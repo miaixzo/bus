@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.Normal;
  * https://github.com/skylot/jadx/blob/master/jadx-plugins/jadx-plugins-api/src/main/java/jadx/api/plugins/utils/LimitedInputStream.java
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LimitedInputStream extends FilterInputStream {
 

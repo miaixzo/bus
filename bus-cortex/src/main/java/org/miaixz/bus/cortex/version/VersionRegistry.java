@@ -27,7 +27,7 @@ import org.miaixz.bus.cortex.registry.WatchManager;
  * Registry for versioned artifact definitions.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class VersionRegistry extends AbstractRegistry<VersionAssets> {
 

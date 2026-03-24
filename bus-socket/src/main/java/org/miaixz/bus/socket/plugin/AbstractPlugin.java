@@ -33,7 +33,7 @@ import java.nio.channels.AsynchronousSocketChannel;
  *
  * @param <T> the type of message object entity handled by this plugin
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractPlugin<T> implements Plugin<T> {
 

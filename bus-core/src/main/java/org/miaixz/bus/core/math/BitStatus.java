@@ -24,7 +24,7 @@ package org.miaixz.bus.core.math;
  * equal to 0`.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BitStatus {
 

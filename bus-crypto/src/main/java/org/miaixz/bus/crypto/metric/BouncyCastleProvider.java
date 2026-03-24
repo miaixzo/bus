@@ -28,7 +28,7 @@ package org.miaixz.bus.crypto.metric;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface BouncyCastleProvider {
 

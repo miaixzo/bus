@@ -54,7 +54,7 @@ import org.miaixz.bus.crypto.cipher.JceCipher;
  * decryption, which requires the decrypting party to know the key in advance.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Crypto implements Encryptor, Decryptor, Serializable {
 

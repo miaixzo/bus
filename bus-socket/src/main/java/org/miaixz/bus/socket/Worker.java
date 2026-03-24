@@ -41,7 +41,7 @@ import org.miaixz.bus.socket.buffer.VirtualBuffer;
  * A worker thread implementation that manages a {@link Selector} for handling I/O events, specifically for UDP.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class Worker implements Runnable {
 

@@ -27,7 +27,7 @@ import org.miaixz.bus.cortex.Instance;
  * Local process existence prober using PID.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ProcessProber implements Prober {
 

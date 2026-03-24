@@ -43,7 +43,7 @@ import com.sun.jna.platform.linux.Udev.UdevListEntry;
  * A Power Source
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class LinuxPowerSource extends AbstractPowerSource {

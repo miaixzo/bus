@@ -28,7 +28,7 @@ import java.util.Iterator;
  *
  * @param <V> The type of the iterated object.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CacheValuesIterator<V> implements Iterator<V>, Serializable {
 

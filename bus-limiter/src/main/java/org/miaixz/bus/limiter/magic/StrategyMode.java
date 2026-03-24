@@ -24,7 +24,7 @@ package org.miaixz.bus.limiter.magic;
  * and what actions are taken when limits are exceeded.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum StrategyMode {
 

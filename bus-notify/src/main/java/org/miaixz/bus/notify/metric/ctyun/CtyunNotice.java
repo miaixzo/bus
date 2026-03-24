@@ -29,7 +29,7 @@ import lombok.experimental.SuperBuilder;
  * Notice for China Telecom Cloud (CTYUN) SMS service.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

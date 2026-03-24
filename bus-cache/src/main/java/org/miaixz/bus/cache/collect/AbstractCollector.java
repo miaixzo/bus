@@ -45,7 +45,7 @@ import org.miaixz.bus.setting.Builder;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractCollector implements Collector, AutoCloseable {
 

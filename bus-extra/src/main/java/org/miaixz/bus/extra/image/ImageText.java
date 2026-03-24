@@ -29,7 +29,7 @@ import java.util.Objects;
  * size, position, and transparency.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ImageText implements Serializable {
 

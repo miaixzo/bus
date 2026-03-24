@@ -21,6 +21,6 @@
  * Provides KCP (A Fast and Reliable ARQ Protocol) related implementations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.socket.accord.kcp;

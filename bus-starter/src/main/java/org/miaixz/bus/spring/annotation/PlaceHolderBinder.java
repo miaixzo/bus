@@ -31,7 +31,7 @@ import org.springframework.core.env.Environment;
  * string. It supports both Spring Boot 2.x and 1.x binding mechanisms.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface PlaceHolderBinder {
 

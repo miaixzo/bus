@@ -35,7 +35,7 @@ import com.sun.jna.platform.unix.LibCAPI.size_t;
  * Provides access to sysctl calls on OpenBSD
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class OpenBsdSysctlKit {

@@ -30,7 +30,7 @@ import java.lang.annotation.*;
  * that meets its conditions will be executed.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Documented
 @Target(ElementType.ANNOTATION_TYPE)

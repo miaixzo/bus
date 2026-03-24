@@ -27,7 +27,7 @@ import java.lang.annotation.*;
  * An annotation used to specify a custom condition for a desensitization strategy to be applied.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Documented
 @Target(ElementType.ANNOTATION_TYPE)

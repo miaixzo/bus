@@ -41,7 +41,7 @@ import org.miaixz.bus.crypto.Holder;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Digester extends SimpleWrapper<MessageDigest> implements Serializable {
 

@@ -31,7 +31,7 @@ import java.io.IOException;
  * identifies event fields (id, event, data, retry, etc.), and triggers callbacks to process the events.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class ServerSentEventReader {
 

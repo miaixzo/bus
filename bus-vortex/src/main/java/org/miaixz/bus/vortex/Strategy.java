@@ -36,7 +36,7 @@ import reactor.core.publisher.Mono;
  * {@link org.miaixz.bus.vortex.filter.PrimaryFilter}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Strategy {
 
@@ -72,7 +72,7 @@ public interface Strategy {
      * back to the main Spring WebFlux {@code WebFilterChain}.
      *
      * @author Kimi Liu
-     * @since Java 17+
+     * @since Java 21+
      */
     interface Chain {
 

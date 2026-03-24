@@ -21,6 +21,6 @@
  * UID Dictionary from Siemens_Ultrasound_Miscellaneous
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.Siemens_Ultrasound_Miscellaneous;

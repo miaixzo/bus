@@ -32,7 +32,7 @@ import reactor.core.publisher.Mono;
  *
  * @author Kimi Liu
  * @see VortexHandler
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Handler {
 

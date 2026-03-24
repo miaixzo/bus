@@ -37,7 +37,7 @@ import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
  * SolarisNetworks class.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class SolarisNetworkIF extends AbstractNetworkIF {

@@ -36,7 +36,7 @@ import lombok.Setter;
  * Represents an exception related to I/O operations or other relevant system issues.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

@@ -32,7 +32,7 @@ import java.io.ByteArrayOutputStream;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Hessian2Serializer extends AbstractSerializer {
 

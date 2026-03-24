@@ -28,7 +28,7 @@ import org.miaixz.bus.core.xyz.CompareKit;
  *
  * @author Kimi Liu
  * @see Float
- * @since Java 17+
+ * @since Java 21+
  */
 public class MutableFloat extends Number implements Comparable<MutableFloat>, Mutable<Number> {
 

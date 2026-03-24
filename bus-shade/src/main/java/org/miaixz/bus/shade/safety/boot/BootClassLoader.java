@@ -38,7 +38,7 @@ import org.springframework.boot.loader.launch.LaunchedClassLoader;
  * resource loading to apply decryption using provided {@link DecryptorProvider} and {@link Key}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BootClassLoader extends LaunchedClassLoader {
 

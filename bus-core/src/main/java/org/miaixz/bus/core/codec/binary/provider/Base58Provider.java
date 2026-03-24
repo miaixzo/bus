@@ -31,7 +31,7 @@ import org.miaixz.bus.core.codec.binary.encoder.Base58Encoder;
  * Provides Base58 encoding and decoding functionality. This implementation does not include checksums or version bytes.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Base58Provider implements Encoder<byte[], String>, Decoder<CharSequence, byte[]>, Serializable {
 

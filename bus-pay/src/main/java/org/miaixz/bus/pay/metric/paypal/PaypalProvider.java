@@ -44,7 +44,7 @@ import org.miaixz.bus.pay.metric.paypal.entity.AccessToken;
  * PayPal API provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PaypalProvider extends AbstractProvider<Voucher, Context> {
 

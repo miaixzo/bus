@@ -21,6 +21,6 @@
  * UID Dictionary from SIEMENS_MED_PT
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_PT;

@@ -26,7 +26,7 @@ package org.miaixz.bus.tempus.temporal;
  * Temporal tasks.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Subscriber extends AutoCloseable {
 

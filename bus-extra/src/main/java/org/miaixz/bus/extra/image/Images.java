@@ -48,7 +48,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * like scaling, cutting, watermarking, and more.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Images implements Flushable, Serializable {
 

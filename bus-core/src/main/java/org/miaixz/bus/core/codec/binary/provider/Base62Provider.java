@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.ArrayKit;
  * work from https://github.com/seruco/base62.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Base62Provider implements Encoder<byte[], byte[]>, Decoder<byte[], byte[]>, Serializable {
 

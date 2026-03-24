@@ -44,7 +44,7 @@ import org.springframework.core.type.filter.AssignableTypeFilter;
  * a specific marker interface. If no annotation or marker interface is specified, it will scan for all interfaces.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
 

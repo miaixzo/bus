@@ -30,7 +30,7 @@ import org.apache.poi.xslf.usermodel.XSLFTextRun;
  * {@link org.miaixz.bus.office.word.FontStyle} but adapted for XSLF (PowerPoint) text runs.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PptStyle {
 

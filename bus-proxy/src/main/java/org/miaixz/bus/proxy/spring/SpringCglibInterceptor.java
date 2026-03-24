@@ -33,7 +33,7 @@ import java.lang.reflect.Method;
  * method calls on a CGLIB proxy, allowing an {@link Aspect} to be applied.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SpringCglibInterceptor extends Interceptor implements MethodInterceptor {
 

@@ -33,7 +33,7 @@ import lombok.Setter;
  *
  * @param <T> watched value type
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

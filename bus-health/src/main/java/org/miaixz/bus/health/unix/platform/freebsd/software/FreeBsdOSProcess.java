@@ -50,7 +50,7 @@ import com.sun.jna.platform.unix.Resource;
  * OSProcess implementation
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public class FreeBsdOSProcess extends AbstractOSProcess {

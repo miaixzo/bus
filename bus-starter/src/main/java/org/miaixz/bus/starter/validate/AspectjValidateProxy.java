@@ -63,7 +63,7 @@ import org.springframework.core.annotation.Order;
  * executed.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Order(99)
 @Aspect

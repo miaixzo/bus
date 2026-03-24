@@ -42,7 +42,7 @@ import com.github.stuxuhai.jpinyin.PinyinHelper;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JPinyinProvider implements PinyinProvider {
 

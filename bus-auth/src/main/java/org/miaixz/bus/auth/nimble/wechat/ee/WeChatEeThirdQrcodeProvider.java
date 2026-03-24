@@ -39,7 +39,7 @@ import java.util.Map;
  * WeChat Enterprise third-party QR code login provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
 

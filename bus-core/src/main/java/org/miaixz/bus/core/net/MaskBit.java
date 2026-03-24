@@ -29,7 +29,7 @@ import org.miaixz.bus.core.net.ip.IPv4;
  * A map that provides a bidirectional mapping between mask bits and subnet masks.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MaskBit {
 

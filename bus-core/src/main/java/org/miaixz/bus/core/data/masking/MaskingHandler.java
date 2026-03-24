@@ -23,7 +23,7 @@ package org.miaixz.bus.core.data.masking;
  * Masking handler for custom masking rules.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @FunctionalInterface
 public interface MaskingHandler {

@@ -59,7 +59,7 @@ import org.miaixz.bus.core.Handler;
  *
  * @param <T> The type of the object being handled.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface MapperHandler<T> extends Handler<T> {
 

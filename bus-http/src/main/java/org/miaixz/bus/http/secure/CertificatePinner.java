@@ -35,7 +35,7 @@ import java.util.*;
  * server's TLS administrator!</strong>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CertificatePinner {
 

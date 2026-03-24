@@ -30,7 +30,7 @@ import org.miaixz.bus.cache.metric.MemoryCache;
  * {@link MemoryCache} internally.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum StorageCache implements CacheX<String, Object> {
 

@@ -36,7 +36,7 @@ import org.miaixz.bus.core.xyz.ModifierKit;
  * from a class, including declared methods, public methods, and all methods in the class hierarchy.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MethodReflect {
 

@@ -71,7 +71,7 @@ import java.util.stream.Collectors;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MutableRequestWrapper extends HttpServletRequestWrapper {
 
@@ -131,7 +131,7 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
                 : new String(this.body, Charset.UTF_8);
         if (logOut instanceof String) {
             // Remove newlines, tabs, and extra whitespace
-            logOut = UrlKit.decodeFilter(((String) logOut).replaceAll("\\s+", Normal.EMPTY), Charset.UTF_8);
+            logOut = UrlKit.decodeQuery(((String) logOut).replaceAll("\\s+", Normal.EMPTY), Charset.UTF_8);
         }
 
         Logger.info(true, "Request", "Parameters: {}", JsonKit.toJsonString(logOut));

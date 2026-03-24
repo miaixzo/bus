@@ -21,6 +21,6 @@
  * This package contains interfaces for logging at different levels (e.g., TRACE, DEBUG, INFO, WARN, ERROR).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.logger.magic.level;

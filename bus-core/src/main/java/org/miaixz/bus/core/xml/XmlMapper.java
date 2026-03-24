@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
  * XML converter for transforming XML data into Maps, Java Beans, etc.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class XmlMapper {
 

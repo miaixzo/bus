@@ -33,7 +33,7 @@ import java.util.*;
  * queues, and acknowledging messages. It supports both automatic and client-side message acknowledgment.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Stomp {
 

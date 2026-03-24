@@ -40,7 +40,7 @@ import org.miaixz.bus.http.metric.NewChain;
  * proceeds to call the network. Finally, it builds a user response from the network response.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class BridgeInterceptor implements Interceptor {
 

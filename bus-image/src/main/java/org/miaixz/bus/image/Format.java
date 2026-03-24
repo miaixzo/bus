@@ -57,7 +57,7 @@ import org.miaixz.bus.image.galaxy.data.DatePrecision;
  * (DA, TM, DT).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Format extends java.text.Format {
 

@@ -31,7 +31,7 @@ import org.miaixz.bus.pay.magic.Callback;
  * Represents a PayPal Access Token.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AccessToken implements Serializable, Callback {
 

@@ -29,7 +29,7 @@ import lombok.experimental.SuperBuilder;
  * V3 WeChat Refund Application - Amount Information.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

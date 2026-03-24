@@ -30,7 +30,7 @@ import org.miaixz.bus.core.data.id.ID;
  * to the second constructor to replace the strategy with a custom implementation (e.g. Snowflake, UUID, NanoId).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class IdGenerator {
 

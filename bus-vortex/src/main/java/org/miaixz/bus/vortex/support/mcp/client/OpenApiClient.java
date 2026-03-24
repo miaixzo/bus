@@ -46,7 +46,7 @@ import reactor.core.publisher.Mono;
  *
  * 
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class OpenApiClient implements McpClient {
 

@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * @param <C> The type of the column key.
  * @param <V> The type of the value stored in the table.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
 

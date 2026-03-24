@@ -41,7 +41,7 @@ import org.miaixz.bus.core.xyz.IoKit;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LineIterator extends ComputeIterator<String> implements IterableIterator<String>, Closeable, Serializable {
 

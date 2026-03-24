@@ -29,7 +29,7 @@ import org.miaixz.bus.core.io.resource.Resource;
  * Abstract base class for resource loaders. Provides common methods for loading resources.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class ResourceLoader implements Loader {
 

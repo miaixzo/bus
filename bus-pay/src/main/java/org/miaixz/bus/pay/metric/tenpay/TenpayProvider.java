@@ -35,7 +35,7 @@ import org.miaixz.bus.pay.metric.tenpay.api.TenpayApi;
  * QQ Wallet payment provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TenpayProvider extends AbstractProvider<Voucher, Context> {
 

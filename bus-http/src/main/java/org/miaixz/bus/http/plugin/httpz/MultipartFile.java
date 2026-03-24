@@ -32,7 +32,7 @@ import java.io.InputStream;
  * array, a {@link File}, or an {@link InputStream}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

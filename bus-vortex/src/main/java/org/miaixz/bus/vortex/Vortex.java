@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * application stops.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Vortex implements SmartLifecycle {
 

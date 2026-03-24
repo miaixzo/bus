@@ -30,7 +30,7 @@ import java.lang.annotation.*;
  * each element within the array or collection. Otherwise, the validators will be applied to the object itself.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

@@ -21,7 +21,7 @@ package org.miaixz.bus.image.galaxy.dict.Philips_EV_Imaging_DD_022;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PrivateKeyword {
 

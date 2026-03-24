@@ -29,7 +29,7 @@ import java.nio.ByteBuffer;
  * for KCP packets.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class KcpMessage implements Message<KcpPacket> {
 

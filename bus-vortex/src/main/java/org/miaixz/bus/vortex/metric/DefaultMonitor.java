@@ -66,7 +66,7 @@ import org.miaixz.bus.vortex.magic.Metrics;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DefaultMonitor implements Monitor {
 

@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.TypeKit;
  * Converts an object to a {@link Collection} of a specified type.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CollectionConverter implements MatcherConverter, Serializable {
 

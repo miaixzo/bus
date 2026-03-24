@@ -21,7 +21,7 @@ package org.miaixz.bus.image.nimble.opencv;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 class SOFSegment {
 

@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
  * retrieve expired task lists (buckets) from the timing wheel.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SystemTimer {
 

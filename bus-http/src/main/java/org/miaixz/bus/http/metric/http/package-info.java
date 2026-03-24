@@ -21,6 +21,6 @@
  * Provides the internal implementation of the HTTP/1.1 and HTTP/2 protocols.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.http.metric.http;

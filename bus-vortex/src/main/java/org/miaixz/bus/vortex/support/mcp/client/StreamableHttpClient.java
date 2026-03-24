@@ -32,7 +32,7 @@ import org.miaixz.bus.cortex.Assets;
  * to process a {@code Flux<String>} or a similar reactive stream from the {@code WebClient} response.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class StreamableHttpClient extends HttpClient {
 

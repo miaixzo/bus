@@ -41,7 +41,7 @@ import java.util.concurrent.*;
  * AIO implementation of a client service.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AioClient {
 

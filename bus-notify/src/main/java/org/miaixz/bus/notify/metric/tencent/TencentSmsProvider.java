@@ -33,7 +33,7 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * Tencent Cloud SMS service provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TencentSmsProvider extends AbstractProvider<TencentNotice, Context> {
 

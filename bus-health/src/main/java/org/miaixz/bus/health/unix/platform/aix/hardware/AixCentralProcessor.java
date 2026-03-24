@@ -45,7 +45,7 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_partition_config_t;
  * A CPU
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 final class AixCentralProcessor extends AbstractCentralProcessor {

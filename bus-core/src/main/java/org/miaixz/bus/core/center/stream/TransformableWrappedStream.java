@@ -40,7 +40,7 @@ import org.miaixz.bus.core.xyz.*;
  * @param <T> the type of the elements in the stream
  * @param <S> the type of the {@link TransformableWrappedStream} implementation itself
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface TransformableWrappedStream<T, S extends TransformableWrappedStream<T, S>> extends WrappedStream<T, S> {
 

@@ -28,7 +28,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Converts an object to a {@link Character}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CharacterConverter extends AbstractConverter {
 

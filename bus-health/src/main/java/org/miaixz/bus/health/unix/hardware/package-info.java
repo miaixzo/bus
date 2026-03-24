@@ -21,6 +21,6 @@
  * Provides mappings for Unix-based operating systems.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.health.unix.hardware;

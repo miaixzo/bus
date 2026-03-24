@@ -23,7 +23,7 @@ package org.miaixz.bus.http.plugin.httpv;
  * Represents data that can be in any format, such as XML, YAML, Protobuf, etc., structured as an array.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface CoverArray {
 

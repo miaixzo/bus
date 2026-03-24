@@ -26,7 +26,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * A {@link CellEditor} that trims leading and trailing whitespace from String cell values.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TrimEditor implements CellEditor {
 

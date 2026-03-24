@@ -29,7 +29,7 @@ package org.miaixz.bus.cache.magic;
  * @param <L> The type of the left value.
  * @param <R> The type of the right value.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CachePair<L, R> {
 

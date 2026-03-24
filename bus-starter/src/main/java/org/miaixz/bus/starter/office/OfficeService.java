@@ -32,7 +32,7 @@ import lombok.RequiredArgsConstructor;
  * conversions) into a central registry upon application startup.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Component
 @RequiredArgsConstructor

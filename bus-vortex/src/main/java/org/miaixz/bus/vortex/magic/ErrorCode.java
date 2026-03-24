@@ -29,7 +29,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
  * are typically in the 116xxx range.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 

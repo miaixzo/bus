@@ -35,7 +35,7 @@ import java.util.List;
  *
  * @param <T> the type of message handled by this processor
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractMessageHandler<T> implements Handler<T>, Monitor {
 

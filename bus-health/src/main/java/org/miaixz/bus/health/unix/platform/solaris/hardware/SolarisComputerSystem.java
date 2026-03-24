@@ -39,7 +39,7 @@ import org.miaixz.bus.health.unix.hardware.UnixBaseboard;
  * Hardware data obtained from smbios.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 final class SolarisComputerSystem extends AbstractComputerSystem {

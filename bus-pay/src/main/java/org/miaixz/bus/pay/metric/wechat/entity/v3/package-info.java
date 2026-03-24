@@ -21,6 +21,6 @@
  * Provides entity classes for the WeChat Pay V3 API, representing various request and response data structures.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.pay.metric.wechat.entity.v3;

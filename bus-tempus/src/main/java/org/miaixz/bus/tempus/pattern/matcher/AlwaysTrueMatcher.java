@@ -25,7 +25,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * A matcher that always returns {@code true}, representing the wildcard ('*') character in a cron expression.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AlwaysTrueMatcher implements PartMatcher {
 

@@ -43,7 +43,7 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * Emay SMS Provider implementation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class EmaySmsProvider extends AbstractProvider<EmayNotice, Context> {
 

@@ -67,7 +67,7 @@ import lombok.SneakyThrows;
  * @param <T> The type of the global object, extending {@link Voucher}.
  * @param <K> The type of the context object, extending {@link Context}.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractProvider<T extends Voucher, K extends Context> implements Provider<T> {
 

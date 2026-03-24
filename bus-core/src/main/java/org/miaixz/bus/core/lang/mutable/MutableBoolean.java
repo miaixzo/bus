@@ -27,7 +27,7 @@ import java.io.Serializable;
  *
  * @author Kimi Liu
  * @see Boolean
- * @since Java 17+
+ * @since Java 21+
  */
 public class MutableBoolean implements Comparable<MutableBoolean>, Mutable<Boolean>, Serializable {
 

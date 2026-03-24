@@ -43,7 +43,7 @@ import org.miaixz.bus.mapper.criteria.OrCriteria;
  * @param <T> The type of the entity class.
  * @param <I> The type of the primary key.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ConditionWrapper<T, I extends Serializable> {
 

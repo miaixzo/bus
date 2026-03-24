@@ -61,7 +61,7 @@ import jakarta.mail.util.ByteArrayDataSource;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Mail implements Builder<MimeMessage> {
 

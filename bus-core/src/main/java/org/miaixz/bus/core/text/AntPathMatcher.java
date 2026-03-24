@@ -56,7 +56,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * <strong>Note:</strong> Both the pattern and the path must be either both absolute or both relative.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AntPathMatcher {
 

@@ -31,7 +31,7 @@ import lombok.Setter;
  * Configuration properties for the Vortex routing gateway.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

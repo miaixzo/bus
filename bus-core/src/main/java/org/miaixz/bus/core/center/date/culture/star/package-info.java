@@ -21,6 +21,6 @@
  * Provides classes related to various star systems and zodiacs in Chinese traditional culture and calendar.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.core.center.date.culture.star;

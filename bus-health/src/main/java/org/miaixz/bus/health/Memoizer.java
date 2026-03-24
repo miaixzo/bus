@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * the same memoized inputs, it returns the memoized result instead of recomputing it.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class Memoizer {

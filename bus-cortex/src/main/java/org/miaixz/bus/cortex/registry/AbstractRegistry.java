@@ -36,7 +36,7 @@ import org.miaixz.bus.extra.json.JsonKit;
  *
  * @param <T> registered asset type
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractRegistry<T extends Assets> implements Registry<T> {
 

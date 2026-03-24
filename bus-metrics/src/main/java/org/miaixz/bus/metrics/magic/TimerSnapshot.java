@@ -26,7 +26,7 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
  * CortexExporter.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public record TimerSnapshot(String name, Tag[] tags, long count, double totalNanos, double maxNanos,
         long[] bucketCounts, double[] bucketBounds) {

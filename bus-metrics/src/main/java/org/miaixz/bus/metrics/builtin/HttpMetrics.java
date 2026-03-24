@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  * {@code /user/{id}}), use the {@code HttpMetricsInterceptor} in bus-starter instead.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HttpMetrics implements Filter {
 

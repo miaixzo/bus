@@ -29,7 +29,7 @@ import lombok.Setter;
  * API service definition persisted in registry.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

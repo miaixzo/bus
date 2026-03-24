@@ -21,6 +21,6 @@
  * UID Dictionary from Philips_US_Imaging_DD_039
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.Philips_US_Imaging_DD_039;

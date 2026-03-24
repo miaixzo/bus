@@ -28,7 +28,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * operations for a message, including retrieving its topic and content.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Message {
 

@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.Normal;
  * using cron expressions, fixed delays, or fixed rates.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

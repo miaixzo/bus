@@ -21,6 +21,6 @@
  * Provides functions to query statistics in the Linux /proc pseudo-filesystem
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.health.linux.driver.proc;

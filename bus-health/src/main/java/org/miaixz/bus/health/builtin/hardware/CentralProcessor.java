@@ -45,7 +45,7 @@ import org.miaixz.bus.health.builtin.software.OSThread;
  * Operating System sees, which may include hyperthreaded cores.)
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public interface CentralProcessor {

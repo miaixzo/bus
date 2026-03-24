@@ -39,7 +39,7 @@ import reactor.core.publisher.Mono;
  * identity provider. An instance of this provider is injected into the {@link QualifierStrategy}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface AuthorizeProvider {
 

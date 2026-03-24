@@ -24,7 +24,7 @@ package org.miaixz.bus.core.bean.path.node;
  * non-existent segment.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class EmptyNode implements Node {
 

@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * A hardware abstraction layer. Provides access to hardware items such as processors, memory, battery, and disks.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public interface HardwareAbstractionLayer {

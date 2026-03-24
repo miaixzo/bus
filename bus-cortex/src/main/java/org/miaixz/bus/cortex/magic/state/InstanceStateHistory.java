@@ -26,7 +26,7 @@ import lombok.Setter;
  * Historical record of an instance state transition.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

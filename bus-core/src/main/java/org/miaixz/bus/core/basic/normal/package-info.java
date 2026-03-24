@@ -21,6 +21,6 @@
  * Provides basic constants and error code definitions.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.core.basic.normal;

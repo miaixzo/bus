@@ -31,7 +31,7 @@ import org.miaixz.bus.mapper.support.paging.Pageable;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractDialect implements Dialect {
 

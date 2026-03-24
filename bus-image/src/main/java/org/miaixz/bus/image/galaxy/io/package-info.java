@@ -21,6 +21,6 @@
  * IO/文件处理
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.io;

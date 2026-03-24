@@ -32,7 +32,7 @@ import org.springframework.cglib.proxy.Enhancer;
  * classes that do not implement interfaces by creating a subclass at runtime.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SpringCglibProvider implements Provider {
 

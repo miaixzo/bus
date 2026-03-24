@@ -30,7 +30,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
  * based on the properties defined in {@link I18nProperties}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @EnableConfigurationProperties(value = { I18nProperties.class })
 public class I18nConfiguration {

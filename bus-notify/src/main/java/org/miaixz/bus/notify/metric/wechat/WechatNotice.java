@@ -30,7 +30,7 @@ import lombok.experimental.SuperBuilder;
  * Notice for WeChat messaging services.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

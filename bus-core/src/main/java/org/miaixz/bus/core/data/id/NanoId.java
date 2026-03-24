@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.RandomKit;
  * <a href="https://github.com/ai/nanoid">https://github.com/ai/nanoid</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NanoId {
 

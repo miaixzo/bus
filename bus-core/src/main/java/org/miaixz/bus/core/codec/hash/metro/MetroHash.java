@@ -35,7 +35,7 @@ import java.nio.ByteOrder;
  *
  * @param <R> The type of the implementing class, allowing for method chaining.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface MetroHash<R extends MetroHash<R>> {
 

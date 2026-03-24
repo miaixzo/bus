@@ -25,7 +25,7 @@ import org.miaixz.bus.tempus.Executor;
  * A simple no-op implementation of {@link TaskListener}. Extend this class and override only the methods you need.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SimpleTaskListener implements TaskListener {
 

@@ -25,7 +25,7 @@ import java.util.TimeZone;
  * Cron task configuration.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Configure {
 

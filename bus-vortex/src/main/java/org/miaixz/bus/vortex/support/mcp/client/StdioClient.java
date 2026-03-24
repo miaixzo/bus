@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
  * asynchronous request-response lifecycle using a map of {@link CompletableFuture}s.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class StdioClient implements McpClient {
 

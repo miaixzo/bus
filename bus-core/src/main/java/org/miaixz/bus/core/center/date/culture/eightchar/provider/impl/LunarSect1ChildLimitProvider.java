@@ -28,7 +28,7 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
  * days equal 1 year, 1 day equals 4 months, and 1 hour equals 10 days.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LunarSect1ChildLimitProvider extends AbstractChildLimitProvider {
 

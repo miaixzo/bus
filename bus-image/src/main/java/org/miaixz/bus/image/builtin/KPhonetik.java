@@ -26,7 +26,7 @@ import org.miaixz.bus.core.lang.Normal;
  * given string into a phonetic code, allowing for comparison of words that sound similar but are spelled differently.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class KPhonetik implements FuzzyString {
 

@@ -30,7 +30,7 @@ import java.util.List;
  * Configuration properties for Druid DataSource.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

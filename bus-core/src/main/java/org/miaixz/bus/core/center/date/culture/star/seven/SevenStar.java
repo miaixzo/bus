@@ -27,7 +27,7 @@ import org.miaixz.bus.core.center.date.culture.Week;
  * week. This class extends {@link Samsara} to manage a cyclical list of these entities.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SevenStar extends Samsara {
 

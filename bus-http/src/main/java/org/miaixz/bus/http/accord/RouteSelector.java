@@ -35,7 +35,7 @@ import java.util.NoSuchElementException;
  * mode. Connections may also be recycled.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RouteSelector {
 

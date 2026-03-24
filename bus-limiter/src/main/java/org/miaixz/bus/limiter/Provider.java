@@ -30,7 +30,7 @@ import org.miaixz.bus.limiter.magic.StrategyMode;
  * processing method invocations under limiting rules.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Provider extends org.miaixz.bus.core.Provider {
 

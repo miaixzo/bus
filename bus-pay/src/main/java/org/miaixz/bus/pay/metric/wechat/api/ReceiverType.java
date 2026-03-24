@@ -23,7 +23,7 @@ package org.miaixz.bus.pay.metric.wechat.api;
  * Enumerates the types of receivers for profit sharing in WeChat Pay.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum ReceiverType {
 

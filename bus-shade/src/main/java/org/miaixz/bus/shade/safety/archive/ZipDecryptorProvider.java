@@ -38,7 +38,7 @@ import org.miaixz.bus.shade.safety.streams.AlwaysOutputStream;
  * compression levels for the output ZIP.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ZipDecryptorProvider extends EntryDecryptorProvider<ZipArchiveEntry> implements DecryptorProvider {
 

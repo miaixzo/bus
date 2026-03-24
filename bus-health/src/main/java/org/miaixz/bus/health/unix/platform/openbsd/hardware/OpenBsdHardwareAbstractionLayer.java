@@ -32,7 +32,7 @@ import org.miaixz.bus.health.unix.hardware.UnixPrinter;
  * OpenBsdHardwareAbstractionLayer class.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class OpenBsdHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {

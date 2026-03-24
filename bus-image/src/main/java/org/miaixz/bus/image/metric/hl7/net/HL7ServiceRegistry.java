@@ -31,7 +31,7 @@ import org.miaixz.bus.image.metric.hl7.HL7Exception;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HL7ServiceRegistry extends DefaultHL7MessageListener {
 

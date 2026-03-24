@@ -29,7 +29,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * implementation uses {@link String#codePoints()} for splitting and replacement when {@code isCodePoint} is true.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CharRangeReplacer extends StringReplacer {
 

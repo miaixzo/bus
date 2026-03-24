@@ -29,7 +29,7 @@ import org.miaixz.bus.logger.Logger;
  * Watch listener that logs configuration changes.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ConfigWatcher implements Listener<String> {
 

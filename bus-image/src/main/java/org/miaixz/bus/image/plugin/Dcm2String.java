@@ -35,7 +35,7 @@ import java.nio.file.attribute.BasicFileAttributes;
  * dataset as a formatted string to the logger.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Dcm2String extends SimpleFileVisitor<Path> {
 

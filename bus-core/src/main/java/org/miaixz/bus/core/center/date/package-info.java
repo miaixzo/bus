@@ -21,6 +21,6 @@
  * Provides date-related encapsulations, with {@link org.miaixz.bus.core.center.date.DateTime} as the core class.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.core.center.date;

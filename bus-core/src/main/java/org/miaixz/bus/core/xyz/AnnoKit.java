@@ -21,19 +21,25 @@ package org.miaixz.bus.core.xyz;
 
 import java.lang.annotation.*;
 import java.lang.reflect.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.function.LambdaX;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.resolve.AnnotationLookupKey;
 import org.miaixz.bus.core.lang.annotation.resolve.AnnotationMappingProxy;
 import org.miaixz.bus.core.lang.annotation.resolve.AnnotationProxy;
 import org.miaixz.bus.core.lang.annotation.resolve.elements.CombinationAnnotatedElement;
+import org.miaixz.bus.core.lang.annotation.resolve.scanner.AnnotationScanner;
+import org.miaixz.bus.core.lang.annotation.resolve.synthesize.GenericSynthesizedAggregateAnnotation;
+import org.miaixz.bus.core.lang.annotation.resolve.synthesize.SynthesizedAggregateAnnotation;
+import org.miaixz.bus.core.lang.annotation.resolve.synthesize.SynthesizedAnnotationProxy;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
@@ -41,7 +47,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * values, etc.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AnnoKit {
 
@@ -71,6 +77,32 @@ public class AnnoKit {
      * Cache for directly declared annotations, stored using a weak-reference concurrent map.
      */
     private static final Map<AnnotatedElement, Annotation[]> DECLARED_ANNOTATIONS_CACHE = new WeakConcurrentMap<>();
+
+    /**
+     * Sentinel object used in the two-level annotation cache to represent “annotation not found”, avoiding NPE from
+     * caching {@code null}.
+     */
+    private static final Annotation NULL_ANNOTATION_SENTINEL = new Annotation() {
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return null;
+        }
+    };
+
+    /**
+     * L1 raw annotation cache (high-frequency core scenario).<br>
+     * Key: annotation lookup key (annotated element + target annotation type).<br>
+     * Value: the raw annotation object, or {@code NULL_ANNOTATION_SENTINEL} if not present.
+     */
+    private static final Map<AnnotationLookupKey, Annotation> L1_ANNOTATION_CACHE = new WeakConcurrentMap<>();
+
+    /**
+     * L2 synthesized annotation cache (alias/aggregate scenario).<br>
+     * Key: annotation lookup key (annotated element + target annotation type).<br>
+     * Value: the synthesized annotation object, or {@code NULL_ANNOTATION_SENTINEL} if not present.
+     */
+    private static final Map<AnnotationLookupKey, Annotation> L2_SYNTHESIZED_ANNOTATION_CACHE = new WeakConcurrentMap<>();
 
     /**
      * Retrieves annotations directly declared on the given element. If a cached value exists, it is returned. This
@@ -175,7 +207,9 @@ public class AnnoKit {
     }
 
     /**
-     * Retrieves a specific type of annotation from the given element.
+     * Retrieves the specified annotation (optimized: adds L1 cache to improve high-frequency call performance).<br>
+     * Supports direct annotations, meta-annotations, and combination annotations with the same behavior as the native
+     * implementation.
      *
      * @param <A>            The type of the annotation.
      * @param annotationEle  The annotated element.
@@ -185,7 +219,20 @@ public class AnnoKit {
     public static <A extends Annotation> A getAnnotation(
             final AnnotatedElement annotationEle,
             final Class<A> annotationType) {
-        return (null == annotationEle) ? null : toCombination(annotationEle).getAnnotation(annotationType);
+        // return (null == annotationEle) ? null : toCombination(annotationEle).getAnnotation(annotationType);
+        if (null == annotationEle || null == annotationType) {
+            return null;
+        }
+
+        // Check L1 cache first
+        final A result = (A) L1_ANNOTATION_CACHE
+                .computeIfAbsent(new AnnotationLookupKey(annotationEle, annotationType), (lookupKey) -> {
+                    // Cache miss: execute native logic
+                    final A annotation = toCombination(annotationEle).getAnnotation(annotationType);
+                    // Store in cache: replace null with sentinel
+                    return (null == annotation) ? NULL_ANNOTATION_SENTINEL : annotation;
+                });
+        return (result == NULL_ANNOTATION_SENTINEL) ? null : result;
     }
 
     /**
@@ -479,6 +526,149 @@ public class AnnoKit {
             return (CombinationAnnotatedElement) annotationEle;
         }
         return new CombinationAnnotatedElement(annotationEle);
+    }
+
+    /**
+     * Converts the given annotation instances and their meta-annotations into a synthesized annotation.
+     *
+     * @param annotationType the annotation type
+     * @param annotations    the annotation instances
+     * @param <T>            the annotation type
+     * @return the synthesized annotation
+     * @see SynthesizedAggregateAnnotation
+     */
+    public static <T extends Annotation> T getSynthesizedAnnotation(
+            final Class<T> annotationType,
+            final Annotation... annotations) {
+        return Optional.ofNullable(annotations).filter(ArrayKit::isNotEmpty)
+                .map(AnnoKit::aggregatingFromAnnotationWithMeta).map(a -> a.synthesize(annotationType)).getOrNull();
+    }
+
+    /**
+     * Retrieves the synthesized annotation of the specified type that is closest to the given element (optimized: adds
+     * L2 cache to avoid repeated synthesis parsing).
+     * <ul>
+     * <li>If the element is a class, recursively resolves annotations on all parent classes and interfaces.</li>
+     * <li>If the element is a method, field, or annotation, only directly declared annotations are resolved.</li>
+     * </ul>
+     *
+     * <p>
+     * Annotation synthesis rules: suppose {@code AnnotatedEle} declares annotations A, B, C in order from top to
+     * bottom, with the following meta-annotation hierarchies:
+     *
+     * <pre>
+     *    A -&gt; M3
+     *    B -&gt; M1 -&gt; M2 -&gt; M3
+     *    C -&gt; M2 -&gt; M3
+     * </pre>
+     *
+     * If {@code annotationType} is {@code M2}, the synthesized annotation derived from root annotation B is returned
+     * first.
+     *
+     * @param annotatedEle   {@link AnnotatedElement}, can be Class, Method, Field, Constructor, or ReflectPermission
+     * @param annotationType the annotation type
+     * @param <T>            the annotation type
+     * @return the synthesized annotation
+     * @see SynthesizedAggregateAnnotation
+     */
+    public static <T extends Annotation> T getSynthesizedAnnotation(
+            final AnnotatedElement annotatedEle,
+            final Class<T> annotationType) {
+        if (null == annotatedEle || null == annotationType) {
+            return null;
+        }
+
+        // Check L2 cache first
+        final AnnotationLookupKey key = new AnnotationLookupKey(annotatedEle, annotationType);
+        final Annotation cached = L2_SYNTHESIZED_ANNOTATION_CACHE.get(key);
+
+        // Cache hit
+        if (null != cached) {
+            return (cached == NULL_ANNOTATION_SENTINEL) ? null : (T) cached;
+        }
+
+        // Cache miss: execute native logic
+        T result = annotatedEle.getAnnotation(annotationType);
+        if (ObjectKit.isNotNull(result)) {
+            L2_SYNTHESIZED_ANNOTATION_CACHE.put(key, result);
+            return result;
+        }
+
+        result = AnnotationScanner.DIRECTLY.getAnnotationsIfSupport(annotatedEle).stream()
+                .map(annotation -> getSynthesizedAnnotation(annotationType, annotation)).filter(Objects::nonNull)
+                .findFirst().orElse(null);
+
+        // Store in cache: replace null with sentinel
+        L2_SYNTHESIZED_ANNOTATION_CACHE.put(key, (null == result) ? NULL_ANNOTATION_SENTINEL : result);
+        return result;
+    }
+
+    /**
+     * Retrieves all synthesized annotations of the specified type from the given element.
+     * <ul>
+     * <li>If the element is a class, recursively resolves annotations on all parent classes and interfaces.</li>
+     * <li>If the element is a method, field, or annotation, only directly declared annotations are resolved.</li>
+     * </ul>
+     *
+     * <p>
+     * Annotation synthesis rules: suppose {@code AnnotatedEle} declares annotations A, B, C in order from top to
+     * bottom, with the following meta-annotation hierarchies:
+     *
+     * <pre>
+     *    A -&gt; M1 -&gt; M2
+     *    B -&gt; M3 -&gt; M1 -&gt; M2
+     *    C -&gt; M2
+     * </pre>
+     *
+     * If {@code annotationType} is {@code M1}, the synthesized annotations derived from root annotations A and B are
+     * both returned.
+     *
+     * @param annotatedEle   {@link AnnotatedElement}, can be Class, Method, Field, Constructor, or ReflectPermission
+     * @param annotationType the annotation type
+     * @param <T>            the annotation type
+     * @return list of synthesized annotations
+     * @see SynthesizedAggregateAnnotation
+     */
+    public static <T extends Annotation> List<T> getAllSynthesizedAnnotations(
+            final AnnotatedElement annotatedEle,
+            final Class<T> annotationType) {
+        return AnnotationScanner.DIRECTLY.getAnnotationsIfSupport(annotatedEle).stream()
+                .map(annotation -> getSynthesizedAnnotation(annotationType, annotation)).filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Aggregates the given annotation instances into a {@link SynthesizedAggregateAnnotation} without scanning
+     * meta-annotations.
+     *
+     * @param annotations the annotation instances to aggregate
+     * @return the aggregate annotation
+     */
+    public static SynthesizedAggregateAnnotation aggregatingFromAnnotation(final Annotation... annotations) {
+        return new GenericSynthesizedAggregateAnnotation(Arrays.asList(annotations), AnnotationScanner.NOTHING);
+    }
+
+    /**
+     * Aggregates the given annotation instances and their meta-annotations into a
+     * {@link SynthesizedAggregateAnnotation}.
+     *
+     * @param annotations the annotation instances to aggregate
+     * @return the aggregate annotation
+     */
+    public static SynthesizedAggregateAnnotation aggregatingFromAnnotationWithMeta(final Annotation... annotations) {
+        return new GenericSynthesizedAggregateAnnotation(Arrays.asList(annotations),
+                AnnotationScanner.DIRECTLY_AND_META_ANNOTATION);
+    }
+
+    /**
+     * Returns whether the given annotation was generated by a proxy class as a synthesized annotation.
+     *
+     * @param annotation the annotation instance
+     * @return {@code true} if the annotation is a synthesized proxy annotation
+     * @see SynthesizedAnnotationProxy#isProxyAnnotation(Class)
+     */
+    public static boolean isSynthesizedAnnotation(final Annotation annotation) {
+        return SynthesizedAnnotationProxy.isProxyAnnotation(annotation.getClass());
     }
 
     /**

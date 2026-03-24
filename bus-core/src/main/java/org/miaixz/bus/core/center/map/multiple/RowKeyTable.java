@@ -36,7 +36,7 @@ import org.miaixz.bus.core.xyz.MapKit;
  * @param <C> The type of the column keys.
  * @param <V> The type of the values.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
 

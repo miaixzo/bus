@@ -92,7 +92,7 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BatchProvider extends BasicProvider {
 

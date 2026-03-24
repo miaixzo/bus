@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
  * This class encapsulates information about users who are currently logged in to an operating system.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 public class OSSession {

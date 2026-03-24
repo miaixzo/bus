@@ -35,7 +35,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Provides auxiliary functions for office documents, such as Excel date judgment, reading, and processing.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Builder {
 

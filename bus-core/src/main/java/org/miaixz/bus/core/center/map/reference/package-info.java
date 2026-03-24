@@ -24,6 +24,6 @@
  * keys/values are no longer strongly reachable, helping to prevent memory leaks.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.core.center.map.reference;

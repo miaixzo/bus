@@ -21,6 +21,6 @@
  * Encapsulates entity classes for users, tokens, responses, and callbacks.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.auth.magic;

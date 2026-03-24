@@ -34,7 +34,7 @@ import java.util.function.Consumer;
  * @param <K> The type of keys maintained by this map.
  * @param <V> The type of mapped values.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class FixedLinkedHashMap<K, V> extends LinkedHashMap<K, V> {
 

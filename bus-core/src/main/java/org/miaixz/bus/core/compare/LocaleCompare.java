@@ -28,7 +28,7 @@ import java.util.Locale;
  * and sorting routines for natural language text.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LocaleCompare extends NullCompare<String> {
 

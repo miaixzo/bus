@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.tuple.Triplet;
  * Utility class for mutable reduction operations using {@link Collector}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CollectorKit {
 

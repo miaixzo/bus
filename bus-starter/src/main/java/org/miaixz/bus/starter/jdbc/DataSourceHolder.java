@@ -37,7 +37,7 @@ import org.miaixz.bus.mapper.Holder;
  *
  * @param <T> The generic type parameter, which is part of the extended {@link Holder} class.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DataSourceHolder<T> extends Holder<T> {
 

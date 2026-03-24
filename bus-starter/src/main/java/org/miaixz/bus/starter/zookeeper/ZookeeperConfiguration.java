@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.starter.zookeeper;
 
-import jakarta.annotation.Resource;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -28,6 +27,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
+import jakarta.annotation.Resource;
+
 /**
  * Auto-configuration for the Apache Curator ZooKeeper client.
  * <p>
@@ -35,7 +36,7 @@ import org.springframework.context.annotation.Bean;
  * point for interacting with ZooKeeper.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @EnableConfigurationProperties(ZookeeperProperties.class)
 public class ZookeeperConfiguration {
@@ -60,7 +61,7 @@ public class ZookeeperConfiguration {
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(this.properties.getBaseSleepTimeMs(),
                 this.properties.getMaxRetries());
         return CuratorFrameworkFactory.builder().connectString(this.properties.getConnectString())
-                .namespace(this.properties.getScope()).sessionTimeoutMs(this.properties.getSessionTimeoutMs())
+                .namespace(this.properties.getNamespace()).sessionTimeoutMs(this.properties.getSessionTimeoutMs())
                 .connectionTimeoutMs(this.properties.getConnectionTimeoutMs()).retryPolicy(retryPolicy).build();
     }
 

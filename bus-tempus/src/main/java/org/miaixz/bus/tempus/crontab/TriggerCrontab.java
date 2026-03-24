@@ -36,7 +36,7 @@ import org.miaixz.bus.tempus.pattern.CronPattern;
  * After execution, the next trigger time is added to the queue.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TriggerCrontab extends Repertoire {
 

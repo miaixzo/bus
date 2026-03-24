@@ -21,6 +21,6 @@
  * Provides classes for customizing and displaying application startup banners.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.spring.banner;

@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
  * GETs) or warnings to the cached response (if the cached data is potentially stale).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CacheStrategy {
 

@@ -23,7 +23,7 @@ package org.miaixz.bus.storage;
  * Enumerates the supported storage platform types.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum Registry {
 

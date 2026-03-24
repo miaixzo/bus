@@ -35,7 +35,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * string template with provided arguments, supporting both indexed and named placeholders.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class StringFormatter {
 

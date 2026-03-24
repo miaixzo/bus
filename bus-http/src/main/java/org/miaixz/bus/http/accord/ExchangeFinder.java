@@ -51,7 +51,7 @@ import java.util.List;
  * It is possible to cancel the finding process.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 final class ExchangeFinder {
 

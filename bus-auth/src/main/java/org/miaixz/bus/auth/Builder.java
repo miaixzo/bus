@@ -48,7 +48,7 @@ import lombok.Setter;
  * parameters, handle OAuth signatures, generate PKCE verification codes, and other authentication flow features.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

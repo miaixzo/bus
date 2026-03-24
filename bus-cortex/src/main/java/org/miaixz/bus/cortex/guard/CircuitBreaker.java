@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Simple circuit breaker with CLOSED/OPEN/HALF_OPEN states.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CircuitBreaker {
 
@@ -33,7 +33,7 @@ public class CircuitBreaker {
      * Circuit breaker state machine states.
      *
      * @author Kimi Liu
-     * @since Java 17+
+     * @since Java 21+
      */
     public enum State {
 

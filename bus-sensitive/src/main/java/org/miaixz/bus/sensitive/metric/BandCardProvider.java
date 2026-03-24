@@ -29,7 +29,7 @@ import org.miaixz.bus.sensitive.magic.annotation.Shield;
  * digits visible. For example: {@code "6227038339383938"} becomes {@code "6227********3938"}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BandCardProvider extends AbstractProvider {
 

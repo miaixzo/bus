@@ -77,7 +77,7 @@ import org.miaixz.bus.storage.Context;
  * platform), Gamebase (game backend), CDN, and AI services.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NhnCloudProvider extends GenericS3Provider {
 

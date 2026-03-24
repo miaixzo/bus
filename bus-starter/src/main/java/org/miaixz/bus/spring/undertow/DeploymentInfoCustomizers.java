@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
  * ensuring that WebSocket buffers are properly set up.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Component
 public class DeploymentInfoCustomizers implements WebServerFactoryCustomizer<UndertowServletWebServerFactory> {

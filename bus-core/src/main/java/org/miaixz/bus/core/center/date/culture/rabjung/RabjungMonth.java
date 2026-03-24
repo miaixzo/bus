@@ -31,7 +31,7 @@ import org.miaixz.bus.core.center.date.culture.Zodiac;
  * Represents a month in the Tibetan calendar. Only supports Tibetan calendar from December 1950 to December 2050.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RabjungMonth extends Loops {
 

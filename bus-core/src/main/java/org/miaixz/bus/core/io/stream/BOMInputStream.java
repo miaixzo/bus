@@ -55,7 +55,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * http://akini.mbnet.fi/java/unicodereader/UnicodeInputStream.java.txt</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BOMInputStream extends InputStream {
 

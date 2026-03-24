@@ -41,7 +41,7 @@ import org.miaixz.bus.core.lang.Keys;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ErrorRegistry implements Errors {
 

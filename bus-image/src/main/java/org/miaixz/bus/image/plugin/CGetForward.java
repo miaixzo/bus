@@ -62,7 +62,7 @@ import java.util.Set;
  * DICOM node using C-STORE.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CGetForward implements AutoCloseable {
 

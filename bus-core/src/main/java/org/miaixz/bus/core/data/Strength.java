@@ -27,7 +27,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * <a href="https://github.com/venshine/CheckPasswordStrength">https://github.com/venshine/CheckPasswordStrength</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Strength {
 

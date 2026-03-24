@@ -46,7 +46,7 @@ import java.net.SocketException;
  * {@link HttpCodec}, which handles the actual I/O.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class Exchange {
 

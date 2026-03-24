@@ -28,7 +28,7 @@ import org.miaixz.bus.tempus.temporal.Binding;
  * components.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface WorkflowPublisherBinding extends Binding {
 

@@ -43,7 +43,7 @@ import org.miaixz.bus.core.xyz.TypeKit;
  *
  * @param <T> The custom reference type whose generic information is to be captured.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class TypeReference<T> implements Type {
 

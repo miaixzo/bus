@@ -32,7 +32,7 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
  * cyclical operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SixtyCycleMonth extends Loops {
 

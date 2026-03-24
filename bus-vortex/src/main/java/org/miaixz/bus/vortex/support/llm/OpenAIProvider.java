@@ -51,7 +51,7 @@ import reactor.core.publisher.Mono;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class OpenAIProvider implements LlmProvider {
 

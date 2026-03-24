@@ -33,7 +33,7 @@ import org.miaixz.bus.extra.nlp.NLPWord;
  * "https://github.com/apache/lucene-solr/tree/master/lucene/analysis">https://github.com/apache/lucene-solr/tree/master/lucene/analysis</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AnalysisResult extends AbstractResult {
 

@@ -36,7 +36,7 @@ import com.sun.jna.Platform;
  * cache expires after one minute.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class IdGroup {

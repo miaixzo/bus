@@ -39,7 +39,7 @@ import org.miaixz.bus.proxy.invoker.ProxyChain;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MultiCacheReader extends AbstractReader {
 

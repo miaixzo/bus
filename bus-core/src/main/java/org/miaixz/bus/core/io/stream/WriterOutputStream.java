@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.Normal;
  * https://github.com/subchen/jetbrick-commons/blob/master/src/main/java/jetbrick/io/stream/WriterOutputStream.java
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WriterOutputStream extends OutputStream {
 

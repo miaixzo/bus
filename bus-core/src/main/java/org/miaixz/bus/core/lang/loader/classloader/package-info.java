@@ -21,6 +21,6 @@
  * Provides classes and utilities related to class loading.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.core.lang.loader.classloader;

@@ -51,7 +51,7 @@ import com.sun.jna.platform.unix.solaris.LibKstat.KstatNamed;
  * Provides access to kstat information on Solaris
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class KstatKit {

@@ -32,7 +32,7 @@ import org.w3c.dom.NodeList;
  *
  * @author Kimi Liu
  * @see NodeList
- * @since Java 17+
+ * @since Java 21+
  */
 public class NodeListIterator implements ResettableIterator<Node> {
 

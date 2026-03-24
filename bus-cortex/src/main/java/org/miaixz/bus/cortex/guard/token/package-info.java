@@ -30,6 +30,6 @@
  * {@code AccessTokenStore} for signature verification and decoding.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.cortex.guard.token;

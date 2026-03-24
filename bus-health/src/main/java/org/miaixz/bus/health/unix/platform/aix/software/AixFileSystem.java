@@ -41,7 +41,7 @@ import org.miaixz.bus.health.builtin.software.common.AbstractFileSystem;
  * system or other implementation specific means of file storage.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public class AixFileSystem extends AbstractFileSystem {

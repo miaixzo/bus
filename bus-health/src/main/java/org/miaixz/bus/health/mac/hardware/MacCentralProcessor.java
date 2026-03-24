@@ -56,7 +56,7 @@ import com.sun.jna.platform.mac.SystemB;
  * A CPU.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 final class MacCentralProcessor extends AbstractCentralProcessor {

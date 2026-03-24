@@ -41,7 +41,7 @@ import lombok.Getter;
  * resource handling, and metadata access.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractDatabaseQuery implements DatabaseQuery {
 

@@ -31,7 +31,7 @@ import org.miaixz.bus.core.xyz.FileKit;
  * An abstract file cache to mitigate performance issues caused by frequent file reads.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractFileCache implements Serializable {
 

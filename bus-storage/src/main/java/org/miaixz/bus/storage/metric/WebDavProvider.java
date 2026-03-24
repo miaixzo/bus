@@ -45,7 +45,7 @@ import com.github.sardine.SardineFactory;
  * operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WebDavProvider extends AbstractProvider {
 

@@ -27,7 +27,7 @@ import java.io.InputStream;
  * is overridden to do nothing.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AlwaysInputStream extends InputStream {
 

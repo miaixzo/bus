@@ -73,7 +73,7 @@ import java.util.Collection;
  *
  * @param <T> the type of data to synchronize
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface ClusterSynchronizer<T> {
 

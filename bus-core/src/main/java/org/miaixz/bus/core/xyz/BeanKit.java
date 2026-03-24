@@ -55,7 +55,7 @@ import org.miaixz.bus.core.lang.mutable.MutableEntry;
  * A class with getter and setter methods for its properties can be called a JavaBean.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BeanKit {
 

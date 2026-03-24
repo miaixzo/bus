@@ -31,7 +31,7 @@ import java.util.Map;
  *
  * @param <T> The type of the concrete builder implementation, for method chaining.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class RequestBuilder<T extends RequestBuilder> {
 

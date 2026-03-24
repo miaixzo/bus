@@ -28,7 +28,7 @@ import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycleYear;
  * {@link Loops} for cyclical operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DecadeFortune extends Loops {
 

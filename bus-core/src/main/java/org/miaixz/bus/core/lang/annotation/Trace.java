@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.Normal;
  * purposes.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

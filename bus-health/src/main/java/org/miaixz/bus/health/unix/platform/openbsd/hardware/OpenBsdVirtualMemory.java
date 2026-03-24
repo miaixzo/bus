@@ -32,7 +32,7 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractVirtualMemory;
  * Memory info on OpenBSD
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 final class OpenBsdVirtualMemory extends AbstractVirtualMemory {

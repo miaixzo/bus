@@ -27,7 +27,7 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  *
  * @param <T> The type of the primary key value.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface GenId<T> {
 

@@ -31,7 +31,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  *
  * @param <T> the type of the bean to be compared.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class FieldCompare<T> extends FunctionCompare<T> {
 

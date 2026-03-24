@@ -23,6 +23,6 @@
  * homepage: <a href="https://github.com/hankcs/HanLP">https://github.com/hankcs/HanLP</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.extra.nlp.provider.hanlp;

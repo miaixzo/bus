@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.MathKit;
  * This class is derived from Apache Commons Lang3.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class Fraction extends Number implements Comparable<Fraction> {
 

@@ -26,7 +26,7 @@ import lombok.Setter;
  * Result of a health check probe.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

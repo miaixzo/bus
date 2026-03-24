@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  *
  * @param <T> The type of the object held by this soft reference.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SoftObject<T> extends SoftReference<T> implements Ref<T> {
 

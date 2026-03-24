@@ -21,6 +21,6 @@
  * Provides the implementation of the WebSocket protocol (RFC 6455) for creating and managing WebSocket connections.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.http.socket;

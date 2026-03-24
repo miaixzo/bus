@@ -33,11 +33,11 @@ import lombok.Setter;
  * Configuration properties for the cache system.
  * <p>
  * Binds to the {@code bus.cache.*} namespace in {@code application.yml}. Two independent concerns are configured here:
+ * </p>
  * <ol>
  * <li><b>Cache storage backend</b> — where data is stored (top-level fields + {@link Redis}).</li>
  * <li><b>Collector backend</b> — where hit/miss statistics are stored ({@link JdbcProperties}).</li>
  * </ol>
- * </p>
  *
  * <p>
  * Example — Redis single-node with Prometheus metrics:
@@ -88,7 +88,7 @@ import lombok.Setter;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

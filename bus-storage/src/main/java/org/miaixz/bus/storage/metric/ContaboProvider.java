@@ -89,7 +89,7 @@ import org.miaixz.bus.storage.Context;
  * <strong>Compliance:</strong> GDPR, ISO 27001, German data protection laws
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ContaboProvider extends GenericS3Provider {
 

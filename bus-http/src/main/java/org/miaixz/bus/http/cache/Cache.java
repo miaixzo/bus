@@ -57,7 +57,7 @@ import java.util.*;
  * Caches HTTP and HTTPS responses to the filesystem so they can be reused, saving time and bandwidth.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Cache implements Closeable, Flushable {
 

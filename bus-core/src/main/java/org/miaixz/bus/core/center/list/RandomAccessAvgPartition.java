@@ -42,7 +42,7 @@ import java.util.RandomAccess;
  *
  * @param <T> the type of elements in the list
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RandomAccessAvgPartition<T> extends AvgPartition<T> implements RandomAccess {
 

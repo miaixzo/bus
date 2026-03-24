@@ -34,7 +34,7 @@ import org.miaixz.bus.crypto.center.HMac;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HMacJWTSigner implements JWTSigner {
 

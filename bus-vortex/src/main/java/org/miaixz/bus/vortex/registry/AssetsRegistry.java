@@ -30,7 +30,7 @@ import org.miaixz.bus.cortex.Assets;
  * @author Kimi Liu
  * @see AbstractRegistry
  * @see Assets
- * @since Java 17+
+ * @since Java 21+
  */
 public class AssetsRegistry extends AbstractRegistry<Assets> {
 

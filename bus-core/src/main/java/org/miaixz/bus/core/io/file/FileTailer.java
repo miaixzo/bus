@@ -43,7 +43,7 @@ import org.miaixz.bus.core.xyz.WatchKit;
  * monitors a file for new content and processes it line by line.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class FileTailer implements Serializable {
 

@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.EnumValue;
  * to be used interchangeably.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface JsonProvider extends Provider {
 

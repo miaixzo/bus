@@ -37,7 +37,7 @@ import java.util.Set;
  * managed by {@link DataSourceHolder}. It allows for switching between multiple configured data sources dynamically.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DynamicDataSource extends AbstractRoutingDataSource {
 

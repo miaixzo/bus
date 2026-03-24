@@ -21,6 +21,6 @@
  * Provides classes for working with the Public Suffix List.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.http.metric.suffix;

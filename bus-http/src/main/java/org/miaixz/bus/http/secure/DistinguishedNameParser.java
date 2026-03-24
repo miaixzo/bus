@@ -29,7 +29,7 @@ import javax.security.auth.x500.X500Principal;
  * from a DN string.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class DistinguishedNameParser {
 

@@ -40,7 +40,7 @@ import org.opencv.core.CvType;
  * handling embedded overlays. It supports processing images with different data types.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ImageRendering {
 

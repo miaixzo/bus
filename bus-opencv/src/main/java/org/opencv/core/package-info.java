@@ -24,6 +24,6 @@
  * data types used throughout the OpenCV library for image processing and computer vision tasks.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.opencv.core;

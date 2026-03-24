@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.starter.pay;
 
-import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.pay.Complex;
 import org.miaixz.bus.pay.Context;
 import org.miaixz.bus.pay.Provider;
+import org.miaixz.bus.pay.Registry;
 import org.miaixz.bus.pay.magic.ErrorCode;
 import org.miaixz.bus.pay.metric.alipay.AliPayProvider;
 import org.miaixz.bus.pay.metric.jdpay.JdPayProvider;
@@ -42,7 +42,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * dynamic registration and retrieval of payment providers.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PayService {
 

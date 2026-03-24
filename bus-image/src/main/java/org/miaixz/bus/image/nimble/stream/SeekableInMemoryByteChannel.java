@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Internal buffer can be accessed via SeekableInMemoryByteChannel.array().
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SeekableInMemoryByteChannel implements SeekableByteChannel {
 

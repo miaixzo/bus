@@ -31,7 +31,7 @@ import lombok.experimental.SuperBuilder;
  * Notice for DingTalk notification messages.
  *
  * @author Justubborn
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

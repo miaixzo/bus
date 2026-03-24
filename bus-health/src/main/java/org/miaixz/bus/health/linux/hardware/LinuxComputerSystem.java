@@ -34,7 +34,7 @@ import org.miaixz.bus.health.linux.driver.proc.CpuInfo;
  * Hardware data obtained from sysfs.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 final class LinuxComputerSystem extends AbstractComputerSystem {

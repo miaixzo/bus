@@ -41,7 +41,7 @@ import com.sun.jna.platform.mac.IOKitUtil;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 final class MacDisplay extends AbstractDisplay {

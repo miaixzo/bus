@@ -27,7 +27,7 @@ import org.miaixz.bus.core.lang.exception.NotFoundException;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class ConfigurationCache<C, T> {
 

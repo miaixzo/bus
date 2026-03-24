@@ -30,7 +30,7 @@ import java.util.Objects;
  *
  * @param <T> The type of the identifier for the node.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TreeNode<T> implements Node<T> {
 

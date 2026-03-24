@@ -41,7 +41,7 @@ import java.net.URL;
  * DICOM Part 19 standard. It uses a {@link SAXWriter} to handle the conversion logic.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Dcm2Xml {
 

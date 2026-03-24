@@ -32,7 +32,7 @@ import com.sun.jna.Union;
  * JNA project.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
 

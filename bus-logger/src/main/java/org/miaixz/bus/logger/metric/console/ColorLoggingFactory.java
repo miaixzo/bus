@@ -26,7 +26,7 @@ import org.miaixz.bus.logger.magic.AbstractFactory;
  * A factory for creating console loggers that print colorful messages using {@code System.out.println}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ColorLoggingFactory extends AbstractFactory {
 

@@ -31,7 +31,7 @@ import org.miaixz.bus.core.xyz.ThreadKit;
  *
  * @param <T> The type of the result returned by the scheduled job.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SimpleScheduler<T> {
 

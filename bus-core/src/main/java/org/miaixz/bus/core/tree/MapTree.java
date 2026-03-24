@@ -36,7 +36,7 @@ import org.miaixz.bus.core.xyz.*;
  *
  * @param <T> The type of the node's identifier.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T> {
 

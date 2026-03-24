@@ -34,7 +34,7 @@ import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
  * calculations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ChaCha20 extends Crypto {
 

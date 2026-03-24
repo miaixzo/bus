@@ -47,7 +47,7 @@ import java.util.List;
  * itself.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class PrimaryFilter extends AbstractFilter {

@@ -28,7 +28,7 @@ import java.lang.annotation.Annotation;
  * Predefined validator names within the current framework.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Builder extends Validator {
 

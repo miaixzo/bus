@@ -30,7 +30,7 @@ import org.miaixz.bus.sensitive.Context;
  * middle part of a string while keeping the head and tail visible, with special handling for short strings.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DafaultProvider extends AbstractProvider {
 

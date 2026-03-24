@@ -23,7 +23,7 @@ package org.miaixz.bus.cortex;
  * Contract for server-side active health probing.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Prober {
 

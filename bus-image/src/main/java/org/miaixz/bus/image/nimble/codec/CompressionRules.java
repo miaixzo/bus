@@ -28,7 +28,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CompressionRules implements Iterable<CompressionRule>, Serializable {
 

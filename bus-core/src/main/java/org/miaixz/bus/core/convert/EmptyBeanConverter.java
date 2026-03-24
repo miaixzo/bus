@@ -30,7 +30,7 @@ import org.miaixz.bus.core.xyz.ReflectKit;
  * Converter for null or empty objects, converting to an instance of the target type
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class EmptyBeanConverter extends AbstractConverter implements MatcherConverter, Serializable {
 

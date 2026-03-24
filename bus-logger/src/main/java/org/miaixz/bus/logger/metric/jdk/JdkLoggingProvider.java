@@ -32,7 +32,7 @@ import java.util.logging.Logger;
  * A logger provider implementation that wraps a {@link java.util.logging.Logger} instance.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JdkLoggingProvider extends AbstractProvider {
 

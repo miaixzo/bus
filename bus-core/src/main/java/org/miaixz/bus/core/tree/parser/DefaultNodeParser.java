@@ -30,7 +30,7 @@ import org.miaixz.bus.core.xyz.MapKit;
  *
  * @param <T> The type of the node's identifier.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DefaultNodeParser<T> implements NodeParser<TreeNode<T>, T> {
 

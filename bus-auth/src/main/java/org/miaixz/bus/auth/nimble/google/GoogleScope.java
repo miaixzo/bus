@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  * Google 授权范围
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @AllArgsConstructor

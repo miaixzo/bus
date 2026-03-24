@@ -27,7 +27,7 @@ import java.util.Iterator;
  *
  * @param <E> the type of elements returned by this iterator
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface ResettableIterator<E> extends Iterator<E> {
 

@@ -26,7 +26,7 @@ package org.miaixz.bus.core.lang.pool;
  *
  * @param <T> the type of object managed by this factory
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface ObjectFactory<T> {
 

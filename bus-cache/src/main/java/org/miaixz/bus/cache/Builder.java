@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Builder {
 

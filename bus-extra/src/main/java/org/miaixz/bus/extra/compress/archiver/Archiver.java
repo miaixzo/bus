@@ -28,7 +28,7 @@ import java.util.function.Predicate;
  * Data archiving wrapper, which archives several files or directories into a compressed package.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Archiver extends Closeable {
 

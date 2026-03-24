@@ -30,7 +30,7 @@ import org.miaixz.bus.core.lang.Chain;
  * A chain of string replacers, allowing multiple replacement logics to be combined.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ReplacerChain extends StringReplacer implements Chain<StringReplacer, ReplacerChain> {
 

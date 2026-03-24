@@ -31,7 +31,7 @@ import org.miaixz.bus.pay.metric.wechat.WechatPayProvider;
  * Represents the types of payment platforms.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum Registry implements Complex {
 

@@ -21,6 +21,6 @@
  * This package contains the implementation for the JD Pay provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.pay.metric.jdpay;

@@ -32,7 +32,7 @@ import java.io.Serial;
  * A builder for creating cron expression strings.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CronPatternBuilder implements Builder<String> {
 

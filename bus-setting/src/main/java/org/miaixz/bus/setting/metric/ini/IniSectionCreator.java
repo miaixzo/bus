@@ -23,7 +23,7 @@ package org.miaixz.bus.setting.metric.ini;
  * section create function
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @FunctionalInterface
 public interface IniSectionCreator {

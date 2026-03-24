@@ -30,7 +30,7 @@ import lombok.Setter;
  * Batch registry operation descriptor.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter
@@ -40,7 +40,7 @@ public class BatchOperation {
      * Type of operation to apply to each entry in the batch.
      *
      * @author Kimi Liu
-     * @since Java 17+
+     * @since Java 21+
      */
     public enum OperationType {
         /**

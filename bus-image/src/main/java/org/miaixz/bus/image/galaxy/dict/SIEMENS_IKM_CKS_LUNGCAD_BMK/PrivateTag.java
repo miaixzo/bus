@@ -21,7 +21,7 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_IKM_CKS_LUNGCAD_BMK;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PrivateTag {
 

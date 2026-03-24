@@ -30,7 +30,7 @@ import org.miaixz.bus.shade.screw.Config;
  * name generation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractExecute implements Execute {
 

@@ -30,7 +30,7 @@ import java.util.Set;
  * BFS-based downstream impact analysis over a dependency graph.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ImpactAnalysis {
 

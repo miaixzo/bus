@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.FieldKit;
  * An abstract base class for SQL interception and handling in MyBatis.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractSqlHandler {
 

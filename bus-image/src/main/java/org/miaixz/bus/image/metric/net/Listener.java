@@ -24,7 +24,7 @@ import java.net.SocketAddress;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Listener extends Closeable {
 

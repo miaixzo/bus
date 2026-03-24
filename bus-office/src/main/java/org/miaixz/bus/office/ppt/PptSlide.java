@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.FileKit;
  * tables, shapes, and configuring background.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PptSlide {
 

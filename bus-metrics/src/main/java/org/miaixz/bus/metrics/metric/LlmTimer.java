@@ -26,7 +26,7 @@ package org.miaixz.bus.metrics.metric;
  * Follows OTel GenAI SIG 2025 semantic conventions (gen_ai.*).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface LlmTimer {
 

@@ -36,7 +36,7 @@ import java.security.GeneralSecurityException;
  * QBP^Q23 message over an MLLP connection to get a list of corresponding patient identifiers.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HL7Pix extends Device {
 

@@ -78,7 +78,7 @@ import org.miaixz.bus.storage.magic.ErrorCode;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class GoogleDriveProvider extends AbstractProvider {
 

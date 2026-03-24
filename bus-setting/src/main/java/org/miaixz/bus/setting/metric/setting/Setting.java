@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * files, with caching support.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Setting {
 

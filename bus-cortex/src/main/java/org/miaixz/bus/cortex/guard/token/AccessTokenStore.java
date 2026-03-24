@@ -27,7 +27,7 @@ import org.miaixz.bus.extra.json.JsonKit;
  * HMAC-SHA256 token issuance and validation backed by CacheX.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AccessTokenStore {
 

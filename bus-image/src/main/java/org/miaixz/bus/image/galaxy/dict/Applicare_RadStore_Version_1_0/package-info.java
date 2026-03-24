@@ -21,6 +21,6 @@
  * UID Dictionary from Applicare_RadStore_Version_1_0
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.Applicare_RadStore_Version_1_0;

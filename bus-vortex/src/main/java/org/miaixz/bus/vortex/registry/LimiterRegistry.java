@@ -26,7 +26,7 @@ import org.miaixz.bus.vortex.magic.Limiter;
  * configurations ({@link Limiter}) based on {@link AbstractRegistry}.
  *
  * @author Justubborn
- * @since Java 17+
+ * @since Java 21+
  */
 public class LimiterRegistry extends AbstractRegistry<Limiter> {
 

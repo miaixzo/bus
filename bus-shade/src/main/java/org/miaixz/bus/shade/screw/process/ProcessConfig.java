@@ -31,7 +31,7 @@ import lombok.Setter;
  * Configuration for data processing, specifically for filtering tables.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

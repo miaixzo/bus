@@ -32,7 +32,7 @@ import java.util.logging.LogManager;
  * A factory for creating {@link java.util.logging.Logger} instances.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JdkLoggingFactory extends AbstractFactory {
 

@@ -36,7 +36,7 @@ import org.miaixz.bus.core.xyz.IoKit;
  * serializable objects, and character sequences to an output stream, with an option to close the stream after writing.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class StreamWriter {
 

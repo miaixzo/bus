@@ -35,7 +35,7 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
  * This class extends {@link Tradition} to encapsulate these four pillars.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class EightChar extends Tradition {
 

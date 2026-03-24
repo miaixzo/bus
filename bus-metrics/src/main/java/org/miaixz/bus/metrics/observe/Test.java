@@ -23,7 +23,7 @@ package org.miaixz.bus.metrics.observe;
  * Placeholder class reserved for future observe-layer integration tests.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Test {
 }

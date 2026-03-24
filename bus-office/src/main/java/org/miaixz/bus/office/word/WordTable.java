@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.MapKit;
  * Utility class for Word table related operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WordTable {
 

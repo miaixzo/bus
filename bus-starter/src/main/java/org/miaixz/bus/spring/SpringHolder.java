@@ -41,7 +41,7 @@ import java.util.Set;
  * initialization.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ComponentScan("org.miaixz.**")
 @Conditional(Nexus.class)

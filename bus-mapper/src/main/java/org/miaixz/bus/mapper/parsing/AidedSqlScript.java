@@ -86,7 +86,7 @@ import org.miaixz.bus.mapper.dialect.Dialect;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface AidedSqlScript extends SqlScript {
 

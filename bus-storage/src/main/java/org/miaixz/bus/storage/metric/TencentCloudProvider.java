@@ -102,7 +102,7 @@ import org.miaixz.bus.storage.Context;
  * Infinite (CI) for media processing, and Cloud Log Service (CLS).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TencentCloudProvider extends GenericS3Provider {
 

@@ -26,7 +26,7 @@ import java.util.function.Predicate;
  * value (like a minute or an hour) matches the constraints of a specific cron field.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface PartMatcher extends Predicate<Integer> {
 

@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.MapKit;
  * @param <K> The type of keys maintained by this map.
  * @param <V> The type of mapped values.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BiMap<K, V> extends MapWrapper<K, V> {
 

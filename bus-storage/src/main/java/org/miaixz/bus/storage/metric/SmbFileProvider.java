@@ -57,7 +57,7 @@ import com.hierynomus.smbj.share.DiskShare;
  * shares for file storage operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SmbFileProvider extends AbstractProvider {
 

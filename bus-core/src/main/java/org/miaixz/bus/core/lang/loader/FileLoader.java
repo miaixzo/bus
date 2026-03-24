@@ -36,7 +36,7 @@ import org.miaixz.bus.core.net.url.UrlDecoder;
  * A resource loader for files within a file system directory.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class FileLoader extends ResourceLoader implements Loader {
 

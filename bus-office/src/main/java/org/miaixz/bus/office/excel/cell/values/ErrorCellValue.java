@@ -27,7 +27,7 @@ import org.miaixz.bus.core.lang.Normal;
  * Represents an ERROR type cell value.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ErrorCellValue implements CellValue<String> {
 

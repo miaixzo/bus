@@ -32,7 +32,7 @@ import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
  * cyclical operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SixtyCycleYear extends Loops {
 

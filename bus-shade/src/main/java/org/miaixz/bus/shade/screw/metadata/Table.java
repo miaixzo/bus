@@ -23,7 +23,7 @@ package org.miaixz.bus.shade.screw.metadata;
  * Interface for table metadata.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Table {
 

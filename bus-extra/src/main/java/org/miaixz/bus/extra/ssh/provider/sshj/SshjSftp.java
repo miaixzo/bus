@@ -55,7 +55,7 @@ import net.schmizz.sshj.xfer.FileSystemFile;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SshjSftp extends AbstractFtp {
 

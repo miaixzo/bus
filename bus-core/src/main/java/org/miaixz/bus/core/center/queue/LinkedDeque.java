@@ -38,7 +38,7 @@ import java.util.*;
  * @author Kimi Liu
  * @see <a href="http://code.google.com/p/concurrentlinkedhashmap/">
  *      http://code.google.com/p/concurrentlinkedhashmap/</a>
- * @since Java 17+
+ * @since Java 21+
  */
 public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> implements Deque<E> {
 
@@ -624,7 +624,7 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 17+
+     * @since Java 21+
      */
     abstract class AbstractLinkedIterator implements Iterator<E> {
 

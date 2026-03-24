@@ -34,7 +34,7 @@ import net.bytebuddy.matcher.ElementMatchers;
  * original class and intercepts all its methods using a {@link ByteBuddyHandler} to apply limiting rules.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ByteBuddyProxy {
 

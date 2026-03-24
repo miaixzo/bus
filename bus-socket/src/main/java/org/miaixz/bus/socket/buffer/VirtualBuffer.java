@@ -31,7 +31,7 @@ import java.util.concurrent.Semaphore;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class VirtualBuffer {
 

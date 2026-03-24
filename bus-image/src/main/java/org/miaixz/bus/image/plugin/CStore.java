@@ -40,7 +40,7 @@ import java.util.Properties;
  * execution of a {@link StoreSCU} instance.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CStore {
 

@@ -21,6 +21,6 @@
  * Provides implementations for Bean copying, including copy options and various copier types.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.core.bean.copier;

@@ -35,7 +35,7 @@ import org.miaixz.bus.core.xyz.IoKit;
  * Deflate algorithm. Deflate is a lossless data compression algorithm that uses both LZ77 algorithm and Huffman coding.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Deflate implements Closeable {
 

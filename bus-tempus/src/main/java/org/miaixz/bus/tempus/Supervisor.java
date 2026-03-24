@@ -29,7 +29,7 @@ import java.util.List;
  * {@link Launcher} is spawned by this supervisor to check for tasks that should be executed.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Supervisor implements Serializable {
 

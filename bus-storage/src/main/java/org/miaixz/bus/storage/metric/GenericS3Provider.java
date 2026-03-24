@@ -60,7 +60,7 @@ import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequ
  * service for file storage operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class GenericS3Provider extends AbstractProvider {
 

@@ -28,7 +28,7 @@ import org.miaixz.bus.limiter.magic.FlowGrade;
  * to frequently accessed methods or resources, preventing them from being overloaded.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Inherited
 @Documented

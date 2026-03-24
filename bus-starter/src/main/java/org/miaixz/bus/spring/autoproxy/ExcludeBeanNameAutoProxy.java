@@ -34,7 +34,7 @@ import java.util.List;
  * certain beans from being proxied, even if they match the inclusion patterns.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ExcludeBeanNameAutoProxy extends BeanNameAutoProxyCreator {
 

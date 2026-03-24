@@ -21,6 +21,6 @@
  * UID Dictionary from SPI_P_Private_ICS_Release_1_4
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.SPI_P_Private_ICS_Release_1_4;

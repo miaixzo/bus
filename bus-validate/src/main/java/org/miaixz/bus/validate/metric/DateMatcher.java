@@ -30,7 +30,7 @@ import org.miaixz.bus.validate.magic.annotation.Date;
  * Validator for checking if a string represents a valid date according to a specified format.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DateMatcher implements Matcher<Object, Date> {
 

@@ -21,6 +21,6 @@
  * This package contains the specific API endpoints for Alipay.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.pay.metric.alipay.api;

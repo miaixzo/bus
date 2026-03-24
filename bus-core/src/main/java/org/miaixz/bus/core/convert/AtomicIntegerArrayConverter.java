@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicIntegerArray;
  * Converts an object to an {@link AtomicIntegerArray}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AtomicIntegerArrayConverter extends AbstractConverter {
 

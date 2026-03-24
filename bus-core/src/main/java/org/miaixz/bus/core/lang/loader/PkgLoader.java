@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.Symbol;
  * "com/example/package").
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PkgLoader extends DelegateLoader implements Loader {
 

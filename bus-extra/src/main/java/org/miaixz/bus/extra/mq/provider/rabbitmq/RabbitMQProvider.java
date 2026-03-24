@@ -39,7 +39,7 @@ import java.util.concurrent.TimeoutException;
  * connections and provides access to RabbitMQ producers and consumers.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RabbitMQProvider implements MQProvider, Closeable {
 

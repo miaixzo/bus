@@ -21,6 +21,6 @@
  * UID Dictionary from agfa_kosd_1_0
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.agfa_kosd_1_0;

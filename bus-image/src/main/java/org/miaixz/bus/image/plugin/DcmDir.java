@@ -48,7 +48,7 @@ import java.util.regex.Pattern;
  * removing references to DICOM files, listing directory records, and compacting the DICOMDIR file.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DcmDir {
 

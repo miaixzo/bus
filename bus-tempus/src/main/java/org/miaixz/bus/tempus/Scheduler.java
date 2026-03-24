@@ -73,7 +73,7 @@ import org.miaixz.bus.setting.Setting;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Scheduler implements Serializable {
 

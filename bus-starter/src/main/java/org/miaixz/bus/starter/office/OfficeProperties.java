@@ -32,7 +32,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * pool sizes, and other operational parameters.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

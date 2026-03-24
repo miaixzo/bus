@@ -50,7 +50,7 @@ import org.miaixz.bus.pay.magic.Message;
  * Utility class for WeChat Pay.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WechatPayBuilder {
 

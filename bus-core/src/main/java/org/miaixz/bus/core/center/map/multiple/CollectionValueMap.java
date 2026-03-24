@@ -40,7 +40,7 @@ import org.miaixz.bus.core.center.function.SupplierX;
  * @param <K> The type of keys in the map.
  * @param <V> The type of values stored in the collections.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CollectionValueMap<K, V> extends AbstractCollValueMap<K, V> {
 

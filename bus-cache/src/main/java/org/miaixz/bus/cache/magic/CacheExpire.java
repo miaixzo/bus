@@ -28,7 +28,7 @@ package org.miaixz.bus.cache.magic;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface CacheExpire {
 

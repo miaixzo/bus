@@ -42,7 +42,7 @@ import org.miaixz.bus.pay.metric.wechat.api.v2.*;
  * Provider for WeChat Pay APIs.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
 

@@ -27,7 +27,7 @@ package org.miaixz.bus.mapper.support.tenant;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum TenantMode {
 

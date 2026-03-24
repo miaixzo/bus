@@ -41,7 +41,7 @@ import java.util.*;
  * service by dynamically configuring OIDC service endpoints in {@link Context}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class OIDCProvider extends AbstractProvider {
 

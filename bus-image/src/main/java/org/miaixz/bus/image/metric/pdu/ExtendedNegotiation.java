@@ -24,7 +24,7 @@ import org.miaixz.bus.image.UID;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ExtendedNegotiation {
 

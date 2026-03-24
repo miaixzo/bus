@@ -31,7 +31,7 @@ import org.miaixz.bus.storage.magic.ErrorCode;
  * Provides an interface for file storage operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Provider extends org.miaixz.bus.core.Provider {
 

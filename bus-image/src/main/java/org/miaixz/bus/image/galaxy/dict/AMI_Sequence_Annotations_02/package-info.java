@@ -21,6 +21,6 @@
  * UID Dictionary from AMI_Sequence_Annotations_02
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.AMI_Sequence_Annotations_02;

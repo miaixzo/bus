@@ -21,6 +21,6 @@
  * Provides node parser implementations for converting custom data objects into tree nodes.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.core.tree.parser;

@@ -57,7 +57,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ClientX implements SdkHttpClient {
 

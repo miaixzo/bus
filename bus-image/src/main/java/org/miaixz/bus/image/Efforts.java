@@ -28,7 +28,7 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
  * to perform additional business logic after an image has been processed or received.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Efforts {
 

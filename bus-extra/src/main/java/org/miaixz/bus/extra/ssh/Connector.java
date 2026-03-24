@@ -31,7 +31,7 @@ package org.miaixz.bus.extra.ssh;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Connector {
 

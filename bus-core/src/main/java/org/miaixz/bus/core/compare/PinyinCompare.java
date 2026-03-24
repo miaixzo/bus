@@ -26,7 +26,7 @@ import java.util.Locale;
  * A comparator for sorting Chinese character strings in Pinyin order (based on GBK).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PinyinCompare extends LocaleCompare {
 

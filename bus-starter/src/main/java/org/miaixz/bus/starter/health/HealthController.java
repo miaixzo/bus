@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HealthController extends Controller {
 

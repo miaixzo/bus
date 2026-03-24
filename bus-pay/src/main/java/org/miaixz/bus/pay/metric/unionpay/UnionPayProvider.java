@@ -33,7 +33,7 @@ import org.miaixz.bus.pay.metric.AbstractProvider;
  * UnionPay Cloud QuickPass provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class UnionPayProvider extends AbstractProvider<Voucher, Context> {
 

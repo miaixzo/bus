@@ -43,7 +43,7 @@ import io.temporal.activity.Activity;
  * @param <C> the activity context type
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractActivityHandler<R, C>
         implements ActivityContextFactory<R, C>, ActivityExecutorResolver<R, C>, ActivityResultSerializer {

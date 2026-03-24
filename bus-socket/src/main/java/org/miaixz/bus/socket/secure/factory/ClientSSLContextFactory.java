@@ -36,7 +36,7 @@ import java.security.cert.X509Certificate;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ClientSSLContextFactory implements SSLContextFactory {
 

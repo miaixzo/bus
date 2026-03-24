@@ -29,7 +29,7 @@ import javax.imageio.stream.MemoryCacheImageOutputStream;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 final class CacheImageOutputStream extends MemoryCacheImageOutputStream implements BytesWithImageImageDescriptor {
 

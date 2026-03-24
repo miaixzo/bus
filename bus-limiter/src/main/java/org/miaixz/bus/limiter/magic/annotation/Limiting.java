@@ -26,7 +26,7 @@ import java.lang.annotation.*;
  * requests to a method, preventing it from being overwhelmed.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Inherited
 @Documented

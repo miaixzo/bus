@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.Assert;
  * @see #Q2
  * @see #Q3
  * @see #Q4
- * @since Java 17+
+ * @since Java 21+
  */
 public enum Quarter {
 

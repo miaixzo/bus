@@ -26,7 +26,7 @@ import org.miaixz.bus.shade.screw.execute.ProduceExecute;
  * Default constants and utility methods for document generation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Builder {
 

@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * {@code null}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class InputStreamResource implements Resource, Serializable {
 

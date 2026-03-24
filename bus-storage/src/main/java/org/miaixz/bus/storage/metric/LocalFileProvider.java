@@ -45,7 +45,7 @@ import org.miaixz.bus.storage.magic.ErrorCode;
  * Local file storage service provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LocalFileProvider extends AbstractProvider {
 

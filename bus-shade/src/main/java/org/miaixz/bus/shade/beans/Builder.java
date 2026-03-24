@@ -35,7 +35,7 @@ import java.util.List;
  * generate various components of a typical web application, such as entities, mappers, services, and controllers.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Builder {
 

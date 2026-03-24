@@ -37,7 +37,7 @@ import java.net.Socket;
  * request/response exchange.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Connection {
 

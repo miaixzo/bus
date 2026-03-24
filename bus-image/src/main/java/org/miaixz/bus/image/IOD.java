@@ -43,7 +43,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * definition file.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class IOD extends ArrayList<IOD.DataElement> {
 

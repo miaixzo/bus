@@ -39,7 +39,7 @@ import java.net.URL;
  * optionally apply an XSLT transformation during the conversion process.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HL72Xml {
 

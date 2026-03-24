@@ -35,7 +35,7 @@ import java.io.UnsupportedEncodingException;
  * A utility class for SOAP-related operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SoapX {
 

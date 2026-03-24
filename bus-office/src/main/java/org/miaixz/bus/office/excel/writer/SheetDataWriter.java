@@ -44,7 +44,7 @@ import org.miaixz.bus.office.excel.RowKit;
  * Sheet data writer. This object only encapsulates writing data to a Sheet and does not flush to a file.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SheetDataWriter {
 

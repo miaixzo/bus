@@ -26,7 +26,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * class is currently in the testing phase.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Instance {
 

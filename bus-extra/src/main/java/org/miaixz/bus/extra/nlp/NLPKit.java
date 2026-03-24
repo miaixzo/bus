@@ -24,7 +24,7 @@ package org.miaixz.bus.extra.nlp;
  * various NLP segmentation engines, allowing for easy text parsing and word extraction.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NLPKit {
 

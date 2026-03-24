@@ -29,7 +29,7 @@ import org.miaixz.bus.core.xyz.*;
  * argument fails an assertion. This class is commonly used for parameter checking.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Assert {
 

@@ -43,7 +43,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Utility class for encapsulating and manipulating {@link java.util.Calendar} objects.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Calendar extends Calculate {
 

@@ -29,7 +29,7 @@ import lombok.Setter;
  * Represents primary key information for a CacheDB table.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

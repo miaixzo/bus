@@ -23,7 +23,7 @@ package org.miaixz.bus.crypto;
  * Interface for cryptographic service providers, defining methods for encryption and decryption.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Factory {
 

@@ -24,7 +24,7 @@ package org.miaixz.bus.core.center.date.culture;
  * It manages a list of names and a current index.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class Samsara extends Loops {
 

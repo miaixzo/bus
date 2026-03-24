@@ -41,7 +41,7 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
  * Represents a specific two-hour block (shichen) in the Lunar calendar.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LunarHour extends SecondParts {
 

@@ -27,7 +27,7 @@ import org.miaixz.bus.core.lang.Normal;
  * copying and improving performance.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class FastBuffer {
 

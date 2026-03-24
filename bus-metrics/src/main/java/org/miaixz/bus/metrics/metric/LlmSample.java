@@ -26,7 +26,7 @@ package org.miaixz.bus.metrics.metric;
  * llm.cost, llm.errors.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface LlmSample {
 

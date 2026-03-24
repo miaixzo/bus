@@ -21,6 +21,6 @@
  * UID Dictionary from Applicare_Centricity_Radiology_Web_Version_1_0
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.Applicare_Centricity_Radiology_Web_Version_1_0;

@@ -26,7 +26,7 @@ import javax.imageio.stream.ImageOutputStreamImpl;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class OutputStreamAdapter extends ImageOutputStreamImpl {
 

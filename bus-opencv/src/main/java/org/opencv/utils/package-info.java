@@ -24,6 +24,6 @@
  * OpenCV tasks and provide convenient abstractions over native OpenCV operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.opencv.utils;

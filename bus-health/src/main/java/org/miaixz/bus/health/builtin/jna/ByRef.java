@@ -37,7 +37,7 @@ import com.sun.jna.ptr.PointerByReference;
  * try-with-resources blocks.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface ByRef {
 

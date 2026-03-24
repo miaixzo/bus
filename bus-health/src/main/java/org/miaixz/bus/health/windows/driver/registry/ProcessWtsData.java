@@ -43,7 +43,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
  * Utility to read process data from HKEY_PERFORMANCE_DATA information with backup from Performance Counters or WMI
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class ProcessWtsData {

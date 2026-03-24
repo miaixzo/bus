@@ -59,7 +59,7 @@ import org.miaixz.bus.pay.metric.wechat.WechatPayBuilder;
  * Payment-related support class.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Builder {
 

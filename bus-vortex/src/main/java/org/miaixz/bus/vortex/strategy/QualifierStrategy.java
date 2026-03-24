@@ -63,7 +63,7 @@ import reactor.core.scheduler.Schedulers;
  * It does not contain any specific validation logic itself, making it a stable part of the framework's core.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE + 3)
 public class QualifierStrategy extends AbstractStrategy {

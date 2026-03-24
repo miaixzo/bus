@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.HashKit;
  *
  * @param <T> The type of the node.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ConsistentHash<T> implements Serializable {
 

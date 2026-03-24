@@ -37,7 +37,7 @@ import org.ofdrw.reader.OFDReader;
  * OFD file generator.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class OfdWriter implements Serializable, Closeable {
 

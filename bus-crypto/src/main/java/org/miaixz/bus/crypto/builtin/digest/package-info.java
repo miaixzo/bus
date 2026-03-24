@@ -22,6 +22,6 @@
  * functions like MD5, SHA-1, SHA-256, and HMAC.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.crypto.builtin.digest;

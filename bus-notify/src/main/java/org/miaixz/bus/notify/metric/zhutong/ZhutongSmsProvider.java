@@ -46,7 +46,7 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * (sendSmsTp).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ZhutongSmsProvider extends AbstractProvider<ZhutongNotice, Context> {
 

@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * </ol>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NamedThreadFactory implements ThreadFactory {
 

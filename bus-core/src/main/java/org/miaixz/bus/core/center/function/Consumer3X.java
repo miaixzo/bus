@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
  * @param <P2> The type of the second argument.
  * @param <P3> The type of the third argument.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @FunctionalInterface
 public interface Consumer3X<P1, P2, P3> extends Serializable {

@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.FieldKit;
  * Utility class for {@link Sheet} related operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SheetKit {
 

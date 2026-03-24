@@ -21,7 +21,7 @@ package org.miaixz.bus.image.galaxy.dict.Philips_RAD_Imaging_DD_097;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PrivateKeyword {
 

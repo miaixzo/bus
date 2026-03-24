@@ -21,6 +21,6 @@
  * Provides utilities for Pinyin conversion and related operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.extra.pinyin;

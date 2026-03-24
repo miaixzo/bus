@@ -27,7 +27,7 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
  * Implementation of Child Limit calculation for Lunar Sect 2. This method calculates based on minutes difference.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LunarSect2ChildLimitProvider extends AbstractChildLimitProvider {
 

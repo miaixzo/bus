@@ -28,7 +28,7 @@ import org.miaixz.bus.core.xyz.CompareKit;
  * lexicographical comparison.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LengthCompare implements Comparator<CharSequence> {
 

@@ -23,6 +23,6 @@
  * This package contains utilities for monitoring and collecting metrics related to SSE connections.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.http.metric.sse;

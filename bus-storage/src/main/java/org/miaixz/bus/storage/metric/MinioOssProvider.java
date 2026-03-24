@@ -25,7 +25,7 @@ import org.miaixz.bus.storage.Context;
  * Storage service provider for MinIO Object Storage. This provider integrates with MinIO using an S3-compatible client.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MinioOssProvider extends GenericS3Provider {
 

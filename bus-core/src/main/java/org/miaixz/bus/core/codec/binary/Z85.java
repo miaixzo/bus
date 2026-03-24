@@ -38,7 +38,7 @@ import org.miaixz.bus.core.codec.Encoder;
  * ASCII characters.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Z85 implements Encoder<byte[], String>, Decoder<String, byte[]>, Serializable {
 

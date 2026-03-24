@@ -30,7 +30,7 @@ import org.springframework.context.annotation.Import;
  * and {@link ResponseBodyAdvice}, to activate the sensitive data handling functionality for Spring MVC controllers.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @EnableConfigurationProperties(value = { SensitiveProperties.class })
 @Import({ RequestBodyAdvice.class, ResponseBodyAdvice.class })

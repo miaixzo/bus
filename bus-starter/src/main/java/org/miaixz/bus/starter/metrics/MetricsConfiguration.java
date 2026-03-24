@@ -43,7 +43,7 @@ import org.springframework.context.annotation.Bean;
  * hardware-accurate). Otherwise falls back to {@link JvmMetrics} and {@link SystemMetrics} (JVM MXBean-backed).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @EnableConfigurationProperties(MetricsProperties.class)
 public class MetricsConfiguration {
@@ -83,6 +83,12 @@ public class MetricsConfiguration {
     @ConditionalOnMissingBean(org.miaixz.bus.cache.Collector.class)
     public CacheMetricsAdapter cacheMetricsAdapter() {
         return new CacheMetricsAdapter();
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "bus.metrics", name = "endpoint", havingValue = "true", matchIfMissing = true)
+    public MetricsEndpoint metricsEndpoint(MetricsProperties props) {
+        return new MetricsEndpoint(props);
     }
 
     /**

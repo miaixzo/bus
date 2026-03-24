@@ -33,7 +33,7 @@ import org.miaixz.bus.health.unix.hardware.UnixPrinter;
  * Hardware Abstraction Layer for macOS.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {

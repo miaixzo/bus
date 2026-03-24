@@ -33,7 +33,7 @@ import java.lang.annotation.*;
  * {@link org.miaixz.bus.limiter.magic.annotation.Downgrade}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Inherited
 @Documented

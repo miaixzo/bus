@@ -29,7 +29,7 @@ import java.io.SequenceInputStream;
  * {@link BulkData} and overrides the {@code openStream()} method to prepend the prefix to the input stream.
  * 
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BulkDataWithPrefix extends BulkData {
 

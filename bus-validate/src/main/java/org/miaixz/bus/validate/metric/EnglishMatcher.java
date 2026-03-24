@@ -29,7 +29,7 @@ import org.miaixz.bus.validate.magic.annotation.English;
  * Validator for checking if a string consists only of English letters.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class EnglishMatcher implements Matcher<Object, English> {
 

@@ -40,7 +40,7 @@ import org.miaixz.bus.core.xyz.ListKit;
  * @param <M> The type of the middle value.
  * @param <R> The type of the right value.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TripletTable<L, M, R> implements Iterable<Triplet<L, M, R>>, Serializable {
 

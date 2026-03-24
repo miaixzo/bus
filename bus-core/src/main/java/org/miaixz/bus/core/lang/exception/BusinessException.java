@@ -29,7 +29,7 @@ import lombok.ToString;
  * Represents an exception that occurs due to business logic errors.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ToString
 public class BusinessException extends UncheckedException {

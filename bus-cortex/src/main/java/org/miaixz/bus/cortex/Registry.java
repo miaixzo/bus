@@ -26,7 +26,7 @@ import java.util.List;
  *
  * @param <T> registered asset type
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Registry<T extends Assets> {
 

@@ -30,7 +30,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @EnableConfigurationProperties(value = { DubboProperties.class })
 public class DubboConfiguration {

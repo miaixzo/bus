@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.*;
  * argument conversion and access.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MethodInvoker implements Invoker {
 

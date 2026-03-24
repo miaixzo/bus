@@ -25,7 +25,7 @@ import org.miaixz.bus.pay.Matcher;
  * WeChat Pay V2 API interfaces related to deposits.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum DepositApi implements Matcher {
 

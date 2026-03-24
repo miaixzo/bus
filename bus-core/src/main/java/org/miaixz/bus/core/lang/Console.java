@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Command-line (console) utility methods. This class primarily encapsulates {@link System#out} and {@link System#err}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Console {
 

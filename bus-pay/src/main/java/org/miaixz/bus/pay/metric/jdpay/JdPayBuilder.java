@@ -46,7 +46,7 @@ import lombok.SneakyThrows;
  * Utility class for JD Pay, providing methods for signing, encryption, decryption, and XML manipulation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JdPayBuilder {
 

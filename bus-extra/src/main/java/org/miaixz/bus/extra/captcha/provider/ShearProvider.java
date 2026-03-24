@@ -35,7 +35,7 @@ import org.miaixz.bus.extra.image.ImageKit;
  * Shear interference CAPTCHA provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ShearProvider extends AbstractProvider {
 

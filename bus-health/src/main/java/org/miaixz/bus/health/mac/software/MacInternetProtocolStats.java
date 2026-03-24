@@ -40,7 +40,7 @@ import com.sun.jna.Memory;
  * Internet Protocol Stats implementation
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public class MacInternetProtocolStats extends AbstractInternetProtocolStats {

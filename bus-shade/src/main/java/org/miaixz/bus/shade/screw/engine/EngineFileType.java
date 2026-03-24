@@ -28,7 +28,7 @@ import lombok.Setter;
  * Enumeration of supported file types for document generation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 
 public enum EngineFileType implements Serializable {

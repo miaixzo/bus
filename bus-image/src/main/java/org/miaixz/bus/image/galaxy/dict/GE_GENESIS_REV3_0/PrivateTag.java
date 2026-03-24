@@ -21,7 +21,7 @@ package org.miaixz.bus.image.galaxy.dict.GE_GENESIS_REV3_0;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PrivateTag {
 

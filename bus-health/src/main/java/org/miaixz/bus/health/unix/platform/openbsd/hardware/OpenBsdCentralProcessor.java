@@ -45,7 +45,7 @@ import com.sun.jna.Native;
  * OpenBSD Central Processor implementation
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public class OpenBsdCentralProcessor extends AbstractCentralProcessor {

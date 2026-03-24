@@ -30,7 +30,7 @@ import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Sequence extends ArrayList<Attributes> implements Value {
 

@@ -38,7 +38,7 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * Uni SMS service provider implementation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class UniSmsProvider extends AbstractProvider<UniNotice, Context> {
 

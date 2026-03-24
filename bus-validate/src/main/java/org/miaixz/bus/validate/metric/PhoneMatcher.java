@@ -29,7 +29,7 @@ import org.miaixz.bus.validate.magic.annotation.Phone;
  * Validator for the {@link Phone} annotation, checking if a string is a valid landline phone number.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PhoneMatcher implements Matcher<Object, Phone> {
 

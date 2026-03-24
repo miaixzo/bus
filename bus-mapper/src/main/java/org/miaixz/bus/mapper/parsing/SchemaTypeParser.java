@@ -31,7 +31,7 @@ import org.miaixz.bus.mapper.builder.GenericTypeResolver;
  * values, parameters, and interface generic arguments.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class SchemaTypeParser implements ClassMetaResolver {
 

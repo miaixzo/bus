@@ -126,7 +126,7 @@ import jakarta.annotation.Resource;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @EnableConfigurationProperties(value = { MapperProperties.class })
 @ConditionalOnClass({ SqlSessionFactory.class, SqlSessionFactoryBean.class })

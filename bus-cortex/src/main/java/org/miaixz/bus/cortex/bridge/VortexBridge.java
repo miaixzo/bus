@@ -34,7 +34,7 @@ import org.miaixz.bus.logger.Logger;
  * Asynchronous gateway sync bridge that forwards registry events to vortex.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class VortexBridge {
 

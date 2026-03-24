@@ -31,7 +31,7 @@ import org.miaixz.bus.office.excel.RowKit;
  * Reads an {@link Sheet} into a list of lists.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ListSheetReader extends AbstractSheetReader<List<List<Object>>> {
 

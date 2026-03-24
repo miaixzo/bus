@@ -33,7 +33,7 @@ import java.util.concurrent.Future;
  * operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 final class AsynchronousServerSocketChannel extends java.nio.channels.AsynchronousServerSocketChannel {
 

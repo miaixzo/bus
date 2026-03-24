@@ -44,7 +44,7 @@ import reactor.core.publisher.Mono;
  * Generic type parameters: {@code Router<ServerRequest, ServerResponse>}
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class GrpcRouter implements Router<ServerRequest, ServerResponse> {
 

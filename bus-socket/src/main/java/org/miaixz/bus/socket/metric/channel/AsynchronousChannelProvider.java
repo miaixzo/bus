@@ -32,7 +32,7 @@ import java.util.concurrent.*;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class AsynchronousChannelProvider extends java.nio.channels.spi.AsynchronousChannelProvider {
 

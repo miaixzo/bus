@@ -53,7 +53,7 @@ import reactor.core.publisher.Mono;
  * @param <I> The input type expected by this coordinator
  * @param <O> The output type produced by this coordinator
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  * @see Executor
  * @see org.miaixz.bus.vortex.support.rest.RestExecutor
  * @see org.miaixz.bus.vortex.support.ws.WsExecutor

@@ -22,6 +22,6 @@
  * format ({@code .setting}) with support for grouping and variable substitution, as well as INI and YAML file support.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.setting;

@@ -45,7 +45,7 @@ import org.xml.sax.InputSource;
  * the creation, reading, writing, and some operations of XML documents.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class XmlKit {
 

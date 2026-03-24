@@ -32,7 +32,7 @@ import java.util.List;
  * way to handle task lifecycle events.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TaskListenerManager implements Serializable {
 

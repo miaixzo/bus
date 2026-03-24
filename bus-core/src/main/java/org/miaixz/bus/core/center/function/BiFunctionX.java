@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
  * @param <U> The type of the second argument to the function.
  * @param <R> The type of the result of the function.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @FunctionalInterface
 public interface BiFunctionX<T, U, R> extends BiFunction<T, U, R>, Serializable {

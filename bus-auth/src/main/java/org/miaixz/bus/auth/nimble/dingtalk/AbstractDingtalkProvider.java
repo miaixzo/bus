@@ -45,7 +45,7 @@ import java.util.Map;
  * and QR code login for third-party websites.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractDingtalkProvider extends AbstractProvider {
 

@@ -35,7 +35,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * client implementations, handling tasks like path existence checks, directory creation, and robust file downloading.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractFtp implements Ftp {
 

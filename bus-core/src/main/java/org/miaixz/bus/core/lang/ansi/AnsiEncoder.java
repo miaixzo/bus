@@ -26,7 +26,7 @@ import org.miaixz.bus.core.lang.Symbol;
  * strings by converting {@link AnsiElement} instances into their corresponding escape codes.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AnsiEncoder {
 

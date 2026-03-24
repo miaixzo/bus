@@ -67,7 +67,7 @@ import reactor.core.scheduler.Schedulers;
  * strategies like authorization or rate limiting.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE + 2)
 public class VettingStrategy extends AbstractStrategy {

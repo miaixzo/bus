@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * Date conversion utility.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Converter extends Formatter {
 

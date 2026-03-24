@@ -21,6 +21,6 @@
  * This package contains annotations for defining validation types, methods, and rules.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.validate.magic.annotation;

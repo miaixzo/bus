@@ -50,7 +50,7 @@ import com.sun.jna.platform.linux.LibC;
  * filesystem, excluding temporary and kernel mounts.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public class LinuxFileSystem extends AbstractFileSystem {

@@ -22,6 +22,6 @@
  * DICOM-related information stored in a directory service.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.builtin.ldap;

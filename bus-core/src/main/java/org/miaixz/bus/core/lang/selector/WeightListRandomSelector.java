@@ -49,7 +49,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  *
  * @param <E> the type of the elements
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WeightListRandomSelector<E> implements Selector<E>, Serializable {
 

@@ -34,7 +34,7 @@ import com.rabbitmq.client.Channel;
  * queues within RabbitMQ.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RabbitMQProducer implements Producer {
 

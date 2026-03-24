@@ -26,7 +26,7 @@ import org.miaixz.bus.core.lang.Symbol;
  * Encodes a byte array into a Base32 string.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Base32Encoder implements Encoder<byte[], String> {
 

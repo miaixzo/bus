@@ -23,7 +23,7 @@ package org.miaixz.bus.http.plugin.httpz;
  * A listener interface for tracking the progress of data transfers (uploads or downloads).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface ProgressListener {
 

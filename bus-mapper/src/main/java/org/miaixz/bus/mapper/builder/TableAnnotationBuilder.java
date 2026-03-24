@@ -30,7 +30,7 @@ import jakarta.persistence.Table;
  * The default table builder, which supports processing entity classes annotated with `jakarta.persistence` annotations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TableAnnotationBuilder implements TableSchemaBuilder {
 

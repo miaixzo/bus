@@ -29,7 +29,7 @@ package org.miaixz.bus.tempus.crontab;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @FunctionalInterface
 public interface Crontab {

@@ -28,6 +28,6 @@
  * a deployment or configuration update is applied.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.cortex.builtin.graph;

@@ -29,7 +29,7 @@ import java.util.Map;
  * HEAD requests are used to retrieve the headers for a resource without fetching the response body.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HeadRequest extends HttpRequest {
 

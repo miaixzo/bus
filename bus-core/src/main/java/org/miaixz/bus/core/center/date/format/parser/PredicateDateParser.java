@@ -26,7 +26,7 @@ import java.util.function.Predicate;
  * Implementations should provide the matching logic in the {@link #test(Object)} method.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface PredicateDateParser extends DateParser, Predicate<CharSequence> {
 

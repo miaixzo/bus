@@ -33,7 +33,7 @@ import java.util.List;
  * Model for the response of the V3 Get Platform Certificates API.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

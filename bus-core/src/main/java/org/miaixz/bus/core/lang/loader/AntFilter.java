@@ -25,7 +25,7 @@ import org.miaixz.bus.core.lang.Symbol;
  * An ANT-style path filter that extends {@link RegexFilter} to provide filtering based on ANT-style path expressions.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AntFilter extends RegexFilter implements Filter {
 

@@ -76,7 +76,7 @@ import org.miaixz.bus.core.xyz.*;
  *
  * @author Kimi Liu
  * @see MetaAnnotatedElement
- * @since Java 17+
+ * @since Java 21+
  */
 public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> {
 

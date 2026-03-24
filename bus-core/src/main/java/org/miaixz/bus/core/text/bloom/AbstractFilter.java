@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.Assert;
  * {@link BitSet} to store the hashed values and defining the common operations for Bloom filters.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractFilter implements BloomFilter {
 

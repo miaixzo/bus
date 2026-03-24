@@ -27,7 +27,7 @@ import java.util.concurrent.ExecutorService;
  * mechanism for the executor service.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class FinalizableDelegatedExecutorService extends DelegatedExecutorService {
 

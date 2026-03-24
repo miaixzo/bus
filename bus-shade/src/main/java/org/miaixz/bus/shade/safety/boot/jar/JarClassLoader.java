@@ -38,7 +38,7 @@ import org.miaixz.bus.shade.safety.provider.EncryptorProvider;
  * loading to apply decryption using provided {@link DecryptorProvider} and {@link Key}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JarClassLoader extends URLClassLoader {
 

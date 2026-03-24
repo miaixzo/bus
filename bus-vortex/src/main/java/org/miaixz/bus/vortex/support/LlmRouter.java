@@ -42,7 +42,7 @@ import reactor.core.publisher.Mono;
  * Assets metadata and used by providers to access the real LLM services.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LlmRouter implements Router<ServerRequest, ServerResponse> {
 

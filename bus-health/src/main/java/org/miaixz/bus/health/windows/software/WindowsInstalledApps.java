@@ -26,7 +26,7 @@ import org.miaixz.bus.health.windows.driver.registry.InstalledAppsData;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class WindowsInstalledApps {
 

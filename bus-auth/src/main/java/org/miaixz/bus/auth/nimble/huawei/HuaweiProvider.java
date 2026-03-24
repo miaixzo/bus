@@ -48,7 +48,7 @@ import java.util.concurrent.TimeUnit;
  * Huawei login provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HuaweiProvider extends AbstractProvider {
 

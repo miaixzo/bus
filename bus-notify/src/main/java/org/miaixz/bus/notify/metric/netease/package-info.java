@@ -21,6 +21,6 @@
  * Provides support for NetEase Cloud messaging services.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.notify.metric.netease;

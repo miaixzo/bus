@@ -21,7 +21,7 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_CT_APPL_MEASUREMENT;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PrivateKeyword {
 

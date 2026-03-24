@@ -26,7 +26,7 @@ import org.miaixz.bus.logger.magic.AbstractFactory;
  * A factory for creating {@link org.apache.logging.log4j.Logger} instances.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Log4jLoggingFactory extends AbstractFactory {
 

@@ -29,7 +29,7 @@ import org.miaixz.bus.pay.magic.Callback;
  * A utility class for PayPal operations, including retry logic for API calls.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PaypalBuilder {
 

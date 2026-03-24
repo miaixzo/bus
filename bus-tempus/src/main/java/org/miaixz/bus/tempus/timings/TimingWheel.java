@@ -30,7 +30,7 @@ import java.util.function.Consumer;
  * the next and executing the tasks within.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TimingWheel {
 

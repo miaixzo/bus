@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.ArrayKit;
  * characters.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Base64Decoder implements Decoder<byte[], byte[]>, Serializable {
 

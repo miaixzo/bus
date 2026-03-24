@@ -28,7 +28,7 @@ import org.miaixz.bus.health.builtin.hardware.LogicalVolumeGroup;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AbstractLogicalVolumeGroup implements LogicalVolumeGroup {
 

@@ -28,7 +28,7 @@ import org.miaixz.bus.metrics.window.EwmaRate;
  * Counter with 1m/5m/15m EWMA rate tracking. Shares a global tick scheduler provided by {@link NativeProvider}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NativeMeter implements Meter {
 

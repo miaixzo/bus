@@ -31,7 +31,7 @@ import org.slf4j.spi.LocationAwareLogger;
  * A logger provider implementation that wraps an {@link org.slf4j.Logger} instance.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Slf4jLoggingProvider extends AbstractProvider {
 

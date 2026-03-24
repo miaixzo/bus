@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
  * user (e.g., Jackson, Gson, Fastjson) and creates a corresponding JSON parser.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JsonFactory {
 

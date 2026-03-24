@@ -41,7 +41,7 @@ import org.miaixz.bus.core.xyz.ArrayKit;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ByteOrderMark implements Predicate<byte[]>, Comparable<ByteOrderMark>, Serializable {
 

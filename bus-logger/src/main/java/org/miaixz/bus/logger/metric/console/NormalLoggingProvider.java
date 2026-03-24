@@ -34,7 +34,7 @@ import java.io.Serial;
  * A logger provider that prints messages to the console using {@code System.out.println}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NormalLoggingProvider extends AbstractProvider {
 

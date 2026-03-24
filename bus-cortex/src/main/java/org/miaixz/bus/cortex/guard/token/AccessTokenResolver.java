@@ -26,7 +26,7 @@ import org.miaixz.bus.extra.json.JsonKit;
  * Parses and validates tokens from incoming requests.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AccessTokenResolver {
 

@@ -36,7 +36,7 @@ import org.springframework.context.annotation.Bean;
  * and the annotation scanner.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @EnableConfigurationProperties(value = { LimiterProperties.class })
 public class LimiterConfiguration {

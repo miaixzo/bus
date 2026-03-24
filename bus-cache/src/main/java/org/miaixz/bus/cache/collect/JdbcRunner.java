@@ -41,7 +41,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 class JdbcRunner {
 

@@ -25,7 +25,7 @@ import org.miaixz.bus.logger.Factory;
  * Abstract base class for logger factories.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractFactory implements Factory {
 

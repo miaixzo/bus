@@ -34,7 +34,7 @@ import java.nio.ByteBuffer;
  *
  * @param <R> The return type of the fluent API, which is the concrete implementation class.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractMetroHash<R extends AbstractMetroHash<R>> implements MetroHash<R> {
 

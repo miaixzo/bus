@@ -27,6 +27,6 @@
  * history record; use {@code ConfigPublisher} instead when full versioned change history is required.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.cortex.builtin.event;

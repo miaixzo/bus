@@ -53,7 +53,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Generic type parameters: {@code Executor<Object, ServerResponse>}
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WsExecutor extends Coordinator<Object, ServerResponse> {
 

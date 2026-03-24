@@ -42,7 +42,7 @@ import java.util.List;
  *
  * @param <T> The type of the object to be processed.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Provider<T> {
 

@@ -40,7 +40,7 @@ import org.miaixz.bus.core.math.*;
  * Therefore, it is recommended to use `new BigDecimal(String)`.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MathKit extends NumberValidator {
 

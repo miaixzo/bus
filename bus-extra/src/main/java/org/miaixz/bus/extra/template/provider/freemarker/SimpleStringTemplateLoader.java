@@ -29,7 +29,7 @@ import freemarker.cache.TemplateLoader;
  * where the template content is provided as a string rather than from a file or other resource.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SimpleStringTemplateLoader implements TemplateLoader {
 

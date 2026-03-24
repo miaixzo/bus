@@ -33,7 +33,7 @@ import org.miaixz.bus.shade.safety.algorithm.Key;
  * A {@link DecryptorProvider} implementation that uses the built-in JDK cryptographic algorithms.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JdkDecryptorProvider implements DecryptorProvider {
 

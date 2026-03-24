@@ -30,7 +30,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  *
  * @param <S> The type of the service.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractServiceLoader<S> implements ServiceLoader<S> {
 

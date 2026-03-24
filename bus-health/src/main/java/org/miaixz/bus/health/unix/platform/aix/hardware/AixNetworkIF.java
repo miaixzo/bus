@@ -38,7 +38,7 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_netinterface_t;
  * AIXNetworks class.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class AixNetworkIF extends AbstractNetworkIF {

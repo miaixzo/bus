@@ -57,7 +57,7 @@ import org.miaixz.bus.mapper.handler.ConditionHandler;
  * not rely on any third-party SQL parsing libraries, ensuring minimal dependencies.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConfig> {
 

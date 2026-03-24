@@ -32,7 +32,7 @@ import java.util.function.Predicate;
  *
  * @param <E> the type of elements
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CheckedLinkedBlockingQueue<E> extends LinkedBlockingQueue<E> {
 

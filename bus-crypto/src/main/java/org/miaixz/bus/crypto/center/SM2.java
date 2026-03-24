@@ -67,7 +67,7 @@ import org.miaixz.bus.crypto.builtin.asymmetric.KeyType;
  * </ol>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SM2 extends AbstractCrypto<SM2> {
 

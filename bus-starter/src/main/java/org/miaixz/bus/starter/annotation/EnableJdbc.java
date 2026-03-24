@@ -32,7 +32,7 @@ import java.lang.annotation.*;
  * {@code @DataSource} annotation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Inherited
 @Documented

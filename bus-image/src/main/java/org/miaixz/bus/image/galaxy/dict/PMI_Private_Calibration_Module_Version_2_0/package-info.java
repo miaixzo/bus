@@ -21,6 +21,6 @@
  * UID Dictionary from PMI_Private_Calibration_Module_Version_2_0
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.PMI_Private_Calibration_Module_Version_2_0;

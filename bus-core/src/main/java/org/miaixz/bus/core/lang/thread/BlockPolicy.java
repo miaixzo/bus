@@ -32,7 +32,7 @@ import java.util.function.Consumer;
  * be found in the {@link RejectPolicy} enumeration.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BlockPolicy implements RejectedExecutionHandler {
 

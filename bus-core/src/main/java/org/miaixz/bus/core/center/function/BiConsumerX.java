@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
  * @param <T> The type of the first input argument to the operation.
  * @param <U> The type of the second input argument to the operation.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @FunctionalInterface
 public interface BiConsumerX<T, U> extends BiConsumer<T, U>, Serializable {

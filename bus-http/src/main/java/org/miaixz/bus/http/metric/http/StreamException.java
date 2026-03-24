@@ -25,7 +25,7 @@ import java.io.IOException;
  * An exception thrown when an HTTP/2 stream is reset without damaging the underlying socket.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class StreamException extends IOException {
 

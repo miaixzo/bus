@@ -29,7 +29,7 @@ import org.miaixz.bus.image.nimble.ImageMetaData;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ImageFileInputStream extends ImageInputStream implements ImageReaderDescriptor {
 

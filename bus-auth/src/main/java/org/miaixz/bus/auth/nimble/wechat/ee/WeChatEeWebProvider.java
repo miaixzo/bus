@@ -32,7 +32,7 @@ import org.miaixz.bus.auth.Registry;
  * WeChat Enterprise web login provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WeChatEeWebProvider extends AbstractWeChatEeProvider {
 

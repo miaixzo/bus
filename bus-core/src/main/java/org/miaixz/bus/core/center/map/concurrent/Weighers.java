@@ -36,7 +36,7 @@ import org.miaixz.bus.core.xyz.IteratorKit;
  *
  * @author Kimi Liu
  * @see <a href="http://code.google.com/p/concurrentlinkedhashmap/">ConcurrentLinkedHashMap Project</a>
- * @since Java 17+
+ * @since Java 21+
  */
 public final class Weighers {
 

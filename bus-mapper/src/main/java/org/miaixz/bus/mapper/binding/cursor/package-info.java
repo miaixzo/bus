@@ -22,6 +22,6 @@
  * results rather than loading them all into memory at once.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.mapper.binding.cursor;

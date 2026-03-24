@@ -34,7 +34,7 @@ import java.util.Arrays;
  *
  * @param <V> The type of values in the map.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class IntHashMap<V> implements Cloneable, Serializable {
 

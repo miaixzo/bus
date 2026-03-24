@@ -25,7 +25,7 @@ import java.util.Objects;
  * Implementation of the LUT parameters. No test is required for this class
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LutParameters {
 

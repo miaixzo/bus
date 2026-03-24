@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.pool.PoolConfig;
  * partitioned pools, such as the number of partitions.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PartitionPoolConfig extends PoolConfig {
 

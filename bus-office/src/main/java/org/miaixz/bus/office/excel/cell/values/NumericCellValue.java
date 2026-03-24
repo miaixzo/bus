@@ -31,7 +31,7 @@ import org.miaixz.bus.office.Builder;
  * Numeric type cell value. The cell value can be Long, Double, or Date.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NumericCellValue implements CellValue<Object> {
 

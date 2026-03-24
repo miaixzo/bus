@@ -29,7 +29,7 @@ import org.miaixz.bus.validate.magic.annotation.Null;
  * Validator for the {@link Null} annotation. Checks if an object is null.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NullMatcher implements Validator<Object>, Matcher<Object, Null> {
 

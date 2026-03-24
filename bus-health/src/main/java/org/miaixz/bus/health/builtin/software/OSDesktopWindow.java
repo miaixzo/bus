@@ -29,7 +29,7 @@ import com.sun.jna.platform.win32.WinDef.HWND;
  * This class encapsulates information about a window on the operating system's GUI desktop
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 public class OSDesktopWindow {

@@ -29,7 +29,7 @@ import org.miaixz.bus.image.galaxy.data.Code;
  * and a descriptive name. It provides methods to retrieve, add, and remove anatomic region codes.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AnatomicRegion {
 

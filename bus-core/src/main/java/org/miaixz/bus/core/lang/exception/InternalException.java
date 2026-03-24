@@ -27,7 +27,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
  * Represents an exception that indicates an internal error or unexpected condition within the application.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class InternalException extends UncheckedException {
 

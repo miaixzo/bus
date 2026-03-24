@@ -35,7 +35,7 @@ import org.miaixz.bus.image.metric.TransferCapability;
  * 属性强制转换规则可以基于SOP类、DIMSE操作、角色和AE标题等条件进行匹配。
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AttributeCoercion implements Serializable, Comparable<AttributeCoercion> {
 

@@ -26,7 +26,7 @@ import org.miaixz.bus.cortex.Builder;
  * Namespace isolation guard backed by CacheX.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NamespaceGuard {
 

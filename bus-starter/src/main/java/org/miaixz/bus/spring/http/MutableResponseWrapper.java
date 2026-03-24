@@ -65,7 +65,7 @@ import java.io.PrintWriter;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MutableResponseWrapper extends HttpServletResponseWrapper {
 

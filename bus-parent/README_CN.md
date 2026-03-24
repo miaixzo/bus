@@ -1,258 +1,304 @@
-# 📦 Bus Parent: 父 POM 配置
+# Bus Framework
 
 <p align="center">
-<strong>Bus 框架的集中式依赖管理和构建配置</strong>
+  <strong>现代化、模块化的 Java 企业级框架 — 基于 Java 17+</strong>
 </p>
 
------
+<p align="center">
+  <a href="https://github.com/818000/bus"><img src="https://img.shields.io/badge/GitHub-miaixz%2Fbus-blue?logo=github" alt="GitHub"/></a>
+  <a href="https://mvnrepository.com/artifact/org.miaixz"><img src="https://img.shields.io/maven-central/v/org.miaixz/bus-core?label=Maven%20Central" alt="Maven Central"/></a>
+  <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg" alt="License"/></a>
+  <img src="https://img.shields.io/badge/Java-17%2B-orange" alt="Java 17+"/>
+  <img src="https://img.shields.io/badge/Spring%20Boot-3.5.x-brightgreen" alt="Spring Boot 3.5.x"/>
+</p>
 
-## 📖 项目介绍
+---
 
-**Bus Parent** 是 Bus 框架的父 POM (项目对象模型)配置模块。它为所有 Bus 框架模块提供集中式依赖管理、统一的构建配置和版本控制。
+## 项目介绍
 
-此模块仅包含一个 `pom.xml` 文件，并提供 `dependencyManagement` 声明以确保所有子模块之间的一致性。
+**Bus** 是一个综合性、模块化的企业级 Java 框架，提供开箱即用的生产级组件，涵盖核心工具库、加密安全、HTTP 客户端、分布式链路追踪、支付集成、云存储等全场景能力。所有模块拥有一致的 API 风格和统一的配置方式，并通过 `bus-starter` 与 Spring Boot 无缝集成。
 
------
+每个模块均可独立使用，按需引入，不带任何强制依赖。
 
-## ✨ 核心特性
+---
 
-* **集中式依赖管理**: 所有第三方库版本在一个地方管理
-* **统一构建配置**: 所有模块的一致构建设置
-* **版本控制**: 框架和依赖版本的单一真实来源
-* **插件管理**: 标准化插件配置(编译器、surefire 等)
-* **仓库管理**: 集中式 Maven 仓库配置
-* **质量控制**: 集成的代码质量和分析插件
+## 模块总览
 
------
+| 模块 | 说明 |
+| :--- | :--- |
+| **bus-all** | 元模块，一次性引入所有 Bus 模块 |
+| **bus-auth** | 企业级认证与授权（OAuth2、JWT、RBAC） |
+| **bus-base** | 基础类型、公共常量与异常体系 |
+| **bus-bom** | 物料清单（BOM），无需继承父项目即可统一管理版本 |
+| **bus-cache** | 多级缓存抽象（Redis、Caffeine、EhCache 等） |
+| **bus-core** | 核心工具：反射、注解合成、类型转换、I/O 等 |
+| **bus-cortex** | 分布式服务统一注册与配置中心 |
+| **bus-crypto** | 加密框架：AES、RSA、SM2/SM3/SM4、摘要算法、编码工具 |
+| **bus-extra** | 核心之外的额外工具与第三方集成 |
+| **bus-gitlab** | GitLab API 客户端与 CI/CD 集成助手 |
+| **bus-health** | 健康检查端点与系统监控 |
+| **bus-http** | 高性能 HTTP 客户端，支持链式 API 与自动重试 |
+| **bus-image** | 图像处理与 DICOM 医学影像专业支持 |
+| **bus-limiter** | 热点检测、限流与服务降级 |
+| **bus-logger** | 通用日志抽象，统一桥接所有主流日志框架 |
+| **bus-mapper** | MyBatis 增强：类型处理器、通用 CRUD、查询 DSL |
+| **bus-metrics** | 生产级指标采集与上报 |
+| **bus-notify** | 多渠道通知服务（邮件、短信、钉钉、企业微信等） |
+| **bus-office** | Office 文档处理：Excel、Word、PDF |
+| **bus-opencv** | OpenCV 集成，支持计算机视觉任务 |
+| **bus-pay** | 通用支付集成（支付宝、微信支付、银联等） |
+| **bus-proxy** | 动态代理与 AOP 工具 |
+| **bus-sensitive** | 数据脱敏与敏感字段保护 |
+| **bus-setting** | 统一配置文件读取（properties、YAML、TOML 等） |
+| **bus-shade** | 依赖 Shade 管理与重定位 |
+| **bus-socket** | 非阻塞 Socket 与 WebSocket 抽象 |
+| **bus-starter** | Bus 生态 Spring Boot 自动配置启动器 |
+| **bus-storage** | 统一云存储抽象（S3、OSS、COS、MinIO 等） |
+| **bus-tempus** | 时间与调度工具：Cron 表达式、日历操作 |
+| **bus-tracer** | 分布式链路追踪集成（OpenTelemetry、SkyWalking 等） |
+| **bus-validate** | 声明式校验框架，支持注解驱动 |
+| **bus-vortex** | 高性能 API 网关与流量管理 |
 
-## 🚀 快速开始
+---
 
-### Maven 父配置
+## 快速开始
 
-要使用 Spring Boot 风格的依赖管理来使用 Bus 框架模块，请将 Bus 父项添加到项目的父 POM 中:
+### 方式一 — 继承父项目 POM
+
+继承 `bus-parent`，一步获得统一的依赖版本管理和构建配置：
 
 ```xml
 <parent>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-parent</artifactId>
-    <version>8.x.x</version>
+    <version>8.5.9</version>
 </parent>
 ```
 
-### 在子模块中添加依赖
-
-配置父项后，您可以添加特定的 Bus 模块而无需指定版本:
+之后按需声明模块依赖，无需填写版本号：
 
 ```xml
-<!-- 添加所有 Bus 模块 -->
+<dependencies>
+    <!-- 核心工具库 -->
+    <dependency>
+        <groupId>org.miaixz</groupId>
+        <artifactId>bus-core</artifactId>
+    </dependency>
+
+    <!-- Spring Boot 自动配置 -->
+    <dependency>
+        <groupId>org.miaixz</groupId>
+        <artifactId>bus-starter</artifactId>
+    </dependency>
+
+    <!-- 加密与安全 -->
+    <dependency>
+        <groupId>org.miaixz</groupId>
+        <artifactId>bus-crypto</artifactId>
+    </dependency>
+</dependencies>
+```
+
+### 方式二 — 导入 BOM（保留自己的父项目）
+
+```xml
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.miaixz</groupId>
+            <artifactId>bus-bom</artifactId>
+            <version>8.5.9</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+```
+
+### 方式三 — 一次性引入所有模块
+
+```xml
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-all</artifactId>
+    <version>8.5.9</version>
 </dependency>
 ```
 
-或根据需要添加单个模块:
+---
 
-```xml
-<!-- 添加特定模块 -->
-<dependency>
-    <groupId>org.miaixz</groupId>
-    <artifactId>bus-core</artifactId>
-</dependency>
+## 使用示例
 
-<dependency>
-    <groupId>org.miaixz</groupId>
-    <artifactId>bus-mapper</artifactId>
-</dependency>
-
-<dependency>
-    <groupId>org.miaixz</groupId>
-    <artifactId>bus-crypto</artifactId>
-</dependency>
-```
-
------
-
-## 📝 使用示例
-
-### 示例 1: 使用 Bus Parent 的 Spring Boot 项目
+### Spring Boot 项目（推荐）
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.miaixz</groupId>
         <artifactId>bus-parent</artifactId>
-        <version>8.x.x</version>
+        <version>8.5.9</version>
     </parent>
 
     <groupId>com.example</groupId>
-    <artifactId>my-project</artifactId>
+    <artifactId>my-app</artifactId>
     <version>1.0.0</version>
 
     <dependencies>
-        <!-- 核心工具 -->
+        <!-- Bus 全系 Spring Boot 自动配置 -->
         <dependency>
             <groupId>org.miaixz</groupId>
-            <artifactId>bus-core</artifactId>
+            <artifactId>bus-starter</artifactId>
         </dependency>
 
-        <!-- 数据库访问 -->
+        <!-- 数据库访问（MyBatis 增强） -->
         <dependency>
             <groupId>org.miaixz</groupId>
             <artifactId>bus-mapper</artifactId>
         </dependency>
 
-        <!-- Spring Boot Starter -->
+        <!-- 多渠道消息通知 -->
         <dependency>
             <groupId>org.miaixz</groupId>
-            <artifactId>bus-starter</artifactId>
+            <artifactId>bus-notify</artifactId>
+        </dependency>
+
+        <!-- 云存储（S3/OSS/COS 等） -->
+        <dependency>
+            <groupId>org.miaixz</groupId>
+            <artifactId>bus-storage</artifactId>
+        </dependency>
+
+        <!-- 分布式链路追踪 -->
+        <dependency>
+            <groupId>org.miaixz</groupId>
+            <artifactId>bus-tracer</artifactId>
         </dependency>
     </dependencies>
 </project>
 ```
 
-### 示例 2: 多模块项目
+### 多模块项目
 
-**父 POM:**
+**根 POM** (`pom.xml`)：
 
 ```xml
 <project>
     <parent>
         <groupId>org.miaixz</groupId>
         <artifactId>bus-parent</artifactId>
-        <version>8.x.x</version>
+        <version>8.5.9</version>
     </parent>
 
     <groupId>com.example</groupId>
-    <artifactId>project-parent</artifactId>
+    <artifactId>my-platform</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
 
     <modules>
-        <module>module-common</module>
-        <module>module-service</module>
-        <module>module-web</module>
+        <module>platform-common</module>
+        <module>platform-service</module>
+        <module>platform-web</module>
     </modules>
 </project>
 ```
 
-**子模块 POM:**
+**子模块** (`platform-common/pom.xml`)：
 
 ```xml
 <project>
     <parent>
         <groupId>com.example</groupId>
-        <artifactId>project-parent</artifactId>
+        <artifactId>my-platform</artifactId>
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>module-common</artifactId>
+    <artifactId>platform-common</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>org.miaixz</groupId>
             <artifactId>bus-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
+            <artifactId>bus-crypto</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
+            <artifactId>bus-validate</artifactId>
+        </dependency>
     </dependencies>
 </project>
 ```
 
------
+---
 
-## 📋 管理的依赖
+## 构建配置
 
-Bus Parent POM 管理以下主要依赖的版本:
+`bus-parent` 提供以下默认配置，如有需要可在子项目中覆盖任意属性。
 
-### 核心框架
-
-* **Spring Framework**: 6.x
-* **Spring Boot**: 3.x
-* **MyBatis**: 3.5.x
-* **MyBatis-Spring**: 3.x
-
-### 数据库
-
-* **Druid**: 1.2.x
-* **HikariCP**: 4.x
-* **MySQL Connector**: 8.x
-* **PostgreSQL**: 42.x
-
-### 工具
-
-* **Lombok**: 最新版
-* **Hutool**: 5.x
-* **Commons Lang3**: 3.x
-* **Guava**: 31.x
-
-### 测试
-
-* **JUnit**: 5.x
-* **Mockito**: 4.x
-* **TestContainers**: 最新版
-
------
-
-## 🔧 配置属性
-
-### Java 版本
+### Java 版本与编码
 
 ```xml
 <properties>
     <java.version>17</java.version>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
-</properties>
-```
-
-### 源代码编码
-
-```xml
-<properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 </properties>
 ```
 
-### 构建插件
+### 关键依赖版本
 
-父 POM 配置以下插件:
+| 组件 | 版本 |
+| :--- | :--- |
+| Spring Boot | 3.5.x |
+| MyBatis | 3.5.x |
+| MyBatis-Spring | 3.0.x |
+| Java 最低版本 | 17+ |
 
-* **maven-compiler-plugin**: Java 编译
-* **maven-surefire-plugin**: 单元测试
-* **maven-failsafe-plugin**: 集成测试
-* **maven-source-plugin**: 源代码 JAR 生成
-* **maven-javadoc-plugin**: Javadoc 生成
-* **maven-gpg-plugin**: 工件签名(用于发布)
+### 预配置插件
 
------
+| 插件 | 用途 |
+| :--- | :--- |
+| `maven-compiler-plugin` | 使用 `--release 17` 编译 Java 代码 |
+| `maven-surefire-plugin` | 运行单元测试 |
+| `maven-failsafe-plugin` | 运行集成测试 |
+| `maven-source-plugin` | 打包源代码 JAR（发布用） |
+| `maven-javadoc-plugin` | 生成 Javadoc JAR（发布用） |
+| `maven-gpg-plugin` | GPG 签名（发布到 Maven Central） |
 
-## 💡 最佳实践
+---
 
-### 1. 有效使用依赖管理
+## 最佳实践
+
+### 让父项目统一管理版本
 
 ```xml
-<!-- ✅ 推荐: 省略版本，使用父项的版本 -->
+<!-- 推荐：版本由 bus-parent 统一管理 -->
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-core</artifactId>
-    <!-- 版本由父 POM 管理 -->
 </dependency>
 
-<!-- ❌ 不推荐: 硬编码版本 -->
+<!-- 不推荐：硬编码版本，增加维护成本 -->
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-core</artifactId>
-    <version>8.x.x</version>  <!-- 不必要 -->
+    <version>8.5.9</version>
 </dependency>
 ```
 
-### 2. 排除不需要的依赖
+### 按需排除 bus-starter 中的可选模块
+
+`bus-starter` 是一个便捷入口依赖，若不需要某个子模块，排除它可以让类路径更精简：
 
 ```xml
 <dependency>
@@ -267,94 +313,67 @@ Bus Parent POM 管理以下主要依赖的版本:
 </dependency>
 ```
 
-### 3. 使用物料清单 (BOM)
-
-或者，导入 BOM 而不用作父项:
-
-```xml
-<dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-dependencies</artifactId>
-            <version>8.x.x</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-    </dependencies>
-</dependencyManagement>
-```
-
------
-
-## ❓ 常见问题
-
-### Q1: 如何覆盖托管依赖版本?
+### 覆盖单个依赖版本
 
 ```xml
 <dependency>
-    <groupId>com.example</groupId>
-    <artifactId>some-library</artifactId>
-    <version>2.0.0</version>  <!-- 覆盖父项的版本 -->
+    <groupId>org.miaixz</groupId>
+    <artifactId>bus-core</artifactId>
+    <version>8.5.10</version>  <!-- 覆盖父项目管理的版本 -->
 </dependency>
 ```
 
-### Q2: 可以将 Bus Parent 与其他父 POM 一起使用吗？
+---
 
-不可以，Maven 只允许一个父项。但是，您可以导入 Bus BOM:
+## 常见问题
 
-```xml
-<dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-dependencies</artifactId>
-            <version>8.x.x</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-    </dependencies>
-</dependencyManagement>
+**Q：我已有 Spring Boot 父项目，还能使用 Bus 吗？**
+
+可以。直接在 `<dependencyManagement>` 中导入 `bus-bom` 即可享有完整的版本管理，无需替换现有父项目。
+
+**Q：如何查看所有已管理的版本？**
+
+```bash
+mvn help:effective-pom | grep -A2 'artifactId>bus-'
 ```
 
-### Q3: 如何检查管理了哪些版本？
-
-运行以下命令:
+或查看完整解析后的 POM：
 
 ```bash
 mvn help:effective-pom
 ```
 
-这将显示有效 POM 及所有已解析的版本。
+**Q：最低 Java 版本要求是什么？**
 
-### Q4: 需要什么 Java 版本？
+Bus 8.x 要求 **Java 17** 或更高版本。如需支持 Java 11，请使用 Bus 7.x 系列。
 
-Bus Parent 8.x 需要 **Java 17** 或更高版本。
+**Q：是否支持 GraalVM 原生镜像？**
 
-对于 Java 11 支持，请使用 Bus Parent 7.x。
+支持。`bus-shade` 包含 GraalVM 原生编译所需的 `reflect-config` 和 `resource-config` 配置文件。
 
------
+---
 
-## 🔄 版本兼容性
+## 版本兼容性
 
-| Bus Parent 版本 | Java 版本 | Spring Boot 版本 | 状态 |
+| Bus 版本 | Java | Spring Boot | 状态 |
 | :--- | :--- | :--- | :--- |
-| **8.x** | 17+ | 3.x | 当前 |
-| 7.x | 11+ | 2.x | 维护中 |
+| **8.5.x** | 17+ | 3.5.x | **维护中** |
+| 8.0.x – 8.4.x | 17+ | 3.x | 维护中 |
+| 7.x | 11+ | 2.x | 已停止维护 |
 
------
+---
 
-## 🔗 相关模块
+## 开源协议
 
-* **[bus-core](../bus-core)**: 核心工具和基础类
-* **[bus-mapper](../bus-mapper)**: MyBatis 增强框架
-* **[bus-starter](../bus-starter)**: Spring Boot 启动器
-* **[bus-crypto](../bus-crypto)**: 加密和安全工具
-* **[bus-logger](../bus-logger)**: 日志框架集成
+Bus 基于 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) 协议开源。
 
------
+Copyright © 2015–2026 [miaixz.org](https://miaixz.org) 及贡献者。
 
-## 📚 其他资源
+---
 
-* [GitHub 仓库](https://github.com/818000/bus)
-* [Maven Central](https://mvnrepository.com/artifact/org.miaixz/bus-parent)
+## 相关链接
+
+* [GitHub 仓库](https://github.com/miaixz/bus)
+* [Maven Central](https://mvnrepository.com/artifact/org.miaixz)
+* [问题反馈](https://github.com/miaixz/bus/issues)
+* [版本记录](https://github.com/miaixz/bus/releases)

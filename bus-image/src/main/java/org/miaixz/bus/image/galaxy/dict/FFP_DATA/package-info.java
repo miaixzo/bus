@@ -21,6 +21,6 @@
  * UID Dictionary from FFP_DATA
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.FFP_DATA;

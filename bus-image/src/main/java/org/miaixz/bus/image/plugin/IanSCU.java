@@ -43,7 +43,7 @@ import java.util.HashMap;
  * (SCP).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class IanSCU {
 

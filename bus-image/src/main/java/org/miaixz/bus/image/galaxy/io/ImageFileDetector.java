@@ -37,7 +37,7 @@ import org.miaixz.bus.image.galaxy.data.VR;
  * Implicit VR Little Endian, and Explicit VR transfer syntaxes.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ImageFileDetector extends FileTypeDetector {
 

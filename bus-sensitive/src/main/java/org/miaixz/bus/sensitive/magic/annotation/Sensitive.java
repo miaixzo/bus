@@ -34,7 +34,7 @@ import java.lang.annotation.*;
  * </ol>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Documented
 @Target({ ElementType.TYPE, ElementType.METHOD })

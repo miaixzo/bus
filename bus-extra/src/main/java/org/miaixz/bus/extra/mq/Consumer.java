@@ -28,7 +28,7 @@ import org.miaixz.bus.core.xyz.ThreadKit;
  * subscribing to messages, either individually or continuously, and handling them with a {@link MessageHandler}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Consumer extends Closeable {
 

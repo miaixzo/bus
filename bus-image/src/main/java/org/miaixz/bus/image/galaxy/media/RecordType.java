@@ -23,7 +23,7 @@ import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum RecordType {
 

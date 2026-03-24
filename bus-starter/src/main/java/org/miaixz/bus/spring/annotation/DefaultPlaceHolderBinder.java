@@ -25,7 +25,7 @@ import org.springframework.core.env.Environment;
  * Default implementation of {@link PlaceHolderBinder} that resolves placeholders from the Spring {@link Environment}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DefaultPlaceHolderBinder implements PlaceHolderBinder {
 

@@ -29,7 +29,7 @@ import org.miaixz.bus.tempus.temporal.Binding;
  * for a worker instance.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface WorkflowSubscriberBinding extends Binding {
 

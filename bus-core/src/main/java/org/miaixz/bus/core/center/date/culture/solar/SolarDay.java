@@ -45,7 +45,7 @@ import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycleDay;
  * Represents a day in the Gregorian calendar.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SolarDay extends DayParts {
 

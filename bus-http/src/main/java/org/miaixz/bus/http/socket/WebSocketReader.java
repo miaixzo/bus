@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
  * close) and message frames (text, binary). This class is not thread-safe and must be operated from a single thread.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class WebSocketReader {
 

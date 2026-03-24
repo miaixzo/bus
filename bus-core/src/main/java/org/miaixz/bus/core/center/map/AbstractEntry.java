@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * @param <K> The type of the key.
  * @param <V> The type of the value.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractEntry<K, V> implements Map.Entry<K, V> {
 

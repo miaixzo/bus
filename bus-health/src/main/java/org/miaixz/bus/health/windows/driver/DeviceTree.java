@@ -38,7 +38,7 @@ import com.sun.jna.ptr.IntByReference;
  * Utility to query device interfaces via Config Manager Device Tree functions
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class DeviceTree {

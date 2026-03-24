@@ -32,7 +32,7 @@ import java.util.List;
  * Jackson, Gson) in priority order. Subclasses can override adapter resolution hooks to force a specific adapter.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractPayloadConverter implements PayloadConverter {
 

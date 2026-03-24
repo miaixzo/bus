@@ -36,7 +36,7 @@ import lombok.Getter;
  * of multiple communication protocols.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @AllArgsConstructor

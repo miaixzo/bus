@@ -28,7 +28,7 @@ import java.lang.annotation.*;
  * Annotation for validating by comparing the values of two parameters.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

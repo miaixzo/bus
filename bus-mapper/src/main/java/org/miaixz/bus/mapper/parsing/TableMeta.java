@@ -51,7 +51,7 @@ import lombok.experimental.Accessors;
  * Represents the metadata of an entity table, recording the relationship between an entity and its corresponding table.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

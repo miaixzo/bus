@@ -42,7 +42,7 @@ import java.util.List;
  * {@link Verified} object and its associated {@link Criterion} rules.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Checker {
 

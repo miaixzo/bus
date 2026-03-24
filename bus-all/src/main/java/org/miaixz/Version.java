@@ -39,7 +39,7 @@ import org.miaixz.bus.core.lang.Keys;
  * to documentation and code, and reporting of issues and bugs.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Version extends org.miaixz.bus.core.Version {
 

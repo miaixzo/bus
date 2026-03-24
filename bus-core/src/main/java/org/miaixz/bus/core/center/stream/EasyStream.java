@@ -72,7 +72,7 @@ import org.miaixz.bus.core.xyz.*;
  * @param <T> the type of the elements in the stream
  * @author Kimi Liu
  * @see java.util.stream.Stream
- * @since Java 17+
+ * @since Java 21+
  */
 public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
 

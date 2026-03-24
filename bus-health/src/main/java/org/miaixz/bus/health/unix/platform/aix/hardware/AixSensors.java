@@ -29,7 +29,7 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractSensors;
  * Sensors not available except counting fans from lscfg
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 final class AixSensors extends AbstractSensors {

@@ -26,7 +26,7 @@ import org.miaixz.bus.socket.Session;
  * {@link FixedLengthBytesMessage} and simply returns the raw byte array as the decoded message.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ByteArrayMessage extends FixedLengthBytesMessage<byte[]> {
 

@@ -34,7 +34,7 @@ import java.util.stream.Stream;
  * and description into one object.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum PORT {
 

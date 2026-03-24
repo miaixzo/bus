@@ -30,7 +30,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Rich text masking processor for masking rich text content.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MaskingProcessor {
 

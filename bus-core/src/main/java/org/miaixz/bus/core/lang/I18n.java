@@ -25,7 +25,7 @@ package org.miaixz.bus.core.lang;
  * language or language-country combination, providing both a language code and a descriptive name.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum I18n {
 

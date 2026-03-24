@@ -35,7 +35,7 @@ import java.util.Map;
  * setter methods (e.g., from a database).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

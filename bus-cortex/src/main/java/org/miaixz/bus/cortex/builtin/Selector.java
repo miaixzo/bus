@@ -28,7 +28,7 @@ import lombok.Setter;
  * Label selector for filtering entries by metadata.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter
@@ -38,7 +38,7 @@ public class Selector {
      * Comparison operator for label selector expressions.
      *
      * @author Kimi Liu
-     * @since Java 17+
+     * @since Java 21+
      */
     public enum Op {
         /** Key equals one of the given values. */

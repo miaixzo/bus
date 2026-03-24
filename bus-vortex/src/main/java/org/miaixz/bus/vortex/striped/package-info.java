@@ -24,6 +24,6 @@
  * proceed concurrently while preserving per-stripe mutual exclusion.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.vortex.striped;

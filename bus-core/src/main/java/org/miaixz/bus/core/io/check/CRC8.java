@@ -28,7 +28,7 @@ import java.util.zip.Checksum;
  * <a href="https://github.com/BBSc0der">https://github.com/BBSc0der</a>.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CRC8 implements Checksum, Serializable {
 

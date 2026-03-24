@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.MapKit;
  * @param <K> the type of keys
  * @param <V> the type of values
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface CacheX<K, V> {
 

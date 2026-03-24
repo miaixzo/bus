@@ -21,6 +21,6 @@
  * This package contains the API definitions for WeChat Pay.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.pay.metric.wechat.api;

@@ -31,7 +31,7 @@ import lombok.experimental.SuperBuilder;
  * Represents the notice or content of a message template.
  *
  * @author Justubborn
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

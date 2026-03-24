@@ -33,7 +33,7 @@ import java.io.IOException;
  * content. It implements the {@link ImageInputHandler} interface to process the DICOM stream and format the output.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DcmDump implements ImageInputHandler {
 

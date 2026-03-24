@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.IoKit;
  * character encodings.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class FileReader extends FileWrapper {
 

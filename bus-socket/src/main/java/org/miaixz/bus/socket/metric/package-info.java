@@ -21,6 +21,6 @@
  * Provides implementations for transcoding, message processing, and other metric-related functionalities.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.socket.metric;

@@ -25,7 +25,7 @@ import org.miaixz.bus.core.lang.Symbol;
  * Defines global and common error codes. This class can be extended to include product-specific error codes.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ErrorCode {
 

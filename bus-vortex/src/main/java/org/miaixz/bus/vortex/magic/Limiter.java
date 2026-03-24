@@ -40,7 +40,7 @@ import org.miaixz.bus.vortex.strategy.LimiterStrategy;
  * @author Kimi Liu
  * @see com.google.common.util.concurrent.RateLimiter
  * @see LimiterStrategy
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

@@ -31,7 +31,7 @@ import org.miaixz.bus.health.unix.hardware.UnixPrinter;
  * SolarisHardwareAbstractionLayer class.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class SolarisHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {

@@ -28,7 +28,7 @@ import java.util.function.Consumer;
  *
  * @param <T> The type of the object to be loaded.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @FunctionalInterface
 public interface Loader<T> extends Serializable {

@@ -22,6 +22,6 @@
  * (<a href="https://gitee.com/Trisia/ofdrw">ofdrw</a>).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.office.ofd;

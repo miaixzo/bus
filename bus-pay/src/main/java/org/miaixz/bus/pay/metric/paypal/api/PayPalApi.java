@@ -25,7 +25,7 @@ import org.miaixz.bus.pay.Matcher;
  * PayPal Payment APIs.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum PayPalApi implements Matcher {
 

@@ -21,21 +21,25 @@ package org.miaixz.bus.starter.metrics;
 
 import org.miaixz.bus.metrics.Metrics;
 import org.miaixz.bus.metrics.metric.prometheus.PrometheusExporter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * Exposes the Prometheus-format metrics scrape endpoint at {@code /metricz}.
  * <p>
- * Active only when {@code bus.metrics.endpoint=true} (the default).
+ * Intentionally NOT annotated with {@code @Controller} or {@code @Component}: this class must never be picked up by
+ * component scanning. It is registered as a bean exclusively by {@link MetricsConfiguration#metricsEndpoint} when
+ * {@code @EnableMetrics} is active and {@code bus.metrics.endpoint=true} (the default).
+ * <p>
+ * Spring MVC detects this class as a handler because {@code RequestMappingHandlerMapping.isHandler()} checks for a
+ * class-level {@code @RequestMapping} in addition to {@code @Controller}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
-@RestController
-@ConditionalOnProperty(prefix = "bus.metrics", name = "endpoint", havingValue = "true", matchIfMissing = true)
+@RequestMapping
 public class MetricsEndpoint {
 
     private final MetricsProperties properties;
@@ -44,6 +48,7 @@ public class MetricsEndpoint {
         this.properties = properties;
     }
 
+    @ResponseBody
     @GetMapping(path = "${bus.metrics.path:/metricz}", produces = MediaType.TEXT_PLAIN_VALUE)
     public String scrape() {
         PrometheusExporter exporter = new PrometheusExporter(Metrics.getProvider());

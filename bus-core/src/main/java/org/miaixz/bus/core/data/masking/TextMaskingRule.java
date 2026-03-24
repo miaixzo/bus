@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.Symbol;
  * Rich text masking rule, used to configure how to mask rich text content.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TextMaskingRule {
 

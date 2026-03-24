@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.Normal;
  * Elliott.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 class LZWEncoder {
 

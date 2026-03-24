@@ -34,7 +34,7 @@ import org.miaixz.bus.core.io.sink.Sink;
  * penalties. It also enables clients to read ahead, buffering necessary input before consumption.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface BufferSource extends Source, ReadableByteChannel {
 

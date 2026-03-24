@@ -124,7 +124,7 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * @see PopulateConfig
  * @see PopulateHandler
  * @see MapperProvider
- * @since Java 17+
+ * @since Java 21+
  */
 @FunctionalInterface
 public interface PopulateProvider extends MapperProvider<PopulateConfig> {

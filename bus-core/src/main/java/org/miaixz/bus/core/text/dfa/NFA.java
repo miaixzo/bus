@@ -26,7 +26,7 @@ import java.util.*;
  * Aho-Corasick automaton for efficient searching of multiple keywords in a text.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NFA {
 

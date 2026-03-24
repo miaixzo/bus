@@ -30,7 +30,7 @@ import java.net.Proxy;
  * options (like proxy selection, TLS configuration).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class Route {
 

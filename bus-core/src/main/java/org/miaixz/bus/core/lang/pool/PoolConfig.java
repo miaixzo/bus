@@ -32,7 +32,7 @@ import java.io.Serializable;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PoolConfig implements Serializable {
 

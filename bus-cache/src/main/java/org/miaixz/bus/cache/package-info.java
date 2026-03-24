@@ -36,6 +36,6 @@
  * Sub-packages contain supporting elements like annotations, readers, and other utilities.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.cache;

@@ -36,7 +36,7 @@ import org.miaixz.bus.core.xyz.XmlKit;
  * String converter, provides encapsulation of various object-to-string conversion logic.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class StringConverter extends AbstractConverter {
 

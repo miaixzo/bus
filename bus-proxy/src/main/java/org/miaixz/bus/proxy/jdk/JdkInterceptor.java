@@ -34,7 +34,7 @@ import java.lang.reflect.Method;
  * on a proxy, allowing an {@link Aspect} to be applied.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JdkInterceptor extends Interceptor implements InvocationHandler {
 

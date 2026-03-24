@@ -48,7 +48,7 @@ import java.util.Set;
  * {@code classpath:/bus-scenes/} directory.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ScenesEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
 

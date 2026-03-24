@@ -37,7 +37,7 @@ import org.springframework.context.SmartLifecycle;
  * support for application startup performance analysis.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SpringSmartLifecycle implements SmartLifecycle, ApplicationContextAware {
 

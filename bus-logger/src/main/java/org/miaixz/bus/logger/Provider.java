@@ -27,7 +27,7 @@ import org.miaixz.bus.logger.magic.level.Error;
  * Unified interface for logging.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Provider extends Trace, Debug, Info, Warn, Error {
 

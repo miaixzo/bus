@@ -40,7 +40,7 @@ import org.miaixz.bus.http.Httpx;
  * Xiaohongshu Commercial Platform login provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RednoteMarketiProvider extends AbstractProvider {
 

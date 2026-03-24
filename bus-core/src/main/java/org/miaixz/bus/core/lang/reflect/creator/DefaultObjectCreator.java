@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.LookupKit;
  *
  * @param <T> The type of the object to be created.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DefaultObjectCreator<T> implements ObjectCreator<T> {
 
@@ -40,6 +40,7 @@ public class DefaultObjectCreator<T> implements ObjectCreator<T> {
      * The method handle for the constructor to be invoked.
      */
     final MethodHandle constructor;
+
     /**
      * The arguments to be passed to the constructor.
      */

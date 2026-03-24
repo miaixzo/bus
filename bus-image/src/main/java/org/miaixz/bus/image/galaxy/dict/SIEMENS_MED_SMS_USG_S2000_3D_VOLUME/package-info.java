@@ -21,6 +21,6 @@
  * UID Dictionary from SIEMENS_MED_SMS_USG_S2000_3D_VOLUME
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_SMS_USG_S2000_3D_VOLUME;

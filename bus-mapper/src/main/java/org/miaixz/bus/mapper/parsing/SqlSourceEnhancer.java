@@ -30,7 +30,7 @@ import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
  * An interface for customizing the processing of {@link SqlSource}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface SqlSourceEnhancer {
 

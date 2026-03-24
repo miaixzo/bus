@@ -29,7 +29,7 @@ import org.miaixz.bus.core.xyz.TypeKit;
  * Converts an object to an {@link AtomicReference}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AtomicReferenceConverter extends AbstractConverter {
 

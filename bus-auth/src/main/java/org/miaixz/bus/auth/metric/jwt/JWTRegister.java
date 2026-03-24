@@ -27,7 +27,7 @@ import java.util.Date;
  *
  * @param <T> the type of the class implementing this interface
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface JWTRegister<T extends JWTRegister<T>> {
 

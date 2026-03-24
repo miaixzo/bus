@@ -46,7 +46,7 @@ import java.util.concurrent.TimeUnit;
  * An interceptor that serves requests from the cache and writes responses to the cache.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CacheInterceptor implements Interceptor {
 

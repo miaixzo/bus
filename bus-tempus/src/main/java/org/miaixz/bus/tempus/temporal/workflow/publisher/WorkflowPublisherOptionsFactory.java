@@ -34,7 +34,7 @@ import io.temporal.client.WorkflowOptions;
  * to a {@link WorkflowIdGenerator}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WorkflowPublisherOptionsFactory implements WorkflowOptionsFactory {
 

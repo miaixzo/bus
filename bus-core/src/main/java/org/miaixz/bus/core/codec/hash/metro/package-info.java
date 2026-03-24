@@ -23,6 +23,6 @@
  * Reference: <a href="https://github.com/postamar/java-metrohash">https://github.com/postamar/java-metrohash</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.core.codec.hash.metro;

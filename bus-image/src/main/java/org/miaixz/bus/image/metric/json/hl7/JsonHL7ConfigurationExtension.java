@@ -28,7 +28,7 @@ import org.miaixz.bus.image.metric.json.JSONWriter;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface JsonHL7ConfigurationExtension {
 

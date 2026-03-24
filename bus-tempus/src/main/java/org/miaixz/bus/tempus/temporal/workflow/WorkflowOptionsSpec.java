@@ -29,7 +29,7 @@ package org.miaixz.bus.tempus.temporal.workflow;
  * @param workflowId   an optional workflow id to use
  * @param stableKey    an optional stable key used for deterministic workflow id generation
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public record WorkflowOptionsSpec(String taskQueue, String workflowType, String workflowId, String stableKey) {
 

@@ -28,7 +28,7 @@ import lombok.Setter;
  * Result summary of a batch registry operation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

@@ -40,7 +40,7 @@ import org.miaixz.bus.core.text.StringJoiner;
  * Array utility class.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ArrayKit extends PrimitiveArray {
 

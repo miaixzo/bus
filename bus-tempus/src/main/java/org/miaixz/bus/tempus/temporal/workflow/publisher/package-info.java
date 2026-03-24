@@ -24,6 +24,6 @@
  * publication metadata bindings, and default implementations used to start workflows.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.tempus.temporal.workflow.publisher;

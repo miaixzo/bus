@@ -21,6 +21,6 @@
  * Provides a general-purpose logging facade, similar in functionality to SLF4J.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.logger;

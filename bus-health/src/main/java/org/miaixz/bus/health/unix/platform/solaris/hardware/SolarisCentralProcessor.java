@@ -42,7 +42,7 @@ import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
  * A CPU
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 final class SolarisCentralProcessor extends AbstractCentralProcessor {

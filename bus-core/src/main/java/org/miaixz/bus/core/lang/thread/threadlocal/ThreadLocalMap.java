@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.Normal;
  * intended for internal use only. Unless you know exactly what you are doing, please use {@link SpecificThread}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class ThreadLocalMap {
 

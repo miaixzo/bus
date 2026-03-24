@@ -26,7 +26,7 @@ import java.lang.annotation.*;
  * annotation is present, only validation constraints belonging to one of the specified groups will be processed.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

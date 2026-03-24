@@ -26,7 +26,7 @@ import lombok.Setter;
  * Decoded token information.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

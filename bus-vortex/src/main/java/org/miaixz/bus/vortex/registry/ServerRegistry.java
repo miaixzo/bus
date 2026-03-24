@@ -39,7 +39,7 @@ import reactor.core.scheduler.Schedulers;
  * service.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ServerRegistry {
 

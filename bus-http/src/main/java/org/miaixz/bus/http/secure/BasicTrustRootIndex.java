@@ -32,7 +32,7 @@ import java.util.Set;
  * subject distinguished name, to allow for quick lookups when building a certificate chain.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BasicTrustRootIndex implements TrustRootIndex {
 

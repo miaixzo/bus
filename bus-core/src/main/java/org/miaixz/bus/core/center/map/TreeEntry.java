@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * @param <V> The type of the value associated with this node.
  * @author Kimi Liu
  * @see ForestMap
- * @since Java 17+
+ * @since Java 21+
  */
 public interface TreeEntry<K, V> extends Map.Entry<K, V> {
 

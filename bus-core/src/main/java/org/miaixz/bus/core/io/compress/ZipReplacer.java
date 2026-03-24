@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Zip file replacer, used to replace content in a source Zip file and generate a new file.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ZipReplacer implements Closeable {
 

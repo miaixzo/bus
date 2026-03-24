@@ -35,7 +35,7 @@ import org.springframework.core.annotation.Order;
  * data source switching occurs before transaction management begins.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Order(-1)
 @Aspect

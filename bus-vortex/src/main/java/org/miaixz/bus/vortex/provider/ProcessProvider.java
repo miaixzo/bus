@@ -31,7 +31,7 @@ import reactor.core.publisher.Mono;
  * services running as local processes, Docker containers, or on remote machines via different providers.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface ProcessProvider {
 

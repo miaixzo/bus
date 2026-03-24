@@ -32,7 +32,7 @@ import java.util.*;
  * complex time combinations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class Expression implements Serializable, Cloneable {
 
@@ -1572,7 +1572,7 @@ public final class Expression implements Serializable, Cloneable {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 17+
+     * @since Java 21+
      */
     class ValueSet {
 

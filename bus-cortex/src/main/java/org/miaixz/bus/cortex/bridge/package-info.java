@@ -29,6 +29,6 @@
  * internal sync endpoint, and retries up to a configurable maximum before discarding a failed event.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.cortex.bridge;

@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
  * responses can be stored, and which requests can be satisfied by a stored response.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CacheControl {
 

@@ -25,7 +25,7 @@ package org.miaixz.bus.tempus.temporal;
  * This interface defines common connection and routing properties shared by both publishers and subscribers.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Binding {
 

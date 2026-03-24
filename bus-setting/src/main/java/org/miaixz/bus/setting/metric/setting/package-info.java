@@ -21,6 +21,6 @@
  * Provides a utility class for easily accessing cached {@code Setting} instances.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.setting.metric.setting;

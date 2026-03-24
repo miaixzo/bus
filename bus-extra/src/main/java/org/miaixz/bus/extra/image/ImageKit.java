@@ -53,7 +53,7 @@ import org.miaixz.bus.core.xyz.*;
  * "http://blog.csdn.net/zhangzhikaixinya/article/details/8459400">http://blog.csdn.net/zhangzhikaixinya/article/details/8459400</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ImageKit {
 

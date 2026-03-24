@@ -36,7 +36,7 @@ import lombok.experimental.Accessors;
  *
  * @param <T> The subtype, for supporting fluent-style chaining.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

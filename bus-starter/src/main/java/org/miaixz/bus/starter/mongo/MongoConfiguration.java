@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
  * sequence.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @EnableConfigurationProperties(value = { MongoProperties.class })
 public class MongoConfiguration {

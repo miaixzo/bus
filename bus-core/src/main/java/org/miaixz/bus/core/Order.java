@@ -23,7 +23,7 @@ package org.miaixz.bus.core;
  * An interface for objects that can be ordered. This is often used for sorting components or plugins.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Order extends Comparable<Order> {
 

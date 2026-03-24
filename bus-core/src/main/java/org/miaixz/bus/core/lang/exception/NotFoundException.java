@@ -27,7 +27,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
  * Represents an exception indicating that a requested resource was not found.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NotFoundException extends UncheckedException {
 

@@ -29,7 +29,7 @@ import org.miaixz.bus.cortex.guard.token.AccessTokenStore;
  * RBAC-based access control backed by CacheX.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AccessGuard {
 

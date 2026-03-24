@@ -67,7 +67,7 @@ import org.miaixz.bus.mapper.dialect.DialectRegistry;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SqlSource implements org.apache.ibatis.mapping.SqlSource {
 

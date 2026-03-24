@@ -28,7 +28,7 @@ import org.miaixz.bus.health.unix.driver.NetStat;
  * Internet Protocol Stats implementation
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public class OpenBsdInternetProtocolStats extends AbstractInternetProtocolStats {

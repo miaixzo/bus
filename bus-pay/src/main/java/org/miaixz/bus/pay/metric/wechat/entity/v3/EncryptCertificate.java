@@ -32,7 +32,7 @@ import java.io.Serializable;
  * Model for the encrypted certificate data provided in the V3 Get Platform Certificates API response.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

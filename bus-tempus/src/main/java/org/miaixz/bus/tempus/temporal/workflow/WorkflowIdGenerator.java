@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.Symbol;
  * Implementations can enforce naming conventions or identifier composition rules for workflows.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface WorkflowIdGenerator {
 

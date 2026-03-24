@@ -31,7 +31,7 @@ import java.lang.annotation.*;
  * in turn sets up all the necessary beans for the third-party authentication and authorization module.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Inherited
 @Documented

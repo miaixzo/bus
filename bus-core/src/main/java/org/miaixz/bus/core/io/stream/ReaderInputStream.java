@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.Normal;
  * This implementation is inspired by Apache Commons IO.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ReaderInputStream extends InputStream {
 

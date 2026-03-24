@@ -26,7 +26,7 @@ package org.miaixz.bus.spring.annotation;
  * consistent handling of environment-aware annotation attributes.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface WrapperAnnotation {
 

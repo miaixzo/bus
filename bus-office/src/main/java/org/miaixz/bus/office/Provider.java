@@ -26,7 +26,7 @@ import java.io.InputStream;
  * Document conversion service provider. Responsible for performing document conversions using an office manager.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Provider {
 

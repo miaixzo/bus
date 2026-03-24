@@ -30,7 +30,7 @@ import com.google.gson.reflect.TypeToken;
  * JSON serialization and deserialization functionalities using Gson.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class GsonProvider extends AbstractJsonProvider {
 

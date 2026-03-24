@@ -23,6 +23,6 @@
  * This package contains plugin implementations for handling SSE connections and events within the HTTP module.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.http.plugin.sse;

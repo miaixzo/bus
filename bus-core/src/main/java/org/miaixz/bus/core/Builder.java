@@ -27,7 +27,7 @@ import java.io.Serializable;
  *
  * @param <T> The type of object to be built.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Builder<T> extends Serializable {
 

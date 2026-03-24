@@ -27,7 +27,7 @@ import org.miaixz.bus.core.center.date.culture.HiddenStems;
  * This class associates a {@link HeavenStem} with a {@link HiddenStems} type.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HiddenStem extends Tradition {
 

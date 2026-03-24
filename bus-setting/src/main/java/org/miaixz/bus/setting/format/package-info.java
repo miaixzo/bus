@@ -21,6 +21,6 @@
  * Provides classes for formatting and parsing lines within configuration files, specifically for the INI format.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.setting.format;

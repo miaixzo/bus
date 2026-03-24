@@ -43,7 +43,7 @@ import com.jcraft.jsch.JSchException;
  * management.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JschSession implements Session {
 

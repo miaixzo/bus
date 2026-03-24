@@ -24,6 +24,6 @@
  * enabling their use as first-class citizens.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.core.center.function;

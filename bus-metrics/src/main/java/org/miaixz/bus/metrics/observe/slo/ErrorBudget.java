@@ -23,7 +23,7 @@ package org.miaixz.bus.metrics.observe.slo;
  * Computes error budget values from a given SLO target and observed compliance.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ErrorBudget {
 

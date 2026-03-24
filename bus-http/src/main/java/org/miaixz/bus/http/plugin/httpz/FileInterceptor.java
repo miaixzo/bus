@@ -37,7 +37,7 @@ import java.io.IOException;
  * implement the {@link #updateProgress} method to handle progress updates.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class FileInterceptor implements Interceptor, ProgressListener {
 

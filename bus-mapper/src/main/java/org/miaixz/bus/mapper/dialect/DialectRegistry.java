@@ -73,7 +73,7 @@ import org.miaixz.bus.mapper.support.paging.Pageable;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class DialectRegistry {
 

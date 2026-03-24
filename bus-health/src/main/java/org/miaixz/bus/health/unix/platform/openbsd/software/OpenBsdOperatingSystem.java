@@ -40,7 +40,7 @@ import org.miaixz.bus.logger.Logger;
  * which was based on Research Unix.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public class OpenBsdOperatingSystem extends AbstractOperatingSystem {

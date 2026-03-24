@@ -57,7 +57,7 @@ import org.springframework.context.annotation.Bean;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @EnableConfigurationProperties(value = { StorageProperties.class })
 public class StorageConfiguration {

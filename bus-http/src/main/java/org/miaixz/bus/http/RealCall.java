@@ -49,7 +49,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * interceptor chain. It supports WebSocket connections, request cancellation, timeout management, and retry mechanisms.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class RealCall implements NewCall {
 

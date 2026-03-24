@@ -33,7 +33,7 @@ import org.miaixz.bus.office.excel.cell.editors.CellEditor;
  * Common configuration for Excel reading and writing.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ExcelConfig {
 

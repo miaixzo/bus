@@ -31,7 +31,7 @@ import org.miaixz.bus.health.linux.SysPath;
  * Utility to read info from {@code sysfs}
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class Sysfs {

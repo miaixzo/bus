@@ -38,7 +38,7 @@ import java.util.List;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class H2 extends AbstractDialect {
 

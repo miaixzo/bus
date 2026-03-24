@@ -32,7 +32,7 @@ import java.util.Objects;
  * This class extends {@link Number} and implements {@link Comparable} for 128-bit integer operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class No128 extends Number implements Comparable<No128> {
 

@@ -28,7 +28,7 @@ import org.miaixz.bus.tempus.crontab.CronCrontab;
  * @param scheduler the scheduler managing this executor
  * @param task      the cron task to execute
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public record Executor(Scheduler scheduler, CronCrontab task) implements Runnable {
 

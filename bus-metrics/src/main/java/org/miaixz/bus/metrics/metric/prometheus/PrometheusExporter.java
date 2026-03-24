@@ -32,7 +32,7 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
  * gauge type.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PrometheusExporter {
 

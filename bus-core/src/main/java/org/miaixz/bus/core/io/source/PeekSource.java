@@ -33,7 +33,7 @@ import org.miaixz.bus.core.io.timout.Timeout;
  * invalid and will throw an {@link IllegalStateException} on subsequent reads.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PeekSource implements Source {
 

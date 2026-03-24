@@ -27,7 +27,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
  * Indicates that an entity or resource already exists.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AlreadyExistsException extends UncheckedException {
 

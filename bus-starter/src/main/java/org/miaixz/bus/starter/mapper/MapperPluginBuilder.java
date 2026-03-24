@@ -60,7 +60,7 @@ import org.springframework.core.env.Environment;
  * multi-tenancy, based on the application's configuration.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MapperPluginBuilder {
 

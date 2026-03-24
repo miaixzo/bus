@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.LongAdder;
  * Each bucket covers one second. The ring advances every second via {@link #advance()}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BucketWindow {
 

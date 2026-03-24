@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.Normal;
  * Map related utility class.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MapKit extends MapGets {
 

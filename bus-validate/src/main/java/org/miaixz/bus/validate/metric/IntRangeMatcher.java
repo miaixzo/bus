@@ -34,7 +34,7 @@ import java.util.Set;
  * Validator for the {@link IntRange} annotation, checking if a numeric value is within a specified integer range.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class IntRangeMatcher implements Matcher<Object, IntRange> {
 

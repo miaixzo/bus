@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
  * Input validation utilities for cortex parameters.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class ParamValidator {
 

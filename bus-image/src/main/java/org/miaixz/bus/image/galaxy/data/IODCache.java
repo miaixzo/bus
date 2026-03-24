@@ -29,7 +29,7 @@ import org.miaixz.bus.image.IOD;
  * redundant loading of IODs by storing previously loaded instances.
  * 
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class IODCache {
 

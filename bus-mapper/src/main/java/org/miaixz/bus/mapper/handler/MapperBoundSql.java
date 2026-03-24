@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.ListKit;
  * A wrapper class for {@link BoundSql} to facilitate manipulation of the MyBatis BoundSql object.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MapperBoundSql {
 

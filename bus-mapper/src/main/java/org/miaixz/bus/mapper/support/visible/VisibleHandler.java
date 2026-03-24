@@ -50,7 +50,7 @@ import org.miaixz.bus.mapper.handler.ConditionHandler;
  *
  * @param <T> the entity type
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class VisibleHandler<T> extends ConditionHandler<T, VisibleConfig> {
 

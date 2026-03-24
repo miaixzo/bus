@@ -29,7 +29,7 @@ import java.util.Set;
  * for adding, removing, and chaining multiple child filters. The specific filtering logic is determined by subclasses.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class MixFilter implements Filter {
 

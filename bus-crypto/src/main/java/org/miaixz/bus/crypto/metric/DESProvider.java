@@ -29,7 +29,7 @@ import org.miaixz.bus.crypto.center.DES;
  * standard, suitable for scenarios requiring the encryption of large amounts of data.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DESProvider implements Provider {
 

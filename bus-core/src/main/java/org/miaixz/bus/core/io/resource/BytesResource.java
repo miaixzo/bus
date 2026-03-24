@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Resource provider based on a byte array. Note: The {@code getUrl} method of this object always returns {@code null}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BytesResource implements Resource, Serializable {
 

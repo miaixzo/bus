@@ -30,7 +30,7 @@ import java.nio.ByteBuffer;
  *
  * @author Kimi Liu
  * @see Handler
- * @since Java 17+
+ * @since Java 21+
  */
 public enum Status {
     /**

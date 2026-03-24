@@ -59,7 +59,7 @@ import reactor.netty.http.client.HttpClient;
  * Generic type parameters: {@code Executor<ServerRequest, ServerResponse>}
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
 

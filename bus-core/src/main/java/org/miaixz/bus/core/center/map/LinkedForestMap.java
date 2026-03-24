@@ -51,7 +51,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @param <K> The type of the keys.
  * @param <V> The type of the values.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LinkedForestMap<K, V> implements ForestMap<K, V> {
 

@@ -21,6 +21,6 @@
  * HL7 LDAP支持
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.metric.hl7.ldap;

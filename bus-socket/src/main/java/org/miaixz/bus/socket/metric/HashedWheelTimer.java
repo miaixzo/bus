@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * A Hashed Wheel Timer for scheduling tasks.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HashedWheelTimer implements SocketTimer, Runnable {
 

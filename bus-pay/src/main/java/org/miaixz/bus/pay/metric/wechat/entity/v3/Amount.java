@@ -29,7 +29,7 @@ import lombok.experimental.SuperBuilder;
  * Model for the Amount object in the V3 Unified Order API.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

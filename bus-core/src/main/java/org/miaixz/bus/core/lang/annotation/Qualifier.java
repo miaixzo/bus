@@ -40,7 +40,7 @@ import java.lang.annotation.*;
  * implementation of a service. This concept is central to standards like JSR-330 ({@code jakarta.inject.Qualifier}).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

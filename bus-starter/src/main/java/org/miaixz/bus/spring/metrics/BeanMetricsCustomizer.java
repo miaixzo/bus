@@ -28,7 +28,7 @@ package org.miaixz.bus.spring.metrics;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @FunctionalInterface
 public interface BeanMetricsCustomizer {

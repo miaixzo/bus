@@ -27,6 +27,6 @@
  * UPDATE), eliminating the need for manual field management and ensuring consistent audit data.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.mapper.support.populate;

@@ -43,7 +43,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
  * Hardware data obtained from WMI.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 final class WindowsComputerSystem extends AbstractComputerSystem {

@@ -28,7 +28,7 @@ import lombok.Setter;
  * Configuration change event payload.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

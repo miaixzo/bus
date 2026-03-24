@@ -26,7 +26,7 @@ import org.miaixz.bus.image.galaxy.data.Code;
  * are commonly used in various DICOM contexts where a binary or ternary choice is required.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class YesNo {
 

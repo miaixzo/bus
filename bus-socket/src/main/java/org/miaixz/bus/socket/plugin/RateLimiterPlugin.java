@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @param <T> the type of message object entity handled by this plugin
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
 

@@ -25,7 +25,7 @@ package org.miaixz.bus.tempus.temporal.activity;
  * Implementations define how activity outputs are encoded before being returned from framework-level activity handlers.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface ActivityResultSerializer {
 

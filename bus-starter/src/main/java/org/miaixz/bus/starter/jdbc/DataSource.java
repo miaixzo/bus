@@ -31,7 +31,7 @@ import java.lang.annotation.*;
  * the data source context dynamically.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

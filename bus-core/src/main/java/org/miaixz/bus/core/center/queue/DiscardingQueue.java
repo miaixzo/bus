@@ -28,7 +28,7 @@ import java.util.Queue;
  * A queue that is always empty, all added nodes are discarded.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DiscardingQueue extends AbstractQueue<Object> {
 

@@ -58,7 +58,7 @@ import java.util.function.Supplier;
  * </ol>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TcpSession extends Session {
 

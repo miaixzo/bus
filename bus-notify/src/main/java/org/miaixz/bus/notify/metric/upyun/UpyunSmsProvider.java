@@ -39,7 +39,7 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * Upyun SMS service provider implementation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class UpyunSmsProvider extends AbstractProvider<UpyunNotice, Context> {
 

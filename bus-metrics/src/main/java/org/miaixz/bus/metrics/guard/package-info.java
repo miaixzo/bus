@@ -23,6 +23,6 @@
  * (throttled) and optionally forwarded to a callback.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.metrics.guard;

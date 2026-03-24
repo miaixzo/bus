@@ -21,7 +21,7 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_SMS_AX__ORIGINAL_IMAGE_INFO_1_0
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PrivateKeyword {
 

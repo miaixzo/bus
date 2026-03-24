@@ -34,7 +34,7 @@ import java.util.List;
  * finishing profit sharing.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

@@ -34,7 +34,7 @@ import java.util.List;
  * trust anchor for certificate pinning.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class CertificateChainCleaner {
 

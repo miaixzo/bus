@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Bean;
  * server lifecycle.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @EnableConfigurationProperties(value = { SocketProperties.class })
 public class SocketConfiguration {

@@ -24,7 +24,7 @@ package org.miaixz.bus.core.bean.path;
  *
  * @param <T> The type of the Bean.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface NodeBeanFactory<T> {
 

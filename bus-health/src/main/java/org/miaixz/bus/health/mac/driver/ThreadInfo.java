@@ -36,7 +36,7 @@ import org.miaixz.bus.health.builtin.software.OSProcess;
  * Utility to query threads for a process on macOS.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class ThreadInfo {

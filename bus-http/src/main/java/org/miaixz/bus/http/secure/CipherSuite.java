@@ -26,7 +26,7 @@ import java.util.*;
  * cipher suites that are unavailable on popular platforms for simplicity.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class CipherSuite {
 

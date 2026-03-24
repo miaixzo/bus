@@ -27,7 +27,7 @@ import java.util.LinkedHashMap;
  * cube, and grayscale colors.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Ansi8bitMapping extends AnsiLabMapping {
 

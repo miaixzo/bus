@@ -35,7 +35,7 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * JD Cloud SMS service provider implementation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JdcloudSmsProvider extends AbstractProvider<JdcloudNotice, Context> {
 

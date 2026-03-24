@@ -25,7 +25,7 @@ package org.miaixz.bus.core.lang.range;
  *
  * @param <T> the type of the boundary value, which must be comparable
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NoneLowerBound<T extends Comparable<? super T>> implements Bound<T> {
 

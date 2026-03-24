@@ -21,6 +21,6 @@
  * UID Dictionary from SIEMENS_DFR_01_MANIPULATED
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_DFR_01_MANIPULATED;

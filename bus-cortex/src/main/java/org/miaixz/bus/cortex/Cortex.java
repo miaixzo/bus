@@ -30,7 +30,7 @@ import org.miaixz.bus.cortex.registry.prompt.PromptAssets;
  * Unified static façade exposing registry and configuration operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class Cortex {
 

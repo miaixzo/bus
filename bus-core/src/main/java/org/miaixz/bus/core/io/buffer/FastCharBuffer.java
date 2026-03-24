@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Normal;
  * one.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class FastCharBuffer extends FastBuffer implements CharSequence, Appendable {
 

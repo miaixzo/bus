@@ -21,6 +21,6 @@
  * Provides implementations for socket channels, including custom asynchronous channel groups and channels.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.socket.metric.channel;

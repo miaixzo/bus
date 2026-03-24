@@ -21,6 +21,6 @@
  * Provides implementations for various plugins that extend the functionality of the socket framework.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.socket.plugin;

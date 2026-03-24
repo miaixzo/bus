@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.NetKit;
  * class provides convenient methods for configuring and starting an embedded FTP server.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SimpleFtpServer {
 

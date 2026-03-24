@@ -31,7 +31,7 @@ import java.util.NoSuchElementException;
  *
  * @param <E> the type of elements returned by this enumeration
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class IteratorEnumeration<E> implements Enumeration<E>, Serializable {
 

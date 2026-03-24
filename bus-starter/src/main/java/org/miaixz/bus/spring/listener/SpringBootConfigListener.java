@@ -39,7 +39,7 @@ import org.springframework.core.env.PropertiesPropertySource;
  * configuration and banner printing occur early in the environment preparation phase and are executed only once.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SpringBootConfigListener implements ApplicationListener<ApplicationEnvironmentPreparedEvent>, Ordered {
 

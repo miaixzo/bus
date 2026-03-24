@@ -21,6 +21,6 @@
  * Provides integration for Meituan related authentication.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.auth.nimble.meituan;

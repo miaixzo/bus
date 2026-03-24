@@ -31,7 +31,7 @@ import org.miaixz.bus.logger.Logger;
  * configuration) and executes any matching tasks.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CronTimer extends Thread implements Serializable {
 

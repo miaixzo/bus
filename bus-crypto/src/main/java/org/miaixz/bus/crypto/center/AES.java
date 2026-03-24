@@ -57,7 +57,7 @@ import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AES extends Crypto {
 

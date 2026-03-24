@@ -38,7 +38,7 @@ import java.util.Properties;
  * property.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SpringEnvironmentPostProcessor implements org.springframework.boot.env.EnvironmentPostProcessor, Ordered {
 

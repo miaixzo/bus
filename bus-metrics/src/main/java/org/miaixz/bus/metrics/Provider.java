@@ -35,7 +35,7 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Provider {
 

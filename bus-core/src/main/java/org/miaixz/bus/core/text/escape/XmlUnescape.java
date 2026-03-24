@@ -41,7 +41,7 @@ import org.miaixz.bus.core.text.replacer.ReplacerChain;
  * It also handles numeric entity unescaping.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class XmlUnescape extends ReplacerChain {
 

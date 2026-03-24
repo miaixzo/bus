@@ -75,7 +75,7 @@ import org.miaixz.bus.core.xyz.RuntimeKit;
  * @param <K> the type of keys maintained by this map
  * @param <V> the type of mapped values
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         implements ConcurrentMap<K, V>, Serializable {

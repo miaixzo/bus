@@ -41,7 +41,7 @@ import com.sun.jna.platform.unix.LibCAPI.ssize_t;
  * Utility to query /proc/psinfo
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class PsInfo {

@@ -36,7 +36,7 @@ import java.nio.ByteBuffer;
  *
  * @param <T> the type of the message object entity
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Message<T> {
 

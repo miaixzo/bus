@@ -37,7 +37,7 @@ import org.springframework.web.server.ServerWebExchange;
  * avoiding repeated computations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class StrategyFactory {
 

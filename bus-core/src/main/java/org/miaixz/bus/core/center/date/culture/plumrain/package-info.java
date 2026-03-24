@@ -21,6 +21,6 @@
  * Provides classes related to the "Plum Rain" (梅雨) quarter, a period of continuous rain in East Asia.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.core.center.date.culture.plumrain;

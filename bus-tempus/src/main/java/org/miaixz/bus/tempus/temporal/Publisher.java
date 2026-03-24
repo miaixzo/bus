@@ -28,7 +28,7 @@ package org.miaixz.bus.tempus.temporal;
  * during publisher instantiation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Publisher extends AutoCloseable {
 

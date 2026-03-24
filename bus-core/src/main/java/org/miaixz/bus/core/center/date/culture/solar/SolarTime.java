@@ -36,7 +36,7 @@ import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycleHour;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SolarTime extends SecondParts {
 

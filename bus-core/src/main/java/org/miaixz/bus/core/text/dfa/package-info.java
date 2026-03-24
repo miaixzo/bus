@@ -26,6 +26,6 @@
  * within the text can be done with O(n) complexity, where n is the length of the text.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.core.text.dfa;

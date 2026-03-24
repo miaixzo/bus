@@ -23,6 +23,6 @@
  * {@code /metricz} feed without a direct dependency on bus-metrics.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.metrics.bridge;

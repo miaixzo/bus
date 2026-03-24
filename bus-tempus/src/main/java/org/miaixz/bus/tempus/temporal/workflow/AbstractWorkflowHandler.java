@@ -36,7 +36,7 @@ import io.temporal.workflow.Workflow;
  * @param <A> the activity interface type
  * @param <R> the workflow input type
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractWorkflowHandler<A, R> {
 

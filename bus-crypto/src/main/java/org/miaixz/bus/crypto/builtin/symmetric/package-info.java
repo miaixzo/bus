@@ -21,6 +21,6 @@
  * Provides support for symmetric encryption algorithms, including AES, DES, DESede, and others.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.crypto.builtin.symmetric;

@@ -33,7 +33,7 @@ import java.io.IOException;
  * interface to process HTTP responses.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class RealEventSource implements EventSource, ServerSentEventReader.Callback, Callback {
 

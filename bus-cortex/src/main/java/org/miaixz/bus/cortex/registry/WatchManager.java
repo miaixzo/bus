@@ -33,7 +33,7 @@ import org.miaixz.bus.cortex.Vector;
  * Manages watch subscriptions and notifies listeners on changes.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WatchManager {
 

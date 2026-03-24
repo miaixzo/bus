@@ -21,7 +21,7 @@ package org.miaixz.bus.image.galaxy.dict.GE_LUT_Asymmetry_Parameter;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PrivateKeyword {
 

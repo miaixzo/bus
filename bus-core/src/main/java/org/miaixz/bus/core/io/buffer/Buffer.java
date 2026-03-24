@@ -79,7 +79,7 @@ import org.miaixz.bus.core.xyz.IoKit;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel {
 

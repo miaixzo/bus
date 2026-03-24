@@ -27,7 +27,7 @@ import java.io.Serializable;
  * provides common fields and methods for cryptographic keys, such as algorithm, key size, IV size, and password.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class SecureKey implements Key, Serializable {
 

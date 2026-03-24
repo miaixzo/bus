@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * example, the decimal number 57 is represented as 111001 in binary and 39 in hexadecimal.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequence, byte[]>, Serializable {
 

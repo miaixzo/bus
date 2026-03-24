@@ -29,7 +29,7 @@ import org.springframework.context.annotation.Import;
  * annotated with validation constraints.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Import(AspectjValidateProxy.class)
 public class ValidateConfiguration {

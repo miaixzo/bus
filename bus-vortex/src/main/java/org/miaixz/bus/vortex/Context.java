@@ -40,7 +40,7 @@ import lombok.experimental.SuperBuilder;
  * {@link org.miaixz.bus.vortex.filter.PrimaryFilter} and shared across all components via the Reactor context.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

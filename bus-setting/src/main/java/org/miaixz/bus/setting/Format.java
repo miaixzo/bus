@@ -28,7 +28,7 @@ import java.io.Closeable;
  * {@link IniElement}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Format extends Closeable {
 

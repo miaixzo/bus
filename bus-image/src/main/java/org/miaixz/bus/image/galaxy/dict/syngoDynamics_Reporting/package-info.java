@@ -21,6 +21,6 @@
  * UID Dictionary from syngoDynamics_Reporting
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.syngoDynamics_Reporting;

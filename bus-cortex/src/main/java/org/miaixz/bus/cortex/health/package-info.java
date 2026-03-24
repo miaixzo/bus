@@ -30,6 +30,6 @@
  * only when every delegate succeeds; the first failure short-circuits the remaining delegates.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.cortex.health;

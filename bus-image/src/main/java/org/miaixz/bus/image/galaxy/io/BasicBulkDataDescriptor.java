@@ -34,7 +34,7 @@ import org.miaixz.bus.image.galaxy.data.VR;
  * Representations (VRs).
  * 
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BasicBulkDataDescriptor implements BulkDataDescriptor {
 

@@ -42,7 +42,7 @@ import org.springframework.context.annotation.Bean;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @EnableConfigurationProperties(CortexProperties.class)
 @ConditionalOnProperty(prefix = "bus.cortex", name = "enabled", havingValue = "true", matchIfMissing = true)
@@ -145,33 +145,6 @@ public class CortexConfiguration {
             WatchManager watchManager,
             CortexProperties properties) {
         return new DefaultConfig(configPublisher, cacheX, watchManager, properties.requireNamespace());
-    }
-
-    /**
-     * Creates the starter context and initializes the static Cortex facade.
-     *
-     * @param properties     bound Cortex properties
-     * @param cacheX         shared starter cache
-     * @param apiRegistry    API registry bean
-     * @param mcpRegistry    MCP registry bean
-     * @param promptRegistry prompt registry bean
-     * @param config         config center bean
-     * @return initialized starter context
-     */
-    @Bean
-    @ConditionalOnMissingBean
-    public CortexContext cortexContext(
-            CortexProperties properties,
-            CacheX<String, Object> cacheX,
-            ApiRegistry apiRegistry,
-            McpRegistry mcpRegistry,
-            PromptRegistry promptRegistry,
-            Config config) {
-        String serverAddr = properties.requireServerAddr();
-        String namespace = properties.requireNamespace();
-        Cortex.init(apiRegistry, mcpRegistry, promptRegistry, config);
-        return new CortexContext(properties, serverAddr, namespace, cacheX, apiRegistry, mcpRegistry, promptRegistry,
-                config);
     }
 
 }

@@ -22,12 +22,12 @@ package org.miaixz.bus.starter.storage;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.Provider;
+import org.miaixz.bus.storage.Registry;
 import org.miaixz.bus.storage.cache.StorageCache;
 import org.miaixz.bus.storage.magic.ErrorCode;
 import org.miaixz.bus.storage.metric.*;
@@ -66,7 +66,7 @@ import org.miaixz.bus.storage.metric.*;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class StorageService {
 

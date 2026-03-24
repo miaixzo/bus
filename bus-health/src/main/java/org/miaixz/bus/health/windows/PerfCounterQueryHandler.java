@@ -34,7 +34,7 @@ import org.miaixz.bus.logger.Logger;
  * be used in a single thread, preferably in a try-with-resources block.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @NotThreadSafe
 public final class PerfCounterQueryHandler implements AutoCloseable {

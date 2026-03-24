@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Chain;
  *
  * @param <E> the type of objects to be compared.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<E>>, Comparator<E>, Serializable {
 

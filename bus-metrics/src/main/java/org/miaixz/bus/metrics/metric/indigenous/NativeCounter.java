@@ -27,7 +27,7 @@ import org.miaixz.bus.metrics.metric.Counter;
  * Lock-free counter backed by {@link LongAdder}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NativeCounter implements Counter {
 

@@ -24,6 +24,6 @@
  * as GZIP decompression and peeking into streams.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.core.io.source;

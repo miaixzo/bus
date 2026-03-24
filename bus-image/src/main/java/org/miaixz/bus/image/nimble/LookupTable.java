@@ -23,7 +23,7 @@ import java.awt.image.*;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class LookupTable {
 

@@ -40,7 +40,7 @@ import org.thymeleaf.context.Context;
  * interface for rendering templates.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ThymeleafTemplate implements Template, Serializable {
 

@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * {@link ArrayKit}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ObjectKit extends ObjectValidator {
 

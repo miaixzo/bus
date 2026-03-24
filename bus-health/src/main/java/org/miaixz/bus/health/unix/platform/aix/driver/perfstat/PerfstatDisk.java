@@ -29,7 +29,7 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_id_t;
  * Utility to query performance stats for disk_stats
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class PerfstatDisk {

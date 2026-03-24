@@ -28,7 +28,7 @@ import org.miaixz.bus.image.metric.pdu.PresentationContext;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface DimseRQHandler {
 

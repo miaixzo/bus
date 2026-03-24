@@ -41,7 +41,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MultipartBody extends RequestBody {
 

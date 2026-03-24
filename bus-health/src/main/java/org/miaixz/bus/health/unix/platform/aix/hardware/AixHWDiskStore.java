@@ -43,7 +43,7 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_disk_t;
  * AIX hard disk implementation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class AixHWDiskStore extends AbstractHWDiskStore {

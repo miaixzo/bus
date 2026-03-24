@@ -37,6 +37,6 @@
  * the client IP address and request headers consumed by the router during evaluation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.cortex.config;

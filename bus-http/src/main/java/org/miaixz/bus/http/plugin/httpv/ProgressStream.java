@@ -30,7 +30,7 @@ import java.util.concurrent.Executor;
  * invokes a callback with progress updates as data is consumed from the stream.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ProgressStream extends InputStream {
 

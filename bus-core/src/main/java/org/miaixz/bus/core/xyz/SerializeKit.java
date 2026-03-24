@@ -30,7 +30,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * security vulnerabilities in some JDK versions.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SerializeKit {
 

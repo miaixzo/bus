@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Wrapper;
  * delegating all method calls to the wrapped instance.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DelegatedExecutorService extends AbstractExecutorService implements Wrapper<ExecutorService> {
 

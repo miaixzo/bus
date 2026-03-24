@@ -29,6 +29,6 @@
  * runtime service instance without exposing its network coordinates directly.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.cortex.magic.identity;

@@ -28,7 +28,7 @@ import org.miaixz.bus.metrics.Metrics;
  * Registers OS-level system metrics: CPU load, process uptime.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SystemMetrics {
 

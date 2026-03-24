@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.Assert;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Claims implements Serializable {
 

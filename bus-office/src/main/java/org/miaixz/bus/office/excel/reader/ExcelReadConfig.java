@@ -25,7 +25,7 @@ import org.miaixz.bus.office.excel.ExcelConfig;
  * Excel read configuration.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ExcelReadConfig extends ExcelConfig {
 

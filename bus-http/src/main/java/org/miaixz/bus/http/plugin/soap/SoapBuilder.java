@@ -48,7 +48,7 @@ import java.util.Map.Entry;
  * XML text, which can be retrieved by calling the {@link #getString(boolean)} method.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SoapBuilder {
 

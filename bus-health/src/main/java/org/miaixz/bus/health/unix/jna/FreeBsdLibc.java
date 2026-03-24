@@ -31,7 +31,7 @@ import com.sun.jna.ptr.NativeLongByReference;
  * into the JNA project.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface FreeBsdLibc extends CLibrary {
 

@@ -40,7 +40,7 @@ import com.sun.jna.platform.mac.SystemB;
  * marketed by Apple Inc. since 2001. It is the primary operating system for Apple's Mac computers.
  * 
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public class MacOperatingSystemJNA extends MacOperatingSystem {

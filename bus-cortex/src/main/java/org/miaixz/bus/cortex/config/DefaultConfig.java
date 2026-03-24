@@ -33,7 +33,7 @@ import org.miaixz.bus.extra.json.JsonKit;
  * Default CacheX-backed configuration center implementation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DefaultConfig implements Config {
 

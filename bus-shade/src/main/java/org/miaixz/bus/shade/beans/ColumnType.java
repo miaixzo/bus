@@ -23,7 +23,7 @@ package org.miaixz.bus.shade.beans;
  * Interface for retrieving column type information for entity fields.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface ColumnType {
 

@@ -27,7 +27,7 @@ import java.util.Map;
  * (March 2026). Override or extend via {@link #register(String, double, double)}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class LlmPriceTable {
 

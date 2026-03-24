@@ -36,6 +36,6 @@
  * a list; passing {@code null} for method or version broadens the scan to all values within the namespace.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.cortex.registry.api;

@@ -21,7 +21,7 @@
  * Defines the bus.extra module, providing extended utilities and integrations.
  * 
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 module bus.extra {
 

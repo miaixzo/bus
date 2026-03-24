@@ -44,7 +44,7 @@ import redis.clients.jedis.resps.ScanResult;
  * @param <K> The type of keys, which are assumed to be convertible to {@link String}.
  * @param <V> The type of values, which must be serializable.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RedisClusterCache<K, V> implements CacheX<K, V>, AutoCloseable {
 

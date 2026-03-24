@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * @param <K> The type of keys maintained by this map.
  * @param <V> The type of mapped values.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MapWrapper<K, V>
         implements Map<K, V>, Iterable<Map.Entry<K, V>>, Wrapper<Map<K, V>>, Serializable, Cloneable {

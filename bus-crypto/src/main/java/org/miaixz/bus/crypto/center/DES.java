@@ -35,7 +35,7 @@ import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
  * encryption. The default implementation in Java is DES/ECB/PKCS5Padding.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DES extends Crypto {
 

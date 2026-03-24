@@ -31,7 +31,7 @@ import org.miaixz.bus.health.unix.hardware.UnixPrinter;
  * LinuxHardwareAbstractionLayer class.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class LinuxHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {

@@ -25,7 +25,7 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
  * The Firmware represents the low level BIOS or equivalent.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 public interface Firmware {

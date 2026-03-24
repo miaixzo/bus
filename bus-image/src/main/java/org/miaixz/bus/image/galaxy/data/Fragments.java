@@ -48,7 +48,7 @@ import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Fragments extends ArrayList<Object> implements Value {
 

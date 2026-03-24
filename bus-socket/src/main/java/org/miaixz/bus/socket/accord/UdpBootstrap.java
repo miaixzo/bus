@@ -33,7 +33,7 @@ import java.nio.channels.DatagramChannel;
  * A bootstrap class for creating and configuring UDP services.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class UdpBootstrap {
 

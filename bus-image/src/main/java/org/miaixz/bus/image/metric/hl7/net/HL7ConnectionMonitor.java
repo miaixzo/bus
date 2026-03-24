@@ -26,7 +26,7 @@ import org.miaixz.bus.image.metric.hl7.HL7Exception;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface HL7ConnectionMonitor {
 

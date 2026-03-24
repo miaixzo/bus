@@ -36,7 +36,7 @@ import org.miaixz.bus.health.builtin.software.ApplicationInfo;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class AixInstalledApps {
 

@@ -28,7 +28,7 @@ package org.miaixz.bus.socket;
  *
  * @param <T> the type of message object entity handled by this plugin
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Plugin<T> extends Monitor {
 

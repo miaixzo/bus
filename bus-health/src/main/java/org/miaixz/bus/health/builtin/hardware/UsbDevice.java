@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
  * other devices connect in a recursive fashion.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 public interface UsbDevice extends Comparable<UsbDevice> {

@@ -24,6 +24,6 @@
  * APIs, providing a higher-level abstraction over the raw API calls.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.gitlab.services;

@@ -27,6 +27,6 @@
  * scenarios such as multi-environment management and dynamic data source switching.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.mapper.support.prefix;

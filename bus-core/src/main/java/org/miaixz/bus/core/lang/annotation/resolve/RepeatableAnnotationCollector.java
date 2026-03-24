@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.MethodKit;
  * A collector for repeatable annotations, used to extract contained repeatable annotations from a given annotation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface RepeatableAnnotationCollector {
 

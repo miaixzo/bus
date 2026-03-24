@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.Normal;
  * length.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractStrategy implements CodeStrategy {
 

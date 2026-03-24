@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.Optional;
  * Original source from https://github.com/mybatis/mybatis-3
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class GenericTypeResolver {
 

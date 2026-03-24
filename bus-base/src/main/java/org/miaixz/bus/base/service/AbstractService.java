@@ -53,7 +53,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @param <I> the type of the primary key, must implement {@link Serializable}
  * @param <M> the mapper type, must extend {@link SharedMapper}
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AbstractService<T extends BaseEntity, I extends Serializable, M extends SharedMapper<T, I>>
         implements SharedService<T, I> {

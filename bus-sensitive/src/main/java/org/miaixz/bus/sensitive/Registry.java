@@ -34,7 +34,7 @@ import org.miaixz.bus.sensitive.metric.*;
  * A central registry for mapping built-in desensitization strategies to their corresponding types or annotations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class Registry {
 

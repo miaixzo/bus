@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.Normal;
  * @param <S> The type of the copy source, such as InputStream, Reader, etc.
  * @param <T> The type of the copy target, such as OutputStream, Writer, etc.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class IoCopier<S, T> {
 

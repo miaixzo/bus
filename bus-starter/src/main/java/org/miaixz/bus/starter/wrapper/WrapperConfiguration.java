@@ -79,7 +79,7 @@ import jakarta.annotation.Resource;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @EnableConfigurationProperties(value = { WrapperProperties.class })
 public class WrapperConfiguration implements WebMvcRegistrations {

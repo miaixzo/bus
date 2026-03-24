@@ -29,7 +29,7 @@ import org.apache.poi.xslf.usermodel.*;
  * PowerPoint slide.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PptShape {
 

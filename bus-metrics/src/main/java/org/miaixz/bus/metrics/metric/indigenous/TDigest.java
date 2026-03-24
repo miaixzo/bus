@@ -33,7 +33,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * O(compression), and the ability to merge digests from multiple instances.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 class TDigest {
 

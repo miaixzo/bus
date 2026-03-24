@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
  * Represents a browser rendering engine, such as Trident, WebKit, or Gecko.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Engine extends UserAgent {
 

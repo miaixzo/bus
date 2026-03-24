@@ -26,7 +26,7 @@ import lombok.Setter;
  * Key-value label with an optional category for grouping.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

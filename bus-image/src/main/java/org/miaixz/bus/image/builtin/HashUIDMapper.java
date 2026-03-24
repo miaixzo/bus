@@ -27,7 +27,7 @@ import org.miaixz.bus.image.UID;
  * non-identifiable UIDs.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HashUIDMapper implements UIDMapper {
 

@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.IoKit;
  * thread-safe after instantiation!
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Mac implements Serializable {
 

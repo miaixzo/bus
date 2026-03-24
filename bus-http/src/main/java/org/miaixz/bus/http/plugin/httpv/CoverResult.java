@@ -39,7 +39,7 @@ import org.miaixz.bus.http.Response;
  * any errors that may have occurred during the request.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface CoverResult {
 
@@ -356,7 +356,7 @@ public interface CoverResult {
      * The concrete implementation of {@link CoverResult}.
      *
      * @author Kimi Liu
-     * @since Java 17+
+     * @since Java 21+
      */
     class Real implements CoverResult {
 

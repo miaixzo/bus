@@ -25,7 +25,7 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
  * The Baseboard represents the system board, also called motherboard, logic board, etc.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 public interface Baseboard {

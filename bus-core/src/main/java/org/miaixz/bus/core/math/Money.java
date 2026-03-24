@@ -57,7 +57,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Money implements Serializable, Comparable<Money> {
 

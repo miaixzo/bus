@@ -30,7 +30,7 @@ import org.miaixz.bus.metrics.metric.Gauge;
  *
  * @param <T> state object type
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NativeGauge<T> implements Gauge {
 

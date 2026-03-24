@@ -24,6 +24,6 @@
  * default manager responsible for starting and stopping worker resources.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.tempus.temporal.worker;

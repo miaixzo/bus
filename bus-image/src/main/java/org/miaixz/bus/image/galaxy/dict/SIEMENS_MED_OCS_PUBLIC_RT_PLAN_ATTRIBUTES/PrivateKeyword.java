@@ -21,7 +21,7 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_OCS_PUBLIC_RT_PLAN_ATTRIBUT
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PrivateKeyword {
 

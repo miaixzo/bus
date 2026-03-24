@@ -30,7 +30,7 @@ import lombok.experimental.SuperBuilder;
  * This class holds all necessary connection parameters and settings for storage providers.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

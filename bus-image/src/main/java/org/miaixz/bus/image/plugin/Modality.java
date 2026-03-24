@@ -40,7 +40,7 @@ import java.util.List;
  * interaction.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Modality {
 

@@ -29,7 +29,7 @@ import org.miaixz.bus.http.metric.sse.ServerSentEventReader;
  * processing event responses. This simplifies the creation of SSE connections and the parsing of event streams.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class EventSources {
 

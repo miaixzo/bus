@@ -30,7 +30,7 @@ import java.util.Collection;
  * called to reset the cursor for reuse.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MultiFileResource extends MultiResource {
 

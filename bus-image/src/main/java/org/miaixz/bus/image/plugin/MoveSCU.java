@@ -49,7 +49,7 @@ import java.util.concurrent.TimeUnit;
  * Application Entity.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MoveSCU extends Device implements AutoCloseable {
 

@@ -39,7 +39,7 @@ import org.springframework.context.annotation.Bean;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @EnableConfigurationProperties(value = { ImageProperties.class })
 public class ImageConfiguration {

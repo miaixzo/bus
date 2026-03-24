@@ -37,7 +37,7 @@ import com.google.zxing.common.BitMatrix;
  * SVG renderer for QR codes.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SVGRender implements BitMatrixRender {
 

@@ -27,7 +27,7 @@ import javax.swing.*;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public record ByteLut(String name, byte[][] lutTable) {
 

@@ -26,7 +26,7 @@ import org.miaixz.bus.core.center.date.culture.Replenish;
  * specific day index with a {@link Dog} instance.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DogDay extends Replenish {
 

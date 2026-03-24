@@ -29,7 +29,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * Converter for {@link StackTraceElement} objects, only supports Map conversion
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class StackTraceElementConverter extends AbstractConverter {
 

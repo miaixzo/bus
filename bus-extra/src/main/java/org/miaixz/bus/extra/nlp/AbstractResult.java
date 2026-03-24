@@ -29,7 +29,7 @@ import org.miaixz.bus.core.center.iterator.ComputeIterator;
  * only implement the {@link #nextWord()} method to provide the next segmented word.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractResult extends ComputeIterator<NLPWord> implements NLPResult {
 

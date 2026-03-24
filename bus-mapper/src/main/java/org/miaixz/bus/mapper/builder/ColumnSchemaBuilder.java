@@ -33,7 +33,7 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * Provider Interface) to extend the logic for creating column information.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface ColumnSchemaBuilder extends Order {
 

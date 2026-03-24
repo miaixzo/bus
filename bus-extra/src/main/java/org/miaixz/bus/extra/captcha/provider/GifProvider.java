@@ -35,7 +35,7 @@ import org.miaixz.bus.extra.image.gif.AnimatedGifEncoder;
  * Gif CAPTCHA Provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class GifProvider extends AbstractProvider {
 

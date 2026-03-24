@@ -31,7 +31,7 @@ import org.miaixz.bus.core.io.file.PathResolve;
  * directory during the traversal and moving process.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MoveVisitor extends SimpleFileVisitor<Path> {
 

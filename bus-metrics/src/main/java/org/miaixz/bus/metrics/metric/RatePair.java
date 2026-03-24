@@ -24,7 +24,7 @@ package org.miaixz.bus.metrics.metric;
  * circuit-breaker decisions without external PromQL.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface RatePair {
 

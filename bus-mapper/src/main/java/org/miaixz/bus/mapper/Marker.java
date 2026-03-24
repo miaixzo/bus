@@ -24,7 +24,7 @@ package org.miaixz.bus.mapper;
  * when {@code ClassPathMapperScanner#setMarkerInterface} is called.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Marker {
 

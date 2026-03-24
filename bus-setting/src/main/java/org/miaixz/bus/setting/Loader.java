@@ -47,7 +47,7 @@ import org.miaixz.bus.setting.metric.ini.*;
  * support for sections (groups), variable substitution, and custom line formatters.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Loader {
 

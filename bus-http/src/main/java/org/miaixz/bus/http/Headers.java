@@ -38,7 +38,7 @@ import org.miaixz.bus.http.secure.Challenge;
  * {@link Response}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Headers {
 

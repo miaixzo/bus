@@ -29,23 +29,11 @@ import java.lang.annotation.*;
  * <p>
  * Importing this annotation bootstraps all Cortex beans: registry, health checking, config center, cluster, audit log,
  * and the client-side SDK beans.
- * </p>
  * <p>
- * Minimal setup — add to a Spring Boot application class:
- * 
- * <pre>
- * {@code
- * &#64;SpringBootApplication
- * &#64;EnableCortex
- * public class Application { ... }
- * }
- * </pre>
- * 
  * Then configure {@code bus.cortex.server-addr} in {@code application.yml}.
- * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Inherited
 @Documented

@@ -21,6 +21,6 @@
  * Provides unified management of singleton objects.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.core.instance;

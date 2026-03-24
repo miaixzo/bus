@@ -25,7 +25,7 @@ import io.temporal.activity.ActivityOptions;
  * Creates {@link ActivityOptions} for workflow activity stubs.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @FunctionalInterface
 public interface ActivityOptionsFactory {

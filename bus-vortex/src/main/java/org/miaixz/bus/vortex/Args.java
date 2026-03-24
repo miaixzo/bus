@@ -43,7 +43,7 @@ import lombok.experimental.SuperBuilder;
  * @see QualifierStrategy
  * @see VettingStrategy
  * @see RequestStrategy
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

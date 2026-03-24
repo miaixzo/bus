@@ -37,7 +37,7 @@ import org.miaixz.bus.core.center.date.culture.star.twentyeight.TwentyEightStar;
  * operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SixtyCycleDay extends Loops {
 

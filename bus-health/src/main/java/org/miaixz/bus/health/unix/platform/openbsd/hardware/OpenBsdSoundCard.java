@@ -35,7 +35,7 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractSoundCard;
  * OpenBSD soundcard.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 final class OpenBsdSoundCard extends AbstractSoundCard {

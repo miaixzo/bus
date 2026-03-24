@@ -29,7 +29,7 @@ import org.miaixz.bus.core.xyz.TypeKit;
  * A copier that copies key-value pairs from a source Map to a target Map.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MapToMapCopier extends AbstractCopier<Map, Map> {
 

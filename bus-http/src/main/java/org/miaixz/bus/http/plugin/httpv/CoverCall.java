@@ -39,7 +39,7 @@ import java.util.List;
  * and close it gracefully. It also queues messages sent before the WebSocket is fully open.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CoverCall implements Cancelable {
 
@@ -451,7 +451,7 @@ public class CoverCall implements Cancelable {
      * A client for creating and configuring WebSocket connections.
      *
      * @author Kimi Liu
-     * @since Java 17+
+     * @since Java 21+
      */
     public static class Client extends CoverHttp<Client> {
 
@@ -655,7 +655,7 @@ public class CoverCall implements Cancelable {
      * data conversion.
      *
      * @author Kimi Liu
-     * @since Java 17+
+     * @since Java 21+
      */
     public static class Message {
 

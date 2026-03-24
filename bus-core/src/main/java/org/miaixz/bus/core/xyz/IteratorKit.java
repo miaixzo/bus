@@ -36,7 +36,7 @@ import org.w3c.dom.NodeList;
  * Utility class for {@link Iterable} and {@link Iterator}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class IteratorKit extends IteratorValidator {
 

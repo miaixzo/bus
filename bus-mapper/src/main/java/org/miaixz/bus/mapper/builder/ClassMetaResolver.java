@@ -31,7 +31,7 @@ import org.miaixz.bus.mapper.Order;
  * can be replaced via SPI (Service Provider Interface).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface ClassMetaResolver extends Order {
 

@@ -38,7 +38,7 @@ import java.io.*;
  * array/string, making it suitable for handling large responses.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class ResponseBody implements Closeable {
 

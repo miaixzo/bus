@@ -35,7 +35,7 @@ import org.miaixz.bus.extra.image.ImageKit;
  * Circle interference CAPTCHA provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CircleProvider extends AbstractProvider {
 

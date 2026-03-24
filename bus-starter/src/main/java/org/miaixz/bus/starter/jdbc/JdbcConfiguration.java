@@ -59,7 +59,7 @@ import jakarta.annotation.Resource;
  * to handle routing. It also provides support for encrypted credentials and configures a transaction manager.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ConditionalOnClass(value = { HikariDataSource.class })
 @EnableConfigurationProperties(value = { JdbcProperties.class })

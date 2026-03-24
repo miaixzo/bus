@@ -39,7 +39,7 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
  * Represents a day in the Lunar calendar.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LunarDay extends DayParts {
 

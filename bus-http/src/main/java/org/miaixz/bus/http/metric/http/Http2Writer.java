@@ -32,7 +32,7 @@ import org.miaixz.bus.logger.Logger;
  * Writes HTTP/2 transport frames.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Http2Writer implements Closeable {
 

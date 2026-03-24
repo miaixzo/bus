@@ -21,6 +21,6 @@
  * Provides extensions and plugins for the HTTP client.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.http.plugin;

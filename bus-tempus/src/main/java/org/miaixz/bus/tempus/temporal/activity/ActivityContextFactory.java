@@ -28,7 +28,7 @@ package org.miaixz.bus.tempus.temporal.activity;
  * @param <C> the activity context type
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface ActivityContextFactory<R, C> {
 

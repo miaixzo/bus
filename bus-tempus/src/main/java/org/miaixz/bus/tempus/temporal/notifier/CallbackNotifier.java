@@ -28,7 +28,7 @@ package org.miaixz.bus.tempus.temporal.notifier;
  * @param <R> the activity input type
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface CallbackNotifier<R> {
 

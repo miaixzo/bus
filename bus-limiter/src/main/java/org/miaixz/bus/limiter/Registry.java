@@ -34,7 +34,7 @@ import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
  * This class interacts with Sentinel's {@link FlowRuleManager} to configure flow control rules dynamically.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Registry {
 

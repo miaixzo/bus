@@ -44,7 +44,7 @@ import java.util.function.Supplier;
  * AIO Server Implementation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AioServer {
 

@@ -66,7 +66,7 @@ import org.miaixz.bus.core.lang.Symbol;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  * @see <a href="https://graalvm.org/latest/reference/native-image/BuildConfiguration/">GraalVM Native Image
  *      Configuration</a>
  */

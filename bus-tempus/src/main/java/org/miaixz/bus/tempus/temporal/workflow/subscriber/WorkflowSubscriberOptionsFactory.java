@@ -27,7 +27,7 @@ import io.temporal.worker.WorkerOptions;
  * This factory builds Temporal worker options with configurable concurrency settings.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WorkflowSubscriberOptionsFactory {
 

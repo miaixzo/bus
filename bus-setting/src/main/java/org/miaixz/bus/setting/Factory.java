@@ -29,7 +29,7 @@ import org.miaixz.bus.setting.metric.ini.IniSection;
  * comments, sections, and properties.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @FunctionalInterface
 public interface Factory {

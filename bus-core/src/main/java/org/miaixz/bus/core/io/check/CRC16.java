@@ -30,7 +30,7 @@ import org.miaixz.bus.core.io.check.crc16.CRC16IBM;
  * Implements the CRC16 (Cyclic Redundancy Check) algorithm, using the IBM algorithm by default.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CRC16 implements Checksum, Serializable {
 

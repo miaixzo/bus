@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.BeanKit;
  *
  * @param <T> The type of the bean to convert each row to.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BeanSheetReader<T> implements SheetReader<List<T>> {
 

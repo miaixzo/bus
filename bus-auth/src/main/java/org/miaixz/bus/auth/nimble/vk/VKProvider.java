@@ -45,7 +45,7 @@ import org.miaixz.bus.http.Httpx;
  * VK login provider.
  * 
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class VKProvider extends AbstractProvider {
 

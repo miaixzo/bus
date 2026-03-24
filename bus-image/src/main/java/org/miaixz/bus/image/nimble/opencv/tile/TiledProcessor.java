@@ -26,7 +26,7 @@ import org.opencv.imgproc.Imgproc;
  * Not an API. This class is under development and can be changed or removed at any moment.
  * 
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TiledProcessor {
 

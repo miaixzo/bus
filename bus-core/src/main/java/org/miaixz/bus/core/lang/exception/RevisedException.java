@@ -27,7 +27,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
  * Represents an exception that indicates a revised or modified I/O operation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RevisedException extends RelevantException {
 

@@ -30,7 +30,7 @@ import reactor.core.publisher.Mono;
  * system commands, JMX, or a library like OSHI).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface MetricsProvider {
 

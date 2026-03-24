@@ -41,7 +41,7 @@ import java.util.Map;
  * Teambition login provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TeambitionProvider extends AbstractProvider {
 

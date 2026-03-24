@@ -34,7 +34,7 @@ import java.io.IOException;
  * de-identification rules using the {@link DeIdentifier}, and writes the modified dataset to a new file.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Deidentify {
 

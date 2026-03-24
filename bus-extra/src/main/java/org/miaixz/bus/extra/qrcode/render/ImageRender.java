@@ -34,7 +34,7 @@ import com.google.zxing.common.BitMatrix;
  * QR code image renderer.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ImageRender implements BitMatrixRender {
 

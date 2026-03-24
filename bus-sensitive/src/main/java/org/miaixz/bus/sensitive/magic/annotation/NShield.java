@@ -27,7 +27,7 @@ import java.lang.annotation.*;
  * An annotation to desensitize or filter key-value pairs within a field that contains a JSON string.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Documented
 @Target({ ElementType.FIELD })

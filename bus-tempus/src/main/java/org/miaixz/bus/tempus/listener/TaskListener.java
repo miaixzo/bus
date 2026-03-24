@@ -26,7 +26,7 @@ import org.miaixz.bus.tempus.Executor;
  * stages of a task's lifecycle.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface TaskListener {
 

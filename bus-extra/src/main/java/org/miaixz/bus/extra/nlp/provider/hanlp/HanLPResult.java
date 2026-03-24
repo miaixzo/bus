@@ -33,7 +33,7 @@ import com.hankcs.hanlp.seg.common.Term;
  * the common interface. Project homepage: <a href="https://github.com/hankcs/HanLP">https://github.com/hankcs/HanLP</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HanLPResult implements NLPResult {
 

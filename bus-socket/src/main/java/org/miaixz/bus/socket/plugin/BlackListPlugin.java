@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  *
  * @param <T> the type of message object entity handled by this plugin
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class BlackListPlugin<T> extends AbstractPlugin<T> {
 

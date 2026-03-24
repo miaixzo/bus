@@ -25,7 +25,7 @@ package org.miaixz.bus.base.mapper;
  *
  * @param <T> the entity type
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface BaseMapper<T> extends SharedMapper<T, String> {
 

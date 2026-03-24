@@ -25,7 +25,7 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
  * Display refers to the information regarding a video source and monitor identified by the EDID standard.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 public interface Display {

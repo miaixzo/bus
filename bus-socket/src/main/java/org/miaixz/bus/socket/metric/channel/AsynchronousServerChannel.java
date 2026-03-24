@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
  * provides common functionality for both client and server asynchronous socket channels.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 class AsynchronousServerChannel extends AsynchronousSocketChannel {
 

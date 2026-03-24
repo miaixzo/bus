@@ -88,7 +88,7 @@ import org.miaixz.bus.storage.magic.ErrorCode;
  * use appropriate consumer-facing authentication flows.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SharePointProvider extends AbstractProvider {
 

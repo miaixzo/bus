@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.Normal;
  * Regular expression finder. Finds the start and end positions of a regular expression match within a specified string.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PatternFinder extends TextFinder {
 

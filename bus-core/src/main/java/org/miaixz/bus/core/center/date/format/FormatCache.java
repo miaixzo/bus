@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.tuple.Tuple;
  *
  * @param <F> The formatter type, extending from {@link Format}.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class FormatCache<F extends Format> {
 

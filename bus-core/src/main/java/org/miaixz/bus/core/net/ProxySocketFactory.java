@@ -31,7 +31,7 @@ import javax.net.SocketFactory;
  * A {@link SocketFactory} for creating sockets that connect through a proxy.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ProxySocketFactory extends SocketFactory {
 

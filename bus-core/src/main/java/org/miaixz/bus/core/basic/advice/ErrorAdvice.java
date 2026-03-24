@@ -27,7 +27,7 @@ import org.miaixz.bus.core.basic.service.ErrorService;
  * Handles exceptions by delegating to registered {@link ErrorService} implementations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ErrorAdvice {
 

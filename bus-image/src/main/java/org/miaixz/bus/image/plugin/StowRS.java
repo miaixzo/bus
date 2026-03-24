@@ -67,7 +67,7 @@ import java.util.stream.Collectors;
  * to a STOW-RS server.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class StowRS {
 

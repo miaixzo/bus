@@ -29,7 +29,7 @@ import java.util.concurrent.locks.Lock;
  * no actual locking behavior is desired, for example, as a placeholder or in single-threaded contexts.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NoLock implements Lock {
 

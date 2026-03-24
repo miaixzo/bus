@@ -31,7 +31,7 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_process_t;
  * Utility to query performance stats for processes
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class PerfstatProcess {

@@ -37,7 +37,7 @@ import java.util.Map;
  * handling URL-encoded forms, multipart file uploads, and raw body content.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PutRequest extends HttpRequest {
 

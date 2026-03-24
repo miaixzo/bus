@@ -23,7 +23,7 @@ package org.miaixz.bus.cortex;
  * Supported cortex species.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum Species {
 

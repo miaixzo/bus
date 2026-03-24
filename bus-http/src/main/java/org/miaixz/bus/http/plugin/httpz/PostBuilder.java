@@ -34,7 +34,7 @@ import java.util.List;
  * raw request body, and multipart file uploads.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PostBuilder extends RequestBuilder<PostBuilder> {
 

@@ -38,7 +38,7 @@ import org.miaixz.bus.image.metric.hl7.MLLPConnection;
  * HL7应用程序类，用于处理HL7消息通信。 该类提供了HL7消息的发送、接收和处理功能，包括连接管理、消息验证、字符集设置等。 它实现了Serializable接口，支持序列化操作。
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HL7Application implements Serializable {
 

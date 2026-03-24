@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.ThreadKit;
  *
  * @param <T> the type of objects managed by this partitioned object pool
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PartitionObjectPool<T> implements ObjectPool<T> {
 

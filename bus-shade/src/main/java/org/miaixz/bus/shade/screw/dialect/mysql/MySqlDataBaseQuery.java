@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
  * MySQL database query implementation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MySqlDataBaseQuery extends AbstractDatabaseQuery {
 

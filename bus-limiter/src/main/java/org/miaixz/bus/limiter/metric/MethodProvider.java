@@ -37,7 +37,7 @@ import org.miaixz.bus.limiter.magic.StrategyMode;
  * (hot methods).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MethodProvider implements Provider {
 

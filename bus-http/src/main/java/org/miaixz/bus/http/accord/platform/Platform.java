@@ -44,7 +44,7 @@ import java.util.List;
  * extensions (SNI, ALPN), trust manager extraction, and network security policy checks.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Platform {
 

@@ -33,7 +33,7 @@ import java.util.Arrays;
  * apply different validation rules or business logic based on the request's origin.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @NoArgsConstructor

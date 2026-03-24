@@ -23,6 +23,6 @@
  * This package contains configuration values, constants, and helper classes used throughout the payment framework.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.pay.magic;

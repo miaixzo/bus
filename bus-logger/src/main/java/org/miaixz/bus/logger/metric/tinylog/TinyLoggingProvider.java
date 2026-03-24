@@ -36,7 +36,7 @@ import java.io.Serial;
  * A logger provider implementation that wraps the tinylog logging framework.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TinyLoggingProvider extends AbstractProvider {
 

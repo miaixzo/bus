@@ -24,7 +24,7 @@ package org.miaixz.bus.image.galaxy.data;
  * DICOM dataset.
  * 
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface AttributesCoercion {
 

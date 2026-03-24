@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * within a large body of text.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WordTree extends HashMap<Character, WordTree> {
 

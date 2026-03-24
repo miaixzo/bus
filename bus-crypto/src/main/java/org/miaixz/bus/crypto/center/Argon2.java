@@ -26,7 +26,7 @@ import org.bouncycastle.crypto.params.Argon2Parameters;
  * Argon2 hashing implementation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Argon2 {
 

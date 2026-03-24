@@ -54,7 +54,7 @@ import org.miaixz.bus.core.xyz.RandomKit;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ULID implements Comparable<ULID>, Serializable {
 

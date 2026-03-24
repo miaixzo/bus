@@ -33,7 +33,7 @@ import com.sun.jna.platform.mac.IOKit.IOConnect;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 final class MacSensors extends AbstractSensors {

@@ -37,7 +37,7 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_disk_t;
  * AIXHardwareAbstractionLayer class.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class AixHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {

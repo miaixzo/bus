@@ -32,7 +32,7 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
  * Native SloTracker implementation backed by {@link ErrorBudget}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NativeSloTracker implements SloTracker {
 

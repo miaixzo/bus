@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
  * @param <T> The type of the input to the predicate.
  * @author Kimi Liu
  * @see Predicate
- * @since Java 17+
+ * @since Java 21+
  */
 @FunctionalInterface
 public interface PredicateX<T> extends Predicate<T>, Serializable {

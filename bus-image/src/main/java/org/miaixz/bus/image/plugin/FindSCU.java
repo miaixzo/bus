@@ -65,7 +65,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Hanging Protocol.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class FindSCU implements AutoCloseable {
 

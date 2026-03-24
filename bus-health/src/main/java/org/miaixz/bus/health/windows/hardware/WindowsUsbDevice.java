@@ -39,7 +39,7 @@ import com.sun.jna.platform.win32.Guid.GUID;
  * Windows Usb Device
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 public class WindowsUsbDevice extends AbstractUsbDevice {

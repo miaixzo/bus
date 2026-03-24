@@ -25,7 +25,7 @@ import java.util.function.Consumer;
  * Configuration center contract.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Config {
 

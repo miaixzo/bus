@@ -43,7 +43,7 @@ import java.util.Map;
  * Abstract class for WeChat Enterprise login providers.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
 

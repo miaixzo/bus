@@ -43,7 +43,7 @@ import org.opencv.core.CvType;
  * @param origin           the overlay origin [row, column] (1-based)
  * @param data             the overlay pixel data
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public record OverlayData(int groupOffset, int rows, int columns, int imageFrameOrigin, int framesInOverlay,
         int[] origin, byte[] data) {

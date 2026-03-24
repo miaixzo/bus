@@ -56,7 +56,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * background daemon thread.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HealthMetrics {
 

@@ -31,7 +31,7 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
  * conventions.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NativeLlmTimer implements LlmTimer {
 

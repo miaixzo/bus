@@ -26,7 +26,7 @@ import org.miaixz.bus.core.Provider;
  *
  * @param <T> The type of the original object being wrapped.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Wrapper<T> extends Provider {
 

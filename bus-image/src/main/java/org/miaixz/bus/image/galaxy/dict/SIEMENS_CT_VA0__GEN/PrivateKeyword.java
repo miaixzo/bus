@@ -21,7 +21,7 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_CT_VA0__GEN;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PrivateKeyword {
 

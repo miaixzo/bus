@@ -47,7 +47,7 @@ import java.util.Map;
  * methods or classes annotated with {@link Sensitive} to perform data encryption and desensitization.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ResponseBodyAdvice extends BaseAdvice
         implements org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice<Object> {

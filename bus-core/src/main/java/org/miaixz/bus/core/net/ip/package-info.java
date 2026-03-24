@@ -21,6 +21,6 @@
  * IPv4/IPv6
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.core.net.ip;

@@ -26,7 +26,7 @@ import com.sun.jna.Native;
  * into the JNA project.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface CoreFoundation extends com.sun.jna.platform.mac.CoreFoundation {
 

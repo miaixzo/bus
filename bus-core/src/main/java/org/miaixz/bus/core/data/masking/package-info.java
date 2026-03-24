@@ -21,6 +21,6 @@
  * Data masking, providing masking methods for various data types (strings, numbers, etc.).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.core.data.masking;

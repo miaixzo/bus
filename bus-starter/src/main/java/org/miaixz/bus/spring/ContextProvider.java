@@ -25,7 +25,7 @@ import org.miaixz.bus.core.basic.entity.Authorize;
  * An interface for providing custom logic to retrieve request context information, such as user authorization.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface ContextProvider {
 

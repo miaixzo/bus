@@ -118,7 +118,7 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * @see TenantConfig
  * @see TenantHandler
  * @see MapperProvider
- * @since Java 17+
+ * @since Java 21+
  */
 @FunctionalInterface
 public interface TenantProvider extends MapperProvider<TenantConfig> {

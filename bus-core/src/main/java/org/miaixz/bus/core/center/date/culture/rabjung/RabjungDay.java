@@ -28,7 +28,7 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
  * (Gregorian January 8, 1951) to the 30th day of the 12th month of 2050 (Gregorian February 11, 2051).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RabjungDay extends Loops {
 

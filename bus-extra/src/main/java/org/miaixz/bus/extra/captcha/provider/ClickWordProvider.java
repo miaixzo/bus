@@ -29,7 +29,7 @@ import org.miaixz.bus.extra.captcha.strategy.CodeStrategy;
  * Click Word CAPTCHA Provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ClickWordProvider extends AbstractProvider {
 

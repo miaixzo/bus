@@ -32,7 +32,7 @@ import java.lang.annotation.*;
  * ({@code /accept}, {@code /refuse}) probes, which are essential for container orchestration platforms like Kubernetes.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Inherited
 @Documented

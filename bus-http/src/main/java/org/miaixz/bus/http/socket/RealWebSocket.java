@@ -51,7 +51,7 @@ import org.miaixz.bus.http.metric.Internal;
  * uses a listener to notify of events.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
 

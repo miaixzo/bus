@@ -22,6 +22,6 @@
  * engine, please refer to: https://freemarker.apache.org/
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.extra.template.provider.freemarker;

@@ -44,7 +44,7 @@ import org.miaixz.bus.cache.serialize.Hessian2Serializer;
  * @param <K> The type of keys, which are assumed to be convertible to {@link String}.
  * @param <V> The type of values, which must be serializable.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MemcachedCache<K, V> implements CacheX<K, V>, AutoCloseable {
 

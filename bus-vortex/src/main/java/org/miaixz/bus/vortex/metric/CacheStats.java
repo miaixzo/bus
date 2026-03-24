@@ -57,7 +57,7 @@ import org.miaixz.bus.vortex.Monitor;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

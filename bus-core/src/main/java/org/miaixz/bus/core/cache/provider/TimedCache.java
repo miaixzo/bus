@@ -43,7 +43,7 @@ import org.miaixz.bus.core.lang.thread.lock.NoLock;
  * @param <K> The type of the key.
  * @param <V> The type of the value.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TimedCache<K, V> extends LockedCache<K, V> {
 

@@ -90,7 +90,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * @see RepeatableMetaAnnotatedElement
  * @see MetaAnnotatedElement
  * @see RepeatableAnnotationCollector
- * @since Java 17+
+ * @since Java 21+
  */
 public class AnnotatedElements {
 

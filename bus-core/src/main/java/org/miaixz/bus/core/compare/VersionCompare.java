@@ -31,7 +31,7 @@ import org.miaixz.bus.core.xyz.CompareKit;
  * {@code java.lang.module.ModuleDescriptor.Version}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class VersionCompare extends NullCompare<String> implements Serializable {
 

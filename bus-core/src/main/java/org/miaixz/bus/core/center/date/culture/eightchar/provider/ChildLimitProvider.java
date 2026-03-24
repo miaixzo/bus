@@ -27,7 +27,7 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
  * Interface for calculating "Child Limit" (童限) information in Chinese astrology.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface ChildLimitProvider {
 

@@ -33,7 +33,7 @@ import java.lang.reflect.Proxy;
  *
  * @param <A> The type of the annotation being wrapped.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AnnotationWrapper<A extends Annotation> {
 

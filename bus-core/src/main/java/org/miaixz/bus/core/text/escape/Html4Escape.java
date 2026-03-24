@@ -29,7 +29,7 @@ import org.miaixz.bus.core.text.replacer.ReplacerChain;
  * HTML 4.0 entity references. This implementation is inspired by Commons Lang3.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Html4Escape extends ReplacerChain {
 

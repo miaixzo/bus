@@ -28,7 +28,7 @@ import org.miaixz.bus.core.xyz.TypeKit;
  * otherwise skips. Implementing this interface can also directly convert without determining assertions.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface MatcherConverter extends Converter {
 

@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.starter.tempus;
 
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.EnableTempus;
 import org.miaixz.bus.tempus.temporal.Publisher;
@@ -50,7 +51,7 @@ import jakarta.annotation.Resource;
  * subscriber worker only starts when {@code bus.tempus.enabled=true}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @EnableConfigurationProperties(TempusProperties.class)
 public class TempusConfiguration {
@@ -124,15 +125,25 @@ public class TempusConfiguration {
      * tasks.
      * <p>
      * Skipped when the application registers its own {@code Subscriber} bean.
+     * <p>
+     * {@code start()} is called inside this factory method rather than via {@code initMethod} so that a connection
+     * failure is caught and logged as a WARN instead of aborting the application context.
      *
      * @param binding  the subscriber binding that registers workflow and activity implementations
      * @param provider the {@link WorkflowServiceStubsProvider} used to build the underlying gRPC stubs
      * @return a workflow subscriber manager
      */
-    @Bean(initMethod = "start", destroyMethod = "shutdown")
+    @Bean(destroyMethod = "shutdown")
+    @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = GeniusBuilder.TEMPUS, name = "enabled", havingValue = "true")
     public Subscriber subscriberManager(WorkflowSubscriberBinding binding, WorkflowServiceStubsProvider provider) {
-        return new WorkflowSubscriberManager(binding, provider);
+        WorkflowSubscriberManager manager = new WorkflowSubscriberManager(binding, provider);
+        try {
+            manager.start();
+        } catch (Exception e) {
+            Logger.warn("[Temporal] Worker failed to start, app continues without worker. error: {}", e.getMessage());
+        }
+        return manager;
     }
 
 }

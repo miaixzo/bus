@@ -40,7 +40,7 @@ import lombok.experimental.SuperBuilder;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

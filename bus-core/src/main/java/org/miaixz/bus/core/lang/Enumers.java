@@ -28,7 +28,7 @@ import java.io.Serializable;
  *
  * @param <E> The type of the enum implementing this interface.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Enumers<E extends Enumers<E>> extends Serializable {
 

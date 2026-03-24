@@ -21,7 +21,7 @@
  * bus.tempus
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 module bus.tempus {
 

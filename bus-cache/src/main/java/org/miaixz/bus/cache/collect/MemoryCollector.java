@@ -33,7 +33,7 @@ import org.miaixz.bus.cache.Collector;
  * in a single-node or testing environment.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MemoryCollector implements Collector {
 

@@ -21,6 +21,6 @@
  * UID Dictionary from SIEMENS_SYNGO_TIME_POINT_SERVICE
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_TIME_POINT_SERVICE;

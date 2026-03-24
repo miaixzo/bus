@@ -33,7 +33,7 @@ import org.miaixz.bus.crypto.metric.*;
  * concrete implementations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class Registry {
 

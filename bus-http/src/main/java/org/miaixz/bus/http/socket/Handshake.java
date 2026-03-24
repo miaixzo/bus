@@ -39,7 +39,7 @@ import org.miaixz.bus.http.secure.CipherSuite;
  * of both the peer and the local party for an HTTPS connection.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class Handshake {
 

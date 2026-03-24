@@ -41,7 +41,7 @@ import reactor.core.publisher.Mono;
  * @param <I> The input type expected by this router
  * @param <O> The output type produced by this router
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Router<I, O> {
 

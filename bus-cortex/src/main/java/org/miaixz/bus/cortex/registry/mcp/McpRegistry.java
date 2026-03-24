@@ -27,7 +27,7 @@ import org.miaixz.bus.cortex.registry.WatchManager;
  * Registry for MCP tool definitions.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class McpRegistry extends AbstractRegistry<McpAssets> {
 

@@ -22,6 +22,6 @@
  * {@link org.miaixz.bus.tempus.pattern.CronPattern}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.tempus.pattern;

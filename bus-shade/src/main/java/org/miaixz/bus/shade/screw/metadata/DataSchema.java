@@ -28,7 +28,7 @@ import lombok.Setter;
  * metadata for the document itself.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

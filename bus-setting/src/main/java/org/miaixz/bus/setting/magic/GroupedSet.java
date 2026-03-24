@@ -48,7 +48,7 @@ import org.miaixz.bus.core.xyz.*;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
 

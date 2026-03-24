@@ -24,6 +24,6 @@
  * conditional annotations, enable annotations, and other stereotype annotations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.spring.annotation;

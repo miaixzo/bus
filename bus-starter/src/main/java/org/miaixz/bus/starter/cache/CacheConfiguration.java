@@ -25,10 +25,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.cache.Context;
 import org.miaixz.bus.cache.Collector;
-import org.miaixz.bus.cache.metric.*;
+import org.miaixz.bus.cache.Context;
 import org.miaixz.bus.cache.collect.*;
+import org.miaixz.bus.cache.metric.*;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.metrics.builtin.CacheMetricsAdapter;
@@ -44,22 +44,24 @@ import redis.clients.jedis.JedisPoolConfig;
 
 /**
  * Auto-configuration for the cache system.
+ *
  * <p>
  * Reads {@link CacheProperties} and wires two independent components:
  * <ol>
  * <li><b>Cache storage backend</b> — selected by {@code bus.cache.type}.</li>
  * <li><b>Collector backend</b> — selected by {@code bus.cache.provider.type}.</li>
  * </ol>
+ *
+ * <p>
  * The resulting {@link AspectjCacheProxy} intercepts {@code @Cached}, {@code @CachedGet}, and {@code @Invalid}
  * annotations to provide transparent AOP-based caching.
- * </p>
+ *
  * <p>
  * Per-entry expiration is controlled by {@code @Cached(expire = ...)}; {@code bus.cache.expire} sets the default TTL
  * only for in-process backends (memory, caffeine, guava).
- * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @EnableConfigurationProperties(value = { CacheProperties.class })
 public class CacheConfiguration {

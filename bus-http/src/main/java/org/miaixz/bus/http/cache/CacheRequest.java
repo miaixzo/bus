@@ -29,7 +29,7 @@ import java.io.IOException;
  * Implementations of this interface provide a {@link Sink} to which the response body can be written.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface CacheRequest {
 

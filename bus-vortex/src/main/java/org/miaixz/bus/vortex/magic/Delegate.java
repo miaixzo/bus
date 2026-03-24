@@ -38,7 +38,7 @@ import lombok.experimental.SuperBuilder;
  *
  * @author Kimi Liu
  * @see org.miaixz.bus.vortex.provider.AuthorizeProvider
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

@@ -26,7 +26,7 @@ package org.miaixz.bus.tempus.temporal.payload;
  * workflow and activity serialization.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface PayloadConverter extends io.temporal.common.converter.PayloadConverter {
 

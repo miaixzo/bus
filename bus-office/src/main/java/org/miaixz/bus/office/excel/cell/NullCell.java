@@ -33,7 +33,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
  * mark the location information of a cell.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NullCell implements Cell {
 

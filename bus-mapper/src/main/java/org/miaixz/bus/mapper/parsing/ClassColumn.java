@@ -23,7 +23,7 @@ package org.miaixz.bus.mapper.parsing;
  * Records the class and column name corresponding to a field, used to match entity class fields with database columns.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ClassColumn extends ClassField {
 

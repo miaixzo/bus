@@ -35,7 +35,7 @@ import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
  * information to locate specific data segments within a file.
  * 
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BulkData implements Value, Serializable {
 

@@ -33,7 +33,7 @@ import java.util.concurrent.ExecutorService;
  * A container class for components related to task execution, lifecycle listeners, and data conversion.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CoverTasks {
 
@@ -42,7 +42,7 @@ public class CoverTasks {
      *
      * @param <T> The type of data associated with the event.
      * @author Kimi Liu
-     * @since Java 17+
+     * @since Java 21+
      */
     public interface Listener<T> {
 
@@ -62,7 +62,7 @@ public class CoverTasks {
      * I/O and main-thread executors, global listeners, and a chain of data converters.
      *
      * @author Kimi Liu
-     * @since Java 17+
+     * @since Java 21+
      */
     public static class Executor {
 

@@ -27,7 +27,7 @@ import org.miaixz.bus.core.net.HTTP;
  * An HTTP header: the name is an ASCII string, but the value can be UTF-8.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Http2Header {
 

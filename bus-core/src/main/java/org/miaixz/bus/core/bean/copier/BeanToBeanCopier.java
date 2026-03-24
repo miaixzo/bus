@@ -36,7 +36,7 @@ import org.miaixz.bus.core.xyz.TypeKit;
  * @param <S> The type of the source Bean.
  * @param <T> The type of the target Bean.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BeanToBeanCopier<S, T> extends AbstractCopier<S, T> {
 

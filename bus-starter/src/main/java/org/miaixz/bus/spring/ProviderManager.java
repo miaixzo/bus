@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * implementing the {@link Provider} interface) from the application context.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Component
 public class ProviderManager {

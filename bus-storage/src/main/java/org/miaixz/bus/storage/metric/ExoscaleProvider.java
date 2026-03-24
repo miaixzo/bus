@@ -83,7 +83,7 @@ import org.miaixz.bus.storage.Context;
  * <strong>Compliance:</strong> GDPR, ISO 27001, Swiss Federal Data Protection Act (FADP)
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ExoscaleProvider extends GenericS3Provider {
 

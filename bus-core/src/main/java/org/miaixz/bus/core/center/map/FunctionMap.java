@@ -42,7 +42,7 @@ import java.util.function.Supplier;
  * @param <K> The type of keys maintained by this map.
  * @param <V> The type of mapped values.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class FunctionMap<K, V> extends TransMap<K, V> {
 

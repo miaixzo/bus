@@ -93,6 +93,7 @@
         <elastic.version>8.19.0</elastic.version>
         <mongo.version>5.5.1</mongo.version>
         <curator.version>5.8.0</curator.version>
+        <caffeine.version>3.2.3</caffeine.version>
         <jedis.version>6.0.0</jedis.version>
         <micrometer.version>1.16.4</micrometer.version>
     </properties>
@@ -276,6 +277,12 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>${gson.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>${caffeine.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>

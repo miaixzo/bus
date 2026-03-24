@@ -45,7 +45,7 @@ import jakarta.annotation.Resource;
  * specifically effective for {@code @RequestBody} annotated parameters.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RequestBodyAdvice extends BaseAdvice
         implements org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice {

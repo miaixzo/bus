@@ -37,7 +37,7 @@ import org.miaixz.bus.cortex.Instance;
  * Server-side active health probe scheduler.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HealthProbeScheduler {
 

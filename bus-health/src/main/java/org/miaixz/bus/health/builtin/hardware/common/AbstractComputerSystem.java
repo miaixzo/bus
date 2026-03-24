@@ -31,7 +31,7 @@ import org.miaixz.bus.health.builtin.hardware.Firmware;
  * Computer System data.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 public abstract class AbstractComputerSystem implements ComputerSystem {

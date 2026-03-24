@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * Inspired by Netflix Spectator's {@code CardinalityLimiters}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public sealed interface CardinalityPolicy
         permits CardinalityPolicy.FirstN, CardinalityPolicy.TopN, CardinalityPolicy.Deny {

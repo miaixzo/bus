@@ -33,7 +33,7 @@ import org.miaixz.bus.metrics.Builder;
  * Tick must be called externally (e.g. by a shared ScheduledExecutorService every 5 s).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class EwmaRate {
 

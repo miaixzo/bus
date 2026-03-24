@@ -35,7 +35,7 @@ import org.w3c.dom.NodeList;
  * <a href="https://www.ibm.com/developerworks/cn/xml/x-nmspccontext/">Using the JAXP NamespaceContext Interface</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class UniversalNamespace implements NamespaceContext {
 

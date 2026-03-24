@@ -42,7 +42,7 @@ import org.miaixz.bus.core.net.url.UrlEncoder;
  * from the classpath, including JAR files and directories.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class StdLoader extends ResourceLoader implements Loader {
 

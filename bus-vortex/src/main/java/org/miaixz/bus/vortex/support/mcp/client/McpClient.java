@@ -34,7 +34,7 @@ import java.util.Map;
  * deserialization, and communication for their respective protocols.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface McpClient extends Closeable {
 

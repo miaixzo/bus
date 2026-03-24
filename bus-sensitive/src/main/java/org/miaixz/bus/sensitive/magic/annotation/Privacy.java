@@ -27,7 +27,7 @@ import java.lang.annotation.*;
  * Marks a field, method parameter, or class for encryption and decryption of sensitive data.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Target({ ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)

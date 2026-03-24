@@ -27,7 +27,7 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
  * Implementation of Child Limit calculation based on the "Yuan Heng Li Zhen" (元亨利贞) method.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class China95ChildLimitProvider extends AbstractChildLimitProvider {
 

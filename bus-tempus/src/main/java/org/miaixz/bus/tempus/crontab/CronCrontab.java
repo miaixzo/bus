@@ -26,7 +26,7 @@ import org.miaixz.bus.tempus.pattern.CronPattern;
  * executed but also its scheduling information.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CronCrontab implements Crontab {
 

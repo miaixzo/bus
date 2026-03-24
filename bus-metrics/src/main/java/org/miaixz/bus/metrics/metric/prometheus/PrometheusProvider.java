@@ -48,7 +48,7 @@ import java.util.function.ToDoubleFunction;
  * Meter (EWMA rates) and LlmTimer are implemented locally since the Prometheus SDK has no equivalent types.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PrometheusProvider implements Provider {
 

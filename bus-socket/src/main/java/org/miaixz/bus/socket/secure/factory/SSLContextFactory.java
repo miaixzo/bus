@@ -29,7 +29,7 @@ import javax.net.ssl.SSLContext;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface SSLContextFactory {
 

@@ -29,7 +29,7 @@ import java.util.List;
  * Represents a week in the Lunar calendar.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LunarWeek extends WeekParts {
 

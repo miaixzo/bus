@@ -26,7 +26,7 @@ import java.util.LinkedHashMap;
  * find the closest ANSI 4-bit color for a given LabColor.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Ansi4bitMapping extends AnsiLabMapping {
 

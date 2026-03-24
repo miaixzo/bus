@@ -30,7 +30,7 @@ import java.nio.file.attribute.BasicFileAttributes;
  * FileVisitor implementation for delete operations, used to recursively traverse and delete directories.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DeleteVisitor extends SimpleFileVisitor<Path> {
 

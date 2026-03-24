@@ -42,7 +42,7 @@ import java.lang.annotation.Target;
  * service. This concept is similar to {@code jakarta.inject.Qualifier}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)

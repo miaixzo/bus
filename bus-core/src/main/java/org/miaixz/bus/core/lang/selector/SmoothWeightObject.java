@@ -27,7 +27,7 @@ package org.miaixz.bus.core.lang.selector;
  *
  * @param <T> the type of the wrapped object
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SmoothWeightObject<T> extends WeightObject<T> {
 

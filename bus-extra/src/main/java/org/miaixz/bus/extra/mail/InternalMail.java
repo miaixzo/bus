@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * intended for public use and provides helper methods for the mail API.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class InternalMail {
 

@@ -28,7 +28,7 @@ import java.lang.reflect.Type;
  *
  * @param <K> The type of the key, typically {@link String}.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface ValueProvider<K> {
 

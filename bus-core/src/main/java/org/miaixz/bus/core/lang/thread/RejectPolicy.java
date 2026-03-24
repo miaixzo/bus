@@ -28,7 +28,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * correspond to the predefined strategies in {@link ThreadPoolExecutor} and a custom {@link BlockPolicy}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum RejectPolicy {
 

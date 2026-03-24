@@ -52,7 +52,7 @@ import org.miaixz.bus.core.xyz.ZoneKit;
  * yyyy-MM-dd HH:mm:ss.SSSSSSSSS, yyyy-MM-dd'T'HH:mm:ss.SSSZ, etc.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Formatter {
 

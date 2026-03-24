@@ -21,6 +21,6 @@
  * Provides internal support classes for mapping entity fields to database columns and other utility functions.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.mapper.support;

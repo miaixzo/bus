@@ -28,7 +28,7 @@ import lombok.Setter;
  * Sync event emitted when a registry change must be propagated to the gateway.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter
@@ -38,7 +38,7 @@ public class SyncEvent {
      * Action type for a gateway sync event.
      *
      * @author Kimi Liu
-     * @since Java 17+
+     * @since Java 21+
      */
     public enum SyncAction {
         /**

@@ -61,7 +61,7 @@ import reactor.core.publisher.Mono;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE + 1)
 public class RequestStrategy extends AbstractStrategy {

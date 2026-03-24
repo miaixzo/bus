@@ -29,7 +29,7 @@ import org.miaixz.bus.core.codec.binary.Hex;
  * Fingerprint utility for generating stable instance identifiers.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class Fingerprint {
 

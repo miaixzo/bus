@@ -31,7 +31,7 @@ import java.io.IOException;
  * can supply a single authenticator for both origin and proxy authentication, or separate authenticators for each.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Authenticator {
 

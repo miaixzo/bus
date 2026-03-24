@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  *
  * @author Kimi Liu
  * @see FastDateParser
- * @since Java 17+
+ * @since Java 21+
  */
 public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter {
 

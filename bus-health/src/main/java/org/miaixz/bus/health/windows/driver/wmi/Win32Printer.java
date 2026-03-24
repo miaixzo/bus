@@ -31,7 +31,7 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * Utility to query WMI class {@code Win32_Printer}
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class Win32Printer {

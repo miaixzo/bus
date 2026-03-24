@@ -26,6 +26,6 @@
  * and PayPal. It is designed to make payment integration "So easy!".
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.pay;

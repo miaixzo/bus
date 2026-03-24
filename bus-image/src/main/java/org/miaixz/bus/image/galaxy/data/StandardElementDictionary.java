@@ -23,7 +23,7 @@ import org.miaixz.bus.image.Tag;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class StandardElementDictionary extends ElementDictionary {
 

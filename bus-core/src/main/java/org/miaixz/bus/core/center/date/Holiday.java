@@ -31,7 +31,7 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
  * Legal holidays (since 2001-12-29)
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Holiday extends Loops {
 

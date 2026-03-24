@@ -29,7 +29,7 @@ import lombok.experimental.SuperBuilder;
  * Configuration information for notification services.
  *
  * @author Justubborn
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

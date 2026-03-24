@@ -23,6 +23,6 @@
  * Micrometer has no equivalent. CardinalityGuard is applied before values reach the registry.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.metrics.metric.micrometer;

@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
  * sorting.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD, ElementType.METHOD })

@@ -21,7 +21,7 @@ package org.miaixz.bus.image.galaxy;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @FunctionalInterface
 public interface SupplierEx<T, E extends Exception> {

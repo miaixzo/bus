@@ -30,7 +30,7 @@ import org.miaixz.bus.core.net.Protocol;
  * {@link javax.net.ssl.SSLSocket#setEnabledProtocols}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum TlsVersion {
 

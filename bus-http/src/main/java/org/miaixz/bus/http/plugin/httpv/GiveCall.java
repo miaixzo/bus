@@ -23,7 +23,7 @@ package org.miaixz.bus.http.plugin.httpv;
  * Represents an asynchronous call that can be canceled and from which a result can be retrieved.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface GiveCall extends Cancelable {
 

@@ -22,6 +22,6 @@
  * implementations that integrate with different SSH libraries.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.extra.ssh.provider;

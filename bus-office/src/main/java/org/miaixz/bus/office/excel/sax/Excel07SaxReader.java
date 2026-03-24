@@ -42,7 +42,7 @@ import org.miaixz.bus.office.excel.ExcelSaxKit;
  * <a href="http://www.cnblogs.com/wangmingshun/p/6654143.html">http://www.cnblogs.com/wangmingshun/p/6654143.html</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
 

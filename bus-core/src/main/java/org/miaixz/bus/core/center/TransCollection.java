@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.IteratorKit;
  * @param <F> The type of elements in the source collection.
  * @param <T> The type of elements in this transformed collection.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TransCollection<F, T> extends AbstractCollection<T> {
 

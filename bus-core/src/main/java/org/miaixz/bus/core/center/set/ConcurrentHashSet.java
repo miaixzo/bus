@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @param <E> The type of elements in this set.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ConcurrentHashSet<E> extends SetFromMap<E> {
 

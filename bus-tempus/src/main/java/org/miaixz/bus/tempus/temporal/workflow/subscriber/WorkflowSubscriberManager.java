@@ -40,7 +40,7 @@ import io.temporal.worker.WorkerOptions;
  * This class implements {@link AutoCloseable} to support try-with-resources for proper resource cleanup.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
 

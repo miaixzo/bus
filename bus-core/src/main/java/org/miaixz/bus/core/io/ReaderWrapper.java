@@ -30,7 +30,7 @@ import org.miaixz.bus.core.lang.Wrapper;
  * Wrapper for {@link Reader}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ReaderWrapper extends Reader implements Wrapper<Reader> {
 

@@ -66,7 +66,7 @@ import org.miaixz.bus.mapper.Context;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Intercepts({ @Signature(type = StatementHandler.class, method = "getBoundSql", args = {}),
         @Signature(type = ResultSetHandler.class, method = "handleResultSets", args = { Statement.class }),

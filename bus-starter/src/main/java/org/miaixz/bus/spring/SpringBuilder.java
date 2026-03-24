@@ -57,7 +57,7 @@ import org.springframework.stereotype.Component;
  * replacement. It implements {@link ApplicationContextAware} to capture the application context.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Component
 public class SpringBuilder implements ApplicationContextAware {

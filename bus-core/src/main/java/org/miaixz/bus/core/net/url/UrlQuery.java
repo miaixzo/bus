@@ -40,7 +40,7 @@ import org.miaixz.bus.core.xyz.*;
  * the content. When building, you can specify a charset to encode the key-value pairs.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class UrlQuery {
 

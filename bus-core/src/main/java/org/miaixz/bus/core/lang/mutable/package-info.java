@@ -24,6 +24,6 @@
  * using them in collections that require mutable elements.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.core.lang.mutable;

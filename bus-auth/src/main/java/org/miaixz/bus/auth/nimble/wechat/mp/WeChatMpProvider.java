@@ -44,7 +44,7 @@ import java.util.Map;
  * WeChat Official Account (MP) login provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WeChatMpProvider extends AbstractWeChatProvider {
 

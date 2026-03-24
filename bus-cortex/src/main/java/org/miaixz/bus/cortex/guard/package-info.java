@@ -32,6 +32,6 @@
  * Access token issuance, validation and header resolution are handled in the {@code guard.token} sub-package.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.cortex.guard;

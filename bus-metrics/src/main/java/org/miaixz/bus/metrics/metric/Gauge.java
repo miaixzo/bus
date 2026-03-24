@@ -23,7 +23,7 @@ package org.miaixz.bus.metrics.metric;
  * A gauge that reads its current value from a state object via a function.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Gauge {
 

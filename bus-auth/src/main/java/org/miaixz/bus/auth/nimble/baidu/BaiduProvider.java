@@ -43,7 +43,7 @@ import java.util.Map;
  * Baidu login provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BaiduProvider extends AbstractProvider {
 

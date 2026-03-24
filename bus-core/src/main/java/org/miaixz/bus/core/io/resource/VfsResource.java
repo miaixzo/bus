@@ -36,7 +36,7 @@ import org.miaixz.bus.core.xyz.MethodKit;
  * Inspired by {@code org.springframework.core.io.VfsUtils}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class VfsResource implements Resource {
 

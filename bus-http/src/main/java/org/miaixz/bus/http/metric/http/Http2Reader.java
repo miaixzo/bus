@@ -36,7 +36,7 @@ import org.miaixz.bus.logger.Logger;
  * {@link Http2#INITIAL_MAX_FRAME_SIZE}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Http2Reader implements Closeable {
 

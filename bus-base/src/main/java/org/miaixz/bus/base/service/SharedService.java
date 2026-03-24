@@ -38,7 +38,7 @@ import org.miaixz.bus.mapper.binding.function.Fn;
  * @param <T> the entity type
  * @param <I> the type of the primary key, which must implement {@link Serializable}
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface SharedService<T, I extends Serializable> extends Service {
 

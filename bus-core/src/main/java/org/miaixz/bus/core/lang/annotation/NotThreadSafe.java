@@ -36,7 +36,7 @@ import java.lang.annotation.*;
  * concurrency-related bugs.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Inherited
 @Documented

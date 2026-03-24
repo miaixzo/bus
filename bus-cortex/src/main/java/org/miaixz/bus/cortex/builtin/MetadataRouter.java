@@ -29,7 +29,7 @@ import org.miaixz.bus.cortex.Assets;
  * Metadata-based entry routing and filtering utility.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MetadataRouter {
 

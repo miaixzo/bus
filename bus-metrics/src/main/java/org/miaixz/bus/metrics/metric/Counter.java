@@ -23,7 +23,7 @@ package org.miaixz.bus.metrics.metric;
  * A monotonically increasing counter.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Counter {
 

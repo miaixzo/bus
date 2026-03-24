@@ -31,7 +31,7 @@ import lombok.experimental.SuperBuilder;
  * Generic base class for entities that carry a namespace scope.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

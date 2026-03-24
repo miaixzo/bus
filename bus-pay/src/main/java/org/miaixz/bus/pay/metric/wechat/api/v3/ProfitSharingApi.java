@@ -25,7 +25,7 @@ import org.miaixz.bus.pay.Matcher;
  * WeChat Pay v3 API - Profit Sharing APIs
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum ProfitSharingApi implements Matcher {
 

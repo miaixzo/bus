@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * library from the JAR to a temporary location and then loads it.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NatLoader extends StdLoader implements Loader {
 

@@ -32,7 +32,7 @@ import java.io.Serializable;
  * Model for the individual certificate information within the platform certificates download response.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

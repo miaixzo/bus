@@ -40,7 +40,7 @@ import reactor.core.publisher.Mono;
  * subclasses if needed.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class HttpClient implements McpClient {
 

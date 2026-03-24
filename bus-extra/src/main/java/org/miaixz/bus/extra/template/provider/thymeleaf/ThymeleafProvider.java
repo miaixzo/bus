@@ -35,7 +35,7 @@ import org.thymeleaf.templateresolver.*;
  * see: https://www.thymeleaf.org/
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ThymeleafProvider implements TemplateProvider {
 

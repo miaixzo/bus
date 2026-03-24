@@ -30,7 +30,7 @@ import org.miaixz.bus.core.lang.exception.ConvertException;
  * optimization to bypass unnecessary conversion logic.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CastConverter implements MatcherConverter, Serializable {
 

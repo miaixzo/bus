@@ -71,7 +71,7 @@ import java.util.List;
  *
  * @param <T> the type of content in the page
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Page<T> extends ArrayList<T> {
 

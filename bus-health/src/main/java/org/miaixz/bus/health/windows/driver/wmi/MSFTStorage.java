@@ -29,7 +29,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
  * Utility to query WMI classes in Storage namespace assocaited with Storage Pools
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class MSFTStorage {

@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
  * for future use.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class ConnectionPool {
 

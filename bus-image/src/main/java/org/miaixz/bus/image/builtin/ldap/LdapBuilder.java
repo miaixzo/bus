@@ -41,7 +41,7 @@ import org.miaixz.bus.image.metric.api.ConfigurationChanges;
  * configurations. It provides methods for storing attributes, comparing values, and handling LDAP-specific operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LdapBuilder {
 

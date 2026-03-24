@@ -24,7 +24,7 @@ package org.miaixz.bus.pay;
  * payment service providers.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum Banking {
 

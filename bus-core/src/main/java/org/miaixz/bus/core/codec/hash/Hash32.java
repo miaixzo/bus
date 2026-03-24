@@ -27,7 +27,7 @@ import org.miaixz.bus.core.codec.Encoder;
  *
  * @param <T> The type of the object for which the hash is to be computed.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @FunctionalInterface
 public interface Hash32<T> extends Encoder<T, Number> {

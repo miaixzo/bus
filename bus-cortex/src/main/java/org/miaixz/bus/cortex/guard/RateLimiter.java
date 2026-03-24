@@ -25,7 +25,7 @@ import org.miaixz.bus.cache.CacheX;
  * Token-bucket rate limiter backed by CacheX.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RateLimiter {
 

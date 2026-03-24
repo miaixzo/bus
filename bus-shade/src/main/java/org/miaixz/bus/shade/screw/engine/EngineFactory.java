@@ -34,7 +34,7 @@ import lombok.Setter;
  * A factory for creating {@link TemplateEngine} instances based on the provided configuration.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

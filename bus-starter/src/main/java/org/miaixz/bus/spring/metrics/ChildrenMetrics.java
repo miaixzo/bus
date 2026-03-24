@@ -36,7 +36,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * @param <T> The type of the child metrics, which must extend {@link BaseMetrics}.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

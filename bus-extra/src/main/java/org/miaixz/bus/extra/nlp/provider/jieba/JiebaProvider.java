@@ -33,7 +33,7 @@ import com.huaban.analysis.jieba.JiebaSegmenter.SegMode;
  * <a href="https://github.com/huaban/jieba-analysis">https://github.com/huaban/jieba-analysis</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JiebaProvider implements NLPProvider {
 

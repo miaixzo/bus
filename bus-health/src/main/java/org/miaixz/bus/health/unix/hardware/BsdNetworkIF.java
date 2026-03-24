@@ -35,7 +35,7 @@ import org.miaixz.bus.logger.Logger;
  * BsdNetworkIF applicable to FreeBSD and OpenBSD.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class BsdNetworkIF extends AbstractNetworkIF {

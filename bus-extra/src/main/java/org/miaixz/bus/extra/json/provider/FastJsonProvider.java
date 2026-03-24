@@ -34,7 +34,7 @@ import com.alibaba.fastjson2.filter.ValueFilter;
  * provides JSON serialization and deserialization functionalities using Fastjson2.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class FastJsonProvider extends AbstractJsonProvider {
 

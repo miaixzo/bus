@@ -34,7 +34,7 @@ import org.springframework.context.annotation.Bean;
  * functionality based on the provided properties.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @EnableConfigurationProperties(value = { PayProperties.class })
 public class PayConfiguration {

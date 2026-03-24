@@ -25,7 +25,7 @@ package org.miaixz.bus.image.builtin;
  * and a mapping table.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ESoundex extends Soundex {
 

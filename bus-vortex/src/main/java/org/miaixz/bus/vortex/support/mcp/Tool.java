@@ -34,7 +34,7 @@ import lombok.experimental.SuperBuilder;
  * describing such a tool, including its name, a human-readable description, and a schema for its input parameters.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

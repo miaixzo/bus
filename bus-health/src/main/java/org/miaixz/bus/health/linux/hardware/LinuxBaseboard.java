@@ -33,7 +33,7 @@ import org.miaixz.bus.health.linux.driver.proc.CpuInfo;
  * Baseboard data obtained by sysfs
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 final class LinuxBaseboard extends AbstractBaseboard {

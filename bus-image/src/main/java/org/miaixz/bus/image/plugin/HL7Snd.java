@@ -39,7 +39,7 @@ import java.util.List;
  * It can send messages from files, directories, or standard input.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HL7Snd extends Device {
 

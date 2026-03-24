@@ -61,7 +61,7 @@ import org.miaixz.bus.core.xyz.ListKit;
  * @param <L> The type of the lock or synchronization primitive managed by the segments (e.g., {@link Lock},
  *            {@link Semaphore}, {@link ReadWriteLock}).
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class SegmentLock<L> {
 

@@ -29,7 +29,7 @@ import org.miaixz.bus.core.text.CharsBacker;
  * {@code ['key0','key1']} for keys.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ListNode implements Node {
 

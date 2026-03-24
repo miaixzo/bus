@@ -31,7 +31,7 @@ import org.miaixz.bus.core.xyz.ClassKit;
  * objects and checking if an object or class is a proxy.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JdkProxy {
 

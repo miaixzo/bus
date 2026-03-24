@@ -23,7 +23,7 @@ package org.miaixz.bus.metrics.observe.tag;
  * An immutable key=value metric tag.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public record Tag(String key, String value) {
 

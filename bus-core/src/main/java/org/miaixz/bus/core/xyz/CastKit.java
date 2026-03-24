@@ -30,7 +30,7 @@ import org.miaixz.bus.core.lang.Assert;
  * Type casting utility. Provides methods for up-casting and down-casting generic collections, maps, etc.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CastKit {
 

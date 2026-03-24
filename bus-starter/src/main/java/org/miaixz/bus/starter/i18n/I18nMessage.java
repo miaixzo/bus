@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
  * to the Spring {@link MessageSource} by using the current locale from {@link LocaleContextHolder}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Component
 public class I18nMessage {

@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.IoKit;
  * trailer, including CRC checks.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class GzipSource implements Source {
 

@@ -34,7 +34,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * mode. If true, the first digit in the scheduled task expression is the second, otherwise it is the minute (default).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Builder {
 

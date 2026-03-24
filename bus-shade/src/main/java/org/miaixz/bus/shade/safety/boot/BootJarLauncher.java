@@ -28,7 +28,7 @@ import org.springframework.boot.loader.launch.JarLauncher;
  * encrypted Spring Boot JARs.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BootJarLauncher extends JarLauncher {
 

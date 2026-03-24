@@ -31,7 +31,7 @@ import org.miaixz.bus.health.Executor;
  * Utility to query xrandr for display information.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class Xrandr {

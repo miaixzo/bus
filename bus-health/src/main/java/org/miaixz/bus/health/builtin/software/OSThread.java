@@ -27,7 +27,7 @@ import org.miaixz.bus.core.lang.Normal;
  * Represents a Thread/Task on the operating system.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface OSThread {
 

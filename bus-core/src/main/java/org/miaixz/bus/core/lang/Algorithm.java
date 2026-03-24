@@ -28,7 +28,7 @@ import javax.crypto.Cipher;
  * Names for Java Cryptography Architecture</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum Algorithm {
 

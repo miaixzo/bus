@@ -26,7 +26,7 @@ import org.miaixz.bus.core.xyz.ReflectKit;
  * objects, such as using JDK proxies or CGLIB.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Provider {
 

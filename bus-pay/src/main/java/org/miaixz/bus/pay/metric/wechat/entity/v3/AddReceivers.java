@@ -30,7 +30,7 @@ import org.miaixz.bus.pay.magic.Voucher;
  * Model for the V3 Add Profit Sharing Receivers API.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

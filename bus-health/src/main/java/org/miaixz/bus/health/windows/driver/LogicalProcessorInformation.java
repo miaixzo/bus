@@ -39,7 +39,7 @@ import com.sun.jna.platform.win32.WinNT.*;
  * Utility to query Logical Processor Information
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class LogicalProcessorInformation {

@@ -37,7 +37,7 @@ import java.util.Objects;
  * <a href="https://github.com/JourWon/coordinate-transform">https://github.com/JourWon/coordinate-transform</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Coordinate {
 

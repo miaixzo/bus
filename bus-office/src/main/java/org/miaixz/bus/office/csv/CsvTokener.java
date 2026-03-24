@@ -31,7 +31,7 @@ import org.miaixz.bus.core.xyz.IoKit;
  * CSV parser, used for parsing CSV files.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CsvTokener extends SimpleWrapper<Reader> implements Closeable {
 

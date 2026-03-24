@@ -89,7 +89,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * only for a UUID with a variant value of 2, which indicates the Leach-Salz variant.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class UUID implements java.io.Serializable, Comparable<UUID> {
 

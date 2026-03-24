@@ -39,7 +39,7 @@ import org.miaixz.bus.core.lang.exception.ConvertException;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PrimitiveConverter extends AbstractConverter implements MatcherConverter, Serializable {
 

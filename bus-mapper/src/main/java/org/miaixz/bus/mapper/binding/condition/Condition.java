@@ -47,7 +47,7 @@ import lombok.experimental.SuperBuilder;
  *
  * @param <T> The type of the entity class.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

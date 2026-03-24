@@ -40,7 +40,7 @@ import org.miaixz.bus.health.unix.driver.Xwininfo;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public interface OperatingSystem {

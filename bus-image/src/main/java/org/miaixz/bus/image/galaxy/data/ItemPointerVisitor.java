@@ -24,7 +24,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class ItemPointerVisitor implements SequenceVisitor {
 

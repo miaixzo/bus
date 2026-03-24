@@ -50,7 +50,7 @@ import java.util.*;
  * strategies should extend this class to reduce boilerplate code.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractStrategy implements Strategy {
 

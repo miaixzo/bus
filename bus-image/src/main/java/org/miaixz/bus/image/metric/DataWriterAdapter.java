@@ -27,7 +27,7 @@ import org.miaixz.bus.image.metric.net.PDVOutputStream;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DataWriterAdapter implements DataWriter {
 

@@ -36,7 +36,7 @@ import com.sun.jna.Memory;
  * Memory obtained by sysctl vm.stats
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 final class OpenBsdGlobalMemory extends AbstractGlobalMemory {

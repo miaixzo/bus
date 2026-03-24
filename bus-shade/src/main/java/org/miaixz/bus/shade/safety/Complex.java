@@ -24,7 +24,7 @@ package org.miaixz.bus.shade.safety;
  *
  * @param <E> The type of entry to be evaluated.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Complex<E> {
 

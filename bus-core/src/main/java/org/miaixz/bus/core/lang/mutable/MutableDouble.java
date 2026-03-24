@@ -28,7 +28,7 @@ import org.miaixz.bus.core.xyz.CompareKit;
  *
  * @author Kimi Liu
  * @see Double
- * @since Java 17+
+ * @since Java 21+
  */
 public class MutableDouble extends Number implements Comparable<MutableDouble>, Mutable<Number> {
 

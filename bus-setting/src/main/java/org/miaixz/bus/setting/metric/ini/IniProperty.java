@@ -25,7 +25,7 @@ import java.util.Map;
  * Ini file's parameters, like {@code property1=value1 }
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface IniProperty extends Map.Entry<String, String>, IniElement {
 

@@ -42,7 +42,7 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
  * Proginn (Programmer's Inn) login provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ProginnProvider extends AbstractProvider {
 

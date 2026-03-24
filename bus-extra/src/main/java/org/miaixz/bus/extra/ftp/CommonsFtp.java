@@ -49,7 +49,7 @@ import org.miaixz.bus.extra.ssh.Connector;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CommonsFtp extends AbstractFtp {
 

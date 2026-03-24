@@ -40,7 +40,7 @@ import java.util.function.Consumer;
  *
  * @param <T> the type of message object entity handled by this plugin
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class SslPlugin<T> extends AbstractPlugin<T> {
 

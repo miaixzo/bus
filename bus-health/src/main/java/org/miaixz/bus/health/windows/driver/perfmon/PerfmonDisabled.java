@@ -33,7 +33,7 @@ import com.sun.jna.platform.win32.WinReg;
  * Tests whether performance counters are disabled
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class PerfmonDisabled {

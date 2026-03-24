@@ -27,7 +27,7 @@ import org.miaixz.bus.http.Response;
  * event source.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class EventSourceListener {
 

@@ -38,7 +38,7 @@ import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
  * Represents a month in the Lunar calendar.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LunarMonth extends MonthParts {
 

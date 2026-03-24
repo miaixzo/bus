@@ -35,7 +35,7 @@ import org.springframework.stereotype.Component;
  * readiness probes are critical.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Component
 public class AvailabilityListener {

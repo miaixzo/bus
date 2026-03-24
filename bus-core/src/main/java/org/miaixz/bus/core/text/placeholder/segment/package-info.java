@@ -21,6 +21,6 @@
  * Provides classes for placeholder segments in text processing.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.core.text.placeholder.segment;

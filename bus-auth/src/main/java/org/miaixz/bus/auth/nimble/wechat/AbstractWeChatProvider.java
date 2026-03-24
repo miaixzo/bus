@@ -30,7 +30,7 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
  * Abstract base class for WeChat login providers.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractWeChatProvider extends AbstractProvider {
 

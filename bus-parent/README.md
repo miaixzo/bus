@@ -1,258 +1,304 @@
-# 📦 Bus Parent: Parent POM Configuration
+# Bus Framework
 
 <p align="center">
-<strong>Centralized Dependency Management and Build Configuration for Bus Framework</strong>
+  <strong>A Modern, Modular Java Enterprise Framework — Built for Java 17+</strong>
 </p>
 
------
+<p align="center">
+  <a href="https://github.com/818000/bus"><img src="https://img.shields.io/badge/GitHub-miaixz%2Fbus-blue?logo=github" alt="GitHub"/></a>
+  <a href="https://mvnrepository.com/artifact/org.miaixz"><img src="https://img.shields.io/maven-central/v/org.miaixz/bus-core?label=Maven%20Central" alt="Maven Central"/></a>
+  <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg" alt="License"/></a>
+  <img src="https://img.shields.io/badge/Java-17%2B-orange" alt="Java 17+"/>
+  <img src="https://img.shields.io/badge/Spring%20Boot-3.5.x-brightgreen" alt="Spring Boot 3.5.x"/>
+</p>
 
-## 📖 Project Introduction
+---
 
-**Bus Parent** is the parent POM (Project Object Model) configuration module for the Bus framework. It provides centralized dependency management, unified build configurations, and version control for all Bus framework modules.
+## What is Bus?
 
-This module consists only of a `pom.xml` file and provides `dependencyManagement` declarations to ensure consistency across all sub-modules.
+**Bus** is a comprehensive, modular enterprise Java framework providing production-ready components for building modern applications. It covers everything from core utilities and cryptography to HTTP clients, distributed tracing, payment integration, and cloud storage — all with unified configuration and a consistent API style.
 
------
+Every module is independently usable and integrates seamlessly into Spring Boot applications via `bus-starter`.
 
-## ✨ Core Features
+---
 
-* **Centralized Dependency Management**: All third-party library versions are managed in one place
-* **Unified Build Configuration**: Consistent build settings across all modules
-* **Version Control**: Single source of truth for framework and dependency versions
-* **Plugin Management**: Standardized plugin configurations (compiler, surefire, etc.)
-* **Repository Management**: Centralized Maven repository configuration
-* **Quality Control**: Integrated code quality and analysis plugins
+## Module Overview
 
------
+| Module | Description |
+| :--- | :--- |
+| **bus-all** | Meta-module that pulls in all Bus modules as a single dependency |
+| **bus-auth** | Enterprise authentication & authorization (OAuth2, JWT, RBAC) |
+| **bus-base** | Shared base types, constants, and exception hierarchy |
+| **bus-bom** | Bill of Materials — import versions without using Bus as a parent |
+| **bus-cache** | Multi-level caching abstraction (Redis, Caffeine, EhCache, …) |
+| **bus-core** | Core utilities: reflection, annotation synthesis, type conversion, I/O, and more |
+| **bus-cortex** | Unified registry & configuration center for distributed services |
+| **bus-crypto** | Cryptographic framework: AES, RSA, SM2/SM3/SM4, digests, encoding |
+| **bus-extra** | Additional utilities and integrations beyond the core |
+| **bus-gitlab** | GitLab API client and CI/CD integration helpers |
+| **bus-health** | Health check endpoints and system health monitoring |
+| **bus-http** | High-performance HTTP client with fluent API and retry support |
+| **bus-image** | Professional image processing and DICOM medical imaging support |
+| **bus-limiter** | Hotspot detection, rate limiting, and degradation |
+| **bus-logger** | Universal logging abstraction that bridges all major log frameworks |
+| **bus-mapper** | MyBatis enhancement: type handlers, generic CRUD, and query DSL |
+| **bus-metrics** | Production-grade metrics collection and reporting |
+| **bus-notify** | Multi-channel notification service (email, SMS, DingTalk, WeChat, …) |
+| **bus-office** | Office document processing: Excel, Word, PDF |
+| **bus-opencv** | OpenCV integration for computer vision tasks |
+| **bus-pay** | Universal payment integration (Alipay, WeChat Pay, UnionPay, …) |
+| **bus-proxy** | Dynamic proxy and AOP utilities |
+| **bus-sensitive** | Data masking and sensitive-field protection |
+| **bus-setting** | Unified configuration file reading (properties, YAML, TOML, …) |
+| **bus-shade** | Shaded dependency management and relocation |
+| **bus-socket** | Non-blocking socket and WebSocket abstractions |
+| **bus-starter** | Spring Boot auto-configuration starter for the entire Bus ecosystem |
+| **bus-storage** | Unified cloud storage abstraction (S3, OSS, COS, MinIO, …) |
+| **bus-tempus** | Time and scheduling utilities: cron expressions, calendar operations |
+| **bus-tracer** | Distributed tracing integration (OpenTelemetry, SkyWalking, …) |
+| **bus-validate** | Declarative validation framework with annotation support |
+| **bus-vortex** | High-performance API gateway and traffic management |
 
-## 🚀 Quick Start
+---
 
-### Maven Parent Configuration
+## Quick Start
 
-To use Bus framework modules with Spring Boot style dependency management, add the Bus parent to your project's parent POM:
+### Option 1 — Use as Parent POM
+
+Inherit from `bus-parent` to get managed dependency versions and build configuration in one step:
 
 ```xml
 <parent>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-parent</artifactId>
-    <version>8.x.x</version>
+    <version>8.5.9</version>
 </parent>
 ```
 
-### Add Dependencies in Sub-modules
-
-After configuring the parent, you can add specific Bus modules without specifying versions:
+Then declare only the modules you need — no version tags required:
 
 ```xml
-<!-- Add all Bus modules -->
+<dependencies>
+    <!-- Core utilities -->
+    <dependency>
+        <groupId>org.miaixz</groupId>
+        <artifactId>bus-core</artifactId>
+    </dependency>
+
+    <!-- Spring Boot auto-configuration -->
+    <dependency>
+        <groupId>org.miaixz</groupId>
+        <artifactId>bus-starter</artifactId>
+    </dependency>
+
+    <!-- Encryption / cryptography -->
+    <dependency>
+        <groupId>org.miaixz</groupId>
+        <artifactId>bus-crypto</artifactId>
+    </dependency>
+</dependencies>
+```
+
+### Option 2 — Import BOM (keeps your own parent)
+
+```xml
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.miaixz</groupId>
+            <artifactId>bus-bom</artifactId>
+            <version>8.5.9</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+```
+
+### Option 3 — Add All Modules at Once
+
+```xml
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-all</artifactId>
+    <version>8.5.9</version>
 </dependency>
 ```
 
-Or add individual modules as needed:
+---
 
-```xml
-<!-- Add specific modules -->
-<dependency>
-    <groupId>org.miaixz</groupId>
-    <artifactId>bus-core</artifactId>
-</dependency>
+## Usage Examples
 
-<dependency>
-    <groupId>org.miaixz</groupId>
-    <artifactId>bus-mapper</artifactId>
-</dependency>
-
-<dependency>
-    <groupId>org.miaixz</groupId>
-    <artifactId>bus-crypto</artifactId>
-</dependency>
-```
-
------
-
-## 📝 Usage Examples
-
-### Example 1: Spring Boot Project with Bus Parent
+### Spring Boot Project (Recommended)
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.miaixz</groupId>
         <artifactId>bus-parent</artifactId>
-        <version>8.x.x</version>
+        <version>8.5.9</version>
     </parent>
 
     <groupId>com.example</groupId>
-    <artifactId>my-project</artifactId>
+    <artifactId>my-app</artifactId>
     <version>1.0.0</version>
 
     <dependencies>
-        <!-- Core utilities -->
+        <!-- Spring Boot auto-configuration for all Bus modules -->
         <dependency>
             <groupId>org.miaixz</groupId>
-            <artifactId>bus-core</artifactId>
+            <artifactId>bus-starter</artifactId>
         </dependency>
 
-        <!-- Database access -->
+        <!-- Database access (MyBatis enhancement) -->
         <dependency>
             <groupId>org.miaixz</groupId>
             <artifactId>bus-mapper</artifactId>
         </dependency>
 
-        <!-- Spring Boot Starter -->
+        <!-- Multi-channel notifications -->
         <dependency>
             <groupId>org.miaixz</groupId>
-            <artifactId>bus-starter</artifactId>
+            <artifactId>bus-notify</artifactId>
+        </dependency>
+
+        <!-- Cloud storage (S3, OSS, COS, …) -->
+        <dependency>
+            <groupId>org.miaixz</groupId>
+            <artifactId>bus-storage</artifactId>
+        </dependency>
+
+        <!-- Distributed tracing -->
+        <dependency>
+            <groupId>org.miaixz</groupId>
+            <artifactId>bus-tracer</artifactId>
         </dependency>
     </dependencies>
 </project>
 ```
 
-### Example 2: Multi-Module Project
+### Multi-Module Project
 
-**Parent POM:**
+**Parent POM** (`pom.xml`):
 
 ```xml
 <project>
     <parent>
         <groupId>org.miaixz</groupId>
         <artifactId>bus-parent</artifactId>
-        <version>8.x.x</version>
+        <version>8.5.9</version>
     </parent>
 
     <groupId>com.example</groupId>
-    <artifactId>project-parent</artifactId>
+    <artifactId>my-platform</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
 
     <modules>
-        <module>module-common</module>
-        <module>module-service</module>
-        <module>module-web</module>
+        <module>platform-common</module>
+        <module>platform-service</module>
+        <module>platform-web</module>
     </modules>
 </project>
 ```
 
-**Child Module POM:**
+**Child module** (`platform-common/pom.xml`):
 
 ```xml
 <project>
     <parent>
         <groupId>com.example</groupId>
-        <artifactId>project-parent</artifactId>
+        <artifactId>my-platform</artifactId>
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>module-common</artifactId>
+    <artifactId>platform-common</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>org.miaixz</groupId>
             <artifactId>bus-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
+            <artifactId>bus-crypto</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
+            <artifactId>bus-validate</artifactId>
+        </dependency>
     </dependencies>
 </project>
 ```
 
------
+---
 
-## 📋 Managed Dependencies
+## Build Configuration
 
-The Bus Parent POM manages versions for the following major dependencies:
+`bus-parent` provides the following defaults — override any property in your own POM as needed.
 
-### Core Framework
-
-* **Spring Framework**: 6.x
-* **Spring Boot**: 3.x
-* **MyBatis**: 3.5.x
-* **MyBatis-Spring**: 3.x
-
-### Database
-
-* **Druid**: 1.2.x
-* **HikariCP**: 4.x
-* **MySQL Connector**: 8.x
-* **PostgreSQL**: 42.x
-
-### Utilities
-
-* **Lombok**: Latest
-* **Hutool**: 5.x
-* **Commons Lang3**: 3.x
-* **Guava**: 31.x
-
-### Testing
-
-* **JUnit**: 5.x
-* **Mockito**: 4.x
-* **TestContainers**: Latest
-
------
-
-## 🔧 Configuration Properties
-
-### Java Version
+### Java & Encoding
 
 ```xml
 <properties>
     <java.version>17</java.version>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
-</properties>
-```
-
-### Source Encoding
-
-```xml
-<properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 </properties>
 ```
 
-### Build Plugins
+### Key Managed Versions
 
-The parent POM configures the following plugins:
+| Component | Version |
+| :--- | :--- |
+| Spring Boot | 3.5.x |
+| MyBatis | 3.5.x |
+| MyBatis-Spring | 3.0.x |
+| Java baseline | 17+ |
 
-* **maven-compiler-plugin**: Java compilation
-* **maven-surefire-plugin**: Unit testing
-* **maven-failsafe-plugin**: Integration testing
-* **maven-source-plugin**: Source JAR generation
-* **maven-javadoc-plugin**: Javadoc generation
-* **maven-gpg-plugin**: Artifact signing (for releases)
+### Preconfigured Plugins
 
------
+| Plugin | Purpose |
+| :--- | :--- |
+| `maven-compiler-plugin` | Java compilation with `--release 17` |
+| `maven-surefire-plugin` | Unit test runner |
+| `maven-failsafe-plugin` | Integration test runner |
+| `maven-source-plugin` | Source JAR for release |
+| `maven-javadoc-plugin` | Javadoc JAR for release |
+| `maven-gpg-plugin` | GPG signing for Maven Central |
 
-## 💡 Best Practices
+---
 
-### 1. Use Dependency Management Effectively
+## Best Practices
+
+### Let the Parent Manage Versions
 
 ```xml
-<!-- ✅ Recommended: Omit version, use parent's version -->
+<!-- Recommended: version is inherited from bus-parent -->
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-core</artifactId>
-    <!-- Version managed by parent POM -->
 </dependency>
 
-<!-- ❌ Not Recommended: Hardcode version -->
+<!-- Avoid: hardcoding the version creates maintenance overhead -->
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-core</artifactId>
-    <version>8.x.x</version>  <!-- Unnecessary -->
+    <version>8.5.9</version>
 </dependency>
 ```
 
-### 2. Exclude Unwanted Dependencies
+### Exclude Optional Modules from bus-starter
+
+`bus-starter` is a convenience dependency. Exclude sub-modules you do not use to keep the classpath lean:
 
 ```xml
 <dependency>
@@ -267,94 +313,67 @@ The parent POM configures the following plugins:
 </dependency>
 ```
 
-### 3. Use Bill of Materials (BOM)
-
-Alternatively, import the BOM without using as parent:
-
-```xml
-<dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-dependencies</artifactId>
-            <version>8.x.x</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-    </dependencies>
-</dependencyManagement>
-```
-
------
-
-## ❓ Frequently Asked Questions
-
-### Q1: How do I override a managed dependency version?
+### Override a Single Dependency Version
 
 ```xml
 <dependency>
-    <groupId>com.example</groupId>
-    <artifactId>some-library</artifactId>
-    <version>2.0.0</version>  <!-- Override parent's version -->
+    <groupId>org.miaixz</groupId>
+    <artifactId>bus-core</artifactId>
+    <version>8.5.10</version>  <!-- overrides the parent-managed version -->
 </dependency>
 ```
 
-### Q2: Can I use Bus Parent with other parent POMs?
+---
 
-No, Maven only allows one parent. However, you can import the Bus BOM:
+## Frequently Asked Questions
 
-```xml
-<dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-dependencies</artifactId>
-            <version>8.x.x</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-    </dependencies>
-</dependencyManagement>
+**Q: Can I use Bus with my own Spring Boot parent?**
+
+Yes. Instead of inheriting `bus-parent`, import `bus-bom` inside `<dependencyManagement>` — this gives you all version management without replacing your parent.
+
+**Q: How do I see every managed version?**
+
+```bash
+mvn help:effective-pom | grep -A2 'artifactId>bus-'
 ```
 
-### Q3: How do I check which versions are managed?
-
-Run the following command:
+Or for the full resolved POM:
 
 ```bash
 mvn help:effective-pom
 ```
 
-This will show the effective POM with all resolved versions.
+**Q: What is the minimum Java version?**
 
-### Q4: What Java version is required?
+Bus 8.x requires **Java 17** or higher. Older Bus 7.x series supports Java 11.
 
-Bus Parent 8.x requires **Java 17** or higher.
+**Q: Is GraalVM native image supported?**
 
-For Java 11 support, use Bus Parent 7.x.
+Yes. `bus-shade` includes the necessary GraalVM reflect-config and resource-config hints for native compilation.
 
------
+---
 
-## 🔄 Version Compatibility
+## Version Compatibility
 
-| Bus Parent Version | Java Version | Spring Boot Version | Status |
+| Bus Version | Java | Spring Boot | Status |
 | :--- | :--- | :--- | :--- |
-| **8.x** | 17+ | 3.x | Current |
-| 7.x | 11+ | 2.x | Maintenance |
+| **8.5.x** | 17+ | 3.5.x | **Active** |
+| 8.0.x – 8.4.x | 17+ | 3.x | Maintenance |
+| 7.x | 11+ | 2.x | End of Life |
 
------
+---
 
-## 🔗 Related Modules
+## License
 
-* **[bus-core](../bus-core)**: Core utilities and base classes
-* **[bus-mapper](../bus-mapper)**: MyBatis enhancement framework
-* **[bus-starter](../bus-starter)**: Spring Boot starter
-* **[bus-crypto](../bus-crypto)**: Encryption and security utilities
-* **[bus-logger](../bus-logger)**: Logging framework integration
+Bus is released under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
------
+Copyright © 2015–2026 [miaixz.org](https://miaixz.org) and contributors.
 
-## 📚 Additional Resources
+---
 
-* [GitHub Repository](https://github.com/818000/bus)
-* [Maven Central](https://mvnrepository.com/artifact/org.miaixz/bus-parent)
+## Links
+
+* [GitHub Repository](https://github.com/miaixz/bus)
+* [Maven Central](https://mvnrepository.com/artifact/org.miaixz)
+* [Issue Tracker](https://github.com/miaixz/bus/issues)
+* [Changelog](https://github.com/miaixz/bus/releases)

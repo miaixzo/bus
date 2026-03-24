@@ -21,6 +21,6 @@
  * Provides proxy implementations based on the standard JDK dynamic proxy mechanism ({@code java.lang.reflect.Proxy}).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.proxy.jdk;

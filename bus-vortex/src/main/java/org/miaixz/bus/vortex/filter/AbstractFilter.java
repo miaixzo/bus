@@ -29,7 +29,7 @@ import org.springframework.web.server.WebFilterChain;
  * filters should extend this class and implement the {@link #filter(ServerWebExchange, WebFilterChain)} method.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractFilter implements Filter {
 

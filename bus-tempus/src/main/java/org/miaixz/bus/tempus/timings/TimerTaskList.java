@@ -31,7 +31,7 @@ import java.util.function.Consumer;
  * acts as a bucket for tasks that expire within the same time range.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TimerTaskList implements Delayed {
 

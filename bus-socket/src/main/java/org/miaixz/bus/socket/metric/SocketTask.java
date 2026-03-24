@@ -24,7 +24,7 @@ package org.miaixz.bus.socket.metric;
  * of the task and to cancel it.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface SocketTask {
 

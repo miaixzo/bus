@@ -24,7 +24,7 @@ package org.miaixz.bus.extra.ssh.provider.jsch;
  * type of SSH channel that can be opened.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum ChannelType {
 

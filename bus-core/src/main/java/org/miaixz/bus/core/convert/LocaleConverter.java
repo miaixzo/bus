@@ -29,7 +29,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Converter for {@link Locale} objects, only provides String conversion support
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LocaleConverter extends AbstractConverter {
 

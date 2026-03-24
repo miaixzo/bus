@@ -29,7 +29,7 @@ import java.nio.Buffer;
  * {@code SafeBuffer.clear(buffer)}, ...
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SafeBuffer {
 

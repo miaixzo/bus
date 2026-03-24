@@ -47,7 +47,7 @@ import java.util.Map;
  * Slack login provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SlackProvider extends AbstractProvider {
 

@@ -28,7 +28,7 @@ import org.miaixz.bus.http.*;
  * an {@link HttpRequest} and executing it either synchronously or asynchronously.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RequestCall {
 

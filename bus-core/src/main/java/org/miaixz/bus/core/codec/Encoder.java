@@ -26,7 +26,7 @@ package org.miaixz.bus.core.codec;
  * @param <T> The type of the data to be encoded (raw data).
  * @param <R> The type of the encoded data (result).
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Encoder<T, R> {
 

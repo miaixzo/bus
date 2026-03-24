@@ -22,6 +22,7 @@ package org.miaixz.bus.starter.metrics;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -32,7 +33,7 @@ import lombok.Setter;
  * Configuration properties for bus-metrics. Bound to prefix {@code bus.metrics}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter
@@ -162,9 +163,9 @@ public class MetricsProperties {
 
         private boolean enabled = false;
         private int intervalSeconds = 15;
-        private String serverAddr = "";
+        private String serverAddr = Normal.EMPTY;
         private String namespace = "default";
-        private String serviceId = "";
+        private String serviceId = Normal.EMPTY;
     }
 
 }

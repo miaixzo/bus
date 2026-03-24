@@ -31,7 +31,7 @@ import java.util.function.Function;
  * @param <F> The type of elements in the source spliterator.
  * @param <T> The type of elements in the transformed spliterator.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TransSpliterator<F, T> implements Spliterator<T> {
 

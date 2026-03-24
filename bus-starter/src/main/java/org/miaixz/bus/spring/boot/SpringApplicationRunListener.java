@@ -48,7 +48,7 @@ import java.util.List;
  * analyzing application startup performance.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SpringApplicationRunListener implements org.springframework.boot.SpringApplicationRunListener,
         ApplicationListener<ApplicationStartedEvent>, Ordered {

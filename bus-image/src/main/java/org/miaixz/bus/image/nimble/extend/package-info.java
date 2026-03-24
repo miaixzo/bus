@@ -21,6 +21,6 @@
  * 图像/图像处理扩展
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.nimble.extend;

@@ -30,7 +30,7 @@ import org.miaixz.bus.validate.magic.annotation.NotBlank;
  * null, or if it is a string that is empty or contains only whitespace.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NotBlankMatcher implements Validator<Object>, Matcher<Object, NotBlank> {
 

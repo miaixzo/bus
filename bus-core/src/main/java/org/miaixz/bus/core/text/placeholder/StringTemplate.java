@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * (extracting values from a formatted string).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class StringTemplate {
 

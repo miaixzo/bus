@@ -32,7 +32,7 @@ import java.io.Serial;
  * A logger provider implementation that wraps an {@link org.apache.commons.logging.Log} instance.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CommonsLoggingProvider extends AbstractProvider {
 

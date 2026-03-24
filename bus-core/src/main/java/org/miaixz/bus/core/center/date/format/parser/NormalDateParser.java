@@ -27,7 +27,7 @@ import org.miaixz.bus.core.center.date.DateTime;
  * A global date parser that uses a set of predefined and customizable regular expression rules to parse date strings.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NormalDateParser implements PredicateDateParser {
 

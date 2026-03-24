@@ -28,7 +28,7 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_partition_config_t;
  * Utility to query partition config
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class PerfstatConfig {

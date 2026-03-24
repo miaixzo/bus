@@ -40,7 +40,7 @@ import org.miaixz.bus.core.xyz.*;
  * lookup and uses {@link AntPathMatcher} to filter resources.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ResourceFinder {
 

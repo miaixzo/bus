@@ -21,6 +21,6 @@
  * UID Dictionary from AMI_ImageContextExt_01
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.AMI_ImageContextExt_01;

@@ -35,7 +35,7 @@ import com.google.zxing.common.HybridBinarizer;
  * QR code (barcode, etc.) decoder.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class QrDecoder implements Decoder<Image, String> {
 

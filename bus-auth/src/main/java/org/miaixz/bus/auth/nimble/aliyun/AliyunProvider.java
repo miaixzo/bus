@@ -37,7 +37,7 @@ import java.util.Map;
  * Aliyun login provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AliyunProvider extends AbstractProvider {
 

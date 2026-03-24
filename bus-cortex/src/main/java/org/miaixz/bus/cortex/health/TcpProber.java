@@ -31,7 +31,7 @@ import org.miaixz.bus.cortex.Status;
  * TCP connectivity prober.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TcpProber implements Prober {
 

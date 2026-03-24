@@ -26,7 +26,7 @@ package org.miaixz.bus.core.io;
  * parameter is invalid.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface StreamProgress {
 

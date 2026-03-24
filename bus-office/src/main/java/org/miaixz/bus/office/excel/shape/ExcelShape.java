@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.StreamKit;
  * Utility class for Excel pictures (shapes).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ExcelShape {
 

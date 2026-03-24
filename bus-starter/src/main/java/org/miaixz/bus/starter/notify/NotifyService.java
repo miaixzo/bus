@@ -22,11 +22,11 @@ package org.miaixz.bus.starter.notify;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.Provider;
+import org.miaixz.bus.notify.Registry;
 import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.aliyun.AliyunEmailProvider;
 import org.miaixz.bus.notify.metric.aliyun.AliyunSmsProvider;
@@ -75,7 +75,7 @@ import org.miaixz.bus.notify.metric.yunpian.YunpianSmsProvider;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NotifyService {
 

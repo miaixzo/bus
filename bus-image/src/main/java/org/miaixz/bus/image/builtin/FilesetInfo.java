@@ -26,7 +26,7 @@ import java.io.File;
  * provides a structured way to store and access metadata related to a DICOM fileset.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class FilesetInfo {
 

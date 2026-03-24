@@ -30,7 +30,7 @@ import org.miaixz.bus.pay.magic.Voucher;
  * Model for the Send Red Packet API.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

@@ -28,7 +28,7 @@ import java.lang.reflect.Type;
  * (fastjson2, Jackson, Gson) without direct dependencies.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface PayloadAdapter {
 

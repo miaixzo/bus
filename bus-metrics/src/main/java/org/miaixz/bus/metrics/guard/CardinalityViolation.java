@@ -30,7 +30,7 @@ import java.time.Instant;
  * @param replacedWith  the substitute value used in place of the rejected one (e.g. {@code "other"})
  * @param detectedAt    wall-clock instant at which the violation was detected
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public record CardinalityViolation(String metricName, String tagKey, String originalValue, String replacedWith,
         Instant detectedAt) {

@@ -27,7 +27,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
  * the {@link StartupReporterAware} interface.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class StartupReporterProcessor implements BeanPostProcessor {
 

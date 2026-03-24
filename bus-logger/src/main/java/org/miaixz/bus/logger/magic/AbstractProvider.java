@@ -31,7 +31,7 @@ import java.io.Serializable;
  * Abstract base class for logger providers, implementing common functionality.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractProvider implements Provider, Serializable {
 

@@ -30,7 +30,7 @@ import com.hankcs.hanlp.seg.common.Term;
  * to the common {@link NLPWord} interface, providing a unified way to access segmented word information.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HanLPWord implements NLPWord {
 

@@ -23,6 +23,6 @@
  * burn-rate threshold is breached.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.metrics.observe.slo;

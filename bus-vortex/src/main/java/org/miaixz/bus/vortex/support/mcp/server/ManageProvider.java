@@ -55,7 +55,7 @@ import reactor.core.scheduler.Schedulers;
  * provider (e.g., for Docker or Kubernetes) would be required.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ManageProvider implements ProcessProvider, MetricsProvider {
 

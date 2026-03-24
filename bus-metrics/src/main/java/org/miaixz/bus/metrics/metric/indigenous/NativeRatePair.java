@@ -26,7 +26,7 @@ import org.miaixz.bus.metrics.metric.RatePair;
  * RatePair backed by two NativeMeter instances (total + errors).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NativeRatePair implements RatePair {
 

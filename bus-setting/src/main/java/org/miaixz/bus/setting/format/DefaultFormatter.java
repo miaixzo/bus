@@ -33,7 +33,7 @@ import org.miaixz.bus.setting.metric.ini.IniSection;
  * comment, a section, or a property, in that order.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DefaultFormatter implements Format {
 

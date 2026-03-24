@@ -31,7 +31,7 @@ import org.miaixz.bus.core.xyz.MethodKit;
  * interact with Kotlin callable entities (classes, methods, constructors) via reflection.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class KCallable {
 

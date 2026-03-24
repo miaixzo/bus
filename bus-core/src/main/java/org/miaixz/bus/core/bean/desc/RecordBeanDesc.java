@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.ModifierKit;
  * getter methods are named identically to their corresponding fields, and setters are not supported.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RecordBeanDesc extends AbstractBeanDesc {
 

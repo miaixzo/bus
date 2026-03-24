@@ -39,7 +39,7 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * JPush SMS service provider implementation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JpushSmsProvider extends AbstractProvider<JpushNotice, Context> {
 

@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.annotation.resolve.AnnotatedElements;
  * this feature, see {@link AnnotatedElements}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

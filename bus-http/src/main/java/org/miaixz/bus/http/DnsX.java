@@ -34,7 +34,7 @@ import java.util.List;
  *
  * @author Kimi Liu
  * @see <a href="https://en.wikipedia.org/wiki/Domain_Name_System">Domain Name System on Wikipedia</a>
- * @since Java 17+
+ * @since Java 21+
  */
 public interface DnsX {
 

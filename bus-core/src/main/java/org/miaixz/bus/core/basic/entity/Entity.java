@@ -36,7 +36,7 @@ import lombok.experimental.SuperBuilder;
  * Represents a base entity with a primary key.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

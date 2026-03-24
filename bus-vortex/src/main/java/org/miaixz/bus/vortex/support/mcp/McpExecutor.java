@@ -69,7 +69,7 @@ import reactor.core.scheduler.Schedulers;
  * Generic type parameters: {@code Executor<Void, Void>}
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecycle {
 

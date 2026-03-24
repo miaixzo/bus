@@ -32,7 +32,7 @@ import org.miaixz.bus.extra.nlp.NLPWord;
  * <a href="https://github.com/ysc/word">https://github.com/ysc/word</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WordResult implements NLPResult {
 

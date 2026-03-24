@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.BeanKit;
  * to access properties of the bean.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BeanValueProvider implements ValueProvider<String> {
 

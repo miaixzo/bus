@@ -27,7 +27,7 @@ import org.miaixz.bus.core.Binder;
  * Interface for property sources, providing methods to access and manage properties.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @FunctionalInterface
 public interface PropertySource {

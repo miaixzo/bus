@@ -26,6 +26,6 @@
  * list — and watch support for {@code PromptAssets} definitions backed by the generic {@code AbstractRegistry}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.cortex.registry.prompt;

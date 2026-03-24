@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.*;
  * Converts an object to an array, including arrays of primitive types.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ArrayConverter extends AbstractConverter implements MatcherConverter {
 

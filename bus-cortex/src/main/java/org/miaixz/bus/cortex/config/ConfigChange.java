@@ -28,7 +28,7 @@ import java.lang.annotation.Target;
  * Callback annotation for config changes.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

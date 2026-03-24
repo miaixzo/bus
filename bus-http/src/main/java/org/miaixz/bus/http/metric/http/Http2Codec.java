@@ -39,7 +39,7 @@ import org.miaixz.bus.http.metric.NewChain;
  * Encodes requests and decodes responses using HTTP/2 frames.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Http2Codec implements HttpCodec {
 

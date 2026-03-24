@@ -28,7 +28,7 @@ import org.miaixz.bus.metrics.Metrics;
  * job SLA tracking.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TempusMetrics {
 

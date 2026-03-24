@@ -26,7 +26,7 @@ import org.miaixz.bus.storage.Provider;
  * Abstract base class for storage providers, offering common functionalities and properties.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractProvider implements Provider {
 

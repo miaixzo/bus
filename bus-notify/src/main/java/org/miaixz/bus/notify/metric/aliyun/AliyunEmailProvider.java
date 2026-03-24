@@ -37,7 +37,7 @@ import org.miaixz.bus.notify.metric.generic.GenericNotice;
  * Alibaba Cloud Email service provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AliyunEmailProvider extends AliyunProvider<AliyunNotice, Context> {
 

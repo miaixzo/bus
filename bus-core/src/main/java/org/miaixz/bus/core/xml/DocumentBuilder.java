@@ -27,7 +27,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * Utility class for {@link javax.xml.parsers.DocumentBuilder}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DocumentBuilder {
 

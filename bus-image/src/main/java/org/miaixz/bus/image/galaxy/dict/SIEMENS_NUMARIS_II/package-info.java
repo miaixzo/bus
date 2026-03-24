@@ -21,6 +21,6 @@
  * UID Dictionary from SIEMENS_NUMARIS_II
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_NUMARIS_II;

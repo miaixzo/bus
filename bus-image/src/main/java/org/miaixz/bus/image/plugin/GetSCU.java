@@ -54,7 +54,7 @@ import java.util.concurrent.TimeUnit;
  * locally.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class GetSCU implements AutoCloseable {
 
