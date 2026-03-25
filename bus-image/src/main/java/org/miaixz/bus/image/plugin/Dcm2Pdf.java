@@ -37,7 +37,7 @@ import java.util.List;
  * DICOM files. It can process individual files or entire directories recursively.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Dcm2Pdf {
 

@@ -27,7 +27,7 @@ import org.miaixz.bus.image.galaxy.data.UpdatePolicy;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class XSLTAttributesCoercion implements AttributesCoercion {
 

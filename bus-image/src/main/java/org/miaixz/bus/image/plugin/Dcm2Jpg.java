@@ -44,7 +44,7 @@ import java.util.stream.StreamSupport;
  * and output format settings.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Dcm2Jpg {
 

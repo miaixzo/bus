@@ -27,7 +27,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * node (empty, range, list, or name) from the expression.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NodeFactory {
 

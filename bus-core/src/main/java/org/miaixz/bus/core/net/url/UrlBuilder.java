@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.UrlKit;
  *
  * @author Kimi Liu
  * @see <a href="https://en.wikipedia.org/wiki/Uniform_Resource_Identifier">Uniform Resource Identifier</a>
- * @since Java 17+
+ * @since Java 21+
  */
 public final class UrlBuilder implements Builder<String> {
 

@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.LambdaKit;
  * @param <T> The type of the object containing the properties.
  * @param <R> The return type of the ID getter.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LambdaNodeConfig<T, R> extends NodeConfig {
 

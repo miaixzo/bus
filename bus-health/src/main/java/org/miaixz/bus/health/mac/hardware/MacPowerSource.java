@@ -43,7 +43,7 @@ import com.sun.jna.platform.mac.CoreFoundation.*;
  * A Power Source
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class MacPowerSource extends AbstractPowerSource {

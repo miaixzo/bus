@@ -45,7 +45,7 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * A custom MyBatis {@link XMLLanguageDriver} that caches XML-based SqlSource to avoid redundant parsing.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Caching extends XMLLanguageDriver {
 

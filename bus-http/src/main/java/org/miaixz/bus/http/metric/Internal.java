@@ -32,7 +32,7 @@ import javax.net.ssl.SSLSocket;
  * of this abstract class is in {@link Httpd}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class Internal {
 

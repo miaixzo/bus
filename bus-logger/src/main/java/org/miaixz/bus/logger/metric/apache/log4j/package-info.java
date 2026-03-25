@@ -21,6 +21,6 @@
  * This package provides an implementation of the logging facade for Log4j 2.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.logger.metric.apache.log4j;

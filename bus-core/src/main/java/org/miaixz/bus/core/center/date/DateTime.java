@@ -49,7 +49,7 @@ import org.miaixz.bus.core.xyz.ZoneKit;
  * default. It maintains a timezone, defaulting to the system's current timezone.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DateTime extends Date {
 

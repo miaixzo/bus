@@ -36,7 +36,7 @@ import java.util.Map;
  * Validator for performing validation on each element of a container (Array, Collection, or Map).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class EachMatcher implements Matcher<Object, Each> {
 

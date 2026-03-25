@@ -27,7 +27,7 @@ package org.miaixz.bus.image.builtin;
  * @see <a href="http://www.uni-koeln.de/phil-fak/phonetik/Lehre/MA-Arbeiten/magister_wilz.pdf">Martin Wilz</a>
  * 
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Phonem implements FuzzyString {
 

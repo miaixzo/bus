@@ -38,7 +38,7 @@ import org.miaixz.bus.shade.safety.Launcher;
  * features such as JAR encryption and decryption. This class acts as the entry point for launching encrypted JARs.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JarLauncher {
 

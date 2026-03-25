@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.exception.DateException;
  * {@link java.text.DateFormat}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface PositionDateParser extends DateParser, DatePrinter {
 

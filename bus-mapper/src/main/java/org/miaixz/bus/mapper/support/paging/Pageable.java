@@ -64,7 +64,7 @@ import java.io.Serializable;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Pageable extends Serializable {
 

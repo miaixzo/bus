@@ -31,7 +31,7 @@ import java.lang.annotation.*;
  * It allows for declarative validation using annotations like {@code @Valid} on method parameters.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Inherited
 @Documented

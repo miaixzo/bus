@@ -35,7 +35,7 @@ import org.miaixz.bus.mapper.provider.ConditionProvider;
  * @param <E> An object that conforms to the Condition data structure, such as {@link Condition} or an MBG-generated
  *            Condition object.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface ConditionMapper<T, E> {
 

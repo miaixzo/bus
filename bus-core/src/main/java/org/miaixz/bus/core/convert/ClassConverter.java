@@ -29,7 +29,7 @@ import org.miaixz.bus.core.xyz.ClassKit;
  * By default, the class is initialized (i.e., its static block is executed).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ClassConverter extends AbstractConverter implements MatcherConverter {
 

@@ -27,7 +27,7 @@ import java.io.Serial;
  * byte last, and the final result is XORed with 0xFFFF. Note: 0xA6BC is the bit-reversed representation of 0x3D65.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CRC16DNP extends CRC16Checksum {
 

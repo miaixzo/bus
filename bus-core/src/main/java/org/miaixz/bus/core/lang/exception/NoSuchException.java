@@ -27,7 +27,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
  * Represents an exception indicating that a requested element or method does not exist.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NoSuchException extends UncheckedException {
 

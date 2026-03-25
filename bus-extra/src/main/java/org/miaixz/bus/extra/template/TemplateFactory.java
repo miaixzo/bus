@@ -31,7 +31,7 @@ import org.miaixz.bus.logger.Logger;
  * template engine JARs introduced by the user. It uses the Simple Factory pattern.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TemplateFactory {
 

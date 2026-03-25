@@ -21,7 +21,7 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_ADWSoft_DPO1;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PrivateKeyword {
 

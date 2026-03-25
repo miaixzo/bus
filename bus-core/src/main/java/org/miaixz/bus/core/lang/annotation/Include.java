@@ -33,7 +33,7 @@ import java.lang.annotation.*;
  * frameworks, libraries, or tools to implement dynamic, annotation-based inclusion logic. Common use cases include:
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

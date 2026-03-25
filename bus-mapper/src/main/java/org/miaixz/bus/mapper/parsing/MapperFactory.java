@@ -38,7 +38,7 @@ import org.miaixz.bus.mapper.builder.ClassMetaResolver;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class MapperFactory {
 

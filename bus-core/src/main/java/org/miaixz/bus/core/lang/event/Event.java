@@ -23,7 +23,7 @@ package org.miaixz.bus.core.lang.event;
  * Marker interface for all events. Any class that represents an event in the system must implement this interface.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Event {
 

@@ -31,7 +31,7 @@ import lombok.experimental.SuperBuilder;
  * Refund application model. Supports: general interface refund application, face payment refund, deposit refund.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

@@ -25,7 +25,7 @@ import java.lang.annotation.*;
  * A marker annotation that indicates a class, method, or parameter should be intercepted for validation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

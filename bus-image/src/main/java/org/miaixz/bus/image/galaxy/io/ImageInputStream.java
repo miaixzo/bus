@@ -46,7 +46,7 @@ import org.miaixz.bus.logger.Logger;
  * comprehensive DICOM data processing.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ImageInputStream extends FilterInputStream implements ImageInputHandler, BulkDataCreator {
 

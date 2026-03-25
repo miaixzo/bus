@@ -41,7 +41,7 @@ import org.miaixz.bus.http.Httpx;
  * Douyin Mini Program login provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DouyinMiniProvider extends AbstractProvider {
 

@@ -34,7 +34,7 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * Yunpian SMS service provider implementation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class YunpianSmsProvider extends AbstractProvider<YunpianNotice, Context> {
 

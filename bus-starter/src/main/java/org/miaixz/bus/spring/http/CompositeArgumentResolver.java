@@ -57,7 +57,7 @@ import jakarta.servlet.http.HttpServletRequest;
  * It automatically binds request parameters to controller method parameter objects using reflection.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CompositeArgumentResolver implements HandlerMethodArgumentResolver {
 

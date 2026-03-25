@@ -27,7 +27,7 @@ import java.util.List;
  *
  * @param <S> The type of the service object.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface ServiceLoader<S> extends Iterable<S> {
 

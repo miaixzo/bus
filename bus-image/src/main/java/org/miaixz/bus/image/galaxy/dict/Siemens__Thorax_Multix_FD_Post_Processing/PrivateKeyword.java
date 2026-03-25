@@ -21,7 +21,7 @@ package org.miaixz.bus.image.galaxy.dict.Siemens__Thorax_Multix_FD_Post_Processi
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PrivateKeyword {
 

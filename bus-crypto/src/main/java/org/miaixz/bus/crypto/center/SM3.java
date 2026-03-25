@@ -36,7 +36,7 @@ import org.miaixz.bus.crypto.builtin.digest.Digester;
  * </ol>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SM3 extends Digester {
 

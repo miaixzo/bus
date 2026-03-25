@@ -30,7 +30,7 @@ import org.miaixz.bus.auth.magic.ErrorCode;
  * Microsoft login provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MicrosoftProvider extends AbstractMicrosoftProvider {
 

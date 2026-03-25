@@ -41,7 +41,7 @@ import org.miaixz.bus.socket.metric.handler.FutureCompletionHandler;
  * An `AsynchronousSocketChannel` wrapper that handles SSL/TLS handshaking and encryption.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy {
 

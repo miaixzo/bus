@@ -33,7 +33,7 @@ import org.miaixz.bus.health.unix.platform.freebsd.BsdSysctlKit;
  * Memory obtained by swapinfo
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 final class FreeBsdVirtualMemory extends AbstractVirtualMemory {

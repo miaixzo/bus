@@ -21,6 +21,6 @@
  * Wrapper for Excel styles.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.office.excel.style;

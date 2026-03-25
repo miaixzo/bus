@@ -30,7 +30,7 @@ import lombok.Builder;
  * Represents configurable options for a DICOM connection or request.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

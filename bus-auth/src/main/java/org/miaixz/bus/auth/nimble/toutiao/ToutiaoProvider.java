@@ -40,7 +40,7 @@ import org.miaixz.bus.extra.json.JsonKit;
  * Toutiao (ByteDance) login provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ToutiaoProvider extends AbstractProvider {
 

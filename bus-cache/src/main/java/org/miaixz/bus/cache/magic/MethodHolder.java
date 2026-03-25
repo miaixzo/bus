@@ -31,7 +31,7 @@ import lombok.Setter;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter
@@ -44,8 +44,13 @@ public class MethodHolder {
 
     /**
      * The return type of the method.
+     * <p>
+     * Marked {@code volatile} because {@code setReturnType} may be called from any thread the first time a cache miss
+     * is resolved, while {@code getReturnType} is read concurrently. The field holds a reference type so a single
+     * volatile write/read is sufficient to ensure visibility without additional synchronization.
+     * </p>
      */
-    private Class<?> returnType;
+    private volatile Class<?> returnType;
 
     /**
      * A flag indicating whether the return type is a collection.

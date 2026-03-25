@@ -45,7 +45,7 @@ import org.miaixz.bus.core.xyz.CompareKit;
  * build metadata.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Version implements Comparable<Version>, Serializable {
 
@@ -55,7 +55,7 @@ public class Version implements Comparable<Version>, Serializable {
     /**
      * The current version of the bus-core library.
      */
-    public static final String _VERSION = "8.5.8";
+    public static final String _VERSION = "8.6.0";
 
     /**
      * The original, unparsed version string.

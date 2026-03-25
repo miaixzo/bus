@@ -35,7 +35,7 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractSensors;
  * Sensors
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 final class OpenBsdSensors extends AbstractSensors {

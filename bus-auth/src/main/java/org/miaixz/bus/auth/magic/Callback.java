@@ -34,7 +34,7 @@ import lombok.experimental.SuperBuilder;
  * phase of an authentication flow.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

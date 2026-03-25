@@ -29,7 +29,7 @@ import org.miaixz.bus.validate.magic.annotation.NotIn;
  * Validator for the {@link NotIn} annotation, checking if a value is NOT present in a specified array of strings.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NotInMatcher implements Matcher<Object, NotIn> {
 

@@ -35,7 +35,7 @@ import org.miaixz.bus.office.excel.StyleKit;
  * Default style set, defining default styles for headers, numbers, dates, etc.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DefaultStyleSet implements StyleSet, Serializable {
 

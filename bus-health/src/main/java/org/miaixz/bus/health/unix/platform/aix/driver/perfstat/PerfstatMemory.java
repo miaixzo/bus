@@ -28,7 +28,7 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_memory_total_t;
  * Utility to query performance stats for memory
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class PerfstatMemory {

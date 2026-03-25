@@ -34,7 +34,7 @@ import org.miaixz.bus.health.unix.platform.openbsd.OpenBsdSysctlKit;
  * OpenBSD ComputerSystem implementation
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 public class OpenBsdComputerSystem extends AbstractComputerSystem {

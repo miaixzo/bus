@@ -40,7 +40,7 @@ import org.miaixz.bus.http.bodys.RequestBody;
  * parameters, headers, and body, and provides a template for building the final Httpd {@link Request} object.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class HttpRequest {
 

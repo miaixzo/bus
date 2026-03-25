@@ -21,6 +21,6 @@
  * Provides classes for parsing and handling User-Agent strings and device information.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.http.metric.anget;

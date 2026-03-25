@@ -30,7 +30,7 @@ import org.miaixz.bus.office.excel.CellKit;
  * Reads an Excel {@link Sheet} and processes cells using a {@link BiConsumerX}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WalkSheetReader extends AbstractSheetReader<Void> {
 

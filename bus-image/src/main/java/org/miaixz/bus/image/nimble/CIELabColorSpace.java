@@ -23,7 +23,7 @@ import java.awt.color.ColorSpace;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CIELabColorSpace extends ColorSpace {
 

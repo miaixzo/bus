@@ -126,7 +126,7 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * @see VisibleConfig
  * @see VisibleHandler
  * @see MapperProvider
- * @since Java 17+
+ * @since Java 21+
  */
 @FunctionalInterface
 public interface VisibleProvider extends MapperProvider<VisibleConfig> {

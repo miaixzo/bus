@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.Symbol;
  * <a href="https://www.ietf.org/rfc/rfc3986.html#appendix-A">https://www.ietf.org/rfc/rfc3986.html#appendix-A</a>.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RFC3986 {
 

@@ -31,7 +31,7 @@ import org.miaixz.bus.notify.Context;
  * Netease Cloud SMS message provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NeteaseSmsProvider extends NeteaseProvider<NeteaseNotice, Context> {
 

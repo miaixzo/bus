@@ -29,7 +29,7 @@ import lombok.experimental.SuperBuilder;
  * Model for an individual transfer detail within a batch transfer.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

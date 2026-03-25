@@ -26,7 +26,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * regular expression or if it contains any substring that matches a regular expression.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RegexValidator {
 

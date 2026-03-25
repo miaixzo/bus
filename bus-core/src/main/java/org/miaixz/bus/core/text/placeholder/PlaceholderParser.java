@@ -34,7 +34,7 @@ import org.miaixz.bus.core.text.CharsValidator;
  * character to escape boundary symbols.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PlaceholderParser implements UnaryOperator<String> {
 

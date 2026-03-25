@@ -44,7 +44,7 @@ import org.miaixz.bus.core.lang.pool.Poolable;
  *
  * @param <T> the type of objects managed by this pool partition
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PartitionPool<T> implements ObjectPool<T> {
 

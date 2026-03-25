@@ -27,7 +27,7 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
  * is used primarily in astronomical calculations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JulianDay extends Loops {
 

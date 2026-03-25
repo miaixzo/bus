@@ -35,7 +35,7 @@ import java.lang.annotation.*;
  * within a Spring application.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Inherited
 @Documented

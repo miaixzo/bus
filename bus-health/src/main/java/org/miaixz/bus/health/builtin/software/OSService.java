@@ -27,7 +27,7 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
  * class is provided for information purposes only. Interpretation of the meaning of services is platform-dependent.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 public class OSService {

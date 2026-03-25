@@ -27,7 +27,7 @@ import org.miaixz.bus.core.lang.exception.DateException;
  * Date parsing interface, used to parse date strings into {@link Date} objects. Thanks to Apache Commons Lang 3.5.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface DateParser {
 

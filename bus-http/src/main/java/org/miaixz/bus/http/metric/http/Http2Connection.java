@@ -43,7 +43,7 @@ import org.miaixz.bus.logger.Logger;
  * A socket connection to a remote peer. Connections host streams which can send and receive data.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Http2Connection implements Closeable {
 

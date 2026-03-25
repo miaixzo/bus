@@ -47,7 +47,7 @@ import org.miaixz.bus.logger.Logger;
  * selection takes place during association negotiation based on the called and calling AE-titles.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Connection implements Serializable {
 

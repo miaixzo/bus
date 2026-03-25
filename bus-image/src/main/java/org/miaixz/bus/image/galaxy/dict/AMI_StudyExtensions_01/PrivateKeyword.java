@@ -21,7 +21,7 @@ package org.miaixz.bus.image.galaxy.dict.AMI_StudyExtensions_01;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PrivateKeyword {
 

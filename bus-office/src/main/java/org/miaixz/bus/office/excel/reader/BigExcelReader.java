@@ -38,7 +38,7 @@ import org.miaixz.bus.office.excel.RowKit;
  * Streaming Excel reader for large datasets.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BigExcelReader implements AutoCloseable {
 

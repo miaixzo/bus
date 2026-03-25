@@ -33,7 +33,7 @@ import org.apache.poi.ss.usermodel.ClientAnchor;
  * For an illustration, see: <a href="https://www.cnblogs.com/sunyl/p/7527703.html">ClientAnchor Illustration</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SimpleAnchor implements ClientAnchor {
 

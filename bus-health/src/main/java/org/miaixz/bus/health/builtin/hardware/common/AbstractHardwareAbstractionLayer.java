@@ -30,7 +30,7 @@ import org.miaixz.bus.health.builtin.hardware.*;
  * Common fields or methods used by platform-specific implementations of HardwareAbstractionLayer
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public abstract class AbstractHardwareAbstractionLayer implements HardwareAbstractionLayer {

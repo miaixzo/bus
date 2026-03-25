@@ -58,7 +58,7 @@ import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequ
  * S3-compatible client.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BaiduBosProvider extends AbstractProvider {
 

@@ -30,7 +30,7 @@ import java.util.NoSuchElementException;
  * @param <K> The type of the key.
  * @param <V> The type of the value.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CacheObjectIterator<K, V> implements Iterator<CacheObject<K, V>>, Serializable {
 

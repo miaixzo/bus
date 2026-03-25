@@ -38,7 +38,7 @@ import java.util.List;
  * written to an output stream.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Xml2Dcm {
 

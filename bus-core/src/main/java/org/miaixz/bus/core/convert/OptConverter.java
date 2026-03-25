@@ -27,7 +27,7 @@ import org.miaixz.bus.core.lang.Optional;
  * Converter for {@link Optional} objects
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class OptConverter extends AbstractConverter {
 

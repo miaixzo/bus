@@ -31,7 +31,7 @@ import org.springframework.beans.factory.InitializingBean;
  * framework's components, such as proxies and strategy providers.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LimiterService implements InitializingBean {
 

@@ -27,6 +27,6 @@
  * automatically collect and log audit information for monitoring, debugging, and optimization purposes.
  * 
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.mapper.support.audit;

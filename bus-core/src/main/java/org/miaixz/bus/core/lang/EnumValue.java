@@ -35,7 +35,7 @@ import lombok.Getter;
  *
  * @param <E> The type of the enum implementing this interface.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface EnumValue<E extends EnumValue<E>> extends Enumers {
 
@@ -105,7 +105,7 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for text alignment options.
      *
      * @author Kimi Liu
-     * @since Java 17+
+     * @since Java 21+
      */
     @Getter
     @AllArgsConstructor
@@ -294,7 +294,7 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Represents the lifecycle status of a managed service process.
      *
      * @author Kimi Liu
-     * @since Java 17+
+     * @since Java 21+
      */
     enum Lifecycle {
 

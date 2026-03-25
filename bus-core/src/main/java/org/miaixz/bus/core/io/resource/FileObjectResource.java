@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.UrlKit;
  * resources represented by a {@link FileObject}, typically used in Java compilation tasks.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class FileObjectResource implements Resource {
 

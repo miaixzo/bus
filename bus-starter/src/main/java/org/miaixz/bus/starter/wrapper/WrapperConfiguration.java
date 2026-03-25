@@ -61,7 +61,7 @@ import jakarta.annotation.Resource;
  * bus:
  *   wrapper:
  *     enabled: true       # Enable the wrapper
- *     order: -100         # Filter order
+ *     order: -100         # Vector order
  *     base-packages:      # Packages for automatic URL prefix generation
  *       - com.example.controller
  *
@@ -79,7 +79,7 @@ import jakarta.annotation.Resource;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @EnableConfigurationProperties(value = { WrapperProperties.class })
 public class WrapperConfiguration implements WebMvcRegistrations {

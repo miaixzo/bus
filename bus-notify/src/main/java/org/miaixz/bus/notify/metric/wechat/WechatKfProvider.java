@@ -27,7 +27,7 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * WeChat Customer Service message provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WechatKfProvider extends AbstractProvider<WechatNotice, Context> {
 

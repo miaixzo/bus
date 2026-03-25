@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.Callback;
 import org.miaixz.bus.http.Headers;
 import org.miaixz.bus.http.Httpv;
@@ -38,7 +39,7 @@ import org.miaixz.bus.http.Response;
  * any errors that may have occurred during the request.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface CoverResult {
 
@@ -355,7 +356,7 @@ public interface CoverResult {
      * The concrete implementation of {@link CoverResult}.
      *
      * @author Kimi Liu
-     * @since Java 17+
+     * @since Java 21+
      */
     class Real implements CoverResult {
 
@@ -498,7 +499,7 @@ public interface CoverResult {
 
         @Override
         public long getContentLength() {
-            String length = getHeader("Content-Length");
+            String length = getHeader(HTTP.CONTENT_LENGTH);
             if (null != length) {
                 try {
                     return Long.parseLong(length);

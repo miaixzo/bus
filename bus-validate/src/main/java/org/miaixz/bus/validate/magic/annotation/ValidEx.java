@@ -46,7 +46,7 @@ import java.lang.annotation.*;
  * If none of the above are defined, a default {@link ValidateException} will be thrown.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

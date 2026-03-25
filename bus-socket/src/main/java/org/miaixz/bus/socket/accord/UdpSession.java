@@ -33,7 +33,7 @@ import java.nio.ByteBuffer;
  * Represents a UDP session, which is a logical connection over a connectionless protocol.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class UdpSession extends Session {
 

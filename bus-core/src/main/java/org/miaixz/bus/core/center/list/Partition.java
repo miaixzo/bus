@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Assert;
  *
  * @param <T> the type of elements in the list
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Partition<T> extends AbstractList<List<T>> {
 

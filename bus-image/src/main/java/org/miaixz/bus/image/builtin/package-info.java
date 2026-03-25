@@ -22,6 +22,6 @@
  * processing methods and data structures used across the DICOM toolkit.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.builtin;

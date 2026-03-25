@@ -39,7 +39,7 @@ import freemarker.template.Configuration;
  * see: <a href="https://freemarker.apache.org/">https://freemarker.apache.org/</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class FreemarkerProvider implements TemplateProvider {
 

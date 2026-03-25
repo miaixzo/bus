@@ -29,7 +29,7 @@ import lombok.experimental.SuperBuilder;
  * Model for the Goods Detail object in the V3 Create Refund API.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

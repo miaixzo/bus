@@ -47,7 +47,7 @@ import java.util.Map;
  * Microsoft China accounts to third-party websites.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractMicrosoftProvider extends AbstractProvider {
 

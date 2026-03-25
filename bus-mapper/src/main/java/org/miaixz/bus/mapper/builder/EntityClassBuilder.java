@@ -32,7 +32,7 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * A builder for entity objects, which stores and provides {@link TableMeta} and {@link ColumnMeta} information.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class EntityClassBuilder {
 

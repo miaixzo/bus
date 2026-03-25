@@ -28,7 +28,7 @@ import org.miaixz.bus.core.io.source.BufferSource;
  * A set of indexed values that can be read by {@link BufferSource#select}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SegmentBuffer extends AbstractList<ByteString> implements RandomAccess {
 

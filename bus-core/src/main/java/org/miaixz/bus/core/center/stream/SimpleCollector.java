@@ -33,7 +33,7 @@ import java.util.stream.Collector;
  * @param <A> the mutable accumulation type of the reduction operation (often hidden as an implementation detail)
  * @param <R> the result type of the reduction operation
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SimpleCollector<T, A, R> implements Collector<T, A, R> {
 

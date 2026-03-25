@@ -27,7 +27,7 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * WeChat Official Account subscription/template message provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WechatMpProvider extends AbstractProvider<WechatNotice, Context> {
 

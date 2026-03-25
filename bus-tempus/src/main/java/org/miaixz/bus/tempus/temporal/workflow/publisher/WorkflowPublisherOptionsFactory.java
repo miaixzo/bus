@@ -1,0 +1,133 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
+package org.miaixz.bus.tempus.temporal.workflow.publisher;
+
+import java.time.Duration;
+
+import org.miaixz.bus.tempus.temporal.workflow.WorkflowIdGenerator;
+import org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsFactory;
+import org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsSpec;
+
+import io.temporal.client.WorkflowOptions;
+
+/**
+ * Default implementation of {@link WorkflowOptionsFactory}.
+ * <p>
+ * This factory builds Temporal workflow options from a publication binding and delegates workflow identifier generation
+ * to a {@link WorkflowIdGenerator}.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
+public class WorkflowPublisherOptionsFactory implements WorkflowOptionsFactory {
+
+    /**
+     * Strategy used to generate workflow identifiers.
+     */
+    private final WorkflowIdGenerator generator;
+
+    /**
+     * Workflow execution timeout in days.
+     */
+    private final int workflowExecutionTimeoutDays;
+
+    /**
+     * Workflow run timeout in hours.
+     */
+    private final int workflowRunTimeoutHours;
+
+    /**
+     * Workflow task timeout in minutes.
+     */
+    private final int workflowTaskTimeoutMinutes;
+
+    /**
+     * Creates a workflow options factory with default timeouts.
+     *
+     * @param generator the workflow identifier generator
+     */
+    public WorkflowPublisherOptionsFactory(WorkflowIdGenerator generator) {
+        this(generator, 1, 12, 3);
+    }
+
+    /**
+     * Creates a workflow options factory.
+     *
+     * @param generator                  the workflow identifier generator
+     * @param workflowTaskTimeoutMinutes workflow task timeout in minutes
+     */
+    public WorkflowPublisherOptionsFactory(WorkflowIdGenerator generator, int workflowTaskTimeoutMinutes) {
+        this(generator, 1, 12, workflowTaskTimeoutMinutes);
+    }
+
+    /**
+     * Creates a workflow options factory with full timeout configuration.
+     *
+     * @param generator                    the workflow identifier generator
+     * @param workflowExecutionTimeoutDays workflow execution timeout in days
+     * @param workflowRunTimeoutHours      workflow run timeout in hours
+     * @param workflowTaskTimeoutMinutes   workflow task timeout in minutes
+     */
+    public WorkflowPublisherOptionsFactory(WorkflowIdGenerator generator, int workflowExecutionTimeoutDays,
+            int workflowRunTimeoutHours, int workflowTaskTimeoutMinutes) {
+        this.generator = generator;
+        this.workflowExecutionTimeoutDays = workflowExecutionTimeoutDays;
+        this.workflowRunTimeoutHours = workflowRunTimeoutHours;
+        this.workflowTaskTimeoutMinutes = workflowTaskTimeoutMinutes;
+    }
+
+    /**
+     * Creates workflow options for the specified workflow parameters.
+     *
+     * @param taskQueue    the task queue name
+     * @param workflowType the workflow type name
+     * @return the created workflow options
+     */
+    @Override
+    public WorkflowOptions createWorkflowOptions(String taskQueue, String workflowType) {
+        return WorkflowOptions.newBuilder().setTaskQueue(taskQueue).setWorkflowId(generator.workflowId(workflowType))
+                .setWorkflowExecutionTimeout(Duration.ofDays(workflowExecutionTimeoutDays))
+                .setWorkflowRunTimeout(Duration.ofHours(workflowRunTimeoutHours))
+                .setWorkflowTaskTimeout(Duration.ofMinutes(workflowTaskTimeoutMinutes)).build();
+    }
+
+    /**
+     * Creates workflow options for the specified workflow options specification.
+     * <p>
+     * When {@link WorkflowOptionsSpec#workflowId()} is blank, this implementation generates a workflow id using the
+     * configured {@link WorkflowIdGenerator} and the optional stable key.
+     *
+     * @param spec the workflow options specification
+     * @return the created workflow options
+     */
+    @Override
+    public WorkflowOptions createWorkflowOptions(WorkflowOptionsSpec spec) {
+        String workflowId = spec.workflowId();
+        if (workflowId == null || workflowId.isBlank()) {
+            workflowId = generator.workflowId(spec.workflowType(), spec.stableKey());
+        }
+
+        return WorkflowOptions.newBuilder().setTaskQueue(spec.taskQueue()).setWorkflowId(workflowId)
+                .setWorkflowExecutionTimeout(Duration.ofDays(workflowExecutionTimeoutDays))
+                .setWorkflowRunTimeout(Duration.ofHours(workflowRunTimeoutHours))
+                .setWorkflowTaskTimeout(Duration.ofMinutes(workflowTaskTimeoutMinutes)).build();
+    }
+
+}

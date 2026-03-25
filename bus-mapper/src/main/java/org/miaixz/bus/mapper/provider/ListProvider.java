@@ -33,7 +33,7 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * Provides dynamic SQL generation methods for batch operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ListProvider {
 

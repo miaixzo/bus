@@ -29,7 +29,7 @@ import lombok.Setter;
  * Table primary key metadata for MySQL.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

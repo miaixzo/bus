@@ -49,7 +49,7 @@ import org.miaixz.bus.core.xyz.RandomKit;
  * </ol>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PrimitiveArray extends ArrayValidator {
 

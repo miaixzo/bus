@@ -35,7 +35,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * XML SAX reader for parsing XML documents.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class XmlSaxReader {
 

@@ -25,7 +25,7 @@ import org.miaixz.bus.core.instance.Instances;
  * An interface for logger factories.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Factory {
 

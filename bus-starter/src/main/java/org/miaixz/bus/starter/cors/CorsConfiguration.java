@@ -35,7 +35,7 @@ import java.util.Arrays;
  * filter based on the properties defined in {@link CorsProperties}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @EnableConfigurationProperties(value = { CorsProperties.class })
 public class CorsConfiguration {

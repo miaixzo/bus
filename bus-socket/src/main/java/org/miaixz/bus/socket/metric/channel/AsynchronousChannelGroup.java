@@ -36,7 +36,7 @@ import java.util.function.Consumer;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChannelGroup {
 

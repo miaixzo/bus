@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * A parser for Chinese numbers or currency amounts.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ChineseNumberParser {
 

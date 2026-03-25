@@ -29,7 +29,7 @@ import lombok.Setter;
  * Represents table information for an Oracle database.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

@@ -21,6 +21,6 @@
  * Provides cache implementations for authentication-related data.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.auth.cache;

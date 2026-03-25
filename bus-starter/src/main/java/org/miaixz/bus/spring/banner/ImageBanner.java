@@ -40,7 +40,7 @@ import java.util.Map.Entry;
  * luminance and color distance calculations to map image pixels to ASCII characters and ANSI colors.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ImageBanner {
 

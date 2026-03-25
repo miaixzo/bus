@@ -33,7 +33,7 @@ import jakarta.json.stream.JsonParser;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JsonImageWriterConfiguration extends JsonConfigurationExtension {
 

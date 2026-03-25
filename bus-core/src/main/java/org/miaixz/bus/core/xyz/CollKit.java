@@ -53,7 +53,7 @@ import org.miaixz.bus.core.text.CharsBacker;
  * A utility class for {@link Collection} and {@link Iterable} operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CollKit extends CollectionStream {
 

@@ -33,7 +33,7 @@ import java.io.PrintStream;
  * creates loggers accordingly.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Slf4jLoggingFactory extends AbstractFactory {
 

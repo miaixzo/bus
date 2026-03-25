@@ -38,7 +38,7 @@ import org.miaixz.bus.extra.image.ImageKit;
  * Implementations generate the image object by implementing the {@link #createImage(String)} method.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractProvider implements CaptchaProvider {
 

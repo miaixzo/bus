@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.vortex.support.mcp.client;
 
-import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.cortex.Assets;
 
 /**
  * An {@link McpClient} implementation for services that provide responses over a generic, streamable HTTP connection.
@@ -32,7 +32,7 @@ import org.miaixz.bus.vortex.Assets;
  * to process a {@code Flux<String>} or a similar reactive stream from the {@code WebClient} response.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class StreamableHttpClient extends HttpClient {
 

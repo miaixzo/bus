@@ -27,7 +27,7 @@ import java.io.Serial;
  * <em>all</em> underlying filters.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CombinedBloomFilter implements BloomFilter {
 

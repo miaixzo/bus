@@ -27,7 +27,7 @@ import org.miaixz.bus.pay.magic.Voucher;
  *
  * @param <T> The global object type, extending {@link Voucher}.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Provider<T extends Voucher> extends org.miaixz.bus.core.Provider {
 

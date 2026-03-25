@@ -34,7 +34,7 @@ import org.miaixz.bus.socket.metric.channel.AsynchronousSocketChannelProxy;
  * A plugin for monitoring idle I/O states.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class IdleStatePlugin<T> extends AbstractPlugin<T> {
 

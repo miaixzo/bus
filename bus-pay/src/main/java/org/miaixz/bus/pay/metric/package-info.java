@@ -21,6 +21,6 @@
  * Core components, all payments are implemented based on the {@code provider}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.pay.metric;

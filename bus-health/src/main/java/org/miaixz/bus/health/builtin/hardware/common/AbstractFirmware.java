@@ -27,7 +27,7 @@ import org.miaixz.bus.health.builtin.hardware.Firmware;
  * Firmware data.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 public abstract class AbstractFirmware implements Firmware {

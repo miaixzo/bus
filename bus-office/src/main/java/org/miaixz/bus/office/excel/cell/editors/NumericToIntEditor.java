@@ -26,7 +26,7 @@ import org.apache.poi.ss.usermodel.Cell;
  * type.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NumericToIntEditor implements CellEditor {
 

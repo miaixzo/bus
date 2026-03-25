@@ -29,7 +29,7 @@ import org.miaixz.bus.sensitive.magic.annotation.Shield;
  * visible and masks the characters in between.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CardProvider extends AbstractProvider {
 

@@ -21,6 +21,6 @@
  * Provides a utility class for reading and writing YAML files, based on the SnakeYAML library.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.setting.metric.yaml;

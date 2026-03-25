@@ -30,6 +30,6 @@
  * These classes are useful for returning multiple values from a method.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.core.lang.tuple;

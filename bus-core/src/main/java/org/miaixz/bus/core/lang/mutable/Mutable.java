@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.Optional;
  *
  * @param <T> The type of the wrapped value.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Mutable<T> {
 

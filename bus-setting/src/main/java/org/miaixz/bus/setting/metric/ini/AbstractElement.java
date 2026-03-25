@@ -25,7 +25,7 @@ import org.miaixz.bus.core.lang.Symbol;
  * an abstract class for {@link IniElement}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractElement implements IniElement {
 

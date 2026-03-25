@@ -27,7 +27,7 @@ import org.apache.lucene.analysis.cn.smart.SmartChineseAnalyzer;
  * "https://github.com/apache/lucene-solr/tree/master/lucene/analysis/smartcn">https://github.com/apache/lucene-solr/tree/master/lucene/analysis/smartcn</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SmartcnProvider extends AnalysisProvider {
 

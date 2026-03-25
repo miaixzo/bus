@@ -21,6 +21,6 @@
  * 服务及相关
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.metric.service;

@@ -27,7 +27,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Multi-string finder. Implemented using the Aho-Corasick automaton algorithm.
  * 
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MultiStringFinder {
 

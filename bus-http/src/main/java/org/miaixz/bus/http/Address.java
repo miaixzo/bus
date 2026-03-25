@@ -45,7 +45,7 @@ import java.util.Objects;
  * @author Kimi Liu
  * @see Connection
  * @see UnoUrl
- * @since Java 17+
+ * @since Java 21+
  */
 public final class Address {
 

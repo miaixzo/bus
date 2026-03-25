@@ -29,7 +29,7 @@ import org.miaixz.bus.setting.metric.ini.IniSectionService;
  * A formatter that parses a string value into an {@link IniSection} object.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SectionFormatter extends AbstractFormatter<IniSection> {
 

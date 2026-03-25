@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.ZoneKit;
  * setter method returns a new {@code DateBuilder} instance.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class DateBuilder {
 

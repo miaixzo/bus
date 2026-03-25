@@ -29,7 +29,7 @@ import java.io.OutputStream;
  * Inspired by Apache Commons IO.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class EmptyOutputStream extends OutputStream {
 

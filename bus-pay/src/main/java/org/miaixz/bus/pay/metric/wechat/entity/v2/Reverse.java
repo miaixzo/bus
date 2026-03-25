@@ -31,7 +31,7 @@ import lombok.experimental.SuperBuilder;
  * Reverse order model. Supports: general payment order reversal, face payment order reversal.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

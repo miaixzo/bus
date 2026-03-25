@@ -27,7 +27,7 @@ import org.miaixz.bus.health.builtin.software.common.AbstractOSFileStore;
  * OSFileStore implementation
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public class AixOSFileStore extends AbstractOSFileStore {

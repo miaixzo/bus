@@ -38,7 +38,7 @@ import com.sun.jna.platform.unix.LibCAPI.size_t;
  * Utility to query NetStat on macOS.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class NetStat {

@@ -27,7 +27,7 @@ import org.miaixz.bus.core.lang.intern.WeakIntern;
  * Utility class for creating canonical object generators (Interners).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class InternKit {
 

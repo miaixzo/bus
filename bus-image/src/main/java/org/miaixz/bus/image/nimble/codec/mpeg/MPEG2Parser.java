@@ -34,7 +34,7 @@ import org.miaixz.bus.image.nimble.codec.mp4.MP4FileType;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MPEG2Parser implements XPEGParser {
 

@@ -37,7 +37,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
  * Utility to query WMI class {@code Win32_Process} using cache
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class Win32ProcessCached {

@@ -27,7 +27,7 @@ import org.miaixz.bus.core.lang.Wrapper;
  *
  * @param <T> the type of the object being pooled
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Poolable<T> extends Wrapper<T> {
 

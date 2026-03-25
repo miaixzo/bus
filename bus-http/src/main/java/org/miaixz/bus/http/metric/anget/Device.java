@@ -29,7 +29,7 @@ import java.util.List;
  * Represents a device type, such as a phone, tablet, or desktop, parsed from a User-Agent string.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Device extends UserAgent {
 

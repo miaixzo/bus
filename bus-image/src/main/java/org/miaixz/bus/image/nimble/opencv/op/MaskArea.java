@@ -31,7 +31,7 @@ import org.opencv.imgproc.Imgproc;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MaskArea {
 

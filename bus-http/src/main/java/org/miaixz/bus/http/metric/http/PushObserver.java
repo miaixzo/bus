@@ -32,7 +32,7 @@ import java.util.List;
  * not guarantee that future frames will not arrive for the canceled stream ID.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface PushObserver {
 

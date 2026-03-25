@@ -21,7 +21,7 @@ package org.miaixz.bus.image.galaxy.dict.SPI_P_Private_CDS_Release_1;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PrivateTag {
 

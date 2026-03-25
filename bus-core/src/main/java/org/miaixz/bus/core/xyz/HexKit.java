@@ -37,7 +37,7 @@ import org.miaixz.bus.core.lang.Symbol;
  *
  * @author Kimi Liu
  * @see Hex
- * @since Java 17+
+ * @since Java 21+
  */
 public class HexKit extends Hex {
 

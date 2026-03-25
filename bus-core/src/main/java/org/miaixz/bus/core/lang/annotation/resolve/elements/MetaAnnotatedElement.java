@@ -54,7 +54,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * @param <T> The type of {@link AnnotationMapping} used for wrapping annotations.
  * @author Kimi Liu
  * @see ResolvedAnnotationMapping
- * @since Java 17+
+ * @since Java 21+
  */
 public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> implements AnnotatedElement, Iterable<T> {
 

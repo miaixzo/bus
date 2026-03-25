@@ -42,7 +42,7 @@ import org.miaixz.bus.core.lang.Assert;
  * @see Calendar#NOVEMBER
  * @see Calendar#DECEMBER
  * @see Calendar#UNDECIMBER
- * @since Java 17+
+ * @since Java 21+
  */
 public enum Month {
 

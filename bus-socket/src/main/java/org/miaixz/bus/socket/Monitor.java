@@ -41,7 +41,7 @@ import java.nio.channels.AsynchronousSocketChannel;
  * connection.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Monitor {
 

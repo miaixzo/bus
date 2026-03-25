@@ -30,7 +30,7 @@ import java.io.IOException;
  *
  * @param <T> The type of the data passed to the generic {@link #on(Object)} callback.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Callback<T> {
 

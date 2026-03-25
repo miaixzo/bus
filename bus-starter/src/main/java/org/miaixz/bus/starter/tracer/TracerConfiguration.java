@@ -29,7 +29,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  * as the entry point for setting up tracing-related beans.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @EnableConfigurationProperties(value = { TracerProperties.class })
 public class TracerConfiguration {

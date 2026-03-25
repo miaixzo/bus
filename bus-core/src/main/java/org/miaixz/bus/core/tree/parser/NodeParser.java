@@ -27,7 +27,7 @@ import org.miaixz.bus.core.tree.MapTree;
  * @param <T> The type of the source data object.
  * @param <E> The type of the node's identifier.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @FunctionalInterface
 public interface NodeParser<T, E> {

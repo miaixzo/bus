@@ -58,7 +58,6 @@ Bus primarily has versions 3.x, 5.x, 6.x, and 8.x, as detailed below:
 | [√]    | [bus-bom](bus-bom)            | Dependency management module, unified version control, supporting on-demand component loading |
 | [√]    | [bus-cache](bus-cache)        | Distributed caching service, supporting Redis/Memcached/Hessian multi-level caching solutions |
 | [√]    | [bus-core](bus-core)          | Core utility library, containing 20+ common utility classes for concurrency/reflection/date/collections |
-| [√]    | [bus-cron](bus-cron)          | Distributed task scheduling, supporting CRON expressions and cluster task coordination |
 | [√]    | [bus-crypto](bus-crypto)      | Encryption/decryption component, supporting AES/DES/SM4/MD5 algorithms and national cipher suites |
 | [√]    | [bus-extra](bus-extra)        | Extended functionality package, integrating peripheral services like FTP/QR code/MQ/file processing |
 | [√]    | [bus-gitlab](bus-gitlab)      | Deep GitLab integration, providing full lifecycle management for CI/CD/repositories/issues |
@@ -80,6 +79,7 @@ Bus primarily has versions 3.x, 5.x, 6.x, and 8.x, as detailed below:
 | [√]    | [bus-socket](bus-socket)      | Network communication framework, wrapping NIO/AIO to implement TCP/UDP/WebSocket communication |
 | [√]    | [bus-starter](bus-starter)    | SpringBoot starter, auto-assembly of core components and configurations |
 | [√]    | [bus-storage](bus-storage)    | Object storage service, supporting storage solutions like Alibaba Cloud OSS/Tencent Cloud COS/MinIO |
+| [√]    | [bus-tempus](bus-tempus)          | Distributed task scheduling, supporting CRON expressions and cluster task coordination |
 | [×]    | [bus-tracer](bus-tracer)      | Distributed tracing, integrating Zipkin/Pinpoint for full-link monitoring (in development) |
 | [√]    | [bus-validate](bus-validate)  | Parameter validation framework, extending JSR-303 annotations to support custom validation rules |
 | [√]    | [bus-vortex](bus-vortex)      | Reactive gateway, high-performance API gateway built on WebFlux |

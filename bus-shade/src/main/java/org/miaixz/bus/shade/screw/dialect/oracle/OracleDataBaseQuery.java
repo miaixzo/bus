@@ -51,7 +51,7 @@ import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
  * Extensions</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class OracleDataBaseQuery extends AbstractDatabaseQuery {
 

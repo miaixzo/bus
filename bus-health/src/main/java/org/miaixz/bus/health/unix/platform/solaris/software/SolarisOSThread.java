@@ -36,7 +36,7 @@ import com.sun.jna.Pointer;
  * OSThread implementation
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public class SolarisOSThread extends AbstractOSThread {

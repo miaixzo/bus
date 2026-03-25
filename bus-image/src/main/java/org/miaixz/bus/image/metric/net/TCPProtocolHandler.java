@@ -26,7 +26,7 @@ import org.miaixz.bus.image.metric.Connection;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface TCPProtocolHandler {
 

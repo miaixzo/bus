@@ -1,0 +1,12 @@
+{
+  "resources": {
+    "includes": [
+      {
+        "pattern": "META-INF/services/*"
+      },
+      {
+        "pattern": "META-INF/org.miaixz.bus.image/*"
+      }
+    ]
+  }
+}

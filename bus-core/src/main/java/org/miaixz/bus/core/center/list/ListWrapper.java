@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
  *
  * @param <E> The type of elements in the list.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
 

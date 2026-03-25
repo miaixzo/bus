@@ -46,7 +46,7 @@ import org.miaixz.bus.core.xyz.ZoneKit;
  *
  * @author Kimi Liu
  * @see FastDatePrinter
- * @since Java 17+
+ * @since Java 21+
  */
 public class FastDateParser extends SimpleDatePrinter implements PositionDateParser {
 

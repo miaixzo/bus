@@ -21,6 +21,6 @@
  * UID Dictionary from http___www_gemedicalsystems_com_it_solutions_orthoview_2_1
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.http___www_gemedicalsystems_com_it_solutions_orthoview_2_1;

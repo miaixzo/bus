@@ -39,7 +39,7 @@ import reactor.core.scheduler.Schedulers;
  * Generic type parameters: {@code Provider<Object, String>}
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class XmlProvider implements Provider<Object, String> {
 

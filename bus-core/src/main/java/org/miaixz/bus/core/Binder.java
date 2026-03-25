@@ -40,7 +40,7 @@ import lombok.RequiredArgsConstructor;
  * placeholders in string values.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @RequiredArgsConstructor
 public class Binder {

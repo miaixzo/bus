@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.Normal;
  * Each byte array has a single owning segment. The pos, limit, prev, and next references are not shared.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SectionBuffer {
 

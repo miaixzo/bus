@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * predicate. If the string is {@code null}, {@code null} is returned.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class StringTrimer implements UnaryOperator<CharSequence>, Serializable {
 

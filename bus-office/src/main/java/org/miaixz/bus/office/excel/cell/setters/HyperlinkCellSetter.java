@@ -26,7 +26,7 @@ import org.apache.poi.ss.usermodel.Hyperlink;
  * {@link CellSetter} for {@link Hyperlink} values.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HyperlinkCellSetter implements CellSetter {
 

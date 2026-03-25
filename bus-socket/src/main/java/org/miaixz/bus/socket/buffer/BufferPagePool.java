@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class BufferPagePool {
 

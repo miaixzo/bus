@@ -29,7 +29,7 @@ import org.miaixz.bus.sensitive.magic.annotation.Shield;
  * digits visible. For example: {@code "18233583070"} becomes {@code "182****3070"}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MobileProvider extends AbstractProvider {
 

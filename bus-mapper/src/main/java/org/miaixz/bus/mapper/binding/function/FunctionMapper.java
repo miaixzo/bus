@@ -34,7 +34,7 @@ import org.miaixz.bus.mapper.provider.FunctionProvider;
  *
  * @param <T> The type of the entity class.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface FunctionMapper<T> {
 

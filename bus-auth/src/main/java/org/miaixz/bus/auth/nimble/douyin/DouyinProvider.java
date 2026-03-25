@@ -42,7 +42,7 @@ import org.miaixz.bus.http.Httpx;
  * Douyin (TikTok) login provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DouyinProvider extends AbstractProvider {
 

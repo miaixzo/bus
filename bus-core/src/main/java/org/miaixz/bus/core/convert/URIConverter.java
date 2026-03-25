@@ -28,7 +28,7 @@ import java.net.URL;
  * Converter for URI objects
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class URIConverter extends AbstractConverter {
 

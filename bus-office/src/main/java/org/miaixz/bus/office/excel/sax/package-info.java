@@ -21,6 +21,6 @@
  * Provides encapsulated operations for Excel using SAX parsing.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.office.excel.sax;

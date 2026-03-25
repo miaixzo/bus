@@ -30,7 +30,7 @@ import org.miaixz.bus.core.cache.provider.LFUCache;
  * performance issues from frequent file reads.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LFUFileCache extends AbstractFileCache {
 

@@ -43,7 +43,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Component
 public class RuntimeContextBindingFilter extends OncePerRequestFilter {

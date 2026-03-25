@@ -21,7 +21,7 @@ package org.miaixz.bus.image.galaxy.dict.http___www_gemedicalsystems_com_it_solu
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PrivateKeyword {
 

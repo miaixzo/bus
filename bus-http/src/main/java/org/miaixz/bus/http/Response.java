@@ -43,7 +43,7 @@ import java.util.List;
  * resource that must be closed after reading and can only be consumed once.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class Response implements Closeable {
 

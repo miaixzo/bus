@@ -26,7 +26,7 @@ import org.miaixz.bus.image.galaxy.data.Code;
  * discontinuation or failure of a procedure step.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ProcedureReasons {
 

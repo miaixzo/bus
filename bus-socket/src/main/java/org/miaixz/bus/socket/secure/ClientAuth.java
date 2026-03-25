@@ -24,7 +24,7 @@ package org.miaixz.bus.socket.secure;
  * engines operating in server mode.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum ClientAuth {
     /**

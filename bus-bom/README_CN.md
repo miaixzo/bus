@@ -125,7 +125,7 @@ Bus BOM 管理所有 Bus 框架模块的版本:
 
 - **bus-image**: 图像处理
 - **bus-office**: Office 文档处理
-- **bus-cron**: 定时任务
+- **bus-tempus**: 定时任务
 - **bus-pay**: 支付集成
 - **bus-notify**: 通知服务
 - **bus-storage**: 存储抽象
@@ -144,7 +144,7 @@ Bus BOM 管理所有 Bus 框架模块的版本:
 - **bus-opencv**: OpenCV 集成
 - **bus-socket**: WebSocket 支持
 - **bus-health**: 健康检查
-- **bus-cron**: Cron 调度器
+- **bus-tempus**: Cron 调度器
 
 -----
 
@@ -194,7 +194,7 @@ Bus BOM 管理所有 Bus 框架模块的版本:
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-bom</artifactId>
-    <version>8.6.0</version> <!-- 更新此版本 -->
+    <version>8.x.x</version> <!-- 更新此版本 -->
     <type>pom</type>
     <scope>import</scope>
 </dependency>

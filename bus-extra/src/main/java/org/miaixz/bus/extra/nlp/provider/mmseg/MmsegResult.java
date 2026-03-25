@@ -33,7 +33,7 @@ import com.chenlb.mmseg4j.MMSeg;
  * <a href="https://github.com/chenlb/mmseg4j-core">https://github.com/chenlb/mmseg4j-core</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MmsegResult extends AbstractResult {
 

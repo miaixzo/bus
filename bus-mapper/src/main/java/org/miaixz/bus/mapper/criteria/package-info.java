@@ -21,6 +21,6 @@
  * Provides classes for encapsulating and building dynamic query conditions.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.mapper.criteria;

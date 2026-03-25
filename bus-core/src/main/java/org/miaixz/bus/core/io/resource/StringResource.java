@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.Charset;
  *
  * @author Kimi Liu
  * @see CharSequenceResource
- * @since Java 17+
+ * @since Java 21+
  */
 public class StringResource extends CharSequenceResource {
 

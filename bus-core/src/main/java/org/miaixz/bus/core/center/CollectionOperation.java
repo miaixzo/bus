@@ -41,7 +41,7 @@ import org.miaixz.bus.core.xyz.SetKit;
  *
  * @param <E> The type of elements in the collections.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CollectionOperation<E> {
 

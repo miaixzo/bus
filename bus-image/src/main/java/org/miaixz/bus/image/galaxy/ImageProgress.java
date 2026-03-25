@@ -32,7 +32,7 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
  * capabilities. This class also manages a list of {@link ProgressListener} to notify about progress updates.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ImageProgress implements CancelListener {
 

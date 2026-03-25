@@ -38,7 +38,7 @@ import com.sun.jna.Platform;
  * A CPU.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public abstract class AbstractCentralProcessor implements CentralProcessor {

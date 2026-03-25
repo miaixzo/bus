@@ -27,7 +27,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
  * Represents an exception indicating that an object or component has not been initialized.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NotInitedException extends UncheckedException {
 

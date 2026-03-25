@@ -46,7 +46,7 @@ import java.util.List;
  * defined in {@link ElasticProperties}.
  *
  * @author <a href="mailto:congchun.zheng@gmail.com">Sixawn.ZHENG</a>
- * @since Java 17+
+ * @since Java 21+
  */
 @EnableConfigurationProperties(value = { ElasticProperties.class })
 public class ElasticConfiguration {

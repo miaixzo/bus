@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.thread.*;
  * Thread pool utility class.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ThreadKit {
 

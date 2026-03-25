@@ -21,6 +21,6 @@
  * Provides a wrapper class for reading and handling {@code .properties} files with enhanced features.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.setting.metric.props;

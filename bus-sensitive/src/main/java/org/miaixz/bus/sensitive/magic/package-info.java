@@ -21,6 +21,6 @@
  * Provides core annotations and marker interfaces for the data desensitization framework.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.sensitive.magic;

@@ -63,7 +63,7 @@ import java.util.concurrent.TimeUnit;
  * This class also supports advanced features like HTTP/2 and WebSockets.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
 

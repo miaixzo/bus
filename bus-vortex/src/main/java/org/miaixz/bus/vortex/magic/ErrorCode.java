@@ -29,7 +29,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
  * are typically in the 116xxx range.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 
@@ -76,7 +76,7 @@ public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
     /**
      * Error code: 116005 - Unsupported interaction mode.
      * <p>
-     * Indicates that the configured {@code mode} in the {@link org.miaixz.bus.vortex.Assets} is not supported or
+     * Indicates that the configured {@code mode} in the {@link org.miaixz.bus.cortex.Assets} is not supported or
      * recognized by the current Vortex gateway instance.
      * </p>
      */

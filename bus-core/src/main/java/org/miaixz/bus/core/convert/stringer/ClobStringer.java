@@ -31,7 +31,7 @@ import org.miaixz.bus.core.xyz.IoKit;
  * Converts a {@link Clob} to a String.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ClobStringer implements Function<Object, String> {
 

@@ -27,7 +27,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * Zip security related classes, such as checking for Zip bomb vulnerabilities.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ZipSecurity {
 

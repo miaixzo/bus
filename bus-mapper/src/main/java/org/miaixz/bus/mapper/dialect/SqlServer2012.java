@@ -41,7 +41,7 @@ import org.miaixz.bus.mapper.parsing.ColumnMeta;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SqlServer2012 extends AbstractDialect {
 

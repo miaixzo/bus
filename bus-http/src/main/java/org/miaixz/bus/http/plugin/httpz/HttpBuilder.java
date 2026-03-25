@@ -48,7 +48,7 @@ import java.util.concurrent.TimeUnit;
  * {@link Httpd.Builder} to provide a simplified, chainable interface for setting up the underlying HTTP client.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HttpBuilder {
 

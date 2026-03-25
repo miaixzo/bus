@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * 10-digit Citizen Identification Number (CIN) for Taiwan, Hong Kong, and Macau.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CIN10 {
 

@@ -29,7 +29,7 @@ import java.nio.channels.AsynchronousChannelGroup;
  * A plugin that provides automatic reconnection functionality for clients upon disconnection.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 class ReconnectPlugin extends AbstractPlugin {
 

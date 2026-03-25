@@ -31,7 +31,7 @@ import java.util.function.Predicate;
  * @param <T> The type of the object being copied.
  * @param <C> The type of the copier itself, used for fluent programming (method chaining).
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class SrcToDestCopier<T, C extends SrcToDestCopier<T, C>> implements Copier<T>, Serializable {
 

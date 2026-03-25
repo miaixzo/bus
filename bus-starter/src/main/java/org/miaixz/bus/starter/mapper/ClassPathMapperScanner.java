@@ -19,6 +19,10 @@
 */
 package org.miaixz.bus.starter.mapper;
 
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.Set;
+
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
@@ -33,10 +37,6 @@ import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 
-import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.Set;
-
 /**
  * A {@link ClassPathBeanDefinitionScanner} that scans for and registers MyBatis mapper interfaces.
  * <p>
@@ -44,7 +44,7 @@ import java.util.Set;
  * a specific marker interface. If no annotation or marker interface is specified, it will scan for all interfaces.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
 

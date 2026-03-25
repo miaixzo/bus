@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.MethodKit;
  * @param <T> The type of the annotation being proxied.
  * @author Kimi Liu
  * @see AnnotationMapping
- * @since Java 17+
+ * @since Java 21+
  */
 public final class AnnotationMappingProxy<T extends Annotation> implements InvocationHandler {
 

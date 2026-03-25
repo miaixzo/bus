@@ -21,6 +21,6 @@
  * UID Dictionary from GEHC_CT_ADVAPP_001
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.GEHC_CT_ADVAPP_001;

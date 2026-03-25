@@ -38,7 +38,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * may provide no results or unchanging results depending on the motherboard manufacturer.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public interface Sensors {

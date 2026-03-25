@@ -33,7 +33,7 @@ import org.miaixz.bus.extra.mq.Producer;
  * Kafka {@link ProducerRecord}s.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class KafkaProducer implements Producer {
 

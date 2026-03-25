@@ -40,7 +40,7 @@ import org.miaixz.bus.http.Headers;
  * A logical bidirectional stream.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Http2Stream {
 

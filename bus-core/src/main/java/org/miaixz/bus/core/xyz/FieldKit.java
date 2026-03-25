@@ -38,7 +38,7 @@ import org.miaixz.bus.core.lang.reflect.field.FieldReflect;
  * Utility class for reflection on {@link Field}s.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class FieldKit {
 

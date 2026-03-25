@@ -31,7 +31,7 @@ import org.miaixz.bus.core.xyz.DateKit;
  * Represents the interval between two dates.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Between implements Serializable {
 

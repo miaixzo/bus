@@ -34,7 +34,7 @@ import com.chenlb.mmseg4j.Seg;
  * Project homepage: <a href="https://github.com/chenlb/mmseg4j-core">https://github.com/chenlb/mmseg4j-core</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MmsegProvider implements NLPProvider {
 

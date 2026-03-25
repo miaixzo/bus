@@ -24,6 +24,6 @@
  * for framework-specific events.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.spring.listener;

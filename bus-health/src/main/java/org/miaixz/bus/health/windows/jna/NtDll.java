@@ -32,7 +32,7 @@ import com.sun.jna.win32.W32APIOptions;
  * NtDll
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface NtDll extends com.sun.jna.platform.win32.NtDll {
 

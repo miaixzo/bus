@@ -43,7 +43,7 @@ import java.util.Map;
  * Github login provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class GithubProvider extends AbstractProvider {
 

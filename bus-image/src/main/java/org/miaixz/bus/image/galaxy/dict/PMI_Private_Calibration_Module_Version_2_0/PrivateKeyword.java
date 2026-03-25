@@ -21,7 +21,7 @@ package org.miaixz.bus.image.galaxy.dict.PMI_Private_Calibration_Module_Version_
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PrivateKeyword {
 

@@ -30,7 +30,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Decodes a Base58 encoded string into a byte array.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Base58Decoder implements Decoder<CharSequence, byte[]> {
 

@@ -29,7 +29,7 @@ import org.miaixz.bus.mapper.Order;
  * SPI interface for processing the final SQL script.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface SqlScriptWrapper extends Order {
 

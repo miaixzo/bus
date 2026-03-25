@@ -30,7 +30,7 @@ import org.miaixz.bus.health.IdGroup;
  * Utility to read info from {@code dmidecode}
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class Dmidecode {

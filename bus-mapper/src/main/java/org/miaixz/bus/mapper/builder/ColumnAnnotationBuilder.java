@@ -37,7 +37,7 @@ import jakarta.persistence.*;
  * field annotations to generate column information.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
 

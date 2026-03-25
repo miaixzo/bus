@@ -39,7 +39,7 @@ import org.miaixz.bus.core.net.url.UrlEncoder;
  * A resource loader for JAR files.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JarLoader extends ResourceLoader implements Loader {
 

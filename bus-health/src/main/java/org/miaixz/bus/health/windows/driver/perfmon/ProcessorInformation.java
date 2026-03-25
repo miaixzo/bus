@@ -34,7 +34,7 @@ import com.sun.jna.platform.win32.VersionHelpers;
  * Utility to query Processor performance counter
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class ProcessorInformation {

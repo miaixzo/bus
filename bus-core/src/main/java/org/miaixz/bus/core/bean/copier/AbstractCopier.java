@@ -31,7 +31,7 @@ import org.miaixz.bus.core.xyz.ReflectKit;
  * @param <S> The type of the source object.
  * @param <T> The type of the target object.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractCopier<S, T> implements Copier<T> {
 

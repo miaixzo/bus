@@ -22,6 +22,6 @@
  * if/when their code is incorporated into the JNA project.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.health.linux.jna;

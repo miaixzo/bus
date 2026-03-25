@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * waiting for the method to complete.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD })

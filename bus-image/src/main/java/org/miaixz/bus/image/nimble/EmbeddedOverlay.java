@@ -32,7 +32,7 @@ import org.miaixz.bus.logger.Logger;
  * This type of overlay has been retired in DICOM standard, but it is still used in some old DICOM files.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public record EmbeddedOverlay(int groupOffset, int bitPosition) {
 

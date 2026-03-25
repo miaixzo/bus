@@ -43,7 +43,7 @@ import jakarta.json.stream.JsonGenerator;
  * being read. See sample usage below.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JSONWriter implements ImageInputHandler {
 

@@ -30,7 +30,7 @@ import org.miaixz.bus.core.xyz.ListKit;
  * Represents CSV data, including header information and row data. Inspired by FastCSV.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CsvData implements Iterable<CsvRow>, Serializable {
 

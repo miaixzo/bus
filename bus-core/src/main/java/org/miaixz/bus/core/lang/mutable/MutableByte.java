@@ -28,7 +28,7 @@ import org.miaixz.bus.core.xyz.CompareKit;
  *
  * @author Kimi Liu
  * @see Byte
- * @since Java 17+
+ * @since Java 21+
  */
 public class MutableByte extends Number implements Comparable<MutableByte>, Mutable<Number> {
 

@@ -48,7 +48,7 @@ import java.util.List;
  * sends storage commitment requests (N-ACTION) and handles the subsequent asynchronous results (N-EVENT-REPORT).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class StgCmtSCU {
 

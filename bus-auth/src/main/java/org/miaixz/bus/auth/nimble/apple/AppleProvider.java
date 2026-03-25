@@ -49,7 +49,7 @@ import lombok.Data;
  * Apple login provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AppleProvider extends AbstractProvider {
 

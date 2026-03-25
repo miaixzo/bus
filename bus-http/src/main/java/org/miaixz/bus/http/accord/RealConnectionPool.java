@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit;
  * connections to multiple hosts. This class is thread-safe.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class RealConnectionPool {
 

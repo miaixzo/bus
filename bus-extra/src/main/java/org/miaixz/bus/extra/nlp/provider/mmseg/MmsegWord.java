@@ -28,7 +28,7 @@ import org.miaixz.bus.extra.nlp.NLPWord;
  * object to the common {@link NLPWord} interface, providing a unified way to access segmented word information.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MmsegWord implements NLPWord {
 

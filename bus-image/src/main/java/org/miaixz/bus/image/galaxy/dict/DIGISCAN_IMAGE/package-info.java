@@ -21,6 +21,6 @@
  * UID Dictionary from DIGISCAN_IMAGE
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.DIGISCAN_IMAGE;

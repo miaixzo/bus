@@ -26,7 +26,7 @@ import org.miaixz.bus.http.Httpv;
  * asynchronously and are ideal for tasks like adding authentication tokens, modifying headers, or logging requests.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Preprocessor {
 

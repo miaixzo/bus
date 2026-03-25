@@ -48,7 +48,7 @@ import lombok.experimental.SuperBuilder;
  * It handles the initialization of executor services and the binding of network connections.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

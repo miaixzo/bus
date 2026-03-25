@@ -31,7 +31,7 @@ import org.miaixz.bus.core.xyz.ArrayKit;
  *
  * @param <T> the type of elements to be compared.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ArrayCompare<T> implements Comparator<T> {
 

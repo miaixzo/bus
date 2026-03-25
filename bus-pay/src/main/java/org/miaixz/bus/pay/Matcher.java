@@ -25,7 +25,7 @@ import org.miaixz.bus.core.lang.Normal;
  * Transaction type matching, i.e., support for multi-scenario payment services.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Matcher extends Complex {
 

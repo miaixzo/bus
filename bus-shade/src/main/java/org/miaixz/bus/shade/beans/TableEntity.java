@@ -34,7 +34,7 @@ import java.util.List;
  * metadata about the project, author, database connection, table structure, and naming conventions.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

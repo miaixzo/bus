@@ -36,7 +36,7 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstraction
  * Graphics card info obtained by lshw
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 final class LinuxGraphicsCard extends AbstractGraphicsCard {

@@ -26,7 +26,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
  * Storage error codes, ranging from 113xxx.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 

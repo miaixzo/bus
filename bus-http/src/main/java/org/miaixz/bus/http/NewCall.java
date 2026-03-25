@@ -29,7 +29,7 @@ import java.io.IOException;
  * request/response pair (stream), it cannot be executed twice.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface NewCall extends Cloneable {
 

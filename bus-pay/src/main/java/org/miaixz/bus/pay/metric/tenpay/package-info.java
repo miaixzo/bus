@@ -21,6 +21,6 @@
  * This package contains the implementation for the Tenpay (QQ Wallet) payment provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.pay.metric.tenpay;

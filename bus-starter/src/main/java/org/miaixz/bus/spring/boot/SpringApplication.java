@@ -39,7 +39,7 @@ import org.springframework.core.io.ResourceLoader;
  * calculates the time taken and stores the statistics for later analysis.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SpringApplication extends org.springframework.boot.SpringApplication {
 

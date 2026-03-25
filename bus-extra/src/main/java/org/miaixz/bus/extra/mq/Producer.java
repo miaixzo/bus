@@ -26,7 +26,7 @@ import java.io.Closeable;
  * sending messages to an MQ broker.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Producer extends Closeable {
 

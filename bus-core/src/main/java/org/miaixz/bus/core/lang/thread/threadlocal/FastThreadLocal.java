@@ -31,7 +31,7 @@ import java.util.Set;
  *
  * @param <V> The type of the thread-local variable's value.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class FastThreadLocal<V> {
 

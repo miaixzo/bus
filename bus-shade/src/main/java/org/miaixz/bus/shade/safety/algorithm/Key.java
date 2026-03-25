@@ -24,7 +24,7 @@ package org.miaixz.bus.shade.safety.algorithm;
  * associated password, and the actual key material for encryption and decryption.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Key {
 

@@ -47,7 +47,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * of an image based on a set of rules.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ImagePlace {
 

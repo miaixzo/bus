@@ -28,7 +28,7 @@ import org.miaixz.bus.core.xyz.BeanKit;
  *
  * @param <T> the type of the bean to be compared.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PropertyCompare<T> extends FunctionCompare<T> {
 

@@ -33,7 +33,7 @@ import java.io.Serializable;
  * authorization platform.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

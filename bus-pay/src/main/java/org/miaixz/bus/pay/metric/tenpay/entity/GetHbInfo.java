@@ -31,7 +31,7 @@ import lombok.experimental.SuperBuilder;
  * Query Red Packet Info model.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

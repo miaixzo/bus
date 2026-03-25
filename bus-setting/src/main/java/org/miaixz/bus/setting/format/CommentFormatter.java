@@ -27,7 +27,7 @@ import org.miaixz.bus.setting.metric.ini.IniCommentService;
  * A formatter that parses a string value into an {@link IniComment} object.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CommentFormatter extends AbstractFormatter<IniComment> {
 

@@ -24,7 +24,7 @@ package org.miaixz.bus.shade.beans;
  * {@link ColumnType}s.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MySQLTypeConvert implements TypeConvert {
 

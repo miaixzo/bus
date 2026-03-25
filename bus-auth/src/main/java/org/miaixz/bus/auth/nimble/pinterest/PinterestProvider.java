@@ -43,7 +43,7 @@ import java.util.Objects;
  * Pinterest login provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PinterestProvider extends AbstractProvider {
 

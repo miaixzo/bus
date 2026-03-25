@@ -32,7 +32,7 @@ package org.miaixz.bus.core.io.file;
  * @see #MAC
  * @see #LINUX
  * @see #WINDOWS
- * @since Java 17+
+ * @since Java 21+
  */
 public enum LineSeparator {
 

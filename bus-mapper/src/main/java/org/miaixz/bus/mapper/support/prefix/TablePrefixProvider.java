@@ -116,7 +116,7 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * @see TablePrefixConfig
  * @see TablePrefixHandler
  * @see MapperProvider
- * @since Java 17+
+ * @since Java 21+
  */
 @FunctionalInterface
 public interface TablePrefixProvider extends MapperProvider<TablePrefixConfig> {

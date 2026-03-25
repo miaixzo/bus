@@ -40,7 +40,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
  * Enables queries of Performance Counters using wild cards to filter instances
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class PerfCounterWildcardQuery {

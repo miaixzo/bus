@@ -56,8 +56,8 @@ import java.util.stream.Collectors;
  * <strong>Usage Example:</strong>
  * 
  * <pre>{@code
- * // In a Servlet Filter:
- * public class XSSFilter implements Filter {
+ * // In a Servlet Vector:
+ * public class XSSFilter implements Vector {
  *
  *     @Override
  *     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -71,7 +71,7 @@ import java.util.stream.Collectors;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MutableRequestWrapper extends HttpServletRequestWrapper {
 

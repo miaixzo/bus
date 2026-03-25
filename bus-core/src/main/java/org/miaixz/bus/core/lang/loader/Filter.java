@@ -25,7 +25,7 @@ import java.net.URL;
  * A filter for resources.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Filter {
 

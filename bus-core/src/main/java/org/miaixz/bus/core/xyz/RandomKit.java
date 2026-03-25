@@ -38,7 +38,7 @@ import org.miaixz.bus.core.lang.selector.WeightRandomSelector;
  * Random utility class.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RandomKit {
 

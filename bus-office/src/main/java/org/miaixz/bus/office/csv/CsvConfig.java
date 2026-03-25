@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.Symbol;
  *
  * @param <T> The type of the subclass, used for returning {@code this}.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CsvConfig<T extends CsvConfig<T>> implements Serializable {
 

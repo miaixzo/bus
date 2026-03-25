@@ -31,7 +31,7 @@ import org.miaixz.bus.socket.buffer.WriteBuffer;
  * Abstract base class representing a network session.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class Session {
 

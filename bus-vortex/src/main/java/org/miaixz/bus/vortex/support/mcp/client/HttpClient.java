@@ -26,7 +26,7 @@ import java.util.Map;
 
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.vortex.support.mcp.Tool;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -40,7 +40,7 @@ import reactor.core.publisher.Mono;
  * subclasses if needed.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class HttpClient implements McpClient {
 

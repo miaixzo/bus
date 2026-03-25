@@ -29,7 +29,7 @@ import javax.net.ssl.X509TrustManager;
  * GET, POST, PUT, HEAD, and DELETE.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Httpz {
 

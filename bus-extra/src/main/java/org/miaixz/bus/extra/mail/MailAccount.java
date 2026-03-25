@@ -38,7 +38,7 @@ import org.miaixz.bus.setting.Setting;
  * details, authentication credentials, and connection settings.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MailAccount implements Serializable {
 

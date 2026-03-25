@@ -27,7 +27,7 @@ import java.io.Serial;
  * with 0x0000. Note: 0x8408 is the bit-reversed representation of 0x1021.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CRC16CCITT extends CRC16Checksum {
 

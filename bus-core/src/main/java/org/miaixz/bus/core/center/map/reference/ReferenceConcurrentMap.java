@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.ReferKit;
  * @param <K> The type of keys in the map.
  * @param <V> The type of values in the map.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class ReferenceConcurrentMap<K, V>
         implements ConcurrentMap<K, V>, Iterable<Map.Entry<K, V>>, Serializable {

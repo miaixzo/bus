@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.IoKit;
  * GZIP is a file compression format used in Unix systems. The basis of gzip is DEFLATE.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Gzip implements Closeable {
 

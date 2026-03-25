@@ -26,7 +26,7 @@ import org.miaixz.bus.storage.Context;
  * offer Wasabi-specific configurations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WasabiProvider extends GenericS3Provider {
 

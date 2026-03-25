@@ -32,7 +32,7 @@ import org.miaixz.bus.core.text.replacer.LookupReplacer;
  * entities.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Html4Unescape extends XmlUnescape {
 

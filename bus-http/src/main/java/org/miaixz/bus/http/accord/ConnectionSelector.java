@@ -39,7 +39,7 @@ import java.util.List;
  * created and used for a single connection attempt.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class ConnectionSelector {
 

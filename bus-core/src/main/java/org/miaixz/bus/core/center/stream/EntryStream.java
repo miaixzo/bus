@@ -41,7 +41,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * @param <K> the type of keys
  * @param <V> the type of values
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, EntryStream<K, V>> {
 

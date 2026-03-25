@@ -24,6 +24,6 @@
  * space conversions, filtering, feature detection, and other computer vision algorithms.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.opencv.imgproc;

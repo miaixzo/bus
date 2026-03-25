@@ -27,7 +27,7 @@ package org.miaixz.bus.socket.buffer;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface VirtualBufferFactory {
 

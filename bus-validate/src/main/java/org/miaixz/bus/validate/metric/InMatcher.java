@@ -29,7 +29,7 @@ import org.miaixz.bus.validate.magic.annotation.In;
  * Validator for the {@link In} annotation, checking if a value is present in a specified array of strings.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class InMatcher implements Matcher<Object, In> {
 

@@ -31,7 +31,7 @@ import java.util.function.Function;
  * @param <K> The type of keys in the map.
  * @param <V> The type of values in the map.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class FunctionKeyMap<K, V> extends CustomKeyMap<K, V> {
 

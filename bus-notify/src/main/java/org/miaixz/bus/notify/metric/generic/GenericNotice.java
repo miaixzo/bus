@@ -37,7 +37,7 @@ import lombok.experimental.SuperBuilder;
  * Represents the notice for generic email messages.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

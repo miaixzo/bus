@@ -26,7 +26,7 @@ import org.miaixz.bus.sensitive.Context;
  * A provider that performs no desensitization. It simply returns the original value as a string.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NoneProvider extends AbstractProvider {
 

@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.UrlKit;
  * A {@link ClassLoader} for loading classes from external JAR files.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JarClassLoader extends URLClassLoader {
 

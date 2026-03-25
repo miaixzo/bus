@@ -31,7 +31,7 @@ import lombok.experimental.SuperBuilder;
  * UnionPay Cloud QuickPass - Merchant Application model.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

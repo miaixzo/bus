@@ -30,7 +30,7 @@ import org.miaixz.bus.core.xyz.MapKit;
  * various header and payload configurations, supporting different signing algorithms.
  * 
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JWTCreator {
 

@@ -26,7 +26,7 @@ import java.util.function.Function;
  * IniElement, like {@code sections, properties, comments}. they all can be like {@link String} .
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface IniElement extends CharSequence, java.io.Serializable {
 

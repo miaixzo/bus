@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
  * Represents a Network Operating System (NOS), typically parsed from a User-Agent string.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NOS extends UserAgent {
 

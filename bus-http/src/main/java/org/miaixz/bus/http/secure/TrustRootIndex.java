@@ -25,7 +25,7 @@ import java.security.cert.X509Certificate;
  * An index of trusted root certificates.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface TrustRootIndex {
 

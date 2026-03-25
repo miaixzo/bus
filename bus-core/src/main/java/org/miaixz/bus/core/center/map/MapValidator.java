@@ -28,7 +28,7 @@ import java.util.Map;
  * A map is considered <b>empty</b> if it is {@code null} or contains no key-value mappings.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MapValidator {
 

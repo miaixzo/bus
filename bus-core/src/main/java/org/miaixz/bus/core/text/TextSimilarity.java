@@ -27,7 +27,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * strings primarily using variations of the Levenshtein distance and longest common subsequence algorithms.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TextSimilarity {
 

@@ -38,7 +38,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  * JSON serialization and deserialization functionalities using Jackson's {@link ObjectMapper}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JacksonProvider extends AbstractJsonProvider {
 

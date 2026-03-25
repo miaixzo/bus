@@ -34,7 +34,7 @@ import lombok.experimental.SuperBuilder;
  * camelCase conversion.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

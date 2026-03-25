@@ -51,7 +51,7 @@ import org.miaixz.bus.health.windows.software.WindowsOperatingSystem;
  * and {@link HardwareAbstractionLayer}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Platform {
 

@@ -269,7 +269,7 @@ writer.flush(FileKit.file("modified.docx"));
 
 ```java
 // Read CSV file
-CsvReader reader = CsvKit.getReader(FileKit.file("data.csv"), StandardCharsets.UTF_8);
+CsvReader reader = CsvKit.getReader(FileKit.file("data.csv"), Charset.UTF_8);
 CsvRow row;
 while ((row = reader.read()) != null) {
     List<String> fields = row.getRawList();
@@ -284,14 +284,14 @@ CsvReadConfig config = CsvReadConfig.builder()
     .ignoreEmptyRows(true)
     .build();
 
-CsvReader reader = CsvKit.getReader(FileKit.file("data.csv"), StandardCharsets.UTF_8, config);
+CsvReader reader = CsvKit.getReader(FileKit.file("data.csv"), Charset.UTF_8, config);
 ```
 
 #### Write CSV
 
 ```java
 // Write CSV file
-CsvWriter writer = CsvKit.getWriter("output.csv", StandardCharsets.UTF_8);
+CsvWriter writer = CsvKit.getWriter("output.csv", Charset.UTF_8);
 
 writer.writeRow(Arrays.asList("Name", "Age", "Email"));
 writer.writeRow(Arrays.asList("Alice", "25", "alice@example.com"));
@@ -300,7 +300,7 @@ writer.writeRow(Arrays.asList("Bob", "30", "bob@example.com"));
 writer.close();
 
 // Append to existing file
-CsvWriter writer = CsvKit.getWriter("output.csv", StandardCharsets.UTF_8, true);
+CsvWriter writer = CsvKit.getWriter("output.csv", Charset.UTF_8, true);
 writer.writeRow(Arrays.asList("Charlie", "35", "charlie@example.com"));
 writer.close();
 ```
@@ -538,8 +538,8 @@ for (List<Object> row : rows) {
 
 ```java
 // ✅ Recommended: Specify encoding explicitly
-CsvReader reader = CsvKit.getReader(file, StandardCharsets.UTF_8);
-CsvWriter writer = CsvKit.getWriter(file, StandardCharsets.UTF_8);
+CsvReader reader = CsvKit.getReader(file, Charset.UTF_8);
+CsvWriter writer = CsvKit.getWriter(file, Charset.UTF_8);
 
 // ❌ Not Recommended: Rely on platform default encoding
 CsvReader reader = CsvKit.getReader(file);
@@ -771,7 +771,7 @@ ExcelKit.readBySax("large.xlsx", 0, new RowHandler() { ... });
 **Solution**: Specify UTF-8 encoding explicitly
 
 ```java
-CsvWriter writer = CsvKit.getWriter("file.csv", StandardCharsets.UTF_8);
+CsvWriter writer = CsvKit.getWriter("file.csv", Charset.UTF_8);
 ```
 
 ### Issue: OFD conversion fails

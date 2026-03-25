@@ -31,7 +31,7 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractPowerSource;
  * A Power Source
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class AixPowerSource extends AbstractPowerSource {

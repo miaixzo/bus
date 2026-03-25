@@ -54,7 +54,7 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_process_t;
  * OSProcess implementation
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public class AixOSProcess extends AbstractOSProcess {

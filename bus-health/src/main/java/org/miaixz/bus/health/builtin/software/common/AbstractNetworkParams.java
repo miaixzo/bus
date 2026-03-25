@@ -37,7 +37,7 @@ import org.miaixz.bus.health.builtin.software.NetworkParams;
  * Common NetworkParams implementation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public abstract class AbstractNetworkParams implements NetworkParams {

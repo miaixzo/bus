@@ -31,7 +31,7 @@ import org.miaixz.bus.extra.nlp.NLPResult;
  * <a href="https://github.com/NLPchina/ansj_seg">https://github.com/NLPchina/ansj_seg</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AnsjProvider implements NLPProvider {
 

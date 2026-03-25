@@ -57,7 +57,7 @@ import java.util.*;
  * Caches HTTP and HTTPS responses to the filesystem so they can be reused, saving time and bandwidth.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Cache implements Closeable, Flushable {
 
@@ -752,8 +752,8 @@ public class Cache implements Closeable, Flushable {
          * @return The response.
          */
         public Response response(DiskLruCache.Snapshot snapshot) {
-            String contentType = responseHeaders.get("Content-Type");
-            String contentLength = responseHeaders.get("Content-Length");
+            String contentType = responseHeaders.get(HTTP.CONTENT_TYPE);
+            String contentLength = responseHeaders.get(HTTP.CONTENT_LENGTH);
             Request cacheRequest = new Request.Builder().url(url).method(requestMethod, null).headers(varyHeaders)
                     .build();
             return new Response.Builder().request(cacheRequest).protocol(protocol).code(code).message(message)

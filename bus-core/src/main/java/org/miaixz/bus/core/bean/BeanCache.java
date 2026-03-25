@@ -30,7 +30,7 @@ import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
  * A cache for Bean properties, designed to prevent performance issues caused by repeated reflection.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum BeanCache {
 

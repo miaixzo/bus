@@ -30,7 +30,7 @@ import lombok.Setter;
  * Represents the schema of a database, including its name and a list of its tables.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

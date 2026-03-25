@@ -31,7 +31,7 @@ import java.lang.annotation.*;
  * distributed tracing system. It will enable the setup of tracers, reporters, and context propagation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Inherited
 @Documented

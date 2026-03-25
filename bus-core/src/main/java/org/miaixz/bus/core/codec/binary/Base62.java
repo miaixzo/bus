@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  *
  * @author Kimi Liu
  * @see Base62Provider
- * @since Java 17+
+ * @since Java 21+
  */
 public class Base62 {
 

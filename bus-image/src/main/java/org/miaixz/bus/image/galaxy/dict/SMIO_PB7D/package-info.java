@@ -21,6 +21,6 @@
  * UID Dictionary from SMIO_PB7D
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.SMIO_PB7D;

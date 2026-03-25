@@ -51,7 +51,7 @@ import reactor.core.scheduler.Schedulers;
  * @author Kimi Liu
  * @see Limiter
  * @see LimiterRegistry
- * @since Java 17+
+ * @since Java 21+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE + 4)
 public class LimiterStrategy extends AbstractStrategy {

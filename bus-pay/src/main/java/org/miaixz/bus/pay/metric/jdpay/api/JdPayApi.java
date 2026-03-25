@@ -25,7 +25,7 @@ import org.miaixz.bus.pay.Matcher;
  * JD Pay APIs.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum JdPayApi implements Matcher {
 

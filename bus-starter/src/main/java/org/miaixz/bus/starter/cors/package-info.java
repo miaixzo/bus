@@ -21,6 +21,6 @@
  * Cross-origin resource sharing (CORS) management.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.starter.cors;

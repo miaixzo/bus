@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.CollectorKit;
  * @param <T> the type of the elements in the stream
  * @param <S> the type of the {@link TerminableWrappedStream} implementation itself
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface TerminableWrappedStream<T, S extends TerminableWrappedStream<T, S>> extends WrappedStream<T, S> {
 

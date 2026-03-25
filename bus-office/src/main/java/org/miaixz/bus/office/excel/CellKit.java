@@ -36,7 +36,7 @@ import org.miaixz.bus.office.excel.style.StyleSet;
  * Utility class for cell operations in Excel tables.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CellKit {
 

@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
  * all network interceptors, and finally the network caller.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RealInterceptorChain implements NewChain {
 

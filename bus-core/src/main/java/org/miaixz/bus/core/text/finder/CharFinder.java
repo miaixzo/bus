@@ -28,7 +28,7 @@ import org.miaixz.bus.core.xyz.CharKit;
  * Character finder. Finds the position information of a specified character within a string.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CharFinder extends TextFinder {
 

@@ -42,7 +42,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * dynamic registration and retrieval of payment providers.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PayService {
 

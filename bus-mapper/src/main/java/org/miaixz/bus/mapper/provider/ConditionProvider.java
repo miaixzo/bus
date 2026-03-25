@@ -31,7 +31,7 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * Provides dynamic SQL generation based on conditions for basic CRUD operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ConditionProvider {
 

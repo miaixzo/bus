@@ -29,15 +29,14 @@ import org.miaixz.bus.core.lang.EnumValue;
  * Represents modern Gregorian festivals.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SolarFestival extends Loops {
 
     /**
      * Names of solar festivals.
      */
-    public static final String[] NAMES = { "元旦", "三八妇女节", "植树节", "五一劳动节", "五四青年节", "六一儿童节", "建党节", "八一建军节", "教师节",
-            "国庆节" };
+    public static final String[] NAMES = { "元旦", "妇女节", "植树节", "劳动节", "青年节", "儿童节", "建党节", "建军节", "教师节", "国庆节" };
 
     /**
      * Data string containing festival information, including type, month, day, and start year.

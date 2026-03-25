@@ -25,7 +25,7 @@ import java.time.temporal.ChronoUnit;
  * Date and time units, each unit is based on milliseconds.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum Chrono {
 

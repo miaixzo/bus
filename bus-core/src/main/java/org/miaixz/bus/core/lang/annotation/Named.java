@@ -30,7 +30,7 @@ import org.miaixz.bus.core.lang.Normal;
  * purpose to {@code jakarta.inject.Named}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Binding
 @Retention(RetentionPolicy.RUNTIME)

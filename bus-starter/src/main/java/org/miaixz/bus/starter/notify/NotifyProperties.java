@@ -19,14 +19,15 @@
 */
 package org.miaixz.bus.starter.notify;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Map;
+
+import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.Registry;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Configuration properties for the message notification service.
@@ -35,7 +36,7 @@ import java.util.Map;
  * setter methods (e.g., from a database).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

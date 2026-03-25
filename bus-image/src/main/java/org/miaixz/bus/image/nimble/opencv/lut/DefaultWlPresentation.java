@@ -23,7 +23,7 @@ package org.miaixz.bus.image.nimble.opencv.lut;
  * Implementation of {@link WlPresentation}. No test is required for this class
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DefaultWlPresentation implements WlPresentation {
 

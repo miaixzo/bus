@@ -46,7 +46,7 @@ import org.miaixz.bus.core.xyz.RandomKit;
  * whether the length is 18 or 19, see: https://blog.csdn.net/unifirst/article/details/80408050
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Snowflake implements Serializable {
 

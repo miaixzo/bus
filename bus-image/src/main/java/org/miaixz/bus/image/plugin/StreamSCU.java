@@ -45,7 +45,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * lifecycle, including dynamic negotiation of presentation contexts and automatic closure of idle connections.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class StreamSCU {
 

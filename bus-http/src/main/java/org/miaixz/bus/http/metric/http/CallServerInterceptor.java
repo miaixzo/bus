@@ -36,7 +36,7 @@ import java.net.ProtocolException;
  * This is the last interceptor in the chain. It makes a network call to the server.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CallServerInterceptor implements Interceptor {
 
@@ -79,7 +79,7 @@ public class CallServerInterceptor implements Interceptor {
             // If there's a "Expect: 100-continue" header on the request, wait for a "HTTP/1.1 100
             // Continue" response before transmitting the request body. If we don't get that, return
             // what we did get (such as a 4xx response) without ever transmitting the request body.
-            if ("100-continue".equalsIgnoreCase(request.header("Expect"))) {
+            if ("100-continue".equalsIgnoreCase(request.header(HTTP.EXPECT))) {
                 exchange.flushRequest();
                 responseHeadersStarted = true;
                 exchange.responseHeadersStart();

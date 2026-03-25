@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * @param <A> The type of the array.
  * @param <E> The type of elements in the array.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
 

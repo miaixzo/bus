@@ -23,7 +23,7 @@ package org.miaixz.bus.core.center.date;
  * Represents an almanac, providing a name for a specific calendar or date system.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Almanac {
 

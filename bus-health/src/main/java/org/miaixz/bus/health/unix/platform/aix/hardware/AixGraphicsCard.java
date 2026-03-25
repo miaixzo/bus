@@ -36,7 +36,7 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractGraphicsCard;
  * Graphics Card info obtained from lscfg
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 final class AixGraphicsCard extends AbstractGraphicsCard {

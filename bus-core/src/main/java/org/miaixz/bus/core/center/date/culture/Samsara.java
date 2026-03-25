@@ -24,7 +24,7 @@ package org.miaixz.bus.core.center.date.culture;
  * It manages a list of names and a current index.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class Samsara extends Loops {
 
@@ -131,6 +131,29 @@ public abstract class Samsara extends Loops {
      */
     public int stepsTo(int targetIndex) {
         return indexOf(targetIndex - index);
+    }
+
+    /**
+     * Gets the number of steps to the target index when traversing in reverse order.
+     *
+     * @param targetIndex target index
+     * @return number of steps ({@code <= 0})
+     */
+    public int stepsBackTo(int targetIndex) {
+        int n = getSize();
+        return -((index - targetIndex + n) % n);
+    }
+
+    /**
+     * Gets the shortest number of steps to the target index.
+     *
+     * @param targetIndex target index
+     * @return number of steps ({@code >= 0} for forward traversal, {@code <= 0} for reverse traversal)
+     */
+    public int stepsCloseTo(int targetIndex) {
+        int d1 = stepsTo(targetIndex);
+        int d2 = stepsBackTo(targetIndex);
+        return d1 <= Math.abs(d2) ? d1 : d2;
     }
 
 }

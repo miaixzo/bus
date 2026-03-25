@@ -23,7 +23,7 @@ package org.miaixz.bus.pay.metric.tenpay;
  * Utility class for Tenpay (QQ Wallet) payments.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TenpayBuilder {
 

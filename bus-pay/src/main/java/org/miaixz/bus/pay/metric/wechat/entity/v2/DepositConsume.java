@@ -30,7 +30,7 @@ import org.miaixz.bus.pay.magic.Voucher;
  * Model for the Deposit Consume API.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

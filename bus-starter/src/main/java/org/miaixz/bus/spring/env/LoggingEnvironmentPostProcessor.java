@@ -38,7 +38,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
  * providing default values if not explicitly configured.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
 

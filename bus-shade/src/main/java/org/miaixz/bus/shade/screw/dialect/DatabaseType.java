@@ -36,7 +36,7 @@ import lombok.Getter;
  * Enumeration of supported database types.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum DatabaseType implements Serializable {
 

@@ -31,7 +31,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * both ends. If one side does not exist, the other side's removal is unaffected.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class StringStripper implements UnaryOperator<CharSequence>, Serializable {
 

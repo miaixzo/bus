@@ -46,7 +46,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  * @see <a href="https://stackoverflow.com/questions/23205020/java-sort-strings-like-windows-explorer">Java - Sort
  *      Strings like Windows Explorer</a>
- * @since Java 17+
+ * @since Java 21+
  */
 public class ExplorerCompare implements Comparator<CharSequence> {
 

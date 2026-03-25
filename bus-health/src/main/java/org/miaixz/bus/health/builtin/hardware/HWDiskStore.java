@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * stamp, and should externally synchronize such usage to ensure consistent calculations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public interface HWDiskStore {

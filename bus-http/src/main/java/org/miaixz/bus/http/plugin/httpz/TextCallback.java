@@ -30,7 +30,7 @@ import java.io.IOException;
  * An abstract {@link Callback} implementation for handling responses where the body is expected to be a text string.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class TextCallback implements Callback {
 

@@ -27,7 +27,7 @@ import org.bouncycastle.crypto.engines.SM4Engine;
  * {@link SM4Engine} for its underlying block cipher.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SM4Mac extends CBCBlockCipherMac {
 

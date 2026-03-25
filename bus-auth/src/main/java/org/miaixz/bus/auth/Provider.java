@@ -40,7 +40,7 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Provider extends org.miaixz.bus.core.Provider {
 

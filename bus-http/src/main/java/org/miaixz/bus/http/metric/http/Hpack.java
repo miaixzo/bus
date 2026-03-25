@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Dynamic entries are added to the array, moving forward from the last position. When the array is full, it is doubled.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Hpack {
 

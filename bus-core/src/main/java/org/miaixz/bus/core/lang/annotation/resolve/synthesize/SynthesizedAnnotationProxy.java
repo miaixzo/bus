@@ -1,0 +1,229 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
+package org.miaixz.bus.core.lang.annotation.resolve.synthesize;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.annotation.resolve.attribute.AnnotationAttributeValueProvider;
+import org.miaixz.bus.core.xyz.ClassKit;
+import org.miaixz.bus.core.xyz.MethodKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.StringKit;
+
+/**
+ * Proxy class for synthesized annotations, used to create dynamic proxy instances for {@link SynthesizedAnnotation}
+ * objects.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
+public class SynthesizedAnnotationProxy implements InvocationHandler {
+
+    /**
+     * Provider for annotation attribute values used when resolving proxied attribute calls.
+     */
+    private final AnnotationAttributeValueProvider annotationAttributeValueProvider;
+
+    /**
+     * The synthesized annotation being proxied.
+     */
+    private final SynthesizedAnnotation annotation;
+
+    /**
+     * Map of method name to handler function for all proxied methods.
+     */
+    private final Map<String, BiFunction<Method, Object[], Object>> methods;
+
+    /**
+     * Creates a proxy annotation instance. The generated proxy implements both {@link SynthesizedProxyAnnotation} and
+     * the specified annotation type.
+     *
+     * @param <T>                              the annotation type
+     * @param annotationType                   the annotation type to proxy
+     * @param annotationAttributeValueProvider the provider used to retrieve attribute values
+     * @param annotation                       the synthesized annotation to proxy
+     * @return the proxy annotation instance, or {@code null} if {@code annotation} is {@code null}
+     */
+    public static <T extends Annotation> T create(
+            final Class<T> annotationType,
+            final AnnotationAttributeValueProvider annotationAttributeValueProvider,
+            final SynthesizedAnnotation annotation) {
+        if (ObjectKit.isNull(annotation)) {
+            return null;
+        }
+        final SynthesizedAnnotationProxy proxyHandler = new SynthesizedAnnotationProxy(annotationAttributeValueProvider,
+                annotation);
+        return (T) Proxy.newProxyInstance(
+                annotationType.getClassLoader(),
+                new Class[] { annotationType, SynthesizedProxyAnnotation.class },
+                proxyHandler);
+    }
+
+    /**
+     * Creates a proxy annotation instance using the synthesized annotation itself as the attribute value provider. The
+     * generated proxy implements both {@link SynthesizedProxyAnnotation} and the specified annotation type.
+     *
+     * @param <T>            the annotation type
+     * @param annotationType the annotation type to proxy
+     * @param annotation     the synthesized annotation to proxy
+     * @return the proxy annotation instance, or {@code null} if {@code annotation} is {@code null}
+     */
+    public static <T extends Annotation> T create(
+            final Class<T> annotationType,
+            final SynthesizedAnnotation annotation) {
+        return create(annotationType, annotation, annotation);
+    }
+
+    /**
+     * Returns whether the given class is a proxy annotation class generated by {@link SynthesizedAnnotationProxy}.
+     *
+     * @param annotationType the annotation class to check
+     * @return {@code true} if the class was generated by this proxy
+     */
+    public static boolean isProxyAnnotation(final Class<?> annotationType) {
+        return ClassKit.isAssignable(SynthesizedProxyAnnotation.class, annotationType);
+    }
+
+    /**
+     * Constructs a new {@code SynthesizedAnnotationProxy}.
+     *
+     * @param annotationAttributeValueProvider the attribute value provider; must not be {@code null}
+     * @param annotation                       the synthesized annotation to proxy; must not be {@code null}
+     */
+    SynthesizedAnnotationProxy(final AnnotationAttributeValueProvider annotationAttributeValueProvider,
+            final SynthesizedAnnotation annotation) {
+        Assert.notNull(annotationAttributeValueProvider, "annotationAttributeValueProvider must not null");
+        Assert.notNull(annotation, "annotation must not null");
+        this.annotationAttributeValueProvider = annotationAttributeValueProvider;
+        this.annotation = annotation;
+        this.methods = new HashMap<>(9);
+        loadMethods();
+    }
+
+    /**
+     * Dispatches the proxied method call to the appropriate handler, or falls back to invoking the method directly on
+     * the original annotation.
+     *
+     * @param proxy  the proxy instance
+     * @param method the method being invoked
+     * @param args   the method arguments
+     * @return the result of the method invocation
+     * @throws Throwable if an error occurs during invocation
+     */
+    @Override
+    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+        return Optional.ofNullable(methods.get(method.getName())).map(m -> m.apply(method, args))
+                .orElseGet(() -> MethodKit.invoke(annotation.getAnnotation(), method, args));
+    }
+
+    /**
+     * Loads the method handler map, registering built-in proxy methods and user-defined annotation attribute methods.
+     */
+    void loadMethods() {
+        // Non-user attribute methods
+        methods.put("toString", (method, args) -> proxyToString());
+        methods.put("hashCode", (method, args) -> proxyHashCode());
+        methods.put("getSynthesizedAnnotation", (method, args) -> proxyGetSynthesizedAnnotation());
+        methods.put("getRoot", (method, args) -> annotation.getRoot());
+        methods.put("getVerticalDistance", (method, args) -> annotation.getVerticalDistance());
+        methods.put("getHorizontalDistance", (method, args) -> annotation.getHorizontalDistance());
+        methods.put("hasAttribute", (method, args) -> annotation.hasAttribute((String) args[0], (Class<?>) args[1]));
+        methods.put("getAttributes", (method, args) -> annotation.getAttributes());
+        methods.put("setAttribute", (method, args) -> {
+            throw new UnsupportedOperationException("proxied annotation can not reset attributes");
+        });
+        methods.put("getAttributeValue", (method, args) -> annotation.getAttributeValue((String) args[0]));
+        methods.put("annotationType", (method, args) -> annotation.annotationType());
+
+        // Synthesizable user-defined attribute methods
+        Stream.of(MethodKit.getDeclaredMethods(annotation.getAnnotation().annotationType()))
+                .filter(m -> !methods.containsKey(m.getName()))
+                .forEach(m -> methods.put(m.getName(), (method, args) -> proxyAttributeValue(method)));
+    }
+
+    /**
+     * Returns the string representation of the proxied annotation, including all attribute values.
+     *
+     * @return the string representation
+     */
+    private String proxyToString() {
+        final String attributes = Stream.of(MethodKit.getDeclaredMethods(annotation.getAnnotation().annotationType()))
+                .filter(MethodKit::isAttributeMethod)
+                .map(method -> StringKit.format("{}={}", method.getName(), proxyAttributeValue(method)))
+                .collect(Collectors.joining(", "));
+        return StringKit.format("@{}({})", annotation.annotationType().getName(), attributes);
+    }
+
+    /**
+     * Returns the hash code of this proxied annotation, based on the attribute value provider and the wrapped
+     * synthesized annotation.
+     *
+     * @return the hash code
+     */
+    private int proxyHashCode() {
+        return Objects.hash(annotationAttributeValueProvider, annotation);
+    }
+
+    /**
+     * Returns the underlying {@link SynthesizedAnnotation} wrapped by this proxy.
+     *
+     * @return the synthesized annotation
+     */
+    private Object proxyGetSynthesizedAnnotation() {
+        return annotation;
+    }
+
+    /**
+     * Retrieves the attribute value for the given attribute method from the annotation attribute value provider.
+     *
+     * @param attributeMethod the attribute method to retrieve the value for
+     * @return the attribute value
+     */
+    private Object proxyAttributeValue(final Method attributeMethod) {
+        return annotationAttributeValueProvider
+                .getAttributeValue(attributeMethod.getName(), attributeMethod.getReturnType());
+    }
+
+    /**
+     * Marker interface for synthesized proxy annotations generated by {@link SynthesizedAnnotationProxy}.
+     */
+    interface SynthesizedProxyAnnotation extends SynthesizedAnnotation {
+
+        /**
+         * Returns the {@link SynthesizedAnnotation} corresponding to this proxy annotation.
+         *
+         * @return the synthesized annotation corresponding to this proxy annotation
+         */
+        SynthesizedAnnotation getSynthesizedAnnotation();
+
+    }
+
+}

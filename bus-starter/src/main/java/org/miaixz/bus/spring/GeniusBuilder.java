@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.spring;
 
+import java.io.File;
+
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ClassKit;
@@ -27,8 +29,6 @@ import org.springframework.boot.SpringApplicationRunListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
-
-import java.io.File;
 
 /**
  * Global constant configuration for the Bus Spring Starter.
@@ -39,7 +39,7 @@ import java.io.File;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class GeniusBuilder {
 
@@ -165,9 +165,19 @@ public class GeniusBuilder {
     public static final String BANNER = Keys.BUS + Symbol.DOT + "banner";
 
     /**
+     * Property key for Bus authentication configuration.
+     */
+    public static final String AUTH = Keys.BUS + Symbol.DOT + "auth";
+
+    /**
      * Property key for Bus cache configuration.
      */
     public static final String CACHE = Keys.BUS + Symbol.DOT + "cache";
+
+    /**
+     * Property key for Bus Cortex registry and configuration center.
+     */
+    public static final String CORTEX = Keys.BUS + Symbol.DOT + "cortex";
 
     /**
      * Property key for Bus CORS configuration.
@@ -183,11 +193,6 @@ public class GeniusBuilder {
      * Property key for Bus Elasticsearch configuration.
      */
     public static final String ELASTIC = Keys.BUS + Symbol.DOT + "elastic";
-
-    /**
-     * Property key for Bus Vortex gateway configuration.
-     */
-    public static final String VORTEX = Keys.BUS + Symbol.DOT + "vortex";
 
     /**
      * Property key for Bus health configuration.
@@ -220,14 +225,14 @@ public class GeniusBuilder {
     public static final String MAPPER = Keys.BUS + Symbol.DOT + "mapper";
 
     /**
+     * Property key for Bus metrics configuration.
+     */
+    public static final String METRICS = Keys.BUS + Symbol.DOT + "metrics";
+
+    /**
      * Property key for Bus notify configuration.
      */
     public static final String NOTIFY = Keys.BUS + Symbol.DOT + "notify";
-
-    /**
-     * Property key for Bus authentication configuration.
-     */
-    public static final String AUTH = Keys.BUS + Symbol.DOT + "auth";
 
     /**
      * Property key for Bus office document processing configuration.
@@ -260,9 +265,19 @@ public class GeniusBuilder {
     public static final String TRACER = Keys.BUS + Symbol.DOT + "tracer";
 
     /**
+     * Property key for Bus distributed tempus configuration.
+     */
+    public static final String TEMPUS = Keys.BUS + Symbol.DOT + "tempus";
+
+    /**
      * Property key for Bus validation configuration.
      */
     public static final String VALIDATE = Keys.BUS + Symbol.DOT + "validate";
+
+    /**
+     * Property key for Bus Vortex gateway configuration.
+     */
+    public static final String VORTEX = Keys.BUS + Symbol.DOT + "vortex";
 
     /**
      * Property key for Bus request/response wrapper configuration.
@@ -344,7 +359,7 @@ public class GeniusBuilder {
     public static final String SPRING_BEANS_SMART_INSTANTIATE = "spring.beans.smart-initialize";
 
     /**
-     * Startup step name for Spring context BeanDefinitionRegistry post-processing.
+     * Startup step name for Spring context BeanDefinitionRegistrar post-processing.
      */
     public static final String SPRING_CONTEXT_BEANDEF_REGISTRY_POST_PROCESSOR = "spring.context.beandef-registry.post-process";
 

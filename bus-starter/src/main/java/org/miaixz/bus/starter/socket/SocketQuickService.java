@@ -34,7 +34,7 @@ import java.io.IOException;
  * server to be started and stopped along with the application.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SocketQuickService {
 

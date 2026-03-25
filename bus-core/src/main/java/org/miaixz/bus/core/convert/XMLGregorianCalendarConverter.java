@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Converter for date objects
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class XMLGregorianCalendarConverter extends AbstractConverter {
 

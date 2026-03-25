@@ -26,7 +26,7 @@ import com.sun.jna.Native;
  * project.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Kernel32 extends com.sun.jna.platform.win32.Kernel32 {
 

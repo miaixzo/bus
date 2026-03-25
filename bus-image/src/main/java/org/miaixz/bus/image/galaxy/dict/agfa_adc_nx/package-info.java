@@ -21,6 +21,6 @@
  * UID Dictionary from agfa_adc_nx
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.agfa_adc_nx;

@@ -21,6 +21,6 @@
  * UID Dictionary from PMS_THORA_5_1
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.PMS_THORA_5_1;

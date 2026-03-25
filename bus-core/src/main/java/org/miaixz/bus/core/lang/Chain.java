@@ -26,7 +26,7 @@ package org.miaixz.bus.core.lang;
  * @param <E> The type of elements in the chain.
  * @param <T> The type of the target class that implements this interface, used for fluent API (returning {@code this}).
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Chain<E, T> extends Iterable<E> {
 

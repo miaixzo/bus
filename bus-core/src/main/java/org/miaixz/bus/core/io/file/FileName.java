@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * components.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class FileName {
 
@@ -130,7 +130,7 @@ public class FileName {
         }
 
         for (final CharSequence specialSuffix : SPECIAL_SUFFIX) {
-            if (StringKit.endWith(fileName, "." + specialSuffix)) {
+            if (StringKit.endWith(fileName, Symbol.DOT + specialSuffix)) {
                 return StringKit.subPre(fileName, len - specialSuffix.length() - 1);
             }
         }
@@ -350,7 +350,7 @@ public class FileName {
         }
 
         final String suffix = getSuffix(fileName);
-        return StringKit.isBlank(suffix) ? newFileMainName : newFileMainName + "." + suffix;
+        return StringKit.isBlank(suffix) ? newFileMainName : newFileMainName + Symbol.DOT + suffix;
     }
 
     /**

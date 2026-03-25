@@ -31,7 +31,7 @@ import org.miaixz.bus.mapper.provider.EntityProvider;
  * @param <T> The type of the entity class.
  * @param <I> The type of the primary key.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface EntityMapper<T, I> extends ClassMapper<T> {
 

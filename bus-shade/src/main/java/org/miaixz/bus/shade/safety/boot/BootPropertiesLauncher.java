@@ -28,7 +28,7 @@ import org.springframework.boot.loader.launch.PropertiesLauncher;
  * encrypted Spring Boot applications configured via properties.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BootPropertiesLauncher extends PropertiesLauncher {
 

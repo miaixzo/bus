@@ -39,7 +39,7 @@ import org.miaixz.bus.crypto.Cipher;
  * handling of JCE (Java Cryptography Extension) ciphers.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cipher {
 

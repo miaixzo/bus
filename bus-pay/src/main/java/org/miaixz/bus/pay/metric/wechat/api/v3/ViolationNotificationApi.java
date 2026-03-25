@@ -25,7 +25,7 @@ import org.miaixz.bus.pay.Matcher;
  * WeChat Pay V3 API interfaces related to merchant violation notification callbacks.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum ViolationNotificationApi implements Matcher {
 

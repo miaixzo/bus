@@ -54,7 +54,7 @@ import org.miaixz.bus.http.metric.http.Http2Header;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Builder {
 

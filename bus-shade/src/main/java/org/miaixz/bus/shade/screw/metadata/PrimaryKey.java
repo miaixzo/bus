@@ -25,7 +25,7 @@ import java.io.Serializable;
  * Interface for primary key metadata.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface PrimaryKey extends Serializable {
 

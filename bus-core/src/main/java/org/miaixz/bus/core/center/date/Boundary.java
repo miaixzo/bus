@@ -30,7 +30,7 @@ import org.miaixz.bus.core.xyz.DateKit;
  * {@link Range} to specifically handle date and time intervals.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Boundary extends Range<DateTime> {
 

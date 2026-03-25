@@ -31,7 +31,7 @@ import java.util.List;
  * Model for the V3 Create Refund API.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

@@ -43,7 +43,7 @@ import org.miaixz.bus.pay.metric.AbstractProvider;
  * Alipay payment related interfaces
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AliPayProvider extends AbstractProvider<Voucher, Context> {
 

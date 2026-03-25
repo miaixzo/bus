@@ -27,7 +27,7 @@ import java.lang.reflect.Type;
  * {@code org.apache.ibatis.reflection.invoker.Invoker}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Invoker {
 

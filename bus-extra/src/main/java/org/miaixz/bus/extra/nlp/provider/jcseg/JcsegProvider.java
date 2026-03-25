@@ -37,7 +37,7 @@ import org.miaixz.bus.extra.nlp.NLPResult;
  * Project homepage: <a href="https://gitee.com/lionsoul/jcseg">https://gitee.com/lionsoul/jcseg</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JcsegProvider implements NLPProvider {
 

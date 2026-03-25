@@ -39,7 +39,7 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
  * WeChat Mini Program authorization login provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WeChatMiniProvider extends AbstractProvider {
 

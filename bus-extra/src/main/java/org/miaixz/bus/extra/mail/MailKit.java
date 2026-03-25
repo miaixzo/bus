@@ -38,7 +38,7 @@ import jakarta.mail.Session;
  * for conveniently sending plain text and HTML emails.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MailKit {
 

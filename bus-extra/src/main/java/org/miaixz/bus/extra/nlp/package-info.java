@@ -23,6 +23,6 @@
  * engines, allowing for flexible integration and interchangeability of NLP providers.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.extra.nlp;

@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * singleton pattern to ensure a single registry throughout the application.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Registry {
 

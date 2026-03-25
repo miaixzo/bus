@@ -29,7 +29,7 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * The default primary key enhancer, which handles primary key generation logic before insertion.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PrimaryKeyEnhancer implements SqlSourceEnhancer {
 

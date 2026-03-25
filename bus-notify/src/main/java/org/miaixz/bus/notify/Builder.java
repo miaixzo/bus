@@ -27,7 +27,7 @@ import lombok.ToString;
  * Builder for constructing notification messages or configurations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

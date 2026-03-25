@@ -30,7 +30,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * with caution in performance-critical applications.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class StackTraceCaller implements Caller, Serializable {
 

@@ -32,7 +32,7 @@ import org.apache.poi.ss.usermodel.RichTextString;
  * type.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CellSetterFactory {
 

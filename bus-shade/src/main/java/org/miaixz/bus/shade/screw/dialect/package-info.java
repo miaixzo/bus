@@ -21,6 +21,6 @@
  * Provides database dialect-specific query implementations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.shade.screw.dialect;

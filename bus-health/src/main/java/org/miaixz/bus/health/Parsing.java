@@ -51,7 +51,7 @@ import org.miaixz.bus.logger.Logger;
  * String parsing support.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class Parsing {

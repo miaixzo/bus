@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
  * A chain of interceptors that can process an HTTP request and response.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface NewChain {
 

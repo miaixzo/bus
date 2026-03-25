@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.RuntimeKit;
  *
  * @param <E> The type of elements held in this collection.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue<E> {
 

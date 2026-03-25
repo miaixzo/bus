@@ -29,7 +29,7 @@ import java.nio.file.WatchKey;
  * they need to implement specific file system event handling logic.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SimpleWatcher implements Watcher, Serializable {
 

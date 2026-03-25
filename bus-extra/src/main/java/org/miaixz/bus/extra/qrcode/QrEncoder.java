@@ -31,7 +31,7 @@ import com.google.zxing.common.BitMatrix;
  * Encoder for QR codes (and other barcodes), used to convert text content into a BitMatrix.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class QrEncoder implements Encoder<CharSequence, BitMatrix> {
 

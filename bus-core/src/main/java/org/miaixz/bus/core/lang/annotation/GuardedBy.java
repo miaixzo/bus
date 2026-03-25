@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Normal;
  * and concurrency libraries (e.g., JCIP - Java Concurrency in Practice).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Inherited
 @Documented

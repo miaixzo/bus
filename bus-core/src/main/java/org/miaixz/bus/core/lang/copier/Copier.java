@@ -25,7 +25,7 @@ package org.miaixz.bus.core.lang.copier;
  *
  * @param <T> The type of the copied target.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @FunctionalInterface
 public interface Copier<T> {

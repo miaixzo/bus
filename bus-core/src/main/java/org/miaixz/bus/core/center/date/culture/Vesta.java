@@ -26,7 +26,7 @@ import org.miaixz.bus.core.center.date.culture.lunar.LunarDay;
  * Represents Zao Ma Tou (the mount of the Kitchen God) in Chinese culture.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Vesta extends Loops {
 

@@ -47,7 +47,9 @@
 * **缓存穿透预防**：自动为 null 结果插入占位符
 * **SpEL 支持**：使用 Spring 表达语言动态生成缓存键
 * **条件缓存**：基于运行时条件通过 SpEL 进行缓存
-* **灵活过期**：每个条目或全局 TTL 配置
+* **灵活过期**：支持条目级或全局 TTL 配置，`CacheExpire.FOREVER`（`0`）表示永不过期
+* **TTL 续期**：`renew(key, expire)` 可在不改写键的前提下刷新已有条目的过期时间
+* **原子计数器**：`increment(key)` 可用于限流、序列号和轻量指标统计
 * **指标集成**：内置缓存命中率和监控
 * **多键缓存**：基于集合的缓存键批量操作
 
@@ -79,52 +81,48 @@
 
 #### 2. 配置缓存
 
+`CacheProperties`（`bus.cache.*`）支持以下字段：
+
+| 配置项 | 类型 | 说明 |
+| :--- | :--- | :--- |
+| `type` | `String` | `Collector` 实现类的全限定名 |
+| `prefix` | `String` | 应用于所有 Key 的全局缓存 Key 前缀 |
+| `timeout` | `String` | 默认过期时间（如 `"3600000"`，主要用于 Redis） |
+| `provider.url` | `String` | 数据库型 Collector 的 JDBC URL（MySQL、H2、SQLite 等） |
+| `provider.username` | `String` | 数据库用户名 |
+| `provider.password` | `String` | 数据库密码 |
+
+缓存实例（`MemoryCache`、`CaffeineCache`、`RedisCache` 等）是**接口类型**，必须注册为 Spring Bean，无法通过 YAML 直接绑定。
+
+**示例：内存 Collector（进程内，重启清零）**
+
 ```yaml
-# application.yml
 bus:
   cache:
-    # 全局启用/禁用缓存
-    enable: true
+    type: org.miaixz.bus.cache.collect.MemoryCollector
+    prefix: myapp
+```
 
-    # 默认缓存过期时间（毫秒）
-    expire: 3600000  # 1 小时
+**示例：MySQL 持久化 Collector（重启不丢数据）**
 
-    # 缓存穿透预防
-    prevent: true
+```yaml
+bus:
+  cache:
+    type: org.miaixz.bus.cache.collect.MySQLCollector
+    prefix: myapp
+    provider:
+      url: jdbc:mysql://localhost:3306/mydb
+      username: root
+      password: secret
+```
 
-    # 缓存配置
-    caches:
-      # 本地内存缓存
-      - name: memory
-        type: memory
-        maximumSize: 1000
-        expireAfterWrite: 180000  # 3 分钟
-        expireAfterAccess: 0
+**示例：bus-metrics 适配器（Prometheus / Micrometer / OTel）**
 
-      # Caffeine 缓存
-      - name: caffeine
-        type: caffeine
-        maximumSize: 10000
-        expireAfterWrite: 3600000
-        expireAfterAccess: 600000
-        initialCapacity: 100
-
-      # Redis 缓存
-      - name: redis
-        type: redis
-        host: localhost
-        port: 6379
-        timeout: 2000
-        expire: 3600000
-
-      # Redis 集群
-      - name: redisCluster
-        type: redis-cluster
-        nodes:
-          - localhost:7000
-          - localhost:7001
-          - localhost:7002
-        expire: 3600000
+```yaml
+bus:
+  cache:
+    type: org.miaixz.bus.metrics.builtin.CacheMetricsAdapter
+    prefix: myapp
 ```
 
 #### 3. 启用缓存
@@ -384,6 +382,9 @@ public class RedisCacheConfig {
 }
 ```
 
+`RedisCache` 实现了 `AutoCloseable`。调用 `close()` 或使用 try-with-resources 可归还所有连接池资源。
+在 Spring 容器中，`@PreDestroy` 注解会自动触发关闭。
+
 #### Redis 集群
 
 ```java
@@ -407,7 +408,72 @@ public class RedisClusterConfig {
 }
 ```
 
-### 5. 缓存指标和监控
+`RedisClusterCache` 同样实现了 `AutoCloseable`。
+
+> **集群 scan 限制**：Redis Cluster 不支持通过单一游标进行跨槽 `SCAN`。
+> `RedisClusterCache.scan(prefix)` 只能覆盖从游标 `"0"` 可达的分片。
+> 如需完整覆盖所有分片，请通过哈希标签（如 `{ns}:key`）将所有键路由到同一槽。
+
+### 5. CacheX 高级操作
+
+#### 永不过期条目
+
+将 `CacheExpire.FOREVER`（`0`）作为过期时间参数，可持久化保存条目：
+
+```java
+// 存储永不过期的配置
+cache.write("global:config", config, CacheExpire.FOREVER);
+```
+
+各实现对此合约的处理方式：
+- `MemoryCache` — TTL 检查中永不驱逐该条目
+- `RedisCache` / `RedisClusterCache` — 使用不带 `PX` 的普通 `SET` 命令
+- `MemcachedCache` — 退化为 Memcached 协议的最大 TTL（30 天）
+
+#### TTL 续期（`renew`）
+
+在不重写值的前提下延长已有条目的生存时间：
+
+```java
+// 每次用户操作时刷新 Session TTL
+boolean refreshed = cache.renew(sessionKey, CacheExpire.HALF_HOUR);
+if (!refreshed) {
+    // 键已过期 — 重建 Session
+}
+```
+
+`RedisCache` 和 `RedisClusterCache` 通过单条 `PEXPIRE` 命令实现 `renew`。
+`MemoryCache` 及其他实现则采用先读后写的默认逻辑。
+
+#### 原子计数器（`increment`）
+
+原子地递增计数器并返回新值：
+
+```java
+// 限流：按客户端和分钟跟踪请求次数
+long count = cache.increment("ratelimit:" + clientId + ":" + minute);
+if (count > MAX_REQUESTS_PER_MINUTE) {
+    throw new RateLimitException();
+}
+```
+
+- Redis：基于原生 `INCR` 命令 — 高并发下原子性有保障。
+- MemoryCache：基于 `AtomicLong` — 同样线程安全。
+- 计数器首次调用时从 `1` 开始（键以 `0` 创建后递增）。
+- 计数器键默认无 TTL；如需重置，请显式调用 `remove()`。
+
+#### 前缀扫描（`scan`）
+
+检索所有键以指定前缀开头的条目：
+
+```java
+// 获取某命名空间下所有缓存条目
+Map<String, Object> items = cache.scan("product:category:electronics:");
+```
+
+> **注意**：对于 `RedisClusterCache`，不完全支持跨分片扫描。请参见上方集群 scan 限制说明。
+
+### 6. 缓存指标和监控
 
 #### 访问缓存统计
 
@@ -416,10 +482,10 @@ public class RedisClusterConfig {
 public class CacheMonitorService {
 
     @Autowired
-    private Metrics cacheMetrics;
+    private Collector cacheCollector;
 
     public void printCacheStats() {
-        Map<String, Snapshot> stats = cacheMetrics.getHitting();
+        Map<String, Snapshot> stats = cacheCollector.getHitting();
 
         stats.forEach((pattern, snapshot) -> {
             System.out.println("缓存模式：" + pattern);
@@ -430,7 +496,7 @@ public class CacheMonitorService {
     }
 
     public void resetCacheStats(String pattern) {
-        cacheMetrics.reset(pattern);
+        cacheCollector.reset(pattern);
     }
 }
 ```
@@ -483,7 +549,7 @@ public class CaffeineCacheService {
 }
 ```
 
-### 6. 缓存穿透预防
+### 7. 缓存穿透预防
 
 ```java
 @Service
@@ -510,7 +576,7 @@ public class SecureUserService {
 }
 ```
 
-### 7. 条件缓存
+### 8. 条件缓存
 
 ```java
 @Service
@@ -548,7 +614,7 @@ public class ConditionalCacheService {
 }
 ```
 
-### 8. 自定义序列化器
+### 9. 自定义序列化器
 
 ```java
 @Configuration
@@ -614,7 +680,7 @@ public Config getConfig(String key) {
 // ❌ 不推荐：动态数据无过期时间
 @Cached(name = "redis", prefix = "price:", expire = CacheExpire.FOREVER)
 public Price getPrice(String productId) {
-    // 将永远提供陈旧数据
+    // FOREVER = 0：条目持久保存直到被显式移除 — 将永久提供陈旧数据
 }
 ```
 
@@ -674,7 +740,7 @@ public Product getProduct(String productId) {
 // ✅ 推荐：定期监控和告警
 @Scheduled(fixedRate = 60000)  // 每分钟
 public void monitorCache() {
-    Map<String, Snapshot> stats = cacheMetrics.getHitting();
+    Map<String, Snapshot> stats = cacheCollector.getHitting();
 
     stats.forEach((pattern, snapshot) -> {
         double hitRate = Double.parseDouble(snapshot.getRate().replace("%", ""));
@@ -706,6 +772,27 @@ public UserSettings getUserSettings(String userId) {
 public Object getData(String type, String id) {
     // 容易冲突，难以失效
 }
+```
+
+### 7. 始终关闭缓存资源
+
+所有持有外部连接的缓存实现（`RedisCache`、`RedisClusterCache`、`MemcachedCache`）均实现了
+`AutoCloseable`。不再使用时请释放资源：
+
+```java
+// ✅ Spring bean：@PreDestroy 会自动触发 — 无需手动调用 close()
+@Bean
+public CacheX<String, Object> redisCache(JedisPool jedisPool) {
+    return new RedisCache<>(jedisPool);  // 上下文关闭时自动释放
+}
+
+// ✅ 非 Spring 场景：使用 try-with-resources
+try (RedisCache<String, Object> cache = new RedisCache<>(jedisPool)) {
+    cache.write("key", value, CacheExpire.ONE_HOUR);
+}
+
+// ✅ 仅需续期时，优先使用 renew() 而非先读后写
+boolean extended = cache.renew(sessionKey, CacheExpire.HALF_HOUR);
 ```
 
 -----

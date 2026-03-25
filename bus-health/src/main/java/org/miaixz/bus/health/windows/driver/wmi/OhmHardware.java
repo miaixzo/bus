@@ -30,7 +30,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
  * Utility to query Open Hardware Monitor WMI data for Hardware
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class OhmHardware {

@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.PredicateKit;
  * A utility class that encapsulates operations on NIO {@link Path} objects.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PathResolve {
 

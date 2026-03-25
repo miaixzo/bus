@@ -26,7 +26,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
  * Authorization error codes: 110xxx.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {

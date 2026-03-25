@@ -21,6 +21,6 @@
  * Bean path, which finds or sets the value in an object or sub-object through a path expression.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.core.bean.path;

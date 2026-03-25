@@ -41,7 +41,7 @@ import reactor.core.publisher.Mono;
  * format specified in the request context (e.g., XML).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE + 5)
 public class ResponseStrategy extends AbstractStrategy {

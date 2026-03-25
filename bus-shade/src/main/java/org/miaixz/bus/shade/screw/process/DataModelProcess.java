@@ -35,7 +35,7 @@ import org.miaixz.bus.shade.screw.metadata.*;
  * Processes the database schema to create a data model for documentation generation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DataModelProcess extends AbstractProcess {
 

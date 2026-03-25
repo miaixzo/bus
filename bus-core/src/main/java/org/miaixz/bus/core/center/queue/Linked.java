@@ -26,7 +26,7 @@ import java.util.Deque;
  *
  * @param <T> 值类型
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Linked<T extends Linked<T>> {
 

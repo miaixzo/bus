@@ -41,7 +41,7 @@ import org.miaixz.bus.office.excel.style.StyleSet;
  * Utility class for {@link Row} operations in Excel.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RowKit {
 

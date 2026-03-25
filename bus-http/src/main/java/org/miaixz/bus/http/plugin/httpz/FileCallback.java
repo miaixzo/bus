@@ -32,7 +32,7 @@ import java.io.*;
  * response body and streams it to a file or provides an {@link InputStream} to the appropriate callback.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class FileCallback implements Callback {
 

@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.Assert;
  *
  * @param <T> the type of elements being iterated over
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PartitionIterator<T> implements IterableIterator<List<T>>, Serializable {
 

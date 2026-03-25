@@ -34,7 +34,7 @@ import java.util.Objects;
  * enum.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class InEnumMatcher implements Matcher<Object, InEnum> {
 

@@ -38,7 +38,7 @@ import java.util.Map;
  * the DICOM Part 18.F standard. It uses a {@link JSONWriter} to handle the conversion logic.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Dcm2Json {
 

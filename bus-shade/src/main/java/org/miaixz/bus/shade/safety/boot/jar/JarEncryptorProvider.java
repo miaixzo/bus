@@ -44,7 +44,7 @@ import org.miaixz.bus.shade.safety.streams.AlwaysOutputStream;
  * class to a custom launcher.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry> implements EncryptorProvider {
 

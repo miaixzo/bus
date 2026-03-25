@@ -32,7 +32,7 @@ import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
  * <a href="https://github.com/hierynomus/sshj">https://github.com/hierynomus/sshj</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SshjKit {
 

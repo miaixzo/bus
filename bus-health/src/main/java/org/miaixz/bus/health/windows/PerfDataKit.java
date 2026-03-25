@@ -45,7 +45,7 @@ import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
  * and remove counters.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class PerfDataKit {

@@ -23,6 +23,6 @@
  * <a href="http://www.jcraft.com/jsch/">http://www.jcraft.com/jsch/</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.extra.ssh.provider.jsch;

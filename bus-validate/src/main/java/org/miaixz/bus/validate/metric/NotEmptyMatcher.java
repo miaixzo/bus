@@ -29,7 +29,7 @@ import org.miaixz.bus.validate.magic.annotation.NotEmpty;
  * is null, an empty string, an empty collection, an empty map, or an empty array.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NotEmptyMatcher implements Matcher<Object, NotEmpty> {
 

@@ -33,7 +33,7 @@ import org.miaixz.bus.sensitive.metric.StrategyProvider;
  * information. It can also be used within {@link NShield} to define rules for keys in a JSON string.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Documented
 @Target({ ElementType.FIELD })

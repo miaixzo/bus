@@ -41,7 +41,7 @@ import org.miaixz.bus.image.nimble.stream.ImageDescriptor;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PresentationLutObject implements PresentationStateLut {
 

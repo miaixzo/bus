@@ -32,7 +32,7 @@ import org.miaixz.bus.core.io.timout.Timeout;
  * protocol. This interface can be adapted to an {@code OutputStream} via {@link BufferSink#outputStream()}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Sink extends Closeable, Flushable {
 

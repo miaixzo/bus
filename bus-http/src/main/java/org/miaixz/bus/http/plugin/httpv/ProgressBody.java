@@ -35,7 +35,7 @@ import java.util.concurrent.Executor;
  * a callback with progress updates as data is being written to the network.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ProgressBody extends RequestBody {
 

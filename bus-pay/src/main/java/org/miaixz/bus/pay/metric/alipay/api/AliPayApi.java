@@ -25,7 +25,7 @@ import org.miaixz.bus.pay.Matcher;
  * Alipay Transaction APIs.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum AliPayApi implements Matcher {
 

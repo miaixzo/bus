@@ -30,7 +30,7 @@ import lombok.Setter;
  * Enumeration of supported template types for document generation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum TemplateType implements Serializable {
 

@@ -29,7 +29,7 @@ import org.miaixz.bus.limiter.magic.FlowGrade;
  * threshold.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Inherited
 @Documented

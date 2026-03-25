@@ -27,7 +27,7 @@ import org.miaixz.bus.sensitive.Context;
  * An interface for defining a custom data desensitization strategy.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface StrategyProvider extends Provider {
 

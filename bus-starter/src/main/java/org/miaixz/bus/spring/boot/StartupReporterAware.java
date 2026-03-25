@@ -30,7 +30,7 @@ import org.springframework.beans.factory.Aware;
  * {@link StartupReporter} instance.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface StartupReporterAware extends Aware {
 

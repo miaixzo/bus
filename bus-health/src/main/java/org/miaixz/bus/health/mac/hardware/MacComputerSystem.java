@@ -42,7 +42,7 @@ import com.sun.jna.platform.mac.IOKitUtil;
  * Hardware data obtained from ioreg.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 final class MacComputerSystem extends AbstractComputerSystem {

@@ -60,7 +60,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class StopWatch {
 
@@ -323,6 +323,16 @@ public class StopWatch {
      */
     public double getTotalTimeSeconds() {
         return DateKit.nanosToSeconds(this.totalTimeNanos);
+    }
+
+    /**
+     * Gets the elapsed time from start to now (in milliseconds), formatted as: XX days XX hours XX minutes XX seconds
+     * XX milliseconds.
+     *
+     * @return The elapsed time from start to now (in milliseconds).
+     */
+    public String getTotalTimePretty() {
+        return DateKit.formatBetween(getTotalTimeMillis());
     }
 
     /**

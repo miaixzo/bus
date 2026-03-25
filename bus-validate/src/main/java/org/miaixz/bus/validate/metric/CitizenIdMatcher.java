@@ -30,7 +30,7 @@ import org.miaixz.bus.validate.magic.annotation.CitizenId;
  * Validator for Chinese citizen ID numbers.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CitizenIdMatcher implements Matcher<Object, CitizenId> {
 

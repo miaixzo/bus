@@ -25,7 +25,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Validator for configuration classes.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Checker {
 

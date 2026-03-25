@@ -21,6 +21,6 @@
  * Internationalization (i18n) support.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.starter.i18n;

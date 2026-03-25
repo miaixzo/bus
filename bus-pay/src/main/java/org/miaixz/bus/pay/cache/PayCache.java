@@ -29,7 +29,7 @@ import org.miaixz.bus.cache.metric.MemoryCache;
  * Default cache implementation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum PayCache implements CacheX<String, Object> {
 

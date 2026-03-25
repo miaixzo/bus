@@ -21,8 +21,8 @@ package org.miaixz.bus.starter.pay;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.pay.Context;
-import org.miaixz.bus.pay.Registry;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -35,7 +35,7 @@ import java.util.Map;
  * setter methods (e.g., from a database).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

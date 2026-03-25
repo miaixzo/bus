@@ -19,6 +19,9 @@
 */
 package org.miaixz.bus.starter.notify;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.notify.Context;
@@ -43,9 +46,6 @@ import org.miaixz.bus.notify.metric.wechat.WechatKfProvider;
 import org.miaixz.bus.notify.metric.wechat.WechatMiniProvider;
 import org.miaixz.bus.notify.metric.wechat.WechatMpProvider;
 import org.miaixz.bus.notify.metric.yunpian.YunpianSmsProvider;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A service provider class for managing and creating various message notification provider instances. This class
@@ -75,7 +75,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NotifyService {
 

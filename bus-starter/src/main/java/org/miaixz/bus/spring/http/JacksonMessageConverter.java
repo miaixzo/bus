@@ -54,7 +54,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
  * annotations via a custom {@link PropertyFilter}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Component
 @ConditionalOnClass({ ObjectMapper.class })

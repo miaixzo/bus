@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.vortex.registry;
 
-import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.cortex.Assets;
 
 /**
  * A specialized, in-memory registry for managing API {@link Assets}.
@@ -30,7 +30,7 @@ import org.miaixz.bus.vortex.Assets;
  * @author Kimi Liu
  * @see AbstractRegistry
  * @see Assets
- * @since Java 17+
+ * @since Java 21+
  */
 public class AssetsRegistry extends AbstractRegistry<Assets> {
 

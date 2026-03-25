@@ -44,7 +44,7 @@ import org.miaixz.bus.crypto.builtin.asymmetric.Asymmetric;
  * Signature wrapper class for {@link Signature}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Sign extends Asymmetric<Sign> {
 

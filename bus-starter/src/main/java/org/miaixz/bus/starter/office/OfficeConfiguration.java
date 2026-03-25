@@ -32,7 +32,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  * conversion, conditional on their presence in the classpath.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ConditionalOnClass({ LocalOfficeProvider.class, OnlineOfficeProvider.class })
 @EnableConfigurationProperties(value = { OfficeProperties.class })

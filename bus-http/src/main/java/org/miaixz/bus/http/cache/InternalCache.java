@@ -29,7 +29,7 @@ import java.io.IOException;
  * should use {@link Cache} to configure a cache for an {@code Httpd} instance.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface InternalCache {
 

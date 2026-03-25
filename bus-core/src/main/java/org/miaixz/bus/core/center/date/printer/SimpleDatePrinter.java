@@ -30,7 +30,7 @@ import org.miaixz.bus.core.lang.Symbol;
  * Abstract base class for date information, providing date format, time zone, and locale information.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SimpleDatePrinter implements DatePrinter, Serializable {
 

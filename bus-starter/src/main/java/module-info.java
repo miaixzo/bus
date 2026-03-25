@@ -21,7 +21,7 @@
  * bus.starter
  * 
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 module bus.starter {
 
@@ -34,6 +34,7 @@ module bus.starter {
     requires bus.base;
     requires bus.cache;
     requires bus.core;
+    requires bus.cortex;
     requires bus.crypto;
     requires bus.extra;
     requires bus.health;
@@ -41,6 +42,7 @@ module bus.starter {
     requires bus.image;
     requires bus.limiter;
     requires bus.logger;
+    requires bus.metrics;
     requires bus.mapper;
     requires bus.notify;
     requires bus.office;
@@ -50,6 +52,8 @@ module bus.starter {
     requires bus.setting;
     requires bus.socket;
     requires bus.storage;
+    requires bus.tempus;
+    requires bus.tracer;
     requires bus.validate;
     requires bus.vortex;
 
@@ -84,6 +88,7 @@ module bus.starter {
     requires elasticsearch.rest.client;
     requires io.vertx.core;
     requires io.vertx.web;
+    requires micrometer.core;
     requires org.aspectj.weaver;
     requires org.jboss.logging;
     requires org.mongodb.driver.core;
@@ -95,6 +100,7 @@ module bus.starter {
     requires org.apache.httpcomponents.httpclient;
     requires org.apache.httpcomponents.httpcore;
     requires org.apache.httpcomponents.httpasyncclient;
+    requires redis.clients.jedis;
 
     exports org.miaixz.bus.spring;
     exports org.miaixz.bus.spring.annotation;
@@ -109,6 +115,7 @@ module bus.starter {
     exports org.miaixz.bus.starter.annotation;
     exports org.miaixz.bus.starter.cache;
     exports org.miaixz.bus.starter.cors;
+    exports org.miaixz.bus.starter.cortex;
     exports org.miaixz.bus.starter.dubbo;
     exports org.miaixz.bus.starter.elastic;
     exports org.miaixz.bus.starter.vortex;
@@ -117,6 +124,7 @@ module bus.starter {
     exports org.miaixz.bus.starter.image;
     exports org.miaixz.bus.starter.jdbc;
     exports org.miaixz.bus.starter.limiter;
+    exports org.miaixz.bus.starter.metrics;
     exports org.miaixz.bus.starter.mapper;
     exports org.miaixz.bus.starter.mongo;
     exports org.miaixz.bus.starter.notify;
@@ -126,6 +134,7 @@ module bus.starter {
     exports org.miaixz.bus.starter.sensitive;
     exports org.miaixz.bus.starter.socket;
     exports org.miaixz.bus.starter.storage;
+    exports org.miaixz.bus.starter.tempus;
     exports org.miaixz.bus.starter.tracer;
     exports org.miaixz.bus.starter.validate;
     exports org.miaixz.bus.starter.wrapper;

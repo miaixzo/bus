@@ -23,7 +23,7 @@ package org.miaixz.bus.shade.screw.metadata;
  * Represents a database.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Database {
 

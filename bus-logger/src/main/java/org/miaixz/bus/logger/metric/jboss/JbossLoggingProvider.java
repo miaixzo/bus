@@ -31,7 +31,7 @@ import java.io.Serial;
  * A logger provider implementation that wraps a {@link org.jboss.logging.Logger} instance.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JbossLoggingProvider extends AbstractProvider {
 

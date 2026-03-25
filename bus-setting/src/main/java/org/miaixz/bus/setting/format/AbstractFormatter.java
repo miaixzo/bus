@@ -28,7 +28,7 @@ import org.miaixz.bus.setting.metric.ini.IniElement;
  *
  * @param <E> The type of {@link IniElement} this formatter produces.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractFormatter<E extends IniElement> implements ElementFormatter<E> {
 

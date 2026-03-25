@@ -39,7 +39,7 @@ import com.sun.jna.Platform;
  * A class for executing commands on the command line and returning the results.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class Executor {

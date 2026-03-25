@@ -25,7 +25,7 @@ import javax.imageio.ImageWriteParam;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JPEGImageWriteParam extends ImageWriteParam {
 

@@ -29,7 +29,7 @@ import org.miaixz.bus.mapper.Caching;
  * An interface for SQL scripts, providing a simple wrapper for XML-based SQL to facilitate usage.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface SqlScript {
 

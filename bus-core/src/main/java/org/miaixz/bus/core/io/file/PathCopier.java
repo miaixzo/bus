@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * various options, including overwriting existing files and handling recursive copies.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PathCopier extends SrcToDestCopier<Path, PathCopier> {
 

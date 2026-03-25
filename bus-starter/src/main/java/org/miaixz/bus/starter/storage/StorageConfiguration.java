@@ -51,13 +51,13 @@ import org.springframework.context.annotation.Bean;
  * private StorageService storageService;
  *
  * // Get the Aliyun OSS storage provider
- * StorageProvider ossProvider = storageService.require(StorageRegistry.ALIYUN_OSS);
+ * StorageProvider ossProvider = storageService.require(Registry.ALIYUN_OSS);
  * // Upload a file
  * ossProvider.upload("filePath", "fileContent");
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @EnableConfigurationProperties(value = { StorageProperties.class })
 public class StorageConfiguration {

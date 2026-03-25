@@ -32,7 +32,7 @@ import java.lang.annotation.*;
  * {@link co.elastic.clients.elasticsearch.ElasticsearchClient}.
  *
  * @author <a href="mailto:congchun.zheng@gmail.com">Sixawn.ZHENG</a>
- * @since Java 17+
+ * @since Java 21+
  */
 @Inherited
 @Documented

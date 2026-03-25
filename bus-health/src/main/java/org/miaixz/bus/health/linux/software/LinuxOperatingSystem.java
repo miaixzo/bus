@@ -53,7 +53,7 @@ import com.sun.jna.platform.linux.Udev;
  * first released on September 17, 1991, by Linus Torvalds. Linux is typically packaged in a Linux distribution.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public class LinuxOperatingSystem extends AbstractOperatingSystem {

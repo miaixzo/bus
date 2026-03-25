@@ -34,7 +34,7 @@ import lombok.NoArgsConstructor;
  * management APIs to be consumed by a UI dashboard.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Data
 @Builder

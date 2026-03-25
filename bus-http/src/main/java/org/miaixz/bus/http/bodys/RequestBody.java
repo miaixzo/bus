@@ -38,7 +38,7 @@ import java.io.IOException;
  * content. It also supports special cases for duplex and one-shot transmission.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class RequestBody {
 

@@ -47,7 +47,7 @@ import com.sun.jna.platform.linux.Udev.UdevListEntry;
  * Linux hard disk implementation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class LinuxHWDiskStore extends AbstractHWDiskStore {

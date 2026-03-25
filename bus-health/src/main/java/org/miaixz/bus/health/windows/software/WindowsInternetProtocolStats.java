@@ -39,7 +39,7 @@ import com.sun.jna.platform.win32.WinError;
  * Internet Protocol Stats implementation
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats {

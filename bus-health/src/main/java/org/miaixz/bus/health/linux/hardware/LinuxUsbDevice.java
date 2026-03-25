@@ -38,7 +38,7 @@ import com.sun.jna.platform.linux.Udev.UdevListEntry;
  * Linux Usb Device
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 public class LinuxUsbDevice extends AbstractUsbDevice {

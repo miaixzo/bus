@@ -97,7 +97,7 @@ import org.miaixz.bus.vortex.metric.CacheStats;
  * @param <K> the type of keys maintained by this cache manager
  * @param <V> the type of mapped values
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CacheManager<K, V> {
 

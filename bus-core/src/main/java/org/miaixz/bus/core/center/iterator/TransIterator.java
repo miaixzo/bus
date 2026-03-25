@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.Assert;
  * @param <F> the type of elements in the source iterator
  * @param <T> the type of elements in the transformed iterator
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TransIterator<F, T> implements Iterator<T> {
 

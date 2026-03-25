@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.IoKit;
  * convert to output streams, and deserialize objects, with options for closing the stream after reading.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class StreamReader {
 

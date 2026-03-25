@@ -23,7 +23,7 @@ package org.miaixz.bus.image.galaxy.io;
  * Represents options for image encoding, controlling aspects like group length and undefined length encoding.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ImageEncodingOptions {
 

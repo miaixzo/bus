@@ -32,7 +32,7 @@ import lombok.experimental.SuperBuilder;
  * sharing receivers, deleting profit sharing receivers, completing profit sharing.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

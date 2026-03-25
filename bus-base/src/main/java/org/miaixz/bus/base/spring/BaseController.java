@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @param <T>       the entity type
  * @param <Service> the service type, which must extend {@link BaseService}
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BaseController<T, Service extends BaseService<T>> extends Controller {
 

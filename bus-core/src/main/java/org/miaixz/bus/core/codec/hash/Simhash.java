@@ -35,7 +35,7 @@ import java.util.concurrent.locks.StampedLock;
  * similarity, they will remain similar after being hashed.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Simhash implements Hash64<Collection<? extends CharSequence>> {
 

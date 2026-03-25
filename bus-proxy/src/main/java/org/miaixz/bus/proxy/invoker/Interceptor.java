@@ -28,7 +28,7 @@ import java.io.Serializable;
  * A simple base class for interceptors, holding a reference to the target object and the aspect to be applied.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Interceptor implements Serializable {
 

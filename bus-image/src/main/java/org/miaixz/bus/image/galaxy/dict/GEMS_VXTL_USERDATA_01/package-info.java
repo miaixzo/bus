@@ -21,6 +21,6 @@
  * UID Dictionary from GEMS_VXTL_USERDATA_01
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.GEMS_VXTL_USERDATA_01;

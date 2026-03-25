@@ -31,7 +31,7 @@ import lombok.experimental.SuperBuilder;
  * Refund Query model. Supports: general interface refund query, face payment refund query, deposit refund query.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

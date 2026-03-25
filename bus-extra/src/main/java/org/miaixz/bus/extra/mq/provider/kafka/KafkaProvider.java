@@ -34,7 +34,7 @@ import org.miaixz.bus.extra.mq.Producer;
  * client configurations and provides access to Kafka producers and consumers.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class KafkaProvider implements MQProvider {
 

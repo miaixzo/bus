@@ -31,7 +31,7 @@ import java.util.Map;
  * Validator for the {@link Size} annotation, which checks the size of various data types.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SizeMatcher implements Matcher<Object, Size> {
 

@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Assert;
  * and its properties.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractBeanDesc implements BeanDesc {
 

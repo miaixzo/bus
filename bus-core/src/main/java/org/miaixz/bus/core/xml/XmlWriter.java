@@ -38,7 +38,7 @@ import org.w3c.dom.Node;
  * XML writer for generating XML content.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class XmlWriter {
 

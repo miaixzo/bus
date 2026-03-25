@@ -20,7 +20,7 @@
 package org.miaixz.bus.vortex.registry;
 
 import org.miaixz.bus.core.lang.EnumValue;
-import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.vortex.magic.Metrics;
 import org.miaixz.bus.vortex.magic.Transmit;
 import org.miaixz.bus.vortex.provider.MetricsProvider;
@@ -39,7 +39,7 @@ import reactor.core.scheduler.Schedulers;
  * service.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ServerRegistry {
 

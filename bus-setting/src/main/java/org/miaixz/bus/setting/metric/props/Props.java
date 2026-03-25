@@ -51,7 +51,7 @@ import org.miaixz.bus.setting.Setting;
  * additional convenience methods for typed data retrieval, automatic reloading, and bean mapping.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class Props extends java.util.Properties implements TypeGetter<CharSequence> {
 

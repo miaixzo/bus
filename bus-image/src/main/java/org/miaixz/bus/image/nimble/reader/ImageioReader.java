@@ -64,7 +64,7 @@ import org.miaixz.bus.logger.Logger;
  * methods below to read that data.
  * 
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ImageioReader extends ImageReader implements Closeable {
 

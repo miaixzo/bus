@@ -36,7 +36,7 @@ import org.miaixz.bus.health.builtin.software.InternetProtocolStats;
  * Utility to query TCP connections on Unix-based systems.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class NetStat {

@@ -42,7 +42,7 @@ import org.miaixz.bus.health.unix.platform.openbsd.driver.disk.Disklabel;
  * OpenBSD hard disk implementation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {

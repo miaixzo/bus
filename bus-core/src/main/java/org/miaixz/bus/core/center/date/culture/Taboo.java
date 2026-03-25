@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.Symbol;
  * 宜忌
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Taboo extends Samsara {
 

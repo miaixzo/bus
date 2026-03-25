@@ -1,0 +1,57 @@
+[
+  {
+    "interfaces": [
+      "io.temporal.activity.ActivityExecutionContext"
+    ]
+  },
+  {
+    "interfaces": [
+      "io.temporal.client.WorkflowClient"
+    ]
+  },
+  {
+    "interfaces": [
+      "io.temporal.client.WorkflowStub"
+    ]
+  },
+  {
+    "interfaces": [
+      "io.temporal.common.converter.DataConverter"
+    ]
+  },
+  {
+    "interfaces": [
+      "io.temporal.internal.WorkflowThreadMarker"
+    ]
+  },
+  {
+    "interfaces": [
+      "io.temporal.internal.sync.AsyncInternal$AsyncMarker"
+    ]
+  },
+  {
+    "interfaces": [
+      "io.temporal.serviceclient.CloudServiceStubs"
+    ]
+  },
+  {
+    "interfaces": [
+      "io.temporal.serviceclient.OperatorServiceStubs"
+    ]
+  },
+  {
+    "interfaces": [
+      "io.temporal.serviceclient.WorkflowServiceStubs"
+    ]
+  },
+  {
+    "interfaces": [
+      "io.temporal.worker.WorkerFactory"
+    ]
+  },
+  {
+    "interfaces": [
+      "io.temporal.workflow.WorkflowInfo"
+    ]
+  }
+]

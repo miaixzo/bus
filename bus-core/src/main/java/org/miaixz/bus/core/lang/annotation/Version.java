@@ -25,7 +25,7 @@ import java.lang.annotation.*;
  * 标记在实体类的版本号字段上
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

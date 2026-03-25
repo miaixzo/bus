@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  * This class defines constants for MyBatis configuration and SQL fragments.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Args {
 

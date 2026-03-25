@@ -45,7 +45,7 @@ import jakarta.mail.util.ByteArrayDataSource;
  * sending emails. This class simplifies the process of setting headers, content, and attachments.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SMTPMessage extends MimeMessage {
 

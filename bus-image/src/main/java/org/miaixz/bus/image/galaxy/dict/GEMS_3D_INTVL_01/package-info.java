@@ -21,6 +21,6 @@
  * UID Dictionary from GEMS_3D_INTVL_01
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.GEMS_3D_INTVL_01;

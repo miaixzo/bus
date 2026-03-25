@@ -38,7 +38,7 @@ package org.miaixz.bus.core.basic.service;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface ErrorService {
 

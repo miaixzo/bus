@@ -29,7 +29,7 @@ import org.miaixz.bus.mapper.builder.GenericTypeResolver;
  * {@link java.lang.reflect.Field}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class FieldMeta {
 

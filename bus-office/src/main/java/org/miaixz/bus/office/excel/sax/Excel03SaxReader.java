@@ -49,7 +49,7 @@ import org.miaixz.bus.office.excel.ExcelSaxKit;
  * <a href="http://www.cnblogs.com/wshsdlau/p/5643862.html">http://www.cnblogs.com/wshsdlau/p/5643862.html</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03SaxReader> {
 

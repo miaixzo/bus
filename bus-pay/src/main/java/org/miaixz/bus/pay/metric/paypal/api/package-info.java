@@ -21,6 +21,6 @@
  * This package contains the specific API endpoints for the PayPal payment provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.pay.metric.paypal.api;

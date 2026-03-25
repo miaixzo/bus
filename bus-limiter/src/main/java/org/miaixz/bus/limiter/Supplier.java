@@ -28,7 +28,7 @@ import java.lang.reflect.Method;
  * requests.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class Supplier {
 

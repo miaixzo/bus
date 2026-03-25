@@ -30,7 +30,7 @@ import org.miaixz.bus.shade.safety.Complex;
  *
  * @param <E> The type of entry to be filtered.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AnyComplex<E> extends MixComplex<E> implements Complex<E> {
 

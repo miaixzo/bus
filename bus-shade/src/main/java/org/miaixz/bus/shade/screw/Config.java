@@ -37,7 +37,7 @@ import lombok.Setter;
  * Main configuration class for the documentation generation process.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

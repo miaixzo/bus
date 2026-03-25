@@ -601,7 +601,7 @@ message=Line1\nLine2\tTabbed
 Properties props = new Properties();
 props.load(new InputStreamReader(
     new FileInputStream("config.properties"),
-    StandardCharsets.ISO_8859_1
+    Charset.ISO_8859_1
 ));
 ```
 

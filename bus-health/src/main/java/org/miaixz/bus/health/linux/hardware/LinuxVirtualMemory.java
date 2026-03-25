@@ -36,7 +36,7 @@ import org.miaixz.bus.health.linux.ProcPath;
  * Memory obtained by /proc/meminfo and /proc/vmstat
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 final class LinuxVirtualMemory extends AbstractVirtualMemory {

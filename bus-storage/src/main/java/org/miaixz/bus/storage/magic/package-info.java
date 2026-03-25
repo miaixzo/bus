@@ -21,6 +21,6 @@
  * Provides core support for OSS (Object Storage Service) storage operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.storage.magic;

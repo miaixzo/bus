@@ -29,7 +29,7 @@ import lombok.Setter;
  * Represents database information for a SQL Server instance.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

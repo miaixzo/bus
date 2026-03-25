@@ -23,7 +23,7 @@ package org.miaixz.bus.notify;
  * Enumerates various notification service providers for registration and identification.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum Registry {
 

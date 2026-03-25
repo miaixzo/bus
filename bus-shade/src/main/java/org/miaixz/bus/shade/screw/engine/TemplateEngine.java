@@ -28,7 +28,7 @@ import org.miaixz.bus.shade.screw.metadata.DataSchema;
  * Interface for file generation engines.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface TemplateEngine extends Serializable {
 

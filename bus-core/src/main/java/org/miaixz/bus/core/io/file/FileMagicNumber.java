@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * represents a file type and implements matching logic.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum FileMagicNumber {
 

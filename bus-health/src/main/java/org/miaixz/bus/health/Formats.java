@@ -30,7 +30,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * Utility class for formatting units or converting between numeric types.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class Formats {

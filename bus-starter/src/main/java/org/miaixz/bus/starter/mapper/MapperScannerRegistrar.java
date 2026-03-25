@@ -49,7 +49,7 @@ import org.springframework.core.type.AnnotationMetadata;
  * {@link ClassPathMapperScanner} to discover and register mapper interfaces as Spring beans.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware {
 

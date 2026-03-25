@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * algorithm. Reference: org.apache.hc.client5.http.entity.DeflateInputStream
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class InflaterStream extends InputStream {
 

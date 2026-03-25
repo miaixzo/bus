@@ -32,7 +32,7 @@ import org.miaixz.bus.extra.mq.Producer;
  * objects into RocketMQ {@link org.apache.rocketmq.common.message.Message} objects for transmission.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RocketMQProducer implements Producer {
 

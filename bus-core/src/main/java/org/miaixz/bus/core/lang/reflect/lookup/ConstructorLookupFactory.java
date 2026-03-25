@@ -33,7 +33,7 @@ import java.lang.reflect.Constructor;
  * "https://blog.csdn.net/u013202238/article/details/108687086">https://blog.csdn.net/u013202238/article/details/108687086</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ConstructorLookupFactory implements LookupFactory {
 

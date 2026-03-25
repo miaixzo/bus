@@ -32,7 +32,7 @@ import java.util.List;
  * Validator for the {@link Multiple} annotation, allowing multiple validation rules to be applied sequentially.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MultipleMatcher implements Matcher<Object, Multiple> {
 

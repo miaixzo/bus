@@ -32,7 +32,7 @@ import java.lang.annotation.*;
  * caching using annotations like {@code @Cached}, {@code @CachedGet}, and {@code @Invalid}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Inherited
 @Documented

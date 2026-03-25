@@ -32,7 +32,7 @@ import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
  * ZUC (Zu Chongzhi) algorithm implementation, based on BouncyCastle.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ZUC extends Crypto {
 

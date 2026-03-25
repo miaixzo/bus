@@ -24,7 +24,7 @@ package org.miaixz.bus.shade.safety.algorithm;
  * holds the public and private key components for asymmetric encryption schemes.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class AsymmetricSecureKey extends SecureKey implements AsymmetricKey {
 

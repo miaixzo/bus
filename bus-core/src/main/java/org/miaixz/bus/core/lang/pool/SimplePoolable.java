@@ -25,7 +25,7 @@ package org.miaixz.bus.core.lang.pool;
  *
  * @param <T> the type of the raw object being pooled
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SimplePoolable<T> implements Poolable<T> {
 

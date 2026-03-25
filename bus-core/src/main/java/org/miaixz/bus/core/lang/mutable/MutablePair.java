@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.tuple.Pair;
  * @param <L> The type of the left value.
  * @param <R> The type of the right value.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MutablePair<L, R> extends Pair<L, R> implements Mutable<MutablePair<L, R>> {
 

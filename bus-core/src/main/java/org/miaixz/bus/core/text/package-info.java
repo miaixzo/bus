@@ -21,6 +21,6 @@
  * Provides encapsulation for text-related operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.core.text;

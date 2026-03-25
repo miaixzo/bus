@@ -36,7 +36,7 @@ import org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingFactory;
  * logger factory instance. It automatically detects the appropriate logging framework from the classpath.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Holder {
 

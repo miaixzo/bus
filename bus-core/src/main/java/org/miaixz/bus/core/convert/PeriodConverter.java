@@ -27,7 +27,7 @@ import java.time.temporal.TemporalAmount;
  * Converter for {@link Period} objects.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PeriodConverter extends AbstractConverter {
 

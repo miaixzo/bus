@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  *
  * @param <T> The type of the annotation being proxied.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AnnotationProxy<T extends Annotation> implements Annotation, InvocationHandler, Serializable {
 

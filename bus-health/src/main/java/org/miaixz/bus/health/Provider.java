@@ -46,7 +46,7 @@ import org.miaixz.bus.health.builtin.software.OperatingSystem;
  * Server information collector.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Provider implements org.miaixz.bus.core.Provider {
 

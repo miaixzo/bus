@@ -54,7 +54,7 @@ import lombok.experimental.SuperBuilder;
  * Certificate related toolkit. This class provides utilities for handling and building X.509 certificates.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

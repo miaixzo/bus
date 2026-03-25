@@ -21,7 +21,7 @@ package org.miaixz.bus.image.galaxy.dict.Philips_PET_Private_Group;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PrivateTag {
 

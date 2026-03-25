@@ -29,7 +29,7 @@ import java.io.IOException;
  * Defines constants and utility methods for the HTTP/2 protocol.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class Http2 {
 

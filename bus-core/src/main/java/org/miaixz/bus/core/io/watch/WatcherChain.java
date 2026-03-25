@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Chain;
  * sequentially for file system events.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WatcherChain implements Watcher, Chain<Watcher, WatcherChain> {
 

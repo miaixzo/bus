@@ -37,7 +37,7 @@ import java.util.Iterator;
  * message over an MLLP connection and waits for a response.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HL7Pdq extends Device {
 

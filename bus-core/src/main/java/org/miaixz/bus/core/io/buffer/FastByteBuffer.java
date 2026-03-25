@@ -27,7 +27,7 @@ import org.miaixz.bus.core.lang.Normal;
  * This approach reduces memory copying and improves performance for growing buffers.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class FastByteBuffer extends FastBuffer {
 

@@ -32,7 +32,7 @@ import org.miaixz.bus.health.builtin.hardware.UsbDevice;
  * A USB device
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 public abstract class AbstractUsbDevice implements UsbDevice {

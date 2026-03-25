@@ -26,7 +26,7 @@ import org.miaixz.bus.logger.magic.AbstractFactory;
  * A factory for creating {@link org.tinylog.Logger} instances.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TinyLoggingFactory extends AbstractFactory {
 

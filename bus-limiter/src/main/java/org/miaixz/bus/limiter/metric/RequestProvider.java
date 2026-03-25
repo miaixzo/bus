@@ -41,7 +41,7 @@ import org.miaixz.bus.limiter.magic.annotation.Limiting;
  * each user to track and enforce limits.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RequestProvider implements Provider {
 

@@ -28,7 +28,7 @@ import lombok.Getter;
  * VK authorization scopes.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @AllArgsConstructor

@@ -38,7 +38,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * Rules), and DL (Definite Length).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ASN1 {
 

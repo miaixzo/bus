@@ -51,7 +51,7 @@ import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
  * earlier SunOS in 1993. In 2010, after the Sun acquisition by Oracle, it was renamed Oracle Solaris.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public class SolarisOperatingSystem extends AbstractOperatingSystem {

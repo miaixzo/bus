@@ -47,7 +47,7 @@ import java.util.TreeMap;
  * JD (Jingdong) login provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JdProvider extends AbstractProvider {
 

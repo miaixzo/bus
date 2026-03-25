@@ -42,7 +42,7 @@ import org.springframework.boot.loader.net.protocol.jar.Handler;
  * of resources within encrypted Spring Boot JARs.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BootURLHandler extends Handler {
 

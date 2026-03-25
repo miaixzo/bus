@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * monitoring a directory, newly created subdirectories are not automatically monitored.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WatchMonitor extends Thread implements Closeable, Serializable {
 

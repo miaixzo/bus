@@ -45,7 +45,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
  * Windows Logical Volume Group
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 final class WindowsLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
 

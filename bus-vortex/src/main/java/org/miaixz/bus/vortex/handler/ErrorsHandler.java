@@ -52,7 +52,7 @@ import reactor.util.annotation.NonNull;
  * error code.
  *
  * @author Justubborn
- * @since Java 17+
+ * @since Java 21+
  */
 public class ErrorsHandler implements WebExceptionHandler {
 

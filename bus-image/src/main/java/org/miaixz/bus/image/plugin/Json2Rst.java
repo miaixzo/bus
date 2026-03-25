@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
  * referenced schemas.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Json2Rst {
 

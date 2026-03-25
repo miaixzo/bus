@@ -29,7 +29,7 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * building.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TableSchemaChain implements TableSchemaBuilder.Chain {
 

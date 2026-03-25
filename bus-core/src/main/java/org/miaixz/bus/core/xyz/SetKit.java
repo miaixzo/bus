@@ -27,7 +27,7 @@ import org.miaixz.bus.core.center.set.SetFromMap;
  * Encapsulates methods related to {@link java.util.Set} in collections.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SetKit {
 

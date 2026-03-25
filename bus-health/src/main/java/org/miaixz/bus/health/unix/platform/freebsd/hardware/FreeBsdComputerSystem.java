@@ -38,7 +38,7 @@ import org.miaixz.bus.health.unix.platform.freebsd.BsdSysctlKit;
  * Hardware data obtained from dmidecode.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 final class FreeBsdComputerSystem extends AbstractComputerSystem {

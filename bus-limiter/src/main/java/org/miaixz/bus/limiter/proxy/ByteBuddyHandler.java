@@ -41,7 +41,7 @@ import org.miaixz.bus.limiter.metric.MethodManager;
  * strategies like downgrade, hotspot, and request limiting.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ByteBuddyHandler implements InvocationHandler {
 

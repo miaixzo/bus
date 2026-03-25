@@ -57,7 +57,7 @@ import com.hierynomus.smbj.share.DiskShare;
  * shares for file storage operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SmbFileProvider extends AbstractProvider {
 
@@ -300,7 +300,9 @@ public class SmbFileProvider extends AbstractProvider {
         try {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             List<String> files = share.list(prefix).stream()
-                    .filter(fileInfo -> !fileInfo.getFileName().equals(".") && !fileInfo.getFileName().equals(".."))
+                    .filter(
+                            fileInfo -> !fileInfo.getFileName().equals(Symbol.DOT)
+                                    && !fileInfo.getFileName().equals(Symbol.DOUBLE_DOT))
                     .map(fileInfo -> fileInfo.getFileName()).collect(Collectors.toList());
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())

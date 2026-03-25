@@ -27,7 +27,7 @@ import org.miaixz.bus.setting.metric.ini.IniPropertyService;
  * A formatter that parses a string value into an {@link IniProperty} object (a key-value pair).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PropertyFormatter extends AbstractFormatter<IniProperty> {
 

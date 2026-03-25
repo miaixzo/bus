@@ -29,7 +29,7 @@ import java.io.Serializable;
  * false positive)" and "not in the set (definitely not in the set)".
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface BloomFilter extends Serializable {
 

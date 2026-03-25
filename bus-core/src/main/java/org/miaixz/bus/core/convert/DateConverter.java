@@ -35,7 +35,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Converter for Date objects
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DateConverter extends AbstractConverter implements MatcherConverter {
 

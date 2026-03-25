@@ -37,7 +37,7 @@ import com.sun.jna.platform.win32.WinPerf.*;
  * Utility to read HKEY_PERFORMANCE_DATA information.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class HkeyPerformanceDataKit {

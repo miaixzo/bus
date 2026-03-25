@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * A database of public suffixes provided by <a href="https://publicsuffix.org/">publicsuffix.org</a>.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class Suffixes {
 

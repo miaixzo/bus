@@ -21,6 +21,6 @@
  * Provides classes for data mapping.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.shade.screw.mapping;

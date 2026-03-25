@@ -48,7 +48,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * This writer supports bare keys consisting of {@code A-Za-z0-9_-}. Any other keys will be enclosed in double quotes.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TomlWriter {
 

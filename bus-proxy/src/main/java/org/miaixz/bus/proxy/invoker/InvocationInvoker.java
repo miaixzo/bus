@@ -31,7 +31,7 @@ import java.lang.reflect.Method;
  * points to be used within this proxy framework.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class InvocationInvoker implements ProxyChain {
 

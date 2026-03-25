@@ -2,7 +2,13 @@
   "resources": {
     "includes": [
       {
+        "pattern": "META-INF/services/.*"
+      },
+      {
         "pattern": ".*mybatis-config\\.xml$"
+      },
+      {
+        "pattern": ".*mapper.*\\.properties$"
       },
       {
         "pattern": ".*mapper.*\\.xml$"
@@ -11,16 +17,10 @@
         "pattern": ".*Mapper\\.xml$"
       },
       {
-        "pattern": "org/apache/ibatis/.*"
-      },
-      {
-        "pattern": "META-INF/services/.*"
-      },
-      {
-        "pattern": ".*mapper.*\\.properties$"
-      },
-      {
         "pattern": "mapper/.*\\.xml$"
+      },
+      {
+        "pattern": "org/apache/ibatis/.*"
       },
       {
         "pattern": "org/apache/ibatis/builder/xml/*.dtd"

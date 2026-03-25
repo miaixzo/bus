@@ -26,7 +26,7 @@ import java.util.concurrent.*;
  * convenient methods to build thread pools with common configurations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ThreadExecutorBuilder {
 

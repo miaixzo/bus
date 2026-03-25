@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.CollKit;
  * For more details, refer to: <a href="https://xz.aliyun.com/t/41/">https://xz.aliyun.com/t/41/</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ValidateObjectInputStream extends ObjectInputStream {
 

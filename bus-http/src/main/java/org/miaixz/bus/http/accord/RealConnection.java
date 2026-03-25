@@ -56,7 +56,7 @@ import java.util.concurrent.TimeUnit;
  * of establishing and maintaining the connection, including TLS handshakes and HTTP/2 multiplexing.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class RealConnection extends Http2Connection.Listener implements Connection {
 

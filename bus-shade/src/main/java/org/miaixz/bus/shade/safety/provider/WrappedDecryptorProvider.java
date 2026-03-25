@@ -31,7 +31,7 @@ import org.miaixz.bus.shade.safety.algorithm.Key;
  * all decryption operations to the wrapped provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class WrappedDecryptorProvider implements DecryptorProvider {
 

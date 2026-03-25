@@ -21,7 +21,7 @@ package org.miaixz.bus.image.galaxy.dict.Philips_MR_Imaging_DD_005;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PrivateTag {
 

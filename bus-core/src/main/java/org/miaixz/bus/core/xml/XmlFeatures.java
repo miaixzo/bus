@@ -24,7 +24,7 @@ package org.miaixz.bus.core.xml;
  *
  * @author Kimi Liu
  * @see <a href="https://blog.spoock.com/2018/10/23/java-xxe/">Java XXE</a>
- * @since Java 17+
+ * @since Java 21+
  */
 public class XmlFeatures {
 

@@ -45,7 +45,7 @@ import java.util.Map;
  * Xiaomi (Mi) login provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MiProvider extends AbstractProvider {
 

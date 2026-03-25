@@ -31,7 +31,7 @@ import java.util.concurrent.Future;
  * {@link AsynchronousServerChannel} to provide client-side asynchronous socket operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 final class AsynchronousClientChannel extends AsynchronousServerChannel {
 

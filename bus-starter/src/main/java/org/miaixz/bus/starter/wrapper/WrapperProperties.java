@@ -35,7 +35,7 @@ import java.util.Set;
  * Configuration properties for the request/response wrapper filter.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

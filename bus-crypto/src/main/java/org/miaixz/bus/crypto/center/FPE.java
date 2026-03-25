@@ -52,7 +52,7 @@ import org.miaixz.bus.crypto.Padding;
  * This class is implemented based on BouncyCastle.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class FPE implements Serializable {
 

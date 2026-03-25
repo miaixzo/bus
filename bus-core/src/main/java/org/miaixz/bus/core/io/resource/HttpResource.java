@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.Assert;
  * {@link Resource} and allows specifying a custom Content-Type for scenarios like HTTP requests.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HttpResource implements Resource, Serializable {
 

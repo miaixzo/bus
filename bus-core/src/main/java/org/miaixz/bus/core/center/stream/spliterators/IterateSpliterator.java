@@ -31,7 +31,7 @@ import java.util.function.UnaryOperator;
  *
  * @param <T> the type of elements returned by this Spliterator
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class IterateSpliterator<T> extends Spliterators.AbstractSpliterator<T> {
 

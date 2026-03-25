@@ -35,7 +35,7 @@ import org.miaixz.bus.image.nimble.opencv.op.MaskArea;
  * about the transfer syntax, source and destination nodes, properties, and any abort conditions or masking areas.
  * 
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class EditorContext {
 

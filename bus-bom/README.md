@@ -125,7 +125,7 @@ The Bus BOM manages versions for all Bus framework modules:
 
 - **bus-image**: Image processing
 - **bus-office**: Office document handling
-- **bus-cron**: Scheduled tasks
+- **bus-tempus**: Scheduled tasks
 - **bus-pay**: Payment integration
 - **bus-notify**: Notification service
 - **bus-storage**: Storage abstraction
@@ -144,7 +144,7 @@ The Bus BOM manages versions for all Bus framework modules:
 - **bus-opencv**: OpenCV integration
 - **bus-socket**: WebSocket support
 - **bus-health**: Health checks
-- **bus-cron**: Cron scheduler
+- **bus-tempus**: Cron scheduler
 
 -----
 
@@ -194,7 +194,7 @@ Update all Bus modules simultaneously by changing the BOM version:
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-bom</artifactId>
-    <version>8.6.0</version> <!-- Update this version -->
+    <version>8.x.x</version> <!-- Update this version -->
     <type>pom</type>
     <scope>import</scope>
 </dependency>

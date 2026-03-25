@@ -21,6 +21,6 @@
  * Provides internal implementation details for the HTTP client, including connection management, streams, and routing.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.http.accord;

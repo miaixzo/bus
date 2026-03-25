@@ -28,7 +28,7 @@ import org.opencv.img_hash.*;
  * @author Kimi Liu
  * @see <a href="http://qtandopencv.blogspot.com/2016/06/introduction-to-image-hash-module-of.html">Hash for pixel
  *      data</a>
- * @since Java 17+
+ * @since Java 21+
  */
 public enum ImageContentHash {
 

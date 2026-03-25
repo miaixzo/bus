@@ -46,7 +46,7 @@ import org.miaixz.bus.http.Httpx;
  * Okta login provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class OktaProvider extends AbstractProvider {
 

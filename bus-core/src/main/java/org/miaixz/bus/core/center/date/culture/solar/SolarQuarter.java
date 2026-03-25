@@ -28,7 +28,7 @@ import org.miaixz.bus.core.center.date.culture.parts.YearParts;
  * Represents a quarter in the Gregorian calendar.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SolarQuarter extends YearParts {
 
@@ -41,20 +41,6 @@ public class SolarQuarter extends YearParts {
      * The index of the quarter (0-3).
      */
     protected int index;
-
-    /**
-     * Validates the year and quarter index.
-     *
-     * @param year  the year
-     * @param index the quarter index (0-3)
-     * @throws IllegalArgumentException if validation fails
-     */
-    public static void validate(int year, int index) {
-        if (index < 0 || index > 3) {
-            throw new IllegalArgumentException(String.format("illegal solar quarter index: %d", index));
-        }
-        SolarYear.validate(year);
-    }
 
     /**
      * Constructs a SolarQuarter instance.
@@ -78,6 +64,20 @@ public class SolarQuarter extends YearParts {
      */
     public static SolarQuarter fromIndex(int year, int index) {
         return new SolarQuarter(year, index);
+    }
+
+    /**
+     * Validates the year and quarter index.
+     *
+     * @param year  the year
+     * @param index the quarter index (0-3)
+     * @throws IllegalArgumentException if validation fails
+     */
+    public static void validate(int year, int index) {
+        if (index < 0 || index > 3) {
+            throw new IllegalArgumentException(String.format("illegal solar quarter index: %d", index));
+        }
+        SolarYear.validate(year);
     }
 
     /**

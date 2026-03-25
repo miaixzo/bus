@@ -29,7 +29,7 @@ import java.net.Proxy;
  * This class generates the request line of an HTTP/1.1 request.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RequestLine {
 

@@ -24,7 +24,7 @@ package org.miaixz.bus.limiter;
  * {@link Context} object, making it accessible throughout the application.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Holder {
 

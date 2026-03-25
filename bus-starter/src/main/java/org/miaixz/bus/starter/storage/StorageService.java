@@ -66,7 +66,7 @@ import org.miaixz.bus.storage.metric.*;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class StorageService {
 

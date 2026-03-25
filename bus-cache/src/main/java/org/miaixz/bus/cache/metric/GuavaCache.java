@@ -41,7 +41,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @param <K> The type of keys.
  * @param <V> The type of values.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class GuavaCache<K, V> implements CacheX<K, V> {
 

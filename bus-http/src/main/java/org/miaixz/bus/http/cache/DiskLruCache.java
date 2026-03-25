@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
  * Each value must be between {@code 0} and {@code Integer.MAX_VALUE} bytes in length.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DiskLruCache implements Closeable, Flushable {
 

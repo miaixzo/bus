@@ -51,7 +51,7 @@ import org.miaixz.bus.core.lang.Normal;
  * (e.g., Tenant ID, Department ID, or User ID).
  * 
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Documented
 @Target({ ElementType.TYPE, ElementType.METHOD }) // 建议增加 METHOD 支持，以便灵活控制

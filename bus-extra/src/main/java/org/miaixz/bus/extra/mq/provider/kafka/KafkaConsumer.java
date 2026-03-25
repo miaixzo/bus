@@ -38,7 +38,7 @@ import org.miaixz.bus.extra.mq.RawMessage;
  * Kafka {@link ConsumerRecord}s.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class KafkaConsumer implements Consumer {
 

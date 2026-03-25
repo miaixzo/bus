@@ -45,7 +45,7 @@ import java.security.cert.CertificateException;
  * the call is canceled.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RetryAndFollowUp implements Interceptor {
 
@@ -339,7 +339,7 @@ public class RetryAndFollowUp implements Interceptor {
      * @return The retry-after delay in seconds.
      */
     private int retryAfter(Response userResponse, int defaultDelay) {
-        String header = userResponse.header("Retry-After");
+        String header = userResponse.header(HTTP.RETRY_AFTER);
 
         if (header == null) {
             return defaultDelay;

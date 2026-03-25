@@ -32,13 +32,13 @@ import org.miaixz.bus.core.compare.PinyinCompare;
 import org.miaixz.bus.core.compare.PropertyCompare;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Validator;
-import org.miaixz.bus.core.lang.reflect.creator.PossibleObjectCreator;
+import org.miaixz.bus.core.lang.reflect.creator.AdaptiveObjectCreator;
 
 /**
  * Utility class for `List`.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ListKit {
 
@@ -449,7 +449,7 @@ public class ListKit {
             return null;
         }
 
-        List<T> result = PossibleObjectCreator.of(list.getClass()).of();
+        List<T> result = AdaptiveObjectCreator.of(list.getClass()).of();
         if (null == result) {
             result = new ArrayList<>(0);
         }

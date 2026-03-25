@@ -34,7 +34,7 @@ import org.miaixz.bus.office.excel.RowKit;
  * Reads an {@link Sheet} into a list of maps.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MapSheetReader extends AbstractSheetReader<List<Map<Object, Object>>> {
 

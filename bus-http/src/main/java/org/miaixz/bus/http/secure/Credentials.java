@@ -27,7 +27,7 @@ import org.miaixz.bus.core.lang.Symbol;
  * A factory for creating HTTP authorization credentials.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class Credentials {
 

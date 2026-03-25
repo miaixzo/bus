@@ -50,7 +50,7 @@ import org.miaixz.bus.shade.safety.streams.AlwaysOutputStream;
  * a provided filter and key. It also modifies the manifest to redirect the main class to a custom launcher.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry> implements EncryptorProvider {
 

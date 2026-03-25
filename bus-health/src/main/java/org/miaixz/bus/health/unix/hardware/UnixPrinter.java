@@ -36,7 +36,7 @@ import com.sun.jna.ptr.PointerByReference;
  * CUPS-based printer implementation for Unix-like systems.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 public final class UnixPrinter extends AbstractPrinter {

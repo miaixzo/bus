@@ -33,7 +33,7 @@ import java.lang.annotation.*;
  * provides a convenient way to access localized messages.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Inherited
 @Documented

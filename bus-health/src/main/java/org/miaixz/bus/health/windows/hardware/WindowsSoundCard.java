@@ -36,7 +36,7 @@ import com.sun.jna.platform.win32.WinReg;
  * Sound Card data obtained from registry
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 final class WindowsSoundCard extends AbstractSoundCard {

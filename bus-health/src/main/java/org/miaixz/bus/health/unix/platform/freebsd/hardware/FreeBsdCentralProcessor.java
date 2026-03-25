@@ -45,7 +45,7 @@ import com.sun.jna.platform.unix.LibCAPI.size_t;
  * A CPU
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 final class FreeBsdCentralProcessor extends AbstractCentralProcessor {

@@ -41,7 +41,7 @@ import org.miaixz.bus.logger.Logger;
  * consistency flags.
  * 
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ImageDirWriter extends ImageDirReader {
 

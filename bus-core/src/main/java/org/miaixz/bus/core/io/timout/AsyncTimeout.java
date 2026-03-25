@@ -35,7 +35,7 @@ import org.miaixz.bus.core.xyz.IoKit;
  * timeouts where they are not natively supported, such as for blocking socket operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AsyncTimeout extends Timeout {
 

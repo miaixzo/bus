@@ -28,7 +28,7 @@ import org.miaixz.bus.core.center.date.culture.lunar.LunarMonth;
  * 正十二月在床房，二三九十门户中，四六十一灶勿犯，五甲七子八厕凶。) This class extends {@link Samsara} to manage a cyclical list of these entities.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class FetusMonth extends Samsara {
 

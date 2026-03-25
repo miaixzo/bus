@@ -40,7 +40,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * Wraps the underlying UDP channel and provides communication and session management.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class UdpChannel {
 

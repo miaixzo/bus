@@ -26,7 +26,7 @@ package org.miaixz.bus.crypto;
  * @author Kimi Liu
  * @see <a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#Cipher"> Cipher
  *      section in Java Cryptography Architecture Standard Algorithm Name Documentation</a>
- * @since Java 17+
+ * @since Java 21+
  */
 public enum Padding {
     /**

@@ -27,7 +27,7 @@ import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycle;
  * extends {@link Tradition} to provide information about daily taboos.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PengZu extends Tradition {
 

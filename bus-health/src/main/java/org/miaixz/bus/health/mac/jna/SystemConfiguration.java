@@ -31,7 +31,7 @@ import com.sun.jna.platform.mac.CoreFoundation.CFTypeRef;
  * such as whether Wi-Fi or cell connectivity are active.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface SystemConfiguration extends Library {
 

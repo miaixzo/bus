@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.exception.AlreadyExistsException;
  * registering, and managing error codes in a unified manner.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Errors {
 

@@ -40,7 +40,7 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * @param <T> The type of {@link Notice} this provider handles.
  * @param <K> The type of {@link Context} this provider uses.
  * @author Justubborn
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class NeteaseProvider<T extends Notice, K extends Context> extends AbstractProvider<T, K> {
 

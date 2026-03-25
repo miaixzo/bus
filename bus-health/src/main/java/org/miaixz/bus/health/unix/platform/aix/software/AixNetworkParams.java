@@ -33,7 +33,7 @@ import com.sun.jna.platform.unix.LibCAPI;
  * AixNetworkParams class.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 final class AixNetworkParams extends AbstractNetworkParams {

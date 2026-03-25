@@ -86,7 +86,7 @@ import reactor.netty.http.server.HttpServer;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  * @see org.miaixz.bus.vortex.Router
  * @see org.miaixz.bus.vortex.Executor
  * @see org.miaixz.bus.vortex.Strategy

@@ -34,7 +34,7 @@ import org.miaixz.bus.image.galaxy.data.*;
  * replacing, or remapping certain DICOM tags to protect patient privacy.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DeIdentifier {
 

@@ -45,7 +45,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
  * presence of the {@link EnableHealth} annotation on a user-defined configuration class.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @EnableConfigurationProperties(value = { HealthProperties.class })
 public class HealthConfiguration {

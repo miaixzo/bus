@@ -24,6 +24,6 @@
  * similarity comparison, and perceptual hash computation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.opencv.img_hash;

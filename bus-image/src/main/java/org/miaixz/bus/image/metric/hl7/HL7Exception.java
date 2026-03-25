@@ -25,7 +25,7 @@ import org.miaixz.bus.core.lang.Normal;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HL7Exception extends Exception {
 

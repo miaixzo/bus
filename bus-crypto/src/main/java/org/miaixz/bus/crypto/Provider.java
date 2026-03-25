@@ -26,7 +26,7 @@ import org.miaixz.bus.core.lang.EnumValue;
  * This interface defines methods for encrypting and decrypting data using various cryptographic keys.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Provider extends org.miaixz.bus.core.Provider {
 

@@ -103,7 +103,7 @@ public class StringMessage implements Message<String> {
         // 读取消息内容
         byte[] data = new byte[length];
         readBuffer.get(data);
-        return new String(data, StandardCharsets.UTF_8);
+        return new String(data, Charset.UTF_8);
     }
 }
 ```
@@ -119,7 +119,7 @@ public class ServerHandler implements Handler<String> {
 
         // 回显响应
         String response = "回显: " + message;
-        byte[] data = response.getBytes(StandardCharsets.UTF_8);
+        byte[] data = response.getBytes(Charset.UTF_8);
 
         try {
             // 写入长度前缀
@@ -191,7 +191,7 @@ public class SimpleClient {
 
         // 发送消息
         String message = "你好，服务器！";
-        byte[] data = message.getBytes(StandardCharsets.UTF_8);
+        byte[] data = message.getBytes(Charset.UTF_8);
 
         session.writeBuffer().writeInt(data.length);
         session.writeBuffer().write(data);

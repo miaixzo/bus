@@ -38,7 +38,7 @@ import org.miaixz.bus.image.galaxy.io.ImageInputStream;
  * iterate through files and apply a callback function for each DICOM file found.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class DicomFiles {
 

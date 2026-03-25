@@ -30,7 +30,7 @@ import java.io.*;
  * controls for pausing, resuming, and canceling the download, and supports callbacks for success and failure events.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Downloads {
 
@@ -284,7 +284,7 @@ public class Downloads {
      * A listener interface for globally intercepting download events.
      *
      * @author Kimi Liu
-     * @since Java 17+
+     * @since Java 21+
      */
     public interface Listener {
 

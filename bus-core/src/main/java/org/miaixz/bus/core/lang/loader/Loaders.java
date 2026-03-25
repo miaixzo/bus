@@ -28,7 +28,7 @@ import java.util.jar.JarFile;
  * Utility class for creating various types of resource loaders.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class Loaders {
 

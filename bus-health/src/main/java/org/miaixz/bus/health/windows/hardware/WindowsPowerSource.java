@@ -43,7 +43,7 @@ import com.sun.jna.win32.W32APITypeMapper;
  * A Power Source
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class WindowsPowerSource extends AbstractPowerSource {

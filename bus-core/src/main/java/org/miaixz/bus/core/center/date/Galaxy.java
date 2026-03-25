@@ -24,7 +24,7 @@ package org.miaixz.bus.core.center.date;
  * methods and constants for orbital mechanics and time calculations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Galaxy {
 

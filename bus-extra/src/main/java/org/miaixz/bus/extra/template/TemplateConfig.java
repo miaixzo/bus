@@ -30,7 +30,7 @@ import org.miaixz.bus.core.lang.Charset;
  * template engines, such as character encoding, template paths, resource loading mode, and custom template providers.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TemplateConfig implements Serializable {
 

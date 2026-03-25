@@ -32,7 +32,7 @@ import org.miaixz.bus.extra.nlp.NLPResult;
  * is thread-safe. Project homepage: <a href="https://github.com/ysc/word">https://github.com/ysc/word</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WordProvider implements NLPProvider {
 

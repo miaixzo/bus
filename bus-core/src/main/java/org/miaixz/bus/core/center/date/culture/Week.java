@@ -26,7 +26,7 @@ import org.miaixz.bus.core.center.date.culture.star.seven.SevenStar;
  * of these entities.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Week extends Samsara {
 

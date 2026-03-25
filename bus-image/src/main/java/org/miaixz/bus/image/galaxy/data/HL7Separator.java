@@ -24,7 +24,7 @@ package org.miaixz.bus.image.galaxy.data;
  * utility methods for escaping and unescaping strings according to HL7 rules.
  * 
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum HL7Separator {
 

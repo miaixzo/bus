@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.Assert;
  * class is often used to find a certain type of character, such as digits.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MatcherFinder extends TextFinder {
 

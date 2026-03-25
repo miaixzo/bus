@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.Normal;
  * Encodes a byte array into a Base58 string.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Base58Encoder implements Encoder<byte[], String> {
 

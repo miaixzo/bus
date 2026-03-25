@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * Instance factory class.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class InstanceFactory implements Instance {
 

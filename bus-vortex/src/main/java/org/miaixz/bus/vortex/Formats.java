@@ -37,7 +37,7 @@ import org.springframework.http.MediaType;
  * {@link ResponseStrategy} to dynamically handle different data formats.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @NoArgsConstructor

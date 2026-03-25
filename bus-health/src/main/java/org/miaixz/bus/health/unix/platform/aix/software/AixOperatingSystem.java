@@ -50,7 +50,7 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_process_t;
  * several of its computer platforms.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public class AixOperatingSystem extends AbstractOperatingSystem {

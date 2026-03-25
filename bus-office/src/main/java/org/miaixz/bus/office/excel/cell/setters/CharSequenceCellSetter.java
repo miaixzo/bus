@@ -25,7 +25,7 @@ import org.apache.poi.ss.usermodel.Cell;
  * {@link CellSetter} for {@link CharSequence} values.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CharSequenceCellSetter implements CellSetter {
 

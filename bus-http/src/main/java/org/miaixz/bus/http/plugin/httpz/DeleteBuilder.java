@@ -29,7 +29,7 @@ import java.util.Map;
  * parameters, headers, a tag, and a request ID.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DeleteBuilder extends RequestBuilder<DeleteBuilder> {
 

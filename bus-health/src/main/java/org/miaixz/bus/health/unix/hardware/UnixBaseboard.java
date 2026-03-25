@@ -26,7 +26,7 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractBaseboard;
  * Baseboard data obtained by a calling class
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 public final class UnixBaseboard extends AbstractBaseboard {

@@ -26,7 +26,7 @@ import java.util.Objects;
  * fixed-size array, overwriting the oldest data when the buffer is full.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CircularBuffer {
 

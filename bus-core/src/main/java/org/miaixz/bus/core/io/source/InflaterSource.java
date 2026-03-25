@@ -36,7 +36,7 @@ import org.miaixz.bus.core.xyz.IoKit;
  * an {@link Inflater} to perform the decompression, writing the decompressed data to a {@link Buffer}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class InflaterSource implements Source {
 

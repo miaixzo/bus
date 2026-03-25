@@ -57,7 +57,7 @@ import java.util.function.Consumer;
  * Note: The {@code store} methods do not preserve comments.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Setting extends AbstractSetting implements Map<String, String> {
 

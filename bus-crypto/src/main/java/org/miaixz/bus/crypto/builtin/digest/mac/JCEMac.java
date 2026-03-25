@@ -34,7 +34,7 @@ import org.miaixz.bus.crypto.Keeper;
  * instance to provide MAC functionality. It uses the JDK's default provider for MAC algorithms.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JCEMac extends SimpleWrapper<javax.crypto.Mac> implements Mac {
 

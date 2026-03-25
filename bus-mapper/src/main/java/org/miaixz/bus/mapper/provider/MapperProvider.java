@@ -28,7 +28,7 @@ package org.miaixz.bus.mapper.provider;
  *
  * @param <C> the configuration type
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface MapperProvider<C> {
 

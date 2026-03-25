@@ -3,6 +3,9 @@
     "includes": [
       {
         "pattern": "META-INF/extra/.*"
+      },
+      {
+        "pattern": "META-INF/services/.*"
       }
     ]
   }

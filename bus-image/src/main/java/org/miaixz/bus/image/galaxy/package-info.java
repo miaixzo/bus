@@ -21,6 +21,6 @@
  * 核心处理逻辑及方法
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy;

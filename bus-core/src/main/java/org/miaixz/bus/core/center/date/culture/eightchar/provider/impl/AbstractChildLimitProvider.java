@@ -29,7 +29,7 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
  * and duration of the Child Limit.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractChildLimitProvider implements ChildLimitProvider {
 

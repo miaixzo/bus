@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
  * Validator for the {@link Regex} annotation, checking if a string matches a given regular expression.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RegexMatcher implements Matcher<Object, Regex> {
 

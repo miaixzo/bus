@@ -36,7 +36,7 @@ import org.miaixz.bus.socket.metric.channel.AsynchronousChannelProvider;
  * server.keystore
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class SslService {
 

@@ -23,7 +23,7 @@ package org.miaixz.bus.core.center.date;
  * Enumeration for date modification types.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum Modify {
     /**

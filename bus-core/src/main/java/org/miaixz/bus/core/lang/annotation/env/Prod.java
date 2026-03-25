@@ -32,7 +32,7 @@ import java.lang.annotation.*;
  * build scripts to validate deployment configurations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Inherited
 @Documented

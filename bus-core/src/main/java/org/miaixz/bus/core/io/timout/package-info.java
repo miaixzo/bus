@@ -22,6 +22,6 @@
  * for managing timeouts during input/output operations, ensuring that I/O processes do not block indefinitely.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.core.io.timout;

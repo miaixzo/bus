@@ -37,7 +37,7 @@ import java.util.List;
  * This allows the client to use credentials configured globally in the JVM.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NetAuthenticator implements Authenticator {
 

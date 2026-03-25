@@ -29,7 +29,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Provides basic response wrapping for controllers.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Controller {
 

@@ -36,7 +36,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
  * Sensors from WMI or Open Hardware Monitor
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 final class WindowsSensors extends AbstractSensors {

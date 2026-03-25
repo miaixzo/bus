@@ -30,7 +30,7 @@ import lombok.experimental.SuperBuilder;
  * limiting functionality, such as hotspot cache duration, logging enablement, and user identifier provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

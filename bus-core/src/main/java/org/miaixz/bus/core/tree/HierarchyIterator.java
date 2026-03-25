@@ -51,7 +51,7 @@ import org.miaixz.bus.core.xyz.TreeKit;
  * @author Kimi Liu
  * @see EasyStream#iterateHierarchies
  * @see StreamKit#iterateHierarchies
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class HierarchyIterator<T> implements Iterator<T> {
 

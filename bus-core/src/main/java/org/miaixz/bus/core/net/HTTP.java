@@ -26,7 +26,7 @@ package org.miaixz.bus.core.net;
  * and HTTP/2 protocol configuration parameters.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HTTP {
 

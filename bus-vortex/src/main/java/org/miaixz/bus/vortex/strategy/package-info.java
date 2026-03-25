@@ -28,6 +28,6 @@
  * assembling the appropriate chain of strategies for a given request.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.vortex.strategy;

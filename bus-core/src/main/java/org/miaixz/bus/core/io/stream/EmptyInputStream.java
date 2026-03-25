@@ -27,7 +27,7 @@ import java.io.InputStream;
  * as a placeholder or for testing scenarios where an empty input stream is required.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class EmptyInputStream extends InputStream {
 

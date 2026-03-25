@@ -30,7 +30,7 @@ import java.util.Objects;
  * Validator for checking if an object is equal to a specified value.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class EqualsMatcher implements Matcher<Object, Equals> {
 

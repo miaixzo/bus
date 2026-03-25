@@ -27,7 +27,7 @@ import lombok.Setter;
  * Disk Information
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

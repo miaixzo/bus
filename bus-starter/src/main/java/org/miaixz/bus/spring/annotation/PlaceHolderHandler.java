@@ -35,7 +35,7 @@ import java.lang.reflect.Method;
  * attributes to support placeholders (e.g., {@code ${property.name}}).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PlaceHolderHandler implements InvocationHandler {
 

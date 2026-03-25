@@ -38,7 +38,7 @@ import org.miaixz.bus.setting.metric.props.Props;
  * the {@link INI} builder.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class IniSetting extends ArrayList<IniElement> {
 

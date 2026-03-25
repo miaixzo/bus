@@ -37,7 +37,7 @@ import reactor.core.publisher.Mono;
  * Generic type parameters: {@code Provider<Object, byte[]>}
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BinaryProvider implements Provider<Object, byte[]> {
 

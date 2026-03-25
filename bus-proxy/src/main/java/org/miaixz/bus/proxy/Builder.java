@@ -29,7 +29,7 @@ import java.lang.reflect.Proxy;
  * A utility class for creating and working with dynamic proxies.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class Builder {
 

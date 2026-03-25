@@ -31,7 +31,7 @@ import java.lang.annotation.*;
  * is similar in purpose to annotations like {@code jakarta.annotation.Nullable}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

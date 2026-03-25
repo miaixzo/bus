@@ -27,7 +27,7 @@ import org.miaixz.bus.core.lang.Normal;
  * Encodes a byte array into a Base62 byte array.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Base62Encoder implements Encoder<byte[], byte[]> {
 

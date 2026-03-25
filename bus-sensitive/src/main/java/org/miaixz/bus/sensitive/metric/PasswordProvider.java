@@ -27,7 +27,7 @@ import org.miaixz.bus.sensitive.Context;
  * actual password or a masked version, effectively removing it from the output.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PasswordProvider extends AbstractProvider {
 

@@ -33,7 +33,7 @@ import javax.net.ssl.SSLPeerUnverifiedException;
  * Android), are not available.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BasicCertificateChainCleaner extends CertificateChainCleaner {
 

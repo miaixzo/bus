@@ -45,7 +45,7 @@ import org.miaixz.bus.shade.safety.streams.AlwaysOutputStream;
  * a provided filter and key.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BootDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntry> implements DecryptorProvider {
 

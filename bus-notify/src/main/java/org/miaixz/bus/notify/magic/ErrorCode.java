@@ -23,7 +23,7 @@ package org.miaixz.bus.notify.magic;
  * Notification error codes, typically in the format 111xxx.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 

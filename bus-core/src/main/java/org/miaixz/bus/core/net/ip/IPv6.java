@@ -35,7 +35,7 @@ import org.miaixz.bus.core.xyz.NetKit;
  * A utility class for IPv6 addresses.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class IPv6 {
 

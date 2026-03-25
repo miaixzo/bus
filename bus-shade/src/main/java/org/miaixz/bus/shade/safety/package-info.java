@@ -21,6 +21,6 @@
  * Provides utilities for secure encryption and execution of Spring Boot JARs, with support for native JARs.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.shade.safety;

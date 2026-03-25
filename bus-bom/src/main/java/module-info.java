@@ -21,7 +21,7 @@
  * bus.bom
  * 
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 module bus.bom {
 
@@ -29,7 +29,7 @@ module bus.bom {
     requires bus.base;
     requires bus.cache;
     requires bus.core;
-    requires bus.cron;
+    requires bus.tempus;
     requires bus.crypto;
     requires bus.extra;
     requires bus.gitlab;

@@ -34,7 +34,7 @@ import java.util.List;
  * Configuration properties for Elasticsearch.
  *
  * @author <a href="mailto:congchun.zheng@gmail.com">Sixawn.ZHENG</a>
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

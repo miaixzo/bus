@@ -46,7 +46,7 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * (sendSmsTp).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ZhutongSmsProvider extends AbstractProvider<ZhutongNotice, Context> {
 
@@ -204,7 +204,7 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongNotice, Context>
         if (StringKit.isBlank(requestUrl)) {
             throw new ValidateException("Zhutong SMS: requestUrl cannot be empty!");
         }
-        if (!requestUrl.endsWith("/")) {
+        if (!requestUrl.endsWith(Symbol.SLASH)) {
             throw new ValidateException("Zhutong SMS: requestUrl must end with '/'!");
         }
         if (ArrayKit.hasBlank(username, password)) {

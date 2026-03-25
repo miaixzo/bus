@@ -82,7 +82,7 @@ import org.miaixz.bus.core.xyz.MapKit;
  * Built-in configurations required by various protocols, managed by platform type using an enum.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum Registry implements Complex {
 

@@ -25,7 +25,7 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
  * Represents detailed information about the "Child Limit" (童限) period in Chinese astrology.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ChildLimitInfo {
 

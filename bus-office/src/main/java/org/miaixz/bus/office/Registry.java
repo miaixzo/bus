@@ -31,7 +31,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * Registry for supported office-related components and services.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Registry {
 

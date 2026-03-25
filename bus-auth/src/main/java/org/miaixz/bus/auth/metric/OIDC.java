@@ -23,7 +23,7 @@ package org.miaixz.bus.auth.metric;
  * Constants related to OIDC (OpenID Connect).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface OIDC {
 

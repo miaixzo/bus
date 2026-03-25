@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.Assert;
  * for segmenting a string into fixed-size chunks.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LengthFinder extends TextFinder {
 

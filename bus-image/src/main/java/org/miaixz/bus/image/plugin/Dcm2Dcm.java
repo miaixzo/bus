@@ -49,7 +49,7 @@ import java.util.concurrent.Executors;
  * supports both modern transcoding via {@link Transcoder} and a legacy approach.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Dcm2Dcm {
 

@@ -49,7 +49,7 @@ import org.miaixz.bus.http.bodys.ResponseBody;
  *
  * @param <C> The concrete subclass type, for method chaining.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
@@ -359,7 +359,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      * @return This instance for chaining.
      */
     public C setRange(long rangeStart) {
-        return addHeader("Range", "bytes=" + rangeStart + Symbol.MINUS);
+        return addHeader(HTTP.RANGE, "bytes=" + rangeStart + Symbol.MINUS);
     }
 
     /**
@@ -370,7 +370,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      * @return This instance for chaining.
      */
     public C setRange(long rangeStart, long rangeEnd) {
-        return addHeader("Range", "bytes=" + rangeStart + Symbol.MINUS + rangeEnd);
+        return addHeader(HTTP.RANGE, "bytes=" + rangeStart + Symbol.MINUS + rangeEnd);
     }
 
     /**
@@ -978,7 +978,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      * A builder for synchronous HTTP requests.
      *
      * @author Kimi Liu
-     * @since Java 17+
+     * @since Java 21+
      */
     public static class Sync extends CoverHttp<Sync> {
 
@@ -1140,7 +1140,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      * A builder for asynchronous HTTP requests.
      *
      * @author Kimi Liu
-     * @since Java 17+
+     * @since Java 21+
      */
     public static class Async extends CoverHttp<Async> {
 

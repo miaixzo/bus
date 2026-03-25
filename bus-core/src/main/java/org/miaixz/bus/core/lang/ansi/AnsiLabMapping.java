@@ -27,7 +27,7 @@ import java.util.Map;
  * {@link AnsiElement} for a given {@link LabColor} or {@link Color}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AnsiLabMapping {
 

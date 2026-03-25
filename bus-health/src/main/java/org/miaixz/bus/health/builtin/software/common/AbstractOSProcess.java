@@ -31,7 +31,7 @@ import org.miaixz.bus.health.builtin.software.OSProcess;
  * execute instructions concurrently.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public abstract class AbstractOSProcess implements OSProcess {

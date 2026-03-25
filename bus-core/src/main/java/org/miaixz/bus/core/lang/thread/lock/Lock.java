@@ -29,7 +29,7 @@ import java.util.concurrent.locks.StampedLock;
  * factory methods for standard Java locks as well as custom segment locks.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Lock {
 

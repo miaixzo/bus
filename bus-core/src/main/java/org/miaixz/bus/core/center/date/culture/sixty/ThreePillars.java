@@ -30,7 +30,7 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
  * Three Pillars (Year, Month, Day).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ThreePillars extends Tradition {
 

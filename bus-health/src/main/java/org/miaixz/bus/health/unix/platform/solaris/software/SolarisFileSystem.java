@@ -45,7 +45,7 @@ import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
  * filesystem, excluding temporary and kernel mounts.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public class SolarisFileSystem extends AbstractFileSystem {

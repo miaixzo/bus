@@ -35,7 +35,7 @@ import org.miaixz.bus.core.xyz.*;
  * Converter for enums without generic type checking
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class EnumConverter extends AbstractConverter implements MatcherConverter {
 

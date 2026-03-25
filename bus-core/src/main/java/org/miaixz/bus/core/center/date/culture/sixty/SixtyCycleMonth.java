@@ -22,17 +22,17 @@ package org.miaixz.bus.core.center.date.culture.sixty;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.Direction;
-import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
+import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
+import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
 
 /**
  * Represents a Sixty-Year Cycle Month (干支月), a traditional Chinese calendar unit. This class extends {@link Loops} for
  * cyclical operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SixtyCycleMonth extends Loops {
 

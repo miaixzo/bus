@@ -38,7 +38,7 @@ import lombok.experimental.SuperBuilder;
  * agnostic of the specific credential type.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

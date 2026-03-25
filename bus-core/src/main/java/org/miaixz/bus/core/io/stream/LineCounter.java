@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * management.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LineCounter implements Closeable {
 

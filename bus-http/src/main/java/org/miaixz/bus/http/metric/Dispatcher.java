@@ -38,7 +38,7 @@ import org.miaixz.bus.http.RealCall;
  * be able to run {@linkplain #getMaxRequests the configured maximum} calls concurrently.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Dispatcher {
 

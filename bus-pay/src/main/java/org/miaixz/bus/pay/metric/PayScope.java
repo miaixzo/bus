@@ -23,7 +23,7 @@ package org.miaixz.bus.pay.metric;
  * Unified interface for scope classes of various platforms.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface PayScope {
 

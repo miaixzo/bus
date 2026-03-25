@@ -44,7 +44,7 @@ import org.miaixz.bus.office.excel.WorkbookKit;
  * Excel reader for reading Excel workbooks.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
 

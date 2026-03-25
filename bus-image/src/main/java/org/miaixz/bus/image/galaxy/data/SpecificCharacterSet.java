@@ -37,7 +37,7 @@ import org.miaixz.bus.logger.Logger;
  * 2022字符集切换机制，允许在同一文本中使用多种字符集。
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SpecificCharacterSet {
 

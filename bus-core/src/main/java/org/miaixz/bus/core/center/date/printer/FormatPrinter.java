@@ -26,7 +26,7 @@ import java.util.Date;
  * Interface for date formatting output, defining methods for formatting dates.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface FormatPrinter extends DatePrinter {
 

@@ -30,7 +30,7 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
  * virtual partitions (logical volumes) as block devices accessible to the file system.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Immutable
 public interface LogicalVolumeGroup {

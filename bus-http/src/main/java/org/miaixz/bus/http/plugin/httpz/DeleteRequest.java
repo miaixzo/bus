@@ -29,7 +29,7 @@ import java.util.Map;
  * DELETE requests are used to delete a specified resource and typically do not have a request body.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DeleteRequest extends HttpRequest {
 

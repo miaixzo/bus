@@ -27,7 +27,7 @@ import org.miaixz.bus.auth.nimble.AuthorizeScope;
  * LINE authorization scopes.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @AllArgsConstructor

@@ -46,7 +46,7 @@ import com.sun.jna.platform.mac.CoreFoundation.*;
  * Mac hard disk implementation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class MacHWDiskStore extends AbstractHWDiskStore {

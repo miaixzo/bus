@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.CollKit;
  * of EasyPOI, see: https://blog.csdn.net/qq_45752401/article/details/121250993
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RowGroup implements Serializable {
 

@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  *
  * @param <T> The type of the resource, which must implement the {@link Resource} interface.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ResourceClassLoader<T extends Resource> extends SecureClassLoader {
 

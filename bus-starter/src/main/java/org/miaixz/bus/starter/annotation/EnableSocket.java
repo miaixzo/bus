@@ -31,7 +31,7 @@ import java.lang.annotation.*;
  * {@link org.miaixz.bus.starter.socket.SocketQuickService} to manage the lifecycle of an AIO (Asynchronous I/O) server.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Inherited
 @Documented

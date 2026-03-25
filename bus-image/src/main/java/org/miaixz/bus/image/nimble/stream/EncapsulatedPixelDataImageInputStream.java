@@ -32,7 +32,7 @@ import org.miaixz.bus.image.nimble.codec.TransferSyntaxType;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class EncapsulatedPixelDataImageInputStream extends MemoryCacheImageInputStream
         implements BytesWithImageImageDescriptor {

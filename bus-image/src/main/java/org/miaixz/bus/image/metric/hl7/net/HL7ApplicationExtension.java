@@ -24,7 +24,7 @@ import java.io.Serializable;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HL7ApplicationExtension implements Serializable {
 

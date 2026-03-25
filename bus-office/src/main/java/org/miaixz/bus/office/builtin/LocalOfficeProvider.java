@@ -27,7 +27,7 @@ import java.io.InputStream;
  * document conversions. The provided office manager must be started for this converter to be used.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LocalOfficeProvider extends AbstractProvider {
 

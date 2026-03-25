@@ -25,7 +25,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * NetworkParams presents network parameters of running OS, such as DNS, host name etc.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public interface NetworkParams {

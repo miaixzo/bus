@@ -38,6 +38,7 @@ import javax.net.ssl.SSLSocketFactory;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.PaymentException;
@@ -66,7 +67,7 @@ import lombok.SneakyThrows;
  * @param <T> The type of the global object, extending {@link Voucher}.
  * @param <K> The type of the context object, extending {@link Context}.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractProvider<T extends Voucher, K extends Context> implements Provider<T> {
 
@@ -339,7 +340,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
 
         try {
             return Httpz.post().url(url).addFile(null, null, FileKit.newFile(filePath))
-                    .addHeader("Content-Type", "multipart/form-data;boundary=\"boundary\"").build().execute().body()
+                    .addHeader(HTTP.CONTENT_TYPE, "multipart/form-data;boundary=\"boundary\"").build().execute().body()
                     .string();
         } catch (Exception e) {
             throw new RuntimeException(e);

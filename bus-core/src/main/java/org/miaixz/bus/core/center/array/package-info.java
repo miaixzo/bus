@@ -21,6 +21,6 @@
  * Provides utility classes for working with arrays, including validators and helpers for primitive arrays.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.core.center.array;

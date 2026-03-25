@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * <a href="https://github.com/TakWolf/Java-MorseCoder">https://github.com/TakWolf/Java-MorseCoder</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Morse {
 

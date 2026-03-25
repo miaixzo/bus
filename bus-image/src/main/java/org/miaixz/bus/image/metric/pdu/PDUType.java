@@ -21,7 +21,7 @@ package org.miaixz.bus.image.metric.pdu;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 class PDUType {
 

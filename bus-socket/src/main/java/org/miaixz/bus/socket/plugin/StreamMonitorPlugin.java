@@ -44,7 +44,7 @@ import java.util.function.BiConsumer;
  *
  * @param <T> the type of message object entity handled by this plugin
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
 

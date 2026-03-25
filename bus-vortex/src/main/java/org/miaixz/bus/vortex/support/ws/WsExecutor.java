@@ -22,7 +22,7 @@ package org.miaixz.bus.vortex.support.ws;
 import jakarta.annotation.PreDestroy;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.support.Coordinator;
 import org.springframework.http.MediaType;
@@ -53,7 +53,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Generic type parameters: {@code Executor<Object, ServerResponse>}
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WsExecutor extends Coordinator<Object, ServerResponse> {
 

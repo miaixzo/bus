@@ -32,7 +32,7 @@ import org.miaixz.bus.sensitive.magic.annotation.Shield;
  * {@code "johndoe@example.com"} becomes {@code "joh***@example.com"}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class EmailProvider extends AbstractProvider {
 

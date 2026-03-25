@@ -29,7 +29,7 @@ package org.miaixz.bus.core.center.date.culture.parts;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class SecondParts extends DayParts {
 

@@ -41,7 +41,7 @@ import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
  * MariaDB database query implementation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MariaDbDataBaseQuery extends AbstractDatabaseQuery {
 

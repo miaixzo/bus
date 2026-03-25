@@ -23,7 +23,7 @@ package org.miaixz.bus.setting.metric.ini;
  * Ini file's comment.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface IniComment extends IniElement {
 

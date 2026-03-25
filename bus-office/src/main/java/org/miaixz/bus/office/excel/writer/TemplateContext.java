@@ -39,7 +39,7 @@ import org.miaixz.bus.office.excel.SheetKit;
  * Template context, which records the cells where variables are located in the template.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TemplateContext {
 

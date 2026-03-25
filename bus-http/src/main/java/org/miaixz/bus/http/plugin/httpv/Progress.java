@@ -23,7 +23,7 @@ package org.miaixz.bus.http.plugin.httpv;
  * Represents the progress of an upload or download operation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Progress {
 

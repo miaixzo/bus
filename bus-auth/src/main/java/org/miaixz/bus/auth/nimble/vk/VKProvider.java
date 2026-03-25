@@ -37,6 +37,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 
@@ -44,7 +45,7 @@ import org.miaixz.bus.http.Httpx;
  * VK login provider.
  * 
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class VKProvider extends AbstractProvider {
 
@@ -258,7 +259,7 @@ public class VKProvider extends AbstractProvider {
      * @return a map of HTTP headers
      */
     private Map<String, String> buildHeader() {
-        return Map.of("Content-Type", MediaType.APPLICATION_FORM_URLENCODED);
+        return Map.of(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
     }
 
     /**

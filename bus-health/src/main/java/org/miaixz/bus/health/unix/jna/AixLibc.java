@@ -30,7 +30,7 @@ import com.sun.jna.Native;
  * the JNA project.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface AixLibc extends CLibrary {
 

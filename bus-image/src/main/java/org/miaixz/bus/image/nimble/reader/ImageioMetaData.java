@@ -27,7 +27,7 @@ import org.w3c.dom.Node;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ImageioMetaData extends IIOMetadata {
 

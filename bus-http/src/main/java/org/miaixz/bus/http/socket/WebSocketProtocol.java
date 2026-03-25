@@ -26,7 +26,7 @@ import org.miaixz.bus.core.io.buffer.Buffer;
  * Constants and utility methods for the WebSocket protocol (RFC 6455).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class WebSocketProtocol {
 

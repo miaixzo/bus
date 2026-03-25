@@ -33,7 +33,7 @@ import org.miaixz.bus.health.windows.driver.registry.ThreadPerformanceData.PerfC
  * OSThread implementation
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public class WindowsOSThread extends AbstractOSThread {

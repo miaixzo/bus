@@ -34,7 +34,7 @@ import org.miaixz.bus.image.Tag;
  * arrays.
  * 
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 enum BinaryValueType implements ValueType {
 

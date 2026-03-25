@@ -26,7 +26,7 @@ import org.miaixz.bus.office.Context;
  * Represents a task to be executed by the office application.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface MadeInOffice {
 

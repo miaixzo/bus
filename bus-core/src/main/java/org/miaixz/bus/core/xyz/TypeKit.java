@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.reflect.TypeReference;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TypeKit {
 

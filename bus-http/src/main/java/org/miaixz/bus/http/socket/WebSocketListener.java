@@ -26,7 +26,7 @@ import org.miaixz.bus.http.Response;
  * A listener for events related to a WebSocket connection.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class WebSocketListener {
 

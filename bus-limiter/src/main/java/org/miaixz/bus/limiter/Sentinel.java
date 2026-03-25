@@ -40,7 +40,7 @@ import com.alibaba.csp.sentinel.slots.block.BlockException;
  * Sentinel to enforce flow control, hotspot protection, and fallback mechanisms based on configured rules.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Sentinel {
 

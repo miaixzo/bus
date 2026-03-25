@@ -33,7 +33,7 @@ import java.lang.annotation.*;
  * Spring MVC controllers.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Inherited
 @Documented

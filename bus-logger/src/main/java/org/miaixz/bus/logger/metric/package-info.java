@@ -21,6 +21,6 @@
  * This package provides implementations and wrappers for various third-party logging libraries.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.logger.metric;

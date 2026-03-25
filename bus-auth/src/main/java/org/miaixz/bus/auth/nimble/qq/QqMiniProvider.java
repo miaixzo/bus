@@ -42,7 +42,7 @@ import java.util.Map;
  * QQ Mini Program login provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class QqMiniProvider extends AbstractProvider {
 

@@ -33,7 +33,7 @@ import java.nio.ByteBuffer;
  *
  * @param <T> the type of the decoded message object
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class FixedLengthBytesMessage<T> implements Message<T> {
 

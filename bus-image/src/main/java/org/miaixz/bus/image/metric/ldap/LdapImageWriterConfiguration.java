@@ -42,7 +42,7 @@ import org.miaixz.bus.image.nimble.extend.ImageWriterExtension;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LdapImageWriterConfiguration extends LdapDicomConfigurationExtension {
 

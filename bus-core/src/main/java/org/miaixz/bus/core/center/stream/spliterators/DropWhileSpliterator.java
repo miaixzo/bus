@@ -32,7 +32,7 @@ import java.util.function.Predicate;
  *
  * @param <T> the type of elements returned by this Spliterator
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class DropWhileSpliterator<T> implements Spliterator<T> {
 

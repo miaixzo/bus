@@ -28,7 +28,7 @@ import org.miaixz.bus.core.center.iterator.IterableIterator;
  * words.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface NLPResult extends IterableIterator<NLPWord> {
 

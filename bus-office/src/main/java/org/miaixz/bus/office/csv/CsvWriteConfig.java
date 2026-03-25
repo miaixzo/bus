@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.Symbol;
  * CSV write configuration options.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CsvWriteConfig extends CsvConfig<CsvWriteConfig> implements Serializable {
 

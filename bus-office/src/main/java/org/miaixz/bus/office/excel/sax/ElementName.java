@@ -23,7 +23,7 @@ package org.miaixz.bus.office.excel.sax;
  * Enumeration of element names used in Excel SAX parsing.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum ElementName {
 

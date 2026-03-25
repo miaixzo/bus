@@ -20,7 +20,11 @@
 package org.miaixz.bus.cache;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+
+import org.miaixz.bus.core.xyz.ListKit;
+import org.miaixz.bus.core.xyz.MapKit;
 
 /**
  * Cache Interface.
@@ -33,7 +37,7 @@ import java.util.Map;
  * @param <K> the type of keys
  * @param <V> the type of values
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface CacheX<K, V> {
 
@@ -101,18 +105,23 @@ public interface CacheX<K, V> {
      * Writes an object to the cache with a specified expiration time.
      * <p>
      * Writes a key-value pair to the cache and sets a specified expiration time in milliseconds. If the key already
-     * exists, its value is updated and the expiration time is reset. Example code:
+     * exists, its value is updated and the expiration time is reset.
      * </p>
-     * 
+     * <p>
+     * <strong>Contract:</strong> when {@code expire == 0} (i.e. {@code CacheExpire.FOREVER}), the entry must never
+     * expire. All implementations are required to honour this convention. Example code:
+     * </p>
+     *
      * <pre>{@code
      * CacheX<String, User> cache = new SomeCacheImpl<>();
      * User user = new User("user123", "John Doe");
      * cache.write(user.getId(), user, 30 * 60 * 1000); // 30 minutes
+     * cache.write(user.getId(), user, CacheExpire.FOREVER); // never expires
      * }</pre>
      *
      * @param key    the cache key
      * @param value  the cache value
-     * @param expire the expiration time in milliseconds
+     * @param expire the expiration time in milliseconds; {@code 0} means never expire
      */
     void write(K key, V value, long expire);
 
@@ -182,12 +191,96 @@ public interface CacheX<K, V> {
      * <p>
      * Removes all key-value pairs from the cache, making it empty. Example code:
      * </p>
-     * 
+     *
      * <pre>{@code
      * CacheX<String, User> cache = new SomeCacheImpl<>();
      * cache.clear();
      * }</pre>
      */
     void clear();
+
+    /**
+     * Scans and returns all key-value pairs whose keys start with the given prefix.
+     * <p>
+     * Implementations that support prefix-based storage (e.g., memory, Redis, JDBC) should override this method to
+     * provide efficient scanning. The default implementation returns an empty map. Example code:
+     * </p>
+     *
+     * <pre>{@code
+     * CacheX<String, String> store = new MemoryCache<>();
+     * store.write("registry:default:API:001", "{}");
+     * store.write("registry:default:API:002", "{}");
+     * Map<String, String> entries = store.scan("registry:default:API:");
+     * }</pre>
+     *
+     * @param prefix the key prefix to match
+     * @return a map of all matching key-value pairs; returns an empty map if not supported or no matches found
+     */
+    default Map<K, V> scan(K prefix) {
+        return MapKit.empty();
+    }
+
+    /**
+     * Returns all keys that start with the given prefix, without loading values.
+     * <p>
+     * This is a lightweight alternative to {@link #scan(Object)} when only keys are needed. The default implementation
+     * delegates to {@link #scan(Object)} and extracts the key set.
+     * </p>
+     *
+     * @param prefix the key prefix to match
+     * @return a list of matching keys; returns an empty list if not supported or no matches found
+     */
+    default List<K> keys(K prefix) {
+        return ListKit.of(scan(prefix).keySet());
+    }
+
+    /**
+     * Atomically increments the numeric value stored at the given key and returns the new value.
+     * <p>
+     * If the key does not exist it is created with an initial value of {@code 1}. Implementations must guarantee
+     * atomicity:
+     * <ul>
+     * <li>Memory: backed by {@code AtomicLong}</li>
+     * <li>Redis: uses the {@code INCR} command</li>
+     * <li>JDBC: uses {@code UPDATE … SET val = val + 1 RETURNING val} (or equivalent)</li>
+     * </ul>
+     * Counters are not subject to TTL expiry and persist until explicitly removed. Used by {@code Sequence} for config
+     * version numbers.
+     *
+     * @param key the cache key holding the counter
+     * @return the new value after increment; starts at {@code 1} when the key did not exist
+     */
+    default long increment(K key) {
+        throw new UnsupportedOperationException("increment() is not supported by this CacheX implementation");
+    }
+
+    /**
+     * Refreshes the TTL of an existing entry without changing its value.
+     * <p>
+     * Returns {@code false} if the key does not exist or has already expired. The default implementation performs a
+     * read then write, which is functionally correct but not atomic. Implementations backed by Redis should override
+     * this with a single {@code PEXPIRE} command for efficiency and atomicity. Used by service-instance heartbeat
+     * renewal in the Cortex registry. Example code:
+     * </p>
+     *
+     * <pre>{@code
+     * boolean refreshed = cache.renew("reg:default:api:001", 60_000);
+     * if (!refreshed) {
+     *     // entry expired between heartbeats — re-register
+     * }
+     * }</pre>
+     *
+     * @param key    the cache key whose TTL to refresh
+     * @param expire the new expiration time in milliseconds; {@code 0} means never expire
+     * @return {@code true} if the TTL was refreshed; {@code false} if the key was not found
+     */
+    default boolean renew(K key, long expire) {
+        V value = read(key);
+        if (value == null) {
+            return false;
+        }
+        write(key, value, expire);
+        return true;
+    }
 
 }

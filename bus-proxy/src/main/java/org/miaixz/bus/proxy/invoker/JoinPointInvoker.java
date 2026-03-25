@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
  * allowing different invocation contexts to be used within the proxy chain framework.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JoinPointInvoker implements ProxyChain {
 

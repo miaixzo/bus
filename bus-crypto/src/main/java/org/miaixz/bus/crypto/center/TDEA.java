@@ -37,7 +37,7 @@ import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
  * DESede/ECB/PKCS5Padding.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TDEA extends Crypto {
 

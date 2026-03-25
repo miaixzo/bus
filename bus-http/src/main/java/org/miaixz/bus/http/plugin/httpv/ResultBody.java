@@ -42,7 +42,7 @@ import org.miaixz.bus.http.bodys.ResponseBody;
  * progress monitoring.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ResultBody implements CoverResult.Body {
 

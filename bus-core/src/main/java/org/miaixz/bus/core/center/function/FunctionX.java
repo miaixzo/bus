@@ -31,7 +31,7 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
  * @param <R> The type of the result of the function.
  * @author Kimi Liu
  * @see Function
- * @since Java 17+
+ * @since Java 21+
  */
 @FunctionalInterface
 public interface FunctionX<T, R> extends Function<T, R>, Serializable {

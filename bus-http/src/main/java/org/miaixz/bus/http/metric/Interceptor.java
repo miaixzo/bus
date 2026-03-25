@@ -28,7 +28,7 @@ import java.io.IOException;
  * interceptors add, remove, or transform headers on requests or responses.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Interceptor {
 

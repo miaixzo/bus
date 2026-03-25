@@ -40,7 +40,7 @@ import org.miaixz.bus.mapper.provider.LogicalProvider;
  * @param <T> The type of the entity class.
  * @param <I> The type of the primary key.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T, I>, FunctionMapper<T> {
 

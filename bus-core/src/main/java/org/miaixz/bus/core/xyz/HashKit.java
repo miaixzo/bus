@@ -29,7 +29,7 @@ import org.miaixz.bus.core.codec.hash.metro.MetroHash64;
  * A collection of various hash algorithms. FNV1 is recommended for general use.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HashKit {
 

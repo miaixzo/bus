@@ -28,7 +28,7 @@ import java.lang.annotation.*;
  * Validates that the annotated string consists of Chinese characters.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

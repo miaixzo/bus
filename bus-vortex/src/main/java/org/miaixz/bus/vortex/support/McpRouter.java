@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Router;
 import org.miaixz.bus.vortex.support.mcp.McpExecutor;
@@ -42,7 +42,7 @@ import reactor.core.publisher.Mono;
  * Generic type parameters: {@code Router<ServerRequest, ServerResponse>}
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class McpRouter implements Router<ServerRequest, ServerResponse> {
 

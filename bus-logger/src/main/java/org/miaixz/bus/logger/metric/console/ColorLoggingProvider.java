@@ -33,7 +33,7 @@ import java.util.function.Function;
  * A console logger that prints colorful messages using {@code System.out.println}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ColorLoggingProvider extends NormalLoggingProvider {
 

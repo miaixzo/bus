@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.FileKit;
  * Utility class for Word Document (DOCX) operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WordKit {
 

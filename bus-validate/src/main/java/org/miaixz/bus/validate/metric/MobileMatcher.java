@@ -29,7 +29,7 @@ import org.miaixz.bus.validate.magic.annotation.Mobile;
  * Validator for mobile phone numbers.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MobileMatcher implements Matcher<Object, Mobile> {
 

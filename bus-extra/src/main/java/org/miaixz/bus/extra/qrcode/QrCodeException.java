@@ -27,7 +27,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * Exception for QR code related operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class QrCodeException extends InternalException {
 

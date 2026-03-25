@@ -27,7 +27,7 @@ import org.miaixz.bus.core.lang.Assert;
  * Code adapted from: <a href="https://github.com/orclight/jencrypt">https://github.com/orclight/jencrypt</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RotateN {
 

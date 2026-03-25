@@ -44,7 +44,7 @@ import com.sun.jna.platform.mac.SystemB;
  * Memory obtained by host_statistics (vm_stat) and sysctl.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 final class MacGlobalMemory extends AbstractGlobalMemory {

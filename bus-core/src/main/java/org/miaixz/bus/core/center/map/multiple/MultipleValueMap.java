@@ -51,7 +51,7 @@ import org.miaixz.bus.core.xyz.CollKit;
  * @see CollectionValueMap
  * @see ListValueMap
  * @see SetValueMap
- * @since Java 17+
+ * @since Java 21+
  */
 public interface MultipleValueMap<K, V> extends Map<K, Collection<V>> {
 

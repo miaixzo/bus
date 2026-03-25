@@ -26,7 +26,7 @@ import org.miaixz.bus.image.nimble.Photometric;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  * @since Jul 2015
  */
 public final class ImageDescriptor {

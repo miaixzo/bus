@@ -27,7 +27,7 @@ import java.util.Map;
  * defining standard header parameters like algorithm, type, content type, and key ID.
  * 
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JWTHeader extends Claims {
 

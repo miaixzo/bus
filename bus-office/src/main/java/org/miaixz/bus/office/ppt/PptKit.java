@@ -35,7 +35,7 @@ import org.miaixz.bus.core.xyz.FileKit;
  * Utility class for PowerPoint (PPTX) operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PptKit {
 

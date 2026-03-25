@@ -31,14 +31,14 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
  * Legal holidays (since 2001-12-29)
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Holiday extends Loops {
 
     /**
      * Names of legal holidays
      */
-    public static final String[] NAMES = { "元旦节", "春节", "清明节", "劳动节", "端午节", "中秋节", "国庆节", "国庆中秋", "抗战胜利日" };
+    public static final String[] NAMES = { "元旦", "春节", "清明节", "劳动节", "端午节", "中秋节", "国庆节", "国庆中秋", "抗战胜利日" };
 
     /**
      * Default holiday data. Full format: Date + Index + Adjustment + Holiday Date: YYYYMMDD Holiday:

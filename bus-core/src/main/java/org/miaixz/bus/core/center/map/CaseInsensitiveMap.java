@@ -38,7 +38,7 @@ import org.miaixz.bus.core.lang.Normal;
  * @param <K> The type of keys in the map (typically {@code String} or a type convertible to {@code String}).
  * @param <V> The type of values in the map.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CaseInsensitiveMap<K, V> extends FunctionKeyMap<K, V> {
 

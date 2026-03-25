@@ -21,6 +21,6 @@
  * 队列{@link java.util.Queue}相关封装
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.core.center.queue;

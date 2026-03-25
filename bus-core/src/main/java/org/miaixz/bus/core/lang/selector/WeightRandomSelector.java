@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.CollKit;
  *
  * @param <T> the type of the object to be selected
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WeightRandomSelector<T> implements Selector<T>, Serializable {
 

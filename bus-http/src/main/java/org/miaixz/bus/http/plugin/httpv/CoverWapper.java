@@ -25,7 +25,7 @@ import java.util.Set;
  * Represents data that can be in any format, such as XML, YAML, Protobuf, etc., structured as a key-value map.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface CoverWapper {
 

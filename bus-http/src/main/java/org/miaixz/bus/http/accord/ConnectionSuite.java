@@ -40,7 +40,7 @@ import java.util.Objects;
  * selection to the underlying SSL socket.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class ConnectionSuite {
 

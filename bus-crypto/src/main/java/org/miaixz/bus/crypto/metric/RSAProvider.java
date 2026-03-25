@@ -31,7 +31,7 @@ import org.miaixz.bus.crypto.center.RSA;
  * handles the encryption and decryption operations using RSA keys.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RSAProvider implements Provider {
 

@@ -31,7 +31,7 @@ import org.miaixz.bus.core.center.BoundedCollection;
  *
  * @param <E> the type of elements in this list
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BoundedList<E> extends ListWrapper<E> implements BoundedCollection<E> {
 

@@ -43,7 +43,7 @@ import org.miaixz.bus.logger.Logger;
  * 则这些是独立的网络AE。如果基于其他内部结构存在功能差异，则这些也是独立的网络AE。
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ApplicationEntity implements Serializable {
 

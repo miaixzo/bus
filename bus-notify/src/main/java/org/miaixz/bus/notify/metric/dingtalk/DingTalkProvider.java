@@ -41,7 +41,7 @@ import lombok.Setter;
  * DingTalk notification service provider.
  *
  * @author Justubborn
- * @since Java 17+
+ * @since Java 21+
  */
 @Setter
 public class DingTalkProvider extends AbstractProvider<DingTalkNotice, Context> {

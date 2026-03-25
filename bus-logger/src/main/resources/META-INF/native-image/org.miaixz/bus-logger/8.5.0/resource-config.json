@@ -2,34 +2,28 @@
   "resources": {
     "includes": [
       {
-        "pattern": "\\QMETA-INF/services/org.miaixz.bus.logger.Factory\\E"
+        "pattern": "META-INF/services/*"
       },
       {
-        "pattern": "\\QMETA-INF/services/org.slf4j.spi.SLF4JServiceProvider\\E"
+        "pattern": "logback-spring.groovy"
       },
       {
-        "pattern": "\\Qlogback-spring.groovy\\E"
+        "pattern": "logback-spring.xml"
       },
       {
-        "pattern": "\\Qlogback-spring.xml\\E"
+        "pattern": "logback-test.scmo"
       },
       {
-        "pattern": "\\Qlogback-test.scmo\\E"
+        "pattern": "logback-test.xml"
       },
       {
-        "pattern": "\\Qlogback-test.xml\\E"
+        "pattern": "logback.groovy"
       },
       {
-        "pattern": "\\Qlogback.groovy\\E"
+        "pattern": "logback.scmo"
       },
       {
-        "pattern": "\\Qlogback.scmo\\E"
-      },
-      {
-        "pattern": "\\Qlogback.xml\\E"
-      },
-      {
-        "pattern": "\\QMETA-INF/services/ch.qos.logback.classic.spi.Configurator\\E"
+        "pattern": "logback.xml"
       }
     ]
   },

@@ -26,7 +26,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
  * Validation error codes, starting from 115xxx.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 

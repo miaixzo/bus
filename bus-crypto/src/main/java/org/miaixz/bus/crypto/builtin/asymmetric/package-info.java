@@ -21,6 +21,6 @@
  * Provides support for asymmetric cryptographic algorithms, including RSA and others.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.crypto.builtin.asymmetric;

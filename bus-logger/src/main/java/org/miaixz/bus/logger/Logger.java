@@ -28,7 +28,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Static logger class for logging without introducing a logger instance.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Logger {
 

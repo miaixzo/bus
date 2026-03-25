@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * character-stream-specific copying functionality.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ReaderWriterCopier extends IoCopier<Reader, Writer> {
 

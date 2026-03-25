@@ -29,7 +29,7 @@ import java.lang.annotation.*;
  * Validates that the annotated string is a valid date according to the specified format.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

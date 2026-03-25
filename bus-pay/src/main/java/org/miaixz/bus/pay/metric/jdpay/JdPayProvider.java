@@ -31,7 +31,7 @@ import org.miaixz.bus.pay.metric.jdpay.api.JdPayApi;
  * JD Pay provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class JdPayProvider extends AbstractProvider<Voucher, Context> {
 

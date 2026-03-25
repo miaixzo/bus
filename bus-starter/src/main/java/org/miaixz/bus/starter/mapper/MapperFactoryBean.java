@@ -32,7 +32,7 @@ import org.springframework.beans.factory.FactoryBean;
  *
  * @param <T> The type of the mapper interface.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MapperFactoryBean<T> extends SqlSessionDaoSupport implements FactoryBean<T> {
 

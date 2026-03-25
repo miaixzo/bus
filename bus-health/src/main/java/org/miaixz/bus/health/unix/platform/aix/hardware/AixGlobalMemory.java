@@ -38,7 +38,7 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_memory_total_t;
  * Memory obtained by perfstat_memory_total_t
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 final class AixGlobalMemory extends AbstractGlobalMemory {

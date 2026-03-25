@@ -29,7 +29,7 @@ import org.apache.commons.compress.archivers.sevenz.SevenZFile;
  * Wrapper for reading file streams during 7z decompression.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Seven7EntryInputStream extends InputStream {
 

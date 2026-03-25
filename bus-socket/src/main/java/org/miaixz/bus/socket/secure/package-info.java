@@ -21,6 +21,6 @@
  * Provides classes for securing communication services, including SSL/TLS implementations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.socket.secure;

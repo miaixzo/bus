@@ -60,7 +60,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AuthMethodResolver implements HandlerMethodArgumentResolver {
 

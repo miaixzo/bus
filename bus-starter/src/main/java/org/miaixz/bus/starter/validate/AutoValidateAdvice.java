@@ -39,7 +39,7 @@ import java.lang.reflect.Method;
  * executed. It is intended to be used with an {@code @Around} advice.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AutoValidateAdvice {
 

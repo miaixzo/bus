@@ -25,7 +25,7 @@ package org.miaixz.bus.core.lang.reflect.creator;
  *
  * @param <T> The type of the object to be created.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface ObjectCreator<T> {
 

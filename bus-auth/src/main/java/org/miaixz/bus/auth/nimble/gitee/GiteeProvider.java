@@ -40,7 +40,7 @@ import java.util.Map;
  * Gitee login provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class GiteeProvider extends AbstractProvider {
 

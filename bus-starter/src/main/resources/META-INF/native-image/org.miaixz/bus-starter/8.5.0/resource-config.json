@@ -3,6 +3,12 @@
     "includes": [
       {
         "pattern": "META-INF/services/.*"
+      },
+      {
+        "pattern": "META-INF/spring/.*"
+      },
+      {
+        "pattern": "spring.factories"
       }
     ]
   }

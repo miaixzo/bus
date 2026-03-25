@@ -49,7 +49,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SheetDataSaxHandler extends DefaultHandler {
 

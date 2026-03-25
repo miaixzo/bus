@@ -64,7 +64,7 @@ import org.miaixz.bus.core.convert.Converter;
  *
  * @param <K> The type of the key.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface TypeGetter<K> {
 

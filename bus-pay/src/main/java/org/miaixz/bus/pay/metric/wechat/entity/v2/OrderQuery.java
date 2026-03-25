@@ -31,7 +31,7 @@ import org.miaixz.bus.pay.magic.Voucher;
  * refund results.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

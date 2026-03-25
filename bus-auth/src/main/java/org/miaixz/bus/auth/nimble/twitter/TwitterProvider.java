@@ -50,7 +50,7 @@ import org.miaixz.bus.http.Httpx;
  * access tokens and user information.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class TwitterProvider extends AbstractProvider {
 
@@ -150,7 +150,7 @@ public class TwitterProvider extends AbstractProvider {
 
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.AUTHORIZATION, buildHeader(form));
-        header.put("User-Agent", "'Httpx' HTTP Client Simple-Http");
+        header.put(HTTP.USER_AGENT, "'Httpx' HTTP Client Simple-Http");
         String requestToken = Httpx.post(baseUrl, null, header);
 
         Map<String, String> res = Builder.parseStringToMap(requestToken);

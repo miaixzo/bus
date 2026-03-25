@@ -21,6 +21,6 @@
  * Provides implementations for message handling within the socket framework.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.socket.metric.handler;

@@ -30,7 +30,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  *
  * @param <T> the type of the boundary value, which must be comparable
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class FiniteBound<T extends Comparable<? super T>> implements Bound<T> {
 

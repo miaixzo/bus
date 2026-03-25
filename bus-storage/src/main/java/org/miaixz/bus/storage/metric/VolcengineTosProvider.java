@@ -30,7 +30,7 @@ import org.miaixz.bus.storage.Context;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class VolcengineTosProvider extends GenericS3Provider {
 

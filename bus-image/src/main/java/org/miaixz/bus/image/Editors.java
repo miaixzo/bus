@@ -27,7 +27,7 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
  * implemented by a lambda expression or method reference that encapsulates the editing logic.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @FunctionalInterface
 public interface Editors {

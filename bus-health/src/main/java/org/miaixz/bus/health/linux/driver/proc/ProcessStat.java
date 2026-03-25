@@ -37,7 +37,7 @@ import org.miaixz.bus.health.linux.ProcPath;
  * Utility to read process statistics from {@code /proc/[pid]/stat}
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class ProcessStat {

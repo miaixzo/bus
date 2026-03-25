@@ -21,6 +21,6 @@
  * Provides a generic, lambda-based implementation of the Builder pattern for constructing objects.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.core.builder;

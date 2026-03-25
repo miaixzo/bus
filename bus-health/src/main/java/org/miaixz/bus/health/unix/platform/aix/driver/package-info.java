@@ -21,6 +21,6 @@
  * Provides functions to query information on AIX
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.health.unix.platform.aix.driver;

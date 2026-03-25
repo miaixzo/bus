@@ -29,7 +29,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HL7ContentHandler extends DefaultHandler {
 

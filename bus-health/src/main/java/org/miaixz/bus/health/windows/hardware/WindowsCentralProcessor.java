@@ -62,7 +62,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
  * A CPU, representing all of a system's processors. It may contain multiple individual Physical and Logical processors.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 final class WindowsCentralProcessor extends AbstractCentralProcessor {

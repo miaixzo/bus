@@ -41,7 +41,7 @@ import org.miaixz.bus.image.nimble.codec.mpeg.MPEGHeader;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MP4Parser implements XPEGParser {
 

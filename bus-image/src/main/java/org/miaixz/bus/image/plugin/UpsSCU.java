@@ -45,7 +45,7 @@ import java.util.Date;
  * provides functionality to find, create, update, and manage Unified Procedure Steps on a remote SCP.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class UpsSCU {
 

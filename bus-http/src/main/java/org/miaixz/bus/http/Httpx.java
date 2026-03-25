@@ -55,7 +55,7 @@ import java.util.stream.Collectors;
  * all requests.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Httpx {
 

@@ -23,7 +23,7 @@ package org.miaixz.bus.http.metric.http;
  * Represents an HTTP/2 error code, as defined in RFC 7540, Section 7.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum Http2ErrorCode {
 

@@ -32,7 +32,7 @@ import org.miaixz.bus.logger.Logger;
  * explicit engine names, providing a unified access point for NLP services.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NLPFactory {
 

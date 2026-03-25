@@ -23,7 +23,7 @@ package org.miaixz.bus.pay.metric.wechat;
  * WeChat Pay v3 interface authorization and authentication types.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum AuthType {
 

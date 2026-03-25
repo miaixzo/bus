@@ -37,7 +37,7 @@ import org.miaixz.bus.setting.metric.props.Props;
  * These methods are intended to be used by a single thread at startup, before any other OSHI classes are instantiated.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @NotThreadSafe
 public final class Config {

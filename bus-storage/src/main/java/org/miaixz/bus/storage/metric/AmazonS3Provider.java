@@ -25,7 +25,7 @@ import org.miaixz.bus.storage.Context;
  * Storage service provider for Amazon S3. This provider integrates with Amazon S3 for file storage operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AmazonS3Provider extends GenericS3Provider {
 

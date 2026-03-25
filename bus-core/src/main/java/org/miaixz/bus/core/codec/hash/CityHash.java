@@ -35,7 +35,7 @@ import org.miaixz.bus.core.xyz.ByteKit;
  * <a href="https://github.com/rolandhe/string-tools">https://github.com/rolandhe/string-tools</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]> {
 

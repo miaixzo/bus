@@ -27,6 +27,6 @@
  * The corresponding {@link org.miaixz.bus.vortex.support.GrpcRouter} delegates routing logic to this executor.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.vortex.support.grpc;

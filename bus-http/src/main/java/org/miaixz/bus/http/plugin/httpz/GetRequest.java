@@ -29,7 +29,7 @@ import java.util.Map;
  * requests are used to retrieve a resource and do not have a request body.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class GetRequest extends HttpRequest {
 

@@ -21,6 +21,6 @@
  * This package provides an implementation of the logging facade for SLF4J/Logback.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.logger.metric.slf4j;

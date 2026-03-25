@@ -30,7 +30,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-parent</artifactId>
-    <version>8.5.8</version>
+    <version>8.6.0</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
@@ -83,7 +83,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.5.8</bus.version>
+        <bus.version>8.6.0</bus.version>
         <lombok.version>1.18.42</lombok.version>
         <spring.boot.version>3.5.11</spring.boot.version>
         <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
@@ -101,7 +101,7 @@
         <yaml.version>2.5</yaml.version>
         <aspectj.version>1.9.24</aspectj.version>
         <bcpkix.version>1.83</bcpkix.version>
-        <temporal.version>1.31.0</temporal.version>
+        <temporal.version>1.33.0</temporal.version>
         <fastjson.version>2.0.60</fastjson.version>
         <gson.version>2.13.2</gson.version>
         <jackson.version>2.21.0</jackson.version>
@@ -127,8 +127,8 @@
         <activemq.version>6.2.0</activemq.version>
         <guice.version>7.0.0</guice.version>
         <jedis.version>6.0.0</jedis.version>
-        <xmemcached.version>2.4.8</xmemcached.version>
-        <caffeine.version>3.2.2</caffeine.version>
+        <xmemcached.version>2.4.9</xmemcached.version>
+        <caffeine.version>3.2.3</caffeine.version>
         <guava.version>33.5.0-jre</guava.version>
         <hessian.version>4.0.66</hessian.version>
         <postgresql.version>42.7.9</postgresql.version>
@@ -182,7 +182,7 @@
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
-                <artifactId>bus-cron</artifactId>
+                <artifactId>bus-cortex</artifactId>
                 <version>${bus.version}</version>
             </dependency>
             <dependency>
@@ -232,6 +232,11 @@
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
+                <artifactId>bus-metrics</artifactId>
+                <version>${bus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.miaixz</groupId>
                 <artifactId>bus-office</artifactId>
                 <version>${bus.version}</version>
             </dependency>
@@ -268,6 +273,11 @@
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-storage</artifactId>
+                <version>${bus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.miaixz</groupId>
+                <artifactId>bus-tempus</artifactId>
                 <version>${bus.version}</version>
             </dependency>
             <dependency>
@@ -389,7 +399,27 @@
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>2.21</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jdk8</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
             <dependency>

@@ -38,7 +38,7 @@ import org.miaixz.bus.extra.mq.RawMessage;
  * RocketMQ {@link MessageExt} objects.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RocketMQConsumer implements Consumer {
 

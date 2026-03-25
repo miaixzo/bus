@@ -32,7 +32,7 @@ import java.lang.annotation.*;
  * providers, such as SMS, email, and instant messaging (e.g., DingTalk, WeChat).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Inherited
 @Documented

@@ -30,7 +30,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  *
  * @param <T> The type of the object held by this strong reference.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class StrongObject<T> implements Ref<T> {
 

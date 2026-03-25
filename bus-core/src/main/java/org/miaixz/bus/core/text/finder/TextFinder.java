@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.Assert;
  * Abstract class for text searching.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class TextFinder implements Finder, Serializable {
 

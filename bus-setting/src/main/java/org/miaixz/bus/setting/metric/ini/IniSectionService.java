@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Symbol;
  * Ini file's Section
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class IniSectionService extends AbstractElement implements IniSection {
 

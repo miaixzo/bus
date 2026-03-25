@@ -30,7 +30,7 @@ import java.util.Map;
  * A utility class providing static methods for reading and writing TOML data.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Toml {
 

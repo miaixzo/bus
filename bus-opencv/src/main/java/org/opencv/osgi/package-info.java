@@ -24,6 +24,6 @@
  * framework, enabling dynamic module loading and service registration.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.opencv.osgi;

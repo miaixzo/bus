@@ -38,7 +38,7 @@ import org.miaixz.bus.core.lang.reflect.method.MethodInvoker;
  * Utility class for Lambda expressions.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LambdaKit {
 

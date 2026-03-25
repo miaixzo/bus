@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * which can expose your application to man-in-the-middle attacks.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AnyTrustManager extends X509ExtendedTrustManager {
 

@@ -49,7 +49,7 @@ import com.alibaba.fastjson2.filter.PropertyFilter;
  * functionality.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Component
 @ConditionalOnClass({ JSON.class })

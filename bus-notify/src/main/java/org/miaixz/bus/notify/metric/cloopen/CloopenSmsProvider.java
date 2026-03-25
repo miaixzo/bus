@@ -35,7 +35,7 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * Cloopen Cloud SMS service provider implementation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CloopenSmsProvider extends AbstractProvider<CloopenNotice, Context> {
 

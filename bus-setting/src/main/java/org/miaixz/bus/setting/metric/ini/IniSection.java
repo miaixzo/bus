@@ -28,7 +28,7 @@ import org.miaixz.bus.setting.magic.ProxyList;
  * Ini file's Section
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface IniSection extends ProxyList<IniProperty>, IniElement {
 

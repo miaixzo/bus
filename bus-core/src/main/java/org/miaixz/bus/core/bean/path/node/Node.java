@@ -24,7 +24,7 @@ package org.miaixz.bus.core.bean.path.node;
  * (e.g., named properties, list indices, or ranges) within a Bean path.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Node {
 

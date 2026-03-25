@@ -27,7 +27,7 @@ import org.miaixz.bus.core.lang.Charset;
  * Converts an object to a {@link java.nio.charset.Charset}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CharsetConverter extends AbstractConverter {
 

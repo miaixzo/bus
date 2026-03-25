@@ -51,7 +51,7 @@ import org.miaixz.bus.core.text.CharsBacker;
  *
  * @author Kimi Liu
  * @see Fields Utility class for common date formats.
- * @since Java 17+
+ * @since Java 21+
  */
 public class DateKit extends Calendar {
 

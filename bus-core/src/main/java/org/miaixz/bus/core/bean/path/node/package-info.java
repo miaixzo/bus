@@ -21,6 +21,6 @@
  * Provides node implementations for Bean path expressions, representing different types of path segments.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.core.bean.path.node;

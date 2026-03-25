@@ -45,7 +45,7 @@ import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
  * request interceptor.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
         implements org.springframework.web.servlet.config.annotation.WebMvcConfigurer {

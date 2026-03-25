@@ -21,6 +21,6 @@
  * Provides classes and methods related to {@link java.io.InputStream} and {@link java.io.OutputStream} operations.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.core.io.stream;

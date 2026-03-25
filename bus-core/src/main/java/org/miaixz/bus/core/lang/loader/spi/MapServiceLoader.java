@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.*;
  *
  * @param <S> The type of the service.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MapServiceLoader<S> extends AbstractServiceLoader<S> {
 

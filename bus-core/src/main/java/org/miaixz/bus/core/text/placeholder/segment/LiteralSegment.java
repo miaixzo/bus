@@ -23,7 +23,7 @@ package org.miaixz.bus.core.text.placeholder.segment;
  * Represents a literal text segment in a string template.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LiteralSegment implements StringSegment {
 

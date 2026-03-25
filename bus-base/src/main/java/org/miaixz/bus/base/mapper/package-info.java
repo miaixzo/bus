@@ -21,6 +21,6 @@
  * Provides basic persistence support for data access layer.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.base.mapper;

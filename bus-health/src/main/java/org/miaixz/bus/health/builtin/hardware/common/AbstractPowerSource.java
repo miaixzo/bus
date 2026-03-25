@@ -38,7 +38,7 @@ import org.miaixz.bus.health.windows.hardware.WindowsPowerSource;
  * A Power Source
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public abstract class AbstractPowerSource implements PowerSource {

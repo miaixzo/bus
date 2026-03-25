@@ -50,7 +50,7 @@ import java.util.List;
  * encapsulated in the Pixel Data element.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Jpg2Dcm {
 

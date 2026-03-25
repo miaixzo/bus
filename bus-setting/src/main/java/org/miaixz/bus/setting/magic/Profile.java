@@ -37,7 +37,7 @@ import org.miaixz.bus.setting.Setting;
  * {@code /test/db.setting}, {@code /develop/db.setting}).
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Profile implements Serializable {
 

@@ -31,7 +31,7 @@ import org.miaixz.bus.health.windows.driver.wmi.Win32ProcessCached;
  * Represents a Process on the operating system, which may contain multiple threads.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public interface OSProcess {

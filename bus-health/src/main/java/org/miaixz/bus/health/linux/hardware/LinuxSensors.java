@@ -42,7 +42,7 @@ import org.miaixz.bus.health.linux.SysPath;
  * Sensors from WMI or Open Hardware Monitor
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 final class LinuxSensors extends AbstractSensors {

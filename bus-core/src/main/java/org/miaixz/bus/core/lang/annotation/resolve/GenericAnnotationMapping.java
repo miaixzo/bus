@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.MethodKit;
  * perform any advanced attribute resolution like aliasing or overriding.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class GenericAnnotationMapping implements AnnotationMapping<Annotation> {
 

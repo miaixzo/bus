@@ -30,7 +30,7 @@ import org.miaixz.bus.core.lang.tuple.Triplet;
  * @param <M> The type of the middle value.
  * @param <R> The type of the right value.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MutableTriplet<L, M, R> extends Triplet<L, M, R> implements Mutable<MutableTriplet<L, M, R>> {
 

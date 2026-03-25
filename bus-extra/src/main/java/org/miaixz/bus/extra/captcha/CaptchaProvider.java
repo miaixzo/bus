@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.EnumValue;
  * generating CAPTCHA images and their corresponding text.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface CaptchaProvider extends Provider {
 

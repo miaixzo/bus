@@ -46,7 +46,7 @@ import com.sun.jna.ptr.NativeLongByReference;
  * permissively licensed BSD systems.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public class FreeBsdOperatingSystem extends AbstractOperatingSystem {

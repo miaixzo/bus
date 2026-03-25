@@ -30,7 +30,7 @@ import java.util.function.Consumer;
  * Wraps the virtual buffer allocated to the current session, providing a stream-based interface for writing data.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class WriteBuffer extends OutputStream {
 

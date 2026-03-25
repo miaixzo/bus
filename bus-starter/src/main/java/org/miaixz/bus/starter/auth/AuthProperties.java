@@ -19,8 +19,8 @@
 */
 package org.miaixz.bus.starter.auth;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Map;
+
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.spring.GeniusBuilder;
@@ -28,7 +28,8 @@ import org.miaixz.bus.starter.cache.CacheProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
-import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Authorization configuration properties.
@@ -38,7 +39,7 @@ import java.util.Map;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

@@ -25,7 +25,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * Constants used in Perfmon driver classes
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class PerfmonConsts {

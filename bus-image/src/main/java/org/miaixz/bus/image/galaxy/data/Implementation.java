@@ -25,7 +25,7 @@ import org.miaixz.bus.core.lang.Normal;
  * 实现类，提供DICOM实现相关的UID和版本名称。 该类用于标识DICOM实现的唯一标识符和版本信息，符合DICOM标准中的要求。
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Implementation {
 

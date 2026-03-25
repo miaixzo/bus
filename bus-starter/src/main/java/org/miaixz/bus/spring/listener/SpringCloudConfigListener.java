@@ -44,7 +44,7 @@ import java.util.stream.StreamSupport;
  * ensures that logging configurations are correctly propagated when running within a Spring Cloud setup.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SpringCloudConfigListener implements ApplicationListener<ApplicationEnvironmentPreparedEvent>, Ordered {
 

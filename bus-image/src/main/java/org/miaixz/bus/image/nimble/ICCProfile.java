@@ -35,7 +35,7 @@ import org.miaixz.bus.image.galaxy.data.Sequence;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class ICCProfile {
 

@@ -58,7 +58,6 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 | [√]  | [bus-bom](bus-bom)             | 依赖管理模块，统一版本控制，支持按需加载组件                         |
 | [√]  | [bus-cache](bus-cache)         | 分布式缓存服务，支持Redis/Memcached/Hessian等多级缓存方案       |
 | [√]  | [bus-core](bus-core)           | 核心工具库，包含并发/反射/日期/集合等20+常用工具类                   |
-| [√]  | [bus-cron](bus-cron)           | 分布式任务调度，支持CRON表达式及集群任务协调                       |
 | [√]  | [bus-crypto](bus-crypto)       | 加密解密组件，支持AES/DES/SM4/MD5等算法及国密套件               |
 | [√]  | [bus-extra](bus-extra)         | 扩展功能包，集成FTP/二维码/MQ/文件处理等外围服务                   |
 | [√]  | [bus-gitlab](bus-gitlab)       | GitLab深度集成，提供CI/CD/仓库/问题等全生命周期管理               |
@@ -80,6 +79,7 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 | [√]  | [bus-socket](bus-socket)       | 网络通信框架，封装NIO/AIO实现TCP/UDP/WebSocket通信          |
 | [√]  | [bus-starter](bus-starter)     | SpringBoot启动器，自动装配核心组件及配置                      |
 | [√]  | [bus-storage](bus-storage)     | 对象存储服务，支持阿里云OSS/腾讯云COS/MinIO等存储方案              |
+| [√]  | [bus-tempus](bus-tempus)           | 分布式任务调度，支持CRON表达式及集群任务协调                       |
 | [×]  | [bus-tracer](bus-tracer)       | 分布式链路追踪，集成Zipkin/Pinpoint实现全链路监控（开发中）          |
 | [√]  | [bus-validate](bus-validate)   | 参数校验框架，扩展JSR-303注解支持自定义校验规则                    |
 | [√]  | [bus-vortex](bus-vortex)       | 响应式网关，基于WebFlux构建的高性能API网关                     |

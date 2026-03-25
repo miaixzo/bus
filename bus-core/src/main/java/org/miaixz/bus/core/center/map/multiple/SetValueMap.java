@@ -35,7 +35,7 @@ import java.util.function.Supplier;
  * @param <K> The type of keys in the map.
  * @param <V> The type of values stored in the sets.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SetValueMap<K, V> extends AbstractCollValueMap<K, V> {
 

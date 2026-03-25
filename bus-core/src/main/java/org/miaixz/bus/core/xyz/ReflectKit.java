@@ -29,8 +29,8 @@ import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.reflect.creator.AdaptiveObjectCreator;
 import org.miaixz.bus.core.lang.reflect.creator.DefaultObjectCreator;
-import org.miaixz.bus.core.lang.reflect.creator.PossibleObjectCreator;
 import org.miaixz.bus.core.text.StringTrimer;
 
 /**
@@ -53,7 +53,7 @@ import org.miaixz.bus.core.text.StringTrimer;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ReflectKit {
 
@@ -503,7 +503,7 @@ public class ReflectKit {
      * @return The new instance, or `null` on failure.
      */
     public static <T> T newInstanceIfPossible(final Class<T> type) {
-        return PossibleObjectCreator.of(type).of();
+        return AdaptiveObjectCreator.of(type).of();
     }
 
 }

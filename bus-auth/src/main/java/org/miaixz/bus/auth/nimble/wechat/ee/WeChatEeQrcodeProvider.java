@@ -32,7 +32,7 @@ import org.miaixz.bus.auth.magic.ErrorCode;
  * WeChat Enterprise QR code login provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class WeChatEeQrcodeProvider extends AbstractWeChatEeProvider {
 

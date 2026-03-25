@@ -22,6 +22,6 @@
  * <a href="https://datatracker.ietf.org/doc/html/rfc4180">RFC 4180</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.office.csv;

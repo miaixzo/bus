@@ -30,7 +30,7 @@ import org.miaixz.bus.core.xyz.ZoneKit;
  * Converter for {@link ZoneId} objects
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ZoneIdConverter extends AbstractConverter implements MatcherConverter {
 

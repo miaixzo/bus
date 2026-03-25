@@ -30,7 +30,7 @@ import org.miaixz.bus.core.lang.Normal;
  * Annotation used to map a field in a data structure to a source field, such as a column in a database result set.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value = { ElementType.FIELD })

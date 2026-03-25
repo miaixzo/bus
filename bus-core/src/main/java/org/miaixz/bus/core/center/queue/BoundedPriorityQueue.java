@@ -30,7 +30,7 @@ import org.miaixz.bus.core.center.BoundedCollection;
  *
  * @param <E> the element type
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BoundedPriorityQueue<E> extends PriorityQueue<E> implements BoundedCollection<E> {
 

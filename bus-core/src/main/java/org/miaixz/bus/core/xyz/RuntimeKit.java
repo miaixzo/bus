@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * System runtime utility class for executing system commands.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class RuntimeKit {
 

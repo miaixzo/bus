@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.Symbol;
  * directions. This class extends {@link Tradition} to provide information about the Fetus God for a specific day.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class FetusDay extends Tradition {
 

@@ -29,7 +29,7 @@ import org.miaixz.bus.socket.buffer.VirtualBuffer;
  * components for managing the handshake between two parties.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HandshakeModel {
 

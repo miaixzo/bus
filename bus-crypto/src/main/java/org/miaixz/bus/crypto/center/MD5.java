@@ -34,7 +34,7 @@ import org.miaixz.bus.crypto.builtin.digest.DigesterFactory;
  * 128-bit (16-byte) hash value.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class MD5 extends Digester {
 

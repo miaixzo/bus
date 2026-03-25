@@ -28,7 +28,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Converts a number of a floating-point type into its English representation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class EnglishNumberFormatter {
 

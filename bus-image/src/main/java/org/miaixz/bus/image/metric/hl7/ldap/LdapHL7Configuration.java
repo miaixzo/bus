@@ -45,7 +45,7 @@ import org.miaixz.bus.image.metric.hl7.net.HL7DeviceExtension;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class LdapHL7Configuration extends LdapDicomConfigurationExtension implements HL7Configuration {
 

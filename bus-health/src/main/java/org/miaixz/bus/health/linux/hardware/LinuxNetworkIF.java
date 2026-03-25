@@ -44,7 +44,7 @@ import com.sun.jna.platform.linux.Udev.UdevDevice;
  * LinuxNetworks class.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class LinuxNetworkIF extends AbstractNetworkIF {

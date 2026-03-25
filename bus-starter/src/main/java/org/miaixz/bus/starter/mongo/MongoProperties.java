@@ -35,7 +35,7 @@ import static java.util.concurrent.TimeUnit.MINUTES;
  * Configuration properties for MongoDB, mirroring a subset of {@link com.mongodb.MongoClientSettings}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

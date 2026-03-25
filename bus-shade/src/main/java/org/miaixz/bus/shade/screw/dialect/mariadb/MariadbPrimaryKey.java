@@ -29,7 +29,7 @@ import lombok.Setter;
  * MariaDB table primary key.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

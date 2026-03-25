@@ -37,7 +37,7 @@ import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
  * Memory obtained by /proc/meminfo and sysinfo.totalram
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public final class LinuxGlobalMemory extends AbstractGlobalMemory {

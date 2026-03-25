@@ -30,7 +30,7 @@ import org.miaixz.bus.core.xyz.CharKit;
  * hexadecimal numeric character references.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class NumericEntityUnescaper extends StringReplacer {
 

@@ -36,7 +36,7 @@ import lombok.Setter;
  * A factory for creating {@link DatabaseQuery} instances based on the database type.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * {@link MailAccount#MAIL_SETTING_PATHS}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum GlobalMailAccount {
 

@@ -31,7 +31,7 @@ import java.util.Collection;
  *
  * @param <T> The type of objects to be stored in the registry.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Registry<T> {
 

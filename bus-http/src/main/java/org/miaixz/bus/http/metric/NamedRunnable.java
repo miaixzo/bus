@@ -23,7 +23,7 @@ package org.miaixz.bus.http.metric;
  * An abstract {@link Runnable} implementation that always sets its thread name.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class NamedRunnable implements Runnable {
 

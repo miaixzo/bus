@@ -46,7 +46,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * "https://github.com/mongodb/mongo-java-driver/blob/master/bson/src/main/org/bson/types/ObjectId.java">ObjectId</a>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ObjectId {
 

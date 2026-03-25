@@ -31,7 +31,7 @@ import java.util.Map.Entry;
  * An RFC 7235 compliant authentication challenge.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Challenge {
 

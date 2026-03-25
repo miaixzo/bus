@@ -33,7 +33,7 @@ import java.util.Map;
  * configuration parameters required for authentication processes.
  * 
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

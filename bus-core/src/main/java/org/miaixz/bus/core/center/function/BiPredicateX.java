@@ -31,7 +31,7 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
  * @param <T> The type of the first input to the predicate.
  * @param <U> The type of the second input to the predicate.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @FunctionalInterface
 public interface BiPredicateX<T, U> extends BiPredicate<T, U>, Serializable {

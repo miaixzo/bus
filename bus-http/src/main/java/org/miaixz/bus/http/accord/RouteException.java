@@ -28,7 +28,7 @@ import java.io.IOException;
  * connection attempts, none of which were successful.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class RouteException extends RuntimeException {
 

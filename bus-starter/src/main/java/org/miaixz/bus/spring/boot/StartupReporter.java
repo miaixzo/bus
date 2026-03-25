@@ -47,7 +47,7 @@ import java.util.*;
  * models, and support customized processing of bean metrics.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class StartupReporter {
 

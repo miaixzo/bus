@@ -29,13 +29,13 @@
  * <li>{@link org.miaixz.bus.cache.Complex}: The primary engine that processes caching annotations and orchestrates
  * cache reads, writes, and invalidations.</li>
  * <li>{@link org.miaixz.bus.cache.Context}: A configuration holder for global cache settings.</li>
- * <li>{@link org.miaixz.bus.cache.Metrics}: An interface for implementing cache performance tracking.</li>
+ * <li>{@link org.miaixz.bus.cache.Collector}: An interface for implementing cache performance tracking.</li>
  * </ul>
  *
  * <p>
  * Sub-packages contain supporting elements like annotations, readers, and other utilities.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 package org.miaixz.bus.cache;

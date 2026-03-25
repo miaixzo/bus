@@ -36,7 +36,7 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
  * QR code configuration.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class QrConfig {
 

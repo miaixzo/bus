@@ -28,7 +28,7 @@ import org.springframework.boot.loader.launch.WarLauncher;
  * encrypted Spring Boot WARs.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BootWarLauncher extends WarLauncher {
 

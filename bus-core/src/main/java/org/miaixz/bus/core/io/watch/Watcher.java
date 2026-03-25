@@ -27,7 +27,7 @@ import java.nio.file.WatchKey;
  * modification, deletion, and overflow events.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface Watcher {
 

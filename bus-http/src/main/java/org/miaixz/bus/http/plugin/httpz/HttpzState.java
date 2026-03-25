@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.DateKit;
  * counters for total requests, failures, and exceptions, as well as a log of recent errors.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class HttpzState {
 

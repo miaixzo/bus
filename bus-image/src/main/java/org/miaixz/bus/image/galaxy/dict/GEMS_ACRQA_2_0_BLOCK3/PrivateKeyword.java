@@ -21,7 +21,7 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_ACRQA_2_0_BLOCK3;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class PrivateKeyword {
 

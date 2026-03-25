@@ -27,7 +27,7 @@ import org.miaixz.bus.health.builtin.hardware.HWDiskStore;
  * Common methods for platform HWDiskStore classes
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @ThreadSafe
 public abstract class AbstractHWDiskStore implements HWDiskStore {

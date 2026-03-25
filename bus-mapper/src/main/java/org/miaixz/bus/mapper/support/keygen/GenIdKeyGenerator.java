@@ -41,7 +41,7 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * A primary key generator responsible for generating primary key values before or after an insert operation.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class GenIdKeyGenerator implements KeyGenerator {
 

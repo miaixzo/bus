@@ -43,7 +43,7 @@ import org.miaixz.bus.shade.screw.metadata.Table;
  * Database query implementation for CacheDB.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class CacheDbDataBaseQuery extends AbstractDatabaseQuery {
 

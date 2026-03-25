@@ -42,7 +42,7 @@ import java.util.Locale;
  * Part 10 file as an Encapsulated Document. It can process individual files or entire directories.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Pdf2Dcm {
 

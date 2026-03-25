@@ -28,7 +28,7 @@ import org.miaixz.bus.core.xyz.BooleanKit;
  * Converts an object to an {@link AtomicBoolean}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AtomicBooleanConverter extends AbstractConverter {
 

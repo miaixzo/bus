@@ -28,7 +28,7 @@ import java.awt.image.SampleModel;
 
 /**
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class SampledColorModel extends ColorModel {
 

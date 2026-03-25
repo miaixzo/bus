@@ -32,7 +32,7 @@ import org.miaixz.bus.extra.template.Template;
  * providing a unified interface for rendering templates.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class FreemarkerTemplate implements Template, Serializable {
 

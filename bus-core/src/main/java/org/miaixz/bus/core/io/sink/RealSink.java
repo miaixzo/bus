@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.IoKit;
  * formats and adapts to an underlying {@link Sink}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class RealSink implements BufferSink {
 

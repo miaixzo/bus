@@ -36,7 +36,7 @@ import org.miaixz.bus.extra.template.TemplateProvider;
  * template engine, allowing for configuration and retrieval of Beetl templates.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class BeetlProvider implements TemplateProvider {
 

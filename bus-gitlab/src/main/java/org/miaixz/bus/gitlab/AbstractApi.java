@@ -23,8 +23,8 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
 import org.miaixz.bus.gitlab.models.*;
 
@@ -257,7 +257,7 @@ public abstract class AbstractApi implements Constants {
      */
     protected String urlEncode(String s) throws GitLabApiException {
         try {
-            String encoded = URLEncoder.encode(s, StandardCharsets.UTF_8);
+            String encoded = URLEncoder.encode(s, Charset.UTF_8);
             // Since the encode method encodes plus signs as %2B,
             // we can simply replace the encoded spaces with the correct encoding here
             encoded = encoded.replace("+", "%20");

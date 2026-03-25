@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Assert;
  * @param <B> The return type of the first function (and the input parameter type of the second function).
  * @param <C> The final result type.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class ComposeX<A, B, C> implements Function<A, C>, Serializable {
 

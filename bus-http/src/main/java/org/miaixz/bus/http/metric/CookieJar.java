@@ -33,7 +33,7 @@ import java.util.List;
  * require cookies.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface CookieJar {
 

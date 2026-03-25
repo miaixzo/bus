@@ -37,7 +37,7 @@ import lombok.experimental.SuperBuilder;
  * Unified authorization response class.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 @Getter
 @Setter

@@ -46,7 +46,7 @@ import org.miaixz.bus.http.Httpx;
  * Feishu (Lark) login provider.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class FeishuProvider extends AbstractProvider {
 

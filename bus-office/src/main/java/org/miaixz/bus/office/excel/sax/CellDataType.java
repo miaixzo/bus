@@ -23,7 +23,7 @@ package org.miaixz.bus.office.excel.sax;
  * Enumeration of cell data types for SAX parsing of Excel files.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public enum CellDataType {
 

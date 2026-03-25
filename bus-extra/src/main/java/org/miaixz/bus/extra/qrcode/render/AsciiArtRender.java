@@ -35,7 +35,7 @@ import com.google.zxing.common.BitMatrix;
  * ASCII Art renderer.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class AsciiArtRender implements BitMatrixRender {
 

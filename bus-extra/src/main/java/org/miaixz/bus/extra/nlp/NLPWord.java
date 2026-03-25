@@ -26,7 +26,7 @@ import java.io.Serializable;
  * interface defines methods to access the textual content and positional information of the segmented word.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public interface NLPWord extends Serializable {
 

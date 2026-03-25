@@ -30,7 +30,7 @@ import org.miaixz.bus.logger.Logger;
  * {@code -Duser.country=US -Duser.language=en}.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Locale {
 

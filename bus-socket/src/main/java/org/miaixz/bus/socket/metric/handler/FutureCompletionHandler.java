@@ -33,7 +33,7 @@ import java.util.concurrent.TimeoutException;
  * @param <V> The result type of the {@code Future} and the {@code CompletionHandler}.
  * @param <A> The type of the attachment passed to the {@code CompletionHandler}.
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public final class FutureCompletionHandler<V, A> implements CompletionHandler<V, A>, Future<V> {
 
