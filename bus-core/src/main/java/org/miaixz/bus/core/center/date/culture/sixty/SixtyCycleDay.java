@@ -183,27 +183,20 @@ public class SixtyCycleDay extends Loops {
      * @return The {@link NineStar} instance.
      */
     public NineStar getNineStar() {
-        SolarTerms dongZhi = SolarTerms.fromIndex(solarDay.getYear(), 0);
-        SolarDay dongZhiSolar = dongZhi.getSolarDay();
-        SolarDay xiaZhiSolar = dongZhi.next(12).getSolarDay();
-        SolarDay dongZhiSolar2 = dongZhi.next(24).getSolarDay();
-        int dongZhiIndex = dongZhiSolar.getLunarDay().getSixtyCycle().getIndex();
-        int xiaZhiIndex = xiaZhiSolar.getLunarDay().getSixtyCycle().getIndex();
-        int dongZhiIndex2 = dongZhiSolar2.getLunarDay().getSixtyCycle().getIndex();
-        SolarDay solarShunBai = dongZhiSolar.next(dongZhiIndex > 29 ? 60 - dongZhiIndex : -dongZhiIndex);
-        SolarDay solarShunBai2 = dongZhiSolar2.next(dongZhiIndex2 > 29 ? 60 - dongZhiIndex2 : -dongZhiIndex2);
-        SolarDay solarNiZi = xiaZhiSolar.next(xiaZhiIndex > 29 ? 60 - xiaZhiIndex : -xiaZhiIndex);
-        int offset = 0;
-        if (!solarDay.isBefore(solarShunBai) && solarDay.isBefore(solarNiZi)) {
-            offset = solarDay.subtract(solarShunBai);
-        } else if (!solarDay.isBefore(solarNiZi) && solarDay.isBefore(solarShunBai2)) {
-            offset = 8 - solarDay.subtract(solarNiZi);
-        } else if (!solarDay.isBefore(solarShunBai2)) {
-            offset = solarDay.subtract(solarShunBai2);
-        } else if (solarDay.isBefore(solarShunBai)) {
-            offset = 8 + solarShunBai.subtract(solarDay);
+        int y = solarDay.getYear();
+        SolarDay winterSolstice = SolarTerms.fromIndex(y, 0).getSolarDay();
+        SolarDay summerSolstice = SolarTerms.fromIndex(y, 12).getSolarDay();
+        SolarDay nextWinterSolstice = SolarTerms.fromIndex(y + 1, 0).getSolarDay();
+        SolarDay w = winterSolstice.next(winterSolstice.getLunarDay().getSixtyCycle().stepsCloseTo(0));
+        SolarDay s = summerSolstice.next(summerSolstice.getLunarDay().getSixtyCycle().stepsCloseTo(0));
+        SolarDay n = nextWinterSolstice.next(nextWinterSolstice.getLunarDay().getSixtyCycle().stepsCloseTo(0));
+        if (solarDay.isBefore(w)) {
+            return NineStar.fromIndex(w.subtract(solarDay) - 1);
         }
-        return NineStar.fromIndex(offset);
+        if (solarDay.isBefore(s)) {
+            return NineStar.fromIndex(solarDay.subtract(w));
+        }
+        return NineStar.fromIndex(solarDay.isBefore(n) ? n.subtract(solarDay) - 1 : solarDay.subtract(n));
     }
 
     /**
@@ -232,7 +225,7 @@ public class SixtyCycleDay extends Loops {
      * @return The {@link TwentyEightStar} instance.
      */
     public TwentyEightStar getTwentyEightStar() {
-        return TwentyEightStar.fromIndex(new int[] { 10, 18, 26, 6, 14, 22, 2 }[solarDay.getWeek().getIndex()])
+        return TwentyEightStar.fromIndex(10 + 8 * solarDay.getWeek().getIndex())
                 .next(-7 * day.getEarthBranch().getIndex());
     }
 

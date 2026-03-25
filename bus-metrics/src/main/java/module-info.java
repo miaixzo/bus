@@ -27,11 +27,8 @@ module bus.metrics {
 
     requires bus.core;
     requires bus.cache;
-    requires bus.cortex;
-    requires bus.crypto;
     requires bus.health;
     requires bus.logger;
-    requires bus.vortex;
 
     requires java.management;
     requires lombok;

@@ -24,7 +24,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-cache</artifactId>
-    <version>8.5.9</version>
+    <version>8.6.0</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -77,7 +77,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.5.9</bus.version>
+        <bus.version>8.6.0</bus.version>
         <lombok.version>1.18.42</lombok.version>
         <jakarta.annotation.version>3.0.0</jakarta.annotation.version>
         <jedis.version>6.0.0</jedis.version>

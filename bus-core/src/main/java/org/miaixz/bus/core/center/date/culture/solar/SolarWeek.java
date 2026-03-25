@@ -19,11 +19,11 @@
 */
 package org.miaixz.bus.core.center.date.culture.solar;
 
-import org.miaixz.bus.core.center.date.culture.Week;
-import org.miaixz.bus.core.center.date.culture.parts.WeekParts;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.miaixz.bus.core.center.date.culture.Week;
+import org.miaixz.bus.core.center.date.culture.parts.WeekParts;
 
 /**
  * Represents a week in the Gregorian calendar.
@@ -136,10 +136,9 @@ public class SolarWeek extends WeekParts {
      * @return the SolarWeek n weeks from this one
      */
     public SolarWeek next(int n) {
-        int d = index;
+        int d = index + n;
         SolarMonth m = getSolarMonth();
         if (n > 0) {
-            d += n;
             int weekCount = m.getWeekCount(start);
             while (d >= weekCount) {
                 d -= weekCount;
@@ -150,7 +149,6 @@ public class SolarWeek extends WeekParts {
                 weekCount = m.getWeekCount(start);
             }
         } else if (n < 0) {
-            d += n;
             while (d < 0) {
                 if (m.getFirstDay().getWeek().getIndex() != start) {
                     d -= 1;

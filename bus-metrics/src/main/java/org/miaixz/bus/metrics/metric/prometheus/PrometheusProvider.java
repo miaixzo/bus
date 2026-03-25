@@ -433,9 +433,7 @@ public class PrometheusProvider implements Provider {
                 return s.collect().getDataPoints().stream()
                         .flatMap(dp -> java.util.stream.StreamSupport.stream(dp.getQuantiles().spliterator(), false))
                         .filter(q -> Double.compare(q.getQuantile(), p) == 0)
-                        .mapToDouble(q -> q.getValue() * unit.toNanos(1) / 1e9)
-                        .findFirst()
-                        .orElse(0);
+                        .mapToDouble(q -> q.getValue() * unit.toNanos(1) / 1e9).findFirst().orElse(0);
             }
 
             /**

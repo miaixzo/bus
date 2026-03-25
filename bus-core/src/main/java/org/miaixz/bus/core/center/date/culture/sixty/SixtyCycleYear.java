@@ -22,8 +22,8 @@ package org.miaixz.bus.core.center.date.culture.sixty;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.Direction;
+import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.Twenty;
 import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
 
@@ -136,8 +136,7 @@ public class SixtyCycleYear extends Loops {
      * @return The {@link SixtyCycleMonth} instance representing the first month.
      */
     public SixtyCycleMonth getFirstMonth() {
-        HeavenStem h = HeavenStem.fromIndex((getSixtyCycle().getHeavenStem().getIndex() + 1) * 2);
-        return new SixtyCycleMonth(this, SixtyCycle.fromName(h.getName() + "寅"));
+        return new SixtyCycleMonth(this, SixtyCycle.fromIndex(year * 12 - 46));
     }
 
     /**

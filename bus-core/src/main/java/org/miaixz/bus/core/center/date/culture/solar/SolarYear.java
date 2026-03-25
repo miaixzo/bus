@@ -44,7 +44,7 @@ public class SolarYear extends YearParts {
      * @throws IllegalArgumentException if the year is out of range
      */
     public SolarYear(int year) {
-        validate(year);
+        this.validate(year);
         this.year = year;
     }
 
@@ -58,6 +58,12 @@ public class SolarYear extends YearParts {
         return new SolarYear(year);
     }
 
+    /**
+     * Validates that the given solar year falls within the supported range (1–9999).
+     *
+     * @param year solar year to validate
+     * @throws IllegalArgumentException if the year is out of range
+     */
     public static void validate(int year) {
         if (year < 1 || year > 9999) {
             throw new IllegalArgumentException(String.format("illegal solar year: %d", year));

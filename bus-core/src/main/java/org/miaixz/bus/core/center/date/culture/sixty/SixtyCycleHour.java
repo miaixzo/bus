@@ -24,8 +24,6 @@ import java.util.List;
 import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.Taboo;
 import org.miaixz.bus.core.center.date.culture.eightchar.EightChar;
-import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
-import org.miaixz.bus.core.center.date.culture.star.twelve.TwelveStar;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarDay;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarHour;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarMonth;
@@ -33,6 +31,8 @@ import org.miaixz.bus.core.center.date.culture.lunar.LunarYear;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
+import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
+import org.miaixz.bus.core.center.date.culture.star.twelve.TwelveStar;
 
 /**
  * Represents a Sixty-Year Cycle Hour (干支时辰), a traditional Chinese timekeeping unit. The year changes at the Start of
@@ -196,11 +196,10 @@ public class SixtyCycleHour extends Loops {
     public NineStar getNineStar() {
         SolarDay solar = solarTime.getSolarDay();
         SolarTerms dongZhi = SolarTerms.fromIndex(solar.getYear(), 0);
-        SolarTerms xiaZhi = dongZhi.next(12);
         int earthBranchIndex = getIndexInDay() % 12;
-        int index = new int[] { 8, 5, 2 }[getDay().getEarthBranch().getIndex() % 3];
+        int index = 8 - 3 * (getDay().getEarthBranch().getIndex() % 3);
         if (!solar.isBefore(dongZhi.getJulianDay().getSolarDay())
-                && solar.isBefore(xiaZhi.getJulianDay().getSolarDay())) {
+                && solar.isBefore(dongZhi.next(12).getJulianDay().getSolarDay())) {
             index = 8 + earthBranchIndex - index;
         } else {
             index -= earthBranchIndex;

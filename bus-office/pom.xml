@@ -24,7 +24,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-office</artifactId>
-    <version>8.5.9</version>
+    <version>8.6.0</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -77,7 +77,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.5.9</bus.version>
+        <bus.version>8.6.0</bus.version>
         <poi.version>5.5.1</poi.version>
         <ofdrw.version>2.3.7</ofdrw.version>
     </properties>

@@ -120,7 +120,7 @@ public class SolarMonth extends MonthParts {
      *
      * @return the SolarQuarter
      */
-    public SolarQuarter getSeason() {
+    public SolarQuarter getQuarter() {
         return SolarQuarter.fromIndex(year, getIndexInYear() / 3);
     }
 

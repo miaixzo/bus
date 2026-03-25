@@ -71,7 +71,7 @@
 <parent>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-parent</artifactId>
-    <version>8.5.9</version>
+    <version>8.x.x</version>
 </parent>
 ```
 
@@ -107,7 +107,7 @@
         <dependency>
             <groupId>org.miaixz</groupId>
             <artifactId>bus-bom</artifactId>
-            <version>8.5.9</version>
+            <version>8.x.x</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -121,7 +121,7 @@
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-all</artifactId>
-    <version>8.5.9</version>
+    <version>8.x.x</version>
 </dependency>
 ```
 
@@ -142,7 +142,7 @@
     <parent>
         <groupId>org.miaixz</groupId>
         <artifactId>bus-parent</artifactId>
-        <version>8.5.9</version>
+        <version>8.x.x</version>
     </parent>
 
     <groupId>com.example</groupId>
@@ -192,7 +192,7 @@
     <parent>
         <groupId>org.miaixz</groupId>
         <artifactId>bus-parent</artifactId>
-        <version>8.5.9</version>
+        <version>8.x.x</version>
     </parent>
 
     <groupId>com.example</groupId>
@@ -292,7 +292,7 @@
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-core</artifactId>
-    <version>8.5.9</version>
+    <version>8.x.x</version>
 </dependency>
 ```
 

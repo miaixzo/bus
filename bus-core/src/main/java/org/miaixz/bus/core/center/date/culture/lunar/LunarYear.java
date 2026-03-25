@@ -223,10 +223,12 @@ public class LunarYear extends YearParts {
      */
     public List<LunarMonth> getMonths() {
         List<LunarMonth> l = new ArrayList<>(13);
-        LunarMonth m = getFirstMonth();
-        while (m.getYear() == year) {
-            l.add(m);
-            m = m.next(1);
+        int leapMonth = getLeapMonth();
+        for (int i = 1; i < 13; i++) {
+            l.add(LunarMonth.fromYm(year, i));
+            if (i == leapMonth) {
+                l.add(LunarMonth.fromYm(year, -i));
+            }
         }
         return l;
     }

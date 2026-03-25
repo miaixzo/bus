@@ -31,11 +31,11 @@ import org.miaixz.bus.core.center.date.culture.sixty.EarthBranch;
 import org.miaixz.bus.core.center.date.culture.sixty.HeavenStem;
 import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycle;
 import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycleHour;
+import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
+import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
 import org.miaixz.bus.core.center.date.culture.star.twelve.TwelveStar;
-import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
-import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 
 /**
  * Represents a specific two-hour block (shichen) in the Lunar calendar.
@@ -167,14 +167,17 @@ public class LunarHour extends SecondParts {
      * @return true if this hour is before the target, false otherwise
      */
     public boolean isBefore(LunarHour target) {
-        LunarDay d = getLunarDay();
-        if (!d.equals(target.getLunarDay())) {
-            return d.isBefore(target.getLunarDay());
+        LunarDay d0 = getLunarDay();
+        LunarDay d1 = target.getLunarDay();
+        if (!d0.equals(d1)) {
+            return d0.isBefore(d1);
         }
-        if (hour != target.getHour()) {
-            return hour < target.getHour();
+        int h = target.getHour();
+        if (hour != h) {
+            return hour < h;
         }
-        return minute != target.getMinute() ? minute < target.getMinute() : second < target.getSecond();
+        int m = target.getMinute();
+        return minute != m ? minute < m : second < target.getSecond();
     }
 
     /**
@@ -184,50 +187,17 @@ public class LunarHour extends SecondParts {
      * @return true if this hour is after the target, false otherwise
      */
     public boolean isAfter(LunarHour target) {
-        LunarDay d = getLunarDay();
-        if (!d.equals(target.getLunarDay())) {
-            return d.isAfter(target.getLunarDay());
+        LunarDay d0 = getLunarDay();
+        LunarDay d1 = target.getLunarDay();
+        if (!d0.equals(d1)) {
+            return d0.isAfter(d1);
         }
-        if (hour != target.getHour()) {
-            return hour > target.getHour();
+        int h = target.getHour();
+        if (hour != h) {
+            return hour > h;
         }
-        return minute != target.getMinute() ? minute > target.getMinute() : second > target.getSecond();
-    }
-
-    /**
-     * Gets the year's Sixty Cycle (Gan-Zhi) for this hour (changes on Lichun).
-     *
-     * @return the Sixty Cycle
-     * @see SixtyCycleHour#getYear()
-     * @deprecated Use {@link SixtyCycleHour#getYear()} instead
-     */
-    @Deprecated
-    public SixtyCycle getYearSixtyCycle() {
-        return getSixtyCycleHour().getYear();
-    }
-
-    /**
-     * Gets the month's Sixty Cycle (Gan-Zhi) for this hour (changes on solar terms).
-     *
-     * @return the Sixty Cycle
-     * @see SixtyCycleHour#getMonth()
-     * @deprecated Use {@link SixtyCycleHour#getMonth()} instead
-     */
-    @Deprecated
-    public SixtyCycle getMonthSixtyCycle() {
-        return getSixtyCycleHour().getMonth();
-    }
-
-    /**
-     * Gets the day's Sixty Cycle (Gan-Zhi) for this hour (23:00 counts as the next day).
-     *
-     * @return the Sixty Cycle
-     * @see SixtyCycleHour#getDay()
-     * @deprecated Use {@link SixtyCycleHour#getDay()} instead
-     */
-    @Deprecated
-    public SixtyCycle getDaySixtyCycle() {
-        return getSixtyCycleHour().getDay();
+        int m = target.getMinute();
+        return minute != m ? minute > m : second > target.getSecond();
     }
 
     /**
@@ -236,14 +206,13 @@ public class LunarHour extends SecondParts {
      * @return the Sixty Cycle
      */
     public SixtyCycle getSixtyCycle() {
-        int earthBranchIndex = getIndexInDay() % 12;
-        SixtyCycle d = getLunarDay().getSixtyCycle();
+        int e = getIndexInDay();
+        HeavenStem h = getLunarDay().getSixtyCycle().getHeavenStem();
         if (hour >= 23) {
-            d = d.next(1);
+            h = h.next(1);
+            e = 0;
         }
-        return SixtyCycle.fromName(
-                HeavenStem.fromIndex(d.getHeavenStem().getIndex() % 5 * 2 + earthBranchIndex).getName()
-                        + EarthBranch.fromIndex(earthBranchIndex).getName());
+        return SixtyCycle.fromIndex(h.getIndex() * 12 + e);
     }
 
     /**
@@ -274,7 +243,7 @@ public class LunarHour extends SecondParts {
         SolarDay solar = d.getSolarDay();
         SolarTerms dongZhi = SolarTerms.fromIndex(solar.getYear(), 0);
         int earthBranchIndex = getIndexInDay() % 12;
-        int index = new int[] { 8, 5, 2 }[d.getSixtyCycle().getEarthBranch().getIndex() % 3];
+        int index = 8 - 3 * (d.getSixtyCycle().getEarthBranch().getIndex() % 3);
         if (!solar.isBefore(dongZhi.getJulianDay().getSolarDay())
                 && solar.isBefore(dongZhi.next(12).getJulianDay().getSolarDay())) {
             index = 8 + earthBranchIndex - index;

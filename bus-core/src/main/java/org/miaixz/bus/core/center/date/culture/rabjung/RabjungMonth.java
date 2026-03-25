@@ -24,8 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.miaixz.bus.core.center.date.culture.Loops;
-import org.miaixz.bus.core.center.date.culture.Zodiac;
+import org.miaixz.bus.core.center.date.culture.parts.MonthParts;
 
 /**
  * Represents a month in the Tibetan calendar. Only supports Tibetan calendar from December 1950 to December 2050.
@@ -33,7 +32,7 @@ import org.miaixz.bus.core.center.date.culture.Zodiac;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class RabjungMonth extends Loops {
+public class RabjungMonth extends MonthParts {
 
     /**
      * Names of Tibetan months.
@@ -44,6 +43,11 @@ public class RabjungMonth extends Loops {
      */
     public static final String[] ALIAS = { "神变月", "苦行月", "具香月", "萨嘎月", "作净月", "明净月", "具醉月", "具贤月", "天降月", "持众月", "庄严月",
             "满意月" };
+    /**
+     * Indicates if this is a leap month.
+     */
+    protected boolean leap;
+
     /**
      * Map storing special days (leap days and missing days) for each month.
      */
@@ -71,78 +75,40 @@ public class RabjungMonth extends Loops {
     }
 
     /**
-     * The Tibetan year this month belongs to.
-     */
-    protected RabjungYear year;
-    /**
-     * The month number.
-     */
-    protected int month;
-    /**
-     * Indicates if this is a leap month.
-     */
-    protected boolean leap;
-    /**
-     * The index of this month within the year, 0-12.
-     */
-    protected int indexInYear;
-
-    /**
-     * Constructs a {@code RabjungMonth} with the given Tibetan year and month.
-     *
-     * @param year  The Tibetan year.
-     * @param month The Tibetan month, negative for leap months.
-     * @throws IllegalArgumentException if the month is out of valid range, or if the year is outside the supported
-     *                                  range (1950-2050), or if a leap month is specified incorrectly.
-     */
-    public RabjungMonth(RabjungYear year, int month) {
-        if (month == 0 || month > 12 || month < -12) {
-            throw new IllegalArgumentException(String.format("illegal rab-byung month: %d", month));
-        }
-        int y = year.getYear();
-        if (y < 1950 || y > 2050) {
-            throw new IllegalArgumentException(String.format("rab-byung year %d must between 1950 and 2050", y));
-        }
-        int m = Math.abs(month);
-        if (y == 1950 && m < 12) {
-            throw new IllegalArgumentException(String.format("month %d must be 12 in rab-byung year %d", month, y));
-        }
-        boolean leap = month < 0;
-        int leapMonth = year.getLeapMonth();
-        if (leap && m != leapMonth) {
-            throw new IllegalArgumentException(String.format("illegal leap month %d in rab-byung year %d", m, y));
-        }
-        this.year = year;
-        this.month = m;
-        this.leap = leap;
-        // Index within the current year
-        int index = m - 1;
-        if (leap || (0 < leapMonth && leapMonth < m)) {
-            index += 1;
-        }
-        indexInYear = index;
-    }
-
-    /**
      * Constructs a {@code RabjungMonth} from the given Tibetan year and month.
      *
      * @param year  The Tibetan year.
      * @param month The Tibetan month, negative for leap months.
      */
     public RabjungMonth(int year, int month) {
-        this(RabjungYear.fromYear(year), month);
+        this.validate(year, month);
+        this.year = year;
+        this.month = Math.abs(month);
+        this.leap = month < 0;
     }
 
     /**
-     * Constructs a {@code RabjungMonth} from the given Rabjung index, element, zodiac, and month.
+     * Validates the given Rabjung month parameters.
      *
-     * @param rabByungIndex The Rabjung cycle index.
-     * @param element       The Rabjung element.
-     * @param zodiac        The Rabjung zodiac.
-     * @param month         The Tibetan month.
+     * @param year  Gregorian year (must be between 1950 and 2050)
+     * @param month Rabjung month (-12 to -1 for leap months, 1 to 12)
+     * @throws IllegalArgumentException if the year or month is out of valid range
      */
-    public RabjungMonth(int rabByungIndex, RabjungElement element, Zodiac zodiac, int month) {
-        this(RabjungYear.fromElementZodiac(rabByungIndex, element, zodiac), month);
+    public static void validate(int year, int month) {
+        if (month == 0 || month > 12 || month < -12) {
+            throw new IllegalArgumentException(String.format("illegal rab-byung month: %d", month));
+        }
+        if (year < 1950 || year > 2050) {
+            throw new IllegalArgumentException(String.format("rab-byung year %d must between 1950 and 2050", year));
+        }
+        boolean leap = month < 0;
+        int m = Math.abs(month);
+        if (year == 1950 && m < 12) {
+            throw new IllegalArgumentException(String.format("month %d must be 12 in rab-byung year %d", month, year));
+        }
+        if (leap && m != RabjungYear.fromYear(year).getLeapMonth()) {
+            throw new IllegalArgumentException(String.format("illegal leap month %d in rab-byung year %d", m, year));
+        }
     }
 
     /**
@@ -157,43 +123,12 @@ public class RabjungMonth extends Loops {
     }
 
     /**
-     * Creates a {@code RabjungMonth} instance from the given Rabjung index, element, zodiac, and month.
-     *
-     * @param rabByungIndex The Rabjung cycle index.
-     * @param element       The Rabjung element.
-     * @param zodiac        The Rabjung zodiac.
-     * @param month         The Tibetan month.
-     * @return A new {@link RabjungMonth} instance.
-     */
-    public static RabjungMonth fromElementZodiac(int rabByungIndex, RabjungElement element, Zodiac zodiac, int month) {
-        return new RabjungMonth(rabByungIndex, element, zodiac, month);
-    }
-
-    /**
      * Gets the Tibetan year this month belongs to.
      *
      * @return The {@link RabjungYear}.
      */
     public RabjungYear getRabByungYear() {
-        return year;
-    }
-
-    /**
-     * Gets the Gregorian year corresponding to this Tibetan month.
-     *
-     * @return The Gregorian year.
-     */
-    public int getYear() {
-        return year.getYear();
-    }
-
-    /**
-     * Gets the month number.
-     *
-     * @return The month number.
-     */
-    public int getMonth() {
-        return month;
+        return RabjungYear.fromYear(year);
     }
 
     /**
@@ -208,10 +143,19 @@ public class RabjungMonth extends Loops {
     /**
      * Gets the index of this month within the year (0-12).
      *
-     * @return The index.
+     * @return The index (0-12).
      */
     public int getIndexInYear() {
-        return indexInYear;
+        int index = month - 1;
+        if (leap) {
+            index += 1;
+        } else {
+            int leapMonth = getRabByungYear().getLeapMonth();
+            if (leapMonth > 0 && month > leapMonth) {
+                index += 1;
+            }
+        }
+        return index;
     }
 
     /**
@@ -248,7 +192,7 @@ public class RabjungMonth extends Loops {
      */
     @Override
     public String toString() {
-        return year + getName();
+        return getRabByungYear() + getName();
     }
 
     /**
@@ -261,8 +205,8 @@ public class RabjungMonth extends Loops {
         if (n == 0) {
             return fromYm(getYear(), getMonthWithLeap());
         }
-        int m = indexInYear + 1 + n;
-        RabjungYear y = year;
+        int m = getIndexInYear() + 1 + n;
+        RabjungYear y = getRabByungYear();
         if (n > 0) {
             int monthCount = y.getMonthCount();
             while (m > monthCount) {
@@ -295,7 +239,7 @@ public class RabjungMonth extends Loops {
      * @return The first {@link RabjungDay} of this month.
      */
     public RabjungDay getFirstDay() {
-        return new RabjungDay(this, 1);
+        return new RabjungDay(year, getMonthWithLeap(), 1);
     }
 
     /**
@@ -307,13 +251,14 @@ public class RabjungMonth extends Loops {
         List<RabjungDay> l = new ArrayList<>();
         List<Integer> missDays = getMissDays();
         List<Integer> leapDays = getLeapDays();
-        for (int i = 1; i <= 31; i++) {
+        int m = getMonthWithLeap();
+        for (int i = 1; i < 31; i++) {
             if (missDays.contains(i)) {
                 continue;
             }
-            l.add(new RabjungDay(this, i));
+            l.add(new RabjungDay(year, m, i));
             if (leapDays.contains(i)) {
-                l.add(new RabjungDay(this, -i));
+                l.add(new RabjungDay(year, m, -i));
             }
         }
         return l;

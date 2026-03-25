@@ -42,23 +42,48 @@ public class RabjungYear extends Loops {
     protected int rabByungIndex;
 
     /**
-     * The Sixty Cycle (GanZhi) of the year.
+     * Element (Five Phases) index, starting from 0.
      */
-    protected SixtyCycle sixtyCycle;
+    protected int elementIndex;
 
     /**
-     * Constructs a {@code RabjungYear} with the given Rabjung index and Sixty Cycle.
-     *
-     * @param rabByungIndex The Rabjung sequence number, starting from 0.
-     * @param sixtyCycle    The {@link SixtyCycle} of the year.
-     * @throws IllegalArgumentException if the Rabjung index is out of valid range.
+     * Zodiac animal index, starting from 0.
      */
-    public RabjungYear(int rabByungIndex, SixtyCycle sixtyCycle) {
+    protected int zodiacIndex;
+
+    /**
+     * Constructs a Rabjung year with the given indices.
+     *
+     * @param rabByungIndex Rabjung (Victorious Cycle) sequence number, starting from 0
+     * @param elementIndex  element (Five Phases) index, starting from 0
+     * @param zodiacIndex   zodiac animal index, starting from 0
+     * @throws IllegalArgumentException if any index is out of valid range
+     */
+    public RabjungYear(int rabByungIndex, int elementIndex, int zodiacIndex) {
         if (rabByungIndex < 0 || rabByungIndex > 150) {
             throw new IllegalArgumentException(String.format("illegal rab-byung index: %d", rabByungIndex));
         }
+        if (elementIndex < 0 || elementIndex >= RabjungElement.NAMES.length) {
+            throw new IllegalArgumentException(String.format("illegal element index: %d", elementIndex));
+        }
+        if (zodiacIndex < 0 || zodiacIndex >= Zodiac.NAMES.length) {
+            throw new IllegalArgumentException(String.format("illegal zodiac index: %d", zodiacIndex));
+        }
         this.rabByungIndex = rabByungIndex;
-        this.sixtyCycle = sixtyCycle;
+        this.elementIndex = elementIndex;
+        this.zodiacIndex = zodiacIndex;
+    }
+
+    /**
+     * Validates that the given Gregorian year falls within the supported range (1027–9999).
+     *
+     * @param year Gregorian year to validate
+     * @throws IllegalArgumentException if the year is out of range
+     */
+    public static void validate(int year) {
+        if (year < 1027 || year > 9999) {
+            throw new IllegalArgumentException(String.format("illegal rab-byung year: %d", year));
+        }
     }
 
     /**
@@ -69,7 +94,8 @@ public class RabjungYear extends Loops {
      * @return A new {@link RabjungYear} instance.
      */
     public static RabjungYear fromSixtyCycle(int rabByungIndex, SixtyCycle sixtyCycle) {
-        return new RabjungYear(rabByungIndex, sixtyCycle);
+        return new RabjungYear(rabByungIndex, sixtyCycle.getHeavenStem().getElement().getIndex(),
+                sixtyCycle.getEarthBranch().getZodiac().getIndex());
     }
 
     /**
@@ -83,14 +109,7 @@ public class RabjungYear extends Loops {
      *                                  Cycle.
      */
     public static RabjungYear fromElementZodiac(int rabByungIndex, RabjungElement element, Zodiac zodiac) {
-        for (int i = 0; i < 60; i++) {
-            SixtyCycle sixtyCycle = SixtyCycle.fromIndex(i);
-            if (sixtyCycle.getEarthBranch().getZodiac().equals(zodiac)
-                    && sixtyCycle.getHeavenStem().getElement().getIndex() == element.getIndex()) {
-                return new RabjungYear(rabByungIndex, sixtyCycle);
-            }
-        }
-        throw new IllegalArgumentException(String.format("illegal rab-byung element %s, zodiac %s", element, zodiac));
+        return new RabjungYear(rabByungIndex, element.getIndex(), zodiac.getIndex());
     }
 
     /**
@@ -100,7 +119,8 @@ public class RabjungYear extends Loops {
      * @return A new {@link RabjungYear} instance.
      */
     public static RabjungYear fromYear(int year) {
-        return new RabjungYear((year - 1024) / 60, SixtyCycle.fromIndex(year - 4));
+        validate(year);
+        return fromSixtyCycle((year - 1024) / 60, SixtyCycle.fromIndex(year - 4));
     }
 
     /**
@@ -118,7 +138,7 @@ public class RabjungYear extends Loops {
      * @return The {@link SixtyCycle} of this year.
      */
     public SixtyCycle getSixtyCycle() {
-        return sixtyCycle;
+        return SixtyCycle.fromIndex(6 * (elementIndex * 2 + zodiacIndex % 2) - 5 * zodiacIndex);
     }
 
     /**
@@ -127,7 +147,7 @@ public class RabjungYear extends Loops {
      * @return The {@link Zodiac} of this year.
      */
     public Zodiac getZodiac() {
-        return getSixtyCycle().getEarthBranch().getZodiac();
+        return Zodiac.fromIndex(zodiacIndex);
     }
 
     /**
@@ -136,7 +156,7 @@ public class RabjungYear extends Loops {
      * @return The {@link RabjungElement} of this year.
      */
     public RabjungElement getElement() {
-        return RabjungElement.fromIndex(getSixtyCycle().getHeavenStem().getElement().getIndex());
+        return RabjungElement.fromIndex(elementIndex);
     }
 
     /**
@@ -160,11 +180,10 @@ public class RabjungYear extends Loops {
             n /= 10;
             pos++;
         }
-        String letter = s.toString();
-        if (letter.startsWith("一十")) {
-            letter = letter.substring(1);
+        if (0 == s.indexOf("一十")) {
+            s.delete(0, 1);
         }
-        return String.format("第%s饶迥%s%s年", letter, getElement(), getZodiac());
+        return String.format("第%s饶迥%s%s年", s, getElement(), getZodiac());
     }
 
     /**
@@ -194,13 +213,17 @@ public class RabjungYear extends Loops {
     public int getLeapMonth() {
         int y = 1;
         int m = 4;
-        int t = 0;
+        int t = 1;
         int currentYear = getYear();
         while (y < currentYear) {
-            int i = m - 1 + (t % 2 == 0 ? 33 : 32);
-            y = (y * 12 + i) / 12;
-            m = i % 12 + 1;
-            t++;
+            int i = m + 31 + t;
+            y += 2;
+            m = i - 23;
+            if (i > 35) {
+                y += 1;
+                m -= 12;
+            }
+            t = 1 - t;
         }
         return y == currentYear ? m : 0;
     }
@@ -220,7 +243,7 @@ public class RabjungYear extends Loops {
      * @return The first {@link RabjungMonth} of this year.
      */
     public RabjungMonth getFirstMonth() {
-        return new RabjungMonth(this, 1);
+        return RabjungMonth.fromYm(getYear(), 1);
     }
 
     /**
@@ -238,12 +261,13 @@ public class RabjungYear extends Loops {
      * @return A list of {@link RabjungMonth} objects for this year.
      */
     public List<RabjungMonth> getMonths() {
-        List<RabjungMonth> l = new ArrayList<>();
+        List<RabjungMonth> l = new ArrayList<>(13);
+        int y = getYear();
         int leapMonth = getLeapMonth();
         for (int i = 1; i < 13; i++) {
-            l.add(new RabjungMonth(this, i));
+            l.add(RabjungMonth.fromYm(y, i));
             if (i == leapMonth) {
-                l.add(new RabjungMonth(this, -i));
+                l.add(RabjungMonth.fromYm(y, -i));
             }
         }
         return l;

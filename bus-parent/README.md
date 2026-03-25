@@ -71,7 +71,7 @@ Inherit from `bus-parent` to get managed dependency versions and build configura
 <parent>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-parent</artifactId>
-    <version>8.5.9</version>
+    <version>8.x.x</version>
 </parent>
 ```
 
@@ -107,7 +107,7 @@ Then declare only the modules you need — no version tags required:
         <dependency>
             <groupId>org.miaixz</groupId>
             <artifactId>bus-bom</artifactId>
-            <version>8.5.9</version>
+            <version>8.x.x</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -121,7 +121,7 @@ Then declare only the modules you need — no version tags required:
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-all</artifactId>
-    <version>8.5.9</version>
+    <version>8.x.x</version>
 </dependency>
 ```
 
@@ -142,7 +142,7 @@ Then declare only the modules you need — no version tags required:
     <parent>
         <groupId>org.miaixz</groupId>
         <artifactId>bus-parent</artifactId>
-        <version>8.5.9</version>
+        <version>8.x.x</version>
     </parent>
 
     <groupId>com.example</groupId>
@@ -192,7 +192,7 @@ Then declare only the modules you need — no version tags required:
     <parent>
         <groupId>org.miaixz</groupId>
         <artifactId>bus-parent</artifactId>
-        <version>8.5.9</version>
+        <version>8.x.x</version>
     </parent>
 
     <groupId>com.example</groupId>
@@ -292,7 +292,7 @@ Then declare only the modules you need — no version tags required:
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-core</artifactId>
-    <version>8.5.9</version>
+    <version>8.x.x</version>
 </dependency>
 ```
 

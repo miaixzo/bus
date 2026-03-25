@@ -19,11 +19,11 @@
 */
 package org.miaixz.bus.core.center.date.culture.lunar;
 
-import org.miaixz.bus.core.center.date.culture.Week;
-import org.miaixz.bus.core.center.date.culture.parts.WeekParts;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.miaixz.bus.core.center.date.culture.Week;
+import org.miaixz.bus.core.center.date.culture.parts.WeekParts;
 
 /**
  * Represents a week in the Lunar calendar.
@@ -114,9 +114,6 @@ public class LunarWeek extends WeekParts {
      * @return the lunar week after n weeks
      */
     public LunarWeek next(int n) {
-        if (n == 0) {
-            return fromYm(getYear(), getMonth(), index, start);
-        }
         int d = index + n;
         LunarMonth m = getLunarMonth();
         if (n > 0) {

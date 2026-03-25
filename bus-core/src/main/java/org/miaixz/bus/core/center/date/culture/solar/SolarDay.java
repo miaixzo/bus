@@ -29,6 +29,7 @@ import org.miaixz.bus.core.center.date.culture.climate.Climate;
 import org.miaixz.bus.core.center.date.culture.climate.ClimateDay;
 import org.miaixz.bus.core.center.date.culture.dog.Dog;
 import org.miaixz.bus.core.center.date.culture.dog.DogDay;
+import org.miaixz.bus.core.center.date.culture.festival.Festival;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarDay;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarMonth;
 import org.miaixz.bus.core.center.date.culture.nine.Nine;
@@ -65,7 +66,7 @@ public class SolarDay extends DayParts {
      * @throws IllegalArgumentException if the date is invalid (e.g., February 30)
      */
     public SolarDay(int year, int month, int day) {
-        validate(year, month, day);
+        this.validate(year, month, day);
         this.year = year;
         this.month = month;
         this.day = day;
@@ -170,10 +171,12 @@ public class SolarDay extends DayParts {
      * @return true if this day is before the target
      */
     public boolean isBefore(SolarDay target) {
-        if (year != target.getYear()) {
-            return year < target.getYear();
+        int y = target.getYear();
+        if (year != y) {
+            return year < y;
         }
-        return month != target.getMonth() ? month < target.getMonth() : day < target.getDay();
+        int m = target.getMonth();
+        return month != m ? month < m : day < target.getDay();
     }
 
     /**
@@ -183,10 +186,12 @@ public class SolarDay extends DayParts {
      * @return true if this day is after the target
      */
     public boolean isAfter(SolarDay target) {
-        if (year != target.getYear()) {
-            return year > target.getYear();
+        int y = target.getYear();
+        if (year != y) {
+            return year > y;
         }
-        return month != target.getMonth() ? month > target.getMonth() : day > target.getDay();
+        int m = target.getMonth();
+        return month != m ? month > m : day > target.getDay();
     }
 
     /**
@@ -266,37 +271,19 @@ public class SolarDay extends DayParts {
      * @return the DogDay, or null if not in the Sanfu period
      */
     public DogDay getDogDay() {
-        // Summer Solstice
-        SolarTerms xiaZhi = SolarTerms.fromIndex(year, 12);
-        SolarDay start = xiaZhi.getSolarDay();
-        // The 3rd Geng day, which is the 1st day of the first period (Toufu)
-        start = start.next(start.getLunarDay().getSixtyCycle().getHeavenStem().stepsTo(6) + 20);
-        int days = subtract(start);
-        // Before the first period (Toufu)
-        if (days < 0) {
+        // Toufu (initial hot period): 3rd Geng day after the Summer Solstice
+        SolarDay d0 = Festival.builder().termHeavenStem(12, 6, 20).build().getSolarDay(year);
+        // Zhongfu (middle hot period): 4th Geng day after the Summer Solstice
+        SolarDay d1 = Festival.builder().termHeavenStem(12, 6, 30).build().getSolarDay(year);
+        // Mofu (final hot period): 1st Geng day after the Start of Autumn
+        SolarDay d2 = Festival.builder().termHeavenStem(15, 6, 0).build().getSolarDay(year);
+        if (isBefore(d0) || isAfter(d2.next(9))) {
             return null;
         }
-        if (days < 10) {
-            return new DogDay(Dog.fromIndex(0), days);
+        if (!isBefore(d2)) {
+            return new DogDay(Dog.fromIndex(2), subtract(d2));
         }
-        // The 4th Geng day, the 1st day of the middle period (Zhongfu)
-        start = start.next(10);
-        days = subtract(start);
-        if (days < 10) {
-            return new DogDay(Dog.fromIndex(1), days);
-        }
-        // The 5th Geng day, the 11th day of Zhongfu or the 1st day of the last period (Mofu)
-        start = start.next(10);
-        days = subtract(start);
-        // Start of Autumn (Liqiu)
-        if (xiaZhi.next(3).getSolarDay().isAfter(start)) {
-            if (days < 10) {
-                return new DogDay(Dog.fromIndex(1), days + 10);
-            }
-            start = start.next(10);
-            days = subtract(start);
-        }
-        return days >= 10 ? null : new DogDay(Dog.fromIndex(2), days);
+        return isBefore(d1) ? new DogDay(Dog.fromIndex(0), subtract(d0)) : new DogDay(Dog.fromIndex(1), subtract(d1));
     }
 
     /**
@@ -325,17 +312,10 @@ public class SolarDay extends DayParts {
      * @return the PlumRainDay, or null if not in the Meiyu period
      */
     public PlumRainDay getPlumRainDay() {
-        // Grain in Ear (Mangzhong)
-        SolarTerms grainInEar = SolarTerms.fromIndex(year, 11);
-        SolarDay start = grainInEar.getSolarDay();
-        // The 1st Bing day after Grain in Ear (Mangzhong)
-        start = start.next(start.getLunarDay().getSixtyCycle().getHeavenStem().stepsTo(2));
-
-        // Minor Heat (Xiaoshu)
-        SolarDay end = grainInEar.next(2).getSolarDay();
-        // The 1st Wei day after Minor Heat (Xiaoshu)
-        end = end.next(end.getLunarDay().getSixtyCycle().getEarthBranch().stepsTo(7));
-
+        // Start of Meiyu: 1st Bing day after Mangzhong (Grain in Ear)
+        SolarDay start = Festival.builder().termHeavenStem(11, 2, 0).build().getSolarDay(year);
+        // End of Meiyu: 1st Wei day after Xiaoshu (Minor Heat)
+        SolarDay end = Festival.builder().termEarthBranch(13, 7, 0).build().getSolarDay(year);
         if (isBefore(start) || isAfter(end)) {
             return null;
         }

@@ -152,13 +152,12 @@ public class LunarFestival extends Loops {
                 return new LunarFestival(EnumValue.Festival.TERM, lunarDay, term, data);
             }
         }
-        if (month == 12 && day > 28) {
+        if (Math.abs(month) == 12 && day > 28) {
             matcher = Pattern.compile("@\\d{2}2").matcher(DATA);
             if (!matcher.find()) {
                 return null;
             }
-            LunarDay nextDay = lunarDay.next(1);
-            if (nextDay.getMonth() == 1 && nextDay.getDay() == 1) {
+            if (lunarDay.next(1).getYear() != year) {
                 return new LunarFestival(EnumValue.Festival.EVE, lunarDay, null, matcher.group());
             }
         }
@@ -209,7 +208,7 @@ public class LunarFestival extends Loops {
      *
      * @return The {@link SolarTerms} if it's a solar term festival, otherwise {@code null}.
      */
-    public SolarTerms getSolarTerm() {
+    public SolarTerms getSolarTerms() {
         return solarTerms;
     }
 

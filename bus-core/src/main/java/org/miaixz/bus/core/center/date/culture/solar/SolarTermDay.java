@@ -32,11 +32,11 @@ public class SolarTermDay extends Replenish {
     /**
      * Constructs a {@code SolarTermDay} with the given solar term and day index.
      *
-     * @param solarTerm The {@link SolarTerms} this day belongs to.
-     * @param dayIndex  The index of the day within the solar term.
+     * @param solarTerms The {@link SolarTerms} this day belongs to.
+     * @param dayIndex   The index of the day within the solar term.
      */
-    public SolarTermDay(SolarTerms solarTerm, int dayIndex) {
-        super(solarTerm, dayIndex);
+    public SolarTermDay(SolarTerms solarTerms, int dayIndex) {
+        super(solarTerms, dayIndex);
     }
 
     /**

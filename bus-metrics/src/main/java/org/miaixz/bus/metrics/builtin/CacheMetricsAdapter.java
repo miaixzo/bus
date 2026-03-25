@@ -31,31 +31,33 @@ import org.miaixz.bus.cache.Collector;
  * <p>
  * This adapter has two responsibilities:
  * <ol>
- *   <li><b>Local resettable tracking</b> — maintains per-pattern hit/request {@link LongAdder} pairs so that
- *       {@link #getHitting()}, {@link #reset(String)}, and {@link #resetAll()} behave exactly as callers of the
- *       bus-cache {@code Collector} interface expect.</li>
- *   <li><b>Backend publishing</b> — forwards every increment to {@link org.miaixz.bus.metrics.Metrics} counters
- *       (tagged with {@code pattern}), making cache hit-rate data visible in Prometheus, Micrometer, or
- *       OpenTelemetry dashboards without any additional wiring.</li>
+ * <li><b>Local resettable tracking</b> — maintains per-pattern hit/request {@link LongAdder} pairs so that
+ * {@link #getHitting()}, {@link #reset(String)}, and {@link #resetAll()} behave exactly as callers of the bus-cache
+ * {@code Collector} interface expect.</li>
+ * <li><b>Backend publishing</b> — forwards every increment to {@link org.miaixz.bus.metrics.Metrics} counters (tagged
+ * with {@code pattern}), making cache hit-rate data visible in Prometheus, Micrometer, or OpenTelemetry dashboards
+ * without any additional wiring.</li>
  * </ol>
  * <p>
  * Because bus-metrics already depends on bus-cache (not the other way around), this class can safely implement
  * {@code bus-cache.Collector} without creating a circular dependency.
  * <p>
  * Typical Spring usage:
- * <pre>{@code
- * @Bean
+ * 
+ * <pre>
+ * {@code
+ * 
+ * &#64;Bean
  * public CacheMetricsAdapter cacheMetricsAdapter() {
  *     return new CacheMetricsAdapter();
  * }
  *
  * @Bean
  * public Context cacheContext(CacheMetricsAdapter adapter) {
- *     return Context.newBuilder()
- *         .hitting(adapter)
- *         .build();
+ *     return Context.newBuilder().hitting(adapter).build();
  * }
- * }</pre>
+ * }
+ * </pre>
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -65,9 +67,9 @@ public class CacheMetricsAdapter implements Collector {
     /**
      * Per-pattern local counters: index 0 = hit count, index 1 = request count.
      * <p>
-     * {@link LongAdder} is chosen over {@link java.util.concurrent.atomic.AtomicLong} because it has lower
-     * contention under high concurrency — critical for hot cache paths where many threads call
-     * {@link #reqIncr}/{@link #hitIncr} simultaneously.
+     * {@link LongAdder} is chosen over {@link java.util.concurrent.atomic.AtomicLong} because it has lower contention
+     * under high concurrency — critical for hot cache paths where many threads call {@link #reqIncr}/{@link #hitIncr}
+     * simultaneously.
      */
     private final ConcurrentHashMap<String, LongAdder[]> registry = new ConcurrentHashMap<>();
 
@@ -122,8 +124,8 @@ public class CacheMetricsAdapter implements Collector {
     /**
      * Resets the local hit and request counters for a specific pattern.
      * <p>
-     * Note: this does <em>not</em> reset the cumulative counters already published to the metrics backend
-     * (Prometheus, Micrometer, etc.), as those backends treat counters as monotonically increasing.
+     * Note: this does <em>not</em> reset the cumulative counters already published to the metrics backend (Prometheus,
+     * Micrometer, etc.), as those backends treat counters as monotonically increasing.
      *
      * @param pattern the cache pattern name to reset
      */

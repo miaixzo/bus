@@ -23,17 +23,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.core.center.date.culture.*;
-import org.miaixz.bus.core.center.date.culture.Week;
 import org.miaixz.bus.core.center.date.culture.fetus.FetusDay;
 import org.miaixz.bus.core.center.date.culture.parts.DayParts;
 import org.miaixz.bus.core.center.date.culture.ren.MinorRen;
-import org.miaixz.bus.core.center.date.culture.sixty.*;
+import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycle;
+import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycleDay;
+import org.miaixz.bus.core.center.date.culture.sixty.ThreePillars;
+import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
 import org.miaixz.bus.core.center.date.culture.star.six.SixStar;
 import org.miaixz.bus.core.center.date.culture.star.twelve.TwelveStar;
 import org.miaixz.bus.core.center.date.culture.star.twentyeight.TwentyEightStar;
-import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 
 /**
  * Represents a day in the Lunar calendar.
@@ -139,11 +140,14 @@ public class LunarDay extends DayParts {
      * @return true if this day is before the target, false otherwise
      */
     public boolean isBefore(LunarDay target) {
-        if (year != target.getYear()) {
-            return year < target.getYear();
+        int y = target.getYear();
+        if (year != y) {
+            return year < y;
         }
-        if (month != target.getMonth()) {
-            return Math.abs(month) < Math.abs(target.getMonth());
+        int m = target.getMonth();
+        if (month != m) {
+            int t = Math.abs(m);
+            return month == t || Math.abs(month) < t;
         }
         return day < target.getDay();
     }
@@ -155,11 +159,14 @@ public class LunarDay extends DayParts {
      * @return true if this day is after the target, false otherwise
      */
     public boolean isAfter(LunarDay target) {
-        if (year != target.getYear()) {
-            return year > target.getYear();
+        int y = target.getYear();
+        if (year != y) {
+            return year > y;
         }
-        if (month != target.getMonth()) {
-            return Math.abs(month) >= Math.abs(target.getMonth());
+        int m = target.getMonth();
+        if (month != m) {
+            int t = Math.abs(month);
+            return t == m || t > Math.abs(m);
         }
         return day > target.getDay();
     }
@@ -174,37 +181,12 @@ public class LunarDay extends DayParts {
     }
 
     /**
-     * Gets the year's Sixty Cycle (Gan-Zhi) for this day (changes on Lichun).
-     *
-     * @return the Sixty Cycle
-     * @see SixtyCycleDay#getYear()
-     * @deprecated Use {@link SixtyCycleDay#getYear()} instead
-     */
-    @Deprecated
-    public SixtyCycle getYearSixtyCycle() {
-        return getSixtyCycleDay().getYear();
-    }
-
-    /**
-     * Gets the month's Sixty Cycle (Gan-Zhi) for this day (changes on solar terms).
-     *
-     * @return the Sixty Cycle
-     * @see SixtyCycleDay#getMonth()
-     * @deprecated Use {@link SixtyCycleDay#getMonth()} instead
-     */
-    @Deprecated
-    public SixtyCycle getMonthSixtyCycle() {
-        return getSixtyCycleDay().getMonth();
-    }
-
-    /**
      * Gets the Sixty Cycle (Gan-Zhi) for this day.
      *
      * @return the Sixty Cycle
      */
     public SixtyCycle getSixtyCycle() {
-        int offset = (int) getLunarMonth().getFirstJulianDay().next(day - 12).getDay();
-        return SixtyCycle.fromName(HeavenStem.fromIndex(offset).getName() + EarthBranch.fromIndex(offset).getName());
+        return SixtyCycle.fromIndex((int) getLunarMonth().getFirstJulianDay().next(day - 12).getDay());
     }
 
     /**
@@ -234,27 +216,27 @@ public class LunarDay extends DayParts {
      */
     public NineStar getNineStar() {
         SolarDay d = getSolarDay();
-        SolarTerms dongZhi = SolarTerms.fromIndex(d.getYear(), 0);
-        SolarDay dongZhiSolar = dongZhi.getSolarDay();
-        SolarDay xiaZhiSolar = dongZhi.next(12).getSolarDay();
-        SolarDay dongZhiSolar2 = dongZhi.next(24).getSolarDay();
-        int dongZhiIndex = dongZhiSolar.getLunarDay().getSixtyCycle().getIndex();
-        int xiaZhiIndex = xiaZhiSolar.getLunarDay().getSixtyCycle().getIndex();
-        int dongZhiIndex2 = dongZhiSolar2.getLunarDay().getSixtyCycle().getIndex();
-        SolarDay solarShunBai = dongZhiSolar.next(dongZhiIndex > 29 ? 60 - dongZhiIndex : -dongZhiIndex);
-        SolarDay solarShunBai2 = dongZhiSolar2.next(dongZhiIndex2 > 29 ? 60 - dongZhiIndex2 : -dongZhiIndex2);
-        SolarDay solarNiZi = xiaZhiSolar.next(xiaZhiIndex > 29 ? 60 - xiaZhiIndex : -xiaZhiIndex);
-        int offset = 0;
-        if (!d.isBefore(solarShunBai) && d.isBefore(solarNiZi)) {
-            offset = d.subtract(solarShunBai);
-        } else if (!d.isBefore(solarNiZi) && d.isBefore(solarShunBai2)) {
-            offset = 8 - d.subtract(solarNiZi);
-        } else if (!d.isBefore(solarShunBai2)) {
-            offset = d.subtract(solarShunBai2);
-        } else if (d.isBefore(solarShunBai)) {
-            offset = 8 + solarShunBai.subtract(d);
+        int y = d.getYear();
+        SolarDay winterSolstice = SolarTerms.fromIndex(y, 0).getSolarDay();
+        SolarDay summerSolstice = SolarTerms.fromIndex(y, 12).getSolarDay();
+        SolarDay nextWinterSolstice = SolarTerms.fromIndex(y + 1, 0).getSolarDay();
+        // Nearest JiaZi day to the winter solstice
+        SolarDay w = winterSolstice.next(winterSolstice.getLunarDay().getSixtyCycle().stepsCloseTo(0));
+        // Nearest JiaZi day to the summer solstice
+        SolarDay s = summerSolstice.next(summerSolstice.getLunarDay().getSixtyCycle().stepsCloseTo(0));
+        // Nearest JiaZi day to the next winter solstice
+        SolarDay n = nextWinterSolstice.next(nextWinterSolstice.getLunarDay().getSixtyCycle().stepsCloseTo(0));
+        // 43210012345678876543210012345
+        // w s n
+        // Winter Summer Winter
+        // Solstice Solstice Solstice
+        if (d.isBefore(w)) {
+            return NineStar.fromIndex(w.subtract(d) - 1);
         }
-        return NineStar.fromIndex(offset);
+        if (d.isBefore(s)) {
+            return NineStar.fromIndex(d.subtract(w));
+        }
+        return NineStar.fromIndex(d.isBefore(n) ? n.subtract(d) - 1 : d.subtract(n));
     }
 
     /**
@@ -336,7 +318,7 @@ public class LunarDay extends DayParts {
      * @return the twenty-eight star mansion
      */
     public TwentyEightStar getTwentyEightStar() {
-        return TwentyEightStar.fromIndex(new int[] { 10, 18, 26, 6, 14, 22, 2 }[getSolarDay().getWeek().getIndex()])
+        return TwentyEightStar.fromIndex(10 + 8 * getWeek().getIndex())
                 .next(-7 * getSixtyCycle().getEarthBranch().getIndex());
     }
 

@@ -22,14 +22,12 @@ package org.miaixz.bus.core.center.date.culture.lunar;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.core.center.date.culture.Direction;
 import org.miaixz.bus.core.center.date.Galaxy;
+import org.miaixz.bus.core.center.date.culture.Direction;
 import org.miaixz.bus.core.center.date.culture.JulianDay;
 import org.miaixz.bus.core.center.date.culture.fetus.FetusMonth;
 import org.miaixz.bus.core.center.date.culture.parts.MonthParts;
 import org.miaixz.bus.core.center.date.culture.ren.MinorRen;
-import org.miaixz.bus.core.center.date.culture.sixty.EarthBranch;
-import org.miaixz.bus.core.center.date.culture.sixty.HeavenStem;
 import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycle;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
@@ -156,7 +154,7 @@ public class LunarMonth extends MonthParts {
      */
     public int getIndexInYear() {
         int index = month - 1;
-        if (isLeap()) {
+        if (leap) {
             index += 1;
         } else {
             int leapMonth = getLunarYear().getLeapMonth();
@@ -308,9 +306,7 @@ public class LunarMonth extends MonthParts {
      * @return the Sixty Cycle
      */
     public SixtyCycle getSixtyCycle() {
-        return SixtyCycle.fromName(
-                HeavenStem.fromIndex(getLunarYear().getSixtyCycle().getHeavenStem().getIndex() * 2 + month + 1)
-                        .getName() + EarthBranch.fromIndex(month + 1).getName());
+        return SixtyCycle.fromIndex(year * 12 + month - 47);
     }
 
     /**
