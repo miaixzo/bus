@@ -127,7 +127,7 @@ public class HexKit extends Hex {
      * digits, it will be padded with leading zeros. For example:
      *
      * <pre>
-     * 你 = \u4f60
+     * A sample CJK character maps to a Unicode escape such as \u4f60.
      * </pre>
      *
      * @param value The int value, which can also be a char.
@@ -153,7 +153,7 @@ public class HexKit extends Hex {
      * less than 4 digits, it will be padded with leading zeros. For example:
      *
      * <pre>
-     * 你 = \u4f60
+     * A sample CJK character maps to a Unicode escape such as \u4f60.
      * </pre>
      *
      * @param ch The char value.

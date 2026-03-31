@@ -570,43 +570,45 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 获得数字对应的二进制字符串
+     * Returns the binary string representation for the specified number.
      * <ul>
-     * <li>Integer/Long：直接使用 JDK 内置方法转换</li>
-     * <li>Byte/Short：转换为无符号整数后补充前导零至对应位数（Byte=8位，Short=16位）</li>
-     * <li>Float/Double：使用 IEEE 754 标准格式转换，Float=32位，Double=64位</li>
+     * <li>{@link Integer}/{@link Long}: converted directly with the built-in JDK methods</li>
+     * <li>{@link Byte}/{@link Short}: converted to unsigned integers and left-padded to their fixed widths (8 and 16
+     * bits)</li>
+     * <li>{@link Float}/{@link Double}: converted with the IEEE 754 binary layout (32 and 64 bits)</li>
      * </ul>
      *
-     * @param number 待转换的Number对象（支持Integer、Long、Byte、Short、Float、Double）
-     * @return 二进制字符串
+     * @param number the {@link Number} to convert; supports {@link Integer}, {@link Long}, {@link Byte}, {@link Short},
+     *               {@link Float}, and {@link Double}
+     * @return the binary string representation
      */
     public static String getBinaryString(final Number number) {
         Assert.notNull(number, "Number must be not null!");
 
-        // 根据Number的实际类型处理
+        // Dispatch based on the concrete Number subtype.
         if (number instanceof Integer) {
             return Integer.toBinaryString(number.intValue());
         } else if (number instanceof Long) {
             return Long.toBinaryString(number.longValue());
         } else if (number instanceof Byte) {
-            // Byte是8位，补前导0至8位
+            // Byte uses 8 bits and is left-padded with zeros.
             return String.format("%8s", Integer.toBinaryString(number.byteValue() & 0xFF)).replace(' ', '0');
         } else if (number instanceof Short) {
-            // Short是16位，补前导0至16位
+            // Short uses 16 bits and is left-padded with zeros.
             return String.format("%16s", Integer.toBinaryString(number.shortValue() & 0xFFFF)).replace(' ', '0');
         } else if (number instanceof Float) {
-            // Float转换为IEEE 754 32位二进制
+            // Float is converted to its IEEE 754 32-bit binary form.
             final int floatBits = Float.floatToIntBits(number.floatValue());
             return String.format("%32s", Integer.toBinaryString(floatBits)).replace(' ', '0');
         } else if (number instanceof Double) {
-            // Double转换为IEEE 754 64位二进制
+            // Double is converted to its IEEE 754 64-bit binary form.
             final long doubleBits = Double.doubleToLongBits(number.doubleValue());
             return String.format("%64s", Long.toBinaryString(doubleBits)).replace(' ', '0');
         } else if (number instanceof BigInteger) {
-            // 大数整数类型
+            // Larger integer-like number types.
             return ((BigInteger) number).toString(2);
         } else {
-            // 不支持的类型（如BigInteger、BigDecimal需额外处理）
+            // Unsupported types such as BigInteger and BigDecimal require dedicated handling.
             throw new IllegalArgumentException("Number not support：" + number.getClass().getName());
         }
     }
@@ -1546,11 +1548,11 @@ public class MathKit extends NumberValidator {
      * @return The LCM.
      */
     public static int multiple(final int m, final int n) {
-        // 先计算最大公约数
+        // Compute the greatest common divisor first.
         final int gcd = gcd(m, n);
-        // 使用长整型避免溢出，再转换回整型
+        // Use long arithmetic to avoid overflow before converting the result back to int.
         final long result = (long) m / gcd * (long) n;
-        // 检查结果是否在int范围内
+        // Verify that the result still fits within the int range.
         if (result > Integer.MAX_VALUE || result < Integer.MIN_VALUE) {
             throw new ArithmeticException("Integer overflow: " + m + " * " + n + " / " + gcd);
         }

@@ -22,6 +22,9 @@ package org.miaixz.bus.tempus.temporal.workflow.subscriber;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.EnumValue;
+import org.miaixz.bus.core.xyz.ExceptionKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.tempus.temporal.Subscriber;
 import org.miaixz.bus.tempus.temporal.worker.WorkflowServiceStubsProvider;
@@ -75,6 +78,11 @@ public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
     private Object serviceStubs;
 
     /**
+     * Lifecycle state for start/shutdown coordination.
+     */
+    private volatile EnumValue.Lifecycle state = EnumValue.Lifecycle.UNKNOWN;
+
+    /**
      * Creates a Temporal worker subscriber manager.
      *
      * @param binding  the worker subscriber binding
@@ -104,19 +112,26 @@ public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
      * @throws IllegalArgumentException if required worker properties are missing
      */
     @Override
-    public void start() {
+    public synchronized void start() {
         if (!binding.isEnabled()) {
             Logger.info("Worker is disabled, skipping initialization");
             return;
         }
-
-        if (binding.getEndpoint() == null) {
-            throw new IllegalArgumentException("temporal.endpoint must not be null");
+        if (state == EnumValue.Lifecycle.RUNNING) {
+            Logger.info("Worker already running, queue: {}", binding.getTaskQueue());
+            return;
         }
-        if (binding.getTaskQueue() == null) {
-            throw new IllegalArgumentException("temporal.task.queue must not be null");
+        if (state == EnumValue.Lifecycle.STARTING) {
+            throw new IllegalStateException("worker is starting");
+        }
+        if (state == EnumValue.Lifecycle.STOPPED || shutdown.get()) {
+            throw new IllegalStateException("worker has been stopped and cannot be restarted");
         }
 
+        Assert.notNull(binding.getEndpoint(), "temporal.endpoint must not be null");
+        Assert.notNull(binding.getTaskQueue(), "temporal.task.queue must not be null");
+
+        state = EnumValue.Lifecycle.STARTING;
         try {
             Logger.info(
                     "Initializing worker, endpoint: {}, queue: {}, maxConcurrent: {}",
@@ -141,10 +156,13 @@ public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
             Logger.debug("Registered workflows and activities");
 
             workerFactory.start();
+            state = EnumValue.Lifecycle.RUNNING;
 
             Logger.info("Worker started successfully, listening on queue: {}", binding.getTaskQueue());
 
         } catch (Exception e) {
+            state = EnumValue.Lifecycle.UNKNOWN;
+            cleanupResources();
             Logger.error(
                     "Failed to start worker, endpoint: {}, queue: {}, error: {}",
                     binding.getEndpoint(),
@@ -161,7 +179,7 @@ public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
      * @return {@code true} if running
      */
     public boolean isRunning() {
-        return workerFactory != null && !shutdown.get();
+        return state == EnumValue.Lifecycle.RUNNING;
     }
 
     /**
@@ -176,11 +194,19 @@ public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
      * Shuts down the worker factory and service stubs created by this manager.
      */
     @Override
-    public void shutdown() {
+    public synchronized void shutdown() {
         if (!shutdown.compareAndSet(false, true)) {
             return;
         }
+        state = EnumValue.Lifecycle.STOPPING;
 
+        cleanupResources();
+    }
+
+    /**
+     * Releases worker-side resources after startup failure or final shutdown.
+     */
+    private void cleanupResources() {
         try {
             if (workerFactory != null) {
                 Logger.info("Shutting down worker...");
@@ -189,6 +215,9 @@ public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
                 Logger.info("Worker shutdown completed");
             }
         } catch (Exception e) {
+            if (ExceptionKit.isCausedBy(e, InterruptedException.class)) {
+                Thread.currentThread().interrupt();
+            }
             Logger.warn("Worker shutdown encountered an error: {}", e.getMessage(), e);
         } finally {
             workerFactory = null;
@@ -201,6 +230,7 @@ public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
                     serviceStubs = null;
                 }
             }
+            state = EnumValue.Lifecycle.STOPPED;
         }
     }
 

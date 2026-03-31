@@ -40,6 +40,9 @@ public class ReferenceConverter extends AbstractConverter {
     @Serial
     private static final long serialVersionUID = 2852271357551L;
 
+    /**
+     * The root converter used to convert the referenced value to the target generic type.
+     */
     private final Converter rootConverter;
 
     /**

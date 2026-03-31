@@ -351,11 +351,11 @@ public class Console {
         public Table() {
         }
 
-        private static final char ROW_LINE = '－';
-        private static final char COLUMN_LINE = '|';
-
+        /**
+         * Full-width space character used when SBC mode is enabled.
+         */
         private static final char SPACE = '\u3000';
-        private static final char LF = Symbol.C_LF;
+
         /**
          * List of header rows for the table.
          */
@@ -469,9 +469,9 @@ public class Console {
          */
         private void fillRows(final StringBuilder sb, final List<List<String>> list) {
             for (final List<String> row : list) {
-                sb.append(COLUMN_LINE);
+                sb.append(Symbol.C_OR);
                 fillRow(sb, row);
-                sb.append(LF);
+                sb.append(Symbol.C_LF);
             }
         }
 
@@ -496,7 +496,7 @@ public class Console {
                 sb.append(SPACE);
                 final int maxLength = columnCharNumber.get(i);
                 sb.append(String.valueOf(SPACE).repeat(Math.max(0, (maxLength - length + (sbcCount / 2)))));
-                sb.append(COLUMN_LINE);
+                sb.append(Symbol.C_OR);
             }
         }
 
@@ -508,10 +508,10 @@ public class Console {
         private void fillBorder(final StringBuilder sb) {
             sb.append(Symbol.C_PLUS);
             for (final Integer width : columnCharNumber) {
-                sb.append(StringKit.repeat(ROW_LINE, width + 2));
+                sb.append(StringKit.repeat(Symbol.C_LINE, width + 2));
                 sb.append(Symbol.C_PLUS);
             }
-            sb.append(LF);
+            sb.append(Symbol.C_LF);
         }
 
         /**

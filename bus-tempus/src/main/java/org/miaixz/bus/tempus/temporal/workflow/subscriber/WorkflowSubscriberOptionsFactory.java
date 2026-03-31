@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.tempus.temporal.workflow.subscriber;
 
+import org.miaixz.bus.core.lang.Assert;
 import io.temporal.worker.WorkerOptions;
 
 /**
@@ -38,6 +39,7 @@ public class WorkflowSubscriberOptionsFactory {
      * @return the created worker options
      */
     public WorkerOptions createWorkerOptions(int maxConcurrent) {
+        Assert.isTrue(maxConcurrent > 0, "maxConcurrent must be > 0");
         return WorkerOptions.newBuilder().setMaxConcurrentActivityExecutionSize(maxConcurrent)
                 .setMaxConcurrentWorkflowTaskExecutionSize(maxConcurrent).validateAndBuildWithDefaults();
     }

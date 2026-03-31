@@ -2,10 +2,19 @@
   "resources": {
     "includes": [
       {
+        "pattern": "META-INF/services/.*"
+      },
+      {
         "pattern": "\\.bks$"
       },
       {
+        "pattern": "\\.crt$"
+      },
+      {
         "pattern": "\\.jks$"
+      },
+      {
+        "pattern": "\\.key$"
       },
       {
         "pattern": "\\.p12$"
@@ -14,19 +23,13 @@
         "pattern": "\\.pem$"
       },
       {
-        "pattern": "\\.crt$"
-      },
-      {
-        "pattern": "\\.key$"
-      },
-      {
-        "pattern": "META-INF/services/.*"
-      },
-      {
         "pattern": "org/bouncycastle/.*"
       },
       {
-        "pattern": "org/bouncycastle/pkix/.*"
+        "pattern": "org/bouncycastle/asn1/.*"
+      },
+      {
+        "pattern": "org/bouncycastle/crypto/.*"
       },
       {
         "pattern": "org/bouncycastle/jcajce/.*"
@@ -35,10 +38,7 @@
         "pattern": "org/bouncycastle/jce/.*"
       },
       {
-        "pattern": "org/bouncycastle/asn1/.*"
-      },
-      {
-        "pattern": "org/bouncycastle/crypto/.*"
+        "pattern": "org/bouncycastle/pkix/.*"
       },
       {
         "pattern": "org/bouncycastle/util/.*"

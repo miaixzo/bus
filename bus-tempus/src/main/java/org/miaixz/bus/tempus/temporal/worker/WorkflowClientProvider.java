@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.tempus.temporal.worker;
 
-import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.tempus.temporal.Binding;
 
 import io.temporal.client.WorkflowClient;
@@ -36,49 +35,14 @@ import io.temporal.client.WorkflowClient;
 public interface WorkflowClientProvider {
 
     /**
-     * Returns a workflow client for the specified Temporal server endpoint.
-     *
-     * @param endpoint the Temporal server endpoint
-     * @return the workflow client
-     */
-    WorkflowClient createWorkflowClient(String endpoint);
-
-    /**
      * Returns a workflow client for the specified Temporal configuration.
      * <p>
-     * Default implementation delegates to {@link #createWorkflowClient(String)}.
+     * This is the primary entry point because a binding can carry namespace and identity information in addition to the
+     * endpoint itself.
      *
      * @param binding temporal configuration
      * @return the workflow client
      */
-    default WorkflowClient createWorkflowClient(Binding binding) {
-        if (binding == null) {
-            throw new IllegalArgumentException("binding must not be null");
-        }
-        if (binding.getEndpoint() == null) {
-            throw new IllegalArgumentException("temporal.endpoint must not be null");
-        }
-
-        Logger.debug(
-                "Creating workflow client, endpoint: {}, namespace: {}, identity: {}",
-                binding.getEndpoint(),
-                binding.getNamespace(),
-                binding.getIdentity());
-
-        try {
-            WorkflowClient client = createWorkflowClient(binding.getEndpoint());
-            Logger.debug("Created workflow client successfully, endpoint: {}", binding.getEndpoint());
-            return client;
-        } catch (Exception e) {
-            Logger.error(
-                    "Failed to create workflow client, endpoint: {}, namespace: {}, identity: {}, error: {}",
-                    binding.getEndpoint(),
-                    binding.getNamespace(),
-                    binding.getIdentity(),
-                    e.getMessage(),
-                    e);
-            throw e;
-        }
-    }
+    WorkflowClient createWorkflowClient(Binding binding);
 
 }

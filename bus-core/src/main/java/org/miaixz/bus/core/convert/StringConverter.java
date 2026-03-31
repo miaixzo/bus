@@ -43,6 +43,9 @@ public class StringConverter extends AbstractConverter {
     @Serial
     private static final long serialVersionUID = 2852271992351L;
 
+    /**
+     * Custom string conversion rules keyed by the target source type.
+     */
     private Map<Class<?>, Function<Object, String>> stringer;
 
     /**

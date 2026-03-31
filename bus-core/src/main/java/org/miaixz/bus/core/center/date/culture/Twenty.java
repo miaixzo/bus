@@ -82,7 +82,7 @@ public class Twenty extends Samsara {
     }
 
     /**
-     * Gets the corresponding {@link Sixty} (元) for this Twenty-year Cycle.
+     * Gets the corresponding {@link Sixty} yuan cycle for this twenty-year cycle.
      *
      * @return The {@link Sixty} associated with this Twenty-year Cycle.
      */

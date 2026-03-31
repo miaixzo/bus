@@ -20,7 +20,10 @@
 package org.miaixz.bus.tempus.temporal.workflow;
 
 import org.miaixz.bus.core.data.id.ID;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.crypto.Builder;
 
 /**
  * Strategy interface for generating Temporal workflow identifiers.
@@ -42,10 +45,11 @@ public interface WorkflowIdGenerator {
      * @return the generated workflow identifier
      */
     default String workflowId(String prefix) {
-        if (prefix == null || prefix.isBlank()) {
+        String normalizedPrefix = normalizeComponent(prefix);
+        if (!StringKit.hasText(normalizedPrefix)) {
             return ID.objectId();
         }
-        return prefix + Symbol.C_COLON + ID.objectId();
+        return normalizedPrefix + Symbol.C_COLON + ID.objectId();
     }
 
     /**
@@ -59,13 +63,36 @@ public interface WorkflowIdGenerator {
      * @return the workflow identifier
      */
     default String workflowId(String prefix, String stableKey) {
-        if (stableKey == null || stableKey.isBlank()) {
+        String normalizedStableKey = normalizeComponent(stableKey);
+        if (!StringKit.hasText(normalizedStableKey)) {
             return workflowId(prefix);
         }
-        if (prefix == null || prefix.isBlank()) {
-            return stableKey;
+        String normalizedPrefix = normalizeComponent(prefix);
+        if (!StringKit.hasText(normalizedPrefix)) {
+            return normalizedStableKey;
         }
-        return prefix + Symbol.C_COLON + stableKey;
+        return normalizedPrefix + Symbol.C_COLON + normalizedStableKey;
+    }
+
+    /**
+     * Normalizes a workflow identifier component into the restricted character set used by this framework.
+     *
+     * @param value the raw component value
+     * @return the normalized component, or {@code null} when no usable content remains
+     */
+    private static String normalizeComponent(String value) {
+        if (value == null) {
+            return null;
+        }
+        String normalized = value.trim().replaceAll("[^A-Za-z0-9._:-]+", "_");
+        normalized = normalized.replaceAll("_+", "_");
+        if (!StringKit.hasText(normalized)) {
+            return null;
+        }
+        if (normalized.length() <= Normal._128) {
+            return normalized;
+        }
+        return normalized.substring(0, 64) + "_" + Builder.sha256Hex(normalized).substring(0, 16);
     }
 
 }

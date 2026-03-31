@@ -56,6 +56,9 @@ public class DateTime extends Date {
     @Serial
     private static final long serialVersionUID = 2852233950292L;
 
+    /**
+     * Whether {@link #toString()} should delegate to the original JDK {@link Date} formatting style.
+     */
     private static boolean useJdkToStringStyle = false;
     /**
      * Whether this object is mutable.
@@ -192,12 +195,12 @@ public class DateTime extends Date {
      * <li>yyyy-MM-dd HH:mm:ss</li>
      * <li>yyyy/MM/dd HH:mm:ss</li>
      * <li>yyyy.MM.dd HH:mm:ss</li>
-     * <li>yyyy年MM月dd日 HH时mm分ss秒</li>
+     * <li>Chinese-style date-time pattern such as {@code yyyy<year>MM<month>dd<day> HH<hour>mm<minute>ss<second>}</li>
      * <li>yyyy-MM-dd</li>
      * <li>yyyy/MM/dd</li>
      * <li>yyyy.MM.dd</li>
      * <li>HH:mm:ss</li>
-     * <li>HH时mm分ss秒</li>
+     * <li>Chinese-style time-only pattern such as {@code HH<hour>mm<minute>ss<second>}</li>
      * <li>yyyy-MM-dd HH:mm</li>
      * <li>yyyy-MM-dd HH:mm:ss.SSS</li>
      * <li>yyyyMMddHHmmss</li>

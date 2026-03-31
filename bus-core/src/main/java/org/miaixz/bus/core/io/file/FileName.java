@@ -378,9 +378,9 @@ public class FileName {
             }
         }
         if (tops > 0 && StringKit.isEmpty(prefix)) {
-            // 只有相对路径补充开头的..，绝对路径直接忽略之
+            // Only relative paths preserve leading ".."; absolute paths ignore the remaining parent markers.
             while (tops-- > 0) {
-                // 遍历完节点发现还有上级标注（即开头有一个或多个..），补充之
+                // If parent markers still remain after traversal, prepend them back to the normalized result.
                 pathElements.add(0, Symbol.DOUBLE_DOT);
             }
         }

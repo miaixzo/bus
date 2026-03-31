@@ -727,7 +727,7 @@ public abstract class SegmentLock<L> {
     }
 
     /**
-     * 填充锁，避免缓存行干扰。
+     * Padding lock used to reduce cache-line interference.
      */
     private static class PaddedLock extends ReentrantLock {
 

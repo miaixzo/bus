@@ -52,6 +52,10 @@ public class EnumConverter extends AbstractConverter implements MatcherConverter
      * Singleton instance
      */
     public static final EnumConverter INSTANCE = new EnumConverter();
+
+    /**
+     * Cache of enum conversion methods keyed by enum type and accepted parameter type.
+     */
     private static final WeakConcurrentMap<Class<?>, Map<Class<?>, Method>> VALUE_OF_METHOD_CACHE = new WeakConcurrentMap<>();
 
     /**

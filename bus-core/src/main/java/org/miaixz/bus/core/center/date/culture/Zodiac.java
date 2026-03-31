@@ -124,7 +124,7 @@ public class Zodiac extends Samsara {
     }
 
     /**
-     * Gets the corresponding {@link EarthBranch} (地支) for this Zodiac animal.
+     * Gets the corresponding {@link EarthBranch} for this zodiac animal.
      *
      * @return The {@link EarthBranch} associated with this Zodiac animal.
      */

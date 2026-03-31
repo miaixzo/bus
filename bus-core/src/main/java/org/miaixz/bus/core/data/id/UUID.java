@@ -36,8 +36,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  * <ul>
  * <li>Generate UUID: For online generation and reference of different UUID versions, see
  * <a href="https://idtools.co/uuid/v4">Generate UUID</a>.</li>
- * <li>5 Versions of UUID: For the differences between UUID versions, see
- * <a href="https://juejin.cn/post/7297225106203689001">UUID 5 version 区别</a>.</li>
+ * <li>UUID versions overview: For a comparison of UUID versions, see
+ * <a href="https://juejin.cn/post/7297225106203689001">this version comparison article</a>.</li>
  * <li>UUID Implementation Reference: For a code implementation reference, see
  * <a href="https://github.com/sake/uuid4j">sake/uuid4j</a>.</li>
  * </ul>

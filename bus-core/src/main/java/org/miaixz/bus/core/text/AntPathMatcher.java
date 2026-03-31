@@ -371,6 +371,13 @@ public class AntPathMatcher {
         return true;
     }
 
+    /**
+     * Determines whether the path can still match the supplied tokenized pattern segments.
+     *
+     * @param path     the path being evaluated
+     * @param pattDirs the tokenized pattern segments
+     * @return {@code true} if the path remains a viable match candidate
+     */
     private boolean isPotentialMatch(final String path, final String[] pattDirs) {
         if (!this.trimTokens) {
             int pos = 0;
@@ -387,6 +394,14 @@ public class AntPathMatcher {
         return true;
     }
 
+    /**
+     * Skips a literal path segment until a wildcard is encountered or the comparison stops matching.
+     *
+     * @param path   the path being matched
+     * @param pos    the starting position within the path
+     * @param prefix the literal pattern prefix to compare
+     * @return the number of characters successfully skipped
+     */
     private int skipSegment(final String path, final int pos, final String prefix) {
         int skipped = 0;
         for (int i = 0; i < prefix.length(); i++) {
@@ -405,6 +420,14 @@ public class AntPathMatcher {
         return skipped;
     }
 
+    /**
+     * Skips repeated separator tokens starting at the supplied path position.
+     *
+     * @param path      the path being matched
+     * @param pos       the starting position within the path
+     * @param separator the configured path separator
+     * @return the number of separator characters skipped
+     */
     private int skipSeparator(final String path, final int pos, final String separator) {
         int skipped = 0;
         while (path.startsWith(separator, pos + skipped)) {
@@ -413,6 +436,12 @@ public class AntPathMatcher {
         return skipped;
     }
 
+    /**
+     * Tests whether the supplied character is treated as a wildcard in Ant-style matching.
+     *
+     * @param c the character to evaluate
+     * @return {@code true} if the character is a wildcard
+     */
     private boolean isWildcardChar(final char c) {
         for (final char candidate : WILDCARD_CHARS) {
             if (c == candidate) {
@@ -447,6 +476,9 @@ public class AntPathMatcher {
         return tokenized;
     }
 
+    /**
+     * Disables internal pattern caches once the configured threshold has been exceeded.
+     */
     private void deactivatePatternCache() {
         this.cachePatterns = false;
         this.tokenizedPatternCache.clear();
@@ -598,6 +630,13 @@ public class AntPathMatcher {
         return file2 + ext;
     }
 
+    /**
+     * Concatenates two path fragments while preserving separator semantics.
+     *
+     * @param path1 the first path fragment
+     * @param path2 the second path fragment
+     * @return the combined path string
+     */
     private String concat(final String path1, final String path2) {
         final boolean path1EndsWithSeparator = path1.endsWith(this.pathSeparator);
         final boolean path2StartsWithSeparator = path2.startsWith(this.pathSeparator);
@@ -701,6 +740,14 @@ public class AntPathMatcher {
             }
         }
 
+        /**
+         * Quotes a substring so it can be safely appended to a regular expression.
+         *
+         * @param s     the source string
+         * @param start the inclusive start index
+         * @param end   the exclusive end index
+         * @return the quoted substring, or an empty string when the range is empty
+         */
         private String quote(final String s, final int start, final int end) {
             if (start == end) {
                 return "";
@@ -867,6 +914,11 @@ public class AntPathMatcher {
              */
             private Integer length;
 
+            /**
+             * Creates a new pattern information holder for the supplied pattern.
+             *
+             * @param pattern the pattern to analyse
+             */
             public PatternInfo(final String pattern) {
                 this.pattern = pattern;
                 if (this.pattern != null) {
@@ -879,6 +931,9 @@ public class AntPathMatcher {
                 }
             }
 
+            /**
+             * Counts URI variables and wildcard tokens contained in the pattern.
+             */
             protected void initCounters() {
                 int pos = 0;
                 if (this.pattern != null) {
@@ -903,30 +958,65 @@ public class AntPathMatcher {
                 }
             }
 
+            /**
+             * Returns the number of URI template variables contained in the pattern.
+             *
+             * @return the URI template variable count
+             */
             public int getUriVars() {
                 return this.uriVars;
             }
 
+            /**
+             * Returns the number of single wildcards contained in the pattern.
+             *
+             * @return the single wildcard count
+             */
             public int getSingleWildcards() {
                 return this.singleWildcards;
             }
 
+            /**
+             * Returns the number of double wildcards contained in the pattern.
+             *
+             * @return the double wildcard count
+             */
             public int getDoubleWildcards() {
                 return this.doubleWildcards;
             }
 
+            /**
+             * Indicates whether the pattern is the least specific catch-all variant.
+             *
+             * @return {@code true} if the pattern is least specific
+             */
             public boolean isLeastSpecific() {
                 return (this.pattern == null || this.catchAllPattern);
             }
 
+            /**
+             * Indicates whether the pattern behaves as a prefix pattern.
+             *
+             * @return {@code true} if the pattern ends with a prefix-style wildcard
+             */
             public boolean isPrefixPattern() {
                 return this.prefixPattern;
             }
 
+            /**
+             * Returns the weighted total number of wildcard and variable tokens.
+             *
+             * @return the total specificity token count
+             */
             public int getTotalCount() {
                 return this.uriVars + this.singleWildcards + (2 * this.doubleWildcards);
             }
 
+            /**
+             * Returns the effective pattern length used during specificity comparison.
+             *
+             * @return the effective pattern length
+             */
             public int getLength() {
                 if (this.length == null) {
                     this.length = (this.pattern != null
@@ -952,15 +1042,30 @@ public class AntPathMatcher {
          */
         private final String endsOnDoubleWildCard;
 
+        /**
+         * Creates a cache for suffix patterns derived from the configured path separator.
+         *
+         * @param pathSeparator the configured path separator
+         */
         public PathSeparatorPatternCache(final String pathSeparator) {
             this.endsOnWildCard = pathSeparator + Symbol.STAR;
             this.endsOnDoubleWildCard = pathSeparator + Symbol.STAR + Symbol.STAR;
         }
 
+        /**
+         * Returns the suffix that represents a single wildcard after the separator.
+         *
+         * @return the single-wildcard suffix
+         */
         public String getEndsOnWildCard() {
             return this.endsOnWildCard;
         }
 
+        /**
+         * Returns the suffix that represents a double wildcard after the separator.
+         *
+         * @return the double-wildcard suffix
+         */
         public String getEndsOnDoubleWildCard() {
             return this.endsOnDoubleWildCard;
         }

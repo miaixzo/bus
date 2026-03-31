@@ -21,6 +21,8 @@ package org.miaixz.bus.tempus.temporal.workflow.publisher;
 
 import java.time.Duration;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.tempus.temporal.workflow.WorkflowIdGenerator;
 import org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsFactory;
 import org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsSpec;
@@ -87,6 +89,10 @@ public class WorkflowPublisherOptionsFactory implements WorkflowOptionsFactory {
      */
     public WorkflowPublisherOptionsFactory(WorkflowIdGenerator generator, int workflowExecutionTimeoutDays,
             int workflowRunTimeoutHours, int workflowTaskTimeoutMinutes) {
+        Assert.notNull(generator, "generator must not be null");
+        Assert.isTrue(workflowExecutionTimeoutDays > 0, "workflowExecutionTimeoutDays must be > 0");
+        Assert.isTrue(workflowRunTimeoutHours > 0, "workflowRunTimeoutHours must be > 0");
+        Assert.isTrue(workflowTaskTimeoutMinutes > 0, "workflowTaskTimeoutMinutes must be > 0");
         this.generator = generator;
         this.workflowExecutionTimeoutDays = workflowExecutionTimeoutDays;
         this.workflowRunTimeoutHours = workflowRunTimeoutHours;
@@ -120,7 +126,7 @@ public class WorkflowPublisherOptionsFactory implements WorkflowOptionsFactory {
     @Override
     public WorkflowOptions createWorkflowOptions(WorkflowOptionsSpec spec) {
         String workflowId = spec.workflowId();
-        if (workflowId == null || workflowId.isBlank()) {
+        if (!StringKit.hasText(workflowId)) {
             workflowId = generator.workflowId(spec.workflowType(), spec.stableKey());
         }
 

@@ -229,7 +229,7 @@ public class Regex {
      * <p>
      * Summary for Chinese names: 2-60 characters, can only be Chinese characters and the Uyghur middle dot (·).
      * Broadened Chinese character range: [CJK Unified Ideographs, CJK Unified Ideographs Extension A] for rare names
-     * like 刘欣䶮(yǎn). Chinese character range reference: https://www.cnblogs.com/animalize/p/5432864.html
+     * including rare-name characters such as the sample surname-given-name form shown in the referenced article.
      */
     public static final String CHINESE_NAME = "^[\u3400-\u9FFF·]{2,60}$";
     /**

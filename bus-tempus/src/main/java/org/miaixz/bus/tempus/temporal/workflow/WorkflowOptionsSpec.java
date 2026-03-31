@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.tempus.temporal.workflow;
 
+import org.miaixz.bus.core.lang.Assert;
+
 /**
  * Specification used when creating {@link io.temporal.client.WorkflowOptions}.
  * <p>
@@ -39,12 +41,8 @@ public record WorkflowOptionsSpec(String taskQueue, String workflowType, String 
      * @throws IllegalArgumentException if {@code taskQueue} or {@code workflowType} is {@code null}
      */
     public WorkflowOptionsSpec {
-        if (taskQueue == null) {
-            throw new IllegalArgumentException("taskQueue must not be null");
-        }
-        if (workflowType == null) {
-            throw new IllegalArgumentException("workflowType must not be null");
-        }
+        Assert.notNull(taskQueue, "taskQueue must not be null");
+        Assert.notNull(workflowType, "workflowType must not be null");
     }
 
     /**

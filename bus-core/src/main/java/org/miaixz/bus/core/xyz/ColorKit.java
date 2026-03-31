@@ -46,6 +46,9 @@ public class ColorKit {
     private ColorKit() {
     }
 
+    /**
+     * Immutable mapping between color names and their {@link Color} instances.
+     */
     private static final Map<String, Color> COLOR_MAPPING;
     /**
      * Upper bound for RGB color values.

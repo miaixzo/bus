@@ -85,7 +85,12 @@
     <dependencies>
         <dependency>
             <groupId>org.miaixz</groupId>
-            <artifactId>bus-setting</artifactId>
+            <artifactId>bus-crypto</artifactId>
+            <version>${bus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
+            <artifactId>bus-extra</artifactId>
             <version>${bus.version}</version>
         </dependency>
         <dependency>

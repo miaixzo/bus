@@ -214,7 +214,7 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
         private final int code;
 
         /**
-         * The Chinese name of the festival type.
+         * The localized name of the festival type.
          */
         private final String name;
 
@@ -835,6 +835,9 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          */
         BROKEN("broken");
 
+        /**
+         * The string value represented by this enum constant.
+         */
         private final String value;
 
     }
@@ -939,6 +942,9 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          */
         AREA_AVERAGING(Image.SCALE_AREA_AVERAGING);
 
+        /**
+         * The integer code represented by this enum constant.
+         */
         private final int code;
 
     }

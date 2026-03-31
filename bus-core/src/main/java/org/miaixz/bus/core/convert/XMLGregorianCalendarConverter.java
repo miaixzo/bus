@@ -44,6 +44,9 @@ public class XMLGregorianCalendarConverter extends AbstractConverter {
     @Serial
     private static final long serialVersionUID = 2852272916958L;
 
+    /**
+     * Factory used to create {@link XMLGregorianCalendar} instances from converted calendar values.
+     */
     private final DatatypeFactory datatypeFactory;
     /**
      * Date format pattern

@@ -323,7 +323,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
             }
         }
         for (final String symbol : sorted) {
-            simpleQuote(regex, symbol).append('|');
+            simpleQuote(regex, symbol).append(Symbol.C_OR);
         }
         return values;
     }
@@ -947,7 +947,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
                 }
             }
             for (final String zoneName : sorted) {
-                simpleQuote(sb.append('|'), zoneName);
+                simpleQuote(sb.append(Symbol.C_OR), zoneName);
             }
             sb.append(Symbol.PARENTHESE_RIGHT);
             createPattern(sb);

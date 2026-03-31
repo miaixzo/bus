@@ -1,0 +1,28 @@
+{
+  "resources": {
+    "includes": [
+      {
+        "pattern": ".*\\.xsb"
+      },
+      {
+        "pattern": ".*\\.xsd"
+      },
+      {
+        "pattern": "com/microsoft/schemas/.*"
+      },
+      {
+        "pattern": "org/apache/poi/.*"
+      },
+      {
+        "pattern": "org/apache/xmlbeans/.*"
+      },
+      {
+        "pattern": "org/openxmlformats/schemas/.*"
+      },
+      {
+        "pattern": "schemaorg_apache_xmlbeans/.*"
+      }
+    ]
+  },
+  "bundles": []
+}

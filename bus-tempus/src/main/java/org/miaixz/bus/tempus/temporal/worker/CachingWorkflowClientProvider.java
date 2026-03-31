@@ -20,8 +20,12 @@
 package org.miaixz.bus.tempus.temporal.worker;
 
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.text.StringJoiner;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.tempus.temporal.Binding;
 
@@ -54,29 +58,17 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
     private final Map<String, WorkflowClient> clientCache = new ConcurrentHashMap<>();
 
     /**
+     * Detached service stubs retained for deferred cleanup after invalidation.
+     */
+    private final Queue<Object> retiredServiceStubs = new ConcurrentLinkedQueue<>();
+
+    /**
      * Creates a caching workflow client provider.
      *
      * @param stubsProvider the service stubs provider
      */
     public CachingWorkflowClientProvider(WorkflowServiceStubsProvider stubsProvider) {
         this.stubsProvider = stubsProvider;
-    }
-
-    /**
-     * Returns a cached workflow client for the specified endpoint, creating one if necessary.
-     *
-     * @param endpoint the Temporal server endpoint
-     * @return the workflow client
-     * @throws IllegalArgumentException if {@code endpoint} is {@code null}
-     */
-    @Override
-    public WorkflowClient createWorkflowClient(String endpoint) {
-        if (endpoint == null) {
-            throw new IllegalArgumentException("temporal.endpoint must not be null");
-        }
-
-        String cacheKey = toClientCacheKey(endpoint, null, null);
-        return clientCache.computeIfAbsent(cacheKey, key -> createAndCacheClient(endpoint));
     }
 
     /**
@@ -90,32 +82,11 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
      */
     @Override
     public WorkflowClient createWorkflowClient(Binding binding) {
-        if (binding == null) {
-            throw new IllegalArgumentException("binding must not be null");
-        }
-        if (binding.getEndpoint() == null) {
-            throw new IllegalArgumentException("temporal.endpoint must not be null");
-        }
+        Assert.notNull(binding, "binding must not be null");
+        Assert.notNull(binding.getEndpoint(), "temporal.endpoint must not be null");
 
         String cacheKey = toClientCacheKey(binding.getEndpoint(), binding.getNamespace(), binding.getIdentity());
         return clientCache.computeIfAbsent(cacheKey, key -> createAndCacheClient(binding));
-    }
-
-    /**
-     * Creates and caches a workflow client for the specified endpoint.
-     *
-     * @param endpoint the Temporal server endpoint
-     * @return the workflow client
-     */
-    private WorkflowClient createAndCacheClient(String endpoint) {
-        Object serviceStubs = serviceStubsCache.computeIfAbsent(endpoint, this::createServiceStubs);
-        Logger.info("Creating workflow client for endpoint: {}", endpoint);
-        try {
-            return stubsProvider.createWorkflowClient(serviceStubs);
-        } catch (Exception e) {
-            Logger.error("Failed to create workflow client for endpoint: {}, error: {}", endpoint, e.getMessage(), e);
-            throw e;
-        }
     }
 
     /**
@@ -126,7 +97,7 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
      */
     private WorkflowClient createAndCacheClient(Binding binding) {
         String endpoint = binding.getEndpoint();
-        Object serviceStubs = serviceStubsCache.computeIfAbsent(endpoint, this::createServiceStubs);
+        Object serviceStubs = serviceStubsCache.computeIfAbsent(endpoint, key -> createServiceStubs(binding));
         Logger.info(
                 "Creating workflow client for endpoint: {}, namespace: {}, identity: {}",
                 endpoint,
@@ -148,29 +119,44 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
     }
 
     /**
-     * Creates a service stub handle for the specified endpoint.
+     * Creates a service stub handle for the specified binding.
      *
-     * @param endpoint the Temporal server endpoint
+     * @param binding temporal configuration
      * @return the created service stub handle
      */
-    private Object createServiceStubs(String endpoint) {
-        Logger.info("Creating workflow service stubs for endpoint: {}", endpoint);
+    private Object createServiceStubs(Binding binding) {
+        String endpoint = binding.getEndpoint();
+        Logger.info(
+                "Creating workflow service stubs for endpoint: {}, namespace: {}, identity: {}",
+                endpoint,
+                binding.getNamespace(),
+                binding.getIdentity());
         try {
-            return stubsProvider.createServiceStubs(endpoint);
+            return stubsProvider.createServiceStubs(binding);
         } catch (Exception e) {
             Logger.error(
-                    "Failed to create workflow service stubs for endpoint: {}, error: {}",
+                    "Failed to create workflow service stubs for endpoint: {}, namespace: {}, identity: {}, error: {}",
                     endpoint,
+                    binding.getNamespace(),
+                    binding.getIdentity(),
                     e.getMessage(),
                     e);
             throw e;
         }
     }
 
+    /**
+     * Builds the cache key used to isolate workflow clients by endpoint, namespace, and client identity.
+     *
+     * @param endpoint  the Temporal endpoint
+     * @param namespace the Temporal namespace
+     * @param identity  the Temporal client identity
+     * @return the composite cache key
+     */
     private static String toClientCacheKey(String endpoint, String namespace, String identity) {
         String ns = namespace == null ? "" : namespace;
         String id = identity == null ? "" : identity;
-        return endpoint + "|" + ns + "|" + id;
+        return StringJoiner.of("|").append(endpoint).append(ns).append(id).toString();
     }
 
     /**
@@ -185,18 +171,11 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
             return;
         }
         clientCache.keySet().removeIf(key -> key.startsWith(endpoint + "|"));
-        Object stubs = serviceStubsCache.remove(endpoint);
-        if (stubs != null) {
-            try {
-                stubsProvider.shutdownServiceStubs(stubs);
-            } catch (Exception e) {
-                Logger.warn(
-                        "Failed to shutdown service stubs during invalidation, endpoint: {}, error: {}",
-                        endpoint,
-                        e.getMessage());
-            }
+        Object detached = serviceStubsCache.remove(endpoint);
+        if (detached != null) {
+            retiredServiceStubs.offer(detached);
         }
-        Logger.info("Invalidated cached client and service stubs for endpoint: {}", endpoint);
+        Logger.info("Invalidated cached clients and detached service stubs for endpoint: {}", endpoint);
     }
 
     /**
@@ -205,21 +184,36 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
     @Override
     public void close() {
         for (Map.Entry<String, Object> entry : serviceStubsCache.entrySet()) {
-            String endpoint = entry.getKey();
-            Object serviceStubs = entry.getValue();
-            try {
-                stubsProvider.shutdownServiceStubs(serviceStubs);
-                Logger.debug("Closed workflow service stubs for endpoint: {}", endpoint);
-            } catch (Exception e) {
-                Logger.warn(
-                        "Failed to close workflow service stubs for endpoint: {}, error: {}",
-                        endpoint,
-                        e.getMessage(),
-                        e);
-            }
+            closeServiceStubs(entry.getKey(), entry.getValue());
+        }
+        while (!retiredServiceStubs.isEmpty()) {
+            closeServiceStubs("retired", retiredServiceStubs.poll());
         }
         serviceStubsCache.clear();
         clientCache.clear();
+        retiredServiceStubs.clear();
+    }
+
+    /**
+     * Closes a single cached service stub and logs failures without interrupting provider-wide cleanup.
+     *
+     * @param endpoint     the endpoint label associated with the stub
+     * @param serviceStubs the service stub instance
+     */
+    private void closeServiceStubs(String endpoint, Object serviceStubs) {
+        if (serviceStubs == null) {
+            return;
+        }
+        try {
+            stubsProvider.shutdownServiceStubs(serviceStubs);
+            Logger.debug("Closed workflow service stubs for endpoint: {}", endpoint);
+        } catch (Exception e) {
+            Logger.warn(
+                    "Failed to close workflow service stubs for endpoint: {}, error: {}",
+                    endpoint,
+                    e.getMessage(),
+                    e);
+        }
     }
 
 }

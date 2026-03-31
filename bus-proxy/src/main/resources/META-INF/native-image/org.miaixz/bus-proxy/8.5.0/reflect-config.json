@@ -1,14 +1,5 @@
 [
   {
-    "name": "org.aspectj.weaver.WeaverMessages",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true
-  },
-  {
     "name": "org.miaixz.bus.proxy.Aspect",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -139,5 +130,14 @@
     "allPublicFields": true,
     "queryAllDeclaredMethods": true,
     "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.aspectj.weaver.WeaverMessages",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true
   }
 ]

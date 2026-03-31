@@ -621,6 +621,15 @@ public class Symbol {
     public static final String CARET = Normal.EMPTY + C_CARET;
 
     /**
+     * Character: line sign '－'
+     */
+    public static final char C_LINE = '－';
+    /**
+     * String: "－"
+     */
+    public static final String LINE = Normal.EMPTY + C_LINE;
+
+    /**
      * Character: minus sign '-'
      */
     public static final char C_MINUS = '-';

@@ -24,7 +24,7 @@ import java.util.Deque;
 /**
  * An element that is linked on the {@link Deque}.
  *
- * @param <T> 值类型
+ * @param <T> value type
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -34,28 +34,28 @@ public interface Linked<T extends Linked<T>> {
      * Retrieves the previous element or {@code null} if either the element is unlinked or the first element on the
      * deque.
      *
-     * @return 前一个值
+     * @return the previous value
      */
     T getPrevious();
 
     /**
      * Sets the previous element or {@code null} if there is no link.
      *
-     * @param prev 前一个值
+     * @param prev the previous value
      */
     void setPrevious(T prev);
 
     /**
      * Retrieves the next element or {@code null} if either the element is unlinked or the last element on the deque.
      *
-     * @return 下一个值
+     * @return the next value
      */
     T getNext();
 
     /**
      * Sets the next element or {@code null} if there is no link.
      *
-     * @param next 下一个值
+     * @param next the next value
      */
     void setNext(T next);
 

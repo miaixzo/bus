@@ -56,6 +56,9 @@ import jakarta.annotation.Resource;
 @EnableConfigurationProperties(TempusProperties.class)
 public class TempusConfiguration {
 
+    /**
+     * Bound Temporal starter properties used to construct the default framework beans.
+     */
     @Resource
     private TempusProperties properties;
 

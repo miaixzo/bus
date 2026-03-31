@@ -687,6 +687,9 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
     public static class EntryNodeWrapper<K, V, N extends TreeEntry<K, V>>
             implements Map.Entry<K, TreeEntry<K, V>>, Wrapper<N> {
 
+        /**
+         * The wrapped tree entry node exposed through the {@link Map.Entry} view.
+         */
         private final N entryNode;
 
         EntryNodeWrapper(final N entryNode) {

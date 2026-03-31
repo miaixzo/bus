@@ -43,6 +43,9 @@ public class EnumKit {
     private EnumKit() {
     }
 
+    /**
+     * Cache of enum constants keyed by enum type.
+     */
     private static final Map<Class<?>, Enum<?>[]> CACHE = new ConcurrentHashMap<>();
 
     /**
