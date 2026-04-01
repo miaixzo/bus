@@ -95,9 +95,9 @@ public final class MacPowerSource extends AbstractPowerSource {
     }
 
     /**
-     * Retrieves a list of {@link PowerSource} objects representing the power sources (batteries) on this machine.
+     * Gets Battery Information.
      *
-     * @return A list of {@link PowerSource} objects.
+     * @return An array of PowerSource objects representing batteries, etc.
      */
     public static List<PowerSource> getPowerSources() {
         String psDeviceName = Normal.UNKNOWN;
@@ -197,7 +197,7 @@ public final class MacPowerSource extends AbstractPowerSource {
             if (bool != null) {
                 psCharging = bool;
             }
-            psDischarging = !psCharging;
+            psDischarging = !psCharging && !psPowerOnLine;
 
             smartBattery.release();
         }

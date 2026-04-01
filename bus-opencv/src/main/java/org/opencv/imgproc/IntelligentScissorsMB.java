@@ -1,22 +1,6 @@
-/*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
- ~                                                                           ~
- ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
- ~ you may not use this file except in compliance with the License.          ~
- ~ You may obtain a copy of the License at                                   ~
- ~                                                                           ~
- ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
- ~                                                                           ~
- ~ Unless required by applicable law or agreed to in writing, software       ~
- ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
- ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
- ~ See the License for the specific language governing permissions and       ~
- ~ limitations under the License.                                            ~
- ~                                                                           ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-*/
+//
+// This file is auto-generated. Please don't modify it!
+//
 package org.opencv.imgproc;
 
 import org.opencv.core.Mat;
@@ -42,13 +26,11 @@ public class IntelligentScissorsMB {
     protected IntelligentScissorsMB(long addr) {
         nativeObj = addr;
         long nativeObjCopy = nativeObj;
-        org.opencv.core.Mat.cleaner.register(this, () -> delete(nativeObjCopy));
+        org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
     }
 
-    public IntelligentScissorsMB() {
-        nativeObj = IntelligentScissorsMB_0();
-        long nativeObjCopy = nativeObj;
-        org.opencv.core.Mat.cleaner.register(this, () -> delete(nativeObjCopy));
+    public long getNativeObjAddr() {
+        return nativeObj;
     }
 
     // internal usage only
@@ -60,128 +42,16 @@ public class IntelligentScissorsMB {
     // C++: cv::segmentation::IntelligentScissorsMB::IntelligentScissorsMB()
     //
 
-    // C++: cv::segmentation::IntelligentScissorsMB::IntelligentScissorsMB()
-    private static native long IntelligentScissorsMB_0();
-
-    //
-    // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::setWeights(float weight_non_edge, float
-    // weight_gradient_direction, float weight_gradient_magnitude)
-    //
-
-    // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::setWeights(float weight_non_edge, float
-    // weight_gradient_direction, float weight_gradient_magnitude)
-    private static native long setWeights_0(
-            long nativeObj,
-            float weight_non_edge,
-            float weight_gradient_direction,
-            float weight_gradient_magnitude);
-
-    //
-    // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::setGradientMagnitudeMaxLimit(float
-    // gradient_magnitude_threshold_max = 0.0f)
-    //
-
-    // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::setGradientMagnitudeMaxLimit(float
-    // gradient_magnitude_threshold_max = 0.0f)
-    private static native long setGradientMagnitudeMaxLimit_0(long nativeObj, float gradient_magnitude_threshold_max);
-
-    private static native long setGradientMagnitudeMaxLimit_1(long nativeObj);
-
-    //
-    // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::setEdgeFeatureZeroCrossingParameters(float
-    // gradient_magnitude_min_value = 0.0f)
-    //
-
-    // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::setEdgeFeatureZeroCrossingParameters(float
-    // gradient_magnitude_min_value = 0.0f)
-    private static native long setEdgeFeatureZeroCrossingParameters_0(
-            long nativeObj,
-            float gradient_magnitude_min_value);
-
-    private static native long setEdgeFeatureZeroCrossingParameters_1(long nativeObj);
-
-    //
-    // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::setEdgeFeatureCannyParameters(double
-    // threshold1, double threshold2, int apertureSize = 3, bool L2gradient = false)
-    //
-
-    // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::setEdgeFeatureCannyParameters(double
-    // threshold1, double threshold2, int apertureSize = 3, bool L2gradient = false)
-    private static native long setEdgeFeatureCannyParameters_0(
-            long nativeObj,
-            double threshold1,
-            double threshold2,
-            int apertureSize,
-            boolean L2gradient);
-
-    private static native long setEdgeFeatureCannyParameters_1(
-            long nativeObj,
-            double threshold1,
-            double threshold2,
-            int apertureSize);
-
-    private static native long setEdgeFeatureCannyParameters_2(long nativeObj, double threshold1, double threshold2);
-
-    //
-    // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::applyImage(Mat image)
-    //
-
-    // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::applyImage(Mat image)
-    private static native long applyImage_0(long nativeObj, long image_nativeObj);
-
-    //
-    // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::applyImageFeatures(Mat non_edge, Mat
-    // gradient_direction, Mat gradient_magnitude, Mat image = Mat())
-    //
-
-    // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::applyImageFeatures(Mat non_edge, Mat
-    // gradient_direction, Mat gradient_magnitude, Mat image = Mat())
-    private static native long applyImageFeatures_0(
-            long nativeObj,
-            long non_edge_nativeObj,
-            long gradient_direction_nativeObj,
-            long gradient_magnitude_nativeObj,
-            long image_nativeObj);
-
-    private static native long applyImageFeatures_1(
-            long nativeObj,
-            long non_edge_nativeObj,
-            long gradient_direction_nativeObj,
-            long gradient_magnitude_nativeObj);
-
-    //
-    // C++: void cv::segmentation::IntelligentScissorsMB::buildMap(Point sourcePt)
-    //
-
-    // C++: void cv::segmentation::IntelligentScissorsMB::buildMap(Point sourcePt)
-    private static native void buildMap_0(long nativeObj, double sourcePt_x, double sourcePt_y);
-
-    //
-    // C++: void cv::segmentation::IntelligentScissorsMB::getContour(Point targetPt, Mat& contour, bool backward =
-    // false)
-    //
-
-    // C++: void cv::segmentation::IntelligentScissorsMB::getContour(Point targetPt, Mat& contour, bool backward =
-    // false)
-    private static native void getContour_0(
-            long nativeObj,
-            double targetPt_x,
-            double targetPt_y,
-            long contour_nativeObj,
-            boolean backward);
-
-    private static native void getContour_1(
-            long nativeObj,
-            double targetPt_x,
-            double targetPt_y,
-            long contour_nativeObj);
-
-    // native support for deleting native object
-    private static native void delete(long nativeObj);
-
-    public long getNativeObjAddr() {
-        return nativeObj;
+    public IntelligentScissorsMB() {
+        nativeObj = IntelligentScissorsMB_0();
+        long nativeObjCopy = nativeObj;
+        org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
     }
+
+    //
+    // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::setWeights(float weight_non_edge, float
+    // weight_gradient_direction, float weight_gradient_magnitude)
+    //
 
     /**
      * Specify weights of feature functions
@@ -201,6 +71,11 @@ public class IntelligentScissorsMB {
         return new IntelligentScissorsMB(
                 setWeights_0(nativeObj, weight_non_edge, weight_gradient_direction, weight_gradient_magnitude));
     }
+
+    //
+    // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::setGradientMagnitudeMaxLimit(float
+    // gradient_magnitude_threshold_max = 0.0f)
+    //
 
     /**
      * Specify gradient magnitude max value threshold
@@ -232,6 +107,11 @@ public class IntelligentScissorsMB {
     public IntelligentScissorsMB setGradientMagnitudeMaxLimit() {
         return new IntelligentScissorsMB(setGradientMagnitudeMaxLimit_1(nativeObj));
     }
+
+    //
+    // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::setEdgeFeatureZeroCrossingParameters(float
+    // gradient_magnitude_min_value = 0.0f)
+    //
 
     /**
      * Switch to "Laplacian Zero-Crossing" edge feature extractor and specify its parameters
@@ -276,13 +156,18 @@ public class IntelligentScissorsMB {
         return new IntelligentScissorsMB(setEdgeFeatureZeroCrossingParameters_1(nativeObj));
     }
 
+    //
+    // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::setEdgeFeatureCannyParameters(double
+    // threshold1, double threshold2, int apertureSize = 3, bool L2gradient = false)
+    //
+
     /**
      * Switch edge feature extractor to use Canny edge detector
      *
      * <b>Note:</b> "Laplacian Zero-Crossing" feature extractor is used by default (following to original article)
      *
      * SEE: Canny
-     *
+     * 
      * @param threshold1   automatically generated
      * @param threshold2   automatically generated
      * @param apertureSize automatically generated
@@ -304,7 +189,7 @@ public class IntelligentScissorsMB {
      * <b>Note:</b> "Laplacian Zero-Crossing" feature extractor is used by default (following to original article)
      *
      * SEE: Canny
-     *
+     * 
      * @param threshold1   automatically generated
      * @param threshold2   automatically generated
      * @param apertureSize automatically generated
@@ -321,7 +206,7 @@ public class IntelligentScissorsMB {
      * <b>Note:</b> "Laplacian Zero-Crossing" feature extractor is used by default (following to original article)
      *
      * SEE: Canny
-     *
+     * 
      * @param threshold1 automatically generated
      * @param threshold2 automatically generated
      * @return automatically generated
@@ -329,6 +214,10 @@ public class IntelligentScissorsMB {
     public IntelligentScissorsMB setEdgeFeatureCannyParameters(double threshold1, double threshold2) {
         return new IntelligentScissorsMB(setEdgeFeatureCannyParameters_2(nativeObj, threshold1, threshold2));
     }
+
+    //
+    // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::applyImage(Mat image)
+    //
 
     /**
      * Specify input image and extract image features
@@ -339,6 +228,11 @@ public class IntelligentScissorsMB {
     public IntelligentScissorsMB applyImage(Mat image) {
         return new IntelligentScissorsMB(applyImage_0(nativeObj, image.nativeObj));
     }
+
+    //
+    // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::applyImageFeatures(Mat non_edge, Mat
+    // gradient_direction, Mat gradient_magnitude, Mat image = Mat())
+    //
 
     /**
      * Specify custom features of input image
@@ -387,6 +281,10 @@ public class IntelligentScissorsMB {
                 gradient_magnitude.nativeObj));
     }
 
+    //
+    // C++: void cv::segmentation::IntelligentScissorsMB::buildMap(Point sourcePt)
+    //
+
     /**
      * Prepares a map of optimal paths for the given source point on the image
      *
@@ -398,6 +296,11 @@ public class IntelligentScissorsMB {
         buildMap_0(nativeObj, sourcePt.x, sourcePt.y);
     }
 
+    //
+    // C++: void cv::segmentation::IntelligentScissorsMB::getContour(Point targetPt, Mat& contour, bool backward =
+    // false)
+    //
+
     /**
      * Extracts optimal contour for the given target point on the image
      *
@@ -406,7 +309,7 @@ public class IntelligentScissorsMB {
      * @param targetPt The target point
      * @param contour  The list of pixels which contains optimal path between the source and the target points of the
      *                 image. Type is CV_32SC2 (compatible with {@code std::vector&lt;Point&gt;})
-     * @param backward Flag to indicate reverse order of retrived pixels (use "true" value to fetch points from the
+     * @param backward Flag to indicate reverse order of retrieved pixels (use "true" value to fetch points from the
      *                 target to the source point)
      */
     public void getContour(Point targetPt, Mat contour, boolean backward) {
@@ -425,5 +328,86 @@ public class IntelligentScissorsMB {
     public void getContour(Point targetPt, Mat contour) {
         getContour_1(nativeObj, targetPt.x, targetPt.y, contour.nativeObj);
     }
+
+    // C++: cv::segmentation::IntelligentScissorsMB::IntelligentScissorsMB()
+    private static native long IntelligentScissorsMB_0();
+
+    // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::setWeights(float weight_non_edge, float
+    // weight_gradient_direction, float weight_gradient_magnitude)
+    private static native long setWeights_0(
+            long nativeObj,
+            float weight_non_edge,
+            float weight_gradient_direction,
+            float weight_gradient_magnitude);
+
+    // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::setGradientMagnitudeMaxLimit(float
+    // gradient_magnitude_threshold_max = 0.0f)
+    private static native long setGradientMagnitudeMaxLimit_0(long nativeObj, float gradient_magnitude_threshold_max);
+
+    private static native long setGradientMagnitudeMaxLimit_1(long nativeObj);
+
+    // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::setEdgeFeatureZeroCrossingParameters(float
+    // gradient_magnitude_min_value = 0.0f)
+    private static native long setEdgeFeatureZeroCrossingParameters_0(
+            long nativeObj,
+            float gradient_magnitude_min_value);
+
+    private static native long setEdgeFeatureZeroCrossingParameters_1(long nativeObj);
+
+    // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::setEdgeFeatureCannyParameters(double
+    // threshold1, double threshold2, int apertureSize = 3, bool L2gradient = false)
+    private static native long setEdgeFeatureCannyParameters_0(
+            long nativeObj,
+            double threshold1,
+            double threshold2,
+            int apertureSize,
+            boolean L2gradient);
+
+    private static native long setEdgeFeatureCannyParameters_1(
+            long nativeObj,
+            double threshold1,
+            double threshold2,
+            int apertureSize);
+
+    private static native long setEdgeFeatureCannyParameters_2(long nativeObj, double threshold1, double threshold2);
+
+    // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::applyImage(Mat image)
+    private static native long applyImage_0(long nativeObj, long image_nativeObj);
+
+    // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::applyImageFeatures(Mat non_edge, Mat
+    // gradient_direction, Mat gradient_magnitude, Mat image = Mat())
+    private static native long applyImageFeatures_0(
+            long nativeObj,
+            long non_edge_nativeObj,
+            long gradient_direction_nativeObj,
+            long gradient_magnitude_nativeObj,
+            long image_nativeObj);
+
+    private static native long applyImageFeatures_1(
+            long nativeObj,
+            long non_edge_nativeObj,
+            long gradient_direction_nativeObj,
+            long gradient_magnitude_nativeObj);
+
+    // C++: void cv::segmentation::IntelligentScissorsMB::buildMap(Point sourcePt)
+    private static native void buildMap_0(long nativeObj, double sourcePt_x, double sourcePt_y);
+
+    // C++: void cv::segmentation::IntelligentScissorsMB::getContour(Point targetPt, Mat& contour, bool backward =
+    // false)
+    private static native void getContour_0(
+            long nativeObj,
+            double targetPt_x,
+            double targetPt_y,
+            long contour_nativeObj,
+            boolean backward);
+
+    private static native void getContour_1(
+            long nativeObj,
+            double targetPt_x,
+            double targetPt_y,
+            long contour_nativeObj);
+
+    // native support for java finalize() or cleaner
+    private static native void delete(long nativeObj);
 
 }

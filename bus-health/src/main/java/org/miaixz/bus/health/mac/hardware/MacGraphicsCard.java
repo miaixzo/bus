@@ -24,13 +24,14 @@ import java.util.List;
 import java.util.Locale;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
+import org.miaixz.bus.health.builtin.hardware.GpuStats;
 import org.miaixz.bus.health.builtin.hardware.GraphicsCard;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractGraphicsCard;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer;
+import org.miaixz.bus.health.mac.SysctlKit;
 
 /**
  * Graphics card information obtained by system_profiler SPDisplaysDataType.
@@ -41,23 +42,30 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstraction
 @Immutable
 final class MacGraphicsCard extends AbstractGraphicsCard {
 
+    private static final boolean IS_APPLE_SILICON = "aarch64".equals(System.getProperty("os.arch"));
+
     /**
-     * Constructor for MacGraphicsCard.
+     * Constructor for MacGraphicsCard
      *
-     * @param name        The name of the graphics card.
-     * @param deviceId    The device ID of the graphics card.
-     * @param vendor      The vendor of the graphics card.
-     * @param versionInfo The version information of the graphics card.
-     * @param vram        The VRAM (Video Random Access Memory) of the graphics card in bytes.
+     * @param name        The name
+     * @param deviceId    The device ID
+     * @param vendor      The vendor
+     * @param versionInfo The version info
+     * @param vram        The VRAM
      */
     MacGraphicsCard(String name, String deviceId, String vendor, String versionInfo, long vram) {
         super(name, deviceId, vendor, versionInfo, vram);
     }
 
+    @Override
+    public GpuStats createStatsSession() {
+        return new MacGpuStats(IS_APPLE_SILICON, getName());
+    }
+
     /**
-     * Public method used by {@link AbstractHardwareAbstractionLayer} to access the graphics cards.
+     * public method used by {@link AbstractHardwareAbstractionLayer} to access the graphics cards.
      *
-     * @return A list of {@link GraphicsCard} objects.
+     * @return List of {@link MacGraphicsCard} objects.
      */
     public static List<GraphicsCard> getGraphicsCards() {
         List<GraphicsCard> cardList = new ArrayList<>();
@@ -69,16 +77,15 @@ final class MacGraphicsCard extends AbstractGraphicsCard {
         long vram = 0;
         int cardNum = 0;
         for (String line : sp) {
-            String[] split = line.trim().split(Symbol.COLON, 2);
+            String[] split = line.trim().split(":", 2);
             if (split.length == 2) {
                 String prefix = split[0].toLowerCase(Locale.ROOT);
                 if (prefix.equals("chipset model")) {
-                    // Save previous card
                     if (cardNum++ > 0) {
                         cardList.add(
                                 new MacGraphicsCard(name, deviceId, vendor,
                                         versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList),
-                                        vram));
+                                        resolveVram(vram, name)));
                         versionInfoList.clear();
                     }
                     name = split[1].trim();
@@ -93,10 +100,23 @@ final class MacGraphicsCard extends AbstractGraphicsCard {
                 }
             }
         }
-        cardList.add(
-                new MacGraphicsCard(name, deviceId, vendor,
-                        versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList), vram));
+        if (cardNum > 0) {
+            cardList.add(
+                    new MacGraphicsCard(name, deviceId, vendor,
+                            versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList),
+                            resolveVram(vram, name)));
+        }
         return cardList;
+    }
+
+    private static long resolveVram(long parsedVram, String chipsetName) {
+        if (parsedVram > 0) {
+            return parsedVram;
+        }
+        if (chipsetName.contains("Apple")) {
+            return SysctlKit.sysctl("hw.memsize", 0L);
+        }
+        return parsedVram;
     }
 
 }

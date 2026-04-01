@@ -356,7 +356,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
      * @return the resident set size (RSS) in bytes
      */
     @Override
-    public long getResidentSetSize() {
+    public long getResidentMemory() {
         return this.residentSetSize;
     }
 

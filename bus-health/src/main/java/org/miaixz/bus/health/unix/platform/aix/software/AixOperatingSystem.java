@@ -29,6 +29,7 @@ import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
@@ -126,16 +127,22 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
         List<OSProcess> procs = new ArrayList<>();
         // Fetch user/system times from perfstat
         perfstat_process_t[] perfstat = procCpu.get();
-        Map<Integer, Pair<Long, Long>> cpuMap = new HashMap<>();
+        Map<Integer, Tuple> cpuMemMap = new HashMap<>();
         for (perfstat_process_t stat : perfstat) {
             int statpid = (int) stat.pid;
             if (pid < 0 || statpid == pid) {
-                cpuMap.put(statpid, Pair.of((long) stat.ucpu_time, (long) stat.scpu_time));
+                cpuMemMap.put(
+                        statpid,
+                        Tuple.of(
+                                (long) stat.ucpu_time,
+                                (long) stat.scpu_time,
+                                stat.real_inuse * 1024L,
+                                (stat.proc_real_mem_data + stat.proc_real_mem_text) * 1024L));
             }
         }
 
         // Keys of this map are pids
-        for (Entry<Integer, Pair<Long, Long>> entry : cpuMap.entrySet()) {
+        for (Entry<Integer, Tuple> entry : cpuMemMap.entrySet()) {
             OSProcess proc = new AixOSProcess(entry.getKey(), entry.getValue(), procCpu, this);
             if (proc.getState() != OSProcess.State.INVALID) {
                 procs.add(proc);

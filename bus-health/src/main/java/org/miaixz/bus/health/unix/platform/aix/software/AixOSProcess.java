@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.health.unix.platform.aix.software;
 
+import static org.miaixz.bus.health.builtin.software.OSProcess.State.INVALID;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -34,6 +36,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.IdGroup;
 import org.miaixz.bus.health.Memoizer;
@@ -81,6 +84,7 @@ public class AixOSProcess extends AbstractOSProcess {
     private int priority;
     private long virtualSize;
     private long residentSetSize;
+    private long privateResidentMemory;
     private long kernelTime;
     private long userTime;
     private long startTime;
@@ -88,14 +92,13 @@ public class AixOSProcess extends AbstractOSProcess {
     private long bytesRead;
     private long bytesWritten;
     private String path = Normal.EMPTY;
-    private OSProcess.State state = OSProcess.State.INVALID;
+    private OSProcess.State state = INVALID;
 
-    public AixOSProcess(int pid, Pair<Long, Long> userSysCpuTime, Supplier<perfstat_process_t[]> procCpu,
-            AixOperatingSystem os) {
+    public AixOSProcess(int pid, Tuple cpuMem, Supplier<perfstat_process_t[]> procCpu, AixOperatingSystem os) {
         super(pid);
         this.procCpu = procCpu;
         this.os = os;
-        updateAttributes(userSysCpuTime);
+        updateAttributes(cpuMem);
     }
 
     /***
@@ -233,8 +236,13 @@ public class AixOSProcess extends AbstractOSProcess {
     }
 
     @Override
-    public long getResidentSetSize() {
+    public long getResidentMemory() {
         return this.residentSetSize;
+    }
+
+    @Override
+    public long getPrivateResidentMemory() {
+        return this.privateResidentMemory;
     }
 
     @Override
@@ -364,14 +372,19 @@ public class AixOSProcess extends AbstractOSProcess {
         for (perfstat_process_t stat : perfstat) {
             int statpid = (int) stat.pid;
             if (statpid == getProcessID()) {
-                return updateAttributes(Pair.of((long) stat.ucpu_time, (long) stat.scpu_time));
+                return updateAttributes(
+                        Tuple.of(
+                                stat.ucpu_time,
+                                stat.scpu_time,
+                                stat.real_inuse * 1024L,
+                                (stat.proc_real_mem_data + stat.proc_real_mem_text) * 1024L));
             }
         }
         this.state = OSProcess.State.INVALID;
         return false;
     }
 
-    private boolean updateAttributes(Pair<Long, Long> userSysCpuTime) {
+    private boolean updateAttributes(Tuple cpuMem) {
         AixLibc.AixPsInfo info = psinfo.get();
         if (info == null) {
             this.state = OSProcess.State.INVALID;
@@ -394,8 +407,14 @@ public class AixOSProcess extends AbstractOSProcess {
         // Avoid divide by zero for processes up less than a millisecond
         long elapsedTime = now - this.startTime;
         this.upTime = elapsedTime < 1L ? 1L : elapsedTime;
-        this.userTime = userSysCpuTime.getLeft();
-        this.kernelTime = userSysCpuTime.getRight();
+        this.userTime = (long) cpuMem.getMembers()[0];
+        this.kernelTime = (long) cpuMem.getMembers()[1];
+        if ((long) cpuMem.getMembers()[2] > 0) {
+            this.residentSetSize = (long) cpuMem.getMembers()[2];
+            this.privateResidentMemory = (long) cpuMem.getMembers()[3];
+        } else {
+            this.privateResidentMemory = this.residentSetSize;
+        }
         this.commandLineBackup = Native.toString(info.pr_psargs);
         this.path = Pattern.SPACES_PATTERN.split(commandLineBackup)[0];
         this.name = this.path.substring(this.path.lastIndexOf('/') + 1);

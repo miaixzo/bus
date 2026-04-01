@@ -1,22 +1,3 @@
-/*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
- ~                                                                           ~
- ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
- ~ you may not use this file except in compliance with the License.          ~
- ~ You may obtain a copy of the License at                                   ~
- ~                                                                           ~
- ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
- ~                                                                           ~
- ~ Unless required by applicable law or agreed to in writing, software       ~
- ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
- ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
- ~ See the License for the specific language governing permissions and       ~
- ~ limitations under the License.                                            ~
- ~                                                                           ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-*/
 package org.opencv.core;
 
 //javadoc:Scalar_
@@ -49,10 +30,6 @@ public class Scalar {
         }
     }
 
-    public static Scalar all(double v) {
-        return new Scalar(v, v, v, v);
-    }
-
     public void set(double[] vals) {
         if (vals != null) {
             val[0] = vals.length > 0 ? vals[0] : 0;
@@ -61,6 +38,10 @@ public class Scalar {
             val[3] = vals.length > 3 ? vals[3] : 0;
         } else
             val[0] = val[1] = val[2] = val[3] = 0;
+    }
+
+    public static Scalar all(double v) {
+        return new Scalar(v, v, v, v);
     }
 
     public Scalar clone() {

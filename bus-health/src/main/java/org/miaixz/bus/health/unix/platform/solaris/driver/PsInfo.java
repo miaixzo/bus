@@ -102,7 +102,7 @@ public final class PsInfo {
      * @param pid    The process ID
      * @param psinfo A populated {@link SolarisLibc.SolarisPsInfo} structure containing the offset pointers for these
      *               fields
-     * @return A quartet containing the argc, argv, envp and dmodel values, or null if unable to read
+     * @return A tuple containing the argc, argv, envp and dmodel values, or null if unable to read
      */
     public static Tuple queryArgsEnvAddrs(int pid, SolarisLibc.SolarisPsInfo psinfo) {
         if (psinfo != null) {

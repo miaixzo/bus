@@ -83,7 +83,8 @@ public class WindowsOSProcess extends AbstractOSProcess {
     private int threadCount;
     private int priority;
     private long virtualSize;
-    private long residentSetSize;
+    private long workingSetSize;
+    private long privateWorkingSetSize;
     private long kernelTime;
     private long userTime;
     private long startTime;
@@ -199,8 +200,13 @@ public class WindowsOSProcess extends AbstractOSProcess {
     }
 
     @Override
-    public long getResidentSetSize() {
-        return this.residentSetSize;
+    public long getResidentMemory() {
+        return this.workingSetSize;
+    }
+
+    @Override
+    public long getPrivateResidentMemory() {
+        return this.privateWorkingSetSize;
     }
 
     @Override
@@ -421,7 +427,8 @@ public class WindowsOSProcess extends AbstractOSProcess {
         this.threadCount = wts.getThreadCount();
         this.priority = pcb.getPriority();
         this.virtualSize = wts.getVirtualSize();
-        this.residentSetSize = pcb.getResidentSetSize();
+        this.workingSetSize = pcb.getWorkingSetSize();
+        this.privateWorkingSetSize = pcb.getPrivateWorkingSetSize();
         this.kernelTime = wts.getKernelTime();
         this.userTime = wts.getUserTime();
         this.startTime = pcb.getStartTime();

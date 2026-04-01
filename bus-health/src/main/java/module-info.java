@@ -91,5 +91,8 @@ module bus.health {
     exports org.miaixz.bus.health.windows.hardware;
     exports org.miaixz.bus.health.windows.jna;
     exports org.miaixz.bus.health.windows.software;
+    exports org.miaixz.bus.health.builtin.gpu;
+
+    opens org.miaixz.bus.health.builtin.gpu to com.sun.jna;
 
 }

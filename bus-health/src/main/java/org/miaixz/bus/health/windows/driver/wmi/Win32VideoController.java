@@ -53,7 +53,7 @@ public final class Win32VideoController {
      * Video Controller properties
      */
     public enum VideoControllerProperty {
-        ADAPTERCOMPATIBILITY, ADAPTERRAM, DRIVERVERSION, NAME, PNPDEVICEID
+        ADAPTERCOMPATIBILITY, ADAPTERRAM, CONFIGMANAGERERRORCODE, DRIVERVERSION, NAME, PNPDEVICEID;
     }
 
 }

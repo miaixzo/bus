@@ -80,6 +80,7 @@ public class SolarisOSProcess extends AbstractOSProcess {
     private int priority;
     private long virtualSize;
     private long residentSetSize;
+    private long residentSetSizePrivate;
     private long kernelTime;
     private long userTime;
     private long startTime;
@@ -305,8 +306,13 @@ public class SolarisOSProcess extends AbstractOSProcess {
      * @return the resident set size (RSS) in bytes
      */
     @Override
-    public long getResidentSetSize() {
+    public long getResidentMemory() {
         return this.residentSetSize;
+    }
+
+    @Override
+    public long getPrivateResidentMemory() {
+        return this.residentSetSizePrivate;
     }
 
     /**
@@ -561,6 +567,7 @@ public class SolarisOSProcess extends AbstractOSProcess {
         // These are in KB, multiply
         this.virtualSize = info.pr_size.longValue() * 1024;
         this.residentSetSize = info.pr_rssize.longValue() * 1024;
+        this.residentSetSizePrivate = info.pr_rssizepriv.longValue() * 1024;
         this.startTime = info.pr_start.tv_sec.longValue() * 1000L + info.pr_start.tv_nsec.longValue() / 1_000_000L;
         // Avoid divide by zero for processes up less than a millisecond
         long elapsedTime = now - this.startTime;

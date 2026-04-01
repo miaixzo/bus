@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Regex;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -87,6 +88,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
     private int priority;
     private long virtualSize;
     private long residentSetSize;
+    private long privateResidentMemory;
     private long kernelTime;
     private long userTime;
     private long startTime;
@@ -314,14 +316,14 @@ public class LinuxOSProcess extends AbstractOSProcess {
         return this.virtualSize;
     }
 
-    /**
-     * Description inherited from parent class or interface.
-     *
-     * @return the resident set size (RSS) in bytes
-     */
     @Override
-    public long getResidentSetSize() {
+    public long getResidentMemory() {
         return this.residentSetSize;
+    }
+
+    @Override
+    public long getPrivateResidentMemory() {
+        return this.privateResidentMemory;
     }
 
     /**
@@ -545,6 +547,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
         Map<String, String> status = Builder
                 .getKeyValueMapFromFile(String.format(Locale.ROOT, ProcPath.PID_STATUS, getProcessID()), Symbol.COLON);
         String stat = Builder.getStringFromFile(String.format(Locale.ROOT, ProcPath.PID_STAT, getProcessID()));
+        String statm = Builder.getStringFromFile(String.format(Locale.ROOT, ProcPath.PID_STATM, getProcessID()));
         if (stat.isEmpty()) {
             this.state = State.INVALID;
             return false;
@@ -575,8 +578,19 @@ public class LinuxOSProcess extends AbstractOSProcess {
         this.parentProcessID = (int) statArray[ProcPidStat.PPID.ordinal()];
         this.threadCount = (int) statArray[ProcPidStat.THREAD_COUNT.ordinal()];
         this.priority = (int) statArray[ProcPidStat.PRIORITY.ordinal()];
-        this.virtualSize = statArray[ProcPidStat.VSZ.ordinal()];
-        this.residentSetSize = statArray[ProcPidStat.RSS.ordinal()] * LinuxOperatingSystem.getPageSize();
+        // Parse /proc/[pid]/statm for resident and shared pages (all in pages)
+        // Fields: size resident shared text lib data dt
+        String[] statmFields = Regex.SPACES.split(statm);
+        if (statmFields.length > 2) {
+            long resident = Parsing.parseLongOrDefault(statmFields[1], 0L);
+            long shared = Parsing.parseLongOrDefault(statmFields[2], 0L);
+            long pageSize = LinuxOperatingSystem.getPageSize();
+            this.residentSetSize = resident * pageSize;
+            this.privateResidentMemory = (resident - shared) * pageSize;
+        } else {
+            this.residentSetSize = statArray[ProcPidStat.RSS.ordinal()] * LinuxOperatingSystem.getPageSize();
+            this.privateResidentMemory = this.residentSetSize;
+        }
         this.kernelTime = statArray[ProcPidStat.KERNEL_TIME.ordinal()] * 1000L / LinuxOperatingSystem.getHz();
         this.userTime = statArray[ProcPidStat.USER_TIME.ordinal()] * 1000L / LinuxOperatingSystem.getHz();
         this.minorFaults = statArray[ProcPidStat.MINOR_FAULTS.ordinal()];

@@ -19,22 +19,27 @@
 */
 package org.miaixz.bus.health.windows.hardware;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
+import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Parsing;
+import org.miaixz.bus.health.builtin.hardware.GpuStats;
 import org.miaixz.bus.health.builtin.hardware.GraphicsCard;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractGraphicsCard;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer;
 import org.miaixz.bus.health.windows.RegistryKit;
 import org.miaixz.bus.health.windows.WmiKit;
+import org.miaixz.bus.health.windows.driver.DxgiAdapterInfo;
+import org.miaixz.bus.health.windows.driver.perfmon.GpuInformation;
+import org.miaixz.bus.health.windows.driver.wmi.LhmSensor;
 import org.miaixz.bus.health.windows.driver.wmi.Win32VideoController;
 import org.miaixz.bus.health.windows.driver.wmi.Win32VideoController.VideoControllerProperty;
+import org.miaixz.bus.health.windows.jna.WindowsDxgi;
+import org.miaixz.bus.logger.Logger;
 
 import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
@@ -46,36 +51,86 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
  * @since Java 21+
  */
 @Immutable
-final class WindowsGraphicsCard extends AbstractGraphicsCard {
+public final class WindowsGraphicsCard extends AbstractGraphicsCard {
+
+    private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
+
+    // Conversion: LHM reports memory in MB; 1 MB = 1_048_576 bytes
+    private static final long MB_TO_BYTES = 1_048_576L;
 
     public static final String ADAPTER_STRING = "HardwareInformation.AdapterString";
     public static final String DRIVER_DESC = "DriverDesc";
     public static final String DRIVER_VERSION = "DriverVersion";
     public static final String VENDOR = "ProviderName";
     public static final String QW_MEMORY_SIZE = "HardwareInformation.qwMemorySize";
-    public static final String MEMORY_SIZE = "HardwareInformation.MemorySize";
+    public static final String MATCHING_DEVICE_ID = "MatchingDeviceId";
+    public static final String LOCATION_INFORMATION = "LocationInformation";
     public static final String DISPLAY_DEVICES_REGISTRY_PATH = "SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}\\";
-    private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
+
+    // PDH instance prefix for this adapter's LUID, e.g. "luid_0x00000000_0x0001234_phys_0"
+    // Used to filter GPU Engine and GPU Adapter Memory counter instances.
+    private final String luidPrefix;
+
+    // LHM hardware identifier for this GPU, e.g. "/gpu-nvidia/0". Empty if LHM is not available.
+    private final String lhmParent;
+
+    // PCI bus number from DXGI, used to correlate with ADL. -1 if unknown.
+    private final int pciBusNumber;
+
+    // PCI bus ID string for NVML correlation, e.g. "0000:01:00.0". Empty if unknown.
+    private final String pciBusId;
 
     /**
      * Constructor for WindowsGraphicsCard
      *
-     * @param name        The name
-     * @param deviceId    The device ID
-     * @param vendor      The vendor
-     * @param versionInfo The version info
-     * @param vram        The VRAM
+     * @param name         The name
+     * @param deviceId     The device ID
+     * @param vendor       The vendor
+     * @param versionInfo  The version info
+     * @param vram         The VRAM
+     * @param luidPrefix   PDH LUID instance prefix for this adapter, or empty string if unknown
+     * @param lhmParent    LHM hardware identifier for this GPU, or empty string if unavailable
+     * @param pciBusNumber PCI bus number for ADL correlation, or -1 if unknown
+     * @param pciBusId     PCI bus ID string for NVML correlation, or empty string if unknown
      */
-    WindowsGraphicsCard(String name, String deviceId, String vendor, String versionInfo, long vram) {
+    WindowsGraphicsCard(String name, String deviceId, String vendor, String versionInfo, long vram, String luidPrefix,
+            String lhmParent, int pciBusNumber, String pciBusId) {
         super(name, deviceId, vendor, versionInfo, vram);
+        this.luidPrefix = luidPrefix;
+        this.lhmParent = lhmParent;
+        this.pciBusNumber = pciBusNumber;
+        this.pciBusId = pciBusId;
+    }
+
+    @Override
+    public GpuStats createStatsSession() {
+        return new WindowsGpuStats(luidPrefix, lhmParent, pciBusNumber, pciBusId, getName());
     }
 
     /**
      * public method used by {@link AbstractHardwareAbstractionLayer} to access the graphics cards.
      *
+     * <p>
+     * When DXGI is available, ghost adapters are excluded and the list is ordered with the primary desktop adapter
+     * first. On systems without DXGI, all registry entries are returned in registry key order.
+     *
      * @return List of {@link WindowsGraphicsCard} objects.
      */
     public static List<GraphicsCard> getGraphicsCards() {
+        // Query DXGI once. Fails gracefully to empty list if unavailable.
+        List<DxgiAdapterInfo> dxgiAdapters = WindowsDxgi.queryAdapters();
+        boolean dxgiAvailable = !dxgiAdapters.isEmpty();
+        // Mutable copy for match-and-consume (prevents same adapter matching two registry entries).
+        List<DxgiAdapterInfo> remainingDxgi = new ArrayList<>(dxgiAdapters);
+
+        // Build LHM parent map: GPU name (normalized) -> LHM identifier
+        Map<String, String> lhmParentMap = buildLhmParentMap();
+
+        // When DXGI is available, collect cards keyed by their DXGI enumeration index so the
+        // final list is ordered primary-adapter-first (DXGI guarantees adapter 0 is the primary
+        // desktop adapter). Registry entries with no DXGI match are ghost adapters and excluded.
+        // When DXGI is unavailable, fall back to simple insertion order.
+        TreeMap<Integer, GraphicsCard> dxgiOrdered = new TreeMap<>();
         List<GraphicsCard> cardList = new ArrayList<>();
 
         int index = 1;
@@ -95,29 +150,72 @@ final class WindowsGraphicsCard extends AbstractGraphicsCard {
                 String deviceId = "VideoController" + index++;
                 String vendor = RegistryKit.getStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, VENDOR);
                 String versionInfo = RegistryKit.getStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, DRIVER_VERSION);
-                long vram = 0L;
 
-                String memKey = Advapi32Util.registryValueExists(WinReg.HKEY_LOCAL_MACHINE, fullKey, QW_MEMORY_SIZE)
-                        ? QW_MEMORY_SIZE
-                        : (Advapi32Util.registryValueExists(WinReg.HKEY_LOCAL_MACHINE, fullKey, MEMORY_SIZE)
-                                ? MEMORY_SIZE
-                                : null);
-                if (memKey != null) {
-                    Object genericValue = Advapi32Util.registryGetValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, memKey);
-                    if (genericValue instanceof Long) {
-                        vram = (long) genericValue;
-                    } else if (genericValue instanceof Integer) {
-                        vram = Integer.toUnsignedLong((int) genericValue);
-                    } else if (genericValue instanceof byte[] bytes) {
-                        vram = Parsing.byteArrayToLong(bytes, bytes.length, false);
-                    }
+                // Parse PCI vendor/device IDs from MatchingDeviceId (e.g. "pci\ven_8086&dev_56a0&...")
+                String matchingDeviceId = RegistryKit
+                        .getStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, MATCHING_DEVICE_ID);
+                Pair<Integer, Integer> pciIds = Parsing.parseDeviceIdToVendorProductIds(matchingDeviceId);
+                int pciVendorId = pciIds == null ? 0 : pciIds.getLeft();
+                int pciDeviceId = pciIds == null ? 0 : pciIds.getRight();
+
+                // Primary: DXGI DedicatedVideoMemory.
+                // Track whether a DXGI match was found separately from the vram value, so that a
+                // legitimate DedicatedVideoMemory == 0 (e.g. a software/render-only adapter) is
+                // preserved and does not trigger the registry fallback.
+                long vram = -1L;
+                int dxgiIndex = -1;
+                String luidPrefix = "";
+                int pciBusNumber = -1;
+                String pciBusId = "";
+                String locationInfo = RegistryKit
+                        .getStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, LOCATION_INFORMATION);
+                DxgiAdapterInfo dxgiMatch = WindowsDxgi.findMatch(remainingDxgi, pciVendorId, pciDeviceId, name);
+                if (dxgiMatch != null) {
+                    vram = dxgiMatch.getDedicatedVideoMemory();
+                    dxgiIndex = dxgiAdapters.indexOf(dxgiMatch);
+                    luidPrefix = buildLuidPrefix(dxgiMatch);
+                    pciBusNumber = parsePciBusNumber(locationInfo);
+                    pciBusId = buildPciBusId(locationInfo);
+                } else if (dxgiAvailable) {
+                    // DXGI is available but this registry entry has no matching adapter:
+                    // it is a ghost device (stale driver from hardware no longer present). Skip it.
+                    continue;
                 }
 
-                cardList.add(
-                        new WindowsGraphicsCard(StringKit.isBlank(name) ? Normal.UNKNOWN : name,
-                                StringKit.isBlank(deviceId) ? Normal.UNKNOWN : deviceId,
-                                StringKit.isBlank(vendor) ? Normal.UNKNOWN : vendor,
-                                StringKit.isBlank(versionInfo) ? Normal.UNKNOWN : versionInfo, vram));
+                // Fallback: 64-bit registry value qwMemorySize, only when DXGI had no match.
+                if (vram < 0 && Advapi32Util.registryValueExists(WinReg.HKEY_LOCAL_MACHINE, fullKey, QW_MEMORY_SIZE)) {
+                    Object regValue = Advapi32Util.registryGetValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, QW_MEMORY_SIZE);
+                    vram = registryValueToVram(regValue);
+                }
+
+                // Normalise sentinel: if still unresolved report 0.
+                if (vram < 0) {
+                    vram = 0L;
+                }
+
+                // HardwareInformation.MemorySize (32-bit) is intentionally omitted: Windows caps
+                // it at 0x7FFFF000 (~2 GiB) for GPUs with more VRAM, making it unreliable.
+
+                String lhmParent = lhmParentMap
+                        .getOrDefault(WindowsDxgi.normalizeName(StringKit.isBlank(name) ? "" : name), "");
+
+                GraphicsCard card = new WindowsGraphicsCard(StringKit.isBlank(name) ? Normal.UNKNOWN : name,
+                        StringKit.isBlank(deviceId) ? Normal.UNKNOWN : deviceId,
+                        StringKit.isBlank(vendor) ? Normal.UNKNOWN : vendor,
+                        StringKit.isBlank(versionInfo) ? Normal.UNKNOWN : versionInfo, vram, luidPrefix, lhmParent,
+                        pciBusNumber, pciBusId);
+                // Remove dxgiMatch from remainingDxgi only after the card is successfully
+                // constructed. This ensures that if earlier registry reads in this try block
+                // throw a Win32Exception, dxgiMatch remains in remainingDxgi and is still
+                // available for subsequent iterations or WMI fallback processing.
+                if (dxgiMatch != null) {
+                    remainingDxgi.remove(dxgiMatch);
+                }
+                if (dxgiIndex >= 0) {
+                    dxgiOrdered.put(dxgiIndex, card);
+                } else {
+                    cardList.add(card);
+                }
             } catch (Win32Exception e) {
                 if (e.getErrorCode() != WinError.ERROR_ACCESS_DENIED) {
                     // Ignore access denied errors, re-throw others
@@ -126,18 +224,47 @@ final class WindowsGraphicsCard extends AbstractGraphicsCard {
             }
         }
 
-        if (cardList.isEmpty()) {
-            return getGraphicsCardsFromWmi();
+        // Merge: DXGI-ordered cards first (primary adapter at index 0), then any non-DXGI cards.
+        List<GraphicsCard> result = new ArrayList<>(dxgiOrdered.values());
+        result.addAll(cardList);
+
+        if (result.isEmpty()) {
+            return getGraphicsCardsFromWmi(remainingDxgi, lhmParentMap);
         }
-        return cardList;
+        return result;
+    }
+
+    /**
+     * Converts a registry value (REG_QWORD as Long, REG_DWORD as Integer, or REG_BINARY as byte[]) to a VRAM size in
+     * bytes. REG_BINARY is interpreted as little-endian.
+     *
+     * @param value the registry value object
+     * @return the VRAM size in bytes, or 0 if the value type is unrecognised
+     */
+    static long registryValueToVram(Object value) {
+        return WindowsDxgi.registryValueToVram(value);
     }
 
     // fall back if something went wrong
-    private static List<GraphicsCard> getGraphicsCardsFromWmi() {
+    private static List<GraphicsCard> getGraphicsCardsFromWmi(
+            List<DxgiAdapterInfo> dxgiAdapters,
+            Map<String, String> lhmParentMap) {
         List<GraphicsCard> cardList = new ArrayList<>();
         if (IS_VISTA_OR_GREATER) {
+            boolean dxgiAvailable = !dxgiAdapters.isEmpty();
+            // dxgiAdapters is not mutated; remainingDxgi is the working copy consumed during matching.
+            // dxgiAdapters is retained as the stable reference for indexOf ordering lookups.
+            List<DxgiAdapterInfo> remainingDxgi = new ArrayList<>(dxgiAdapters);
+            TreeMap<Integer, GraphicsCard> dxgiOrdered = new TreeMap<>();
+
             WmiResult<VideoControllerProperty> cards = Win32VideoController.queryVideoController();
             for (int index = 0; index < cards.getResultCount(); index++) {
+                // ConfigManagerErrorCode 0 = working properly; non-zero = disabled/error (ghost device).
+                // When DXGI is unavailable, keep all entries for maximum compatibility.
+                if (dxgiAvailable
+                        && WmiKit.getUint32(cards, VideoControllerProperty.CONFIGMANAGERERRORCODE, index) != 0) {
+                    continue;
+                }
                 String name = WmiKit.getString(cards, VideoControllerProperty.NAME, index);
                 Triplet<String, String, String> idPair = Parsing.parseDeviceIdToVendorProductSerial(
                         WmiKit.getString(cards, VideoControllerProperty.PNPDEVICEID, index));
@@ -147,7 +274,7 @@ final class WindowsGraphicsCard extends AbstractGraphicsCard {
                     if (StringKit.isBlank(vendor)) {
                         deviceId = idPair.getLeft();
                     } else {
-                        vendor = vendor + " (" + idPair.getLeft() + Symbol.PARENTHESE_RIGHT;
+                        vendor = vendor + " (" + idPair.getLeft() + ")";
                     }
                 }
                 String versionInfo = WmiKit.getString(cards, VideoControllerProperty.DRIVERVERSION, index);
@@ -156,13 +283,219 @@ final class WindowsGraphicsCard extends AbstractGraphicsCard {
                 } else {
                     versionInfo = Normal.UNKNOWN;
                 }
-                long vram = WmiKit.getUint32asLong(cards, VideoControllerProperty.ADAPTERRAM, index);
-                cardList.add(
-                        new WindowsGraphicsCard(StringKit.isBlank(name) ? Normal.UNKNOWN : name, deviceId,
-                                StringKit.isBlank(vendor) ? Normal.UNKNOWN : vendor, versionInfo, vram));
+                // Prefer DXGI DedicatedVideoMemory when a match can be found via the PCI IDs
+                // extracted from PNPDEVICEID. Fall back to WMI AdapterRAM (32-bit capped) only
+                // when no DXGI match is available.
+                Pair<Integer, Integer> pciIds = Parsing.parseDeviceIdToVendorProductIds(
+                        WmiKit.getString(cards, VideoControllerProperty.PNPDEVICEID, index));
+                int pciVendorId = pciIds == null ? 0 : pciIds.getLeft();
+                int pciDeviceId = pciIds == null ? 0 : pciIds.getRight();
+                DxgiAdapterInfo dxgiMatch = WindowsDxgi.findMatch(remainingDxgi, pciVendorId, pciDeviceId, name);
+                long vram;
+                int dxgiIndex = -1;
+                String luidPrefix = "";
+                int pciBusNumber = -1;
+                String pciBusId = "";
+                if (dxgiMatch != null) {
+                    vram = dxgiMatch.getDedicatedVideoMemory();
+                    dxgiIndex = dxgiAdapters.indexOf(dxgiMatch);
+                    luidPrefix = buildLuidPrefix(dxgiMatch);
+                    // pciBusNumber and pciBusId are not available via WMI; leave as -1 / empty.
+                    // ADL and NVML correlation will be skipped for cards enumerated via this path.
+                } else {
+                    vram = WmiKit.getUint32asLong(cards, VideoControllerProperty.ADAPTERRAM, index);
+                }
+                String lhmParent = lhmParentMap
+                        .getOrDefault(WindowsDxgi.normalizeName(StringKit.isBlank(name) ? "" : name), "");
+                GraphicsCard card = new WindowsGraphicsCard(StringKit.isBlank(name) ? Normal.UNKNOWN : name, deviceId,
+                        StringKit.isBlank(vendor) ? Normal.UNKNOWN : vendor, versionInfo, vram, luidPrefix, lhmParent,
+                        pciBusNumber, pciBusId);
+                // Remove dxgiMatch from remainingDxgi only after the card is successfully
+                // constructed, matching the registry path's defensive pattern so that a
+                // failure during construction leaves the match available for subsequent entries.
+                if (dxgiMatch != null) {
+                    remainingDxgi.remove(dxgiMatch);
+                }
+                if (dxgiIndex >= 0) {
+                    dxgiOrdered.put(dxgiIndex, card);
+                } else {
+                    cardList.add(card);
+                }
             }
+            List<GraphicsCard> result = new ArrayList<>(dxgiOrdered.values());
+            result.addAll(cardList);
+            return result;
         }
         return cardList;
+    }
+
+    /**
+     * Queries LHM WMI for GPU hardware entries and returns a map from normalized GPU name to LHM parent identifier.
+     * Returns an empty map if LHM is not running. If two GPU entries normalize to the same name the key is mapped to an
+     * empty string so callers skip LHM for that ambiguous name rather than returning the wrong adapter's metrics.
+     *
+     * @return map of normalized GPU name to LHM hardware identifier
+     */
+    private static Map<String, String> buildLhmParentMap() {
+        Map<String, String> map = new HashMap<>();
+        try {
+            WmiResult<LhmSensor.LhmHardwareProperty> hw = LhmSensor.queryGpuHardware();
+            for (int i = 0; i < hw.getResultCount(); i++) {
+                String identifier = WmiKit.getString(hw, LhmSensor.LhmHardwareProperty.IDENTIFIER, i);
+                String hwName = WmiKit.getString(hw, LhmSensor.LhmHardwareProperty.NAME, i);
+                if (!identifier.isEmpty() && !hwName.isEmpty()) {
+                    String norm = WindowsDxgi.normalizeName(hwName);
+                    if (map.containsKey(norm)) {
+                        // Two adapters with the same normalized name: mark ambiguous so neither
+                        // is used (empty string is the "skip LHM" sentinel for callers).
+                        map.put(norm, "");
+                    } else {
+                        map.put(norm, identifier);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Logger.debug("LHM GPU hardware query failed (LHM may not be running): {}", e.getMessage());
+        }
+        return map;
+    }
+
+    /**
+     * Parses the PCI bus number from a Windows registry {@code LocationInformation} string of the form
+     * {@code "PCI bus N, device N, function N"}.
+     *
+     * @param locationInfo the LocationInformation registry value
+     * @return PCI bus number, or -1 if not parseable
+     */
+    static int parsePciBusNumber(String locationInfo) {
+        if (locationInfo == null || locationInfo.isEmpty()) {
+            return -1;
+        }
+        // Format: "PCI bus N, device N, function N" (case-insensitive)
+        String lower = locationInfo.toLowerCase(Locale.ROOT);
+        int busIdx = lower.indexOf("pci bus ");
+        if (busIdx < 0) {
+            return -1;
+        }
+        int start = busIdx + 8;
+        int end = lower.indexOf(',', start);
+        String numStr = end > start ? locationInfo.substring(start, end).trim() : locationInfo.substring(start).trim();
+        return Parsing.parseIntOrDefault(numStr, -1);
+    }
+
+    /**
+     * Parses the PCI device number from a Windows registry {@code LocationInformation} string.
+     *
+     * @param locationInfo the LocationInformation registry value
+     * @return PCI device number, or -1 if not parseable
+     */
+    static int parsePciDevice(String locationInfo) {
+        if (locationInfo == null || locationInfo.isEmpty()) {
+            return -1;
+        }
+        String lower = locationInfo.toLowerCase(Locale.ROOT);
+        int devIdx = lower.indexOf("device ");
+        if (devIdx < 0) {
+            return -1;
+        }
+        int start = devIdx + 7;
+        int end = lower.indexOf(',', start);
+        String numStr = end > start ? locationInfo.substring(start, end).trim() : locationInfo.substring(start).trim();
+        return Parsing.parseIntOrDefault(numStr, -1);
+    }
+
+    /**
+     * Parses the PCI function number from a Windows registry {@code LocationInformation} string.
+     *
+     * @param locationInfo the LocationInformation registry value
+     * @return PCI function number, or -1 if not parseable
+     */
+    static int parsePciFunction(String locationInfo) {
+        if (locationInfo == null || locationInfo.isEmpty()) {
+            return -1;
+        }
+        String lower = locationInfo.toLowerCase(Locale.ROOT);
+        int fnIdx = lower.indexOf("function ");
+        if (fnIdx < 0) {
+            return -1;
+        }
+        int start = fnIdx + 9;
+        int end = lower.indexOf(',', start);
+        String numStr = end > start ? locationInfo.substring(start, end).trim() : locationInfo.substring(start).trim();
+        return Parsing.parseIntOrDefault(numStr, -1);
+    }
+
+    /**
+     * Builds a PCI bus ID string in {@code "0000:BB:DD.F"} format from a Windows registry {@code LocationInformation}
+     * string. Returns an empty string if any component cannot be parsed.
+     *
+     * @param locationInfo the LocationInformation registry value
+     * @return PCI bus ID string, or empty string if not parseable
+     */
+    static String buildPciBusId(String locationInfo) {
+        int bus = parsePciBusNumber(locationInfo);
+        int device = parsePciDevice(locationInfo);
+        int function = parsePciFunction(locationInfo);
+        if (bus < 0 || device < 0 || function < 0) {
+            return "";
+        }
+        return String.format(Locale.ROOT, "0000:%02x:%02x.%x", bus, device, function);
+    }
+
+    /**
+     * Builds the PDH LUID instance prefix for the given DXGI adapter. The prefix has the form
+     * {@code luid_0xHHHHHHHH_0xLLLLLLLL_phys_0} matching the Windows PDH GPU Engine and GPU Adapter Memory counter
+     * instance names.
+     *
+     * <p>
+     * The LUID is read directly from {@code DXGI_ADAPTER_DESC.AdapterLuid}, so this method works correctly on multi-GPU
+     * systems. A zero LUID (both parts zero) indicates the adapter did not supply a valid LUID; in that case an empty
+     * string is returned and PDH metrics will report {@code -1}.
+     *
+     * @param adapter the DXGI adapter info containing the LUID
+     * @return PDH LUID instance prefix string, or empty string if the LUID is zero
+     */
+    private static String buildLuidPrefix(DxgiAdapterInfo adapter) {
+        int low = adapter.getLuidLowPart();
+        int high = adapter.getLuidHighPart();
+        if (low == 0 && high == 0) {
+            // Zero LUID is invalid; fall back to PDH enumeration for single-GPU case.
+            return buildLuidPrefixFromPdh();
+        }
+        return String.format(Locale.ROOT, "luid_0x%08x_0x%08x_phys_0", high, low);
+    }
+
+    /**
+     * Fallback LUID prefix discovery by enumerating PDH GPU Adapter Memory instances. Used when the DXGI adapter
+     * reports a zero LUID.
+     *
+     * <p>
+     * Only reliable on single-GPU systems: when multiple GPU Adapter Memory instances are present, the correct
+     * per-adapter mapping cannot be determined without a valid LUID, so an empty string is returned and PDH metrics
+     * will report {@code -1}.
+     *
+     * @return PDH LUID instance prefix string, or empty string if not determinable
+     */
+    private static String buildLuidPrefixFromPdh() {
+        Pair<List<String>, Map<GpuInformation.GpuAdapterMemoryProperty, List<Long>>> adapterData = GpuInformation
+                .queryGpuAdapterMemoryCounters();
+        List<String> instances = adapterData.getLeft();
+        if (instances.isEmpty()) {
+            return Normal.EMPTY;
+        }
+        // GPU Adapter Memory instance names have the form: luid_0xHHHH_0xLLLL_phys_0
+        // There is one instance per physical adapter. We return the full instance name as the prefix.
+        // If there is only one adapter, use it directly.
+        if (instances.size() == 1) {
+            return instances.get(0);
+        }
+        // Multiple adapters: we cannot reliably match by name here since GPU Adapter Memory
+        // instances do not carry a name. Return empty; callers will get -1 for PDH metrics.
+        // A future improvement could correlate via DXGI LUID enumeration.
+        Logger.debug(
+                "Multiple GPU Adapter Memory instances found ({}); LUID matching not yet implemented for multi-GPU",
+                instances.size());
+        return Normal.EMPTY;
     }
 
 }

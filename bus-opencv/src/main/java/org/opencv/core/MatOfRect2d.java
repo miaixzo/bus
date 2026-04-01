@@ -1,22 +1,3 @@
-/*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
- ~                                                                           ~
- ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
- ~ you may not use this file except in compliance with the License.          ~
- ~ You may obtain a copy of the License at                                   ~
- ~                                                                           ~
- ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
- ~                                                                           ~
- ~ Unless required by applicable law or agreed to in writing, software       ~
- ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
- ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
- ~ See the License for the specific language governing permissions and       ~
- ~ limitations under the License.                                            ~
- ~                                                                           ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-*/
 package org.opencv.core;
 
 import java.util.Arrays;
@@ -39,6 +20,10 @@ public class MatOfRect2d extends Mat {
         // FIXME: do we need release() here?
     }
 
+    public static MatOfRect2d fromNativeAddr(long addr) {
+        return new MatOfRect2d(addr);
+    }
+
     public MatOfRect2d(Mat m) {
         super(m, Range.all());
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -49,10 +34,6 @@ public class MatOfRect2d extends Mat {
     public MatOfRect2d(Rect2d... a) {
         super();
         fromArray(a);
-    }
-
-    public static MatOfRect2d fromNativeAddr(long addr) {
-        return new MatOfRect2d(addr);
     }
 
     public void alloc(int elemNumber) {
@@ -98,5 +79,4 @@ public class MatOfRect2d extends Mat {
         Rect2d[] ar = toArray();
         return Arrays.asList(ar);
     }
-
 }

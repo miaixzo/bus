@@ -51,12 +51,18 @@ final class MacSensors extends AbstractSensors {
     @Override
     public double queryCpuTemperature() {
         IOConnect conn = SmcKit.smcOpen();
-        double temp = SmcKit.smcGetFloat(conn, SmcKit.SMC_KEY_CPU_TEMP);
-        SmcKit.smcClose(conn);
-        if (temp > 0d) {
-            return temp;
+        if (conn == null) {
+            return 0d;
         }
-        return 0d;
+        try {
+            double temp = SmcKit.smcGetFirstFloat(conn, SmcKit.SMC_KEYS_CPU_TEMP_AS);
+            if (temp <= 0d) {
+                temp = SmcKit.smcGetFloat(conn, SmcKit.SMC_KEY_CPU_TEMP);
+            }
+            return temp;
+        } finally {
+            SmcKit.smcClose(conn);
+        }
     }
 
     /**
@@ -66,17 +72,22 @@ final class MacSensors extends AbstractSensors {
      */
     @Override
     public int[] queryFanSpeeds() {
-        // If we don't have fan # try to get it
         IOConnect conn = SmcKit.smcOpen();
-        if (this.numFans == 0) {
-            this.numFans = (int) SmcKit.smcGetLong(conn, SmcKit.SMC_KEY_FAN_NUM);
+        if (conn == null) {
+            return new int[this.numFans];
         }
-        int[] fanSpeeds = new int[this.numFans];
-        for (int i = 0; i < this.numFans; i++) {
-            fanSpeeds[i] = (int) SmcKit.smcGetFloat(conn, String.format(Locale.ROOT, SmcKit.SMC_KEY_FAN_SPEED, i));
+        try {
+            if (this.numFans == 0) {
+                this.numFans = (int) SmcKit.smcGetLong(conn, SmcKit.SMC_KEY_FAN_NUM);
+            }
+            int[] fanSpeeds = new int[this.numFans];
+            for (int i = 0; i < this.numFans; i++) {
+                fanSpeeds[i] = (int) SmcKit.smcGetFloat(conn, String.format(Locale.ROOT, SmcKit.SMC_KEY_FAN_SPEED, i));
+            }
+            return fanSpeeds;
+        } finally {
+            SmcKit.smcClose(conn);
         }
-        SmcKit.smcClose(conn);
-        return fanSpeeds;
     }
 
     /**
@@ -87,9 +98,20 @@ final class MacSensors extends AbstractSensors {
     @Override
     public double queryCpuVoltage() {
         IOConnect conn = SmcKit.smcOpen();
-        double volts = SmcKit.smcGetFloat(conn, SmcKit.SMC_KEY_CPU_VOLTAGE) / 1000d;
-        SmcKit.smcClose(conn);
-        return volts;
+        if (conn == null) {
+            return 0d;
+        }
+        try {
+            // Apple Silicon: VP0C is flt already in volts, no scaling needed
+            double volts = SmcKit.smcGetFloat(conn, SmcKit.SMC_KEY_CPU_VOLTAGE_AS);
+            if (volts > 0d) {
+                return volts;
+            }
+            // Intel: VC0C is FPE2 in millivolts, divide by 1000 to get volts
+            return SmcKit.smcGetFloat(conn, SmcKit.SMC_KEY_CPU_VOLTAGE) / 1000d;
+        } finally {
+            SmcKit.smcClose(conn);
+        }
     }
 
 }

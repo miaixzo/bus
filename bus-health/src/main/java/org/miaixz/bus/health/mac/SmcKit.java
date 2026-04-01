@@ -52,6 +52,26 @@ import com.sun.jna.platform.mac.IOKitUtil;
 public final class SmcKit {
 
     /**
+     * Instance of IOKit.
+     */
+    private static final IOKit IO = IOKit.INSTANCE;
+    /**
+     * Thread-safe map for caching info retrieved by a key necessary for subsequent calls.
+     */
+    private static Map<Integer, SMCKeyDataKeyInfo> keyInfoCache = new ConcurrentHashMap<>();
+    /**
+     * Byte array used for matching return type
+     */
+    private static final byte[] DATATYPE_SP78 = Parsing.asciiStringToByteArray("sp78", 5);
+    /**
+     * Byte array used for matching FPE2 return type.
+     */
+    private static final byte[] DATATYPE_FPE2 = Parsing.asciiStringToByteArray("fpe2", 5);
+    /**
+     * Byte array used for matching FLT return type.
+     */
+    private static final byte[] DATATYPE_FLT = Parsing.asciiStringToByteArray("flt ", 5);
+    /**
      * SMC key for the number of fans.
      */
     public static final String SMC_KEY_FAN_NUM = "FNum";
@@ -68,6 +88,18 @@ public final class SmcKit {
      */
     public static final String SMC_KEY_CPU_VOLTAGE = "VC0C";
     /**
+     * Apple Silicon keys, tried in order until one returns a positive value.
+     */
+    public static final String[] SMC_KEYS_CPU_TEMP_AS = { "Tp09", "Tp0T", "Tp01", "Tp05", "Tp0D" };
+    /**
+     * SMC key for CPU temperature.
+     */
+    public static final String[] SMC_KEYS_GPU_TEMP_AS = { "Tg05", "Tg0D", "Tg0f", "Tg0j" };
+    /**
+     * SMC key for CPU voltage.
+     */
+    public static final String SMC_KEY_CPU_VOLTAGE_AS = "VP0C";
+    /**
      * SMC command to read bytes.
      */
     public static final byte SMC_CMD_READ_BYTES = 5;
@@ -79,37 +111,11 @@ public final class SmcKit {
      * Kernel index for SMC.
      */
     public static final int KERNEL_INDEX_SMC = 2;
-    /**
-     * Instance of IOKit.
-     */
-    private static final IOKit IO = IOKit.INSTANCE;
-    /**
-     * Byte array used for matching SP78 return type.
-     */
-    private static final byte[] DATATYPE_SP78 = Parsing.asciiStringToByteArray("sp78", 5);
-    /**
-     * Byte array used for matching FPE2 return type.
-     */
-    private static final byte[] DATATYPE_FPE2 = Parsing.asciiStringToByteArray("fpe2", 5);
-    /**
-     * Byte array used for matching FLT return type.
-     */
-    private static final byte[] DATATYPE_FLT = Parsing.asciiStringToByteArray("flt ", 5);
-    /**
-     * Thread-safe map for caching key information necessary for subsequent calls.
-     */
-    private static final Map<Integer, SMCKeyDataKeyInfo> keyInfoCache = new ConcurrentHashMap<>();
 
     /**
-     * Private constructor to prevent instantiation.
-     */
-    private SmcKit() {
-    }
-
-    /**
-     * Opens a connection to the SMC (System Management Controller).
+     * Open a connection to SMC.
      *
-     * @return The {@link IOConnect} object if the connection is successful, or {@code null} if an error occurs.
+     * @return The connection if successful, null if failure
      */
     public static IOConnect smcOpen() {
         IOService smcService = IOKitUtil.getMatchingService("AppleSMC");
@@ -135,22 +141,22 @@ public final class SmcKit {
     }
 
     /**
-     * Closes an open connection to the SMC.
+     * Close connection to SMC.
      *
-     * @param conn The {@link IOConnect} object representing the open connection.
-     * @return 0 if the connection is successfully closed, a nonzero value if an error occurs.
+     * @param conn The connection
+     *
+     * @return 0 if successful, nonzero if failure
      */
     public static int smcClose(IOConnect conn) {
         return IO.IOServiceClose(conn);
     }
 
     /**
-     * Retrieves a floating-point value from the SMC for a given key. This method handles various floating-point data
-     * types including SP78, FPE2, and FLT.
+     * Get a value from SMC which is in a floating point datatype (SP78, FPE2, FLT)
      *
-     * @param conn The {@link IOConnect} object representing the open connection to the SMC.
-     * @param key  The SMC key (e.g., "TC0P" for CPU temperature) to retrieve the value for.
-     * @return A double representing the retrieved value. Returns 0.0 if the read fails or the data type is unknown.
+     * @param conn The connection
+     * @param key  The key to retrieve
+     * @return Double representing the value
      */
     public static double smcGetFloat(IOConnect conn, String key) {
         try (SMCVal val = new SMCVal()) {
@@ -174,11 +180,28 @@ public final class SmcKit {
     }
 
     /**
-     * Retrieves a 64-bit integer value from the SMC for a given key.
+     * Get the first positive value from a list of SMC keys.
      *
-     * @param conn The {@link IOConnect} object representing the open connection to the SMC.
-     * @param key  The SMC key to retrieve the value for.
-     * @return A long representing the retrieved value. Returns 0 if the read fails.
+     * @param conn The connection
+     * @param keys The keys to try in order
+     * @return The first value greater than 0, or 0 if all keys fail
+     */
+    public static double smcGetFirstFloat(IOConnect conn, String... keys) {
+        for (String key : keys) {
+            double val = smcGetFloat(conn, key);
+            if (val > 0d) {
+                return val;
+            }
+        }
+        return 0d;
+    }
+
+    /**
+     * Get a 64-bit integer value from SMC
+     *
+     * @param conn The connection
+     * @param key  The key to retrieve
+     * @return Long representing the value
      */
     public static long smcGetLong(IOConnect conn, String key) {
         try (SMCVal val = new SMCVal()) {
@@ -192,12 +215,12 @@ public final class SmcKit {
     }
 
     /**
-     * Retrieves cached key information for an SMC key, or generates it if not present in the cache.
+     * Get cached keyInfo if it exists, or generate new keyInfo
      *
-     * @param conn            The {@link IOConnect} object representing the open connection to the SMC.
-     * @param inputStructure  The {@link SMCKeyData} input structure containing the key to query.
-     * @param outputStructure The {@link SMCKeyData} output structure to populate with key information.
-     * @return 0 if successful, a nonzero value if an error occurs.
+     * @param conn            The connection
+     * @param inputStructure  Key data input
+     * @param outputStructure Key data output
+     * @return 0 if successful, nonzero if failure
      */
     public static int smcGetKeyInfo(IOConnect conn, SMCKeyData inputStructure, SMCKeyData outputStructure) {
         if (keyInfoCache.containsKey(inputStructure.key)) {
@@ -221,12 +244,12 @@ public final class SmcKit {
     }
 
     /**
-     * Reads the value associated with an SMC key.
+     * Read a key from SMC
      *
-     * @param conn The {@link IOConnect} object representing the open connection to the SMC.
-     * @param key  The SMC key to read.
-     * @param val  The {@link SMCVal} structure to receive the result.
-     * @return 0 if successful, a nonzero value if an error occurs.
+     * @param conn The connection
+     * @param key  Key to read
+     * @param val  Structure to receive the result
+     * @return 0 if successful, nonzero if failure
      */
     public static int smcReadKey(IOConnect conn, String key, SMCVal val) {
         try (SMCKeyData inputStructure = new SMCKeyData(); SMCKeyData outputStructure = new SMCKeyData()) {
@@ -250,13 +273,13 @@ public final class SmcKit {
     }
 
     /**
-     * Makes a call to the SMC.
+     * Call SMC
      *
-     * @param conn            The {@link IOConnect} object representing the open connection to the SMC.
-     * @param index           The kernel index for the SMC call.
-     * @param inputStructure  The {@link SMCKeyData} input structure for the call.
-     * @param outputStructure The {@link SMCKeyData} output structure to receive the result.
-     * @return 0 if successful, a nonzero value if an error occurs.
+     * @param conn            The connection
+     * @param index           Kernel index
+     * @param inputStructure  Key data input
+     * @param outputStructure Key data output
+     * @return 0 if successful, nonzero if failure
      */
     public static int smcCall(IOConnect conn, int index, SMCKeyData inputStructure, SMCKeyData outputStructure) {
         try (CloseableNativeLongByReference size = new CloseableNativeLongByReference(
