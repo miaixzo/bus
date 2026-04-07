@@ -29,7 +29,6 @@ import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.core.lang.annotation.Logical;
 import org.miaixz.bus.validate.magic.annotation.NotBlank;
 
-import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -83,38 +82,6 @@ public class BaseEntity extends Tracer {
      * The modification timestamp of the entity.
      */
     protected Long modified;
-
-    /**
-     * A random number, used to prevent duplicate submissions or as a unique identifier.
-     */
-    @Transient
-    protected String nonce;
-
-    /**
-     * Search parameters, used to store query conditions.
-     */
-    @Transient
-    protected String params;
-
-    /**
-     * Page number for pagination.
-     */
-    @NotBlank
-    @Transient
-    protected Integer pageNo;
-
-    /**
-     * Page size for pagination.
-     */
-    @NotBlank
-    @Transient
-    protected Integer pageSize;
-
-    /**
-     * Sorting order, can be "asc" (ascending) or "desc" (descending).
-     */
-    @Transient
-    protected String orderBy;
 
     /**
      * Resets numeric string fields to null to prevent database insertion errors. If a numeric string property's value
