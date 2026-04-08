@@ -24,11 +24,13 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Workbook;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.office.Builder;
+import org.miaixz.bus.office.excel.WorkbookKit;
 import org.miaixz.bus.office.excel.sax.ExcelSaxReader;
 import org.miaixz.bus.office.excel.sax.handler.RowHandler;
 import org.miaixz.bus.office.excel.ExcelSaxKit;
@@ -47,11 +49,22 @@ public class BigExcelReader implements AutoCloseable {
      */
     private static final class EndOfReadException extends RuntimeException {
 
+        /**
+         * Shared singleton instance used to abort SAX iteration without allocating a full stack trace.
+         */
         private static final EndOfReadException INSTANCE = new EndOfReadException();
 
+        /**
+         * Creates the end-of-read signal exception.
+         */
         private EndOfReadException() {
         }
 
+        /**
+         * Skips stack trace generation because this exception is only used as an internal control signal.
+         *
+         * @return current exception instance
+         */
         @Override
         public synchronized Throwable fillInStackTrace() {
             return this;
@@ -201,6 +214,7 @@ public class BigExcelReader implements AutoCloseable {
                 this.config.getEndRow(),
                 this.config.getIncludeColumns(),
                 this.config.getBatchSize(),
+                null,
                 null);
     }
 
@@ -212,7 +226,7 @@ public class BigExcelReader implements AutoCloseable {
      * @param handler  row handler.
      */
     public void read(final long startRow, final long endRow, final RowHandler handler) {
-        doRead(handler, startRow, endRow, this.config.getIncludeColumns(), this.config.getBatchSize(), null);
+        doRead(handler, startRow, endRow, this.config.getIncludeColumns(), this.config.getBatchSize(), null, null);
     }
 
     /**
@@ -228,6 +242,7 @@ public class BigExcelReader implements AutoCloseable {
                 this.config.getEndRow(),
                 includeColumns,
                 this.config.getBatchSize(),
+                null,
                 null);
     }
 
@@ -245,6 +260,25 @@ public class BigExcelReader implements AutoCloseable {
                 this.config.getEndRow(),
                 this.config.getIncludeColumns(),
                 Math.max(batchSize, 1),
+                handler,
+                null);
+    }
+
+    /**
+     * Reads in batch mode with sheet context metadata.
+     *
+     * @param batchSize batch size.
+     * @param handler   contextual batch handler.
+     */
+    public void readBatchWithContext(final int batchSize, final ContextBatchRowHandler handler) {
+        Assert.notNull(handler, "context batch handler must not be null");
+        doRead(
+                null,
+                this.config.getStartRow(),
+                this.config.getEndRow(),
+                this.config.getIncludeColumns(),
+                Math.max(batchSize, 1),
+                null,
                 handler);
     }
 
@@ -261,12 +295,13 @@ public class BigExcelReader implements AutoCloseable {
     /**
      * Performs read with filtering and projection.
      *
-     * @param rowHandler      Row handler for row-by-row callbacks.
-     * @param startRow        Start row (inclusive, global index across selected sheets).
-     * @param endRow          End row (inclusive, global index across selected sheets).
-     * @param includeColumns  Included column indexes, optional.
-     * @param batchSize       Batch size for batch callback mode.
-     * @param batchRowHandler Batch callback, optional.
+     * @param rowHandler             Row handler for row-by-row callbacks.
+     * @param startRow               Start row (inclusive, global index across selected sheets).
+     * @param endRow                 End row (inclusive, global index across selected sheets).
+     * @param includeColumns         Included column indexes, optional.
+     * @param batchSize              Batch size for batch callback mode.
+     * @param batchRowHandler        Batch callback, optional.
+     * @param contextBatchRowHandler Context-aware batch callback, optional.
      */
     private void doRead(
             final RowHandler rowHandler,
@@ -274,35 +309,77 @@ public class BigExcelReader implements AutoCloseable {
             final long endRow,
             final int[] includeColumns,
             final int batchSize,
-            final BatchRowHandler batchRowHandler) {
+            final BatchRowHandler batchRowHandler,
+            final ContextBatchRowHandler contextBatchRowHandler) {
         checkClosed();
 
         final long safeStart = Math.max(0, startRow);
         final long safeEnd = endRow < 0 ? Long.MAX_VALUE : endRow;
+        final ExcelReadListener listener = this.config.getReadListener();
+        final boolean useContextBatch = batchSize > 0 && null != contextBatchRowHandler;
+        final long previewRowsPerSheet = Math.max(0, this.config.getPreviewRowsPerSheet());
+        final long progressIntervalRows = Math.max(0L, this.config.getProgressReportIntervalRows());
+        final long startedAt = System.currentTimeMillis();
+        final boolean isXlsx = isXlsx();
+        final ExcelReadState.WorkbookContext workbookContext = resolveWorkbookContext(isXlsx);
         if (safeStart > safeEnd) {
             if (null != rowHandler) {
                 rowHandler.doAfterAllAnalysed();
             }
+            if (null != listener) {
+                listener.onWorkbookStart(workbookContext);
+                listener.onWorkbookEnd(new ExcelReadState.Progress(workbookContext, null, 0L, 0L, -1L, 0L));
+            }
             return;
         }
         final int[] projectedColumns = RowKit.normalizeIncludeColumns(includeColumns);
-        final boolean isXlsx = isXlsx();
         final int[] saxIncludeColumns = isXlsx ? projectedColumns : null;
         final boolean hasProjectedColumns = !isXlsx && null != projectedColumns && projectedColumns.length > 0;
         final List<List<Object>>[] batchRowsHolder = batchSize > 0 ? new List[] { new ArrayList<>(batchSize) } : null;
+        final long[] batchStartRowHolder = batchSize > 0 ? new long[] { -1L } : null;
+        final long[] batchEndRowHolder = batchSize > 0 ? new long[] { -1L } : null;
+        final ExcelReadState.SheetContext[] batchSheetHolder = batchSize > 0
+                ? new ExcelReadState.SheetContext[] { null }
+                : null;
         final long[] globalRowCursor = new long[] { 0L };
         final boolean[] terminated = new boolean[] { false };
-        final boolean[] afterAllDone = new boolean[] { false };
+        final boolean[] workbookDone = new boolean[] { false };
+        final int[] currentSheetIndexHolder = new int[] { -1 };
+        final ExcelReadState.SheetContext[] currentSheetHolder = new ExcelReadState.SheetContext[] { null };
+        final long[] currentSheetProcessedRows = new long[] { 0L };
+        final long[] processedRows = new long[] { 0L };
+        final long[] lastReportedRows = new long[] { 0L };
+
+        if (null != listener) {
+            listener.onWorkbookStart(workbookContext);
+        }
 
         final RowHandler filterHandler = new RowHandler() {
 
             @Override
             public void handle(final int sheetIndex, final long rowIndex, final List<Object> rowCells) {
+                switchSheetIfNecessary(
+                        sheetIndex,
+                        listener,
+                        workbookContext,
+                        currentSheetIndexHolder,
+                        currentSheetHolder,
+                        currentSheetProcessedRows,
+                        batchSize,
+                        batchRowHandler,
+                        contextBatchRowHandler,
+                        batchRowsHolder,
+                        batchStartRowHolder,
+                        batchEndRowHolder,
+                        batchSheetHolder);
                 final long currentGlobalRow = globalRowCursor[0]++;
                 if (currentGlobalRow > safeEnd) {
                     throw EndOfReadException.INSTANCE;
                 }
                 if (currentGlobalRow < safeStart) {
+                    return;
+                }
+                if (previewRowsPerSheet > 0 && rowIndex >= previewRowsPerSheet) {
                     return;
                 }
 
@@ -315,15 +392,51 @@ public class BigExcelReader implements AutoCloseable {
                     return;
                 }
 
+                processedRows[0]++;
+                currentSheetProcessedRows[0]++;
                 if (batchSize > 0 && null != batchRowHandler) {
                     final List<List<Object>> batchRows = batchRowsHolder[0];
+                    if (batchRows.isEmpty()) {
+                        batchStartRowHolder[0] = rowIndex;
+                    }
+                    batchEndRowHolder[0] = rowIndex;
+                    batchSheetHolder[0] = currentSheetHolder[0];
                     batchRows.add(projected);
                     if (batchRows.size() >= batchSize) {
                         batchRowHandler.handle(batchRows);
                         batchRowsHolder[0] = new ArrayList<>(batchSize);
+                        batchStartRowHolder[0] = -1L;
+                        batchEndRowHolder[0] = -1L;
+                        batchSheetHolder[0] = currentSheetHolder[0];
+                    }
+                } else if (useContextBatch) {
+                    final List<List<Object>> batchRows = batchRowsHolder[0];
+                    if (batchRows.isEmpty()) {
+                        batchStartRowHolder[0] = rowIndex;
+                    }
+                    batchEndRowHolder[0] = rowIndex;
+                    batchSheetHolder[0] = currentSheetHolder[0];
+                    batchRows.add(projected);
+                    if (batchRows.size() >= batchSize) {
+                        contextBatchRowHandler.handle(
+                                new RowBatch(batchSheetHolder[0], batchStartRowHolder[0], batchEndRowHolder[0],
+                                        batchRows));
+                        batchRowsHolder[0] = new ArrayList<>(batchSize);
+                        batchStartRowHolder[0] = -1L;
+                        batchEndRowHolder[0] = -1L;
+                        batchSheetHolder[0] = currentSheetHolder[0];
                     }
                 } else if (null != rowHandler) {
                     rowHandler.handle(sheetIndex, rowIndex, projected);
+                }
+
+                if (null != listener && progressIntervalRows > 0
+                        && processedRows[0] - lastReportedRows[0] >= progressIntervalRows) {
+                    lastReportedRows[0] = processedRows[0];
+                    listener.onProgress(
+                            new ExcelReadState.Progress(workbookContext, currentSheetHolder[0], processedRows[0],
+                                    currentSheetProcessedRows[0], rowIndex,
+                                    Math.max(0L, System.currentTimeMillis() - startedAt)));
                 }
             }
 
@@ -341,7 +454,20 @@ public class BigExcelReader implements AutoCloseable {
 
             @Override
             public void doAfterAllAnalysed() {
-                finishReading(rowHandler, batchSize, batchRowHandler, batchRowsHolder, afterAllDone);
+                finishSheet(
+                        rowHandler,
+                        batchSize,
+                        batchRowHandler,
+                        contextBatchRowHandler,
+                        batchRowsHolder,
+                        batchStartRowHolder,
+                        batchEndRowHolder,
+                        batchSheetHolder,
+                        currentSheetIndexHolder,
+                        currentSheetHolder,
+                        currentSheetProcessedRows,
+                        listener,
+                        currentSheetHolder[0]);
             }
         };
 
@@ -356,9 +482,23 @@ public class BigExcelReader implements AutoCloseable {
         } catch (final EndOfReadException e) {
             terminated[0] = true;
         } finally {
-            if (terminated[0]) {
-                finishReading(rowHandler, batchSize, batchRowHandler, batchRowsHolder, afterAllDone);
-            }
+            finishWorkbook(
+                    rowHandler,
+                    batchSize,
+                    batchRowHandler,
+                    contextBatchRowHandler,
+                    batchRowsHolder,
+                    batchStartRowHolder,
+                    batchEndRowHolder,
+                    batchSheetHolder,
+                    currentSheetIndexHolder,
+                    currentSheetHolder,
+                    currentSheetProcessedRows,
+                    workbookDone,
+                    listener,
+                    workbookContext,
+                    processedRows[0],
+                    startedAt);
         }
     }
 
@@ -378,31 +518,240 @@ public class BigExcelReader implements AutoCloseable {
     /**
      * Flushes remaining batches and triggers after callback once.
      *
-     * @param rowHandler      Row handler for row-by-row callbacks.
-     * @param batchSize       Batch size for batch callback mode.
-     * @param batchRowHandler Batch callback, optional.
-     * @param batchRowsHolder Holder of current batch rows.
-     * @param afterAllDone    Single-invocation guard for after callback.
+     * @param rowHandler                Row handler for row-by-row callbacks.
+     * @param batchSize                 Batch size for batch callback mode.
+     * @param batchRowHandler           Batch callback, optional.
+     * @param contextBatchRowHandler    Context-aware batch callback, optional.
+     * @param batchRowsHolder           Holder of current batch rows.
+     * @param batchStartRowHolder       Holder of current batch start row index.
+     * @param batchEndRowHolder         Holder of current batch end row index.
+     * @param batchSheetHolder          Holder of current batch sheet metadata.
+     * @param currentSheetIndexHolder   Holder of current sheet index.
+     * @param currentSheetHolder        Holder of current sheet context.
+     * @param currentSheetProcessedRows Holder of processed row count in current sheet.
+     * @param listener                  Lifecycle listener, optional.
+     * @param currentSheet              Current sheet context.
+     * @param ignored                   Reserved trailing parameters for call-site compatibility.
      */
-    private void finishReading(
+    private void finishSheet(
             final RowHandler rowHandler,
             final int batchSize,
             final BatchRowHandler batchRowHandler,
+            final ContextBatchRowHandler contextBatchRowHandler,
             final List<List<Object>>[] batchRowsHolder,
-            final boolean[] afterAllDone) {
-        if (afterAllDone[0]) {
+            final long[] batchStartRowHolder,
+            final long[] batchEndRowHolder,
+            final ExcelReadState.SheetContext[] batchSheetHolder,
+            final int[] currentSheetIndexHolder,
+            final ExcelReadState.SheetContext[] currentSheetHolder,
+            final long[] currentSheetProcessedRows,
+            final ExcelReadListener listener,
+            final ExcelReadState.SheetContext currentSheet,
+            final long... ignored) {
+        if (null == currentSheet) {
             return;
         }
-        afterAllDone[0] = true;
-
-        final List<List<Object>> batchRows = null == batchRowsHolder ? null : batchRowsHolder[0];
-        if (batchSize > 0 && null != batchRowHandler && null != batchRows && !batchRows.isEmpty()) {
-            batchRowHandler.handle(batchRows);
-            batchRowsHolder[0] = new ArrayList<>(batchSize);
-        }
+        flushPendingBatch(
+                batchSize,
+                batchRowHandler,
+                contextBatchRowHandler,
+                batchRowsHolder,
+                batchStartRowHolder,
+                batchEndRowHolder,
+                batchSheetHolder);
         if (null != rowHandler) {
             rowHandler.doAfterAllAnalysed();
         }
+        if (null != listener) {
+            listener.onSheetEnd(currentSheet);
+        }
+        currentSheetIndexHolder[0] = -1;
+        currentSheetHolder[0] = null;
+        currentSheetProcessedRows[0] = 0L;
+    }
+
+    /**
+     * Finishes workbook lifecycle exactly once.
+     *
+     * @param rowHandler                Row handler for row-by-row callbacks.
+     * @param batchSize                 Batch size for batch callback mode.
+     * @param batchRowHandler           Batch callback, optional.
+     * @param contextBatchRowHandler    Context-aware batch callback, optional.
+     * @param batchRowsHolder           Holder of current batch rows.
+     * @param batchStartRowHolder       Holder of current batch start row index.
+     * @param batchEndRowHolder         Holder of current batch end row index.
+     * @param batchSheetHolder          Holder of current batch sheet metadata.
+     * @param currentSheetIndexHolder   Holder of current sheet index.
+     * @param currentSheetHolder        Holder of current sheet context.
+     * @param currentSheetProcessedRows Holder of processed row count in current sheet.
+     * @param workbookDone              Single-invocation guard for workbook completion.
+     * @param listener                  Lifecycle listener, optional.
+     * @param workbookContext           Workbook callback context.
+     * @param processedRows             Total processed rows after filtering.
+     * @param startedAt                 Start timestamp in milliseconds.
+     */
+    private void finishWorkbook(
+            final RowHandler rowHandler,
+            final int batchSize,
+            final BatchRowHandler batchRowHandler,
+            final ContextBatchRowHandler contextBatchRowHandler,
+            final List<List<Object>>[] batchRowsHolder,
+            final long[] batchStartRowHolder,
+            final long[] batchEndRowHolder,
+            final ExcelReadState.SheetContext[] batchSheetHolder,
+            final int[] currentSheetIndexHolder,
+            final ExcelReadState.SheetContext[] currentSheetHolder,
+            final long[] currentSheetProcessedRows,
+            final boolean[] workbookDone,
+            final ExcelReadListener listener,
+            final ExcelReadState.WorkbookContext workbookContext,
+            final long processedRows,
+            final long startedAt) {
+        if (workbookDone[0]) {
+            return;
+        }
+        workbookDone[0] = true;
+        final ExcelReadState.SheetContext finalSheet = currentSheetHolder[0];
+        final long finalSheetRows = currentSheetProcessedRows[0];
+        finishSheet(
+                rowHandler,
+                batchSize,
+                batchRowHandler,
+                contextBatchRowHandler,
+                batchRowsHolder,
+                batchStartRowHolder,
+                batchEndRowHolder,
+                batchSheetHolder,
+                currentSheetIndexHolder,
+                currentSheetHolder,
+                currentSheetProcessedRows,
+                listener,
+                finalSheet);
+        if (null != listener) {
+            listener.onWorkbookEnd(
+                    new ExcelReadState.Progress(workbookContext, finalSheet, processedRows, finalSheetRows,
+                            null == batchEndRowHolder ? -1L : batchEndRowHolder[0],
+                            Math.max(0L, System.currentTimeMillis() - startedAt)));
+        }
+    }
+
+    /**
+     * Switches current sheet context when crossing sheet boundaries.
+     *
+     * @param sheetIndex                Current sheet index reported by SAX reader.
+     * @param listener                  Lifecycle listener, optional.
+     * @param workbookContext           Workbook callback context.
+     * @param currentSheetIndexHolder   Holder of current sheet index.
+     * @param currentSheetHolder        Holder of current sheet context.
+     * @param currentSheetProcessedRows Holder of processed row count in current sheet.
+     * @param batchSize                 Batch size for batch callback mode.
+     * @param batchRowHandler           Batch callback, optional.
+     * @param contextBatchRowHandler    Context-aware batch callback, optional.
+     * @param batchRowsHolder           Holder of current batch rows.
+     * @param batchStartRowHolder       Holder of current batch start row index.
+     * @param batchEndRowHolder         Holder of current batch end row index.
+     * @param batchSheetHolder          Holder of current batch sheet metadata.
+     */
+    private void switchSheetIfNecessary(
+            final int sheetIndex,
+            final ExcelReadListener listener,
+            final ExcelReadState.WorkbookContext workbookContext,
+            final int[] currentSheetIndexHolder,
+            final ExcelReadState.SheetContext[] currentSheetHolder,
+            final long[] currentSheetProcessedRows,
+            final int batchSize,
+            final BatchRowHandler batchRowHandler,
+            final ContextBatchRowHandler contextBatchRowHandler,
+            final List<List<Object>>[] batchRowsHolder,
+            final long[] batchStartRowHolder,
+            final long[] batchEndRowHolder,
+            final ExcelReadState.SheetContext[] batchSheetHolder) {
+        if (currentSheetIndexHolder[0] == sheetIndex) {
+            return;
+        }
+        currentSheetIndexHolder[0] = sheetIndex;
+        currentSheetProcessedRows[0] = 0L;
+        currentSheetHolder[0] = resolveSheetContext(workbookContext, sheetIndex);
+        if (null != listener && null != currentSheetHolder[0]) {
+            listener.onSheetStart(currentSheetHolder[0]);
+        }
+    }
+
+    /**
+     * Flushes pending batch rows.
+     *
+     * @param batchSize              Batch size for batch callback mode.
+     * @param batchRowHandler        Batch callback, optional.
+     * @param contextBatchRowHandler Context-aware batch callback, optional.
+     * @param batchRowsHolder        Holder of current batch rows.
+     * @param batchStartRowHolder    Holder of current batch start row index.
+     * @param batchEndRowHolder      Holder of current batch end row index.
+     * @param batchSheetHolder       Holder of current batch sheet metadata.
+     */
+    private void flushPendingBatch(
+            final int batchSize,
+            final BatchRowHandler batchRowHandler,
+            final ContextBatchRowHandler contextBatchRowHandler,
+            final List<List<Object>>[] batchRowsHolder,
+            final long[] batchStartRowHolder,
+            final long[] batchEndRowHolder,
+            final ExcelReadState.SheetContext[] batchSheetHolder) {
+        if (batchSize <= 0 || null == batchRowsHolder || null == batchRowsHolder[0] || batchRowsHolder[0].isEmpty()) {
+            return;
+        }
+        if (null != batchRowHandler) {
+            batchRowHandler.handle(batchRowsHolder[0]);
+        } else if (null != contextBatchRowHandler) {
+            contextBatchRowHandler.handle(
+                    new RowBatch(null == batchSheetHolder ? null : batchSheetHolder[0],
+                            null == batchStartRowHolder ? -1L : batchStartRowHolder[0],
+                            null == batchEndRowHolder ? -1L : batchEndRowHolder[0], batchRowsHolder[0]));
+        }
+        batchRowsHolder[0] = new ArrayList<>(batchSize);
+        if (null != batchStartRowHolder) {
+            batchStartRowHolder[0] = -1L;
+        }
+        if (null != batchEndRowHolder) {
+            batchEndRowHolder[0] = -1L;
+        }
+    }
+
+    /**
+     * Resolves workbook context for lifecycle callbacks.
+     *
+     * @param isXlsx whether the source workbook is in xlsx format
+     * @return workbook callback context
+     */
+    private ExcelReadState.WorkbookContext resolveWorkbookContext(final boolean isXlsx) {
+        if (null == this.sourceFile) {
+            return new ExcelReadState.WorkbookContext("stream", isXlsx, List.of());
+        }
+        final List<ExcelReadState.SheetContext> sheets = new ArrayList<>();
+        try (Workbook workbook = WorkbookKit.createBook(this.sourceFile, true)) {
+            for (int sheetIndex = 0; sheetIndex < workbook.getNumberOfSheets(); sheetIndex++) {
+                sheets.add(new ExcelReadState.SheetContext(sheetIndex, workbook.getSheetName(sheetIndex)));
+            }
+        } catch (final Exception e) {
+            return new ExcelReadState.WorkbookContext(this.sourceFile.getName(), isXlsx, List.of());
+        }
+        return new ExcelReadState.WorkbookContext(this.sourceFile.getName(), isXlsx, sheets);
+    }
+
+    /**
+     * Resolves sheet context by index.
+     *
+     * @param workbookContext workbook callback context
+     * @param sheetIndex      zero-based sheet index
+     * @return resolved sheet context
+     */
+    private ExcelReadState.SheetContext resolveSheetContext(
+            final ExcelReadState.WorkbookContext workbookContext,
+            final int sheetIndex) {
+        if (null != workbookContext && null != workbookContext.sheets() && workbookContext.sheets().size() > sheetIndex
+                && sheetIndex >= 0) {
+            return workbookContext.sheets().get(sheetIndex);
+        }
+        return new ExcelReadState.SheetContext(sheetIndex, "");
     }
 
     /**
@@ -428,6 +777,32 @@ public class BigExcelReader implements AutoCloseable {
          * @param rows row batch.
          */
         void handle(List<List<Object>> rows);
+    }
+
+    /**
+     * Context-aware batch callback.
+     */
+    @FunctionalInterface
+    public interface ContextBatchRowHandler {
+
+        /**
+         * Handles a contextual row batch.
+         *
+         * @param batch row batch with sheet metadata.
+         */
+        void handle(RowBatch batch);
+    }
+
+    /**
+     * Batch payload with sheet metadata.
+     *
+     * @param sheet         current sheet context
+     * @param startRowIndex first row index in this batch
+     * @param endRowIndex   last row index in this batch
+     * @param rows          row batch data
+     */
+    public record RowBatch(ExcelReadState.SheetContext sheet, long startRowIndex, long endRowIndex,
+            List<List<Object>> rows) {
     }
 
 }

@@ -17,45 +17,59 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.magic.identity;
-
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
-import org.miaixz.bus.core.codec.binary.Hex;
+package org.miaixz.bus.office.excel.reader;
 
 /**
- * Fingerprint utility for generating stable instance identifiers.
+ * Listener for streaming read lifecycle callbacks.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class Fingerprint {
+public interface ExcelReadListener {
 
     /**
-     * Creates a new Fingerprint.
+     * Called before workbook streaming starts.
+     *
+     * @param workbook workbook context.
      */
-
-    private Fingerprint() {
+    default void onWorkbookStart(final ExcelReadState.WorkbookContext workbook) {
+        // pass
     }
 
     /**
-     * Generates a 32-char hex fingerprint from host and port.
+     * Called when a new sheet starts producing rows.
      *
-     * @param host instance host
-     * @param port instance port
-     * @return 32-character hex string
+     * @param sheet sheet context.
      */
-    public static String of(String host, int port) {
-        String input = host + ":" + port;
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] digest = md.digest(input.getBytes(StandardCharsets.UTF_8));
-            return Hex.encodeString(digest).substring(0, 32);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("SHA-256 not available", e);
-        }
+    default void onSheetStart(final ExcelReadState.SheetContext sheet) {
+        // pass
+    }
+
+    /**
+     * Called when the current sheet ends.
+     *
+     * @param sheet sheet context.
+     */
+    default void onSheetEnd(final ExcelReadState.SheetContext sheet) {
+        // pass
+    }
+
+    /**
+     * Called periodically while streaming rows.
+     *
+     * @param progress progress snapshot.
+     */
+    default void onProgress(final ExcelReadState.Progress progress) {
+        // pass
+    }
+
+    /**
+     * Called after workbook streaming ends.
+     *
+     * @param progress final progress snapshot.
+     */
+    default void onWorkbookEnd(final ExcelReadState.Progress progress) {
+        // pass
     }
 
 }

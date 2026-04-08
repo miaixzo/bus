@@ -25,6 +25,7 @@ import java.awt.geom.PathIterator;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.List;
 
@@ -916,16 +917,80 @@ public class ImageProcessor {
     public static ImageCV readImageWithCvException(File file, List<String> tags) {
         if (!file.canRead()) {
             return null;
+        } else if (tags == null) {
+            Mat mat = Imgcodecs.imread(file.getPath());
+            return handleImageConversion(file, mat);
+        } else {
+            MatOfInt metadataTypes = new MatOfInt();
+            List<Mat> metadataList = new ArrayList();
+            Mat mat = Imgcodecs.imreadWithMetadata(file.getPath(), metadataTypes, metadataList);
+            List<String> exifTags = parseExifParseMetadata(metadataList, metadataTypes);
+            tags.clear();
+            tags.addAll(exifTags);
+            return handleImageConversion(file, mat);
         }
-        List<String> exifs = tags;
-        if (exifs == null) {
-            exifs = new ArrayList<>();
+    }
+
+    /**
+     * Converts a decoded OpenCV matrix into {@link ImageCV} and fails fast when the matrix is empty.
+     *
+     * @param path source image path used to enrich the error message
+     * @param mat  decoded image matrix returned by OpenCV
+     * @return converted {@link ImageCV} instance
+     * @throws CvException if the matrix is empty, which means the image could not be decoded
+     */
+    private static ImageCV handleImageConversion(File path, Mat mat) {
+        if (mat.empty()) {
+            throw new CvException("Failed to read image or unsupported format: " + String.valueOf(path));
+        } else {
+            return ImageCV.toImageCV(mat);
         }
-        Mat img = Imgcodecs.imread(file.getPath(), exifs);
-        if (img.width() < 1 || img.height() < 1) {
-            throw new CvException("OpenCV cannot read " + file.getPath());
+    }
+
+    /**
+     * Extracts EXIF tag strings from the metadata blocks returned by
+     * {@link Imgcodecs#imreadWithMetadata(String, MatOfInt, List)}.
+     *
+     * @param metadataList  metadata matrices returned by OpenCV
+     * @param metadataTypes metadata type identifiers aligned with {@code metadataList}
+     * @return extracted EXIF tag values in the original metadata order, or an empty list when metadata is missing or
+     *         not in the expected EXIF layout
+     */
+    public static List<String> parseExifParseMetadata(List<Mat> metadataList, MatOfInt metadataTypes) {
+        List<String> result = new ArrayList<>();
+
+        if (metadataList == null || metadataTypes == null || metadataTypes.empty()) {
+            return result;
         }
-        return ImageCV.toImageCV(img);
+
+        int[] typesArray = metadataTypes.toArray();
+        if (metadataList.size() != typesArray.length || typesArray[typesArray.length - 1] != 1000) {
+            return result;
+        }
+        int lastIndex = typesArray.length - 1;
+        Mat metadata = metadataList.get(lastIndex);
+
+        if (metadata.empty()) {
+            return result;
+        }
+
+        // The metadata Mat contains rows of tag data
+        int numTags = metadata.rows();
+        for (int i = 0; i < numTags; i++) {
+            Mat row = metadata.row(i);
+            if (row.empty()) {
+                result.add("");
+            } else {
+                int bytesPerElement = (int) (row.elemSize());
+                int totalElements = row.cols() * row.channels();
+                byte[] tagBytes = new byte[bytesPerElement * totalElements];
+
+                row.get(0, 0, tagBytes);
+                String tagValue = new String(tagBytes, StandardCharsets.UTF_8).trim();
+                result.add(tagValue);
+            }
+        }
+        return result;
     }
 
 }

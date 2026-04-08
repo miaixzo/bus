@@ -69,6 +69,18 @@ public class ExcelReadConfig extends ExcelConfig {
      * Estimated column count for transfer auto tuning.
      */
     protected int transferEstimatedColumnCount = 80;
+    /**
+     * Preview row limit per sheet. Non-positive means unlimited.
+     */
+    protected int previewRowsPerSheet;
+    /**
+     * Progress callback interval in processed rows. Non-positive means disabled.
+     */
+    protected long progressReportIntervalRows;
+    /**
+     * Optional streaming listener.
+     */
+    protected ExcelReadListener readListener;
 
     /**
      * Read mode enum.
@@ -205,6 +217,66 @@ public class ExcelReadConfig extends ExcelConfig {
      */
     public ExcelReadConfig setBatchSize(final int batchSize) {
         this.batchSize = Math.max(batchSize, 0);
+        return this;
+    }
+
+    /**
+     * Gets preview row limit per sheet.
+     *
+     * @return preview row limit per sheet.
+     */
+    public int getPreviewRowsPerSheet() {
+        return this.previewRowsPerSheet;
+    }
+
+    /**
+     * Sets preview row limit per sheet.
+     *
+     * @param previewRowsPerSheet preview row limit per sheet.
+     * @return This {@code ExcelReadConfig} instance, for chaining.
+     */
+    public ExcelReadConfig setPreviewRowsPerSheet(final int previewRowsPerSheet) {
+        this.previewRowsPerSheet = Math.max(previewRowsPerSheet, 0);
+        return this;
+    }
+
+    /**
+     * Gets progress report interval.
+     *
+     * @return progress report interval in rows.
+     */
+    public long getProgressReportIntervalRows() {
+        return this.progressReportIntervalRows;
+    }
+
+    /**
+     * Sets progress report interval.
+     *
+     * @param progressReportIntervalRows progress report interval in rows.
+     * @return This {@code ExcelReadConfig} instance, for chaining.
+     */
+    public ExcelReadConfig setProgressReportIntervalRows(final long progressReportIntervalRows) {
+        this.progressReportIntervalRows = Math.max(progressReportIntervalRows, 0L);
+        return this;
+    }
+
+    /**
+     * Gets streaming read listener.
+     *
+     * @return read listener.
+     */
+    public ExcelReadListener getReadListener() {
+        return this.readListener;
+    }
+
+    /**
+     * Sets streaming read listener.
+     *
+     * @param readListener read listener.
+     * @return This {@code ExcelReadConfig} instance, for chaining.
+     */
+    public ExcelReadConfig setReadListener(final ExcelReadListener readListener) {
+        this.readListener = readListener;
         return this;
     }
 
