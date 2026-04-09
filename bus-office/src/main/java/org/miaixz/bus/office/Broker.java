@@ -23,7 +23,9 @@ import java.io.File;
 import java.nio.file.Files;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.miaixz.bus.core.data.id.ID;
 
@@ -107,6 +109,133 @@ public interface Broker<T> {
         }
 
         /**
+         * Opens a new streaming archive session.
+         *
+         * @param previewRows preview row limit
+         * @param ttlMillis   handle time to live in milliseconds
+         * @return opened session
+         */
+        public Session<T> open(final int previewRows, final long ttlMillis) {
+            final String handleId = ID.objectId();
+            final File handleDir = resolveHandleDir(handleId);
+            final long expiresAt = Instant.now().plusMillis(Math.max(ttlMillis, 0L)).toEpochMilli();
+            try {
+                Archive.Writer writer = new Archive.Writer(handleDir, handleId, expiresAt, previewRows);
+                return new Session<>(handleId, handleDir, expiresAt, Math.max(previewRows, 0), writer,
+                        new LinkedHashMap<>(), 0L, 0L, false);
+            } catch (Exception e) {
+                deleteRecursively(handleDir);
+                throw new IllegalStateException("Failed to open archived bundle session", e);
+            }
+        }
+
+        /**
+         * Appends a single item to the target segment.
+         *
+         * @param session      streaming session
+         * @param segmentIndex segment index
+         * @param segmentName  segment name
+         * @param attributes   segment attributes
+         * @param item         item to append
+         */
+        public void append(
+                final Session<T> session,
+                final int segmentIndex,
+                final String segmentName,
+                final Map<String, String> attributes,
+                final T item) {
+            if (item == null) {
+                return;
+            }
+            try {
+                ensureWritable(session);
+                SessionSegmentState segmentState = resolveSegmentState(session, segmentIndex, segmentName, attributes);
+                byte[] payload = this.codec.encode(item);
+                session.writer().append(segmentIndex, segmentName, segmentState.totalItems(), payload, attributes);
+                segmentState.increment(1L, payload != null ? payload.length : 0L);
+                session.increment(1L, payload != null ? payload.length : 0L);
+            } catch (Exception e) {
+                throw new IllegalStateException("Failed to append archived bundle item", e);
+            }
+        }
+
+        /**
+         * Appends multiple items to the target segment.
+         *
+         * @param session      streaming session
+         * @param segmentIndex segment index
+         * @param segmentName  segment name
+         * @param attributes   segment attributes
+         * @param items        items to append
+         */
+        public void appendAll(
+                final Session<T> session,
+                final int segmentIndex,
+                final String segmentName,
+                final Map<String, String> attributes,
+                final List<T> items) {
+            if (items == null || items.isEmpty()) {
+                return;
+            }
+            try {
+                ensureWritable(session);
+                SessionSegmentState segmentState = resolveSegmentState(session, segmentIndex, segmentName, attributes);
+                List<byte[]> payloads = new ArrayList<>(items.size());
+                long writtenBytes = 0L;
+                for (T item : items) {
+                    byte[] payload = this.codec.encode(item);
+                    payloads.add(payload);
+                    writtenBytes += payload != null ? payload.length : 0L;
+                }
+                session.writer().appendAll(segmentIndex, segmentName, segmentState.totalItems(), payloads, attributes);
+                segmentState.increment(items.size(), writtenBytes);
+                session.increment(items.size(), writtenBytes);
+            } catch (Exception e) {
+                throw new IllegalStateException("Failed to append archived bundle items", e);
+            }
+        }
+
+        /**
+         * Finishes the current session and returns the handle descriptor.
+         *
+         * @param session streaming session
+         * @return handle descriptor
+         */
+        public Bundle.Paged<T> finish(final Session<T> session) {
+            try {
+                ensureWritable(session);
+                Archive.Manifest manifest = session.writer().finish();
+                session.markFinished();
+                return Bundle.Paged.<T>builder().handleId(session.handleId()).segmentCount(manifest.segments().size())
+                        .totalItems(session.writtenItems()).expiresAt(manifest.expiresAt())
+                        .previewRows(manifest.previewRows()).total(session.writtenItems()).items(List.of()).build();
+            } catch (Exception e) {
+                abort(session);
+                throw new IllegalStateException("Failed to finish archived bundle session", e);
+            }
+        }
+
+        /**
+         * Aborts the session and removes temporary files.
+         *
+         * @param session streaming session
+         */
+        public void abort(final Session<T> session) {
+            if (session == null) {
+                return;
+            }
+            try {
+                if (session.writer() != null) {
+                    session.writer().close();
+                }
+            } catch (Exception ignored) {
+                // ignore close failure during abort
+            }
+            session.markFinished();
+            deleteRecursively(session.handleDir());
+        }
+
+        /**
          * Creates an archived bundle in the local file system.
          *
          * @param segments    ordered segment list
@@ -122,32 +251,22 @@ public interface Broker<T> {
             if (null == segments || segments.isEmpty()) {
                 return null;
             }
-            final String handleId = ID.objectId();
-            final File handleDir = resolveHandleDir(handleId);
-            final long expiresAt = Instant.now().plusMillis(Math.max(ttlMillis, 0L)).toEpochMilli();
-            try (Archive.Writer writer = new Archive.Writer(handleDir, handleId, expiresAt, previewRows)) {
-                long totalItems = 0L;
+            final Session<T> session = open(previewRows, ttlMillis);
+            try {
                 for (Bundle.Segment<T> segment : segments) {
                     if (null == segment || null == segment.items() || segment.items().isEmpty()) {
                         continue;
                     }
-                    long recordIndex = 0L;
-                    for (T item : segment.items()) {
-                        writer.append(
-                                segment.segmentIndex(),
-                                segment.segmentName(),
-                                recordIndex++,
-                                this.codec.encode(item),
-                                segment.attributes());
-                    }
-                    totalItems += segment.items().size();
+                    appendAll(
+                            session,
+                            segment.segmentIndex(),
+                            segment.segmentName(),
+                            segment.attributes(),
+                            segment.items());
                 }
-                Archive.Manifest manifest = writer.finish();
-                return Bundle.Paged.<T>builder().handleId(handleId).segmentCount(manifest.segments().size())
-                        .totalItems(totalItems).expiresAt(manifest.expiresAt()).previewRows(manifest.previewRows())
-                        .total(totalItems).items(List.of()).build();
+                return finish(session);
             } catch (Exception e) {
-                deleteRecursively(handleDir);
+                abort(session);
                 throw new IllegalStateException("Failed to create archived bundle", e);
             }
         }
@@ -287,6 +406,284 @@ public interface Broker<T> {
                         });
             } catch (Exception ignored) {
                 // ignore best effort cleanup
+            }
+        }
+
+        /**
+         * Ensures that the session can still accept writes.
+         *
+         * @param session streaming session
+         */
+        private void ensureWritable(final Session<T> session) {
+            if (session == null) {
+                throw new IllegalArgumentException("Session must not be null");
+            }
+            if (session.finished()) {
+                throw new IllegalStateException("Broker session has already been finished");
+            }
+        }
+
+        /**
+         * Resolves or creates mutable state for the target segment.
+         *
+         * @param session      streaming session
+         * @param segmentIndex segment index
+         * @param segmentName  segment name
+         * @param attributes   segment attributes
+         * @return mutable segment state
+         */
+        private SessionSegmentState resolveSegmentState(
+                final Session<T> session,
+                final int segmentIndex,
+                final String segmentName,
+                final Map<String, String> attributes) {
+            return session.segments().computeIfAbsent(
+                    segmentIndex,
+                    index -> new SessionSegmentState(segmentIndex, segmentName != null ? segmentName : "",
+                            attributes != null ? Map.copyOf(attributes) : Map.of()));
+        }
+
+        /**
+         * Streaming archive session.
+         *
+         * @param <T> item type
+         */
+        public static final class Session<T> {
+
+            /**
+             * Handle identifier.
+             */
+            private final String handleId;
+
+            /**
+             * Handle directory.
+             */
+            private final File handleDir;
+
+            /**
+             * Expiration timestamp.
+             */
+            private final long expiresAt;
+
+            /**
+             * Preview row limit.
+             */
+            private final int previewRows;
+
+            /**
+             * Archive writer.
+             */
+            private final Archive.Writer writer;
+
+            /**
+             * Mutable segment states.
+             */
+            private final Map<Integer, SessionSegmentState> segments;
+
+            /**
+             * Written item count.
+             */
+            private long writtenItems;
+
+            /**
+             * Written payload bytes.
+             */
+            private long writtenBytes;
+
+            /**
+             * Whether the session has been finished.
+             */
+            private boolean finished;
+
+            /**
+             * Creates a streaming session.
+             *
+             * @param handleId     handle identifier
+             * @param handleDir    handle directory
+             * @param expiresAt    expiration timestamp
+             * @param previewRows  preview row limit
+             * @param writer       archive writer
+             * @param segments     mutable segment states
+             * @param writtenItems written item count
+             * @param writtenBytes written payload bytes
+             * @param finished     completion flag
+             */
+            private Session(final String handleId, final File handleDir, final long expiresAt, final int previewRows,
+                    final Archive.Writer writer, final Map<Integer, SessionSegmentState> segments,
+                    final long writtenItems, final long writtenBytes, final boolean finished) {
+                this.handleId = handleId;
+                this.handleDir = handleDir;
+                this.expiresAt = expiresAt;
+                this.previewRows = previewRows;
+                this.writer = writer;
+                this.segments = segments;
+                this.writtenItems = writtenItems;
+                this.writtenBytes = writtenBytes;
+                this.finished = finished;
+            }
+
+            /**
+             * Returns the handle identifier.
+             *
+             * @return handle identifier
+             */
+            public String handleId() {
+                return this.handleId;
+            }
+
+            /**
+             * Returns the handle directory.
+             *
+             * @return handle directory
+             */
+            public File handleDir() {
+                return this.handleDir;
+            }
+
+            /**
+             * Returns the expiration timestamp.
+             *
+             * @return expiration timestamp
+             */
+            public long expiresAt() {
+                return this.expiresAt;
+            }
+
+            /**
+             * Returns the preview row limit.
+             *
+             * @return preview row limit
+             */
+            public int previewRows() {
+                return this.previewRows;
+            }
+
+            /**
+             * Returns the archive writer.
+             *
+             * @return archive writer
+             */
+            public Archive.Writer writer() {
+                return this.writer;
+            }
+
+            /**
+             * Returns mutable segment states.
+             *
+             * @return segment states
+             */
+            public Map<Integer, SessionSegmentState> segments() {
+                return this.segments;
+            }
+
+            /**
+             * Returns the written item count.
+             *
+             * @return written item count
+             */
+            public long writtenItems() {
+                return this.writtenItems;
+            }
+
+            /**
+             * Returns the written payload bytes.
+             *
+             * @return written payload bytes
+             */
+            public long writtenBytes() {
+                return this.writtenBytes;
+            }
+
+            /**
+             * Returns whether the session has been finished.
+             *
+             * @return {@code true} when finished
+             */
+            public boolean finished() {
+                return this.finished;
+            }
+
+            /**
+             * Increments write statistics.
+             *
+             * @param items written item count delta
+             * @param bytes written payload byte delta
+             */
+            private void increment(final long items, final long bytes) {
+                this.writtenItems += Math.max(items, 0L);
+                this.writtenBytes += Math.max(bytes, 0L);
+            }
+
+            /**
+             * Marks the session as finished.
+             */
+            private void markFinished() {
+                this.finished = true;
+            }
+        }
+
+        /**
+         * Mutable session segment state.
+         */
+        private static final class SessionSegmentState {
+
+            /**
+             * Segment index.
+             */
+            private final int segmentIndex;
+
+            /**
+             * Segment name.
+             */
+            private final String segmentName;
+
+            /**
+             * Segment attributes.
+             */
+            private final Map<String, String> attributes;
+
+            /**
+             * Written item count.
+             */
+            private long totalItems;
+
+            /**
+             * Written payload bytes.
+             */
+            private long totalBytes;
+
+            /**
+             * Creates segment state.
+             *
+             * @param segmentIndex segment index
+             * @param segmentName  segment name
+             * @param attributes   segment attributes
+             */
+            private SessionSegmentState(final int segmentIndex, final String segmentName,
+                    final Map<String, String> attributes) {
+                this.segmentIndex = segmentIndex;
+                this.segmentName = segmentName;
+                this.attributes = attributes;
+            }
+
+            /**
+             * Returns the written item count.
+             *
+             * @return written item count
+             */
+            private long totalItems() {
+                return this.totalItems;
+            }
+
+            /**
+             * Increments segment statistics.
+             *
+             * @param items item count delta
+             * @param bytes payload byte delta
+             */
+            private void increment(final long items, final long bytes) {
+                this.totalItems += Math.max(items, 0L);
+                this.totalBytes += Math.max(bytes, 0L);
             }
         }
     }

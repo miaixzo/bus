@@ -204,6 +204,7 @@ public class Archive {
             state.outputStream.writeInt(safePayload.length);
             state.outputStream.write(safePayload);
             state.totalRecords++;
+            state.totalBytes += safePayload.length;
         }
 
         /**
@@ -281,6 +282,65 @@ public class Archive {
             return manifest;
         }
 
+        /**
+         * Returns the total number of records written by the current writer.
+         *
+         * @return total record count
+         */
+        public long totalRecords() {
+            long total = 0L;
+            for (SegmentState state : this.states.values()) {
+                total += state.totalRecords;
+            }
+            return total;
+        }
+
+        /**
+         * Returns the total payload bytes written by the current writer.
+         *
+         * @return total payload bytes
+         */
+        public long totalBytes() {
+            long total = 0L;
+            for (SegmentState state : this.states.values()) {
+                total += state.totalBytes;
+            }
+            return total;
+        }
+
+        /**
+         * Returns the number of records written to the target segment.
+         *
+         * @param segmentIndex segment index
+         * @return written record count
+         */
+        public long totalRecords(final int segmentIndex) {
+            SegmentState state = this.states.get(segmentIndex);
+            return state != null ? state.totalRecords : 0L;
+        }
+
+        /**
+         * Returns the payload bytes written to the target segment.
+         *
+         * @param segmentIndex segment index
+         * @return written payload bytes
+         */
+        public long totalBytes(final int segmentIndex) {
+            SegmentState state = this.states.get(segmentIndex);
+            return state != null ? state.totalBytes : 0L;
+        }
+
+        /**
+         * Aborts the current writer and deletes the archive directory.
+         *
+         * @throws IOException if closing the writer fails
+         */
+        public void abort() throws IOException {
+            close();
+            deleteRecursively(this.rootDir);
+            this.finished = true;
+        }
+
         @Override
         public void close() throws IOException {
             for (SegmentState state : this.states.values()) {
@@ -319,9 +379,28 @@ public class Archive {
             final File indexFile = new File(this.rootDir, baseName + ".idx");
             state = new SegmentState(segmentIndex, null == segmentName ? "" : segmentName, dataFile, indexFile,
                     new DataOutputStream(new BufferedOutputStream(new FileOutputStream(dataFile))), new ArrayList<>(),
-                    Collections.unmodifiableMap(new LinkedHashMap<>(null == attributes ? Map.of() : attributes)), 0L);
+                    Collections.unmodifiableMap(new LinkedHashMap<>(null == attributes ? Map.of() : attributes)), 0L,
+                    0L);
             this.states.put(segmentIndex, state);
             return state;
+        }
+
+        /**
+         * Deletes a file tree recursively.
+         *
+         * @param file target file or directory
+         */
+        private void deleteRecursively(final File file) {
+            if (file == null || !file.exists()) {
+                return;
+            }
+            File[] children = file.listFiles();
+            if (children != null) {
+                for (File child : children) {
+                    deleteRecursively(child);
+                }
+            }
+            file.delete();
         }
 
         /**
@@ -370,6 +449,11 @@ public class Archive {
             private long totalRecords;
 
             /**
+             * Written payload bytes.
+             */
+            private long totalBytes;
+
+            /**
              * Creates mutable state for one segment writer.
              *
              * @param segmentIndex segment index
@@ -380,10 +464,11 @@ public class Archive {
              * @param offsets      recorded payload offsets
              * @param attributes   immutable segment attributes
              * @param totalRecords current record count
+             * @param totalBytes   current payload bytes
              */
             private SegmentState(final int segmentIndex, final String segmentName, final File dataFile,
                     final File indexFile, final DataOutputStream outputStream, final List<Long> offsets,
-                    final Map<String, String> attributes, final long totalRecords) {
+                    final Map<String, String> attributes, final long totalRecords, final long totalBytes) {
                 this.segmentIndex = segmentIndex;
                 this.segmentName = segmentName;
                 this.dataFile = dataFile;
@@ -392,6 +477,7 @@ public class Archive {
                 this.offsets = offsets;
                 this.attributes = attributes;
                 this.totalRecords = totalRecords;
+                this.totalBytes = totalBytes;
             }
         }
     }

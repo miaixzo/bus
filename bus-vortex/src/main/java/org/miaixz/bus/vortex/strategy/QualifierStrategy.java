@@ -298,8 +298,8 @@ public class QualifierStrategy extends AbstractStrategy {
         // 4. Delegate the validation to the provider
         // The type field is set to the policy value, provider uses it to determine validation method
         return this.provider.authorize(
-                Principal.builder().channel(context.getChannel().getType()).context(context).type(policy)
-                        .value(credentialValue).build())
+                        Principal.builder().channel(context.getChannel().getType()).context(context).type(policy)
+                                .value(credentialValue).build())
                 .flatMap(delegate -> {
                     // 5. Process the final result from the provider
                     if (delegate.isOk()) {

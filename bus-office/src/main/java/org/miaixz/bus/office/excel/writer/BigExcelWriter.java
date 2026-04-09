@@ -249,6 +249,8 @@ public class BigExcelWriter extends ExcelWriter {
     @Override
     public BigExcelWriter setSheet(final int sheetIndex) {
         super.setSheet(sheetIndex);
+        reset();
+        setCurrentRow(0);
         return this;
     }
 
@@ -261,6 +263,8 @@ public class BigExcelWriter extends ExcelWriter {
     @Override
     public BigExcelWriter setSheet(final String sheetName) {
         super.setSheet(sheetName);
+        reset();
+        setCurrentRow(0);
         return this;
     }
 
