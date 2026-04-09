@@ -20,6 +20,8 @@
 package org.miaixz.bus.tempus.temporal.payload;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.xyz.ClassKit;
+import org.miaixz.bus.core.xyz.MethodKit;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -67,15 +69,7 @@ public abstract class AbstractPayloadConverter implements PayloadConverter {
         if (preferred != null) {
             return preferred;
         }
-
-        for (PayloadAdapter adapter : candidateAdapters()) {
-            if (adapter != null) {
-                return adapter;
-            }
-        }
-
-        throw new IllegalStateException(
-                "No supported JSON framework found for Temporal payload conversion. Expected fastjson2, Jackson, or Gson.");
+        return DefaultPayloadAdapterHolder.ADAPTER;
     }
 
     /**
@@ -85,24 +79,46 @@ public abstract class AbstractPayloadConverter implements PayloadConverter {
      */
     protected static PayloadAdapter tryCreateFastjsonAdapter() {
         try {
-            Class<?> jsonClass = Class.forName("com.alibaba.fastjson2.JSON");
-            Method toJsonBytes = jsonClass.getMethod("toJSONBytes", Object.class);
-            Method parseObject = jsonClass.getMethod("parseObject", byte[].class, Type.class);
+            Class<?> jsonClass = ClassKit.loadClass("com.alibaba.fastjson2.JSON");
+            Method toJsonBytes = MethodKit.getPublicMethod(jsonClass, false, "toJSONBytes", Object.class);
+            Method parseObject = MethodKit.getPublicMethod(jsonClass, false, "parseObject", byte[].class, Type.class);
             return new PayloadAdapter() {
 
+                /**
+                 * Returns the adapter identifier used in diagnostics.
+                 *
+                 * @return the adapter name
+                 */
                 @Override
                 public String name() {
                     return "fastjson2";
                 }
 
+                /**
+                 * Serializes the given value with fastjson2.
+                 *
+                 * @param value the value to serialize
+                 * @return serialized bytes
+                 * @throws Exception if serialization fails
+                 */
                 @Override
                 public byte[] toBytes(Object value) throws Exception {
-                    return (byte[]) toJsonBytes.invoke(null, value);
+                    return MethodKit.invokeStatic(toJsonBytes, value);
                 }
 
+                /**
+                 * Deserializes the given bytes with fastjson2.
+                 *
+                 * @param bytes      the serialized bytes
+                 * @param valueClass the raw value type
+                 * @param valueType  the generic value type when available
+                 * @param <T>        the target value type
+                 * @return the deserialized value
+                 * @throws Exception if deserialization fails
+                 */
                 @Override
                 public <T> T fromBytes(byte[] bytes, Class<T> valueClass, Type valueType) throws Exception {
-                    return (T) parseObject.invoke(null, bytes, valueType == null ? valueClass : valueType);
+                    return MethodKit.invokeStatic(parseObject, bytes, valueType == null ? valueClass : valueType);
                 }
             };
         } catch (Throwable ignored) {
@@ -117,29 +133,57 @@ public abstract class AbstractPayloadConverter implements PayloadConverter {
      */
     protected static PayloadAdapter tryCreateJacksonAdapter() {
         try {
-            Class<?> objectMapperClass = Class.forName("com.fasterxml.jackson.databind.ObjectMapper");
+            Class<?> objectMapperClass = ClassKit.loadClass("com.fasterxml.jackson.databind.ObjectMapper");
             Object objectMapper = objectMapperClass.getConstructor().newInstance();
             invokeNoArgIfPresent(objectMapperClass, objectMapper, "findAndRegisterModules");
-            Method writeValueAsBytes = objectMapperClass.getMethod("writeValueAsBytes", Object.class);
-            Method constructType = objectMapperClass.getMethod("constructType", Type.class);
-            Method readValue = objectMapperClass
-                    .getMethod("readValue", byte[].class, Class.forName("com.fasterxml.jackson.databind.JavaType"));
+            Method writeValueAsBytes = MethodKit
+                    .getPublicMethod(objectMapperClass, false, "writeValueAsBytes", Object.class);
+            Method constructType = MethodKit.getPublicMethod(objectMapperClass, false, "constructType", Type.class);
+            Method readValue = MethodKit.getPublicMethod(
+                    objectMapperClass,
+                    false,
+                    "readValue",
+                    byte[].class,
+                    ClassKit.loadClass("com.fasterxml.jackson.databind.JavaType"));
             return new PayloadAdapter() {
 
+                /**
+                 * Returns the adapter identifier used in diagnostics.
+                 *
+                 * @return the adapter name
+                 */
                 @Override
                 public String name() {
                     return "jackson";
                 }
 
+                /**
+                 * Serializes the given value with Jackson.
+                 *
+                 * @param value the value to serialize
+                 * @return serialized bytes
+                 * @throws Exception if serialization fails
+                 */
                 @Override
                 public byte[] toBytes(Object value) throws Exception {
-                    return (byte[]) writeValueAsBytes.invoke(objectMapper, value);
+                    return MethodKit.invoke(objectMapper, writeValueAsBytes, value);
                 }
 
+                /**
+                 * Deserializes the given bytes with Jackson.
+                 *
+                 * @param bytes      the serialized bytes
+                 * @param valueClass the raw value type
+                 * @param valueType  the generic value type when available
+                 * @param <T>        the target value type
+                 * @return the deserialized value
+                 * @throws Exception if deserialization fails
+                 */
                 @Override
                 public <T> T fromBytes(byte[] bytes, Class<T> valueClass, Type valueType) throws Exception {
-                    Object javaType = constructType.invoke(objectMapper, valueType == null ? valueClass : valueType);
-                    return (T) readValue.invoke(objectMapper, bytes, javaType);
+                    Object javaType = MethodKit
+                            .invoke(objectMapper, constructType, valueType == null ? valueClass : valueType);
+                    return MethodKit.invoke(objectMapper, readValue, bytes, javaType);
                 }
             };
         } catch (Throwable ignored) {
@@ -154,26 +198,51 @@ public abstract class AbstractPayloadConverter implements PayloadConverter {
      */
     protected static PayloadAdapter tryCreateGsonAdapter() {
         try {
-            Class<?> gsonClass = Class.forName("com.google.gson.Gson");
+            Class<?> gsonClass = ClassKit.loadClass("com.google.gson.Gson");
             Object gson = gsonClass.getConstructor().newInstance();
-            Method toJson = gsonClass.getMethod("toJson", Object.class);
-            Method fromJson = gsonClass.getMethod("fromJson", String.class, Type.class);
+            Method toJson = MethodKit.getPublicMethod(gsonClass, false, "toJson", Object.class);
+            Method fromJson = MethodKit.getPublicMethod(gsonClass, false, "fromJson", String.class, Type.class);
             return new PayloadAdapter() {
 
+                /**
+                 * Returns the adapter identifier used in diagnostics.
+                 *
+                 * @return the adapter name
+                 */
                 @Override
                 public String name() {
                     return "gson";
                 }
 
+                /**
+                 * Serializes the given value with Gson.
+                 *
+                 * @param value the value to serialize
+                 * @return serialized bytes
+                 * @throws Exception if serialization fails
+                 */
                 @Override
                 public byte[] toBytes(Object value) throws Exception {
-                    return ((String) toJson.invoke(gson, value)).getBytes(Charset.UTF_8);
+                    return MethodKit.<String>invoke(gson, toJson, value).getBytes(Charset.UTF_8);
                 }
 
+                /**
+                 * Deserializes the given bytes with Gson.
+                 *
+                 * @param bytes      the serialized bytes
+                 * @param valueClass the raw value type
+                 * @param valueType  the generic value type when available
+                 * @param <T>        the target value type
+                 * @return the deserialized value
+                 * @throws Exception if deserialization fails
+                 */
                 @Override
                 public <T> T fromBytes(byte[] bytes, Class<T> valueClass, Type valueType) throws Exception {
-                    return (T) fromJson
-                            .invoke(gson, new String(bytes, Charset.UTF_8), valueType == null ? valueClass : valueType);
+                    return MethodKit.invoke(
+                            gson,
+                            fromJson,
+                            new String(bytes, Charset.UTF_8),
+                            valueType == null ? valueClass : valueType);
                 }
             };
         } catch (Throwable ignored) {
@@ -190,9 +259,43 @@ public abstract class AbstractPayloadConverter implements PayloadConverter {
      */
     protected static void invokeNoArgIfPresent(Class<?> type, Object target, String methodName) {
         try {
-            Method method = type.getMethod(methodName);
-            method.invoke(target);
+            Method method = MethodKit.getPublicMethod(type, false, methodName);
+            MethodKit.invoke(target, method);
         } catch (Throwable ignored) {
+        }
+    }
+
+    /**
+     * Resolves the default adapter using the framework priority order: fastjson2, Jackson, then Gson.
+     *
+     * @return the default JSON adapter
+     * @throws IllegalStateException if no supported JSON framework is available at runtime
+     */
+    private static PayloadAdapter resolveDefaultAdapter() {
+        for (PayloadAdapter adapter : List
+                .of(tryCreateFastjsonAdapter(), tryCreateJacksonAdapter(), tryCreateGsonAdapter())) {
+            if (adapter != null) {
+                return adapter;
+            }
+        }
+        throw new IllegalStateException(
+                "No supported JSON framework found for Temporal payload conversion. Expected fastjson2, Jackson, or Gson.");
+    }
+
+    /**
+     * Holds the lazily initialized default adapter to avoid eager framework detection during class loading.
+     */
+    private static final class DefaultPayloadAdapterHolder {
+
+        /**
+         * Lazily resolved default JSON adapter.
+         */
+        private static final PayloadAdapter ADAPTER = resolveDefaultAdapter();
+
+        /**
+         * Creates the holder type.
+         */
+        private DefaultPayloadAdapterHolder() {
         }
     }
 

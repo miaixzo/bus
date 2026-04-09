@@ -17,45 +17,29 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.magic.identity;
-
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
-import org.miaixz.bus.core.codec.binary.Hex;
+package org.miaixz.bus.tempus.temporal.notifier;
 
 /**
- * Fingerprint utility for generating stable instance identifiers.
+ * Defines when callback notifications run relative to the Temporal activity completion handshake.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class Fingerprint {
+public enum NotificationMode {
 
     /**
-     * Creates a new Fingerprint.
+     * Executes notification logic inline before the activity completion is reported to Temporal.
      */
-
-    private Fingerprint() {
-    }
+    INLINE_BEFORE_COMPLETE,
 
     /**
-     * Generates a 32-char hex fingerprint from host and port.
-     *
-     * @param host instance host
-     * @param port instance port
-     * @return 32-character hex string
+     * Reports activity completion to Temporal first and executes notification logic afterward.
      */
-    public static String of(String host, int port) {
-        String input = host + ":" + port;
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] digest = md.digest(input.getBytes(StandardCharsets.UTF_8));
-            return Hex.encodeString(digest).substring(0, 32);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("SHA-256 not available", e);
-        }
-    }
+    AFTER_COMPLETE,
+
+    /**
+     * Disables callback notification handling inside the activity execution flow.
+     */
+    DISABLED
 
 }

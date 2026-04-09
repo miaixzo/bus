@@ -38,6 +38,9 @@ public class DiscardingQueue extends AbstractQueue<Object> {
     private DiscardingQueue() {
     }
 
+    /**
+     * The singleton instance shared by all callers.
+     */
     private static final DiscardingQueue INSTANCE = new DiscardingQueue();
 
     /**

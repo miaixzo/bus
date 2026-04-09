@@ -22,7 +22,7 @@ package org.miaixz.bus.core.lang.annotation;
 import java.lang.annotation.*;
 
 /**
- * 标记在实体类的版本号字段上
+ * Marks the version field on an entity class.
  *
  * @author Kimi Liu
  * @since Java 21+

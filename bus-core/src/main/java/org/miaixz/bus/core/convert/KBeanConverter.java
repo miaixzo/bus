@@ -88,6 +88,15 @@ public class KBeanConverter implements MatcherConverter, Serializable {
         return convertInternal(targetType, targetClass, value);
     }
 
+    /**
+     * Converts the source object into a Kotlin bean by selecting an appropriate {@link ValueProvider}.
+     *
+     * @param targetType  The declared target type.
+     * @param targetClass The raw target class.
+     * @param value       The source object to convert.
+     * @return The converted Kotlin bean instance.
+     * @throws ConvertException if the source type cannot be adapted to a supported value provider.
+     */
     private Object convertInternal(final Type targetType, final Class<?> targetClass, final Object value) {
         ValueProvider<String> valueProvider = null;
         if (value instanceof ValueProvider) {

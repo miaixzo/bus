@@ -19,14 +19,15 @@
 */
 package org.miaixz.bus.starter.pay;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.miaixz.bus.auth.Registry;
+import java.util.Map;
+
 import org.miaixz.bus.pay.Context;
+import org.miaixz.bus.pay.Registry;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Configuration properties for the integrated payment service.

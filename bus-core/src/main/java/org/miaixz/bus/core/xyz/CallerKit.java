@@ -38,6 +38,9 @@ public class CallerKit {
     private CallerKit() {
     }
 
+    /**
+     * Shared caller strategy used by this utility.
+     */
     private static final Caller INSTANCE;
 
     static {

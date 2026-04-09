@@ -39,6 +39,9 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  */
 public class ManifestKit {
 
+    /**
+     * Supported manifest file names when scanning exploded project directories.
+     */
     private static final String[] MANIFEST_NAMES = { "Manifest.mf", "manifest.mf", "MANIFEST.MF" };
 
     /**

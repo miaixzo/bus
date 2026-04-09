@@ -49,6 +49,13 @@ public final class WmiKit {
      */
     public static final String OHM_NAMESPACE = "ROOT\\OpenHardwareMonitor";
 
+    /**
+     * The namespace where LibreHardwareMonitor publishes to WMI,
+     * <code>LHM_NAMESPACE="ROOT\\LibreHardwareMonitor"</code>. This namespace is not built-in to WMI, so if LHM is not
+     * running would result in unnecessary log messages.
+     */
+    public static final String LHM_NAMESPACE = "ROOT\\LibreHardwareMonitor";
+
     private static final String CLASS_CAST_MSG = "%s is not a %s type. CIM Type is %d and VT type is %d";
 
     /**

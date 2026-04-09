@@ -26,6 +26,8 @@
 module bus.tempus {
 
     requires bus.core;
+    requires bus.crypto;
+    requires bus.extra;
     requires bus.logger;
     requires bus.setting;
 

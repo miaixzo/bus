@@ -49,7 +49,7 @@ public class GitLabApi implements AutoCloseable {
     public static final int DEFAULT_PER_PAGE = 96;
     // Used to keep track of GitLabApiExceptions on calls that return Optional<?>
     private static final Map<Integer, GitLabApiException> optionalExceptionMap = Collections
-            .synchronizedMap(new WeakHashMap<Integer, GitLabApiException>());
+            .synchronizedMap(new WeakHashMap<>());
     private PersonalAccessTokenApi personalAccessTokenApi;
 
     GitLabApiClient apiClient;
@@ -89,18 +89,6 @@ public class GitLabApi implements AutoCloseable {
     private NotesApi notesApi;
     private NotificationSettingsApi notificationSettingsApi;
     private PackagesApi packagesApi;
-
-    /**
-     * Constructs a GitLabApi instance set up to interact with the GitLab server using the specified GitLab API version.
-     *
-     * @param apiVersion          the ApiVersion specifying which version of the API to use
-     * @param hostUrl             the URL of the GitLab server
-     * @param personalAccessToken the private token to use for access to the API
-     */
-    public GitLabApi(ApiVersion apiVersion, String hostUrl, String personalAccessToken) {
-        this(apiVersion, hostUrl, personalAccessToken, null);
-    }
-
     private PipelineApi pipelineApi;
     private ProjectApi projectApi;
     private ProtectedBranchesApi protectedBranchesApi;
@@ -122,6 +110,18 @@ public class GitLabApi implements AutoCloseable {
     private WikisApi wikisApi;
     private KeysApi keysApi;
     private MetadataApi metadataApi;
+    private ErrorTrackingApi errorTrackingApi;
+
+    /**
+     * Constructs a GitLabApi instance set up to interact with the GitLab server using the specified GitLab API version.
+     *
+     * @param apiVersion          the ApiVersion specifying which version of the API to use
+     * @param hostUrl             the URL of the GitLab server
+     * @param personalAccessToken the private token to use for access to the API
+     */
+    public GitLabApi(ApiVersion apiVersion, String hostUrl, String personalAccessToken) {
+        this(apiVersion, hostUrl, personalAccessToken, null);
+    }
 
     /**
      * Constructs a GitLabApi instance set up to interact with the GitLab server using the specified GitLab API version.
@@ -1926,6 +1926,23 @@ public class GitLabApi implements AutoCloseable {
             }
         }
         return metadataApi;
+    }
+
+    /**
+     * Gets the ErrorTrackingApi instance owned by this GitLabApi instance.
+     *
+     * @return the ErrorTrackingApi instance owned by this GitLabApi instance
+     */
+    public ErrorTrackingApi getErrorTrackingApi() {
+        if (errorTrackingApi == null) {
+            synchronized (this) {
+                if (errorTrackingApi == null) {
+                    errorTrackingApi = new ErrorTrackingApi(this);
+                }
+            }
+        }
+
+        return errorTrackingApi;
     }
 
     /**

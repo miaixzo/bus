@@ -2,28 +2,13 @@
   "resources": {
     "includes": [
       {
-        "pattern": "\\.conf$"
-      },
-      {
-        "pattern": "\\.json$"
-      },
-      {
-        "pattern": "\\.txt$"
-      },
-      {
-        "pattern": "\\.xml$"
-      },
-      {
-        "pattern": ".*\\.ya?ml$"
-      },
-      {
-        "pattern": "\\.properties$"
-      },
-      {
         "pattern": ".*\\.factories"
       },
       {
         "pattern": ".*\\.providers"
+      },
+      {
+        "pattern": ".*\\.ya?ml$"
       },
       {
         "pattern": "META-INF/.*"
@@ -41,6 +26,9 @@
         "pattern": "META-INF/.*\\.json"
       },
       {
+        "pattern": "META-INF/.*\\.properties"
+      },
+      {
         "pattern": "META-INF/.*\\.sig"
       },
       {
@@ -56,22 +44,34 @@
         "pattern": "META-INF/.*\\.yml"
       },
       {
-        "pattern": "META-INF/.*\\.properties"
+        "pattern": "META-INF/INDEX\\.LIST"
       },
       {
         "pattern": "META-INF/LICENSE"
       },
       {
-        "pattern": "META-INF/NOTICE"
-      },
-      {
         "pattern": "META-INF/MANIFEST\\.MF"
       },
       {
-        "pattern": "META-INF/INDEX\\.LIST"
+        "pattern": "META-INF/NOTICE"
       },
       {
         "pattern": "META-INF/native-image/.*"
+      },
+      {
+        "pattern": "\\.conf$"
+      },
+      {
+        "pattern": "\\.json$"
+      },
+      {
+        "pattern": "\\.properties$"
+      },
+      {
+        "pattern": "\\.txt$"
+      },
+      {
+        "pattern": "\\.xml$"
       }
     ]
   },

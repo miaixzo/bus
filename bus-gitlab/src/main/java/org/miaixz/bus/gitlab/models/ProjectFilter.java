@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
 import org.miaixz.bus.gitlab.models.Constants.ProjectOrderBy;
 import org.miaixz.bus.gitlab.models.Constants.SortOrder;
 import org.miaixz.bus.gitlab.support.JacksonJson;
-import java.io.Serial;
 
 /**
  * This class is used to filter Projects when getting lists of projects for a specified user.
@@ -73,6 +73,10 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    public Boolean getArchived() {
+        return archived;
+    }
+
     /**
      * Limit by visibility public, internal, or private.
      *
@@ -82,6 +86,10 @@ public class ProjectFilter implements Serializable {
     public ProjectFilter withVisibility(Visibility visibility) {
         this.visibility = visibility;
         return (this);
+    }
+
+    public Visibility getVisibility() {
+        return visibility;
     }
 
     /**
@@ -96,6 +104,10 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    public ProjectOrderBy getOrderBy() {
+        return orderBy;
+    }
+
     /**
      * Return projects sorted in asc or desc order. Default is desc.
      *
@@ -105,6 +117,10 @@ public class ProjectFilter implements Serializable {
     public ProjectFilter withSortOder(SortOrder sort) {
         this.sort = sort;
         return (this);
+    }
+
+    public SortOrder getSort() {
+        return sort;
     }
 
     /**
@@ -118,6 +134,10 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    public String getSearch() {
+        return search;
+    }
+
     /**
      * Include ancestor namespaces when matching search criteria. Default is false.
      *
@@ -127,6 +147,10 @@ public class ProjectFilter implements Serializable {
     public ProjectFilter withSearchNamespaces(Boolean searchNamespaces) {
         this.searchNamespaces = searchNamespaces;
         return (this);
+    }
+
+    public Boolean getSearchNamespaces() {
+        return searchNamespaces;
     }
 
     /**
@@ -141,6 +165,10 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    public Boolean getSimple() {
+        return simple;
+    }
+
     /**
      * Limit by projects explicitly owned by the current user
      *
@@ -150,6 +178,10 @@ public class ProjectFilter implements Serializable {
     public ProjectFilter withOwned(Boolean owned) {
         this.owned = owned;
         return (this);
+    }
+
+    public Boolean getOwned() {
+        return owned;
     }
 
     /**
@@ -163,6 +195,10 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    public Boolean getMembership() {
+        return membership;
+    }
+
     /**
      * Limit by projects starred by the current user.
      *
@@ -172,6 +208,10 @@ public class ProjectFilter implements Serializable {
     public ProjectFilter withStarred(Boolean starred) {
         this.starred = starred;
         return (this);
+    }
+
+    public Boolean getStarred() {
+        return starred;
     }
 
     /**
@@ -185,6 +225,10 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    public Boolean getStatistics() {
+        return statistics;
+    }
+
     /**
      * Include custom attributes in response (admins only).
      *
@@ -194,6 +238,10 @@ public class ProjectFilter implements Serializable {
     public ProjectFilter withCustomAttributes(Boolean withCustomAttributes) {
         this.withCustomAttributes = withCustomAttributes;
         return (this);
+    }
+
+    public Boolean getWithCustomAttributes() {
+        return withCustomAttributes;
     }
 
     /**
@@ -207,6 +255,10 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    public Boolean getWithIssuesEnabled() {
+        return withIssuesEnabled;
+    }
+
     /**
      * Limit by enabled merge requests feature
      *
@@ -218,6 +270,10 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    public Boolean getWithMergeRequestsEnabled() {
+        return withMergeRequestsEnabled;
+    }
+
     /**
      * Limit by projects which use the given programming language.
      *
@@ -227,6 +283,10 @@ public class ProjectFilter implements Serializable {
     public ProjectFilter withProgrammingLanguage(String withProgrammingLanguage) {
         this.withProgrammingLanguage = withProgrammingLanguage;
         return (this);
+    }
+
+    public String getWithProgrammingLanguage() {
+        return withProgrammingLanguage;
     }
 
     /**
@@ -241,6 +301,10 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    public Boolean getWikiChecksumFailed() {
+        return wikiChecksumFailed;
+    }
+
     /**
      * Limit projects where the repository checksum calculation has failed.
      *
@@ -251,6 +315,10 @@ public class ProjectFilter implements Serializable {
     public ProjectFilter withRepositoryChecksumFailed(Boolean repositoryChecksumFailed) {
         this.repositoryChecksumFailed = repositoryChecksumFailed;
         return (this);
+    }
+
+    public Boolean getRepositoryChecksumFailed() {
+        return repositoryChecksumFailed;
     }
 
     /**
@@ -264,6 +332,10 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    public AccessLevel getMinAccessLevel() {
+        return minAccessLevel;
+    }
+
     /**
      * Limit results to projects with IDs greater than the specified projectID.
      *
@@ -273,6 +345,10 @@ public class ProjectFilter implements Serializable {
     public ProjectFilter withIdAfter(Long idAfter) {
         this.idAfter = idAfter;
         return (this);
+    }
+
+    public Long getIdAfter() {
+        return idAfter;
     }
 
     /**
@@ -286,6 +362,10 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    public Long getIdBefore() {
+        return idBefore;
+    }
+
     /**
      * Limit results to projects with last_activity after specified time.
      *
@@ -295,6 +375,10 @@ public class ProjectFilter implements Serializable {
     public ProjectFilter withLastActivityAfter(Date lastActivityAfter) {
         this.lastActivityAfter = lastActivityAfter;
         return (this);
+    }
+
+    public Date getLastActivityAfter() {
+        return lastActivityAfter;
     }
 
     /**
@@ -308,6 +392,10 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    public Date getLastActivityBefore() {
+        return lastActivityBefore;
+    }
+
     /**
      * Limit results to projects stored on the specified repository_storage. Available for admins only.
      *
@@ -317,6 +405,10 @@ public class ProjectFilter implements Serializable {
     public ProjectFilter withRepositoryStorage(String repositoryStorage) {
         this.repositoryStorage = repositoryStorage;
         return (this);
+    }
+
+    public String getRepositoryStorage() {
+        return repositoryStorage;
     }
 
     /**
@@ -330,6 +422,10 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    public Boolean getImported() {
+        return imported;
+    }
+
     /**
      * Limit results to projects that match all of given topics.
      *
@@ -341,6 +437,10 @@ public class ProjectFilter implements Serializable {
         return (this);
     }
 
+    public String getTopic() {
+        return topic;
+    }
+
     /**
      * Limit results to projects with the assigned topic given by the topic ID.
      *
@@ -350,6 +450,10 @@ public class ProjectFilter implements Serializable {
     public ProjectFilter withTopicId(Integer topic_id) {
         this.topic_id = topic_id;
         return (this);
+    }
+
+    public Integer getTopicId() {
+        return topic_id;
     }
 
     /**

@@ -21,8 +21,8 @@ package org.miaixz.bus.starter.notify;
 
 import java.util.Map;
 
-import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.notify.Context;
+import org.miaixz.bus.notify.Registry;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

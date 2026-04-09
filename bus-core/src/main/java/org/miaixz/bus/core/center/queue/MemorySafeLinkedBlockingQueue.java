@@ -91,6 +91,9 @@ public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue
      */
     private static class MemoryChecker<E> implements Predicate<E> {
 
+        /**
+         * The minimum amount of free memory required before accepting a new element.
+         */
         private long maxFreeMemory;
 
         /**

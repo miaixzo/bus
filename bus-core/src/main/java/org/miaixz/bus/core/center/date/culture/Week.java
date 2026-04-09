@@ -89,7 +89,7 @@ public class Week extends Samsara {
     }
 
     /**
-     * Gets the corresponding {@link SevenStar} (七曜) for this day of the week.
+     * Gets the corresponding {@link SevenStar} for this day of the week.
      *
      * @return The {@link SevenStar} associated with this day.
      */

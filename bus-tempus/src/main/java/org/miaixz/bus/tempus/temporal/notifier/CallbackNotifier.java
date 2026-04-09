@@ -23,7 +23,8 @@ package org.miaixz.bus.tempus.temporal.notifier;
  * Receives activity completion notifications.
  * <p>
  * Implementations can propagate execution outcomes to external systems or perform additional post-processing after
- * activity completion.
+ * activity completion. The actual invocation timing is controlled by the surrounding activity handler via
+ * {@link NotificationMode}.
  *
  * @param <R> the activity input type
  *

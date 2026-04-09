@@ -438,21 +438,22 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
     }
 
     /**
-     * 令{@code annotationAttributes}中属性覆写当前注解中同名同类型且未被覆写的属性
+     * Uses attributes from {@code annotationAttributes} to overwrite matching attributes on the current annotation when
+     * they share the same name and type and have not already been overwritten.
      *
-     * @param overwriteMapping 注解属性聚合
+     * @param overwriteMapping aggregated annotation attribute mapping
      */
     private void updateResolvedAttributesByOverwrite(final ResolvedAnnotationMapping overwriteMapping) {
         for (int overwriteIndex = 0; overwriteIndex < overwriteMapping.getAttributes().length; overwriteIndex++) {
             final Method overwrite = overwriteMapping.getAttribute(overwriteIndex);
             for (int targetIndex = 0; targetIndex < attributes.length; targetIndex++) {
                 final Method attribute = attributes[targetIndex];
-                // 覆写的属性与被覆写的属性名称与类型必须一致
+                // The overriding and overridden attributes must share the same name and type.
                 if (!CharsBacker.equals(attribute.getName(), overwrite.getName())
                         || !ClassKit.isAssignable(attribute.getReturnType(), overwrite.getReturnType())) {
                     continue;
                 }
-                // 若目标属性未被覆写，则覆写其属性
+                // Overwrite the target attribute only when it has not already been replaced.
                 overwriteAttribute(overwriteMapping, overwriteIndex, targetIndex, true);
             }
         }

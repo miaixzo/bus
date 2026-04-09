@@ -76,21 +76,33 @@ public abstract class AbstractWorkflowHandler<A, R> {
      */
     public String execute(R request) {
         try {
-            Logger.info("Starting workflow, request: {}", request);
+            Logger.info(
+                    "Starting workflow. requestType: {}, maxDurationHours: {}",
+                    request == null ? null : request.getClass().getName(),
+                    getMaxDurationHours(request));
 
             Integer maxDurationHours = getMaxDurationHours(request);
             if (maxDurationHours != null && maxDurationHours > 0) {
                 A dynamicActivity = Workflow
                         .newActivityStub(getActivityClass(), createDynamicActivityOptions(maxDurationHours));
-                return invokeActivity(dynamicActivity, request);
+                String result = invokeActivity(dynamicActivity, request);
+                Logger.info(
+                        "Workflow completed. requestType: {}, dynamicTimeoutHours: {}",
+                        request == null ? null : request.getClass().getName(),
+                        maxDurationHours);
+                return result;
             }
 
             String result = invokeActivity(activity, request);
-            Logger.info("Workflow completed, request: {}", request);
+            Logger.info("Workflow completed. requestType: {}", request == null ? null : request.getClass().getName());
             return result;
 
         } catch (Exception e) {
-            Logger.error("Workflow failed: {}", e.getMessage(), e);
+            Logger.error(
+                    "Workflow failed. requestType: {}, error: {}",
+                    request == null ? null : request.getClass().getName(),
+                    e.getMessage(),
+                    e);
             throw e;
         }
     }
@@ -115,7 +127,7 @@ public abstract class AbstractWorkflowHandler<A, R> {
      * @return heartbeat timeout in seconds, default is 30
      */
     protected long getHeartbeatTimeoutSeconds() {
-        return 60;
+        return 90;
     }
 
     /**

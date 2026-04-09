@@ -19,11 +19,9 @@
 */
 package org.miaixz.bus.tempus.temporal.workflow.publisher;
 
-import java.lang.reflect.Method;
-import java.time.Duration;
-import java.util.function.Supplier;
-
-import org.miaixz.bus.core.xyz.RetryKit;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.xyz.MethodKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.tempus.temporal.Publisher;
 import org.miaixz.bus.tempus.temporal.worker.CachingWorkflowClientProvider;
@@ -73,18 +71,10 @@ public class WorkflowPublisherManager implements Publisher {
      */
     public WorkflowPublisherManager(WorkflowClientProvider provider, WorkflowOptionsFactory factory,
             WorkflowPublisherBinding binding) {
-        if (binding == null) {
-            throw new IllegalArgumentException("binding must not be null");
-        }
-        if (binding.getEndpoint() == null) {
-            throw new IllegalArgumentException("temporal.endpoint must not be null");
-        }
-        if (binding.getTaskQueue() == null) {
-            throw new IllegalArgumentException("temporal.task.queue must not be null");
-        }
-        if (binding.getWorkflowType() == null) {
-            throw new IllegalArgumentException("temporal.workflow.type must not be null");
-        }
+        Assert.notNull(binding, "binding must not be null");
+        Assert.notNull(binding.getEndpoint(), "temporal.endpoint must not be null");
+        Assert.notNull(binding.getTaskQueue(), "temporal.task.queue must not be null");
+        Assert.notNull(binding.getWorkflowType(), "temporal.workflow.type must not be null");
 
         this.provider = provider;
         this.factory = factory;
@@ -107,24 +97,29 @@ public class WorkflowPublisherManager implements Publisher {
                 binding.getEndpoint(),
                 binding.getTaskQueue(),
                 args != null ? args.length : 0);
-
-        Supplier<String> recover = () -> {
-            throw new RuntimeException("Publish failed after retry, type: " + binding.getWorkflowType());
-        };
-        return RetryKit.ofPredicate(() -> doPublish(args), 1, Duration.ZERO, recover, (result, ex) -> {
-            if (ex != null && isConnectionError(ex)) {
+        Throwable lastError = null;
+        int maxAttempts = 2;
+        for (int attempt = 1; attempt <= maxAttempts; attempt++) {
+            try {
+                return doPublish(args);
+            } catch (Exception ex) {
+                lastError = ex;
+                boolean retryable = attempt < maxAttempts && isConnectionError(ex);
+                if (!retryable) {
+                    break;
+                }
                 Logger.warn(
-                        "Connection error detected, invalidating cached client and retrying. type: {}, endpoint: {}, error: {}",
+                        "Connection error detected, invalidating cached client and retrying. type: {}, endpoint: {}, attempt: {}, error: {}",
                         binding.getWorkflowType(),
                         binding.getEndpoint(),
+                        attempt,
                         ex.getMessage());
                 if (provider instanceof CachingWorkflowClientProvider c) {
                     c.invalidate(binding.getEndpoint());
                 }
-                return true;
             }
-            return false;
-        });
+        }
+        throw new RuntimeException("Publish failed after retry, type: " + binding.getWorkflowType(), lastError);
     }
 
     /**
@@ -148,6 +143,11 @@ public class WorkflowPublisherManager implements Publisher {
 
             String workflowId = extractString(execution, "getWorkflowId");
             String runId = extractString(execution, "getRunId");
+            Assert.notNull(
+                    runId,
+                    "Failed to resolve Temporal runId after workflow start, type: %s, workflowId: %s",
+                    binding.getWorkflowType(),
+                    workflowId);
 
             Logger.info(
                     "Published workflow successfully, type: {}, workflowId: {}, runId: {}",
@@ -174,18 +174,59 @@ public class WorkflowPublisherManager implements Publisher {
      * @return {@code true} if the error is connection-related
      */
     private boolean isConnectionError(Throwable ex) {
-        String msg = ex.getMessage();
-        if (msg != null
-                && (msg.contains("UNAVAILABLE") || msg.contains("DEADLINE_EXCEEDED") || msg.contains("CANCELLED"))) {
-            return true;
+        Throwable current = ex;
+        while (current != null) {
+            String grpcStatusCode = extractGrpcStatusCode(current);
+            if ("UNAVAILABLE".equals(grpcStatusCode) || "DEADLINE_EXCEEDED".equals(grpcStatusCode)
+                    || "CANCELLED".equals(grpcStatusCode)) {
+                return true;
+            }
+            String msg = current.getMessage();
+            if (StringKit.hasText(msg)
+                    && (msg.contains("UNAVAILABLE") || msg.contains("DEADLINE_EXCEEDED") || msg.contains("CANCELLED")
+                            || msg.contains("connection reset") || msg.contains("connection refused"))) {
+                return true;
+            }
+            if (current instanceof java.io.IOException) {
+                return true;
+            }
+            current = current.getCause();
         }
-        return ex.getCause() instanceof java.io.IOException;
+        return false;
     }
 
+    /**
+     * Extracts the gRPC status code from a throwable without introducing a direct gRPC compile-time dependency.
+     *
+     * @param throwable the throwable to inspect
+     * @return the gRPC status code name, or {@code null} when it cannot be resolved
+     */
+    private String extractGrpcStatusCode(Throwable throwable) {
+        if (!"io.grpc.StatusRuntimeException".equals(throwable.getClass().getName())) {
+            return null;
+        }
+        try {
+            Object status = MethodKit.invoke(throwable, "getStatus");
+            if (status == null) {
+                return null;
+            }
+            Object code = MethodKit.invoke(status, "getCode");
+            return code == null ? null : String.valueOf(code);
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+
+    /**
+     * Extracts a string value from a Temporal SDK object by invoking a no-argument accessor method.
+     *
+     * @param obj        the source object
+     * @param methodName the accessor method name
+     * @return the extracted string value, or {@code null} when extraction fails
+     */
     private String extractString(Object obj, String methodName) {
         try {
-            Method m = obj.getClass().getMethod(methodName);
-            return (String) m.invoke(obj);
+            return MethodKit.invoke(obj, methodName);
         } catch (Exception e) {
             Logger.warn("Failed to extract {} from {}: {}", methodName, obj.getClass().getSimpleName(), e.getMessage());
             return null;

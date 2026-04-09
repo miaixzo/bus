@@ -110,7 +110,7 @@ public class TempusProperties {
     /**
      * Activity heartbeat timeout in seconds. Maps to setHeartbeatTimeout.
      */
-    private int activityHeartbeatTimeoutSeconds = 60;
+    private int activityHeartbeatTimeoutSeconds = 300;
 
     // -------------------------------------------------------------------------
     // Activity retry

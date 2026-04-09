@@ -468,7 +468,14 @@ public class StopWatch {
      */
     public static final class TaskInfo {
 
+        /**
+         * The name assigned to the recorded task.
+         */
         private final String taskName;
+
+        /**
+         * The elapsed duration of the task in nanoseconds.
+         */
         private final long timeNanos;
 
         /**

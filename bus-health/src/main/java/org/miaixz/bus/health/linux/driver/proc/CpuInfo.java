@@ -95,8 +95,7 @@ public final class CpuInfo {
     /**
      * Gets the board manufacturer, model, version, and serial number from {@code /proc/cpuinfo}
      *
-     * @return A quartet of strings for manufacturer, model, version, and serial number. Each one may be null if
-     *         unknown.
+     * @return A tuple of strings for manufacturer, model, version, and serial number. Each one may be null if unknown.
      */
     public static Tuple queryBoardInfo() {
         String pcManufacturer = null;

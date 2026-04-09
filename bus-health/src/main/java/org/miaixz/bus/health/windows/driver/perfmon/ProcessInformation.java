@@ -96,7 +96,8 @@ public final class ProcessInformation {
         CREATINGPROCESSID("Creating Process ID"), //
         IOREADBYTESPERSEC("IO Read Bytes/sec"), //
         IOWRITEBYTESPERSEC("IO Write Bytes/sec"), //
-        PRIVATEBYTES("Working Set - Private"), //
+        WORKINGSETPRIVATE("Working Set - Private"), //
+        WORKINGSET("Working Set"), //
         PAGEFAULTSPERSEC("Page Faults/sec");
 
         private final String counter;

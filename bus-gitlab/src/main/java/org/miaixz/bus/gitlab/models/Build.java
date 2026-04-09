@@ -21,6 +21,7 @@ package org.miaixz.bus.gitlab.models;
 
 import java.util.Date;
 
+import org.miaixz.bus.gitlab.hooks.web.EventEnvironment;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class Build {
@@ -41,6 +42,7 @@ public class Build {
     private User user;
     private Runner runner;
     private ArtifactsFile artifactsFile;
+    private EventEnvironment environment;
 
     public Long getId() {
         return id;
@@ -168,6 +170,14 @@ public class Build {
 
     public void setArtifactsFile(ArtifactsFile artifactsFile) {
         this.artifactsFile = artifactsFile;
+    }
+
+    public EventEnvironment getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(EventEnvironment environment) {
+        this.environment = environment;
     }
 
     @Override

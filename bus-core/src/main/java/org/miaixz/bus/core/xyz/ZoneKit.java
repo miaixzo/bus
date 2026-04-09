@@ -72,9 +72,9 @@ public class ZoneKit {
     }
 
     /**
-     * {@link ZoneId}转换为{@link TimeZone}，{@code null}则返回系统默认值
+     * Converts a {@link ZoneId} to a {@link TimeZone}; returns the system default when {@code zoneId} is {@code null}.
      *
-     * @param zoneId {@link ZoneId}，{@code null}则返回系统默认值
+     * @param zoneId the {@link ZoneId}; when {@code null}, the system default time zone is returned
      * @return {@link TimeZone}
      */
     public static TimeZone getTimeZone(final ZoneId zoneId) {
@@ -86,20 +86,23 @@ public class ZoneKit {
     }
 
     /**
-     * 在{@link ZoneId#SHORT_IDS}中映射ID后，委托给{@link TimeZone#getTimeZone(String)}。
+     * Resolves the identifier through {@link ZoneId#SHORT_IDS} first, then delegates to
+     * {@link TimeZone#getTimeZone(String)}.
      * <p>
-     * 在Java 25中，使用{@link ZoneId#SHORT_IDS}中的ID调用{@link TimeZone#getTimeZone(String)}会在{@link System#err}中写入如下形式的消息：
+     * In Java 25, calling {@link TimeZone#getTimeZone(String)} with an identifier from {@link ZoneId#SHORT_IDS} may
+     * write a message similar to the following to {@link System#err}:
      * </p>
      *
      * <pre>
      * WARNING: Use of the three-letter time zone ID "the-short-id" is deprecated and it will be removed in a future release
      * </pre>
      * <p>
-     * 您可以通过设置系统属性{@code "TimeZone.mapShortIDs=false"}来禁用从{@link ZoneId#SHORT_IDS}的映射。
+     * You can disable the mapping from {@link ZoneId#SHORT_IDS} by setting the system property
+     * {@code "TimeZone.mapShortIDs=false"}.
      * </p>
      *
-     * @param id 与{@link TimeZone#getTimeZone(String)}相同。
-     * @return 与{@link TimeZone#getTimeZone(String)}相同。
+     * @param id same as {@link TimeZone#getTimeZone(String)}
+     * @return same as {@link TimeZone#getTimeZone(String)}
      */
     public static TimeZone getTimeZone(final String id) {
         return TimeZone.getTimeZone(

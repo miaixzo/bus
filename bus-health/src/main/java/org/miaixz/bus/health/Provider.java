@@ -361,7 +361,7 @@ public class Provider implements org.miaixz.bus.core.Provider {
         processMap.put("name", process.getName());
         processMap.put("pid", process.getProcessID());
         processMap.put(TID.CPU, formatDouble(process.getProcessCpuLoadCumulative()));
-        processMap.put(TID.MEMORY, process.getResidentSetSize());
+        processMap.put(TID.MEMORY, process.getResidentMemory());
         processMap.put("state", process.getState().toString());
         return processMap;
     }

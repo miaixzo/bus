@@ -1053,17 +1053,17 @@ public class Validator {
     }
 
     /**
-     * Validates if the value is a Hex (16进制) string.
+     * Validates whether the value is a hexadecimal string.
      *
      * @param value the value to validate
-     * @return true if the value is a Hex (16进制) string
+     * @return true if the value is a hexadecimal string
      */
     public static boolean isHex(final CharSequence value) {
         return isMatchRegex(Pattern.HEX_PATTERN, value);
     }
 
     /**
-     * Validates that the value is a Hex (16进制) string.
+     * Validates that the value is a hexadecimal string.
      *
      * @param <T>      the string type
      * @param value    the value to validate
@@ -1191,8 +1191,8 @@ public class Validator {
     }
 
     /**
-     * Checks if the value is a Chinese name. The dot in Uyghur names is · (input method in Chinese state, the symbol
-     * before number 1 in the upper left corner of the keyboard); Wrong characters: {@code ．.。．.} Correct Uyghur names:
+     * Checks if the value is a Chinese name. The dot in Uyghur names must be the middle dot character {@code ·}; other
+     * dot-like characters such as {@code ．.。．.} are invalid. Valid Uyghur-name examples include:
      *
      * <pre>
      * 霍加阿卜杜拉·麦提喀斯木

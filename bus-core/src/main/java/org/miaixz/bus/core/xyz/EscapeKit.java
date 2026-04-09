@@ -47,6 +47,9 @@ public class EscapeKit {
      * Characters that should not be escaped for JS compatibility.
      */
     private static final String NOT_ESCAPE_CHARS = "*@-_+./";
+    /**
+     * Predicate that identifies characters requiring JavaScript-style escaping.
+     */
     private static final Predicate<Character> JS_ESCAPE_FILTER = c -> !(Character.isDigit(c) || Character.isLowerCase(c)
             || Character.isUpperCase(c) || StringKit.contains(NOT_ESCAPE_CHARS, c));
 

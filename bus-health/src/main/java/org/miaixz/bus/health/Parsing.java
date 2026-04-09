@@ -98,6 +98,15 @@ public final class Parsing {
             .compile(".*(?:VID|VEN)_(\\p{XDigit}{4})&(?:PID|DEV)_(\\p{XDigit}{4})(.*)\\\\(.*)");
 
     /**
+     * Pattern for Windows DeviceID vendor and product ID without requiring a trailing instance component. Matches both
+     * full PNPDeviceID strings (PCI\VEN_8086&DEV_56A0&...\instance) and bare MatchingDeviceId values
+     * (pci\ven_8086&dev_56a0&...) that lack the trailing backslash. Case-insensitive to handle both the uppercase
+     * PNPDeviceID format and the lowercase MatchingDeviceId registry values.
+     */
+    private static final java.util.regex.Pattern VENDOR_PRODUCT_ID = java.util.regex.Pattern
+            .compile("(?i).*(?:VID|VEN)_(\\p{XDigit}{4})&(?:PID|DEV)_(\\p{XDigit}{4}).*");
+
+    /**
      * Regular expression for matching Linux lspci machine-readable format.
      */
     private static final java.util.regex.Pattern LSPCI_MACHINE_READABLE = java.util.regex.Pattern
@@ -432,7 +441,7 @@ public final class Parsing {
     public static int parseIntOrDefault(String s, int defaultInt) {
         try {
             return Integer.parseInt(s);
-        } catch (NumberFormatException e) {
+        } catch (NullPointerException | NumberFormatException e) {
             Logger.trace(DEFAULT_LOG_MSG, s, e);
             return defaultInt;
         }
@@ -986,6 +995,29 @@ public final class Parsing {
                     vendorId,
                     productId,
                     !m.group(3).isEmpty() || serial.contains(Symbol.AND) ? Normal.EMPTY : serial);
+        }
+        return null;
+    }
+
+    /**
+     * Parse a Windows DeviceID string to extract the vendor and product/device IDs as integers.
+     *
+     * <p>
+     * Handles both full PNPDeviceID strings such as {@code PCI\VEN_8086&DEV_56A0&SUBSYS_...&REV_08\instance} and bare
+     * {@code MatchingDeviceId} registry values such as {@code pci\ven_8086&dev_56a0&subsys_...} that lack a trailing
+     * backslash instance component. Also handles USB {@code VID_xxxx&PID_xxxx} format. Matching is case-insensitive.
+     *
+     * @param deviceId The DeviceID or MatchingDeviceId string
+     * @return A {@link Pair} of (vendorId, productId) as integers, or {@code null} if the string does not contain a
+     *         recognisable {@code VEN_xxxx&DEV_xxxx} or {@code VID_xxxx&PID_xxxx} pattern
+     */
+    public static Pair<Integer, Integer> parseDeviceIdToVendorProductIds(String deviceId) {
+        if (deviceId == null) {
+            return null;
+        }
+        Matcher m = VENDOR_PRODUCT_ID.matcher(deviceId);
+        if (m.matches()) {
+            return new Pair<>(hexStringToInt(m.group(1), 0), hexStringToInt(m.group(2), 0));
         }
         return null;
     }

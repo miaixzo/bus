@@ -1,25 +1,5 @@
-/*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- ~                                                                           ~
- ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
- ~                                                                           ~
- ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
- ~ you may not use this file except in compliance with the License.          ~
- ~ You may obtain a copy of the License at                                   ~
- ~                                                                           ~
- ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
- ~                                                                           ~
- ~ Unless required by applicable law or agreed to in writing, software       ~
- ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
- ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
- ~ See the License for the specific language governing permissions and       ~
- ~ limitations under the License.                                            ~
- ~                                                                           ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-*/
 package org.miaixz.bus.gitlab.hooks.web;
 
-import java.io.Serial;
 import java.util.Date;
 
 import org.miaixz.bus.gitlab.models.Runner;
@@ -31,8 +11,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class BuildEvent extends AbstractEvent {
 
-    @Serial
-    private static final long serialVersionUID = 2852230100093L;
+    private static final long serialVersionUID = 1L;
 
     public static final String JOB_HOOK_X_GITLAB_EVENT = "Job Hook";
     public static final String OBJECT_KIND = "build";
@@ -63,6 +42,8 @@ public class BuildEvent extends AbstractEvent {
     private EventRepository repository;
     private EventProject project;
     private Runner runner;
+
+    private EventEnvironment environment;
 
     @Override
     public String getObjectKind() {
@@ -264,6 +245,14 @@ public class BuildEvent extends AbstractEvent {
 
     public void setRunner(Runner runner) {
         this.runner = runner;
+    }
+
+    public EventEnvironment getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(EventEnvironment environment) {
+        this.environment = environment;
     }
 
     @Override

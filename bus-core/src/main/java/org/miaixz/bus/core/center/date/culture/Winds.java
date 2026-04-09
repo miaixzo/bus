@@ -91,7 +91,7 @@ public class Winds extends Samsara {
     }
 
     /**
-     * Gets the corresponding {@link Beast} (神兽) for this Zone.
+     * Gets the corresponding {@link Beast} for this zone.
      *
      * @return The {@link Beast} associated with this Zone.
      */

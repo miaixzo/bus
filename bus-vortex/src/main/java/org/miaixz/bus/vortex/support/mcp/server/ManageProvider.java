@@ -29,12 +29,12 @@ import java.util.concurrent.ConcurrentMap;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.health.Platform;
 import org.miaixz.bus.health.builtin.software.OSProcess;
 import org.miaixz.bus.health.builtin.software.OperatingSystem;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.vortex.magic.Metrics;
 import org.miaixz.bus.vortex.provider.MetricsProvider;
 import org.miaixz.bus.vortex.provider.ProcessProvider;
@@ -242,7 +242,7 @@ public class ManageProvider implements ProcessProvider, MetricsProvider {
 
             // Calculate average CPU load over the process uptime
             double cpuLoad = 100d * (osProcess.getKernelTime() + osProcess.getUserTime()) / osProcess.getUpTime();
-            long memoryUsage = osProcess.getResidentSetSize();
+            long memoryUsage = osProcess.getResidentMemory();
 
             return Metrics.builder().cpu(cpuLoad).memory(memoryUsage).build();
         }).subscribeOn(Schedulers.boundedElastic());

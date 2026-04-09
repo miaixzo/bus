@@ -19,16 +19,17 @@
 */
 package org.miaixz.bus.starter.storage;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.miaixz.bus.auth.Registry;
+import java.util.Map;
+
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.starter.cache.CacheProperties;
 import org.miaixz.bus.storage.Context;
+import org.miaixz.bus.storage.Registry;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
-import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Configuration properties for the object storage service.

@@ -24,7 +24,6 @@ import java.time.LocalDate;
 import java.util.*;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
@@ -48,10 +47,34 @@ import com.sun.jna.platform.linux.Udev.UdevListEntry;
 @ThreadSafe
 public final class LinuxPowerSource extends AbstractPowerSource {
 
+    enum Prop {
+        POWER_SUPPLY_NAME, POWER_SUPPLY_STATUS, POWER_SUPPLY_CAPACITY, POWER_SUPPLY_PRESENT, POWER_SUPPLY_ONLINE,
+        POWER_SUPPLY_ENERGY_NOW, POWER_SUPPLY_CHARGE_NOW, POWER_SUPPLY_ENERGY_FULL, POWER_SUPPLY_CHARGE_FULL,
+        POWER_SUPPLY_ENERGY_FULL_DESIGN, POWER_SUPPLY_CHARGE_FULL_DESIGN, POWER_SUPPLY_VOLTAGE_NOW,
+        POWER_SUPPLY_POWER_NOW, POWER_SUPPLY_CURRENT_NOW, POWER_SUPPLY_CYCLE_COUNT, POWER_SUPPLY_TECHNOLOGY,
+        POWER_SUPPLY_MODEL_NAME, POWER_SUPPLY_MANUFACTURER, POWER_SUPPLY_SERIAL_NUMBER, POWER_SUPPLY_TEMP,
+        POWER_SUPPLY_TIME_TO_EMPTY_NOW, POWER_SUPPLY_TIME_TO_FULL_NOW, POWER_SUPPLY_MANUFACTURE_YEAR,
+        POWER_SUPPLY_MANUFACTURE_MONTH, POWER_SUPPLY_MANUFACTURE_DAY
+    }
+
+    /**
+     * Initialization-on-demand holder: the map is only constructed if the non-udev path is reached, avoiding
+     * unnecessary work on systems where udev is available.
+     */
+    private static final class PropByName {
+
+        static final Map<String, Prop> MAP = new HashMap<>();
+        static {
+            for (Prop p : Prop.values()) {
+                MAP.put(p.name(), p);
+            }
+        }
+    }
+
     public LinuxPowerSource(String psName, String psDeviceName, double psRemainingCapacityPercent,
             double psTimeRemainingEstimated, double psTimeRemainingInstant, double psPowerUsageRate, double psVoltage,
             double psAmperage, boolean psPowerOnLine, boolean psCharging, boolean psDischarging,
-            PowerSource.CapacityUnits psCapacityUnits, int psCurrentCapacity, int psMaxCapacity, int psDesignCapacity,
+            CapacityUnits psCapacityUnits, int psCurrentCapacity, int psMaxCapacity, int psDesignCapacity,
             int psCycleCount, String psChemistry, LocalDate psManufactureDate, String psManufacturer,
             String psSerialNumber, double psTemperature) {
         super(psName, psDeviceName, psRemainingCapacityPercent, psTimeRemainingEstimated, psTimeRemainingInstant,
@@ -66,28 +89,6 @@ public final class LinuxPowerSource extends AbstractPowerSource {
      * @return An array of PowerSource objects representing batteries, etc.
      */
     public static List<PowerSource> getPowerSources() {
-        String psName;
-        String psDeviceName;
-        double psRemainingCapacityPercent = -1d;
-        double psTimeRemainingEstimated = -1d; // -1 = unknown, -2 = unlimited
-        double psTimeRemainingInstant = -1d;
-        double psPowerUsageRate = 0d;
-        double psVoltage = -1d;
-        double psAmperage = 0d;
-        boolean psPowerOnLine = false;
-        boolean psCharging = false;
-        boolean psDischarging = false;
-        PowerSource.CapacityUnits psCapacityUnits = PowerSource.CapacityUnits.RELATIVE;
-        int psCurrentCapacity = -1;
-        int psMaxCapacity = -1;
-        int psDesignCapacity = -1;
-        int psCycleCount = -1;
-        String psChemistry;
-        LocalDate psManufactureDate = null;
-        String psManufacturer;
-        String psSerialNumber;
-        double psTemperature = 0d;
-
         List<PowerSource> psList = new ArrayList<>();
         if (LinuxOperatingSystem.HAS_UDEV) {
             UdevContext udev = Udev.INSTANCE.udev_new();
@@ -103,88 +104,20 @@ public final class LinuxPowerSource extends AbstractPowerSource {
                             UdevDevice device = udev.deviceNewFromSyspath(syspath);
                             if (device != null) {
                                 try {
-                                    if (Parsing
-                                            .parseIntOrDefault(device.getPropertyValue("POWER_SUPPLY_PRESENT"), 1) > 0
+                                    if (Parsing.parseIntOrDefault(
+                                            device.getPropertyValue(Prop.POWER_SUPPLY_PRESENT.name()),
+                                            1) > 0
                                             && Parsing.parseIntOrDefault(
-                                                    device.getPropertyValue("POWER_SUPPLY_ONLINE"),
+                                                    device.getPropertyValue(Prop.POWER_SUPPLY_ONLINE.name()),
                                                     1) > 0) {
-                                        psName = getOrDefault(device, "POWER_SUPPLY_NAME", name);
-                                        String status = device.getPropertyValue("POWER_SUPPLY_STATUS");
-                                        psCharging = "Charging".equals(status);
-                                        psDischarging = "Discharging".equals(status);
-                                        psRemainingCapacityPercent = Parsing.parseIntOrDefault(
-                                                device.getPropertyValue("POWER_SUPPLY_CAPACITY"),
-                                                -100) / 100d;
-
-                                        // Debian/Ubuntu provides Energy. Fedora/RHEL provides Charge.
-                                        psCurrentCapacity = Parsing.parseIntOrDefault(
-                                                device.getPropertyValue("POWER_SUPPLY_ENERGY_NOW"),
-                                                -1);
-                                        if (psCurrentCapacity < 0) {
-                                            psCurrentCapacity = Parsing.parseIntOrDefault(
-                                                    device.getPropertyValue("POWER_SUPPLY_CHARGE_NOW"),
-                                                    -1);
-                                        }
-                                        psMaxCapacity = Parsing.parseIntOrDefault(
-                                                device.getPropertyValue("POWER_SUPPLY_ENERGY_FULL"),
-                                                1);
-                                        if (psMaxCapacity < 0) {
-                                            psMaxCapacity = Parsing.parseIntOrDefault(
-                                                    device.getPropertyValue("POWER_SUPPLY_CHARGE_FULL"),
-                                                    1);
-                                        }
-                                        psDesignCapacity = Parsing.parseIntOrDefault(
-                                                device.getPropertyValue("POWER_SUPPLY_ENERGY_FULL_DESIGN"),
-                                                1);
-                                        if (psDesignCapacity < 0) {
-                                            psDesignCapacity = Parsing.parseIntOrDefault(
-                                                    device.getPropertyValue("POWER_SUPPLY_CHARGE_FULL_DESIGN"),
-                                                    1);
-                                        }
-
-                                        // Debian/Ubuntu provides Voltage and Power.
-                                        // Fedora/RHEL provides Voltage and Current.
-                                        psVoltage = Parsing.parseIntOrDefault(
-                                                device.getPropertyValue("POWER_SUPPLY_VOLTAGE_NOW"),
-                                                -1);
-                                        // From Physics we know P = IV so I = P/V
-                                        if (psVoltage > 0) {
-                                            String power = device.getPropertyValue("POWER_SUPPLY_POWER_NOW");
-                                            String current = device.getPropertyValue("POWER_SUPPLY_CURRENT_NOW");
-                                            if (power == null) {
-                                                psAmperage = Parsing.parseIntOrDefault(current, 0);
-                                                psPowerUsageRate = psAmperage * psVoltage;
-                                            } else if (current == null) {
-                                                psPowerUsageRate = Parsing.parseIntOrDefault(power, 0);
-                                                psAmperage = psPowerUsageRate / psVoltage;
-                                            } else {
-                                                psAmperage = Parsing.parseIntOrDefault(current, 0);
-                                                psPowerUsageRate = Parsing.parseIntOrDefault(power, 0);
+                                        Map<Prop, String> props = new EnumMap<>(Prop.class);
+                                        for (Prop p : Prop.values()) {
+                                            String val = device.getPropertyValue(p.name());
+                                            if (val != null) {
+                                                props.put(p, val);
                                             }
                                         }
-
-                                        psCycleCount = Parsing.parseIntOrDefault(
-                                                device.getPropertyValue("POWER_SUPPLY_CYCLE_COUNT"),
-                                                -1);
-                                        psChemistry = getOrDefault(device, "POWER_SUPPLY_TECHNOLOGY", Normal.UNKNOWN);
-                                        psDeviceName = getOrDefault(device, "POWER_SUPPLY_MODEL_NAME", Normal.UNKNOWN);
-                                        psManufacturer = getOrDefault(
-                                                device,
-                                                "POWER_SUPPLY_MANUFACTURER",
-                                                Normal.UNKNOWN);
-                                        psSerialNumber = getOrDefault(
-                                                device,
-                                                "POWER_SUPPLY_SERIAL_NUMBER",
-                                                Normal.UNKNOWN);
-
-                                        psList.add(
-                                                new LinuxPowerSource(psName, psDeviceName, psRemainingCapacityPercent,
-                                                        psTimeRemainingEstimated, psTimeRemainingInstant,
-                                                        psPowerUsageRate, psVoltage, psAmperage, psPowerOnLine,
-                                                        psCharging, psDischarging, psCapacityUnits, psCurrentCapacity,
-                                                        psMaxCapacity, psDesignCapacity, psCycleCount, psChemistry,
-                                                        psManufactureDate, psManufacturer, psSerialNumber,
-                                                        psTemperature));
+                                        psList.add(buildPowerSource(name, props));
                                     }
                                 } finally {
                                     device.unref();
@@ -206,78 +139,20 @@ public final class LinuxPowerSource extends AbstractPowerSource {
             }
             for (File ps : psArr) {
                 String name = ps.getName();
-                if (!name.startsWith("ADP") && !name.startsWith("AC")) {
-                    // Skip if can't read uevent file
+                if (!name.startsWith("ADP") && !name.startsWith("AC") && !name.contains("USBC")) {
                     List<String> psInfo = Builder.readFile(SysPath.POWER_SUPPLY + "/" + name + "/uevent", false);
-                    Map<String, String> psMap = new HashMap<>();
+                    Map<Prop, String> props = new EnumMap<>(Prop.class);
                     for (String line : psInfo) {
-                        String[] split = line.split(Symbol.EQUAL);
+                        String[] split = line.split("=", 2);
                         if (split.length > 1 && !split[1].isEmpty()) {
-                            psMap.put(split[0], split[1]);
+                            Prop p = PropByName.MAP.get(split[0]);
+                            if (p != null) {
+                                props.put(p, split[1]);
+                            }
                         }
                     }
-
-                    psName = psMap.getOrDefault("POWER_SUPPLY_NAME", name);
-                    String status = psMap.get("POWER_SUPPLY_STATUS");
-                    psCharging = "Charging".equals(status);
-                    psDischarging = "Discharging".equals(status);
-
-                    if (psMap.containsKey("POWER_SUPPLY_CAPACITY")) {
-                        psRemainingCapacityPercent = Parsing.parseIntOrDefault(psMap.get("POWER_SUPPLY_CAPACITY"), -100)
-                                / 100d;
-                    }
-                    if (psMap.containsKey("POWER_SUPPLY_ENERGY_NOW")) {
-                        psCurrentCapacity = Parsing.parseIntOrDefault(psMap.get("POWER_SUPPLY_ENERGY_NOW"), -1);
-                    } else if (psMap.containsKey("POWER_SUPPLY_CHARGE_NOW")) {
-                        psCurrentCapacity = Parsing.parseIntOrDefault(psMap.get("POWER_SUPPLY_CHARGE_NOW"), -1);
-                    }
-                    if (psMap.containsKey("POWER_SUPPLY_ENERGY_FULL")) {
-                        psCurrentCapacity = Parsing.parseIntOrDefault(psMap.get("POWER_SUPPLY_ENERGY_FULL"), 1);
-                    } else if (psMap.containsKey("POWER_SUPPLY_CHARGE_FULL")) {
-                        psCurrentCapacity = Parsing.parseIntOrDefault(psMap.get("POWER_SUPPLY_CHARGE_FULL"), 1);
-                    }
-                    if (psMap.containsKey("POWER_SUPPLY_ENERGY_FULL_DESIGN")) {
-                        psMaxCapacity = Parsing.parseIntOrDefault(psMap.get("POWER_SUPPLY_ENERGY_FULL_DESIGN"), 1);
-                    } else if (psMap.containsKey("POWER_SUPPLY_CHARGE_FULL_DESIGN")) {
-                        psMaxCapacity = Parsing.parseIntOrDefault(psMap.get("POWER_SUPPLY_CHARGE_FULL_DESIGN"), 1);
-                    }
-                    // Debian/Ubuntu provides Voltage and Power.
-                    // Fedora/RHEL provides Voltage and Current.
-                    if (psMap.containsKey("POWER_SUPPLY_VOLTAGE_NOW")) {
-                        psVoltage = Parsing.parseIntOrDefault(psMap.get("POWER_SUPPLY_VOLTAGE_NOW"), -1);
-                    }
-                    // From Physics we know P = IV so I = P/V
-                    if (psVoltage > 0) {
-                        if (psMap.containsKey("POWER_SUPPLY_POWER_NOW")) {
-                            psPowerUsageRate = Parsing.parseIntOrDefault(psMap.get("POWER_SUPPLY_POWER_NOW"), -1);
-                        }
-                        if (psMap.containsKey("POWER_SUPPLY_CURRENT_NOW")) {
-                            psAmperage = Parsing.parseIntOrDefault(psMap.get("POWER_SUPPLY_CURRENT_NOW"), -1);
-                        }
-                        if (psPowerUsageRate < 0 && psAmperage >= 0) {
-                            psPowerUsageRate = psAmperage * psVoltage;
-                        } else if (psPowerUsageRate >= 0 && psAmperage < 0) {
-                            psAmperage = psPowerUsageRate / psVoltage;
-                        } else {
-                            psAmperage = 0;
-                            psPowerUsageRate = 0;
-                        }
-                    }
-
-                    if (psMap.containsKey("POWER_SUPPLY_CYCLE_COUNT")) {
-                        psCycleCount = Parsing.parseIntOrDefault(psMap.get("POWER_SUPPLY_CYCLE_COUNT"), -1);
-                    }
-                    psChemistry = psMap.getOrDefault("POWER_SUPPLY_TECHNOLOGY", Normal.UNKNOWN);
-                    psDeviceName = psMap.getOrDefault("POWER_SUPPLY_MODEL_NAME", Normal.UNKNOWN);
-                    psManufacturer = psMap.getOrDefault("POWER_SUPPLY_MANUFACTURER", Normal.UNKNOWN);
-                    psSerialNumber = psMap.getOrDefault("POWER_SUPPLY_SERIAL_NUMBER", Normal.UNKNOWN);
-                    if (Parsing.parseIntOrDefault(psMap.get("POWER_SUPPLY_PRESENT"), 1) > 0) {
-                        psList.add(
-                                new LinuxPowerSource(psName, psDeviceName, psRemainingCapacityPercent,
-                                        psTimeRemainingEstimated, psTimeRemainingInstant, psPowerUsageRate, psVoltage,
-                                        psAmperage, psPowerOnLine, psCharging, psDischarging, psCapacityUnits,
-                                        psCurrentCapacity, psMaxCapacity, psDesignCapacity, psCycleCount, psChemistry,
-                                        psManufactureDate, psManufacturer, psSerialNumber, psTemperature));
+                    if (Parsing.parseIntOrDefault(props.get(Prop.POWER_SUPPLY_PRESENT), 1) > 0) {
+                        psList.add(buildPowerSource(name, props));
                     }
                 }
             }
@@ -285,9 +160,87 @@ public final class LinuxPowerSource extends AbstractPowerSource {
         return psList;
     }
 
-    private static String getOrDefault(UdevDevice device, String property, String def) {
-        String value = device.getPropertyValue(property);
-        return value == null ? def : value;
+    static LinuxPowerSource buildPowerSource(String name, Map<Prop, String> props) {
+        String psName = props.getOrDefault(Prop.POWER_SUPPLY_NAME, name);
+        String status = props.get(Prop.POWER_SUPPLY_STATUS);
+        boolean psCharging = "Charging".equals(status);
+        boolean psDischarging = "Discharging".equals(status);
+        double psRemainingCapacityPercent = Parsing.parseIntOrDefault(props.get(Prop.POWER_SUPPLY_CAPACITY), -100)
+                / 100d;
+
+        // Debian/Ubuntu provides Energy (µWh). Fedora/RHEL provides Charge (µAh).
+        // Parse raw values in micro-units first, fall back across Energy/Charge, then
+        // divide by 1000 at the end to avoid integer division truncating the -1 sentinel.
+        int rawNow = Parsing.parseIntOrDefault(props.get(Prop.POWER_SUPPLY_ENERGY_NOW), -1);
+        CapacityUnits psCapacityUnits;
+        if (rawNow >= 0) {
+            psCapacityUnits = CapacityUnits.MWH;
+        } else {
+            rawNow = Parsing.parseIntOrDefault(props.get(Prop.POWER_SUPPLY_CHARGE_NOW), -1);
+            psCapacityUnits = CapacityUnits.MAH;
+        }
+        int psCurrentCapacity = rawNow >= 0 ? rawNow / 1000 : -1;
+
+        int rawFull = Parsing.parseIntOrDefault(props.get(Prop.POWER_SUPPLY_ENERGY_FULL), -1);
+        if (rawFull < 0) {
+            rawFull = Parsing.parseIntOrDefault(props.get(Prop.POWER_SUPPLY_CHARGE_FULL), -1);
+        }
+        int psMaxCapacity = rawFull >= 0 ? rawFull / 1000 : -1;
+
+        int rawDesign = Parsing.parseIntOrDefault(props.get(Prop.POWER_SUPPLY_ENERGY_FULL_DESIGN), -1);
+        if (rawDesign < 0) {
+            rawDesign = Parsing.parseIntOrDefault(props.get(Prop.POWER_SUPPLY_CHARGE_FULL_DESIGN), -1);
+        }
+        int psDesignCapacity = rawDesign >= 0 ? rawDesign / 1000 : -1;
+
+        // Debian/Ubuntu provides Voltage and Power. Fedora/RHEL provides Voltage and Current.
+        double psVoltage = Parsing.parseDoubleOrDefault(props.get(Prop.POWER_SUPPLY_VOLTAGE_NOW), -1d) / 1_000_000d;
+        double psPowerUsageRate = 0d;
+        double psAmperage = 0d;
+        // From Physics we know P = IV so I = P/V
+        // Linux always reports POWER_NOW and CURRENT_NOW as non-negative; sign is
+        // conveyed by STATUS. Negate when discharging to match the PowerSource contract
+        // (positive = charging, negative = discharging).
+        double sign = psDischarging ? -1d : 1d;
+        if (psVoltage > 0) {
+            double rawPower = Parsing.parseDoubleOrDefault(props.get(Prop.POWER_SUPPLY_POWER_NOW), -1d);
+            double rawCurrent = Parsing.parseDoubleOrDefault(props.get(Prop.POWER_SUPPLY_CURRENT_NOW), -1d);
+            if (rawPower >= 0) {
+                psPowerUsageRate = sign * rawPower / 1000d;
+            }
+            if (rawCurrent >= 0) {
+                psAmperage = sign * rawCurrent / 1000d;
+            }
+            if (rawPower < 0 && rawCurrent >= 0) {
+                psPowerUsageRate = psAmperage * psVoltage;
+            } else if (rawCurrent < 0 && rawPower >= 0) {
+                psAmperage = psPowerUsageRate / psVoltage;
+            }
+        }
+
+        int psCycleCount = Parsing.parseIntOrDefault(props.get(Prop.POWER_SUPPLY_CYCLE_COUNT), -1);
+        String psChemistry = props.getOrDefault(Prop.POWER_SUPPLY_TECHNOLOGY, Normal.UNKNOWN);
+        String psDeviceName = props.getOrDefault(Prop.POWER_SUPPLY_MODEL_NAME, Normal.UNKNOWN);
+        String psManufacturer = props.getOrDefault(Prop.POWER_SUPPLY_MANUFACTURER, Normal.UNKNOWN);
+        String psSerialNumber = props.getOrDefault(Prop.POWER_SUPPLY_SERIAL_NUMBER, Normal.UNKNOWN);
+
+        // TEMP is in tenths of degrees Celsius
+        int rawTemp = Parsing.parseIntOrDefault(props.get(Prop.POWER_SUPPLY_TEMP), -1);
+        double psTemperature = rawTemp >= 0 ? rawTemp / 10d : 0d;
+
+        // TIME_TO_EMPTY_NOW when discharging, TIME_TO_FULL_NOW when charging; both in seconds
+        Prop timeKey = psCharging ? Prop.POWER_SUPPLY_TIME_TO_FULL_NOW : Prop.POWER_SUPPLY_TIME_TO_EMPTY_NOW;
+        double psTimeRemainingInstant = Parsing.parseIntOrDefault(props.get(timeKey), -1);
+
+        int year = Parsing.parseIntOrDefault(props.get(Prop.POWER_SUPPLY_MANUFACTURE_YEAR), -1);
+        int month = Parsing.parseIntOrDefault(props.get(Prop.POWER_SUPPLY_MANUFACTURE_MONTH), -1);
+        int day = Parsing.parseIntOrDefault(props.get(Prop.POWER_SUPPLY_MANUFACTURE_DAY), -1);
+        LocalDate psManufactureDate = (year > 0 && month > 0 && day > 0) ? LocalDate.of(year, month, day) : null;
+
+        return new LinuxPowerSource(psName, psDeviceName, psRemainingCapacityPercent, -1d, psTimeRemainingInstant,
+                psPowerUsageRate, psVoltage, psAmperage, false, psCharging, psDischarging, psCapacityUnits,
+                psCurrentCapacity, psMaxCapacity, psDesignCapacity, psCycleCount, psChemistry, psManufactureDate,
+                psManufacturer, psSerialNumber, psTemperature);
     }
 
 }

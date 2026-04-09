@@ -37,7 +37,14 @@ public class CacheObjectIterator<K, V> implements Iterator<CacheObject<K, V>>, S
     @Serial
     private static final long serialVersionUID = 2852231183370L;
 
+    /**
+     * The underlying iterator that traverses cached entries.
+     */
     private final Iterator<CacheObject<K, V>> iterator;
+
+    /**
+     * The next non-expired cache entry prepared for iteration.
+     */
     private CacheObject<K, V> nextValue;
 
     /**

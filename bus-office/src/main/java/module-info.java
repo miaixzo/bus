@@ -31,6 +31,7 @@ module bus.office {
     requires bus.core;
     requires bus.logger;
 
+    requires lombok;
     requires org.apache.poi.poi;
     requires org.apache.poi.ooxml;
     requires ofdrw.converter;
