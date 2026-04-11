@@ -97,8 +97,8 @@ public class CompositeArgumentResolver implements HandlerMethodArgumentResolver 
      * The decision follows two paths:
      * <ul>
      * <li>Parameters explicitly annotated with {@link ModelAttribute} are always supported.</li>
-     * <li>Otherwise, support depends on {@link WrapperRuntimeOptions#isResolveNonSimpleArguments()} and whether the
-     * parameter type is considered a simple type by {@link #isSimpleType(Class)}.</li>
+     * <li>Otherwise, support depends on the runtime option {@code resolveNonSimpleArguments} and whether the parameter
+     * type is considered a simple type by {@link #isSimpleType(Class)}.</li>
      * </ul>
      * This preserves the legacy "auto bind non-simple arguments" behavior while still allowing stricter operation
      * through runtime configuration.
@@ -123,7 +123,7 @@ public class CompositeArgumentResolver implements HandlerMethodArgumentResolver 
      * <li>For wrapped requests, cached body content is preferred.</li>
      * <li>For JSON requests, the body is deserialized directly into the target type.</li>
      * <li>For form requests, binding is driven by {@code parameterMap}, optionally supplemented by synthesized form
-     * body content when {@link WrapperRuntimeOptions#isSynthesizeFormBody()} is enabled.</li>
+     * body content when the runtime option {@code synthesizeFormBody} is enabled.</li>
      * <li>For multipart requests, uploaded files are merged into binding values.</li>
      * </ul>
      * The custom {@code @Valid} semantics used by the framework remain unchanged and are applied after binding values
@@ -225,9 +225,9 @@ public class CompositeArgumentResolver implements HandlerMethodArgumentResolver 
     /**
      * Determines if a given type is a simple type.
      * <p>
-     * This helper is used as the boundary for the legacy "resolve all non-simple arguments" behavior. When
-     * {@link WrapperRuntimeOptions#isResolveNonSimpleArguments()} is enabled, types outside this set are considered
-     * eligible for automatic binding by this resolver.
+     * This helper is used as the boundary for the legacy "resolve all non-simple arguments" behavior. When the runtime
+     * option {@code resolveNonSimpleArguments} is enabled, types outside this set are considered eligible for automatic
+     * binding by this resolver.
      * <p>
      * Simple types include:
      * <ul>
@@ -288,8 +288,8 @@ public class CompositeArgumentResolver implements HandlerMethodArgumentResolver 
     /**
      * Determines whether a string should be treated as an empty binding value.
      * <p>
-     * The resolver treats blank strings and common frontend placeholders such as {@code null} and {@code undefined}
-     * as absent values so they do not participate in object binding.
+     * The resolver treats blank strings and common frontend placeholders such as {@code null} and {@code undefined} as
+     * absent values so they do not participate in object binding.
      *
      * @param value The raw string value submitted by the request.
      * @return {@code true} if the value should be treated as absent, {@code false} otherwise.
