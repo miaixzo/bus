@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.spring.GeniusBuilder;
 
 /**
  * Matches class names against comma-separated auto-type package rules.
@@ -41,7 +42,7 @@ public class AutoBindingTypeMatcher {
     /**
      * Built-in safe default so all org.miaixz.bus types work even with no user config.
      */
-    private static final String DEFAULT_RULE = "org.miaixz.bus.**";
+    private static final String DEFAULT_RULE = GeniusBuilder.BUS_PACKAGE + Symbol.DOT + Symbol.STAR + Symbol.STAR;
 
     /**
      * The normalized rule list used during matching.

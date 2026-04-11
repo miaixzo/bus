@@ -60,6 +60,11 @@ public class GeniusBuilder {
     public static final String BUS_BOOT_BANNER = " :: Bus Boot :: ";
 
     /**
+     * Built-in auto-binding type rule so Bus framework types work without user configuration.
+     */
+    public static final String BUS_PACKAGE = "org.miaixz.bus";
+
+    /**
      * Spring Boot banner prefix.
      */
     public static final String SPRING_BOOT_BANNER = " :: Spring Boot :: ";
