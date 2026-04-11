@@ -87,7 +87,7 @@ public class LunarDay extends DayParts {
      */
     public static void validate(int year, int month, int day) {
         if (day < 1) {
-            throw new IllegalArgumentException(String.format("illegal lunar day %d", day));
+            throw new IllegalArgumentException("illegal lunar day: " + day);
         }
         LunarMonth m = LunarMonth.fromYm(year, month);
         if (day > m.getDayCount()) {
@@ -107,7 +107,7 @@ public class LunarDay extends DayParts {
     /**
      * Gets the Chinese name of this lunar day.
      *
-     * @return the Chinese name (e.g., "初一", "十五")
+     * @return the localized lunar day name
      */
     public String getName() {
         return NAMES[day - 1];

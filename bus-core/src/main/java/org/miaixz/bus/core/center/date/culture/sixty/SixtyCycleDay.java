@@ -32,8 +32,8 @@ import org.miaixz.bus.core.center.date.culture.star.twelve.TwelveStar;
 import org.miaixz.bus.core.center.date.culture.star.twentyeight.TwentyEightStar;
 
 /**
- * Represents a Sixty-Year Cycle Day (干支日), a traditional Chinese calendar unit. The year changes at the Start of Spring
- * (立春), and the month changes at the beginning of a solar term (节令). This class extends {@link Loops} for cyclical
+ * Represents a Sixty-Year Cycle day, a traditional Chinese calendar unit. The year changes at the Start of Spring,
+ * and the month changes at the beginning of a solar term. This class extends {@link Loops} for cyclical
  * operations.
  *
  * @author Kimi Liu
@@ -52,7 +52,7 @@ public class SixtyCycleDay extends Loops {
     protected SixtyCycleMonth month;
 
     /**
-     * The Sixty-Year Cycle for the day (日柱).
+     * The day pillar within the Sixty-Year Cycle.
      */
     protected SixtyCycle day;
 
@@ -113,7 +113,7 @@ public class SixtyCycleDay extends Loops {
     }
 
     /**
-     * Gets the Sixty-Year Cycle for the year (年柱).
+     * Gets the year pillar.
      *
      * @return The {@link SixtyCycle} instance representing the year pillar.
      */
@@ -122,7 +122,7 @@ public class SixtyCycleDay extends Loops {
     }
 
     /**
-     * Gets the Sixty-Year Cycle for the month (月柱).
+     * Gets the month pillar.
      *
      * @return The {@link SixtyCycle} instance representing the month pillar.
      */
@@ -131,7 +131,7 @@ public class SixtyCycleDay extends Loops {
     }
 
     /**
-     * Gets the Sixty-Year Cycle for the day (日柱).
+     * Gets the day pillar.
      *
      * @return The {@link SixtyCycle} instance representing the day pillar.
      */
@@ -145,7 +145,7 @@ public class SixtyCycleDay extends Loops {
      * @return The name of the day as a formatted string.
      */
     public String getName() {
-        return String.format("%s日", day);
+        return day + "日";
     }
 
     /**
@@ -155,11 +155,11 @@ public class SixtyCycleDay extends Loops {
      */
     @Override
     public String toString() {
-        return String.format("%s%s", month, getName());
+        return month + getName();
     }
 
     /**
-     * Gets the Duty (建除十二值神) associated with this day.
+     * Gets the duty deity associated with this day.
      *
      * @return The {@link Duty} instance.
      */
@@ -168,7 +168,7 @@ public class SixtyCycleDay extends Loops {
     }
 
     /**
-     * Gets the Twelve Star (黄道黑道十二神) associated with this day.
+     * Gets the twelve-star marker associated with this day.
      *
      * @return The {@link TwelveStar} instance.
      */
@@ -178,7 +178,7 @@ public class SixtyCycleDay extends Loops {
     }
 
     /**
-     * Gets the Nine Star (九星) associated with this day.
+     * Gets the nine-star marker associated with this day.
      *
      * @return The {@link NineStar} instance.
      */
@@ -200,7 +200,7 @@ public class SixtyCycleDay extends Loops {
     }
 
     /**
-     * Gets the direction of Jupiter (太岁方位) for this day.
+     * Gets the Jupiter direction for this day.
      *
      * @return The {@link Direction} of Jupiter.
      */
@@ -211,7 +211,7 @@ public class SixtyCycleDay extends Loops {
     }
 
     /**
-     * Gets the daily Fetus God (逐日胎神) for this day.
+     * Gets the daily Fetus God for this day.
      *
      * @return The {@link FetusDay} instance.
      */
@@ -220,7 +220,7 @@ public class SixtyCycleDay extends Loops {
     }
 
     /**
-     * Gets the Twenty-Eight Mansions (二十八宿) associated with this day.
+     * Gets the Twenty-Eight Mansions associated with this day.
      *
      * @return The {@link TwentyEightStar} instance.
      */
@@ -230,7 +230,7 @@ public class SixtyCycleDay extends Loops {
     }
 
     /**
-     * Gets the list of Gods and Evils (神煞列表) for this day, indicating auspicious (吉神宜趋) and inauspicious (凶神宜忌) ones.
+     * Gets the list of auspicious and inauspicious markers associated with this day.
      *
      * @return A list of {@link God} objects.
      */
@@ -239,7 +239,7 @@ public class SixtyCycleDay extends Loops {
     }
 
     /**
-     * Gets the list of recommended activities (宜) for this day.
+     * Gets the list of recommended activities for this day.
      *
      * @return A list of {@link Taboo} objects representing recommended activities.
      */
@@ -248,7 +248,7 @@ public class SixtyCycleDay extends Loops {
     }
 
     /**
-     * Gets the list of activities to avoid (忌) for this day.
+     * Gets the list of activities to avoid for this day.
      *
      * @return A list of {@link Taboo} objects representing activities to avoid.
      */
@@ -268,7 +268,7 @@ public class SixtyCycleDay extends Loops {
     }
 
     /**
-     * Gets a list of all Sixty-Year Cycle Hours (干支时辰列表) for this day.
+     * Gets all Sixty-Year Cycle hours belonging to this day.
      *
      * @return A list of {@link SixtyCycleHour} objects.
      */

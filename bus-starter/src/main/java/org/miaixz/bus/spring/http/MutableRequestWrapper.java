@@ -32,6 +32,7 @@ import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
 
 import jakarta.servlet.ReadListener;
 import jakarta.servlet.ServletInputStream;
@@ -41,7 +42,6 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
 
 /**
  * Request wrapper that caches the request body content and provides XSS protection.

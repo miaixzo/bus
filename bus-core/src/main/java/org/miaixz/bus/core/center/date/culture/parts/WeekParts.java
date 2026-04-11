@@ -71,10 +71,10 @@ public abstract class WeekParts extends MonthParts {
      */
     public static void validate(int index, int start) {
         if (index < 0 || index > 5) {
-            throw new IllegalArgumentException(String.format("illegal week index: %d", index));
+            throw new IllegalArgumentException("illegal week index: " + index);
         }
         if (start < 0 || start > 6) {
-            throw new IllegalArgumentException(String.format("illegal week start: %d", start));
+            throw new IllegalArgumentException("illegal week start: " + start);
         }
     }
 

@@ -96,7 +96,7 @@ public class RabjungMonth extends MonthParts {
      */
     public static void validate(int year, int month) {
         if (month == 0 || month > 12 || month < -12) {
-            throw new IllegalArgumentException(String.format("illegal rab-byung month: %d", month));
+            throw new IllegalArgumentException("illegal rab-byung month: " + month);
         }
         if (year < 1950 || year > 2050) {
             throw new IllegalArgumentException(String.format("rab-byung year %d must between 1950 and 2050", year));

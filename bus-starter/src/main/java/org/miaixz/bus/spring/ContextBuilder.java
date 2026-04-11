@@ -353,7 +353,7 @@ public class ContextBuilder extends WebUtils {
                 if (request instanceof MutableRequestWrapper wrapper) {
                     String contentType = request.getContentType();
                     byte[] bodyBytes = wrapper.getBody();
-                    if (WrapperRuntimeOptions.of().isSynthesizeFormBody() && contentType != null
+                    if (WrapperRuntimeOptions.current().isSynthesizeFormBody() && contentType != null
                             && contentType.startsWith(MediaType.APPLICATION_FORM_URLENCODED) && bodyBytes != null
                             && bodyBytes.length > 0) {
                         String bodyString = new String(bodyBytes, Charset.UTF_8);

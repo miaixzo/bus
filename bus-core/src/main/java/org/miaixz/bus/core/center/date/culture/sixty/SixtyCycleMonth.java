@@ -28,7 +28,7 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
 
 /**
- * Represents a Sixty-Year Cycle Month (干支月), a traditional Chinese calendar unit. This class extends {@link Loops} for
+ * Represents a Sixty-Year Cycle month, a traditional Chinese calendar unit. This class extends {@link Loops} for
  * cyclical operations.
  *
  * @author Kimi Liu
@@ -42,7 +42,7 @@ public class SixtyCycleMonth extends Loops {
     protected SixtyCycleYear year;
 
     /**
-     * The Sixty-Year Cycle for the month (月柱).
+     * The month pillar within the Sixty-Year Cycle.
      */
     protected SixtyCycle month;
 
@@ -78,7 +78,7 @@ public class SixtyCycleMonth extends Loops {
     }
 
     /**
-     * Gets the Sixty-Year Cycle for the year (年柱).
+     * Gets the year pillar.
      *
      * @return The {@link SixtyCycle} instance representing the year.
      */
@@ -87,7 +87,7 @@ public class SixtyCycleMonth extends Loops {
     }
 
     /**
-     * Gets the Sixty-Year Cycle for the month (月柱).
+     * Gets the month pillar.
      *
      * @return The {@link SixtyCycle} instance representing the month.
      */
@@ -101,7 +101,7 @@ public class SixtyCycleMonth extends Loops {
      * @return The name of the month as a formatted string.
      */
     public String getName() {
-        return String.format("%s月", month);
+        return month + "月";
     }
 
     /**
@@ -111,7 +111,7 @@ public class SixtyCycleMonth extends Loops {
      */
     @Override
     public String toString() {
-        return String.format("%s%s", year, getName());
+        return year + getName();
     }
 
     /**
@@ -126,7 +126,7 @@ public class SixtyCycleMonth extends Loops {
     }
 
     /**
-     * Gets the index of this month within the year (0-11), where Yin month (寅月) is 0.
+     * Gets the index of this month within the year, where the Yin month is zero.
      *
      * @return The index of the month in the year.
      */
@@ -135,7 +135,7 @@ public class SixtyCycleMonth extends Loops {
     }
 
     /**
-     * Gets the Nine Star (九星) associated with this month.
+     * Gets the nine-star marker associated with this month.
      *
      * @return The {@link NineStar} instance.
      */
@@ -148,7 +148,7 @@ public class SixtyCycleMonth extends Loops {
     }
 
     /**
-     * Gets the direction of Jupiter (太岁方位) for this month.
+     * Gets the Jupiter direction for this month.
      *
      * @return The {@link Direction} of Jupiter.
      */
@@ -158,7 +158,7 @@ public class SixtyCycleMonth extends Loops {
     }
 
     /**
-     * Gets the first day (节令当天) of this Sixty-Year Cycle Month.
+     * Gets the first day of this Sixty-Year Cycle month, aligned to the opening solar term.
      *
      * @return The {@link SixtyCycleDay} instance representing the first day.
      */

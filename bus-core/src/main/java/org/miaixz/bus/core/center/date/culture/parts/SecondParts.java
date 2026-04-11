@@ -58,13 +58,13 @@ public abstract class SecondParts extends DayParts {
      */
     public static void validate(int hour, int minute, int second) {
         if (hour < 0 || hour > 23) {
-            throw new IllegalArgumentException(String.format("illegal hour: %d", hour));
+            throw new IllegalArgumentException("illegal hour: " + hour);
         }
         if (minute < 0 || minute > 59) {
-            throw new IllegalArgumentException(String.format("illegal minute: %d", minute));
+            throw new IllegalArgumentException("illegal minute: " + minute);
         }
         if (second < 0 || second > 59) {
-            throw new IllegalArgumentException(String.format("illegal second: %d", second));
+            throw new IllegalArgumentException("illegal second: " + second);
         }
     }
 

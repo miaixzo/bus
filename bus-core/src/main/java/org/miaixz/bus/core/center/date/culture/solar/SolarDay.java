@@ -41,6 +41,7 @@ import org.miaixz.bus.core.center.date.culture.rabjung.RabjungDay;
 import org.miaixz.bus.core.center.date.culture.sixty.HiddenStem;
 import org.miaixz.bus.core.center.date.culture.sixty.HiddenStemDay;
 import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycleDay;
+import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
 
 /**
  * Represents a day in the Gregorian calendar.
@@ -51,7 +52,7 @@ import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycleDay;
 public class SolarDay extends DayParts {
 
     /**
-     * Array of Chinese day names (1日 to 31日).
+     * Localized day labels for the first through thirty-first day of a month.
      */
     public static final String[] NAMES = { "1日", "2日", "3日", "4日", "5日", "6日", "7日", "8日", "9日", "10日", "11日", "12日",
             "13日", "14日", "15日", "16日", "17日", "18日", "19日", "20日", "21日", "22日", "23日", "24日", "25日", "26日", "27日",
@@ -146,7 +147,7 @@ public class SolarDay extends DayParts {
     }
 
     /**
-     * Gets the Chinese name of this day (e.g., "1日", "2日").
+     * Gets the localized display name of this day.
      *
      * @return the Chinese day name
      */
@@ -472,6 +473,35 @@ public class SolarDay extends DayParts {
     @Override
     public String toString() {
         return getSolarMonth() + getName();
+    }
+
+    /**
+     * Gets the Nine Star assigned to this day.
+     * The calculation anchors to the nearest Jia-Zi day around the winter and summer solstices and then advances
+     * forward or backward according to the traditional sequence.
+     *
+     * @return nine star for this day
+     */
+    public NineStar getNineStar() {
+        SolarDay winterSolstice = SolarTerms.fromIndex(year, 0).getSolarDay();
+        SolarDay summerSolstice = SolarTerms.fromIndex(year, 12).getSolarDay();
+        SolarDay nextWinterSolstice = SolarTerms.fromIndex(year + 1, 0).getSolarDay();
+        // Nearest Jia-Zi day around the winter solstice.
+        SolarDay w = winterSolstice.next(winterSolstice.getLunarDay().getSixtyCycle().stepsCloseTo(0));
+        // Nearest Jia-Zi day around the summer solstice.
+        SolarDay s = summerSolstice.next(summerSolstice.getLunarDay().getSixtyCycle().stepsCloseTo(0));
+        // Nearest Jia-Zi day around the next winter solstice.
+        SolarDay n = nextWinterSolstice.next(nextWinterSolstice.getLunarDay().getSixtyCycle().stepsCloseTo(0));
+        // 43210012345678876543210012345
+        // w s n
+        // Evaluate against the winter-solstice / summer-solstice / next-winter-solstice window.
+        if (isBefore(w)) {
+            return NineStar.fromIndex(w.subtract(this) - 1);
+        }
+        if (isBefore(s)) {
+            return NineStar.fromIndex(subtract(w));
+        }
+        return NineStar.fromIndex(isBefore(n) ? n.subtract(this) - 1 : subtract(n));
     }
 
 }

@@ -49,13 +49,25 @@ public class FestivalBuilder {
     }
 
     /**
-     * Encodes the festival rule type to a character.
+     * Gets the registry encoding character for the specified index.
      *
-     * @param type festival rule type
+     * @param index character index
      * @return encoded character
      */
-    public static char encodeType(FestivalRule type) {
-        return FestivalRegistry.CHARS.charAt(type.getCode());
+    protected char getChar(int index) {
+        return FestivalRegistry.CHARS.charAt(index);
+    }
+
+    /**
+     * Writes a signed numeric value into the encoded payload.
+     *
+     * @param index payload position
+     * @param n     signed numeric value
+     * @return this builder
+     */
+    protected FestivalBuilder setValue(int index, int n) {
+        data[index] = getChar(31 + n);
+        return this;
     }
 
     /**
@@ -68,11 +80,8 @@ public class FestivalBuilder {
      * @return this builder
      */
     protected FestivalBuilder content(FestivalRule type, int a, int b, int c) {
-        data[1] = encodeType(type);
-        data[2] = FestivalRegistry.CHARS.charAt(31 + a);
-        data[3] = FestivalRegistry.CHARS.charAt(31 + b);
-        data[4] = FestivalRegistry.CHARS.charAt(31 + c);
-        return this;
+        data[1] = getChar(type.getCode());
+        return setValue(2, a).setValue(3, b).setValue(4, c);
     }
 
     /**
@@ -156,7 +165,7 @@ public class FestivalBuilder {
         int size = FestivalRegistry.CHARS.length();
         int n = year;
         for (int i = 0; i < 3; i++) {
-            data[8 - i] = FestivalRegistry.CHARS.charAt(n % size);
+            data[8 - i] = getChar(n % size);
             n /= size;
         }
         return this;
@@ -169,8 +178,7 @@ public class FestivalBuilder {
      * @return this builder
      */
     public FestivalBuilder offset(int days) {
-        data[5] = FestivalRegistry.CHARS.charAt(31 + days);
-        return this;
+        return setValue(5, days);
     }
 
     /**
@@ -181,4 +189,5 @@ public class FestivalBuilder {
     public Festival build() {
         return new Festival(name, new String(data));
     }
+
 }

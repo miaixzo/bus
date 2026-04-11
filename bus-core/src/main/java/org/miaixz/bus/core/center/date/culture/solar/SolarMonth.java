@@ -33,7 +33,7 @@ import org.miaixz.bus.core.center.date.culture.parts.MonthParts;
 public class SolarMonth extends MonthParts {
 
     /**
-     * Chinese month names (1月 to 12月).
+     * Localized month labels for January through December.
      */
     public static final String[] NAMES = { "1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月" };
 
@@ -75,7 +75,7 @@ public class SolarMonth extends MonthParts {
      */
     public static void validate(int year, int month) {
         if (month < 1 || month > 12) {
-            throw new IllegalArgumentException(String.format("illegal solar month: %d", month));
+            throw new IllegalArgumentException("illegal solar month: " + month);
         }
         SolarYear.validate(year);
     }
@@ -136,7 +136,7 @@ public class SolarMonth extends MonthParts {
     }
 
     /**
-     * Gets the Chinese name of this month (e.g., "1月", "2月").
+     * Gets the localized display name of this month.
      *
      * @return the Chinese month name
      */

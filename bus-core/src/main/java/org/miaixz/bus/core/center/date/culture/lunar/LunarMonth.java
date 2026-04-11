@@ -83,7 +83,7 @@ public class LunarMonth extends MonthParts {
      */
     public static void validate(int year, int month) {
         if (month == 0 || month > 12 || month < -12) {
-            throw new IllegalArgumentException(String.format("illegal lunar month: %d", month));
+            throw new IllegalArgumentException("illegal lunar month: " + month);
         }
         // Leap month validation
         if (month < 0 && -month != LunarYear.fromYear(year).getLeapMonth()) {
