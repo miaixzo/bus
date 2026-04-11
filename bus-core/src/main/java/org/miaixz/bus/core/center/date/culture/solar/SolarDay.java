@@ -476,9 +476,8 @@ public class SolarDay extends DayParts {
     }
 
     /**
-     * Gets the Nine Star assigned to this day.
-     * The calculation anchors to the nearest Jia-Zi day around the winter and summer solstices and then advances
-     * forward or backward according to the traditional sequence.
+     * Gets the Nine Star assigned to this day. The calculation anchors to the nearest Jia-Zi day around the winter and
+     * summer solstices and then advances forward or backward according to the traditional sequence.
      *
      * @return nine star for this day
      */

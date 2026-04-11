@@ -130,8 +130,8 @@ public class SixtyCycleYear extends Loops {
     }
 
     /**
-     * Gets the first Sixty-Year Cycle month of this year.
-     * The calculation follows the traditional "Five Tigers" rule used to derive the opening month stem.
+     * Gets the first Sixty-Year Cycle month of this year. The calculation follows the traditional "Five Tigers" rule
+     * used to derive the opening month stem.
      *
      * @return The {@link SixtyCycleMonth} instance representing the first month.
      */

@@ -35,9 +35,9 @@ import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
 import org.miaixz.bus.core.center.date.culture.star.twelve.TwelveStar;
 
 /**
- * Represents a Sixty-Year Cycle hour, a traditional Chinese timekeeping unit. The year changes at the Start of
- * Spring, the month changes at the beginning of a solar term, and the day changes at 23:00. This class
- * extends {@link Loops} for cyclical operations.
+ * Represents a Sixty-Year Cycle hour, a traditional Chinese timekeeping unit. The year changes at the Start of Spring,
+ * the month changes at the beginning of a solar term, and the day changes at 23:00. This class extends {@link Loops}
+ * for cyclical operations.
  *
  * @author Kimi Liu
  * @since Java 21+

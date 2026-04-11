@@ -25,8 +25,8 @@ import org.miaixz.bus.core.center.date.culture.Samsara;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * Represents the Nine Stars in Chinese metaphysics, often associated with Feng Shui and other divinatory
- * practices. This class extends {@link Samsara} to manage a cyclical list of these entities.
+ * Represents the Nine Stars in Chinese metaphysics, often associated with Feng Shui and other divinatory practices.
+ * This class extends {@link Samsara} to manage a cyclical list of these entities.
  *
  * @author Kimi Liu
  * @since Java 21+

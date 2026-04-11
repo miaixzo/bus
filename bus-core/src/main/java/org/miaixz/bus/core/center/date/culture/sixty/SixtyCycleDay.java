@@ -32,9 +32,8 @@ import org.miaixz.bus.core.center.date.culture.star.twelve.TwelveStar;
 import org.miaixz.bus.core.center.date.culture.star.twentyeight.TwentyEightStar;
 
 /**
- * Represents a Sixty-Year Cycle day, a traditional Chinese calendar unit. The year changes at the Start of Spring,
- * and the month changes at the beginning of a solar term. This class extends {@link Loops} for cyclical
- * operations.
+ * Represents a Sixty-Year Cycle day, a traditional Chinese calendar unit. The year changes at the Start of Spring, and
+ * the month changes at the beginning of a solar term. This class extends {@link Loops} for cyclical operations.
  *
  * @author Kimi Liu
  * @since Java 21+

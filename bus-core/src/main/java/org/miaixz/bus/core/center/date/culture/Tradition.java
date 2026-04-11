@@ -43,6 +43,7 @@ public abstract class Tradition implements Culture {
     /**
      * Compares this object with another based on its textual representation.
      * <p>
+     * 
      * @param o The object to compare with.
      * @return {@code true} if the objects are equal.
      */

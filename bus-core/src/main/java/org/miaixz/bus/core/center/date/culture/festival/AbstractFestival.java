@@ -24,6 +24,7 @@ import org.miaixz.bus.core.center.date.culture.parts.DayParts;
 
 /**
  * Abstract base class for festival instances.
+ * 
  * @author Kimi Liu
  * @since Java 21+
  */
