@@ -211,14 +211,30 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
                 }
                 try {
                     ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-                    if (contextClassLoader != null) {
-                        return Class.forName(typeName, false, contextClassLoader);
-                    }
-                    return Class.forName(typeName);
+                    return resolveType(typeName, contextClassLoader);
                 } catch (ClassNotFoundException e) {
                     Logger.error("Fastjson2 failed to resolve @type '{}': {}", typeName, e.getMessage());
                     return null;
                 }
+            }
+
+            /**
+             * Resolves standard class names and canonical array names such as {@code java.lang.String[]}.
+             *
+             * @param typeName the fastjson type name
+             * @param classLoader the class loader to use first
+             * @return the resolved class
+             * @throws ClassNotFoundException if the type cannot be resolved
+             */
+            private Class<?> resolveType(String typeName, ClassLoader classLoader) throws ClassNotFoundException {
+                if (typeName.endsWith("[]")) {
+                    Class<?> componentType = resolveType(typeName.substring(0, typeName.length() - 2), classLoader);
+                    return componentType.arrayType();
+                }
+                if (classLoader != null) {
+                    return Class.forName(typeName, false, classLoader);
+                }
+                return Class.forName(typeName);
             }
         }
     }

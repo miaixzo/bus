@@ -128,8 +128,9 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
         Gson gson = gsonBuilder.create();
         GsonHttpMessageConverter converter = new GsonHttpMessageConverter();
         converter.setGson(gson);
-        converter
-                .setSupportedMediaTypes(List.of(MediaType.APPLICATION_JSON, new MediaType("application", "json+gson")));
+        // Keep Gson available for explicit opt-in only; regular application/json should prefer
+        // Fastjson2/Jackson to avoid duplicate inherited-field binding issues in Gson.
+        converter.setSupportedMediaTypes(List.of(new MediaType("application", "json+gson")));
         converters.add(order(), converter);
         Logger.debug("Gson converter configured with media types: {}", converter.getSupportedMediaTypes());
     }

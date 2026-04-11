@@ -60,7 +60,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 @ConditionalOnClass({ ObjectMapper.class })
 public class JacksonMessageConverter extends AbstractHttpMessageConverter {
 
-    private String autoType;
+    private AutoBindingTypeMatcher autoTypeMatcher;
 
     /**
      * A unique ID for the custom property filter used to handle @Include and @Transient.
@@ -98,7 +98,9 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
      */
     @Override
     public void configure(List<org.springframework.http.converter.HttpMessageConverter<?>> converters) {
-        Logger.debug("Configuring MappingJackson2HttpMessageConverter with autoType: {}", autoType);
+        Logger.debug(
+                "Configuring MappingJackson2HttpMessageConverter with autoType: {}",
+                autoTypeMatcher == null ? null : autoTypeMatcher.description());
         ObjectMapper jacksonMapper = new ObjectMapper();
 
         // 1. Configure the PropertyFilter to handle @Include/@Transient and null/empty values.
@@ -114,8 +116,10 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
         jacksonMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         // 4. Configure autoType restrictions
-        if (autoType != null && !autoType.isEmpty()) {
-            Logger.debug("Jackson autoType is DISABLED to ensure clean JSON output.");
+        if (autoTypeMatcher != null) {
+            Logger.debug(
+                    "Jackson autoType patterns are prepared but default polymorphic typing remains disabled: {}",
+                    autoTypeMatcher.description());
         }
 
         // 5. Add support for Java Time API (LocalDateTime)
@@ -141,7 +145,7 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
      */
     @Override
     public void autoType(String autoType) {
-        this.autoType = autoType;
+        this.autoTypeMatcher = AutoBindingTypeMatcher.of(autoType);
     }
 
     /**

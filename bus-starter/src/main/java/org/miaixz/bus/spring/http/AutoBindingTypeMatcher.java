@@ -45,6 +45,14 @@ public class AutoBindingTypeMatcher {
     private static final String DEFAULT_RULE = GeniusBuilder.BUS_PACKAGE + Symbol.DOT + Symbol.STAR + Symbol.STAR;
 
     /**
+     * Built-in base package prefixes that are always allowed.
+     * <p>
+     * These types are common scalar, collection, servlet, and Spring framework types that
+     * can appear in normal controller responses and exception payloads.
+     */
+    private static final List<String> DEFAULT_PREFIXES = List.of("java.", "javax.", "jakarta.", "org.springframework.");
+
+    /**
      * The normalized rule list used during matching.
      * <p>
      * This list merges the built-in default rule with any user-provided rules and keeps insertion order after
@@ -88,7 +96,16 @@ public class AutoBindingTypeMatcher {
      * @return {@code true} if the class matches at least one rule; otherwise {@code false}
      */
     boolean matches(Class<?> type) {
-        return type != null && matches(type.getName());
+        if (type == null) {
+            return false;
+        }
+        if (type.isPrimitive()) {
+            return true;
+        }
+        if (type.isArray()) {
+            return matches(type.getComponentType());
+        }
+        return matches(type.getName());
     }
 
     /**
@@ -101,6 +118,15 @@ public class AutoBindingTypeMatcher {
         if (StringKit.isEmpty(className)) {
             return false;
         }
+        if (className.startsWith("[")) {
+            return matchesArrayDescriptor(className);
+        }
+        if (className.endsWith("[]")) {
+            return matches(className.substring(0, className.length() - 2));
+        }
+        if (isImplicitlyAllowed(className)) {
+            return true;
+        }
         String packageName = packageNameOf(className);
         return this.rules.stream().anyMatch(rule -> matchesRule(rule, className, packageName));
     }
@@ -111,7 +137,44 @@ public class AutoBindingTypeMatcher {
      * @return the current rules joined with commas
      */
     String description() {
-        return String.join(", ", this.rules);
+        return String.join(", ", this.rules) + ", " + String.join(", ", DEFAULT_PREFIXES);
+    }
+
+    /**
+     * Checks whether a type belongs to the built-in always-allowed package set.
+     *
+     * @param className the fully qualified class name
+     * @return {@code true} if the class belongs to a built-in allowed package; otherwise {@code false}
+     */
+    private boolean isImplicitlyAllowed(String className) {
+        return DEFAULT_PREFIXES.stream().anyMatch(className::startsWith);
+    }
+
+    /**
+     * Checks whether a JVM array descriptor belongs to an allowed component type.
+     *
+     * @param className the JVM descriptor, such as {@code [Ljava.lang.String;} or {@code [I}
+     * @return {@code true} if the array component type is allowed; otherwise {@code false}
+     */
+    private boolean matchesArrayDescriptor(String className) {
+        int dimensionIndex = 0;
+        while (dimensionIndex < className.length() && className.charAt(dimensionIndex) == '[') {
+            dimensionIndex++;
+        }
+        if (dimensionIndex >= className.length()) {
+            return false;
+        }
+
+        char componentType = className.charAt(dimensionIndex);
+        if (componentType != 'L') {
+            return true;
+        }
+
+        int endIndex = className.indexOf(';', dimensionIndex);
+        if (endIndex < 0) {
+            return false;
+        }
+        return matches(className.substring(dimensionIndex + 1, endIndex));
     }
 
     /**
