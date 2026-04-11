@@ -330,6 +330,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.vortex.magic.Parameter",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.vortex.magic.Performance",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,

@@ -311,21 +311,19 @@ public class VettingStrategy extends AbstractStrategy {
      * @param context  The request context.
      */
     protected void enrich(ServerWebExchange exchange, Context context) {
-        Map<String, Object> params = context.getParameters();
-
         String x_request_id = context.getX_request_id();
         if (StringKit.isEmpty(x_request_id)) {
             x_request_id = context.getX_request_id();
             context.setX_request_id(x_request_id);
         }
-        params.put("x_request_id", x_request_id);
+        context.getParameters().put("x_request_id", x_request_id);
 
         String x_request_ipv4 = context.getX_request_ip();
         if (StringKit.isEmpty(x_request_ipv4)) {
             x_request_ipv4 = this.getClientIp(exchange.getRequest());
             context.setX_request_ipv4(x_request_ipv4);
         }
-        params.put("x_request_ipv4", x_request_ipv4);
+        context.getParameters().put("x_request_ipv4", x_request_ipv4);
 
         String x_request_domain = context.getX_request_domain();
         if (StringKit.isEmpty(x_request_domain)) {
@@ -333,7 +331,7 @@ public class VettingStrategy extends AbstractStrategy {
             x_request_domain = this.determineRequestDomain(exchange.getRequest());
             context.setX_request_domain(x_request_domain);
         }
-        params.put("x_request_domain", x_request_domain);
+        context.getParameters().put("x_request_domain", x_request_domain);
     }
 
     /**

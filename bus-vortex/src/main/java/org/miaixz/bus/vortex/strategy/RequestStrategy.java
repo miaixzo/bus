@@ -86,7 +86,7 @@ public class RequestStrategy extends AbstractStrategy {
             context.setX_request_ipv4(this.getClientIp(exchange.getRequest()));
 
             // Extract original URL query parameters to context.query (unified for all request types)
-            context.getQuery().putAll(exchange.getRequest().getQueryParams().toSingleValueMap());
+            context.setQuery(exchange.getRequest().getQueryParams().toSingleValueMap());
 
             // 1. Set default Content-Type if missing and record the request start time.
             // This setup logic is synchronous but acceptable as it's part of
@@ -254,7 +254,7 @@ public class RequestStrategy extends AbstractStrategy {
                     "[{}] JSON request processed - Path: {}, Params: {}",
                     context.getX_request_ip(),
                     exchange.getRequest().getURI().getPath(),
-                    JsonKit.toJsonString(jsonMap));
+                    JsonKit.toJsonString(context.getParameters()));
 
             // 4. Return the new exchange for the next chain link
             return exchange.mutate().request(newRequest).build();
@@ -456,7 +456,7 @@ public class RequestStrategy extends AbstractStrategy {
                     "[{}] Multipart request processed - Path: {}, Params: {}",
                     context.getX_request_ip(),
                     exchange.getRequest().getURI().getPath(),
-                    JsonKit.toJsonString(formMap));
+                    JsonKit.toJsonString(context.getParameters()));
         })
                 // After the sync work, apply the rest of the chain.
                 .then(chain.apply(exchange))

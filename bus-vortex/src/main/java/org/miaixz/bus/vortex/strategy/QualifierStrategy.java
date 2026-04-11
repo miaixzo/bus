@@ -178,10 +178,10 @@ public class QualifierStrategy extends AbstractStrategy {
                     })
                     // 6. After all validations, remove internal parameters
                     .then(Mono.fromRunnable(() -> {
-                        params.remove(Args.METHOD);
-                        params.remove(Args.FORMAT);
-                        params.remove(Args.VERSION);
-                        params.remove(Args.SIGN);
+                        context.getParameters().remove(Args.METHOD);
+                        context.getParameters().remove(Args.FORMAT);
+                        context.getParameters().remove(Args.VERSION);
+                        context.getParameters().remove(Args.SIGN);
                         Logger.info(
                                 true,
                                 "Qualifier",

@@ -260,6 +260,23 @@ extend:
     server:
       port: 8765
       path: /router/rest
+    performance:
+      sanitize-null-like-parameters: true
+```
+
+### Null-like Parameter Sanitization
+
+When `extend.vortex.performance.sanitize-null-like-parameters=true`, the gateway removes Java `null`, `"null"`, and
+`"undefined"` consistently at request ingestion, context enrichment, and outbound forwarding.
+
+`Context#getParameters()` preserves the familiar `Map` usage style, but the returned map is a controlled `Parameter`
+instance, so `put` / `putAll` / `remove` still pass through the shared sanitization rules. Query parameters remain
+read-only.
+
+```java
+context.getParameters().put("status", status);
+context.getParameters().putAll(payload);
+context.putQueryParameter("lang", "en");
 ```
 
 -----

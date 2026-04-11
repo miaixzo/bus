@@ -39,6 +39,7 @@ import lombok.NoArgsConstructor;
  * <li>Cache size limits for MQ producers</li>
  * <li>Registry L2 cache configuration (Caffeine)</li>
  * <li>Cluster synchronization configuration</li>
+ * <li>Null-like request parameter sanitization</li>
  * </ul>
  * <p>
  * <b>Default Values:</b>
@@ -53,6 +54,7 @@ import lombok.NoArgsConstructor;
  * <li>clusterSyncIntervalSeconds: 60 (1 minute)</li>
  * <li>clusterFullSyncOnStartup: true</li>
  * <li>clusterStartupDelaySeconds: 10</li>
+ * <li>sanitizeNullLikeParameters: true</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -155,5 +157,15 @@ public class Performance {
      */
     @Builder.Default
     private int timestampToleranceMinutes = 30;
+
+    /**
+     * Whether null-like request parameter values should be removed before they are stored and forwarded.
+     * <p>
+     * When enabled, parameters whose values are {@code null}, {@code "null"}, or {@code "undefined"} are discarded
+     * throughout request ingestion, context enrichment, and outbound forwarding. Default: true.
+     * </p>
+     */
+    @Builder.Default
+    private boolean sanitizeNullLikeParameters = true;
 
 }
