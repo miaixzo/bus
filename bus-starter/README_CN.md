@@ -50,6 +50,41 @@ public class Application {
 }
 ```
 
+### Wrapper 兼容模式配置
+
+`@EnableWrapper` 会启用一条兼容现有项目的请求处理链，包含：
+
+- request body 缓存与重复读取
+- 非简单类型 controller 参数自动解析
+- 原始 body 为空时按需合成 form body
+- 参数与 header 的可选输入净化
+
+推荐配置：
+
+```yaml
+bus:
+  wrapper:
+    enabled: true
+    sanitize-input-values: true
+    synthesize-form-body: true
+    resolve-non-simple-arguments: true
+    wrap-content-types: all
+    include-multipart: true
+```
+
+兼容性说明：
+
+- `synthesize-form-body=true` 时，保留当前从 `parameterMap` 合成 form body 的行为，同时允许
+  `ContextBuilder.getParameters()` 再从该 body 反向恢复参数。
+- `sanitize-input-values=true` 时，保留当前 wrapper 层对参数和 header 的 HTML escape 行为。
+- `resolve-non-simple-arguments=true` 时，保留当前 `CompositeArgumentResolver` 对裸 DTO 参数的解析行为。
+- `wrap-content-types` 支持 `all`、`json-form`、`json-only`。
+
+迁移建议：
+
+- 现有项目建议先保持 legacy 默认值，避免无测试前提下直接翻转行为。
+- 新项目可以在有回归验证的前提下逐步关闭 legacy 行为。
+
 ### 示例 3: 启用 MyBatis Mapper
 
 ```java

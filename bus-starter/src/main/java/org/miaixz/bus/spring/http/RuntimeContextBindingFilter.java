@@ -21,8 +21,8 @@ package org.miaixz.bus.spring.http;
 
 import java.io.IOException;
 
-import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.spring.ContextBuilder;
+import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -49,6 +49,27 @@ import jakarta.servlet.http.HttpServletResponse;
 public class RuntimeContextBindingFilter extends OncePerRequestFilter {
 
     /**
+     * Runtime wrapper compatibility snapshot used to decide whether the current request should be wrapped.
+     */
+    private final WrapperRuntimeOptions options;
+
+    /**
+     * Creates a filter using the current shared {@link WrapperRuntimeOptions} snapshot.
+     */
+    public RuntimeContextBindingFilter() {
+        this(WrapperRuntimeOptions.of());
+    }
+
+    /**
+     * Creates a filter with an explicit runtime compatibility snapshot.
+     *
+     * @param options The runtime compatibility options. If {@code null}, the current shared snapshot is used.
+     */
+    public RuntimeContextBindingFilter(WrapperRuntimeOptions options) {
+        this.options = options == null ? WrapperRuntimeOptions.of() : options;
+    }
+
+    /**
      * Wraps the request and response if necessary.
      * <p>
      * This method initializes the request context, wraps the {@link HttpServletRequest} in a
@@ -70,9 +91,7 @@ public class RuntimeContextBindingFilter extends OncePerRequestFilter {
             // Initialize the request context (generates request ID and stores in ThreadLocal)
             ContextBuilder.init();
 
-            final String method = request.getMethod();
-            // Only wrap requests with a body to improve performance.
-            if (HTTP.POST.equals(method) || HTTP.PATCH.equals(method) || HTTP.PUT.equals(method)) {
+            if (this.options.shouldWrap(request)) {
                 if (!(request instanceof MutableRequestWrapper)) {
                     request = new MutableRequestWrapper(request);
                 }

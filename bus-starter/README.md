@@ -50,6 +50,42 @@ public class Application {
 }
 ```
 
+### Wrapper Compatibility Configuration
+
+`@EnableWrapper` activates a legacy-compatible request pipeline:
+
+- request body caching for repeated reads
+- automatic resolution of non-simple controller arguments
+- optional synthesized form body when the native body is empty
+- optional input sanitization for parameters and headers
+
+Recommended configuration:
+
+```yaml
+bus:
+  wrapper:
+    enabled: true
+    sanitize-input-values: true
+    synthesize-form-body: true
+    resolve-non-simple-arguments: true
+    wrap-content-types: all
+    include-multipart: true
+```
+
+Compatibility notes:
+
+- `synthesize-form-body=true` preserves the legacy behavior where `MutableRequestWrapper` rebuilds a form body from
+  `parameterMap`, and `ContextBuilder.getParameters()` can reconstruct parameters from that synthesized body.
+- `sanitize-input-values=true` preserves the current wrapper-level HTML escaping for request parameters and headers.
+- `resolve-non-simple-arguments=true` preserves the existing `CompositeArgumentResolver` behavior for bare DTO
+  arguments.
+- `wrap-content-types` supports `all`, `json-form`, and `json-only`.
+
+Migration notes:
+
+- Keep the default legacy values for existing projects unless you have explicit regression coverage.
+- New projects can selectively disable legacy behaviors after verifying controller binding and parameter extraction.
+
 ### Example 3: Enable MyBatis Mapper
 
 ```java

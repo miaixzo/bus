@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.starter.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.starter.wrapper.WrapperConfiguration;
 import org.springframework.context.annotation.Import;
-
-import java.lang.annotation.*;
 
 /**
  * Enables request/response wrapping and XSS protection.

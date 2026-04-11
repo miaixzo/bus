@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.spring.http;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.basic.normal.ErrorCode;
@@ -31,6 +33,7 @@ import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
 import org.miaixz.bus.validate.magic.annotation.Valid;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.core.MethodParameter;
@@ -62,7 +65,43 @@ import jakarta.servlet.http.HttpServletRequest;
 public class CompositeArgumentResolver implements HandlerMethodArgumentResolver {
 
     /**
+     * Runtime wrapper compatibility snapshot used to decide resolver behavior.
+     * <p>
+     * This snapshot controls whether legacy non-simple argument resolution remains enabled and whether synthesized form
+     * body content should continue to participate in parameter binding.
+     */
+    private final WrapperRuntimeOptions options;
+
+    /**
+     * Creates a resolver using the current shared {@link WrapperRuntimeOptions} snapshot.
+     * <p>
+     * This constructor is suitable for the default framework wiring path where all wrapper-related components share the
+     * same runtime compatibility snapshot.
+     */
+    public CompositeArgumentResolver() {
+        this(WrapperRuntimeOptions.of());
+    }
+
+    /**
+     * Creates a resolver with an explicit runtime compatibility snapshot.
+     *
+     * @param options The runtime compatibility options. If {@code null}, the current shared snapshot is used.
+     */
+    public CompositeArgumentResolver(WrapperRuntimeOptions options) {
+        this.options = options == null ? WrapperRuntimeOptions.of() : options;
+    }
+
+    /**
      * Determines whether this resolver supports the given method parameter.
+     * <p>
+     * The decision follows two paths:
+     * <ul>
+     * <li>Parameters explicitly annotated with {@link ModelAttribute} are always supported.</li>
+     * <li>Otherwise, support depends on {@link WrapperRuntimeOptions#isResolveNonSimpleArguments()} and whether the
+     * parameter type is considered a simple type by {@link #isSimpleType(Class)}.</li>
+     * </ul>
+     * This preserves the legacy "auto bind non-simple arguments" behavior while still allowing stricter operation
+     * through runtime configuration.
      *
      * @param parameter Method parameter information.
      * @return {@code true} if the parameter is not a simple type (primitive, String, Number, etc.) or is annotated with
@@ -70,11 +109,25 @@ public class CompositeArgumentResolver implements HandlerMethodArgumentResolver 
      */
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(ModelAttribute.class) || !isSimpleType(parameter.getParameterType());
+        if (parameter.hasParameterAnnotation(ModelAttribute.class)) {
+            return true;
+        }
+        return this.options.isResolveNonSimpleArguments() && !isSimpleType(parameter.getParameterType());
     }
 
     /**
      * Resolves the method argument by binding request parameters to the target object.
+     * <p>
+     * Resolution behavior depends on request content type and runtime compatibility settings:
+     * <ul>
+     * <li>For wrapped requests, cached body content is preferred.</li>
+     * <li>For JSON requests, the body is deserialized directly into the target type.</li>
+     * <li>For form requests, binding is driven by {@code parameterMap}, optionally supplemented by synthesized form
+     * body content when {@link WrapperRuntimeOptions#isSynthesizeFormBody()} is enabled.</li>
+     * <li>For multipart requests, uploaded files are merged into binding values.</li>
+     * </ul>
+     * The custom {@code @Valid} semantics used by the framework remain unchanged and are applied after binding values
+     * have been collected.
      *
      * @param methodParameter Method parameter information.
      * @param mavContainer    Model and view container.
@@ -104,8 +157,7 @@ public class CompositeArgumentResolver implements HandlerMethodArgumentResolver 
         } else {
             // Read input stream
             body = IoKit.readBytes(request.getInputStream());
-            if (body == null || body.length == 0) {
-                // If the input stream is empty and there are parameters, use parameterMap
+            if ((body == null || body.length == 0) && this.options.isSynthesizeFormBody()) {
                 if (MapKit.isNotEmpty(request.getParameterMap())) {
                     String paramString = request.getParameterMap().entrySet().stream()
                             .map(entry -> entry.getKey() + Symbol.EQUAL + String.join(Symbol.COMMA, entry.getValue()))
@@ -115,6 +167,8 @@ public class CompositeArgumentResolver implements HandlerMethodArgumentResolver 
                 } else {
                     body = new byte[0];
                 }
+            } else if (body == null) {
+                body = new byte[0];
             }
         }
 
@@ -123,11 +177,12 @@ public class CompositeArgumentResolver implements HandlerMethodArgumentResolver 
         Object target = parameterType.getDeclaredConstructor().newInstance();
         WebDataBinder binder = binderFactory.createBinder(webRequest, target, methodParameter.getParameterName());
 
-        // Add query parameters
+        // 先合并所有来源的参数，再统一清理 null-like 值，避免后续追加的表单参数把 "null" 再带回来。
         MutablePropertyValues mpvs = new MutablePropertyValues(request.getParameterMap());
 
         // Handle application/x-www-form-urlencoded requests
-        if (contentType != null && contentType.startsWith(MediaType.APPLICATION_FORM_URLENCODED)) {
+        if (this.options.isSynthesizeFormBody() && contentType != null
+                && contentType.startsWith(MediaType.APPLICATION_FORM_URLENCODED)) {
             String bodyString = new String(body, Charset.UTF_8);
             if (!StringKit.isEmpty(bodyString)) {
                 mpvs.addPropertyValues(UrlKit.decodeQuery(bodyString, Charset.UTF_8));
@@ -153,6 +208,8 @@ public class CompositeArgumentResolver implements HandlerMethodArgumentResolver 
             });
         }
 
+        sanitizePropertyValues(mpvs);
+
         if (mpvs.isEmpty() && !methodParameter.hasParameterAnnotation(ModelAttribute.class)
                 && methodParameter.hasParameterAnnotation(Valid.class)) {
             throw new ValidateException(ErrorCode._100100);
@@ -167,6 +224,10 @@ public class CompositeArgumentResolver implements HandlerMethodArgumentResolver 
 
     /**
      * Determines if a given type is a simple type.
+     * <p>
+     * This helper is used as the boundary for the legacy "resolve all non-simple arguments" behavior. When
+     * {@link WrapperRuntimeOptions#isResolveNonSimpleArguments()} is enabled, types outside this set are considered
+     * eligible for automatic binding by this resolver.
      * <p>
      * Simple types include:
      * <ul>
@@ -185,6 +246,56 @@ public class CompositeArgumentResolver implements HandlerMethodArgumentResolver 
         return type.isPrimitive() || type == String.class || Number.class.isAssignableFrom(type)
                 || Boolean.class.isAssignableFrom(type) || Character.class.isAssignableFrom(type)
                 || MultipartFile.class.isAssignableFrom(type);
+    }
+
+    /**
+     * Removes null-like values from binding inputs before invoking the data binder.
+     * <p>
+     * This keeps compatibility with requests that may submit placeholder strings such as {@code null} or
+     * {@code undefined}. For scalar string values, the whole property is removed. For string arrays, only valid items
+     * are retained; if none remain, the property is removed entirely.
+     *
+     * @param mpvs Mutable binding values collected from query parameters, synthesized form body content, and multipart
+     *             inputs.
+     */
+    private void sanitizePropertyValues(MutablePropertyValues mpvs) {
+        List<String> removeKeys = new ArrayList<>();
+        mpvs.getPropertyValueList().forEach(propertyValue -> {
+            Object value = propertyValue.getValue();
+            if (value instanceof String stringValue) {
+                if (isNullLike(stringValue)) {
+                    removeKeys.add(propertyValue.getName());
+                }
+                return;
+            }
+            if (value instanceof String[] values) {
+                List<String> validValues = new ArrayList<>();
+                for (String item : values) {
+                    if (!isNullLike(item)) {
+                        validValues.add(item);
+                    }
+                }
+                if (validValues.isEmpty()) {
+                    removeKeys.add(propertyValue.getName());
+                } else if (validValues.size() != values.length) {
+                    mpvs.add(propertyValue.getName(), validValues.toArray(String[]::new));
+                }
+            }
+        });
+        removeKeys.forEach(mpvs::removePropertyValue);
+    }
+
+    /**
+     * Determines whether a string should be treated as an empty binding value.
+     * <p>
+     * The resolver treats blank strings and common frontend placeholders such as {@code null} and {@code undefined}
+     * as absent values so they do not participate in object binding.
+     *
+     * @param value The raw string value submitted by the request.
+     * @return {@code true} if the value should be treated as absent, {@code false} otherwise.
+     */
+    private boolean isNullLike(String value) {
+        return StringKit.isBlank(value) || "null".equalsIgnoreCase(value) || "undefined".equalsIgnoreCase(value);
     }
 
 }

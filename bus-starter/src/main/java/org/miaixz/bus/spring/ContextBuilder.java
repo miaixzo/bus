@@ -42,6 +42,7 @@ import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.http.MutableRequestWrapper;
+import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
 import org.miaixz.bus.vortex.Args;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -352,8 +353,9 @@ public class ContextBuilder extends WebUtils {
                 if (request instanceof MutableRequestWrapper wrapper) {
                     String contentType = request.getContentType();
                     byte[] bodyBytes = wrapper.getBody();
-                    if (contentType != null && contentType.startsWith(MediaType.APPLICATION_FORM_URLENCODED)
-                            && bodyBytes != null && bodyBytes.length > 0) {
+                    if (WrapperRuntimeOptions.of().isSynthesizeFormBody() && contentType != null
+                            && contentType.startsWith(MediaType.APPLICATION_FORM_URLENCODED) && bodyBytes != null
+                            && bodyBytes.length > 0) {
                         String bodyString = new String(bodyBytes, Charset.UTF_8);
                         Map<String, String[]> urlEncodedParams = parseUrlEncoded(bodyString);
                         urlEncodedParams.forEach((key, values) -> {

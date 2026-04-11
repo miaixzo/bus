@@ -19,20 +19,26 @@
 */
 package org.miaixz.bus.starter.wrapper;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.spring.GeniusBuilder;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
-
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
+
+import lombok.Getter;
+import lombok.Setter;
+
 /**
- * Configuration properties for the request/response wrapper filter.
+ * Configuration properties for the request/response wrapper pipeline.
+ * <p>
+ * This class binds external Spring configuration. The wrapper-related compatibility subset can be converted into a
+ * runtime snapshot through {@link #runtimeOptions()}, while the remaining fields are used by Spring registration and
+ * mapping infrastructure.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -61,6 +67,31 @@ public class WrapperProperties {
      * Flag to indicate if this filter registration is enabled. Default is true.
      */
     private boolean enabled = true;
+
+    /**
+     * Whether request parameters and headers should be sanitized before being exposed through the wrapper.
+     */
+    private boolean sanitizeInputValues = true;
+
+    /**
+     * Whether an empty body should be synthesized from request parameters for legacy form compatibility.
+     */
+    private boolean synthesizeFormBody = true;
+
+    /**
+     * Whether the custom resolver should continue to resolve all non-simple controller parameters.
+     */
+    private boolean resolveNonSimpleArguments = true;
+
+    /**
+     * Request wrapping scope. Supported values: all, json-form, json-only.
+     */
+    private String wrapContentTypes = "all";
+
+    /**
+     * Whether multipart requests should be wrapped using the legacy behavior.
+     */
+    private boolean includeMultipart = true;
 
     /**
      * Base packages to scan for controllers. Ant-style path patterns can be used. The main purpose is to apply a
@@ -96,5 +127,20 @@ public class WrapperProperties {
      * The ServletRegistrationBeans that the filter will be registered against.
      */
     private Set<ServletRegistrationBean<?>> servletRegistrationBeans = new LinkedHashSet<>();
+
+    /**
+     * Converts the current configuration properties into a runtime options snapshot.
+     * <p>
+     * This method isolates the mapping between Spring-bound configuration and the runtime object consumed by wrapper
+     * components, keeping configuration concerns separate from execution concerns.
+     *
+     * @return A new {@link WrapperRuntimeOptions} instance reflecting the current wrapper compatibility settings.
+     */
+    public WrapperRuntimeOptions runtimeOptions() {
+        return WrapperRuntimeOptions.builder().sanitizeInputValues(this.isSanitizeInputValues())
+                .synthesizeFormBody(this.isSynthesizeFormBody())
+                .resolveNonSimpleArguments(this.isResolveNonSimpleArguments())
+                .wrapContentTypes(this.getWrapContentTypes()).includeMultipart(this.isIncludeMultipart()).build();
+    }
 
 }

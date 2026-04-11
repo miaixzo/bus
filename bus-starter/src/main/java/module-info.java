@@ -101,6 +101,7 @@ module bus.starter {
     requires org.apache.httpcomponents.httpcore;
     requires org.apache.httpcomponents.httpasyncclient;
     requires redis.clients.jedis;
+    requires org.checkerframework.checker.qual;
 
     exports org.miaixz.bus.spring;
     exports org.miaixz.bus.spring.annotation;
@@ -139,5 +140,6 @@ module bus.starter {
     exports org.miaixz.bus.starter.validate;
     exports org.miaixz.bus.starter.wrapper;
     exports org.miaixz.bus.starter.zookeeper;
+    exports org.miaixz.bus.spring.options;
 
 }
