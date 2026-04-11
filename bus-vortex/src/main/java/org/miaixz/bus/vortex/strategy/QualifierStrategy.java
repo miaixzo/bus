@@ -19,12 +19,11 @@
 */
 package org.miaixz.bus.vortex.strategy;
 
-import org.miaixz.bus.cortex.Assets;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.basic.normal.Errors;
@@ -33,8 +32,13 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.vortex.*;
+import org.miaixz.bus.vortex.Args;
+import org.miaixz.bus.vortex.Channel;
+import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.Formats;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.magic.Principal;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
@@ -146,6 +150,21 @@ public class QualifierStrategy extends AbstractStrategy {
                     })).flatMap(assets -> {
                         // 2. Set assets in context
                         context.setAssets(assets);
+                        Logger.info(
+                                true,
+                                "Qualifier",
+                                "[{}] Assets resolved: method={}, version={}, policy={}, sign={}, mode={}, type={}, host={}, port={}, path={}, url={}",
+                                context.getX_request_ip(),
+                                assets.getMethod(),
+                                assets.getVersion(),
+                                assets.getPolicy(),
+                                assets.getSign(),
+                                assets.getMode(),
+                                assets.getType(),
+                                assets.getHost(),
+                                assets.getPort(),
+                                assets.getPath(),
+                                assets.getUrl());
 
                         // 3. Chain HTTP method validation
                         Mono<Void> validationMono = this.method(exchange, context, assets);
@@ -298,8 +317,8 @@ public class QualifierStrategy extends AbstractStrategy {
         // 4. Delegate the validation to the provider
         // The type field is set to the policy value, provider uses it to determine validation method
         return this.provider.authorize(
-                        Principal.builder().channel(context.getChannel().getType()).context(context).type(policy)
-                                .value(credentialValue).build())
+                Principal.builder().channel(context.getChannel().getType()).context(context).type(policy)
+                        .value(credentialValue).build())
                 .flatMap(delegate -> {
                     // 5. Process the final result from the provider
                     if (delegate.isOk()) {
@@ -309,8 +328,17 @@ public class QualifierStrategy extends AbstractStrategy {
                                 authMap,
                                 CopyOptions.of().setTransientSupport(false).setIgnoreCase(true)
                                         .setIgnoreProperties("id"));
+                        Logger.info(
+                                true,
+                                "Qualifier",
+                                "[{}] Auth map after conversion: {}",
+                                context.getX_request_ip(),
+                                JsonKit.toJsonString(authMap));
+                        Map<String, Object> nonNullAuthMap = authMap.entrySet().stream()
+                                .filter(entry -> entry.getKey() != null && entry.getValue() != null)
+                                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-                        context.getParameters().putAll(authMap);
+                        context.getParameters().putAll(nonNullAuthMap);
                         Logger.info(
                                 true,
                                 "Qualifier",
