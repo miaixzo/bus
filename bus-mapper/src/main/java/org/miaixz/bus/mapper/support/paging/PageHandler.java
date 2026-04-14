@@ -529,7 +529,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
             BoundSql boundSql,
             Dialect dialect) throws Exception {
         // Generate count SQL
-        String countSql = dialect.getCountSql(boundSql.getSql());
+        String countSql = dialect.buildCountSql(boundSql.getSql());
 
         // Create count statement ID based on params mapping
         String countStatementId = ms.getId() + "_COUNT";
@@ -586,7 +586,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
             Pageable pageable,
             Dialect dialect) throws Exception {
         // Generate pagination SQL
-        String paginatedSql = dialect.getPaginationSql(boundSql.getSql(), pageable);
+        String paginatedSql = dialect.buildPaginationSql(boundSql.getSql(), pageable);
 
         // Create bound SQL for pagination
         BoundSql paginatedBoundSql = new BoundSql(ms.getConfiguration(), paginatedSql, boundSql.getParameterMappings(),

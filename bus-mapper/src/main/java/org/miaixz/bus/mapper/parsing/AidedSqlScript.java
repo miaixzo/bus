@@ -67,12 +67,12 @@ import org.miaixz.bus.mapper.dialect.Dialect;
  * // In Provider class for UPSERT operations
  * public static String insertUp(ProviderContext providerContext) {
  *     return SqlScript.cachingDynamic(providerContext, (entity, dialect) -> {
- *         if (!dialect.supportsUpsert()) {
- *             throw new UnsupportedOperationException(dialect.getDatabase() + " does not support UPSERT");
- *         }
- *         String template = dialect.getUpsertTemplate();
- *         // Build UPSERT SQL using template
- *         return String.format(template, tableName, columns, values);
+ *         return switch (dialect.getUpsertType()) {
+ *             case INSERT_ON_DUPLICATE -> "...";
+ *             case INSERT_ON_CONFLICT -> "...";
+ *             default -> throw new UnsupportedOperationException(
+ *                     dialect.getDatabase() + " does not support this UPSERT variant");
+ *         };
  *     });
  * }
  * }</pre>

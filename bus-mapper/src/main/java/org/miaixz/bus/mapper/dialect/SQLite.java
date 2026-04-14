@@ -19,66 +19,47 @@
 */
 package org.miaixz.bus.mapper.dialect;
 
-import java.util.List;
-
-import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.support.paging.Pageable;
 
 /**
- * SQLite dialect.
+ * Dialect implementation for SQLite databases.
  *
  * <p>
- * Supports:
+ * This dialect uses standard {@code LIMIT/OFFSET} pagination and the SQLite {@code INSERT OR REPLACE} UPSERT family.
  * </p>
- * <ul>
- * <li>LIMIT, OFFSET pagination</li>
- * <li>Multi-values INSERT</li>
- * <li>INSERT OR REPLACE (UPSERT)</li>
- * <li>JDBC batch operations</li>
- * </ul>
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class SQLite extends AbstractDialect {
 
+    /**
+     * Creates the SQLite dialect.
+     */
     public SQLite() {
         super("SQLite", "jdbc:sqlite:");
     }
 
+    /**
+     * Returns the UPSERT family used by SQLite.
+     *
+     * @return {@link Dialect.Type#INSERT_OR_REPLACE}
+     */
     @Override
-    public String getPaginationSql(String originalSql, Pageable pageable) {
-        return buildLimitOffsetPagination(originalSql, pageable);
+    public Dialect.Type getUpsertType() {
+        return Dialect.Type.INSERT_OR_REPLACE;
     }
 
+    /**
+     * Builds paginated SQL using SQLite {@code LIMIT/OFFSET} syntax.
+     *
+     * @param originalSql the original SQL statement
+     * @param pageable    the requested pagination information
+     * @return the paginated SQL statement
+     */
     @Override
-    public boolean supportsMultiValuesInsert() {
-        return true;
-    }
-
-    @Override
-    public boolean supportsUpsert() {
-        return true;
-    }
-
-    @Override
-    public String getUpsertTemplate() {
-        return "INSERT OR REPLACE INTO %s (%s) VALUES %s";
-    }
-
-    @Override
-    public String buildUpsertSql(
-            String tableName,
-            String columnList,
-            String valuesList,
-            String keyColumns,
-            List<ColumnMeta> updateColumns,
-            String itemPrefix) {
-        // SQLite: INSERT OR REPLACE INTO ... VALUES ... (doesn't need UPDATE clause)
-        StringBuilder sb = new StringBuilder();
-        sb.append("INSERT OR REPLACE INTO ").append(tableName).append(" (").append(columnList).append(") VALUES\n");
-        sb.append(valuesList);
-        return sb.toString();
+    public String buildPaginationSql(String originalSql, Pageable pageable) {
+        return buildPaginatedSql(originalSql, pageable);
     }
 
 }

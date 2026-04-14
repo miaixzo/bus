@@ -31,8 +31,8 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * Batch operation SQL provider.
  *
  * <p>
- * Provides SQL generation methods for batch insert, update, delete and upsert operations. Extends BasicProvider to
- * reuse common SQL building logic.
+ * Provides SQL generation methods for batch insert and batch UPSERT operations. Extends {@link BasicProvider} to reuse
+ * shared SQL building logic.
  * </p>
  *
  * <p>
@@ -41,8 +41,8 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * <ul>
  * <li>Multi-Values INSERT - High-performance batch insertion</li>
  * <li>Batch UPSERT - Update if exists, insert if not</li>
- * <li>Dynamic SQL generation - Generate dialect-specific SQL</li>
- * <li>SQL caching - Based on BasicProvider caching mechanism</li>
+ * <li>Dynamic SQL generation for selective and dialect-aware operations</li>
+ * <li>SQL caching based on the shared provider infrastructure</li>
  * </ul>
  *
  * <p>
@@ -60,7 +60,7 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * <ul>
  * <li>For MySQL/PostgreSQL: Use {@code insertBatch()} for best performance</li>
  * <li>For Oracle/SQL Server/DB2: Use JDBC batch mode with {@code sqlSession.commit()}</li>
- * <li>For mixed databases: Use {@code insertUpBatch()} with dynamic datasource detection</li>
+ * <li>For mixed databases: Use {@code insertUpBatch()} only on dialects with native batch upsert support</li>
  * <li>For large datasets (&gt;1000 rows): Consider chunking into smaller batches</li>
  * <li>For SQLite: Use {@code insertUpBatch()} as INSERT OR REPLACE handles conflicts efficiently</li>
  * </ul>
@@ -85,7 +85,7 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  *
  * // Multi-datasource with dynamic detection
  * Holder.setKey("oracle_ds"); // Switch to Oracle datasource
- * userMapper.insertUpBatch(users); // Automatically uses MERGE syntax
+ * // Use JDBC batch fallback instead of native insertUpBatch(users)
  *
  * Holder.setKey("mysql_ds"); // Switch to MySQL datasource
  * userMapper.insertUpBatch(users); // Automatically uses ON DUPLICATE KEY UPDATE
@@ -144,12 +144,7 @@ public class BatchProvider extends BasicProvider {
      * </pre>
      *
      * <p>
-     * The SQL is generated dynamically at runtime based on the current datasource's dialect. Uses:
-     * </p>
-     * <ul>
-     * <li>{@link Dialect#supportsUpsert()} - Checks if UPSERT is supported</li>
-     * <li>{@link Dialect#getUpsertTemplate()} - Gets the UPSERT SQL template</li>
-     * </ul>
+     * The SQL is generated dynamically at runtime based on the current datasource's dialect.
      *
      * @param providerContext Provider context containing entity metadata
      * @return SQL statement with foreach tags for batch UPSERT
@@ -191,8 +186,8 @@ public class BatchProvider extends BasicProvider {
      * Build Batch UPSERT SQL (insert only non-null fields).
      *
      * <p>
-     * Generates UPSERT statements with dynamic SQL for only non-null fields. Uses {@link Dialect#supportsUpsert()},
-     * {@link Dialect#getUpsertTemplate()}.
+     * Generates UPSERT statements with dynamic SQL for only non-null fields on dialects that support native batch
+     * UPSERT SQL. Other dialects must use JDBC batch fallback at the service layer.
      * </p>
      *
      * @param providerContext Provider context
@@ -234,84 +229,28 @@ public class BatchProvider extends BasicProvider {
     }
 
     /**
-     * Build batch UPSERT SQL function that accepts Dialect parameter.
+     * Builds a dialect-aware native batch UPSERT SQL function.
      *
-     * <p>
-     * This method returns a function that generates database-specific batch UPSERT SQL. The SQL is generated
-     * dynamically at runtime based on the current datasource's dialect.
-     * </p>
-     *
-     * <p>
-     * <b>Implementation Details:</b>
-     * </p>
-     * <ul>
-     * <li>Checks {@link Dialect#supportsUpsert()} to verify UPSERT support</li>
-     * <li>Gets UPSERT template via {@link Dialect#getUpsertTemplate()}</li>
-     * <li>Generates {@code <foreach>} tags for multi-values INSERT</li>
-     * <li>Builds UPDATE clause inline based on dialect type:
-     * <ul>
-     * <li>MySQL/MariaDB: {@code col = VALUES(col)}</li>
-     * <li>PostgreSQL/H2/CirroData: {@code col = EXCLUDED.col}</li>
-     * </ul>
-     * </li>
-     * <li>Applies template with 5 parameters: tableName, columnList, foreachValues, keyColumns, updateClause</li>
-     * </ul>
-     *
-     * <p>
-     * <b>Generated SQL Example (PostgreSQL):</b>
-     * </p>
-     * 
-     * <pre>
-     * INSERT INTO users (id, name, email) VALUES
-     *   &lt;foreach collection="list" item="item" separator=","&gt;
-     *     (#{item.id}, #{item.name}, #{item.email})
-     *   &lt;/foreach&gt;
-     * ON CONFLICT (id) DO UPDATE SET
-     *   name = EXCLUDED.name,
-     *   email = EXCLUDED.email
-     * </pre>
-     *
-     * @param entity Table metadata containing column and key information
-     * @return Function that accepts Dialect and returns complete UPSERT SQL with foreach tags
+     * @param entity the table metadata
+     * @return a function that renders SQL for the active dialect
      */
     protected static Function<Dialect, String> insertUpBatch(TableMeta entity) {
         return dialect -> {
-            // Step 1: Check if UPSERT is supported
-            if (!dialect.supportsUpsert()) {
-                throw new UnsupportedOperationException(dialect.getDatabase() + " does not support UPSERT operations");
+            Dialect.Type upsertType = dialect.getUpsertType();
+            if (upsertType == Dialect.Type.NONE) {
+                throw unsupportedUpsert(dialect);
             }
-
-            // Get key and update columns
-            String keyColumns = entity.idColumns().stream().map(ColumnMeta::column).collect(Collectors.joining(", "));
-            String columnList = entity.insertColumns().stream().map(ColumnMeta::column)
-                    .collect(Collectors.joining(", "));
-
-            // Step 2: Use getUpsertTemplate()
-            String template = dialect.getUpsertTemplate();
-            if (template == null || template.isEmpty()) {
-                throw new UnsupportedOperationException(dialect.getDatabase() + " does not provide UPSERT template");
+            if (!supportsNativeBatchUpsert(upsertType)) {
+                throw new UnsupportedOperationException(
+                        dialect.getDatabase() + " does not support native batch UPSERT SQL; use JDBC batch fallback");
             }
-
-            // Build values placeholder with foreach tags
-            String valuesPlaceholder = entity.insertColumns().stream().map(col -> "#{item." + col.property() + "}")
-                    .collect(Collectors.joining(", "));
-            String foreachValues = "  <foreach collection=\"list\" item=\"item\" separator=\",\">\n" + "    ("
-                    + valuesPlaceholder + ")\n" + "  </foreach>";
-
-            // Step 3: Build UPDATE clause inline based on dialect type
-            String updateClause;
-            String database = dialect.getDatabase();
-            if (database.contains("MySQL") || database.contains("MariaDB")) {
-                // MySQL: col1 = VALUES(col1), col2 = VALUES(col2)
-                updateClause = entity.updateColumns().stream()
-                        .map(col -> col.column() + " = VALUES(" + col.column() + ")").collect(Collectors.joining(", "));
-            } else {
-                // PostgreSQL, H2, CirroData: col1 = EXCLUDED.col1, col2 = EXCLUDED.col2
-                updateClause = entity.updateColumns().stream().map(col -> col.column() + " = EXCLUDED." + col.column())
-                        .collect(Collectors.joining(", "));
-            }
-
-            return String.format(template, entity.tableName(), columnList, foreachValues, keyColumns, updateClause);
+            return switch (upsertType) {
+                case INSERT_ON_DUPLICATE -> buildBatchInsertOnDuplicate(entity);
+                case INSERT_ON_CONFLICT -> buildBatchInsertOnConflict(entity);
+                case INSERT_OR_REPLACE -> buildBatchInsertOrReplace(entity);
+                default -> throw new UnsupportedOperationException(
+                        dialect.getDatabase() + " does not support native batch UPSERT SQL");
+            };
         };
     }
 
@@ -327,100 +266,159 @@ public class BatchProvider extends BasicProvider {
      * @return Function that accepts Dialect and returns INSERT SQL
      */
     protected static Function<Dialect, String> insertSelectiveBatch(TableMeta entity) {
-        return dialect -> {
-            // Build dynamic column list and values list
-            String columnList = buildDynamicColumnList(entity, "list", "0");
-            String valuesList = "  <foreach collection=\"list\" item=\"item\" separator=\",\">\n"
-                    + buildDynamicValuesList(entity, "item") + "\n  </foreach>";
+        return dialect -> "INSERT INTO " + entity.tableName() + "\n" + buildDynamicColumnList(entity, "list", "0")
+                + "\nVALUES\n" + buildBatchDynamicRows(entity);
+    }
 
-            // Use template to build final SQL
-            return String.format(dialect.getInsertTemplate(), entity.tableName(), columnList, valuesList);
+    /**
+     * Builds a dialect-aware native selective batch UPSERT SQL function.
+     *
+     * <p>
+     * Only dialects with stable native batch UPSERT syntax are allowed to proceed. Dialects that require {@code MERGE},
+     * {@code UPDATE OR INSERT}, or driver-level batch execution are rejected explicitly so that callers can switch to a
+     * JDBC batch fallback.
+     * </p>
+     *
+     * @param entity the table metadata
+     * @return a function that renders SQL for the active dialect
+     */
+    protected static Function<Dialect, String> insertUpSelectiveBatch(TableMeta entity) {
+        return dialect -> {
+            Dialect.Type upsertType = dialect.getUpsertType();
+            if (upsertType == Dialect.Type.NONE) {
+                throw unsupportedUpsert(dialect);
+            }
+            if (!supportsNativeBatchUpsert(upsertType)) {
+                throw new UnsupportedOperationException(dialect.getDatabase()
+                        + " does not support native batch selective UPSERT SQL; use JDBC batch fallback");
+            }
+            return switch (upsertType) {
+                case INSERT_ON_DUPLICATE -> buildBatchInsertOnDuplicateSelective(entity);
+                case INSERT_ON_CONFLICT -> buildBatchInsertOnConflictSelective(entity);
+                case INSERT_OR_REPLACE -> buildBatchInsertOrReplaceSelective(entity);
+                default -> throw new UnsupportedOperationException(
+                        dialect.getDatabase() + " does not support native batch selective UPSERT SQL");
+            };
         };
     }
 
     /**
-     * Build batch UPSERT SQL function (insert only non-null fields) that accepts Dialect parameter.
+     * Builds a MySQL-style native batch UPSERT statement.
      *
-     * <p>
-     * This method returns a function that generates database-specific batch UPSERT SQL with dynamic SQL for only
-     * non-null fields. The SQL is generated dynamically at runtime based on the current datasource's dialect.
-     * </p>
-     *
-     * <p>
-     * <b>Implementation Details:</b>
-     * </p>
-     * <ul>
-     * <li>Checks {@link Dialect#supportsUpsert()} to verify UPSERT support</li>
-     * <li>Detects if dialect uses INSERT OR REPLACE (SQLite) by checking template</li>
-     * <li>For SQLite: Uses INSERT OR REPLACE template with dynamic columns</li>
-     * <li>For other databases: Uses {@link Dialect#buildUpsertSql} to generate complete dynamic UPSERT</li>
-     * </ul>
-     *
-     * <p>
-     * <b>Generated SQL Example (PostgreSQL):</b>
-     * </p>
-     * 
-     * <pre>
-     * INSERT INTO users
-     * &lt;trim prefix="(" suffix=")" suffixOverrides=","&gt;
-     *   &lt;if test="list[0].id != null"&gt;id,&lt;/if&gt;
-     *   &lt;if test="list[0].name != null"&gt;name,&lt;/if&gt;
-     *   &lt;if test="list[0].email != null"&gt;email,&lt;/if&gt;
-     * &lt;/trim&gt;
-     * VALUES
-     * &lt;foreach collection="list" item="item" separator=","&gt;
-     *   &lt;trim prefix="(" suffix=")" suffixOverrides=","&gt;
-     *     &lt;if test="item.id != null"&gt;#{item.id},&lt;/if&gt;
-     *     &lt;if test="item.name != null"&gt;#{item.name},&lt;/if&gt;
-     *     &lt;if test="item.email != null"&gt;#{item.email},&lt;/if&gt;
-     *   &lt;/trim&gt;
-     * &lt;/foreach&gt;
-     * ON CONFLICT (id) DO UPDATE SET
-     *   &lt;if test="list[0].name != null"&gt;name = EXCLUDED.name,&lt;/if&gt;
-     *   &lt;if test="list[0].email != null"&gt;email = EXCLUDED.email,&lt;/if&gt;
-     * </pre>
-     *
-     * @param entity Table metadata containing column and key information
-     * @return Function that accepts Dialect and returns complete dynamic UPSERT SQL
+     * @param entity the table metadata
+     * @return the generated SQL
      */
-    protected static Function<Dialect, String> insertUpSelectiveBatch(TableMeta entity) {
-        return dialect -> {
-            // Step 1: Check if UPSERT is supported
-            if (!dialect.supportsUpsert()) {
-                throw new UnsupportedOperationException(dialect.getDatabase() + " does not support UPSERT operations");
-            }
+    private static String buildBatchInsertOnDuplicate(TableMeta entity) {
+        return "INSERT INTO " + entity.tableName() + " (" + insertColumnList(entity) + ") VALUES\n"
+                + buildBatchRowValues(entity) + "\nON DUPLICATE KEY UPDATE " + entity.updateColumns().stream()
+                        .map(col -> col.column() + " = VALUES(" + col.column() + ")").collect(Collectors.joining(", "));
+    }
 
-            // Check if using INSERT OR REPLACE by examining the template
-            String upsertTemplate = dialect.getUpsertTemplate();
-            boolean useInsertOrReplace = upsertTemplate != null && upsertTemplate.contains("INSERT OR REPLACE");
-
-            // Step 2: Build dynamic column list and values list
-            String columnList = buildDynamicColumnList(entity, "list", "0");
-            String valuesList = "  <foreach collection=\"list\" item=\"item\" separator=\",\">\n"
-                    + buildDynamicValuesList(entity, "item") + "\n  </foreach>";
-
-            StringBuilder sql = new StringBuilder();
-            if (useInsertOrReplace) {
-                // SQLite: Use INSERT OR REPLACE template
-                sql.append("INSERT OR REPLACE INTO ").append(entity.tableName()).append(" (").append(columnList)
-                        .append(") VALUES\n");
-                sql.append(valuesList);
-            } else {
-                // MySQL/PostgreSQL/H2: Use buildUpsertSql()
-                String keyColumns = entity.idColumns().stream().map(ColumnMeta::column)
+    /**
+     * Builds a PostgreSQL-style native batch UPSERT statement.
+     *
+     * @param entity the table metadata
+     * @return the generated SQL
+     */
+    private static String buildBatchInsertOnConflict(TableMeta entity) {
+        return "INSERT INTO " + entity.tableName() + " (" + insertColumnList(entity) + ") VALUES\n"
+                + buildBatchRowValues(entity) + "\nON CONFLICT (" + keyColumnList(entity) + ") DO UPDATE SET "
+                + entity.updateColumns().stream().map(col -> col.column() + " = EXCLUDED." + col.column())
                         .collect(Collectors.joining(", "));
-                String upsertSql = dialect.buildUpsertSql(
-                        entity.tableName(),
-                        columnList,
-                        valuesList,
-                        keyColumns,
-                        entity.updateColumns(),
-                        "list[0]");
-                sql.append(upsertSql);
-            }
+    }
 
-            return sql.toString();
-        };
+    /**
+     * Builds a SQLite-style native batch UPSERT statement.
+     *
+     * @param entity the table metadata
+     * @return the generated SQL
+     */
+    private static String buildBatchInsertOrReplace(TableMeta entity) {
+        return "INSERT OR REPLACE INTO " + entity.tableName() + " (" + insertColumnList(entity) + ") VALUES\n"
+                + buildBatchRowValues(entity);
+    }
+
+    /**
+     * Builds a MySQL-style native batch selective UPSERT statement.
+     *
+     * @param entity the table metadata
+     * @return the generated SQL
+     */
+    private static String buildBatchInsertOnDuplicateSelective(TableMeta entity) {
+        return "INSERT INTO " + entity.tableName() + "\n" + buildDynamicColumnList(entity, "list", "0") + "\nVALUES\n"
+                + buildBatchDynamicRows(entity) + "\nON DUPLICATE KEY UPDATE\n"
+                + buildSelectiveAssignments(entity, "VALUES");
+    }
+
+    /**
+     * Builds a PostgreSQL-style native batch selective UPSERT statement.
+     *
+     * @param entity the table metadata
+     * @return the generated SQL
+     */
+    private static String buildBatchInsertOnConflictSelective(TableMeta entity) {
+        return "INSERT INTO " + entity.tableName() + "\n" + buildDynamicColumnList(entity, "list", "0") + "\nVALUES\n"
+                + buildBatchDynamicRows(entity) + "\nON CONFLICT (" + keyColumnList(entity) + ") DO UPDATE SET\n"
+                + buildSelectiveAssignments(entity, "EXCLUDED");
+    }
+
+    /**
+     * Builds a SQLite-style native batch selective UPSERT statement.
+     *
+     * @param entity the table metadata
+     * @return the generated SQL
+     */
+    private static String buildBatchInsertOrReplaceSelective(TableMeta entity) {
+        return "INSERT OR REPLACE INTO " + entity.tableName() + "\n" + buildDynamicColumnList(entity, "list", "0")
+                + "\nVALUES\n" + buildBatchDynamicRows(entity);
+    }
+
+    /**
+     * Builds the static multi-row value tuples used by native batch statements.
+     *
+     * @param entity the table metadata
+     * @return the generated {@code <foreach>} block
+     */
+    private static String buildBatchRowValues(TableMeta entity) {
+        String valuesPlaceholder = entity.insertColumns().stream().map(col -> "#{item." + col.property() + "}")
+                .collect(Collectors.joining(", "));
+        return "  <foreach collection=\"list\" item=\"item\" separator=\",\">\n    (" + valuesPlaceholder
+                + ")\n  </foreach>";
+    }
+
+    /**
+     * Builds dynamic multi-row value tuples for selective batch statements.
+     *
+     * @param entity the table metadata
+     * @return the generated {@code <foreach>} block
+     */
+    private static String buildBatchDynamicRows(TableMeta entity) {
+        return "<foreach collection=\"list\" item=\"item\" separator=\",\">\n" + buildDynamicValuesList(entity, "item")
+                + "\n</foreach>";
+    }
+
+    /**
+     * Builds a dynamic update assignment list for selective batch UPSERT SQL.
+     *
+     * @param entity the table metadata
+     * @param mode   the right-hand-side reference mode
+     * @return the generated assignment segment
+     */
+    private static String buildSelectiveAssignments(TableMeta entity, String mode) {
+        StringBuilder sql = new StringBuilder();
+        sql.append("<trim suffixOverrides=\",\">\n");
+        for (ColumnMeta col : entity.updateColumns()) {
+            sql.append("  <if test=\"").append(col.id() ? "true" : "list[0]." + col.property() + " != null\">")
+                    .append(col.column()).append(" = ");
+            if ("VALUES".equals(mode)) {
+                sql.append("VALUES(").append(col.column()).append(")");
+            } else {
+                sql.append("EXCLUDED.").append(col.column());
+            }
+            sql.append(",</if>\n");
+        }
+        sql.append("</trim>");
+        return sql.toString();
     }
 
 }

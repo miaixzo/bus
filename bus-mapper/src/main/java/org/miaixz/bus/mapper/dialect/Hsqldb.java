@@ -20,104 +20,47 @@
 package org.miaixz.bus.mapper.dialect;
 
 import org.miaixz.bus.mapper.support.paging.Pageable;
-import java.util.List;
-import org.miaixz.bus.mapper.parsing.ColumnMeta;
 
 /**
- * HyperSQL (HSQLDB) dialect.
+ * Dialect implementation for HSQLDB databases.
  *
  * <p>
- * Supports:
+ * HSQLDB uses standard {@code LIMIT/OFFSET} pagination in this framework and is grouped with the
+ * {@code MERGE_USING_VALUES} UPSERT family.
  * </p>
- * <ul>
- * <li>LIMIT OFFSET pagination</li>
- * <li>OFFSET...FETCH pagination (SQL standard)</li>
- * <li>Multi-Values INSERT</li>
- * <li>MERGE (UPSERT)</li>
- * <li>JDBC batch operations</li>
- * </ul>
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class Hsqldb extends AbstractDialect {
 
+    /**
+     * Creates the HSQLDB dialect.
+     */
     public Hsqldb() {
         super("HSQLDB", "jdbc:hsqldb:");
     }
 
+    /**
+     * Returns the UPSERT family used by HSQLDB in this framework.
+     *
+     * @return {@link Dialect.Type#MERGE_USING_VALUES}
+     */
     @Override
-    public boolean supportsProduct(String productName) {
-        if (productName == null) {
-            return false;
-        }
-        String lower = productName.toLowerCase();
-        return lower.contains("hsql") || lower.contains("hypersql");
+    public Dialect.Type getUpsertType() {
+        return Dialect.Type.MERGE_USING_VALUES;
     }
 
+    /**
+     * Builds paginated SQL using standard {@code LIMIT/OFFSET} syntax.
+     *
+     * @param originalSql the original SQL statement
+     * @param pageable    the requested pagination information
+     * @return the paginated SQL statement
+     */
     @Override
-    public String getPaginationSql(String originalSql, Pageable pageable) {
-        return buildLimitOffsetPagination(originalSql, pageable);
-    }
-
-    @Override
-    public boolean supportsMultiValuesInsert() {
-        return true;
-    }
-
-    @Override
-    public boolean supportsUpsert() {
-        return true; // Uses MERGE
-    }
-
-    @Override
-    public String getUpsertTemplate() {
-        return "MERGE INTO %s USING (VALUES %s) AS source (%s) ON %s WHEN MATCHED THEN UPDATE SET %s WHEN NOT MATCHED THEN INSERT (%s) VALUES (%s)";
-    }
-
-    @Override
-    public String buildUpsertSql(
-            String tableName,
-            String columnList,
-            String valuesList,
-            String keyColumns,
-            List<ColumnMeta> updateColumns,
-            String itemPrefix) {
-        // Hsqldb: MERGE INTO ... USING (VALUES ...) AS source (...) ON (...) WHEN MATCHED THEN UPDATE SET ...
-        // WHEN NOT MATCHED THEN INSERT (...) VALUES (...) with dynamic <if> tags
-        StringBuilder sb = new StringBuilder();
-        sb.append("MERGE INTO ").append(tableName).append(" USING (VALUES (").append(valuesList)
-                .append(")) AS source (").append(columnList).append(")\n");
-
-        sb.append("ON (");
-        String[] keyColArray = keyColumns.split(",\\s*");
-        for (int i = 0; i < keyColArray.length; i++) {
-            if (i > 0) {
-                sb.append(" AND ");
-            }
-            String colName = keyColArray[i].trim();
-            sb.append("target.").append(colName).append(" = source.").append(colName);
-        }
-        sb.append(")\n");
-
-        sb.append("WHEN MATCHED THEN UPDATE SET\n");
-        for (ColumnMeta col : updateColumns) {
-            sb.append("  <if test=\"").append(itemPrefix).append(".").append(col.property())
-                    .append(" != null\">target.").append(col.column()).append(" = source.").append(col.column())
-                    .append(",</if>\n");
-        }
-
-        sb.append("WHEN NOT MATCHED THEN INSERT (").append(columnList).append(")\n");
-        sb.append("VALUES (");
-
-        StringBuilder sourceValues = new StringBuilder();
-        for (ColumnMeta col : updateColumns) {
-            sourceValues.append("<if test=\"").append(itemPrefix).append(".").append(col.property())
-                    .append(" != null\">source.").append(col.column()).append(",</if>");
-        }
-        sb.append(sourceValues).append(")");
-
-        return sb.toString();
+    public String buildPaginationSql(String originalSql, Pageable pageable) {
+        return buildPaginatedSql(originalSql, pageable);
     }
 
 }

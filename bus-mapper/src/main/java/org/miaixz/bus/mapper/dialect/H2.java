@@ -19,74 +19,48 @@
 */
 package org.miaixz.bus.mapper.dialect;
 
-import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.support.paging.Pageable;
 
-import java.util.List;
-
 /**
- * H2 Database dialect.
+ * Dialect implementation for H2 databases.
  *
  * <p>
- * Supports:
+ * H2 is aligned with the framework's {@code ON CONFLICT} UPSERT branch and supports standard multi-values insert
+ * statements.
  * </p>
- * <ul>
- * <li>LIMIT, OFFSET pagination</li>
- * <li>Multi-values INSERT</li>
- * <li>ON CONFLICT DO UPDATE (UPSERT)</li>
- * <li>JDBC batch operations</li>
- * </ul>
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class H2 extends AbstractDialect {
 
+    /**
+     * Creates the H2 dialect.
+     */
     public H2() {
         super("H2", "jdbc:h2:");
     }
 
+    /**
+     * Returns the UPSERT family used by H2 in this framework.
+     *
+     * @return {@link Dialect.Type#INSERT_ON_CONFLICT}
+     */
     @Override
-    public String getPaginationSql(String originalSql, Pageable pageable) {
-        return buildLimitOffsetPagination(originalSql, pageable);
+    public Dialect.Type getUpsertType() {
+        return Dialect.Type.INSERT_ON_CONFLICT;
     }
 
+    /**
+     * Builds paginated SQL using standard {@code LIMIT/OFFSET} syntax.
+     *
+     * @param originalSql the original SQL statement
+     * @param pageable    the requested pagination information
+     * @return the paginated SQL statement
+     */
     @Override
-    public boolean supportsMultiValuesInsert() {
-        return true;
-    }
-
-    @Override
-    public boolean supportsUpsert() {
-        return true;
-    }
-
-    @Override
-    public String getUpsertTemplate() {
-        return "INSERT INTO %s (%s) VALUES %s ON CONFLICT (%s) DO UPDATE SET %s";
-    }
-
-    @Override
-    public String buildUpsertSql(
-            String tableName,
-            String columnList,
-            String valuesList,
-            String keyColumns,
-            List<ColumnMeta> updateColumns,
-            String itemPrefix) {
-        // H2: INSERT INTO ... VALUES ... ON CONFLICT (keys) DO UPDATE SET with dynamic <if> tags
-        StringBuilder sb = new StringBuilder();
-        sb.append("INSERT INTO ").append(tableName).append(" (").append(columnList).append(") VALUES\n");
-        sb.append(valuesList);
-        sb.append("\nON CONFLICT (").append(keyColumns).append(") DO UPDATE SET\n");
-
-        for (ColumnMeta col : updateColumns) {
-            String assignment = col.column() + " = EXCLUDED." + col.column();
-            sb.append("  <if test=\"").append(itemPrefix).append(".").append(col.property()).append(" != null\">")
-                    .append(assignment).append(",</if>\n");
-        }
-
-        return sb.toString();
+    public String buildPaginationSql(String originalSql, Pageable pageable) {
+        return buildPaginatedSql(originalSql, pageable);
     }
 
 }

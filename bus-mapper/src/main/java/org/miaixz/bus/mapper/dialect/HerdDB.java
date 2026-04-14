@@ -22,57 +22,44 @@ package org.miaixz.bus.mapper.dialect;
 import org.miaixz.bus.mapper.support.paging.Pageable;
 
 /**
- * HerdDB dialect (Apache Calcite-based database).
+ * Dialect implementation for Herddb databases.
  *
  * <p>
- * HerdDB is built on Apache Calcite and supports standard SQL.
+ * Herddb uses standard {@code LIMIT/OFFSET} pagination in this framework but does not advertise any UPSERT support.
  * </p>
- *
- * <p>
- * Supports:
- * </p>
- * <ul>
- * <li>LIMIT OFFSET pagination</li>
- * <li>Multi-Values INSERT</li>
- * <li>JDBC batch operations</li>
- * </ul>
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public class HerdDB extends AbstractDialect {
+public class Herddb extends AbstractDialect {
 
-    public HerdDB() {
-        super("HerdDB", "jdbc:herddb:");
+    /**
+     * Creates the Herddb dialect.
+     */
+    public Herddb() {
+        super("Herddb", "jdbc:herddb:");
     }
 
+    /**
+     * Returns the UPSERT family used by Herddb in this framework.
+     *
+     * @return {@link Dialect.Type#NONE}
+     */
     @Override
-    public boolean supportsProduct(String productName) {
-        if (productName == null) {
-            return false;
-        }
-        String lower = productName.toLowerCase();
-        return lower.contains("herddb") || lower.contains("herd db");
+    public Dialect.Type getUpsertType() {
+        return Dialect.Type.NONE;
     }
 
+    /**
+     * Builds paginated SQL using standard {@code LIMIT/OFFSET} syntax.
+     *
+     * @param originalSql the original SQL statement
+     * @param pageable    the requested pagination information
+     * @return the paginated SQL statement
+     */
     @Override
-    public String getPaginationSql(String originalSql, Pageable pageable) {
-        return buildLimitOffsetPagination(originalSql, pageable);
-    }
-
-    @Override
-    public boolean supportsMultiValuesInsert() {
-        return true;
-    }
-
-    @Override
-    public boolean supportsUpsert() {
-        return false; // HerdDB doesn't support standard UPSERT
-    }
-
-    @Override
-    public String getUpsertTemplate() {
-        return null;
+    public String buildPaginationSql(String originalSql, Pageable pageable) {
+        return buildPaginatedSql(originalSql, pageable);
     }
 
 }

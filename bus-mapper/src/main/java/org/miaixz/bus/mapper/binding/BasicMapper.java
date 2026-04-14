@@ -34,6 +34,7 @@ import org.miaixz.bus.mapper.binding.condition.ConditionMapper;
 import org.miaixz.bus.mapper.binding.condition.ConditionWrapper;
 import org.miaixz.bus.mapper.binding.cursor.CursorMapper;
 import org.miaixz.bus.mapper.binding.function.Fn;
+import org.miaixz.bus.mapper.binding.list.ListMapper;
 import org.miaixz.bus.mapper.provider.FunctionProvider;
 
 /**
@@ -45,8 +46,8 @@ import org.miaixz.bus.mapper.provider.FunctionProvider;
  * @author Kimi Liu
  * @since Java 21+
  */
-public interface BasicMapper<T, I extends Serializable>
-        extends EntityMapper<T, I>, ConditionMapper<T, Condition<T>>, CursorMapper<T, Condition<T>>, BatchMapper<T> {
+public interface BasicMapper<T, I extends Serializable> extends EntityMapper<T, I>, ConditionMapper<T, Condition<T>>,
+        CursorMapper<T, Condition<T>>, ListMapper<T>, BatchMapper<T> {
 
     /**
      * Creates a {@link ConditionWrapper} object for building complex queries.
