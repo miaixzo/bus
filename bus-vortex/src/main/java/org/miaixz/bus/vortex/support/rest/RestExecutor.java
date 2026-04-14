@@ -23,9 +23,9 @@ import java.util.Map;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.NonNull;
+import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Holder;
 import org.miaixz.bus.vortex.support.Coordinator;
@@ -422,6 +422,14 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
         // This is your provided code block (streaming).
         return bodySpec.exchangeToMono(clientResponse -> {
             ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(clientResponse.statusCode());
+            Logger.debug(
+                    false,
+                    "Http",
+                    "[{}] [{}] [{}] [HTTP_ROUTER_RECV_HEADERS] - Downstream response headers: {}",
+                    ip,
+                    method,
+                    path,
+                    clientResponse.headers().asHttpHeaders());
 
             responseBuilder.headers(headers -> {
                 headers.addAll(clientResponse.headers().asHttpHeaders());
@@ -501,6 +509,14 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                             method,
                             path,
                             responseEntity.getStatusCode());
+                    Logger.info(
+                            false,
+                            "Http",
+                            "[{}] [{}] [{}] [HTTP_ROUTER_RECV_HEADERS] - Downstream response headers: {}",
+                            ip,
+                            method,
+                            path,
+                            responseEntity.getHeaders());
 
                     DataBuffer body = responseEntity.getBody();
                     if (body != null && body.readableByteCount() > 0) {

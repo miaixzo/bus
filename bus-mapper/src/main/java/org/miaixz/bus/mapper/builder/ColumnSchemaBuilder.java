@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.mapper.builder;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.miaixz.bus.core.lang.Optional;
@@ -36,11 +35,6 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * @since Java 21+
  */
 public interface ColumnSchemaBuilder extends Order {
-
-    /**
-     * A default value for ignored fields, representing an empty list of column information.
-     */
-    Optional<List<ColumnMeta>> IGNORE = Optional.of(Collections.emptyList());
 
     /**
      * Creates column information. A field may not be a column, it may be a single column, or it may correspond to

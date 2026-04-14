@@ -19,14 +19,9 @@
 */
 package org.miaixz.bus.spring.http;
 
-import jakarta.servlet.ReadListener;
-import jakarta.servlet.ServletInputStream;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletRequestWrapper;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import java.io.*;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Normal;
@@ -37,9 +32,16 @@ import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
 
-import java.io.*;
-import java.util.stream.Collectors;
+import jakarta.servlet.ReadListener;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Request wrapper that caches the request body content and provides XSS protection.
@@ -91,11 +93,6 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
     public byte[] body;
 
     /**
-     * Custom {@link ServletInputStream} wrapper for the cached body.
-     */
-    public ServletInputStreamWrapper inputStreamWrapper;
-
-    /**
      * Constructs a new {@code MutableRequestWrapper}, initializing the request wrapper.
      * <p>
      * This constructor reads and caches the request body content, initializes a custom input stream wrapper, and logs
@@ -109,11 +106,12 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
         super(request);
         this.request = request;
         this.contentType = request.getContentType();
+        WrapperRuntimeOptions options = WrapperRuntimeOptions.of();
 
         // Read and cache the request body content
         // Read input stream
         this.body = IoKit.readBytes(request.getInputStream());
-        if (this.body == null || this.body.length == 0) {
+        if ((this.body == null || this.body.length == 0) && options.isSynthesizeFormBody()) {
             // If the input stream is empty and there are parameters, use parameterMap
             if (MapKit.isNotEmpty(request.getParameterMap())) {
                 String paramString = request.getParameterMap().entrySet().stream()
@@ -124,22 +122,19 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
             } else {
                 this.body = new byte[0]; // Ensure body is not null
             }
+        } else if (this.body == null) {
+            this.body = new byte[0];
         }
 
         // Log request parameters, prioritizing parameterMap
         Object logOut = MapKit.isNotEmpty(request.getParameterMap()) ? request.getParameterMap()
                 : new String(this.body, Charset.UTF_8);
-        if (logOut instanceof String) {
+        if (logOut instanceof String && options.isSynthesizeFormBody()) {
             // Remove newlines, tabs, and extra whitespace
             logOut = UrlKit.decodeQuery(((String) logOut).replaceAll("\\s+", Normal.EMPTY), Charset.UTF_8);
         }
 
         Logger.info(true, "Request", "Parameters: {}", JsonKit.toJsonString(logOut));
-
-        // Initialize custom input stream
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(this.body);
-        this.inputStreamWrapper = new ServletInputStreamWrapper(byteArrayInputStream);
-        this.inputStreamWrapper.setInputStream(byteArrayInputStream);
     }
 
     /**
@@ -175,22 +170,21 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
      * Returns a custom {@link ServletInputStream} that reads from the cached request body.
      *
      * @return A custom {@link ServletInputStream}.
-     * @throws IOException If an I/O error occurs.
      */
     @Override
-    public ServletInputStream getInputStream() throws IOException {
-        return this.inputStreamWrapper;
+    public ServletInputStream getInputStream() {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(this.body);
+        return new ServletInputStreamWrapper(inputStream);
     }
 
     /**
      * Returns a {@link BufferedReader} for reading the request body.
      *
      * @return A {@link BufferedReader} for the request body.
-     * @throws IOException If an I/O error occurs.
      */
     @Override
-    public BufferedReader getReader() throws IOException {
-        return new BufferedReader(new InputStreamReader(this.inputStreamWrapper, Charset.UTF_8));
+    public BufferedReader getReader() {
+        return new BufferedReader(new InputStreamReader(new ByteArrayInputStream(this.body), Charset.UTF_8));
     }
 
     /**
@@ -207,6 +201,9 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
         String[] values = super.getParameterValues(parameter);
         if (null == values || values.length <= 0) {
             return null;
+        }
+        if (!WrapperRuntimeOptions.of().isSanitizeInputValues()) {
+            return values;
         }
         int count = values.length;
         String[] encodedValues = new String[count];
@@ -231,6 +228,9 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public String getParameter(String name) {
         String content = super.getParameter(name);
+        if (!WrapperRuntimeOptions.of().isSanitizeInputValues()) {
+            return content;
+        }
         if (!JsonKit.isJson(content)) {
             content = EscapeKit.escapeHtml4(content);
         }
@@ -249,6 +249,9 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public String getHeader(String name) {
         String content = super.getHeader(name);
+        if (!WrapperRuntimeOptions.of().isSanitizeInputValues()) {
+            return content;
+        }
         if (!JsonKit.isJson(content)) {
             content = EscapeKit.escapeHtml4(content);
         }

@@ -19,14 +19,14 @@
 */
 package org.miaixz.bus.core.center.date.culture.star.nine;
 
-import org.miaixz.bus.core.center.date.culture.Samsara;
 import org.miaixz.bus.core.center.date.culture.Direction;
 import org.miaixz.bus.core.center.date.culture.Element;
+import org.miaixz.bus.core.center.date.culture.Samsara;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * Represents the Nine Stars (九星) in Chinese metaphysics, often associated with Feng Shui and other divinatory
- * practices. This class extends {@link Samsara} to manage a cyclical list of these entities.
+ * Represents the Nine Stars in Chinese metaphysics, often associated with Feng Shui and other divinatory practices.
+ * This class extends {@link Samsara} to manage a cyclical list of these entities.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -96,16 +96,16 @@ public class NineStar extends Samsara {
     }
 
     /**
-     * Gets the corresponding {@link Element} (五行) for this Nine Star.
+     * Gets the corresponding {@link Element} for this Nine Star.
      *
      * @return The {@link Element} associated with this Nine Star.
      */
     public Element getElement() {
-        return Element.fromIndex(new int[] { 4, 2, 0, 0, 2, 3, 3, 2, 1 }[index]);
+        return getDirection().getElement();
     }
 
     /**
-     * Gets the corresponding {@link Dipper} (北斗九星) for this Nine Star.
+     * Gets the corresponding {@link Dipper} for this Nine Star.
      *
      * @return The {@link Dipper} associated with this Nine Star.
      */
@@ -114,7 +114,7 @@ public class NineStar extends Samsara {
     }
 
     /**
-     * Gets the corresponding {@link Direction} (方位) for this Nine Star.
+     * Gets the corresponding {@link Direction} for this Nine Star.
      *
      * @return The {@link Direction} associated with this Nine Star.
      */

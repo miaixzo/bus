@@ -27,6 +27,7 @@ import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
 import org.miaixz.bus.spring.http.AwareWebMvcConfigurer;
 import org.miaixz.bus.spring.http.RuntimeContextBindingFilter;
 import org.miaixz.bus.spring.http.SentinelRequestHandler;
@@ -113,11 +114,12 @@ public class WrapperConfiguration implements WebMvcRegistrations {
      * @return A configured {@link FilterRegistrationBean} for the body cache filter.
      */
     @Bean("registrationBodyCacheFilter")
-    public FilterRegistrationBean<RuntimeContextBindingFilter> registrationBodyCacheFilter() {
+    public FilterRegistrationBean<RuntimeContextBindingFilter> registrationBodyCacheFilter(
+            WrapperRuntimeOptions options) {
         FilterRegistrationBean<RuntimeContextBindingFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setEnabled(this.properties.isEnabled());
         registrationBean.setOrder(this.properties.getOrder());
-        registrationBean.setFilter(new RuntimeContextBindingFilter());
+        registrationBean.setFilter(new RuntimeContextBindingFilter(options));
         if (StringKit.isNotEmpty(this.properties.getName())) {
             registrationBean.setName(this.properties.getName());
         }
@@ -149,8 +151,26 @@ public class WrapperConfiguration implements WebMvcRegistrations {
      * @return A new {@link AwareWebMvcConfigurer} instance.
      */
     @Bean("supportWebMvcConfigurer")
-    public org.springframework.web.servlet.config.annotation.WebMvcConfigurer supportWebMvcConfigurer() {
-        return new AwareWebMvcConfigurer(this.properties.getAutoType(), this.properties.getPrefix(), requestHandler());
+    public org.springframework.web.servlet.config.annotation.WebMvcConfigurer supportWebMvcConfigurer(
+            SentinelRequestHandler requestHandler,
+            WrapperRuntimeOptions options) {
+        return new AwareWebMvcConfigurer(this.properties.getAutoType(), this.properties.getPrefix(), requestHandler,
+                options);
+    }
+
+    /**
+     * Publishes the runtime wrapper compatibility snapshot.
+     * <p>
+     * The snapshot is derived from {@link WrapperProperties} and then stored as the shared runtime instance so that
+     * filter, wrapper, resolver, and request-context helpers observe the same settings.
+     *
+     * @return The shared {@link WrapperRuntimeOptions} runtime snapshot.
+     */
+    @Bean("wrapperRuntimeOptions")
+    public WrapperRuntimeOptions wrapperRuntimeOptions() {
+        WrapperRuntimeOptions options = this.properties.runtimeOptions();
+        WrapperRuntimeOptions.update(options);
+        return options;
     }
 
     /**

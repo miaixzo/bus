@@ -100,7 +100,7 @@ public abstract class Samsara extends Loops {
                 return i;
             }
         }
-        throw new IllegalArgumentException(String.format("illegal name: %s", name));
+        throw new IllegalArgumentException("illegal name: " + name);
     }
 
     /**

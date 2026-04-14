@@ -24,13 +24,13 @@
  * <h2>Overview</h2>
  * <p>
  * This package provides a unified abstraction for database-specific SQL generation and capabilities. Each supported
- * database has its own Dialect implementation that handles:
+ * database has its own {@link org.miaixz.bus.mapper.dialect.Dialect} implementation that handles:
  * </p>
  * <ul>
  * <li>Pagination SQL generation</li>
- * <li>Batch operation capabilities (Multi-Values INSERT, UPSERT, etc.)</li>
- * <li>Database identification and detection</li>
- * <li>Database-specific SQL templates</li>
+ * <li>Database capability declarations such as multi-values insert support</li>
+ * <li>JDBC URL based database identification and matching</li>
+ * <li>UPSERT family selection through {@link org.miaixz.bus.mapper.dialect.Dialect.Type}</li>
  * </ul>
  *
  * @author Kimi Liu

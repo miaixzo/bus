@@ -20,116 +20,56 @@
 package org.miaixz.bus.mapper.dialect;
 
 import org.miaixz.bus.mapper.support.paging.Pageable;
-import java.util.List;
-import org.miaixz.bus.mapper.parsing.ColumnMeta;
 
 /**
- * IBM AS/400 (IBM i, DB2 for i) dialect.
+ * Dialect implementation for IBM AS/400 databases.
  *
  * <p>
- * Supports:
+ * This dialect uses {@code OFFSET ... FETCH FIRST} pagination and maps UPSERT handling to the
+ * {@code MERGE_USING_VALUES} family.
  * </p>
- * <ul>
- * <li>OFFSET...FETCH FIRST pagination</li>
- * <li>MERGE (UPSERT)</li>
- * <li>Multi-Values INSERT</li>
- * <li>JDBC batch operations</li>
- * </ul>
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class AS400 extends AbstractDialect {
 
+    /**
+     * Creates the AS/400 dialect.
+     */
     public AS400() {
         super("AS400", "jdbc:as400:");
     }
 
+    /**
+     * Returns the UPSERT family used by AS/400 in this framework.
+     *
+     * @return {@link Dialect.Type#MERGE_USING_VALUES}
+     */
     @Override
-    public boolean supportsProduct(String productName) {
-        if (productName == null) {
-            return false;
-        }
-        String lower = productName.toLowerCase();
-        return lower.contains("as400") || lower.contains("as/400") || lower.contains("db2/400")
-                || lower.contains("db2 udb for as/400");
+    public Dialect.Type getUpsertType() {
+        return Dialect.Type.MERGE_USING_VALUES;
     }
 
+    /**
+     * Builds paginated SQL using the AS/400 {@code OFFSET ... FETCH FIRST} syntax.
+     *
+     * @param originalSql the original SQL statement
+     * @param pageable    the requested pagination information
+     * @return the paginated SQL statement
+     */
     @Override
-    public String getPaginationSql(String originalSql, Pageable pageable) {
+    public String buildPaginationSql(String originalSql, Pageable pageable) {
         if (pageable.isUnpaged()) {
             return originalSql;
         }
-
         StringBuilder sql = new StringBuilder(originalSql.length() + 100);
         sql.append(originalSql);
-
         if (pageable.getOffset() > 0) {
             sql.append(" OFFSET ").append(pageable.getOffset()).append(" ROWS");
         }
         sql.append(" FETCH FIRST ").append(pageable.getPageSize()).append(" ROWS ONLY");
-
         return sql.toString();
-    }
-
-    @Override
-    public boolean supportsMultiValuesInsert() {
-        return true;
-    }
-
-    @Override
-    public boolean supportsUpsert() {
-        return true;
-    }
-
-    @Override
-    public String getUpsertTemplate() {
-        return "MERGE INTO %s AS target USING (VALUES %s) AS source (%s) ON %s WHEN MATCHED THEN UPDATE SET %s WHEN NOT MATCHED THEN INSERT (%s) VALUES (%s)";
-    }
-
-    @Override
-    public String buildUpsertSql(
-            String tableName,
-            String columnList,
-            String valuesList,
-            String keyColumns,
-            List<ColumnMeta> updateColumns,
-            String itemPrefix) {
-        // AS400: MERGE INTO ... USING (VALUES ...) AS source (...) ON (...) WHEN MATCHED THEN UPDATE SET ...
-        // WHEN NOT MATCHED THEN INSERT (...) VALUES (...) with dynamic <if> tags
-        StringBuilder sb = new StringBuilder();
-        sb.append("MERGE INTO ").append(tableName).append(" AS target\n");
-        sb.append("USING (VALUES (").append(valuesList).append(")) AS source (").append(columnList).append(")\n");
-
-        sb.append("ON (");
-        String[] keyColArray = keyColumns.split(",\\s*");
-        for (int i = 0; i < keyColArray.length; i++) {
-            if (i > 0) {
-                sb.append(" AND ");
-            }
-            String colName = keyColArray[i].trim();
-            sb.append("target.").append(colName).append(" = source.").append(colName);
-        }
-        sb.append(")\n");
-
-        sb.append("WHEN MATCHED THEN UPDATE SET\n");
-        for (ColumnMeta col : updateColumns) {
-            sb.append("  <if test=\"").append(itemPrefix).append(".").append(col.property())
-                    .append(" != null\">target.").append(col.column()).append(" = source.").append(col.column())
-                    .append(",</if>\n");
-        }
-
-        sb.append("WHEN NOT MATCHED THEN INSERT (").append(columnList).append(")\n");
-        sb.append("VALUES (");
-
-        StringBuilder sourceValues = new StringBuilder();
-        for (ColumnMeta col : updateColumns) {
-            sourceValues.append("<if test=\"").append(itemPrefix).append(".").append(col.property())
-                    .append(" != null\">source.").append(col.column()).append(",</if>");
-        }
-        sb.append(sourceValues).append(")");
-
-        return sb.toString();
     }
 
 }

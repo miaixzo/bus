@@ -37,6 +37,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The primary {@link WebFilter} that acts as the main entry point and orchestrator for the Vortex gateway.
@@ -121,6 +122,15 @@ public class PrimaryFilter extends AbstractFilter {
                     // 6. Store the context in the exchange attributes for fallback access.
                     exchange.getAttributes().put(Context.$, context);
 
+                    Logger.info(
+                            true,
+                            "Filter",
+                            "[{}] Strategy chain selected for path {}: {}",
+                            context.getX_request_id(),
+                            path,
+                            strategies.stream().map(strategy -> strategy.getClass().getSimpleName())
+                                    .collect(Collectors.joining(" -> ")));
+
                     // 7. Create a new strategy chain and execute it.
                     // The context is written to the Reactor context.
                     return new Chain(strategies, chain).apply(exchange)
@@ -191,6 +201,14 @@ public class PrimaryFilter extends AbstractFilter {
         public Mono<Void> apply(ServerWebExchange exchange) {
             if (this.index < this.list.size()) {
                 Strategy strategy = this.list.get(this.index);
+                Logger.info(
+                        true,
+                        "Filter",
+                        "[{}] Executing strategy {}/{}: {}",
+                        exchange.getRequest().getId(),
+                        this.index + 1,
+                        this.list.size(),
+                        strategy.getClass().getSimpleName());
                 // Create the next link in the chain and pass it to the current strategy.
                 Chain next = new Chain(this, this.index + 1);
                 return strategy.apply(exchange, next);

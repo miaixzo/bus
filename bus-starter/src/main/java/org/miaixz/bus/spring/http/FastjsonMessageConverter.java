@@ -21,14 +21,11 @@ package org.miaixz.bus.spring.http;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.List;
 
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.http.HttpInputMessage;
@@ -111,7 +108,7 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
         /**
          * An array of whitelisted class names for autoType deserialization.
          */
-        private final String[] autoTypes;
+        private final AutoBindingTypeMatcher autoTypeMatcher;
 
         /**
          * Constructs a new converter, parsing the autoType whitelist.
@@ -120,13 +117,11 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
          */
         public FastJson2HttpMessageConverter(String autoType) {
             super(Charset.UTF_8, DEFAULT_MEDIA_TYPES.toArray(new MediaType[0]));
-            this.autoTypes = StringKit.isEmpty(autoType) ? null
-                    : Arrays.stream(autoType.split(Symbol.COMMA)).map(String::trim).filter(StringKit::isNotEmpty)
-                            .toArray(String[]::new);
-            if (this.autoTypes == null) {
+            this.autoTypeMatcher = AutoBindingTypeMatcher.of(autoType);
+            if (this.autoTypeMatcher == null) {
                 Logger.info("Fastjson2 autoType is not configured, @type deserialization is disabled");
             } else {
-                Logger.info("Fastjson2 autoType is enabled, whitelist types: {}", String.join(", ", autoTypes));
+                Logger.info("Fastjson2 autoType is enabled, whitelist patterns: {}", autoTypeMatcher.description());
             }
         }
 
@@ -142,13 +137,12 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
                 String jsonString = new String(IoKit.readBytes(inputStream), Charset.UTF_8);
                 Logger.debug("Deserializing JSON for class {}", clazz.getName());
 
-                if (autoTypes != null && !isSafeJson(jsonString)) {
-                    Logger.error("JSON contains untrusted @type: {}", jsonString);
-                    throw new HttpMessageNotReadableException("JSON contains untrusted @type", inputMessage);
-                }
-
-                return autoTypes == null ? JSON.parseObject(jsonString, clazz, READER_FEATURES)
-                        : JSON.parseObject(jsonString, clazz, JSONReader.autoTypeFilter(autoTypes), READER_FEATURES);
+                return autoTypeMatcher == null ? JSON.parseObject(jsonString, clazz, READER_FEATURES)
+                        : JSON.parseObject(
+                                jsonString,
+                                clazz,
+                                new PatternAutoTypeBeforeHandler(autoTypeMatcher),
+                                READER_FEATURES);
             } catch (IOException e) {
                 Logger.error(
                         "IO error occurred during JSON deserialization for class {}: {}",
@@ -198,15 +192,50 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
             }
         }
 
-        /**
-         * Validates that the JSON input only contains {@code @type} values that are in the whitelist.
-         *
-         * @param jsonString The JSON string to validate.
-         * @return {@code true} if the JSON is safe, {@code false} otherwise.
-         */
-        private boolean isSafeJson(String jsonString) {
-            // A simple check; more robust validation might be needed for production.
-            return !jsonString.contains("@type") || Arrays.stream(autoTypes).anyMatch(jsonString::contains);
+        private static class PatternAutoTypeBeforeHandler implements JSONReader.AutoTypeBeforeHandler {
+
+            private final AutoBindingTypeMatcher autoTypeMatcher;
+
+            private PatternAutoTypeBeforeHandler(AutoBindingTypeMatcher autoTypeMatcher) {
+                this.autoTypeMatcher = autoTypeMatcher;
+            }
+
+            @Override
+            public Class<?> apply(String typeName, Class<?> expectClass, long features) {
+                if (!autoTypeMatcher.matches(typeName)) {
+                    Logger.error(
+                            "Fastjson2 rejected @type '{}' by auto-type patterns: {}",
+                            typeName,
+                            autoTypeMatcher.description());
+                    return null;
+                }
+                try {
+                    ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+                    return resolveType(typeName, contextClassLoader);
+                } catch (ClassNotFoundException e) {
+                    Logger.error("Fastjson2 failed to resolve @type '{}': {}", typeName, e.getMessage());
+                    return null;
+                }
+            }
+
+            /**
+             * Resolves standard class names and canonical array names such as {@code java.lang.String[]}.
+             *
+             * @param typeName    the fastjson type name
+             * @param classLoader the class loader to use first
+             * @return the resolved class
+             * @throws ClassNotFoundException if the type cannot be resolved
+             */
+            private Class<?> resolveType(String typeName, ClassLoader classLoader) throws ClassNotFoundException {
+                if (typeName.endsWith("[]")) {
+                    Class<?> componentType = resolveType(typeName.substring(0, typeName.length() - 2), classLoader);
+                    return componentType.arrayType();
+                }
+                if (classLoader != null) {
+                    return Class.forName(typeName, false, classLoader);
+                }
+                return Class.forName(typeName);
+            }
         }
     }
 

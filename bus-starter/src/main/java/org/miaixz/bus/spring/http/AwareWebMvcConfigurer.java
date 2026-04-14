@@ -27,6 +27,7 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.SpringBuilder;
 import org.miaixz.bus.spring.env.SpringEnvironmentPostProcessor;
+import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Controller;
@@ -70,17 +71,27 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
     protected SentinelRequestHandler handler;
 
     /**
+     * Runtime wrapper compatibility snapshot shared with MVC argument resolvers.
+     * <p>
+     * This keeps controller argument-resolution behavior aligned with the request filter and request wrapper pipeline.
+     */
+    protected WrapperRuntimeOptions options;
+
+    /**
      * Constructs a new {@code AwareWebMvcConfigurer} with the specified autoType, prefix, and handler.
      *
      * @param autoType JSON serialization type support configuration.
      * @param prefix   Unified URL prefix for controllers.
      * @param handler  Sentinel request interceptor.
+     * @param options  Runtime wrapper compatibility snapshot used by MVC argument resolvers.
      */
-    public AwareWebMvcConfigurer(String autoType, String prefix, SentinelRequestHandler handler) {
+    public AwareWebMvcConfigurer(String autoType, String prefix, SentinelRequestHandler handler,
+            WrapperRuntimeOptions options) {
         super();
         this.autoType = autoType;
         this.prefix = prefix;
         this.handler = handler;
+        this.options = options == null ? WrapperRuntimeOptions.of() : options;
     }
 
     /**
@@ -104,7 +115,7 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
      */
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new CompositeArgumentResolver());
+        resolvers.add(new CompositeArgumentResolver(this.options));
     }
 
     /**

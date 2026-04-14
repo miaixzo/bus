@@ -121,6 +121,11 @@ public final class Holder {
         Logger.info(true, "Holder", "  - Sync Interval: {} seconds", performance.getSyncIntervalSeconds());
         Logger.info(true, "Holder", "  - Full Sync On Startup: {}", performance.isFullSyncOnStartup());
         Logger.info(true, "Holder", "  - Startup Delay: {} seconds", performance.getStartupDelaySeconds());
+        Logger.info(
+                true,
+                "Holder",
+                "  - Sanitize Null-like Parameters: {}",
+                performance.isSanitizeNullLikeParameters());
     }
 
     /**
@@ -256,6 +261,15 @@ public final class Holder {
      */
     public static long getCacheExpireMs() {
         return get().getCacheExpireMs();
+    }
+
+    /**
+     * Checks whether null-like parameter sanitization is enabled.
+     *
+     * @return {@code true} when null-like values should be removed from request parameters
+     */
+    public static boolean isSanitizeNullLikeParameters() {
+        return get().isSanitizeNullLikeParameters();
     }
 
     /**

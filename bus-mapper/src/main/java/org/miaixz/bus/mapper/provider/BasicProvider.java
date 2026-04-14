@@ -254,247 +254,425 @@ public abstract class BasicProvider {
     }
 
     /**
-     * Build single-record UPSERT SQL function that accepts Dialect parameter.
+     * Builds a dialect-aware single-row UPSERT SQL function for non-selective inserts.
      *
-     * <p>
-     * This method returns a function that generates database-specific single-record UPSERT SQL using the dialect's
-     * UPSERT template. The SQL is generated dynamically at runtime based on the current datasource's dialect.
-     * </p>
-     *
-     * <p>
-     * <b>Implementation Details:</b>
-     * </p>
-     * <ul>
-     * <li>Gets UPSERT template via {@link Dialect#getUpsertTemplate()}</li>
-     * <li>Builds UPDATE clause inline based on dialect type:
-     * <ul>
-     * <li>MySQL/MariaDB: {@code col = VALUES(col)}</li>
-     * <li>PostgreSQL/H2/CirroData: {@code col = EXCLUDED.col}</li>
-     * <li>SQLite: UPDATE clause is ignored (INSERT OR REPLACE handles conflicts)</li>
-     * </ul>
-     * </li>
-     * <li>Applies template with parameters: tableName, insertColumns, values, keyColumns, updateColumns</li>
-     * </ul>
-     *
-     * <p>
-     * <b>Generated SQL Example (PostgreSQL):</b>
-     * </p>
-     * 
-     * <pre>
-     * INSERT INTO users (id, name, email) VALUES (#{id}, #{name}, #{email})
-     * ON CONFLICT (id) DO UPDATE SET
-     *   name = EXCLUDED.name,
-     *   email = EXCLUDED.email
-     * </pre>
-     *
-     * @param entity Table metadata containing column and key information
-     * @return Function that accepts Dialect and returns complete UPSERT SQL for single record
+     * @param entity the table metadata
+     * @return a function that renders SQL for the active dialect
      */
     protected static Function<Dialect, String> buildInsertUp(TableMeta entity) {
-        return dialect -> {
-            String template = dialect.getUpsertTemplate();
-            if (template == null) {
-                throw new UnsupportedOperationException(dialect.getDatabase() + " does not support UPSERT operations");
-            }
-
-            String keyColumns = entity.idColumns().stream().map(ColumnMeta::column).collect(Collectors.joining(", "));
-            String insertColumns = entity.insertColumns().stream().map(ColumnMeta::column)
-                    .collect(Collectors.joining(", "));
-            String values = entity.insertColumns().stream().map(ColumnMeta::variables)
-                    .collect(Collectors.joining(", "));
-
-            // Build UPDATE clause inline based on dialect type
-            String updateColumnNames = entity.updateColumns().stream().map(ColumnMeta::column)
-                    .collect(Collectors.joining(", "));
-            String updateColumns;
-            String database = dialect.getDatabase();
-            if (database.contains("MySQL") || database.contains("MariaDB")) {
-                // MySQL: col1 = VALUES(col1), col2 = VALUES(col2)
-                updateColumns = entity.updateColumns().stream()
-                        .map(col -> col.column() + " = VALUES(" + col.column() + ")").collect(Collectors.joining(", "));
-            } else {
-                // PostgreSQL, H2, CirroData: col1 = EXCLUDED.col1, col2 = EXCLUDED.col2
-                updateColumns = entity.updateColumns().stream().map(col -> col.column() + " = EXCLUDED." + col.column())
-                        .collect(Collectors.joining(", "));
-            }
-
-            // SQLite template doesn't use UPDATE clause (parameter will be ignored)
-            return String.format(
-                    template,
-                    entity.tableName(),
-                    insertColumns,
-                    values,
-                    keyColumns,
-                    updateColumns,
-                    insertColumns,
-                    values);
+        return dialect -> switch (dialect.getUpsertType()) {
+            case INSERT_ON_DUPLICATE -> buildInsertOnDuplicate(entity, false);
+            case INSERT_ON_CONFLICT -> buildInsertOnConflict(entity, false);
+            case INSERT_OR_REPLACE -> buildInsertOrReplace(entity, false);
+            case UPDATE_OR_INSERT -> buildUpdateOrInsert(entity, false);
+            case MERGE_USING_VALUES -> buildMergeUsingValues(entity, false);
+            case MERGE_USING_DUAL -> buildMergeUsingDual(entity, false);
+            case NONE -> throw unsupportedUpsert(dialect);
         };
     }
 
     /**
-     * Build single-record UPSERT SQL function (insert only non-null fields).
+     * Builds a dialect-aware single-row UPSERT SQL function.
      *
-     * <p>
-     * This method returns a function that generates database-specific single-record UPSERT SQL with dynamic SQL for
-     * only non-null fields. The SQL is generated dynamically at runtime based on the current datasource's dialect.
-     * </p>
-     *
-     * <p>
-     * <b>Implementation Details:</b>
-     * </p>
-     * <ul>
-     * <li>Checks {@link Dialect#supportsUpsert()} to verify UPSERT support</li>
-     * <li>Detects if dialect uses INSERT OR REPLACE (SQLite) by checking template</li>
-     * <li>Builds dynamic column list and values list with {@code <if>} tags</li>
-     * <li>For SQLite: Uses INSERT OR REPLACE template with dynamic columns</li>
-     * <li>For other databases: Uses {@link Dialect#buildUpsertSql} to generate complete dynamic UPSERT</li>
-     * </ul>
-     *
-     * <p>
-     * <b>Generated SQL Example (PostgreSQL):</b>
-     * </p>
-     * 
-     * <pre>
-     * INSERT INTO users
-     * &lt;trim prefix="(" suffix=")" suffixOverrides=","&gt;
-     *   &lt;if test="name != null"&gt;name,&lt;/if&gt;
-     *   &lt;if test="email != null"&gt;email,&lt;/if&gt;
-     * &lt;/trim&gt;
-     * VALUES
-     * &lt;trim prefix="(" suffix=")" suffixOverrides=","&gt;
-     *   &lt;if test="name != null"&gt;#{name},&lt;/if&gt;
-     *   &lt;if test="email != null"&gt;#{email},&lt;/if&gt;
-     * &lt;/trim&gt;
-     * ON CONFLICT (id) DO UPDATE SET
-     *   &lt;if test="name != null"&gt;name = EXCLUDED.name,&lt;/if&gt;
-     *   &lt;if test="email != null"&gt;email = EXCLUDED.email,&lt;/if&gt;
-     * </pre>
-     *
-     * @param entity Table metadata containing column and key information
-     * @return Function that accepts Dialect and returns complete dynamic UPSERT SQL
+     * @param entity the table metadata
+     * @return a function that renders SQL for the active dialect
      */
     protected static Function<Dialect, String> buildInsertUpSelective(TableMeta entity) {
-        return dialect -> {
-            if (!dialect.supportsUpsert()) {
-                throw new UnsupportedOperationException(dialect.getDatabase() + " does not support UPSERT operations");
-            }
-
-            // Check if using INSERT OR REPLACE by examining the template
-            String upsertTemplate = dialect.getUpsertTemplate();
-            boolean useInsertOrReplace = upsertTemplate != null && upsertTemplate.contains("INSERT OR REPLACE");
-
-            // Build dynamic column list and values list
-            StringBuilder columnList = new StringBuilder();
-            columnList.append("<trim prefix='(' suffix=')' suffixOverrides=','>\n");
-            for (ColumnMeta col : entity.insertColumns()) {
-                columnList.append("  <if test='").append(col.notNullTest()).append("'>").append(col.column())
-                        .append(",</if>\n");
-            }
-            columnList.append("</trim>");
-
-            StringBuilder valuesList = new StringBuilder();
-            valuesList.append("<trim prefix='VALUES (' suffix=')' suffixOverrides=','>\n");
-            for (ColumnMeta col : entity.insertColumns()) {
-                valuesList.append("  <if test='").append(col.notNullTest()).append("'>").append(col.variables())
-                        .append(",</if>\n");
-            }
-            valuesList.append("</trim>");
-
-            StringBuilder sql = new StringBuilder();
-            if (useInsertOrReplace) {
-                // SQLite: Use INSERT OR REPLACE template
-                sql.append(
-                        String.format(
-                                upsertTemplate,
-                                entity.tableName(),
-                                columnList.toString(),
-                                valuesList.toString()));
-            } else {
-                // MySQL/PostgreSQL/H2/others: Use buildUpsertSql()
-                String keyColumns = entity.idColumns().stream().map(ColumnMeta::column)
-                        .collect(Collectors.joining(", "));
-                String upsertSql = dialect.buildUpsertSql(
-                        entity.tableName(),
-                        columnList.toString(),
-                        valuesList.toString(),
-                        keyColumns,
-                        entity.updateColumns(),
-                        "");
-                sql.append(upsertSql);
-            }
-
-            return sql.toString();
+        return dialect -> switch (dialect.getUpsertType()) {
+            case INSERT_ON_DUPLICATE -> buildInsertOnDuplicate(entity, true);
+            case INSERT_ON_CONFLICT -> buildInsertOnConflict(entity, true);
+            case INSERT_OR_REPLACE -> buildInsertOrReplace(entity, true);
+            case UPDATE_OR_INSERT -> buildUpdateOrInsert(entity, true);
+            case MERGE_USING_VALUES -> buildMergeUsingValues(entity, true);
+            case MERGE_USING_DUAL -> buildMergeUsingDual(entity, true);
+            case NONE -> throw unsupportedUpsert(dialect);
         };
     }
 
     /**
-     * Builds dynamic column list for MyBatis trim tag (for batch operations).
+     * Builds a dynamic insert column list for batch selective SQL.
      *
-     * <p>
-     * Generates dynamic SQL that includes only non-null columns from the first item in a collection.
-     * </p>
-     *
-     * @param entity     Table metadata
-     * @param collection Collection parameter name (e.g., "list", "entityList")
-     * @param prefix     Column prefix index (e.g., "list[0]", "list[1]")
-     * @return MyBatis dynamic SQL fragment
-     *
-     *         <p>
-     *         Example output:
-     *         </p>
-     * 
-     *         <pre>
-     * &lt;trim prefix="(" suffix=")" suffixOverrides=","&gt;
-     *   &lt;if test="list[0].name != null"&gt;name,&lt;/if&gt;
-     *   &lt;if test="list[0].age != null"&gt;age,&lt;/if&gt;
-     * &lt;/trim&gt;
-     *         </pre>
+     * @param entity     the table metadata
+     * @param collection the batch collection variable name
+     * @param prefix     the sample element index used to infer included columns
+     * @return a dynamic column list wrapped in a {@code <trim>} tag
      */
     protected static String buildDynamicColumnList(TableMeta entity, String collection, String prefix) {
         StringBuilder sql = new StringBuilder();
         sql.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">\n");
         for (ColumnMeta col : entity.insertColumns()) {
-            sql.append("  <if test=\"").append(collection).append("[").append(prefix).append("].")
-                    .append(col.property()).append(" != null\">").append(col.column()).append(",</if>\n");
+            String itemRef = collection + "[" + prefix + "]";
+            sql.append("  <if test=\"").append(requiredUpsertColumnCondition(itemRef, col)).append("\">")
+                    .append(col.column()).append(",</if>\n");
         }
         sql.append("</trim>");
         return sql.toString();
     }
 
     /**
-     * Builds dynamic values list for MyBatis foreach tag (for batch operations).
+     * Builds a dynamic insert column list for single-row selective SQL.
      *
-     * <p>
-     * Generates dynamic SQL that iterates over a collection and includes only non-null values.
-     * </p>
+     * @param entity the table metadata
+     * @return a dynamic column list wrapped in a {@code <trim>} tag
+     */
+    protected static String buildDynamicColumnListSingle(TableMeta entity) {
+        StringBuilder sql = new StringBuilder();
+        sql.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">\n");
+        for (ColumnMeta col : entity.insertColumns()) {
+            sql.append("  <if test=\"").append(requiredUpsertColumnCondition("", col)).append("\">")
+                    .append(col.column()).append(",</if>\n");
+        }
+        sql.append("</trim>");
+        return sql.toString();
+    }
+
+    /**
+     * Builds a dynamic value tuple for one batch item.
      *
-     * @param entity Table metadata
-     * @param item   Iteration variable name (e.g., "item", "entity")
-     * @return MyBatis dynamic SQL fragment
-     *
-     *         <p>
-     *         Example output:
-     *         </p>
-     * 
-     *         <pre>
-     * &lt;foreach collection="list" item="item" separator=","&gt;
-     *   &lt;trim prefix="(" suffix=")" suffixOverrides=","&gt;
-     *     &lt;if test="item.name != null"&gt;#{item.name},&lt;/if&gt;
-     *     &lt;if test="item.age != null"&gt;#{item.age},&lt;/if&gt;
-     *   &lt;/trim&gt;
-     * &lt;/foreach&gt;
-     *         </pre>
+     * @param entity the table metadata
+     * @param item   the batch item variable name
+     * @return a dynamic value tuple wrapped in a {@code <trim>} tag
      */
     protected static String buildDynamicValuesList(TableMeta entity, String item) {
         StringBuilder sql = new StringBuilder();
-        sql.append("<foreach collection=\"list\" item=\"").append(item).append("\" separator=\",\">\n");
-        sql.append("  <trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">\n");
+        sql.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">\n");
         for (ColumnMeta col : entity.insertColumns()) {
-            sql.append("    <if test=\"").append(item).append(".").append(col.property()).append(" != null\">#{")
-                    .append(item).append(".").append(col.property()).append("},</if>\n");
+            sql.append("  <if test=\"").append(requiredUpsertColumnCondition(item, col)).append("\">#{").append(item)
+                    .append(".").append(col.property()).append("},</if>\n");
         }
-        sql.append("  </trim>\n");
-        sql.append("</foreach>");
+        sql.append("</trim>");
+        return sql.toString();
+    }
+
+    /**
+     * Builds a dynamic value tuple for a single selective UPSERT statement.
+     *
+     * @param entity the table metadata
+     * @return a dynamic value tuple wrapped in a {@code <trim>} tag
+     */
+    protected static String buildDynamicValuesListSingle(TableMeta entity) {
+        StringBuilder sql = new StringBuilder();
+        sql.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">\n");
+        for (ColumnMeta col : entity.insertColumns()) {
+            sql.append("  <if test=\"").append(requiredUpsertColumnCondition("", col)).append("\">")
+                    .append(col.variables()).append(",</if>\n");
+        }
+        sql.append("</trim>");
+        return sql.toString();
+    }
+
+    /**
+     * Determines whether the specified UPSERT type supports a single native batch statement.
+     *
+     * @param upsertType the UPSERT type
+     * @return {@code true} when the dialect supports native batch UPSERT SQL
+     */
+    protected static boolean supportsNativeBatchUpsert(Dialect.Type upsertType) {
+        return upsertType == Dialect.Type.INSERT_ON_DUPLICATE || upsertType == Dialect.Type.INSERT_ON_CONFLICT
+                || upsertType == Dialect.Type.INSERT_OR_REPLACE;
+    }
+
+    /**
+     * Creates a consistent exception for unsupported UPSERT operations.
+     *
+     * @param dialect the current dialect
+     * @return the exception to throw
+     */
+    protected static RuntimeException unsupportedUpsert(Dialect dialect) {
+        return new UnsupportedOperationException(dialect.getDatabase() + " does not support UPSERT operations");
+    }
+
+    /**
+     * Returns the comma-separated list of key columns used for conflict detection.
+     *
+     * @param entity the table metadata
+     * @return the key column list
+     */
+    protected static String keyColumnList(TableMeta entity) {
+        return entity.idColumns().stream().map(ColumnMeta::column).collect(Collectors.joining(", "));
+    }
+
+    /**
+     * Returns the comma-separated list of insertable columns.
+     *
+     * @param entity the table metadata
+     * @return the insert column list
+     */
+    protected static String insertColumnList(TableMeta entity) {
+        return entity.insertColumns().stream().map(ColumnMeta::column).collect(Collectors.joining(", "));
+    }
+
+    /**
+     * Builds a MySQL-style UPSERT statement.
+     *
+     * @param entity    the table metadata
+     * @param selective whether to include only non-null fields
+     * @return the generated SQL
+     */
+    protected static String buildInsertOnDuplicate(TableMeta entity, boolean selective) {
+        StringBuilder sql = new StringBuilder();
+        if (!selective) {
+            sql.append("INSERT INTO ").append(entity.tableName()).append(" (").append(insertColumnList(entity))
+                    .append(") VALUES (").append(insertValues(entity, null)).append(")\n");
+            sql.append("ON DUPLICATE KEY UPDATE ").append(buildUpdateAssignments(entity, "VALUES", null, false));
+            return sql.toString();
+        }
+        sql.append("INSERT INTO ").append(entity.tableName()).append("\n").append(buildDynamicColumnListSingle(entity))
+                .append("\nVALUES\n").append(buildDynamicValuesListSingle(entity)).append("\n");
+        sql.append("ON DUPLICATE KEY UPDATE\n").append(buildUpdateAssignments(entity, "VALUES", "", true));
+        return sql.toString();
+    }
+
+    /**
+     * Builds a PostgreSQL-style UPSERT statement.
+     *
+     * @param entity    the table metadata
+     * @param selective whether to include only non-null fields
+     * @return the generated SQL
+     */
+    protected static String buildInsertOnConflict(TableMeta entity, boolean selective) {
+        StringBuilder sql = new StringBuilder();
+        if (!selective) {
+            sql.append("INSERT INTO ").append(entity.tableName()).append(" (").append(insertColumnList(entity))
+                    .append(") VALUES (").append(insertValues(entity, null)).append(")\n");
+            sql.append("ON CONFLICT (").append(keyColumnList(entity)).append(") DO UPDATE SET ")
+                    .append(buildUpdateAssignments(entity, "EXCLUDED", null, false));
+            return sql.toString();
+        }
+        sql.append("INSERT INTO ").append(entity.tableName()).append("\n").append(buildDynamicColumnListSingle(entity))
+                .append("\nVALUES\n").append(buildDynamicValuesListSingle(entity)).append("\n");
+        sql.append("ON CONFLICT (").append(keyColumnList(entity)).append(") DO UPDATE SET\n")
+                .append(buildUpdateAssignments(entity, "EXCLUDED", "", true));
+        return sql.toString();
+    }
+
+    /**
+     * Builds a SQLite-style {@code INSERT OR REPLACE} statement.
+     *
+     * @param entity    the table metadata
+     * @param selective whether to include only non-null fields
+     * @return the generated SQL
+     */
+    protected static String buildInsertOrReplace(TableMeta entity, boolean selective) {
+        StringBuilder sql = new StringBuilder();
+        if (!selective) {
+            sql.append("INSERT OR REPLACE INTO ").append(entity.tableName()).append(" (")
+                    .append(insertColumnList(entity)).append(") VALUES (").append(insertValues(entity, null))
+                    .append(")");
+            return sql.toString();
+        }
+        sql.append("INSERT OR REPLACE INTO ").append(entity.tableName()).append("\n")
+                .append(buildDynamicColumnListSingle(entity)).append("\nVALUES\n")
+                .append(buildDynamicValuesListSingle(entity));
+        return sql.toString();
+    }
+
+    /**
+     * Builds a Firebird-style {@code UPDATE OR INSERT} statement.
+     *
+     * @param entity    the table metadata
+     * @param selective whether to include only non-null fields
+     * @return the generated SQL
+     */
+    protected static String buildUpdateOrInsert(TableMeta entity, boolean selective) {
+        StringBuilder sql = new StringBuilder();
+        if (!selective) {
+            sql.append("UPDATE OR INSERT INTO ").append(entity.tableName()).append(" (")
+                    .append(insertColumnList(entity)).append(") VALUES (").append(insertValues(entity, null))
+                    .append(") MATCHING (").append(keyColumnList(entity)).append(")");
+            return sql.toString();
+        }
+        sql.append("UPDATE OR INSERT INTO ").append(entity.tableName()).append("\n")
+                .append(buildDynamicColumnListSingle(entity)).append("\nVALUES\n")
+                .append(buildDynamicValuesListSingle(entity)).append("\nMATCHING (").append(keyColumnList(entity))
+                .append(")");
+        return sql.toString();
+    }
+
+    /**
+     * Builds a {@code MERGE} statement whose source is expressed as a {@code VALUES} clause.
+     *
+     * @param entity    the table metadata
+     * @param selective whether to include only non-null fields
+     * @return the generated SQL
+     */
+    protected static String buildMergeUsingValues(TableMeta entity, boolean selective) {
+        String targetAlias = "target";
+        String sourceAlias = "source";
+        StringBuilder sql = new StringBuilder();
+        sql.append("MERGE INTO ").append(entity.tableName()).append(" ").append(targetAlias).append("\n");
+        if (!selective) {
+            sql.append("USING (VALUES (").append(insertValues(entity, null)).append(")) ").append(sourceAlias)
+                    .append(" (").append(insertColumnList(entity)).append(")\n");
+            sql.append("ON (").append(buildMergeOnClause(entity, targetAlias, sourceAlias)).append(")\n");
+            sql.append("WHEN MATCHED THEN UPDATE SET ")
+                    .append(buildUpdateAssignments(entity, "SOURCE", sourceAlias, false)).append("\n");
+            sql.append("WHEN NOT MATCHED THEN INSERT (").append(insertColumnList(entity)).append(")\n");
+            sql.append("VALUES (").append(buildSourceReferenceList(entity, sourceAlias, false)).append(")");
+            return sql.toString();
+        }
+        String columns = buildDynamicColumnListSingle(entity);
+        sql.append("USING (VALUES\n").append(buildDynamicValuesListSingle(entity)).append(") ").append(sourceAlias)
+                .append(" ").append(columns).append("\n");
+        sql.append("ON (").append(buildMergeOnClause(entity, targetAlias, sourceAlias)).append(")\n");
+        sql.append("WHEN MATCHED THEN UPDATE SET\n").append(buildUpdateAssignments(entity, "SOURCE", "", true))
+                .append("\n");
+        sql.append("WHEN NOT MATCHED THEN INSERT\n").append(columns).append("\nVALUES\n")
+                .append(buildSourceReferenceList(entity, sourceAlias, true));
+        return sql.toString();
+    }
+
+    /**
+     * Builds a {@code MERGE} statement whose source is expressed as a {@code SELECT ... FROM dual} clause.
+     *
+     * @param entity    the table metadata
+     * @param selective whether to include only non-null fields
+     * @return the generated SQL
+     */
+    protected static String buildMergeUsingDual(TableMeta entity, boolean selective) {
+        String targetAlias = "target";
+        String sourceAlias = "source";
+        StringBuilder sql = new StringBuilder();
+        sql.append("MERGE INTO ").append(entity.tableName()).append(" ").append(targetAlias).append("\n");
+        if (!selective) {
+            sql.append("USING (\n  SELECT ")
+                    .append(
+                            entity.insertColumns().stream().map(col -> col.variables() + " AS " + col.column())
+                                    .collect(Collectors.joining(", ")))
+                    .append(" FROM dual\n) ").append(sourceAlias).append("\n");
+            sql.append("ON (").append(buildMergeOnClause(entity, targetAlias, sourceAlias)).append(")\n");
+            sql.append("WHEN MATCHED THEN UPDATE SET ")
+                    .append(buildUpdateAssignments(entity, "SOURCE", sourceAlias, false)).append("\n");
+            sql.append("WHEN NOT MATCHED THEN INSERT (").append(insertColumnList(entity)).append(")\n");
+            sql.append("VALUES (").append(buildSourceReferenceList(entity, sourceAlias, false)).append(")");
+            return sql.toString();
+        }
+        String columns = buildDynamicColumnListSingle(entity);
+        sql.append("USING (\nSELECT\n").append(buildSelectSourceList(entity)).append("\nFROM dual\n) ")
+                .append(sourceAlias).append("\n");
+        sql.append("ON (").append(buildMergeOnClause(entity, targetAlias, sourceAlias)).append(")\n");
+        sql.append("WHEN MATCHED THEN UPDATE SET\n").append(buildUpdateAssignments(entity, "SOURCE", "", true))
+                .append("\n");
+        sql.append("WHEN NOT MATCHED THEN INSERT\n").append(columns).append("\nVALUES\n")
+                .append(buildSourceReferenceList(entity, sourceAlias, true));
+        return sql.toString();
+    }
+
+    /**
+     * Builds the dynamic inclusion condition for an UPSERT column.
+     *
+     * <p>
+     * Key columns are always forced into the SQL to keep conflict detection stable.
+     * </p>
+     *
+     * @param prefix the property prefix, or an empty string for root parameters
+     * @param col    the column metadata
+     * @return the OGNL expression used in dynamic SQL
+     */
+    private static String requiredUpsertColumnCondition(String prefix, ColumnMeta col) {
+        String property = prefix.isEmpty() ? col.property() : prefix + "." + col.property();
+        return col.id() ? "true" : property + " != null";
+    }
+
+    /**
+     * Builds a static placeholder list for insert values.
+     *
+     * @param entity the table metadata
+     * @param prefix the parameter prefix, or {@code null} for root parameters
+     * @return the comma-separated placeholder list
+     */
+    private static String insertValues(TableMeta entity, String prefix) {
+        return entity.insertColumns().stream().map(col -> prefix == null ? col.variables() : col.variables(prefix))
+                .collect(Collectors.joining(", "));
+    }
+
+    /**
+     * Builds the update assignment segment used by UPSERT statements.
+     *
+     * @param entity      the table metadata
+     * @param mode        the source reference mode
+     * @param sourceAlias the source alias used by {@code MERGE} statements
+     * @param selective   whether to emit dynamic assignments only for non-null properties
+     * @return the generated assignment segment
+     */
+    private static String buildUpdateAssignments(TableMeta entity, String mode, String sourceAlias, boolean selective) {
+        if (!selective) {
+            return entity.updateColumns().stream().map(col -> col.column() + " = " + switch (mode) {
+                case "VALUES" -> "VALUES(" + col.column() + ")";
+                case "EXCLUDED" -> "EXCLUDED." + col.column();
+                case "SOURCE" -> sourceAlias + "." + col.column();
+                default -> col.variables();
+            }).collect(Collectors.joining(", "));
+        }
+        StringBuilder sql = new StringBuilder();
+        sql.append("<trim suffixOverrides=\",\">\n");
+        for (ColumnMeta col : entity.updateColumns()) {
+            sql.append("  <if test=\"").append(requiredUpsertColumnCondition("", col)).append("\">")
+                    .append(col.column()).append(" = ");
+            if ("VALUES".equals(mode)) {
+                sql.append("VALUES(").append(col.column()).append(")");
+            } else if ("EXCLUDED".equals(mode)) {
+                sql.append("EXCLUDED.").append(col.column());
+            } else {
+                sql.append(sourceAlias).append(".").append(col.column());
+            }
+            sql.append(",</if>\n");
+        }
+        sql.append("</trim>");
+        return sql.toString();
+    }
+
+    /**
+     * Builds the {@code ON} predicate for {@code MERGE} statements.
+     *
+     * @param entity      the table metadata
+     * @param targetAlias the target table alias
+     * @param sourceAlias the source alias
+     * @return the merge predicate
+     */
+    private static String buildMergeOnClause(TableMeta entity, String targetAlias, String sourceAlias) {
+        return entity.idColumns().stream()
+                .map(col -> targetAlias + "." + col.column() + " = " + sourceAlias + "." + col.column())
+                .collect(Collectors.joining(" AND "));
+    }
+
+    /**
+     * Builds the insert value reference list for {@code MERGE} statements.
+     *
+     * @param entity      the table metadata
+     * @param sourceAlias the source alias
+     * @param selective   whether to emit dynamic references only for included columns
+     * @return the generated value list
+     */
+    private static String buildSourceReferenceList(TableMeta entity, String sourceAlias, boolean selective) {
+        if (!selective) {
+            return entity.insertColumns().stream().map(col -> sourceAlias + "." + col.column())
+                    .collect(Collectors.joining(", "));
+        }
+        StringBuilder sql = new StringBuilder();
+        sql.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">\n");
+        for (ColumnMeta col : entity.insertColumns()) {
+            sql.append("  <if test=\"").append(requiredUpsertColumnCondition("", col)).append("\">").append(sourceAlias)
+                    .append(".").append(col.column()).append(",</if>\n");
+        }
+        sql.append("</trim>");
+        return sql.toString();
+    }
+
+    /**
+     * Builds the dynamic {@code SELECT} source list used by {@code MERGE ... USING (... FROM dual)} statements.
+     *
+     * @param entity the table metadata
+     * @return the generated source projection list
+     */
+    private static String buildSelectSourceList(TableMeta entity) {
+        StringBuilder sql = new StringBuilder();
+        sql.append("<trim suffixOverrides=\",\">\n");
+        for (ColumnMeta col : entity.insertColumns()) {
+            sql.append("  <if test=\"").append(requiredUpsertColumnCondition("", col)).append("\">")
+                    .append(col.variables()).append(" AS ").append(col.column()).append(",</if>\n");
+        }
+        sql.append("</trim>");
         return sql.toString();
     }
 

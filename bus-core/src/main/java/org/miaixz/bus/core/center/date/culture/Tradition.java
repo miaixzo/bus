@@ -31,7 +31,7 @@ import org.miaixz.bus.core.center.date.Culture;
 public abstract class Tradition implements Culture {
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the display name of this traditional culture item.
      *
      * @return The name of the traditional element.
      */
@@ -41,11 +41,9 @@ public abstract class Tradition implements Culture {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Compares this object with another based on its textual representation.
      * <p>
-     * Compares this object with another based on their string representation.
      * 
-     *
      * @param o The object to compare with.
      * @return {@code true} if the objects are equal.
      */
@@ -62,11 +60,7 @@ public abstract class Tradition implements Culture {
      * @return The normalized 0-based index.
      */
     protected int indexOf(int index, int size) {
-        int i = index % size;
-        if (i < 0) {
-            i += size;
-        }
-        return i;
+        return Math.floorMod(index, size);
     }
 
 }

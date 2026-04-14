@@ -28,7 +28,7 @@ import org.miaixz.bus.core.center.date.culture.Twenty;
 import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
 
 /**
- * Represents a Sixty-Year Cycle Year (干支年), a traditional Chinese calendar unit. This class extends {@link Loops} for
+ * Represents a Sixty-Year Cycle year, a traditional Chinese calendar unit. This class extends {@link Loops} for
  * cyclical operations.
  *
  * @author Kimi Liu
@@ -49,7 +49,7 @@ public class SixtyCycleYear extends Loops {
      */
     public SixtyCycleYear(int year) {
         if (year < -1 || year > 9999) {
-            throw new IllegalArgumentException(String.format("illegal sixty cycle year: %d", year));
+            throw new IllegalArgumentException("illegal sixty cycle year: " + year);
         }
         this.year = year;
     }
@@ -74,7 +74,7 @@ public class SixtyCycleYear extends Loops {
     }
 
     /**
-     * Gets the Sixty-Year Cycle (干支) for this year.
+     * Gets the Sixty-Year Cycle value for this year.
      *
      * @return The {@link SixtyCycle} instance.
      */
@@ -92,7 +92,7 @@ public class SixtyCycleYear extends Loops {
     }
 
     /**
-     * Gets the Twenty-year Cycle (运) to which this year belongs.
+     * Gets the twenty-year cycle to which this year belongs.
      *
      * @return The {@link Twenty} instance.
      */
@@ -101,7 +101,7 @@ public class SixtyCycleYear extends Loops {
     }
 
     /**
-     * Gets the Nine Star (九星) associated with this year.
+     * Gets the nine-star marker associated with this year.
      *
      * @return The {@link NineStar} instance.
      */
@@ -110,7 +110,7 @@ public class SixtyCycleYear extends Loops {
     }
 
     /**
-     * Gets the direction of Jupiter (太岁方位) for this year.
+     * Gets the Jupiter direction for this year.
      *
      * @return The {@link Direction} of Jupiter.
      */
@@ -130,8 +130,8 @@ public class SixtyCycleYear extends Loops {
     }
 
     /**
-     * Gets the first Sixty-Year Cycle Month (首月) of this year. (Reference:
-     * 五虎遁：甲己之年丙作首，乙庚之岁戊为头，丙辛必定寻庚起，丁壬壬位顺行流，若问戊癸何方发，甲寅之上好追求。)
+     * Gets the first Sixty-Year Cycle month of this year. The calculation follows the traditional "Five Tigers" rule
+     * used to derive the opening month stem.
      *
      * @return The {@link SixtyCycleMonth} instance representing the first month.
      */

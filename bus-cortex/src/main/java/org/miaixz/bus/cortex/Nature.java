@@ -20,9 +20,9 @@
 package org.miaixz.bus.cortex;
 
 import java.io.Serial;
-import java.io.Serializable;
 
-import jakarta.persistence.Id;
+import org.miaixz.bus.core.basic.entity.Lifecycle;
+
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -47,16 +47,10 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class Nature implements Serializable {
+public abstract class Nature extends Lifecycle {
 
     @Serial
     private static final long serialVersionUID = 2852290719700L;
-
-    /**
-     * Globally unique identifier for this entry.
-     */
-    @Id
-    protected String id;
 
     /**
      * Logical namespace that isolates this entry by tenant or environment.

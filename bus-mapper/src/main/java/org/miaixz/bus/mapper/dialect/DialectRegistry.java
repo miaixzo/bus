@@ -111,6 +111,10 @@ public final class DialectRegistry {
         // Mainstream databases
         registerDialect(new MySql());
         registerDialect(new PostgreSql());
+        // Register product-family dialects after their generic families because
+        // registerDialect inserts at the head of the list.
+        registerDialect(new Polardb());
+        registerDialect(new Dameng());
         registerDialect(new Oracle());
         registerDialect(new SqlServer());
         registerDialect(new SQLite());
@@ -122,9 +126,8 @@ public final class DialectRegistry {
         registerDialect(new AS400());
         registerDialect(new Informix());
 
-        // Legacy/specific versions
-        registerDialect(new Oracle9i());
-        registerDialect(new SqlServer2012());
+        // Legacy/specific versions are not auto-registered because URL-only detection
+        // cannot distinguish them reliably from their primary dialects.
 
         // Chinese domestic databases
         registerDialect(new Oscar());
@@ -132,12 +135,12 @@ public final class DialectRegistry {
 
         // Other databases
         registerDialect(new Firebird());
-        registerDialect(new HerdDB());
+        registerDialect(new Herddb());
         registerDialect(new CirroData());
     }
 
     private DialectRegistry() {
-        // Utility class
+
     }
 
     /**
@@ -201,17 +204,7 @@ public final class DialectRegistry {
 
         try {
             DatabaseMetaData metaData = connection.getMetaData();
-            String productName = metaData.getDatabaseProductName();
             String jdbcUrl = metaData.getURL();
-
-            // Try to match by product name first
-            for (Dialect dialect : DIALECTS) {
-                if (dialect.supportsProduct(productName)) {
-                    return dialect;
-                }
-            }
-
-            // Fallback to URL matching
             return getDialectByUrl(jdbcUrl);
         } catch (SQLException e) {
             return UNKNOWN;
@@ -239,31 +232,12 @@ public final class DialectRegistry {
             return cached;
         }
 
-        // Try to match by URL
+        // Resolve by URL
         for (Dialect dialect : DIALECTS) {
-            if (dialect.supportsUrl(jdbcUrl)) {
-                URL_CACHE.put(jdbcUrl, dialect);
-                return dialect;
-            }
-        }
-
-        return UNKNOWN;
-    }
-
-    /**
-     * Gets the dialect for the specified database product name.
-     *
-     * @param productName the database product name (from DatabaseMetaData)
-     * @return the detected dialect, or UnknownDialect if no match found
-     */
-    public static Dialect getDialectByProductName(String productName) {
-        if (productName == null || productName.isEmpty()) {
-            return UNKNOWN;
-        }
-
-        for (Dialect dialect : DIALECTS) {
-            if (dialect.supportsProduct(productName)) {
-                return dialect;
+            Dialect resolved = dialect.resolve(jdbcUrl);
+            if (resolved != null) {
+                URL_CACHE.put(jdbcUrl, resolved);
+                return resolved;
             }
         }
 
@@ -274,7 +248,8 @@ public final class DialectRegistry {
      * Gets the dialect for the specified dialect name.
      *
      * <p>
-     * Supported dialect names: mysql, postgresql, oracle, sqlserver, sqlite, h2, db2, informix, etc.
+     * Supported dialect names include registered database names such as mysql, postgresql, polardb, oracle, sqlserver,
+     * sqlite, h2, db2, and informix.
      * </p>
      *
      * @param dialectName the dialect name (case-insensitive)
@@ -405,38 +380,44 @@ public final class DialectRegistry {
      */
     private static class DefaultDialect extends AbstractDialect {
 
+        /**
+         * Creates the fallback dialect used when no concrete JDBC URL match is available.
+         */
         public DefaultDialect() {
             super("Unknown", Normal.EMPTY);
         }
 
+        /**
+         * Indicates that the fallback dialect never resolves any JDBC URL.
+         *
+         * @param jdbcUrl the JDBC URL to inspect
+         * @return always {@code null}
+         */
         @Override
-        public boolean supportsProduct(String productName) {
-            return false;
-        }
-
-        @Override
-        public boolean supportsUrl(String jdbcUrl) {
-            return false;
-        }
-
-        @Override
-        public String getPaginationSql(String originalSql, Pageable pageable) {
-            return originalSql;
-        }
-
-        @Override
-        public boolean supportsMultiValuesInsert() {
-            return false;
-        }
-
-        @Override
-        public boolean supportsUpsert() {
-            return false;
-        }
-
-        @Override
-        public String getUpsertTemplate() {
+        public Dialect resolve(String jdbcUrl) {
             return null;
+        }
+
+        /**
+         * Returns the UPSERT kind for the fallback dialect.
+         *
+         * @return {@link Dialect.Type#NONE}
+         */
+        @Override
+        public Dialect.Type getUpsertType() {
+            return Dialect.Type.NONE;
+        }
+
+        /**
+         * Returns the original SQL unchanged because the unknown dialect cannot safely apply pagination rules.
+         *
+         * @param originalSql the original SQL statement
+         * @param pageable    the requested pagination information
+         * @return the original SQL statement
+         */
+        @Override
+        public String buildPaginationSql(String originalSql, Pageable pageable) {
+            return originalSql;
         }
     }
 

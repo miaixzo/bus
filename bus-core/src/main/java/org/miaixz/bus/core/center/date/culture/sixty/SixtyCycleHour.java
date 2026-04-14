@@ -35,9 +35,9 @@ import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
 import org.miaixz.bus.core.center.date.culture.star.twelve.TwelveStar;
 
 /**
- * Represents a Sixty-Year Cycle Hour (干支时辰), a traditional Chinese timekeeping unit. The year changes at the Start of
- * Spring (立春), and the month changes at the beginning of a solar term (节令). The day changes at 23:00 (子时). This class
- * extends {@link Loops} for cyclical operations.
+ * Represents a Sixty-Year Cycle hour, a traditional Chinese timekeeping unit. The year changes at the Start of Spring,
+ * the month changes at the beginning of a solar term, and the day changes at 23:00. This class extends {@link Loops}
+ * for cyclical operations.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -55,7 +55,7 @@ public class SixtyCycleHour extends Loops {
     protected SixtyCycleDay day;
 
     /**
-     * The Sixty-Year Cycle for the hour (时柱).
+     * The hour pillar within the Sixty-Year Cycle.
      */
     protected SixtyCycle hour;
 
@@ -106,7 +106,7 @@ public class SixtyCycleHour extends Loops {
     }
 
     /**
-     * Gets the Sixty-Year Cycle for the year (年柱).
+     * Gets the year pillar.
      *
      * @return The {@link SixtyCycle} instance representing the year.
      */
@@ -115,7 +115,7 @@ public class SixtyCycleHour extends Loops {
     }
 
     /**
-     * Gets the Sixty-Year Cycle for the month (月柱).
+     * Gets the month pillar.
      *
      * @return The {@link SixtyCycle} instance representing the month.
      */
@@ -124,7 +124,7 @@ public class SixtyCycleHour extends Loops {
     }
 
     /**
-     * Gets the Sixty-Year Cycle for the day (日柱).
+     * Gets the day pillar.
      *
      * @return The {@link SixtyCycle} instance representing the day.
      */
@@ -133,7 +133,7 @@ public class SixtyCycleHour extends Loops {
     }
 
     /**
-     * Gets the Sixty-Year Cycle for the hour (时柱).
+     * Gets the hour pillar.
      *
      * @return The {@link SixtyCycle} instance representing the hour.
      */
@@ -165,7 +165,7 @@ public class SixtyCycleHour extends Loops {
      * @return The name of the hour as a formatted string.
      */
     public String getName() {
-        return String.format("%s时", hour);
+        return hour + "时";
     }
 
     /**
@@ -175,7 +175,7 @@ public class SixtyCycleHour extends Loops {
      */
     @Override
     public String toString() {
-        return String.format("%s%s", day, getName());
+        return day + getName();
     }
 
     /**
@@ -189,7 +189,7 @@ public class SixtyCycleHour extends Loops {
     }
 
     /**
-     * Gets the Nine Star (九星) associated with this hour.
+     * Gets the nine-star marker associated with this hour.
      *
      * @return The {@link NineStar} instance.
      */
@@ -208,7 +208,7 @@ public class SixtyCycleHour extends Loops {
     }
 
     /**
-     * Gets the Twelve Star (黄道黑道十二神) associated with this hour.
+     * Gets the twelve-star marker associated with this hour.
      *
      * @return The {@link TwelveStar} instance.
      */
@@ -218,7 +218,7 @@ public class SixtyCycleHour extends Loops {
     }
 
     /**
-     * Gets the list of recommended activities (宜) for this hour.
+     * Gets the list of recommended activities for this hour.
      *
      * @return A list of {@link Taboo} objects representing recommended activities.
      */
@@ -227,7 +227,7 @@ public class SixtyCycleHour extends Loops {
     }
 
     /**
-     * Gets the list of activities to avoid (忌) for this hour.
+     * Gets the list of activities to avoid for this hour.
      *
      * @return A list of {@link Taboo} objects representing activities to avoid.
      */
@@ -247,7 +247,7 @@ public class SixtyCycleHour extends Loops {
     }
 
     /**
-     * Gets the Eight Characters (八字) for this Sixty-Year Cycle Hour.
+     * Gets the Eight Characters for this Sixty-Year Cycle hour.
      *
      * @return The {@link EightChar} instance.
      */

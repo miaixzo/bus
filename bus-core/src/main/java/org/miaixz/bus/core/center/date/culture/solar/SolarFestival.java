@@ -19,11 +19,9 @@
 */
 package org.miaixz.bus.core.center.date.culture.solar;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.miaixz.bus.core.center.date.culture.Loops;
-import org.miaixz.bus.core.lang.EnumValue;
+import org.miaixz.bus.core.center.date.culture.festival.AbstractFestival;
+import org.miaixz.bus.core.center.date.culture.festival.Festival;
+import org.miaixz.bus.core.center.date.culture.festival.FestivalRegistry;
 
 /**
  * Represents modern Gregorian festivals.
@@ -31,7 +29,7 @@ import org.miaixz.bus.core.lang.EnumValue;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class SolarFestival extends Loops {
+public class SolarFestival extends AbstractFestival {
 
     /**
      * Names of solar festivals.
@@ -39,107 +37,67 @@ public class SolarFestival extends Loops {
     public static final String[] NAMES = { "元旦", "妇女节", "植树节", "劳动节", "青年节", "儿童节", "建党节", "建军节", "教师节", "国庆节" };
 
     /**
-     * Data string containing festival information, including type, month, day, and start year.
-     */
-    public static String DATA = "@00001011950@01003081950@02003121979@03005011950@04005041950@05006011950@06007011941@07008011933@08009101985@09010011950";
-
-    /**
-     * The type of festival.
-     */
-    protected EnumValue.Festival type;
-
-    /**
-     * The index of the festival.
-     */
-    protected int index;
-
-    /**
-     * The solar day of the festival.
-     */
-    protected SolarDay day;
-
-    /**
-     * The name of the festival.
-     */
-    protected String name;
-
-    /**
-     * The start year from which this festival is observed.
-     */
-    protected int startYear;
-
-    /**
-     * Constructs a {@code SolarFestival} instance.
+     * Encoded solar festival data.
      *
-     * @param type      The type of festival.
-     * @param day       The solar day of the festival.
-     * @param startYear The start year from which this festival is observed.
-     * @param data      The raw data string for the festival.
+     * @see FestivalRegistry#DATA
      */
-    public SolarFestival(EnumValue.Festival type, SolarDay day, int startYear, String data) {
-        this.type = type;
-        this.day = day;
-        this.startYear = startYear;
-        index = Integer.parseInt(data.substring(1, 3), 10);
-        name = NAMES[index];
+    public static String DATA = "0VV__0Ux0Xc__0Ux0Xg__0_Q0ZV__0Ux0ZY__0Ux0aV__0Ux0bV__0Uo0cV__0Ug0de__0_V0eV__0Ux";
+
+    /**
+     * Constructs a solar festival instance.
+     *
+     * @param index festival index within {@link #NAMES}
+     * @param event festival definition
+     * @param day   matched solar day
+     */
+    public SolarFestival(int index, Festival event, SolarDay day) {
+        super(index, event, day);
     }
 
     /**
-     * Creates a {@code SolarFestival} instance from the given year and festival index.
+     * Creates a solar festival by festival index for a specific year.
      *
-     * @param year  The year.
-     * @param index The index of the festival.
-     * @return A new {@link SolarFestival} instance, or {@code null} if not found or not applicable for the year.
-     * @throws IllegalArgumentException if the index is out of valid range.
+     * @param year  target year
+     * @param index festival index
+     * @return matching solar festival, or {@code null} if none exists
      */
     public static SolarFestival fromIndex(int year, int index) {
         if (index < 0 || index >= NAMES.length) {
             return null;
         }
-        Matcher matcher = Pattern.compile(String.format("@%02d\\d+", index)).matcher(DATA);
-        if (!matcher.find()) {
+        int start = index * 8;
+        Festival e = new Festival(NAMES[index], "@" + DATA.substring(start, start + 8));
+        if (year < e.getStartYear()) {
             return null;
         }
-        String data = matcher.group();
-        EnumValue.Festival type = EnumValue.Festival.fromCode(data.charAt(3) - '0');
-        if (type != EnumValue.Festival.DAY) {
-            return null;
-        }
-        int startYear = Integer.parseInt(data.substring(8), 10);
-        return year < startYear ? null
-                : new SolarFestival(type,
-                        SolarDay.fromYmd(
-                                year,
-                                Integer.parseInt(data.substring(4, 6), 10),
-                                Integer.parseInt(data.substring(6, 8), 10)),
-                        startYear, data);
+        return new SolarFestival(index, e, SolarDay.fromYmd(year, e.getValue(2), e.getValue(3)));
     }
 
     /**
-     * Creates a {@code SolarFestival} instance from the given year, month, and day.
+     * Creates a solar festival by concrete calendar date.
      *
-     * @param year  The year.
-     * @param month The month.
-     * @param day   The day.
-     * @return A new {@link SolarFestival} instance, or {@code null} if no festival matches or not applicable for the
-     *         year.
+     * @param year  target year
+     * @param month target month
+     * @param day   target day of month
+     * @return matching solar festival, or {@code null} if none exists
      */
     public static SolarFestival fromYmd(int year, int month, int day) {
-        Matcher matcher = Pattern.compile(String.format("@\\d{2}0%02d%02d\\d+", month, day)).matcher(DATA);
-        if (!matcher.find()) {
-            return null;
+        SolarDay d = SolarDay.fromYmd(year, month, day);
+        for (int i = 0, j = SolarFestival.NAMES.length; i < j; i++) {
+            int start = i * 8;
+            Festival e = new Festival(SolarFestival.NAMES[i], "@" + SolarFestival.DATA.substring(start, start + 8));
+            if (d.getYear() >= e.getStartYear() && d.getMonth() == e.getValue(2) && d.getDay() == e.getValue(3)) {
+                return new SolarFestival(i, e, d);
+            }
         }
-        String data = matcher.group();
-        int startYear = Integer.parseInt(data.substring(8), 10);
-        return year < startYear ? null
-                : new SolarFestival(EnumValue.Festival.DAY, SolarDay.fromYmd(year, month, day), startYear, data);
+        return null;
     }
 
     /**
-     * Gets the next solar festival after a specified number of festivals.
+     * Gets the festival that is {@code n} positions away in the ordered solar festival sequence.
      *
-     * @param n The number of festivals to add.
-     * @return The {@link SolarFestival} after {@code n} festivals.
+     * @param n number of festival steps to move
+     * @return target solar festival
      */
     public SolarFestival next(int n) {
         int size = NAMES.length;
@@ -148,21 +106,12 @@ public class SolarFestival extends Loops {
     }
 
     /**
-     * Gets the type of festival.
+     * Gets the start year from which this festival is observed.
      *
-     * @return The {@link EnumValue.Festival} type.
+     * @return The start year.
      */
-    public EnumValue.Festival getType() {
-        return type;
-    }
-
-    /**
-     * Gets the index of the festival.
-     *
-     * @return The index.
-     */
-    public int getIndex() {
-        return index;
+    public int getStartYear() {
+        return event.getStartYear();
     }
 
     /**
@@ -171,35 +120,7 @@ public class SolarFestival extends Loops {
      * @return The {@link SolarDay} of the festival.
      */
     public SolarDay getDay() {
-        return day;
-    }
-
-    /**
-     * Gets the start year from which this festival is observed.
-     *
-     * @return The start year.
-     */
-    public int getStartYear() {
-        return startYear;
-    }
-
-    /**
-     * Gets the name of the festival.
-     *
-     * @return The name of the festival.
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Returns the string representation of this object.
-     *
-     * @return the string representation
-     */
-    @Override
-    public String toString() {
-        return String.format("%s %s", day, name);
+        return (SolarDay) super.getDay();
     }
 
 }

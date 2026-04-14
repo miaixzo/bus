@@ -50,7 +50,7 @@ import com.google.gson.reflect.TypeToken;
 @ConditionalOnClass({ Gson.class })
 public class GsonMessageConverter extends AbstractHttpMessageConverter {
 
-    private String autoType;
+    private AutoBindingTypeMatcher autoTypeMatcher;
 
     /**
      * Returns the name of this JSON converter configurer.
@@ -82,7 +82,9 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
      */
     @Override
     public void configure(List<org.springframework.http.converter.HttpMessageConverter<?>> converters) {
-        Logger.debug("Configuring GsonHttpMessageConverter with autoType: {}", autoType);
+        Logger.debug(
+                "Configuring GsonHttpMessageConverter with autoType: {}",
+                autoTypeMatcher == null ? null : autoTypeMatcher.description());
 
         // Configure Gson, adding autoType restriction
         GsonBuilder gsonBuilder = new GsonBuilder();
@@ -118,16 +120,17 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
             }
         });
 
-        if (autoType != null && !autoType.isEmpty()) {
-            gsonBuilder.registerTypeAdapterFactory(new AutoTypeAdapterFactory(autoType));
-            Logger.debug("Gson autoType enabled for package prefix: {}", autoType);
+        if (autoTypeMatcher != null) {
+            gsonBuilder.registerTypeAdapterFactory(new AutoTypeAdapterFactory(autoTypeMatcher));
+            Logger.debug("Gson autoType enabled for package patterns: {}", autoTypeMatcher.description());
         }
 
         Gson gson = gsonBuilder.create();
         GsonHttpMessageConverter converter = new GsonHttpMessageConverter();
         converter.setGson(gson);
-        converter
-                .setSupportedMediaTypes(List.of(MediaType.APPLICATION_JSON, new MediaType("application", "json+gson")));
+        // Keep Gson available for explicit opt-in only; regular application/json should prefer
+        // Fastjson2/Jackson to avoid duplicate inherited-field binding issues in Gson.
+        converter.setSupportedMediaTypes(List.of(new MediaType("application", "json+gson")));
         converters.add(order(), converter);
         Logger.debug("Gson converter configured with media types: {}", converter.getSupportedMediaTypes());
     }
@@ -139,7 +142,7 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
      */
     @Override
     public void autoType(String autoType) {
-        this.autoType = autoType;
+        this.autoTypeMatcher = AutoBindingTypeMatcher.of(autoType);
     }
 
     /**
@@ -148,15 +151,15 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
      */
     private static class AutoTypeAdapterFactory implements com.google.gson.TypeAdapterFactory {
 
-        private final String autoTypePrefix;
+        private final AutoBindingTypeMatcher autoTypeMatcher;
 
         /**
          * Constructs an {@code AutoTypeAdapterFactory} with the given package prefix.
          *
-         * @param autoTypePrefix The package prefix to allow for deserialization.
+         * @param autoTypeMatcher The package matcher used to allow deserialization.
          */
-        public AutoTypeAdapterFactory(String autoTypePrefix) {
-            this.autoTypePrefix = autoTypePrefix;
+        public AutoTypeAdapterFactory(AutoBindingTypeMatcher autoTypeMatcher) {
+            this.autoTypeMatcher = autoTypeMatcher;
         }
 
         /**
@@ -175,9 +178,9 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
         @Override
         public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
             Class<?> rawType = type.getRawType();
-            if (autoTypePrefix != null && !rawType.getName().startsWith(autoTypePrefix)) {
+            if (autoTypeMatcher != null && !autoTypeMatcher.matches(rawType)) {
                 throw new JsonParseException("Type not allowed: " + rawType.getName()
-                        + ", must start with package prefix: " + autoTypePrefix);
+                        + ", must match auto-type patterns: " + autoTypeMatcher.description());
             }
             return null; // Delegate to default adapter
         }

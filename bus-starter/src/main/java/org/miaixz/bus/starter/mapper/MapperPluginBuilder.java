@@ -209,7 +209,7 @@ public class MapperPluginBuilder {
 
         boolean hasSimplifiedConfig = tenantProps != null;
         boolean hasConfigFile = ObjectKit.isNotEmpty(properties)
-                && ObjectKit.isNotEmpty(properties.getConfigurationProperties());
+                && ObjectKit.isNotEmpty(properties.resolveConfigurationProperties());
 
         // If no config and no provider, return early
         if (!hasSimplifiedConfig && !hasConfigFile) {
@@ -231,7 +231,7 @@ public class MapperPluginBuilder {
             }
         } else if (hasConfigFile) {
             Logger.info(false, "Mapper", "Loading tenant config from configuration file");
-            props.putAll(properties.getConfigurationProperties());
+            props.putAll(properties.resolveConfigurationProperties());
         }
 
         // Step 1: Try to get TenantProvider Bean
@@ -297,7 +297,7 @@ public class MapperPluginBuilder {
 
         boolean hasSimplifiedConfig = populateProps != null;
         boolean hasConfigFile = ObjectKit.isNotEmpty(properties)
-                && ObjectKit.isNotEmpty(properties.getConfigurationProperties());
+                && ObjectKit.isNotEmpty(properties.resolveConfigurationProperties());
 
         // If no config and no provider, return early
         if (!hasSimplifiedConfig && !hasConfigFile) {
@@ -323,7 +323,7 @@ public class MapperPluginBuilder {
                     String.valueOf(populateProps.isModifier()));
         } else if (hasConfigFile) {
             Logger.info(false, "Mapper", "Loading populate config from configuration file");
-            props.putAll(properties.getConfigurationProperties());
+            props.putAll(properties.resolveConfigurationProperties());
         }
 
         // Step 1: Try to get PopulateProvider Bean
@@ -389,7 +389,7 @@ public class MapperPluginBuilder {
 
         boolean hasSimplifiedConfig = visibleProps != null;
         boolean hasConfigFile = ObjectKit.isNotEmpty(properties)
-                && ObjectKit.isNotEmpty(properties.getConfigurationProperties());
+                && ObjectKit.isNotEmpty(properties.resolveConfigurationProperties());
 
         // If no config and no provider, return early
         if (!hasSimplifiedConfig && !hasConfigFile) {
@@ -408,7 +408,7 @@ public class MapperPluginBuilder {
             }
         } else if (hasConfigFile) {
             Logger.info(false, "Mapper", "Loading visible config from configuration file");
-            props.putAll(properties.getConfigurationProperties());
+            props.putAll(properties.resolveConfigurationProperties());
         }
 
         // Step 1: Try to get VisibleProvider Bean
@@ -474,7 +474,7 @@ public class MapperPluginBuilder {
 
         boolean hasSimplifiedConfig = prefixProps != null;
         boolean hasConfigFile = ObjectKit.isNotEmpty(properties)
-                && ObjectKit.isNotEmpty(properties.getConfigurationProperties());
+                && ObjectKit.isNotEmpty(properties.resolveConfigurationProperties());
 
         // If no config and no provider, return early
         if (!hasSimplifiedConfig && !hasConfigFile) {
@@ -498,7 +498,7 @@ public class MapperPluginBuilder {
             }
         } else if (hasConfigFile) {
             Logger.info(false, "Mapper", "Loading prefix config from configuration file");
-            props.putAll(properties.getConfigurationProperties());
+            props.putAll(properties.resolveConfigurationProperties());
         }
 
         // Step 1: Try to get TablePrefixProvider Bean
@@ -565,7 +565,7 @@ public class MapperPluginBuilder {
 
         boolean hasSimplifiedConfig = auditProps != null;
         boolean hasConfigFile = ObjectKit.isNotEmpty(properties)
-                && ObjectKit.isNotEmpty(properties.getConfigurationProperties());
+                && ObjectKit.isNotEmpty(properties.resolveConfigurationProperties());
 
         // If no config and no provider, return early
         if (!hasSimplifiedConfig && !hasConfigFile) {
@@ -594,7 +594,7 @@ public class MapperPluginBuilder {
                     String.valueOf(auditProps.isPrintConsole()));
         } else if (hasConfigFile) {
             Logger.info(false, "Mapper", "Loading audit config from configuration file");
-            props.putAll(properties.getConfigurationProperties());
+            props.putAll(properties.resolveConfigurationProperties());
         }
 
         // Step 1: Try to get AuditProvider Bean

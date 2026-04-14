@@ -77,14 +77,16 @@ public class Args {
     public static final String TIMESTAMP = "timestamp";
 
     /**
-     * The parameter name for the client's API key, used for identification and signature validation.
+     * Candidate parameter and header names for backward-compatible access-token transport.
      */
-    public static final String API_KEY = "api_key";
+    public static final String[] TOKEN_KEYS = { "Authorization", "authorization", "AUTHORIZATION", "X-Access-Token",
+            "X-ACCESS-TOKEN", "x-access-token", "X_Access_Token", "X_ACCESS_TOKEN", "x_access_token" };
 
     /**
-     * The HTTP header name for the bearer access token (e.g., JWT).
+     * Candidate parameter and header names for API-key transport.
      */
-    public static final String X_ACCESS_TOKEN = "X-Access-Token";
+    public static final String[] API_KEY_KEYS = { "apiKey", "apikey", "api_key", "x_api_key", "api_id", "x_api_id",
+            "X-API-ID", "X-API-KEY", "API-KEY", "API-ID" };
 
     /**
      * The HTTP header name for identifying the client channel (e.g., "web", "app", "mobile").

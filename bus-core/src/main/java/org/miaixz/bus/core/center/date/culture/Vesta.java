@@ -19,8 +19,8 @@
 */
 package org.miaixz.bus.core.center.date.culture;
 
-import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycle;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarDay;
+import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycle;
 
 /**
  * Represents Zao Ma Tou (the mount of the Kitchen God) in Chinese culture.
@@ -85,7 +85,7 @@ public class Vesta extends Loops {
      * @return The "Mouse Stealing Grain" saying.
      */
     public String getMouse() {
-        return String.format("%s鼠偷粮", byEarthBranch(0));
+        return byEarthBranch(0) + "鼠偷粮";
     }
 
     /**
@@ -103,7 +103,7 @@ public class Vesta extends Loops {
      * @return The "Cattle Plowing Field" saying.
      */
     public String getCattle() {
-        return String.format("%s牛耕田", byEarthBranch(1));
+        return byEarthBranch(1) + "牛耕田";
     }
 
     /**
@@ -121,7 +121,7 @@ public class Vesta extends Loops {
      * @return The "Dragon Governing Water" saying.
      */
     public String getDragon() {
-        return String.format("%s龙治水", byEarthBranch(4));
+        return byEarthBranch(4) + "龙治水";
     }
 
     /**
@@ -130,7 +130,7 @@ public class Vesta extends Loops {
      * @return The "Horse Carrying Grain" saying.
      */
     public String getHorse() {
-        return String.format("%s马驮谷", byEarthBranch(6));
+        return byEarthBranch(6) + "马驮谷";
     }
 
     /**
@@ -139,7 +139,7 @@ public class Vesta extends Loops {
      * @return The "Chicken Snatching Rice" saying.
      */
     public String getChicken() {
-        return String.format("%s鸡抢米", byEarthBranch(9));
+        return byEarthBranch(9) + "鸡抢米";
     }
 
     /**
@@ -148,16 +148,16 @@ public class Vesta extends Loops {
      * @return The "Aunt Watching Silkworms" saying.
      */
     public String getSilkworm() {
-        return String.format("%s姑看蚕", byEarthBranch(9));
+        return byEarthBranch(9) + "姑看蚕";
     }
 
     /**
      * Gets the "Butcher Sharing Pig" saying for the year.
      *
-     * @return The "Butcher Sharing Pig" saying.
+     * @return The "Butchers Sharing a Pig" saying.
      */
     public String getPig() {
-        return String.format("%s屠共猪", byEarthBranch(11));
+        return byEarthBranch(11) + "屠共猪";
     }
 
     /**
@@ -175,7 +175,7 @@ public class Vesta extends Loops {
      * @return The "People Sharing Cake" saying.
      */
     public String getCake() {
-        return String.format("%s人分饼", byHeavenStem(2));
+        return byHeavenStem(2) + "人分饼";
     }
 
     /**
@@ -184,7 +184,7 @@ public class Vesta extends Loops {
      * @return The "Days to Get Gold" saying.
      */
     public String getGold() {
-        return String.format("%s日得金", byHeavenStem(7));
+        return byHeavenStem(7) + "日得金";
     }
 
     /**

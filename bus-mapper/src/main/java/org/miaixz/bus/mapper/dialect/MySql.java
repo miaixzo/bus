@@ -19,83 +19,48 @@
 */
 package org.miaixz.bus.mapper.dialect;
 
-import java.util.List;
-
-import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.support.paging.Pageable;
 
 /**
- * MySQL and MariaDB dialect.
+ * Dialect implementation for MySQL databases.
  *
  * <p>
- * Supports:
+ * This dialect uses standard {@code LIMIT/OFFSET} pagination and the MySQL {@code ON DUPLICATE KEY UPDATE} UPSERT
+ * family.
  * </p>
- * <ul>
- * <li>LIMIT, OFFSET pagination</li>
- * <li>Multi-values INSERT</li>
- * <li>ON DUPLICATE KEY UPDATE (UPSERT)</li>
- * <li>JDBC batch operations</li>
- * </ul>
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class MySql extends AbstractDialect {
 
+    /**
+     * Creates the MySQL dialect.
+     */
     public MySql() {
         super("MySQL", "jdbc:mysql:");
     }
 
+    /**
+     * Returns the UPSERT family used by MySQL.
+     *
+     * @return {@link Dialect.Type#INSERT_ON_DUPLICATE}
+     */
     @Override
-    public boolean supportsProduct(String productName) {
-        if (productName == null) {
-            return false;
-        }
-        String lower = productName.toLowerCase();
-        return lower.contains("mysql") || lower.contains("mariadb");
+    public Dialect.Type getUpsertType() {
+        return Dialect.Type.INSERT_ON_DUPLICATE;
     }
 
+    /**
+     * Builds paginated SQL using MySQL {@code LIMIT/OFFSET} syntax.
+     *
+     * @param originalSql the original SQL statement
+     * @param pageable    the requested pagination information
+     * @return the paginated SQL statement
+     */
     @Override
-    public String getPaginationSql(String originalSql, Pageable pageable) {
-        return buildLimitOffsetPagination(originalSql, pageable);
-    }
-
-    @Override
-    public boolean supportsMultiValuesInsert() {
-        return true;
-    }
-
-    @Override
-    public boolean supportsUpsert() {
-        return true;
-    }
-
-    @Override
-    public String getUpsertTemplate() {
-        return "INSERT INTO %s (%s) VALUES %s ON DUPLICATE KEY UPDATE %s";
-    }
-
-    @Override
-    public String buildUpsertSql(
-            String tableName,
-            String columnList,
-            String valuesList,
-            String keyColumns,
-            List<ColumnMeta> updateColumns,
-            String itemPrefix) {
-        // MySQL: INSERT INTO ... VALUES ... ON DUPLICATE KEY UPDATE with dynamic <if> tags
-        StringBuilder sb = new StringBuilder();
-        sb.append("INSERT INTO ").append(tableName).append(" (").append(columnList).append(") VALUES\n");
-        sb.append(valuesList);
-        sb.append("\nON DUPLICATE KEY UPDATE\n");
-
-        for (ColumnMeta col : updateColumns) {
-            String assignment = col.column() + " = VALUES(" + col.column() + ")";
-            sb.append("  <if test=\"").append(itemPrefix).append(".").append(col.property()).append(" != null\">")
-                    .append(assignment).append(",</if>\n");
-        }
-
-        return sb.toString();
+    public String buildPaginationSql(String originalSql, Pageable pageable) {
+        return buildPaginatedSql(originalSql, pageable);
     }
 
 }

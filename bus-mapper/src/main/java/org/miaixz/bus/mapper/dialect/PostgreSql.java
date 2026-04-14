@@ -19,74 +19,47 @@
 */
 package org.miaixz.bus.mapper.dialect;
 
-import java.util.List;
-
-import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.support.paging.Pageable;
 
 /**
- * PostgreSQL dialect.
+ * Dialect implementation for PostgreSQL databases.
  *
  * <p>
- * Supports:
+ * This dialect uses standard {@code LIMIT/OFFSET} pagination and PostgreSQL {@code ON CONFLICT} UPSERT semantics.
  * </p>
- * <ul>
- * <li>LIMIT, OFFSET pagination</li>
- * <li>Multi-values INSERT</li>
- * <li>ON CONFLICT DO UPDATE (UPSERT)</li>
- * <li>JDBC batch operations</li>
- * </ul>
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PostgreSql extends AbstractDialect {
 
+    /**
+     * Creates the PostgreSQL dialect.
+     */
     public PostgreSql() {
         super("PostgreSQL", "jdbc:postgresql:");
     }
 
+    /**
+     * Returns the UPSERT family used by PostgreSQL.
+     *
+     * @return {@link Dialect.Type#INSERT_ON_CONFLICT}
+     */
     @Override
-    public String getPaginationSql(String originalSql, Pageable pageable) {
-        return buildLimitOffsetPagination(originalSql, pageable);
+    public Dialect.Type getUpsertType() {
+        return Dialect.Type.INSERT_ON_CONFLICT;
     }
 
+    /**
+     * Builds paginated SQL using PostgreSQL {@code LIMIT/OFFSET} syntax.
+     *
+     * @param originalSql the original SQL statement
+     * @param pageable    the requested pagination information
+     * @return the paginated SQL statement
+     */
     @Override
-    public boolean supportsMultiValuesInsert() {
-        return true;
-    }
-
-    @Override
-    public boolean supportsUpsert() {
-        return true;
-    }
-
-    @Override
-    public String getUpsertTemplate() {
-        return "INSERT INTO %s (%s) VALUES %s ON CONFLICT (%s) DO UPDATE SET %s";
-    }
-
-    @Override
-    public String buildUpsertSql(
-            String tableName,
-            String columnList,
-            String valuesList,
-            String keyColumns,
-            List<ColumnMeta> updateColumns,
-            String itemPrefix) {
-        // PostgreSQL: INSERT INTO ... VALUES ... ON CONFLICT (keys) DO UPDATE SET with dynamic <if> tags
-        StringBuilder sb = new StringBuilder();
-        sb.append("INSERT INTO ").append(tableName).append(" (").append(columnList).append(") VALUES\n");
-        sb.append(valuesList);
-        sb.append("\nON CONFLICT (").append(keyColumns).append(") DO UPDATE SET\n");
-
-        for (ColumnMeta col : updateColumns) {
-            String assignment = col.column() + " = EXCLUDED." + col.column();
-            sb.append("  <if test=\"").append(itemPrefix).append(".").append(col.property()).append(" != null\">")
-                    .append(assignment).append(",</if>\n");
-        }
-
-        return sb.toString();
+    public String buildPaginationSql(String originalSql, Pageable pageable) {
+        return buildPaginatedSql(originalSql, pageable);
     }
 
 }

@@ -19,13 +19,11 @@
 */
 package org.miaixz.bus.core.center.date.culture.lunar;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.miaixz.bus.core.center.date.culture.Loops;
-import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
+import org.miaixz.bus.core.center.date.culture.festival.AbstractFestival;
+import org.miaixz.bus.core.center.date.culture.festival.Festival;
+import org.miaixz.bus.core.center.date.culture.festival.FestivalRegistry;
+import org.miaixz.bus.core.center.date.culture.solar.SolarTermDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
-import org.miaixz.bus.core.lang.EnumValue;
 
 /**
  * Represents traditional lunar festivals (based on the national standard "Compilation and Promulgation of the Lunar
@@ -34,7 +32,7 @@ import org.miaixz.bus.core.lang.EnumValue;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class LunarFestival extends Loops {
+public class LunarFestival extends AbstractFestival {
 
     /**
      * Names of lunar festivals.
@@ -43,49 +41,21 @@ public class LunarFestival extends Loops {
             "腊八节", "除夕" };
 
     /**
-     * Data string containing festival information.
-     */
-    public static String DATA = "@0000101@0100115@0200202@0300303@04107@0500505@0600707@0700715@0800815@0900909@10124@1101208@122";
-
-    /**
-     * The type of festival.
-     */
-    protected EnumValue.Festival type;
-
-    /**
-     * The index of the festival.
-     */
-    protected int index;
-
-    /**
-     * The lunar day of the festival.
-     */
-    protected LunarDay day;
-
-    /**
-     * The solar term associated with the festival, if any.
-     */
-    protected SolarTerms solarTerms;
-
-    /**
-     * The name of the festival.
-     */
-    protected String name;
-
-    /**
-     * Constructs a {@code LunarFestival} instance.
+     * Encoded lunar festival data.
      *
-     * @param type       The type of festival.
-     * @param day        The lunar day of the festival.
-     * @param solarTerms The solar term associated with the festival (can be null).
-     * @param data       The raw data string for the festival.
+     * @see FestivalRegistry#DATA
      */
-    public LunarFestival(EnumValue.Festival type, LunarDay day, SolarTerms solarTerms, String data) {
-        this.type = type;
-        this.day = day;
-        this.solarTerms = solarTerms;
-        index = Integer.parseInt(data.substring(1, 3), 10);
-        name = NAMES[index];
+    public static String DATA = "2VV__0002Vj__0002WW__0002XX__0003b___0002ZZ__0002bb__0002bj__0002cj__0002dd__0003s___0002gc__0002hV_U000";
+
+    /**
+     * Constructs a lunar festival instance.
+     *
+     * @param index festival index within {@link #NAMES}
+     * @param event festival definition
+     * @param day   matched lunar day
+     */
+    public LunarFestival(int index, Festival event, LunarDay day) {
+        super(index, event, day);
     }
 
     /**
@@ -100,27 +70,18 @@ public class LunarFestival extends Loops {
         if (index < 0 || index >= NAMES.length) {
             return null;
         }
-        Matcher matcher = Pattern.compile(String.format("@%02d\\d+", index)).matcher(DATA);
-        if (!matcher.find()) {
-            return null;
-        }
-        String data = matcher.group();
-        EnumValue.Festival type = EnumValue.Festival.fromCode(data.charAt(3) - '0');
-        switch (type) {
-            case DAY:
-                return new LunarFestival(type,
-                        LunarDay.fromYmd(
-                                year,
-                                Integer.parseInt(data.substring(4, 6), 10),
-                                Integer.parseInt(data.substring(6), 10)),
-                        null, data);
+        int start = index * 8;
+        Festival e = new Festival(NAMES[index], "@" + DATA.substring(start, start + 8));
+        switch (e.getType()) {
+            case LUNAR_DAY:
+                int[] m = e.getMonth(year);
+                LunarDay d = LunarDay.fromYmd(m[0], m[1], e.getValue(3));
+                int offset = e.getValue(5);
+                return new LunarFestival(index, e, 0 == offset ? d : d.next(offset));
 
-            case TERM:
-                SolarTerms solarTerm = SolarTerms.fromIndex(year, Integer.parseInt(data.substring(4), 10));
-                return new LunarFestival(type, solarTerm.getSolarDay().getLunarDay(), solarTerm, data);
-
-            case EVE:
-                return new LunarFestival(type, LunarDay.fromYmd(year + 1, 1, 1).next(-1), null, data);
+            case TERM_DAY:
+                return new LunarFestival(index, e,
+                        SolarTerms.fromIndex(year, e.getValue(2)).getSolarDay().getLunarDay());
 
             default:
                 return null;
@@ -136,29 +97,31 @@ public class LunarFestival extends Loops {
      * @return A new {@link LunarFestival} instance, or {@code null} if no festival matches.
      */
     public static LunarFestival fromYmd(int year, int month, int day) {
-        Matcher matcher = Pattern.compile(String.format("@\\d{2}0%02d%02d", month, day)).matcher(DATA);
-        if (matcher.find()) {
-            return new LunarFestival(EnumValue.Festival.DAY, LunarDay.fromYmd(year, month, day), null, matcher.group());
-        }
-        LunarDay lunarDay = LunarDay.fromYmd(year, month, day);
-        SolarDay solarDay = lunarDay.getSolarDay();
-        matcher = Pattern.compile("@\\d{2}1\\d{2}").matcher(DATA);
-        while (matcher.find()) {
-            String data = matcher.group();
-            SolarTerms term = SolarTerms.fromIndex(year, Integer.parseInt(data.substring(4), 10));
-            SolarDay termDay = term.getSolarDay();
-            if (termDay.getYear() == solarDay.getYear() && termDay.getMonth() == solarDay.getMonth()
-                    && termDay.getDay() == solarDay.getDay()) {
-                return new LunarFestival(EnumValue.Festival.TERM, lunarDay, term, data);
-            }
-        }
-        if (Math.abs(month) == 12 && day > 28) {
-            matcher = Pattern.compile("@\\d{2}2").matcher(DATA);
-            if (!matcher.find()) {
-                return null;
-            }
-            if (lunarDay.next(1).getYear() != year) {
-                return new LunarFestival(EnumValue.Festival.EVE, lunarDay, null, matcher.group());
+        LunarDay d = LunarDay.fromYmd(year, month, day);
+        for (int i = 0, j = LunarFestival.NAMES.length; i < j; i++) {
+            int start = i * 8;
+            Festival e = new Festival(LunarFestival.NAMES[i], '@' + LunarFestival.DATA.substring(start, start + 8));
+            switch (e.getType()) {
+                case LUNAR_DAY:
+                    int offset = e.getValue(5);
+                    if (0 == offset) {
+                        if (d.getMonth() == e.getValue(2) && d.getDay() == e.getValue(3)) {
+                            return new LunarFestival(i, e, d);
+                        }
+                    } else {
+                        int[] m = e.getMonth(d.getYear());
+                        LunarDay next = d.next(-offset);
+                        if (next.getYear() == m[0] && next.getMonth() == m[1] && next.getDay() == e.getValue(3)) {
+                            return new LunarFestival(i, e, d);
+                        }
+                    }
+                    break;
+
+                case TERM_DAY:
+                    SolarTermDay term = d.getSolarDay().getTermDay();
+                    if (term.getDayIndex() == 0 && term.getSolarTerm().getIndex() == e.getValue(2) % 24) {
+                        return new LunarFestival(i, e, d);
+                    }
             }
         }
         return null;
@@ -177,58 +140,22 @@ public class LunarFestival extends Loops {
     }
 
     /**
-     * Gets the type of festival.
+     * Gets the lunar day associated with this festival.
      *
-     * @return The {@link EnumValue.Festival} type.
-     */
-    public EnumValue.Festival getType() {
-        return type;
-    }
-
-    /**
-     * Gets the index of the festival.
-     *
-     * @return The index.
-     */
-    public int getIndex() {
-        return index;
-    }
-
-    /**
-     * Gets the lunar day of the festival.
-     *
-     * @return The {@link LunarDay} of the festival.
+     * @return lunar day
      */
     public LunarDay getDay() {
-        return day;
+        return (LunarDay) super.getDay();
     }
 
     /**
-     * Gets the solar term associated with the festival. Returns {@code null} if it's not a solar term festival.
+     * Gets the related solar term when this festival falls exactly on a solar-term day.
      *
-     * @return The {@link SolarTerms} if it's a solar term festival, otherwise {@code null}.
+     * @return solar term, or {@code null} if this day is not a solar-term day
      */
-    public SolarTerms getSolarTerms() {
-        return solarTerms;
-    }
-
-    /**
-     * Gets the name of the festival.
-     *
-     * @return The name of the festival.
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Returns the string representation of this object.
-     *
-     * @return the string representation
-     */
-    @Override
-    public String toString() {
-        return String.format("%s %s", day, name);
+    public SolarTerms getSolarTerm() {
+        SolarTermDay t = getDay().getSolarDay().getTermDay();
+        return t.getDayIndex() == 0 ? t.getSolarTerm() : null;
     }
 
 }

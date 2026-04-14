@@ -42,6 +42,7 @@ import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.http.MutableRequestWrapper;
+import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
 import org.miaixz.bus.vortex.Args;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -352,8 +353,9 @@ public class ContextBuilder extends WebUtils {
                 if (request instanceof MutableRequestWrapper wrapper) {
                     String contentType = request.getContentType();
                     byte[] bodyBytes = wrapper.getBody();
-                    if (contentType != null && contentType.startsWith(MediaType.APPLICATION_FORM_URLENCODED)
-                            && bodyBytes != null && bodyBytes.length > 0) {
+                    if (WrapperRuntimeOptions.of().isSynthesizeFormBody() && contentType != null
+                            && contentType.startsWith(MediaType.APPLICATION_FORM_URLENCODED) && bodyBytes != null
+                            && bodyBytes.length > 0) {
                         String bodyString = new String(bodyBytes, Charset.UTF_8);
                         Map<String, String[]> urlEncodedParams = parseUrlEncoded(bodyString);
                         urlEncodedParams.forEach((key, values) -> {
@@ -928,27 +930,18 @@ public class ContextBuilder extends WebUtils {
      * @return The extracted token string, or {@code null} if no token is found in any of the checked locations.
      */
     public static String getToken() {
-        // 1. Prioritize the standard `Authorization` header with the `Bearer` scheme.
-        String authorization = getHeaderValue(HTTP.AUTHORIZATION);
-        if (StringKit.isNotEmpty(authorization) && authorization.startsWith(HTTP.BEARER)) {
-            return authorization.substring(7);
-        }
-
-        // 2. Check for a custom `X-Access-Token` header for backward compatibility.
-        final String[] keys = { Args.X_ACCESS_TOKEN, Args.X_ACCESS_TOKEN.toUpperCase(),
-                Args.X_ACCESS_TOKEN.toLowerCase(), "X_Access_Token", "X_ACCESS_TOKEN", "x_access_token" };
-
-        String token = MapKit.getFirstNonNull(getHeaders(), keys);
-        if (StringKit.isNotEmpty(token)) {
+        // 1. Check token in headers first, including Authorization and backward-compatible token headers.
+        String token = MapKit.getFirstNonNull(getHeaders(), Args.TOKEN_KEYS);
+        if (StringKit.isNotBlank(token)) {
+            token = token.trim();
+            if (token.regionMatches(true, 0, HTTP.BEARER, 0, HTTP.BEARER.length())) {
+                return token.substring(HTTP.BEARER.length()).trim();
+            }
             return token;
         }
 
-        // 3. If not found in headers, search in request parameters as a fallback.
-        if (StringKit.isBlank(token)) {
-            token = MapKit.getFirstNonNull(getParameters(), keys);
-        }
-
-        return token;
+        // 2. If not found in headers, search in request parameters as a fallback.
+        return MapKit.getFirstNonNull(getParameters(), Args.TOKEN_KEYS);
     }
 
     /**
@@ -957,18 +950,15 @@ public class ContextBuilder extends WebUtils {
      * @return The found API key, or {@code null} if not present.
      */
     public static String getApiKey() {
-        final String[] keys = { "apiKey", "apikey", "api_key", "x_api_key", "api_id", "x_api_id", "X-API-ID",
-                "X-API-KEY", "API-KEY", "API-ID" };
-
-        // First, search in request parameters.
-        String apiKey = MapKit.getFirstNonNull(getParameters(), keys);
-
-        // If not found, search in request headers.
-        if (StringKit.isBlank(apiKey)) {
-            apiKey = MapKit.getFirstNonNull(getHeaders(), keys);
+        // 1. Check API key in headers first.
+        String apiKey = MapKit.getFirstNonNull(getHeaders(), Args.API_KEY_KEYS);
+        if (StringKit.isNotBlank(apiKey)) {
+            return apiKey.trim();
         }
 
-        return apiKey;
+        // 2. If not found in headers, search in request parameters as a fallback.
+        apiKey = MapKit.getFirstNonNull(getParameters(), Args.API_KEY_KEYS);
+        return StringKit.isNotBlank(apiKey) ? apiKey.trim() : null;
     }
 
     /**

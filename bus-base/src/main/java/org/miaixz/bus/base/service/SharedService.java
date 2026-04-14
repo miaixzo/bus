@@ -32,8 +32,18 @@ import org.miaixz.bus.mapper.binding.function.Fn;
 /**
  * Generic service interface defining standard CRUD (Create, Retrieve, Update, Delete) operations.
  * <p>
- * This interface serves as a base for service implementations, providing common methods for entity persistence, batch
- * operations, and conditional queries.
+ * This interface exposes both native batch-write methods and list-oriented batch methods:
+ * </p>
+ * <ul>
+ * <li>{@code insertBatch}/{@code insertUpBatch}/{@code insertSelectiveBatch}: native batch SQL oriented, aligned with
+ * {@code BatchMapper}.</li>
+ * <li>{@code insertList}/{@code update(List)}/{@code updateListSelective}: generic list-oriented batch processing,
+ * aligned with {@code ListMapper}.</li>
+ * </ul>
+ * <p>
+ * Use the list-oriented methods when cross-database compatibility or batch update semantics matter more than native
+ * batch SQL throughput.
+ * </p>
  *
  * @param <T> the entity type
  * @param <I> the type of the primary key, which must implement {@link Serializable}
@@ -61,18 +71,31 @@ public interface SharedService<T, I extends Serializable> extends Service {
     Object insertSelective(T entity);
 
     /**
-     * Persists a batch of entities, saving all fields for each entity.
+     * Persists a list of entities using list-oriented batch insertion semantics.
+     * <p>
+     * This method corresponds to {@code ListMapper.insertList(...)} and is intended for generic list processing rather
+     * than dialect-specific native batch SQL optimization.
+     * </p>
      *
      * @param list the list of entities to insert
-     * @return the list of inserted entities
+     * @return the batch insert result
+     */
+    Object insertList(List<T> list);
+
+    /**
+     * Persists a batch of entities using native batch SQL, saving all fields for each entity.
+     *
+     * @param list the list of entities to insert
+     * @return the batch insert result
      */
     Object insertBatch(List<T> list);
 
     /**
-     * Batch insert or update (Upsert) operation.
+     * Batch insert or update (Upsert) operation using database-native batch SQL.
      * <p>
      * Typically attempts to insert the entities, and updates them if a primary key or unique constraint violation
      * occurs.
+     * </p>
      *
      * @param list the list of entities to insert or update
      * @return the result of the batch operation
@@ -80,10 +103,10 @@ public interface SharedService<T, I extends Serializable> extends Service {
     Object insertUpBatch(List<T> list);
 
     /**
-     * Persists a batch of entities, saving only non-null fields for each entity.
+     * Persists a batch of entities using native selective batch SQL, saving only non-null fields for each entity.
      *
      * @param list the list of entities to insert
-     * @return the list of inserted entities
+     * @return the batch insert result
      */
     Object insertSelectiveBatch(List<T> list);
 
@@ -94,6 +117,15 @@ public interface SharedService<T, I extends Serializable> extends Service {
      * @return the updated entity or operation result
      */
     Object update(T entity);
+
+    /**
+     * Updates a list of entities using list-oriented batch update semantics, overwriting all mapped fields for each
+     * entity.
+     *
+     * @param list the list of entities to update
+     * @return the batch update result
+     */
+    Object update(List<T> list);
 
     /**
      * Updates an existing entity, forcing updates on the specific fields provided.
@@ -121,6 +153,15 @@ public interface SharedService<T, I extends Serializable> extends Service {
      * @return the updated entity or operation result
      */
     Object updateSelective(T entity, Fn<T, Object>... fields);
+
+    /**
+     * Updates a list of entities using list-oriented selective batch update semantics, modifying only the non-null
+     * fields of each entity.
+     *
+     * @param list the list of entities to update
+     * @return the batch selective update result
+     */
+    Object updateListSelective(List<T> list);
 
     /**
      * Saves the entity: inserts if it's new, or updates if it already exists (based on all fields).

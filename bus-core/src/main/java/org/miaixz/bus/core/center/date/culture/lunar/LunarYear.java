@@ -84,7 +84,7 @@ public class LunarYear extends YearParts {
      */
     public static void validate(int year) {
         if (year < -1 || year > 9999) {
-            throw new IllegalArgumentException(String.format("illegal lunar year: %d", year));
+            throw new IllegalArgumentException("illegal lunar year: " + year);
         }
     }
 
@@ -146,7 +146,7 @@ public class LunarYear extends YearParts {
      * The standard defines two naming methods for lunar years: the Sixty Cycle (Gan-Zhi) method and the Zodiac animal
      * method. By default, this method uses the Sixty Cycle method.
      *
-     * @return the name (e.g., "农历甲子年")
+     * @return the localized lunar year name
      */
     public String getName() {
         return String.format("农历%s年", getSixtyCycle());

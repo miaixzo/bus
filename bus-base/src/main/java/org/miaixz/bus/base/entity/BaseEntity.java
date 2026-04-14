@@ -26,10 +26,7 @@ import org.miaixz.bus.core.basic.entity.Tracer;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.xyz.*;
-import org.miaixz.bus.core.lang.annotation.Logical;
-import org.miaixz.bus.validate.magic.annotation.NotBlank;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -47,7 +44,6 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
 public class BaseEntity extends Tracer {
 
     /**
@@ -55,33 +51,6 @@ public class BaseEntity extends Tracer {
      */
     @Serial
     private static final long serialVersionUID = 2852287773629L;
-
-    /**
-     * Data status: -1 for deleted, 0 for invalid, 1 for normal.
-     */
-    @Logical
-    @NotBlank
-    protected Integer status;
-
-    /**
-     * The creator of the entity.
-     */
-    protected String creator;
-
-    /**
-     * The creation timestamp of the entity.
-     */
-    protected Long created;
-
-    /**
-     * The modifier of the entity.
-     */
-    protected String modifier;
-
-    /**
-     * The modification timestamp of the entity.
-     */
-    protected Long modified;
 
     /**
      * Resets numeric string fields to null to prevent database insertion errors. If a numeric string property's value

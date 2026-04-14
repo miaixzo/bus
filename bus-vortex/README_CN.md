@@ -257,6 +257,22 @@ extend:
     server:
       port: 8765
       path: /router/rest
+    performance:
+      sanitize-null-like-parameters: true
+```
+
+### null-like 参数净化
+
+当 `extend.vortex.performance.sanitize-null-like-parameters=true` 时，网关会在请求入口、上下文追加、以及出站转发三个阶段统一移除
+Java `null`、`"null"`、`"undefined"`。
+
+`Context#getParameters()` 保留了原有的 `Map` 使用习惯，但返回值底层是受控 `Parameter`，因此 `put` / `putAll` /
+`remove` 仍然会统一经过净化规则。query 参数仍保持只读。
+
+```java
+context.getParameters().put("status", status);
+context.getParameters().putAll(payload);
+context.putQueryParameter("lang", "en");
 ```
 
 -----

@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.vortex.strategy;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -40,6 +41,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.center.HMac;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
@@ -286,12 +288,16 @@ public class VettingStrategy extends AbstractStrategy {
         }
 
         // 1. Filter, encode, and sort parameters
-        String sortedAndEncodedParams = params.entrySet().stream()
-                .filter(entry -> StringKit.isNotEmpty(String.valueOf(entry.getValue())))
-                .sorted(Map.Entry.comparingByKey())
+        String sortedAndEncodedParams = params.entrySet().stream().map(entry -> {
+            Object value = entry.getValue();
+            String normalizedValue = value instanceof Map || value instanceof Collection
+                    || (value != null && value.getClass().isArray()) ? JsonKit.toJsonString(value)
+                            : String.valueOf(value);
+            return Map.entry(entry.getKey(), normalizedValue);
+        }).filter(entry -> StringKit.isNotEmpty(entry.getValue())).sorted(Map.Entry.comparingByKey())
                 .map(
                         entry -> UrlEncoder.encodeAll(entry.getKey(), Charset.UTF_8)
-                                + UrlEncoder.encodeAll(String.valueOf(entry.getValue()), Charset.UTF_8))
+                                + UrlEncoder.encodeAll(entry.getValue(), Charset.UTF_8))
                 .collect(Collectors.joining());
 
         // 2. Construct the string to be signed
@@ -311,21 +317,19 @@ public class VettingStrategy extends AbstractStrategy {
      * @param context  The request context.
      */
     protected void enrich(ServerWebExchange exchange, Context context) {
-        Map<String, Object> params = context.getParameters();
-
         String x_request_id = context.getX_request_id();
         if (StringKit.isEmpty(x_request_id)) {
             x_request_id = context.getX_request_id();
             context.setX_request_id(x_request_id);
         }
-        params.put("x_request_id", x_request_id);
+        context.getParameters().put("x_request_id", x_request_id);
 
         String x_request_ipv4 = context.getX_request_ip();
         if (StringKit.isEmpty(x_request_ipv4)) {
             x_request_ipv4 = this.getClientIp(exchange.getRequest());
             context.setX_request_ipv4(x_request_ipv4);
         }
-        params.put("x_request_ipv4", x_request_ipv4);
+        context.getParameters().put("x_request_ipv4", x_request_ipv4);
 
         String x_request_domain = context.getX_request_domain();
         if (StringKit.isEmpty(x_request_domain)) {
@@ -333,7 +337,7 @@ public class VettingStrategy extends AbstractStrategy {
             x_request_domain = this.determineRequestDomain(exchange.getRequest());
             context.setX_request_domain(x_request_domain);
         }
-        params.put("x_request_domain", x_request_domain);
+        context.getParameters().put("x_request_domain", x_request_domain);
     }
 
     /**

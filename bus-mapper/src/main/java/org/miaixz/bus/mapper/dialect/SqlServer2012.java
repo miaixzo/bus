@@ -20,127 +20,67 @@
 package org.miaixz.bus.mapper.dialect;
 
 import org.miaixz.bus.mapper.support.paging.Pageable;
-import java.util.List;
-import org.miaixz.bus.mapper.parsing.ColumnMeta;
 
 /**
- * Microsoft SQL Server 2012+ dialect.
+ * Dialect implementation for SQL Server 2012 style pagination.
  *
  * <p>
- * This is essentially the same as {@link SqlServer} but explicitly named for SQL Server 2012+. SQL Server 2012
- * introduced the OFFSET...FETCH syntax for pagination.
+ * This dialect uses SQL Server {@code OFFSET ... FETCH NEXT} pagination and injects a neutral {@code ORDER BY}
+ * expression when required. UPSERT handling is mapped to the {@code MERGE_USING_VALUES} family.
  * </p>
- *
- * <p>
- * Supports:
- * </p>
- * <ul>
- * <li>OFFSET...FETCH pagination (SQL Server 2012+)</li>
- * <li>MERGE (UPSERT)</li>
- * <li>JDBC batch operations</li>
- * </ul>
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class SqlServer2012 extends AbstractDialect {
 
+    /**
+     * Creates the SQL Server 2012 dialect.
+     */
     public SqlServer2012() {
         super("Microsoft SQL Server", "jdbc:sqlserver:");
     }
 
+    /**
+     * Returns the UPSERT family used by SQL Server 2012 in this framework.
+     *
+     * @return {@link Dialect.Type#MERGE_USING_VALUES}
+     */
     @Override
-    public boolean supportsProduct(String productName) {
-        // This is for explicit SQL Server 2012 usage
-        // Normal SQL Server detection will use SqlServerDialect
-        return false;
+    public Dialect.Type getUpsertType() {
+        return Dialect.Type.MERGE_USING_VALUES;
     }
 
-    @Override
-    public String getPaginationSql(String originalSql, Pageable pageable) {
-        if (pageable.isUnpaged()) {
-            return originalSql;
-        }
-
-        StringBuilder sql = new StringBuilder(originalSql.length() + 100);
-        sql.append(originalSql);
-
-        // SQL Server 2012+ OFFSET...FETCH syntax
-        // Requires an Order BY clause
-        if (!originalSql.toUpperCase().contains("Order BY")) {
-            // Add a default Order BY if none exists
-            sql.append(" Order BY (SELECT NULL)");
-        }
-
-        sql.append(" OFFSET ").append(pageable.getOffset()).append(" ROWS");
-        sql.append(" FETCH NEXT ").append(pageable.getPageSize()).append(" ROWS ONLY");
-
-        return sql.toString();
-    }
-
-    @Override
-    public boolean supportsMultiValuesInsert() {
-        return false;
-    }
-
-    @Override
-    public boolean supportsUpsert() {
-        return true;
-    }
-
-    @Override
-    public String getUpsertTemplate() {
-        return "MERGE INTO %s AS target USING (VALUES %s) AS source (%s) ON %s WHEN MATCHED THEN UPDATE SET %s WHEN NOT MATCHED THEN INSERT (%s) VALUES (%s)";
-    }
-
-    @Override
-    public String buildUpsertSql(
-            String tableName,
-            String columnList,
-            String valuesList,
-            String keyColumns,
-            List<ColumnMeta> updateColumns,
-            String itemPrefix) {
-        // SQL Server 2012: MERGE INTO ... USING (VALUES ...) AS source (...) ON (...) WHEN MATCHED THEN UPDATE SET ...
-        // WHEN NOT MATCHED THEN INSERT (...) VALUES (...) with dynamic <if> tags
-        StringBuilder sb = new StringBuilder();
-        sb.append("MERGE INTO ").append(tableName).append(" AS target\n");
-        sb.append("USING (VALUES (").append(valuesList).append(")) AS source (").append(columnList).append(")\n");
-
-        sb.append("ON (");
-        String[] keyColArray = keyColumns.split(",\\s*");
-        for (int i = 0; i < keyColArray.length; i++) {
-            if (i > 0) {
-                sb.append(" AND ");
-            }
-            String colName = keyColArray[i].trim();
-            sb.append("target.").append(colName).append(" = source.").append(colName);
-        }
-        sb.append(")\n");
-
-        sb.append("WHEN MATCHED THEN UPDATE SET\n");
-        for (ColumnMeta col : updateColumns) {
-            sb.append("  <if test=\"").append(itemPrefix).append(".").append(col.property())
-                    .append(" != null\">target.").append(col.column()).append(" = source.").append(col.column())
-                    .append(",</if>\n");
-        }
-
-        sb.append("WHEN NOT MATCHED THEN INSERT (").append(columnList).append(")\n");
-        sb.append("VALUES (");
-
-        StringBuilder sourceValues = new StringBuilder();
-        for (ColumnMeta col : updateColumns) {
-            sourceValues.append("<if test=\"").append(itemPrefix).append(".").append(col.property())
-                    .append(" != null\">source.").append(col.column()).append(",</if>");
-        }
-        sb.append(sourceValues).append(")");
-
-        return sb.toString();
-    }
-
+    /**
+     * Returns the keyword used by SQL Server 2012 to express row limits.
+     *
+     * @return the keyword {@code FETCH NEXT}
+     */
     @Override
     public String getLimitKeyword() {
         return "FETCH NEXT";
+    }
+
+    /**
+     * Builds paginated SQL using SQL Server 2012 {@code OFFSET ... FETCH NEXT} syntax.
+     *
+     * @param originalSql the original SQL statement
+     * @param pageable    the requested pagination information
+     * @return the paginated SQL statement
+     */
+    @Override
+    public String buildPaginationSql(String originalSql, Pageable pageable) {
+        if (pageable.isUnpaged()) {
+            return originalSql;
+        }
+        StringBuilder sql = new StringBuilder(originalSql.length() + 100);
+        sql.append(originalSql);
+        if (!originalSql.toUpperCase().contains("ORDER BY")) {
+            sql.append(" ORDER BY (SELECT NULL)");
+        }
+        sql.append(" OFFSET ").append(pageable.getOffset()).append(" ROWS");
+        sql.append(" FETCH NEXT ").append(pageable.getPageSize()).append(" ROWS ONLY");
+        return sql.toString();
     }
 
 }
