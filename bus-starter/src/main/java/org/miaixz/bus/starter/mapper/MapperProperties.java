@@ -22,11 +22,19 @@ package org.miaixz.bus.starter.mapper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
@@ -52,6 +60,8 @@ import lombok.Setter;
 public class MapperProperties {
 
     private static final ResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
+    private static final Pattern NAMESPACE_INDEXED_KEY = Pattern
+            .compile("^namespaces(?:\\[(\\d+)\\]|\\.(\\d+))\\.(.+)$");
 
     /**
      * Base packages to scan for MyBatis mapper interfaces.
@@ -166,6 +176,61 @@ public class MapperProperties {
      */
     @NestedConfigurationProperty
     private PrefixProperties prefix;
+
+    /**
+     * Resolves mapper configuration properties into the flat Properties contract consumed by mapper handlers.
+     * <p>
+     * Supports both legacy fixed-key configuration and the new {@code namespaces[].name} structure.
+     * </p>
+     *
+     * @return flattened configuration properties
+     */
+    public Properties resolveConfigurationProperties() {
+        Properties raw = this.configurationProperties;
+        Properties resolved = new Properties();
+        if (raw == null || raw.isEmpty()) {
+            return resolved;
+        }
+
+        Map<Integer, Map<String, String>> groupedNamespaceProperties = new TreeMap<>();
+        for (String key : raw.stringPropertyNames()) {
+            Matcher matcher = NAMESPACE_INDEXED_KEY.matcher(key);
+            if (matcher.matches()) {
+                String indexText = matcher.group(1) != null ? matcher.group(1) : matcher.group(2);
+                int index = Integer.parseInt(indexText);
+                String path = matcher.group(3);
+                groupedNamespaceProperties.computeIfAbsent(index, ignored -> new LinkedHashMap<>())
+                        .put(path, raw.getProperty(key));
+                continue;
+            }
+            resolved.setProperty(key, raw.getProperty(key));
+        }
+
+        if (groupedNamespaceProperties.isEmpty()) {
+            return resolved;
+        }
+
+        Set<String> namespaceNames = new HashSet<>(groupedNamespaceProperties.size());
+        for (Map.Entry<Integer, Map<String, String>> entry : groupedNamespaceProperties.entrySet()) {
+            String namespaceName = StringKit.trim(entry.getValue().get("name"));
+            if (StringKit.isEmpty(namespaceName)) {
+                throw new IllegalArgumentException(
+                        "bus.mapper.configurationProperties.namespaces[" + entry.getKey() + "].name must not be empty");
+            }
+            if (!namespaceNames.add(namespaceName)) {
+                throw new IllegalArgumentException("Duplicate mapper namespace name: " + namespaceName);
+            }
+
+            for (Map.Entry<String, String> propertyEntry : entry.getValue().entrySet()) {
+                String path = propertyEntry.getKey();
+                if ("name".equals(path)) {
+                    continue;
+                }
+                resolved.setProperty(namespaceName + "." + path, propertyEntry.getValue());
+            }
+        }
+        return resolved;
+    }
 
     /**
      * Operation safety configuration class.

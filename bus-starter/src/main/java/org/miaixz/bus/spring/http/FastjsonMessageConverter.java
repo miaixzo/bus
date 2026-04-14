@@ -221,7 +221,7 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
             /**
              * Resolves standard class names and canonical array names such as {@code java.lang.String[]}.
              *
-             * @param typeName the fastjson type name
+             * @param typeName    the fastjson type name
              * @param classLoader the class loader to use first
              * @return the resolved class
              * @throws ClassNotFoundException if the type cannot be resolved

@@ -47,8 +47,8 @@ public class AutoBindingTypeMatcher {
     /**
      * Built-in base package prefixes that are always allowed.
      * <p>
-     * These types are common scalar, collection, servlet, and Spring framework types that
-     * can appear in normal controller responses and exception payloads.
+     * These types are common scalar, collection, servlet, and Spring framework types that can appear in normal
+     * controller responses and exception payloads.
      */
     private static final List<String> DEFAULT_PREFIXES = List.of("java.", "javax.", "jakarta.", "org.springframework.");
 
