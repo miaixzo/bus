@@ -45,8 +45,17 @@ import org.springframework.beans.factory.annotation.Autowired;
  * creation time, modifier, update time) during insert and update operations.
  * </p>
  * <p>
- * If your business logic requires custom handling of these fields or does not use {@link BaseEntity}, consider
- * overriding the specific methods or extending a different base class.
+ * It also keeps the service-layer distinction between two batch models:
+ * </p>
+ * <ul>
+ * <li>Native batch SQL methods such as {@code insertBatch} and {@code insertUpBatch}, delegated to
+ * {@code BatchMapper}.</li>
+ * <li>List-oriented batch methods such as {@code insertList}, {@code update(List)} and {@code updateListSelective},
+ * delegated to {@code ListMapper}.</li>
+ * </ul>
+ * <p>
+ * If your business logic requires custom handling of lifecycle fields or batch strategy selection, override the
+ * relevant methods in a concrete service.
  * </p>
  *
  * @param <T> the entity type, must extend {@link BaseEntity}
@@ -92,6 +101,23 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     public Object insertSelective(T entity) {
         this.setValue(entity);
         return mapper.insertSelective(entity);
+    }
+
+    /**
+     * Persists a list of entities using list-oriented batch insertion semantics.
+     * <p>
+     * Automatically populates common metadata (status, creator, create time) before insertion.
+     * </p>
+     *
+     * @param list the list of entities to insert
+     * @return the list-oriented batch insert result
+     */
+    @Override
+    public Object insertList(List<T> list) {
+        if (ObjectKit.isNotEmpty(list)) {
+            list.forEach(this::setValue);
+        }
+        return mapper.insertList(list);
     }
 
     /**
@@ -161,6 +187,23 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
+     * Updates a list of entities using list-oriented batch update semantics.
+     * <p>
+     * Automatically updates modification metadata (modifier, update time) before execution.
+     * </p>
+     *
+     * @param list the list of entities to update
+     * @return the list-oriented batch update result
+     */
+    @Override
+    public Object update(List<T> list) {
+        if (ObjectKit.isNotEmpty(list)) {
+            list.forEach(entity -> entity.setUpdate(entity));
+        }
+        return mapper.updateList(list);
+    }
+
+    /**
      * Updates an existing entity, forcing updates on specified fields.
      * <p>
      * Automatically updates modification metadata (modifier, update time).
@@ -205,6 +248,23 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     public Object updateSelective(T entity, Fn<T, Object>... fields) {
         entity.setUpdate(entity);
         return mapper.updateByPrimaryKeySelectiveWithForceFields(entity, Fn.of(fields));
+    }
+
+    /**
+     * Updates a list of entities using list-oriented selective batch update semantics.
+     * <p>
+     * Automatically updates modification metadata (modifier, update time) before execution.
+     * </p>
+     *
+     * @param list the list of entities to update
+     * @return the list-oriented selective batch update result
+     */
+    @Override
+    public Object updateListSelective(List<T> list) {
+        if (ObjectKit.isNotEmpty(list)) {
+            list.forEach(entity -> entity.setUpdate(entity));
+        }
+        return mapper.updateListSelective(list);
     }
 
     /**
