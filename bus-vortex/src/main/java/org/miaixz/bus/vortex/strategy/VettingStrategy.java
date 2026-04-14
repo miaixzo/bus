@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.vortex.strategy;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -40,6 +41,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.center.HMac;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
@@ -286,12 +288,16 @@ public class VettingStrategy extends AbstractStrategy {
         }
 
         // 1. Filter, encode, and sort parameters
-        String sortedAndEncodedParams = params.entrySet().stream()
-                .filter(entry -> StringKit.isNotEmpty(String.valueOf(entry.getValue())))
-                .sorted(Map.Entry.comparingByKey())
+        String sortedAndEncodedParams = params.entrySet().stream().map(entry -> {
+            Object value = entry.getValue();
+            String normalizedValue = value instanceof Map || value instanceof Collection
+                    || (value != null && value.getClass().isArray()) ? JsonKit.toJsonString(value)
+                            : String.valueOf(value);
+            return Map.entry(entry.getKey(), normalizedValue);
+        }).filter(entry -> StringKit.isNotEmpty(entry.getValue())).sorted(Map.Entry.comparingByKey())
                 .map(
                         entry -> UrlEncoder.encodeAll(entry.getKey(), Charset.UTF_8)
-                                + UrlEncoder.encodeAll(String.valueOf(entry.getValue()), Charset.UTF_8))
+                                + UrlEncoder.encodeAll(entry.getValue(), Charset.UTF_8))
                 .collect(Collectors.joining());
 
         // 2. Construct the string to be signed

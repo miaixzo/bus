@@ -93,6 +93,13 @@ public class RequestStrategy extends AbstractStrategy {
             // building the reactive chain, not executing it.
             ServerWebExchange mutate = setContentType(exchange);
             ServerHttpRequest request = mutate.getRequest();
+            Logger.debug(
+                    true,
+                    "Request",
+                    "[{}] Request headers - Path: {}, Headers: {}",
+                    context.getX_request_ip(),
+                    request.getURI().getPath(),
+                    request.getHeaders());
 
             // 2. Dispatch to the appropriate handler based on method and Content-Type.
             if (Objects.equals(request.getMethod(), HttpMethod.GET)) {

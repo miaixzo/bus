@@ -32,104 +32,61 @@ import org.miaixz.bus.vortex.Monitor;
 import org.miaixz.bus.vortex.metric.CacheStats;
 
 /**
- * A generic two-level cache manager combining L1 (ConcurrentHashMap) and L2 (Caffeine) caches.
+ * Generic two-level cache manager.
  * <p>
- * This cache manager provides a high-performance caching solution with the following characteristics:
+ * The first-level cache uses {@link ConcurrentHashMap} for hot data, while the second-level cache uses {@link CacheX}
+ * for larger-capacity storage. Reads follow the order "L1 -> L2 -> miss", and writes and removals update both cache
+ * levels.
+ * </p>
+ *
+ * <p>
+ * Default configuration is loaded from {@link Holder}:
  * </p>
  * <ul>
- * <li>L1 Cache: ConcurrentHashMap for ultra-fast access to hot data</li>
- * <li>L2 Cache: Caffeine for large-capacity storage with LRU eviction</li>
- * <li>Query Flow: L1 → L2 → Cache miss</li>
- * <li>Write Strategy: Update both L1 and L2 simultaneously</li>
- * <li>Eviction Policy: Automatic LRU eviction in L2 cache</li>
+ * <li>Cache size: {@link Holder#getCacheSize()}</li>
+ * <li>Cache expiration: {@link Holder#getCacheExpireMs()}</li>
  * </ul>
  *
  * <p>
- * <b>Configuration Parameters:</b>
+ * This manager also supports hit-rate statistics and optional performance monitoring.
  * </p>
- * <ul>
- * <li>Cache configuration is obtained from {@link Holder}</li>
- * <li>Cache size: {@link Holder#getCacheSize()} (default: 10000)</li>
- * <li>Cache expiration: {@link Holder#getCacheExpireMs()} (default: 300000ms)</li>
- * </ul>
  *
- * <p>
- * <b>Performance Monitoring:</b>
- * </p>
- * <ul>
- * <li>Automatic statistics collection for hit/miss counts</li>
- * <li>Optional integration with {@link Monitor}</li>
- * <li>Statistics query support via {@link CacheStats}</li>
- * </ul>
- *
- * <p>
- * <b>Use Cases:</b>
- * </p>
- * <ul>
- * <li>Two-level cache for {@link org.miaixz.bus.vortex.registry.AbstractRegistry}</li>
- * <li>Permission information caching</li>
- * <li>Configuration data caching</li>
- * <li>Any scenario requiring high-performance caching</li>
- * </ul>
- *
- * <p>
- * <b>Example Usage:</b>
- * </p>
- * 
- * <pre>{@code
- * // Create cache manager
- * CacheManager<String, Assets> cacheManager = new CacheManager<>();
- *
- * // Optional: Set performance monitor
- * cacheManager.setPerformanceMonitor(new DefaultMonitor());
- *
- * // Query cache (automatic L1 → L2 flow)
- * Assets asset = cacheManager.get("user.getProfile:1.0.0");
- *
- * // Write to cache (updates both L1 and L2)
- * cacheManager.put("user.getProfile:1.0.0", asset);
- *
- * // Get statistics
- * CacheStats stats = cacheManager.getStats();
- * System.out.println("Hit rate: " + stats.getHitRate());
- * }</pre>
- *
- * @param <K> the type of keys maintained by this cache manager
- * @param <V> the type of mapped values
+ * @param <K> cache key type
+ * @param <V> cache value type
  * @author Kimi Liu
  * @since Java 21+
  */
 public class CacheManager<K, V> {
 
     /**
-     * 一级缓存：ConcurrentHashMap（热数据，极快访问）
+     * Level-1 cache for hot data with very fast access.
      */
     private final Map<K, V> cache;
 
     /**
-     * 二级缓存：Caffeine（全量数据，LRU淘汰）
+     * Level-2 cache implementation.
      */
     private final CacheX<K, V> cachex;
 
     /**
-     * L2缓存配置
+     * Level-2 cache configuration.
      */
     private final long cacheSize;
     private final long cacheExpireMs;
 
     /**
-     * 访问统计
+     * Access statistics.
      */
     private final AtomicLong hitCount = new AtomicLong(0);
     private final AtomicLong missCount = new AtomicLong(0);
 
     /**
-     * 性能监控器（可选）
+     * Optional performance monitor.
      */
     private volatile Monitor monitor;
 
     /**
-     * 构造函数：从 Holder 获取配置
+     * Creates a cache manager with global default configuration.
      */
     public CacheManager() {
         this.cacheSize = Holder.getCacheSize();
@@ -139,16 +96,16 @@ public class CacheManager<K, V> {
         this.cachex = new GuavaCache<>(cacheSize, cacheExpireMs);
 
         Logger.debug(
-                "CacheManager初始化: L1=ConcurrentHashMap, L2=Caffeine(size={}, expireMs={})",
+                "CacheManager initialized: L1=ConcurrentHashMap, L2=GuavaCache(size={}, expireMs={})",
                 cacheSize,
                 cacheExpireMs);
     }
 
     /**
-     * 构造函数：自定义配置
+     * Creates a cache manager with explicit configuration.
      *
-     * @param cacheSize     L2缓存最大容量
-     * @param cacheExpireMs L2缓存过期时间（毫秒）
+     * @param cacheSize     maximum level-2 cache size
+     * @param cacheExpireMs level-2 cache expiration in milliseconds
      */
     public CacheManager(long cacheSize, long cacheExpireMs) {
         this.cacheSize = cacheSize;
@@ -158,36 +115,35 @@ public class CacheManager<K, V> {
         this.cachex = new CaffeineCache(cacheSize, cacheExpireMs);
 
         Logger.debug(
-                "CacheManager初始化: L1=ConcurrentHashMap, L2=Caffeine(size={}, expireMs={})",
+                "CacheManager initialized: L1=ConcurrentHashMap, L2=CaffeineCache(size={}, expireMs={})",
                 cacheSize,
                 cacheExpireMs);
     }
 
     /**
-     * 设置性能监控器
+     * Sets the performance monitor.
      *
-     * @param monitor 性能监控器
+     * @param monitor performance monitor
      */
     public void setPerformanceMonitor(Monitor monitor) {
         this.monitor = monitor;
-        Logger.debug("CacheManager性能监控器已设置: {}", monitor.getClass().getSimpleName());
+        Logger.debug("CacheManager performance monitor configured: {}", monitor.getClass().getSimpleName());
     }
 
     /**
-     * 查询缓存（L1 → L2 → 未命中）
+     * Reads a value from the cache.
      *
-     * @param key 键
-     * @return 值，如果未找到返回null
+     * @param key cache key
+     * @return cached value, or {@code null} if not found
      */
     public V get(K key) {
         long startTime = System.nanoTime();
 
         try {
-            // 1. 查询L1缓存
+            // Step 1: check the level-1 cache first.
             V value = this.cache.get(key);
 
             if (value != null) {
-                // L1命中
                 hitCount.incrementAndGet();
 
                 if (monitor != null) {
@@ -197,11 +153,10 @@ public class CacheManager<K, V> {
                 return value;
             }
 
-            // 2. L1未命中，查询L2缓存
+            // Step 2: check the level-2 cache and backfill level-1 on hit.
             value = this.cachex.read(key);
 
             if (value != null) {
-                // L2命中，同步到L1
                 this.cache.put(key, value);
                 hitCount.incrementAndGet();
 
@@ -212,7 +167,7 @@ public class CacheManager<K, V> {
                 return value;
             }
 
-            // 3. 完全未命中
+            // Step 3: both cache levels missed.
             missCount.incrementAndGet();
 
             if (monitor != null) {
@@ -222,43 +177,43 @@ public class CacheManager<K, V> {
             return null;
 
         } catch (Exception e) {
-            Logger.error("CacheManager查询失败: key={}, error={}", key, e.getMessage(), e);
+            Logger.error("Cache read failed: key={}, error={}", key, e.getMessage(), e);
             return null;
         }
     }
 
     /**
-     * 写入缓存（同时更新L1+L2）
+     * Writes a value to the cache and updates both cache levels.
      *
-     * @param key   键
-     * @param value 值
+     * @param key   cache key
+     * @param value cache value
      */
     public void put(K key, V value) {
         try {
             this.cache.put(key, value);
             this.cachex.write(key, value, cacheExpireMs);
         } catch (Exception e) {
-            Logger.error("CacheManager写入失败: key={}, error={}", key, e.getMessage(), e);
+            Logger.error("Cache write failed: key={}, error={}", key, e.getMessage(), e);
             throw e;
         }
     }
 
     /**
-     * 移除缓存（同时清理L1+L2）
+     * Removes a value from the cache and clears both cache levels.
      *
-     * @param key 键
+     * @param key cache key
      */
     public void remove(K key) {
         try {
             this.cache.remove(key);
             this.cachex.remove(key);
         } catch (Exception e) {
-            Logger.error("CacheManager移除失败: key={}, error={}", key, e.getMessage(), e);
+            Logger.error("Cache removal failed: key={}, error={}", key, e.getMessage(), e);
         }
     }
 
     /**
-     * 清空所有缓存
+     * Clears all cached data and resets statistics.
      */
     public void clear() {
         this.cache.clear();
@@ -268,18 +223,18 @@ public class CacheManager<K, V> {
     }
 
     /**
-     * 获取L1缓存大小
+     * Returns the current level-1 cache size.
      *
-     * @return L1缓存当前大小
+     * @return current level-1 cache size
      */
     public long getL1Size() {
         return this.cache.size();
     }
 
     /**
-     * 获取统计信息
+     * Returns current cache statistics.
      *
-     * @return 缓存统计信息
+     * @return cache statistics
      */
     public CacheStats getStats() {
         long hits = hitCount.get();
@@ -291,9 +246,9 @@ public class CacheManager<K, V> {
     }
 
     /**
-     * 计算命中率
+     * Calculates the current cache hit rate.
      *
-     * @return 命中率（0.0 - 1.0）
+     * @return hit rate between {@code 0.0} and {@code 1.0}
      */
     public double hitRate() {
         long hits = hitCount.get();

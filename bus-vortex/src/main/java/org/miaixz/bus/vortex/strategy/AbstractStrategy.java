@@ -19,6 +19,10 @@
 */
 package org.miaixz.bus.vortex.strategy;
 
+import java.net.InetSocketAddress;
+import java.util.Arrays;
+import java.util.Optional;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -38,9 +42,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.web.server.ServerWebExchange;
-
-import java.net.InetSocketAddress;
-import java.util.*;
 
 /**
  * An abstract base class for {@link Strategy} implementations, providing a collection of common utility methods.
@@ -320,31 +321,19 @@ public abstract class AbstractStrategy implements Strategy {
      * @return The extracted token string, or {@code null} if no token is found in any of the checked locations.
      */
     protected String getToken(Context context) {
-        // 1. Prioritize the standard `Authorization` header with the `Bearer` scheme.
-        String authorization = context.getHeaders().get(HTTP.AUTHORIZATION);
-        if (StringKit.isNotEmpty(authorization)) {
-            authorization = authorization.trim();
-            if (authorization.startsWith(HTTP.BEARER)) {
-                return authorization.substring(HTTP.BEARER.length()).trim();
+        // 1. Check token in headers first, including Authorization and backward-compatible token headers.
+        String token = MapKit.getFirstNonNull(context.getHeaders(), Args.TOKEN_KEYS);
+        if (StringKit.isNotBlank(token)) {
+            token = token.trim();
+            if (token.regionMatches(true, 0, HTTP.BEARER, 0, HTTP.BEARER.length())) {
+                return token.substring(HTTP.BEARER.length()).trim();
             }
-            return authorization;
-        }
-
-        // 2. Check for a custom `X-Access-Token` header for backward compatibility.
-        final String[] keys = { Args.X_ACCESS_TOKEN, Args.X_ACCESS_TOKEN.toUpperCase(),
-                Args.X_ACCESS_TOKEN.toLowerCase(), "X_Access_Token", "X_ACCESS_TOKEN", "x_access_token" };
-        String token = MapKit.getFirstNonNull(context.getHeaders(), keys);
-        if (StringKit.isNotEmpty(token)) {
             return token;
         }
 
-        // 3. If not found in headers, search in request parameters as a fallback.
-        if (StringKit.isBlank(token)) {
-            token = Optional.ofNullable(MapKit.getFirstNonNull(context.getParameters(), keys)).map(Object::toString)
-                    .orElse(null);
-        }
-
-        return token;
+        // 2. If not found in headers, search in request parameters as a fallback.
+        return Optional.ofNullable(MapKit.getFirstNonNull(context.getParameters(), Args.TOKEN_KEYS))
+                .map(Object::toString).orElse(null);
     }
 
     /**
@@ -354,19 +343,15 @@ public abstract class AbstractStrategy implements Strategy {
      * @return The found API key, or {@code null} if not present.
      */
     protected String getApiKey(Context context) {
-        final String[] keys = { "apiKey", "apikey", "api_key", "x_api_key", "api_id", "x_api_id", "X-API-ID",
-                "X-API-KEY", "API-KEY", "API-ID" };
-
-        // First, search in request parameters.
-        String apiKey = Optional.ofNullable(MapKit.getFirstNonNull(context.getParameters(), keys)).map(Object::toString)
-                .orElse(null);
-
-        // If not found, search in request headers.
-        if (StringKit.isBlank(apiKey)) {
-            apiKey = MapKit.getFirstNonNull(context.getHeaders(), keys);
+        // 1. Check API key in headers first.
+        String apiKey = MapKit.getFirstNonNull(context.getHeaders(), Args.API_KEY_KEYS);
+        if (StringKit.isNotBlank(apiKey)) {
+            return apiKey.trim();
         }
 
-        return apiKey;
+        // 2. If not found in headers, search in request parameters as a fallback.
+        return Optional.ofNullable(MapKit.getFirstNonNull(context.getParameters(), Args.API_KEY_KEYS))
+                .map(Object::toString).map(String::trim).orElse(null);
     }
 
 }

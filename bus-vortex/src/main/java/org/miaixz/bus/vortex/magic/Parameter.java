@@ -288,6 +288,13 @@ public final class Parameter extends AbstractMap<String, Object> {
         return value;
     }
 
+    /**
+     * Writes a value that has already passed sanitization into the backing map. For string-only containers, non-string
+     * values are ignored to keep the stored representation aligned with the exposed string view.
+     *
+     * @param key       The parameter key.
+     * @param sanitized The sanitized value to store.
+     */
     private void writeSanitized(String key, Object sanitized) {
         if (sanitized == null) {
             return;
