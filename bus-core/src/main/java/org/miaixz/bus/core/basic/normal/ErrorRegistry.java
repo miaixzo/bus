@@ -19,9 +19,6 @@
 */
 package org.miaixz.bus.core.basic.normal;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 import org.miaixz.bus.core.lang.I18n;
 import org.miaixz.bus.core.lang.Keys;
 
@@ -108,17 +105,15 @@ public class ErrorRegistry implements Errors {
      */
     public String getValue(I18n i18n) {
         try {
-            // Determine the locale: use default if auto-detect, otherwise create a new locale.
-            Locale locale = i18n == I18n.AUTO_DETECT ? Locale.getDefault() : Locale.forLanguageTag(i18n.lang());
-            // Get the resource bundle for the specified locale.
-            ResourceBundle bundle = ResourceBundle.getBundle(Keys.BUNDLE_NAME, locale);
-            // Return the localized message from the bundle.
-            return bundle.getString(this.key);
+            String message = I18n.message(i18n, Keys.BUNDLE_NAME, this.key);
+            if (!this.key.equals(message)) {
+                return message;
+            }
         } catch (Exception e) {
-            // Fallback to the error message registered in the ERRORS_CACHE.
-            Entry entry = Errors.require(this.key);
-            return entry != null ? entry.getValue() : this.value;
         }
+        // Fallback to the error message registered in the ERRORS_CACHE.
+        Entry entry = Errors.require(this.key);
+        return entry != null ? entry.getValue() : this.value;
     }
 
     /**

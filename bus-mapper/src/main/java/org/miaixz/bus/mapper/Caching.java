@@ -21,7 +21,6 @@ package org.miaixz.bus.mapper;
 
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -33,6 +32,7 @@ import org.apache.ibatis.mapping.SqlSource;
 import org.apache.ibatis.scripting.xmltags.XMLLanguageDriver;
 import org.apache.ibatis.session.Configuration;
 import org.miaixz.bus.core.Context;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
@@ -79,21 +79,21 @@ public class Caching extends XMLLanguageDriver {
     /**
      * Generates a cache key based on the mapper interface and method.
      *
-     * @param providerContext The provider context containing mapper interface and method information.
+     * @param context The provider context containing mapper interface and method information.
      * @return A cache key, which is interned to be used as a lock object.
      */
-    private static String cacheKey(ProviderContext providerContext) {
-        return (providerContext.getMapperType().getName() + "." + providerContext.getMapperMethod().getName()).intern();
+    private static String cacheKey(ProviderContext context) {
+        return (context.getMapperType().getName() + "." + context.getMapperMethod().getName()).intern();
     }
 
     /**
      * Checks if the mapper method is annotated with {@code @Lang(Caching.class)}.
      *
-     * @param providerContext The provider context containing method information.
+     * @param context The provider context containing method information.
      * @throws RuntimeException if the method is not annotated with {@code @Lang(Caching.class)}.
      */
-    private static void isAnnotationPresentLang(ProviderContext providerContext) {
-        Method mapperMethod = providerContext.getMapperMethod();
+    private static void isAnnotationPresentLang(ProviderContext context) {
+        Method mapperMethod = context.getMapperMethod();
         if (mapperMethod.isAnnotationPresent(Lang.class)) {
             Lang lang = mapperMethod.getAnnotation(Lang.class);
             if (lang.value() == Caching.class) {
@@ -112,20 +112,19 @@ public class Caching extends XMLLanguageDriver {
      * lock contention and improve concurrent performance by 3-5x.
      * </p>
      *
-     * @param providerContext   The provider context, containing mapper interface and method information.
+     * @param context           The provider context, containing mapper interface and method information.
      * @param entity            The entity metadata.
      * @param sqlScriptSupplier A supplier for the SQL script string.
      * @return The generated cache key.
      */
-    public static String cache(ProviderContext providerContext, TableMeta entity, Supplier<String> sqlScriptSupplier) {
-        String cacheKey = cacheKey(providerContext);
+    public static String cache(ProviderContext context, TableMeta entity, Supplier<String> sqlScriptSupplier) {
+        String cacheKey = cacheKey(context);
 
         // Use computeIfAbsent for lock-free concurrency, performance optimization: concurrent throughput improved by
         // 3-5x
         CACHE_SQL.computeIfAbsent(cacheKey, k -> {
-            isAnnotationPresentLang(providerContext);
-            return new SqlMetaCache(Objects.requireNonNull(providerContext), Objects.requireNonNull(entity),
-                    Objects.requireNonNull(sqlScriptSupplier));
+            isAnnotationPresentLang(context);
+            return new SqlMetaCache(Assert.notNull(context), Assert.notNull(entity), Assert.notNull(sqlScriptSupplier));
         });
 
         return cacheKey;
@@ -139,23 +138,23 @@ public class Caching extends XMLLanguageDriver {
      * generated at execution time when the dialect is known, not at cache time.
      * </p>
      *
-     * @param providerContext          The provider context, containing mapper interface and method information.
+     * @param context                  The provider context, containing mapper interface and method information.
      * @param entity                   The entity metadata.
      * @param dynamicSqlScriptFunction A function that accepts Dialect and returns SQL script.
      * @return The generated cache key.
      */
     public static String cacheDynamic(
-            ProviderContext providerContext,
+            ProviderContext context,
             TableMeta entity,
             Function<Dialect, String> dynamicSqlScriptFunction) {
-        String cacheKey = cacheKey(providerContext);
+        String cacheKey = cacheKey(context);
 
         // Use computeIfAbsent for lock-free concurrency, performance optimization: concurrent throughput improved by
         // 3-5x
         CACHE_SQL.computeIfAbsent(cacheKey, k -> {
-            isAnnotationPresentLang(providerContext);
-            return new SqlMetaCache(Objects.requireNonNull(providerContext), Objects.requireNonNull(entity), null,
-                    Objects.requireNonNull(dynamicSqlScriptFunction));
+            isAnnotationPresentLang(context);
+            return new SqlMetaCache(Assert.notNull(context), Assert.notNull(entity), null,
+                    Assert.notNull(dynamicSqlScriptFunction));
         });
 
         return cacheKey;
@@ -181,9 +180,9 @@ public class Caching extends XMLLanguageDriver {
                     throw new RuntimeException(
                             k + " => CACHE_SQL is NULL, you need to configure mapper.provider.cacheSql.useOnce=false");
                 }
-                cache.getTableMeta().initRuntimeContext(configuration, cache.getProviderContext(), k);
+                cache.getTableMeta().initRuntimeContext(configuration, cache.getContext(), k);
                 MappedStatement ms = configuration.getMappedStatement(k);
-                Registry.SPI.customize(cache.getTableMeta(), ms, cache.getProviderContext());
+                Registry.SPI.customize(cache.getTableMeta(), ms, cache.getContext());
 
                 // Check if this is dynamic SQL (depends on dialect)
                 if (cache.isDynamic()) {
@@ -208,7 +207,7 @@ public class Caching extends XMLLanguageDriver {
                     }
                     SqlSource sqlSource = super.createSqlSource(configuration, sqlScript, parameterType);
                     sqlSource = SqlSourceEnhancer.SPI
-                            .customize(sqlSource, cache.getTableMeta(), ms, cache.getProviderContext());
+                            .customize(sqlSource, cache.getTableMeta(), ms, cache.getContext());
                     if (USE_ONCE) {
                         CACHE_SQL.put(k, SqlMetaCache.NULL);
                     }

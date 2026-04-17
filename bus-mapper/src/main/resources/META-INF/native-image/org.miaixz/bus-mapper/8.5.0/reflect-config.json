@@ -66,28 +66,6 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.Locale",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.mapper.Locale$Language",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
     "name": "org.miaixz.bus.mapper.Mapper",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,

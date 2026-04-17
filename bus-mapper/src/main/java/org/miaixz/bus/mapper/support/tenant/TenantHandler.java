@@ -29,6 +29,7 @@ import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -91,10 +92,7 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
      * @param config the tenant configuration from file
      */
     public TenantHandler(TenantConfig config) {
-        if (config == null) {
-            throw new IllegalArgumentException("TenantConfig cannot be null");
-        }
-        this.config = config;
+        this.config = Assert.notNull(config, "TenantConfig cannot be null");
     }
 
     /**

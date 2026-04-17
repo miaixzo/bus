@@ -19,10 +19,13 @@
 */
 package org.miaixz.bus.mapper.provider;
 
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.builder.annotation.ProviderContext;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.mapper.dialect.Dialect;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
@@ -110,11 +113,13 @@ public class BatchProvider extends BasicProvider {
      * &lt;/foreach&gt;
      * </pre>
      *
-     * @param providerContext Provider context
+     * @param context Provider context
+     * @param list    Batch entities, must not be null or empty
      * @return SQL statement with foreach tags
      */
-    public static String insertBatch(ProviderContext providerContext) {
-        return cacheSql(providerContext, BatchProvider::insertBatch);
+    public static String insertBatch(ProviderContext context, @Param("list") List<?> list) {
+        Assert.notEmpty(list, "Parameter cannot be empty");
+        return cacheSql(context, BatchProvider::insertBatch);
     }
 
     /**
@@ -146,11 +151,13 @@ public class BatchProvider extends BasicProvider {
      * <p>
      * The SQL is generated dynamically at runtime based on the current datasource's dialect.
      *
-     * @param providerContext Provider context containing entity metadata
+     * @param context Provider context containing entity metadata
+     * @param list    Batch entities, must not be null or empty
      * @return SQL statement with foreach tags for batch UPSERT
      */
-    public static String insertUpBatch(ProviderContext providerContext) {
-        return cacheSqlDynamic(providerContext, BatchProvider::insertUpBatch);
+    public static String insertUpBatch(ProviderContext context, @Param("list") List<?> list) {
+        Assert.notEmpty(list, "Parameter cannot be empty");
+        return cacheSqlDynamic(context, BatchProvider::insertUpBatch);
     }
 
     /**
@@ -175,11 +182,13 @@ public class BatchProvider extends BasicProvider {
      * &lt;/foreach&gt;
      * </pre>
      *
-     * @param providerContext Provider context
+     * @param context Provider context
+     * @param list    Batch entities, must not be null or empty
      * @return SQL statement
      */
-    public static String insertSelectiveBatch(ProviderContext providerContext) {
-        return cacheSqlDynamic(providerContext, BatchProvider::insertSelectiveBatch);
+    public static String insertSelectiveBatch(ProviderContext context, @Param("list") List<?> list) {
+        Assert.notEmpty(list, "Parameter cannot be empty");
+        return cacheSqlDynamic(context, BatchProvider::insertSelectiveBatch);
     }
 
     /**
@@ -190,11 +199,13 @@ public class BatchProvider extends BasicProvider {
      * UPSERT SQL. Other dialects must use JDBC batch fallback at the service layer.
      * </p>
      *
-     * @param providerContext Provider context
+     * @param context Provider context
+     * @param list    Batch entities, must not be null or empty
      * @return SQL statement
      */
-    public static String insertUpSelectiveBatch(ProviderContext providerContext) {
-        return cacheSqlDynamic(providerContext, BatchProvider::insertUpSelectiveBatch);
+    public static String insertUpSelectiveBatch(ProviderContext context, @Param("list") List<?> list) {
+        Assert.notEmpty(list, "Parameter cannot be empty");
+        return cacheSqlDynamic(context, BatchProvider::insertUpSelectiveBatch);
     }
 
     /**

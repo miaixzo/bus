@@ -46,11 +46,11 @@ public class LogicalProvider {
     /**
      * Selects records that are not logically deleted based on entity field conditions.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String select(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext, new LogicalSqlScript() {
+    public static String select(ProviderContext context) {
+        return SqlScript.caching(context, new LogicalSqlScript() {
 
             /**
              * Generates SQL for selecting records that are not logically deleted.
@@ -74,11 +74,11 @@ public class LogicalProvider {
      * Selects records that are not logically deleted based on entity field conditions, with dynamic selection of query
      * fields.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String selectColumns(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext, new LogicalSqlScript() {
+    public static String selectColumns(ProviderContext context) {
+        return SqlScript.caching(context, new LogicalSqlScript() {
 
             /**
              * Generates SQL for selecting columns with dynamic field selection.
@@ -114,11 +114,11 @@ public class LogicalProvider {
     /**
      * Selects records that are not logically deleted based on a Condition object.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String selectByCondition(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext, new LogicalSqlScript() {
+    public static String selectByCondition(ProviderContext context) {
+        return SqlScript.caching(context, new LogicalSqlScript() {
 
             /**
              * Generates SQL for selecting records based on a Condition object.
@@ -150,11 +150,11 @@ public class LogicalProvider {
     /**
      * Counts the total number of records that are not logically deleted based on a Condition object.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String countByCondition(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext, new LogicalSqlScript() {
+    public static String countByCondition(ProviderContext context) {
+        return SqlScript.caching(context, new LogicalSqlScript() {
 
             /**
              * Generates SQL for counting records based on a Condition object.
@@ -186,11 +186,11 @@ public class LogicalProvider {
     /**
      * Selects a record that is not logically deleted by its primary key.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String selectByPrimaryKey(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext, new LogicalSqlScript() {
+    public static String selectByPrimaryKey(ProviderContext context) {
+        return SqlScript.caching(context, new LogicalSqlScript() {
 
             /**
              * Generates SQL for selecting a record by primary key.
@@ -212,11 +212,11 @@ public class LogicalProvider {
     /**
      * Counts the total number of records that are not logically deleted based on entity field conditions.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String selectCount(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext, new LogicalSqlScript() {
+    public static String selectCount(ProviderContext context) {
+        return SqlScript.caching(context, new LogicalSqlScript() {
 
             /**
              * Generates SQL for counting records based on entity conditions.
@@ -237,11 +237,11 @@ public class LogicalProvider {
     /**
      * Batch updates non-logically deleted entity information based on a Condition object, updating all fields.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String updateByCondition(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext, new LogicalSqlScript() {
+    public static String updateByCondition(ProviderContext context) {
+        return SqlScript.caching(context, new LogicalSqlScript() {
 
             /**
              * Generates SQL for updating all fields by Condition.
@@ -274,11 +274,11 @@ public class LogicalProvider {
     /**
      * Batch updates non-logically deleted entity non-null fields based on a Condition object.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String updateByConditionSelective(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext, new LogicalSqlScript() {
+    public static String updateByConditionSelective(ProviderContext context) {
+        return SqlScript.caching(context, new LogicalSqlScript() {
 
             /**
              * Generates SQL for updating non-null fields by Condition.
@@ -314,11 +314,11 @@ public class LogicalProvider {
     /**
      * Batch updates non-logically deleted entity information based on a Condition object, using specified set values.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String updateByConditionSetValues(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext, new LogicalSqlScript() {
+    public static String updateByConditionSetValues(ProviderContext context) {
+        return SqlScript.caching(context, new LogicalSqlScript() {
 
             /**
              * Generates SQL for updating with specified set values by Condition.
@@ -348,11 +348,11 @@ public class LogicalProvider {
     /**
      * Updates all fields of a non-logically deleted entity by its primary key.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String updateByPrimaryKey(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext, new LogicalSqlScript() {
+    public static String updateByPrimaryKey(ProviderContext context) {
+        return SqlScript.caching(context, new LogicalSqlScript() {
 
             /**
              * Generates SQL for updating all fields by primary key.
@@ -376,11 +376,11 @@ public class LogicalProvider {
     /**
      * Updates non-null fields of a non-logically deleted entity by its primary key.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String updateByPrimaryKeySelective(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext, new LogicalSqlScript() {
+    public static String updateByPrimaryKeySelective(ProviderContext context) {
+        return SqlScript.caching(context, new LogicalSqlScript() {
 
             /**
              * Generates SQL for updating non-null fields by primary key.
@@ -410,11 +410,11 @@ public class LogicalProvider {
      * Updates non-null fields of a non-logically deleted entity by its primary key, and forcibly updates specified
      * fields (regardless of nullness).
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String updateByPrimaryKeySelectiveWithForceFields(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext, new LogicalSqlScript() {
+    public static String updateByPrimaryKeySelectiveWithForceFields(ProviderContext context) {
+        return SqlScript.caching(context, new LogicalSqlScript() {
 
             /**
              * Generates SQL for updating non-null fields with forced fields by primary key.
@@ -446,11 +446,11 @@ public class LogicalProvider {
     /**
      * Logically deletes records in batch based on entity field conditions.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String delete(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext, new LogicalSqlScript() {
+    public static String delete(ProviderContext context) {
+        return SqlScript.caching(context, new LogicalSqlScript() {
 
             /**
              * Generates SQL for logically deleting records by conditions.
@@ -478,11 +478,11 @@ public class LogicalProvider {
     /**
      * Logically deletes a record by its primary key.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String deleteByPrimaryKey(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext, new LogicalSqlScript() {
+    public static String deleteByPrimaryKey(ProviderContext context) {
+        return SqlScript.caching(context, new LogicalSqlScript() {
 
             /**
              * Generates SQL for logically deleting a record by primary key.
@@ -504,11 +504,11 @@ public class LogicalProvider {
     /**
      * Logically deletes records in batch based on a Condition object.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String deleteByCondition(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext, new LogicalSqlScript() {
+    public static String deleteByCondition(ProviderContext context) {
+        return SqlScript.caching(context, new LogicalSqlScript() {
 
             /**
              * Generates SQL for logically deleting records by Condition.

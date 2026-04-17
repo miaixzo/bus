@@ -38,11 +38,11 @@ public class FunctionProvider {
      * Updates non-null fields of an entity by its primary key, and forcibly updates specified fields (regardless of
      * nullness).
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String updateByPrimaryKeySelectiveWithForceFields(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext, new SqlScript() {
+    public static String updateByPrimaryKeySelectiveWithForceFields(ProviderContext context) {
+        return SqlScript.caching(context, new SqlScript() {
 
             @Override
             public String getSql(TableMeta entity) {
@@ -67,11 +67,11 @@ public class FunctionProvider {
     /**
      * Updates a specified list of fields by the primary key.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String updateForFieldListByPrimaryKey(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext, new SqlScript() {
+    public static String updateForFieldListByPrimaryKey(ProviderContext context) {
+        return SqlScript.caching(context, new SqlScript() {
 
             @Override
             public String getSql(TableMeta entity) {
@@ -95,11 +95,11 @@ public class FunctionProvider {
      * Selects a single entity or a batch of entities based on entity field conditions, with support for dynamic
      * selection of query fields. The number of results is defined by the method.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String selectColumns(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext, new SqlScript() {
+    public static String selectColumns(ProviderContext context) {
+        return SqlScript.caching(context, new SqlScript() {
 
             @Override
             public String getSql(TableMeta entity) {

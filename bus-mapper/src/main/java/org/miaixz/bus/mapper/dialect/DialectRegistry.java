@@ -30,6 +30,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.sql.DataSource;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.Holder;
@@ -153,9 +154,7 @@ public final class DialectRegistry {
      * @param dialect the dialect to register
      */
     public static synchronized void registerDialect(Dialect dialect) {
-        if (dialect == null) {
-            throw new IllegalArgumentException("Dialect cannot be null");
-        }
+        Assert.notNull(dialect, "Dialect cannot be null");
         // Add at the beginning for priority
         DIALECTS.add(0, dialect);
     }

@@ -24,13 +24,13 @@ import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.MapperException;
@@ -195,9 +195,7 @@ public class OGNL {
      * @throws RuntimeException if the reflection operation fails.
      */
     public static ClassField fnToFieldName(Fn<?, ?> fn) {
-        if (fn == null) {
-            throw new IllegalArgumentException("Function cannot be null");
-        }
+        Assert.notNull(fn, "Function cannot be null");
 
         // Use cache to avoid repeated Lambda serialization operations
         return LAMBDA_CACHE.computeIfAbsent(fn, f -> {
@@ -427,7 +425,7 @@ public class OGNL {
      * @throws NullPointerException if text is null.
      */
     public static String removeEscapeCharacter(String text) {
-        Objects.requireNonNull(text);
+        Assert.notNull(text, "Text cannot be null");
         return text.replaceAll("\"", "").replaceAll("'", "");
     }
 

@@ -22,6 +22,8 @@ package org.miaixz.bus.mapper.support.prefix;
 import java.util.Collections;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Assert;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -89,7 +91,7 @@ public class TablePrefixConfig {
      * @return a TablePrefixConfig instance
      */
     public static TablePrefixConfig of(TablePrefixProvider provider) {
-        return builder().provider(provider).build();
+        return builder().provider(Assert.notNull(provider, "TablePrefixProvider cannot be null")).build();
     }
 
 }

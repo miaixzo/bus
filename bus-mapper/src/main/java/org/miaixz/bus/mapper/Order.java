@@ -23,6 +23,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Normal;
 
@@ -117,9 +118,7 @@ public interface Order extends org.miaixz.bus.core.Order {
      * @throws IllegalArgumentException if directionCode is invalid
      */
     static Order of(String property, String directionCode) {
-        if (!propertyIsValid(property)) {
-            throw new IllegalArgumentException("Property cannot be null or empty");
-        }
+        Assert.notBlank(property, "Property cannot be null or empty");
 
         EnumValue.Sort direction = "DESC".equalsIgnoreCase(directionCode) ? EnumValue.Sort.DESC : EnumValue.Sort.ASC;
         return new SimpleOrder(direction, property);
@@ -238,7 +237,7 @@ public interface Order extends org.miaixz.bus.core.Order {
          * @param property  the property to sort by
          */
         public SimpleOrder(EnumValue.Sort direction, String property) {
-            this.direction = Objects.requireNonNull(direction, "Direction cannot be null");
+            this.direction = Assert.notNull(direction, "Direction cannot be null");
             this.property = property != null ? property : "";
         }
 

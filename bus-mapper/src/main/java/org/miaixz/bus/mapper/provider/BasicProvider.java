@@ -60,12 +60,12 @@ public abstract class BasicProvider {
      * function.
      * </p>
      *
-     * @param providerContext Provider context
-     * @param sqlBuilder      SQL building function
+     * @param context    Provider context
+     * @param sqlBuilder SQL building function
      * @return Cache key
      */
-    protected static String cacheSql(ProviderContext providerContext, Function<TableMeta, String> sqlBuilder) {
-        return SqlScript.caching(providerContext, entity -> sqlBuilder.apply(entity));
+    protected static String cacheSql(ProviderContext context, Function<TableMeta, String> sqlBuilder) {
+        return SqlScript.caching(context, entity -> sqlBuilder.apply(entity));
     }
 
     /**
@@ -76,14 +76,14 @@ public abstract class BasicProvider {
      * SQL is not generated at cache time, but rather at execution time when the dialect is known.
      * </p>
      *
-     * @param providerContext Provider context
-     * @param sqlBuilder      SQL building function that accepts Dialect parameter
+     * @param context    Provider context
+     * @param sqlBuilder SQL building function that accepts Dialect parameter
      * @return Cache key
      */
     protected static String cacheSqlDynamic(
-            ProviderContext providerContext,
+            ProviderContext context,
             Function<TableMeta, Function<Dialect, String>> sqlBuilder) {
-        return SqlScript.cachingDynamic(providerContext, (entity, dialect) -> sqlBuilder.apply(entity).apply(dialect));
+        return SqlScript.cachingDynamic(context, (entity, dialect) -> sqlBuilder.apply(entity).apply(dialect));
     }
 
     /**
