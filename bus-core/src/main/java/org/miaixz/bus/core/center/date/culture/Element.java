@@ -51,10 +51,22 @@ public class Element extends Samsara {
         super(NAMES, name);
     }
 
+    /**
+     * Constructs an element from a custom element-name array and index.
+     *
+     * @param names the element names
+     * @param index the index in the provided array
+     */
     protected Element(String[] names, int index) {
         super(names, index);
     }
 
+    /**
+     * Constructs an element from a custom element-name array and name.
+     *
+     * @param names the element names
+     * @param name the element name
+     */
     protected Element(String[] names, String name) {
         super(names, name);
     }

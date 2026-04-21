@@ -127,6 +127,13 @@ public class DefaultMonitor implements Monitor {
      */
     private final AtomicLong dbDurationNs = new AtomicLong(0);
 
+    /**
+     * Records a cache access and updates hit or miss counters.
+     *
+     * @param key           cache key
+     * @param hit           whether the lookup hit the cache
+     * @param durationNanos lookup duration in nanoseconds
+     */
     @Override
     public void access(String key, boolean hit, long durationNanos) {
         if (hit) {
@@ -138,6 +145,12 @@ public class DefaultMonitor implements Monitor {
         }
     }
 
+    /**
+     * Records a gateway request outcome and its total duration.
+     *
+     * @param duration request duration
+     * @param success  whether the request completed successfully
+     */
     @Override
     public void request(Duration duration, boolean success) {
         requestCount.incrementAndGet();
@@ -150,6 +163,13 @@ public class DefaultMonitor implements Monitor {
         }
     }
 
+    /**
+     * Records a backend or database operation observed during request processing.
+     *
+     * @param type     operation category
+     * @param duration operation duration
+     * @param rowCount affected row count or item count
+     */
     @Override
     public void operation(String type, Duration duration, int rowCount) {
         dbOperationCount.incrementAndGet();
@@ -158,6 +178,11 @@ public class DefaultMonitor implements Monitor {
         Logger.debug(true, "Operation", "type={}, duration={}ms, rows={}", type, duration.toMillis(), rowCount);
     }
 
+    /**
+     * Builds a snapshot of the current in-memory monitoring counters.
+     *
+     * @return aggregated metrics snapshot
+     */
     @Override
     public Metrics getSummary() {
         long requests = requestCount.get();
@@ -181,6 +206,9 @@ public class DefaultMonitor implements Monitor {
                 .avgDbDurationMs(dbOps > 0 ? dbNs / 1_000_000.0 / dbOps : 0).build();
     }
 
+    /**
+     * Resets all counters maintained by this in-memory monitor.
+     */
     @Override
     public void reset() {
         requestCount.set(0);

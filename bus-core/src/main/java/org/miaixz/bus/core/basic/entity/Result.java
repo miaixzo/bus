@@ -26,7 +26,6 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -40,7 +39,6 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
 @AllArgsConstructor
 public class Result<T> implements Serializable {
 
@@ -65,6 +63,12 @@ public class Result<T> implements Serializable {
      * The number of records per page for pagination.
      */
     protected transient Integer pageSize;
+
+    /**
+     * Constructs an empty query result.
+     */
+    public Result() {
+    }
 
     /**
      * Retrieves a sublist of data for a specific page number.

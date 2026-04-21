@@ -38,6 +38,12 @@ public class StackTraceCaller implements Caller, Serializable {
     private static final long serialVersionUID = 2852251293153L;
 
     /**
+     * Constructs a stack-trace-based caller resolver.
+     */
+    public StackTraceCaller() {
+    }
+
+    /**
      * The offset in the stack trace to account for internal method calls within this class and
      * {@link Thread#getStackTrace()}.
      */

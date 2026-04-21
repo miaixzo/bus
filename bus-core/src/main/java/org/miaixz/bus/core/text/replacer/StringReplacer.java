@@ -38,6 +38,12 @@ public abstract class StringReplacer implements UnaryOperator<CharSequence>, Ser
     private static final long serialVersionUID = 2852239827580L;
 
     /**
+     * Constructs a string replacer.
+     */
+    protected StringReplacer() {
+    }
+
+    /**
      * Abstract method to perform a partial string replacement. This method defines the logic for replacing a portion of
      * the input text.
      *

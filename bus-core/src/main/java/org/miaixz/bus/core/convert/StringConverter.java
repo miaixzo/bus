@@ -44,6 +44,12 @@ public class StringConverter extends AbstractConverter {
     private static final long serialVersionUID = 2852271992351L;
 
     /**
+     * Constructs a new string converter.
+     */
+    public StringConverter() {
+    }
+
+    /**
      * Custom string conversion rules keyed by the target source type.
      */
     private Map<Class<?>, Function<Object, String>> stringer;

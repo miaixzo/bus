@@ -58,6 +58,13 @@ import org.miaixz.bus.core.text.StringTrimer;
 public class ReflectKit {
 
     /**
+     * Constructs a new reflection utility instance.
+     */
+    public ReflectKit() {
+
+    }
+
+    /**
      * JVM type descriptor for void (V).
      */
     public static final char JVM_VOID = 'V';

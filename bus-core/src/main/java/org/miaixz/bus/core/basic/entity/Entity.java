@@ -22,14 +22,13 @@ package org.miaixz.bus.core.basic.entity;
 import java.io.Serial;
 import java.io.Serializable;
 
+import lombok.Setter;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.FieldKit;
 
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
@@ -41,12 +40,18 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
 @AllArgsConstructor
 public class Entity implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 2852290719680L;
+
+    /**
+     * Constructs an empty entity.
+     */
+    public Entity() {
+
+    }
 
     /**
      * The primary key of the data.

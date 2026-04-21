@@ -22,7 +22,6 @@ package org.miaixz.bus.core.basic.entity;
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -41,7 +40,6 @@ import java.io.Serial;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
 @AllArgsConstructor
 public class Query extends Lifecycle {
 
@@ -77,5 +75,11 @@ public class Query extends Lifecycle {
      */
     @Transient
     protected String orderBy;
+
+    /**
+     * Constructs an empty query entity.
+     */
+    public Query() {
+    }
 
 }

@@ -40,6 +40,13 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class RuntimeKit {
 
     /**
+     * Constructs a new runtime utility instance.
+     */
+    public RuntimeKit() {
+
+    }
+
+    /**
      * Executes a system command using the default system character set.
      *
      * @param cmds The commands to execute.

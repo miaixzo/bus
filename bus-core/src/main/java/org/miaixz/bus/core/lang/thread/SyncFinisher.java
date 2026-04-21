@@ -286,6 +286,12 @@ public class SyncFinisher implements Closeable {
     public abstract class Worker implements Runnable {
 
         /**
+         * Constructs a worker.
+         */
+        public Worker() {
+        }
+
+        /**
          * Executes the worker's task. If {@code isBeginAtSameTime} is true, this method waits for the
          * {@code beginLatch} to count down before executing the {@code work()} method. After the work is done, it
          * decrements the {@code endLatch}.

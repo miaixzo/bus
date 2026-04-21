@@ -32,6 +32,13 @@ import org.miaixz.bus.core.lang.Assert;
 public class RotateN {
 
     /**
+     * Constructs a new RotN codec.
+     */
+    public RotateN() {
+
+    }
+
+    /**
      * Represents the character 'a', used as a reference for lowercase letters.
      */
     private static final char aCHAR = 'a';

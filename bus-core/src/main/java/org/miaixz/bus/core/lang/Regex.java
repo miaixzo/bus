@@ -30,6 +30,13 @@ import java.util.regex.Pattern;
 public class Regex {
 
     /**
+     * Constructs a new regular expression constants holder.
+     */
+    public Regex() {
+
+    }
+
+    /**
      * Matches English letters, numbers, and underscores.
      */
     public static final String GENERAL = "^\\w+$";

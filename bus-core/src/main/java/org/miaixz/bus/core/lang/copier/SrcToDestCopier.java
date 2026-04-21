@@ -39,6 +39,12 @@ public abstract class SrcToDestCopier<T, C extends SrcToDestCopier<T, C>> implem
     private static final long serialVersionUID = 2852251585211L;
 
     /**
+     * Constructs a source-to-destination copier.
+     */
+    protected SrcToDestCopier() {
+    }
+
+    /**
      * The source object from which data will be copied.
      */
     protected T src;

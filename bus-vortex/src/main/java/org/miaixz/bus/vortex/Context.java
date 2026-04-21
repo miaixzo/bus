@@ -166,30 +166,65 @@ public class Context extends Tracer {
         this.query.replaceAll(values);
     }
 
+    /**
+     * Replaces uploaded multipart parts for the current request.
+     *
+     * @param fileParts multipart parts keyed by field name
+     */
     public void setFileParts(Map<String, Part> fileParts) {
         this.fileParts = fileParts;
     }
 
+    /**
+     * Sets the preferred response format resolved for the request.
+     *
+     * @param format negotiated response format
+     */
     public void setFormat(Formats format) {
         this.format = format;
     }
 
+    /**
+     * Sets the access channel resolved from the request metadata.
+     *
+     * @param channel request channel
+     */
     public void setChannel(Channel channel) {
         this.channel = channel;
     }
 
+    /**
+     * Stores the bearer token or API key extracted from the request.
+     *
+     * @param bearer bearer credential value
+     */
     public void setBearer(String bearer) {
         this.bearer = bearer;
     }
 
+    /**
+     * Stores the matched route asset for downstream processing.
+     *
+     * @param assets resolved route asset
+     */
     public void setAssets(Assets assets) {
         this.assets = assets;
     }
 
+    /**
+     * Stores the request start timestamp in milliseconds.
+     *
+     * @param timestamp request start time
+     */
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
+    /**
+     * Stores the incoming HTTP method.
+     *
+     * @param httpMethod request HTTP method
+     */
     public void setHttpMethod(HttpMethod httpMethod) {
         this.httpMethod = httpMethod;
     }

@@ -31,16 +31,20 @@ import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.RecordKit;
 
 /**
- * Converter for Record classes, supporting:
- *
- * <pre>
- *   Map = Record
- *   Bean = Record
- *   ValueProvider = Record
- * </pre>
+ * Converter for {@code Record} classes.
+ * <p>
+ * Supported source types are:
+ * </p>
+ * <ul>
+ * <li>{@link Map}</li>
+ * <li>JavaBean readable by {@link BeanKit#isReadableBean(Class)}</li>
+ * <li>{@link ValueProvider}</li>
+ * </ul>
+ * <p>
+ * The target record instance is created through {@link RecordKit#newInstance(Class, ValueProvider)}.
+ * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RecordConverter extends AbstractConverter implements MatcherConverter {
 
@@ -48,17 +52,17 @@ public class RecordConverter extends AbstractConverter implements MatcherConvert
     private static final long serialVersionUID = 2852271152563L;
 
     /**
-     * Singleton instance
+     * Singleton instance.
      */
     public static RecordConverter INSTANCE = new RecordConverter();
 
     /**
-     * Checks if this converter can handle the conversion to the specified target type.
+     * Determines whether the specified target type is a record type.
      *
      * @param targetType the target type
      * @param rawType    the raw class of the target type
-     * @param value      the value to be converted
-     * @return {@code true} if the target type is a Record class
+     * @param value      the source value
+     * @return {@code true} if {@code rawType} is a record type, otherwise {@code false}
      */
     @Override
     public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
@@ -66,15 +70,16 @@ public class RecordConverter extends AbstractConverter implements MatcherConvert
     }
 
     /**
-     * Converts the given value to a Record instance.
+     * Converts the specified value to an instance of the target record class.
      * <p>
-     * Supports conversion from Map, Bean, and ValueProvider.
+     * Supported source values are {@link Map}, JavaBean readable by {@link BeanKit#isReadableBean(Class)}, and
+     * {@link ValueProvider}.
      * </p>
      *
-     * @param targetClass the target Record class
-     * @param value       the value to convert (Map, Bean, or ValueProvider)
-     * @return the created Record instance
-     * @throws ConvertException if the source type is not supported
+     * @param targetClass the target record class
+     * @param value       the source value to convert
+     * @return the created record instance
+     * @throws ConvertException if the source value type is not supported
      */
     @Override
     protected Object convertInternal(final Class<?> targetClass, final Object value) {

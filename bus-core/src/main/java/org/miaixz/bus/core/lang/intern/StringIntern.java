@@ -30,6 +30,12 @@ package org.miaixz.bus.core.lang.intern;
 public class StringIntern implements Intern<String> {
 
     /**
+     * Constructs a new string interner.
+     */
+    public StringIntern() {
+    }
+
+    /**
      * Returns the canonical representation for the given string. This method delegates to {@link String#intern()} to
      * return a canonical string. If the {@code sample} string is {@code null}, this method returns {@code null}.
      *

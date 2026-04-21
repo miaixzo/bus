@@ -40,6 +40,12 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class StringFormatter {
 
     /**
+     * Constructs a new string formatter.
+     */
+    public StringFormatter() {
+    }
+
+    /**
      * Cache for compiled {@link StringTemplate} instances. The cache uses a weak-concurrent map to store templates,
      * preventing memory leaks when templates are no longer referenced. The key is a combination of the template pattern
      * and the placeholder (for single placeholder templates) or a flag for named placeholders.

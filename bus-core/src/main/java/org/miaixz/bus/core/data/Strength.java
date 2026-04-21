@@ -32,6 +32,12 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Strength {
 
     /**
+     * Constructs a new password strength checker.
+     */
+    public Strength() {
+    }
+
+    /**
      * Simple password dictionary.
      */
     private static final String[] DICTIONARY = { "password", "abc123", "iloveyou", "adobe123", "123123", "sunshine",

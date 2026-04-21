@@ -23,7 +23,6 @@ import java.io.Serial;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -36,7 +35,6 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
 @AllArgsConstructor
 public class Scope extends Tracer {
 
@@ -47,5 +45,11 @@ public class Scope extends Tracer {
      * Namespace scope shared by derived entities.
      */
     protected String namespace;
+
+    /**
+     * Constructs an empty scoped entity.
+     */
+    public Scope() {
+    }
 
 }

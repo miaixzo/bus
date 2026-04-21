@@ -139,21 +139,51 @@ public class Args {
     public static final String DEFAULT_VERSION = "1.0";
 
     /**
+     * Route mode for HTTP assets.
+     */
+    public static final int MODE_HTTP = 1;
+
+    /**
+     * Route mode for MQ assets.
+     */
+    public static final int MODE_MQ = 2;
+
+    /**
+     * Route mode for MCP assets.
+     */
+    public static final int MODE_MCP = 3;
+
+    /**
+     * Route mode for gRPC assets.
+     */
+    public static final int MODE_GRPC = 4;
+
+    /**
+     * Route mode for WebSocket assets.
+     */
+    public static final int MODE_WS = 5;
+
+    /**
+     * Route mode for LLM assets.
+     */
+    public static final int MODE_LLM = 6;
+
+    /**
      * Pre-built mapping table for mode to router key. Using static map for O(1) lookup instead of switch expression
      * evaluation on every request.
      */
     public static final Map<Integer, String> MODE_TO_ROUTER = Map.of(
-            1,
+            MODE_HTTP,
             Protocol.HTTP.getName(),
-            2,
+            MODE_MQ,
             Protocol.MQ.getName(),
-            3,
+            MODE_MCP,
             Protocol.MCP.getName(),
-            4,
+            MODE_GRPC,
             Protocol.GRPC.getName(),
-            5,
+            MODE_WS,
             Protocol.WS.getName(),
-            6,
+            MODE_LLM,
             "llm");
 
     /**

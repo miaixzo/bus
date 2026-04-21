@@ -35,6 +35,13 @@ import org.miaixz.bus.core.lang.thread.RetryableTask;
 public class RetryKit {
 
     /**
+     * Constructs a new retry utility instance.
+     */
+    public RetryKit() {
+
+    }
+
+    /**
      * Retries a task based on specified exceptions. This method has no return value.
      *
      * @param run         The task to execute.

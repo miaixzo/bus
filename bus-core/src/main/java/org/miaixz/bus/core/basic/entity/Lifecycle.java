@@ -25,7 +25,6 @@ import org.miaixz.bus.core.lang.annotation.Logical;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -42,12 +41,18 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
 @AllArgsConstructor
 public class Lifecycle extends Entity {
 
     @Serial
     private static final long serialVersionUID = 2852290719630L;
+
+    /**
+     * Constructs an empty lifecycle entity.
+     */
+    public Lifecycle() {
+
+    }
 
     /**
      * Data status:
