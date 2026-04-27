@@ -59,6 +59,9 @@ import reactor.core.scheduler.Schedulers;
  */
 public class ManageProvider implements ProcessProvider, MetricsProvider {
 
+    /**
+     * Managed process handles keyed by service identifier.
+     */
     private final ConcurrentMap<String, Process> processMap = new ConcurrentHashMap<>();
 
     /**
@@ -240,7 +243,6 @@ public class ManageProvider implements ProcessProvider, MetricsProvider {
                 return Metrics.builder().cpu(0).memory(0).build();
             }
 
-            // Calculate average CPU load over the process uptime
             double cpuLoad = 100d * (osProcess.getKernelTime() + osProcess.getUserTime()) / osProcess.getUpTime();
             long memoryUsage = osProcess.getResidentMemory();
 

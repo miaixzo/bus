@@ -26,6 +26,7 @@ import org.miaixz.bus.limiter.Supplier;
 import org.miaixz.bus.limiter.metric.FallbackProvider;
 import org.miaixz.bus.limiter.metric.MethodProvider;
 import org.miaixz.bus.limiter.metric.RequestProvider;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
@@ -50,6 +51,7 @@ public class LimiterConfiguration {
      * @return A new {@link LimiterService} instance.
      */
     @Bean
+    @ConditionalOnMissingBean(LimiterService.class)
     public LimiterService limiterService() {
         return new LimiterService(this.properties);
     }
@@ -63,6 +65,7 @@ public class LimiterConfiguration {
      * @return A configured {@link RequestProvider} instance.
      */
     @Bean
+    @ConditionalOnMissingBean(RequestProvider.class)
     public RequestProvider requestProvider() {
         RequestProvider strategy = new RequestProvider();
         String implClassName = this.properties.getSupplier();
@@ -83,6 +86,7 @@ public class LimiterConfiguration {
      * @return A new {@link FallbackProvider} instance.
      */
     @Bean
+    @ConditionalOnMissingBean(FallbackProvider.class)
     public FallbackProvider fallbackProvider() {
         return new FallbackProvider();
     }
@@ -93,6 +97,7 @@ public class LimiterConfiguration {
      * @return A new {@link MethodProvider} instance.
      */
     @Bean
+    @ConditionalOnMissingBean(MethodProvider.class)
     public MethodProvider methodProvider() {
         return new MethodProvider();
     }
@@ -104,6 +109,7 @@ public class LimiterConfiguration {
      * @return A new {@link LimiterScanner} instance.
      */
     @Bean
+    @ConditionalOnMissingBean(LimiterScanner.class)
     public LimiterScanner scanner() {
         return new LimiterScanner();
     }

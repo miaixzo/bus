@@ -22,8 +22,8 @@ package org.miaixz.bus.core.basic.entity;
 import java.io.Serial;
 
 import jakarta.persistence.Transient;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -36,18 +36,11 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-@AllArgsConstructor
+@NoArgsConstructor
 public class Authorize extends Query {
 
     @Serial
     private static final long serialVersionUID = 2852290950589L;
-
-    /**
-     * Constructs an empty authorization entity.
-     */
-    public Authorize() {
-
-    }
 
     /**
      * The identifier for the current tenant.
@@ -60,6 +53,18 @@ public class Authorize extends Query {
      */
     @Transient
     protected String x_tenant_name;
+
+    /**
+     * The identifier for the current namespace.
+     */
+    @Transient
+    protected String x_namespace_id;
+
+    /**
+     * The name of the current namespace.
+     */
+    @Transient
+    protected String x_namespace_name;
 
     /**
      * The identifier for the current user.

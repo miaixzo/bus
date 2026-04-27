@@ -76,7 +76,6 @@ public class McpRouter implements Router<ServerRequest, ServerResponse> {
     @Override
     public Mono<ServerResponse> route(ServerRequest input) {
         ServerRequest request = input;
-        // This logic is synchronous, fast, and non-blocking.
         String action = request.queryParam("action").orElse("listTools");
         if ("listTools".equalsIgnoreCase(action)) {
             return listTools();
@@ -109,7 +108,6 @@ public class McpRouter implements Router<ServerRequest, ServerResponse> {
             final Context context = contextView.get(Context.class);
             final Assets assets = context.getAssets();
 
-            // --- Parse tool name and arguments (fast, in-memory, non-blocking) ---
             String prefixedToolName = request.queryParam("toolName").orElse(null);
             if (StringKit.isEmpty(prefixedToolName)) {
                 return ServerResponse.badRequest().bodyValue("Missing required parameter: toolName");
@@ -124,13 +122,10 @@ public class McpRouter implements Router<ServerRequest, ServerResponse> {
             String serviceName = parts[0];
             String actualToolName = parts[1];
 
-            // Extract all query parameters as arguments, excluding action and toolName.
             Map<String, Object> arguments = request.queryParams().toSingleValueMap().entrySet().stream()
                     .filter(entry -> !entry.getKey().equals("action") && !entry.getKey().equals("toolName"))
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-            // --- End of parsing ---
 
-            // Delegate to executor
             return this.executor.callToolAndFormat(serviceName, actualToolName, arguments, assets.getStream());
         });
     }

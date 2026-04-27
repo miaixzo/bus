@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.core.basic.entity;
 
+import java.io.Serial;
+
 import jakarta.persistence.Transient;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
-import java.io.Serial;
 
 /**
  * Base class for query entities with pagination and sorting capabilities.
@@ -40,7 +40,7 @@ import java.io.Serial;
 @Getter
 @Setter
 @SuperBuilder
-@AllArgsConstructor
+@NoArgsConstructor
 public class Query extends Lifecycle {
 
     @Serial
@@ -75,11 +75,5 @@ public class Query extends Lifecycle {
      */
     @Transient
     protected String orderBy;
-
-    /**
-     * Constructs an empty query entity.
-     */
-    public Query() {
-    }
 
 }

@@ -28,6 +28,8 @@ import org.miaixz.bus.image.Efforts;
 import org.miaixz.bus.image.Node;
 import org.miaixz.bus.image.nimble.opencv.OpenCVNativeLoader;
 import org.miaixz.bus.image.plugin.StoreSCP;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
@@ -60,52 +62,46 @@ public class ImageConfiguration {
      * Creates and configures the DICOM Store SCP bean, represented by the {@link Centre} class.
      * <p>
      * The bean's lifecycle is managed by Spring, with its {@code start} and {@code stop} methods called automatically.
-     * The server is only created if {@code bus.image.server} is enabled.
+     * The server is only created if {@code bus.image.server=true}.
      * </p>
      *
-     * @return A configured {@link Centre} instance, or {@code null} if the server is disabled.
+     * @return A configured {@link Centre} instance.
      * @throws NullPointerException if essential server properties (aeTitle, host, port) are missing.
      */
     @Bean(initMethod = "start", destroyMethod = "stop")
+    @ConditionalOnMissingBean(Centre.class)
+    @ConditionalOnProperty(prefix = "bus.image", name = "server", havingValue = "true")
     public Centre onStoreSCP() {
         if (this.properties.isOpencv()) {
             new OpenCVNativeLoader().init();
         }
-        if (this.properties.isServer()) {
-            if (StringKit.isEmpty(this.properties.getNode().getAeTitle())) {
-                throw new NullPointerException("The aeTitle cannot be null.");
-            }
-            if (StringKit.isEmpty(this.properties.getNode().getHost())) {
-                throw new NullPointerException("The host cannot be null.");
-            }
-            if (StringKit.isEmpty(this.properties.getNode().getPort())) {
-                throw new NullPointerException("The port cannot be null.");
-            }
-            Args args = new Args();
-            if (StringKit.isNotEmpty(this.properties.getNode().getSopClasses())) {
-                args.setSopClasses(
-                        ResourceKit
-                                .getResourceUrl(this.properties.getNode().getSopClasses(), ImageConfiguration.class));
-            }
-            if (StringKit.isNotEmpty(this.properties.getNode().getSopClassesTCS())) {
-                args.setSopClassesTCS(
-                        ResourceKit.getResourceUrl(
-                                this.properties.getNode().getSopClassesTCS(),
-                                ImageConfiguration.class));
-            }
-            if (StringKit.isNotEmpty(this.properties.getNode().getSopClassesUID())) {
-                args.setSopClassesUID(
-                        ResourceKit.getResourceUrl(
-                                this.properties.getNode().getSopClassesUID(),
-                                ImageConfiguration.class));
-            }
-            return Centre.builder().args(args).efforts(efforts)
-                    .node(
-                            new Node(this.properties.getNode().getAeTitle(), this.properties.getNode().getHost(),
-                                    Integer.parseInt(this.properties.getNode().getPort())))
-                    .storeSCP(new StoreSCP(this.properties.getDcmDir())).build();
+        if (StringKit.isEmpty(this.properties.getNode().getAeTitle())) {
+            throw new NullPointerException("The aeTitle cannot be null.");
         }
-        return null;
+        if (StringKit.isEmpty(this.properties.getNode().getHost())) {
+            throw new NullPointerException("The host cannot be null.");
+        }
+        if (StringKit.isEmpty(this.properties.getNode().getPort())) {
+            throw new NullPointerException("The port cannot be null.");
+        }
+        Args args = new Args();
+        if (StringKit.isNotEmpty(this.properties.getNode().getSopClasses())) {
+            args.setSopClasses(
+                    ResourceKit.getResourceUrl(this.properties.getNode().getSopClasses(), ImageConfiguration.class));
+        }
+        if (StringKit.isNotEmpty(this.properties.getNode().getSopClassesTCS())) {
+            args.setSopClassesTCS(
+                    ResourceKit.getResourceUrl(this.properties.getNode().getSopClassesTCS(), ImageConfiguration.class));
+        }
+        if (StringKit.isNotEmpty(this.properties.getNode().getSopClassesUID())) {
+            args.setSopClassesUID(
+                    ResourceKit.getResourceUrl(this.properties.getNode().getSopClassesUID(), ImageConfiguration.class));
+        }
+        return Centre.builder().args(args).efforts(efforts)
+                .node(
+                        new Node(this.properties.getNode().getAeTitle(), this.properties.getNode().getHost(),
+                                Integer.parseInt(this.properties.getNode().getPort())))
+                .storeSCP(new StoreSCP(this.properties.getDcmDir())).build();
     }
 
 }

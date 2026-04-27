@@ -15400,17 +15400,6 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.image.nimble.opencv.lut.LutShape$eFunction",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
     "name": "org.miaixz.bus.image.nimble.opencv.lut.ModalityLutModule",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -15951,17 +15940,6 @@
   },
   {
     "name": "org.miaixz.bus.image.plugin.DcmDir$CSVParser",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.image.plugin.DcmDir$factory",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,

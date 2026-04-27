@@ -154,6 +154,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.gitlab.ErrorTrackingApi",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.gitlab.EventsApi",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -1200,6 +1211,17 @@
   },
   {
     "name": "org.miaixz.bus.gitlab.hooks.web.EventCommit",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.gitlab.hooks.web.EventEnvironment",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3036,6 +3058,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.gitlab.models.ErrorTrackingClientKey",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.gitlab.models.Event",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -3554,17 +3587,6 @@
   },
   {
     "name": "org.miaixz.bus.gitlab.models.Iteration$IterationState",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.gitlab.models.Iteration$found",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,

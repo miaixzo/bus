@@ -50,6 +50,7 @@ public class MetricsConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "bus.metrics", name = "provider", havingValue = "native", matchIfMissing = true)
     public Provider metricsProvider(MetricsProperties props) {
         applyCardinalityGuard(props.getCardinality());
         Provider provider = new NativeProvider();
@@ -59,7 +60,7 @@ public class MetricsConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean(name = "metricsProvider")
+    @ConditionalOnMissingBean(Provider.class)
     @ConditionalOnClass(name = "io.micrometer.core.instrument.MeterRegistry")
     @ConditionalOnProperty(prefix = "bus.metrics", name = "provider", havingValue = "micrometer")
     public Provider micrometerProvider(MetricsProperties props, io.micrometer.core.instrument.MeterRegistry registry) {

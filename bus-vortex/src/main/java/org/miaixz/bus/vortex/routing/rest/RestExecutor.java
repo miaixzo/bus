@@ -126,15 +126,12 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
         final String path = request.path();
         final String ip = context.getX_request_ip();
 
-        // 1. Build the base URL for the target service (synchronous, no I/O involved)
         String baseUrl = buildBaseUrl(context);
         Logger.info(true, "Http", "[{}] [{}] [{}] [HTTP_ROUTER_BASEURL] - Base URL: {}", ip, method, path, baseUrl);
 
-        // 2. Build a WebClient with cached HTTP client (timeout is handled at VortexHandler level)
         WebClient webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(getHttpClient()))
                 .exchangeStrategies(CACHED_EXCHANGE_STRATEGIES).baseUrl(baseUrl).build();
 
-        // 3. Build and execute the request.
         String targetUri = buildTargetUri(assets, context);
         Logger.info(true, "Http", "[{}] [{}] [{}] [HTTP_ROUTER_URI] - Target URI: {}", ip, method, path, targetUri);
 
@@ -148,7 +145,6 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 path,
                 context.getHttpMethod());
 
-        // 4. Configure request headers, copying from the original request and cleaning up as needed.
         bodySpec.headers(headers -> {
             headers.addAll(request.headers().asHttpHeaders());
             headers.remove(HttpHeaders.HOST);
@@ -156,7 +152,6 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
         });
         Logger.info(true, "Http", "[{}] [{}] [{}] [HTTP_ROUTER_HEADERS] - Headers configured", ip, method, path);
 
-        // 5. Handle the request body, if applicable (i.e., for non-GET requests).
         if (!HttpMethod.GET.equals(context.getHttpMethod())) {
             MediaType mediaType = request.headers().contentType().orElse(null);
             if (mediaType != null) {
@@ -197,15 +192,11 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                     path);
         }
 
-        // 6. Send the request and process the response (timeout and retry are handled at VortexHandler level).
         Logger.info(true, "Http", "[{}] [{}] [{}] [HTTP_ROUTER_SEND] - Sending request", ip, method, path);
 
-        // Choose the execution strategy based on the asset's stream configuration.
         boolean isStreaming = assets.getStream() != null && assets.getStream() == 2;
 
         if (isStreaming) {
-            // ** STRATEGY 1: STREAMING (stream = 2) **
-            // Use the low-memory exchangeToMono for streaming responses (SSE, chunked transfer).
             Logger.info(
                     true,
                     "Http",
@@ -215,8 +206,6 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                     path);
             return executeStreaming(bodySpec, ip, method, path);
         } else {
-            // ** STRATEGY 2: ATOMIC/BUFFERING (stream = 1 or null) **
-            // Use the buffering retrieve().toEntity() for standard responses.
             Logger.info(
                     true,
                     "Http",
@@ -245,13 +234,9 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             String path) {
         Map<String, Object> params = context.getParameters();
         if (!params.isEmpty()) {
-            // **OPTIMIZATION:** Wrap synchronous, CPU-bound JSON serialization
-            // in fromCallable and offload it from the event loop.
-            // **GRAALVM FIX**: Apply Native Image encoding fix for FastJSON unsafe operations
             Mono<String> jsonBodyMono = Mono.fromCallable(() -> {
                 String json = JsonKit.toJsonString(params);
                 String fixed = fixJsonEncoding(json);
-                // Log what will actually be sent
                 int backslashCount = fixed.length() - fixed.replace("\\", "").length();
                 Logger.debug(
                         true,
@@ -264,7 +249,6 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                         fixed.length() > 300 ? fixed.substring(0, 300) + "..." : fixed);
                 return fixed;
             }).subscribeOn(Schedulers.boundedElastic()).doOnNext(jsonString -> {
-                // Log the exact JSON string after fix
                 Logger.debug(
                         true,
                         "Http",
@@ -276,7 +260,6 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                         jsonString);
             });
 
-            // Use body() for reactive types (Publisher)
             bodySpec.contentType(MediaType.APPLICATION_JSON).body(jsonBodyMono, String.class);
 
             Logger.info(
@@ -317,7 +300,6 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
         if (!params.isEmpty()) {
             MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>(params.size());
             params.forEach((k, v) -> multiValueMap.add(k, String.valueOf(v)));
-            // bodyValue is fine for MultiValueMap, WebClient handles it efficiently.
             bodySpec.contentType(MediaType.APPLICATION_FORM_URLENCODED).bodyValue(multiValueMap);
             Logger.info(
                     true,
@@ -359,7 +341,6 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             MultiValueMap<String, Object> multipartData = new LinkedMultiValueMap<>();
             fileParts.forEach(multipartData::add);
             params.forEach((k, v) -> multipartData.add(k, String.valueOf(v)));
-            // fromMultipartData is non-blocking and supports streaming.
             bodySpec.body(BodyInserters.fromMultipartData(multipartData));
             Logger.info(
                     true,
@@ -383,7 +364,6 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
     private String buildTargetUri(Assets assets, Context context) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(assets.getUrl());
 
-        // Start with query parameters
         Map<String, String> query = context.getQuery();
         MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
 
@@ -391,12 +371,10 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             query.forEach(multiValueMap::add);
         }
 
-        // For GET requests, parameters should override query
         if (HttpMethod.GET.equals(context.getHttpMethod())) {
             Map<String, Object> parameters = context.getParameters();
             if (!parameters.isEmpty()) {
                 parameters.forEach((k, v) -> {
-                    // Remove existing value and add new one (override)
                     multiValueMap.remove(k);
                     multiValueMap.add(k, String.valueOf(v));
                 });
@@ -419,7 +397,6 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             String ip,
             String method,
             String path) {
-        // This is your provided code block (streaming).
         return bodySpec.exchangeToMono(clientResponse -> {
             ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(clientResponse.statusCode());
             Logger.debug(
@@ -438,7 +415,6 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 headers.remove(HttpHeaders.CONTENT_LENGTH);
             });
 
-            // Stream the response body directly, with logging
             Flux<DataBuffer> bodyFlux = clientResponse.bodyToFlux(DataBuffer.class).doOnNext(dataBuffer -> {
                 Logger.debug(
                         false,
@@ -497,71 +473,65 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             String ip,
             String method,
             String path) {
-        // This is the "buffering" fix that works with traditional Servlet backends.
-        return bodySpec.retrieve().toEntity(DataBuffer.class) // <-- Buffers the *entire* response
-                .flatMap(responseEntity -> {
-                    // responseEntity is a ResponseEntity<DataBuffer>
-                    Logger.info(
-                            false,
-                            "Http",
-                            "[{}] [{}] [{}] [HTTP_ROUTER_RECV_BUFFERED] - Received buffered status: {}",
-                            ip,
-                            method,
-                            path,
-                            responseEntity.getStatusCode());
-                    Logger.info(
-                            false,
-                            "Http",
-                            "[{}] [{}] [{}] [HTTP_ROUTER_RECV_HEADERS] - Downstream response headers: {}",
-                            ip,
-                            method,
-                            path,
-                            responseEntity.getHeaders());
+        return bodySpec.retrieve().toEntity(DataBuffer.class).flatMap(responseEntity -> {
+            Logger.info(
+                    false,
+                    "Http",
+                    "[{}] [{}] [{}] [HTTP_ROUTER_RECV_BUFFERED] - Received buffered status: {}",
+                    ip,
+                    method,
+                    path,
+                    responseEntity.getStatusCode());
+            Logger.info(
+                    false,
+                    "Http",
+                    "[{}] [{}] [{}] [HTTP_ROUTER_RECV_HEADERS] - Downstream response headers: {}",
+                    ip,
+                    method,
+                    path,
+                    responseEntity.getHeaders());
 
-                    DataBuffer body = responseEntity.getBody();
-                    if (body != null && body.readableByteCount() > 0) {
-                        Logger.info(
-                                false,
-                                "Http",
-                                "[{}] [{}] [{}] [HTTP_ROUTER_RECV_BODY_BUFFERED] - Received buffered body, size: {} bytes",
-                                ip,
-                                method,
-                                path,
-                                body.readableByteCount());
-                    } else {
-                        Logger.warn(
-                                false,
-                                "Http",
-                                "[{}] [{}] [{}] [HTTP_ROUTER_RECV_BODY_BUFFERED] - Received buffered body, but it is NULL or EMPTY",
-                                ip,
-                                method,
-                                path);
-                    }
+            DataBuffer body = responseEntity.getBody();
+            if (body != null && body.readableByteCount() > 0) {
+                Logger.info(
+                        false,
+                        "Http",
+                        "[{}] [{}] [{}] [HTTP_ROUTER_RECV_BODY_BUFFERED] - Received buffered body, size: {} bytes",
+                        ip,
+                        method,
+                        path,
+                        body.readableByteCount());
+            } else {
+                Logger.warn(
+                        false,
+                        "Http",
+                        "[{}] [{}] [{}] [HTTP_ROUTER_RECV_BODY_BUFFERED] - Received buffered body, but it is NULL or EMPTY",
+                        ip,
+                        method,
+                        path);
+            }
 
-                    ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
-                    responseBuilder.headers(headers -> {
-                        headers.addAll(responseEntity.getHeaders());
-                        headers.remove(HttpHeaders.HOST);
-                        headers.remove(HttpHeaders.TRANSFER_ENCODING);
-                        headers.remove(HttpHeaders.CONTENT_LENGTH);
-                    });
+            ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
+            responseBuilder.headers(headers -> {
+                headers.addAll(responseEntity.getHeaders());
+                headers.remove(HttpHeaders.HOST);
+                headers.remove(HttpHeaders.TRANSFER_ENCODING);
+                headers.remove(HttpHeaders.CONTENT_LENGTH);
+            });
 
-                    if (body != null && body.readableByteCount() > 0) {
-                        // Send the buffered body
-                        return responseBuilder.body(Mono.just(body), DataBuffer.class);
-                    } else {
-                        // Send an empty response
-                        return responseBuilder.build();
-                    }
-                })
-                .doOnSubscribe(
-                        subscription -> Logger.info(
-                                true,
-                                "Http",
-                                "[{}] [{}] [{}] [HTTP_ROUTER_SUBSCRIBE] - Request subscribed (Buffering).",
-                                ip,
-                                method,
-                                path))
+            if (body != null && body.readableByteCount() > 0) {
+                return responseBuilder.body(Mono.just(body), DataBuffer.class);
+            } else {
+                return responseBuilder.build();
+            }
+        }).doOnSubscribe(
+                subscription -> Logger.info(
+                        true,
+                        "Http",
+                        "[{}] [{}] [{}] [HTTP_ROUTER_SUBSCRIBE] - Request subscribed (Buffering).",
+                        ip,
+                        method,
+                        path))
                 .doOnSuccess(
                         serverResponse -> Logger.info(
                                 false,

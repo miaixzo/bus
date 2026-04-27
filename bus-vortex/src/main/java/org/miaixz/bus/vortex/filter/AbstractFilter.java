@@ -34,6 +34,12 @@ import org.springframework.web.server.WebFilterChain;
 public abstract class AbstractFilter implements Filter {
 
     /**
+     * Creates an abstract filter.
+     */
+    protected AbstractFilter() {
+    }
+
+    /**
      * The factory used to dynamically select the appropriate strategy chain for the current request.
      */
     public StrategyFactory factory;

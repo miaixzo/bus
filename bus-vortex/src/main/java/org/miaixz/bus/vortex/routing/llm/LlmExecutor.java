@@ -78,14 +78,12 @@ public class LlmExecutor extends Coordinator {
 
         Logger.debug(true, "LLM", "{} Executing LLM request for model: {}", context.getX_request_ip(), modelName);
 
-        // Validate Assets
         if (assets == null) {
             Logger.warn(true, "LLM", "{} No Assets found in context", context.getX_request_ip());
             return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).bodyValue(
                     "{\"error\":{\"message\":\"Assets configuration not found\",\"type\":\"server_error\",\"code\":\"assets_not_found\"}}");
         }
 
-        // Find the provider configuration for the requested model from Assets metadata
         final ProviderConfig providerConfig;
         try {
             providerConfig = findProviderForModel(assets, modelName);
@@ -116,7 +114,6 @@ public class LlmExecutor extends Coordinator {
                 providerConfig.type,
                 providerConfig.endpoint);
 
-        // Get or create provider
         final LlmProvider provider;
         try {
             provider = this.factory.getProvider(
@@ -130,7 +127,6 @@ public class LlmExecutor extends Coordinator {
                     "{\"error\":{\"message\":\"Failed to create provider\",\"type\":\"server_error\",\"code\":\"provider_creation_error\"}}");
         }
 
-        // Parse request body from ServerRequest
         final ServerRequest serverRequest = (ServerRequest) context.getParameters().get("serverRequest");
         return serverRequest.bodyToMono(String.class).flatMap(body -> {
             final LlmRequest request;
@@ -142,16 +138,13 @@ public class LlmExecutor extends Coordinator {
                         "{\"error\":{\"message\":\"Invalid request body\",\"type\":\"invalid_request_error\",\"code\":\"invalid_request_body\"}}");
             }
 
-            // Check if streaming is requested
             final boolean stream = request.isStream();
 
             if (stream) {
-                // Streaming response (SSE)
                 Logger.debug(true, "LLM", "{} Streaming response for model: {}", context.getX_request_ip(), modelName);
                 return ServerResponse.ok().contentType(org.springframework.http.MediaType.TEXT_EVENT_STREAM)
                         .body(provider.stream(request), String.class);
             } else {
-                // Non-streaming response (JSON)
                 Logger.debug(
                         true,
                         "LLM",
@@ -202,20 +195,17 @@ public class LlmExecutor extends Coordinator {
 
         final List<Map<String, Object>> providers = (List<Map<String, Object>>) providersObj;
 
-        // Iterate through providers to find one that supports the model
         for (Map<String, Object> provider : providers) {
             final String type = (String) provider.get("type");
             final String endpoint = (String) provider.get("endpoint");
             final String apiKey = (String) provider.get("apiKey");
             final String model = (String) provider.get("model");
 
-            // Check if this provider supports the requested model
             final Object modelsObj = provider.get("models");
             if (modelsObj instanceof List) {
                 final List<String> models = (List<String>) modelsObj;
                 for (String mod : models) {
                     if (mod.equals(modelName)) {
-                        // Found matching provider
                         return new ProviderConfig(type, endpoint, apiKey, model);
                     }
                 }
@@ -235,7 +225,6 @@ public class LlmExecutor extends Coordinator {
     private LlmRequest parseRequest(final String body, final String modelName) {
         final LlmRequest request = JsonKit.toPojo(body, LlmRequest.class);
 
-        // Set the model name from the URL path
         request.setModel(modelName);
 
         return request;

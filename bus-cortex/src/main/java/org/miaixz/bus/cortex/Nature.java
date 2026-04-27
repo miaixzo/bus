@@ -21,22 +21,17 @@ package org.miaixz.bus.cortex;
 
 import java.io.Serial;
 
-import org.miaixz.bus.core.basic.entity.Lifecycle;
+import org.miaixz.bus.core.basic.entity.Namespace;
 
-import jakarta.persistence.Transient;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
  * Minimal common base for all Cortex domain objects.
  * <p>
- * Carries three stable fields shared by every Cortex entity: {@code id} is the globally unique string identifier,
- * {@code namespace} isolates entries by logical tenant or environment, and {@code species} classifies the entry as API,
- * MCP, PROMPT, CONFIG or VERSION. No bus-core entity semantics (audit fields, pagination, authorization, tracing) are
- * inherited; Cortex models own their domain exclusively.
+ * Extends {@link Namespace} for the shared identifier, request context and namespace scope, then adds the Cortex-level
+ * {@code type}. The type stores the stable numeric key of {@link Type} for persistence and business routing.
  * </p>
  *
  * @author Kimi Liu
@@ -45,22 +40,34 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
-public abstract class Nature extends Lifecycle {
+public class Nature extends Namespace {
 
+    /**
+     * Serialization identifier for the shared runtime base model.
+     */
     @Serial
     private static final long serialVersionUID = 2852290719700L;
 
     /**
-     * Logical namespace that isolates this entry by tenant or environment.
+     * Stable numeric asset type key used for persistence and business routing.
      */
-    protected String namespace;
+    private Integer type;
 
     /**
-     * Logical species category that classifies the kind of entry.
+     * Creates an empty shared Cortex domain base.
      */
-    @Transient
-    private Species species;
+    protected Nature() {
+
+    }
+
+    /**
+     * Returns whether the current entry belongs to the supplied type.
+     *
+     * @param type candidate type
+     * @return {@code true} when the type matches
+     */
+    public boolean isType(Type type) {
+        return type != null && getType() != null && getType().intValue() == type.key();
+    }
 
 }

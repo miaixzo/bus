@@ -19,11 +19,14 @@
 */
 package org.miaixz.bus.starter.cortex;
 
+import org.miaixz.bus.cache.Hybrid;
+import org.miaixz.bus.cache.Options;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.cortex.Builder;
+import org.miaixz.bus.cortex.guard.token.TokenGuardConfig;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -31,9 +34,9 @@ import lombok.Setter;
 /**
  * Configuration properties for Bus Cortex starter wiring.
  * <p>
- * The default client entrypoint keeps setup intentionally simple: a regular application only needs
- * {@code bus.cortex.server-addr}. The remaining properties are optional tuning switches for starter-side cache,
- * watches, config loading and self-registration behavior.
+ * For client-side integrations that talk to a remote Cortex server, a minimal setup typically starts with
+ * {@code bus.cortex.server-addr}. The remaining properties tune starter-provisioned cache behavior, watch delivery,
+ * bridge wiring, and optional server-side components.
  * </p>
  *
  * @author Kimi Liu
@@ -45,49 +48,57 @@ import lombok.Setter;
 public class CortexProperties {
 
     /**
+     * Creates a mutable Bus Cortex starter property holder.
+     */
+    public CortexProperties() {
+
+    }
+
+    /**
      * Enables the Cortex starter.
      */
     private boolean enabled = true;
 
     /**
-     * Cortex server address.
+     * Optional remote Cortex server address used by client-side integrations.
      */
     private String serverAddr = "";
 
     /**
      * Namespace used by the client.
      */
-    private String namespace = Builder.DEFAULT_NAMESPACE;
+    private String namespace = Normal.DEFAULT;
 
     /**
-     * Enables automatic self-registration for local API services.
+     * Reserved starter flag for automatic self-registration of local API services.
      */
     private boolean autoRegister = true;
 
     /**
-     * Enables startup-time config loading and annotation-based config injection.
+     * Enables setting-related starter wiring and production-store validation paths.
      */
-    private boolean configEnabled = true;
+    private boolean settingEnabled = true;
 
     /**
-     * Enables optional server-side Cortex controllers inside the current application.
+     * Marks the current application as a server-side Cortex deployment.
      */
     private boolean serverEnabled = false;
 
     /**
-     * Remote config group used by startup property loading.
+     * Reserved default remote setting group for external bootstrap integrations.
      */
-    private String configGroup = "DEFAULT_GROUP";
+    private String settingGroup = "DEFAULT";
 
     /**
-     * Remote config data identifier used by startup property loading.
+     * Reserved default remote setting data identifier for external bootstrap integrations.
      */
-    private String configDataId = Normal.EMPTY;
+    private String settingDataId = Normal.EMPTY;
 
     /**
-     * Maximum number of historical config versions retained in the local cache.
+     * Maximum number of historical {@code setting.item.revision} snapshots retained after publish and rollback
+     * operations.
      */
-    private int maxConfigVersions = 10;
+    private int maxSettingVersions = 10;
 
     /**
      * Maximum number of watch registrations allowed in a single namespace.
@@ -100,9 +111,41 @@ public class CortexProperties {
     private long watchExpireMs = 86400000L;
 
     /**
-     * Default expiration time in milliseconds for the local starter cache.
+     * Default expiration time in milliseconds for the starter-provisioned Cortex cache.
      */
-    private long cacheExpireMs = 180000L;
+    private long cacheExpireMs = Hybrid.DEFAULT_EXPIRE_MS;
+
+    /**
+     * Nested cache backend options for Cortex.
+     * <p>
+     * When present, these options are overlaid on top of the Cortex starter defaults so callers may override only a
+     * subset of backend settings under {@code bus.cortex.cache.*}.
+     * </p>
+     */
+    @NestedConfigurationProperty
+    private Options cache;
+
+    /**
+     * Watch-specific starter properties.
+     */
+    private Watch watch = new Watch();
+
+    /**
+     * Bridge-specific starter properties.
+     */
+    private Bridge bridge = new Bridge();
+    /**
+     * Guard-specific starter properties.
+     */
+    private Guard guard = new Guard();
+    /**
+     * Audit-specific starter properties.
+     */
+    private Audit audit = new Audit();
+    /**
+     * Version-registry starter properties.
+     */
+    private Version version = new Version();
 
     /**
      * Returns the required server address.
@@ -123,7 +166,7 @@ public class CortexProperties {
      * @return configured namespace or the default namespace when blank
      */
     public String requireNamespace() {
-        return StringKit.isBlank(namespace) ? Builder.DEFAULT_NAMESPACE : namespace.trim();
+        return StringKit.isBlank(namespace) ? Normal.DEFAULT : namespace.trim();
     }
 
     /**
@@ -133,6 +176,214 @@ public class CortexProperties {
      */
     public String requireScope() {
         return requireNamespace();
+    }
+
+    /**
+     * Returns the effective maximum retained {@code setting.item.revision} count.
+     *
+     * @return positive max version count
+     */
+    public int requireMaxSettingVersions() {
+        return maxSettingVersions > 0 ? maxSettingVersions : 10;
+    }
+
+    /**
+     * Returns the effective watch registration cap.
+     *
+     * @return positive watch cap
+     */
+    public int requireMaxWatchesPerNamespace() {
+        return maxWatchesPerNamespace > 0 ? maxWatchesPerNamespace : 1000;
+    }
+
+    /**
+     * Returns the effective watch expiration timeout.
+     *
+     * @return positive watch expiration in milliseconds
+     */
+    public long requireWatchExpireMs() {
+        return watchExpireMs > 0L ? watchExpireMs : 86400000L;
+    }
+
+    /**
+     * Returns the configured cache expiration timeout.
+     *
+     * @return positive cache expiration in milliseconds
+     */
+    public long requireCacheExpireMs() {
+        return cacheExpireMs > 0L ? cacheExpireMs : Hybrid.DEFAULT_EXPIRE_MS;
+    }
+
+    /**
+     * Nested watch properties.
+     */
+    @Getter
+    @Setter
+    public static class Watch {
+
+        /**
+         * Creates the nested watch-property holder.
+         */
+        public Watch() {
+        }
+
+        /**
+         * Enables registration of the builtin logging watch listener.
+         */
+        private boolean loggingEnabled = false;
+
+    }
+
+    /**
+     * Nested bridge properties.
+     */
+    @Getter
+    @Setter
+    public static class Bridge {
+
+        /**
+         * Creates the nested bridge-property holder.
+         */
+        public Bridge() {
+        }
+
+        /**
+         * Bridge synchronization mode. Only {@code push+pull/pull-only} creates the remote bridge bean.
+         */
+        private String mode = "pull-only";
+
+        /**
+         * Remote Vortex bridge base URL.
+         */
+        private String url = Normal.EMPTY;
+
+        /**
+         * Maximum number of delivery retries for bridge pushes.
+         */
+        private int maxRetries = 3;
+
+        /**
+         * Optional event source marker attached to bridge payloads.
+         */
+        private String source = Normal.EMPTY;
+
+        /**
+         * Returns whether the remote bridge should be started.
+         *
+         * @return {@code true} when bridge mode is {@code push+pull}
+         */
+        public boolean isPushPullEnabled() {
+            return "push+pull".equalsIgnoreCase(StringKit.trim(mode));
+        }
+
+        /**
+         * Returns the required bridge URL.
+         *
+         * @return trimmed bridge URL
+         * @throws IllegalStateException if the bridge URL is blank while push+pull mode is enabled
+         */
+        public String requireUrl() {
+            if (StringKit.isBlank(url)) {
+                throw new IllegalStateException("bus.cortex.bridge.url is required when bridge mode is push+pull");
+            }
+            return url.trim();
+        }
+
+        /**
+         * Returns the effective retry count.
+         *
+         * @return positive retry count
+         */
+        public int requireMaxRetries() {
+            return maxRetries > 0 ? maxRetries : 3;
+        }
+
+        /**
+         * Returns the optional bridge source marker.
+         *
+         * @return trimmed source marker or empty string
+         */
+        public String resolveSource() {
+            return StringKit.isBlank(source) ? Normal.EMPTY : source.trim();
+        }
+
+    }
+
+    /**
+     * Nested guard properties.
+     */
+    @Getter
+    @Setter
+    public static class Guard {
+
+        /**
+         * Creates the nested guard-property holder.
+         */
+        public Guard() {
+        }
+
+        /**
+         * Enables default token guard configuration exposure.
+         */
+        private boolean enabled = true;
+
+        /**
+         * Default token guard configuration.
+         */
+        private Token token = new Token();
+    }
+
+    /**
+     * Nested token-guard properties.
+     */
+    @Getter
+    @Setter
+    public static class Token extends TokenGuardConfig {
+
+        /**
+         * Creates the nested token-property holder.
+         */
+        public Token() {
+        }
+
+    }
+
+    /**
+     * Nested audit properties.
+     */
+    @Getter
+    @Setter
+    public static class Audit {
+
+        /**
+         * Creates the nested audit-property holder.
+         */
+        public Audit() {
+        }
+
+        /**
+         * Enables the default audit logger bean.
+         */
+        private boolean enabled = false;
+    }
+
+    /**
+     * Nested version properties.
+     */
+    @Getter
+    @Setter
+    public static class Version {
+
+        /**
+         * Creates the nested version-property holder.
+         */
+        public Version() {
+        }
+
+        /**
+         * Enables the version registry bean.
+         */
+        private boolean enabled = false;
     }
 
 }

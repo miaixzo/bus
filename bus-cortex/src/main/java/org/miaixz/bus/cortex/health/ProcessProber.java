@@ -32,6 +32,23 @@ import org.miaixz.bus.cortex.Instance;
 public class ProcessProber implements Prober {
 
     /**
+     * Creates a process-based health prober.
+     */
+    public ProcessProber() {
+    }
+
+    /**
+     * Returns whether this prober can check the supplied instance through its process ID.
+     *
+     * @param instance candidate instance
+     * @return {@code true} when process probing is supported
+     */
+    @Override
+    public boolean supports(Instance instance) {
+        return instance != null && instance.getPid() != null;
+    }
+
+    /**
      * Checks whether the process identified by the instance's PID is alive.
      *
      * @param instance instance whose {@code pid} field is checked
@@ -41,15 +58,15 @@ public class ProcessProber implements Prober {
     public Status check(Instance instance) {
         Long pid = instance.getPid();
         if (pid == null) {
-            return Status.fail("No PID available for process check");
+            return Status.fail("No PID available for process check", name());
         }
         long start = System.currentTimeMillis();
         boolean alive = ProcessHandle.of(pid).isPresent();
         long latency = System.currentTimeMillis() - start;
         if (alive) {
-            return Status.ok(latency);
+            return Status.ok(latency, name()).detail("pid", pid.toString());
         }
-        return Status.fail("Process " + pid + " is not running");
+        return Status.fail("Process " + pid + " is not running", name()).detail("pid", pid.toString());
     }
 
 }

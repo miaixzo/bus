@@ -55,6 +55,12 @@ import reactor.core.publisher.Mono;
 public class GrpcExecutor extends Coordinator<String, ServerResponse> {
 
     /**
+     * Creates a gRPC executor.
+     */
+    public GrpcExecutor() {
+    }
+
+    /**
      * Executes a gRPC request using the provided context and String payload.
      * <p>
      * This method is required by the {@link org.miaixz.bus.vortex.Executor} interface. It invokes the gRPC method and
@@ -69,11 +75,9 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
         Assets assets = context.getAssets();
         String payload = input;
 
-        // Invoke gRPC service (wrap synchronous call in Mono)
         Mono<String> responseMono = Mono.fromCallable(() -> invoke(assets, payload))
                 .subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic());
 
-        // Select execution strategy based on assets.getStream()
         boolean isStreaming = assets.getStream() != null && assets.getStream() == 2;
 
         if (isStreaming) {
@@ -102,7 +106,6 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
 
             DefaultDataBufferFactory bufferFactory = new DefaultDataBufferFactory();
 
-            // Convert response to streaming data buffers
             Flux<DataBuffer> dataFlux = Flux.interval(Duration.ofMillis(10)).take(1).map(i -> {
                 byte[] bytes = response.getBytes(Charset.UTF_8);
                 return bufferFactory.wrap(bytes);
@@ -146,7 +149,6 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
      */
     public String invoke(Assets assets, String payload) {
         try {
-            // Parse the method name (format: "package.Service/Method")
             String fullMethodName = assets.getMethod();
 
             Logger.info(
@@ -157,11 +159,9 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
                     assets.getHost(),
                     assets.getPort());
 
-            // Build HTTP URL for gRPC gateway
             String url = buildGrpcUrl(assets, fullMethodName);
 
             Logger.info(true, "gRPC", "gRPC method {} invoked successfully", fullMethodName);
-            // Send HTTP POST request to gRPC gateway
             return Httpx.post(url, payload, MediaType.APPLICATION_JSON);
 
         } catch (Exception e) {
@@ -183,8 +183,6 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
         StringBuilder url = new StringBuilder();
         url.append("http://").append(assets.getHost()).append(Symbol.COLON).append(assets.getPort());
 
-        // Replace dots with slashes for URL path
-        // e.g., "package.Service/Method" -> "/package.Service/Method"
         if (StringKit.isNotEmpty(fullMethodName)) {
             url.append(Symbol.SLASH).append(fullMethodName);
         }

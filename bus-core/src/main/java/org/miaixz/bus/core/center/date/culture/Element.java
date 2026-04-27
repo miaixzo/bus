@@ -65,7 +65,7 @@ public class Element extends Samsara {
      * Constructs an element from a custom element-name array and name.
      *
      * @param names the element names
-     * @param name the element name
+     * @param name  the element name
      */
     protected Element(String[] names, String name) {
         super(names, name);

@@ -34,8 +34,6 @@ public class SseClient extends HttpClient {
      */
     public SseClient(Assets assets) {
         super(assets);
-        // In a real implementation, this might use WebClient's exchangeToFlux method to handle SSE event streams.
-        // For listTools and callTool's single request-response pattern, the parent's implementation is sufficient.
     }
 
 }

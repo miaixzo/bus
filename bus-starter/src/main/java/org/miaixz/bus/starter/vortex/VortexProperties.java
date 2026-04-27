@@ -39,6 +39,12 @@ import lombok.Setter;
 public class VortexProperties {
 
     /**
+     * Creates empty Vortex configuration properties.
+     */
+    public VortexProperties() {
+    }
+
+    /**
      * The service port, specifying the port number the server listens on.
      */
     private int port;

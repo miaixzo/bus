@@ -71,6 +71,12 @@ import org.miaixz.bus.vortex.magic.Metrics;
 public class DefaultMonitor implements Monitor {
 
     /**
+     * Creates an in-memory monitor.
+     */
+    public DefaultMonitor() {
+    }
+
+    /**
      * Singleton instance of DefaultMonitor.
      * <p>
      * This instance can be shared across the application for centralized monitoring. It is thread-safe and suitable for
@@ -140,7 +146,6 @@ public class DefaultMonitor implements Monitor {
             cacheHits.incrementAndGet();
         } else {
             cacheMisses.incrementAndGet();
-            // Log misses for debugging
             Logger.debug("Cache miss: key={}, duration={}ns", key, durationNanos);
         }
     }
@@ -192,16 +197,9 @@ public class DefaultMonitor implements Monitor {
         long hits = cacheHits.get();
         long misses = cacheMisses.get();
 
-        return Metrics.builder()
-                // System-level metrics (not populated by this monitor)
-                .cpu(0.0).memory(0L)
-                // Application-level metrics
-                .totalRequests(requests).successRequests(successCount.get()).failureRequests(failureCount.get())
-                .avgDurationMs(requests > 0 ? totalNs / 1_000_000.0 / requests : 0).p95DurationMs(0.0) // Not calculated
-                                                                                                       // in basic
-                                                                                                       // implementation
-                .p99DurationMs(0.0) // Not calculated in basic implementation
-                .cacheHits(hits).cacheMisses(misses)
+        return Metrics.builder().cpu(0.0).memory(0L).totalRequests(requests).successRequests(successCount.get())
+                .failureRequests(failureCount.get()).avgDurationMs(requests > 0 ? totalNs / 1_000_000.0 / requests : 0)
+                .p95DurationMs(0.0).p99DurationMs(0.0).cacheHits(hits).cacheMisses(misses)
                 .cacheHitRate((hits + misses) > 0 ? (double) hits / (hits + misses) : 0).totalDbOperations(dbOps)
                 .avgDbDurationMs(dbOps > 0 ? dbNs / 1_000_000.0 / dbOps : 0).build();
     }

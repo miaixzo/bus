@@ -58,6 +58,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class WsExecutor extends Coordinator<Object, ServerResponse> {
 
     /**
+     * Creates a WebSocket executor.
+     */
+    public WsExecutor() {
+    }
+
+    /**
      * A thread-safe map of active WebSocket sessions, keyed by session ID. This allows tracking and managing all active
      * connections through the gateway.
      */
@@ -84,7 +90,6 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
         Assets assets = context.getAssets();
         String upstreamUrl = buildUpstreamUrl(assets);
 
-        // Build response with WebSocket connection information
         String responseJson = String.format(
                 "{\"status\": \"websocket_ready\", " + "\"message\": \"WebSocket endpoint configured\", "
                         + "\"upstream\": \"%s\", " + "\"note\": \"Use WebSocket client to connect to this endpoint\"}",
@@ -112,33 +117,27 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
     private String buildUpstreamUrl(Assets assets) {
         StringBuilder urlBuilder = new StringBuilder();
 
-        // Determine protocol (ws or wss)
         boolean isSecure = false;
 
-        // Check if host starts with wss:// or contains secure indicators
         if (assets.getHost() != null && assets.getHost().startsWith("wss://")) {
             isSecure = true;
         }
 
         urlBuilder.append(isSecure ? "wss://" : "ws://");
 
-        // Add host (remove protocol prefix if present)
         String host = assets.getHost();
         if (host != null) {
             host = host.replaceFirst("^(ws://|wss://)", "");
             urlBuilder.append(host);
         }
 
-        // Add port if specified and not default
         if (assets.getPort() != null && assets.getPort() > 0) {
-            // Don't add port if it's the default for the protocol
             boolean isDefaultPort = (isSecure && assets.getPort() == 443) || (!isSecure && assets.getPort() == 80);
             if (!isDefaultPort) {
                 urlBuilder.append(Symbol.COLON).append(assets.getPort());
             }
         }
 
-        // Add path
         if (assets.getPath() != null && !assets.getPath().isEmpty()) {
             if (!assets.getPath().startsWith(Symbol.SLASH)) {
                 urlBuilder.append(Symbol.SLASH);
@@ -146,7 +145,6 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
             urlBuilder.append(assets.getPath());
         }
 
-        // Add URL pattern
         if (assets.getUrl() != null && !assets.getUrl().isEmpty()) {
             if (!assets.getUrl().startsWith(Symbol.SLASH)) {
                 urlBuilder.append(Symbol.SLASH);
@@ -273,9 +271,21 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
      */
     public static class SessionMetadata {
 
+        /**
+         * Gateway WebSocket session identifier.
+         */
         private final String sessionId;
+        /**
+         * Connection timestamp in milliseconds since epoch.
+         */
         private final long connectedAt;
+        /**
+         * Upstream WebSocket target URI.
+         */
         private final String upstreamTarget;
+        /**
+         * Logical method associated with the upstream route.
+         */
         private final String method;
 
         /**

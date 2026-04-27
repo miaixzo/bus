@@ -142,16 +142,12 @@ public class OpenApiClient implements McpClient {
         return toolConfigs.stream().map(toolConfig -> {
             String name = (String) toolConfig.get("name");
             String description = (String) toolConfig.get("description");
-            // The inputSchema defines the parameters for the tool.
             Map<String, Object> schema = (Map<String, Object>) toolConfig.get("inputSchema");
             if (schema == null) {
-                schema = new HashMap<>(); // Ensure it's a mutable map
+                schema = new HashMap<>();
             } else {
-                // JsonKit might return an immutable map, so we create a new mutable one.
                 schema = new HashMap<>(schema);
             }
-            // Store the entire raw configuration map for later use in callTool.
-            // This is a practical way to access endpoint and method without defining more fields.
             schema.put("_rawConfig", toolConfig);
             return new Tool(name, description, schema);
         }).collect(Collectors.toMap(Tool::getName, Function.identity()));
@@ -198,40 +194,32 @@ public class OpenApiClient implements McpClient {
      */
     @Override
     public Mono<Object> callTool(String toolName, Map<String, Object> arguments) {
-        // 1. Look up the tool definition.
         Tool tool = tools.get(toolName);
         if (tool == null) {
             return Mono.error(new ValidateException("Tool '" + toolName + "' not found."));
         }
 
-        // 2. Extract raw configuration details (endpoint, method).
         Map<String, Object> rawConfig = (Map<String, Object>) tool.getInputSchema().get("_rawConfig");
         String endpoint = (String) rawConfig.get("endpoint");
         String httpMethod = ((String) rawConfig.get("method")).toUpperCase();
 
-        // 3. Start building the URI.
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(endpoint);
 
-        // 4. Separate arguments into path, query, and body based on the schema.
         Map<String, Object> pathParamsSchema = (Map<String, Object>) tool.getInputSchema()
                 .getOrDefault("path", Collections.emptyMap());
         Map<String, Object> queryParamsSchema = (Map<String, Object>) tool.getInputSchema()
                 .getOrDefault("query", Collections.emptyMap());
 
-        // 5. Populate query parameters from arguments.
         queryParamsSchema.keySet().forEach(key -> {
             if (arguments.containsKey(key)) {
                 uriBuilder.queryParam(key, arguments.get(key));
             }
         });
 
-        // 6. Build the final URI, substituting path variables from arguments.
         String finalUri = uriBuilder.buildAndExpand(arguments).toUriString();
 
-        // 7. Create the request specification.
         WebClient.RequestBodySpec requestSpec = client.method(HttpMethod.valueOf(httpMethod)).uri(finalUri);
 
-        // 8. Handle the request body if the schema defines one.
         if (tool.getInputSchema().containsKey("body")) {
             Object bodyValue = arguments.get("body");
             if (bodyValue != null) {
@@ -241,10 +229,7 @@ public class OpenApiClient implements McpClient {
 
         Logger.info("Executing OpenAPI tool '{}': {} {}", toolName, httpMethod, finalUri);
 
-        // 9. Execute the request and return the response body as Object.
-        return requestSpec.retrieve().bodyToMono(String.class).map(response -> (Object) response) // Cast String to
-                                                                                                  // Object to match
-                                                                                                  // interface
+        return requestSpec.retrieve().bodyToMono(String.class).map(response -> (Object) response)
                 .doOnSuccess(response -> Logger.info("Received response for tool '{}'", toolName));
     }
 
@@ -260,14 +245,9 @@ public class OpenApiClient implements McpClient {
      */
     @Override
     public Mono<Boolean> isHealthy() {
-        return this.client.options().uri("") // Check the base URL
-                .retrieve().toBodilessEntity().map(response -> !response.getStatusCode().is5xxServerError()) // Any
-                                                                                                             // non-5xx
-                                                                                                             // is
-                                                                                                             // considered
-                                                                                                             // healthy
-                .timeout(Duration.ofSeconds(5), Mono.just(false)) // Fallback to false on timeout
-                .onErrorReturn(false); // Fallback to false on any other error
+        return this.client.options().uri("").retrieve().toBodilessEntity()
+                .map(response -> !response.getStatusCode().is5xxServerError())
+                .timeout(Duration.ofSeconds(5), Mono.just(false)).onErrorReturn(false);
     }
 
 }

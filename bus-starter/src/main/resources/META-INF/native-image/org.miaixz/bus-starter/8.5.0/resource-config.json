@@ -5,10 +5,10 @@
         "pattern": "META-INF/services/.*"
       },
       {
-        "pattern": "META-INF/spring/.*"
+        "pattern": "META-INF/spring\\.factories"
       },
       {
-        "pattern": "spring.factories"
+        "pattern": "META-INF/spring/.*"
       }
     ]
   }

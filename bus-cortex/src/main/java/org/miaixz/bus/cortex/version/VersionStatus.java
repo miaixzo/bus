@@ -28,6 +28,10 @@ package org.miaixz.bus.cortex.version;
 public enum VersionStatus {
 
     /**
+     * Version is recorded but not published yet.
+     */
+    DRAFT,
+    /**
      * Version is current and in active use.
      */
     ACTIVE,
@@ -39,5 +43,16 @@ public enum VersionStatus {
      * Version has been removed from service and must not be used.
      */
     DISABLED
+
+    ;
+
+    /**
+     * Returns whether the version may still serve traffic.
+     *
+     * @return {@code true} when traffic is allowed
+     */
+    public boolean isServable() {
+        return this == ACTIVE || this == DEPRECATED;
+    }
 
 }

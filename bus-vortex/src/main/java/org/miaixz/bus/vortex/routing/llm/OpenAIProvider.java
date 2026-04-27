@@ -122,7 +122,6 @@ public class OpenAIProvider implements LlmProvider {
         this.apiKey = apiKey;
         this.model = model;
 
-        // Build WebClient with API key authentication
         this.webClient = WebClient.builder().baseUrl(this.endpoint)
                 .defaultHeader(HTTP.AUTHORIZATION, HTTP.BEARER + this.apiKey)
                 .defaultHeader(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON).build();

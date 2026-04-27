@@ -25,7 +25,6 @@ import org.miaixz.bus.vortex.provider.AuthorizeProvider;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -43,9 +42,14 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
 @AllArgsConstructor
 public class Principal {
+
+    /**
+     * Creates an empty principal.
+     */
+    public Principal() {
+    }
 
     /**
      * The type of the credential being presented.

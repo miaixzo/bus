@@ -19,38 +19,41 @@
 */
 package org.miaixz.bus.cortex.builtin.event;
 
-import java.util.List;
-
 import org.miaixz.bus.cortex.Listener;
+import org.miaixz.bus.cortex.Watch;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Built-in {@link Listener} that logs all change events to the standard logger.
+ * Built-in {@link Listener} that logs watch change events to the standard logger.
  * <p>
- * Suitable as a diagnostic listener or as a no-op placeholder during development.
+ * Suitable as a diagnostic listener or as a lightweight placeholder during development.
  * </p>
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public class LoggingWatchListener implements Listener<String> {
+public class LoggingWatchListener implements Listener<Watch<Object>> {
 
     /**
-     * Logs each added, removed and updated item.
+     * Creates a logging watch listener.
+     */
+    public LoggingWatchListener() {
+    }
+
+    /**
+     * Logs each value carried by a watch change event.
      *
-     * @param added   newly added values
-     * @param removed removed values
-     * @param updated updated values
+     * @param event watch change event to log
      */
     @Override
-    public void accept(List<String> added, List<String> removed, List<String> updated) {
-        for (String item : added) {
+    public void onEvent(Watch<Object> event) {
+        for (Object item : event.getAdded()) {
             Logger.info("Watch added: {}", item);
         }
-        for (String item : removed) {
+        for (Object item : event.getRemoved()) {
             Logger.info("Watch removed: {}", item);
         }
-        for (String item : updated) {
+        for (Object item : event.getUpdated()) {
             Logger.info("Watch updated: {}", item);
         }
     }

@@ -79,10 +79,8 @@ public class MqRouter implements Router<ServerRequest, ServerResponse> {
 
             Logger.info("MQ Router: Routing request for topic: {}", context.getAssets().getMethod());
 
-            // Read request body and delegate to executor
-            return input.bodyToMono(String.class)
-                    // .switchIfEmpty() handles cases where the body might be empty
-                    .switchIfEmpty(Mono.just(Normal.EMPTY)).flatMap(body -> executor.execute(context, body)).doOnError(
+            return input.bodyToMono(String.class).switchIfEmpty(Mono.just(Normal.EMPTY))
+                    .flatMap(body -> executor.execute(context, body)).doOnError(
                             error -> Logger.error(
                                     true,
                                     "MQ",

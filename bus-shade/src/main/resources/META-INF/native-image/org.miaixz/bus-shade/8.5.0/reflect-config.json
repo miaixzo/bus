@@ -1089,28 +1089,6 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlDataBaseQuery$ci",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlDataBaseQuery$ct",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
     "name": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlDatabase",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,

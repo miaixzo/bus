@@ -19,9 +19,13 @@
 */
 package org.miaixz.bus.cortex.registry.mcp;
 
+import java.util.List;
+
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.cortex.registry.AbstractRegistry;
-import org.miaixz.bus.cortex.registry.WatchManager;
+import org.miaixz.bus.cortex.Type;
+import org.miaixz.bus.cortex.registry.RegistryStore;
+import org.miaixz.bus.cortex.registry.StoreBackedRegistry;
+import org.miaixz.bus.cortex.magic.watch.WatchManager;
 
 /**
  * Registry for MCP tool definitions.
@@ -29,16 +33,17 @@ import org.miaixz.bus.cortex.registry.WatchManager;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class McpRegistry extends AbstractRegistry<McpAssets> {
+public class McpRegistry extends StoreBackedRegistry<McpAssets> {
 
     /**
      * Creates a McpRegistry backed by the given CacheX and WatchManager.
      *
-     * @param cacheX       shared cache for persistence
+     * @param cacheX       shared cache for registry state
      * @param watchManager watch subscription manager
+     * @param store        durable store adapter
      */
-    public McpRegistry(CacheX<String, Object> cacheX, WatchManager watchManager) {
-        super(cacheX, watchManager, McpAssets.class, "mcp");
+    public McpRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, RegistryStore<McpAssets> store) {
+        super(cacheX, watchManager, store, McpAssets.class, Type.MCP, List.of());
     }
 
 }

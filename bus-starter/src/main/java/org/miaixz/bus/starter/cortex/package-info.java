@@ -18,7 +18,11 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Service registry and configuration center auto-configuration support.
+ * Bus Cortex starter-side auto-configuration and property binding support.
+ * <p>
+ * The package is loaded through Spring Boot auto-configuration metadata and exposes one unified {@code bus.cortex.*}
+ * configuration surface for registry, setting, watch, and bridge wiring.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 21+

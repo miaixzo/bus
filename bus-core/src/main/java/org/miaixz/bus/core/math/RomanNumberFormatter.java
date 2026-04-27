@@ -35,7 +35,6 @@ public class RomanNumberFormatter {
     public RomanNumberFormatter() {
     }
 
-
     /**
      * Converts an integer to a Roman numeral. The valid range for the input integer is [1, 3999].
      * <ul>

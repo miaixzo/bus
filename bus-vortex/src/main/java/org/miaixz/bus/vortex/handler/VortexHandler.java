@@ -114,11 +114,9 @@ public class VortexHandler {
     @NonNull
     public Mono<ServerResponse> handle(ServerRequest request) {
         return Mono.deferContextual(contextView -> {
-            // Get request method and path for logging
             String method = request.methodName();
             String path = request.path();
 
-            // 1. Retrieve and validate request context
             final Context context = contextView.get(Context.class);
             if (context == null) {
                 Logger.info(true, "Vortex", "[N/A] [{}] [{}] [CONTEXT_ERROR] - Request context is null", method, path);
@@ -128,7 +126,6 @@ public class VortexHandler {
             ServerWebExchange exchange = request.exchange();
             Logger.info(true, "Vortex", "[{}] [{}] [{}] [REQUEST_START] - Request started", ip, method, path);
 
-            // 2. Validate Assets configuration
             Assets assets = context.getAssets();
             if (assets == null) {
                 Logger.info(
@@ -141,8 +138,7 @@ public class VortexHandler {
                 throw new ValidateException(ErrorCode._100800);
             }
 
-            // 3. Map mode to router key using pre-built static map for O(1) lookup
-            String modeKey = Args.MODE_TO_ROUTER.get(assets.getMode());
+            String modeKey = Args.MODE_TO_ROUTER.get(assets.getProtocol());
             if (modeKey == null) {
                 Logger.info(
                         true,
@@ -151,11 +147,10 @@ public class VortexHandler {
                         ip,
                         method,
                         path,
-                        assets.getMode());
+                        assets.getProtocol());
                 throw new ValidateException(ErrorCode._116005);
             }
 
-            // 4. Retrieve the corresponding Router instance
             Router<ServerRequest, ?> router = routers.get(modeKey);
             if (router == null) {
                 Logger.info(
@@ -178,7 +173,6 @@ public class VortexHandler {
                     path,
                     router.getClass().getSimpleName());
 
-            // 5. Execute pre-interceptors and delegate routing
             return executePreHandle(exchange, router).flatMap(preHandleResult -> {
                 if (!preHandleResult) {
                     Logger.info(
@@ -191,7 +185,6 @@ public class VortexHandler {
                     throw new ValidateException(ErrorCode._100800);
                 }
 
-                // Check if mock mode is enabled (mock = 1)
                 if (Integer.valueOf(Consts.ONE).equals(assets.getMock())) {
                     Logger.info(
                             true,
@@ -202,7 +195,6 @@ public class VortexHandler {
                             path,
                             assets.getMethod());
 
-                    // Return mock response with post-handlers execution
                     return handleMockResponse(context, assets).flatMap(
                             response -> executePostHandlers(exchange, router, response, null).map(obj -> response))
                             .doOnSuccess(serverResponse -> {
@@ -235,12 +227,10 @@ public class VortexHandler {
                                         method,
                                         path,
                                         error.getMessage());
-                                // Execute postHandle and afterCompletion even on mock error
                                 return executePostHandlers(exchange, router, null, error).then(Mono.error(error));
                             });
                 }
 
-                // Actual routing with timeout + retry mechanism + post-interceptors
                 return router.route(request)
                         .timeout(Duration.ofSeconds(assets.getTimeout() != null ? assets.getTimeout() : 60))
                         .retryWhen(buildRetrySpec(assets, ip, method, path)).cast(ServerResponse.class)
@@ -276,7 +266,6 @@ public class VortexHandler {
                                     path,
                                     error.getMessage());
 
-                            // Execute postHandle and afterCompletion for all handlers even on error
                             return executePostHandlers(exchange, router, null, error).then(Mono.error(error));
                         });
             });
@@ -317,16 +306,13 @@ public class VortexHandler {
             Router<ServerRequest, ?> router,
             Object response,
             Throwable error) {
-        // Cast to ServerResponse for handlers (if applicable)
         ServerResponse serverResponse = response instanceof ServerResponse ? (ServerResponse) response : null;
 
-        // postHandle chain (only if no error)
         Mono<Void> postHandle = error == null
                 ? Flux.fromIterable(handlers)
                         .concatMap(handler -> handler.postHandle(exchange, router, null, serverResponse)).then()
                 : Mono.empty();
 
-        // afterCompletion chain (always executed, with or without error)
         Mono<Void> afterCompletion = Flux.fromIterable(handlers)
                 .concatMap(handler -> handler.afterCompletion(exchange, router, null, serverResponse, error)).then();
 
@@ -355,30 +341,27 @@ public class VortexHandler {
         int maxRetries = assets.getRetries() != null && assets.getRetries() > 0 ? assets.getRetries() : 0;
 
         if (maxRetries == 0) {
-            // No retries configured
             return Retry.max(0);
         }
 
         return Retry.backoff(maxRetries, Duration.ofMillis(100)).maxBackoff(Duration.ofSeconds(5)).filter(throwable -> {
-            // Only retry on transient errors
             if (throwable instanceof java.util.concurrent.TimeoutException) {
-                return true; // Reactor timeout
+                return true;
             }
             if (throwable instanceof java.net.ConnectException) {
-                return true; // Connection refused
+                return true;
             }
             if (throwable instanceof java.net.SocketTimeoutException) {
-                return true; // Read timeout
+                return true;
             }
             if (throwable instanceof java.io.IOException) {
-                return true; // Network I/O errors
+                return true;
             }
             if (throwable instanceof WebClientResponseException) {
                 WebClientResponseException ex = (WebClientResponseException) throwable;
-                // Retry on 5xx server errors and 429 Too Many Requests
                 return ex.getStatusCode().is5xxServerError() || ex.getStatusCode().value() == 429;
             }
-            return false; // Don't retry on other errors (4xx client errors, etc.)
+            return false;
         }).doBeforeRetry(retrySignal -> {
             long attempt = retrySignal.totalRetries() + 1;
             Throwable failure = retrySignal.failure();
@@ -422,7 +405,6 @@ public class VortexHandler {
         return Mono.fromCallable(() -> {
             String mockData = assets.getResult();
 
-            // If no mock data is configured, return empty response
             if (mockData == null || mockData.isEmpty()) {
                 Logger.warn(
                         true,
@@ -442,10 +424,9 @@ public class VortexHandler {
 
             return mockData;
         }).flatMap(mockData -> {
-            // Build response based on the requested format
             Formats format = context.getFormat();
             if (format == null) {
-                format = Formats.JSON; // Default to JSON
+                format = Formats.JSON;
             }
 
             return ServerResponse.ok().contentType(format.getMediaType()).bodyValue(mockData);

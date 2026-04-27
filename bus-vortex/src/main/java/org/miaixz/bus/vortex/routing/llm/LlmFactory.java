@@ -37,6 +37,12 @@ import org.miaixz.bus.logger.Logger;
 public class LlmFactory {
 
     /**
+     * Creates an LLM provider factory.
+     */
+    public LlmFactory() {
+    }
+
+    /**
      * Cache for storing created LLM provider instances.
      * <p>
      * The cache key is a composite string in the format: {@code "type:endpoint:apiKey"}. This ensures that providers
@@ -62,7 +68,6 @@ public class LlmFactory {
         Assert.notBlank(endpoint, "Endpoint URL must not be blank");
         Assert.notBlank(apiKey, "API key must not be blank");
 
-        // Create cache key: type:endpoint:apiKey
         final String cacheKey = type + ":" + endpoint + ":" + apiKey;
 
         return providerCache.computeIfAbsent(cacheKey, key -> {

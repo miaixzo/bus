@@ -19,9 +19,11 @@
 */
 package org.miaixz.bus.cortex.builtin.batch;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.cortex.Type;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -35,6 +37,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class BatchOperation {
+
+    /**
+     * Creates an empty batch operation descriptor.
+     */
+    public BatchOperation() {
+    }
 
     /**
      * Type of operation to apply to each entry in the batch.
@@ -54,16 +62,70 @@ public class BatchOperation {
         /**
          * Update all entries in the batch.
          */
-        UPDATE
+        UPDATE,
+        /**
+         * Upsert all entries in the batch.
+         */
+        UPSERT
     }
 
     /**
+     * Conflict handling policy for batch writes.
+     */
+    public enum ConflictPolicy {
+        /**
+         * Keep the existing entry when a conflict is detected.
+         */
+        SKIP,
+        /**
+         * Overwrite the existing entry.
+         */
+        OVERWRITE,
+        /**
+         * Abort the batch when a conflict is detected.
+         */
+        FAIL_FAST
+    }
+
+    /**
+     * Target registry type applied when entries do not specify one explicitly.
+     */
+    private Type type;
+    /**
+     * Target namespace applied when entries do not specify one explicitly.
+     */
+    private String namespace_id;
+    /**
+     * Optional operator or caller label attached to the batch request.
+     */
+    private String operator;
+    /**
+     * Optional request identifier for tracing one batch.
+     */
+    private String requestId;
+    /**
+     * Whether the batch should be evaluated without applying durable mutations.
+     */
+    private boolean dryRun;
+    /**
+     * Maximum parallelism hint for implementations that support concurrent processing.
+     */
+    private int parallelism = 1;
+    /**
+     * Conflict policy applied when entries already exist.
+     */
+    private ConflictPolicy conflictPolicy = ConflictPolicy.OVERWRITE;
+    /**
+     * Whether batch execution should continue after one failed entry.
+     */
+    private boolean continueOnError = true;
+    /**
      * Entries to process in this batch.
      */
-    private List<Assets> entries;
+    private List<Assets> entries = new ArrayList<>();
     /**
      * Operation to apply to the entries.
      */
-    private OperationType operationType;
+    private OperationType operationType = OperationType.UPSERT;
 
 }

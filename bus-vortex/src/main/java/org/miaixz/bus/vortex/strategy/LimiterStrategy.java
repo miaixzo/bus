@@ -92,22 +92,18 @@ public class LimiterStrategy extends AbstractStrategy {
     @Override
     public Mono<Void> apply(ServerWebExchange exchange, Chain chain) {
         return Mono.deferContextual(contextView -> {
-            // --- This initial setup is synchronous, non-blocking, and fast ---
             final Context context = contextView.get(Context.class);
 
             Assert.notNull(context, "Context must be initialized by a preceding strategy.");
             Assert.notNull(context.getAssets(), "Assets must be resolved by a preceding strategy.");
 
             String methodVersion = context.getAssets().getMethod() + context.getAssets().getVersion();
-            String clientIp = context.getX_request_ip(); // Populated by a preceding strategy
+            String clientIp = context.getX_request_ip();
 
             Logger.debug(true, "Limiter", "[{}] Applying rate limits for: {}", clientIp, methodVersion);
-            // --- End of sync setup ---
 
-            // 1. Asynchronously fetch all applicable limiters in parallel
             return getLimiter(methodVersion, clientIp).flatMap(limiters -> {
                 if (limiters.isEmpty()) {
-                    // No limiters to apply, proceed immediately
                     Logger.debug(
                             true,
                             "Limiter",
@@ -124,18 +120,13 @@ public class LimiterStrategy extends AbstractStrategy {
                         clientIp,
                         limiters.size());
 
-                // 2. Create a list of async tasks for acquiring each limiter
-                // Each acquire() call is blocking and must be offloaded
                 List<Mono<Void>> acquireMonos = limiters.stream()
                         .map(
                                 limiter -> Mono.fromRunnable(() -> limiter.acquire())
-                                        // Offload the blocking acquire() call
                                         .subscribeOn(Schedulers.boundedElastic()).then())
                         .collect(Collectors.toList());
 
-                // 3. Wait for all limiters to be acquired in parallel
                 return Mono.when(acquireMonos).doOnError(ex -> {
-                    // Log the rate limit failure specifically
                     Logger.warn(
                             false,
                             "Limiter",
@@ -144,7 +135,6 @@ public class LimiterStrategy extends AbstractStrategy {
                             methodVersion,
                             ex.getMessage());
                 }).then(Mono.fromRunnable(() -> {
-                    // This logging runs after all acquisitions are successful
                     Logger.info(
                             true,
                             "Limiter",
@@ -152,9 +142,7 @@ public class LimiterStrategy extends AbstractStrategy {
                             clientIp,
                             exchange.getRequest().getURI().getPath(),
                             methodVersion);
-                }))
-                        // 4. Proceed to the next strategy in the chain
-                        .then(chain.apply(exchange));
+                })).then(chain.apply(exchange));
             });
         });
     }
@@ -175,18 +163,14 @@ public class LimiterStrategy extends AbstractStrategy {
      * @return A {@code Mono<Set<Limiter>>} that emits the set of all found {@link Limiter} instances.
      */
     private Mono<Set<Limiter>> getLimiter(String methodVersion, String ip) {
-        // Create a stream of keys to check
         Stream<String> limitKeys = Stream.of(methodVersion, ip + methodVersion);
 
         Logger.debug(true, "Limiter", "[{}] Searching for limiter keys: [{}]", ip, methodVersion);
 
-        // For each key, create a Mono that fetches the limiter, offloading the
-        // blocking registry.get() call to the boundedElastic scheduler.
         List<Mono<Limiter>> limiterMonos = limitKeys
                 .map(key -> Mono.fromCallable(() -> registry.get(key)).subscribeOn(Schedulers.boundedElastic()))
                 .collect(Collectors.toList());
 
-        // Run all fetches in parallel and collect non-null results into a Set
         return Flux.merge(limiterMonos).filter(Objects::nonNull).collect(Collectors.toSet());
     }
 

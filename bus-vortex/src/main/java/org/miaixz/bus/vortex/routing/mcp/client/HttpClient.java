@@ -121,9 +121,8 @@ public abstract class HttpClient implements McpClient {
     @Override
     public Mono<Object> callTool(String toolName, Map<String, Object> arguments) {
         Logger.info("Calling tool '{}' on remote HTTP-based service with args: {}", toolName, arguments);
-        return this.webClient.post().uri("/mcp/call") // Assuming a standard endpoint for tool calls
-                .bodyValue(Map.of("toolName", toolName, "arguments", arguments)).retrieve().bodyToMono(String.class)
-                .map(response -> response); // Cast String to Object to match interface
+        return this.webClient.post().uri("/mcp/call").bodyValue(Map.of("toolName", toolName, "arguments", arguments))
+                .retrieve().bodyToMono(String.class).map(response -> response);
     }
 
     /**
@@ -136,11 +135,9 @@ public abstract class HttpClient implements McpClient {
      */
     @Override
     public Mono<Boolean> isHealthy() {
-        return this.webClient.get().uri("/health") // Assuming a /health endpoint
-                .retrieve().toBodilessEntity() // We only care about the status code, not the body
+        return this.webClient.get().uri("/health").retrieve().toBodilessEntity()
                 .map(response -> response.getStatusCode().is2xxSuccessful())
-                .timeout(Duration.ofSeconds(5), Mono.just(false)) // Consider it unhealthy on timeout
-                .onErrorReturn(false); // Consider it unhealthy on any connection error
+                .timeout(Duration.ofSeconds(5), Mono.just(false)).onErrorReturn(false);
     }
 
     /**
@@ -153,10 +150,7 @@ public abstract class HttpClient implements McpClient {
      * @return A {@code Mono} emitting a list of tools.
      */
     private Mono<List<Tool>> listToolsFromRemote() {
-        // A real implementation would look like this:
-        // return this.webClient.get().uri("/mcp/listTools").retrieve().bodyToFlux(Tool.class).collectList();
 
-        // Simulation for demonstration purposes:
         Tool remoteTool = new Tool("remote_tool", "A tool from a remote HTTP service", Collections.emptyMap());
         return Mono.just(List.of(remoteTool));
     }

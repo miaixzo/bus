@@ -83,11 +83,9 @@ public class StrategyFactory {
      */
     public StrategyFactory(List<Strategy> chain) {
         Logger.info(true, "Chain", "Initializing StrategyFactory...");
-        // Sort all strategies by their @Order annotation to establish a definitive execution order.
         chain.sort(AnnotationAwareOrderComparator.INSTANCE);
         Logger.info(true, "Chain", "Found {} total strategies, sorting and caching chains...", chain.size());
 
-        // Pre-calculate and cache all strategy chains.
         this.chain = List.copyOf(chain);
         Logger.info(
                 true,
@@ -159,14 +157,12 @@ public class StrategyFactory {
     public List<Strategy> getStrategiesFor(ServerWebExchange exchange) {
         String path = exchange.getRequest().getPath().value();
 
-        // This method is called before creating Context and IP, therefore using [N/A]
         final String ipTag = "[N/A]";
 
         if (Logger.isDebugEnabled()) {
             Logger.debug(true, "Chain", "{} Selecting strategy chain for path: {}", ipTag, path);
         }
 
-        // 1. Url requests are identified by a unique path segment.
         if (Args.isCstRequest(path)) {
             Logger.debug(
                     true,
@@ -177,7 +173,6 @@ public class StrategyFactory {
             return this.cstChain;
         }
 
-        // 2. MCP requests are identified by a unique path prefix.
         if (Args.isMcpRequest(path)) {
             Logger.debug(
                     true,
@@ -188,7 +183,6 @@ public class StrategyFactory {
             return this.mcpChain;
         }
 
-        // 3. MQ requests.
         if (Args.isMqRequest(path)) {
             Logger.debug(
                     true,
@@ -199,7 +193,6 @@ public class StrategyFactory {
             return this.mqChain;
         }
 
-        // 3. grcp requests.
         if (Args.isGrpcRequest(path)) {
             Logger.debug(
                     true,
@@ -210,7 +203,6 @@ public class StrategyFactory {
             return this.grpcChain;
         }
 
-        // 4. grcp requests.
         if (Args.isWsRequest(path)) {
             Logger.debug(
                     true,
@@ -221,7 +213,6 @@ public class StrategyFactory {
             return this.wsChain;
         }
 
-        // 5. LLM requests.
         if (Args.isLlmRequest(path)) {
             Logger.debug(
                     true,
@@ -232,7 +223,6 @@ public class StrategyFactory {
             return this.llmChain;
         }
 
-        // 6. For all other requests (e.g., REST), apply the full, default strategy chain.
         Logger.debug(
                 true,
                 "Chain",
@@ -253,7 +243,6 @@ public class StrategyFactory {
      *         otherwise.
      */
     public boolean isApplicableToMcp(Strategy strategy) {
-        // MCP requests are simple proxies; they don't need complex validation like authorization or licensing.
         return !(strategy instanceof QualifierStrategy || strategy instanceof LimiterStrategy);
     }
 
@@ -267,9 +256,6 @@ public class StrategyFactory {
      * @return {@code true} if the strategy should be part of the MQ chain, {@code false} otherwise.
      */
     public boolean isApplicableToMq(Strategy strategy) {
-        // Example: MQ requests might have their own authorization logic but share others.
-        // For now, we assume all strategies apply to MQ, but this can be customized.
-        // This logic is identical to default, but is kept separate for future customization.
         return true;
     }
 
@@ -282,8 +268,6 @@ public class StrategyFactory {
      * @return {@code true} if the strategy should be part of the CST chain, {@code false} otherwise.
      */
     public boolean isApplicableToGrpc(Strategy strategy) {
-        // For now, we assume all strategies apply to CST.
-        // This logic is identical to default, but is kept separate for future customization.
         return true;
     }
 
@@ -296,8 +280,6 @@ public class StrategyFactory {
      * @return {@code true} if the strategy should be part of the CST chain, {@code false} otherwise.
      */
     public boolean isApplicableToCst(Strategy strategy) {
-        // For now, we assume all strategies apply to CST.
-        // This logic is identical to default, but is kept separate for future customization.
         return true;
     }
 
@@ -312,7 +294,6 @@ public class StrategyFactory {
      *         otherwise.
      */
     public boolean isApplicableToLlm(Strategy strategy) {
-        // LLM requests skip QualifierStrategy (method/version validation) and LimiterStrategy
         return !(strategy instanceof QualifierStrategy || strategy instanceof LimiterStrategy);
     }
 

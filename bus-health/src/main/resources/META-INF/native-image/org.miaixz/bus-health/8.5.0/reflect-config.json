@@ -176,6 +176,28 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.health.builtin.gpu.AdlKit",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.health.builtin.gpu.NvmlKit",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.health.builtin.hardware.Baseboard",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -308,6 +330,28 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.health.builtin.hardware.GpuStats",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.health.builtin.hardware.GpuTicks",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.health.builtin.hardware.GraphicsCard",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -408,6 +452,17 @@
   },
   {
     "name": "org.miaixz.bus.health.builtin.hardware.PowerSource$CapacityUnits",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.health.builtin.hardware.Printer",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -583,7 +638,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.builtin.hardware.common.AbstractNetworkIF$information",
+    "name": "org.miaixz.bus.health.builtin.hardware.common.AbstractPowerSource",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -594,7 +649,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.health.builtin.hardware.common.AbstractPowerSource",
+    "name": "org.miaixz.bus.health.builtin.hardware.common.AbstractPrinter",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -639,6 +694,28 @@
   },
   {
     "name": "org.miaixz.bus.health.builtin.hardware.common.AbstractVirtualMemory",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.health.builtin.hardware.common.NoOpGpuStats",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.health.builtin.jna.Adl",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -749,6 +826,17 @@
   },
   {
     "name": "org.miaixz.bus.health.builtin.jna.ByRef$CloseableULONGptrByReference",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.health.builtin.jna.Nvml",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1540,6 +1628,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.health.linux.hardware.LinuxGpuStats",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.health.linux.hardware.LinuxGraphicsCard",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -1881,6 +1980,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.health.mac.driver.IOReportClient",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.health.mac.driver.ThreadInfo",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -2014,6 +2124,17 @@
   },
   {
     "name": "org.miaixz.bus.health.mac.hardware.MacGlobalMemory",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.health.mac.hardware.MacGpuStats",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2267,6 +2388,17 @@
   },
   {
     "name": "org.miaixz.bus.health.mac.jna.IOKit$SMCVal",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.health.mac.jna.IOReport",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2574,6 +2706,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.health.unix.hardware.UnixPrinter",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.health.unix.jna.AixLibc",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -2696,6 +2839,17 @@
   },
   {
     "name": "org.miaixz.bus.health.unix.jna.CLibrary$Sockaddr",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.health.unix.jna.Cups",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4279,6 +4433,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.health.windows.driver.DxgiAdapterInfo",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.health.windows.driver.EnumWindows",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -4291,6 +4456,17 @@
   },
   {
     "name": "org.miaixz.bus.health.windows.driver.LogicalProcessorInformation",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.health.windows.driver.perfmon.GpuInformation",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4676,6 +4852,17 @@
   },
   {
     "name": "org.miaixz.bus.health.windows.driver.registry.ThreadPerformanceData$PerfCounterBlock",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.health.windows.driver.wmi.LhmSensor",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -5093,6 +5280,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.health.windows.driver.wmi.Win32Printer",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.health.windows.driver.wmi.Win32Process",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -5269,6 +5467,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.health.windows.hardware.WindowsGpuStats",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.health.windows.hardware.WindowsGraphicsCard",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -5347,6 +5556,17 @@
   },
   {
     "name": "org.miaixz.bus.health.windows.hardware.WindowsPowerSource",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.health.windows.hardware.WindowsPrinter",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -5600,6 +5820,17 @@
   },
   {
     "name": "org.miaixz.bus.health.windows.jna.PowrProf$SystemBatteryState",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.health.windows.jna.WindowsDxgi",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,

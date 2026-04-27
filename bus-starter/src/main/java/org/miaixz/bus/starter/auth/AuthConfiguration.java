@@ -19,14 +19,17 @@
 */
 package org.miaixz.bus.starter.auth;
 
-import jakarta.annotation.Resource;
 import org.miaixz.bus.auth.cache.AuthCache;
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.cache.Factory;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+
+import jakarta.annotation.Resource;
 
 /**
  * Auto-configuration class for authorization, responsible for setting up authorization-related beans.
@@ -35,7 +38,8 @@ import org.springframework.context.annotation.Bean;
  * <ul>
  * <li>{@link AuthService} - The authorization service provider factory for creating various third-party authorization
  * services.</li>
- * <li>{@link CacheX} - The authorization cache implementation, using {@link AuthCache} as the default.</li>
+ * <li>{@link CacheX} - The authorization cache implementation, using a dedicated auth cache, the shared default cache,
+ * or {@link AuthCache} as fallback.</li>
  * </ul>
  * <p>
  * <strong>Configuration Example (in {@code application.yml}):</strong>
@@ -44,7 +48,7 @@ import org.springframework.context.annotation.Bean;
  * bus:
  *   auth:
  *     cache:
- *       type: default  # Use the default cache
+ *       type: redis
  * }
  * </pre>
  * <p>
@@ -84,26 +88,50 @@ public class AuthConfiguration {
      * @return A configured instance of the authorization service provider factory.
      */
     @Bean
-    public AuthService authProviderFactory(CacheX cache) {
+    @ConditionalOnMissingBean(AuthService.class)
+    public AuthService authProviderFactory(@Qualifier("authCache") CacheX<String, Object> cache) {
         return new AuthService(this.properties, cache);
     }
 
     /**
-     * Creates the default authorization cache implementation bean.
+     * Creates the authorization cache implementation bean.
      * <p>
-     * This method creates a default cache implementation under the following conditions:
+     * Resolution order:
      * <ul>
-     * <li>No custom {@link CacheX} bean exists in the container.</li>
-     * <li>The cache type in the configuration properties is set to "default" (which is the default setting).</li>
+     * <li>If {@code bus.auth.cache.*} configures a concrete backend type, create an auth-specific cache through
+     * {@link Factory}.</li>
+     * <li>If {@code bus.auth.cache.type=default} or no auth-specific backend is configured, reuse the shared
+     * {@code defaultCache} bean when available.</li>
+     * <li>If neither auth nor global cache is configured, fall back to {@link AuthCache#INSTANCE}.</li>
      * </ul>
      *
-     * @return The default authorization cache implementation instance.
+     * @param factory              shared cache factory
+     * @param defaultCacheProvider shared default cache provider
+     * @return authorization cache implementation
      */
-    @Bean
-    @ConditionalOnMissingBean(CacheX.class)
-    @ConditionalOnProperty(name = GeniusBuilder.AUTH + ".cache.type", havingValue = "default", matchIfMissing = true)
-    public CacheX authCache() {
-        return AuthCache.INSTANCE;
+    @Bean("authCache")
+    @ConditionalOnMissingBean(name = "authCache")
+    public CacheX<String, Object> authCache(
+            Factory factory,
+            @Qualifier("defaultCache") ObjectProvider<CacheX<String, Object>> defaultCacheProvider) {
+        if (hasAuthBackend()) {
+            return factory.initialize(this.properties.getCache());
+        }
+        CacheX<String, Object> defaultCache = defaultCacheProvider.getIfAvailable();
+        return defaultCache != null ? defaultCache : AuthCache.INSTANCE;
+    }
+
+    /**
+     * Returns whether auth defines its own concrete cache backend instead of reusing the shared default cache.
+     *
+     * @return {@code true} when auth should initialize a dedicated backend
+     */
+    private boolean hasAuthBackend() {
+        if (this.properties.getCache() == null) {
+            return false;
+        }
+        String type = this.properties.getCache().getType();
+        return StringKit.isNotBlank(type) && !"default".equalsIgnoreCase(type.trim());
     }
 
 }

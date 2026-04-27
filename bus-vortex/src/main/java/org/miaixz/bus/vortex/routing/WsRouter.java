@@ -96,7 +96,6 @@ public class WsRouter implements Router<ServerRequest, ServerResponse> {
                     path,
                     context.getAssets().getMethod());
 
-            // Check if this is a WebSocket upgrade request
             boolean isWebSocketUpgrade = input.headers().header(HTTP.UPGRADE).stream()
                     .anyMatch(h -> h.equalsIgnoreCase("websocket"));
 
@@ -122,7 +121,6 @@ public class WsRouter implements Router<ServerRequest, ServerResponse> {
                     method,
                     path);
 
-            // Delegate to executor
             return executor.execute(context, null);
         });
     }

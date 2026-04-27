@@ -21,6 +21,7 @@ package org.miaixz.bus.starter.cache;
 
 import java.util.Map;
 
+import org.miaixz.bus.cache.Options;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.starter.jdbc.JdbcProperties;
@@ -30,12 +31,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Configuration properties for the cache system.
+ * Starter-side configuration properties for the cache system.
  * <p>
  * Binds to the {@code bus.cache.*} namespace in {@code application.yml}. Two independent concerns are configured here:
  * </p>
  * <ol>
- * <li><b>Cache storage backend</b> — where data is stored (top-level fields + {@link Redis}).</li>
+ * <li><b>Cache storage backend</b> — where data is stored (inherited from {@link Options}, including
+ * {@link Options.Redis}).</li>
  * <li><b>Collector backend</b> — where hit/miss statistics are stored ({@link JdbcProperties}).</li>
  * </ol>
  *
@@ -93,56 +95,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @ConfigurationProperties(prefix = GeniusBuilder.CACHE)
-public class CacheProperties {
-
-    /**
-     * Cache storage backend type.
-     * <p>
-     * Supported values:
-     * </p>
-     * <ul>
-     * <li>{@code memory} — in-process {@link org.miaixz.bus.cache.metric.MemoryCache}</li>
-     * <li>{@code noop} — no-op cache for testing {@link org.miaixz.bus.cache.metric.NoOpCache}</li>
-     * <li>{@code caffeine} — high-performance in-process {@link org.miaixz.bus.cache.metric.CaffeineCache}</li>
-     * <li>{@code guava} — Guava-backed in-process {@link org.miaixz.bus.cache.metric.GuavaCache}</li>
-     * <li>{@code redis} — single-node Redis {@link org.miaixz.bus.cache.metric.RedisCache}</li>
-     * <li>{@code redis-cluster} — Redis Cluster {@link org.miaixz.bus.cache.metric.RedisClusterCache}</li>
-     * <li>{@code memcached} — Memcached {@link org.miaixz.bus.cache.metric.MemcachedCache}</li>
-     * </ul>
-     */
-    private String type;
-
-    /**
-     * Maximum number of entries. Applies to {@code memory}, {@code caffeine}, {@code guava}.
-     */
-    private long maxSize = 10_000;
-
-    /**
-     * Default TTL in milliseconds. Applies to {@code memory}, {@code caffeine}, {@code guava}. Per-method expiry is
-     * controlled by {@code @Cached(expire = ...)}.
-     */
-    private long expire = 3_600_000;
-
-    /**
-     * Comma-separated {@code host:port} server list for {@code memcached}. Example:
-     * {@code 192.168.1.1:11211,192.168.1.2:11211}
-     * <p>
-     * For Redis cluster nodes, use {@link Redis#nodes} instead.
-     * </p>
-     */
-    private String nodes;
-
-    /**
-     * Redis connection configuration. Applies to {@code redis} and {@code redis-cluster}.
-     */
-    private Redis redis = new Redis();
+public class CacheProperties extends Options {
 
     /**
      * Named {@link CacheX} instances for advanced multi-cache scenarios.
      * <p>
      * Because {@link CacheX} is an interface, this map <strong>cannot</strong> be bound from YAML. Provide it
      * programmatically via {@code @Bean}. When present, it takes precedence over the auto-configured backend defined by
-     * {@link #type}.
+     * {@link Options#getType()}.
      * </p>
      */
     private Map<String, CacheX> map;
@@ -158,66 +118,12 @@ public class CacheProperties {
      * <li>{@code postgresql} — PostgreSQL via JDBC</li>
      * <li>{@code sqlite} — embedded SQLite database</li>
      * <li>{@code bus} — bridges to bus-metrics (Prometheus / Micrometer / OTel), backend determined by
-     * {@code bus.metrics.provider} configuration</li> *
+     * {@code bus.metrics.provider} configuration</li>
      * </ul>
      * Connection pool fields ({@code url}, {@code username}, {@code password}, {@code maxActive}, etc.) apply to
      * JDBC-backed metrics types.
      * </p>
      */
     private JdbcProperties provider = new JdbcProperties();
-
-    /**
-     * Redis connection and pool settings.
-     * <p>
-     * Shared by both {@code redis} (single-node) and {@code redis-cluster} modes. Single-node uses {@link #host} and
-     * {@link #port}; cluster mode uses {@link #nodes}.
-     * </p>
-     */
-    @Getter
-    @Setter
-    public static class Redis {
-
-        /**
-         * Redis server hostname. Applies to single-node ({@code redis}) mode.
-         */
-        private String host = "localhost";
-
-        /**
-         * Redis server port. Applies to single-node ({@code redis}) mode.
-         */
-        private int port = 6379;
-
-        /**
-         * Redis authentication password. Applies to both {@code redis} and {@code redis-cluster}.
-         */
-        private String password;
-
-        /**
-         * Connection and read timeout in milliseconds.
-         */
-        private int timeout = 2000;
-
-        /**
-         * Maximum total connections in the pool.
-         */
-        private int maxActive = 8;
-
-        /**
-         * Maximum idle connections in the pool.
-         */
-        private int maxIdle = 8;
-
-        /**
-         * Minimum idle connections in the pool.
-         */
-        private int minIdle = 0;
-
-        /**
-         * Comma-separated {@code host:port} cluster node list. Applies to {@code redis-cluster} mode. Example:
-         * {@code 192.168.1.1:6379,192.168.1.2:6379,192.168.1.3:6379}
-         */
-        private String nodes;
-
-    }
 
 }

@@ -57,6 +57,9 @@ public class CompositeProber implements Prober {
     public Status check(Instance instance) {
         long maxLatency = 0L;
         for (Prober prober : checkers) {
+            if (prober == null || !prober.supports(instance)) {
+                continue;
+            }
             Status result = prober.check(instance);
             if (!result.isHealthy()) {
                 return result;
@@ -65,7 +68,7 @@ public class CompositeProber implements Prober {
                 maxLatency = result.getLatencyMs();
             }
         }
-        return Status.ok(maxLatency);
+        return Status.ok(maxLatency, name());
     }
 
 }

@@ -98,8 +98,6 @@ public final class Holder {
             throw new IllegalArgumentException("Performance configuration cannot be null");
         }
 
-        // Use Instances.put() for thread-safe singleton registration
-        // ConcurrentHashMap ensures thread-safety for concurrent writes
         Instances.put(PERFORMANCE_KEY, performance);
         Instances.put(INIT_MARKER_KEY, Boolean.TRUE);
         Logger.info(true, "Holder", "Performance configuration initialized:");
@@ -143,8 +141,7 @@ public final class Holder {
             Logger.info(true, "Holder", "  - Pool Name: vortex-http-pool");
             Logger.info(true, "Holder", "  - Max Connections: {}", perf.getMaxConnections());
             return ConnectionProvider.builder("vortex-http-pool").maxConnections(perf.getMaxConnections())
-                    .pendingAcquireTimeout(Duration.ofSeconds(45)).pendingAcquireMaxCount(-1) // Unlimited pending
-                                                                                              // acquires
+                    .pendingAcquireTimeout(Duration.ofSeconds(45)).pendingAcquireMaxCount(-1)
                     .maxIdleTime(Duration.ofSeconds(20)).maxLifeTime(Duration.ofMinutes(5)).build();
         });
     }
@@ -162,8 +159,6 @@ public final class Holder {
      * @return The ConnectionProvider if initialized, or {@code null} if never created
      */
     public static ConnectionProvider getConnectionProviderIfPresent() {
-        // If key exists, return the ConnectionProvider without calling supplier
-        // If key doesn't exist, supplier returns null, which is NOT stored in the map
         return Instances.get(CONNECTION_PROVIDER_KEY, () -> null);
     }
 
@@ -176,7 +171,6 @@ public final class Holder {
      * @return The current performance configuration (never null)
      */
     public static Performance get() {
-        // Use Instances.get() with supplier to provide default configuration
         return Instances.get(PERFORMANCE_KEY, () -> Performance.builder().build());
     }
 

@@ -84,7 +84,7 @@ public enum Formats {
         try {
             return Formats.valueOf(name.toUpperCase());
         } catch (IllegalArgumentException e) {
-            return JSON; // Default to JSON if the format is unknown
+            return JSON;
         }
     }
 

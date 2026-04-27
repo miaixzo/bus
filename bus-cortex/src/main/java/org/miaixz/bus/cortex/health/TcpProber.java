@@ -36,6 +36,38 @@ import org.miaixz.bus.cortex.Status;
 public class TcpProber implements Prober {
 
     /**
+     * TCP connect timeout in milliseconds.
+     */
+    private final int timeoutMs;
+
+    /**
+     * Creates a TCP prober with the default timeout.
+     */
+    public TcpProber() {
+        this(Builder.DEFAULT_HEALTH_TIMEOUT_MS);
+    }
+
+    /**
+     * Creates a TCP prober with an explicit timeout.
+     *
+     * @param timeoutMs timeout in milliseconds
+     */
+    public TcpProber(long timeoutMs) {
+        this.timeoutMs = (int) Math.max(1L, timeoutMs);
+    }
+
+    /**
+     * Returns whether this prober can attempt a TCP connection to the supplied instance.
+     *
+     * @param instance candidate instance
+     * @return {@code true} when TCP probing is supported
+     */
+    @Override
+    public boolean supports(Instance instance) {
+        return instance != null && instance.getHost() != null && instance.getPort() != null;
+    }
+
+    /**
      * Attempts a TCP socket connection to the instance's host and port.
      *
      * @param instance instance to probe
@@ -47,11 +79,12 @@ public class TcpProber implements Prober {
         int port = instance.getPort() != null ? instance.getPort() : 80;
         long start = System.currentTimeMillis();
         try (Socket socket = new Socket()) {
-            socket.connect(new InetSocketAddress(host, port), (int) Builder.DEFAULT_HEALTH_TIMEOUT_MS);
+            socket.connect(new InetSocketAddress(host, port), timeoutMs);
             long latency = System.currentTimeMillis() - start;
-            return Status.ok(latency);
+            return Status.ok(latency, name()).detail("host", host).detail("port", Integer.toString(port));
         } catch (Exception e) {
-            return Status.fail("TCP check failed: " + e.getMessage());
+            return Status.fail("TCP check failed: " + e.getMessage(), name()).detail("host", host)
+                    .detail("port", Integer.toString(port));
         }
     }
 

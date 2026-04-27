@@ -21,13 +21,11 @@
  * Active liveness and health probe implementations for registered service instances.
  * <p>
  * Every class in this package implements the {@link org.miaixz.bus.cortex.Prober} contract and returns a {@code Status}
- * carrying a boolean healthy flag and the measured round-trip latency in milliseconds. {@code HttpProber} sends an HTTP
- * GET to a configurable URL and considers the instance healthy when the response status code is 2xx. {@code TcpProber}
- * opens a TCP socket to the instance host and port and reports healthy when the connection succeeds within the timeout
- * defined by {@code Builder.DEFAULT_HEALTH_TIMEOUT_MS}. {@code ProcessProber} checks whether a local OS process with a
- * given PID is still alive. {@code McpPingProber} sends an MCP ping request over HTTP to verify that a remote MCP
- * server is responsive. {@code CompositeProber} fans out to an ordered list of delegate probers and reports healthy
- * only when every delegate succeeds; the first failure short-circuits the remaining delegates.
+ * carrying the health flag, measured latency, and diagnostic details. {@code HttpProber} performs an HTTP GET against
+ * the instance health endpoint. {@code TcpProber} attempts a TCP socket connection within the configured timeout.
+ * {@code ProcessProber} checks whether a local OS process with a given PID is still alive. {@code McpPingProber} posts
+ * a JSON-RPC ping to the MCP endpoint. {@code CompositeProber} runs an ordered list of delegate probers, skips
+ * delegates that do not support the target instance, and returns the first failure or a combined success result.
  *
  * @author Kimi Liu
  * @since Java 21+

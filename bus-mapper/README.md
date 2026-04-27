@@ -48,7 +48,7 @@ Supports **18** mainstream and domestic databases:
 
 **Domestic Databases**: Shenzhou General (Oscar), HandGo Database (CirroData), Xugu Database (Xugudb)
 
-**Enterprise Databases**: DB2, Informix, AS400, Firebird, HerdDB
+**Enterprise Databases**: DB2, Informix, AS400, Firebird, Herddb
 
 -----
 

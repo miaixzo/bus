@@ -21,11 +21,13 @@ package org.miaixz.bus.starter.pay;
 
 import jakarta.annotation.Resource;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.cache.Factory;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pay.Complex;
 import org.miaixz.bus.pay.cache.PayCache;
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
@@ -49,25 +51,55 @@ public class PayConfiguration {
      * Creates the {@link PayService} bean.
      *
      * @param complex The complex payment parameters.
-     * @param cache   The cache instance.
+     * @param cache   The payment cache instance.
      * @return A new instance of {@link PayService}.
      */
     @Bean
-    public PayService payProviderFactory(Complex complex, CacheX cache) {
+    @ConditionalOnMissingBean(PayService.class)
+    public PayService payProviderFactory(Complex complex, @Qualifier("payCache") CacheX<String, Object> cache) {
         return new PayService(this.properties, complex, cache);
     }
 
     /**
-     * Creates a default {@link CacheX} bean if no other bean of the same type is present. This bean is only created if
-     * the property `bus.pay.cache.type` is set to `default` or is missing.
+     * Creates the payment cache implementation bean.
+     * <p>
+     * Resolution order:
+     * <ul>
+     * <li>If {@code bus.pay.cache.*} configures a concrete backend type, create a pay-specific cache through
+     * {@link Factory}.</li>
+     * <li>If {@code bus.pay.cache.type=default} or no pay-specific backend is configured, reuse the shared
+     * {@code defaultCache} bean when available.</li>
+     * <li>If neither pay nor global cache is configured, fall back to {@link PayCache#INSTANCE}.</li>
+     * </ul>
      *
-     * @return The default {@link CacheX} instance for payment caching.
+     * @param factory              shared cache factory
+     * @param defaultCacheProvider shared default cache provider
+     * @return payment cache implementation
+     *
      */
-    @Bean
-    @ConditionalOnMissingBean(CacheX.class)
-    @ConditionalOnProperty(name = GeniusBuilder.PAY + ".cache.type", havingValue = "default", matchIfMissing = true)
-    public CacheX cache() {
-        return PayCache.INSTANCE;
+    @Bean("payCache")
+    @ConditionalOnMissingBean(name = "payCache")
+    public CacheX<String, Object> payCache(
+            Factory factory,
+            @Qualifier("defaultCache") ObjectProvider<CacheX<String, Object>> defaultCacheProvider) {
+        if (hasPayBackend()) {
+            return factory.initialize(this.properties.getCache());
+        }
+        CacheX<String, Object> defaultCache = defaultCacheProvider.getIfAvailable();
+        return defaultCache != null ? defaultCache : PayCache.INSTANCE;
+    }
+
+    /**
+     * Returns whether pay defines its own concrete cache backend instead of reusing the shared default cache.
+     *
+     * @return {@code true} when pay should initialize a dedicated backend
+     */
+    private boolean hasPayBackend() {
+        if (this.properties.getCache() == null) {
+            return false;
+        }
+        String type = this.properties.getCache().getType();
+        return StringKit.isNotBlank(type) && !"default".equalsIgnoreCase(type.trim());
     }
 
 }

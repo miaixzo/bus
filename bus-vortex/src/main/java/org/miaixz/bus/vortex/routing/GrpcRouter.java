@@ -83,7 +83,6 @@ public class GrpcRouter implements Router<ServerRequest, ServerResponse> {
                     "[GRPC_ROUTER_START] - Routing request to gRPC service: {}",
                     context.getAssets().getMethod());
 
-            // Read request body and delegate to executor
             return input.bodyToMono(String.class).switchIfEmpty(Mono.just("{}"))
                     .flatMap(body -> executor.execute(context, body)).doOnError(
                             error -> Logger.error(

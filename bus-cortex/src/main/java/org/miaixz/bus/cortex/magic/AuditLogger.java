@@ -21,9 +21,12 @@ package org.miaixz.bus.cortex.magic;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Comparator;
 
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.cortex.Builder;
+import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.extra.json.JsonKit;
 
 /**
@@ -57,13 +60,60 @@ public class AuditLogger {
      * @param operator  actor performing the operation
      */
     public void log(String namespace, String operation, String id, String operator) {
-        String key = Builder.AUDIT_PREFIX + namespace + ":" + operation + ":" + id;
+        log(namespace, operation, id, operator, Map.of());
+    }
+
+    /**
+     * Records an audit event with optional structured details.
+     *
+     * @param namespace logical namespace
+     * @param operation operation name
+     * @param id        resource identifier
+     * @param operator  actor performing the operation
+     * @param details   optional detail payload
+     */
+    public void log(String namespace, String operation, String id, String operator, Map<String, Object> details) {
+        long now = DateKit.current();
+        String key = auditPrefix(namespace, operation, id) + ":" + now + ":" + Long.toHexString(System.nanoTime());
         Map<String, Object> payload = new LinkedHashMap<>();
         payload.put("op", operation);
         payload.put("id", id);
         payload.put("operator", operator);
-        payload.put("ts", System.currentTimeMillis());
+        payload.put("ts", now);
+        if (details != null && !details.isEmpty()) {
+            payload.put("details", new LinkedHashMap<>(details));
+        }
         cacheX.write(key, JsonKit.toJsonString(payload), 7 * 24 * 3600_000L);
+    }
+
+    /**
+     * Loads one audit entry from the backing cache.
+     *
+     * @param namespace namespace
+     * @param operation operation
+     * @param id        resource identifier
+     * @return serialized audit payload or {@code null}
+     */
+    public String get(String namespace, String operation, String id) {
+        Map<String, Object> entries = cacheX.scan(auditPrefix(namespace, operation, id) + ":");
+        if (entries == null || entries.isEmpty()) {
+            return null;
+        }
+        String latestKey = entries.keySet().stream().max(Comparator.naturalOrder()).orElse(null);
+        Object payload = latestKey == null ? null : entries.get(latestKey);
+        return payload == null ? null : payload.toString();
+    }
+
+    /**
+     * Builds the common audit-key prefix shared by all records of the same resource.
+     *
+     * @param namespace namespace
+     * @param operation operation
+     * @param id        resource identifier
+     * @return audit-key prefix
+     */
+    private String auditPrefix(String namespace, String operation, String id) {
+        return Builder.AUDIT_PREFIX + CortexIdentity.namespace(namespace) + ":" + operation + ":" + id;
     }
 
 }

@@ -19,28 +19,26 @@
 */
 package org.miaixz.bus.starter.cache;
 
-import java.util.Arrays;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.Collector;
 import org.miaixz.bus.cache.Context;
+import org.miaixz.bus.cache.Factory;
 import org.miaixz.bus.cache.collect.*;
-import org.miaixz.bus.cache.metric.*;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.metrics.builtin.CacheMetricsAdapter;
 import org.miaixz.bus.starter.jdbc.JdbcProperties;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 
 import jakarta.annotation.Resource;
-import redis.clients.jedis.HostAndPort;
-import redis.clients.jedis.JedisCluster;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
 
 /**
  * Auto-configuration for the cache system.
@@ -48,8 +46,8 @@ import redis.clients.jedis.JedisPoolConfig;
  * <p>
  * Reads {@link CacheProperties} and wires two independent components:
  * <ol>
- * <li><b>Cache storage backend</b> — selected by {@code bus.cache.type}.</li>
- * <li><b>Collector backend</b> — selected by {@code bus.cache.provider.type}.</li>
+ * <li><b>Cache storage backend</b> - selected by {@code bus.cache.type}.</li>
+ * <li><b>Collector backend</b> - selected by {@code bus.cache.provider.type}.</li>
  * </ol>
  *
  * <p>
@@ -73,20 +71,50 @@ public class CacheConfiguration {
     CacheProperties properties;
 
     /**
+     * Exposes the shared cache factory used by both cache and Cortex auto-configuration.
+     *
+     * @return cache factory
+     */
+    @Bean
+    @ConditionalOnMissingBean(Factory.class)
+    public Factory cacheFactory() {
+        return new Factory();
+    }
+
+    /**
+     * Creates the default cache backend from {@code bus.cache.*}.
+     *
+     * @param factory shared cache factory
+     * @return default cache backend
+     */
+    @Bean("defaultCache")
+    @Primary
+    @ConditionalOnProperty(prefix = "bus.cache", name = "type")
+    @ConditionalOnMissingBean(name = "defaultCache")
+    public CacheX<String, Object> defaultCache(Factory factory) {
+        return factory.initialize(this.properties);
+    }
+
+    /**
      * Creates the {@link AspectjCacheProxy} bean.
      * <p>
-     * Returns {@code null} when neither a backend type nor a metrics type is configured, leaving caching inactive.
+     * Returns {@code null} when no cache backend is configured, leaving caching inactive.
      * </p>
      *
      * @return configured proxy, or {@code null} if no configuration is present
      * @throws IllegalArgumentException on unknown type values or missing required properties
      */
     @Bean
-    public AspectjCacheProxy cacheConfigurer() {
+    public AspectjCacheProxy cacheConfigurer(
+            Factory factory,
+            @Qualifier("defaultCache") ObjectProvider<CacheX<String, Object>> defaultCacheProvider) {
         try {
             Map<String, CacheX> caches = this.properties.getMap();
             if (MapKit.isEmpty(caches)) {
-                CacheX<?, ?> backend = createBackend();
+                CacheX<String, Object> backend = defaultCacheProvider.getIfAvailable();
+                if (backend == null && factory.hasBackend(this.properties)) {
+                    backend = factory.initialize(this.properties);
+                }
                 if (backend != null) {
                     caches = Map.of("default", backend);
                 }
@@ -95,55 +123,18 @@ public class CacheConfiguration {
             JdbcProperties providerCfg = this.properties.getProvider();
             boolean hasCollector = providerCfg != null && StringKit.isNotEmpty(providerCfg.getKey());
 
-            if (MapKit.isEmpty(caches) && !hasCollector) {
+            if (MapKit.isEmpty(caches)) {
                 return null;
             }
 
             Context context = Context.newConfig(caches);
-            context.setCollector(createCollector(providerCfg));
+            if (hasCollector) {
+                context.setCollector(createCollector(providerCfg));
+            }
             return new AspectjCacheProxy(context);
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to configure cache: " + e.getMessage(), e);
         }
-    }
-
-    private CacheX<?, ?> createBackend() throws Exception {
-        String type = this.properties.getType();
-        if (StringKit.isEmpty(type)) {
-            return null;
-        }
-        CacheProperties.Redis redisCfg = this.properties.getRedis();
-        return switch (type.toLowerCase()) {
-            case "memory" -> new MemoryCache<>();
-            case "noop" -> new NoOpCache<>();
-            case "caffeine" -> new CaffeineCache<>(this.properties.getMaxSize(), this.properties.getExpire());
-            case "guava" -> new GuavaCache<>(this.properties.getMaxSize(), this.properties.getExpire());
-            case "redis" -> {
-                JedisPoolConfig cfg = new JedisPoolConfig();
-                cfg.setMaxTotal(redisCfg.getMaxActive());
-                cfg.setMaxIdle(redisCfg.getMaxIdle());
-                cfg.setMinIdle(redisCfg.getMinIdle());
-                yield new RedisCache<>(new JedisPool(cfg, redisCfg.getHost(), redisCfg.getPort(), redisCfg.getTimeout(),
-                        redisCfg.getPassword()));
-            }
-            case "redis-cluster" -> {
-                Set<HostAndPort> nodes = Arrays.stream(redisCfg.getNodes().split(",")).map(s -> {
-                    String[] p = s.trim().split(":");
-                    if (p.length != 2) {
-                        throw new IllegalArgumentException(
-                                "Invalid Redis cluster node format (expected host:port): " + s.trim());
-                    }
-                    try {
-                        return new HostAndPort(p[0], Integer.parseInt(p[1]));
-                    } catch (NumberFormatException e) {
-                        throw new IllegalArgumentException("Invalid port in Redis cluster node: " + s.trim(), e);
-                    }
-                }).collect(Collectors.toSet());
-                yield new RedisClusterCache<>(new JedisCluster(nodes));
-            }
-            case "memcached" -> new MemcachedCache<>(this.properties.getNodes());
-            default -> throw new IllegalArgumentException("Unknown cache backend type: " + type);
-        };
     }
 
     private Collector createCollector(JdbcProperties cfg) {

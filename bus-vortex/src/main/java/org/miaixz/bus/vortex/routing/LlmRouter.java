@@ -46,6 +46,9 @@ import reactor.core.publisher.Mono;
  */
 public class LlmRouter implements Router<ServerRequest, ServerResponse> {
 
+    /**
+     * Executor responsible for provider selection and LLM request dispatch.
+     */
     private final LlmExecutor executor;
 
     /**
@@ -71,7 +74,6 @@ public class LlmRouter implements Router<ServerRequest, ServerResponse> {
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
 
-            // Extract model name from path: /router/llm/{model}
             final String path = input.path();
             final String modelName = extractModelName(path);
 
@@ -81,7 +83,6 @@ public class LlmRouter implements Router<ServerRequest, ServerResponse> {
                         "{\"error\":{\"message\":\"Model name is required in path: /router/llm/{model}\",\"type\":\"invalid_request_error\",\"code\":\"model_name_missing\"}}");
             }
 
-            // Extract project API key from header
             final String projectApiKey = input.headers().firstHeader("X-API-Key");
             if (StringKit.isBlank(projectApiKey)) {
                 Logger.warn(true, "LLM", "{} Project API key is missing in header", context.getX_request_ip());
@@ -89,14 +90,12 @@ public class LlmRouter implements Router<ServerRequest, ServerResponse> {
                         "{\"error\":{\"message\":\"Project API key is required in X-API-Key header\",\"type\":\"authentication_error\",\"code\":\"api_key_missing\"}}");
             }
 
-            // Store model name, project API key, and ServerRequest in context
             context.getParameters().put("modelName", modelName);
             context.getParameters().put("projectApiKey", projectApiKey);
             context.getParameters().put("serverRequest", input);
 
             Logger.debug(true, "LLM", "{} Routing request to model: {}", context.getX_request_ip(), modelName);
 
-            // Delegate to executor
             return executor.execute(context, null);
         });
     }

@@ -21,10 +21,12 @@ package org.miaixz.bus.starter.pay;
 
 import java.util.Map;
 
+import org.miaixz.bus.cache.Options;
 import org.miaixz.bus.pay.Context;
 import org.miaixz.bus.pay.Registry;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -48,5 +50,15 @@ public class PayProperties {
      * value is the {@link Context} containing the specific configuration for that provider.
      */
     private Map<Registry, Context> type;
+
+    /**
+     * Nested cache backend options for the payment module.
+     * <p>
+     * When present, these options initialize a pay-specific cache instance. When absent, pay falls back to the shared
+     * default cache configuration or the legacy in-memory singleton.
+     * </p>
+     */
+    @NestedConfigurationProperty
+    private Options cache;
 
 }

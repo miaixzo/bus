@@ -22,13 +22,11 @@ package org.miaixz.bus.cortex.registry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.cortex.Builder;
-import org.miaixz.bus.cortex.Assets;
-import org.miaixz.bus.cortex.Vector;
-import org.miaixz.bus.cortex.Listener;
-import org.miaixz.bus.cortex.Registry;
+import org.miaixz.bus.cortex.*;
+import org.miaixz.bus.cortex.magic.watch.WatchManager;
 import org.miaixz.bus.extra.json.JsonKit;
 
 /**
@@ -53,9 +51,9 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
      */
     protected final Class<T> type;
     /**
-     * Cache key segment that identifies this registrar's species bucket.
+     * Stable registry type handled by this registrar.
      */
-    protected final String typePrefix;
+    protected final Type registryType;
 
     /**
      * Constructs an AbstractRegistry with shared infrastructure components.
@@ -63,14 +61,14 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
      * @param cacheX       shared cache used for persistence
      * @param watchManager watch subscription manager
      * @param type         Java type of the managed entries
-     * @param typePrefix   cache key segment identifying the species bucket
+     * @param registryType stable registry type
      */
     protected AbstractRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, Class<T> type,
-            String typePrefix) {
+            Type registryType) {
         this.cacheX = cacheX;
         this.watchManager = watchManager;
         this.type = type;
-        this.typePrefix = typePrefix;
+        this.registryType = Objects.requireNonNull(registryType, "registryType");
     }
 
     /**
@@ -81,7 +79,7 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
      * @return cache key string
      */
     protected String buildKey(String namespace, String id) {
-        return Builder.REG_PREFIX + namespace + ":" + typePrefix + ":" + id;
+        return RegistryKeys.entry(namespace, registryType, id);
     }
 
     /**
@@ -91,7 +89,7 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
      * @return cache key prefix string
      */
     protected String buildScanPrefix(String namespace) {
-        return Builder.REG_PREFIX + namespace + ":" + typePrefix + ":";
+        return RegistryKeys.entryPrefix(namespace, registryType);
     }
 
     /**
@@ -102,7 +100,7 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
     @Override
     public void register(T entry) {
         long ttl = entry.getTtl() > 0 ? entry.getTtl() : 3600_000L;
-        String key = buildKey(entry.getNamespace(), entry.getId());
+        String key = buildKey(entry.getNamespace_id(), entry.getId());
         cacheX.write(key, JsonKit.toJsonString(entry), ttl);
     }
 
@@ -125,7 +123,9 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
      */
     @Override
     public List<T> query(Vector vector) {
-        String ns = vector.getNamespace() != null ? vector.getNamespace() : Builder.DEFAULT_NAMESPACE;
+        RegistryQuery query = RegistryScopeMapping.query(vector, registryType);
+        Vector criteria = RegistryScopeMapping.toVector(query);
+        String ns = query.getNamespace_id();
         String prefix = buildScanPrefix(ns);
         Map<String, Object> raw = cacheX.scan(prefix);
         List<T> result = new ArrayList<>();
@@ -134,13 +134,13 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
             if (entry == null) {
                 continue;
             }
-            if (vector.getId() != null && !vector.getId().equals(entry.getId())) {
+            if (criteria.getId() != null && !criteria.getId().equals(entry.getId())) {
                 continue;
             }
             result.add(entry);
         }
-        int offset = vector.getOffset() > 0 ? vector.getOffset() : 0;
-        int limit = vector.getLimit() > 0 ? vector.getLimit() : 100;
+        int offset = criteria.getOffset() > 0 ? criteria.getOffset() : 0;
+        int limit = criteria.getLimit() > 0 ? criteria.getLimit() : 100;
         int fromIdx = Math.min(offset, result.size());
         int toIdx = Math.min(fromIdx + limit, result.size());
         return result.subList(fromIdx, toIdx);
@@ -154,18 +154,19 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
      * @return watch identifier used to cancel the subscription
      */
     @Override
-    public String watch(Vector vector, Listener<T> listener) {
-        return watchManager.add(vector, listener);
+    public String watch(Vector vector, Listener<Watch<T>> listener) {
+        RegistryWatchScope scope = RegistryScopeMapping.watch(vector, registryType);
+        return watchManager.add(RegistryScopeMapping.toVector(scope), listener);
     }
 
     /**
      * Cancels a watch subscription by ID.
      *
-     * @param watchId watch identifier previously returned by {@link #watch}
+     * @param watch_id watch identifier previously returned by {@link #watch}
      */
     @Override
-    public void unwatch(String watchId) {
-        watchManager.remove(watchId);
+    public void unwatch(String watch_id) {
+        watchManager.remove(watch_id);
     }
 
     /**
@@ -181,7 +182,10 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
         if (raw instanceof String s) {
             return JsonKit.toPojo(s, type);
         }
-        return type.cast(raw);
+        if (type.isInstance(raw)) {
+            return type.cast(raw);
+        }
+        return JsonKit.toPojo(JsonKit.toJsonString(raw), type);
     }
 
 }

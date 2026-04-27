@@ -88,38 +88,27 @@ public class PrimaryFilter extends AbstractFilter {
      */
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        // 1. Run fast, non-blocking pre-checks synchronously.
         String path = exchange.getRequest().getPath().value();
-        // Note: IP is not available yet, as context is not created.
         Logger.info(true, "Filter", "[N/A] Request to path: {} ", path);
 
-        // 2. Check if the request path matches any known gateway prefixes.
         if (!Args.isKnownRequest(path)) {
             Logger.warn(false, "Filter", "[N/A] Blocked request to unknown path: {}", path);
-            // Throwing is acceptable here as it's a synchronous, definitive rejection.
             throw new ValidateException(ErrorCode._BLOCKED);
         }
 
-        // 3. Check for path traversal attack patterns.
         if (isPathTraversalAttempt(path)) {
             Logger.warn(false, "Filter", "[N/A] Path traversal attempt detected: {}", path);
             throw new ValidateException(ErrorCode._LIMITER);
         }
 
-        // 4. Get the strategies. This is a *potentially blocking* call.
-        // We wrap it in fromCallable and offload it from the event loop.
         return Mono.fromCallable(() -> factory.getStrategiesFor(exchange)).subscribeOn(Schedulers.boundedElastic())
                 .flatMap(strategies -> {
-                    // 5. Create and initialize the context. This logic now runs *after*
-                    // the blocking call has completed on another thread.
                     Context context = new Context();
                     context.setX_request_id(exchange.getRequest().getId());
                     context.setTimestamp(DateKit.current());
                     context.setHeaders(exchange.getRequest().getHeaders().toSingleValueMap());
                     context.setHttpMethod(exchange.getRequest().getMethod());
-                    // IP is not set here; it's set by the *first* strategy (RequestStrategy)
 
-                    // 6. Store the context in the exchange attributes for fallback access.
                     exchange.getAttributes().put(Context.$, context);
 
                     Logger.info(
@@ -131,8 +120,6 @@ public class PrimaryFilter extends AbstractFilter {
                             strategies.stream().map(strategy -> strategy.getClass().getSimpleName())
                                     .collect(Collectors.joining(" -> ")));
 
-                    // 7. Create a new strategy chain and execute it.
-                    // The context is written to the Reactor context.
                     return new Chain(strategies, chain).apply(exchange)
                             .contextWrite(ctx -> ctx.put(Context.class, context));
                 });
@@ -209,12 +196,9 @@ public class PrimaryFilter extends AbstractFilter {
                         this.index + 1,
                         this.list.size(),
                         strategy.getClass().getSimpleName());
-                // Create the next link in the chain and pass it to the current strategy.
                 Chain next = new Chain(this, this.index + 1);
                 return strategy.apply(exchange, next);
             }
-            // If all strategies in the inner chain have been executed, invoke the original WebFlux filter chain
-            // to proceed to the next WebFilter or, eventually, the VortexHandler.
             return this.chain.filter(exchange);
         }
     }
@@ -226,7 +210,6 @@ public class PrimaryFilter extends AbstractFilter {
      * @return {@code true} if a potential traversal attempt is detected, {@code false} otherwise.
      */
     private boolean isPathTraversalAttempt(String path) {
-        // Check for various characteristics of path traversal attacks, including plain text and URL-encoded forms.
         return path.contains("../") || path.contains("..\\") || path.contains("%2e%2e%2f") || path.contains("%2e%2e\\")
                 || path.contains("..%2f") || path.contains("..%5c");
     }

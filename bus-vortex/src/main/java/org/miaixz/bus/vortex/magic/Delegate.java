@@ -25,7 +25,6 @@ import org.miaixz.bus.core.basic.normal.Consts;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -44,8 +43,13 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 @AllArgsConstructor
-@RequiredArgsConstructor
 public class Delegate {
+
+    /**
+     * Creates an empty delegate response.
+     */
+    public Delegate() {
+    }
 
     /**
      * The message object containing the result status. On failure, it holds the error code and error message. On

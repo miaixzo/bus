@@ -22,7 +22,8 @@ package org.miaixz.bus.cortex.health;
 import org.miaixz.bus.cortex.Prober;
 import org.miaixz.bus.cortex.Status;
 import org.miaixz.bus.cortex.Instance;
-import org.miaixz.bus.http.Httpx;
+import org.miaixz.bus.cortex.Builder;
+import org.miaixz.bus.cortex.Callout;
 
 /**
  * HTTP-based prober.
@@ -31,6 +32,38 @@ import org.miaixz.bus.http.Httpx;
  * @since Java 21+
  */
 public class HttpProber implements Prober {
+
+    /**
+     * Request timeout in milliseconds.
+     */
+    private final long timeoutMs;
+
+    /**
+     * Creates an HTTP prober with the default timeout.
+     */
+    public HttpProber() {
+        this(Builder.DEFAULT_HEALTH_TIMEOUT_MS);
+    }
+
+    /**
+     * Creates an HTTP prober with an explicit timeout.
+     *
+     * @param timeoutMs timeout in milliseconds
+     */
+    public HttpProber(long timeoutMs) {
+        this.timeoutMs = Math.max(1L, timeoutMs);
+    }
+
+    /**
+     * Returns whether this prober can probe the supplied instance through HTTP.
+     *
+     * @param instance candidate instance
+     * @return {@code true} when HTTP probing is supported
+     */
+    @Override
+    public boolean supports(Instance instance) {
+        return instance != null && instance.getHost() != null && !"tcp".equalsIgnoreCase(instance.getScheme());
+    }
 
     /**
      * Performs an HTTP GET request to the instance's health endpoint.
@@ -46,16 +79,17 @@ public class HttpProber implements Prober {
         String path = instance.getHealthPath() != null ? instance.getHealthPath() : "/health";
         String url = scheme + "://" + host + ":" + port + path;
         long start = System.currentTimeMillis();
-        try {
-            String response = Httpx.get(url);
-            long latency = System.currentTimeMillis() - start;
-            if (response != null) {
-                return Status.ok(latency);
-            }
-            return Status.fail("Empty response from " + url);
-        } catch (Exception e) {
-            return Status.fail("HTTP check failed: " + e.getMessage());
+        Callout.Response response = Callout.get(url, timeoutMs);
+        long latency = System.currentTimeMillis() - start;
+        if (response.errorMessage() != null) {
+            return Status.fail("HTTP check failed: " + response.errorMessage(), name()).detail("url", url);
         }
+        if (response.isSuccessful()) {
+            return Status.ok(latency, name()).detail("url", url)
+                    .detail("statusCode", Integer.toString(response.statusCode()));
+        }
+        return Status.fail("HTTP status " + response.statusCode() + " from " + url, name()).detail("url", url)
+                .detail("statusCode", Integer.toString(response.statusCode()));
     }
 
 }

@@ -22,7 +22,6 @@ package org.miaixz.bus.core.basic.entity;
 import java.io.Serial;
 
 import jakarta.persistence.Transient;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -38,7 +37,6 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-@AllArgsConstructor
 public class Tracer extends Authorize {
 
     @Serial

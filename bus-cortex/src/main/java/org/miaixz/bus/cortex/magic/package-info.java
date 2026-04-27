@@ -18,19 +18,17 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Cross-cutting infrastructure shared by all Cortex sub-packages: structured audit logging, distributed identity
- * generation and instance lifecycle state tracking.
+ * Cross-cutting infrastructure shared by Cortex packages: structured audit logging, distributed identity generation,
+ * watch dispatch, reliable change-log records, and instance lifecycle state tracking.
  * <p>
- * {@code AuditLogger} records structured audit events backed by CacheX. Each call to
- * {@code log(namespace, operation, id, operator)} serialises the event fields — operation, entity ID, operator and
- * timestamp — as a JSON string and writes it under a namespaced key ({@code audit:namespace:operation:id}) with a 7-day
- * TTL retention window.
- * <p>
- * The {@code magic.identity} sub-package provides {@code IdGenerator} (defaults to {@code ID.objectId()}, extensible
- * via any {@code Supplier<String>}), {@code Sequence} (named CacheX-backed atomic counters) and {@code Fingerprint}
- * (SHA-256 hex identifier derived from host and port). The {@code magic.state} sub-package provides
- * {@code InstanceState} (the UP/DOWN/UNKNOWN/STARTING enum) and {@code InstanceStateHistory} (immutable
- * state-transition snapshot with timestamp and reason).
+ * {@code AuditLogger} writes JSON audit events with optional detail payloads to CacheX under time-suffixed audit keys
+ * and retains them for seven days. The {@code magic.identity} subpackage provides {@code CortexIdentity},
+ * {@code IdGenerator}, {@code Sequence}, and {@code Fingerprint} for shared identity normalization, IDs, ordered
+ * counters, and stable instance fingerprints. The {@code magic.watch} subpackage owns watch subscription lifecycle,
+ * dispatch ordering, async fan-out, namespace limits, and per-watch backlog handling. The {@code magic.event}
+ * subpackage owns the first-stage Cortex outbox abstractions and cache fallback store. The {@code magic.state}
+ * subpackage provides {@code InstanceState} (UP, DOWN, UNKNOWN, STARTING, and MAINTENANCE) plus mutable
+ * {@code InstanceStateHistory} records that capture observed state transitions with timestamps and diagnostic metadata.
  *
  * @author Kimi Liu
  * @since Java 21+

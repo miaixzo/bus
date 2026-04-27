@@ -21,10 +21,12 @@ package org.miaixz.bus.starter.storage;
 
 import jakarta.annotation.Resource;
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.cache.Factory;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.storage.cache.StorageCache;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
@@ -82,28 +84,51 @@ public class StorageConfiguration {
      * @return A fully configured {@code StorageService} instance.
      */
     @Bean
-    public StorageService storageService(CacheX cachex) {
+    @ConditionalOnMissingBean(StorageService.class)
+    public StorageService storageService(@Qualifier("storageCache") CacheX<String, Object> cachex) {
         return new StorageService(this.properties, cachex);
     }
 
     /**
-     * Creates the default {@link CacheX} bean for storage operations.
-     *
+     * Creates the storage cache implementation bean.
      * <p>
-     * This bean is only created if the following conditions are met:
-     * </p>
+     * Resolution order:
      * <ul>
-     * <li>No custom {@link CacheX} bean is already present in the container.</li>
-     * <li>The configuration property {@code bus.storage.cache.type} is set to "default" (or is missing).</li>
+     * <li>If {@code bus.storage.cache.*} configures a concrete backend type, create a storage-specific cache through
+     * {@link Factory}.</li>
+     * <li>If {@code bus.storage.cache.type=default} or no storage-specific backend is configured, reuse the shared
+     * {@code defaultCache} bean when available.</li>
+     * <li>If neither storage nor global cache is configured, fall back to {@link StorageCache#INSTANCE}.</li>
      * </ul>
      *
-     * @return The default storage cache implementation instance.
+     * @param factory              shared cache factory
+     * @param defaultCacheProvider shared default cache provider
+     * @return storage cache implementation
+     *
      */
-    @Bean
-    @ConditionalOnMissingBean(CacheX.class)
-    @ConditionalOnProperty(name = GeniusBuilder.STORAGE + ".cache.type", havingValue = "default", matchIfMissing = true)
-    public CacheX storageCache() {
-        return StorageCache.INSTANCE;
+    @Bean("storageCache")
+    @ConditionalOnMissingBean(name = "storageCache")
+    public CacheX<String, Object> storageCache(
+            Factory factory,
+            @Qualifier("defaultCache") ObjectProvider<CacheX<String, Object>> defaultCacheProvider) {
+        if (hasStorageBackend()) {
+            return factory.initialize(this.properties.getCache());
+        }
+        CacheX<String, Object> defaultCache = defaultCacheProvider.getIfAvailable();
+        return defaultCache != null ? defaultCache : StorageCache.INSTANCE;
+    }
+
+    /**
+     * Returns whether storage defines its own concrete cache backend instead of reusing the shared default cache.
+     *
+     * @return {@code true} when storage should initialize a dedicated backend
+     */
+    private boolean hasStorageBackend() {
+        if (this.properties.getCache() == null) {
+            return false;
+        }
+        String type = this.properties.getCache().getType();
+        return StringKit.isNotBlank(type) && !"default".equalsIgnoreCase(type.trim());
     }
 
 }

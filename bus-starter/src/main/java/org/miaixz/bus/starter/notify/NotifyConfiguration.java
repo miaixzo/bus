@@ -20,6 +20,7 @@
 package org.miaixz.bus.starter.notify;
 
 import jakarta.annotation.Resource;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
@@ -69,6 +70,7 @@ public class NotifyConfiguration {
      * @return A configured instance of the notification service provider factory.
      */
     @Bean
+    @ConditionalOnMissingBean(NotifyService.class)
     public NotifyService notifyProviderFactory() {
         return new NotifyService(this.properties);
     }

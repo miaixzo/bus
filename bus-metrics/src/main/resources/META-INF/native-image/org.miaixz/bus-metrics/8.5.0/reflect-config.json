@@ -99,6 +99,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.metrics.builtin.CacheMetricsAdapter",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.metrics.builtin.HttpMetrics",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,

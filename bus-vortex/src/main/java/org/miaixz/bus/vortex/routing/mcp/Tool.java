@@ -23,7 +23,6 @@ import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -39,9 +38,14 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
 @AllArgsConstructor
 public class Tool {
+
+    /**
+     * Creates an empty MCP tool description.
+     */
+    public Tool() {
+    }
 
     /**
      * The unique name of the tool (e.g., "getCurrentWeather", "sendEmail"). This name is used to invoke the tool.

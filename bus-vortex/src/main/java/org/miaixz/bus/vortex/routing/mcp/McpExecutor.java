@@ -30,8 +30,9 @@ import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.cortex.registry.AssetMetadata;
-import org.miaixz.bus.cortex.Species;
+import org.miaixz.bus.cortex.Type;
+import org.miaixz.bus.cortex.registry.RegistryAssets;
+import org.miaixz.bus.cortex.registry.RegistryIdentity;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.vortex.Context;
@@ -146,18 +147,10 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
         if (running.compareAndSet(false, true)) {
             Logger.info("MCP Service is starting...");
 
-            // 1. Asynchronously get assets, offloading the potentially blocking registry call
-            Mono.fromCallable(
-                    () -> this.assetsRegistry.getAll().stream()
-                            .filter(McpExecutor::isMcpAsset)
-                            .toList())
-                    .subscribeOn(Schedulers.boundedElastic()) // Offload the registry I/O
-                    .flatMapMany(Flux::fromIterable) // Convert the List<Assets> to a Flux<Assets>
-                    .flatMap(this::startAndRegisterClient) // 2. Start each client in parallel
-                    .doOnError(e -> Logger.error("Error during MCP service startup.", e)).subscribe(); // 3.
-                                                                                                       // Fire-and-forget
-                                                                                                       // (startup is
-                                                                                                       // async)
+            Mono.fromCallable(() -> this.assetsRegistry.getAll().stream().filter(McpExecutor::isMcpAsset).toList())
+                    .subscribeOn(Schedulers.boundedElastic()).flatMapMany(Flux::fromIterable)
+                    .flatMap(this::startAndRegisterClient)
+                    .doOnError(e -> Logger.error("Error during MCP service startup.", e)).subscribe();
 
             Logger.info("MCP Service startup process initiated for all clients.");
         }
@@ -179,35 +172,24 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
         if (running.compareAndSet(true, false)) {
             Logger.info("MCP Service is stopping...");
 
-            // 1. Asynchronously get assets, offloading the potentially blocking registry call
             Mono<List<Assets>> mcpAssets = Mono
-                    .fromCallable(() -> this.assetsRegistry.getAll().stream()
-                            .filter(McpExecutor::isMcpAsset)
-                            .toList())
+                    .fromCallable(() -> this.assetsRegistry.getAll().stream().filter(McpExecutor::isMcpAsset).toList())
                     .subscribeOn(Schedulers.boundedElastic());
 
-            // 2. Create a Mono to stop all processes (assumes provider.stop() is reactive)
             Mono<Void> stopProcesses = mcpAssets.flatMapMany(Flux::fromIterable)
-                    .filter(asset -> "stdio".equals(resolveMcpTransport(asset)))
-                    .flatMap(processProvider::stop)
+                    .filter(asset -> "stdio".equals(resolveMcpTransport(asset))).flatMap(processProvider::stop)
                     .doOnError(e -> Logger.error("Error stopping MCP process.", e)).then();
 
-            // 3. Create a Mono to close all clients in parallel
             Mono<Void> closeClients = Flux.fromIterable(clientCache.values())
                     .flatMap(
-                            client -> Mono.fromRunnable(client::close) // Wrap blocking I/O
-                                    .subscribeOn(Schedulers.boundedElastic()) // Offload each close
+                            client -> Mono.fromRunnable(client::close).subscribeOn(Schedulers.boundedElastic())
                                     .doOnError(e -> Logger.error("Error closing MCP client.", e)))
                     .then();
 
-            // 4. Run both stop/close operations in parallel and block until all are complete
-            // (Blocking is acceptable in SmartLifecycle.stop())
-            // Add timeout to prevent indefinite blocking during shutdown
             Mono.when(stopProcesses, closeClients).doOnError(e -> Logger.error("Error during MCP service shutdown.", e))
                     .timeout(java.time.Duration.ofSeconds(5))
                     .doOnError(e -> Logger.warn("MCP service shutdown timed out after 5 seconds")).block();
 
-            // 5. Clear cache after all resources are released
             clientCache.clear();
             Logger.info("MCP Service stopped.");
         }
@@ -240,9 +222,17 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
         return clientMono.flatMap(client -> client.initialize().doOnSuccess(v -> {
             clientCache.put(asset.getId(), client);
             Logger.info("Client for '{}' registered and initialized successfully.", asset.getName());
-        })).doOnError(e -> Logger.error("Failed to start or register client for asset '{}'", asset.getName(), e)).then();
+        })).doOnError(e -> Logger.error("Failed to start or register client for asset '{}'", asset.getName(), e))
+                .then();
     }
 
+    /**
+     * Creates the correct MCP client implementation for a runtime asset.
+     *
+     * @param asset   runtime MCP asset
+     * @param process process handle for stdio transports, otherwise {@code null}
+     * @return initialized client instance before protocol initialization
+     */
     private McpClient createClientForAsset(Assets asset, Process process) {
         return switch (resolveMcpTransport(asset)) {
             case "stdio" -> new StdioClient(asset, process);
@@ -257,10 +247,10 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
      * Determines whether a runtime asset belongs to the MCP registry view.
      *
      * @param asset runtime asset candidate
-     * @return {@code true} when the asset is non-null and its species is {@link Species#MCP}
+     * @return {@code true} when the asset is non-null and its type is {@link Type#MCP}
      */
     private static boolean isMcpAsset(Assets asset) {
-        return asset != null && asset.getSpecies() == Species.MCP;
+        return asset != null && Type.MCP.is(RegistryIdentity.type(asset.getType()));
     }
 
     /**
@@ -273,7 +263,7 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
      * @return normalized transport name used for client selection
      */
     private static String resolveMcpTransport(Assets asset) {
-        String transport = AssetMetadata.transportOf(asset);
+        String transport = RegistryAssets.mcp(asset).transport();
         if (StringKit.isNotEmpty(transport)) {
             return transport.toLowerCase(Locale.ROOT);
         }
@@ -311,26 +301,15 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
      * @return A {@code Mono} emitting a List of all available {@link Tool}s.
      */
     public Mono<List<Tool>> getTools() {
-        // 1. Get all client entries from the cache (non-blocking)
-        return Flux.fromIterable(clientCache.entrySet())
-                // 2. For each client, fetch its tools in parallel.
-                .flatMap(entry ->
-                // 3. Wrap the blocking client.getTools() call
-                Mono.fromCallable(() -> {
-                    String serviceName = entry.getKey();
-                    McpClient client = entry.getValue();
-                    // This is the blocking call. It's now wrapped and will be offloaded.
-                    return client.getTools().stream()
-                            .map(
-                                    tool -> new Tool(serviceName + TOOL_NAME_SEPARATOR + tool.getName(),
-                                            tool.getDescription(), tool.getInputSchema()))
-                            .collect(Collectors.toList());
-                }).subscribeOn(Schedulers.boundedElastic()) // 4. Offload the blocking call
-                )
-                // 5. We now have a Flux<List<Tool>>. Flatten it to a Flux<Tool>.
-                .flatMap(Flux::fromIterable)
-                // 6. Collect all tools from all clients into a single list.
-                .collectList();
+        return Flux.fromIterable(clientCache.entrySet()).flatMap(entry -> Mono.fromCallable(() -> {
+            String serviceName = entry.getKey();
+            McpClient client = entry.getValue();
+            return client.getTools().stream()
+                    .map(
+                            tool -> new Tool(serviceName + TOOL_NAME_SEPARATOR + tool.getName(), tool.getDescription(),
+                                    tool.getInputSchema()))
+                    .collect(Collectors.toList());
+        }).subscribeOn(Schedulers.boundedElastic())).flatMap(Flux::fromIterable).collectList();
     }
 
     /**
@@ -357,10 +336,8 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
                         .bodyValue("Service '" + serviceName + "' is not available or not found.");
             }
 
-            // Call the tool
             Mono<Object> toolResultMono = client.callTool(toolName, arguments);
 
-            // Format response based on stream mode
             boolean isStreaming = streamMode != null && streamMode == 2;
 
             if (isStreaming) {
@@ -382,7 +359,6 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
     private Mono<ServerResponse> executeStreamingToolCall(Mono<Object> toolResultMono) {
         return toolResultMono.flatMap(result -> {
             String resultJson = result.toString();
-            // Convert result to streaming data buffers
             Flux<DataBuffer> dataFlux = Flux.interval(Duration.ofMillis(10)).take(1).map(i -> {
                 byte[] bytes = resultJson.getBytes(Charset.UTF_8);
                 return new DefaultDataBufferFactory().wrap(bytes);

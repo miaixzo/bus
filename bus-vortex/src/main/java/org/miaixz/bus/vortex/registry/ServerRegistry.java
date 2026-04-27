@@ -78,14 +78,8 @@ public class ServerRegistry {
      * @return A {@code Flux} emitting a {@link Transmit} for each configured server.
      */
     public Flux<Transmit> getAllServerStatus() {
-        // 1. Wrap the potentially blocking I/O call in fromCallable
-        return Mono.fromCallable(() -> assetsRegistry.getAll())
-                // 2. Offload the blocking call from the event loop
-                .subscribeOn(Schedulers.boundedElastic())
-                // 3. Convert the resulting List into a Flux
-                .flatMapMany(Flux::fromIterable)
-                // 4. Process each item with the already-asynchronous method
-                .flatMap(this::buildServerStatusView);
+        return Mono.fromCallable(() -> assetsRegistry.getAll()).subscribeOn(Schedulers.boundedElastic())
+                .flatMapMany(Flux::fromIterable).flatMap(this::buildServerStatusView);
     }
 
     /**
@@ -96,7 +90,6 @@ public class ServerRegistry {
      * @return A {@code Mono} emitting the consolidated {@link Transmit}.
      */
     private Mono<Transmit> buildServerStatusView(Assets assets) {
-        // This method is already perfectly asynchronous. No changes needed.
         Mono<EnumValue.Lifecycle> statusMono = processProvider.getStatus(assets)
                 .defaultIfEmpty(EnumValue.Lifecycle.UNKNOWN);
         Mono<Metrics> metricsMono = metricsProvider.getMetrics(assets.getId())

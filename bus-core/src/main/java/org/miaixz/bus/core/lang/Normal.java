@@ -603,6 +603,11 @@ public class Normal {
     public static final String DISABLED = "disabled";
 
     /**
+     * The string "default".
+     */
+    public static final String DEFAULT = "default";
+
+    /**
      * The string "is".
      */
     public static final String IS = "is";

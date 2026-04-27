@@ -22,8 +22,8 @@ package org.miaixz.bus.core.basic.entity;
 import java.io.Serial;
 import java.io.Serializable;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -36,7 +36,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-@AllArgsConstructor
+@NoArgsConstructor
 public class Message implements Serializable {
 
     @Serial
@@ -56,11 +56,5 @@ public class Message implements Serializable {
      * The data payload of the response.
      */
     public Object data;
-
-    /**
-     * Constructs an empty message.
-     */
-    public Message() {
-    }
 
 }

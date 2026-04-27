@@ -19,9 +19,13 @@
 */
 package org.miaixz.bus.cortex.registry.prompt;
 
+import java.util.List;
+
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.cortex.registry.AbstractRegistry;
-import org.miaixz.bus.cortex.registry.WatchManager;
+import org.miaixz.bus.cortex.Type;
+import org.miaixz.bus.cortex.registry.RegistryStore;
+import org.miaixz.bus.cortex.registry.StoreBackedRegistry;
+import org.miaixz.bus.cortex.magic.watch.WatchManager;
 
 /**
  * Registry for prompt template definitions.
@@ -29,16 +33,17 @@ import org.miaixz.bus.cortex.registry.WatchManager;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class PromptRegistry extends AbstractRegistry<PromptAssets> {
+public class PromptRegistry extends StoreBackedRegistry<PromptAssets> {
 
     /**
      * Creates a PromptRegistry backed by the given CacheX and WatchManager.
      *
-     * @param cacheX       shared cache for persistence
+     * @param cacheX       shared cache for registry state
      * @param watchManager watch subscription manager
+     * @param store        durable store adapter
      */
-    public PromptRegistry(CacheX<String, Object> cacheX, WatchManager watchManager) {
-        super(cacheX, watchManager, PromptAssets.class, "prompt");
+    public PromptRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, RegistryStore<PromptAssets> store) {
+        super(cacheX, watchManager, store, PromptAssets.class, Type.PROMPT, List.of());
     }
 
 }

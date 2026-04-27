@@ -41,6 +41,12 @@ import reactor.core.publisher.Mono;
 public class AccessHandler extends AbstractHandler {
 
     /**
+     * Creates an access handler.
+     */
+    public AccessHandler() {
+    }
+
+    /**
      * Asynchronous pre-processing method, typically used for permission validation or initial setup.
      * <p>
      * This method logs basic request information (HTTP method and path) and then proceeds. Currently, it assumes
@@ -56,7 +62,6 @@ public class AccessHandler extends AbstractHandler {
     @Override
     public Mono<Boolean> preHandle(ServerWebExchange exchange, Object service, Object args) {
         return Mono.fromCallable(() -> {
-            // Get context and IP
             Context context = exchange.getAttribute(Context.$);
             String ip = (context != null) ? context.getX_request_ip() : "N/A";
 
@@ -72,7 +77,7 @@ public class AccessHandler extends AbstractHandler {
                     method,
                     path);
 
-            return true; // Assume validation passes
+            return true;
         });
     }
 
@@ -91,7 +96,6 @@ public class AccessHandler extends AbstractHandler {
     @Override
     public Mono<Void> postHandle(ServerWebExchange exchange, Object service, Object args, Object result) {
         return Mono.fromRunnable(() -> {
-            // Get context and IP
             Context context = exchange.getAttribute(Context.$);
             String ip = (context != null) ? context.getX_request_ip() : "N/A";
 
@@ -132,7 +136,6 @@ public class AccessHandler extends AbstractHandler {
             Object result,
             Throwable exception) {
         return Mono.fromRunnable(() -> {
-            // Get context and IP
             Context context = exchange.getAttribute(Context.$);
             String ip = (context != null) ? context.getX_request_ip() : "N/A";
 

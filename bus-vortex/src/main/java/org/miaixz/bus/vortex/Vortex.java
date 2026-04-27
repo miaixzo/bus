@@ -89,14 +89,12 @@ public class Vortex implements SmartLifecycle {
     public void stop() {
         if (running.compareAndSet(true, false) && disposableServer != null) {
             try {
-                // Dispose the HTTP server first
                 disposableServer.disposeNow();
                 Logger.info("Vortex server stopped successfully on port: {}", disposableServer.port());
             } catch (Exception e) {
                 Logger.error("Error while stopping Vortex server", e);
             }
 
-            // Close the ConnectionProvider to release all connections
             try {
                 ConnectionProvider connectionProvider = Holder.getConnectionProviderIfPresent();
                 if (connectionProvider != null) {

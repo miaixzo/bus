@@ -23,7 +23,6 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -39,9 +38,14 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
 @AllArgsConstructor
 public class LlmResponse {
+
+    /**
+     * Creates an empty LLM response.
+     */
+    public LlmResponse() {
+    }
 
     /**
      * Unique identifier for the completion.
@@ -81,6 +85,12 @@ public class LlmResponse {
     public static class Choice {
 
         /**
+         * Creates an empty LLM choice.
+         */
+        public Choice() {
+        }
+
+        /**
          * The index of this choice.
          */
         private Integer index;
@@ -105,6 +115,12 @@ public class LlmResponse {
     public static class Message {
 
         /**
+         * Creates an empty LLM response message.
+         */
+        public Message() {
+        }
+
+        /**
          * The role of the message author.
          */
         private String role;
@@ -122,6 +138,12 @@ public class LlmResponse {
     @Getter
     @Setter
     public static class Usage {
+
+        /**
+         * Creates an empty token usage snapshot.
+         */
+        public Usage() {
+        }
 
         /**
          * Number of tokens in the prompt. JSON field: prompt_tokens

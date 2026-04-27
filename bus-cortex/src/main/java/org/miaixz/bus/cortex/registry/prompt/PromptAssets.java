@@ -19,11 +19,15 @@
 */
 package org.miaixz.bus.cortex.registry.prompt;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+import jakarta.persistence.Transient;
+import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.cortex.Assets;
-import org.miaixz.bus.cortex.Species;
+import org.miaixz.bus.cortex.Type;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.json.JsonKit;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -34,40 +38,178 @@ import lombok.Setter;
  * @author Kimi Liu
  * @since Java 21+
  */
-@Getter
-@Setter
+@SuperBuilder
 public class PromptAssets extends Assets {
 
     /**
-     * Prompt name exposed for lookup and invocation.
+     * Prompt-specific metadata view.
      */
-    private String name;
-    /**
-     * Prompt template content.
-     */
-    private String template;
-    /**
-     * Declared template variables accepted by the prompt.
-     */
-    private List<String> variables;
-    /**
-     * Tags attached to the prompt for discovery.
-     */
-    private List<String> tags;
-    /**
-     * Human-readable description of the prompt.
-     */
-    private String description;
-    /**
-     * Additional labels associated with the prompt.
-     */
-    private Map<String, String> labels;
+    @Transient
+    private Meta meta;
 
     /**
-     * Creates a prompt assets entry with type preset to {@link Species#PROMPT}.
+     * Creates a prompt assets entry with type preset to {@link Type#PROMPT}.
      */
     public PromptAssets() {
-        setSpecies(Species.PROMPT);
+        setType(Type.PROMPT.key());
+    }
+
+    /**
+     * Replaces the raw metadata payload and clears the parsed prompt metadata view.
+     *
+     * @param metadata raw metadata JSON
+     */
+    @Override
+    public void metadata(String metadata) {
+        super.metadata(metadata);
+        this.meta = null;
+    }
+
+    /**
+     * Returns prompt-specific metadata parsed from the raw asset metadata JSON payload.
+     *
+     * @return prompt metadata
+     */
+    public Meta meta() {
+        if (meta == null) {
+            meta = Meta.from(getMetadata());
+        }
+        return meta;
+    }
+
+    /**
+     * Replaces prompt-specific metadata and writes it back to the raw asset metadata JSON payload.
+     *
+     * @param meta prompt metadata
+     */
+    public void meta(Meta meta) {
+        this.meta = meta == null ? new Meta() : meta;
+        super.metadata(this.meta.merge());
+    }
+
+    /**
+     * Writes the current prompt metadata view back to the raw asset metadata JSON payload.
+     *
+     * @return this asset
+     */
+    public PromptAssets normalizeMeta() {
+        meta(meta());
+        return this;
+    }
+
+    /**
+     * Returns prompt template content.
+     *
+     * @return template content
+     */
+    public String template() {
+        return meta().getTemplate();
+    }
+
+    /**
+     * Stores prompt template content into prompt metadata.
+     *
+     * @param template template content
+     */
+    public void template(String template) {
+        Meta meta = meta();
+        meta.setTemplate(template);
+        meta(meta);
+    }
+
+    /**
+     * Returns declared template variables accepted by the prompt.
+     *
+     * @return variables
+     */
+    public List<String> variables() {
+        return meta().getVariables();
+    }
+
+    /**
+     * Stores declared template variables into prompt metadata.
+     *
+     * @param variables variables
+     */
+    public void variables(List<String> variables) {
+        Meta meta = meta();
+        meta.setVariables(variables == null ? null : new ArrayList<>(variables));
+        meta(meta);
+    }
+
+    /**
+     * Returns tags attached to the prompt.
+     *
+     * @return tags
+     */
+    public List<String> tags() {
+        return meta().getTags();
+    }
+
+    /**
+     * Stores tags into prompt metadata.
+     *
+     * @param tags tags
+     */
+    public void tags(List<String> tags) {
+        Meta meta = meta();
+        meta.setTags(tags == null ? null : new ArrayList<>(tags));
+        meta(meta);
+    }
+
+    /**
+     * Prompt-specific metadata payload stored directly in the raw asset metadata JSON payload.
+     */
+    @Getter
+    @Setter
+    public static class Meta {
+
+        /**
+         * Prompt template content.
+         */
+        private String template;
+        /**
+         * Declared template variables accepted by the prompt.
+         */
+        private List<String> variables;
+        /**
+         * Tags attached to the prompt for discovery.
+         */
+        private List<String> tags;
+
+        /**
+         * Creates an empty prompt metadata view.
+         */
+        public Meta() {
+        }
+
+        /**
+         * Parses prompt metadata from a raw metadata JSON payload.
+         *
+         * @param metadata raw metadata JSON
+         * @return parsed prompt metadata
+         */
+        public static Meta from(String metadata) {
+            if (StringKit.isBlank(metadata)) {
+                return new Meta();
+            }
+            try {
+                Meta meta = JsonKit.toPojo(metadata, Meta.class);
+                return meta == null ? new Meta() : meta;
+            } catch (Exception ignore) {
+                return new Meta();
+            }
+        }
+
+        /**
+         * Converts this prompt metadata to JSON.
+         *
+         * @return metadata JSON
+         */
+        public String merge() {
+            return JsonKit.toJsonString(this);
+        }
+
     }
 
 }

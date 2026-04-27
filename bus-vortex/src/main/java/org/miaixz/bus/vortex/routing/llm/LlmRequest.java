@@ -23,7 +23,6 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -39,9 +38,14 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
 @AllArgsConstructor
 public class LlmRequest {
+
+    /**
+     * Creates an empty LLM request.
+     */
+    public LlmRequest() {
+    }
 
     /**
      * The model to use for completion (e.g., "gpt-4", "llama3-70b").
@@ -99,6 +103,12 @@ public class LlmRequest {
     @Getter
     @Setter
     public static class Message {
+
+        /**
+         * Creates an empty LLM request message.
+         */
+        public Message() {
+        }
 
         /**
          * The role of the message author (system, user, assistant).

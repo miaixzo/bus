@@ -33,16 +33,16 @@ import org.miaixz.bus.vortex.provider.AuthorizeProvider;
 import org.miaixz.bus.vortex.provider.ProcessProvider;
 import org.miaixz.bus.vortex.registry.AssetsRegistry;
 import org.miaixz.bus.vortex.registry.LimiterRegistry;
+import org.miaixz.bus.vortex.routing.*;
+import org.miaixz.bus.vortex.routing.grpc.GrpcExecutor;
+import org.miaixz.bus.vortex.routing.llm.LlmExecutor;
+import org.miaixz.bus.vortex.routing.llm.LlmFactory;
+import org.miaixz.bus.vortex.routing.mcp.McpExecutor;
+import org.miaixz.bus.vortex.routing.mcp.server.ManageProvider;
+import org.miaixz.bus.vortex.routing.mq.MqExecutor;
+import org.miaixz.bus.vortex.routing.rest.RestExecutor;
+import org.miaixz.bus.vortex.routing.ws.WsExecutor;
 import org.miaixz.bus.vortex.strategy.*;
-import org.miaixz.bus.vortex.support.*;
-import org.miaixz.bus.vortex.support.grpc.GrpcExecutor;
-import org.miaixz.bus.vortex.support.llm.LlmExecutor;
-import org.miaixz.bus.vortex.support.llm.LlmFactory;
-import org.miaixz.bus.vortex.support.mcp.McpExecutor;
-import org.miaixz.bus.vortex.support.mcp.server.ManageProvider;
-import org.miaixz.bus.vortex.support.mq.MqExecutor;
-import org.miaixz.bus.vortex.support.rest.RestExecutor;
-import org.miaixz.bus.vortex.support.ws.WsExecutor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.codec.ServerCodecConfigurer;
@@ -94,6 +94,15 @@ import reactor.netty.http.server.HttpServer;
 @EnableConfigurationProperties(value = { VortexProperties.class })
 public class VortexConfiguration {
 
+    /**
+     * Creates a Vortex auto-configuration.
+     */
+    public VortexConfiguration() {
+    }
+
+    /**
+     * Bound Vortex configuration properties.
+     */
     @Resource
     private VortexProperties properties;
 
@@ -108,28 +117,21 @@ public class VortexConfiguration {
      */
     @Bean(initMethod = "start", destroyMethod = "stop")
     public Vortex vortex(List<Filter> filters, List<Handler> handlers, Map<String, Router<ServerRequest, ?>> routers) {
-        // Initialize the global performance configuration holder
-        // This must be done first, before any Strategy is used
         Holder.of(properties.getPerformance());
 
-        // Create the main Vortex handler with all injected Handler instances.
         VortexHandler vortexHandler = new VortexHandler(handlers, routers);
 
-        // Configure the router to handle requests at the specified path.
         RouterFunction<ServerResponse> routerFunction = RouterFunctions.route(
                 RequestPredicates.path(this.properties.getPath() + Symbol.SLASH + Symbol.STAR + Symbol.STAR),
                 vortexHandler::handle);
 
-        // Configure codecs, setting the maximum in-memory size.
         ServerCodecConfigurer configurer = ServerCodecConfigurer.create();
         configurer.defaultCodecs().maxInMemorySize(Math.toIntExact(Normal.MEBI_128));
 
-        // Build the WebHandler, integrating filters and exception handlers.
         WebHandler webHandler = RouterFunctions.toWebHandler(routerFunction);
         HttpHandler httpHandler = WebHttpHandlerBuilder.webHandler(webHandler).filters(list -> list.addAll(filters))
                 .exceptionHandlers(list -> list.add(new ErrorsHandler())).codecConfigurer(configurer).build();
 
-        // Create the Reactor Netty HTTP server adapter.
         ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
         HttpServer server = HttpServer.create()
                 .port(this.properties.getPort() != 0 ? this.properties.getPort() : PORT._8765.getPort())
@@ -240,7 +242,8 @@ public class VortexConfiguration {
     /**
      * Provides the McpExecutor bean. This executor manages the lifecycle and operations of MCP clients.
      *
-     * @param assetsRegistry The AssetsRegistry instance used to access asset configurations.
+     * @param assetsRegistry  The AssetsRegistry instance used to access asset configurations.
+     * @param processProvider The process provider used to manage MCP processes.
      * @return A new instance of McpExecutor.
      */
     @Bean

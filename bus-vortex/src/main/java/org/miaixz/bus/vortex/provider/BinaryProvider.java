@@ -42,6 +42,12 @@ import reactor.core.publisher.Mono;
 public class BinaryProvider implements Provider<Object, byte[]> {
 
     /**
+     * Creates a binary provider.
+     */
+    public BinaryProvider() {
+    }
+
+    /**
      * Handles binary data serialization.
      * <p>
      * For binary data, we convert the input to a byte array. If the input is already a byte array or DataBuffer, we
@@ -60,14 +66,12 @@ public class BinaryProvider implements Provider<Object, byte[]> {
                 return new byte[0];
             }
 
-            // If it's already a byte array, return it directly
             if (input instanceof byte[]) {
                 byte[] bytes = (byte[]) input;
                 Logger.debug(true, "BinaryProvider", "Processing byte array of size: {}", bytes.length);
                 return bytes;
             }
 
-            // If it's a DataBuffer, extract bytes
             if (input instanceof DataBuffer) {
                 DataBuffer dataBuffer = (DataBuffer) input;
                 byte[] bytes = new byte[dataBuffer.readableByteCount()];
@@ -76,17 +80,14 @@ public class BinaryProvider implements Provider<Object, byte[]> {
                 return bytes;
             }
 
-            // If it's a Flux of DataBuffer, return a marker byte array
             if (input instanceof Flux) {
                 Logger.debug(
                         true,
                         "BinaryProvider",
                         "Flux detected - this should be handled by streaming infrastructure");
-                // Return a marker that indicates streaming should be used
                 return "BINARY_STREAM_MARKER".getBytes(Charset.ISO_8859_1);
             }
 
-            // For any other object, convert to byte array (fallback)
             byte[] result = input.toString().getBytes(Charset.UTF_8);
             Logger.debug(
                     true,

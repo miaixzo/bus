@@ -34,4 +34,10 @@ import org.miaixz.bus.vortex.Handler;
  */
 public abstract class AbstractHandler implements Handler {
 
+    /**
+     * Creates an abstract handler.
+     */
+    protected AbstractHandler() {
+    }
+
 }

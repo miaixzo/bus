@@ -19,7 +19,10 @@
 */
 package org.miaixz.bus.cortex.builtin;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -33,6 +36,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Selector {
+
+    /**
+     * Creates an empty metadata selector.
+     */
+    public Selector() {
+    }
 
     /**
      * Comparison operator for label selector expressions.
@@ -86,6 +95,54 @@ public class Selector {
         s.op = Op.IN;
         s.values = values;
         return s;
+    }
+
+    /**
+     * Creates a non-equality selector.
+     *
+     * @param key   metadata key
+     * @param value rejected value
+     * @return selector
+     */
+    public static Selector neq(String key, String value) {
+        Selector s = new Selector();
+        s.key = key;
+        s.op = Op.NEQ;
+        s.values = List.of(value);
+        return s;
+    }
+
+    /**
+     * Creates a NOT IN selector.
+     *
+     * @param key    metadata key
+     * @param values rejected values
+     * @return selector
+     */
+    public static Selector notIn(String key, List<String> values) {
+        Selector s = new Selector();
+        s.key = key;
+        s.op = Op.NOTIN;
+        s.values = values;
+        return s;
+    }
+
+    /**
+     * Converts one exact-label map into selector expressions.
+     *
+     * @param labels exact-label map
+     * @return equality selectors preserving encounter order
+     */
+    public static List<Selector> ofExactLabels(Map<String, String> labels) {
+        if (labels == null || labels.isEmpty()) {
+            return List.of();
+        }
+        List<Selector> selectors = new ArrayList<>(labels.size());
+        Map<String, String> ordered = new LinkedHashMap<>(labels);
+        for (Map.Entry<String, String> entry : ordered.entrySet()) {
+            selectors.add(eq(entry.getKey(), entry.getValue()));
+        }
+        return selectors;
     }
 
 }

@@ -18,13 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Ready-to-use implementations for registry watch notification and lightweight configuration publishing.
+ * Ready-to-use implementations for watch-event logging and lightweight setting publishing.
  * <p>
- * {@code LoggingWatchListener} implements the {@link org.miaixz.bus.cortex.Listener} contract and logs every registry
- * change event — added, removed and updated entries — at INFO level via the standard logger. It is suitable as a
- * diagnostic listener during development or as a no-op placeholder when no other listener is wired.
- * {@code SimpleConfigPublisher} writes configuration content directly to a CacheX key without creating a versioned
- * history record; use {@code ConfigPublisher} instead when full versioned change history is required.
+ * {@code LoggingWatchListener} implements the {@link org.miaixz.bus.cortex.Listener} contract and logs every
+ * {@code Watch<?>} diff event — added, removed and updated values — at INFO level via the standard logger. It is
+ * suitable as a diagnostic listener during development or as a lightweight placeholder when no other listener is wired.
+ * {@code SimpleSettingPublisher} writes setting content directly to a CacheX key without creating revision history; use
+ * {@code SettingPublisher} instead when full revision history is required. The lightweight publisher is intended for
+ * runtime overlays, warmup snapshots, and other non-revisioned operational data.
  *
  * @author Kimi Liu
  * @since Java 21+

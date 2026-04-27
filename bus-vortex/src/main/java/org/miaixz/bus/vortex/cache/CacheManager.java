@@ -72,12 +72,18 @@ public class CacheManager<K, V> {
      * Level-2 cache configuration.
      */
     private final long cacheSize;
+    /**
+     * Level-2 cache expiration in milliseconds.
+     */
     private final long cacheExpireMs;
 
     /**
      * Access statistics.
      */
     private final AtomicLong hitCount = new AtomicLong(0);
+    /**
+     * Cache miss statistics.
+     */
     private final AtomicLong missCount = new AtomicLong(0);
 
     /**
@@ -140,7 +146,6 @@ public class CacheManager<K, V> {
         long startTime = System.nanoTime();
 
         try {
-            // Step 1: check the level-1 cache first.
             V value = this.cache.get(key);
 
             if (value != null) {
@@ -153,7 +158,6 @@ public class CacheManager<K, V> {
                 return value;
             }
 
-            // Step 2: check the level-2 cache and backfill level-1 on hit.
             value = this.cachex.read(key);
 
             if (value != null) {
@@ -167,7 +171,6 @@ public class CacheManager<K, V> {
                 return value;
             }
 
-            // Step 3: both cache levels missed.
             missCount.incrementAndGet();
 
             if (monitor != null) {

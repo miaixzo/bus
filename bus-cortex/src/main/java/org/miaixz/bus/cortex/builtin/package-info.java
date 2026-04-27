@@ -18,20 +18,15 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Label-based asset annotation and metadata-driven routing for filtering registered service assets by arbitrary
- * key/value criteria.
+ * Built-in optional Cortex capabilities that can be used out of the box by applications.
  * <p>
- * Assets carry a list of {@code Label} objects, each holding a key, a value and an optional category field, used to
- * annotate entries for capability discovery, environment targeting and traffic routing. A {@code Selector} expression
- * matches label values using one of four operators — EQ (exact equals), NEQ (not equals), IN (value present in a set)
- * or NOTIN (value absent from a set) — and static factory methods {@code eq(key, value)} and {@code in(key, values)}
- * cover the common cases without constructing the enum directly. {@code MetadataRouter} evaluates a list of
- * {@code Selector} expressions against an asset's labels map using logical AND; its {@code filter()} method narrows a
- * candidate asset list to those satisfying every selector, enabling tag-based blue/green and canary routing decisions.
- * <p>
- * Sub-packages extend these primitives: {@code builtin.batch} for bulk register/deregister operations,
- * {@code builtin.event} for ready-to-use watch listeners and config publishers, and {@code builtin.graph} for
- * upstream/downstream dependency analysis.
+ * {@code builtin.batch} provides bulk register/deregister operations, {@code builtin.event} provides ready-to-use watch
+ * listeners and setting publishers, and {@code builtin.graph} provides upstream/downstream dependency analysis. Shared
+ * runtime infrastructure belongs under {@code magic}; this package should stay focused on optional assembled features.
+ * During the current structure-freeze period, the root-level metadata helpers {@code Label}, {@code LabelMapper},
+ * {@code Selector}, and {@code MetadataMatcher} remain here as historical compatibility helpers. Root, setting, and
+ * watch code may depend only on those helpers; optional batch/event/graph implementations stay outside the foundation
+ * path.
  *
  * @author Kimi Liu
  * @since Java 21+

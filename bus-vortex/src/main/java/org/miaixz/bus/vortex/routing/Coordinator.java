@@ -64,6 +64,12 @@ import reactor.core.publisher.Mono;
 public abstract class Coordinator<I, O> implements Executor<I, O> {
 
     /**
+     * Creates an abstract coordinator.
+     */
+    protected Coordinator() {
+    }
+
+    /**
      * Builds the URL or connection target for the downstream service.
      * <p>
      * Description inherited from parent interface.
@@ -106,6 +112,12 @@ public abstract class Coordinator<I, O> implements Executor<I, O> {
         return baseUrlBuilder.toString();
     }
 
+    /**
+     * Normalizes JSON text returned by concrete executors before downstream parsing.
+     *
+     * @param json raw JSON text
+     * @return normalized JSON text
+     */
     protected String fixJsonEncoding(String json) {
         return json;
     }

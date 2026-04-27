@@ -19,19 +19,20 @@
 */
 package org.miaixz.bus.base.service;
 
-import org.miaixz.bus.base.entity.BaseEntity;
 import org.miaixz.bus.base.mapper.BaseMapper;
 
 /**
  * Default service class, extending {@link AbstractService} and providing default implementations for entities and
  * mappers.
  *
- * @param <T> the entity type, which must extend {@link BaseEntity}
+ * By default the service uses the field conventions implemented by {@link AbstractService}. Subclasses can override the
+ * protected lifecycle methods when they require custom behavior.
+ *
+ * @param <T> the entity type
  * @param <M> the mapper type, which must extend {@link BaseMapper} with String as the primary key type
  * @author Kimi Liu
  * @since Java 21+
  */
-public abstract class DefaultService<T extends BaseEntity, M extends BaseMapper<T>>
-        extends AbstractService<T, String, M> {
+public abstract class DefaultService<T, M extends BaseMapper<T>> extends AbstractService<T, String, M> {
 
 }

@@ -47,6 +47,12 @@ import reactor.core.publisher.Mono;
 public class ResponseStrategy extends AbstractStrategy {
 
     /**
+     * Creates a response strategy.
+     */
+    public ResponseStrategy() {
+    }
+
+    /**
      * Applies the response formatting strategy based on the requested format.
      * <p>
      * This method checks the format specified in the context and decorates the response accordingly:
@@ -67,7 +73,6 @@ public class ResponseStrategy extends AbstractStrategy {
             ServerWebExchange newExchange = exchange;
             final String ip = context.getX_request_ip();
 
-            // **DEBUG LOGGING:** Log response strategy parameters and format details
             Logger.info(
                     true,
                     "Response",
@@ -77,20 +82,17 @@ public class ResponseStrategy extends AbstractStrategy {
                     context.getChannel(),
                     context.getParameters().size());
 
-            // Log all parameters being passed through for debugging
             if (!context.getParameters().isEmpty()) {
                 Logger.info(true, "ResponseStrategy", "[{}] Parameters in response: {}", ip, context.getParameters());
             }
 
             Logger.debug(true, "Response", "[{}] Strategy applying for format: {}", ip, context.getFormat());
 
-            // If the request asks for XML format, apply the transformation.
             if (Formats.XML.equals(context.getFormat())) {
                 Logger.debug(true, "Response", "[{}] Format is XML, applying response transformation.", ip);
                 newExchange = exchange.mutate().response(processXml(exchange, context)).build();
             }
 
-            // If the request asks for BINARY format, apply binary handling.
             if (Formats.BINARY.equals(context.getFormat())) {
                 Logger.debug(true, "Response", "[{}] Format is BINARY, applying binary stream handling.", ip);
                 newExchange = exchange.mutate().response(processBinary(exchange, context)).build();
@@ -132,26 +134,17 @@ public class ResponseStrategy extends AbstractStrategy {
              */
             @Override
             public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
-                // Convert response data stream to Flux
                 Flux<? extends DataBuffer> flux = Flux.from(body);
 
-                // Collect all data buffers (necessary for non-streaming provider.serialize())
                 Mono<List<? extends DataBuffer>> collectedBuffers = flux.collectList().map(list -> list);
 
-                // Chain the transformation
                 Mono<DataBuffer> formattedBufferMono = collectedBuffers.flatMap(dataBuffers -> {
-                    // 1. Synchronously merge buffers and convert to string.
-                    // This is fast, in-memory work.
                     byte[] allBytes = merge(dataBuffers);
                     String bodyString = new String(allBytes, Charset.UTF_8);
 
-                    // 2. Explicitly use XML provider and media type
                     Provider provider = Formats.XML.getProvider();
 
-                    // 3. Call the *asynchronous* serialize method, which returns a Mono<String>
-                    // and handles its own thread scheduling.
                     return provider.serialize(bodyString).map(xmlBody -> {
-                        // 4. This logic now runs after the async serialization is complete
                         String xmlString = xmlBody.toString();
                         Logger.trace(
                                 false,
@@ -159,17 +152,12 @@ public class ResponseStrategy extends AbstractStrategy {
                                 "[{}] Response formatted to XML: {}",
                                 context.getX_request_ip(),
                                 xmlString);
-                        // Wrap the formatted data into a new data buffer
                         return bufferFactory().wrap(xmlString.getBytes(Charset.UTF_8));
                     });
                 });
-                // The Mono.fromCallable and .subscribeOn are no longer needed here,
-                // as the Provider handles its own asynchronicity.
 
-                // Set headers *before* writing
                 getDelegate().getHeaders().setContentType(Formats.XML.getMediaType());
 
-                // Write the formatted response. super.writeWith subscribes to the Mono.
                 return super.writeWith(formattedBufferMono);
             }
         };
@@ -202,11 +190,8 @@ public class ResponseStrategy extends AbstractStrategy {
             public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
                 Logger.debug(true, "Response", "[{}] Processing binary stream response", context.getX_request_ip());
 
-                // Set headers *before* writing
                 getDelegate().getHeaders().setContentType(Formats.BINARY.getMediaType());
 
-                // For binary data, we want to preserve the original stream without conversion
-                // This is important for file downloads, images, PDFs, etc.
                 if (body instanceof Flux) {
                     Logger.debug(
                             true,
@@ -216,10 +201,8 @@ public class ResponseStrategy extends AbstractStrategy {
                     return super.writeWith(body);
                 }
 
-                // Convert to Flux if it's not already
                 Flux<? extends DataBuffer> flux = Flux.from(body);
 
-                // Log the binary stream size for debugging
                 return flux.doOnNext(dataBuffer -> {
                     Logger.debug(
                             true,
@@ -239,20 +222,15 @@ public class ResponseStrategy extends AbstractStrategy {
      * @return The merged byte array.
      */
     private byte[] merge(List<? extends DataBuffer> dataBuffers) {
-        // Calculate total bytes
         int totalBytes = dataBuffers.stream().mapToInt(DataBuffer::readableByteCount).sum();
 
-        // Create result array
         byte[] result = new byte[totalBytes];
 
-        // Fill data
         int position = 0;
         for (DataBuffer buffer : dataBuffers) {
             int length = buffer.readableByteCount();
             buffer.read(result, position, length);
             position += length;
-            // Consider releasing pooled buffers here if applicable,
-            // e.g., DataBufferUtils.release(buffer);
         }
 
         return result;

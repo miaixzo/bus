@@ -150,7 +150,7 @@ public class StdioClient implements McpClient {
             }
 
             return future;
-        }).map(response -> (Object) response); // Cast String to Object to match interface
+        }).map(response -> (Object) response);
     }
 
     /**
@@ -198,7 +198,6 @@ public class StdioClient implements McpClient {
         try {
             Map<String, Object> messageMap = JsonKit.toMap(jsonLine);
 
-            // Check if it's a response (has an 'id')
             if (messageMap.containsKey("id") && messageMap.get("id") != null) {
                 McpMessage response = JsonKit.toPojo(messageMap, McpMessage.class);
                 CompletableFuture<String> future = pendingRequests.remove(response.id);
@@ -207,13 +206,10 @@ public class StdioClient implements McpClient {
                         future.completeExceptionally(
                                 new RuntimeException("Tool execution error: " + response.error.errmsg));
                     } else {
-                        // The result can be a string or a structured object, always serialize to string
                         future.complete(JsonKit.toJsonString(response.result));
                     }
                 }
-            }
-            // Check if it's a notification (has a 'method')
-            else if (messageMap.containsKey("method")) {
+            } else if (messageMap.containsKey("method")) {
                 McpMessage notification = JsonKit.toPojo(messageMap, McpMessage.class);
                 if ("tool_list".equals(notification.method)) {
                     if (notification.params instanceof List) {
@@ -231,8 +227,6 @@ public class StdioClient implements McpClient {
             Logger.warn("Received non-JSON or malformed message from service '{}': {}", assets.getName(), jsonLine, e);
         }
     }
-
-    // Inner classes for JSON-RPC 2.0 serialization/deserialization
 
     /**
      * Represents a JSON-RPC 2.0 request sent to the MCP service.
@@ -259,6 +253,14 @@ public class StdioClient implements McpClient {
          */
         Map<String, Object> params;
 
+        /**
+         * Creates a JSON-RPC request.
+         *
+         * @param jsonrpc JSON-RPC protocol version
+         * @param id      unique request identifier
+         * @param method  method name
+         * @param params  method parameters
+         */
         McpRequest(String jsonrpc, String id, String method, Map<String, Object> params) {
             this.jsonrpc = jsonrpc;
             this.id = id;

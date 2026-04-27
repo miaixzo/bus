@@ -22,14 +22,13 @@ package org.miaixz.bus.vortex;
 import java.util.Map;
 
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.net.Specifics;
 import org.miaixz.bus.vortex.strategy.QualifierStrategy;
 import org.miaixz.bus.vortex.strategy.RequestStrategy;
 import org.miaixz.bus.vortex.strategy.VettingStrategy;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 /**
  * A central repository for constants defining the gateway's public API contract and for binding configuration
@@ -45,48 +44,18 @@ import lombok.experimental.SuperBuilder;
  * @see RequestStrategy
  * @since Java 21+
  */
-@Getter
-@Setter
-@SuperBuilder
-@AllArgsConstructor
-public class Args {
+public class Args extends Specifics {
 
     /**
-     * The mandatory parameter name for the logical API method to be invoked (e.g., "user.getProfile").
+     * Creates an empty gateway argument contract holder.
      */
-    public static final String METHOD = "method";
+    public Args() {
+    }
 
     /**
-     * The parameter name for specifying the desired response format (e.g., "json", "xml").
+     * The parameter name for selecting the logical namespace used to resolve registry assets.
      */
-    public static final String FORMAT = "format";
-
-    /**
-     * The parameter name for specifying the version of the requested API method (e.g., "v1", "1.0.0").
-     */
-    public static final String VERSION = "v";
-
-    /**
-     * The parameter name for the request signature, used for validation and integrity checks.
-     */
-    public static final String SIGN = "sign";
-
-    /**
-     * The parameter name for the request timestamp (milliseconds since epoch), used for replay attack prevention.
-     */
-    public static final String TIMESTAMP = "timestamp";
-
-    /**
-     * Candidate parameter and header names for backward-compatible access-token transport.
-     */
-    public static final String[] TOKEN_KEYS = { "Authorization", "authorization", "AUTHORIZATION", "X-Access-Token",
-            "X-ACCESS-TOKEN", "x-access-token", "X_Access_Token", "X_ACCESS_TOKEN", "x_access_token" };
-
-    /**
-     * Candidate parameter and header names for API-key transport.
-     */
-    public static final String[] API_KEY_KEYS = { "apiKey", "apikey", "api_key", "x_api_key", "api_id", "x_api_id",
-            "X-API-ID", "X-API-KEY", "API-KEY", "API-ID" };
+    public static final String NAMESPACE = "namespace";
 
     /**
      * The HTTP header name for identifying the client channel (e.g., "web", "app", "mobile").
@@ -285,6 +254,12 @@ public class Args {
     @Getter
     @Setter
     public static class Limit {
+
+        /**
+         * Creates an empty rate-limit configuration.
+         */
+        public Limit() {
+        }
 
         /**
          * Whether rate limiting is globally enabled.

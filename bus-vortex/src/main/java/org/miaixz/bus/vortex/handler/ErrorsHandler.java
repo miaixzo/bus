@@ -57,6 +57,12 @@ import reactor.util.annotation.NonNull;
 public class ErrorsHandler implements WebExceptionHandler {
 
     /**
+     * Creates a global errors handler.
+     */
+    public ErrorsHandler() {
+    }
+
+    /**
      * Handles exceptions, generating a standardized error response.
      * <p>
      * This method is invoked when an exception occurs during request processing. It sets the response status to
@@ -71,12 +77,10 @@ public class ErrorsHandler implements WebExceptionHandler {
     @NonNull
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
-        // 1. Get request/response objects and set status
         ServerHttpResponse response = exchange.getResponse();
         ServerHttpRequest request = exchange.getRequest();
         response.setStatusCode(HttpStatus.OK);
 
-        // 2. Get context and log format
         Context context = exchange.getAttribute(Context.$);
         if (context != null) {
             Logger.info(false, "Errors", "Context format is: {}", context.getFormat());
@@ -84,30 +88,23 @@ public class ErrorsHandler implements WebExceptionHandler {
             Logger.info(false, "Errors", "Context is null, defaulting to JSON format.");
         }
 
-        // 3. Get request information
         String path = request.getPath().value();
         String method = request.getMethod() != null ? request.getMethod().name() : "UNKNOWN";
 
-        // 4. Determine format and set content type
         Formats formats = (context != null) ? context.getFormat() : Formats.JSON;
         response.getHeaders().setContentType(formats.getMediaType());
 
-        // 5. Build the standardized error message *reactively*
         Mono<Message> messageMono = Mono.fromCallable(() -> buildErrorMessage(ex, method, path));
 
-        // 6. Asynchronously serialize the message and get a DataBuffer
-        Mono<DataBuffer> dataBufferMono = messageMono.flatMap(message ->
-        // Call the asynchronous serialize method
-        formats.getProvider().serialize(message)).map(formatBody -> {
-            // Handle both String (JSON/XML) and byte[] (BINARY) return types
-            if (formatBody instanceof byte[]) {
-                return response.bufferFactory().wrap((byte[]) formatBody);
-            } else {
-                return response.bufferFactory().wrap(((String) formatBody).getBytes(Charset.UTF_8));
-            }
-        });
+        Mono<DataBuffer> dataBufferMono = messageMono.flatMap(message -> formats.getProvider().serialize(message))
+                .map(formatBody -> {
+                    if (formatBody instanceof byte[]) {
+                        return response.bufferFactory().wrap((byte[]) formatBody);
+                    } else {
+                        return response.bufferFactory().wrap(((String) formatBody).getBytes(Charset.UTF_8));
+                    }
+                });
 
-        // 7. Write response and log completion
         return response.writeWith(dataBufferMono).doOnTerminate(() -> {
             String exceptionName = ex.getClass().getSimpleName();
             String ip = "N/A";
@@ -128,7 +125,7 @@ public class ErrorsHandler implements WebExceptionHandler {
                         false,
                         "Errors",
                         "[{}] [{}] [{}] [ERROR_COMPLETION] - Error handled, exception: {}",
-                        ip, // Will be "N/A"
+                        ip,
                         method,
                         path,
                         exceptionName);
@@ -145,9 +142,7 @@ public class ErrorsHandler implements WebExceptionHandler {
      * @return A populated Message object
      */
     private Message buildErrorMessage(Throwable ex, String method, String path) {
-        // This logic is fast, synchronous, and non-blocking.
 
-        // 1. Handle UncheckedException
         if (ex instanceof UncheckedException) {
             UncheckedException ue = (UncheckedException) ex;
             String errcode = ue.getErrcode();
@@ -163,10 +158,7 @@ public class ErrorsHandler implements WebExceptionHandler {
                         errmsg);
                 return Message.builder().errcode(errcode).errmsg(errmsg).build();
             }
-            // If errcode is blank, fall through to the default unknown error (preserves original logic)
-        }
-        // 2. Handle WebClientException
-        else if (ex instanceof WebClientException || ex instanceof WebClientRequestException) {
+        } else if (ex instanceof WebClientException || ex instanceof WebClientRequestException) {
             if (ex.getCause() instanceof UnknownHostException) {
                 Logger.error(
                         false,
@@ -206,9 +198,14 @@ public class ErrorsHandler implements WebExceptionHandler {
     @Getter
     @Setter
     @Builder
-    @NoArgsConstructor
     @AllArgsConstructor
     public static class Message {
+
+        /**
+         * Creates an empty response message.
+         */
+        public Message() {
+        }
 
         /**
          * The response code, indicating the specific error or status.

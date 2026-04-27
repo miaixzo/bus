@@ -31,7 +31,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.codec.multipart.Part;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 /**
  * Represents the request context, a stateful object that is created at the beginning of a request and enriched as it
@@ -45,8 +44,13 @@ import lombok.NoArgsConstructor;
  * @since Java 21+
  */
 @Getter
-@NoArgsConstructor
 public class Context extends Tracer {
+
+    /**
+     * Creates an empty request context.
+     */
+    public Context() {
+    }
 
     /**
      * The key used to store and retrieve this Context object from the attributes of a {@code ServerWebExchange}.

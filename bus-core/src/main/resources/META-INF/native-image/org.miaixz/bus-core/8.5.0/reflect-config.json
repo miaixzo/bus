@@ -1,5 +1,135 @@
 [
   {
+    "name": "java.lang.invoke.MethodHandles",
+    "allPublicMethods": true,
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "privateLookupIn",
+        "parameterTypes": [
+          "java.lang.Class",
+          "java.lang.invoke.MethodHandles$Lookup"
+        ]
+      },
+      {
+        "name": "lookup",
+        "parameterTypes": []
+      }
+    ],
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "java.sql.Statement",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "java.util.ArrayList",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "java.util.HashMap",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "java.util.HashSet",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "java.util.LinkedHashMap",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "java.util.LinkedList",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "java.util.Properties",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "java.util.TreeMap",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "java.util.TreeSet",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "java.util.Vector",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
     "name": "org.miaixz.bus.core.Binder",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -165,6 +295,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.core.basic.entity.Namespace",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.core.basic.entity.Query",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -187,7 +328,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.core.basic.entity.Scope",
+    "name": "org.miaixz.bus.core.basic.entity.Tenant",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1045,6 +1186,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.core.center.date.Chrono",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
     "name": "org.miaixz.bus.core.center.date.Converter",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -1210,17 +1362,6 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.core.center.date.Units",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
     "name": "org.miaixz.bus.core.center.date.Various",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -1241,6 +1382,17 @@
     "allPublicFields": true,
     "queryAllDeclaredMethods": true,
     "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.core.center.date.Zodiac",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
   },
   {
     "name": "org.miaixz.bus.core.center.date.builder.DateBuilder",
@@ -1758,6 +1910,61 @@
     "allPublicFields": true,
     "queryAllDeclaredMethods": true,
     "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.core.center.date.culture.festival.AbstractFestival",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "org.miaixz.bus.core.center.date.culture.festival.Festival",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "org.miaixz.bus.core.center.date.culture.festival.FestivalBuilder",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "org.miaixz.bus.core.center.date.culture.festival.FestivalRegistry",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "org.miaixz.bus.core.center.date.culture.festival.FestivalRule",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
   },
   {
     "name": "org.miaixz.bus.core.center.date.culture.fetus.FetusDay",
@@ -5368,17 +5575,6 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.core.convert.CompositeConverter$from",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
     "name": "org.miaixz.bus.core.convert.Convert",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -6158,6 +6354,17 @@
     "allPublicFields": true,
     "queryAllDeclaredMethods": true,
     "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.core.io.FastCharArrayReader",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
   },
   {
     "name": "org.miaixz.bus.core.io.FastStringWriter",
@@ -8019,6 +8226,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.core.lang.annotation.AliasFor",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
     "name": "org.miaixz.bus.core.lang.annotation.Async",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -8094,6 +8312,17 @@
     "allPublicFields": true,
     "queryAllDeclaredMethods": true,
     "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.core.lang.annotation.ForceAliasFor",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
   },
   {
     "name": "org.miaixz.bus.core.lang.annotation.GuardedBy",
@@ -8173,6 +8402,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.core.lang.annotation.Link",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
     "name": "org.miaixz.bus.core.lang.annotation.Logical",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -8193,6 +8433,17 @@
     "allPublicFields": true,
     "queryAllDeclaredMethods": true,
     "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.core.lang.annotation.MirrorFor",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
   },
   {
     "name": "org.miaixz.bus.core.lang.annotation.Modified",
@@ -8292,6 +8543,17 @@
     "allPublicFields": true,
     "queryAllDeclaredMethods": true,
     "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.core.lang.annotation.RelationType",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
   },
   {
     "name": "org.miaixz.bus.core.lang.annotation.SPI",
@@ -10582,6 +10844,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.core.lang.reflect.creator.AdaptiveObjectCreator",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
     "name": "org.miaixz.bus.core.lang.reflect.creator.DefaultObjectCreator",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -11482,6 +11755,17 @@
     "allPublicFields": true,
     "queryAllDeclaredMethods": true,
     "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.core.net.Specifics",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
   },
   {
     "name": "org.miaixz.bus.core.net.ip.IPv4",
@@ -13002,6 +13286,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.core.xyz.FunctionKit",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
     "name": "org.miaixz.bus.core.xyz.HashKit",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -13376,17 +13671,6 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.core.xyz.TypeKit$type",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
     "name": "org.miaixz.bus.core.xyz.UnicodeKit",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -13451,135 +13735,5 @@
     "allPublicFields": true,
     "queryAllDeclaredMethods": true,
     "queryAllPublicMethods": true
-  },
-  {
-    "name": "java.lang.invoke.MethodHandles",
-    "allPublicMethods": true,
-    "queryAllPublicMethods": true,
-    "methods": [
-      {
-        "name": "privateLookupIn",
-        "parameterTypes": [
-          "java.lang.Class",
-          "java.lang.invoke.MethodHandles$Lookup"
-        ]
-      },
-      {
-        "name": "lookup",
-        "parameterTypes": []
-      }
-    ],
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true
-  },
-  {
-    "name": "java.sql.Statement",
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true
-  },
-  {
-    "name": "java.util.ArrayList",
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true
-  },
-  {
-    "name": "java.util.HashMap",
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true
-  },
-  {
-    "name": "java.util.HashSet",
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true
-  },
-  {
-    "name": "java.util.LinkedHashMap",
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true
-  },
-  {
-    "name": "java.util.LinkedList",
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true
-  },
-  {
-    "name": "java.util.Properties",
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true
-  },
-  {
-    "name": "java.util.TreeMap",
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true
-  },
-  {
-    "name": "java.util.TreeSet",
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true
-  },
-  {
-    "name": "java.util.Vector",
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true
   }
 ]

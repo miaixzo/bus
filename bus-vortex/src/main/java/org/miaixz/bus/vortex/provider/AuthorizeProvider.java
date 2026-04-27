@@ -62,31 +62,22 @@ public interface AuthorizeProvider {
     default Mono<Delegate> authorize(Principal principal) {
         if (ObjectKit.isEmpty(principal)) {
             Logger.warn(false, "Authorize", "Authorization failed: The principal entity is null or empty.");
-            // Return a Mono that signals an error immediately.
             return Mono.error(new ValidateException(ErrorCode._100806));
         }
 
         final Integer type = principal.getType();
 
-        // Dispatch based on the policy type:
-        // Policy 1-3: Token-based (1: basic, 2: with permissions, 3: with permissions and license)
-        // Policy 4-6: ApiKey-based (4: basic, 5: with permissions, 6: with permissions and license)
         final boolean isTokenBased = Consts.ONE.equals(type) || Consts.TWO.equals(type) || Consts.THREE.equals(type);
         final boolean isApiKeyBased = Consts.FOUR.equals(type) || Consts.FIVE.equals(type) || Consts.SIX.equals(type);
 
-        // For policy 3 or 6: license verification required
         final boolean requiresLicense = Consts.THREE.equals(type) || Consts.SIX.equals(type);
 
-        // Dispatch based on the credential type using an if-else if chain,
-        // as case labels in a switch must be compile-time constants.
         if (isTokenBased) {
-            // If license verification is required (policy 3), validate license first, then token
             Mono<Delegate> chain = requiresLicense ? this.license(principal)
                     .flatMap(delegate -> delegate.isOk() ? this.token(principal) : Mono.just(delegate)) : Mono.empty();
 
             return chain.switchIfEmpty(this.token(principal));
         } else if (isApiKeyBased) {
-            // If license verification is required (policy 6), validate license first, then apiKey
             Mono<Delegate> chain = requiresLicense ? this.license(principal)
                     .flatMap(delegate -> delegate.isOk() ? this.apiKey(principal) : Mono.just(delegate)) : Mono.empty();
 
@@ -97,7 +88,6 @@ public interface AuthorizeProvider {
                 "Authorize",
                 "Unsupported principal type: {}. Override the 'authorize' method to handle it.",
                 principal.getType());
-        // Return a Mono emitting a Delegate with the error information.
         return Mono.just(
                 Delegate.builder()
                         .message(
@@ -123,7 +113,6 @@ public interface AuthorizeProvider {
                 true,
                 "Authorize",
                 "Executing default `token` method. This provides no security and should be overridden.");
-        // Wrap the synchronous default result in Mono.just()
         return Mono.just(
                 Delegate.builder()
                         .message(
@@ -149,7 +138,6 @@ public interface AuthorizeProvider {
                 true,
                 "Authorize",
                 "Executing default `apiKey` method. This provides no security and should be overridden.");
-        // Wrap the synchronous default result in Mono.just()
         return Mono.just(
                 Delegate.builder()
                         .message(
@@ -175,7 +163,6 @@ public interface AuthorizeProvider {
                 true,
                 "Authorize",
                 "Executing default `license` method. This provides no security and should be overridden.");
-        // Wrap the synchronous default result in Mono.just()
         return Mono.just(
                 Delegate.builder()
                         .message(
