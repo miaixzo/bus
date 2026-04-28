@@ -37,7 +37,6 @@ import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Strategy;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
@@ -222,24 +221,18 @@ public abstract class AbstractStrategy implements Strategy {
     }
 
     /**
-     * Converts an integer representation of an HTTP method to the corresponding {@link HttpMethod} enum.
+     * Converts an integer registry verb code to the canonical {@link HTTP.Method}.
      *
      * @param type The integer representation of the request method (e.g., 1 for GET, 2 for POST).
-     * @return The matching {@link HttpMethod} enum.
+     * @return The matching canonical HTTP method.
      * @throws ValidateException if the type is not a valid or supported HTTP method.
      */
-    protected HttpMethod valueOf(int type) {
-        return switch (type) {
-            case 1 -> HttpMethod.GET;
-            case 2 -> HttpMethod.POST;
-            case 3 -> HttpMethod.HEAD;
-            case 4 -> HttpMethod.PUT;
-            case 5 -> HttpMethod.PATCH;
-            case 6 -> HttpMethod.DELETE;
-            case 7 -> HttpMethod.OPTIONS;
-            case 8 -> HttpMethod.TRACE;
-            default -> throw new ValidateException(ErrorCode._100802);
-        };
+    protected HTTP.Method methodOf(int type) {
+        try {
+            return HTTP.Method.of(type);
+        } catch (IllegalArgumentException e) {
+            throw new ValidateException(ErrorCode._100802);
+        }
     }
 
     /**

@@ -26,6 +26,7 @@ import java.util.Objects;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cortex.*;
+import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
 import org.miaixz.bus.extra.json.JsonKit;
 
@@ -54,6 +55,10 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
      * Stable registry type handled by this registrar.
      */
     protected final Type registryType;
+    /**
+     * Key strategy shared by registry persistence and runtime routing.
+     */
+    protected final Keying<Keying.RegistrySpec> keying;
 
     /**
      * Constructs an AbstractRegistry with shared infrastructure components.
@@ -65,31 +70,25 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
      */
     protected AbstractRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, Class<T> type,
             Type registryType) {
+        this(cacheX, watchManager, type, registryType, RegistryGenerator.INSTANCE);
+    }
+
+    /**
+     * Constructs an AbstractRegistry with shared infrastructure components and keying strategy.
+     *
+     * @param cacheX       shared cache used for persistence
+     * @param watchManager watch subscription manager
+     * @param type         Java type of the managed entries
+     * @param registryType stable registry type
+     * @param keying       key strategy
+     */
+    protected AbstractRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, Class<T> type,
+            Type registryType, Keying<Keying.RegistrySpec> keying) {
         this.cacheX = cacheX;
         this.watchManager = watchManager;
         this.type = type;
         this.registryType = Objects.requireNonNull(registryType, "registryType");
-    }
-
-    /**
-     * Builds the full cache key for an entry.
-     *
-     * @param namespace entry namespace
-     * @param id        entry identifier
-     * @return cache key string
-     */
-    protected String buildKey(String namespace, String id) {
-        return RegistryKeys.entry(namespace, registryType, id);
-    }
-
-    /**
-     * Builds the cache key prefix for scanning all entries in a namespace.
-     *
-     * @param namespace entry namespace
-     * @return cache key prefix string
-     */
-    protected String buildScanPrefix(String namespace) {
-        return RegistryKeys.entryPrefix(namespace, registryType);
+        this.keying = keying == null ? RegistryGenerator.INSTANCE : keying;
     }
 
     /**
@@ -100,7 +99,7 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
     @Override
     public void register(T entry) {
         long ttl = entry.getTtl() > 0 ? entry.getTtl() : 3600_000L;
-        String key = buildKey(entry.getNamespace_id(), entry.getId());
+        String key = keying.key(Keying.RegistrySpec.entry(entry.getNamespace_id(), registryType, entry.getId()));
         cacheX.write(key, JsonKit.toJsonString(entry), ttl);
     }
 
@@ -112,7 +111,7 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
      */
     @Override
     public void deregister(String namespace, String id) {
-        cacheX.remove(buildKey(namespace, id));
+        cacheX.remove(keying.key(Keying.RegistrySpec.entry(namespace, registryType, id)));
     }
 
     /**
@@ -126,7 +125,7 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
         RegistryQuery query = RegistryScopeMapping.query(vector, registryType);
         Vector criteria = RegistryScopeMapping.toVector(query);
         String ns = query.getNamespace_id();
-        String prefix = buildScanPrefix(ns);
+        String prefix = keying.prefix(Keying.RegistrySpec.entry(ns, registryType, null));
         Map<String, Object> raw = cacheX.scan(prefix);
         List<T> result = new ArrayList<>();
         for (Object value : raw.values()) {

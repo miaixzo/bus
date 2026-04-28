@@ -91,11 +91,10 @@ public class NullCell implements Cell {
 
     /**
      * This operation is not supported for a NullCell.
-     * 
+     *
      * @param cellType The type to set.
      * @throws UnsupportedOperationException always
      */
-    @Deprecated
     @Override
     public void setCellType(final CellType cellType) {
         throw new UnsupportedOperationException("Can not set any thing to null cell!");
@@ -103,7 +102,7 @@ public class NullCell implements Cell {
 
     /**
      * This operation is not supported for a NullCell.
-     * 
+     *
      * @throws UnsupportedOperationException always
      */
     @Override
@@ -129,7 +128,7 @@ public class NullCell implements Cell {
 
     /**
      * This operation is not supported for a NullCell.
-     * 
+     *
      * @param value The value to set.
      * @throws UnsupportedOperationException always
      */
@@ -140,7 +139,7 @@ public class NullCell implements Cell {
 
     /**
      * This operation is not supported for a NullCell.
-     * 
+     *
      * @param value The value to set.
      * @throws UnsupportedOperationException always
      */
@@ -151,7 +150,7 @@ public class NullCell implements Cell {
 
     /**
      * This operation is not supported for a NullCell.
-     * 
+     *
      * @param value The value to set.
      * @throws UnsupportedOperationException always
      */
@@ -162,7 +161,7 @@ public class NullCell implements Cell {
 
     /**
      * This operation is not supported for a NullCell.
-     * 
+     *
      * @param value The value to set.
      * @throws UnsupportedOperationException always
      */
@@ -173,7 +172,7 @@ public class NullCell implements Cell {
 
     /**
      * This operation is not supported for a NullCell.
-     * 
+     *
      * @param value The value to set.
      * @throws UnsupportedOperationException always
      */
@@ -184,7 +183,7 @@ public class NullCell implements Cell {
 
     /**
      * This operation is not supported for a NullCell.
-     * 
+     *
      * @param value The value to set.
      * @throws UnsupportedOperationException always
      */
@@ -195,7 +194,7 @@ public class NullCell implements Cell {
 
     /**
      * This operation is not supported for a NullCell.
-     * 
+     *
      * @throws UnsupportedOperationException always
      */
     @Override
@@ -213,7 +212,7 @@ public class NullCell implements Cell {
 
     /**
      * This operation is not supported for a NullCell.
-     * 
+     *
      * @param formula The formula to set.
      * @throws UnsupportedOperationException always
      */
@@ -224,7 +223,7 @@ public class NullCell implements Cell {
 
     /**
      * This operation is not supported for a NullCell.
-     * 
+     *
      * @return nothing, always throws UnsupportedOperationException
      * @throws UnsupportedOperationException always
      */
@@ -267,7 +266,7 @@ public class NullCell implements Cell {
 
     /**
      * This operation is not supported for a NullCell.
-     * 
+     *
      * @param value The value to set.
      * @throws UnsupportedOperationException always
      */
@@ -278,7 +277,7 @@ public class NullCell implements Cell {
 
     /**
      * This operation is not supported for a NullCell.
-     * 
+     *
      * @param value The value to set.
      * @throws UnsupportedOperationException always
      */
@@ -289,7 +288,7 @@ public class NullCell implements Cell {
 
     /**
      * This operation is not supported for a NullCell.
-     * 
+     *
      * @return nothing, always throws UnsupportedOperationException
      * @throws UnsupportedOperationException always
      */
@@ -300,7 +299,7 @@ public class NullCell implements Cell {
 
     /**
      * This operation is not supported for a NullCell.
-     * 
+     *
      * @return nothing, always throws UnsupportedOperationException
      * @throws UnsupportedOperationException always
      */
@@ -319,7 +318,7 @@ public class NullCell implements Cell {
 
     /**
      * This operation is not supported for a NullCell.
-     * 
+     *
      * @param style The style to set.
      * @throws UnsupportedOperationException always
      */
@@ -330,7 +329,7 @@ public class NullCell implements Cell {
 
     /**
      * This operation is not supported for a NullCell.
-     * 
+     *
      * @throws UnsupportedOperationException always
      */
     @Override
@@ -356,7 +355,7 @@ public class NullCell implements Cell {
 
     /**
      * This operation is not supported for a NullCell.
-     * 
+     *
      * @param comment The comment to set.
      * @throws UnsupportedOperationException always
      */
@@ -367,7 +366,7 @@ public class NullCell implements Cell {
 
     /**
      * This operation is not supported for a NullCell.
-     * 
+     *
      * @throws UnsupportedOperationException always
      */
     @Override
@@ -385,7 +384,7 @@ public class NullCell implements Cell {
 
     /**
      * This operation is not supported for a NullCell.
-     * 
+     *
      * @param link The hyperlink to set.
      * @throws UnsupportedOperationException always
      */
@@ -396,7 +395,7 @@ public class NullCell implements Cell {
 
     /**
      * This operation is not supported for a NullCell.
-     * 
+     *
      * @throws UnsupportedOperationException always
      */
     @Override
@@ -414,7 +413,7 @@ public class NullCell implements Cell {
 
     /**
      * This operation is not supported for a NullCell.
-     * 
+     *
      * @return nothing, always throws UnsupportedOperationException
      * @throws UnsupportedOperationException always
      */

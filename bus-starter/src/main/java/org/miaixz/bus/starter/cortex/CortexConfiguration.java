@@ -30,6 +30,8 @@ import org.miaixz.bus.cache.Options;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.*;
 import org.miaixz.bus.cortex.bridge.VortexBridge;
+import org.miaixz.bus.cortex.builtin.RegistryGenerator;
+import org.miaixz.bus.cortex.builtin.SettingGenerator;
 import org.miaixz.bus.cortex.builtin.event.LoggingWatchListener;
 import org.miaixz.bus.cortex.builtin.event.SimpleSettingPublisher;
 import org.miaixz.bus.cortex.setting.SettingPublisher;
@@ -155,6 +157,28 @@ public class CortexConfiguration {
     }
 
     /**
+     * Exposes the default registry-side key strategy.
+     *
+     * @return registry key strategy
+     */
+    @Bean(name = "registryKeying")
+    @ConditionalOnMissingBean(name = "registryKeying")
+    public Keying<Keying.RegistrySpec> registryKeying() {
+        return RegistryGenerator.INSTANCE;
+    }
+
+    /**
+     * Exposes the default setting-side key strategy.
+     *
+     * @return setting key strategy
+     */
+    @Bean(name = "settingKeying")
+    @ConditionalOnMissingBean(name = "settingKeying")
+    public Keying<Keying.SettingSpec> settingKeying() {
+        return SettingGenerator.INSTANCE;
+    }
+
+    /**
      * Creates the secret masker used by management-facing APIs.
      *
      * @return secret masker
@@ -266,12 +290,14 @@ public class CortexConfiguration {
             WatchManager watchManager,
             ObjectProvider<ApiRegistryStore> storeProvider,
             ObjectProvider<RegistryStore<Assets>> sharedStoreProvider,
-            List<Listener<RegistryChange<ApiAssets>>> syncListeners) {
+            List<Listener<RegistryChange<ApiAssets>>> syncListeners,
+            @Qualifier("registryKeying") ObjectProvider<Keying<Keying.RegistrySpec>> keyingProvider) {
         RegistryStore<ApiAssets> store = storeProvider.getIfAvailable();
         if (store == null) {
             store = typedStore(sharedStoreProvider.getIfAvailable(), ApiAssets.class);
         }
-        return new ApiRegistry(cache(cache), watchManager, store, syncListeners);
+        return new ApiRegistry(cache(cache), watchManager, store, syncListeners,
+                keyingProvider.getIfAvailable(() -> RegistryGenerator.INSTANCE));
     }
 
     /**
@@ -289,12 +315,14 @@ public class CortexConfiguration {
             @Qualifier("cortexCache") CacheX cache,
             WatchManager watchManager,
             ObjectProvider<McpRegistryStore> storeProvider,
-            ObjectProvider<RegistryStore<Assets>> sharedStoreProvider) {
+            ObjectProvider<RegistryStore<Assets>> sharedStoreProvider,
+            @Qualifier("registryKeying") ObjectProvider<Keying<Keying.RegistrySpec>> keyingProvider) {
         RegistryStore<McpAssets> store = storeProvider.getIfAvailable();
         if (store == null) {
             store = typedStore(sharedStoreProvider.getIfAvailable(), McpAssets.class);
         }
-        return new McpRegistry(cache(cache), watchManager, store);
+        return new McpRegistry(cache(cache), watchManager, store,
+                keyingProvider.getIfAvailable(() -> RegistryGenerator.INSTANCE));
     }
 
     /**
@@ -312,12 +340,14 @@ public class CortexConfiguration {
             @Qualifier("cortexCache") CacheX cache,
             WatchManager watchManager,
             ObjectProvider<PromptRegistryStore> storeProvider,
-            ObjectProvider<RegistryStore<Assets>> sharedStoreProvider) {
+            ObjectProvider<RegistryStore<Assets>> sharedStoreProvider,
+            @Qualifier("registryKeying") ObjectProvider<Keying<Keying.RegistrySpec>> keyingProvider) {
         RegistryStore<PromptAssets> store = storeProvider.getIfAvailable();
         if (store == null) {
             store = typedStore(sharedStoreProvider.getIfAvailable(), PromptAssets.class);
         }
-        return new PromptRegistry(cache(cache), watchManager, store);
+        return new PromptRegistry(cache(cache), watchManager, store,
+                keyingProvider.getIfAvailable(() -> RegistryGenerator.INSTANCE));
     }
 
     /**
@@ -363,9 +393,11 @@ public class CortexConfiguration {
     @Bean
     public RegistryControlService registryAdminService(
             Cortex.Runtime runtime,
-            ObjectProvider<CortexGuard> cortexGuard) {
+            ObjectProvider<CortexGuard> cortexGuard,
+            @Qualifier("registryKeying") ObjectProvider<Keying<Keying.RegistrySpec>> keyingProvider) {
         return new RegistryControlService((ApiRegistry) runtime.api(), (McpRegistry) runtime.mcp(),
-                (PromptRegistry) runtime.prompt(), cortexGuard.getIfAvailable());
+                (PromptRegistry) runtime.prompt(), cortexGuard.getIfAvailable(),
+                keyingProvider.getIfAvailable(() -> RegistryGenerator.INSTANCE));
     }
 
     /**
@@ -397,13 +429,15 @@ public class CortexConfiguration {
     @ConditionalOnMissingBean(StoreBackedItemStore.class)
     public StoreBackedItemStore storeBackedSettingStore(
             @Qualifier("cortexCache") CacheX cache,
-            ObjectProvider<ItemStore> storeProvider) {
+            ObjectProvider<ItemStore> storeProvider,
+            @Qualifier("settingKeying") ObjectProvider<Keying<Keying.SettingSpec>> keyingProvider) {
         ItemStore store = storeProvider.getIfAvailable();
         if (store == null && properties.isServerEnabled() && properties.isSettingEnabled()) {
             throw new IllegalStateException(
                     "A production SettingStore is required when bus.cortex.server-enabled=true");
         }
-        return new StoreBackedItemStore(cache(cache), store);
+        return new StoreBackedItemStore(cache(cache), store,
+                keyingProvider.getIfAvailable(() -> SettingGenerator.INSTANCE));
     }
 
     /**
@@ -416,7 +450,7 @@ public class CortexConfiguration {
     @Bean
     @ConditionalOnMissingBean(ItemRevisionStore.class)
     public ItemRevisionStore revisionStore(@Qualifier("cortexCache") CacheX cache) {
-        return new CacheItemRevisionStore(cache(cache));
+        return new CacheItemRevisionStore(cache(cache), SettingGenerator.INSTANCE);
     }
 
     /**
@@ -437,17 +471,19 @@ public class CortexConfiguration {
             WatchManager watchManager,
             SecretCodec secretCodec,
             ObjectProvider<SettingEnforcer> settingEnforcer,
-            ObjectProvider<CortexGuard> cortexGuard) {
+            ObjectProvider<CortexGuard> cortexGuard,
+            @Qualifier("settingKeying") ObjectProvider<Keying<Keying.SettingSpec>> keyingProvider) {
         if (revisionStore instanceof CacheItemRevisionStore && properties.isServerEnabled()
                 && properties.isSettingEnabled()) {
             throw new IllegalStateException(
                     "A production ItemRevisionStore is required when bus.cortex.server-enabled=true");
         }
         ItemValueResolver resolver = new ItemValueResolver(settingSourceAdapters(), new GrayRuleMatcher(), secretCodec);
+        Keying<Keying.SettingSpec> settingKeying = keyingProvider.getIfAvailable(() -> SettingGenerator.INSTANCE);
         SettingPublisher settingPublisher = new SettingPublisher(settingStore, revisionStore, watchManager, secretCodec,
-                properties.requireMaxSettingVersions());
+                properties.requireMaxSettingVersions(), settingKeying, null);
         return new ItemCuratorService(settingStore, revisionStore, resolver, settingPublisher,
-                settingEnforcer.getIfAvailable(), cortexGuard.getIfAvailable());
+                settingEnforcer.getIfAvailable(), cortexGuard.getIfAvailable(), settingKeying);
     }
 
     /**
@@ -460,8 +496,11 @@ public class CortexConfiguration {
     @Bean
     public RuntimeItemOverlayService runtimeSettingOverlayService(
             @Qualifier("cortexCache") CacheX cache,
-            WatchManager watchManager) {
-        return new RuntimeItemOverlayService(new SimpleSettingPublisher(cache(cache)), watchManager);
+            WatchManager watchManager,
+            @Qualifier("settingKeying") ObjectProvider<Keying<Keying.SettingSpec>> keyingProvider) {
+        Keying<Keying.SettingSpec> settingKeying = keyingProvider.getIfAvailable(() -> SettingGenerator.INSTANCE);
+        return new RuntimeItemOverlayService(new SimpleSettingPublisher(cache(cache), settingKeying), watchManager,
+                settingKeying);
     }
 
     /**

@@ -58,9 +58,24 @@ public class Args extends Specifics {
     public static final String NAMESPACE = "namespace";
 
     /**
+     * The parameter name for selecting the application-specific route scope.
+     */
+    public static final String APP_ID = "app_id";
+
+    /**
+     * The parameter name for selecting the numeric or legacy textual registry type scope.
+     */
+    public static final String TYPE = "type";
+
+    /**
      * The HTTP header name for identifying the client channel (e.g., "web", "app", "mobile").
      */
     public static final String X_REMOTE_CHANNEL = "x_remote_channel";
+
+    /**
+     * Optional header fallback for application-specific route scope.
+     */
+    public static final String X_APP_ID = "x_app_id";
 
     /**
      * The base URI path for standard RESTful API requests.

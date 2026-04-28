@@ -22,11 +22,13 @@ package org.miaixz.bus.cortex.setting;
 import java.util.List;
 
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.cortex.Keying;
+import org.miaixz.bus.cortex.Keying.SettingSpec;
+import org.miaixz.bus.cortex.builtin.SettingGenerator;
 import org.miaixz.bus.cortex.setting.item.revision.ItemRevisionStore;
 import org.miaixz.bus.cortex.setting.item.StoreBackedItemStore;
 import org.miaixz.bus.cortex.setting.item.ItemBindingProjection;
 import org.miaixz.bus.cortex.setting.item.Item;
-import org.miaixz.bus.cortex.setting.item.ItemKeys;
 import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
 import org.miaixz.bus.cortex.setting.item.ItemRevisionNumbers;
 import org.miaixz.bus.cortex.setting.item.revision.ItemRevision;
@@ -86,6 +88,10 @@ public class SettingPublisher {
      * Optional reliable change log used as a first-stage outbox.
      */
     private final CortexChangeLogStore changeLogStore;
+    /**
+     * Setting-domain key strategy.
+     */
+    private final Keying<SettingSpec> keying;
 
     /**
      * Creates a SettingPublisher with default history retention.
@@ -97,7 +103,7 @@ public class SettingPublisher {
      */
     public SettingPublisher(StoreBackedItemStore entryStore, ItemRevisionStore revisionStore, WatchManager watchManager,
             SecretCodec secretCodec) {
-        this(entryStore, revisionStore, watchManager, secretCodec, 10);
+        this(entryStore, revisionStore, watchManager, secretCodec, 10, SettingGenerator.INSTANCE, null);
     }
 
     /**
@@ -111,7 +117,7 @@ public class SettingPublisher {
      */
     public SettingPublisher(StoreBackedItemStore entryStore, ItemRevisionStore revisionStore, WatchManager watchManager,
             SecretCodec secretCodec, int maxRevisions) {
-        this(entryStore, revisionStore, watchManager, secretCodec, maxRevisions, null);
+        this(entryStore, revisionStore, watchManager, secretCodec, maxRevisions, SettingGenerator.INSTANCE, null);
     }
 
     /**
@@ -126,12 +132,31 @@ public class SettingPublisher {
      */
     public SettingPublisher(StoreBackedItemStore entryStore, ItemRevisionStore revisionStore, WatchManager watchManager,
             SecretCodec secretCodec, int maxRevisions, CortexChangeLogStore changeLogStore) {
+        this(entryStore, revisionStore, watchManager, secretCodec, maxRevisions, SettingGenerator.INSTANCE,
+                changeLogStore);
+    }
+
+    /**
+     * Creates a SettingPublisher with explicit history retention, key strategy, and optional outbox recording.
+     *
+     * @param entryStore     current-state setting store
+     * @param revisionStore  revision history store
+     * @param watchManager   watch manager
+     * @param secretCodec    secret codec
+     * @param maxRevisions   max revisions to retain
+     * @param keying         setting-domain key strategy
+     * @param changeLogStore optional outbox store
+     */
+    public SettingPublisher(StoreBackedItemStore entryStore, ItemRevisionStore revisionStore, WatchManager watchManager,
+            SecretCodec secretCodec, int maxRevisions, Keying<SettingSpec> keying,
+            CortexChangeLogStore changeLogStore) {
         this.entryStore = entryStore;
         this.revisionStore = revisionStore;
         this.watchManager = watchManager;
         this.secretCodec = secretCodec;
         this.maxRevisions = maxRevisions;
         this.changeLogStore = changeLogStore;
+        this.keying = keying == null ? SettingGenerator.INSTANCE : keying;
     }
 
     /**
@@ -209,7 +234,7 @@ public class SettingPublisher {
         List<String> profiles = ItemBindingProjection.normalizedProfileIds(stored);
         if (profiles == null || profiles.isEmpty()) {
             watchManager.notifySetting(
-                    ItemKeys.watchKeyForScope(stored.getNamespace_id(), stored.getGroup(), stored.getData_id(), null),
+                    watchKey(stored.getNamespace_id(), stored.getGroup(), stored.getData_id(), null),
                     notifyContent,
                     source,
                     eventType,
@@ -217,11 +242,7 @@ public class SettingPublisher {
         } else {
             for (String profileId : profiles) {
                 watchManager.notifySetting(
-                        ItemKeys.watchKeyForScope(
-                                stored.getNamespace_id(),
-                                stored.getGroup(),
-                                stored.getData_id(),
-                                profileId),
+                        watchKey(stored.getNamespace_id(), stored.getGroup(), stored.getData_id(), profileId),
                         notifyContent,
                         source,
                         eventType,
@@ -245,7 +266,7 @@ public class SettingPublisher {
         if (deleted != null) {
             appendChangeLog("delete", deleted, null);
             watchManager.notifySetting(
-                    ItemKeys.watchKeyForScope(namespace, group, data_id, profile),
+                    watchKey(namespace, group, data_id, profile),
                     null,
                     SETTING_DURABLE_SOURCE,
                     DURABLE_DELETE_EVENT,
@@ -337,7 +358,7 @@ public class SettingPublisher {
      * @return normalized entry ready for persistence
      */
     private Item prepare(Item entry) {
-        return ItemNormalizer.normalize(entry);
+        return ItemNormalizer.normalize(entry, keying);
     }
 
     /**
@@ -400,7 +421,7 @@ public class SettingPublisher {
         record.setAction(action);
         record.setResourceType("ITEM");
         record.setResourceId(
-                ItemKeys.profileScope(
+                profileScope(
                         item.getNamespace_id(),
                         item.getGroup(),
                         item.getData_id(),
@@ -428,6 +449,32 @@ public class SettingPublisher {
             return profiles == null || profiles.isEmpty();
         }
         return profiles != null && profiles.contains(profile.trim().toLowerCase());
+    }
+
+    /**
+     * Builds one watch key.
+     *
+     * @param namespace namespace
+     * @param group     setting group
+     * @param dataId    setting data identifier
+     * @param profile   optional profile
+     * @return watch key
+     */
+    private String watchKey(String namespace, String group, String dataId, String profile) {
+        return keying.key(SettingSpec.watch(namespace, group, dataId, profile));
+    }
+
+    /**
+     * Builds one logical profile scope.
+     *
+     * @param namespace namespace
+     * @param group     setting group
+     * @param dataId    setting data identifier
+     * @param profile   optional profile
+     * @return profile scope key
+     */
+    private String profileScope(String namespace, String group, String dataId, String profile) {
+        return keying.key(SettingSpec.profileScope(namespace, group, dataId, profile));
     }
 
 }

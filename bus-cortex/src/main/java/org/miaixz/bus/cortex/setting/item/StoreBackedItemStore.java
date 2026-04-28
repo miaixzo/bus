@@ -27,8 +27,11 @@ import java.util.Objects;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.cortex.Keying;
+import org.miaixz.bus.cortex.Keying.SettingSpec;
 import org.miaixz.bus.cortex.Suite;
 import org.miaixz.bus.cortex.Trait;
+import org.miaixz.bus.cortex.builtin.SettingGenerator;
 import org.miaixz.bus.cortex.builtin.MetadataMatcher;
 import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -54,6 +57,10 @@ public class StoreBackedItemStore {
      * Optional durable current-state store.
      */
     private final ItemStore store;
+    /**
+     * Setting-domain key strategy.
+     */
+    private final Keying<SettingSpec> keying;
 
     /**
      * Creates a StoreBackedItemStore.
@@ -62,8 +69,20 @@ public class StoreBackedItemStore {
      * @param store  durable current-state store, or {@code null} for cache-only fallback
      */
     public StoreBackedItemStore(CacheX<String, Object> cacheX, ItemStore store) {
+        this(cacheX, store, SettingGenerator.INSTANCE);
+    }
+
+    /**
+     * Creates a StoreBackedItemStore.
+     *
+     * @param cacheX shared cache backend
+     * @param store  durable current-state store, or {@code null} for cache-only fallback
+     * @param keying setting-domain key strategy
+     */
+    public StoreBackedItemStore(CacheX<String, Object> cacheX, ItemStore store, Keying<SettingSpec> keying) {
         this.cacheX = cacheX;
         this.store = store;
+        this.keying = keying == null ? SettingGenerator.INSTANCE : keying;
     }
 
     /**
@@ -76,7 +95,7 @@ public class StoreBackedItemStore {
         if (entry == null) {
             return null;
         }
-        Item prepared = ItemNormalizer.normalize(entry);
+        Item prepared = ItemNormalizer.normalize(entry, keying);
         Item stored = durable() ? store.save(prepared) : prepared;
         if (store != null && !durable()) {
             capabilityFallback("save", Trait.DURABLE, "cache write");
@@ -247,11 +266,11 @@ public class StoreBackedItemStore {
      */
     public void evict(String namespace, String group, String data_id, String profile) {
         if (StringKit.isNotEmpty(profile)) {
-            cacheX.remove(ItemKeys.entryKeyForScope(namespace, group, data_id, profile));
+            cacheX.remove(entryKey(namespace, group, data_id, profile));
             return;
         }
         List<String> keys = new ArrayList<>();
-        String sharedKey = ItemKeys.entryKeyForScope(namespace, group, data_id, null);
+        String sharedKey = entryKey(namespace, group, data_id, null);
         keys.add(sharedKey);
         Map<String, Object> profileEntries = cacheX.scan(sharedKey + ":");
         if (profileEntries != null && !profileEntries.isEmpty()) {
@@ -289,7 +308,7 @@ public class StoreBackedItemStore {
         if (entry == null) {
             return null;
         }
-        Item prepared = ItemNormalizer.normalize(entry);
+        Item prepared = ItemNormalizer.normalize(entry, keying);
         String json = JsonKit.toJsonString(prepared);
         for (String key : cacheKeys(prepared)) {
             cacheX.write(key, json, 0L);
@@ -308,12 +327,12 @@ public class StoreBackedItemStore {
      */
     private Item cached(String namespace, String group, String data_id, String profile) {
         if (StringKit.isNotEmpty(profile)) {
-            Item scoped = readCached(ItemKeys.entryKeyForScope(namespace, group, data_id, profile));
+            Item scoped = readCached(entryKey(namespace, group, data_id, profile));
             if (matchesExactProfile(scoped, profile)) {
                 return scoped;
             }
         }
-        Item shared = readCached(ItemKeys.entryKeyForScope(namespace, group, data_id, null));
+        Item shared = readCached(entryKey(namespace, group, data_id, null));
         return ItemBindingProjection.matchesProfileBinding(shared, profile) ? shared : null;
     }
 
@@ -326,7 +345,7 @@ public class StoreBackedItemStore {
     private List<Item> queryCache(ItemQuery query) {
         ItemQuery criteria = query != null ? query : new ItemQuery();
         String namespace = CortexIdentity.namespace(criteria.getNamespace_id());
-        Map<String, Object> entries = cacheX.scan(ItemKeys.entryPrefix(namespace));
+        Map<String, Object> entries = cacheX.scan(entryPrefix(namespace));
         Map<String, Item> result = new LinkedHashMap<>();
         for (Object value : entries.values()) {
             if (!(value instanceof String json)) {
@@ -468,13 +487,11 @@ public class StoreBackedItemStore {
     private List<String> cacheKeys(Item entry) {
         List<String> profiles = ItemBindingProjection.normalizedProfileIds(entry);
         if (profiles == null || profiles.isEmpty()) {
-            return List
-                    .of(ItemKeys.entryKeyForScope(entry.getNamespace_id(), entry.getGroup(), entry.getData_id(), null));
+            return List.of(entryKey(entry.getNamespace_id(), entry.getGroup(), entry.getData_id(), null));
         }
         List<String> keys = new ArrayList<>(profiles.size());
         for (String profile : profiles) {
-            String key = ItemKeys
-                    .entryKeyForScope(entry.getNamespace_id(), entry.getGroup(), entry.getData_id(), profile);
+            String key = entryKey(entry.getNamespace_id(), entry.getGroup(), entry.getData_id(), profile);
             if (!keys.contains(key)) {
                 keys.add(key);
             }
@@ -501,11 +518,47 @@ public class StoreBackedItemStore {
      */
     private String cacheIdentity(Item entry) {
         List<String> profiles = ItemBindingProjection.normalizedProfileIds(entry);
-        return ItemKeys.profileScope(
+        return profileScope(
                 entry.getNamespace_id(),
                 entry.getGroup(),
                 entry.getData_id(),
                 profiles == null || profiles.isEmpty() ? null : String.join(",", profiles));
+    }
+
+    /**
+     * Builds one current-state entry cache key.
+     *
+     * @param namespace namespace
+     * @param group     setting group
+     * @param dataId    setting data identifier
+     * @param profile   optional profile
+     * @return cache key
+     */
+    private String entryKey(String namespace, String group, String dataId, String profile) {
+        return keying.key(SettingSpec.entry(namespace, group, dataId, profile));
+    }
+
+    /**
+     * Builds the current-state entry prefix for one namespace.
+     *
+     * @param namespace namespace
+     * @return cache prefix
+     */
+    private String entryPrefix(String namespace) {
+        return keying.prefix(SettingSpec.entry(namespace, null, null, null));
+    }
+
+    /**
+     * Builds the logical profile scope used for diagnostics and change events.
+     *
+     * @param namespace namespace
+     * @param group     setting group
+     * @param dataId    setting data identifier
+     * @param profile   optional profile
+     * @return profile scope key
+     */
+    private String profileScope(String namespace, String group, String dataId, String profile) {
+        return keying.key(SettingSpec.profileScope(namespace, group, dataId, profile));
     }
 
     /**

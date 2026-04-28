@@ -21,6 +21,7 @@ package org.miaixz.bus.vortex.filter;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
@@ -107,7 +108,11 @@ public class PrimaryFilter extends AbstractFilter {
                     context.setX_request_id(exchange.getRequest().getId());
                     context.setTimestamp(DateKit.current());
                     context.setHeaders(exchange.getRequest().getHeaders().toSingleValueMap());
-                    context.setHttpMethod(exchange.getRequest().getMethod());
+                    try {
+                        context.setHttpMethod(HTTP.Method.of(exchange.getRequest().getMethod().name()));
+                    } catch (IllegalArgumentException e) {
+                        throw new ValidateException(ErrorCode._100802);
+                    }
 
                     exchange.getAttributes().put(Context.$, context);
 

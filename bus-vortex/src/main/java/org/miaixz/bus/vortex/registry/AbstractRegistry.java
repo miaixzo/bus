@@ -22,8 +22,8 @@ package org.miaixz.bus.vortex.registry;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Monitor;
 import org.miaixz.bus.vortex.Registry;
@@ -78,7 +78,7 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
     /**
      * The function used to generate a unique key for each item stored in the registry.
      */
-    protected Function<T, String> keyGenerator;
+    protected FunctionX<T, String> keyGenerator;
 
     /**
      * Constructor: Initializes the cache manager.
@@ -91,9 +91,9 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
      * Sets the key generation strategy for this registry. This method must be called by subclasses in their constructor
      * to define how items are indexed.
      *
-     * @param keyGenerator A {@link Function} that takes an item of type {@code T} and returns its unique string key.
+     * @param keyGenerator A {@link FunctionX} that takes an item of type {@code T} and returns its unique string key.
      */
-    protected void setKeyGenerator(Function<T, String> keyGenerator) {
+    protected void setKeyGenerator(FunctionX<T, String> keyGenerator) {
         this.keyGenerator = keyGenerator;
     }
 

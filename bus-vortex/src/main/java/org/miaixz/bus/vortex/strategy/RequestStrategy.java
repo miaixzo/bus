@@ -22,10 +22,10 @@ package org.miaixz.bus.vortex.strategy;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
@@ -34,7 +34,6 @@ import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.FormFieldPart;
@@ -101,7 +100,7 @@ public class RequestStrategy extends AbstractStrategy {
                     request.getURI().getPath(),
                     request.getHeaders());
 
-            if (Objects.equals(request.getMethod(), HttpMethod.GET)) {
+            if (context.getHttpMethod() == HTTP.Method.GET) {
                 return handleGetRequest(mutate, chain, context);
             } else {
                 MediaType contentType = mutate.getRequest().getHeaders().getContentType();

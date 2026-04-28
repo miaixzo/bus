@@ -22,7 +22,9 @@ package org.miaixz.bus.cortex.registry.mcp;
 import java.util.List;
 
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Type;
+import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.cortex.registry.RegistryStore;
 import org.miaixz.bus.cortex.registry.StoreBackedRegistry;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
@@ -43,7 +45,20 @@ public class McpRegistry extends StoreBackedRegistry<McpAssets> {
      * @param store        durable store adapter
      */
     public McpRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, RegistryStore<McpAssets> store) {
-        super(cacheX, watchManager, store, McpAssets.class, Type.MCP, List.of());
+        this(cacheX, watchManager, store, RegistryGenerator.INSTANCE);
+    }
+
+    /**
+     * Creates a McpRegistry backed by the given CacheX, WatchManager and keying strategy.
+     *
+     * @param cacheX       shared cache for registry state
+     * @param watchManager watch subscription manager
+     * @param store        durable store adapter
+     * @param keying       key strategy
+     */
+    public McpRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, RegistryStore<McpAssets> store,
+            Keying<Keying.RegistrySpec> keying) {
+        super(cacheX, watchManager, store, McpAssets.class, Type.MCP, List.of(), keying);
     }
 
 }

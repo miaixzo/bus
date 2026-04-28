@@ -20,6 +20,7 @@
 package org.miaixz.bus.vortex.strategy;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,6 +34,7 @@ import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Type;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
@@ -46,8 +48,6 @@ import org.miaixz.bus.vortex.provider.AuthorizeProvider;
 import org.miaixz.bus.vortex.registry.AssetsRegistry;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
 
 import reactor.core.publisher.Mono;
@@ -101,8 +101,7 @@ public class QualifierStrategy extends AbstractStrategy {
      * <ol>
      * <li>Extracts key gateway parameters (e.g., format, channel, namespace, method, version) from the request and
      * populates the {@link Context}.</li>
-     * <li>Retrieves the {@link Assets} configuration from the registry using the API type, namespace, method, and
-     * version.</li>
+     * <li>Retrieves the {@link Assets} configuration from the registry using namespace, method, version, and verb.</li>
      * <li>Sets the resolved {@link Assets} in the context for downstream use.</li>
      * <li>Validates that the request's HTTP method matches the one defined in the assets.</li>
      * <li>If the API asset is protected, it invokes the authorization workflow.</li>
@@ -129,34 +128,59 @@ public class QualifierStrategy extends AbstractStrategy {
                             Optional.ofNullable(params.get(Args.X_REMOTE_CHANNEL)).map(Object::toString).orElse(null)));
 
             String namespace = Optional.ofNullable(params.get(Args.NAMESPACE)).map(Object::toString).orElse(null);
+            String appId = Optional.ofNullable(params.get(Args.APP_ID)).map(Object::toString)
+                    .orElseGet(() -> exchange.getRequest().getHeaders().getFirst(Args.X_APP_ID));
             String method = Optional.ofNullable(params.get(Args.METHOD)).map(Object::toString).orElse(null);
+            Type type = this.type(Optional.ofNullable(params.get(Args.TYPE)).map(Object::toString).orElse(null));
             String version = Optional.ofNullable(params.get(Args.VERSION)).map(Object::toString).orElse(null);
+            Integer verb = context.getHttpMethod() == null ? null : context.getHttpMethod().verb();
+            Keying.RegistrySpec requestRoute = Keying.RegistrySpec.route(namespace, type, appId, method, version, verb);
 
-            return Mono.fromCallable(() -> this.registry.get(Type.API, namespace, method, version))
-                    .subscribeOn(Schedulers.boundedElastic()).switchIfEmpty(Mono.defer(() -> {
+            return Mono.fromCallable(() -> this.registry.get(requestRoute)).subscribeOn(Schedulers.boundedElastic())
+                    .switchIfEmpty(Mono.defer(() -> {
                         Logger.warn(
                                 false,
                                 "Qualifier",
-                                "[{}] Assets not found for namespace: {}, method: {}, version: {}",
+                                "[{}] Assets not found for namespace: {}, type: {}, appId: {}, method: {}, version: {}, verb: {}",
                                 context.getX_request_ip(),
                                 namespace,
+                                type == null ? null : type.key(),
+                                appId,
                                 method,
-                                version);
+                                version,
+                                verb);
                         return Mono.error(new ValidateException(ErrorCode._100800));
                     })).flatMap(assets -> {
                         context.setAssets(assets);
+                        Keying.RegistrySpec resolvedRoute = Keying.RegistrySpec.route(assets);
+                        String matchedRoute = null;
+                        Integer matchedLevel = null;
+                        List<String> requestedRoutes = this.registry.keying().keys(requestRoute);
+                        List<String> resolvedRoutes = this.registry.keying().keys(resolvedRoute);
+                        for (int i = 0; i < requestedRoutes.size(); i++) {
+                            String requested = requestedRoutes.get(i);
+                            if (resolvedRoutes.contains(requested)) {
+                                matchedRoute = requested;
+                                matchedLevel = i + 1;
+                                break;
+                            }
+                        }
                         Logger.info(
                                 true,
                                 "Qualifier",
-                                "[{}] Assets resolved: namespace={}, method={}, version={}, policy={}, sign={}, mode={}, type={}, host={}, port={}, path={}, url={}",
+                                "[{}] Assets resolved: namespace={}, type={}, appId={}, method={}, version={}, verb={}, matchedLevel={}, matchedRoute={}, policy={}, sign={}, mode={}, host={}, port={}, path={}, url={}",
                                 context.getX_request_ip(),
                                 assets.getNamespace_id(),
+                                assets.getType(),
+                                assets.getApp_id(),
                                 assets.getMethod(),
                                 assets.getVersion(),
+                                assets.getVerb(),
+                                matchedLevel,
+                                matchedRoute,
                                 assets.getPolicy(),
                                 assets.getSign(),
                                 assets.getProtocol(),
-                                assets.getVerb(),
                                 assets.getHost(),
                                 assets.getPort(),
                                 assets.getPath(),
@@ -170,20 +194,41 @@ public class QualifierStrategy extends AbstractStrategy {
                         return validationMono.then(authMono);
                     }).then(Mono.fromRunnable(() -> {
                         context.getParameters().remove(Args.NAMESPACE);
+                        context.getParameters().remove(Args.APP_ID);
                         context.getParameters().remove(Args.METHOD);
                         context.getParameters().remove(Args.FORMAT);
+                        context.getParameters().remove(Args.TYPE);
                         context.getParameters().remove(Args.VERSION);
                         context.getParameters().remove(Args.SIGN);
                         Logger.info(
                                 true,
                                 "Qualifier",
-                                "[{}] Namespace: {}, Method: {}, Version: {} validated successfully",
+                                "[{}] Namespace: {}, Type: {}, AppId: {}, Method: {}, Version: {} validated successfully",
                                 context.getX_request_ip(),
                                 namespace,
+                                type == null ? null : type.key(),
+                                appId,
                                 method,
                                 version);
                     })).then(chain.apply(exchange));
         });
+    }
+
+    /**
+     * Resolves one optional request type token from either the numeric type key or the historical enum name.
+     *
+     * @param token raw request token
+     * @return resolved registry type or {@code null}
+     */
+    protected Type type(String token) {
+        if (StringKit.isBlank(token)) {
+            return null;
+        }
+        Type resolved = Type.tryFrom(token).orElseThrow(() -> new ValidateException(ErrorCode._100800));
+        if (!resolved.isRegistry()) {
+            throw new ValidateException(ErrorCode._100800);
+        }
+        return resolved;
     }
 
     /**
@@ -196,19 +241,19 @@ public class QualifierStrategy extends AbstractStrategy {
      */
     protected Mono<Void> method(ServerWebExchange exchange, Context context, Assets assets) {
         return Mono.fromRunnable(() -> {
-            ServerHttpRequest request = exchange.getRequest();
-            final HttpMethod expectedMethod = this.valueOf(assets.getVerb());
+            final HTTP.Method actualMethod = context.getHttpMethod();
+            final HTTP.Method expectedMethod = this.methodOf(assets.getVerb());
 
-            if (!Objects.equals(request.getMethod(), expectedMethod)) {
+            if (!Objects.equals(actualMethod, expectedMethod)) {
                 Logger.warn(
                         false,
                         "Qualifier",
                         "[{}] HTTP method mismatch, expected: {}, actual: {}",
                         context.getX_request_ip(),
                         expectedMethod,
-                        request.getMethod());
+                        actualMethod);
 
-                final Errors error = switch (expectedMethod.name()) {
+                final Errors error = switch (expectedMethod.value()) {
                     case HTTP.GET -> ErrorCode._100200;
                     case HTTP.POST -> ErrorCode._100201;
                     case HTTP.PUT -> ErrorCode._100202;

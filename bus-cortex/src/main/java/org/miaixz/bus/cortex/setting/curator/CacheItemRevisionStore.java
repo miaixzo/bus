@@ -25,10 +25,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.cortex.Keying;
+import org.miaixz.bus.cortex.Keying.SettingSpec;
 import org.miaixz.bus.cortex.Suite;
 import org.miaixz.bus.cortex.Trait;
+import org.miaixz.bus.cortex.builtin.SettingGenerator;
 import org.miaixz.bus.cortex.setting.item.ItemBindingProjection;
-import org.miaixz.bus.cortex.setting.item.ItemKeys;
 import org.miaixz.bus.cortex.setting.item.ItemRevisionNumbers;
 import org.miaixz.bus.cortex.setting.item.revision.ItemRevision;
 import org.miaixz.bus.cortex.setting.item.revision.ItemRevisionStore;
@@ -46,6 +48,10 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
      * Shared cache that stores serialized {@code setting.item.revision} snapshots.
      */
     private final CacheX<String, Object> cacheX;
+    /**
+     * Setting-domain key strategy.
+     */
+    private final Keying<SettingSpec> keying;
 
     /**
      * Creates a CacheItemRevisionStore.
@@ -53,7 +59,18 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
      * @param cacheX shared cache backend
      */
     public CacheItemRevisionStore(CacheX<String, Object> cacheX) {
+        this(cacheX, SettingGenerator.INSTANCE);
+    }
+
+    /**
+     * Creates a CacheItemRevisionStore.
+     *
+     * @param cacheX shared cache backend
+     * @param keying setting-domain key strategy
+     */
+    public CacheItemRevisionStore(CacheX<String, Object> cacheX, Keying<SettingSpec> keying) {
         this.cacheX = cacheX;
+        this.keying = keying == null ? SettingGenerator.INSTANCE : keying;
     }
 
     /**
@@ -86,7 +103,7 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
      */
     @Override
     public ItemRevision find(String namespace, String group, String data_id, String profile, String revisionNo) {
-        Object raw = cacheX.read(ItemKeys.revisionKeyForScope(namespace, group, data_id, profile, revisionNo));
+        Object raw = cacheX.read(revisionKey(namespace, group, data_id, profile, revisionNo));
         if (raw instanceof String json) {
             return JsonKit.toPojo(json, ItemRevision.class);
         }
@@ -106,7 +123,7 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
     public ItemRevision delete(String namespace, String group, String data_id, String profile, String revisionNo) {
         ItemRevision revision = find(namespace, group, data_id, profile, revisionNo);
         if (revision == null) {
-            cacheX.remove(ItemKeys.revisionKeyForScope(namespace, group, data_id, profile, revisionNo));
+            cacheX.remove(revisionKey(namespace, group, data_id, profile, revisionNo));
             return null;
         }
         cacheX.remove(revisionKeys(revision).toArray(String[]::new));
@@ -124,7 +141,7 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
      */
     @Override
     public List<ItemRevision> query(String namespace, String group, String data_id, String profile) {
-        Map<String, Object> entries = cacheX.scan(ItemKeys.revisionPrefixForScope(namespace, group, data_id, profile));
+        Map<String, Object> entries = cacheX.scan(revisionPrefix(namespace, group, data_id, profile));
         List<ItemRevision> result = new ArrayList<>();
         for (Object value : entries.values()) {
             if (value instanceof String json) {
@@ -224,7 +241,7 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
         List<String> profiles = ItemBindingProjection.normalizedProfileIds(revision);
         if (profiles == null || profiles.isEmpty()) {
             return List.of(
-                    ItemKeys.revisionKeyForScope(
+                    revisionKey(
                             revision.getNamespace_id(),
                             revision.getGroup(),
                             revision.getData_id(),
@@ -233,7 +250,7 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
         }
         List<String> keys = new ArrayList<>(profiles.size());
         for (String profile : profiles) {
-            String key = ItemKeys.revisionKeyForScope(
+            String key = revisionKey(
                     revision.getNamespace_id(),
                     revision.getGroup(),
                     revision.getData_id(),
@@ -244,6 +261,33 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
             }
         }
         return keys;
+    }
+
+    /**
+     * Builds one revision cache key.
+     *
+     * @param namespace namespace
+     * @param group     setting group
+     * @param dataId    setting data identifier
+     * @param profile   optional profile
+     * @param revision  revision number
+     * @return revision cache key
+     */
+    private String revisionKey(String namespace, String group, String dataId, String profile, String revision) {
+        return keying.key(SettingSpec.revision(namespace, group, dataId, profile, revision));
+    }
+
+    /**
+     * Builds the revision scan prefix.
+     *
+     * @param namespace namespace
+     * @param group     setting group
+     * @param dataId    setting data identifier
+     * @param profile   optional profile
+     * @return revision prefix
+     */
+    private String revisionPrefix(String namespace, String group, String dataId, String profile) {
+        return keying.prefix(SettingSpec.revision(namespace, group, dataId, profile, null));
     }
 
 }

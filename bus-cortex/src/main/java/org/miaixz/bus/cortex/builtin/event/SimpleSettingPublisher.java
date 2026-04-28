@@ -20,8 +20,10 @@
 package org.miaixz.bus.cortex.builtin.event;
 
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.cortex.Keying;
+import org.miaixz.bus.cortex.Keying.SettingSpec;
+import org.miaixz.bus.cortex.builtin.SettingGenerator;
 import org.miaixz.bus.cortex.setting.delivery.RuntimeItemOverlayPublisher;
-import org.miaixz.bus.cortex.setting.item.ItemKeys;
 
 /**
  * Lightweight setting publisher that writes directly to the shared cache without revision history.
@@ -38,6 +40,10 @@ public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
      * Shared cache used to store published setting content.
      */
     private final CacheX<String, Object> cacheX;
+    /**
+     * Setting-domain key strategy.
+     */
+    private final Keying<SettingSpec> keying;
 
     /**
      * Creates a SimpleSettingPublisher backed by the given CacheX.
@@ -45,7 +51,18 @@ public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
      * @param cacheX shared cache used to store setting content
      */
     public SimpleSettingPublisher(CacheX<String, Object> cacheX) {
+        this(cacheX, SettingGenerator.INSTANCE);
+    }
+
+    /**
+     * Creates a SimpleSettingPublisher backed by the given CacheX.
+     *
+     * @param cacheX shared cache used to store setting content
+     * @param keying setting-domain key strategy
+     */
+    public SimpleSettingPublisher(CacheX<String, Object> cacheX, Keying<SettingSpec> keying) {
         this.cacheX = cacheX;
+        this.keying = keying == null ? SettingGenerator.INSTANCE : keying;
     }
 
     /**
@@ -85,7 +102,7 @@ public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
      */
     @Override
     public void publish(String namespace, String group, String data_id, String profile, String content, long ttlMs) {
-        cacheX.write(ItemKeys.overlayKeyForScope(namespace, group, data_id, profile), content, ttlMs);
+        cacheX.write(overlayKey(namespace, group, data_id, profile), content, ttlMs);
     }
 
     /**
@@ -99,7 +116,7 @@ public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
      */
     @Override
     public String get(String namespace, String group, String data_id, String profile) {
-        Object value = cacheX.read(ItemKeys.overlayKeyForScope(namespace, group, data_id, profile));
+        Object value = cacheX.read(overlayKey(namespace, group, data_id, profile));
         return value == null ? null : value.toString();
     }
 
@@ -113,7 +130,20 @@ public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
      */
     @Override
     public void delete(String namespace, String group, String data_id, String profile) {
-        cacheX.remove(ItemKeys.overlayKeyForScope(namespace, group, data_id, profile));
+        cacheX.remove(overlayKey(namespace, group, data_id, profile));
+    }
+
+    /**
+     * Builds one overlay key.
+     *
+     * @param namespace namespace
+     * @param group     setting group
+     * @param dataId    setting data identifier
+     * @param profile   optional profile
+     * @return overlay key
+     */
+    private String overlayKey(String namespace, String group, String dataId, String profile) {
+        return keying.key(SettingSpec.overlay(namespace, group, dataId, profile));
     }
 
 }

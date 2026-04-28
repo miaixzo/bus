@@ -238,7 +238,7 @@ public class VettingStrategy extends AbstractStrategy {
             Map<String, Object> params = context.getParameters();
             String key = StringKit.isNotEmpty(getApiKey(context)) ? getApiKey(context)
                     : String.valueOf(params.get(Args.METHOD));
-            if (!validateSign(key + params.get(Args.TIMESTAMP), context.getHttpMethod().name(), params)) {
+            if (!validateSign(key + params.get(Args.TIMESTAMP), context.getHttpMethod().value(), params)) {
                 throw new SignatureException(ErrorCode._100109);
             }
             return (Void) null;

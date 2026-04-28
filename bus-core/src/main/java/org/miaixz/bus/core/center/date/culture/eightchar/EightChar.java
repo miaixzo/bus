@@ -174,17 +174,6 @@ public class EightChar extends Tradition {
     }
 
     /**
-     * Gets the 12 Duty Gods (Jian Chu).
-     *
-     * @return The Duty.
-     * @see SixtyCycleDay#getDuty()
-     */
-    @Deprecated
-    public Duty getDuty() {
-        return Duty.fromIndex(getDay().getEarthBranch().getIndex() - getYear().getEarthBranch().getIndex());
-    }
-
-    /**
      * Gets a list of Gregorian (Solar) times that match this EightChar.
      *
      * @param startYear The inclusive start year (supports 1-9999).

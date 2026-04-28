@@ -27,6 +27,7 @@ import java.util.Objects;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cortex.*;
+import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.cortex.magic.identity.Sequence;
 import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
 import org.miaixz.bus.cortex.magic.event.CortexChangeRecord;
@@ -72,7 +73,24 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
      */
     protected StoreBackedRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, RegistryStore<T> store,
             Class<T> type, Type registryType, List<Listener<RegistryChange<T>>> listeners) {
-        this(cacheX, watchManager, store, type, registryType, listeners, null);
+        this(cacheX, watchManager, store, type, registryType, listeners, null, RegistryGenerator.INSTANCE);
+    }
+
+    /**
+     * Creates a store-backed registry with the supplied keying strategy.
+     *
+     * @param cacheX       shared cache backend
+     * @param watchManager watch manager
+     * @param store        durable store adapter
+     * @param type         managed entry type
+     * @param registryType registry type
+     * @param listeners    post-commit listeners
+     * @param keying       key strategy
+     */
+    protected StoreBackedRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, RegistryStore<T> store,
+            Class<T> type, Type registryType, List<Listener<RegistryChange<T>>> listeners,
+            Keying<Keying.RegistrySpec> keying) {
+        this(cacheX, watchManager, store, type, registryType, listeners, null, keying);
     }
 
     /**
@@ -89,7 +107,25 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
     protected StoreBackedRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, RegistryStore<T> store,
             Class<T> type, Type registryType, List<Listener<RegistryChange<T>>> listeners,
             CortexChangeLogStore changeLogStore) {
-        super(cacheX, watchManager, type, registryType);
+        this(cacheX, watchManager, store, type, registryType, listeners, changeLogStore, RegistryGenerator.INSTANCE);
+    }
+
+    /**
+     * Creates a store-backed registry with optional outbox recording and keying strategy.
+     *
+     * @param cacheX         shared cache backend
+     * @param watchManager   watch manager
+     * @param store          durable store adapter
+     * @param type           managed entry type
+     * @param registryType   registry type
+     * @param listeners      post-commit listeners
+     * @param changeLogStore optional outbox store
+     * @param keying         key strategy
+     */
+    protected StoreBackedRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, RegistryStore<T> store,
+            Class<T> type, Type registryType, List<Listener<RegistryChange<T>>> listeners,
+            CortexChangeLogStore changeLogStore, Keying<Keying.RegistrySpec> keying) {
+        super(cacheX, watchManager, type, registryType, keying);
         this.store = store;
         this.listeners = listeners == null ? List.of() : List.copyOf(listeners);
         this.sequence = new Sequence(cacheX);
@@ -105,7 +141,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
      */
     public T find(String namespace, String id) {
         String ns = normalizeNamespace(namespace);
-        T cached = deserialize(cacheX.read(buildKey(ns, id)));
+        T cached = deserialize(cacheX.read(keying.key(Keying.RegistrySpec.entry(ns, registryType, id))));
         if (cached != null) {
             cached.setNamespace_id(ns);
             if (cached.getType() == null) {
@@ -138,11 +174,11 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
             return null;
         }
         if (store == null) {
-            return deserialize(cacheX.read(buildKey(ns, id)));
+            return deserialize(cacheX.read(keying.key(Keying.RegistrySpec.entry(ns, registryType, id))));
         }
         T loaded = store.find(registryType, ns, id);
         if (loaded == null) {
-            cacheX.remove(buildKey(ns, id));
+            cacheX.remove(keying.key(Keying.RegistrySpec.entry(ns, registryType, id)));
             return null;
         }
         T prepared = normalizeEntry(loaded);
@@ -188,7 +224,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         if (id == null) {
             return;
         }
-        cacheX.remove(buildKey(normalizeNamespace(namespace), id));
+        cacheX.remove(keying.key(Keying.RegistrySpec.entry(normalizeNamespace(namespace), registryType, id)));
     }
 
     /**
@@ -242,7 +278,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
             evict(criteria.getNamespace_id(), criteria.getId());
             return refresh(criteria);
         }
-        String prefix = buildScanPrefix(criteria.getNamespace_id());
+        String prefix = keying.prefix(Keying.RegistrySpec.entry(criteria.getNamespace_id(), registryType, null));
         Map<String, Object> current = cacheX.scan(prefix);
         if (current != null && !current.isEmpty()) {
             cacheX.remove(current.keySet().toArray(String[]::new));
@@ -282,7 +318,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         String ns = normalizeNamespace(namespace);
         T existing = find(ns, id);
         if (existing == null) {
-            cacheX.remove(buildKey(ns, id));
+            cacheX.remove(keying.key(Keying.RegistrySpec.entry(ns, registryType, id)));
             return;
         }
         long tombstoneTime = System.currentTimeMillis();
@@ -550,7 +586,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         } else if (store != null) {
             capabilityFallback("delete", Trait.DURABLE, "cache remove");
         }
-        cacheX.remove(buildKey(namespace, id));
+        cacheX.remove(keying.key(Keying.RegistrySpec.entry(namespace, registryType, id)));
     }
 
     /**
@@ -660,7 +696,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
      * @return cached entry or {@code null}
      */
     private T findCachedByRoute(String namespace, String app_id, String method, String version) {
-        Map<String, Object> raw = cacheX.scan(buildScanPrefix(namespace));
+        Map<String, Object> raw = cacheX.scan(keying.prefix(Keying.RegistrySpec.entry(namespace, registryType, null)));
         if (raw == null || raw.isEmpty()) {
             return null;
         }

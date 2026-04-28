@@ -25,6 +25,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
@@ -201,12 +202,9 @@ public class OpenApiClient implements McpClient {
 
         Map<String, Object> rawConfig = (Map<String, Object>) tool.getInputSchema().get("_rawConfig");
         String endpoint = (String) rawConfig.get("endpoint");
-        String httpMethod = ((String) rawConfig.get("method")).toUpperCase();
+        HTTP.Method httpMethod = HTTP.Method.of((String) rawConfig.get("method"));
 
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(endpoint);
-
-        Map<String, Object> pathParamsSchema = (Map<String, Object>) tool.getInputSchema()
-                .getOrDefault("path", Collections.emptyMap());
         Map<String, Object> queryParamsSchema = (Map<String, Object>) tool.getInputSchema()
                 .getOrDefault("query", Collections.emptyMap());
 
@@ -218,7 +216,7 @@ public class OpenApiClient implements McpClient {
 
         String finalUri = uriBuilder.buildAndExpand(arguments).toUriString();
 
-        WebClient.RequestBodySpec requestSpec = client.method(HttpMethod.valueOf(httpMethod)).uri(finalUri);
+        WebClient.RequestBodySpec requestSpec = client.method(HttpMethod.valueOf(httpMethod.value())).uri(finalUri);
 
         if (tool.getInputSchema().containsKey("body")) {
             Object bodyValue = arguments.get("body");
@@ -227,7 +225,7 @@ public class OpenApiClient implements McpClient {
             }
         }
 
-        Logger.info("Executing OpenAPI tool '{}': {} {}", toolName, httpMethod, finalUri);
+        Logger.info("Executing OpenAPI tool '{}': {} {}", toolName, httpMethod.value(), finalUri);
 
         return requestSpec.retrieve().bodyToMono(String.class).map(response -> (Object) response)
                 .doOnSuccess(response -> Logger.info("Received response for tool '{}'", toolName));

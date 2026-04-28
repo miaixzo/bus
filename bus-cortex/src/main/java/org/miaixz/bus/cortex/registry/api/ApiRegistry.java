@@ -27,13 +27,14 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Builder;
 import org.miaixz.bus.cortex.Instance;
+import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Listener;
 import org.miaixz.bus.cortex.Registry;
 import org.miaixz.bus.cortex.Trait;
 import org.miaixz.bus.cortex.Type;
+import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.cortex.magic.identity.Fingerprint;
 import org.miaixz.bus.cortex.registry.RegistryChange;
-import org.miaixz.bus.cortex.registry.RegistryKeys;
 import org.miaixz.bus.cortex.registry.RegistryStore;
 import org.miaixz.bus.cortex.registry.StoreBackedRegistry;
 import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
@@ -58,7 +59,21 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
      */
     public ApiRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, RegistryStore<ApiAssets> store,
             List<Listener<RegistryChange<ApiAssets>>> syncListeners) {
-        super(cacheX, watchManager, store, ApiAssets.class, Type.API, syncListeners);
+        this(cacheX, watchManager, store, syncListeners, RegistryGenerator.INSTANCE);
+    }
+
+    /**
+     * Creates an ApiRegistry backed by the given CacheX, WatchManager and keying strategy.
+     *
+     * @param cacheX        shared cache for registry state
+     * @param watchManager  watch subscription manager
+     * @param store         durable store adapter
+     * @param syncListeners post-commit listeners
+     * @param keying        route-key strategy
+     */
+    public ApiRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, RegistryStore<ApiAssets> store,
+            List<Listener<RegistryChange<ApiAssets>>> syncListeners, Keying<Keying.RegistrySpec> keying) {
+        super(cacheX, watchManager, store, ApiAssets.class, Type.API, syncListeners, keying);
     }
 
     /**
@@ -72,7 +87,23 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
      */
     public ApiRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, RegistryStore<ApiAssets> store,
             List<Listener<RegistryChange<ApiAssets>>> syncListeners, CortexChangeLogStore changeLogStore) {
-        super(cacheX, watchManager, store, ApiAssets.class, Type.API, syncListeners, changeLogStore);
+        this(cacheX, watchManager, store, syncListeners, changeLogStore, RegistryGenerator.INSTANCE);
+    }
+
+    /**
+     * Creates an ApiRegistry backed by the given CacheX, WatchManager, optional outbox store, and keying strategy.
+     *
+     * @param cacheX         shared cache for registry state
+     * @param watchManager   watch subscription manager
+     * @param store          durable store adapter
+     * @param syncListeners  post-commit listeners
+     * @param changeLogStore optional outbox store
+     * @param keying         route-key strategy
+     */
+    public ApiRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, RegistryStore<ApiAssets> store,
+            List<Listener<RegistryChange<ApiAssets>>> syncListeners, CortexChangeLogStore changeLogStore,
+            Keying<Keying.RegistrySpec> keying) {
+        super(cacheX, watchManager, store, ApiAssets.class, Type.API, syncListeners, changeLogStore, keying);
     }
 
     /**
@@ -118,7 +149,7 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
         fillInstanceIdentity(prepared, instance);
 
         long ttl = prepared.getTtl() > 0 ? prepared.getTtl() : 3600_000L;
-        String instKey = RegistryKeys.instance(ns, appId, method, version, fingerprint);
+        String instKey = keying.key(Keying.RegistrySpec.instance(ns, appId, method, version, fingerprint));
         cacheX.write(instKey, JsonKit.toJsonString(instance), ttl);
         ApiAssets existing = loadExisting(prepared);
         persistEntry(prepared, instance);
@@ -142,7 +173,7 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
     @Override
     public void deregisterInstance(String namespace, String app_id, String method, String version, String fingerprint) {
         String ns = normalizeNamespace(namespace);
-        String instKey = RegistryKeys.instance(ns, app_id, method, version, fingerprint);
+        String instKey = keying.key(Keying.RegistrySpec.instance(ns, app_id, method, version, fingerprint));
         ApiAssets service = findServiceByRoute(ns, app_id, method, version);
         Instance current = findInstance(ns, app_id, method, version, fingerprint);
         if (store != null && storeSupports(Trait.DURABLE) && storeSupports(Trait.INSTANCES)) {
@@ -182,13 +213,13 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
         }
         String prefix;
         if (app_id == null) {
-            prefix = RegistryKeys.instancePrefix(ns, null, null, null);
+            prefix = keying.prefix(Keying.RegistrySpec.instance(ns, null, null, null, null));
         } else if (method == null) {
-            prefix = RegistryKeys.instancePrefix(ns, app_id, null, null);
+            prefix = keying.prefix(Keying.RegistrySpec.instance(ns, app_id, null, null, null));
         } else if (version == null) {
-            prefix = RegistryKeys.instancePrefix(ns, app_id, method, null);
+            prefix = keying.prefix(Keying.RegistrySpec.instance(ns, app_id, method, null, null));
         } else {
-            prefix = RegistryKeys.instancePrefix(ns, app_id, method, version);
+            prefix = keying.prefix(Keying.RegistrySpec.instance(ns, app_id, method, version, null));
         }
         Map<String, Object> raw = cacheX.scan(prefix);
         List<Instance> result = new ArrayList<>();
@@ -225,7 +256,7 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
      */
     private ApiAssets normalizeService(ApiAssets service, Instance instance) {
         ApiAssets prepared = normalizeEntry(service);
-        prepared.normalizeMeta();
+        prepared.normalizeMeta(keying);
         if (instance == null) {
             return prepared;
         }
@@ -316,7 +347,7 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
         } else if (store != null) {
             capabilityFallback("findServiceByRoute", Trait.ROUTE_QUERY, "cache route scan");
         }
-        Map<String, Object> raw = cacheX.scan(buildScanPrefix(namespace));
+        Map<String, Object> raw = cacheX.scan(keying.prefix(Keying.RegistrySpec.entry(namespace, registryType, null)));
         if (raw == null || raw.isEmpty()) {
             return null;
         }
@@ -390,8 +421,9 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
             String instAppId = app_id != null ? app_id : instance.getApp_id();
             String instMethod = method != null ? method : instance.getMethod();
             String instVersion = version != null ? version : instance.getVersion();
-            String instKey = RegistryKeys
-                    .instance(instNamespace, instAppId, instMethod, instVersion, instance.getFingerprint());
+            String instKey = keying.key(
+                    Keying.RegistrySpec
+                            .instance(instNamespace, instAppId, instMethod, instVersion, instance.getFingerprint()));
             cacheX.write(instKey, JsonKit.toJsonString(instance), Builder.DEFAULT_HEALTH_INTERVAL_MS * 120);
         }
     }

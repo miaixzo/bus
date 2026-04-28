@@ -23,7 +23,9 @@ import jakarta.persistence.Transient;
 import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.cortex.Builder;
 import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Type;
+import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 
@@ -99,8 +101,19 @@ public class ApiAssets extends Assets {
      * @return this asset
      */
     public ApiAssets normalizeMeta() {
+        return normalizeMeta(RegistryGenerator.INSTANCE);
+    }
+
+    /**
+     * Applies API-registry metadata defaults using the supplied keying strategy.
+     *
+     * @param keying route-key strategy
+     * @return this asset
+     */
+    public ApiAssets normalizeMeta(Keying<Keying.RegistrySpec> keying) {
+        Keying<Keying.RegistrySpec> effective = keying == null ? RegistryGenerator.INSTANCE : keying;
         Meta meta = meta();
-        meta.setRouteKey(defaultRouteKey());
+        meta.setRouteKey(defaultRouteKey(effective));
         if (meta.getLeaseSeconds() == null) {
             meta.setLeaseSeconds(DEFAULT_LEASE_SECONDS);
         }
@@ -153,6 +166,9 @@ public class ApiAssets extends Assets {
 
     /**
      * Returns route key from API metadata.
+     * <p>
+     * The built-in format uses {@code method:version:verbCode}, for example {@code dp.license.get:1.0:1}.
+     * </p>
      *
      * @return route key
      */
@@ -162,6 +178,9 @@ public class ApiAssets extends Assets {
 
     /**
      * Stores route key into API metadata.
+     * <p>
+     * The built-in default route-key format uses the numeric registry verb code rather than the HTTP token string.
+     * </p>
      *
      * @param routeKey route key
      */
@@ -172,15 +191,16 @@ public class ApiAssets extends Assets {
     }
 
     /**
-     * Builds the default route key from method and version.
+     * Builds the default public route alias from method, version, and numeric verb code.
+     * <p>
+     * This metadata field intentionally keeps the lightweight public alias semantics. Runtime lookup candidates are now
+     * generated independently by the registry-side {@link Keying#keys(Object)} candidate chain.
+     * </p>
      *
      * @return default route key or {@code null}
      */
-    private String defaultRouteKey() {
-        if (getMethod() == null || getVersion() == null) {
-            return null;
-        }
-        return getMethod() + ":" + getVersion();
+    private String defaultRouteKey(Keying<Keying.RegistrySpec> keying) {
+        return keying.key(Keying.RegistrySpec.route(null, null, null, getMethod(), getVersion(), getVerb()));
     }
 
     /**
@@ -199,7 +219,7 @@ public class ApiAssets extends Assets {
          */
         private Integer leaseSeconds;
         /**
-         * Stable route key used by admin and bridge paths.
+         * Stable public route alias used by admin and bridge paths, for example {@code dp.license.get:1.0:1}.
          */
         private String routeKey;
 

@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.cortex.Keying;
+import org.miaixz.bus.cortex.Keying.SettingSpec;
+import org.miaixz.bus.cortex.builtin.SettingGenerator;
 import org.miaixz.bus.cortex.guard.CortexGuard;
 import org.miaixz.bus.cortex.guard.GuardContext;
 import org.miaixz.bus.cortex.setting.SettingEnforcer;
@@ -65,6 +68,10 @@ public class ItemCuratorService {
      * Optional shared Cortex guard.
      */
     private final CortexGuard cortexGuard;
+    /**
+     * Setting-domain key strategy.
+     */
+    private final Keying<SettingSpec> keying;
 
     /**
      * Creates an ItemCuratorService.
@@ -76,7 +83,7 @@ public class ItemCuratorService {
      */
     public ItemCuratorService(StoreBackedItemStore entryStore, ItemRevisionStore revisionStore,
             ItemValueResolver resolver, SettingPublisher publisher) {
-        this(entryStore, revisionStore, resolver, publisher, null);
+        this(entryStore, revisionStore, resolver, publisher, null, null, SettingGenerator.INSTANCE);
     }
 
     /**
@@ -90,7 +97,7 @@ public class ItemCuratorService {
      */
     public ItemCuratorService(StoreBackedItemStore entryStore, ItemRevisionStore revisionStore,
             ItemValueResolver resolver, SettingPublisher publisher, SettingEnforcer enforcer) {
-        this(entryStore, revisionStore, resolver, publisher, enforcer, null);
+        this(entryStore, revisionStore, resolver, publisher, enforcer, null, SettingGenerator.INSTANCE);
     }
 
     /**
@@ -105,12 +112,30 @@ public class ItemCuratorService {
      */
     public ItemCuratorService(StoreBackedItemStore entryStore, ItemRevisionStore revisionStore,
             ItemValueResolver resolver, SettingPublisher publisher, SettingEnforcer enforcer, CortexGuard cortexGuard) {
+        this(entryStore, revisionStore, resolver, publisher, enforcer, cortexGuard, SettingGenerator.INSTANCE);
+    }
+
+    /**
+     * Creates an ItemCuratorService with explicit setting key strategy.
+     *
+     * @param entryStore    current-state store
+     * @param revisionStore revision-history store
+     * @param resolver      resolver
+     * @param publisher     publisher
+     * @param enforcer      setting enforcer
+     * @param cortexGuard   shared guard
+     * @param keying        setting-domain key strategy
+     */
+    public ItemCuratorService(StoreBackedItemStore entryStore, ItemRevisionStore revisionStore,
+            ItemValueResolver resolver, SettingPublisher publisher, SettingEnforcer enforcer, CortexGuard cortexGuard,
+            Keying<SettingSpec> keying) {
         this.entryStore = entryStore;
         this.revisionStore = revisionStore;
         this.resolver = resolver;
         this.publisher = publisher;
         this.enforcer = enforcer;
         this.cortexGuard = cortexGuard;
+        this.keying = keying == null ? SettingGenerator.INSTANCE : keying;
     }
 
     /**
@@ -151,7 +176,7 @@ public class ItemCuratorService {
      * @return deleted entry or {@code null}
      */
     public Item delete(String namespace, String group, String data_id, String profile) {
-        requireAllowed("delete", namespace, null, profile, ItemKeys.profileScope(namespace, group, data_id, profile));
+        requireAllowed("delete", namespace, null, profile, profileScope(namespace, group, data_id, profile));
         return publisher.delete(namespace, group, data_id, profile);
     }
 
@@ -166,7 +191,7 @@ public class ItemCuratorService {
      * @return newly published current entry after rollback, or {@code null}
      */
     public Item rollback(String namespace, String group, String data_id, String profile, String revision) {
-        requireAllowed("rollback", namespace, null, profile, ItemKeys.profileScope(namespace, group, data_id, profile));
+        requireAllowed("rollback", namespace, null, profile, profileScope(namespace, group, data_id, profile));
         return publisher.rollback(namespace, group, data_id, profile, revision);
     }
 
@@ -321,7 +346,7 @@ public class ItemCuratorService {
                     validated.getNamespace_id(),
                     first(ItemBindingProjection.normalizedAppIds(validated)),
                     first(ItemBindingProjection.normalizedProfileIds(validated)),
-                    ItemKeys.profileScope(
+                    profileScope(
                             validated.getNamespace_id(),
                             validated.getGroup(),
                             validated.getData_id(),
@@ -483,8 +508,8 @@ public class ItemCuratorService {
         List<String> profiles = ItemBindingProjection.normalizedProfileIds(entry);
         String resolvedProfile = StringKit.isNotEmpty(profile) ? profile
                 : profiles == null || profiles.isEmpty() ? null : profiles.getFirst();
-        return ItemKeys
-                .exportKeyForScope(entry.getNamespace_id(), entry.getGroup(), entry.getData_id(), resolvedProfile);
+        return keying.key(
+                SettingSpec.export(entry.getNamespace_id(), entry.getGroup(), entry.getData_id(), resolvedProfile));
     }
 
     /**
@@ -497,7 +522,7 @@ public class ItemCuratorService {
      * @return logical watch key
      */
     public String watchKey(String namespace, String group, String data_id, String profile) {
-        return ItemKeys.watchKeyForScope(namespace, group, data_id, profile);
+        return keying.key(SettingSpec.watch(namespace, group, data_id, profile));
     }
 
     /**
@@ -521,6 +546,19 @@ public class ItemCuratorService {
             }
         }
         return result;
+    }
+
+    /**
+     * Builds the logical profile scope used by permission and audit checks.
+     *
+     * @param namespace namespace
+     * @param group     setting group
+     * @param dataId    setting data identifier
+     * @param profile   optional profile
+     * @return profile scope
+     */
+    private String profileScope(String namespace, String group, String dataId, String profile) {
+        return keying.key(SettingSpec.profileScope(namespace, group, dataId, profile));
     }
 
 }

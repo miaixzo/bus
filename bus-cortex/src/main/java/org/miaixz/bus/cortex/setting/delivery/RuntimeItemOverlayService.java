@@ -23,11 +23,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.cortex.Keying;
+import org.miaixz.bus.cortex.Keying.SettingSpec;
+import org.miaixz.bus.cortex.builtin.SettingGenerator;
 import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
 import org.miaixz.bus.cortex.setting.item.ItemBindingProjection;
 import org.miaixz.bus.cortex.setting.item.Item;
-import org.miaixz.bus.cortex.setting.item.ItemKeys;
 
 /**
  * Lightweight runtime overlay publisher outside the revision-tracked curator write path.
@@ -58,6 +60,10 @@ public class RuntimeItemOverlayService {
      * Watch manager notified when one overlay is refreshed.
      */
     private final WatchManager watchManager;
+    /**
+     * Setting-domain key strategy.
+     */
+    private final Keying<SettingSpec> keying;
 
     /**
      * Creates one runtime overlay service.
@@ -66,8 +72,21 @@ public class RuntimeItemOverlayService {
      * @param watchManager watch manager
      */
     public RuntimeItemOverlayService(RuntimeItemOverlayPublisher publisher, WatchManager watchManager) {
+        this(publisher, watchManager, SettingGenerator.INSTANCE);
+    }
+
+    /**
+     * Creates one runtime overlay service.
+     *
+     * @param publisher    lightweight overlay publisher
+     * @param watchManager watch manager
+     * @param keying       setting-domain key strategy
+     */
+    public RuntimeItemOverlayService(RuntimeItemOverlayPublisher publisher, WatchManager watchManager,
+            Keying<SettingSpec> keying) {
         this.publisher = publisher;
         this.watchManager = watchManager;
+        this.keying = keying == null ? SettingGenerator.INSTANCE : keying;
     }
 
     /**
@@ -103,7 +122,7 @@ public class RuntimeItemOverlayService {
         String resolvedNamespace = CortexIdentity.namespace(namespace);
         publisher.publish(resolvedNamespace, group, data_id, profile, content, ttlMs);
         watchManager.notifySetting(
-                ItemKeys.watchKeyForScope(resolvedNamespace, group, data_id, profile),
+                watchKey(resolvedNamespace, group, data_id, profile),
                 content,
                 OVERLAY_SOURCE,
                 OVERLAY_PUBLISH_EVENT,
@@ -169,7 +188,7 @@ public class RuntimeItemOverlayService {
     public Map<String, Object> describe(String namespace, String group, String data_id, String profile) {
         Map<String, Object> result = new LinkedHashMap<>();
         String content = resolveRuntimeOverlay(namespace, group, data_id, profile);
-        result.put("key", ItemKeys.overlayKeyForScope(namespace, group, data_id, profile));
+        result.put("key", overlayKey(namespace, group, data_id, profile));
         result.put("present", content != null);
         result.put("content", content);
         return result;
@@ -187,11 +206,37 @@ public class RuntimeItemOverlayService {
         String resolvedNamespace = CortexIdentity.namespace(namespace);
         publisher.delete(resolvedNamespace, group, data_id, profile);
         watchManager.notifySetting(
-                ItemKeys.watchKeyForScope(resolvedNamespace, group, data_id, profile),
+                watchKey(resolvedNamespace, group, data_id, profile),
                 null,
                 OVERLAY_SOURCE,
                 OVERLAY_CLEAR_EVENT,
                 "Runtime overlay cleared");
+    }
+
+    /**
+     * Builds one watch key.
+     *
+     * @param namespace namespace
+     * @param group     setting group
+     * @param dataId    setting data identifier
+     * @param profile   optional profile
+     * @return watch key
+     */
+    private String watchKey(String namespace, String group, String dataId, String profile) {
+        return keying.key(SettingSpec.watch(namespace, group, dataId, profile));
+    }
+
+    /**
+     * Builds one overlay key.
+     *
+     * @param namespace namespace
+     * @param group     setting group
+     * @param dataId    setting data identifier
+     * @param profile   optional profile
+     * @return overlay key
+     */
+    private String overlayKey(String namespace, String group, String dataId, String profile) {
+        return keying.key(SettingSpec.overlay(namespace, group, dataId, profile));
     }
 
 }

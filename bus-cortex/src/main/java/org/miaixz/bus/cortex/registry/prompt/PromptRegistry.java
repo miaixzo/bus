@@ -22,7 +22,9 @@ package org.miaixz.bus.cortex.registry.prompt;
 import java.util.List;
 
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Type;
+import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.cortex.registry.RegistryStore;
 import org.miaixz.bus.cortex.registry.StoreBackedRegistry;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
@@ -43,7 +45,20 @@ public class PromptRegistry extends StoreBackedRegistry<PromptAssets> {
      * @param store        durable store adapter
      */
     public PromptRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, RegistryStore<PromptAssets> store) {
-        super(cacheX, watchManager, store, PromptAssets.class, Type.PROMPT, List.of());
+        this(cacheX, watchManager, store, RegistryGenerator.INSTANCE);
+    }
+
+    /**
+     * Creates a PromptRegistry backed by the given CacheX, WatchManager and keying strategy.
+     *
+     * @param cacheX       shared cache for registry state
+     * @param watchManager watch subscription manager
+     * @param store        durable store adapter
+     * @param keying       key strategy
+     */
+    public PromptRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, RegistryStore<PromptAssets> store,
+            Keying<Keying.RegistrySpec> keying) {
+        super(cacheX, watchManager, store, PromptAssets.class, Type.PROMPT, List.of(), keying);
     }
 
 }

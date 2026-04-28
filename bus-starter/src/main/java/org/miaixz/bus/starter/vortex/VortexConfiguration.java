@@ -22,6 +22,8 @@ package org.miaixz.bus.starter.vortex;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.cortex.Keying;
+import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.PORT;
@@ -43,6 +45,9 @@ import org.miaixz.bus.vortex.routing.mq.MqExecutor;
 import org.miaixz.bus.vortex.routing.rest.RestExecutor;
 import org.miaixz.bus.vortex.routing.ws.WsExecutor;
 import org.miaixz.bus.vortex.strategy.*;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.codec.ServerCodecConfigurer;
@@ -317,6 +322,19 @@ public class VortexConfiguration {
     @Bean
     public ProcessProvider processProvider() {
         return new ManageProvider();
+    }
+
+    /**
+     * Provides the AssetsRegistry bean with the effective route-key strategy.
+     *
+     * @param keyingProvider optional route-key strategy bean
+     * @return assets registry
+     */
+    @Bean
+    @ConditionalOnMissingBean(AssetsRegistry.class)
+    public AssetsRegistry assetsRegistry(
+            @Qualifier("registryKeying") ObjectProvider<Keying<Keying.RegistrySpec>> keyingProvider) {
+        return new AssetsRegistry(keyingProvider.getIfAvailable(() -> RegistryGenerator.INSTANCE));
     }
 
     /**

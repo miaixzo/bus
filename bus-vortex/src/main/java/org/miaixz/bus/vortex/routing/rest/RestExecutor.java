@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.NonNull;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
@@ -135,7 +136,8 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
         String targetUri = buildTargetUri(assets, context);
         Logger.info(true, "Http", "[{}] [{}] [{}] [HTTP_ROUTER_URI] - Target URI: {}", ip, method, path, targetUri);
 
-        WebClient.RequestBodySpec bodySpec = webClient.method(context.getHttpMethod()).uri(targetUri);
+        WebClient.RequestBodySpec bodySpec = webClient.method(HttpMethod.valueOf(context.getHttpMethod().value()))
+                .uri(targetUri);
         Logger.info(
                 true,
                 "Http",
@@ -152,7 +154,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
         });
         Logger.info(true, "Http", "[{}] [{}] [{}] [HTTP_ROUTER_HEADERS] - Headers configured", ip, method, path);
 
-        if (!HttpMethod.GET.equals(context.getHttpMethod())) {
+        if (context.getHttpMethod() != HTTP.Method.GET) {
             MediaType mediaType = request.headers().contentType().orElse(null);
             if (mediaType != null) {
                 if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(mediaType)) {
@@ -371,7 +373,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             query.forEach(multiValueMap::add);
         }
 
-        if (HttpMethod.GET.equals(context.getHttpMethod())) {
+        if (context.getHttpMethod() == HTTP.Method.GET) {
             Map<String, Object> parameters = context.getParameters();
             if (!parameters.isEmpty()) {
                 parameters.forEach((k, v) -> {

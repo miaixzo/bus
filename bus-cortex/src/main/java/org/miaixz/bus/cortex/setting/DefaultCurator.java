@@ -34,7 +34,6 @@ import org.miaixz.bus.cortex.setting.delivery.RuntimeItemOverlayService;
 import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemBindingProjection;
 import org.miaixz.bus.cortex.setting.item.GrayRequestContext;
-import org.miaixz.bus.cortex.setting.item.ItemKeys;
 import org.miaixz.bus.cortex.setting.item.ItemQuery;
 import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
@@ -276,7 +275,7 @@ public class DefaultCurator implements Curator {
     public String watch(String group, String data_id, Consumer<String> listener) {
         Vector vector = new Vector();
         vector.setNamespace_id(namespace_id);
-        vector.setId(ItemKeys.watchKeyForScope(namespace_id, group, data_id, null));
+        vector.setId(settingCuratorService.watchKey(namespace_id, group, data_id, null));
         Listener<Watch<String>> wl = event -> {
             for (String item : event.getAdded()) {
                 listener.accept(item);

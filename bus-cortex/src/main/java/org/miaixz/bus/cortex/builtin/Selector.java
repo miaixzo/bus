@@ -50,21 +50,35 @@ public class Selector {
      * @since Java 21+
      */
     public enum Op {
-        /** Key equals one of the given values. */
+        /**
+         * Key equals one of the given values.
+         */
         EQ,
-        /** Key does not equal any of the given values. */
+        /**
+         * Key does not equal any of the given values.
+         */
         NEQ,
-        /** Key value is contained in the given set. */
+        /**
+         * Key value is contained in the given set.
+         */
         IN,
-        /** Key value is not contained in the given set. */
+        /**
+         * Key value is not contained in the given set.
+         */
         NOTIN
     }
 
-    /** Metadata key to match against. */
+    /**
+     * Metadata key to match against.
+     */
     private String key;
-    /** Comparison operator to apply. */
+    /**
+     * Comparison operator to apply.
+     */
     private Op op;
-    /** Set of values used in the comparison. */
+    /**
+     * Set of values used in the comparison.
+     */
     private List<String> values;
 
     /**

@@ -850,22 +850,6 @@ public class Keeper {
     }
 
     /**
-     * Encodes an EC public key (based on BouncyCastle). This method is a placeholder and should be replaced with a
-     * specific encoding method. See: <a href="https://www.cnblogs.com/xinzhao/p/8963724.html">EC Public Key
-     * Encoding</a>
-     *
-     * @param publicKey The {@link PublicKey}, which must be an instance of
-     *                  {@code org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey}.
-     * @return The encoded X coordinate of the public key.
-     * @deprecated This method has a duplicate name and should be replaced by
-     *             {@link #encodeECPublicKey(PublicKey, boolean)}.
-     */
-    @Deprecated
-    public static byte[] encodeECPublicKey(final PublicKey publicKey) {
-        return encodeECPublicKey(publicKey, false);
-    }
-
-    /**
      * Encodes a key into Base64 format.
      *
      * @param key The {@link Key} to encode.

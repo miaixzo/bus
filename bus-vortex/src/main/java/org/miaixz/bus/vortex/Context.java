@@ -24,10 +24,10 @@ import java.util.Map;
 
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.core.basic.entity.Tracer;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.vortex.filter.PrimaryFilter;
 import org.miaixz.bus.vortex.handler.ErrorsHandler;
 import org.miaixz.bus.vortex.magic.Parameter;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.codec.multipart.Part;
 
 import lombok.Getter;
@@ -113,7 +113,7 @@ public class Context extends Tracer {
     /**
      * The HTTP method of the incoming request (e.g., GET, POST).
      */
-    private HttpMethod httpMethod;
+    private HTTP.Method httpMethod;
 
     /**
      * Returns a read-only live view of the business parameters.
@@ -229,7 +229,7 @@ public class Context extends Tracer {
      *
      * @param httpMethod request HTTP method
      */
-    public void setHttpMethod(HttpMethod httpMethod) {
+    public void setHttpMethod(HTTP.Method httpMethod) {
         this.httpMethod = httpMethod;
     }
 

@@ -23,8 +23,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.miaixz.bus.cortex.Keying;
+import org.miaixz.bus.cortex.Keying.SettingSpec;
 import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.Type;
+import org.miaixz.bus.cortex.builtin.SettingGenerator;
 
 /**
  * Canonical normalization policy for setting entries.
@@ -53,6 +56,17 @@ public final class ItemNormalizer {
      * @return normalized setting entry
      */
     public static Item normalize(Item entry) {
+        return normalize(entry, SettingGenerator.INSTANCE);
+    }
+
+    /**
+     * Applies canonical defaults and derived identifiers to one setting entry before persistence or resolution.
+     *
+     * @param entry  raw setting entry
+     * @param keying setting-domain key strategy
+     * @return normalized setting entry
+     */
+    public static Item normalize(Item entry, Keying<SettingSpec> keying) {
         Item prepared = entry == null ? new Item() : entry;
         ItemBindingProjection.normalizeProfileIdsInto(prepared, ItemBindingProjection.normalizedProfileIds(prepared));
         ItemBindingProjection.normalizeAppIdsInto(prepared, ItemBindingProjection.normalizedAppIds(prepared));
@@ -61,7 +75,10 @@ public final class ItemNormalizer {
         }
         prepared.setNamespace_id(CortexIdentity.namespace(prepared.getNamespace_id()));
         prepared.setType(Type.ITEM.key());
-        prepared.setId(ItemKeys.itemId(prepared.getNamespace_id(), prepared.getGroup(), prepared.getData_id()));
+        Keying<SettingSpec> resolvedKeying = keying == null ? SettingGenerator.INSTANCE : keying;
+        prepared.setId(
+                resolvedKeying.key(
+                        SettingSpec.itemId(prepared.getNamespace_id(), prepared.getGroup(), prepared.getData_id())));
         if (prepared.getSource() == null) {
             prepared.setSource(INLINE_SOURCE);
         }

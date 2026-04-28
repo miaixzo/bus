@@ -25,10 +25,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Type;
 import org.miaixz.bus.cortex.Vector;
+import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.cortex.builtin.batch.BatchOperation;
 import org.miaixz.bus.cortex.builtin.batch.BatchResult;
 import org.miaixz.bus.cortex.builtin.graph.DependencyGraph;
@@ -67,6 +68,10 @@ public class RegistryControlService {
      * Optional shared guard applied to registry mutations.
      */
     private final CortexGuard cortexGuard;
+    /**
+     * Route-key strategy used for alias registration and dependency resolution.
+     */
+    private final Keying<Keying.RegistrySpec> keying;
 
     /**
      * Creates a RegistryControlService.
@@ -76,7 +81,7 @@ public class RegistryControlService {
      * @param promptRegistry prompt registry
      */
     public RegistryControlService(ApiRegistry apiRegistry, McpRegistry mcpRegistry, PromptRegistry promptRegistry) {
-        this(apiRegistry, mcpRegistry, promptRegistry, null);
+        this(apiRegistry, mcpRegistry, promptRegistry, null, RegistryGenerator.INSTANCE);
     }
 
     /**
@@ -89,10 +94,25 @@ public class RegistryControlService {
      */
     public RegistryControlService(ApiRegistry apiRegistry, McpRegistry mcpRegistry, PromptRegistry promptRegistry,
             CortexGuard cortexGuard) {
+        this(apiRegistry, mcpRegistry, promptRegistry, cortexGuard, RegistryGenerator.INSTANCE);
+    }
+
+    /**
+     * Creates a RegistryControlService with an optional shared guard and route-key strategy.
+     *
+     * @param apiRegistry    API registry
+     * @param mcpRegistry    MCP registry
+     * @param promptRegistry prompt registry
+     * @param cortexGuard    optional shared guard
+     * @param keying         route-key strategy
+     */
+    public RegistryControlService(ApiRegistry apiRegistry, McpRegistry mcpRegistry, PromptRegistry promptRegistry,
+            CortexGuard cortexGuard, Keying<Keying.RegistrySpec> keying) {
         this.apiRegistry = apiRegistry;
         this.mcpRegistry = mcpRegistry;
         this.promptRegistry = promptRegistry;
         this.cortexGuard = cortexGuard;
+        this.keying = keying == null ? RegistryGenerator.INSTANCE : keying;
     }
 
     /**
@@ -258,7 +278,7 @@ public class RegistryControlService {
                 }
             }
         }
-        String sourceKey = aliases.getOrDefault(scopedDependencyKey(source), canonicalDependencyKey(source));
+        String sourceKey = canonicalDependencyKey(source);
         if (sourceKey == null) {
             return List.of();
         }
@@ -627,16 +647,26 @@ public class RegistryControlService {
         if (asset.getId() != null) {
             aliases.putIfAbsent(asset.getId(), canonical);
         }
-        String route = routeDependencyKey(asset);
-        if (route != null) {
-            aliases.putIfAbsent(route, canonical);
+        for (String route : keying.keys(Keying.RegistrySpec.route(asset))) {
+            if (route != null) {
+                aliases.putIfAbsent(route, canonical);
+            }
         }
-        String scoped = scopedDependencyKey(asset);
-        if (scoped != null) {
-            aliases.putIfAbsent(scoped, canonical);
+        String legacyRoute = routeDependencyKey(asset);
+        if (legacyRoute != null) {
+            aliases.putIfAbsent(legacyRoute, canonical);
         }
-        if (StringKit.isEmpty(asset.getApp_id()) && asset.getMethod() != null && asset.getVersion() != null) {
-            aliases.putIfAbsent(asset.getMethod() + ":" + asset.getVersion(), canonical);
+        String legacyScoped = scopedDependencyKey(asset);
+        if (legacyScoped != null) {
+            aliases.putIfAbsent(legacyScoped, canonical);
+        }
+        if (asset != null && asset.getMethod() != null && asset.getVersion() != null) {
+            String legacyPublic = keying.key(
+                    Keying.RegistrySpec
+                            .route(null, null, null, asset.getMethod(), asset.getVersion(), asset.getVerb()));
+            if (legacyPublic != null) {
+                aliases.putIfAbsent(legacyPublic, canonical);
+            }
         }
     }
 
@@ -647,9 +677,9 @@ public class RegistryControlService {
      * @return canonical dependency key
      */
     private String canonicalDependencyKey(Assets asset) {
-        String scoped = scopedDependencyKey(asset);
-        if (scoped != null) {
-            return scoped;
+        String primary = asset == null ? null : keying.key(Keying.RegistrySpec.route(asset));
+        if (primary != null) {
+            return primary;
         }
         return asset == null ? null : asset.getId();
     }
@@ -661,11 +691,17 @@ public class RegistryControlService {
      * @return scoped dependency key
      */
     private String scopedDependencyKey(Assets asset) {
-        if (asset == null || asset.getMethod() == null || asset.getVersion() == null) {
+        if (asset == null) {
             return null;
         }
-        return RegistryIdentity
-                .scopedRouteKey(RegistryIdentity.type(asset), asset.getApp_id(), asset.getMethod(), asset.getVersion());
+        return keying.key(
+                Keying.RegistrySpec.route(
+                        null,
+                        RegistryIdentity.type(asset),
+                        asset.getApp_id(),
+                        asset.getMethod(),
+                        asset.getVersion(),
+                        asset.getVerb()));
     }
 
     /**
@@ -678,7 +714,9 @@ public class RegistryControlService {
         if (asset == null) {
             return null;
         }
-        return RegistryIdentity.routeKey(asset.getApp_id(), asset.getMethod(), asset.getVersion());
+        return keying.key(
+                Keying.RegistrySpec
+                        .route(null, null, asset.getApp_id(), asset.getMethod(), asset.getVersion(), asset.getVerb()));
     }
 
     /**
@@ -696,21 +734,65 @@ public class RegistryControlService {
         if (trimmed.isEmpty()) {
             return null;
         }
-        if (asset == null || StringKit.isEmpty(asset.getApp_id())) {
+        String[] segments = trimmed.split(":", -1);
+        if (segments.length == 3) {
+            Integer verb = parseVerbToken(segments[2]);
+            if (verb != null) {
+                return keying.key(Keying.RegistrySpec.route(null, null, null, segments[0], segments[1], verb));
+            }
             return trimmed;
         }
-        String[] segments = trimmed.split(":", -1);
         if (segments.length == 2) {
-            return RegistryIdentity.routeKey(asset.getApp_id(), segments[0], segments[1]);
+            return trimmed;
         }
-        if (segments.length == 3 && isTypeToken(segments[0])) {
-            return RegistryIdentity.scopedRouteKey(
-                    Type.valueOf(segments[0].toUpperCase()),
-                    asset.getApp_id(),
-                    segments[1],
-                    segments[2]);
+        if (segments.length == 4) {
+            Integer verb = parseVerbToken(segments[3]);
+            if (verb != null) {
+                Type type = parseTypeToken(segments[0]);
+                if (type != null) {
+                    return keying.key(Keying.RegistrySpec.route(null, type, null, segments[1], segments[2], verb));
+                }
+            }
+            return trimmed;
+        }
+        if (segments.length == 5) {
+            Integer verb = parseVerbToken(segments[4]);
+            if (verb == null) {
+                return trimmed;
+            }
+            Type type = parseTypeToken(segments[0]);
+            if (type != null) {
+                return keying.key(Keying.RegistrySpec.route(null, type, segments[1], segments[2], segments[3], verb));
+            }
+            type = parseTypeToken(segments[1]);
+            if (type != null) {
+                return keying.key(Keying.RegistrySpec.route(segments[0], type, null, segments[2], segments[3], verb));
+            }
+            return trimmed;
+        }
+        if (segments.length == 6) {
+            Integer verb = parseVerbToken(segments[5]);
+            Type type = parseTypeToken(segments[1]);
+            if (verb != null && type != null) {
+                return keying
+                        .key(Keying.RegistrySpec.route(segments[0], type, segments[2], segments[3], segments[4], verb));
+            }
         }
         return trimmed;
+    }
+
+    /**
+     * Parses one dependency verb segment.
+     *
+     * @param token raw dependency token
+     * @return parsed verb code or {@code null} when invalid
+     */
+    private Integer parseVerbToken(String token) {
+        try {
+            return token == null || token.isBlank() ? null : Integer.valueOf(token);
+        } catch (NumberFormatException ignored) {
+            return null;
+        }
     }
 
     /**
@@ -719,16 +801,8 @@ public class RegistryControlService {
      * @param token raw token
      * @return {@code true} when the token names a supported type
      */
-    private boolean isTypeToken(String token) {
-        if (token == null || token.isBlank()) {
-            return false;
-        }
-        for (Type type : Type.registryTypes()) {
-            if (type.name().equalsIgnoreCase(token)) {
-                return true;
-            }
-        }
-        return false;
+    private Type parseTypeToken(String token) {
+        return token == null || token.isBlank() ? null : Type.tryFrom(token).filter(Type::isRegistry).orElse(null);
     }
 
     /**
