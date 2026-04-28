@@ -102,7 +102,7 @@ public class CacheManager<K, V> {
         this.cachex = new GuavaCache<>(cacheSize, cacheExpireMs);
 
         Logger.debug(
-                "CacheManager initialized: L1=ConcurrentHashMap, L2=GuavaCache(size={}, expireMs={})",
+                "Cache initialized: L1=ConcurrentHashMap, L2=GuavaCache(size={}, expireMs={})",
                 cacheSize,
                 cacheExpireMs);
     }
@@ -121,7 +121,7 @@ public class CacheManager<K, V> {
         this.cachex = new CaffeineCache(cacheSize, cacheExpireMs);
 
         Logger.debug(
-                "CacheManager initialized: L1=ConcurrentHashMap, L2=CaffeineCache(size={}, expireMs={})",
+                "Cache initialized: L1=ConcurrentHashMap, L2=CaffeineCache(size={}, expireMs={})",
                 cacheSize,
                 cacheExpireMs);
     }
@@ -133,7 +133,7 @@ public class CacheManager<K, V> {
      */
     public void setPerformanceMonitor(Monitor monitor) {
         this.monitor = monitor;
-        Logger.debug("CacheManager performance monitor configured: {}", monitor.getClass().getSimpleName());
+        Logger.debug("Performance monitor configured");
     }
 
     /**

@@ -80,10 +80,10 @@ public abstract class HttpClient implements McpClient {
      */
     @Override
     public Mono<Void> initialize() {
-        Logger.info("Initializing HTTP-based client for URL: {}", assets.getUrl());
+        Logger.info("Initializing remote HTTP tool client: url={}", assets.getUrl());
         return listToolsFromRemote().doOnSuccess(toolList -> {
             this.tools = toolList;
-            Logger.info("Successfully fetched {} tools from remote.", toolList.size());
+            Logger.info("Remote tool catalog loaded: count={}", toolList.size());
         }).then();
     }
 
@@ -93,7 +93,7 @@ public abstract class HttpClient implements McpClient {
      */
     @Override
     public void close() {
-        Logger.info("Closing HTTP-based client for URL: {}", assets.getUrl());
+        Logger.info("Closing remote HTTP tool client: url={}", assets.getUrl());
     }
 
     /**
@@ -120,7 +120,7 @@ public abstract class HttpClient implements McpClient {
      */
     @Override
     public Mono<Object> callTool(String toolName, Map<String, Object> arguments) {
-        Logger.info("Calling tool '{}' on remote HTTP-based service with args: {}", toolName, arguments);
+        Logger.info("Invoking remote HTTP tool: name={}, args={}", toolName, arguments);
         return this.webClient.post().uri("/mcp/call").bodyValue(Map.of("toolName", toolName, "arguments", arguments))
                 .retrieve().bodyToMono(String.class).map(response -> response);
     }

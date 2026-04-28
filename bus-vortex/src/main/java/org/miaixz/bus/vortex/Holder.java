@@ -100,28 +100,28 @@ public final class Holder {
 
         Instances.put(PERFORMANCE_KEY, performance);
         Instances.put(INIT_MARKER_KEY, Boolean.TRUE);
-        Logger.info(true, "Holder", "Performance configuration initialized:");
+        Logger.info(true, "Runtime", "Performance profile applied");
         Logger.info(
                 true,
-                "Holder",
+                "Runtime",
                 "  - Streaming Request Threshold: {} MB",
                 performance.getStreamingRequestThreshold() / (1024 * 1024));
-        Logger.info(true, "Holder", "  - Max Request Size: {} MB", performance.getMaxRequestSize() / (1024 * 1024));
+        Logger.info(true, "Runtime", "  - Max Request Size: {} MB", performance.getMaxRequestSize() / (1024 * 1024));
         Logger.info(
                 true,
-                "Holder",
+                "Runtime",
                 "  - Max Multipart Request Size: {} MB",
                 performance.getMaxMultipartRequestSize() / (1024 * 1024));
-        Logger.info(true, "Holder", "  - Max Connections: {}", performance.getMaxConnections());
-        Logger.info(true, "Holder", "  - Max Producer Cache Size: {}", performance.getMaxProducerCacheSize());
-        Logger.info(true, "Holder", "  - L2 Cache Size: {}", performance.getCacheSize());
-        Logger.info(true, "Holder", "  - L2 Cache Expire: {} ms", performance.getCacheExpireMs());
-        Logger.info(true, "Holder", "  - Sync Interval: {} seconds", performance.getSyncIntervalSeconds());
-        Logger.info(true, "Holder", "  - Full Sync On Startup: {}", performance.isFullSyncOnStartup());
-        Logger.info(true, "Holder", "  - Startup Delay: {} seconds", performance.getStartupDelaySeconds());
+        Logger.info(true, "Runtime", "  - Max Connections: {}", performance.getMaxConnections());
+        Logger.info(true, "Runtime", "  - Max Producer Cache Size: {}", performance.getMaxProducerCacheSize());
+        Logger.info(true, "Runtime", "  - L2 Cache Size: {}", performance.getCacheSize());
+        Logger.info(true, "Runtime", "  - L2 Cache Expire: {} ms", performance.getCacheExpireMs());
+        Logger.info(true, "Runtime", "  - Sync Interval: {} seconds", performance.getSyncIntervalSeconds());
+        Logger.info(true, "Runtime", "  - Full Sync On Startup: {}", performance.isFullSyncOnStartup());
+        Logger.info(true, "Runtime", "  - Startup Delay: {} seconds", performance.getStartupDelaySeconds());
         Logger.info(
                 true,
-                "Holder",
+                "Runtime",
                 "  - Sanitize Null-like Parameters: {}",
                 performance.isSanitizeNullLikeParameters());
     }
@@ -137,9 +137,9 @@ public final class Holder {
     public static ConnectionProvider connectionProvider() {
         return Instances.get(CONNECTION_PROVIDER_KEY, () -> {
             Performance perf = get();
-            Logger.info(true, "Holder", "ConnectionProvider initialized:");
-            Logger.info(true, "Holder", "  - Pool Name: vortex-http-pool");
-            Logger.info(true, "Holder", "  - Max Connections: {}", perf.getMaxConnections());
+            Logger.info(true, "Runtime", "HTTP connection pool initialized");
+            Logger.info(true, "Runtime", "  - Pool Name: vortex-http-pool");
+            Logger.info(true, "Runtime", "  - Max Connections: {}", perf.getMaxConnections());
             return ConnectionProvider.builder("vortex-http-pool").maxConnections(perf.getMaxConnections())
                     .pendingAcquireTimeout(Duration.ofSeconds(45)).pendingAcquireMaxCount(-1)
                     .maxIdleTime(Duration.ofSeconds(20)).maxLifeTime(Duration.ofMinutes(5)).build();

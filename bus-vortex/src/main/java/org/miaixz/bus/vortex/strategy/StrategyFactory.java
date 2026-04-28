@@ -82,9 +82,9 @@ public class StrategyFactory {
      * @param chain A list of all available {@link Strategy} beans, injected by the Spring container.
      */
     public StrategyFactory(List<Strategy> chain) {
-        Logger.info(true, "Chain", "Initializing StrategyFactory...");
+        Logger.info(true, "Chain", "Initializing strategy chains");
         chain.sort(AnnotationAwareOrderComparator.INSTANCE);
-        Logger.info(true, "Chain", "Found {} total strategies, sorting and caching chains...", chain.size());
+        Logger.info(true, "Chain", "Discovered {} strategies; building execution chains", chain.size());
 
         this.chain = List.copyOf(chain);
         Logger.info(
@@ -142,7 +142,7 @@ public class StrategyFactory {
                 this.llmChain.size(),
                 getStrategyNames(this.llmChain));
 
-        Logger.info(true, "Chain", "StrategyFactory initialization complete.");
+        Logger.info(true, "Chain", "Strategy chains ready");
     }
 
     /**

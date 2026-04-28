@@ -62,13 +62,13 @@ public class BinaryProvider implements Provider<Object, byte[]> {
     public Mono<byte[]> serialize(Object input) {
         return Mono.fromCallable(() -> {
             if (input == null) {
-                Logger.debug(true, "BinaryProvider", "Binary object is null, returning empty byte array");
+                Logger.debug(true, "Binary", "Binary payload is empty; returning zero-length buffer");
                 return new byte[0];
             }
 
             if (input instanceof byte[]) {
                 byte[] bytes = (byte[]) input;
-                Logger.debug(true, "BinaryProvider", "Processing byte array of size: {}", bytes.length);
+                Logger.debug(true, "Binary", "Serializing byte-array payload: size={}", bytes.length);
                 return bytes;
             }
 
@@ -76,23 +76,23 @@ public class BinaryProvider implements Provider<Object, byte[]> {
                 DataBuffer dataBuffer = (DataBuffer) input;
                 byte[] bytes = new byte[dataBuffer.readableByteCount()];
                 dataBuffer.read(bytes);
-                Logger.debug(true, "BinaryProvider", "Processing DataBuffer of size: {}", bytes.length);
+                Logger.debug(true, "Binary", "Serializing data-buffer payload: size={}", bytes.length);
                 return bytes;
             }
 
             if (input instanceof Flux) {
                 Logger.debug(
                         true,
-                        "BinaryProvider",
-                        "Flux detected - this should be handled by streaming infrastructure");
+                        "Binary",
+                        "Streaming binary payload detected; delegating to the streaming pipeline");
                 return "BINARY_STREAM_MARKER".getBytes(Charset.ISO_8859_1);
             }
 
             byte[] result = input.toString().getBytes(Charset.UTF_8);
             Logger.debug(
                     true,
-                    "BinaryProvider",
-                    "Fallback processing for object type: {}, byte array length: {}",
+                    "Binary",
+                    "Serializing fallback payload: type={}, size={}",
                     input.getClass().getSimpleName(),
                     result.length);
             return result;

@@ -83,7 +83,7 @@ public class ResponseStrategy extends AbstractStrategy {
                     context.getParameters().size());
 
             if (!context.getParameters().isEmpty()) {
-                Logger.info(true, "ResponseStrategy", "[{}] Parameters in response: {}", ip, context.getParameters());
+                Logger.info(true, "Response", "[{}] Response parameters: {}", ip, context.getParameters());
             }
 
             Logger.debug(true, "Response", "[{}] Strategy applying for format: {}", ip, context.getFormat());

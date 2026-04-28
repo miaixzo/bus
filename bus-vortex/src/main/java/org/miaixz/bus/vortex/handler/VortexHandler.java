@@ -119,12 +119,12 @@ public class VortexHandler {
 
             final Context context = contextView.get(Context.class);
             if (context == null) {
-                Logger.info(true, "Vortex", "[N/A] [{}] [{}] [CONTEXT_ERROR] - Request context is null", method, path);
+                Logger.info(true, "Gateway", "[N/A] [{}] [{}] [CONTEXT_ERROR] - Request context is null", method, path);
                 throw new ValidateException(ErrorCode._116000);
             }
             final String ip = context.getX_request_ip();
             ServerWebExchange exchange = request.exchange();
-            Logger.info(true, "Vortex", "[{}] [{}] [{}] [REQUEST_START] - Request started", ip, method, path);
+            Logger.info(true, "Gateway", "[{}] [{}] [{}] [REQUEST_START] - Request received", ip, method, path);
 
             Assets assets = context.getAssets();
             if (assets == null) {

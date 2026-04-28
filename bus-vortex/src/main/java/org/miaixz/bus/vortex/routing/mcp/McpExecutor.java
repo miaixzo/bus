@@ -145,14 +145,14 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
     @Override
     public void start() {
         if (running.compareAndSet(false, true)) {
-            Logger.info("MCP Service is starting...");
+            Logger.info("MCP runtime startup initiated");
 
             Mono.fromCallable(() -> this.assetsRegistry.getAll().stream().filter(McpExecutor::isMcpAsset).toList())
                     .subscribeOn(Schedulers.boundedElastic()).flatMapMany(Flux::fromIterable)
                     .flatMap(this::startAndRegisterClient)
-                    .doOnError(e -> Logger.error("Error during MCP service startup.", e)).subscribe();
+                    .doOnError(e -> Logger.error("MCP runtime startup failed", e)).subscribe();
 
-            Logger.info("MCP Service startup process initiated for all clients.");
+            Logger.info("MCP client discovery dispatched");
         }
     }
 
@@ -170,7 +170,7 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
     @Override
     public void stop() {
         if (running.compareAndSet(true, false)) {
-            Logger.info("MCP Service is stopping...");
+            Logger.info("MCP runtime shutdown initiated");
 
             Mono<List<Assets>> mcpAssets = Mono
                     .fromCallable(() -> this.assetsRegistry.getAll().stream().filter(McpExecutor::isMcpAsset).toList())
@@ -178,20 +178,20 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
 
             Mono<Void> stopProcesses = mcpAssets.flatMapMany(Flux::fromIterable)
                     .filter(asset -> "stdio".equals(resolveMcpTransport(asset))).flatMap(processProvider::stop)
-                    .doOnError(e -> Logger.error("Error stopping MCP process.", e)).then();
+                    .doOnError(e -> Logger.error("MCP process stop failed", e)).then();
 
             Mono<Void> closeClients = Flux.fromIterable(clientCache.values())
                     .flatMap(
                             client -> Mono.fromRunnable(client::close).subscribeOn(Schedulers.boundedElastic())
-                                    .doOnError(e -> Logger.error("Error closing MCP client.", e)))
+                                    .doOnError(e -> Logger.error("MCP client close failed", e)))
                     .then();
 
-            Mono.when(stopProcesses, closeClients).doOnError(e -> Logger.error("Error during MCP service shutdown.", e))
+            Mono.when(stopProcesses, closeClients).doOnError(e -> Logger.error("MCP runtime shutdown failed", e))
                     .timeout(java.time.Duration.ofSeconds(5))
-                    .doOnError(e -> Logger.warn("MCP service shutdown timed out after 5 seconds")).block();
+                    .doOnError(e -> Logger.warn("MCP runtime shutdown timed out after 5 seconds")).block();
 
             clientCache.clear();
-            Logger.info("MCP Service stopped.");
+            Logger.info("MCP runtime stopped");
         }
     }
 
@@ -221,8 +221,8 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
         }
         return clientMono.flatMap(client -> client.initialize().doOnSuccess(v -> {
             clientCache.put(asset.getId(), client);
-            Logger.info("Client for '{}' registered and initialized successfully.", asset.getName());
-        })).doOnError(e -> Logger.error("Failed to start or register client for asset '{}'", asset.getName(), e))
+            Logger.info("MCP client ready: asset={}", asset.getName());
+        })).doOnError(e -> Logger.error("MCP client initialization failed: asset={}", asset.getName(), e))
                 .then();
     }
 

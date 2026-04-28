@@ -98,7 +98,7 @@ public class ManageProvider implements ProcessProvider, MetricsProvider {
 
             Process existingProcess = processMap.get(serviceId);
             if (existingProcess != null && existingProcess.isAlive()) {
-                Logger.info("Service '{}' is already running.", serviceId);
+                Logger.info("Local process already running: assetId={}", serviceId);
                 return existingProcess;
             }
 
@@ -118,7 +118,7 @@ public class ManageProvider implements ProcessProvider, MetricsProvider {
                     }
                 } catch (Exception e) {
                     Logger.error(
-                            "Failed to parse environment variables JSON for service '{}': {}",
+                            "Failed to parse environment variables: assetId={}, payload={}",
                             serviceId,
                             envJson,
                             e);
@@ -130,7 +130,7 @@ public class ManageProvider implements ProcessProvider, MetricsProvider {
             processBuilder.redirectErrorStream(true);
 
             try {
-                Logger.info("Starting service '{}' with command: {}", serviceId, commandString);
+                Logger.info("Launching local process: assetId={}, command={}", serviceId, commandString);
                 Process process = processBuilder.start();
                 processMap.put(serviceId, process);
 
@@ -142,12 +142,12 @@ public class ManageProvider implements ProcessProvider, MetricsProvider {
                             Logger.trace("[Process-{}]: {}", serviceId, line);
                         }
                     } catch (IOException e) {
-                        Logger.warn("Error reading output for service '{}': {}", serviceId, e.getMessage());
+                        Logger.warn("Process output read failed: assetId={}, error={}", serviceId, e.getMessage());
                     }
                 });
                 return process;
             } catch (IOException e) {
-                Logger.error("Failed to start service '{}'", serviceId, e);
+                Logger.error("Local process launch failed: assetId={}", serviceId, e);
                 throw new RuntimeException("Failed to start service: " + serviceId, e);
             }
         }).subscribeOn(Schedulers.boundedElastic());
@@ -174,16 +174,16 @@ public class ManageProvider implements ProcessProvider, MetricsProvider {
             Process process = processMap.get(serviceId);
 
             if (process != null && process.isAlive()) {
-                Logger.info("Stopping service '{}'", serviceId);
+                Logger.info("Stopping local process: assetId={}", serviceId);
                 process.destroy();
                 try {
                     if (!process.waitFor(5, java.util.concurrent.TimeUnit.SECONDS)) {
-                        Logger.warn("Service '{}' did not terminate gracefully. Forcing shutdown.", serviceId);
+                        Logger.warn("Process did not exit gracefully; forcing termination: assetId={}", serviceId);
                         process.destroyForcibly();
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                    Logger.error("Interrupted while waiting for service '{}' to stop.", serviceId, e);
+                    Logger.error("Interrupted while waiting for process shutdown: assetId={}", serviceId, e);
                     process.destroyForcibly();
                 }
                 processMap.remove(serviceId);

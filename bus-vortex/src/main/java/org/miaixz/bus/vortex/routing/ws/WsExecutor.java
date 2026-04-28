@@ -244,7 +244,7 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
     @PreDestroy
     @Override
     public Mono<ServerResponse> destroy() {
-        Logger.info("Shutting down WsExecutor... (Active sessions: {})", activeSessions.size());
+        Logger.info("WebSocket resources shutting down: activeSessions={}", activeSessions.size());
 
         return Flux.fromIterable(activeSessions.values()).flatMap(session -> {
             try {
@@ -262,7 +262,7 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
         }).doOnComplete(() -> {
             activeSessions.clear();
             sessionMetadata.clear();
-            Logger.info("WsExecutor shut down successfully.");
+            Logger.info("WebSocket resources stopped");
         }).then(Mono.empty());
     }
 

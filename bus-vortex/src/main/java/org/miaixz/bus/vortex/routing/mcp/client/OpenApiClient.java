@@ -98,7 +98,7 @@ public class OpenApiClient implements McpClient {
     @Override
     public Mono<Void> initialize() {
         return Mono.fromRunnable(() -> {
-            Logger.info("OpenApiClient initialized for baseUrl: {}. Found {} tools.", this.baseUrl, this.tools.size());
+            Logger.info("OpenAPI tool catalog initialized: baseUrl={}, tools={}", this.baseUrl, this.tools.size());
         });
     }
 
@@ -128,7 +128,7 @@ public class OpenApiClient implements McpClient {
      */
     private Map<String, Tool> initializeTools() {
         if (StringKit.isEmpty(assets.getMetadata())) {
-            Logger.warn("OpenAPI asset '{}' has no metadata field. No tools will be loaded.", assets.getName());
+            Logger.warn("OpenAPI metadata is missing; no tools loaded: asset={}", assets.getName());
             return Collections.emptyMap();
         }
 
@@ -136,7 +136,7 @@ public class OpenApiClient implements McpClient {
         List<Map<String, Object>> toolConfigs = (List<Map<String, Object>>) rawConfig.get("tools");
 
         if (toolConfigs == null || toolConfigs.isEmpty()) {
-            Logger.warn("OpenAPI asset '{}' metadata has no 'tools' list. No tools will be loaded.", assets.getName());
+            Logger.warn("OpenAPI tool definition is missing; no tools loaded: asset={}", assets.getName());
             return Collections.emptyMap();
         }
 
@@ -162,7 +162,7 @@ public class OpenApiClient implements McpClient {
      */
     @Override
     public void close() {
-        Logger.info("Closing OpenAPI client for baseUrl: {}", this.baseUrl);
+        Logger.info("Closing OpenAPI endpoint client: baseUrl={}", this.baseUrl);
     }
 
     /**
@@ -225,10 +225,10 @@ public class OpenApiClient implements McpClient {
             }
         }
 
-        Logger.info("Executing OpenAPI tool '{}': {} {}", toolName, httpMethod.value(), finalUri);
+        Logger.info("Invoking OpenAPI tool: name={}, method={}, uri={}", toolName, httpMethod.value(), finalUri);
 
         return requestSpec.retrieve().bodyToMono(String.class).map(response -> (Object) response)
-                .doOnSuccess(response -> Logger.info("Received response for tool '{}'", toolName));
+                .doOnSuccess(response -> Logger.info("OpenAPI tool completed: name={}", toolName));
     }
 
     /**

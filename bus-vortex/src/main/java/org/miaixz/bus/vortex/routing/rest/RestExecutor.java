@@ -101,7 +101,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             synchronized (RestExecutor.class) {
                 if (CACHED_HTTP_CLIENT == null) {
                     CACHED_HTTP_CLIENT = HttpClient.create(Holder.connectionProvider());
-                    Logger.info(true, "RestExecutor", "HttpClient initialized with shared connection pool");
+                    Logger.info(true, "HTTP", "Shared HTTP client initialized");
                 }
             }
         }

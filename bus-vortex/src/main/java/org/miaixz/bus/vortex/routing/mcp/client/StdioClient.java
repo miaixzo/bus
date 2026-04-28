@@ -116,9 +116,9 @@ public class StdioClient implements McpClient {
                     }
                 } catch (IOException e) {
                     if (!process.isAlive()) {
-                        Logger.info("Process for service '{}' terminated, stopping stdout listener.", assets.getName());
+                        Logger.info("Process exited; stdout listener stopped: asset={}", assets.getName());
                     } else {
-                        Logger.error("Error reading stdout for service '{}': {}", assets.getName(), e.getMessage());
+                        Logger.error("Stdout listener failed: asset={}, error={}", assets.getName(), e.getMessage());
                     }
                 }
             });
@@ -178,14 +178,14 @@ public class StdioClient implements McpClient {
      */
     @Override
     public void close() {
-        Logger.info("Closing StdioClient for service '{}'", assets.getName());
+        Logger.info("Closing stdio session: asset={}", assets.getName());
         stdoutListenerExecutor.shutdownNow();
         try {
             if (process.isAlive()) {
                 process.destroy();
             }
         } catch (Exception e) {
-            Logger.error("Error destroying process for service '{}'", assets.getName(), e);
+            Logger.error("Process termination failed during close: asset={}", assets.getName(), e);
         }
     }
 
@@ -217,14 +217,14 @@ public class StdioClient implements McpClient {
                         this.tools = toolMaps.stream().map(toolMap -> JsonKit.toPojo(toolMap, Tool.class))
                                 .collect(Collectors.toList());
                         Logger.info(
-                                "Received tool list from service '{}': {} tools found.",
+                                "Tool catalog received: asset={}, tools={}",
                                 assets.getName(),
                                 tools.size());
                     }
                 }
             }
         } catch (Exception e) {
-            Logger.warn("Received non-JSON or malformed message from service '{}': {}", assets.getName(), jsonLine, e);
+            Logger.warn("Malformed message received: asset={}, payload={}", assets.getName(), jsonLine, e);
         }
     }
 
