@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.core.center.date.culture.Tradition;
-import org.miaixz.bus.core.center.date.culture.Duty;
 import org.miaixz.bus.core.center.date.culture.sixty.*;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
