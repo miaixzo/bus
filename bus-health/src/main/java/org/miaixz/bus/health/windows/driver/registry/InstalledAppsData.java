@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -39,11 +39,20 @@ import com.sun.jna.platform.win32.WinReg;
  */
 public final class InstalledAppsData {
 
+    /**
+     * Creates a new InstalledAppsData instance.
+     */
     private InstalledAppsData() {
 
     }
 
+    /**
+     * The REGISTRY_PATHS constant.
+     */
     private static final Map<WinReg.HKEY, List<String>> REGISTRY_PATHS = new HashMap<>();
+    /**
+     * The ACCESS_FLAGS constant.
+     */
     private static final int[] ACCESS_FLAGS = { KEY_WOW64_64KEY, KEY_WOW64_32KEY };
 
     static {
@@ -56,6 +65,11 @@ public final class InstalledAppsData {
         REGISTRY_PATHS.put(HKEY_CURRENT_USER, Arrays.asList("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall"));
     }
 
+    /**
+     * Queries the installed apps.
+     *
+     * @return the query installed apps result
+     */
     public static List<ApplicationInfo> queryInstalledApps() {
         Set<ApplicationInfo> appInfoSet = new LinkedHashSet<>();
 

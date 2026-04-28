@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -48,19 +48,37 @@ import org.miaixz.bus.health.unix.platform.freebsd.BsdSysctlKit;
 @ThreadSafe
 public final class FreeBsdFileSystem extends AbstractFileSystem {
 
+    /**
+     * The FS_PATH_EXCLUDES constant.
+     */
     private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._UNIX_FREEBSD_FS_PATH_EXCLUDES);
+    /**
+     * The FS_PATH_INCLUDES constant.
+     */
     private static final List<PathMatcher> FS_PATH_INCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._UNIX_FREEBSD_FS_PATH_INCLUDES);
+    /**
+     * The FS_VOLUME_EXCLUDES constant.
+     */
     private static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._UNIX_FREEBSD_FS_VOLUME_EXCLUDES);
+    /**
+     * The FS_VOLUME_INCLUDES constant.
+     */
     private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._UNIX_FREEBSD_FS_VOLUME_INCLUDES);
 
+    /**
+     * Returns the file stores.
+     *
+     * @param localOnly the local only
+     * @return the get file stores result
+     */
     @Override
     public List<OSFileStore> getFileStores(boolean localOnly) {
-        // TODO map mount point to UUID?
-        // is /etc/fstab useful for this?
+        // Mount point to UUID mapping is unavailable here.
+        // The /etc/fstab file may be useful for future enrichment.
         Map<String, String> uuidMap = new HashMap<>();
         // Now grab dmssg output
         String device = Normal.EMPTY;
@@ -160,16 +178,31 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
         return fsList;
     }
 
+    /**
+     * Returns the open file descriptors.
+     *
+     * @return the get open file descriptors result
+     */
     @Override
     public long getOpenFileDescriptors() {
         return BsdSysctlKit.sysctl("kern.openfiles", 0);
     }
 
+    /**
+     * Returns the max file descriptors.
+     *
+     * @return the get max file descriptors result
+     */
     @Override
     public long getMaxFileDescriptors() {
         return BsdSysctlKit.sysctl("kern.maxfiles", 0);
     }
 
+    /**
+     * Returns the max file descriptors per process.
+     *
+     * @return the get max file descriptors per process result
+     */
     @Override
     public long getMaxFileDescriptorsPerProcess() {
         // On FreeBsd there is no process specific system-wide limit, so the general limit is returned

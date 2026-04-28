@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -395,8 +395,16 @@ public interface CentralProcessor {
          */
         STEAL(7);
 
+        /**
+         * The index value.
+         */
         private final int index;
 
+        /**
+         * Creates a new TickType instance.
+         *
+         * @param value the value
+         */
         TickType(int value) {
             this.index = value;
         }
@@ -417,10 +425,25 @@ public interface CentralProcessor {
     @Immutable
     class LogicalProcessor {
 
+        /**
+         * The processorNumber value.
+         */
         private final int processorNumber;
+        /**
+         * The physicalProcessorNumber value.
+         */
         private final int physicalProcessorNumber;
+        /**
+         * The physicalPackageNumber value.
+         */
         private final int physicalPackageNumber;
+        /**
+         * The numaNode value.
+         */
         private final int numaNode;
+        /**
+         * The processorGroup value.
+         */
         private final int processorGroup;
 
         /**
@@ -509,6 +532,11 @@ public interface CentralProcessor {
             return processorGroup;
         }
 
+        /**
+         * Returns the to string result.
+         *
+         * @return the to string result
+         */
         @Override
         public String toString() {
             return "LogicalProcessor [processorNumber=" + processorNumber + ", coreNumber=" + physicalProcessorNumber
@@ -524,15 +552,41 @@ public interface CentralProcessor {
     @Immutable
     class PhysicalProcessor {
 
+        /**
+         * The physicalPackageNumber value.
+         */
         private final int physicalPackageNumber;
+        /**
+         * The physicalProcessorNumber value.
+         */
         private final int physicalProcessorNumber;
+        /**
+         * The efficiency value.
+         */
         private final int efficiency;
+        /**
+         * The idString value.
+         */
         private final String idString;
 
+        /**
+         * Creates a new PhysicalProcessor instance.
+         *
+         * @param physicalPackageNumber   the physical package number
+         * @param physicalProcessorNumber the physical processor number
+         */
         public PhysicalProcessor(int physicalPackageNumber, int physicalProcessorNumber) {
             this(physicalPackageNumber, physicalProcessorNumber, 0, Normal.EMPTY);
         }
 
+        /**
+         * Creates a new PhysicalProcessor instance.
+         *
+         * @param physicalPackageNumber   the physical package number
+         * @param physicalProcessorNumber the physical processor number
+         * @param efficiency              the efficiency
+         * @param idString                the id string
+         */
         public PhysicalProcessor(int physicalPackageNumber, int physicalProcessorNumber, int efficiency,
                 String idString) {
             this.physicalPackageNumber = physicalPackageNumber;
@@ -606,6 +660,11 @@ public interface CentralProcessor {
             return idString;
         }
 
+        /**
+         * Returns the to string result.
+         *
+         * @return the to string result
+         */
         @Override
         public String toString() {
             return "PhysicalProcessor [package/core=" + physicalPackageNumber + "/" + physicalProcessorNumber
@@ -619,12 +678,36 @@ public interface CentralProcessor {
     @Immutable
     class ProcessorCache {
 
+        /**
+         * The level value.
+         */
         private final byte level;
+        /**
+         * The associativity value.
+         */
         private final byte associativity;
+        /**
+         * The lineSize value.
+         */
         private final short lineSize;
+        /**
+         * The cacheSize value.
+         */
         private final int cacheSize;
+        /**
+         * The type value.
+         */
         private final Type type;
 
+        /**
+         * Creates a new ProcessorCache instance.
+         *
+         * @param level         the level
+         * @param associativity the associativity
+         * @param lineSize      the line size
+         * @param cacheSize     the cache size
+         * @param type          the type
+         */
         public ProcessorCache(byte level, byte associativity, short lineSize, int cacheSize, Type type) {
             this.level = level;
             this.associativity = associativity;
@@ -633,6 +716,15 @@ public interface CentralProcessor {
             this.type = type;
         }
 
+        /**
+         * Creates a new ProcessorCache instance.
+         *
+         * @param level         the level
+         * @param associativity the associativity
+         * @param lineSize      the line size
+         * @param cacheSize     the cache size
+         * @param type          the type
+         */
         public ProcessorCache(int level, int associativity, int lineSize, long cacheSize, Type type) {
             this((byte) level, (byte) associativity, (short) lineSize, (int) cacheSize, type);
         }
@@ -682,6 +774,11 @@ public interface CentralProcessor {
             return type;
         }
 
+        /**
+         * Returns the to string result.
+         *
+         * @return the to string result
+         */
         @Override
         public String toString() {
             return "ProcessorCache [L" + level + Symbol.SPACE + type + ", cacheSize=" + cacheSize + ", "
@@ -689,6 +786,12 @@ public interface CentralProcessor {
                     + "]";
         }
 
+        /**
+         * Returns the equals result.
+         *
+         * @param obj the obj
+         * @return the equals result
+         */
         @Override
         public boolean equals(Object obj) {
             if (this == obj) {
@@ -702,6 +805,11 @@ public interface CentralProcessor {
                     && lineSize == other.lineSize && type == other.type;
         }
 
+        /**
+         * Returns whether the h code value is present.
+         *
+         * @return the hash code result
+         */
         @Override
         public int hashCode() {
             return Objects.hash(associativity, cacheSize, level, lineSize, type);
@@ -714,6 +822,11 @@ public interface CentralProcessor {
 
             UNIFIED, INSTRUCTION, DATA, TRACE;
 
+            /**
+             * Returns the to string result.
+             *
+             * @return the to string result
+             */
             @Override
             public String toString() {
                 return name().charAt(0) + name().substring(1).toLowerCase(Locale.ROOT);
@@ -729,23 +842,76 @@ public interface CentralProcessor {
     final class ProcessorIdentifier {
 
         // Provided in constructor
+        /**
+         * The cpuVendor value.
+         */
         private final String cpuVendor;
+        /**
+         * The cpuName value.
+         */
         private final String cpuName;
+        /**
+         * The cpuFamily value.
+         */
         private final String cpuFamily;
+        /**
+         * The cpuModel value.
+         */
         private final String cpuModel;
+        /**
+         * The cpuStepping value.
+         */
         private final String cpuStepping;
+        /**
+         * The processorID value.
+         */
         private final String processorID;
+        /**
+         * The cpuIdentifier value.
+         */
         private final String cpuIdentifier;
+        /**
+         * The cpu64bit value.
+         */
         private final boolean cpu64bit;
+        /**
+         * The cpuVendorFreq value.
+         */
         private final long cpuVendorFreq;
 
+        /**
+         * The microArchictecture value.
+         */
         private final Supplier<String> microArchictecture = Memoizer.memoize(this::queryMicroarchitecture);
 
+        /**
+         * Creates a new ProcessorIdentifier instance.
+         *
+         * @param cpuVendor   the cpu vendor
+         * @param cpuName     the cpu name
+         * @param cpuFamily   the cpu family
+         * @param cpuModel    the cpu model
+         * @param cpuStepping the cpu stepping
+         * @param processorID the processor id
+         * @param cpu64bit    the cpu64bit
+         */
         public ProcessorIdentifier(String cpuVendor, String cpuName, String cpuFamily, String cpuModel,
                 String cpuStepping, String processorID, boolean cpu64bit) {
             this(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit, -1L);
         }
 
+        /**
+         * Creates a new ProcessorIdentifier instance.
+         *
+         * @param cpuVendor   the cpu vendor
+         * @param cpuName     the cpu name
+         * @param cpuFamily   the cpu family
+         * @param cpuModel    the cpu model
+         * @param cpuStepping the cpu stepping
+         * @param processorID the processor id
+         * @param cpu64bit    the cpu64bit
+         * @param vendorFreq  the vendor freq
+         */
         public ProcessorIdentifier(String cpuVendor, String cpuName, String cpuFamily, String cpuModel,
                 String cpuStepping, String processorID, boolean cpu64bit, long vendorFreq) {
             this.cpuVendor = cpuVendor.startsWith("0x") ? queryVendorFromImplementer(cpuVendor) : cpuVendor;
@@ -889,6 +1055,11 @@ public interface CentralProcessor {
             return microArchictecture.get();
         }
 
+        /**
+         * Queries the microarchitecture.
+         *
+         * @return the query microarchitecture result
+         */
         private String queryMicroarchitecture() {
             String arch = null;
             Properties archProps = Config.readProperties(Config._ARCHITECTURE_PROPERTIES);
@@ -930,11 +1101,22 @@ public interface CentralProcessor {
             return StringKit.isBlank(arch) ? Normal.UNKNOWN : arch;
         }
 
+        /**
+         * Queries the vendor from implementer.
+         *
+         * @param cpuVendor the cpu vendor
+         * @return the query vendor from implementer result
+         */
         private String queryVendorFromImplementer(String cpuVendor) {
             Properties archProps = Config.readProperties(Config._ARCHITECTURE_PROPERTIES);
             return archProps.getProperty("hw_impl." + cpuVendor, cpuVendor);
         }
 
+        /**
+         * Returns the to string result.
+         *
+         * @return the to string result
+         */
         @Override
         public String toString() {
             return getIdentifier();

@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -39,9 +39,17 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_protocol_t;
 @ThreadSafe
 public class AixInternetProtocolStats extends AbstractInternetProtocolStats {
 
+    /**
+     * The ipstats value.
+     */
     private final Supplier<perfstat_protocol_t[]> ipstats = Memoizer
             .memoize(PerfstatProtocol::queryProtocols, Memoizer.defaultExpiration());
 
+    /**
+     * Returns the tc pv4 stats.
+     *
+     * @return the get tc pv4 stats result
+     */
     @Override
     public InternetProtocolStats.TcpStats getTCPv4Stats() {
         for (perfstat_protocol_t stat : ipstats.get()) {
@@ -54,6 +62,11 @@ public class AixInternetProtocolStats extends AbstractInternetProtocolStats {
         return new InternetProtocolStats.TcpStats(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L);
     }
 
+    /**
+     * Returns the ud pv4 stats.
+     *
+     * @return the get ud pv4 stats result
+     */
     @Override
     public InternetProtocolStats.UdpStats getUDPv4Stats() {
         for (perfstat_protocol_t stat : ipstats.get()) {

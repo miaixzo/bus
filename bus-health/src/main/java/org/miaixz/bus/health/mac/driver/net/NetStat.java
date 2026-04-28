@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -126,16 +126,49 @@ public final class NetStat {
     @Immutable
     public static class IFdata {
 
+        /**
+         * The ifType value.
+         */
         private final int ifType;
+        /**
+         * The oPackets value.
+         */
         private final long oPackets;
+        /**
+         * The iPackets value.
+         */
         private final long iPackets;
+        /**
+         * The oBytes value.
+         */
         private final long oBytes;
+        /**
+         * The iBytes value.
+         */
         private final long iBytes;
+        /**
+         * The oErrors value.
+         */
         private final long oErrors;
+        /**
+         * The iErrors value.
+         */
         private final long iErrors;
+        /**
+         * The collisions value.
+         */
         private final long collisions;
+        /**
+         * The iDrops value.
+         */
         private final long iDrops;
+        /**
+         * The speed value.
+         */
         private final long speed;
+        /**
+         * The timeStamp value.
+         */
         private final long timeStamp;
 
         /**

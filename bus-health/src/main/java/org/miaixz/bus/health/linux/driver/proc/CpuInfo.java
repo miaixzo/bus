@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -132,6 +132,12 @@ public final class CpuInfo {
         return new Tuple(pcManufacturer, pcModel, pcVersion, pcSerialNumber);
     }
 
+    /**
+     * Queries the board manufacturer.
+     *
+     * @param digit the digit
+     * @return the query board manufacturer result
+     */
     private static String queryBoardManufacturer(char digit) {
         switch (digit) {
             case '0':
@@ -157,6 +163,11 @@ public final class CpuInfo {
         }
     }
 
+    /**
+     * Queries the feature flags.
+     *
+     * @return the query feature flags result
+     */
     public static List<String> queryFeatureFlags() {
         return Builder.readFile(ProcPath.CPUINFO).stream().filter(f -> {
             String s = f.toLowerCase(Locale.ROOT);

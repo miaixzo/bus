@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -52,18 +52,33 @@ public final class Who {
 
     // sample format:
     // oshi pts/0 2020-05-14 21:23 (192.168.1.23)
+    /**
+     * The WHO_FORMAT_LINUX constant.
+     */
     private static final Pattern WHO_FORMAT_LINUX = Pattern
             .compile("(\\S+)\\s+(\\S+)\\s+(\\d{4}-\\d{2}-\\d{2})\\s+(\\d{2}:\\d{2})\\s*(?:\\((.+)\\))?");
+    /**
+     * The WHO_DATE_FORMAT_LINUX constant.
+     */
     private static final DateTimeFormatter WHO_DATE_FORMAT_LINUX = DateTimeFormatter
             .ofPattern("yyyy-MM-dd HH:mm", Locale.ROOT);
     // oshi ttys000 May 4 23:50 (192.168.1.23)
     // middle 12 characters from Thu Nov 24 18:22:48 1986
+    /**
+     * The WHO_FORMAT_UNIX constant.
+     */
     private static final Pattern WHO_FORMAT_UNIX = Pattern
             .compile("(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\d+)\\s+(\\d{2}:\\d{2})\\s*(?:\\((.+)\\))?");
+    /**
+     * The WHO_DATE_FORMAT_UNIX constant.
+     */
     private static final DateTimeFormatter WHO_DATE_FORMAT_UNIX = new DateTimeFormatterBuilder()
             .appendPattern("MMM d HH:mm").parseDefaulting(ChronoField.YEAR, Year.now(ZoneId.systemDefault()).getValue())
             .toFormatter(Locale.US);
 
+    /**
+     * Creates a new Who instance.
+     */
     private Who() {
     }
 
@@ -118,7 +133,7 @@ public final class Who {
      * @param s       the string to match.
      * @return true if successful, false otherwise.
      */
-    private static boolean matchUnix(List<OSSession> whoList, String s) {
+    public static boolean matchUnix(List<OSSession> whoList, String s) {
         Matcher m = WHO_FORMAT_UNIX.matcher(s);
         if (m.matches()) {
             try {

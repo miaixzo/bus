@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -80,7 +80,7 @@ final class MacSoundCard extends AbstractSoundCard {
         String versionMarker = "<key>com.apple.driver.AppleHDAController</key>";
 
         for (final String checkLine : Builder
-                .readFile("/System/Library/Extensions/AppleHDA.kext/Contents/Info.plist")) {
+                .readFile("/System/Library/Extensions/AppleHDA.kext/Contents/Info.plist", false)) {
             if (checkLine.contains(versionMarker)) {
                 version = true;
                 continue;

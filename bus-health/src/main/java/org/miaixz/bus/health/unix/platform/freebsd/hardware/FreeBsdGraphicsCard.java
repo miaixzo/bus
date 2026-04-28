@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -42,6 +42,9 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstraction
 @Immutable
 final class FreeBsdGraphicsCard extends AbstractGraphicsCard {
 
+    /**
+     * The PCI_CLASS_DISPLAY constant.
+     */
     private static final String PCI_CLASS_DISPLAY = "0x03";
 
     /**

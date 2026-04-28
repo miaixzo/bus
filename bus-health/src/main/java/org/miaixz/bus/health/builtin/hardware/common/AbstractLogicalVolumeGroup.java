@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -32,8 +32,17 @@ import org.miaixz.bus.health.builtin.hardware.LogicalVolumeGroup;
  */
 public class AbstractLogicalVolumeGroup implements LogicalVolumeGroup {
 
+    /**
+     * The name value.
+     */
     private final String name;
+    /**
+     * The lvMap value.
+     */
     private final Map<String, Set<String>> lvMap;
+    /**
+     * The pvSet value.
+     */
     private final Set<String> pvSet;
 
     /**
@@ -50,21 +59,41 @@ public class AbstractLogicalVolumeGroup implements LogicalVolumeGroup {
         this.pvSet = Collections.unmodifiableSet(pvSet);
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return the get name result
+     */
     @Override
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns the logical volumes.
+     *
+     * @return the get logical volumes result
+     */
     @Override
     public Map<String, Set<String>> getLogicalVolumes() {
         return lvMap;
     }
 
+    /**
+     * Returns the physical volumes.
+     *
+     * @return the get physical volumes result
+     */
     @Override
     public Set<String> getPhysicalVolumes() {
         return pvSet;
     }
 
+    /**
+     * Returns the to string result.
+     *
+     * @return the to string result
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Logical Volume Group: ");

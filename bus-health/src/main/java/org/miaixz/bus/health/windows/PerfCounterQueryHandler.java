@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -40,8 +40,14 @@ import org.miaixz.bus.logger.Logger;
 public final class PerfCounterQueryHandler implements AutoCloseable {
 
     // Map of counter handles
+    /**
+     * The counterHandleMap value.
+     */
     private final Map<PerfCounter, ByRef.CloseableHANDLEByReference> counterHandleMap = new HashMap<>();
     // The query handle
+    /**
+     * The queryHandle value.
+     */
     private ByRef.CloseableHANDLEByReference queryHandle = null;
 
     /**
@@ -154,6 +160,9 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
         return value;
     }
 
+    /**
+     * Closes this resource.
+     */
     @Override
     public void close() {
         removeAllCounters();

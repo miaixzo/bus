@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -41,7 +41,13 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractSoundCard;
 @Immutable
 final class SolarisSoundCard extends AbstractSoundCard {
 
+    /**
+     * The LSHAL constant.
+     */
     private static final String LSHAL = "lshal";
+    /**
+     * The DEFAULT_AUDIO_DRIVER constant.
+     */
     private static final String DEFAULT_AUDIO_DRIVER = "audio810";
 
     /**

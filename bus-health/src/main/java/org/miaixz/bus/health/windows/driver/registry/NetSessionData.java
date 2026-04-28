@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -39,8 +39,16 @@ import com.sun.jna.platform.win32.Netapi32.SESSION_INFO_10;
 @ThreadSafe
 public final class NetSessionData {
 
+    /**
+     * The NET constant.
+     */
     private static final Netapi32 NET = Netapi32.INSTANCE;
 
+    /**
+     * Queries the user sessions.
+     *
+     * @return the query user sessions result
+     */
     public static List<OSSession> queryUserSessions() {
         List<OSSession> sessions = new ArrayList<>();
         try (ByRef.CloseablePointerByReference bufptr = new ByRef.CloseablePointerByReference();

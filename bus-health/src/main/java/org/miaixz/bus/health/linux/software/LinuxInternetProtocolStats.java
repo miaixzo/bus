@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -44,19 +44,39 @@ import org.miaixz.bus.health.linux.driver.proc.ProcessStat;
 @ThreadSafe
 public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
 
+    /**
+     * The tcpColon value.
+     */
     private final String tcpColon = "Tcp:";
+    /**
+     * The udpColon value.
+     */
     private final String udpColon = "Udp:";
+    /**
+     * The udp6 value.
+     */
     private final String udp6 = "Udp6";
 
+    /**
+     * The TcpStat enum.
+     */
     private enum TcpStat {
         RtoAlgorithm, RtoMin, RtoMax, MaxConn, ActiveOpens, PassiveOpens, AttemptFails, EstabResets, CurrEstab, InSegs,
         OutSegs, RetransSegs, InErrs, OutRsts, InCsumErrors;
     }
 
+    /**
+     * The UdpStat enum.
+     */
     private enum UdpStat {
         OutDatagrams, InDatagrams, NoPorts, InErrors, RcvbufErrors, SndbufErrors, InCsumErrors, IgnoredMulti, MemErrors;
     }
 
+    /**
+     * Returns the tc pv4 stats.
+     *
+     * @return the get tc pv4 stats result
+     */
     @Override
     public TcpStats getTCPv4Stats() {
         byte[] fileBytes = Builder.readAllBytes(ProcPath.SNMP, true);
@@ -81,6 +101,11 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
                 tcpData.getOrDefault(TcpStat.InErrs, 0L), tcpData.getOrDefault(TcpStat.OutRsts, 0L));
     }
 
+    /**
+     * Returns the ud pv4 stats.
+     *
+     * @return the get ud pv4 stats result
+     */
     @Override
     public UdpStats getUDPv4Stats() {
         byte[] fileBytes = Builder.readAllBytes(ProcPath.SNMP, true);
@@ -103,6 +128,11 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
                 udpData.getOrDefault(UdpStat.InErrors, 0L));
     }
 
+    /**
+     * Returns the ud pv6 stats.
+     *
+     * @return the get ud pv6 stats result
+     */
     @Override
     public UdpStats getUDPv6Stats() {
         byte[] fileBytes = Builder.readAllBytes(ProcPath.SNMP6, true);
@@ -148,6 +178,11 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
         return new UdpStats(inDatagrams, noPorts, inErrors, outDatagrams);
     }
 
+    /**
+     * Returns the connections.
+     *
+     * @return the get connections result
+     */
     @Override
     public List<InternetProtocolStats.IPConnection> getConnections() {
         List<InternetProtocolStats.IPConnection> conns = new ArrayList<>();
@@ -159,6 +194,14 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
         return conns;
     }
 
+    /**
+     * Queries the connections.
+     *
+     * @param protocol the protocol
+     * @param ipver    the ipver
+     * @param pidMap   the pid map
+     * @return the query connections result
+     */
     private static List<IPConnection> queryConnections(String protocol, int ipver, Map<Long, Integer> pidMap) {
         List<IPConnection> conns = new ArrayList<>();
         for (String s : Builder.readFile(ProcPath.NET + "/" + protocol + (ipver == 6 ? "6" : ""))) {
@@ -180,6 +223,12 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
         return conns;
     }
 
+    /**
+     * Parses the ip addr.
+     *
+     * @param s the s
+     * @return the parse ip addr result
+     */
     private static Pair<byte[], Integer> parseIpAddr(String s) {
         int colon = s.indexOf(':');
         if (colon > 0 && colon < s.length()) {
@@ -199,6 +248,12 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
         return new Pair<>(new byte[0], 0);
     }
 
+    /**
+     * Parses the hex colon hex.
+     *
+     * @param s the s
+     * @return the parse hex colon hex result
+     */
     private static Pair<Integer, Integer> parseHexColonHex(String s) {
         int colon = s.indexOf(':');
         if (colon > 0 && colon < s.length()) {
@@ -209,6 +264,12 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
         return new Pair<>(0, 0);
     }
 
+    /**
+     * Returns the state lookup result.
+     *
+     * @param state the state
+     * @return the state lookup result
+     */
     private static InternetProtocolStats.TcpState stateLookup(int state) {
         switch (state) {
             case 0x01:

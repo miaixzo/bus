@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -42,12 +42,32 @@ public final class DevPath {
      */
     public static final String DEV = queryDevConfig() + "/";
 
+    /**
+     * The DISK_BY_UUID constant.
+     */
     public static final String DISK_BY_UUID = DEV + "disk/by-uuid";
+    /**
+     * The DM constant.
+     */
     public static final String DM = DEV + "dm";
+    /**
+     * The LOOP constant.
+     */
     public static final String LOOP = DEV + "loop";
+    /**
+     * The MAPPER constant.
+     */
     public static final String MAPPER = DEV + "mapper/";
+    /**
+     * The RAM constant.
+     */
     public static final String RAM = DEV + "ram";
 
+    /**
+     * Queries the dev config.
+     *
+     * @return the query dev config result
+     */
     private static String queryDevConfig() {
         String devPath = Config.get(Config._UTIL_DEV_PATH, "/dev");
         // Ensure prefix begins with path separator, but doesn't end with one

@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -37,6 +37,11 @@ import org.miaixz.bus.health.builtin.software.common.AbstractInternetProtocolSta
 @ThreadSafe
 public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats {
 
+    /**
+     * Returns the tcp stats.
+     *
+     * @return the get tcp stats result
+     */
     private static InternetProtocolStats.TcpStats getTcpStats() {
         long connectionsEstablished = 0;
         long connectionsActive = 0;
@@ -113,6 +118,11 @@ public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats 
                 outResets);
     }
 
+    /**
+     * Returns the udp stats.
+     *
+     * @return the get udp stats result
+     */
     private static InternetProtocolStats.UdpStats getUdpStats() {
         long datagramsSent = 0;
         long datagramsReceived = 0;
@@ -157,6 +167,13 @@ public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats 
                 datagramsReceivedErrors);
     }
 
+    /**
+     * Returns the split on prefix result.
+     *
+     * @param s      the s
+     * @param prefix the prefix
+     * @return the split on prefix result
+     */
     private static String[] splitOnPrefix(String s, String prefix) {
         String[] stats = new String[2];
         int first = s.indexOf(prefix);
@@ -172,11 +189,21 @@ public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats 
         return stats;
     }
 
+    /**
+     * Returns the tc pv4 stats.
+     *
+     * @return the get tc pv4 stats result
+     */
     @Override
     public InternetProtocolStats.TcpStats getTCPv4Stats() {
         return getTcpStats();
     }
 
+    /**
+     * Returns the ud pv4 stats.
+     *
+     * @return the get ud pv4 stats result
+     */
     @Override
     public InternetProtocolStats.UdpStats getUDPv4Stats() {
         return getUdpStats();

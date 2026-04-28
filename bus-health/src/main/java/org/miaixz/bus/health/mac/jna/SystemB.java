@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -40,6 +40,25 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
      * Singleton instance of the SystemB library.
      */
     SystemB INSTANCE = Native.load("System", SystemB.class);
+
+    /**
+     * Returns the vm deallocate result.
+     *
+     * @param targetTask the target task
+     * @param address    the address
+     * @param size       the size
+     * @return the vm deallocate result
+     */
+    int vm_deallocate(int targetTask, long address, long size);
+
+    /**
+     * Returns the statfs64 result.
+     *
+     * @param path the path
+     * @param buf  the buf
+     * @return the statfs64 result
+     */
+    int statfs64(String path, com.sun.jna.platform.mac.SystemB.Statfs buf);
 
     /**
      * Command to list file descriptors for a process.

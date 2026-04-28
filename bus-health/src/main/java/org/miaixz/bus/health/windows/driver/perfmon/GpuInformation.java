@@ -29,14 +29,20 @@ import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
 /**
  * Utility to query GPU Engine and GPU Adapter Memory performance counters. Available on Windows 10 version 1709 and
  * later.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 @ThreadSafe
 public final class GpuInformation {
 
+    /**
+     * The GPU_ENGINE constant.
+     */
     static final String GPU_ENGINE = "GPU Engine";
+    /**
+     * The GPU_ADAPTER_MEMORY constant.
+     */
     static final String GPU_ADAPTER_MEMORY = "GPU Adapter Memory";
 
     /**
@@ -52,12 +58,25 @@ public final class GpuInformation {
         // Total elapsed time in 100ns units (SecondValue of Running Time counter; idle = base - active)
         RUNNING_TIME_BASE("Running Time_Base");
 
+        /**
+         * The counter value.
+         */
         private final String counter;
 
+        /**
+         * Creates a new GpuEngineProperty instance.
+         *
+         * @param counter the counter
+         */
         GpuEngineProperty(String counter) {
             this.counter = counter;
         }
 
+        /**
+         * Returns the counter.
+         *
+         * @return the get counter result
+         */
         @Override
         public String getCounter() {
             return counter;
@@ -72,18 +91,34 @@ public final class GpuInformation {
         // First element: instance filter (all instances)
         NAME("*"), DEDICATED_USAGE("Dedicated Usage"), SHARED_USAGE("Shared Usage");
 
+        /**
+         * The counter value.
+         */
         private final String counter;
 
+        /**
+         * Creates a new GpuAdapterMemoryProperty instance.
+         *
+         * @param counter the counter
+         */
         GpuAdapterMemoryProperty(String counter) {
             this.counter = counter;
         }
 
+        /**
+         * Returns the counter.
+         *
+         * @return the get counter result
+         */
         @Override
         public String getCounter() {
             return counter;
         }
     }
 
+    /**
+     * Creates a new GpuInformation instance.
+     */
     private GpuInformation() {
     }
 

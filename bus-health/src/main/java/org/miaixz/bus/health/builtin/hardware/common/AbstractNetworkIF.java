@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -46,16 +46,49 @@ import org.miaixz.bus.logger.Logger;
 @ThreadSafe
 public abstract class AbstractNetworkIF implements NetworkIF {
 
+    /**
+     * The vmMacAddrProps value.
+     */
     private final Supplier<Properties> vmMacAddrProps = Memoizer.memoize(AbstractNetworkIF::queryVmMacAddrProps);
+    /**
+     * The networkInterface value.
+     */
     private final NetworkInterface networkInterface;
+    /**
+     * The name value.
+     */
     private final String name;
+    /**
+     * The displayName value.
+     */
     private final String displayName;
+    /**
+     * The index value.
+     */
     private final int index;
+    /**
+     * The mtu value.
+     */
     private final long mtu;
+    /**
+     * The mac value.
+     */
     private final String mac;
+    /**
+     * The ipv4 value.
+     */
     private final String[] ipv4;
+    /**
+     * The subnetMasks value.
+     */
     private final Short[] subnetMasks;
+    /**
+     * The ipv6 value.
+     */
     private final String[] ipv6;
+    /**
+     * The prefixLengths value.
+     */
     private final Short[] prefixLengths;
 
     /**
@@ -151,6 +184,12 @@ public abstract class AbstractNetworkIF implements NetworkIF {
         return Collections.emptyList();
     }
 
+    /**
+     * Returns whether the local interface condition is true.
+     *
+     * @param networkInterface the network interface
+     * @return the is local interface result
+     */
     private static boolean isLocalInterface(NetworkInterface networkInterface) {
         try {
             // getHardwareAddress also checks for loopback
@@ -164,66 +203,131 @@ public abstract class AbstractNetworkIF implements NetworkIF {
         return false;
     }
 
+    /**
+     * Queries the vm mac addr props.
+     *
+     * @return the query vm mac addr props result
+     */
     private static Properties queryVmMacAddrProps() {
         return Config.readProperties(Config._VM_MAC_ADDR_PROPERTIES);
     }
 
+    /**
+     * Queries the network interface.
+     *
+     * @return the query network interface result
+     */
     @Override
     public NetworkInterface queryNetworkInterface() {
         return this.networkInterface;
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return the get name result
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Returns the index.
+     *
+     * @return the get index result
+     */
     @Override
     public int getIndex() {
         return this.index;
     }
 
+    /**
+     * Returns the display name.
+     *
+     * @return the get display name result
+     */
     @Override
     public String getDisplayName() {
         return this.displayName;
     }
 
+    /**
+     * Returns the mtu.
+     *
+     * @return the get mtu result
+     */
     @Override
     public long getMTU() {
         return this.mtu;
     }
 
+    /**
+     * Returns the macaddr.
+     *
+     * @return the get macaddr result
+     */
     @Override
     public String getMacaddr() {
         return this.mac;
     }
 
+    /**
+     * Returns the i pv4addr.
+     *
+     * @return the get i pv4addr result
+     */
     @Override
     public String[] getIPv4addr() {
         return Arrays.copyOf(this.ipv4, this.ipv4.length);
     }
 
+    /**
+     * Returns the subnet masks.
+     *
+     * @return the get subnet masks result
+     */
     @Override
     public Short[] getSubnetMasks() {
         return Arrays.copyOf(this.subnetMasks, this.subnetMasks.length);
     }
 
+    /**
+     * Returns the i pv6addr.
+     *
+     * @return the get i pv6addr result
+     */
     @Override
     public String[] getIPv6addr() {
         return Arrays.copyOf(this.ipv6, this.ipv6.length);
     }
 
+    /**
+     * Returns the prefix lengths.
+     *
+     * @return the get prefix lengths result
+     */
     @Override
     public Short[] getPrefixLengths() {
         return Arrays.copyOf(this.prefixLengths, this.prefixLengths.length);
     }
 
+    /**
+     * Returns whether the known vm mac addr condition is true.
+     *
+     * @return the is known vm mac addr result
+     */
     @Override
     public boolean isKnownVmMacAddr() {
         String oui = getMacaddr().length() > 7 ? getMacaddr().substring(0, 8) : getMacaddr();
         return this.vmMacAddrProps.get().containsKey(oui.toUpperCase(Locale.ROOT));
     }
 
+    /**
+     * Returns the to string result.
+     *
+     * @return the to string result
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

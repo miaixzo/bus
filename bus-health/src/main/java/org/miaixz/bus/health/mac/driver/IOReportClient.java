@@ -45,32 +45,78 @@ import com.sun.jna.ptr.PointerByReference;
  * <p>
  * Call {@link #close()} when done to release all CoreFoundation references. After {@code close()}, all sampling methods
  * return sentinel values.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public final class IOReportClient {
 
+    /**
+     * The GROUP_GPU_STATS constant.
+     */
     private static final String GROUP_GPU_STATS = "GPU Stats";
+    /**
+     * The GROUP_ENERGY constant.
+     */
     private static final String GROUP_ENERGY = "Energy Model";
+    /**
+     * The CHANNEL_GPU_ENERGY constant.
+     */
     private static final String CHANNEL_GPU_ENERGY = "GPU Energy";
+    /**
+     * The SUBGROUP_GPU_PERF_STATES constant.
+     */
     private static final String SUBGROUP_GPU_PERF_STATES = "GPU Performance States";
+    /**
+     * The STATE_OFF constant.
+     */
     private static final String STATE_OFF = "OFF";
+    /**
+     * The KEY_CHANNELS constant.
+     */
     private static final String KEY_CHANNELS = "IOReportChannels";
 
+    /**
+     * The ioReport value.
+     */
     private final IOReport ioReport;
+    /**
+     * The subscription value.
+     */
     private final IOReport.IOReportSubscriptionRef subscription;
+    /**
+     * The subscribedChannels value.
+     */
     private final CFDictionaryRef subscribedChannels;
 
     // Previous sample for utilization delta
+    /**
+     * The prevSampleUtil value.
+     */
     private CFDictionaryRef prevSampleUtil;
 
     // Previous sample and timestamp for power delta
+    /**
+     * The prevSamplePower value.
+     */
     private CFDictionaryRef prevSamplePower;
+    /**
+     * The prevSamplePowerNanos value.
+     */
     private long prevSamplePowerNanos;
 
+    /**
+     * The closed value.
+     */
     private boolean closed;
 
+    /**
+     * Creates a new IOReportClient instance.
+     *
+     * @param ioReport           the io report
+     * @param subscription       the subscription
+     * @param subscribedChannels the subscribed channels
+     */
     private IOReportClient(IOReport ioReport, IOReport.IOReportSubscriptionRef subscription,
             CFDictionaryRef subscribedChannels) {
         this.ioReport = ioReport;
@@ -290,6 +336,12 @@ public final class IOReportClient {
         subscription.release();
     }
 
+    /**
+     * Returns the extract gpu energy microjoules result.
+     *
+     * @param delta the delta
+     * @return the extract gpu energy microjoules result
+     */
     private long extractGpuEnergyMicrojoules(CFDictionaryRef delta) {
         CFStringRef channelsKey = CFStringRef.createCFString(KEY_CHANNELS);
         try {
@@ -324,17 +376,38 @@ public final class IOReportClient {
     /** Holds the merged state-residency map and the number of IOReport channels that contributed to it. */
     private static final class ChannelStates {
 
+        /**
+         * The states value.
+         */
         private final Map<String, Long> states;
 
+        /**
+         * Creates a new ChannelStates instance.
+         *
+         * @param states the states
+         */
         ChannelStates(Map<String, Long> states) {
             this.states = states;
         }
 
+        /**
+         * Returns the states.
+         *
+         * @return the get states result
+         */
         Map<String, Long> getStates() {
             return states;
         }
     }
 
+    /**
+     * Returns the extract channel states result.
+     *
+     * @param dict     the dict
+     * @param group    the group
+     * @param subgroup the subgroup
+     * @return the extract channel states result
+     */
     private ChannelStates extractChannelStates(CFDictionaryRef dict, String group, String subgroup) {
         CFStringRef channelsKey = CFStringRef.createCFString(KEY_CHANNELS);
         try {

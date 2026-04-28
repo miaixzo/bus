@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -57,9 +57,15 @@ import com.sun.jna.platform.unix.Resource;
 @ThreadSafe
 public class LinuxOSProcess extends AbstractOSProcess {
 
+    /**
+     * The LOG_PROCFS_WARNING constant.
+     */
     private static final boolean LOG_PROCFS_WARNING = Config.get(Config._LINUX_PROCFS_LOGWARNING, false);
 
     // Get a list of orders to pass to Parsing
+    /**
+     * The PROC_PID_STAT_ORDERS constant.
+     */
     private static final int[] PROC_PID_STAT_ORDERS = new int[ProcPidStat.values().length];
 
     static {
@@ -70,35 +76,122 @@ public class LinuxOSProcess extends AbstractOSProcess {
         }
     }
 
+    /**
+     * The os value.
+     */
     private final LinuxOperatingSystem os;
+    /**
+     * The commandLine value.
+     */
     private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
+    /**
+     * The arguments value.
+     */
     private final Supplier<List<String>> arguments = Memoizer.memoize(this::queryArguments);
+    /**
+     * The environmentVariables value.
+     */
     private final Supplier<Map<String, String>> environmentVariables = Memoizer
             .memoize(this::queryEnvironmentVariables);
+    /**
+     * The path value.
+     */
     private String path = Normal.EMPTY;
+    /**
+     * The bitness value.
+     */
     private final Supplier<Integer> bitness = Memoizer.memoize(this::queryBitness);
+    /**
+     * The userID value.
+     */
     private String userID;
+    /**
+     * The user value.
+     */
     private final Supplier<String> user = Memoizer.memoize(this::queryUser);
+    /**
+     * The groupID value.
+     */
     private String groupID;
+    /**
+     * The group value.
+     */
     private final Supplier<String> group = Memoizer.memoize(this::queryGroup);
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The state value.
+     */
     private State state = State.INVALID;
+    /**
+     * The parentProcessID value.
+     */
     private int parentProcessID;
+    /**
+     * The threadCount value.
+     */
     private int threadCount;
+    /**
+     * The priority value.
+     */
     private int priority;
+    /**
+     * The virtualSize value.
+     */
     private long virtualSize;
+    /**
+     * The residentSetSize value.
+     */
     private long residentSetSize;
+    /**
+     * The privateResidentMemory value.
+     */
     private long privateResidentMemory;
+    /**
+     * The kernelTime value.
+     */
     private long kernelTime;
+    /**
+     * The userTime value.
+     */
     private long userTime;
+    /**
+     * The startTime value.
+     */
     private long startTime;
+    /**
+     * The upTime value.
+     */
     private long upTime;
+    /**
+     * The bytesRead value.
+     */
     private long bytesRead;
+    /**
+     * The bytesWritten value.
+     */
     private long bytesWritten;
+    /**
+     * The minorFaults value.
+     */
     private long minorFaults;
+    /**
+     * The majorFaults value.
+     */
     private long majorFaults;
+    /**
+     * The contextSwitches value.
+     */
     private long contextSwitches;
 
+    /**
+     * Creates a new LinuxOSProcess instance.
+     *
+     * @param pid the pid
+     * @param os  the os
+     */
     public LinuxOSProcess(int pid, LinuxOperatingSystem os) {
         super(pid);
         this.os = os;
@@ -171,6 +264,11 @@ public class LinuxOSProcess extends AbstractOSProcess {
         return arguments.get();
     }
 
+    /**
+     * Queries the command line.
+     *
+     * @return the query command line result
+     */
     private String queryCommandLine() {
         return Arrays.stream(
                 Builder.getStringFromFile(String.format(Locale.ROOT, ProcPath.PID_CMDLINE, getProcessID())).split("\0"))
@@ -187,6 +285,11 @@ public class LinuxOSProcess extends AbstractOSProcess {
         return environmentVariables.get();
     }
 
+    /**
+     * Queries the arguments.
+     *
+     * @return the query arguments result
+     */
     private List<String> queryArguments() {
         return Collections.unmodifiableList(
                 Parsing.parseByteArrayToStrings(
@@ -224,10 +327,15 @@ public class LinuxOSProcess extends AbstractOSProcess {
         return user.get();
     }
 
+    /**
+     * Queries the environment variables.
+     *
+     * @return the query environment variables result
+     */
     private Map<String, String> queryEnvironmentVariables() {
         return Collections.unmodifiableMap(
                 Parsing.parseByteArrayToStringMap(
-                        Builder.readAllBytes(
+                        Privilege.readAllBytes(
                                 String.format(Locale.ROOT, ProcPath.PID_ENVIRON, getProcessID()),
                                 LOG_PROCFS_WARNING)));
     }
@@ -252,6 +360,11 @@ public class LinuxOSProcess extends AbstractOSProcess {
         return group.get();
     }
 
+    /**
+     * Queries the user.
+     *
+     * @return the query user result
+     */
     private String queryUser() {
         return IdGroup.getUser(userID);
     }
@@ -316,11 +429,21 @@ public class LinuxOSProcess extends AbstractOSProcess {
         return this.virtualSize;
     }
 
+    /**
+     * Returns the resident memory.
+     *
+     * @return the get resident memory result
+     */
     @Override
     public long getResidentMemory() {
         return this.residentSetSize;
     }
 
+    /**
+     * Returns the private resident memory.
+     *
+     * @return the get private resident memory result
+     */
     @Override
     public long getPrivateResidentMemory() {
         return this.privateResidentMemory;
@@ -447,8 +570,10 @@ public class LinuxOSProcess extends AbstractOSProcess {
     public long getSoftOpenFileLimit() {
         if (getProcessID() == this.os.getProcessId()) {
             final Resource.Rlimit rlimit = new Resource.Rlimit();
-            LinuxLibc.INSTANCE.getrlimit(LinuxLibc.RLIMIT_NOFILE, rlimit);
-            return rlimit.rlim_cur;
+            if (0 == LinuxLibc.INSTANCE.getrlimit(LinuxLibc.RLIMIT_NOFILE, rlimit)) {
+                return rlimit.rlim_cur;
+            }
+            return getProcessOpenFileLimit(getProcessID(), 1);
         } else {
             return getProcessOpenFileLimit(getProcessID(), 1);
         }
@@ -463,8 +588,10 @@ public class LinuxOSProcess extends AbstractOSProcess {
     public long getHardOpenFileLimit() {
         if (getProcessID() == this.os.getProcessId()) {
             final Resource.Rlimit rlimit = new Resource.Rlimit();
-            LinuxLibc.INSTANCE.getrlimit(LinuxLibc.RLIMIT_NOFILE, rlimit);
-            return rlimit.rlim_max;
+            if (0 == LinuxLibc.INSTANCE.getrlimit(LinuxLibc.RLIMIT_NOFILE, rlimit)) {
+                return rlimit.rlim_max;
+            }
+            return getProcessOpenFileLimit(getProcessID(), 2);
         } else {
             return getProcessOpenFileLimit(getProcessID(), 2);
         }
@@ -480,6 +607,11 @@ public class LinuxOSProcess extends AbstractOSProcess {
         return this.bitness.get();
     }
 
+    /**
+     * Queries the bitness.
+     *
+     * @return the query bitness result
+     */
     private int queryBitness() {
         // get 5th byte of file for 64-bit check
         // https://en.wikipedia.org/wiki/Executable_and_Linkable_Format#File_header
@@ -496,6 +628,11 @@ public class LinuxOSProcess extends AbstractOSProcess {
         return 0;
     }
 
+    /**
+     * Queries the group.
+     *
+     * @return the query group result
+     */
     private String queryGroup() {
         return IdGroup.getGroupName(groupID);
     }
@@ -542,7 +679,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
         }
         // Fetch all the values here
         // check for terminated process race condition after last one.
-        Map<String, String> io = Builder
+        Map<String, String> io = Privilege
                 .getKeyValueMapFromFile(String.format(Locale.ROOT, ProcPath.PID_IO, getProcessID()), Symbol.COLON);
         Map<String, String> status = Builder
                 .getKeyValueMapFromFile(String.format(Locale.ROOT, ProcPath.PID_STATUS, getProcessID()), Symbol.COLON);
@@ -616,6 +753,13 @@ public class LinuxOSProcess extends AbstractOSProcess {
         return true;
     }
 
+    /**
+     * Returns the process open file limit.
+     *
+     * @param processId the process id
+     * @param index     the index
+     * @return the get process open file limit result
+     */
     private long getProcessOpenFileLimit(long processId, int index) {
         final String limitsPath = String.format(Locale.ROOT, "/proc/%d/limits", processId);
         if (!Files.exists(Paths.get(limitsPath))) {
@@ -628,8 +772,15 @@ public class LinuxOSProcess extends AbstractOSProcess {
             return -1;
         }
 
-        // Split all non-Digits away -> ["", "{soft-limit}, "{hard-limit}"]
-        final String[] split = maxOpenFilesLine.get().split("\\D+");
+        final String line = maxOpenFilesLine.get();
+        if (line.contains("unlimited")) {
+            return -1;
+        }
+        // Split all non-Digits away -> ["", "{soft-limit}", "{hard-limit}"]
+        final String[] split = line.split("\\D+");
+        if (split.length <= index) {
+            return -1;
+        }
         return Parsing.parseLongOrDefault(split[index], -1);
     }
 
@@ -644,12 +795,25 @@ public class LinuxOSProcess extends AbstractOSProcess {
         PPID(4), MINOR_FAULTS(10), MAJOR_FAULTS(12), USER_TIME(14), KERNEL_TIME(15), PRIORITY(18), THREAD_COUNT(20),
         START_TIME(22), VSZ(23), RSS(24);
 
+        /**
+         * The order value.
+         */
         private final int order;
 
+        /**
+         * Creates a new ProcPidStat instance.
+         *
+         * @param order the order
+         */
         ProcPidStat(int order) {
             this.order = order;
         }
 
+        /**
+         * Returns the order.
+         *
+         * @return the get order result
+         */
         public int getOrder() {
             return this.order;
         }

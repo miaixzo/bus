@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -32,18 +32,33 @@ import org.miaixz.bus.health.unix.driver.NetStat;
  */
 public abstract class AbstractInternetProtocolStats implements InternetProtocolStats {
 
+    /**
+     * Returns the tc pv6 stats.
+     *
+     * @return the get tc pv6 stats result
+     */
     @Override
     public TcpStats getTCPv6Stats() {
         // Default when OS doesn't have separate TCPv6 stats
         return new TcpStats(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L);
     }
 
+    /**
+     * Returns the ud pv6 stats.
+     *
+     * @return the get ud pv6 stats result
+     */
     @Override
     public UdpStats getUDPv6Stats() {
         // Default when OS doesn't have separate UDPv6 stats
         return new UdpStats(0L, 0L, 0L, 0L);
     }
 
+    /**
+     * Returns the connections.
+     *
+     * @return the get connections result
+     */
     @Override
     public List<IPConnection> getConnections() {
         return NetStat.queryNetstat();

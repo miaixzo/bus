@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -47,17 +47,52 @@ import org.miaixz.bus.health.unix.platform.openbsd.driver.disk.Disklabel;
 @ThreadSafe
 public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {
 
+    /**
+     * The iostat value.
+     */
     private final Supplier<List<String>> iostat = Memoizer
             .memoize(OpenBsdHWDiskStore::querySystatIostat, Memoizer.defaultExpiration());
+    /**
+     * The currentQueueLength value.
+     */
     private final long currentQueueLength = 0L;
+    /**
+     * The reads value.
+     */
     private long reads = 0L;
+    /**
+     * The readBytes value.
+     */
     private long readBytes = 0L;
+    /**
+     * The writes value.
+     */
     private long writes = 0L;
+    /**
+     * The writeBytes value.
+     */
     private long writeBytes = 0L;
+    /**
+     * The transferTime value.
+     */
     private long transferTime = 0L;
+    /**
+     * The timeStamp value.
+     */
     private long timeStamp = 0L;
+    /**
+     * The partitionList value.
+     */
     private List<HWPartition> partitionList;
 
+    /**
+     * Creates a new OpenBsdHWDiskStore instance.
+     *
+     * @param name   the name
+     * @param model  the model
+     * @param serial the serial
+     * @param size   the size
+     */
     private OpenBsdHWDiskStore(String name, String model, String serial, long size) {
         super(name, model, serial, size);
     }
@@ -124,50 +159,100 @@ public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {
         return diskList;
     }
 
+    /**
+     * Queries the systat iostat.
+     *
+     * @return the query systat iostat result
+     */
     private static List<String> querySystatIostat() {
         return Executor.runNative("systat -ab iostat");
     }
 
+    /**
+     * Returns the reads.
+     *
+     * @return the get reads result
+     */
     @Override
     public long getReads() {
         return reads;
     }
 
+    /**
+     * Returns the read bytes.
+     *
+     * @return the get read bytes result
+     */
     @Override
     public long getReadBytes() {
         return readBytes;
     }
 
+    /**
+     * Returns the writes.
+     *
+     * @return the get writes result
+     */
     @Override
     public long getWrites() {
         return writes;
     }
 
+    /**
+     * Returns the write bytes.
+     *
+     * @return the get write bytes result
+     */
     @Override
     public long getWriteBytes() {
         return writeBytes;
     }
 
+    /**
+     * Returns the current queue length.
+     *
+     * @return the get current queue length result
+     */
     @Override
     public long getCurrentQueueLength() {
         return currentQueueLength;
     }
 
+    /**
+     * Returns the transfer time.
+     *
+     * @return the get transfer time result
+     */
     @Override
     public long getTransferTime() {
         return transferTime;
     }
 
+    /**
+     * Returns the time stamp.
+     *
+     * @return the get time stamp result
+     */
     @Override
     public long getTimeStamp() {
         return timeStamp;
     }
 
+    /**
+     * Returns the partitions.
+     *
+     * @return the get partitions result
+     */
     @Override
     public List<HWPartition> getPartitions() {
         return this.partitionList;
     }
 
+    /**
+     * Updates the attributes.
+     *
+     * @return the update attributes result
+     */
     @Override
     public boolean updateAttributes() {
         /*-

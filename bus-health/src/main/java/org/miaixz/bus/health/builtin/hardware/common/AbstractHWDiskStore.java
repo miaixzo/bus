@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -32,11 +32,31 @@ import org.miaixz.bus.health.builtin.hardware.HWDiskStore;
 @ThreadSafe
 public abstract class AbstractHWDiskStore implements HWDiskStore {
 
+    /**
+     * The name value.
+     */
     private final String name;
+    /**
+     * The model value.
+     */
     private final String model;
+    /**
+     * The serial value.
+     */
     private final String serial;
+    /**
+     * The size value.
+     */
     private final long size;
 
+    /**
+     * Creates a new AbstractHWDiskStore instance.
+     *
+     * @param name   the name
+     * @param model  the model
+     * @param serial the serial
+     * @param size   the size
+     */
     protected AbstractHWDiskStore(String name, String model, String serial, long size) {
         this.name = name;
         this.model = model;
@@ -44,26 +64,51 @@ public abstract class AbstractHWDiskStore implements HWDiskStore {
         this.size = size;
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return the get name result
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Returns the model.
+     *
+     * @return the get model result
+     */
     @Override
     public String getModel() {
         return this.model;
     }
 
+    /**
+     * Returns the serial.
+     *
+     * @return the get serial result
+     */
     @Override
     public String getSerial() {
         return this.serial;
     }
 
+    /**
+     * Returns the size.
+     *
+     * @return the get size result
+     */
     @Override
     public long getSize() {
         return this.size;
     }
 
+    /**
+     * Returns the to string result.
+     *
+     * @return the to string result
+     */
     @Override
     public String toString() {
         boolean readwrite = getReads() > 0 || getWrites() > 0;

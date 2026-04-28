@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -29,10 +29,7 @@ import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.CentralProcessor;
-import org.miaixz.bus.health.linux.driver.proc.Auxv;
 import org.miaixz.bus.logger.Logger;
-
-import com.sun.jna.Platform;
 
 /**
  * A CPU.
@@ -43,26 +40,68 @@ import com.sun.jna.Platform;
 @ThreadSafe
 public abstract class AbstractCentralProcessor implements CentralProcessor {
 
+    /**
+     * The cpuid value.
+     */
     private final Supplier<ProcessorIdentifier> cpuid = Memoizer.memoize(this::queryProcessorId);
     // Max often iterates current, intentionally making it shorter to re-memoize current
+    /**
+     * The currentFreq value.
+     */
     private final Supplier<long[]> currentFreq = Memoizer
             .memoize(this::queryCurrentFreq, Memoizer.defaultExpiration() / 2L);
+    /**
+     * The contextSwitches value.
+     */
     private final Supplier<Long> contextSwitches = Memoizer
             .memoize(this::queryContextSwitches, Memoizer.defaultExpiration());
+    /**
+     * The interrupts value.
+     */
     private final Supplier<Long> interrupts = Memoizer.memoize(this::queryInterrupts, Memoizer.defaultExpiration());
+    /**
+     * The systemCpuLoadTicks value.
+     */
     private final Supplier<long[]> systemCpuLoadTicks = Memoizer
             .memoize(this::querySystemCpuLoadTicks, Memoizer.defaultExpiration());
+    /**
+     * The processorCpuLoadTicks value.
+     */
     private final Supplier<long[][]> processorCpuLoadTicks = Memoizer
             .memoize(this::queryProcessorCpuLoadTicks, Memoizer.defaultExpiration());
     // Logical and Physical Processor Counts
+    /**
+     * The physicalPackageCount value.
+     */
     private final int physicalPackageCount;
+    /**
+     * The physicalProcessorCount value.
+     */
     private final int physicalProcessorCount;
+    /**
+     * The logicalProcessorCount value.
+     */
     private final int logicalProcessorCount;
+    /**
+     * The maxFreq value.
+     */
     private final Supplier<Long> maxFreq = Memoizer.memoize(this::queryMaxFreq, Memoizer.defaultExpiration());
     // Processor info, initialized in constructor
+    /**
+     * The logicalProcessors value.
+     */
     private final List<LogicalProcessor> logicalProcessors;
+    /**
+     * The physicalProcessors value.
+     */
     private final List<PhysicalProcessor> physicalProcessors;
+    /**
+     * The processorCaches value.
+     */
     private final List<ProcessorCache> processorCaches;
+    /**
+     * The featureFlags value.
+     */
     private final List<String> featureFlags;
 
     /**
@@ -106,6 +145,26 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
      * @return The Processor ID string
      */
     protected static String createProcessorID(String stepping, String model, String family, String[] flags) {
+        return createProcessorID(stepping, model, family, flags, 0L);
+    }
+
+    /**
+     * Creates a Processor ID by encoding the stepping, model, family, feature flags, and optional hardware
+     * capabilities.
+     *
+     * @param stepping The CPU stepping
+     * @param model    The CPU model
+     * @param family   The CPU family
+     * @param flags    A space-delimited list of CPU feature flags
+     * @param hwcap    Hardware capabilities from the auxiliary vector, or 0 if unavailable
+     * @return The Processor ID string
+     */
+    protected static String createProcessorID(
+            String stepping,
+            String model,
+            String family,
+            String[] flags,
+            long hwcap) {
         long processorIdBytes = 0L;
         long steppingL = Parsing.parseLongOrDefault(stepping, 0L);
         long modelL = Parsing.parseLongOrDefault(model, 0L);
@@ -119,11 +178,7 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
         processorIdBytes |= (familyL & 0xf) << 8;
         processorIdBytes |= (familyL & 0xff0) << 16; // shift high 8 bits
         // 13:12 – Processor Type, assume 0
-        long hwcap = 0L;
-        if (Platform.isLinux()) {
-            hwcap = Auxv.queryAuxv().getOrDefault(Auxv.AT_HWCAP, 0L);
-        }
-        if (hwcap > 0) {
+        if (hwcap != 0) {
             processorIdBytes |= hwcap << 32;
         } else {
             for (String flag : flags) {
@@ -285,11 +340,21 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
      */
     protected abstract ProcessorIdentifier queryProcessorId();
 
+    /**
+     * Returns the processor identifier.
+     *
+     * @return the get processor identifier result
+     */
     @Override
     public ProcessorIdentifier getProcessorIdentifier() {
         return cpuid.get();
     }
 
+    /**
+     * Returns the max freq.
+     *
+     * @return the get max freq result
+     */
     @Override
     public long getMaxFreq() {
         return maxFreq.get();
@@ -304,6 +369,11 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
         return Arrays.stream(getCurrentFreq()).max().orElse(-1L);
     }
 
+    /**
+     * Returns the current freq.
+     *
+     * @return the get current freq result
+     */
     @Override
     public long[] getCurrentFreq() {
         long[] freq = currentFreq.get();
@@ -322,6 +392,11 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
      */
     protected abstract long[] queryCurrentFreq();
 
+    /**
+     * Returns the context switches.
+     *
+     * @return the get context switches result
+     */
     @Override
     public long getContextSwitches() {
         return contextSwitches.get();
@@ -334,6 +409,11 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
      */
     protected abstract long queryContextSwitches();
 
+    /**
+     * Returns the interrupts.
+     *
+     * @return the get interrupts result
+     */
     @Override
     public long getInterrupts() {
         return interrupts.get();
@@ -346,26 +426,51 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
      */
     protected abstract long queryInterrupts();
 
+    /**
+     * Returns the logical processors.
+     *
+     * @return the get logical processors result
+     */
     @Override
     public List<LogicalProcessor> getLogicalProcessors() {
         return this.logicalProcessors;
     }
 
+    /**
+     * Returns the physical processors.
+     *
+     * @return the get physical processors result
+     */
     @Override
     public List<PhysicalProcessor> getPhysicalProcessors() {
         return this.physicalProcessors;
     }
 
+    /**
+     * Returns the processor caches.
+     *
+     * @return the get processor caches result
+     */
     @Override
     public List<ProcessorCache> getProcessorCaches() {
         return this.processorCaches;
     }
 
+    /**
+     * Returns the feature flags.
+     *
+     * @return the get feature flags result
+     */
     @Override
     public List<String> getFeatureFlags() {
         return this.featureFlags;
     }
 
+    /**
+     * Returns the system cpu load ticks.
+     *
+     * @return the get system cpu load ticks result
+     */
     @Override
     public long[] getSystemCpuLoadTicks() {
         return systemCpuLoadTicks.get();
@@ -378,6 +483,11 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
      */
     protected abstract long[] querySystemCpuLoadTicks();
 
+    /**
+     * Returns the processor cpu load ticks.
+     *
+     * @return the get processor cpu load ticks result
+     */
     @Override
     public long[][] getProcessorCpuLoadTicks() {
         return processorCpuLoadTicks.get();
@@ -390,6 +500,12 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
      */
     protected abstract long[][] queryProcessorCpuLoadTicks();
 
+    /**
+     * Returns the system cpu load between ticks.
+     *
+     * @param oldTicks the old ticks
+     * @return the get system cpu load between ticks result
+     */
     @Override
     public double getSystemCpuLoadBetweenTicks(long[] oldTicks) {
         if (oldTicks.length != TickType.values().length) {
@@ -399,6 +515,13 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
         return getSystemCpuLoadBetweenTicks(oldTicks, getSystemCpuLoadTicks());
     }
 
+    /**
+     * Returns the system cpu load between ticks.
+     *
+     * @param oldTicks the old ticks
+     * @param ticks    the ticks
+     * @return the get system cpu load between ticks result
+     */
     @Override
     public double getSystemCpuLoadBetweenTicks(long[] oldTicks, long[] ticks) {
         // Calculate total
@@ -414,11 +537,24 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
         return total > 0 ? (double) (total - idle) / total : 0d;
     }
 
+    /**
+     * Returns the processor cpu load between ticks.
+     *
+     * @param oldTicks the old ticks
+     * @return the get processor cpu load between ticks result
+     */
     @Override
     public double[] getProcessorCpuLoadBetweenTicks(long[][] oldTicks) {
         return getProcessorCpuLoadBetweenTicks(oldTicks, getProcessorCpuLoadTicks());
     }
 
+    /**
+     * Returns the processor cpu load between ticks.
+     *
+     * @param oldTicks the old ticks
+     * @param ticks    the ticks
+     * @return the get processor cpu load between ticks result
+     */
     @Override
     public double[] getProcessorCpuLoadBetweenTicks(long[][] oldTicks, long[][] ticks) {
         if (oldTicks.length != ticks.length || oldTicks[0].length != TickType.values().length) {
@@ -441,21 +577,43 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
         return load;
     }
 
+    /**
+     * Returns the logical processor count.
+     *
+     * @return the get logical processor count result
+     */
     @Override
     public int getLogicalProcessorCount() {
         return this.logicalProcessorCount;
     }
 
+    /**
+     * Returns the physical processor count.
+     *
+     * @return the get physical processor count result
+     */
     @Override
     public int getPhysicalProcessorCount() {
         return this.physicalProcessorCount;
     }
 
+    /**
+     * Returns the physical package count.
+     *
+     * @return the get physical package count result
+     */
     @Override
     public int getPhysicalPackageCount() {
         return this.physicalPackageCount;
     }
 
+    /**
+     * Creates the proc list from dmesg.
+     *
+     * @param logProcs the log procs
+     * @param dmesg    the dmesg
+     * @return the create proc list from dmesg result
+     */
     protected List<PhysicalProcessor> createProcListFromDmesg(
             List<LogicalProcessor> logProcs,
             Map<Integer, String> dmesg) {
@@ -488,6 +646,11 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
         return physProcs;
     }
 
+    /**
+     * Returns the to string result.
+     *
+     * @return the to string result
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getProcessorIdentifier().getName());

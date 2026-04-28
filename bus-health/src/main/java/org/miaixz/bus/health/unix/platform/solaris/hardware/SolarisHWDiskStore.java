@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -49,15 +49,47 @@ import com.sun.jna.platform.unix.solaris.LibKstat.KstatIO;
 @ThreadSafe
 public final class SolarisHWDiskStore extends AbstractHWDiskStore {
 
+    /**
+     * The reads value.
+     */
     private long reads = 0L;
+    /**
+     * The readBytes value.
+     */
     private long readBytes = 0L;
+    /**
+     * The writes value.
+     */
     private long writes = 0L;
+    /**
+     * The writeBytes value.
+     */
     private long writeBytes = 0L;
+    /**
+     * The currentQueueLength value.
+     */
     private long currentQueueLength = 0L;
+    /**
+     * The transferTime value.
+     */
     private long transferTime = 0L;
+    /**
+     * The timeStamp value.
+     */
     private long timeStamp = 0L;
+    /**
+     * The partitionList value.
+     */
     private List<HWPartition> partitionList;
 
+    /**
+     * Creates a new SolarisHWDiskStore instance.
+     *
+     * @param name   the name
+     * @param model  the model
+     * @param serial the serial
+     * @param size   the size
+     */
     private SolarisHWDiskStore(String name, String model, String serial, long size) {
         super(name, model, serial, size);
     }
@@ -100,6 +132,19 @@ public final class SolarisHWDiskStore extends AbstractHWDiskStore {
         return storeList;
     }
 
+    /**
+     * Creates the store.
+     *
+     * @param diskName the disk name
+     * @param model    the model
+     * @param vendor   the vendor
+     * @param product  the product
+     * @param serial   the serial
+     * @param size     the size
+     * @param mount    the mount
+     * @param major    the major
+     * @return the create store result
+     */
     private static SolarisHWDiskStore createStore(
             String diskName,
             String model,
@@ -118,46 +163,91 @@ public final class SolarisHWDiskStore extends AbstractHWDiskStore {
         return store;
     }
 
+    /**
+     * Returns the reads.
+     *
+     * @return the get reads result
+     */
     @Override
     public long getReads() {
         return reads;
     }
 
+    /**
+     * Returns the read bytes.
+     *
+     * @return the get read bytes result
+     */
     @Override
     public long getReadBytes() {
         return readBytes;
     }
 
+    /**
+     * Returns the writes.
+     *
+     * @return the get writes result
+     */
     @Override
     public long getWrites() {
         return writes;
     }
 
+    /**
+     * Returns the write bytes.
+     *
+     * @return the get write bytes result
+     */
     @Override
     public long getWriteBytes() {
         return writeBytes;
     }
 
+    /**
+     * Returns the current queue length.
+     *
+     * @return the get current queue length result
+     */
     @Override
     public long getCurrentQueueLength() {
         return currentQueueLength;
     }
 
+    /**
+     * Returns the transfer time.
+     *
+     * @return the get transfer time result
+     */
     @Override
     public long getTransferTime() {
         return transferTime;
     }
 
+    /**
+     * Returns the time stamp.
+     *
+     * @return the get time stamp result
+     */
     @Override
     public long getTimeStamp() {
         return timeStamp;
     }
 
+    /**
+     * Returns the partitions.
+     *
+     * @return the get partitions result
+     */
     @Override
     public List<HWPartition> getPartitions() {
         return this.partitionList;
     }
 
+    /**
+     * Updates the attributes.
+     *
+     * @return the update attributes result
+     */
     @Override
     public boolean updateAttributes() {
         this.timeStamp = System.currentTimeMillis();
@@ -183,6 +273,11 @@ public final class SolarisHWDiskStore extends AbstractHWDiskStore {
         return false;
     }
 
+    /**
+     * Updates the attributes2.
+     *
+     * @return the update attributes2 result
+     */
     private boolean updateAttributes2() {
         String fullName = getName();
         String alpha = fullName;

@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -51,9 +51,15 @@ import com.sun.jna.platform.unix.LibCAPI.size_t;
 final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
 
     // Capture the CSV of hex values as group(1), clients should split on ','
+    /**
+     * The CPUMASK constant.
+     */
     private static final java.util.regex.Pattern CPUMASK = java.util.regex.Pattern
             .compile(".*<cpu\\s.*mask=\"(\\p{XDigit}+(,\\p{XDigit}+)*)\".*>.*</cpu>.*");
 
+    /**
+     * The CPTIME_SIZE constant.
+     */
     private static final long CPTIME_SIZE;
 
     static {
@@ -62,6 +68,11 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         }
     }
 
+    /**
+     * Parses the topology.
+     *
+     * @return the parse topology result
+     */
     private static List<CentralProcessor.LogicalProcessor> parseTopology() {
         String[] topology = BsdSysctlKit.sysctl("kern.sched.topology_spec", Normal.EMPTY).split("[\\n\\r]");
         /*-
@@ -138,6 +149,14 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         return matchBitmasks(group1, group2, group3);
     }
 
+    /**
+     * Returns the match bitmasks result.
+     *
+     * @param group1 the group1
+     * @param group2 the group2
+     * @param group3 the group3
+     * @return the match bitmasks result
+     */
     private static List<CentralProcessor.LogicalProcessor> matchBitmasks(
             long group1,
             List<Long> group2,
@@ -180,6 +199,13 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         return String.format(Locale.ROOT, "%016X", processorID);
     }
 
+    /**
+     * Returns the matching bitmask.
+     *
+     * @param bitmasks the bitmasks
+     * @param lp       the lp
+     * @return the get matching bitmask result
+     */
     private static int getMatchingBitmask(List<Long> bitmasks, int lp) {
         for (int j = 0; j < bitmasks.size(); j++) {
             if ((bitmasks.get(j).longValue() & (1L << lp)) != 0) {
@@ -189,6 +215,11 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         return 0;
     }
 
+    /**
+     * Queries the processor id.
+     *
+     * @return the query processor id result
+     */
     @Override
     protected CentralProcessor.ProcessorIdentifier queryProcessorId() {
         final java.util.regex.Pattern identifierPattern = java.util.regex.Pattern
@@ -239,6 +270,11 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
                 processorID, cpu64bit, cpuFreq);
     }
 
+    /**
+     * Returns the init processor counts result.
+     *
+     * @return the init processor counts result
+     */
     @Override
     protected Tuple initProcessorCounts() {
         List<CentralProcessor.LogicalProcessor> logProcs = parseTopology();
@@ -283,6 +319,11 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         return new Tuple(logProcs, physProcs, caches, featureFlags);
     }
 
+    /**
+     * Returns the cache info from lscpu.
+     *
+     * @return the get cache info from lscpu result
+     */
     private List<CentralProcessor.ProcessorCache> getCacheInfoFromLscpu() {
         Set<CentralProcessor.ProcessorCache> caches = new HashSet<>();
         for (String checkLine : Executor.runNative("lscpu")) {
@@ -311,6 +352,11 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         return orderedProcCaches(caches);
     }
 
+    /**
+     * Queries the system cpu load ticks.
+     *
+     * @return the query system cpu load ticks result
+     */
     @Override
     public long[] querySystemCpuLoadTicks() {
         long[] ticks = new long[CentralProcessor.TickType.values().length];
@@ -325,6 +371,11 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         return ticks;
     }
 
+    /**
+     * Queries the current freq.
+     *
+     * @return the query current freq result
+     */
     @Override
     public long[] queryCurrentFreq() {
         long[] freq = new long[1];
@@ -338,6 +389,12 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         return freq;
     }
 
+    /**
+     * Returns the system load average.
+     *
+     * @param nelem the nelem
+     * @return the get system load average result
+     */
     @Override
     public double[] getSystemLoadAverage(int nelem) {
         if (nelem < 1 || nelem > 3) {
@@ -353,6 +410,11 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         return average;
     }
 
+    /**
+     * Queries the max freq.
+     *
+     * @return the query max freq result
+     */
     @Override
     public long queryMaxFreq() {
         long max = -1L;
@@ -373,6 +435,11 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         return max;
     }
 
+    /**
+     * Queries the processor cpu load ticks.
+     *
+     * @return the query processor cpu load ticks result
+     */
     @Override
     public long[][] queryProcessorCpuLoadTicks() {
         long[][] ticks = new long[getLogicalProcessorCount()][CentralProcessor.TickType.values().length];
@@ -404,6 +471,11 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         return ticks;
     }
 
+    /**
+     * Queries the context switches.
+     *
+     * @return the query context switches result
+     */
     @Override
     public long queryContextSwitches() {
         String name = "vm.stats.sys.v_swtch";
@@ -416,6 +488,11 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         }
     }
 
+    /**
+     * Queries the interrupts.
+     *
+     * @return the query interrupts result
+     */
     @Override
     public long queryInterrupts() {
         String name = "vm.stats.sys.v_intr";

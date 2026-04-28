@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -41,6 +41,9 @@ import org.miaixz.bus.health.builtin.software.InternetProtocolStats;
 @ThreadSafe
 public final class NetStat {
 
+    /**
+     * Creates a new NetStat instance.
+     */
     private NetStat() {
     }
 
@@ -268,7 +271,7 @@ public final class NetStat {
                     case "with incomplete header":
                     case "with bad data length field":
                     case "with bad checksum":
-                    case "woth no checksum":
+                    case "with no checksum":
                         datagramsReceivedErrors += Parsing.parseLongOrDefault(split[0], 0L);
                         break;
 

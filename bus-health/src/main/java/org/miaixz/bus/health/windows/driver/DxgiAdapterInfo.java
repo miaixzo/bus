@@ -32,17 +32,35 @@ import java.util.Locale;
  * values. {@code DedicatedVideoMemory} from {@code DXGI_ADAPTER_DESC} is the authoritative Windows API source for
  * dedicated GPU memory; it is not subject to the 2 GiB cap that affects the 32-bit registry value
  * {@code HardwareInformation.MemorySize}.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public final class DxgiAdapterInfo {
 
+    /**
+     * The description value.
+     */
     private final String description;
+    /**
+     * The vendorId value.
+     */
     private final int vendorId;
+    /**
+     * The deviceId value.
+     */
     private final int deviceId;
+    /**
+     * The dedicatedVideoMemory value.
+     */
     private final long dedicatedVideoMemory;
+    /**
+     * The luidLowPart value.
+     */
     private final int luidLowPart;
+    /**
+     * The luidHighPart value.
+     */
     private final int luidHighPart;
 
     /**
@@ -117,6 +135,11 @@ public final class DxgiAdapterInfo {
         return luidHighPart;
     }
 
+    /**
+     * Returns the to string result.
+     *
+     * @return the to string result
+     */
     @Override
     public String toString() {
         return String.format(

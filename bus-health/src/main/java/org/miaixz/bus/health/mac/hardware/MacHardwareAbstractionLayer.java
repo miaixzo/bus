@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -134,6 +134,11 @@ public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstracti
         return MacGraphicsCard.getGraphicsCards();
     }
 
+    /**
+     * Returns the printers.
+     *
+     * @return the get printers result
+     */
     @Override
     public List<Printer> getPrinters() {
         return UnixPrinter.getPrinters();

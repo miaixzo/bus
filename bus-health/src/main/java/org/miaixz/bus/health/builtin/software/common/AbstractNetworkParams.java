@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -42,6 +42,9 @@ import org.miaixz.bus.health.builtin.software.NetworkParams;
 @ThreadSafe
 public abstract class AbstractNetworkParams implements NetworkParams {
 
+    /**
+     * The NAMESERVER constant.
+     */
     private static final String NAMESERVER = "nameserver";
 
     /**
@@ -65,6 +68,11 @@ public abstract class AbstractNetworkParams implements NetworkParams {
         return Normal.EMPTY;
     }
 
+    /**
+     * Returns the domain name.
+     *
+     * @return the get domain name result
+     */
     @Override
     public String getDomainName() {
         InetAddress localHost;
@@ -76,6 +84,11 @@ public abstract class AbstractNetworkParams implements NetworkParams {
         return localHost.getCanonicalHostName();
     }
 
+    /**
+     * Returns the host name.
+     *
+     * @return the get host name result
+     */
     @Override
     public String getHostName() {
         InetAddress localHost;
@@ -92,6 +105,11 @@ public abstract class AbstractNetworkParams implements NetworkParams {
         return hn.substring(0, dot);
     }
 
+    /**
+     * Returns the dns servers.
+     *
+     * @return the get dns servers result
+     */
     @Override
     public String[] getDnsServers() {
         List<String> resolv = Builder.readFile("/etc/resolv.conf");
@@ -111,6 +129,11 @@ public abstract class AbstractNetworkParams implements NetworkParams {
         return servers.toArray(new String[0]);
     }
 
+    /**
+     * Returns the to string result.
+     *
+     * @return the to string result
+     */
     @Override
     public String toString() {
         return String.format(

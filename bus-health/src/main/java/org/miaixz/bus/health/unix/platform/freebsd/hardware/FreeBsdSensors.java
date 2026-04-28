@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -43,6 +43,11 @@ final class FreeBsdSensors extends AbstractSensors {
      *
      * @return Temperature if successful, otherwise NaN
      */
+    /**
+     * Queries the kldload coretemp.
+     *
+     * @return the query kldload coretemp result
+     */
     private static double queryKldloadCoretemp() {
         String name = "dev.cpu.%d.temperature";
         try (ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(FreeBsdLibc.INT_SIZE)) {
@@ -59,17 +64,32 @@ final class FreeBsdSensors extends AbstractSensors {
         }
     }
 
+    /**
+     * Queries the cpu temperature.
+     *
+     * @return the query cpu temperature result
+     */
     @Override
     public double queryCpuTemperature() {
         return queryKldloadCoretemp();
     }
 
+    /**
+     * Queries the fan speeds.
+     *
+     * @return the query fan speeds result
+     */
     @Override
     public int[] queryFanSpeeds() {
         // Nothing known on FreeBSD for this.
         return new int[0];
     }
 
+    /**
+     * Queries the cpu voltage.
+     *
+     * @return the query cpu voltage result
+     */
     @Override
     public double queryCpuVoltage() {
         // Nothing known on FreeBSD for this.

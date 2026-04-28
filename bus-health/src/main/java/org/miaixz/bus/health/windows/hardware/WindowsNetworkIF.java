@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -44,25 +44,82 @@ import com.sun.jna.platform.win32.VersionHelpers;
 @ThreadSafe
 public final class WindowsNetworkIF extends AbstractNetworkIF {
 
+    /**
+     * The IS_VISTA_OR_GREATER constant.
+     */
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
+    /**
+     * The CONNECTOR_PRESENT_BIT constant.
+     */
     private static final byte CONNECTOR_PRESENT_BIT = 0b00000100;
 
+    /**
+     * The ifType value.
+     */
     private int ifType;
+    /**
+     * The ndisPhysicalMediumType value.
+     */
     private int ndisPhysicalMediumType;
+    /**
+     * The connectorPresent value.
+     */
     private boolean connectorPresent;
+    /**
+     * The bytesRecv value.
+     */
     private long bytesRecv;
+    /**
+     * The bytesSent value.
+     */
     private long bytesSent;
+    /**
+     * The packetsRecv value.
+     */
     private long packetsRecv;
+    /**
+     * The packetsSent value.
+     */
     private long packetsSent;
+    /**
+     * The inErrors value.
+     */
     private long inErrors;
+    /**
+     * The outErrors value.
+     */
     private long outErrors;
+    /**
+     * The inDrops value.
+     */
     private long inDrops;
+    /**
+     * The collisions value.
+     */
     private long collisions;
+    /**
+     * The speed value.
+     */
     private long speed;
+    /**
+     * The timeStamp value.
+     */
     private long timeStamp;
+    /**
+     * The ifAlias value.
+     */
     private String ifAlias;
+    /**
+     * The ifOperStatus value.
+     */
     private NetworkIF.IfOperStatus ifOperStatus;
 
+    /**
+     * Creates a new WindowsNetworkIF instance.
+     *
+     * @param netint the netint
+     * @throws InstantiationException if the instantiation exception condition occurs
+     */
     public WindowsNetworkIF(NetworkInterface netint) throws InstantiationException {
         super(netint);
         updateAttributes();
@@ -86,81 +143,161 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
         return ifList;
     }
 
+    /**
+     * Returns the if type.
+     *
+     * @return the get if type result
+     */
     @Override
     public int getIfType() {
         return this.ifType;
     }
 
+    /**
+     * Returns the ndis physical medium type.
+     *
+     * @return the get ndis physical medium type result
+     */
     @Override
     public int getNdisPhysicalMediumType() {
         return this.ndisPhysicalMediumType;
     }
 
+    /**
+     * Returns whether the connector present condition is true.
+     *
+     * @return the is connector present result
+     */
     @Override
     public boolean isConnectorPresent() {
         return this.connectorPresent;
     }
 
+    /**
+     * Returns the bytes recv.
+     *
+     * @return the get bytes recv result
+     */
     @Override
     public long getBytesRecv() {
         return this.bytesRecv;
     }
 
+    /**
+     * Returns the bytes sent.
+     *
+     * @return the get bytes sent result
+     */
     @Override
     public long getBytesSent() {
         return this.bytesSent;
     }
 
+    /**
+     * Returns the packets recv.
+     *
+     * @return the get packets recv result
+     */
     @Override
     public long getPacketsRecv() {
         return this.packetsRecv;
     }
 
+    /**
+     * Returns the packets sent.
+     *
+     * @return the get packets sent result
+     */
     @Override
     public long getPacketsSent() {
         return this.packetsSent;
     }
 
+    /**
+     * Returns the in errors.
+     *
+     * @return the get in errors result
+     */
     @Override
     public long getInErrors() {
         return this.inErrors;
     }
 
+    /**
+     * Returns the out errors.
+     *
+     * @return the get out errors result
+     */
     @Override
     public long getOutErrors() {
         return this.outErrors;
     }
 
+    /**
+     * Returns the in drops.
+     *
+     * @return the get in drops result
+     */
     @Override
     public long getInDrops() {
         return this.inDrops;
     }
 
+    /**
+     * Returns the collisions.
+     *
+     * @return the get collisions result
+     */
     @Override
     public long getCollisions() {
         return this.collisions;
     }
 
+    /**
+     * Returns the speed.
+     *
+     * @return the get speed result
+     */
     @Override
     public long getSpeed() {
         return this.speed;
     }
 
+    /**
+     * Returns the time stamp.
+     *
+     * @return the get time stamp result
+     */
     @Override
     public long getTimeStamp() {
         return this.timeStamp;
     }
 
+    /**
+     * Returns the if alias.
+     *
+     * @return the get if alias result
+     */
     @Override
     public String getIfAlias() {
         return ifAlias;
     }
 
+    /**
+     * Returns the if oper status.
+     *
+     * @return the get if oper status result
+     */
     @Override
     public NetworkIF.IfOperStatus getIfOperStatus() {
         return ifOperStatus;
     }
 
+    /**
+     * Updates the attributes.
+     *
+     * @return the update attributes result
+     */
     @Override
     public boolean updateAttributes() {
         // MIB_IFROW2 requires Vista (6.0) or later.

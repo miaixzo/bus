@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -56,12 +56,21 @@ import com.sun.jna.platform.unix.solaris.LibKstat.KstatNamed;
 @ThreadSafe
 public final class KstatKit {
 
+    /**
+     * The CHAIN constant.
+     */
     private static final Lock CHAIN = new ReentrantLock();
     // Only one thread may access the chain at any time, so we wrap this object in
     // the KstatChain class locked until the lock is released on auto-close.
+    /**
+     * The kstatCtl value.
+     */
     @GuardedBy("CHAIN")
     private static KstatCtl kstatCtl = null;
 
+    /**
+     * Creates a new KstatKit instance.
+     */
     private KstatKit() {
     }
 
@@ -260,8 +269,16 @@ public final class KstatKit {
      */
     public static final class KstatChain implements AutoCloseable {
 
+        /**
+         * The localCtlRef value.
+         */
         private final KstatCtl localCtlRef;
 
+        /**
+         * Creates a new KstatChain instance.
+         *
+         * @param ctl the ctl
+         */
         private KstatChain(KstatCtl ctl) {
             this.localCtlRef = ctl;
             update();

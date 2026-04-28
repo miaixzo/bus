@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -55,17 +55,65 @@ import com.sun.jna.platform.linux.LibC;
 @ThreadSafe
 public class LinuxFileSystem extends AbstractFileSystem {
 
+    /**
+     * The FS_PATH_EXCLUDES constant.
+     */
     private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._LINUX_FS_PATH_EXCLUDES);
+    /**
+     * The FS_PATH_INCLUDES constant.
+     */
     private static final List<PathMatcher> FS_PATH_INCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._LINUX_FS_PATH_INCLUDES);
+    /**
+     * The FS_VOLUME_EXCLUDES constant.
+     */
     private static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._LINUX_FS_VOLUME_EXCLUDES);
+    /**
+     * The FS_VOLUME_INCLUDES constant.
+     */
     private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._LINUX_FS_VOLUME_INCLUDES);
 
+    /**
+     * The UNICODE_SPACE constant.
+     */
     private static final String UNICODE_SPACE = "\\040";
 
+    /**
+     * Queries the statvfs.
+     *
+     * @param path the path
+     * @return the query statvfs result
+     */
+    static long[] queryStatvfs(String path) {
+        try {
+            LibC.Statvfs vfsStat = new LibC.Statvfs();
+            if (0 == LibC.INSTANCE.statvfs(path, vfsStat)) {
+                long frsize = vfsStat.f_frsize.longValue();
+                return new long[] { vfsStat.f_files.longValue(), vfsStat.f_ffree.longValue(),
+                        vfsStat.f_blocks.longValue() * frsize, vfsStat.f_bavail.longValue() * frsize,
+                        vfsStat.f_bfree.longValue() * frsize };
+            }
+            Logger.warn(
+                    "Failed to get information to use statvfs. path: {}, Error code: {}",
+                    path,
+                    Native.getLastError());
+        } catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
+            Logger.error("Failed to get file counts from statvfs. {}", e.getMessage());
+        }
+        return null;
+    }
+
+    /**
+     * Returns the file store matching.
+     *
+     * @param nameToMatch the name to match
+     * @param uuidMap     the uuid map
+     * @param localOnly   the local only
+     * @return the get file store matching result
+     */
     static List<OSFileStore> getFileStoreMatching(String nameToMatch, Map<String, String> uuidMap, boolean localOnly) {
         List<OSFileStore> fsList = new ArrayList<>();
 
@@ -150,23 +198,13 @@ public class LinuxFileSystem extends AbstractFileSystem {
             long usableSpace = 0L;
             long freeSpace = 0L;
 
-            try {
-                LibC.Statvfs vfsStat = new LibC.Statvfs();
-                if (0 == LibC.INSTANCE.statvfs(path, vfsStat)) {
-                    totalInodes = vfsStat.f_files.longValue();
-                    freeInodes = vfsStat.f_ffree.longValue();
-                    // Per stavfs, these units are in fragments
-                    totalSpace = vfsStat.f_blocks.longValue() * vfsStat.f_frsize.longValue();
-                    usableSpace = vfsStat.f_bavail.longValue() * vfsStat.f_frsize.longValue();
-                    freeSpace = vfsStat.f_bfree.longValue() * vfsStat.f_frsize.longValue();
-                } else {
-                    Logger.warn(
-                            "Failed to get information to use statvfs. path: {}, Error code: {}",
-                            path,
-                            Native.getLastError());
-                }
-            } catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
-                Logger.error("Failed to get file counts from statvfs. {}", e.getMessage());
+            long[] vfs = queryStatvfs(path);
+            if (vfs != null) {
+                totalInodes = vfs[0];
+                freeInodes = vfs[1];
+                totalSpace = vfs[2];
+                usableSpace = vfs[3];
+                freeSpace = vfs[4];
             }
             // If native methods failed use JVM methods
             if (totalSpace == 0L) {
@@ -184,6 +222,11 @@ public class LinuxFileSystem extends AbstractFileSystem {
         return fsList;
     }
 
+    /**
+     * Queries the label map.
+     *
+     * @return the query label map result
+     */
     private static Map<String, String> queryLabelMap() {
         Map<String, String> labelMap = new HashMap<>();
         for (String line : Executor.runNative("lsblk -o mountpoint,label")) {
@@ -216,10 +259,21 @@ public class LinuxFileSystem extends AbstractFileSystem {
         return 0L;
     }
 
+    /**
+     * Returns the file descriptors per process.
+     *
+     * @return the get file descriptors per process result
+     */
     private static long getFileDescriptorsPerProcess() {
         return Builder.getLongFromFile(ProcPath.SYS_FS_FILE_MAX);
     }
 
+    /**
+     * Returns the file stores.
+     *
+     * @param localOnly the local only
+     * @return the get file stores result
+     */
     @Override
     public List<OSFileStore> getFileStores(boolean localOnly) {
         // Map of volume with device path as key
@@ -258,16 +312,31 @@ public class LinuxFileSystem extends AbstractFileSystem {
         return getFileStoreMatching(null, uuidMap, localOnly);
     }
 
+    /**
+     * Returns the open file descriptors.
+     *
+     * @return the get open file descriptors result
+     */
     @Override
     public long getOpenFileDescriptors() {
         return getFileDescriptors(0);
     }
 
+    /**
+     * Returns the max file descriptors.
+     *
+     * @return the get max file descriptors result
+     */
     @Override
     public long getMaxFileDescriptors() {
         return getFileDescriptors(2);
     }
 
+    /**
+     * Returns the max file descriptors per process.
+     *
+     * @return the get max file descriptors per process result
+     */
     @Override
     public long getMaxFileDescriptorsPerProcess() {
         return getFileDescriptorsPerProcess();

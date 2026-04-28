@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -52,32 +52,89 @@ import com.sun.jna.platform.linux.Udev.UdevListEntry;
 @ThreadSafe
 public final class LinuxHWDiskStore extends AbstractHWDiskStore {
 
+    /**
+     * The BLOCK constant.
+     */
     private static final String BLOCK = "block";
+    /**
+     * The DISK constant.
+     */
     private static final String DISK = "disk";
+    /**
+     * The PARTITION constant.
+     */
     private static final String PARTITION = "partition";
 
+    /**
+     * The STAT constant.
+     */
     private static final String STAT = "stat";
+    /**
+     * The SIZE constant.
+     */
     private static final String SIZE = "size";
+    /**
+     * The MINOR constant.
+     */
     private static final String MINOR = "MINOR";
+    /**
+     * The MAJOR constant.
+     */
     private static final String MAJOR = "MAJOR";
 
+    /**
+     * The ID_FS_TYPE constant.
+     */
     private static final String ID_FS_TYPE = "ID_FS_TYPE";
+    /**
+     * The ID_FS_UUID constant.
+     */
     private static final String ID_FS_UUID = "ID_FS_UUID";
+    /**
+     * The ID_FS_LABEL constant.
+     */
     private static final String ID_FS_LABEL = "ID_FS_LABEL";
+    /**
+     * The ID_MODEL constant.
+     */
     private static final String ID_MODEL = "ID_MODEL";
+    /**
+     * The ID_SERIAL_SHORT constant.
+     */
     private static final String ID_SERIAL_SHORT = "ID_SERIAL_SHORT";
 
+    /**
+     * The DM_UUID constant.
+     */
     private static final String DM_UUID = "DM_UUID";
+    /**
+     * The DM_VG_NAME constant.
+     */
     private static final String DM_VG_NAME = "DM_VG_NAME";
+    /**
+     * The DM_LV_NAME constant.
+     */
     private static final String DM_LV_NAME = "DM_LV_NAME";
+    /**
+     * The LOGICAL_VOLUME_GROUP constant.
+     */
     private static final String LOGICAL_VOLUME_GROUP = "Logical Volume Group";
 
+    /**
+     * The SECTORSIZE constant.
+     */
     private static final int SECTORSIZE = 512;
 
     // Get a list of orders to pass to Parsing
+    /**
+     * The UDEV_STAT_ORDERS constant.
+     */
     private static final int[] UDEV_STAT_ORDERS = new int[UdevStat.values().length];
     // There are at least 11 elements in udev stat output or sometimes 15. We want
     // the rightmost 11 or 15 if there is leading text.
+    /**
+     * The UDEV_STAT_LENGTH constant.
+     */
     private static final int UDEV_STAT_LENGTH;
 
     static {
@@ -95,19 +152,57 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
         UDEV_STAT_LENGTH = statLength;
     }
 
+    /**
+     * The reads value.
+     */
     private long reads = 0L;
+    /**
+     * The readBytes value.
+     */
     private long readBytes = 0L;
+    /**
+     * The writes value.
+     */
     private long writes = 0L;
+    /**
+     * The writeBytes value.
+     */
     private long writeBytes = 0L;
+    /**
+     * The currentQueueLength value.
+     */
     private long currentQueueLength = 0L;
+    /**
+     * The transferTime value.
+     */
     private long transferTime = 0L;
+    /**
+     * The timeStamp value.
+     */
     private long timeStamp = 0L;
+    /**
+     * The partitionList value.
+     */
     private List<HWPartition> partitionList = new ArrayList<>();
 
+    /**
+     * Creates a new LinuxHWDiskStore instance.
+     *
+     * @param name   the name
+     * @param model  the model
+     * @param serial the serial
+     * @param size   the size
+     */
     private LinuxHWDiskStore(String name, String model, String serial, long size) {
         super(name, model, serial, size);
     }
 
+    /**
+     * Returns the disks.
+     *
+     * @param storeToUpdate the store to update
+     * @return the get disks result
+     */
     private static List<HWDiskStore> getDisks(LinuxHWDiskStore storeToUpdate) {
         if (!LinuxOperatingSystem.HAS_UDEV) {
             Logger.warn("Disk Store information requires libudev, which is not present.");
@@ -119,6 +214,9 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
         Map<String, String> mountsMap = readMountsMap();
 
         UdevContext udev = Udev.INSTANCE.udev_new();
+        if (udev == null) {
+            return Collections.emptyList();
+        }
         try {
             UdevEnumerate enumerate = udev.enumerateNew();
             try {
@@ -147,20 +245,27 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
                                                 devSerial == null ? Normal.UNKNOWN : devSerial, devSize);
                                         String vgName = device.getPropertyValue(DM_VG_NAME);
                                         String lvName = device.getPropertyValue(DM_LV_NAME);
-                                        store.partitionList.add(
-                                                new HWPartition(getPartitionNameForDmDevice(vgName, lvName),
-                                                        device.getSysname(),
-                                                        device.getPropertyValue(ID_FS_TYPE) == null ? PARTITION
-                                                                : device.getPropertyValue(ID_FS_TYPE),
-                                                        device.getPropertyValue(ID_FS_UUID) == null ? Normal.EMPTY
-                                                                : device.getPropertyValue(ID_FS_UUID),
-                                                        device.getPropertyValue(ID_FS_LABEL) == null ? ""
-                                                                : device.getPropertyValue(ID_FS_LABEL),
-                                                        Parsing.parseLongOrDefault(device.getSysattrValue(SIZE), 0L)
-                                                                * SECTORSIZE,
-                                                        Parsing.parseIntOrDefault(device.getPropertyValue(MAJOR), 0),
-                                                        Parsing.parseIntOrDefault(device.getPropertyValue(MINOR), 0),
-                                                        getMountPointOfDmDevice(vgName, lvName)));
+                                        if (vgName != null && lvName != null && devSerial != null
+                                                && devSerial.startsWith("LVM-")) {
+                                            store.partitionList.add(
+                                                    new HWPartition(getPartitionNameForDmDevice(vgName, lvName),
+                                                            device.getSysname(),
+                                                            device.getPropertyValue(ID_FS_TYPE) == null ? PARTITION
+                                                                    : device.getPropertyValue(ID_FS_TYPE),
+                                                            device.getPropertyValue(ID_FS_UUID) == null ? Normal.EMPTY
+                                                                    : device.getPropertyValue(ID_FS_UUID),
+                                                            device.getPropertyValue(ID_FS_LABEL) == null ? ""
+                                                                    : device.getPropertyValue(ID_FS_LABEL),
+                                                            Parsing.parseLongOrDefault(device.getSysattrValue(SIZE), 0L)
+                                                                    * SECTORSIZE,
+                                                            Parsing.parseIntOrDefault(
+                                                                    device.getPropertyValue(MAJOR),
+                                                                    0),
+                                                            Parsing.parseIntOrDefault(
+                                                                    device.getPropertyValue(MINOR),
+                                                                    0),
+                                                            getMountPointOfDmDevice(vgName, lvName)));
+                                        }
                                     } else {
                                         store = new LinuxHWDiskStore(devnode,
                                                 devModel == null ? Normal.UNKNOWN : devModel,
@@ -205,7 +310,7 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
                                                         mountsMap.getOrDefault(
                                                                 name,
                                                                 getDependentNamesFromHoldersDirectory(
-                                                                        device.getSysname()))));
+                                                                        device.getSyspath()))));
                                     }
                                 }
                             }
@@ -229,6 +334,11 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
         return result;
     }
 
+    /**
+     * Reads the mounts map.
+     *
+     * @return the read mounts map result
+     */
     private static Map<String, String> readMountsMap() {
         Map<String, String> mountsMap = new HashMap<>();
         List<String> mounts = Builder.readFile(ProcPath.MOUNTS);
@@ -242,6 +352,12 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
         return mountsMap;
     }
 
+    /**
+     * Handles the compute disk stats operation.
+     *
+     * @param store   the store
+     * @param devstat the devstat
+     */
     private static void computeDiskStats(LinuxHWDiskStore store, String devstat) {
         long[] devstatArray = Parsing
                 .parseStringToLongArray(devstat, UDEV_STAT_ORDERS, UDEV_STAT_LENGTH, Symbol.C_SPACE);
@@ -256,10 +372,24 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
         store.transferTime = devstatArray[UdevStat.ACTIVE_MS.ordinal()];
     }
 
+    /**
+     * Returns the partition name for dm device.
+     *
+     * @param vgName the vg name
+     * @param lvName the lv name
+     * @return the get partition name for dm device result
+     */
     private static String getPartitionNameForDmDevice(String vgName, String lvName) {
         return DevPath.DEV + vgName + '/' + lvName;
     }
 
+    /**
+     * Returns the mount point of dm device.
+     *
+     * @param vgName the vg name
+     * @param lvName the lv name
+     * @return the get mount point of dm device result
+     */
     private static String getMountPointOfDmDevice(String vgName, String lvName) {
         return DevPath.MAPPER + vgName + Symbol.C_MINUS + lvName;
     }
@@ -273,6 +403,12 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
         return getDisks(null);
     }
 
+    /**
+     * Returns the dependent names from holders directory.
+     *
+     * @param sysPath the sys path
+     * @return the get dependent names from holders directory result
+     */
     private static String getDependentNamesFromHoldersDirectory(String sysPath) {
         File holdersDir = new File(sysPath + "/holders");
         File[] holders = holdersDir.listFiles();
@@ -282,46 +418,91 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
         return Normal.EMPTY;
     }
 
+    /**
+     * Returns the reads.
+     *
+     * @return the get reads result
+     */
     @Override
     public long getReads() {
         return reads;
     }
 
+    /**
+     * Returns the read bytes.
+     *
+     * @return the get read bytes result
+     */
     @Override
     public long getReadBytes() {
         return readBytes;
     }
 
+    /**
+     * Returns the writes.
+     *
+     * @return the get writes result
+     */
     @Override
     public long getWrites() {
         return writes;
     }
 
+    /**
+     * Returns the write bytes.
+     *
+     * @return the get write bytes result
+     */
     @Override
     public long getWriteBytes() {
         return writeBytes;
     }
 
+    /**
+     * Returns the current queue length.
+     *
+     * @return the get current queue length result
+     */
     @Override
     public long getCurrentQueueLength() {
         return currentQueueLength;
     }
 
+    /**
+     * Returns the transfer time.
+     *
+     * @return the get transfer time result
+     */
     @Override
     public long getTransferTime() {
         return transferTime;
     }
 
+    /**
+     * Returns the time stamp.
+     *
+     * @return the get time stamp result
+     */
     @Override
     public long getTimeStamp() {
         return timeStamp;
     }
 
+    /**
+     * Returns the partitions.
+     *
+     * @return the get partitions result
+     */
     @Override
     public List<HWPartition> getPartitions() {
         return this.partitionList;
     }
 
+    /**
+     * Updates the attributes.
+     *
+     * @return the update attributes result
+     */
     @Override
     public boolean updateAttributes() {
         // If this returns non-empty (the same store, but updated) then we were
@@ -330,18 +511,34 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
     }
 
     // Order the field is in udev stats
+    /**
+     * The UdevStat enum.
+     */
     enum UdevStat {
 
         // The parsing implementation in Parsing requires these to be declared
         // in increasing order. Use 0-ordered index here
         READS(0), READ_BYTES(2), WRITES(4), WRITE_BYTES(6), QUEUE_LENGTH(8), ACTIVE_MS(9);
 
+        /**
+         * The order value.
+         */
         private final int order;
 
+        /**
+         * Creates a new UdevStat instance.
+         *
+         * @param order the order
+         */
         UdevStat(int order) {
             this.order = order;
         }
 
+        /**
+         * Returns the order.
+         *
+         * @return the get order result
+         */
         public int getOrder() {
             return this.order;
         }

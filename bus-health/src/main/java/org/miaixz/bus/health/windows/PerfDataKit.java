@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -20,6 +20,7 @@
 package org.miaixz.bus.health.windows;
 
 import java.util.Locale;
+import java.util.Objects;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -50,10 +51,22 @@ import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
 @ThreadSafe
 public final class PerfDataKit {
 
+    /**
+     * The PZERO constant.
+     */
     private static final DWORD_PTR PZERO = new DWORD_PTR(0);
+    /**
+     * The PDH_FMT_RAW constant.
+     */
     private static final DWORDByReference PDH_FMT_RAW = new DWORDByReference(new DWORD(Pdh.PDH_FMT_RAW));
+    /**
+     * The PDH constant.
+     */
     private static final Pdh PDH = Pdh.INSTANCE;
 
+    /**
+     * The IS_VISTA_OR_GREATER constant.
+     */
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
 
     /**
@@ -209,24 +222,42 @@ public final class PerfDataKit {
      * Encapsulates the three string components of a performance counter
      */
     @Immutable
-    public static class PerfCounter {
+    public static final class PerfCounter {
 
+        /**
+         * The object value.
+         */
         private final String object;
+        /**
+         * The instance value.
+         */
         private final String instance;
+        /**
+         * The counter value.
+         */
         private final String counter;
+        /**
+         * The baseCounter value.
+         */
         private final boolean baseCounter;
 
+        /**
+         * Suffix appended to counter names to indicate that the SecondValue (base) should be read.
+         */
+        public static final String BASE_SUFFIX = "_Base";
+
+        /**
+         * Creates a new PerfCounter instance.
+         *
+         * @param objectName   the object name
+         * @param instanceName the instance name
+         * @param counterName  the counter name
+         */
         public PerfCounter(String objectName, String instanceName, String counterName) {
             this.object = objectName;
             this.instance = instanceName;
-            int baseIdx = counterName.indexOf("_Base");
-            if (baseIdx > 0) {
-                this.counter = counterName.substring(0, baseIdx);
-                this.baseCounter = true;
-            } else {
-                this.counter = counterName;
-                this.baseCounter = false;
-            }
+            this.baseCounter = isBase(counterName);
+            this.counter = stripBaseSuffix(counterName);
         }
 
         /**
@@ -270,6 +301,58 @@ public final class PerfDataKit {
             }
             sb.append('\\').append(counter);
             return sb.toString();
+        }
+
+        /**
+         * Strips the {@link #BASE_SUFFIX} from a counter name if present.
+         *
+         * @param counterName The counter name, possibly ending with {@code _Base}.
+         * @return The counter name without the suffix, or the original name if the suffix is not present.
+         */
+        public static String stripBaseSuffix(String counterName) {
+            if (isBase(counterName)) {
+                return counterName.substring(0, counterName.length() - BASE_SUFFIX.length());
+            }
+            return counterName;
+        }
+
+        /**
+         * Tests whether a counter name has the {@link #BASE_SUFFIX}.
+         *
+         * @param counterName The counter name to test.
+         * @return true if the counter name ends with {@code _Base}.
+         */
+        public static boolean isBase(String counterName) {
+            return counterName.endsWith(BASE_SUFFIX);
+        }
+
+        /**
+         * Returns the equals result.
+         *
+         * @param o the o
+         * @return the equals result
+         */
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof PerfCounter)) {
+                return false;
+            }
+            PerfCounter other = (PerfCounter) o;
+            return baseCounter == other.baseCounter && Objects.equals(object, other.object)
+                    && Objects.equals(instance, other.instance) && Objects.equals(counter, other.counter);
+        }
+
+        /**
+         * Returns whether the h code value is present.
+         *
+         * @return the hash code result
+         */
+        @Override
+        public int hashCode() {
+            return Objects.hash(object, instance, counter, baseCounter);
         }
     }
 

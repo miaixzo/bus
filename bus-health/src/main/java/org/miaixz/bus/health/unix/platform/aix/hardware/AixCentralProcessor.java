@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -54,13 +54,30 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
      * Jiffies per second, used for process time counters.
      */
     private static final long USER_HZ = Parsing.parseLongOrDefault(Executor.getFirstAnswer("getconf CLK_TCK"), 100L);
+    /**
+     * The SBITS constant.
+     */
     private static final int SBITS = querySbits();
+    /**
+     * The cpuTotal value.
+     */
     private final Supplier<perfstat_cpu_total_t> cpuTotal = Memoizer
             .memoize(PerfstatCpu::queryCpuTotal, Memoizer.defaultExpiration());
+    /**
+     * The cpuProc value.
+     */
     private final Supplier<perfstat_cpu_t[]> cpuProc = Memoizer
             .memoize(PerfstatCpu::queryCpu, Memoizer.defaultExpiration());
+    /**
+     * The config value.
+     */
     private perfstat_partition_config_t config;
 
+    /**
+     * Queries the sbits.
+     *
+     * @return the query sbits result
+     */
     private static int querySbits() {
         // read from /usr/include/sys/proc.h
         for (String s : Builder.readFile("/usr/include/sys/proc.h")) {
@@ -71,6 +88,11 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
         return 16;
     }
 
+    /**
+     * Queries the processor id.
+     *
+     * @return the query processor id result
+     */
     @Override
     protected CentralProcessor.ProcessorIdentifier queryProcessorId() {
         String cpuVendor = Normal.UNKNOWN;
@@ -114,6 +136,11 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
                 cpu64bit, (long) (config.processorMHz * 1_000_000L));
     }
 
+    /**
+     * Returns the init processor counts result.
+     *
+     * @return the init processor counts result
+     */
     @Override
     protected Tuple initProcessorCounts() {
         this.config = PerfstatConfig.queryConfig();
@@ -145,6 +172,12 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
         return new Tuple(logProcs, null, getCachesForModel(physProcs), Collections.emptyList());
     }
 
+    /**
+     * Returns the caches for model.
+     *
+     * @param cores the cores
+     * @return the get caches for model result
+     */
     private List<CentralProcessor.ProcessorCache> getCachesForModel(int cores) {
         // The only info available in the OS is the L2 size
         // But we can hardcode POWER7, POWER8, and POWER9 configs
@@ -205,6 +238,11 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
         return caches;
     }
 
+    /**
+     * Queries the system cpu load ticks.
+     *
+     * @return the query system cpu load ticks result
+     */
     @Override
     public long[] querySystemCpuLoadTicks() {
         perfstat_cpu_total_t perfstat = cpuTotal.get();
@@ -221,12 +259,23 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
         return ticks;
     }
 
+    /**
+     * Queries the max freq.
+     *
+     * @return the query max freq result
+     */
     @Override
     protected long queryMaxFreq() {
         perfstat_cpu_total_t perfstat = cpuTotal.get();
         return perfstat.processorHZ;
     }
 
+    /**
+     * Returns the system load average.
+     *
+     * @param nelem the nelem
+     * @return the get system load average result
+     */
     @Override
     public double[] getSystemLoadAverage(int nelem) {
         if (nelem < 1 || nelem > 3) {
@@ -240,6 +289,11 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
         return average;
     }
 
+    /**
+     * Queries the current freq.
+     *
+     * @return the query current freq result
+     */
     @Override
     public long[] queryCurrentFreq() {
         // $ pmcycles -m
@@ -249,7 +303,7 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
         // ~/git/oshi$ pmcycles -m
         // This machine runs at 1000 MHz
 
-        // FIXME change to this as pmcycles requires root
+        // The lsattr path is preferable when pmcycles requires root access.
         // $ lsattr -El proc0
         // frequency 3425000000 Processor Speed False
 
@@ -268,17 +322,32 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
         return freqs;
     }
 
+    /**
+     * Queries the context switches.
+     *
+     * @return the query context switches result
+     */
     @Override
     public long queryContextSwitches() {
         return cpuTotal.get().pswitch;
     }
 
+    /**
+     * Queries the interrupts.
+     *
+     * @return the query interrupts result
+     */
     @Override
     public long queryInterrupts() {
         perfstat_cpu_total_t cpu = cpuTotal.get();
         return cpu.devintrs + cpu.softintrs;
     }
 
+    /**
+     * Queries the processor cpu load ticks.
+     *
+     * @return the query processor cpu load ticks result
+     */
     @Override
     public long[][] queryProcessorCpuLoadTicks() {
         perfstat_cpu_t[] cpu = cpuProc.get();

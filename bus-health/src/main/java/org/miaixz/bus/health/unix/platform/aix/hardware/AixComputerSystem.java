@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -42,13 +42,29 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractComputerSystem;
 @Immutable
 final class AixComputerSystem extends AbstractComputerSystem {
 
+    /**
+     * The lsattrStrings value.
+     */
     private final Supplier<LsattrStrings> lsattrStrings = Memoizer.memoize(AixComputerSystem::readLsattr);
+    /**
+     * The lscfg value.
+     */
     private final Supplier<List<String>> lscfg;
 
+    /**
+     * Creates a new AixComputerSystem instance.
+     *
+     * @param lscfg the lscfg
+     */
     AixComputerSystem(Supplier<List<String>> lscfg) {
         this.lscfg = lscfg;
     }
 
+    /**
+     * Reads the lsattr.
+     *
+     * @return the read lsattr result
+     */
     private static LsattrStrings readLsattr() {
         String fwVendor = "IBM";
         String fwVersion = null;
@@ -111,48 +127,113 @@ final class AixComputerSystem extends AbstractComputerSystem {
         return new LsattrStrings(fwVendor, fwPlatformVersion, fwVersion, manufacturer, model, serialNumber, uuid);
     }
 
+    /**
+     * Returns the manufacturer.
+     *
+     * @return the get manufacturer result
+     */
     @Override
     public String getManufacturer() {
         return lsattrStrings.get().manufacturer;
     }
 
+    /**
+     * Returns the model.
+     *
+     * @return the get model result
+     */
     @Override
     public String getModel() {
         return lsattrStrings.get().model;
     }
 
+    /**
+     * Returns the serial number.
+     *
+     * @return the get serial number result
+     */
     @Override
     public String getSerialNumber() {
         return lsattrStrings.get().serialNumber;
     }
 
+    /**
+     * Returns the hardware uuid.
+     *
+     * @return the get hardware uuid result
+     */
     @Override
     public String getHardwareUUID() {
         return lsattrStrings.get().uuid;
     }
 
+    /**
+     * Creates the firmware.
+     *
+     * @return the create firmware result
+     */
     @Override
     public Firmware createFirmware() {
         return new AixFirmware(lsattrStrings.get().biosVendor, lsattrStrings.get().biosPlatformVersion,
                 lsattrStrings.get().biosVersion);
     }
 
+    /**
+     * Creates the baseboard.
+     *
+     * @return the create baseboard result
+     */
     @Override
     public Baseboard createBaseboard() {
         return new AixBaseboard(lscfg);
     }
 
+    /**
+     * The LsattrStrings class.
+     */
     private static final class LsattrStrings {
 
+        /**
+         * The biosVendor value.
+         */
         private final String biosVendor;
+        /**
+         * The biosPlatformVersion value.
+         */
         private final String biosPlatformVersion;
+        /**
+         * The biosVersion value.
+         */
         private final String biosVersion;
 
+        /**
+         * The manufacturer value.
+         */
         private final String manufacturer;
+        /**
+         * The model value.
+         */
         private final String model;
+        /**
+         * The serialNumber value.
+         */
         private final String serialNumber;
+        /**
+         * The uuid value.
+         */
         private final String uuid;
 
+        /**
+         * Creates a new LsattrStrings instance.
+         *
+         * @param biosVendor          the bios vendor
+         * @param biosPlatformVersion the bios platform version
+         * @param biosVersion         the bios version
+         * @param manufacturer        the manufacturer
+         * @param model               the model
+         * @param serialNumber        the serial number
+         * @param uuid                the uuid
+         */
         private LsattrStrings(String biosVendor, String biosPlatformVersion, String biosVersion, String manufacturer,
                 String model, String serialNumber, String uuid) {
             this.biosVendor = StringKit.isBlank(biosVendor) ? Normal.UNKNOWN : biosVendor;

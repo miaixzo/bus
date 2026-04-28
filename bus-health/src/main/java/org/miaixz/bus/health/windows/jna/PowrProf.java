@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -40,6 +40,9 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
      */
     PowrProf INSTANCE = Native.load("PowrProf", PowrProf.class);
 
+    /**
+     * The BATTERY_QUERY_INFORMATION_LEVEL enum.
+     */
     enum BATTERY_QUERY_INFORMATION_LEVEL {
         BatteryInformation, BatteryGranularityInformation, BatteryTemperature, BatteryEstimatedTime, BatteryDeviceName,
         BatteryManufactureDate, BatteryManufactureName, BatteryUniqueID, BatterySerialNumber
@@ -52,28 +55,75 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
             "remainingCapacity", "rate", "estimatedTime", "defaultAlert1", "defaultAlert2" })
     class SystemBatteryState extends Structure implements AutoCloseable {
 
+        /**
+         * The acOnLine value.
+         */
         public byte acOnLine;
+        /**
+         * The batteryPresent value.
+         */
         public byte batteryPresent;
+        /**
+         * The charging value.
+         */
         public byte charging;
+        /**
+         * The discharging value.
+         */
         public byte discharging;
+        /**
+         * The spare1 value.
+         */
         public byte[] spare1 = new byte[3];
+        /**
+         * The tag value.
+         */
         public byte tag;
+        /**
+         * The maxCapacity value.
+         */
         public int maxCapacity;
+        /**
+         * The remainingCapacity value.
+         */
         public int remainingCapacity;
+        /**
+         * The rate value.
+         */
         public int rate;
+        /**
+         * The estimatedTime value.
+         */
         public int estimatedTime;
+        /**
+         * The defaultAlert1 value.
+         */
         public int defaultAlert1;
+        /**
+         * The defaultAlert2 value.
+         */
         public int defaultAlert2;
 
+        /**
+         * Creates a new SystemBatteryState instance.
+         *
+         * @param p the p
+         */
         public SystemBatteryState(Pointer p) {
             super(p);
             read();
         }
 
+        /**
+         * Creates a new SystemBatteryState instance.
+         */
         public SystemBatteryState() {
             super();
         }
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
@@ -86,18 +136,44 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
     @FieldOrder({ "number", "maxMhz", "currentMhz", "mhzLimit", "maxIdleState", "currentIdleState" })
     class ProcessorPowerInformation extends Structure {
 
+        /**
+         * The number value.
+         */
         public int number;
+        /**
+         * The maxMhz value.
+         */
         public int maxMhz;
+        /**
+         * The currentMhz value.
+         */
         public int currentMhz;
+        /**
+         * The mhzLimit value.
+         */
         public int mhzLimit;
+        /**
+         * The maxIdleState value.
+         */
         public int maxIdleState;
+        /**
+         * The currentIdleState value.
+         */
         public int currentIdleState;
 
+        /**
+         * Creates a new ProcessorPowerInformation instance.
+         *
+         * @param p the p
+         */
         public ProcessorPowerInformation(Pointer p) {
             super(p);
             read();
         }
 
+        /**
+         * Creates a new ProcessorPowerInformation instance.
+         */
         public ProcessorPowerInformation() {
             super();
         }
@@ -110,13 +186,28 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
      * </p>
      */
     // MOVE?
+    /**
+     * The BATTERY_QUERY_INFORMATION class.
+     */
     @FieldOrder({ "BatteryTag", "InformationLevel", "AtRate" })
     class BATTERY_QUERY_INFORMATION extends Structure implements AutoCloseable {
 
+        /**
+         * The BatteryTag value.
+         */
         public int BatteryTag;
+        /**
+         * The InformationLevel value.
+         */
         public int InformationLevel;
+        /**
+         * The AtRate value.
+         */
         public int AtRate;
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
@@ -140,17 +231,50 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
             "DefaultAlert1", "DefaultAlert2", "CriticalBias", "CycleCount" })
     class BATTERY_INFORMATION extends Structure implements AutoCloseable {
 
+        /**
+         * The Capabilities value.
+         */
         public int Capabilities;
+        /**
+         * The Technology value.
+         */
         public byte Technology;
+        /**
+         * The Reserved value.
+         */
         public byte[] Reserved = new byte[3];
+        /**
+         * The Chemistry value.
+         */
         public byte[] Chemistry = new byte[4];
+        /**
+         * The DesignedCapacity value.
+         */
         public int DesignedCapacity;
+        /**
+         * The FullChargedCapacity value.
+         */
         public int FullChargedCapacity;
+        /**
+         * The DefaultAlert1 value.
+         */
         public int DefaultAlert1;
+        /**
+         * The DefaultAlert2 value.
+         */
         public int DefaultAlert2;
+        /**
+         * The CriticalBias value.
+         */
         public int CriticalBias;
+        /**
+         * The CycleCount value.
+         */
         public int CycleCount;
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
@@ -166,12 +290,30 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
     @FieldOrder({ "BatteryTag", "Timeout", "PowerState", "LowCapacity", "HighCapacity" })
     class BATTERY_WAIT_STATUS extends Structure implements AutoCloseable {
 
+        /**
+         * The BatteryTag value.
+         */
         public int BatteryTag;
+        /**
+         * The Timeout value.
+         */
         public int Timeout;
+        /**
+         * The PowerState value.
+         */
         public int PowerState;
+        /**
+         * The LowCapacity value.
+         */
         public int LowCapacity;
+        /**
+         * The HighCapacity value.
+         */
         public int HighCapacity;
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
@@ -188,11 +330,26 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
     @FieldOrder({ "PowerState", "Capacity", "Voltage", "Rate" })
     class BATTERY_STATUS extends Structure implements AutoCloseable {
 
+        /**
+         * The PowerState value.
+         */
         public int PowerState;
+        /**
+         * The Capacity value.
+         */
         public int Capacity;
+        /**
+         * The Voltage value.
+         */
         public int Voltage;
+        /**
+         * The Rate value.
+         */
         public int Rate;
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
@@ -209,10 +366,22 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
     @FieldOrder({ "Day", "Month", "Year" })
     class BATTERY_MANUFACTURE_DATE extends Structure implements AutoCloseable {
 
+        /**
+         * The Day value.
+         */
         public byte Day;
+        /**
+         * The Month value.
+         */
         public byte Month;
+        /**
+         * The Year value.
+         */
         public short Year;
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());

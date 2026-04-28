@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -26,11 +26,10 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.windows.driver.perfmon.PerfmonDisabled;
 import org.miaixz.bus.health.windows.driver.perfmon.ThreadInformation;
 import org.miaixz.bus.health.windows.driver.perfmon.ThreadInformation.ThreadPerformanceProperty;
-
-import com.sun.jna.platform.win32.WinBase.FILETIME;
 
 /**
  * Utility to read thread data from HKEY_PERFORMANCE_DATA information with backup from Performance Counters or WMI
@@ -41,7 +40,10 @@ import com.sun.jna.platform.win32.WinBase.FILETIME;
 @ThreadSafe
 public final class ThreadPerformanceData {
 
-    private static final String THREAD = "Thread";
+    /**
+     * The THREAD constant.
+     */
+    public static final String THREAD = "Thread";
 
     /**
      * Query the registry for thread performance counters
@@ -87,8 +89,8 @@ public final class ThreadPerformanceData {
                 Object addr = threadInstanceMap.get(ThreadPerformanceProperty.STARTADDRESS);
                 long startAddr = addr.getClass().equals(Long.class) ? (Long) addr
                         : Integer.toUnsignedLong((Integer) addr);
-                int contextSwitches = ((Integer) threadInstanceMap.get(ThreadPerformanceProperty.CONTEXTSWITCHESPERSEC))
-                        .intValue();
+                long contextSwitches = Integer.toUnsignedLong(
+                        (Integer) threadInstanceMap.get(ThreadPerformanceProperty.CONTEXTSWITCHESPERSEC));
                 threadMap.put(
                         tid,
                         new PerfCounterBlock(name, tid, pid, now - upTime, user, kernel, priority, threadState,
@@ -129,6 +131,9 @@ public final class ThreadPerformanceData {
         Pair<List<String>, Map<ThreadPerformanceProperty, List<Long>>> instanceValues = StringKit.isBlank(procName)
                 ? ThreadInformation.queryThreadCounters()
                 : ThreadInformation.queryThreadCounters(procName, threadNum);
+        if (instanceValues == null) {
+            return null;
+        }
         long now = System.currentTimeMillis(); // 1970 epoch
         List<String> instances = instanceValues.getLeft();
         Map<ThreadPerformanceProperty, List<Long>> valueMap = instanceValues.getRight();
@@ -150,9 +155,7 @@ public final class ThreadPerformanceData {
                 int tid = tidList.get(inst).intValue();
                 String name = Integer.toString(nameIndex++);
                 long startTime = startTimeList.get(inst);
-                int lowerStartTimeLimit = (int) (startTime >> 32);
-                int higherStartTimeLimit = (int) (startTime & 0xffffffffL);
-                startTime = FILETIME.filetimeToDate(lowerStartTimeLimit, higherStartTimeLimit).getTime();
+                startTime = Parsing.filetimeToUtcMs(startTime, false);
                 if (startTime > now) {
                     startTime = now - 1;
                 }
@@ -162,7 +165,7 @@ public final class ThreadPerformanceData {
                 int threadState = stateList.get(inst).intValue();
                 int threadWaitReason = waitReasonList.get(inst).intValue();
                 long startAddr = startAddrList.get(inst).longValue();
-                int contextSwitches = contextSwitchesList.get(inst).intValue();
+                long contextSwitches = contextSwitchesList.get(inst).longValue();
 
                 // if creation time value is less than current millis, it's in 1970 epoch,
                 // otherwise it's 1601 epoch and we must convert
@@ -181,21 +184,69 @@ public final class ThreadPerformanceData {
     @Immutable
     public static class PerfCounterBlock {
 
+        /**
+         * The name value.
+         */
         private final String name;
+        /**
+         * The threadID value.
+         */
         private final int threadID;
+        /**
+         * The owningProcessID value.
+         */
         private final int owningProcessID;
+        /**
+         * The startTime value.
+         */
         private final long startTime;
+        /**
+         * The userTime value.
+         */
         private final long userTime;
+        /**
+         * The kernelTime value.
+         */
         private final long kernelTime;
+        /**
+         * The priority value.
+         */
         private final int priority;
+        /**
+         * The threadState value.
+         */
         private final int threadState;
+        /**
+         * The threadWaitReason value.
+         */
         private final int threadWaitReason;
+        /**
+         * The startAddress value.
+         */
         private final long startAddress;
-        private final int contextSwitches;
+        /**
+         * The contextSwitches value.
+         */
+        private final long contextSwitches;
 
+        /**
+         * Creates a new PerfCounterBlock instance.
+         *
+         * @param name             the name
+         * @param threadID         the thread id
+         * @param owningProcessID  the owning process id
+         * @param startTime        the start time
+         * @param userTime         the user time
+         * @param kernelTime       the kernel time
+         * @param priority         the priority
+         * @param threadState      the thread state
+         * @param threadWaitReason the thread wait reason
+         * @param startAddress     the start address
+         * @param contextSwitches  the context switches
+         */
         public PerfCounterBlock(String name, int threadID, int owningProcessID, long startTime, long userTime,
                 long kernelTime, int priority, int threadState, int threadWaitReason, long startAddress,
-                int contextSwitches) {
+                long contextSwitches) {
             this.name = name;
             this.threadID = threadID;
             this.owningProcessID = owningProcessID;
@@ -282,7 +333,7 @@ public final class ThreadPerformanceData {
         /**
          * @return the contextSwitches
          */
-        public int getContextSwitches() {
+        public long getContextSwitches() {
             return contextSwitches;
         }
     }

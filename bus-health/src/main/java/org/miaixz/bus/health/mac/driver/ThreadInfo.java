@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -82,11 +82,29 @@ public final class ThreadInfo {
     @Immutable
     public static class ThreadStats {
 
+        /**
+         * The threadId value.
+         */
         private final int threadId;
+        /**
+         * The userTime value.
+         */
         private final long userTime;
+        /**
+         * The systemTime value.
+         */
         private final long systemTime;
+        /**
+         * The upTime value.
+         */
         private final long upTime;
+        /**
+         * The state value.
+         */
         private final OSProcess.State state;
+        /**
+         * The priority value.
+         */
         private final int priority;
 
         /**

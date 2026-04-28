@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -25,6 +25,9 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.software.OSFileStore;
 import org.miaixz.bus.health.builtin.software.common.AbstractOSFileStore;
 
+import com.sun.jna.platform.win32.Kernel32;
+import com.sun.jna.platform.win32.WinNT;
+
 /**
  * OSFileStore implementation
  *
@@ -34,16 +37,59 @@ import org.miaixz.bus.health.builtin.software.common.AbstractOSFileStore;
 @ThreadSafe
 public class WindowsOSFileStore extends AbstractOSFileStore {
 
+    /**
+     * The logicalVolume value.
+     */
     private String logicalVolume;
+    /**
+     * The description value.
+     */
     private String description;
+    /**
+     * The fsType value.
+     */
     private String fsType;
 
+    /**
+     * The freeSpace value.
+     */
     private long freeSpace;
+    /**
+     * The usableSpace value.
+     */
     private long usableSpace;
+    /**
+     * The totalSpace value.
+     */
     private long totalSpace;
+    /**
+     * The freeInodes value.
+     */
     private long freeInodes;
+    /**
+     * The totalInodes value.
+     */
     private long totalInodes;
 
+    /**
+     * Creates a new WindowsOSFileStore instance.
+     *
+     * @param name          the name
+     * @param volume        the volume
+     * @param label         the label
+     * @param mount         the mount
+     * @param options       the options
+     * @param uuid          the uuid
+     * @param local         the local
+     * @param logicalVolume the logical volume
+     * @param description   the description
+     * @param fsType        the fs type
+     * @param freeSpace     the free space
+     * @param usableSpace   the usable space
+     * @param totalSpace    the total space
+     * @param freeInodes    the free inodes
+     * @param totalInodes   the total inodes
+     */
     public WindowsOSFileStore(String name, String volume, String label, String mount, String options, String uuid,
             boolean local, String logicalVolume, String description, String fsType, long freeSpace, long usableSpace,
             long totalSpace, long freeInodes, long totalInodes) {
@@ -58,48 +104,102 @@ public class WindowsOSFileStore extends AbstractOSFileStore {
         this.totalInodes = totalInodes;
     }
 
+    /**
+     * Returns the logical volume.
+     *
+     * @return the get logical volume result
+     */
     @Override
     public String getLogicalVolume() {
         return this.logicalVolume;
     }
 
+    /**
+     * Returns the description.
+     *
+     * @return the get description result
+     */
     @Override
     public String getDescription() {
         return this.description;
     }
 
+    /**
+     * Returns the type.
+     *
+     * @return the get type result
+     */
     @Override
     public String getType() {
         return this.fsType;
     }
 
+    /**
+     * Returns the free space.
+     *
+     * @return the get free space result
+     */
     @Override
     public long getFreeSpace() {
         return this.freeSpace;
     }
 
+    /**
+     * Returns the usable space.
+     *
+     * @return the get usable space result
+     */
     @Override
     public long getUsableSpace() {
         return this.usableSpace;
     }
 
+    /**
+     * Returns the total space.
+     *
+     * @return the get total space result
+     */
     @Override
     public long getTotalSpace() {
         return this.totalSpace;
     }
 
+    /**
+     * Returns the free inodes.
+     *
+     * @return the get free inodes result
+     */
     @Override
     public long getFreeInodes() {
         return this.freeInodes;
     }
 
+    /**
+     * Returns the total inodes.
+     *
+     * @return the get total inodes result
+     */
     @Override
     public long getTotalInodes() {
         return this.totalInodes;
     }
 
+    /**
+     * Updates the attributes.
+     *
+     * @return the update attributes result
+     */
     @Override
     public boolean updateAttributes() {
+        WinNT.LARGE_INTEGER userFreeBytes = new WinNT.LARGE_INTEGER(0L);
+        WinNT.LARGE_INTEGER totalBytes = new WinNT.LARGE_INTEGER(0L);
+        WinNT.LARGE_INTEGER systemFreeBytes = new WinNT.LARGE_INTEGER(0L);
+        if (Kernel32.INSTANCE.GetDiskFreeSpaceEx(getVolume(), userFreeBytes, totalBytes, systemFreeBytes)) {
+            this.freeSpace = systemFreeBytes.getValue();
+            this.usableSpace = userFreeBytes.getValue();
+            this.totalSpace = totalBytes.getValue();
+            return true;
+        }
         // Check if we have the volume locally
         List<OSFileStore> volumes;
         if (isLocal()) {

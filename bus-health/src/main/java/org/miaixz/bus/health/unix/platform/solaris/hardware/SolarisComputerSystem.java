@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -44,8 +44,16 @@ import org.miaixz.bus.health.unix.hardware.UnixBaseboard;
 @Immutable
 final class SolarisComputerSystem extends AbstractComputerSystem {
 
+    /**
+     * The smbiosStrings value.
+     */
     private final Supplier<SmbiosStrings> smbiosStrings = Memoizer.memoize(SolarisComputerSystem::readSmbios);
 
+    /**
+     * Reads the smbios.
+     *
+     * @return the read smbios result
+     */
     private static SmbiosStrings readSmbios() {
         // $ smbios
         // ID SIZE TYPE
@@ -120,6 +128,11 @@ final class SolarisComputerSystem extends AbstractComputerSystem {
         return new SmbiosStrings(smbTypeBIOSMap, smbTypeSystemMap, smbTypeBaseboardMap);
     }
 
+    /**
+     * Reads the serial number.
+     *
+     * @return the read serial number result
+     */
     private static String readSerialNumber() {
         // If they've installed STB (Sun Explorer) this should work
         String serialNumber = Executor.getFirstAnswer("sneep");
@@ -136,6 +149,12 @@ final class SolarisComputerSystem extends AbstractComputerSystem {
         return serialNumber;
     }
 
+    /**
+     * Returns the smb type.
+     *
+     * @param checkLine the check line
+     * @return the get smb type result
+     */
     private static SmbType getSmbType(String checkLine) {
         for (SmbType smbType : SmbType.values()) {
             if (checkLine.contains(smbType.name())) {
@@ -147,38 +166,71 @@ final class SolarisComputerSystem extends AbstractComputerSystem {
         return null;
     }
 
+    /**
+     * Returns the manufacturer.
+     *
+     * @return the get manufacturer result
+     */
     @Override
     public String getManufacturer() {
         return smbiosStrings.get().manufacturer;
     }
 
+    /**
+     * Returns the model.
+     *
+     * @return the get model result
+     */
     @Override
     public String getModel() {
         return smbiosStrings.get().model;
     }
 
+    /**
+     * Returns the serial number.
+     *
+     * @return the get serial number result
+     */
     @Override
     public String getSerialNumber() {
         return smbiosStrings.get().serialNumber;
     }
 
+    /**
+     * Returns the hardware uuid.
+     *
+     * @return the get hardware uuid result
+     */
     @Override
     public String getHardwareUUID() {
         return smbiosStrings.get().uuid;
     }
 
+    /**
+     * Creates the firmware.
+     *
+     * @return the create firmware result
+     */
     @Override
     public Firmware createFirmware() {
         return new SolarisFirmware(smbiosStrings.get().biosVendor, smbiosStrings.get().biosVersion,
                 smbiosStrings.get().biosDate);
     }
 
+    /**
+     * Creates the baseboard.
+     *
+     * @return the create baseboard result
+     */
     @Override
     public Baseboard createBaseboard() {
         return new UnixBaseboard(smbiosStrings.get().boardManufacturer, smbiosStrings.get().boardModel,
                 smbiosStrings.get().boardSerialNumber, smbiosStrings.get().boardVersion);
     }
 
+    /**
+     * The SmbType enum.
+     */
     public enum SmbType {
         /**
          * BIOS
@@ -194,22 +246,65 @@ final class SolarisComputerSystem extends AbstractComputerSystem {
         SMB_TYPE_BASEBOARD
     }
 
+    /**
+     * The SmbiosStrings class.
+     */
     private static final class SmbiosStrings {
 
+        /**
+         * The biosVendor value.
+         */
         private final String biosVendor;
+        /**
+         * The biosVersion value.
+         */
         private final String biosVersion;
+        /**
+         * The biosDate value.
+         */
         private final String biosDate;
 
+        /**
+         * The manufacturer value.
+         */
         private final String manufacturer;
+        /**
+         * The model value.
+         */
         private final String model;
+        /**
+         * The serialNumber value.
+         */
         private final String serialNumber;
+        /**
+         * The uuid value.
+         */
         private final String uuid;
 
+        /**
+         * The boardManufacturer value.
+         */
         private final String boardManufacturer;
+        /**
+         * The boardModel value.
+         */
         private final String boardModel;
+        /**
+         * The boardVersion value.
+         */
         private final String boardVersion;
+        /**
+         * The boardSerialNumber value.
+         */
         private final String boardSerialNumber;
 
+        /**
+         * Creates a new SmbiosStrings instance.
+         *
+         * @param smbTypeBIOSStrings      the smb type bios strings
+         * @param smbTypeSystemStrings    the smb type system strings
+         * @param smbTypeBaseboardStrings the smb type baseboard strings
+         */
         private SmbiosStrings(Map<String, String> smbTypeBIOSStrings, Map<String, String> smbTypeSystemStrings,
                 Map<String, String> smbTypeBaseboardStrings) {
             final String vendorMarker = "Vendor";

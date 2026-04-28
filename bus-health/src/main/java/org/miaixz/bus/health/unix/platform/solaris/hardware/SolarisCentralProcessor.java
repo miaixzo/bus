@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -47,15 +47,39 @@ import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 @ThreadSafe
 final class SolarisCentralProcessor extends AbstractCentralProcessor {
 
+    /**
+     * The KSTAT_SYSTEM_CPU constant.
+     */
     private static final String KSTAT_SYSTEM_CPU = "kstat:/system/cpu/";
+    /**
+     * The INFO constant.
+     */
     private static final String INFO = "/info";
+    /**
+     * The SYS constant.
+     */
     private static final String SYS = "/sys";
 
+    /**
+     * The KSTAT_PM_CPU constant.
+     */
     private static final String KSTAT_PM_CPU = "kstat:/pm/cpu/";
+    /**
+     * The PSTATE constant.
+     */
     private static final String PSTATE = "/pstate";
 
+    /**
+     * The CPU_INFO constant.
+     */
     private static final String CPU_INFO = "cpu_info";
 
+    /**
+     * Queries the processor id2.
+     *
+     * @param cpu64bit the cpu64bit
+     * @return the query processor id2 result
+     */
     private static CentralProcessor.ProcessorIdentifier queryProcessorId2(boolean cpu64bit) {
         Object[] results = KstatKit.queryKstat2(
                 KSTAT_SYSTEM_CPU + "0" + INFO,
@@ -78,6 +102,12 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
                 processorID, cpu64bit, cpuFreq);
     }
 
+    /**
+     * Returns the init processor counts2 result.
+     *
+     * @param numaNodeMap the numa node map
+     * @return the init processor counts2 result
+     */
     private static List<CentralProcessor.LogicalProcessor> initProcessorCounts2(Map<Integer, Integer> numaNodeMap) {
         List<CentralProcessor.LogicalProcessor> logProcs = new ArrayList<>();
 
@@ -96,6 +126,11 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
         return logProcs;
     }
 
+    /**
+     * Returns the map numa nodes result.
+     *
+     * @return the map numa nodes result
+     */
     private static Map<Integer, Integer> mapNumaNodes() {
         // Get numa node info from lgrpinfo
         Map<Integer, Integer> numaNodeMap = new HashMap<>();
@@ -119,6 +154,12 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
         return numaNodeMap;
     }
 
+    /**
+     * Queries the current freq2.
+     *
+     * @param processorCount the processor count
+     * @return the query current freq2 result
+     */
     private static long[] queryCurrentFreq2(int processorCount) {
         long[] freqs = new long[processorCount];
         Arrays.fill(freqs, -1);
@@ -134,6 +175,11 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
         return freqs;
     }
 
+    /**
+     * Queries the max freq2.
+     *
+     * @return the query max freq2 result
+     */
     private static long queryMaxFreq2() {
         long max = -1L;
         List<Object[]> results = KstatKit.queryKstat2List(KSTAT_PM_CPU, PSTATE, "supported_frequencies");
@@ -147,6 +193,12 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
         return max;
     }
 
+    /**
+     * Queries the processor cpu load ticks2.
+     *
+     * @param processorCount the processor count
+     * @return the query processor cpu load ticks2 result
+     */
     private static long[][] queryProcessorCpuLoadTicks2(int processorCount) {
         long[][] ticks = new long[processorCount][CentralProcessor.TickType.values().length];
         List<Object[]> results = KstatKit
@@ -188,6 +240,11 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
                 Pattern.SPACES_PATTERN.split(flags.toString().toLowerCase(Locale.ROOT)));
     }
 
+    /**
+     * Queries the context switches2.
+     *
+     * @return the query context switches2 result
+     */
     private static long queryContextSwitches2() {
         long swtch = 0;
         List<Object[]> results = KstatKit.queryKstat2List(KSTAT_SYSTEM_CPU, SYS, "pswitch", "inv_swtch");
@@ -198,6 +255,11 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
         return swtch;
     }
 
+    /**
+     * Queries the interrupts2.
+     *
+     * @return the query interrupts2 result
+     */
     private static long queryInterrupts2() {
         long intr = 0;
         List<Object[]> results = KstatKit.queryKstat2List(KSTAT_SYSTEM_CPU, SYS, "intr");
@@ -207,6 +269,11 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
         return intr;
     }
 
+    /**
+     * Queries the processor id.
+     *
+     * @return the query processor id result
+     */
     @Override
     protected CentralProcessor.ProcessorIdentifier queryProcessorId() {
         boolean cpu64bit = "64".equals(Executor.getFirstAnswer("isainfo -b").trim());
@@ -240,6 +307,12 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
                 processorID, cpu64bit, cpuFreq);
     }
 
+    /**
+     * Returns the system load average.
+     *
+     * @param nelem the nelem
+     * @return the get system load average result
+     */
     @Override
     public double[] getSystemLoadAverage(int nelem) {
         if (nelem < 1 || nelem > 3) {
@@ -255,6 +328,11 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
         return average;
     }
 
+    /**
+     * Returns the init processor counts result.
+     *
+     * @return the init processor counts result
+     */
     @Override
     protected Tuple initProcessorCounts() {
         List<CentralProcessor.LogicalProcessor> logProcs;
@@ -303,6 +381,11 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
         return new Tuple(logProcs, createProcListFromDmesg(logProcs, dmesg), null, featureFlags);
     }
 
+    /**
+     * Queries the system cpu load ticks.
+     *
+     * @return the query system cpu load ticks result
+     */
     @Override
     public long[] querySystemCpuLoadTicks() {
         long[] ticks = new long[CentralProcessor.TickType.values().length];
@@ -317,6 +400,11 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
         return ticks;
     }
 
+    /**
+     * Queries the current freq.
+     *
+     * @return the query current freq result
+     */
     @Override
     public long[] queryCurrentFreq() {
         if (SolarisOperatingSystem.HAS_KSTAT2) {
@@ -337,6 +425,11 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
         return freqs;
     }
 
+    /**
+     * Queries the max freq.
+     *
+     * @return the query max freq result
+     */
     @Override
     public long queryMaxFreq() {
         if (SolarisOperatingSystem.HAS_KSTAT2) {
@@ -362,6 +455,11 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
         return max;
     }
 
+    /**
+     * Queries the processor cpu load ticks.
+     *
+     * @return the query processor cpu load ticks result
+     */
     @Override
     public long[][] queryProcessorCpuLoadTicks() {
         if (SolarisOperatingSystem.HAS_KSTAT2) {
@@ -390,6 +488,11 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
         return ticks;
     }
 
+    /**
+     * Queries the context switches.
+     *
+     * @return the query context switches result
+     */
     @Override
     public long queryContextSwitches() {
         if (SolarisOperatingSystem.HAS_KSTAT2) {
@@ -404,6 +507,11 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
         return swtch;
     }
 
+    /**
+     * Queries the interrupts.
+     *
+     * @return the query interrupts result
+     */
     @Override
     public long queryInterrupts() {
         if (SolarisOperatingSystem.HAS_KSTAT2) {

@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -48,11 +48,22 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 @Immutable
 final class WindowsComputerSystem extends AbstractComputerSystem {
 
+    /**
+     * The manufacturerModel value.
+     */
     private final Supplier<Pair<String, String>> manufacturerModel = Memoizer
             .memoize(WindowsComputerSystem::queryManufacturerModel);
+    /**
+     * The serialNumberUUID value.
+     */
     private final Supplier<Pair<String, String>> serialNumberUUID = Memoizer
             .memoize(WindowsComputerSystem::querySystemSerialNumberUUID);
 
+    /**
+     * Queries the manufacturer model.
+     *
+     * @return the query manufacturer model result
+     */
     private static Pair<String, String> queryManufacturerModel() {
         String manufacturer = null;
         String model = null;
@@ -66,6 +77,11 @@ final class WindowsComputerSystem extends AbstractComputerSystem {
                 StringKit.isBlank(model) ? Normal.UNKNOWN : model);
     }
 
+    /**
+     * Queries the system serial number uuid.
+     *
+     * @return the query system serial number uuid result
+     */
     private static Pair<String, String> querySystemSerialNumberUUID() {
         String serialNumber = null;
         String uuid = null;
@@ -88,6 +104,11 @@ final class WindowsComputerSystem extends AbstractComputerSystem {
         return Pair.of(serialNumber, uuid);
     }
 
+    /**
+     * Queries the serial from bios.
+     *
+     * @return the query serial from bios result
+     */
     private static String querySerialFromBios() {
         WmiResult<BiosSerialProperty> serialNum = Win32Bios.querySerialNumber();
         if (serialNum.getResultCount() > 0) {
@@ -96,31 +117,61 @@ final class WindowsComputerSystem extends AbstractComputerSystem {
         return null;
     }
 
+    /**
+     * Returns the manufacturer.
+     *
+     * @return the get manufacturer result
+     */
     @Override
     public String getManufacturer() {
         return manufacturerModel.get().getLeft();
     }
 
+    /**
+     * Returns the model.
+     *
+     * @return the get model result
+     */
     @Override
     public String getModel() {
         return manufacturerModel.get().getRight();
     }
 
+    /**
+     * Returns the serial number.
+     *
+     * @return the get serial number result
+     */
     @Override
     public String getSerialNumber() {
         return serialNumberUUID.get().getLeft();
     }
 
+    /**
+     * Returns the hardware uuid.
+     *
+     * @return the get hardware uuid result
+     */
     @Override
     public String getHardwareUUID() {
         return serialNumberUUID.get().getRight();
     }
 
+    /**
+     * Creates the firmware.
+     *
+     * @return the create firmware result
+     */
     @Override
     public Firmware createFirmware() {
         return new WindowsFirmware();
     }
 
+    /**
+     * Creates the baseboard.
+     *
+     * @return the create baseboard result
+     */
     @Override
     public Baseboard createBaseboard() {
         return new WindowsBaseboard();

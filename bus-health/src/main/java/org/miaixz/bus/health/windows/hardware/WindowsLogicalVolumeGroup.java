@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -49,19 +49,43 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
  */
 final class WindowsLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
 
+    /**
+     * The SP_OBJECT_ID constant.
+     */
     private static final java.util.regex.Pattern SP_OBJECT_ID = java.util.regex.Pattern
             .compile(".*ObjectId=.*SP:(\\{.*\\}).*");
+    /**
+     * The PD_OBJECT_ID constant.
+     */
     private static final java.util.regex.Pattern PD_OBJECT_ID = java.util.regex.Pattern
             .compile(".*ObjectId=.*PD:(\\{.*\\}).*");
+    /**
+     * The VD_OBJECT_ID constant.
+     */
     private static final java.util.regex.Pattern VD_OBJECT_ID = java.util.regex.Pattern
             .compile(".*ObjectId=.*VD:(\\{.*\\})(\\{.*\\}).*");
 
+    /**
+     * The IS_WINDOWS8_OR_GREATER constant.
+     */
     private static final boolean IS_WINDOWS8_OR_GREATER = VersionHelpers.IsWindows8OrGreater();
 
+    /**
+     * Creates a new WindowsLogicalVolumeGroup instance.
+     *
+     * @param name  the name
+     * @param lvMap the lv map
+     * @param pvSet the pv set
+     */
     WindowsLogicalVolumeGroup(String name, Map<String, Set<String>> lvMap, Set<String> pvSet) {
         super(name, lvMap, pvSet);
     }
 
+    /**
+     * Returns the logical volume groups.
+     *
+     * @return the get logical volume groups result
+     */
     static List<LogicalVolumeGroup> getLogicalVolumeGroups() {
         // Storage Spaces requires Windows 8 or Server 2012
         if (!IS_WINDOWS8_OR_GREATER) {

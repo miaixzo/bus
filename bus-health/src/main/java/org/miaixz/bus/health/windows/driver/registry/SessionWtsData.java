@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -48,18 +48,44 @@ import com.sun.jna.platform.win32.Wtsapi32.WTS_SESSION_INFO;
 @ThreadSafe
 public final class SessionWtsData {
 
+    /**
+     * The WTS_ACTIVE constant.
+     */
     private static final int WTS_ACTIVE = 0;
+    /**
+     * The WTS_CLIENTADDRESS constant.
+     */
     private static final int WTS_CLIENTADDRESS = 14;
+    /**
+     * The WTS_SESSIONINFO constant.
+     */
     private static final int WTS_SESSIONINFO = 24;
+    /**
+     * The WTS_CLIENTPROTOCOLTYPE constant.
+     */
     private static final int WTS_CLIENTPROTOCOLTYPE = 16;
 
+    /**
+     * The IS_VISTA_OR_GREATER constant.
+     */
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
 
+    /**
+     * The WTS constant.
+     */
     private static final Wtsapi32 WTS = Wtsapi32.INSTANCE;
 
+    /**
+     * Creates a new SessionWtsData instance.
+     */
     private SessionWtsData() {
     }
 
+    /**
+     * Queries the user sessions.
+     *
+     * @return the query user sessions result
+     */
     public static List<OSSession> queryUserSessions() {
         List<OSSession> sessions = new ArrayList<>();
         if (IS_VISTA_OR_GREATER) {

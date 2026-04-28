@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -32,11 +32,21 @@ import org.miaixz.bus.health.builtin.software.common.AbstractNetworkParams;
 @ThreadSafe
 public class OpenBsdNetworkParams extends AbstractNetworkParams {
 
+    /**
+     * Returns the ipv4 default gateway.
+     *
+     * @return the get ipv4 default gateway result
+     */
     @Override
     public String getIpv4DefaultGateway() {
         return searchGateway(Executor.runNative("route -n get default"));
     }
 
+    /**
+     * Returns the ipv6 default gateway.
+     *
+     * @return the get ipv6 default gateway result
+     */
     @Override
     public String getIpv6DefaultGateway() {
         return searchGateway(Executor.runNative("route -n get default"));

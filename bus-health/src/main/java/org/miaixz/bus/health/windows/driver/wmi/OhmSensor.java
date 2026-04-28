@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -35,7 +35,15 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 @ThreadSafe
 public final class OhmSensor {
 
-    private static final String SENSOR = "Sensor";
+    /**
+     * The WMI namespace for Open Hardware Monitor.
+     */
+    public static final String OHM_NAMESPACE = WmiKit.OHM_NAMESPACE;
+
+    /**
+     * The WMI class name for sensors.
+     */
+    public static final String SENSOR = "Sensor";
 
     /**
      * Queries the sensor value of an hardware identifier and sensor type.
@@ -46,9 +54,23 @@ public final class OhmSensor {
      * @return The sensor value.
      */
     public static WmiResult<ValueProperty> querySensorValue(WmiQueryHandler h, String identifier, String sensorType) {
-        String sb = SENSOR + " WHERE Parent = \"" + identifier + "\" AND SensorType=\"" + sensorType + '\"';
-        WmiQuery<ValueProperty> ohmSensorQuery = new WmiQuery<>(WmiKit.OHM_NAMESPACE, sb, ValueProperty.class);
+        WmiQuery<ValueProperty> ohmSensorQuery = new WmiQuery<>(OHM_NAMESPACE,
+                buildSensorWmiClassNameWithWhere(identifier, sensorType), ValueProperty.class);
         return h.queryWMI(ohmSensorQuery, false);
+    }
+
+    /**
+     * Builds the WMI class name with WHERE clause for sensor value queries.
+     *
+     * @param identifier The identifier whose value to query
+     * @param sensorType The type of sensor to query
+     * @return the WMI class name with WHERE clause
+     */
+    public static String buildSensorWmiClassNameWithWhere(String identifier, String sensorType) {
+        StringBuilder sb = new StringBuilder(SENSOR);
+        sb.append(" WHERE Parent = \"").append(identifier);
+        sb.append("\" AND SensorType = \"").append(sensorType).append('"');
+        return sb.toString();
     }
 
     /**

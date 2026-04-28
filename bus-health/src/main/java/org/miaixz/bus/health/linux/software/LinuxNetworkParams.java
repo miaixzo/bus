@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -47,11 +47,25 @@ import com.sun.jna.platform.unix.LibCAPI;
 @ThreadSafe
 final class LinuxNetworkParams extends AbstractNetworkParams {
 
+    /**
+     * The LIBC constant.
+     */
     private static final LinuxLibc LIBC = LinuxLibc.INSTANCE;
 
+    /**
+     * The IPV4_DEFAULT_DEST constant.
+     */
     private static final String IPV4_DEFAULT_DEST = "0.0.0.0"; // NOSONAR
+    /**
+     * The IPV6_DEFAULT_DEST constant.
+     */
     private static final String IPV6_DEFAULT_DEST = "::/0";
 
+    /**
+     * Returns the domain name.
+     *
+     * @return the get domain name result
+     */
     @Override
     public String getDomainName() {
         try (CLibrary.Addrinfo hint = new CLibrary.Addrinfo()) {
@@ -65,19 +79,27 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
             }
             try (ByRef.CloseablePointerByReference ptr = new ByRef.CloseablePointerByReference()) {
                 int res = LIBC.getaddrinfo(hostname, null, hint, ptr);
-                if (res > 0) {
+                if (res != 0) {
                     if (Logger.isErrorEnabled()) {
                         Logger.error("Failed getaddrinfo(): {}", LIBC.gai_strerror(res));
                     }
                     return Normal.EMPTY;
                 }
-                try (CLibrary.Addrinfo info = new CLibrary.Addrinfo(ptr.getValue())) {
+                CLibrary.Addrinfo info = new CLibrary.Addrinfo(ptr.getValue());
+                try {
                     return info.ai_canonname == null ? hostname : info.ai_canonname.trim();
+                } finally {
+                    LIBC.freeaddrinfo(ptr.getValue());
                 }
             }
         }
     }
 
+    /**
+     * Returns the host name.
+     *
+     * @return the get host name result
+     */
     @Override
     public String getHostName() {
         byte[] hostnameBuffer = new byte[LibCAPI.HOST_NAME_MAX + 1];
@@ -87,6 +109,11 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
         return Native.toString(hostnameBuffer);
     }
 
+    /**
+     * Returns the ipv4 default gateway.
+     *
+     * @return the get ipv4 default gateway result
+     */
     @Override
     public String getIpv4DefaultGateway() {
         List<String> routes = Executor.runNative("route -A inet -n");
@@ -111,6 +138,11 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
         return gateway;
     }
 
+    /**
+     * Returns the ipv6 default gateway.
+     *
+     * @return the get ipv6 default gateway result
+     */
     @Override
     public String getIpv6DefaultGateway() {
         List<String> routes = Executor.runNative("route -A inet6 -n");

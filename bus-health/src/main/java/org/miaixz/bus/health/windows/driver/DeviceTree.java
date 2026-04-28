@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -43,8 +43,17 @@ import com.sun.jna.ptr.IntByReference;
 @ThreadSafe
 public final class DeviceTree {
 
+    /**
+     * The MAX_PATH constant.
+     */
     private static final int MAX_PATH = 260;
+    /**
+     * The SA constant.
+     */
     private static final SetupApi SA = SetupApi.INSTANCE;
+    /**
+     * The C32 constant.
+     */
     private static final Cfgmgr32 C32 = Cfgmgr32.INSTANCE;
 
     /**
@@ -128,6 +137,15 @@ public final class DeviceTree {
         return new Tuple(controllerDevices, parentMap, nameMap, deviceIdMap, mfgMap);
     }
 
+    /**
+     * Returns the dev node property.
+     *
+     * @param node  the node
+     * @param cmDrp the cm drp
+     * @param buf   the buf
+     * @param size  the size
+     * @return the get dev node property result
+     */
     private static String getDevNodeProperty(int node, int cmDrp, Memory buf, IntByReference size) {
         buf.clear();
         size.setValue((int) buf.size());

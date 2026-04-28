@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -40,14 +40,28 @@ import org.miaixz.bus.health.builtin.software.ApplicationInfo;
  */
 public final class AixInstalledApps {
 
+    /**
+     * The COLON_PATTERN constant.
+     */
     private static final Pattern COLON_PATTERN = Pattern.compile(Symbol.COLON);
 
+    /**
+     * Queries the installed apps.
+     *
+     * @return the query installed apps result
+     */
     public static List<ApplicationInfo> queryInstalledApps() {
         // https://www.ibm.com/docs/en/aix/7.1.0?topic=l-lslpp-command
         List<String> output = Executor.runNative("lslpp -Lc");
         return parseAixAppInfo(output);
     }
 
+    /**
+     * Parses the aix app info.
+     *
+     * @param lines the lines
+     * @return the parse aix app info result
+     */
     private static List<ApplicationInfo> parseAixAppInfo(List<String> lines) {
         Set<ApplicationInfo> appInfoSet = new LinkedHashSet<>();
         String architecture = System.getProperty("os.arch");

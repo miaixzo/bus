@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -36,10 +36,21 @@ import org.miaixz.bus.health.builtin.hardware.Firmware;
 @Immutable
 public abstract class AbstractComputerSystem implements ComputerSystem {
 
+    /**
+     * The firmware value.
+     */
     private final Supplier<Firmware> firmware = Memoizer.memoize(this::createFirmware);
 
+    /**
+     * The baseboard value.
+     */
     private final Supplier<Baseboard> baseboard = Memoizer.memoize(this::createBaseboard);
 
+    /**
+     * Returns the firmware.
+     *
+     * @return the get firmware result
+     */
     @Override
     public Firmware getFirmware() {
         return firmware.get();
@@ -52,6 +63,11 @@ public abstract class AbstractComputerSystem implements ComputerSystem {
      */
     protected abstract Firmware createFirmware();
 
+    /**
+     * Returns the baseboard.
+     *
+     * @return the get baseboard result
+     */
     @Override
     public Baseboard getBaseboard() {
         return baseboard.get();
@@ -64,6 +80,11 @@ public abstract class AbstractComputerSystem implements ComputerSystem {
      */
     protected abstract Baseboard createBaseboard();
 
+    /**
+     * Returns the to string result.
+     *
+     * @return the to string result
+     */
     @Override
     public String toString() {
         String sb = "manufacturer=" + getManufacturer() + ", " + "model=" + getModel() + ", " + "serial number="

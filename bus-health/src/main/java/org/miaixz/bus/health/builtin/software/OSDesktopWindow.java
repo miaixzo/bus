@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -34,14 +34,46 @@ import com.sun.jna.platform.win32.WinDef.HWND;
 @Immutable
 public class OSDesktopWindow {
 
+    /**
+     * The windowId value.
+     */
     private final long windowId;
+    /**
+     * The title value.
+     */
     private final String title;
+    /**
+     * The command value.
+     */
     private final String command;
+    /**
+     * The locAndSize value.
+     */
     private final Rectangle locAndSize;
+    /**
+     * The owningProcessId value.
+     */
     private final long owningProcessId;
+    /**
+     * The order value.
+     */
     private final int order;
+    /**
+     * The visible value.
+     */
     private final boolean visible;
 
+    /**
+     * Creates a new OSDesktopWindow instance.
+     *
+     * @param windowId        the window id
+     * @param title           the title
+     * @param command         the command
+     * @param locAndSize      the loc and size
+     * @param owningProcessId the owning process id
+     * @param order           the order
+     * @param visible         the visible
+     */
     public OSDesktopWindow(long windowId, String title, String command, Rectangle locAndSize, long owningProcessId,
             int order, boolean visible) {
         super();
@@ -130,6 +162,11 @@ public class OSDesktopWindow {
         return visible;
     }
 
+    /**
+     * Returns the to string result.
+     *
+     * @return the to string result
+     */
     @Override
     public String toString() {
         return "OSDesktopWindow [windowId=" + windowId + ", title=" + title + ", command=" + command + ", locAndSize="

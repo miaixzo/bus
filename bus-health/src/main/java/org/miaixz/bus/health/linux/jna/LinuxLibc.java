@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -37,6 +37,9 @@ import com.sun.jna.platform.linux.LibC;
  */
 public interface LinuxLibc extends LibC, CLibrary {
 
+    /**
+     * The INSTANCE value.
+     */
     LinuxLibc INSTANCE = Native.load("c", LinuxLibc.class);
 
     /**
@@ -94,16 +97,49 @@ public interface LinuxLibc extends LibC, CLibrary {
             "ut_addr_v6", "reserved" })
     class LinuxUtmpx extends Structure {
 
+        /**
+         * The ut_type value.
+         */
         public short ut_type; // Type of login.
+        /**
+         * The ut_pid value.
+         */
         public int ut_pid; // Process ID of login process.
+        /**
+         * The ut_line value.
+         */
         public byte[] ut_line = new byte[UT_LINESIZE]; // Devicename.
+        /**
+         * The ut_id value.
+         */
         public byte[] ut_id = new byte[4]; // Inittab ID.
+        /**
+         * The ut_user value.
+         */
         public byte[] ut_user = new byte[UT_NAMESIZE]; // Username.
+        /**
+         * The ut_host value.
+         */
         public byte[] ut_host = new byte[UT_HOSTSIZE]; // Hostname for remote login.
+        /**
+         * The ut_exit value.
+         */
         public Exit_status ut_exit; // Exit status of a process marked as DEAD_PROCESS.
+        /**
+         * The ut_session value.
+         */
         public int ut_session; // Session ID, used for windowing.
+        /**
+         * The ut_tv value.
+         */
         public Ut_Tv ut_tv; // Time entry was made.
+        /**
+         * The ut_addr_v6 value.
+         */
         public int[] ut_addr_v6 = new int[4]; // Internet address of remote host; IPv4 address uses just ut_addr_v6[0]
+        /**
+         * The reserved value.
+         */
         public byte[] reserved = new byte[20]; // Reserved for future use.
     }
 
@@ -116,7 +152,13 @@ public interface LinuxLibc extends LibC, CLibrary {
     @FieldOrder({ "e_termination", "e_exit" })
     class Exit_status extends Structure {
 
+        /**
+         * The e_termination value.
+         */
         public short e_termination; // Process termination status
+        /**
+         * The e_exit value.
+         */
         public short e_exit; // Process exit status
     }
 
@@ -129,7 +171,13 @@ public interface LinuxLibc extends LibC, CLibrary {
     @FieldOrder({ "tv_sec", "tv_usec" })
     class Ut_Tv extends Structure {
 
+        /**
+         * The tv_sec value.
+         */
         public int tv_sec; // seconds
+        /**
+         * The tv_usec value.
+         */
         public int tv_usec; // microseconds
     }
 

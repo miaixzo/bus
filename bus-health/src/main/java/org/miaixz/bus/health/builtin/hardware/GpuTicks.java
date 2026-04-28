@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
  * without needing a separate timestamp:
  *
  * <pre>{@code
- * 
+ *
  * long dActive = curr.getActiveTicks() - prev.getActiveTicks();
  * long dIdle = curr.getIdleTicks() - prev.getIdleTicks();
  * long dTotal = dActive + dIdle;
@@ -40,14 +40,20 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
  * Both counters are {@code 0} when tick-level metrics are not available on this platform. Because {@code 0} is also the
  * natural starting value of a real counter, callers cannot distinguish "not available" from "counter just started" —
  * but the {@code dTotal > 0} guard in the utilization formula handles both cases correctly.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 @Immutable
 public final class GpuTicks {
 
+    /**
+     * The activeTicks value.
+     */
     private final long activeTicks;
+    /**
+     * The idleTicks value.
+     */
     private final long idleTicks;
 
     /**
@@ -75,6 +81,11 @@ public final class GpuTicks {
         return idleTicks;
     }
 
+    /**
+     * Returns the to string result.
+     *
+     * @return the to string result
+     */
     @Override
     public String toString() {
         return "GpuTicks{activeTicks=" + activeTicks + ", idleTicks=" + idleTicks + '}';

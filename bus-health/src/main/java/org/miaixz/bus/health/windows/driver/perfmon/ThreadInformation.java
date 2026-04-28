@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -98,12 +98,25 @@ public final class ThreadInformation {
         IDTHREAD("ID Thread"), //
         CONTEXTSWITCHESPERSEC("Context Switches/sec");
 
+        /**
+         * The counter value.
+         */
         private final String counter;
 
+        /**
+         * Creates a new ThreadPerformanceProperty instance.
+         *
+         * @param counter the counter
+         */
         ThreadPerformanceProperty(String counter) {
             this.counter = counter;
         }
 
+        /**
+         * Returns the counter.
+         *
+         * @return the get counter result
+         */
         @Override
         public String getCounter() {
             return counter;

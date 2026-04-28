@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -45,40 +45,87 @@ final class AixGlobalMemory extends AbstractGlobalMemory {
 
     // AIX has multiple page size units, but for purposes of "pages" in perfstat,
     // the docs specify 4KB pages so we hardcode this
+    /**
+     * The PAGESIZE constant.
+     */
     private static final long PAGESIZE = 4096L;
+    /**
+     * The perfstatMem value.
+     */
     private final Supplier<perfstat_memory_total_t> perfstatMem = Memoizer
             .memoize(AixGlobalMemory::queryPerfstat, Memoizer.defaultExpiration());
+    /**
+     * The lscfg value.
+     */
     private final Supplier<List<String>> lscfg;
+    /**
+     * The vm value.
+     */
     private final Supplier<VirtualMemory> vm = Memoizer.memoize(this::createVirtualMemory);
 
+    /**
+     * Creates a new AixGlobalMemory instance.
+     *
+     * @param lscfg the lscfg
+     */
     AixGlobalMemory(Supplier<List<String>> lscfg) {
         this.lscfg = lscfg;
     }
 
+    /**
+     * Queries the perfstat.
+     *
+     * @return the query perfstat result
+     */
     private static perfstat_memory_total_t queryPerfstat() {
         return PerfstatMemory.queryMemoryTotal();
     }
 
+    /**
+     * Returns the available.
+     *
+     * @return the get available result
+     */
     @Override
     public long getAvailable() {
         return perfstatMem.get().real_avail * PAGESIZE;
     }
 
+    /**
+     * Returns the total.
+     *
+     * @return the get total result
+     */
     @Override
     public long getTotal() {
         return perfstatMem.get().real_total * PAGESIZE;
     }
 
+    /**
+     * Returns the page size.
+     *
+     * @return the get page size result
+     */
     @Override
     public long getPageSize() {
         return PAGESIZE;
     }
 
+    /**
+     * Returns the virtual memory.
+     *
+     * @return the get virtual memory result
+     */
     @Override
     public VirtualMemory getVirtualMemory() {
         return vm.get();
     }
 
+    /**
+     * Returns the physical memory.
+     *
+     * @return the get physical memory result
+     */
     @Override
     public List<PhysicalMemory> getPhysicalMemory() {
         List<PhysicalMemory> pmList = new ArrayList<>();
@@ -140,6 +187,11 @@ final class AixGlobalMemory extends AbstractGlobalMemory {
         return pmList;
     }
 
+    /**
+     * Creates the virtual memory.
+     *
+     * @return the create virtual memory result
+     */
     private VirtualMemory createVirtualMemory() {
         return new AixVirtualMemory(perfstatMem);
     }

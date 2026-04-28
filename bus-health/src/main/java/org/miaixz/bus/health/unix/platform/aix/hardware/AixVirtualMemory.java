@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -37,8 +37,14 @@ final class AixVirtualMemory extends AbstractVirtualMemory {
 
     // AIX has multiple page size units, but for purposes of "pages" in perfstat,
     // the docs specify 4KB pages so we hardcode this
+    /**
+     * The PAGESIZE constant.
+     */
     private static final long PAGESIZE = 4096L;
     // Memoized perfstat from GlobalMemory
+    /**
+     * The perfstatMem value.
+     */
     private final Supplier<perfstat_memory_total_t> perfstatMem;
 
     /**
@@ -50,32 +56,62 @@ final class AixVirtualMemory extends AbstractVirtualMemory {
         this.perfstatMem = perfstatMem;
     }
 
+    /**
+     * Returns the swap used.
+     *
+     * @return the get swap used result
+     */
     @Override
     public long getSwapUsed() {
         perfstat_memory_total_t perfstat = perfstatMem.get();
         return (perfstat.pgsp_total - perfstat.pgsp_free) * PAGESIZE;
     }
 
+    /**
+     * Returns the swap total.
+     *
+     * @return the get swap total result
+     */
     @Override
     public long getSwapTotal() {
         return perfstatMem.get().pgsp_total * PAGESIZE;
     }
 
+    /**
+     * Returns the virtual max.
+     *
+     * @return the get virtual max result
+     */
     @Override
     public long getVirtualMax() {
         return perfstatMem.get().virt_total * PAGESIZE;
     }
 
+    /**
+     * Returns the virtual in use.
+     *
+     * @return the get virtual in use result
+     */
     @Override
     public long getVirtualInUse() {
         return perfstatMem.get().virt_active * PAGESIZE;
     }
 
+    /**
+     * Returns the swap pages in.
+     *
+     * @return the get swap pages in result
+     */
     @Override
     public long getSwapPagesIn() {
         return perfstatMem.get().pgspins;
     }
 
+    /**
+     * Returns the swap pages out.
+     *
+     * @return the get swap pages out result
+     */
     @Override
     public long getSwapPagesOut() {
         return perfstatMem.get().pgspouts;

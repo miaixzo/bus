@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -47,18 +47,44 @@ import org.miaixz.bus.logger.Logger;
 @ThreadSafe
 public abstract class MacOperatingSystem extends AbstractOperatingSystem {
 
+    /**
+     * The SYSTEM_LIBRARY_LAUNCH_AGENTS constant.
+     */
     private static final String SYSTEM_LIBRARY_LAUNCH_AGENTS = "/System/Library/LaunchAgents";
+    /**
+     * The SYSTEM_LIBRARY_LAUNCH_DAEMONS constant.
+     */
     private static final String SYSTEM_LIBRARY_LAUNCH_DAEMONS = "/System/Library/LaunchDaemons";
 
+    /**
+     * The maxProc value.
+     */
     protected final int maxProc;
 
+    /**
+     * The osXVersion value.
+     */
     protected final String osXVersion;
+    /**
+     * The major value.
+     */
     protected final int major;
+    /**
+     * The minor value.
+     */
     protected final int minor;
 
+    /**
+     * The installedAppsSupplier value.
+     */
     private final Supplier<List<ApplicationInfo>> installedAppsSupplier = Memoizer
             .memoize(MacInstalledApps::queryInstalledApps, Memoizer.installedAppsExpiration());
 
+    /**
+     * Creates a new MacOperatingSystem instance.
+     *
+     * @param maxproc the maxproc
+     */
     protected MacOperatingSystem(int maxproc) {
         String version = System.getProperty("os.version");
         int verMajor = Parsing.getFirstIntValue(version);
@@ -66,24 +92,45 @@ public abstract class MacOperatingSystem extends AbstractOperatingSystem {
         // Big Sur (11.x) may return 10.16
         if (verMajor == 10 && verMinor > 15) {
             String swVers = Executor.getFirstAnswer("sw_vers -productVersion");
-            if (!swVers.isEmpty()) {
-                version = swVers;
-            }
+            version = resolveVersion(version, swVers);
             verMajor = Parsing.getFirstIntValue(version);
             verMinor = Parsing.getNthIntValue(version, 2);
         }
         this.osXVersion = version;
         this.major = verMajor;
         this.minor = verMinor;
-        // Set max processes
         this.maxProc = maxproc;
     }
 
+    /**
+     * Resolves the macOS version by preferring the sw_vers command output when available.
+     *
+     * @param osVersion    The version reported by the JVM system property.
+     * @param swVersOutput The version reported by sw_vers.
+     * @return The resolved macOS version.
+     */
+    static String resolveVersion(String osVersion, String swVersOutput) {
+        if (!swVersOutput.isEmpty()) {
+            return swVersOutput;
+        }
+        return osVersion;
+    }
+
+    /**
+     * Queries the manufacturer.
+     *
+     * @return the query manufacturer result
+     */
     @Override
     public String queryManufacturer() {
         return "Apple";
     }
 
+    /**
+     * Parses the code name.
+     *
+     * @return the parse code name result
+     */
     protected String parseCodeName() {
         Properties verProps = Config.readProperties(Config._MACOS_VERSIONS_PROPERTIES);
         String codeName = null;
@@ -98,6 +145,12 @@ public abstract class MacOperatingSystem extends AbstractOperatingSystem {
         return codeName;
     }
 
+    /**
+     * Queries the bitness.
+     *
+     * @param jvmBitness the jvm bitness
+     * @return the query bitness result
+     */
     @Override
     protected int queryBitness(int jvmBitness) {
         if (jvmBitness == 64 || (this.major == 10 && this.minor > 6)) {
@@ -106,6 +159,12 @@ public abstract class MacOperatingSystem extends AbstractOperatingSystem {
         return Parsing.parseIntOrDefault(Executor.getFirstAnswer("getconf LONG_BIT"), 32);
     }
 
+    /**
+     * Queries the child processes.
+     *
+     * @param parentPid the parent pid
+     * @return the query child processes result
+     */
     @Override
     public List<OSProcess> queryChildProcesses(int parentPid) {
         List<OSProcess> allProcs = queryAllProcesses();
@@ -113,6 +172,12 @@ public abstract class MacOperatingSystem extends AbstractOperatingSystem {
         return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
     }
 
+    /**
+     * Queries the descendant processes.
+     *
+     * @param parentPid the parent pid
+     * @return the query descendant processes result
+     */
     @Override
     public List<OSProcess> queryDescendantProcesses(int parentPid) {
         List<OSProcess> allProcs = queryAllProcesses();
@@ -120,6 +185,11 @@ public abstract class MacOperatingSystem extends AbstractOperatingSystem {
         return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
     }
 
+    /**
+     * Returns the thread id.
+     *
+     * @return the get thread id result
+     */
     @Override
     public int getThreadId() {
         OSThread thread = getCurrentThread();
@@ -129,6 +199,11 @@ public abstract class MacOperatingSystem extends AbstractOperatingSystem {
         return thread.getThreadId();
     }
 
+    /**
+     * Returns the current thread.
+     *
+     * @return the get current thread result
+     */
     @Override
     public OSThread getCurrentThread() {
         // Get oldest thread
@@ -136,11 +211,21 @@ public abstract class MacOperatingSystem extends AbstractOperatingSystem {
                 .findFirst().orElse(new MacOSThread(getProcessId()));
     }
 
+    /**
+     * Returns the system uptime.
+     *
+     * @return the get system uptime result
+     */
     @Override
     public long getSystemUptime() {
         return System.currentTimeMillis() / 1000 - getSystemBootTime();
     }
 
+    /**
+     * Returns the services.
+     *
+     * @return the get services result
+     */
     @Override
     public List<OSService> getServices() {
         // Get running services
@@ -178,6 +263,11 @@ public abstract class MacOperatingSystem extends AbstractOperatingSystem {
         return services;
     }
 
+    /**
+     * Returns the installed applications.
+     *
+     * @return the get installed applications result
+     */
     @Override
     public List<ApplicationInfo> getInstalledApplications() {
         return installedAppsSupplier.get();

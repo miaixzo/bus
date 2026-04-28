@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -952,7 +952,7 @@ public final class Parsing {
             }
         }
         long capacity = Parsing.parseLongOrDefault(mem[0], 0L);
-        if (mem.length == 2 && mem[1].length() > 1) {
+        if (mem.length == 2 && mem[1].length() > 0) {
             switch (mem[1].charAt(0)) {
                 case 'T':
                     capacity <<= 40;
@@ -1412,6 +1412,24 @@ public final class Parsing {
      */
     public static String getStringValueOrUnknown(String value) {
         return (value == null || value.isEmpty()) ? Normal.UNKNOWN : value;
+    }
+
+    /**
+     * Parses a list of strings into a map of string key-value pairs.
+     *
+     * @param lines     A list of strings, each containing a key-value pair separated by the separator.
+     * @param separator The character(s) separating key and value.
+     * @return A map of string key-value pairs with values trimmed.
+     */
+    public static Map<String, String> parseStringListToMap(List<String> lines, String separator) {
+        Map<String, String> map = new HashMap<>();
+        for (String line : lines) {
+            int idx = line.indexOf(separator);
+            if (idx >= 0) {
+                map.put(line.substring(0, idx), line.substring(idx + separator.length()).trim());
+            }
+        }
+        return map;
     }
 
     /**

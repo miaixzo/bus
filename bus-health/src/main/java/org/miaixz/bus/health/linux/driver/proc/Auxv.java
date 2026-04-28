@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -37,6 +37,10 @@ import org.miaixz.bus.health.linux.ProcPath;
 public final class Auxv {
 
     /**
+     * end of vector
+     */
+    public static final int AT_NULL = 0;
+    /**
      * system page size
      */
     public static final int AT_PAGESZ = 6;
@@ -61,10 +65,10 @@ public final class Auxv {
         int key;
         do {
             key = Builder.readNativeLongFromBuffer(buff).intValue();
-            if (key > 0) {
+            if (key != AT_NULL) {
                 auxvMap.put(key, Builder.readNativeLongFromBuffer(buff).longValue());
             }
-        } while (key > 0);
+        } while (key != AT_NULL);
         return auxvMap;
 
     }

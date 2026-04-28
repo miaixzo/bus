@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -40,16 +40,31 @@ public abstract class AbstractFirmware implements Firmware {
         return Normal.UNKNOWN;
     }
 
+    /**
+     * Returns the description.
+     *
+     * @return the get description result
+     */
     @Override
     public String getDescription() {
         return Normal.UNKNOWN;
     }
 
+    /**
+     * Returns the release date.
+     *
+     * @return the get release date result
+     */
     @Override
     public String getReleaseDate() {
         return Normal.UNKNOWN;
     }
 
+    /**
+     * Returns the to string result.
+     *
+     * @return the to string result
+     */
     @Override
     public String toString() {
         String sb = "manufacturer=" + getManufacturer() + ", " + "name=" + getName() + ", " + "description="

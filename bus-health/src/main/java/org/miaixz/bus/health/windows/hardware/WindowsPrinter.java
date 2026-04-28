@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -33,7 +33,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 
 /**
  * Printer data obtained from WMI
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -42,9 +42,24 @@ final class WindowsPrinter extends AbstractPrinter {
 
     // DetectedErrorState: 0=Unknown, 1=Other, 2=No Error, 3=Low Paper, 4=No Paper,
     // 5=Low Toner, 6=No Toner, 7=Door Open, 8=Jammed, 9=Offline, 10=Service Requested, 11=Output Bin Full
+    /**
+     * The ERROR_STATE_NAMES constant.
+     */
     private static final String[] ERROR_STATE_NAMES = { "Unknown", "Other", "", "Low Paper", "No Paper", "Low Toner",
             "No Toner", "Door Open", "Jammed", "Offline", "Service Requested", "Output Bin Full" };
 
+    /**
+     * Creates a new WindowsPrinter instance.
+     *
+     * @param name         the name
+     * @param driverName   the driver name
+     * @param description  the description
+     * @param status       the status
+     * @param statusReason the status reason
+     * @param isDefault    the is default
+     * @param isLocal      the is local
+     * @param portName     the port name
+     */
     WindowsPrinter(String name, String driverName, String description, PrinterStatus status, String statusReason,
             boolean isDefault, boolean isLocal, String portName) {
         super(name, driverName, description, status, statusReason, isDefault, isLocal, portName);
@@ -76,6 +91,14 @@ final class WindowsPrinter extends AbstractPrinter {
         return printers;
     }
 
+    /**
+     * Returns the boolean value.
+     *
+     * @param result   the result
+     * @param property the property
+     * @param index    the index
+     * @return the get boolean value result
+     */
     private static boolean getBooleanValue(
             WmiResult<Win32Printer.PrinterProperty> result,
             Win32Printer.PrinterProperty property,
@@ -129,6 +152,12 @@ final class WindowsPrinter extends AbstractPrinter {
         }
     }
 
+    /**
+     * Parses the error state.
+     *
+     * @param errorState the error state
+     * @return the parse error state result
+     */
     private static String parseErrorState(int errorState) {
         if (errorState >= 0 && errorState < ERROR_STATE_NAMES.length) {
             return ERROR_STATE_NAMES[errorState];

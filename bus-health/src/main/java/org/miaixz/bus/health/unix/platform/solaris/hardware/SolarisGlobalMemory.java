@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -39,37 +39,76 @@ import org.miaixz.bus.health.unix.platform.solaris.driver.kstat.SystemPages;
 @ThreadSafe
 final class SolarisGlobalMemory extends AbstractGlobalMemory {
 
+    /**
+     * The availTotal value.
+     */
     private final Supplier<Pair<Long, Long>> availTotal = Memoizer
             .memoize(SystemPages::queryAvailableTotal, Memoizer.defaultExpiration());
 
+    /**
+     * The pageSize value.
+     */
     private final Supplier<Long> pageSize = Memoizer.memoize(SolarisGlobalMemory::queryPageSize);
 
+    /**
+     * The vm value.
+     */
     private final Supplier<VirtualMemory> vm = Memoizer.memoize(this::createVirtualMemory);
 
+    /**
+     * Queries the page size.
+     *
+     * @return the query page size result
+     */
     private static long queryPageSize() {
         return Parsing.parseLongOrDefault(Executor.getFirstAnswer("pagesize"), 4096L);
     }
 
+    /**
+     * Returns the available.
+     *
+     * @return the get available result
+     */
     @Override
     public long getAvailable() {
         return availTotal.get().getLeft() * getPageSize();
     }
 
+    /**
+     * Returns the total.
+     *
+     * @return the get total result
+     */
     @Override
     public long getTotal() {
         return availTotal.get().getRight() * getPageSize();
     }
 
+    /**
+     * Returns the page size.
+     *
+     * @return the get page size result
+     */
     @Override
     public long getPageSize() {
         return pageSize.get();
     }
 
+    /**
+     * Returns the virtual memory.
+     *
+     * @return the get virtual memory result
+     */
     @Override
     public VirtualMemory getVirtualMemory() {
         return vm.get();
     }
 
+    /**
+     * Creates the virtual memory.
+     *
+     * @return the create virtual memory result
+     */
     private VirtualMemory createVirtualMemory() {
         return new SolarisVirtualMemory(this);
     }

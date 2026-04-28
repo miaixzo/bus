@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -51,16 +51,46 @@ import com.sun.jna.platform.mac.CoreFoundation.*;
 @ThreadSafe
 public final class MacHWDiskStore extends AbstractHWDiskStore {
 
+    /**
+     * The CF constant.
+     */
     private static final CoreFoundation CF = CoreFoundation.INSTANCE;
+    /**
+     * The DA constant.
+     */
     private static final DiskArbitration DA = DiskArbitration.INSTANCE;
+    /**
+     * The currentQueueLength value.
+     */
     private final long currentQueueLength = 0L;
+    /**
+     * The reads value.
+     */
     private long reads = 0L;
+    /**
+     * The readBytes value.
+     */
     private long readBytes = 0L;
+    /**
+     * The writes value.
+     */
     private long writes = 0L;
+    /**
+     * The writeBytes value.
+     */
     private long writeBytes = 0L;
+    /**
+     * The transferTime value.
+     */
     private long transferTime = 0L;
+    /**
+     * The timeStamp value.
+     */
     private long timeStamp = 0L;
-    private List<HWPartition> partitionList;
+    /**
+     * The partitionList value.
+     */
+    private List<HWPartition> partitionList = Collections.emptyList();
 
     /**
      * Constructs a {@code MacHWDiskStore} object.
@@ -529,6 +559,9 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
          */
         MODEL("Model");
 
+        /**
+         * The key value.
+         */
         private final String key;
 
         /**

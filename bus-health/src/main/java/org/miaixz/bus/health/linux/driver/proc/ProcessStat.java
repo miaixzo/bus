@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -47,6 +47,9 @@ public final class ProcessStat {
      * and 3.5 has 52.
      */
     public static final int PROC_PID_STAT_LENGTH;
+    /**
+     * The SOCKET constant.
+     */
     private static final java.util.regex.Pattern SOCKET = java.util.regex.Pattern.compile("socket:\\[(\\d+)\\]");
 
     static {
@@ -60,6 +63,9 @@ public final class ProcessStat {
         }
     }
 
+    /**
+     * Creates a new ProcessStat instance.
+     */
     private ProcessStat() {
     }
 
@@ -175,6 +181,12 @@ public final class ProcessStat {
                 .filter(threadId -> threadId != pid).collect(Collectors.toList());
     }
 
+    /**
+     * Returns the list numeric files result.
+     *
+     * @param path the path
+     * @return the list numeric files result
+     */
     private static File[] listNumericFiles(String path) {
         File directory = new File(path);
         File[] numericFiles = directory.listFiles(file -> Pattern.NUMBERS_PATTERN.matcher(file.getName()).matches());

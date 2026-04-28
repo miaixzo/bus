@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -53,18 +53,18 @@ public final class ProcessInformation {
     }
 
     /**
-     * Returns handle counters
+     * Returns handle counters.
      *
-     * @return Process handle counters for each process.
+     * @return Handle count for the _Total instance.
      */
-    public static Pair<List<String>, Map<HandleCountProperty, List<Long>>> queryHandles() {
+    public static Map<HandleCountProperty, Long> queryHandles() {
         if (PerfmonDisabled.PERF_PROC_DISABLED) {
-            return Pair.of(Collections.emptyList(), Collections.emptyMap());
+            return Collections.emptyMap();
         }
-        return PerfCounterWildcardQuery.queryInstancesAndValues(
+        return PerfCounterQuery.queryValues(
                 HandleCountProperty.class,
                 PerfmonConsts.PROCESS,
-                PerfmonConsts.WIN32_PERFPROC_PROCESS);
+                PerfmonConsts.WIN32_PERFPROC_PROCESS_WHERE_NAME_TOTAL);
     }
 
     /**
@@ -100,12 +100,25 @@ public final class ProcessInformation {
         WORKINGSET("Working Set"), //
         PAGEFAULTSPERSEC("Page Faults/sec");
 
+        /**
+         * The counter value.
+         */
         private final String counter;
 
+        /**
+         * Creates a new ProcessPerformanceProperty instance.
+         *
+         * @param counter the counter
+         */
         ProcessPerformanceProperty(String counter) {
             this.counter = counter;
         }
 
+        /**
+         * Returns the counter.
+         *
+         * @return the get counter result
+         */
         @Override
         public String getCounter() {
             return counter;
@@ -115,19 +128,45 @@ public final class ProcessInformation {
     /**
      * Handle performance counters
      */
-    public enum HandleCountProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
+    public enum HandleCountProperty implements PerfCounterQuery.PdhCounterProperty {
 
-        // First element defines WMI instance name field and PDH instance filter
-        NAME(PerfCounterQuery.TOTAL_INSTANCE),
-        // Remaining elements define counters
-        HANDLECOUNT("Handle Count");
+        HANDLECOUNT(PerfmonConsts.TOTAL_INSTANCE, "Handle Count");
 
+        /**
+         * The instance value.
+         */
+        private final String instance;
+        /**
+         * The counter value.
+         */
         private final String counter;
 
-        HandleCountProperty(String counter) {
+        /**
+         * Creates a new HandleCountProperty instance.
+         *
+         * @param instance the instance
+         * @param counter  the counter
+         */
+        HandleCountProperty(String instance, String counter) {
+            this.instance = instance;
             this.counter = counter;
         }
 
+        /**
+         * Returns the instance.
+         *
+         * @return the get instance result
+         */
+        @Override
+        public String getInstance() {
+            return instance;
+        }
+
+        /**
+         * Returns the counter.
+         *
+         * @return the get counter result
+         */
         @Override
         public String getCounter() {
             return counter;
@@ -145,12 +184,25 @@ public final class ProcessInformation {
         PERCENTPROCESSORTIME("% Processor Time"), //
         ELAPSEDTIME("Elapsed Time");
 
+        /**
+         * The counter value.
+         */
         private final String counter;
 
+        /**
+         * Creates a new IdleProcessorTimeProperty instance.
+         *
+         * @param counter the counter
+         */
         IdleProcessorTimeProperty(String counter) {
             this.counter = counter;
         }
 
+        /**
+         * Returns the counter.
+         *
+         * @return the get counter result
+         */
         @Override
         public String getCounter() {
             return counter;

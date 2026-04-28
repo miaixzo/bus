@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -146,6 +146,21 @@ public final class Config {
      * Linux configuration: priority of CPU temperature sensor types.
      */
     public static final String _LINUX_THERMAL_ZONE_TYPE_PRIORITY = "bus.health.linux.sensors.cpuTemperature.types";
+
+    /**
+     * Linux configuration: optional command prefix for privileged command execution.
+     */
+    public static final String _LINUX_PRIVILEGED_PREFIX = "bus.health.linux.privileged.prefix";
+
+    /**
+     * Linux configuration: comma-separated allowlist for commands eligible for privileged execution.
+     */
+    public static final String _LINUX_PRIVILEGED_ALLOWLIST = "bus.health.linux.privileged.allowlist";
+
+    /**
+     * Linux configuration: comma-separated allowlist for files eligible for privileged reads.
+     */
+    public static final String _LINUX_PRIVILEGED_FILE_ALLOWLIST = "bus.health.linux.privileged.file.allowlist";
 
     /**
      * macOS configuration: filesystem path exclusion list.
@@ -295,17 +310,17 @@ public final class Config {
     /**
      * Windows configuration: whether to disable performance disk counters.
      */
-    public static final String _WINDOWS_PERFDISK_DIABLED = "bus.health.windows.perfdisk.disabled";
+    public static final String _WINDOWS_PERFDISK_DISABLED = "bus.health.windows.perfdisk.disabled";
 
     /**
      * Windows configuration: whether to disable performance OS counters.
      */
-    public static final String _WINDOWS_PERFOS_DIABLED = "bus.health.windows.perfos.disabled";
+    public static final String _WINDOWS_PERFOS_DISABLED = "bus.health.windows.perfos.disabled";
 
     /**
      * Windows configuration: whether to disable performance process counters.
      */
-    public static final String _WINDOWS_PERFPROC_DIABLED = "bus.health.windows.perfproc.disabled";
+    public static final String _WINDOWS_PERFPROC_DISABLED = "bus.health.windows.perfproc.disabled";
 
     /**
      * Windows configuration: whether to disable all counters on performance counter failure.

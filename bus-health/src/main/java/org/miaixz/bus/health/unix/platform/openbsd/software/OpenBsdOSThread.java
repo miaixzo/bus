@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -39,90 +39,203 @@ import org.miaixz.bus.health.builtin.software.common.AbstractOSThread;
 @ThreadSafe
 public class OpenBsdOSThread extends AbstractOSThread {
 
+    /**
+     * The threadId value.
+     */
     private int threadId;
+    /**
+     * The name value.
+     */
     private String name = Normal.EMPTY;
+    /**
+     * The state value.
+     */
     private OSProcess.State state = OSProcess.State.INVALID;
+    /**
+     * The minorFaults value.
+     */
     private long minorFaults;
+    /**
+     * The majorFaults value.
+     */
     private long majorFaults;
+    /**
+     * The startMemoryAddress value.
+     */
     private long startMemoryAddress;
+    /**
+     * The contextSwitches value.
+     */
     private long contextSwitches;
+    /**
+     * The kernelTime value.
+     */
     private long kernelTime;
+    /**
+     * The userTime value.
+     */
     private long userTime;
+    /**
+     * The startTime value.
+     */
     private long startTime;
+    /**
+     * The upTime value.
+     */
     private long upTime;
+    /**
+     * The priority value.
+     */
     private int priority;
 
+    /**
+     * Creates a new OpenBsdOSThread instance.
+     *
+     * @param processId the process id
+     * @param threadMap the thread map
+     */
     public OpenBsdOSThread(int processId, Map<OpenBsdOSProcess.PsThreadColumns, String> threadMap) {
         super(processId);
         updateAttributes(threadMap);
     }
 
+    /**
+     * Creates a new OpenBsdOSThread instance.
+     *
+     * @param processId the process id
+     * @param threadId  the thread id
+     */
     public OpenBsdOSThread(int processId, int threadId) {
         super(processId);
         this.threadId = threadId;
         updateAttributes();
     }
 
+    /**
+     * Returns the thread id.
+     *
+     * @return the get thread id result
+     */
     @Override
     public int getThreadId() {
         return this.threadId;
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return the get name result
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Returns the state.
+     *
+     * @return the get state result
+     */
     @Override
     public OSProcess.State getState() {
         return this.state;
     }
 
+    /**
+     * Returns the start memory address.
+     *
+     * @return the get start memory address result
+     */
     @Override
     public long getStartMemoryAddress() {
         return this.startMemoryAddress;
     }
 
+    /**
+     * Returns the context switches.
+     *
+     * @return the get context switches result
+     */
     @Override
     public long getContextSwitches() {
         return this.contextSwitches;
     }
 
+    /**
+     * Returns the minor faults.
+     *
+     * @return the get minor faults result
+     */
     @Override
     public long getMinorFaults() {
         return this.minorFaults;
     }
 
+    /**
+     * Returns the major faults.
+     *
+     * @return the get major faults result
+     */
     @Override
     public long getMajorFaults() {
         return this.majorFaults;
     }
 
+    /**
+     * Returns the kernel time.
+     *
+     * @return the get kernel time result
+     */
     @Override
     public long getKernelTime() {
         return this.kernelTime;
     }
 
+    /**
+     * Returns the user time.
+     *
+     * @return the get user time result
+     */
     @Override
     public long getUserTime() {
         return this.userTime;
     }
 
+    /**
+     * Returns the up time.
+     *
+     * @return the get up time result
+     */
     @Override
     public long getUpTime() {
         return this.upTime;
     }
 
+    /**
+     * Returns the start time.
+     *
+     * @return the get start time result
+     */
     @Override
     public long getStartTime() {
         return this.startTime;
     }
 
+    /**
+     * Returns the priority.
+     *
+     * @return the get priority result
+     */
     @Override
     public int getPriority() {
         return this.priority;
     }
 
+    /**
+     * Updates the attributes.
+     *
+     * @return the update attributes result
+     */
     @Override
     public boolean updateAttributes() {
         String psCommand = "ps -aHwwxo " + OpenBsdOSProcess.PS_THREAD_COLUMNS + " -p " + getOwningProcessId();
@@ -141,6 +254,12 @@ public class OpenBsdOSThread extends AbstractOSThread {
         return false;
     }
 
+    /**
+     * Updates the attributes.
+     *
+     * @param threadMap the thread map
+     * @return the update attributes result
+     */
     private boolean updateAttributes(Map<OpenBsdOSProcess.PsThreadColumns, String> threadMap) {
         this.threadId = Parsing.parseIntOrDefault(threadMap.get(OpenBsdOSProcess.PsThreadColumns.TID), 0);
         switch (threadMap.get(OpenBsdOSProcess.PsThreadColumns.STATE).charAt(0)) {

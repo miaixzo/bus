@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -36,8 +36,16 @@ import com.sun.jna.platform.unix.LibCAPI;
 @ThreadSafe
 final class SolarisNetworkParams extends AbstractNetworkParams {
 
+    /**
+     * The LIBC constant.
+     */
     private static final SolarisLibc LIBC = SolarisLibc.INSTANCE;
 
+    /**
+     * Returns the host name.
+     *
+     * @return the get host name result
+     */
     @Override
     public String getHostName() {
         byte[] hostnameBuffer = new byte[LibCAPI.HOST_NAME_MAX + 1];
@@ -47,11 +55,21 @@ final class SolarisNetworkParams extends AbstractNetworkParams {
         return Native.toString(hostnameBuffer);
     }
 
+    /**
+     * Returns the ipv4 default gateway.
+     *
+     * @return the get ipv4 default gateway result
+     */
     @Override
     public String getIpv4DefaultGateway() {
         return searchGateway(Executor.runNative("route get -inet default"));
     }
 
+    /**
+     * Returns the ipv6 default gateway.
+     *
+     * @return the get ipv6 default gateway result
+     */
     @Override
     public String getIpv6DefaultGateway() {
         return searchGateway(Executor.runNative("route get -inet6 default"));

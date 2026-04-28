@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -46,11 +46,20 @@ import com.sun.jna.platform.mac.SystemB;
 @ThreadSafe
 final class MacVirtualMemory extends AbstractVirtualMemory {
 
+    /**
+     * The global value.
+     */
     private final MacGlobalMemory global;
 
+    /**
+     * The usedTotal value.
+     */
     private final Supplier<Pair<Long, Long>> usedTotal = Memoizer
             .memoize(MacVirtualMemory::querySwapUsage, Memoizer.defaultExpiration());
 
+    /**
+     * The inOut value.
+     */
     private final Supplier<Pair<Long, Long>> inOut = Memoizer
             .memoize(MacVirtualMemory::queryVmStat, Memoizer.defaultExpiration());
 

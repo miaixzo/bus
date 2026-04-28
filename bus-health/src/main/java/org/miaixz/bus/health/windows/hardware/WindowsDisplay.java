@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -40,9 +40,18 @@ import com.sun.jna.platform.win32.*;
 @Immutable
 final class WindowsDisplay extends AbstractDisplay {
 
+    /**
+     * The SU constant.
+     */
     private static final SetupApi SU = SetupApi.INSTANCE;
+    /**
+     * The ADV constant.
+     */
     private static final Advapi32 ADV = Advapi32.INSTANCE;
 
+    /**
+     * The GUID_DEVINTERFACE_MONITOR constant.
+     */
     private static final Guid.GUID GUID_DEVINTERFACE_MONITOR = new Guid.GUID("E6F07B5F-EE97-4a90-B076-33F57BF4EAA7");
 
     /**

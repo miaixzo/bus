@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -45,10 +45,16 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 @ThreadSafe
 public final class PerfCounterWildcardQuery {
 
+    /**
+     * The PERF_DISABLE_ALL_ON_FAILURE constant.
+     */
     private static final boolean PERF_DISABLE_ALL_ON_FAILURE = Config
             .get(Config._WINDOWS_PERF_DISABLE_ALL_ON_FAILURE, false);
 
     // Use a thread safe set to cache failed pdh queries
+    /**
+     * The FAILED_QUERY_CACHE constant.
+     */
     private static final Set<String> FAILED_QUERY_CACHE = ConcurrentHashMap.newKeySet();
 
     /**

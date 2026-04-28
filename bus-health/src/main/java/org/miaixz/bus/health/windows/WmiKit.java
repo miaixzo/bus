@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -56,6 +56,9 @@ public final class WmiKit {
      */
     public static final String LHM_NAMESPACE = "ROOT\\LibreHardwareMonitor";
 
+    /**
+     * The CLASS_CAST_MSG constant.
+     */
     private static final String CLASS_CAST_MSG = "%s is not a %s type. CIM Type is %d and VT type is %d";
 
     /**
@@ -165,6 +168,14 @@ public final class WmiKit {
                 result.getVtType(property)));
     }
 
+    /**
+     * Returns the str.
+     *
+     * @param result   the result
+     * @param property the property
+     * @param index    the index
+     * @return the get str result
+     */
     private static <T extends Enum<T>> String getStr(WmiResult<T> result, T property, int index) {
         Object o = result.getValue(property, index);
         if (o == null) {
@@ -303,6 +314,14 @@ public final class WmiKit {
                 result.getVtType(property)));
     }
 
+    /**
+     * Returns the int.
+     *
+     * @param result   the result
+     * @param property the property
+     * @param index    the index
+     * @return the get int result
+     */
     private static <T extends Enum<T>> int getInt(WmiResult<T> result, T property, int index) {
         Object o = result.getValue(property, index);
         if (o == null) {

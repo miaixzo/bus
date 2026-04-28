@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -58,36 +58,82 @@ final class LinuxSensors extends AbstractSensors {
      * </ul>
      */
     public static final String OSHI_HWMON_NAME_PRIORITY = "oshi.os.linux.sensors.hwmon.names";
+    /**
+     * The OSHI_THERMAL_ZONE_TYPE_PRIORITY constant.
+     */
     public static final String OSHI_THERMAL_ZONE_TYPE_PRIORITY = "oshi.os.linux.sensors.cpuTemperature.types";
 
+    /**
+     * The HWMON_NAME_PRIORITY constant.
+     */
     private static final List<String> HWMON_NAME_PRIORITY = Stream
             .of(Config.get(OSHI_HWMON_NAME_PRIORITY, "coretemp,k10temp,zenpower,k8temp,via-cputemp,acpitz").split(","))
             .filter((s) -> !s.isEmpty()).collect(Collectors.toList());
+    /**
+     * The THERMAL_ZONE_TYPE_PRIORITY constant.
+     */
     private static final List<String> THERMAL_ZONE_TYPE_PRIORITY = Stream
             .of(Config.get(OSHI_THERMAL_ZONE_TYPE_PRIORITY, "cpu-thermal,x86_pkg_temp").split(","))
             .filter((s) -> !s.isEmpty()).collect(Collectors.toList());
 
+    /**
+     * The TYPE constant.
+     */
     private static final String TYPE = "type";
+    /**
+     * The NAME constant.
+     */
     private static final String NAME = "/name";
     // Possible sensor types. See sysfs documentation for others, e.g. current
+    /**
+     * The TEMP constant.
+     */
     private static final String TEMP = "temp";
+    /**
+     * The FAN constant.
+     */
     private static final String FAN = "fan";
+    /**
+     * The VOLTAGE constant.
+     */
     private static final String VOLTAGE = "in";
     // Compile pattern for "temp<digits>_input"
+    /**
+     * The INPUT_SUFFIX constant.
+     */
     private static final String INPUT_SUFFIX = "_input";
+    /**
+     * The TEMP_INPUT_PATTERN constant.
+     */
     private static final Pattern TEMP_INPUT_PATTERN = Pattern.compile("^" + TEMP + "\\d+" + INPUT_SUFFIX + "$");
 
-    // Base HWMON path, adds 0, 1, etc. to end for various sensors
+    // Base path constants
+    /**
+     * The HWMON constant.
+     */
     private static final String HWMON = "hwmon";
-    private static final String HWMON_PATH = SysPath.HWMON + HWMON;
-    // Base THERMAL_ZONE path, adds 0, 1, etc. to end for temperature sensors
+    /**
+     * The THERMAL_ZONE constant.
+     */
     private static final String THERMAL_ZONE = "thermal_zone";
-    private static final String THERMAL_ZONE_PATH = SysPath.THERMAL + THERMAL_ZONE;
 
-    // Initial test to see if we are running on a Pi
-    private static final boolean IS_PI = queryCpuTemperatureFromVcGenCmd() > 0;
+    /**
+     * The hwmonPath value.
+     */
+    private final String hwmonPath;
+    /**
+     * The thermalZonePath value.
+     */
+    private final String thermalZonePath;
+    /**
+     * The isPi value.
+     */
+    private final boolean isPi;
 
     // Map from sensor to path. Built by constructor, so thread safe
+    /**
+     * The sensorsMap value.
+     */
     private final Map<String, String> sensorsMap = new HashMap<>();
 
     /**
@@ -96,7 +142,21 @@ final class LinuxSensors extends AbstractSensors {
      * </p>
      */
     LinuxSensors() {
-        if (!IS_PI) {
+        this(SysPath.HWMON + HWMON, SysPath.THERMAL + THERMAL_ZONE, queryCpuTemperatureFromVcGenCmd() > 0);
+    }
+
+    /**
+     * Creates a new LinuxSensors instance.
+     *
+     * @param hwmonBasePath       the hwmon base path
+     * @param thermalZoneBasePath the thermal zone base path
+     * @param isPi                the is pi
+     */
+    LinuxSensors(String hwmonBasePath, String thermalZoneBasePath, boolean isPi) {
+        this.hwmonPath = hwmonBasePath;
+        this.thermalZonePath = thermalZoneBasePath;
+        this.isPi = isPi;
+        if (!isPi) {
             populateSensorsMapFromHwmon();
             // if no temperature sensor is found in hwmon, try thermal_zone
             if (!this.sensorsMap.containsKey(TEMP)) {
@@ -186,13 +246,16 @@ final class LinuxSensors extends AbstractSensors {
     /*
      * Iterate over all hwmon* directories and look for sensor files, e.g., /sys/class/hwmon/hwmon0/temp1_input
      */
+    /**
+     * Handles the populate sensors map from hwmon operation.
+     */
     private void populateSensorsMapFromHwmon() {
         String selectedTempPath = null;
         int selectedPriority = Integer.MAX_VALUE;
 
         int i = 0;
-        while (Paths.get(HWMON_PATH + i).toFile().isDirectory()) {
-            String path = HWMON_PATH + i;
+        while (Paths.get(hwmonPath + i).toFile().isDirectory()) {
+            String path = hwmonPath + i;
 
             // Read the name file
             String sensorName = Builder.getStringFromFile(path + NAME).trim();
@@ -216,34 +279,35 @@ final class LinuxSensors extends AbstractSensors {
                 }
             }
 
-            // Handle other sensor types (fan, voltage)
-            for (String sensor : new String[] { FAN, VOLTAGE }) {
-                final String sensorPrefix = sensor;
-                // Final to pass to anonymous class
-                getSensorFilesFromPath(path, sensor, f -> {
-                    try {
-                        return f.getName().startsWith(sensorPrefix) && f.getName().endsWith(INPUT_SUFFIX)
-                                && Builder.getIntFromFile(f.getCanonicalPath()) > 0;
-                    } catch (IOException e) {
-                        return false;
-                    }
-                });
-            }
-
             i++;
         }
 
         if (selectedTempPath != null) {
             this.sensorsMap.put(TEMP, selectedTempPath + "/temp");
         }
+
+        for (String sensor : new String[] { FAN, VOLTAGE }) {
+            final String sensorPrefix = sensor;
+            getSensorFilesFromPath(hwmonPath, sensor, f -> {
+                try {
+                    return f.getName().startsWith(sensorPrefix) && f.getName().endsWith(INPUT_SUFFIX)
+                            && Builder.getIntFromFile(f.getCanonicalPath()) > 0;
+                } catch (IOException e) {
+                    return false;
+                }
+            });
+        }
     }
 
     /*
      * Iterate over all thermal_zone* directories and look for sensor files, e.g., /sys/class/thermal/thermal_zone0/temp
      */
+    /**
+     * Handles the populate sensors map from thermal zone operation.
+     */
     private void populateSensorsMapFromThermalZone() {
         getSensorFilesFromPath(
-                THERMAL_ZONE_PATH,
+                thermalZonePath,
                 TEMP,
                 f -> f.getName().equals(TYPE) || f.getName().equals(TEMP),
                 files -> Stream.of(files).filter(f -> TYPE.equals(f.getName())).findFirst().map(File::getPath)
@@ -251,9 +315,14 @@ final class LinuxSensors extends AbstractSensors {
                         .filter((index) -> index >= 0).orElse(THERMAL_ZONE_TYPE_PRIORITY.size()));
     }
 
+    /**
+     * Queries the cpu temperature.
+     *
+     * @return the query cpu temperature result
+     */
     @Override
     public double queryCpuTemperature() {
-        if (IS_PI) {
+        if (isPi) {
             return queryCpuTemperatureFromVcGenCmd();
         }
         String tempStr = this.sensorsMap.get(TEMP);
@@ -261,7 +330,7 @@ final class LinuxSensors extends AbstractSensors {
             long millidegrees = 0;
             if (tempStr.contains(HWMON)) {
                 // First attempt should be CPU temperature at index 1, if available
-                millidegrees = Builder.getLongFromFile(String.format(Locale.ROOT, "%s1%s", tempStr));
+                millidegrees = Builder.getLongFromFile(String.format(Locale.ROOT, "%s1%s", tempStr, INPUT_SUFFIX));
                 // Should return a single line of millidegrees Celsius
                 if (millidegrees > 0) {
                     return millidegrees / 1000d;
@@ -271,7 +340,8 @@ final class LinuxSensors extends AbstractSensors {
                 long sum = 0;
                 int count = 0;
                 for (int i = 2; i <= 6; i++) {
-                    millidegrees = Builder.getLongFromFile(String.format(Locale.ROOT, "%s%d%s", tempStr, i));
+                    millidegrees = Builder
+                            .getLongFromFile(String.format(Locale.ROOT, "%s%d%s", tempStr, i, INPUT_SUFFIX));
                     if (millidegrees > 0) {
                         sum += millidegrees;
                         count++;
@@ -292,15 +362,20 @@ final class LinuxSensors extends AbstractSensors {
         return 0d;
     }
 
+    /**
+     * Queries the fan speeds.
+     *
+     * @return the query fan speeds result
+     */
     @Override
     public int[] queryFanSpeeds() {
-        if (!IS_PI) {
+        if (!isPi) {
             String fanStr = this.sensorsMap.get(FAN);
             if (fanStr != null) {
                 List<Integer> speeds = new ArrayList<>();
                 int fan = 1;
                 for (;;) {
-                    String fanPath = String.format(Locale.ROOT, "%s%d%s", fanStr, fan);
+                    String fanPath = String.format(Locale.ROOT, "%s%d%s", fanStr, fan, INPUT_SUFFIX);
                     if (!new File(fanPath).exists()) {
                         // No file found, we've reached max fans
                         break;
@@ -320,15 +395,20 @@ final class LinuxSensors extends AbstractSensors {
         return new int[0];
     }
 
+    /**
+     * Queries the cpu voltage.
+     *
+     * @return the query cpu voltage result
+     */
     @Override
     public double queryCpuVoltage() {
-        if (IS_PI) {
+        if (isPi) {
             return queryCpuVoltageFromVcGenCmd();
         }
         String voltageStr = this.sensorsMap.get(VOLTAGE);
         if (voltageStr != null) {
             // Should return a single line of millivolt
-            return Builder.getIntFromFile(String.format(Locale.ROOT, "%s1%s", voltageStr)) / 1000d;
+            return Builder.getIntFromFile(String.format(Locale.ROOT, "%s1%s", voltageStr, INPUT_SUFFIX)) / 1000d;
         }
         return 0d;
     }

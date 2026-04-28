@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -71,24 +71,51 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      */
     public static final boolean HAS_SYSCALL_GETTID;
     // Package private for access from LinuxOSProcess
+    /**
+     * The BOOTTIME constant.
+     */
     static final long BOOTTIME;
+    /**
+     * The OS_RELEASE_LOG constant.
+     */
     private static final String OS_RELEASE_LOG = "os-release: {}";
+    /**
+     * The LSB_RELEASE_A_LOG constant.
+     */
     private static final String LSB_RELEASE_A_LOG = "lsb_release -a: {}";
+    /**
+     * The LSB_RELEASE_LOG constant.
+     */
     private static final String LSB_RELEASE_LOG = "lsb-release: {}";
+    /**
+     * The RELEASE_DELIM constant.
+     */
     private static final String RELEASE_DELIM = " release ";
+    /**
+     * The DOUBLE_QUOTES constant.
+     */
     private static final String DOUBLE_QUOTES = "(?:^\")|(?:\"$)";
     /**
      * Jiffies per second, used for process time counters.
      */
     private static final long USER_HZ;
+    /**
+     * The PAGE_SIZE constant.
+     */
     private static final long PAGE_SIZE;
     /**
      * OS Name for manufacturer
      */
     private static final String OS_NAME = Executor.getFirstAnswer("uname -o");
     // PPID is 4th numeric value in proc pid stat; subtract 1 for 0-index
+    /**
+     * The PPID_INDEX constant.
+     */
     private static final int[] PPID_INDEX = { 3 };
 
+    /**
+     * The installedAppsSupplier value.
+     */
     private final Supplier<List<ApplicationInfo>> installedAppsSupplier = Memoizer
             .memoize(LinuxInstalledApps::queryInstalledApps, Memoizer.installedAppsExpiration());
 
@@ -165,6 +192,12 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         super.getVersionInfo();
     }
 
+    /**
+     * Returns the parent pids from proc files.
+     *
+     * @param pidFiles the pid files
+     * @return the get parent pids from proc files result
+     */
     private static Map<Integer, Integer> getParentPidsFromProcFiles(File[] pidFiles) {
         Map<Integer, Integer> parentPidMap = new HashMap<>();
         for (File procFile : pidFiles) {
@@ -174,6 +207,12 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         return parentPidMap;
     }
 
+    /**
+     * Returns the parent pid from proc file.
+     *
+     * @param pid the pid
+     * @return the get parent pid from proc file result
+     */
     private static int getParentPidFromProcFile(int pid) {
         String stat = Builder.getStringFromFile(String.format(Locale.ROOT, "/proc/%d/stat", pid));
         // A race condition may leave us with an empty string
@@ -186,6 +225,11 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         return (int) statArray[0];
     }
 
+    /**
+     * Queries the family version codename from release files.
+     *
+     * @return the query family version codename from release files result
+     */
     private static Triplet<String, String, String> queryFamilyVersionCodenameFromReleaseFiles() {
         Triplet<String, String, String> familyVersionCodename;
         // There are two competing options for family/version information.
@@ -494,11 +538,22 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         return "/etc/issue";
     }
 
+    /**
+     * Queries the manufacturer.
+     *
+     * @return the query manufacturer result
+     */
     @Override
     public String queryManufacturer() {
         return OS_NAME;
     }
 
+    /**
+     * Queries the bitness.
+     *
+     * @param jvmBitness the jvm bitness
+     * @return the query bitness result
+     */
     @Override
     protected int queryBitness(int jvmBitness) {
         if (jvmBitness < 64 && !Executor.getFirstAnswer("uname -m").contains("64")) {
@@ -507,21 +562,42 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         return 64;
     }
 
+    /**
+     * Returns the file system.
+     *
+     * @return the get file system result
+     */
     @Override
     public FileSystem getFileSystem() {
         return new LinuxFileSystem();
     }
 
+    /**
+     * Returns the internet protocol stats.
+     *
+     * @return the get internet protocol stats result
+     */
     @Override
     public InternetProtocolStats getInternetProtocolStats() {
         return new LinuxInternetProtocolStats();
     }
 
+    /**
+     * Returns the sessions.
+     *
+     * @return the get sessions result
+     */
     @Override
     public List<OSSession> getSessions() {
         return USE_WHO_COMMAND ? super.getSessions() : Who.queryUtxent();
     }
 
+    /**
+     * Returns the process.
+     *
+     * @param pid the pid
+     * @return the get process result
+     */
     @Override
     public OSProcess getProcess(int pid) {
         OSProcess proc = new LinuxOSProcess(pid, this);
@@ -531,11 +607,21 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         return null;
     }
 
+    /**
+     * Queries the all processes.
+     *
+     * @return the query all processes result
+     */
     @Override
     public List<OSProcess> queryAllProcesses() {
         return queryChildProcesses(-1);
     }
 
+    /**
+     * Queries the family version info.
+     *
+     * @return the query family version info result
+     */
     @Override
     public Pair<String, OperatingSystem.OSVersionInfo> queryFamilyVersionInfo() {
         Triplet<String, String, String> familyVersionCodename = queryFamilyVersionCodenameFromReleaseFiles();
@@ -555,12 +641,24 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         return Pair.of(familyVersionCodename.getLeft(), versionInfo);
     }
 
+    /**
+     * Queries the descendant processes.
+     *
+     * @param parentPid the parent pid
+     * @return the query descendant processes result
+     */
     @Override
     public List<OSProcess> queryDescendantProcesses(int parentPid) {
         File[] pidFiles = ProcessStat.getPidFiles();
         return queryProcessList(getChildrenOrDescendants(getParentPidsFromProcFiles(pidFiles), parentPid, true));
     }
 
+    /**
+     * Queries the child processes.
+     *
+     * @param parentPid the parent pid
+     * @return the query child processes result
+     */
     @Override
     public List<OSProcess> queryChildProcesses(int parentPid) {
         File[] pidFiles = ProcessStat.getPidFiles();
@@ -579,16 +677,32 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         return queryProcessList(descendantPids);
     }
 
+    /**
+     * Returns the process id.
+     *
+     * @return the get process id result
+     */
     @Override
     public int getProcessId() {
         return LinuxLibc.INSTANCE.getpid();
     }
 
+    /**
+     * Returns the process count.
+     *
+     * @return the get process count result
+     */
     @Override
     public int getProcessCount() {
         return ProcessStat.getPidFiles().length;
     }
 
+    /**
+     * Queries the process list.
+     *
+     * @param descendantPids the descendant pids
+     * @return the query process list result
+     */
     private List<OSProcess> queryProcessList(Set<Integer> descendantPids) {
         List<OSProcess> procs = new ArrayList<>();
         for (int pid : descendantPids) {
@@ -600,11 +714,21 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         return procs;
     }
 
+    /**
+     * Returns the current thread.
+     *
+     * @return the get current thread result
+     */
     @Override
     public OSThread getCurrentThread() {
         return new LinuxOSThread(getProcessId(), getThreadId());
     }
 
+    /**
+     * Returns the thread count.
+     *
+     * @return the get thread count result
+     */
     @Override
     public int getThreadCount() {
         try (Struct.CloseableSysinfo info = new Struct.CloseableSysinfo()) {
@@ -612,13 +736,18 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 Logger.error("Failed to get process thread count. Error code: {}", Native.getLastError());
                 return 0;
             }
-            return info.procs;
+            return Short.toUnsignedInt(info.procs);
         } catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
             Logger.error("Failed to get procs from sysinfo. {}", e.getMessage());
         }
         return 0;
     }
 
+    /**
+     * Returns the thread id.
+     *
+     * @return the get thread id result
+     */
     @Override
     public int getThreadId() {
         if (HAS_SYSCALL_GETTID) {
@@ -634,21 +763,41 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         }
     }
 
+    /**
+     * Returns the system uptime.
+     *
+     * @return the get system uptime result
+     */
     @Override
     public long getSystemUptime() {
         return (long) UpTime.getSystemUptimeSeconds();
     }
 
+    /**
+     * Returns the system boot time.
+     *
+     * @return the get system boot time result
+     */
     @Override
     public long getSystemBootTime() {
         return BOOTTIME;
     }
 
+    /**
+     * Returns the network params.
+     *
+     * @return the get network params result
+     */
     @Override
     public NetworkParams getNetworkParams() {
         return new LinuxNetworkParams();
     }
 
+    /**
+     * Returns the services.
+     *
+     * @return the get services result
+     */
     @Override
     public List<OSService> getServices() {
         // Get running services
@@ -700,6 +849,11 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         return services;
     }
 
+    /**
+     * Returns the installed applications.
+     *
+     * @return the get installed applications result
+     */
     @Override
     public List<ApplicationInfo> getInstalledApplications() {
         return installedAppsSupplier.get();

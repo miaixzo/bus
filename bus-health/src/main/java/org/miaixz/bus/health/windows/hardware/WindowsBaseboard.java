@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -42,8 +42,16 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 @Immutable
 final class WindowsBaseboard extends AbstractBaseboard {
 
+    /**
+     * The manufModelVersSerial value.
+     */
     private final Supplier<Tuple> manufModelVersSerial = Memoizer.memoize(WindowsBaseboard::queryManufModelVersSerial);
 
+    /**
+     * Queries the manuf model vers serial.
+     *
+     * @return the query manuf model vers serial result
+     */
     private static Tuple queryManufModelVersSerial() {
         String manufacturer = null;
         String model = null;
@@ -66,21 +74,41 @@ final class WindowsBaseboard extends AbstractBaseboard {
                 StringKit.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber);
     }
 
+    /**
+     * Returns the manufacturer.
+     *
+     * @return the get manufacturer result
+     */
     @Override
     public String getManufacturer() {
         return manufModelVersSerial.get().get(0);
     }
 
+    /**
+     * Returns the model.
+     *
+     * @return the get model result
+     */
     @Override
     public String getModel() {
         return manufModelVersSerial.get().get(1);
     }
 
+    /**
+     * Returns the version.
+     *
+     * @return the get version result
+     */
     @Override
     public String getVersion() {
         return manufModelVersSerial.get().get(2);
     }
 
+    /**
+     * Returns the serial number.
+     *
+     * @return the get serial number result
+     */
     @Override
     public String getSerialNumber() {
         return manufModelVersSerial.get().get(3);

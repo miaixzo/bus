@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -56,19 +56,41 @@ public final class PagingFile {
 
         PERCENTUSAGE(PerfCounterQuery.TOTAL_INSTANCE, "% Usage");
 
+        /**
+         * The instance value.
+         */
         private final String instance;
+        /**
+         * The counter value.
+         */
         private final String counter;
 
+        /**
+         * Creates a new PagingPercentProperty instance.
+         *
+         * @param instance the instance
+         * @param counter  the counter
+         */
         PagingPercentProperty(String instance, String counter) {
             this.instance = instance;
             this.counter = counter;
         }
 
+        /**
+         * Returns the instance.
+         *
+         * @return the get instance result
+         */
         @Override
         public String getInstance() {
             return instance;
         }
 
+        /**
+         * Returns the counter.
+         *
+         * @return the get counter result
+         */
         @Override
         public String getCounter() {
             return counter;

@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -36,7 +36,10 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 @ThreadSafe
 public final class Win32Printer {
 
-    private static final String WIN32_PRINTER = "Win32_Printer";
+    /**
+     * The WMI class name.
+     */
+    public static final String WIN32_PRINTER = "Win32_Printer";
 
     /**
      * Printer properties from WMI
@@ -45,6 +48,9 @@ public final class Win32Printer {
         NAME, DRIVERNAME, PRINTERSTATUS, DETECTEDERRORSTATE, DEFAULT, LOCAL, PORTNAME, DESCRIPTION;
     }
 
+    /**
+     * Creates a new Win32Printer instance.
+     */
     private Win32Printer() {
     }
 

@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -36,14 +36,17 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 @ThreadSafe
 public final class Win32PhysicalMemory {
 
-    private static final String WIN32_PHYSICAL_MEMORY = "Win32_PhysicalMemory";
+    /**
+     * The WMI class name.
+     */
+    public static final String WIN32_PHYSICAL_MEMORY = "Win32_PhysicalMemory";
 
     /**
      * Queries physical memory info for Win10 and later.
      *
      * @return Information regarding physical memory.
      */
-    public static WmiResult<PhysicalMemoryProperty> queryphysicalMemory() {
+    public static WmiResult<PhysicalMemoryProperty> queryPhysicalMemory() {
         WmiQuery<PhysicalMemoryProperty> physicalMemoryQuery = new WmiQuery<>(WIN32_PHYSICAL_MEMORY,
                 PhysicalMemoryProperty.class);
         return Objects.requireNonNull(WmiQueryHandler.createInstance()).queryWMI(physicalMemoryQuery);
@@ -54,7 +57,7 @@ public final class Win32PhysicalMemory {
      *
      * @return Information regarding physical memory.
      */
-    public static WmiResult<PhysicalMemoryPropertyWin8> queryphysicalMemoryWin8() {
+    public static WmiResult<PhysicalMemoryPropertyWin8> queryPhysicalMemoryWin8() {
         WmiQuery<PhysicalMemoryPropertyWin8> physicalMemoryQuery = new WmiQuery<>(WIN32_PHYSICAL_MEMORY,
                 PhysicalMemoryPropertyWin8.class);
         return Objects.requireNonNull(WmiQueryHandler.createInstance()).queryWMI(physicalMemoryQuery);

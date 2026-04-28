@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -60,6 +60,11 @@ public final class SystemPages {
         return Pair.of(memAvailable, memTotal);
     }
 
+    /**
+     * Queries the available total2.
+     *
+     * @return the query available total2 result
+     */
     private static Pair<Long, Long> queryAvailableTotal2() {
         Object[] results = KstatKit.queryKstat2("kstat:/pages/unix/system_pages", "availrmem", "physmem");
         long avail = results[0] == null ? 0L : (long) results[0];

@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -40,9 +40,17 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractFirmware;
 @Immutable
 public class OpenBsdFirmware extends AbstractFirmware {
 
+    /**
+     * The manufVersRelease value.
+     */
     private final Supplier<Triplet<String, String, String>> manufVersRelease = Memoizer
             .memoize(OpenBsdFirmware::readDmesg);
 
+    /**
+     * Reads the dmesg.
+     *
+     * @return the read dmesg result
+     */
     private static Triplet<String, String, String> readDmesg() {
         String version = null;
         String vendor = null;
@@ -65,16 +73,31 @@ public class OpenBsdFirmware extends AbstractFirmware {
                 StringKit.isBlank(releaseDate) ? Normal.UNKNOWN : releaseDate);
     }
 
+    /**
+     * Returns the manufacturer.
+     *
+     * @return the get manufacturer result
+     */
     @Override
     public String getManufacturer() {
         return manufVersRelease.get().getLeft();
     }
 
+    /**
+     * Returns the version.
+     *
+     * @return the get version result
+     */
     @Override
     public String getVersion() {
         return manufVersRelease.get().getMiddle();
     }
 
+    /**
+     * Returns the release date.
+     *
+     * @return the get release date result
+     */
     @Override
     public String getReleaseDate() {
         return manufVersRelease.get().getRight();

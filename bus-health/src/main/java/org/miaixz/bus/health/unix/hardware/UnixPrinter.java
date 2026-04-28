@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -42,9 +42,15 @@ import com.sun.jna.ptr.PointerByReference;
 public final class UnixPrinter extends AbstractPrinter {
 
     // Local URI schemes for directly-attached or local printers
+    /**
+     * The LOCAL_URI_PREFIXES constant.
+     */
     private static final String[] LOCAL_URI_PREFIXES = { "usb:", "parallel:", "serial:", "file:", "direct:", "hp:",
             "lpd://127.", "lpd://localhost", "socket://127.", "socket://localhost" };
 
+    /**
+     * The HAS_CUPS constant.
+     */
     private static final boolean HAS_CUPS;
 
     static {
@@ -58,6 +64,18 @@ public final class UnixPrinter extends AbstractPrinter {
         HAS_CUPS = hasCups;
     }
 
+    /**
+     * Creates a new UnixPrinter instance.
+     *
+     * @param name         the name
+     * @param driverName   the driver name
+     * @param description  the description
+     * @param status       the status
+     * @param statusReason the status reason
+     * @param isDefault    the is default
+     * @param isLocal      the is local
+     * @param portName     the port name
+     */
     UnixPrinter(String name, String driverName, String description, PrinterStatus status, String statusReason,
             boolean isDefault, boolean isLocal, String portName) {
         super(name, driverName, description, status, statusReason, isDefault, isLocal, portName);
@@ -75,6 +93,11 @@ public final class UnixPrinter extends AbstractPrinter {
         return getPrintersFromLpstat();
     }
 
+    /**
+     * Returns the printers from lib cups.
+     *
+     * @return the get printers from lib cups result
+     */
     private static List<Printer> getPrintersFromLibCups() {
         List<Printer> printers = new ArrayList<>();
         PointerByReference destsRef = new PointerByReference();
@@ -122,11 +145,25 @@ public final class UnixPrinter extends AbstractPrinter {
         return printers;
     }
 
+    /**
+     * Returns the option.
+     *
+     * @param dest       the dest
+     * @param optionName the option name
+     * @return the get option result
+     */
     private static String getOption(Cups.CupsDest dest, String optionName) {
         String value = Cups.INSTANCE.cupsGetOption(optionName, dest.num_options, dest.options);
         return value != null ? value : "";
     }
 
+    /**
+     * Parses the state from cups.
+     *
+     * @param state        the state
+     * @param stateReasons the state reasons
+     * @return the parse state from cups result
+     */
     private static PrinterStatus parseStateFromCups(String state, String stateReasons) {
         if (!stateReasons.isEmpty() && !"none".equals(stateReasons)) {
             String lower = stateReasons.toLowerCase(Locale.ROOT);
@@ -153,6 +190,11 @@ public final class UnixPrinter extends AbstractPrinter {
         }
     }
 
+    /**
+     * Returns the printers from lpstat.
+     *
+     * @return the get printers from lpstat result
+     */
     private static List<Printer> getPrintersFromLpstat() {
         List<Printer> printers = new ArrayList<>();
         String defaultPrinter = getDefaultPrinter();
@@ -184,6 +226,11 @@ public final class UnixPrinter extends AbstractPrinter {
         return printers;
     }
 
+    /**
+     * Parses the port map.
+     *
+     * @return the parse port map result
+     */
     private static Map<String, String> parsePortMap() {
         Map<String, String> map = new HashMap<>();
         // lpstat -v output: "device for PrinterName: uri"
@@ -201,6 +248,11 @@ public final class UnixPrinter extends AbstractPrinter {
         return map;
     }
 
+    /**
+     * Parses the description map.
+     *
+     * @return the parse description map result
+     */
     private static Map<String, String> parseDescriptionMap() {
         Map<String, String> map = new HashMap<>();
         String currentPrinter = null;
@@ -221,6 +273,12 @@ public final class UnixPrinter extends AbstractPrinter {
 
     // Retrieves driver via lpoptions which requires a per-printer subprocess call.
     // On systems with many printers, this may add latency.
+    /**
+     * Returns the driver for printer.
+     *
+     * @param printerName the printer name
+     * @return the get driver for printer result
+     */
     private static String getDriverForPrinter(String printerName) {
         // lpoptions -p requires per-printer call as there's no global option
         for (String line : Executor.runNative(new String[] { "lpoptions", "-p", printerName })) {
@@ -236,6 +294,11 @@ public final class UnixPrinter extends AbstractPrinter {
         return "";
     }
 
+    /**
+     * Returns the default printer.
+     *
+     * @return the get default printer result
+     */
     private static String getDefaultPrinter() {
         for (String line : Executor.runNative(new String[] { "lpstat", "-d" })) {
             if (line.contains("default destination:")) {
@@ -248,6 +311,12 @@ public final class UnixPrinter extends AbstractPrinter {
         return "";
     }
 
+    /**
+     * Parses the status from lpstat.
+     *
+     * @param line the line
+     * @return the parse status from lpstat result
+     */
     private static PrinterStatus parseStatusFromLpstat(String line) {
         String lower = line.toLowerCase(Locale.ROOT);
         if (lower.contains("disabled") || lower.contains("not accepting")) {
@@ -262,6 +331,12 @@ public final class UnixPrinter extends AbstractPrinter {
         return PrinterStatus.UNKNOWN;
     }
 
+    /**
+     * Returns the status reason from lpstat.
+     *
+     * @param line the line
+     * @return the get status reason from lpstat result
+     */
     private static String getStatusReasonFromLpstat(String line) {
         int dashIdx = line.indexOf(" - ");
         if (dashIdx > 0) {
@@ -270,6 +345,12 @@ public final class UnixPrinter extends AbstractPrinter {
         return "";
     }
 
+    /**
+     * Returns whether the local uri condition is true.
+     *
+     * @param uri the uri
+     * @return the is local uri result
+     */
     private static boolean isLocalUri(String uri) {
         if (uri.startsWith("/dev")) {
             return true;

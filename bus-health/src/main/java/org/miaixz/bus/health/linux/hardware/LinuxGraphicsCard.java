@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -44,16 +44,28 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstraction
 @Immutable
 final class LinuxGraphicsCard extends AbstractGraphicsCard {
 
+    /**
+     * The DRM_PATH constant.
+     */
     private static final String DRM_PATH = "/sys/class/drm/";
 
     // sysfs path for this card's device directory, e.g. /sys/class/drm/card0/device
     // Empty string if this card has no associated DRM sysfs entry.
+    /**
+     * The drmDevicePath value.
+     */
     private final String drmDevicePath;
 
     // Driver name detected from the sysfs driver symlink, e.g. "amdgpu", "i915", "xe", "nvidia"
+    /**
+     * The driverName value.
+     */
     private final String driverName;
 
     // PCI bus ID string for NVML correlation, e.g. "0000:01:00.0". Empty if unknown.
+    /**
+     * The pciBusId value.
+     */
     private final String pciBusId;
 
     /**
@@ -76,6 +88,11 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
         this.pciBusId = pciBusId;
     }
 
+    /**
+     * Creates the stats session.
+     *
+     * @return the create stats session result
+     */
     @Override
     public GpuStats createStatsSession() {
         return new LinuxGpuStats(drmDevicePath, driverName, pciBusId, getName());
@@ -95,6 +112,11 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
     }
 
     // Faster, use as primary
+    /**
+     * Returns the graphics cards from lspci.
+     *
+     * @return the get graphics cards from lspci result
+     */
     private static List<GraphicsCard> getGraphicsCardsFromLspci() {
         List<GraphicsCard> cardList = new ArrayList<>();
         // Machine readable version
@@ -163,6 +185,12 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
         return cardList;
     }
 
+    /**
+     * Queries the lspci memory size.
+     *
+     * @param lookupDevice the lookup device
+     * @return the query lspci memory size result
+     */
     private static long queryLspciMemorySize(String lookupDevice) {
         long vram = 0L;
         // Lookup memory
@@ -177,9 +205,14 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
     }
 
     // Slower, use as backup
+    /**
+     * Returns the graphics cards from lshw.
+     *
+     * @return the get graphics cards from lshw result
+     */
     private static List<GraphicsCard> getGraphicsCardsFromLshw() {
         List<GraphicsCard> cardList = new ArrayList<>();
-        List<String> lshw = Executor.runNative("lshw -C display");
+        List<String> lshw = Executor.runPrivilegedNative("lshw -C display");
         String name = Normal.UNKNOWN;
         String deviceId = Normal.UNKNOWN;
         String vendor = Normal.UNKNOWN;
@@ -247,7 +280,18 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
      * @return triplet of (drmDevicePath, driverName, pciBusId), all empty strings if not found
      */
     private static Triplet<String, String, String> findDrmInfo(String pciSlot) {
-        File drmDir = new File(DRM_PATH);
+        return findDrmInfo(pciSlot, DRM_PATH);
+    }
+
+    /**
+     * Finds the sysfs DRM device path, driver name, and PCI bus ID for a GPU.
+     *
+     * @param pciSlot the PCI slot address, or {@code null} to use first-match
+     * @param drmPath the base DRM sysfs directory path
+     * @return triplet of (drmDevicePath, driverName, pciBusId), all empty strings if not found
+     */
+    static Triplet<String, String, String> findDrmInfo(String pciSlot, String drmPath) {
+        File drmDir = new File(drmPath);
         File[] cards = drmDir.listFiles(f -> f.getName().matches("card\\d+"));
         if (cards == null) {
             return new Triplet<>("", "", "");
@@ -279,7 +323,7 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
      * @param key        the key to look up (e.g. {@code "PCI_SLOT_NAME"})
      * @return the value string, or empty string if not found
      */
-    private static String readUeventValue(String ueventPath, String key) {
+    static String readUeventValue(String ueventPath, String key) {
         List<String> lines = Builder.readFile(ueventPath);
         String prefix = key + "=";
         for (String line : lines) {
@@ -290,15 +334,21 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
         return "";
     }
 
-    private static String readDriverName(String driverSymlink) {
+    /**
+     * Reads the driver name.
+     *
+     * @param driverSymlink the driver symlink
+     * @return the read driver name result
+     */
+    static String readDriverName(String driverSymlink) {
         String target = Builder.readSymlinkTarget(new File(driverSymlink));
         if (target == null || target.isEmpty()) {
             return Normal.EMPTY;
         }
         // The symlink target resolves to a driver directory,
         // e.g. "../../../bus/pci/drivers/amdgpu"; the last path segment is the driver name.
-        int lastSlash = target.lastIndexOf('/');
-        return lastSlash >= 0 ? target.substring(lastSlash + 1) : target;
+        String name = new File(target).getName();
+        return name.isEmpty() ? target : name;
     }
 
 }

@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.jna.Nvml;
@@ -46,7 +47,7 @@ import com.sun.jna.ptr.PointerByReference;
  * <p>
  * Device handles are enumerated once on first successful init and cached by PCI bus ID string for correlation with OSHI
  * GraphicsCard instances.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -57,9 +58,18 @@ public final class NvmlKit {
     // Library loading (holder pattern — loads the .dll/.so once)
     // -------------------------------------------------------------------------
 
+    /**
+     * The Holder class.
+     */
     private static final class Holder {
 
+        /**
+         * The LIB constant.
+         */
         static final Nvml.NvmlLibrary LIB;
+        /**
+         * The LIBRARY_LOADED constant.
+         */
         static final boolean LIBRARY_LOADED;
 
         static {
@@ -80,9 +90,18 @@ public final class NvmlKit {
     // Lazy device enumeration state — written once on first successful enumeration, read-only thereafter.
     // Stores PCI bus ID strings (stable identifiers) rather than Pointer handles, which are only valid
     // within a single nvmlInit/nvmlShutdown scope.
+    /**
+     * The devicesEnumerated value.
+     */
     private static volatile boolean devicesEnumerated = false;
-    private static volatile Set<String> deviceBusIds = Collections.emptySet();
+    /**
+     * The DEVICE_BUS_IDS constant.
+     */
+    private static final AtomicReference<Set<String>> DEVICE_BUS_IDS = new AtomicReference<>(Collections.emptySet());
 
+    /**
+     * Creates a new NvmlKit instance.
+     */
     private NvmlKit() {
     }
 
@@ -127,9 +146,9 @@ public final class NvmlKit {
         }
         Set<String> ids = enumerateDeviceBusIds();
         if (ids != null) {
-            deviceBusIds = ids;
+            DEVICE_BUS_IDS.set(ids);
             devicesEnumerated = true;
-            Logger.debug("NVML enumerated {} device(s)", deviceBusIds.size());
+            Logger.debug("NVML enumerated {} device(s)", DEVICE_BUS_IDS.get().size());
         }
     }
 
@@ -233,6 +252,12 @@ public final class NvmlKit {
         return null;
     }
 
+    /**
+     * Returns the count matches by name result.
+     *
+     * @param gpuName the gpu name
+     * @return the count matches by name result
+     */
     private static int countMatchesByName(String gpuName) {
         IntByReference countRef = new IntByReference();
         if (Holder.LIB.nvmlDeviceGetCount_v2(countRef) != Nvml.NVML_SUCCESS) {
@@ -297,7 +322,7 @@ public final class NvmlKit {
             // Verify a handle can be acquired (device exists), then return the canonical bus ID
             // from the enumerated set that matches — not the handle itself.
             String needle = pciBusId.toLowerCase(Locale.ROOT);
-            for (String id : deviceBusIds) {
+            for (String id : DEVICE_BUS_IDS.get()) {
                 if (id.contains(needle) || needle.contains(id)) {
                     return id;
                 }

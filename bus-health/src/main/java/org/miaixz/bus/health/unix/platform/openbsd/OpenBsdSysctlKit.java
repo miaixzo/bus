@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -40,8 +40,14 @@ import com.sun.jna.platform.unix.LibCAPI.size_t;
 @ThreadSafe
 public final class OpenBsdSysctlKit {
 
+    /**
+     * The SYSCTL_N constant.
+     */
     private static final String SYSCTL_N = "sysctl -n ";
 
+    /**
+     * The SYSCTL_FAIL constant.
+     */
     private static final String SYSCTL_FAIL = "Failed sysctl call: {}, Error code: {}";
 
     /**

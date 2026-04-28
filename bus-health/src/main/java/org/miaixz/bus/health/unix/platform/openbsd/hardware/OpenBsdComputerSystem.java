@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -39,55 +39,117 @@ import org.miaixz.bus.health.unix.platform.openbsd.OpenBsdSysctlKit;
 @Immutable
 public class OpenBsdComputerSystem extends AbstractComputerSystem {
 
+    /**
+     * The manufacturer value.
+     */
     private final Supplier<String> manufacturer = Memoizer.memoize(OpenBsdComputerSystem::queryManufacturer);
 
+    /**
+     * The model value.
+     */
     private final Supplier<String> model = Memoizer.memoize(OpenBsdComputerSystem::queryModel);
 
+    /**
+     * The serialNumber value.
+     */
     private final Supplier<String> serialNumber = Memoizer.memoize(OpenBsdComputerSystem::querySerialNumber);
 
+    /**
+     * The uuid value.
+     */
     private final Supplier<String> uuid = Memoizer.memoize(OpenBsdComputerSystem::queryUUID);
 
+    /**
+     * Queries the manufacturer.
+     *
+     * @return the query manufacturer result
+     */
     private static String queryManufacturer() {
         return OpenBsdSysctlKit.sysctl("hw.vendor", Normal.UNKNOWN);
     }
 
+    /**
+     * Queries the model.
+     *
+     * @return the query model result
+     */
     private static String queryModel() {
         return OpenBsdSysctlKit.sysctl("hw.version", Normal.UNKNOWN);
     }
 
+    /**
+     * Queries the serial number.
+     *
+     * @return the query serial number result
+     */
     private static String querySerialNumber() {
         return OpenBsdSysctlKit.sysctl("hw.serialno", Normal.UNKNOWN);
     }
 
+    /**
+     * Queries the uuid.
+     *
+     * @return the query uuid result
+     */
     private static String queryUUID() {
         return OpenBsdSysctlKit.sysctl("hw.uuid", Normal.UNKNOWN);
     }
 
+    /**
+     * Returns the manufacturer.
+     *
+     * @return the get manufacturer result
+     */
     @Override
     public String getManufacturer() {
         return manufacturer.get();
     }
 
+    /**
+     * Returns the model.
+     *
+     * @return the get model result
+     */
     @Override
     public String getModel() {
         return model.get();
     }
 
+    /**
+     * Returns the serial number.
+     *
+     * @return the get serial number result
+     */
     @Override
     public String getSerialNumber() {
         return serialNumber.get();
     }
 
+    /**
+     * Returns the hardware uuid.
+     *
+     * @return the get hardware uuid result
+     */
     @Override
     public String getHardwareUUID() {
         return uuid.get();
     }
 
+    /**
+     * Creates the firmware.
+     *
+     * @return the create firmware result
+     */
     @Override
     protected Firmware createFirmware() {
         return new OpenBsdFirmware();
     }
 
+    /**
+     * Creates the baseboard.
+     *
+     * @return the create baseboard result
+     */
     @Override
     protected Baseboard createBaseboard() {
         return new UnixBaseboard(manufacturer.get(), model.get(), serialNumber.get(),

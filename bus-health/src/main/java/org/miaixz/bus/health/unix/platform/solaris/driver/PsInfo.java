@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -46,8 +46,14 @@ import com.sun.jna.platform.unix.LibCAPI.ssize_t;
 @ThreadSafe
 public final class PsInfo {
 
+    /**
+     * The LIBC constant.
+     */
     private static final SolarisLibc LIBC = SolarisLibc.INSTANCE;
 
+    /**
+     * The PAGE_SIZE constant.
+     */
     private static final long PAGE_SIZE = Parsing.parseLongOrDefault(Executor.getFirstAnswer("pagesize"), 4096L);
 
     /**
@@ -247,6 +253,14 @@ public final class PsInfo {
         return bufStart;
     }
 
+    /**
+     * Returns the offset from buffer.
+     *
+     * @param buffer    the buffer
+     * @param offset    the offset
+     * @param increment the increment
+     * @return the get offset from buffer result
+     */
     private static long getOffsetFromBuffer(Memory buffer, long offset, long increment) {
         return increment == 8 ? buffer.getLong(offset) : buffer.getInt(offset);
     }

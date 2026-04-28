@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -40,12 +40,17 @@ import org.miaixz.bus.health.builtin.hardware.PhysicalMemory;
 @ThreadSafe
 public abstract class AbstractGlobalMemory implements GlobalMemory {
 
+    /**
+     * Returns the physical memory.
+     *
+     * @return the get physical memory result
+     */
     @Override
     public List<PhysicalMemory> getPhysicalMemory() {
         // dmidecode requires sudo permission but is the only option on Linux
         // and Unix
         List<PhysicalMemory> pmList = new ArrayList<>();
-        List<String> dmi = Executor.runNative("dmidecode --type 17");
+        List<String> dmi = Executor.runPrivilegedNative("dmidecode --type 17");
         int bank = 0;
         String bankLabel = Normal.UNKNOWN;
         String locator = Normal.EMPTY;
@@ -120,6 +125,11 @@ public abstract class AbstractGlobalMemory implements GlobalMemory {
         return pmList;
     }
 
+    /**
+     * Returns the to string result.
+     *
+     * @return the to string result
+     */
     @Override
     public String toString() {
         String sb = "Available: " + Formats.formatBytes(getAvailable()) + "/" + Formats.formatBytes(getTotal());

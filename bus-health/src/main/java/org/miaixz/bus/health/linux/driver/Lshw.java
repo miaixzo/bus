@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -21,7 +21,6 @@ package org.miaixz.bus.health.linux.driver;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
-import org.miaixz.bus.health.IdGroup;
 import org.miaixz.bus.health.Parsing;
 
 /**
@@ -33,8 +32,17 @@ import org.miaixz.bus.health.Parsing;
 @ThreadSafe
 public final class Lshw {
 
+    /**
+     * The MODEL constant.
+     */
     private static final String MODEL;
+    /**
+     * The SERIAL constant.
+     */
     private static final String SERIAL;
+    /**
+     * The UUID constant.
+     */
     private static final String UUID;
 
     static {
@@ -42,19 +50,17 @@ public final class Lshw {
         String serial = null;
         String uuid = null;
 
-        if (IdGroup.isElevated()) {
-            String modelMarker = "product:";
-            String serialMarker = "serial:";
-            String uuidMarker = "uuid:";
+        String modelMarker = "product:";
+        String serialMarker = "serial:";
+        String uuidMarker = "uuid:";
 
-            for (String checkLine : Executor.runNative("lshw -C system")) {
-                if (checkLine.contains(modelMarker)) {
-                    model = checkLine.split(modelMarker)[1].trim();
-                } else if (checkLine.contains(serialMarker)) {
-                    serial = checkLine.split(serialMarker)[1].trim();
-                } else if (checkLine.contains(uuidMarker)) {
-                    uuid = checkLine.split(uuidMarker)[1].trim();
-                }
+        for (String checkLine : Executor.runPrivilegedNative("lshw -C system")) {
+            if (checkLine.contains(modelMarker)) {
+                model = checkLine.split(modelMarker)[1].trim();
+            } else if (checkLine.contains(serialMarker)) {
+                serial = checkLine.split(serialMarker)[1].trim();
+            } else if (checkLine.contains(uuidMarker)) {
+                uuid = checkLine.split(uuidMarker)[1].trim();
             }
         }
         MODEL = model;
@@ -62,6 +68,9 @@ public final class Lshw {
         UUID = uuid;
     }
 
+    /**
+     * Creates a new Lshw instance.
+     */
     private Lshw() {
     }
 
@@ -99,7 +108,7 @@ public final class Lshw {
      */
     public static long queryCpuCapacity() {
         String capacityMarker = "capacity:";
-        for (String checkLine : Executor.runNative("lshw -class processor")) {
+        for (String checkLine : Executor.runPrivilegedNative("lshw -class processor")) {
             if (checkLine.contains(capacityMarker)) {
                 return Parsing.parseHertz(checkLine.split(capacityMarker)[1].trim());
             }

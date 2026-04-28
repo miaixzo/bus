@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -46,16 +46,37 @@ public final class PerfCounterQuery {
      * Multiple classes use these constants
      */
     public static final String TOTAL_INSTANCE = "_Total";
+    /**
+     * The TOTAL_OR_IDLE_INSTANCES constant.
+     */
     public static final String TOTAL_OR_IDLE_INSTANCES = "_Total|Idle";
+    /**
+     * The TOTAL_INSTANCES constant.
+     */
     public static final String TOTAL_INSTANCES = "*_Total";
+    /**
+     * The NOT_TOTAL_INSTANCE constant.
+     */
     public static final String NOT_TOTAL_INSTANCE = "^" + TOTAL_INSTANCE;
+    /**
+     * The NOT_TOTAL_INSTANCES constant.
+     */
     public static final String NOT_TOTAL_INSTANCES = "^" + TOTAL_INSTANCES;
+    /**
+     * The IS_VISTA_OR_GREATER constant.
+     */
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
 
     // Use a thread safe set to cache failed pdh queries
+    /**
+     * The FAILED_QUERY_CACHE constant.
+     */
     private static final Set<String> FAILED_QUERY_CACHE = ConcurrentHashMap.newKeySet();
 
     // A map to cache localization strings
+    /**
+     * The LOCALIZE_CACHE constant.
+     */
     private static final ConcurrentHashMap<String, String> LOCALIZE_CACHE = new ConcurrentHashMap<>();
 
     /**
@@ -105,21 +126,22 @@ public final class PerfCounterQuery {
         EnumMap<T, PerfDataKit.PerfCounter> counterMap = new EnumMap<>(propertyEnum);
         EnumMap<T, Long> valueMap = new EnumMap<>(propertyEnum);
         try (PerfCounterQueryHandler pdhQueryHandler = new PerfCounterQueryHandler()) {
-            // Set up the query and counter handles
+            // Set up the query and counter handles, skipping any that fail.
             for (T prop : props) {
                 PerfDataKit.PerfCounter counter = PerfDataKit.createCounter(
                         perfObjectLocalized,
                         ((PdhCounterProperty) prop).getInstance(),
                         ((PdhCounterProperty) prop).getCounter());
-                counterMap.put(prop, counter);
-                if (!pdhQueryHandler.addCounterToQuery(counter)) {
-                    return valueMap;
+                if (pdhQueryHandler.addCounterToQuery(counter)) {
+                    counterMap.put(prop, counter);
+                } else {
+                    Logger.debug("Failed to add counter for {}", prop);
                 }
             }
             // And then query. Zero timestamp means update failed
-            if (0 < pdhQueryHandler.updateQuery()) {
-                for (T prop : props) {
-                    valueMap.put(prop, pdhQueryHandler.queryCounter(counterMap.get(prop)));
+            if (!counterMap.isEmpty() && 0 < pdhQueryHandler.updateQuery()) {
+                for (Map.Entry<T, PerfDataKit.PerfCounter> entry : counterMap.entrySet()) {
+                    valueMap.put(entry.getKey(), pdhQueryHandler.queryCounter(entry.getValue()));
                 }
             }
         }
@@ -183,6 +205,12 @@ public final class PerfCounterQuery {
                 : LOCALIZE_CACHE.computeIfAbsent(perfObject, PerfCounterQuery::localizeUsingPerfIndex);
     }
 
+    /**
+     * Returns the localize using perf index result.
+     *
+     * @param perfObject the perf object
+     * @return the localize using perf index result
+     */
     private static String localizeUsingPerfIndex(String perfObject) {
         String localized = perfObject;
         try {

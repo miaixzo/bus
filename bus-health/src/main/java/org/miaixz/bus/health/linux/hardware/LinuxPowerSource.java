@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -47,6 +47,9 @@ import com.sun.jna.platform.linux.Udev.UdevListEntry;
 @ThreadSafe
 public final class LinuxPowerSource extends AbstractPowerSource {
 
+    /**
+     * The Prop enum.
+     */
     enum Prop {
         POWER_SUPPLY_NAME, POWER_SUPPLY_STATUS, POWER_SUPPLY_CAPACITY, POWER_SUPPLY_PRESENT, POWER_SUPPLY_ONLINE,
         POWER_SUPPLY_ENERGY_NOW, POWER_SUPPLY_CHARGE_NOW, POWER_SUPPLY_ENERGY_FULL, POWER_SUPPLY_CHARGE_FULL,
@@ -63,6 +66,9 @@ public final class LinuxPowerSource extends AbstractPowerSource {
      */
     private static final class PropByName {
 
+        /**
+         * The MAP constant.
+         */
         static final Map<String, Prop> MAP = new HashMap<>();
         static {
             for (Prop p : Prop.values()) {
@@ -71,6 +77,31 @@ public final class LinuxPowerSource extends AbstractPowerSource {
         }
     }
 
+    /**
+     * Creates a new LinuxPowerSource instance.
+     *
+     * @param psName                     the ps name
+     * @param psDeviceName               the ps device name
+     * @param psRemainingCapacityPercent the ps remaining capacity percent
+     * @param psTimeRemainingEstimated   the ps time remaining estimated
+     * @param psTimeRemainingInstant     the ps time remaining instant
+     * @param psPowerUsageRate           the ps power usage rate
+     * @param psVoltage                  the ps voltage
+     * @param psAmperage                 the ps amperage
+     * @param psPowerOnLine              the ps power on line
+     * @param psCharging                 the ps charging
+     * @param psDischarging              the ps discharging
+     * @param psCapacityUnits            the ps capacity units
+     * @param psCurrentCapacity          the ps current capacity
+     * @param psMaxCapacity              the ps max capacity
+     * @param psDesignCapacity           the ps design capacity
+     * @param psCycleCount               the ps cycle count
+     * @param psChemistry                the ps chemistry
+     * @param psManufactureDate          the ps manufacture date
+     * @param psManufacturer             the ps manufacturer
+     * @param psSerialNumber             the ps serial number
+     * @param psTemperature              the ps temperature
+     */
     public LinuxPowerSource(String psName, String psDeviceName, double psRemainingCapacityPercent,
             double psTimeRemainingEstimated, double psTimeRemainingInstant, double psPowerUsageRate, double psVoltage,
             double psAmperage, boolean psPowerOnLine, boolean psCharging, boolean psDischarging,
@@ -84,6 +115,16 @@ public final class LinuxPowerSource extends AbstractPowerSource {
     }
 
     /**
+     * Queries the power sources.
+     *
+     * @return the query power sources result
+     */
+    @Override
+    protected List<PowerSource> queryPowerSources() {
+        return getPowerSources();
+    }
+
+    /**
      * Gets Battery Information
      *
      * @return An array of PowerSource objects representing batteries, etc.
@@ -92,6 +133,9 @@ public final class LinuxPowerSource extends AbstractPowerSource {
         List<PowerSource> psList = new ArrayList<>();
         if (LinuxOperatingSystem.HAS_UDEV) {
             UdevContext udev = Udev.INSTANCE.udev_new();
+            if (udev == null) {
+                return getPowerSources(SysPath.POWER_SUPPLY);
+            }
             try {
                 UdevEnumerate enumerate = udev.enumerateNew();
                 try {
@@ -106,10 +150,7 @@ public final class LinuxPowerSource extends AbstractPowerSource {
                                 try {
                                     if (Parsing.parseIntOrDefault(
                                             device.getPropertyValue(Prop.POWER_SUPPLY_PRESENT.name()),
-                                            1) > 0
-                                            && Parsing.parseIntOrDefault(
-                                                    device.getPropertyValue(Prop.POWER_SUPPLY_ONLINE.name()),
-                                                    1) > 0) {
+                                            1) > 0) {
                                         Map<Prop, String> props = new EnumMap<>(Prop.class);
                                         for (Prop p : Prop.values()) {
                                             String val = device.getPropertyValue(p.name());
@@ -132,34 +173,53 @@ public final class LinuxPowerSource extends AbstractPowerSource {
                 udev.unref();
             }
         } else {
-            File psDir = new File(SysPath.POWER_SUPPLY);
-            File[] psArr = psDir.listFiles();
-            if (psArr == null) {
-                return Collections.emptyList();
-            }
-            for (File ps : psArr) {
-                String name = ps.getName();
-                if (!name.startsWith("ADP") && !name.startsWith("AC") && !name.contains("USBC")) {
-                    List<String> psInfo = Builder.readFile(SysPath.POWER_SUPPLY + "/" + name + "/uevent", false);
-                    Map<Prop, String> props = new EnumMap<>(Prop.class);
-                    for (String line : psInfo) {
-                        String[] split = line.split("=", 2);
-                        if (split.length > 1 && !split[1].isEmpty()) {
-                            Prop p = PropByName.MAP.get(split[0]);
-                            if (p != null) {
-                                props.put(p, split[1]);
-                            }
+            return getPowerSources(SysPath.POWER_SUPPLY);
+        }
+        return psList;
+    }
+
+    /**
+     * Returns the power sources.
+     *
+     * @param powerSupplyPath the power supply path
+     * @return the get power sources result
+     */
+    static List<PowerSource> getPowerSources(String powerSupplyPath) {
+        List<PowerSource> psList = new ArrayList<>();
+        File psDir = new File(powerSupplyPath);
+        File[] psArr = psDir.listFiles();
+        if (psArr == null) {
+            return Collections.emptyList();
+        }
+        for (File ps : psArr) {
+            String name = ps.getName();
+            if (!name.startsWith("ADP") && !name.startsWith("AC") && !name.contains("USBC")) {
+                List<String> psInfo = Builder.readFile(powerSupplyPath + "/" + name + "/uevent", false);
+                Map<Prop, String> props = new EnumMap<>(Prop.class);
+                for (String line : psInfo) {
+                    String[] split = line.split("=", 2);
+                    if (split.length > 1 && !split[1].isEmpty()) {
+                        Prop p = PropByName.MAP.get(split[0]);
+                        if (p != null) {
+                            props.put(p, split[1]);
                         }
                     }
-                    if (Parsing.parseIntOrDefault(props.get(Prop.POWER_SUPPLY_PRESENT), 1) > 0) {
-                        psList.add(buildPowerSource(name, props));
-                    }
+                }
+                if (Parsing.parseIntOrDefault(props.get(Prop.POWER_SUPPLY_PRESENT), 1) > 0) {
+                    psList.add(buildPowerSource(name, props));
                 }
             }
         }
         return psList;
     }
 
+    /**
+     * Builds the power source.
+     *
+     * @param name  the name
+     * @param props the props
+     * @return the build power source result
+     */
     static LinuxPowerSource buildPowerSource(String name, Map<Prop, String> props) {
         String psName = props.getOrDefault(Prop.POWER_SUPPLY_NAME, name);
         String status = props.get(Prop.POWER_SUPPLY_STATUS);

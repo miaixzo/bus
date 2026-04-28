@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -44,6 +44,9 @@ import com.sun.jna.platform.win32.WinDef.HWND;
 @ThreadSafe
 public final class EnumWindows {
 
+    /**
+     * The GW_HWNDNEXT constant.
+     */
     private static final DWORD GW_HWNDNEXT = new DWORD(2);
 
     /**
@@ -80,6 +83,12 @@ public final class EnumWindows {
         return windowList;
     }
 
+    /**
+     * Updates the window z order map.
+     *
+     * @param hWnd      the h wnd
+     * @param zOrderMap the z order map
+     */
     private static void updateWindowZOrderMap(HWND hWnd, Map<HWND, Integer> zOrderMap) {
         if (hWnd != null) {
             int zOrder = 1;

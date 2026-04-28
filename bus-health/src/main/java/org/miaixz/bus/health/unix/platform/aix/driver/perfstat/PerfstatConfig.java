@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -33,8 +33,14 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_partition_config_t;
 @ThreadSafe
 public final class PerfstatConfig {
 
+    /**
+     * The PERF constant.
+     */
     private static final Perfstat PERF = Perfstat.INSTANCE;
 
+    /**
+     * Creates a new PerfstatConfig instance.
+     */
     private PerfstatConfig() {
     }
 

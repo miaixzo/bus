@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -34,11 +34,30 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 @ThreadSafe
 public final class MSFTStorage {
 
-    private static final String STORAGE_NAMESPACE = "ROOT\\Microsoft\\Windows\\Storage";
-    private static final String MSFT_STORAGE_POOL_WHERE_IS_PRIMORDIAL_FALSE = "MSFT_StoragePool WHERE IsPrimordial=FALSE";
-    private static final String MSFT_STORAGE_POOL_TO_PHYSICAL_DISK = "MSFT_StoragePoolToPhysicalDisk";
-    private static final String MSFT_PHYSICAL_DISK = "MSFT_PhysicalDisk";
-    private static final String MSFT_VIRTUAL_DISK = "MSFT_VirtualDisk";
+    /**
+     * The WMI namespace for storage.
+     */
+    public static final String STORAGE_NAMESPACE = "ROOT\\Microsoft\\Windows\\Storage";
+
+    /**
+     * The WMI class name for non-primordial storage pools.
+     */
+    public static final String MSFT_STORAGE_POOL_WHERE_IS_PRIMORDIAL_FALSE = "MSFT_StoragePool WHERE IsPrimordial=FALSE";
+
+    /**
+     * The WMI class name for storage pool to physical disk associations.
+     */
+    public static final String MSFT_STORAGE_POOL_TO_PHYSICAL_DISK = "MSFT_StoragePoolToPhysicalDisk";
+
+    /**
+     * The WMI class name for physical disks.
+     */
+    public static final String MSFT_PHYSICAL_DISK = "MSFT_PhysicalDisk";
+
+    /**
+     * The WMI class name for virtual disks.
+     */
+    public static final String MSFT_VIRTUAL_DISK = "MSFT_VirtualDisk";
 
     /**
      * Query the storage pools.

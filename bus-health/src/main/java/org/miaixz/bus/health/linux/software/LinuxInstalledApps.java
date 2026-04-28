@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -32,12 +32,26 @@ import org.miaixz.bus.health.builtin.software.ApplicationInfo;
  */
 public final class LinuxInstalledApps {
 
+    /**
+     * The PIPE_PATTERN constant.
+     */
     private static final Pattern PIPE_PATTERN = Pattern.compile("\\|");
+    /**
+     * The PACKAGE_MANAGER_COMMANDS constant.
+     */
     private static final Map<String, String> PACKAGE_MANAGER_COMMANDS = initializePackageManagerCommands();
 
+    /**
+     * Creates a new LinuxInstalledApps instance.
+     */
     private LinuxInstalledApps() {
     }
 
+    /**
+     * Returns the initialize package manager commands result.
+     *
+     * @return the initialize package manager commands result
+     */
     private static Map<String, String> initializePackageManagerCommands() {
         Map<String, String> commands = new HashMap<>();
 
@@ -83,12 +97,24 @@ public final class LinuxInstalledApps {
         return Executor.runNative(command);
     }
 
+    /**
+     * Returns whether the package manager available condition is true.
+     *
+     * @param packageManager the package manager
+     * @return the is package manager available result
+     */
     private static boolean isPackageManagerAvailable(String packageManager) {
         List<String> result = Executor.runNative(packageManager + " --version");
         // If the command executes fine the result is non-empty else empty
         return !result.isEmpty();
     }
 
+    /**
+     * Parses the linux app info.
+     *
+     * @param output the output
+     * @return the parse linux app info result
+     */
     private static List<ApplicationInfo> parseLinuxAppInfo(List<String> output) {
         Set<ApplicationInfo> appInfoSet = new LinkedHashSet<>();
 

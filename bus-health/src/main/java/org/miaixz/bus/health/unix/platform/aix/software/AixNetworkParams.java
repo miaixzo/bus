@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -38,8 +38,17 @@ import com.sun.jna.platform.unix.LibCAPI;
 @ThreadSafe
 final class AixNetworkParams extends AbstractNetworkParams {
 
+    /**
+     * The LIBC constant.
+     */
     private static final AixLibc LIBC = AixLibc.INSTANCE;
 
+    /**
+     * Returns the default gateway.
+     *
+     * @param netstat the netstat
+     * @return the get default gateway result
+     */
     private static String getDefaultGateway(String netstat) {
         /*-
         $ netstat -rnf inet
@@ -63,6 +72,11 @@ final class AixNetworkParams extends AbstractNetworkParams {
         return Normal.UNKNOWN;
     }
 
+    /**
+     * Returns the host name.
+     *
+     * @return the get host name result
+     */
     @Override
     public String getHostName() {
         byte[] hostnameBuffer = new byte[LibCAPI.HOST_NAME_MAX + 1];
@@ -72,11 +86,21 @@ final class AixNetworkParams extends AbstractNetworkParams {
         return Native.toString(hostnameBuffer);
     }
 
+    /**
+     * Returns the ipv4 default gateway.
+     *
+     * @return the get ipv4 default gateway result
+     */
     @Override
     public String getIpv4DefaultGateway() {
         return getDefaultGateway("netstat -rnf inet");
     }
 
+    /**
+     * Returns the ipv6 default gateway.
+     *
+     * @return the get ipv6 default gateway result
+     */
     @Override
     public String getIpv6DefaultGateway() {
         return getDefaultGateway("netstat -rnf inet6");

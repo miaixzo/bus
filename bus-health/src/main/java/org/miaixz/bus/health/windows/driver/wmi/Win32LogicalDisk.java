@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -36,7 +36,10 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 @ThreadSafe
 public final class Win32LogicalDisk {
 
-    private static final String WIN32_LOGICAL_DISK = "Win32_LogicalDisk";
+    /**
+     * The WMI class name.
+     */
+    public static final String WIN32_LOGICAL_DISK = "Win32_LogicalDisk";
 
     /**
      * Queries logical disk information
@@ -46,18 +49,30 @@ public final class Win32LogicalDisk {
      * @return Logical Disk Information
      */
     public static WmiResult<LogicalDiskProperty> queryLogicalDisk(String nameToMatch, boolean localOnly) {
+        String wmiClassName = buildWmiClassNameWithWhere(nameToMatch, localOnly);
+        WmiQuery<LogicalDiskProperty> logicalDiskQuery = new WmiQuery<>(wmiClassName, LogicalDiskProperty.class);
+        return Objects.requireNonNull(WmiQueryHandler.createInstance()).queryWMI(logicalDiskQuery);
+    }
+
+    /**
+     * Builds the WMI class name with optional WHERE clause for logical disk queries.
+     *
+     * @param nameToMatch an optional string to filter match, null otherwise
+     * @param localOnly   whether to only search local drives
+     * @return the WMI class name with WHERE clause appended
+     */
+    public static String buildWmiClassNameWithWhere(String nameToMatch, boolean localOnly) {
         StringBuilder wmiClassName = new StringBuilder(WIN32_LOGICAL_DISK);
         boolean where = false;
         if (localOnly) {
-            wmiClassName.append(" WHERE DriveType = 2 OR DriveType = 3 OR DriveType = 6");
+            wmiClassName.append(" WHERE (DriveType = 2 OR DriveType = 3 OR DriveType = 6)");
             where = true;
         }
         if (nameToMatch != null) {
-            wmiClassName.append(where ? " AND" : " WHERE").append(" Name=\"").append(nameToMatch).append('\"');
+            wmiClassName.append(where ? " AND" : " WHERE").append(" Name=\"").append(nameToMatch.replace("\"", "\\\""))
+                    .append('"');
         }
-        WmiQuery<LogicalDiskProperty> logicalDiskQuery = new WmiQuery<>(wmiClassName.toString(),
-                LogicalDiskProperty.class);
-        return Objects.requireNonNull(WmiQueryHandler.createInstance()).queryWMI(logicalDiskQuery);
+        return wmiClassName.toString();
     }
 
     /**

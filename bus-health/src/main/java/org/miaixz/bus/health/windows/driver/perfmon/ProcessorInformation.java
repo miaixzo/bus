@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -39,8 +39,14 @@ import com.sun.jna.platform.win32.VersionHelpers;
 @ThreadSafe
 public final class ProcessorInformation {
 
+    /**
+     * The IS_WIN7_OR_GREATER constant.
+     */
     private static final boolean IS_WIN7_OR_GREATER = VersionHelpers.IsWindows7OrGreater();
 
+    /**
+     * Creates a new ProcessorInformation instance.
+     */
     private ProcessorInformation() {
     }
 
@@ -70,6 +76,9 @@ public final class ProcessorInformation {
      * @return Performance Counters for the total of all processors.
      */
     public static Map<SystemTickCountProperty, Long> querySystemCounters() {
+        if (PerfmonDisabled.PERF_OS_DISABLED) {
+            return Collections.emptyMap();
+        }
         return PerfCounterQuery.queryValues(
                 SystemTickCountProperty.class,
                 PerfmonConsts.PROCESSOR,
@@ -128,19 +137,41 @@ public final class ProcessorInformation {
 
         INTERRUPTSPERSEC(PerfCounterQuery.TOTAL_INSTANCE, "Interrupts/sec");
 
+        /**
+         * The instance value.
+         */
         private final String instance;
+        /**
+         * The counter value.
+         */
         private final String counter;
 
+        /**
+         * Creates a new InterruptsProperty instance.
+         *
+         * @param instance the instance
+         * @param counter  the counter
+         */
         InterruptsProperty(String instance, String counter) {
             this.instance = instance;
             this.counter = counter;
         }
 
+        /**
+         * Returns the instance.
+         *
+         * @return the get instance result
+         */
         @Override
         public String getInstance() {
             return instance;
         }
 
+        /**
+         * Returns the counter.
+         *
+         * @return the get counter result
+         */
         @Override
         public String getCounter() {
             return counter;
@@ -157,12 +188,25 @@ public final class ProcessorInformation {
         // Remaining elements define counters
         PERCENTOFMAXIMUMFREQUENCY("% of Maximum Frequency");
 
+        /**
+         * The counter value.
+         */
         private final String counter;
 
+        /**
+         * Creates a new ProcessorFrequencyProperty instance.
+         *
+         * @param counter the counter
+         */
         ProcessorFrequencyProperty(String counter) {
             this.counter = counter;
         }
 
+        /**
+         * Returns the counter.
+         *
+         * @return the get counter result
+         */
         @Override
         public String getCounter() {
             return counter;
@@ -183,12 +227,25 @@ public final class ProcessorInformation {
         PERCENTPROCESSORTIME("% Processor Time"), //
         PERCENTUSERTIME("% User Time");
 
+        /**
+         * The counter value.
+         */
         private final String counter;
 
+        /**
+         * Creates a new ProcessorTickCountProperty instance.
+         *
+         * @param counter the counter
+         */
         ProcessorTickCountProperty(String counter) {
             this.counter = counter;
         }
 
+        /**
+         * Returns the counter.
+         *
+         * @return the get counter result
+         */
         @Override
         public String getCounter() {
             return counter;
@@ -215,12 +272,25 @@ public final class ProcessorInformation {
         PERCENTPROCESSORUTILITY_BASE("% Processor Utility_Base"), //
         PERCENTUSERTIME("% User Time");
 
+        /**
+         * The counter value.
+         */
         private final String counter;
 
+        /**
+         * Creates a new ProcessorUtilityTickCountProperty instance.
+         *
+         * @param counter the counter
+         */
         ProcessorUtilityTickCountProperty(String counter) {
             this.counter = counter;
         }
 
+        /**
+         * Returns the counter.
+         *
+         * @return the get counter result
+         */
         @Override
         public String getCounter() {
             return counter;
@@ -235,19 +305,41 @@ public final class ProcessorInformation {
         PERCENTDPCTIME(PerfCounterQuery.TOTAL_INSTANCE, "% DPC Time"), //
         PERCENTINTERRUPTTIME(PerfCounterQuery.TOTAL_INSTANCE, "% Interrupt Time");
 
+        /**
+         * The instance value.
+         */
         private final String instance;
+        /**
+         * The counter value.
+         */
         private final String counter;
 
+        /**
+         * Creates a new SystemTickCountProperty instance.
+         *
+         * @param instance the instance
+         * @param counter  the counter
+         */
         SystemTickCountProperty(String instance, String counter) {
             this.instance = instance;
             this.counter = counter;
         }
 
+        /**
+         * Returns the instance.
+         *
+         * @return the get instance result
+         */
         @Override
         public String getInstance() {
             return instance;
         }
 
+        /**
+         * Returns the counter.
+         *
+         * @return the get counter result
+         */
         @Override
         public String getCounter() {
             return counter;
