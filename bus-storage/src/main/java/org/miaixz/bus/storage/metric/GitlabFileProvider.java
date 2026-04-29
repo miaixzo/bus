@@ -118,7 +118,7 @@ public class GitlabFileProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(content).build();
         } catch (Exception e) {
-            Logger.error("Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
+            Logger.error(false, "Storage", "Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -167,7 +167,7 @@ public class GitlabFileProvider extends AbstractProvider {
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
-            Logger.error(
+            Logger.error(false, "Storage",
                     "Failed to download file: {} from bucket: {} to local file: {}. Error: {}",
                     fileName,
                     bucket,
@@ -207,7 +207,7 @@ public class GitlabFileProvider extends AbstractProvider {
                                     }).collect(Collectors.toList()))
                     .build();
         } catch (Exception e) {
-            Logger.error("Failed to list files in bucket: {}. Error: {}", this.context.getBucket(), e.getMessage(), e);
+            Logger.error(false, "Storage", "Failed to list files in bucket: {}. Error: {}", this.context.getBucket(), e.getMessage(), e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -262,7 +262,7 @@ public class GitlabFileProvider extends AbstractProvider {
             }
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
-            Logger.error(
+            Logger.error(false, "Storage",
                     "Failed to rename file: from {} to {} in bucket: {} path: {}. Error: {}",
                     oldName,
                     newName,
@@ -366,7 +366,7 @@ public class GitlabFileProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(Blob.builder().name(fileName).url(url).path(objectKey).build()).build();
         } catch (Exception e) {
-            Logger.error(
+            Logger.error(false, "Storage",
                     "Failed to upload file: {} to bucket: {} path: {}. Error: {}",
                     fileName,
                     bucket,
@@ -416,7 +416,7 @@ public class GitlabFileProvider extends AbstractProvider {
             client.getRepositoryFileApi().deleteFile(bucket, objectKey, "master", "delete");
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
-            Logger.error(
+            Logger.error(false, "Storage",
                     "Failed to delete file: {} from bucket: {} path: {}. Error: {}",
                     fileName,
                     bucket,

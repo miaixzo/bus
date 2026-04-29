@@ -24,10 +24,14 @@ import java.io.IOException;
 import org.miaixz.bus.spring.ContextBuilder;
 import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
 import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.WebUtils;
 
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -38,15 +42,20 @@ import jakarta.servlet.http.HttpServletResponse;
  * cleaned up after the request completes to prevent data leakage between requests in thread pools.
  * </p>
  * <p>
- * Uses {@link OncePerRequestFilter} to guarantee the filter is executed only once per request, even in the case of
- * request forwarding or including.
+ * Implements once-per-request filtering directly so initialization does not emit Spring's inherited non-directional
+ * filter debug log.
  * </p>
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @Component
-public class RuntimeContextBindingFilter extends OncePerRequestFilter {
+public class RuntimeContextBindingFilter implements Filter {
+
+    /**
+     * Suffix that marks requests already processed by this filter.
+     */
+    private static final String ALREADY_FILTERED_SUFFIX = ".FILTERED";
 
     /**
      * Runtime wrapper compatibility snapshot used to decide whether the current request should be wrapped.
@@ -85,25 +94,73 @@ public class RuntimeContextBindingFilter extends OncePerRequestFilter {
      * @throws IOException      if an I/O error occurs.
      */
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        if (!(request instanceof HttpServletRequest httpRequest)
+                || !(response instanceof HttpServletResponse httpResponse)) {
+            throw new ServletException("RuntimeContextBindingFilter only supports HTTP requests");
+        }
+
+        String alreadyFilteredAttributeName = getAlreadyFilteredAttributeName();
+        boolean hasAlreadyFilteredAttribute = request.getAttribute(alreadyFilteredAttributeName) != null;
+
+        if (skipDispatch(httpRequest) || hasAlreadyFilteredAttribute) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        request.setAttribute(alreadyFilteredAttributeName, Boolean.TRUE);
+        try {
+            doFilterInternal(httpRequest, httpResponse, filterChain);
+        } finally {
+            request.removeAttribute(alreadyFilteredAttributeName);
+        }
+    }
+
+    /**
+     * Wraps the request and response if necessary.
+     *
+     * @param request     The original HTTP request.
+     * @param response    The original HTTP response.
+     * @param filterChain The filter chain.
+     * @throws ServletException if a servlet-specific error occurs.
+     * @throws IOException      if an I/O error occurs.
+     */
+    private void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         try {
-            // Initialize the request context (generates request ID and stores in ThreadLocal)
             ContextBuilder.init();
 
-            if (this.options.shouldWrap(request)) {
-                if (!(request instanceof MutableRequestWrapper)) {
-                    request = new MutableRequestWrapper(request);
-                }
+            if (this.options.shouldWrap(request) && !(request instanceof MutableRequestWrapper)) {
+                request = new MutableRequestWrapper(request);
             }
             if (!(response instanceof MutableResponseWrapper)) {
                 response = new MutableResponseWrapper(response);
             }
             filterChain.doFilter(request, response);
         } finally {
-            // Clean up the request context (removes ThreadLocal and clears cache)
             ContextBuilder.clear();
         }
+    }
+
+    /**
+     * Returns the request attribute used to detect repeat filtering.
+     *
+     * @return The already-filtered request attribute name.
+     */
+    private String getAlreadyFilteredAttributeName() {
+        return RuntimeContextBindingFilter.class.getName() + ALREADY_FILTERED_SUFFIX;
+    }
+
+    /**
+     * Determines whether async or error dispatches should bypass this filter.
+     *
+     * @param request The current HTTP request.
+     * @return {@code true} when this dispatch should bypass the filter.
+     */
+    private boolean skipDispatch(HttpServletRequest request) {
+        return DispatcherType.ASYNC.equals(request.getDispatcherType())
+                || request.getAttribute(WebUtils.ERROR_REQUEST_URI_ATTRIBUTE) != null;
     }
 
 }

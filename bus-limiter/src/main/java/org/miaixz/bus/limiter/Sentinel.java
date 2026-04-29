@@ -69,7 +69,7 @@ public class Sentinel {
                     }
                 } else {
                     if (Holder.load().isLogger()) {
-                        Logger.info("Trigger fallback strategy for [{}], args: [{}]", name, JsonKit.toJsonString(args));
+                        Logger.info(false, "Limiter", "Trigger fallback strategy for [{}], args: [{}]", name, JsonKit.toJsonString(args));
                     }
                     // Call the fallback method
                     return StrategyManager.get(strategyMode).process(bean, method, args);
@@ -84,7 +84,7 @@ public class Sentinel {
                     return MethodKit.invoke(bean, method, args);
                 } catch (BlockException e) {
                     if (Holder.load().isLogger()) {
-                        Logger.info(" Trigger hotspot strategy for [{}], args: [{}]", name, JsonKit.toJsonString(args));
+                        Logger.info(false, "Limiter", " Trigger hotspot strategy for [{}], args: [{}]", name, JsonKit.toJsonString(args));
                     }
                     return StrategyManager.get(strategyMode).process(bean, method, args);
                 } finally {
@@ -94,7 +94,7 @@ public class Sentinel {
                 }
             case REQUEST_LIMIT:
                 if (Holder.load().isLogger()) {
-                    Logger.info("Trigger requestLimit strategy for [{}], args: [{}]", name, JsonKit.toJsonString(args));
+                    Logger.info(true, "Limiter", "Trigger requestLimit strategy for [{}], args: [{}]", name, JsonKit.toJsonString(args));
                 }
                 return StrategyManager.get(strategyMode).process(bean, method, args);
 

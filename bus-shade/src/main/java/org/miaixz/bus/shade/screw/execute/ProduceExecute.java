@@ -61,7 +61,7 @@ public class ProduceExecute extends AbstractExecute {
             TemplateEngine produce = new EngineFactory(config.getEngineConfig()).newInstance();
             // Generate the document.
             produce.produce(dataModel, getDocName(dataModel.getDatabase()));
-            Logger.debug(
+            Logger.debug(false, "Shade",
                     "database document generation complete time consuming:{}ms",
                     System.currentTimeMillis() - start);
         } catch (Exception e) {

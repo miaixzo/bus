@@ -284,9 +284,9 @@ public final class Privilege {
                 }
                 String error = new String(stderr, StandardCharsets.UTF_8).trim();
                 if (reportError) {
-                    Logger.error("Privileged cat exited with code {}: {}", exitCode, error);
+                    Logger.error(false, "Health", "Privileged cat exited with code {}: {}", exitCode, error);
                 } else {
-                    Logger.debug("Privileged cat exited with code {}: {}", exitCode, error);
+                    Logger.debug(false, "Health", "Privileged cat exited with code {}: {}", exitCode, error);
                 }
             } finally {
                 Executor.destroyProcess(p);
@@ -295,7 +295,7 @@ public final class Privilege {
             if (e instanceof InterruptedException) {
                 Thread.currentThread().interrupt();
             }
-            Logger.debug("Failed to execute privileged cat command: {}", e.getMessage());
+            Logger.debug(false, "Health", "Failed to execute privileged cat command: {}", e.getMessage());
         }
         return new byte[0];
     }
@@ -364,7 +364,7 @@ public final class Privilege {
         cmdList.add("cat");
         cmdList.add(filePath);
         String[] cmdArray = cmdList.toArray(new String[0]);
-        Logger.debug("Attempting privileged file read: {}", Arrays.toString(cmdArray));
+        Logger.debug(false, "Health", "Attempting privileged file read: {}", Arrays.toString(cmdArray));
         return cmdArray;
     }
 

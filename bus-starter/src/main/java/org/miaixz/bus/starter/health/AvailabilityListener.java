@@ -61,15 +61,15 @@ public class AvailabilityListener {
         String stateName = state.toString();
 
         if (state == ReadinessState.ACCEPTING_TRAFFIC) {
-            Logger.debug("Health system is ready to accept traffic at {}: {}", timestamp, stateName);
+            Logger.debug(false, "Health", "Health system is ready to accept traffic at {}: {}", timestamp, stateName);
         } else if (state == ReadinessState.REFUSING_TRAFFIC) {
-            Logger.debug("Health system is refusing traffic at {}: {}", timestamp, stateName);
+            Logger.debug(false, "Health", "Health system is refusing traffic at {}: {}", timestamp, stateName);
         } else if (state == LivenessState.BROKEN) {
-            Logger.debug("Health system is in a broken state at {}: {}", timestamp, stateName);
+            Logger.debug(false, "Health", "Health system is in a broken state at {}: {}", timestamp, stateName);
         } else if (state == LivenessState.CORRECT) {
-            Logger.debug("Health system is in a correct state at {}: {}", timestamp, stateName);
+            Logger.debug(false, "Health", "Health system is in a correct state at {}: {}", timestamp, stateName);
         } else {
-            Logger.warn("Health unknown availability state detected at {}: {}", timestamp, stateName);
+            Logger.warn(false, "Health", "Health unknown availability state detected at {}: {}", timestamp, stateName);
         }
     }
 

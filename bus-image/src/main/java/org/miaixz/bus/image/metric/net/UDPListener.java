@@ -52,30 +52,30 @@ public class UDPListener implements Listener {
 
     public void listen() {
         SocketAddress sockAddr = ds.getLocalSocketAddress();
-        Logger.info("Start UDP listener on {}", sockAddr);
+        Logger.info(true, "ImageNet", "Start UDP listener on {}", sockAddr);
         byte[] data = new byte[MAX_PACKAGE_LEN];
         try {
             while (!ds.isClosed()) {
-                Logger.debug("Wait for UDP datagram package on {}", sockAddr);
+                Logger.debug(false, "ImageNet", "Wait for UDP datagram package on {}", sockAddr);
                 DatagramPacket dp = new DatagramPacket(data, MAX_PACKAGE_LEN);
                 ds.receive(dp);
                 InetAddress senderAddr = dp.getAddress();
                 if (conn.isBlackListed(dp.getAddress())) {
-                    Logger.info("Ignore UDP datagram package received from blacklisted {}", senderAddr);
+                    Logger.info(false, "ImageNet", "Ignore UDP datagram package received from blacklisted {}", senderAddr);
                 } else {
-                    Logger.info("Received UDP datagram package from {}", senderAddr);
+                    Logger.info(false, "ImageNet", "Received UDP datagram package from {}", senderAddr);
                     try {
                         handler.onReceive(conn, dp);
                     } catch (Throwable e) {
-                        Logger.warn("Exception processing UDP received from {}:", senderAddr, e);
+                        Logger.warn(false, "ImageNet", "Exception processing UDP received from {}:", senderAddr, e);
                     }
                 }
             }
         } catch (Throwable e) {
             if (!ds.isClosed()) // ignore exception caused by close()
-                Logger.error("Exception on listing on {}:", sockAddr, e);
+                Logger.error(false, "ImageNet", "Exception on listing on {}:", sockAddr, e);
         }
-        Logger.info("Stop UDP listener on {}", sockAddr);
+        Logger.info(false, "ImageNet", "Stop UDP listener on {}", sockAddr);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class UDPListener implements Listener {
             ds.close();
         } catch (Throwable e) {
             // Ignore errors when closing datagram socket
-            Logger.error(e.getMessage());
+            Logger.error(false, "ImageNet", e.getMessage());
         }
     }
 

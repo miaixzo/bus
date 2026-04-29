@@ -157,9 +157,9 @@ public class Modality {
      * @throws IOException if an I/O error occurs while reading from the console.
      */
     private static void printNextStepMessage(String message) throws IOException {
-        Logger.info("===========================================================");
-        Logger.info(message + ". Press <enter> to continue.");
-        Logger.info("===========================================================");
+        Logger.info(false, "ImageTool", "===========================================================");
+        Logger.info(false, "ImageTool", message + ". Press <enter> to continue.");
+        Logger.info(false, "ImageTool", "===========================================================");
         new BufferedReader(new InputStreamReader(System.in)).read();
     }
 

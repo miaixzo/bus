@@ -114,11 +114,11 @@ public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
     @Override
     public synchronized void start() {
         if (!binding.isEnabled()) {
-            Logger.info("Worker is disabled, skipping initialization");
+            Logger.info(false, "Tempus", "Worker is disabled, skipping initialization");
             return;
         }
         if (state == EnumValue.Lifecycle.RUNNING) {
-            Logger.info("Worker already running, queue: {}", binding.getTaskQueue());
+            Logger.info(false, "Tempus", "Worker already running, queue: {}", binding.getTaskQueue());
             return;
         }
         if (state == EnumValue.Lifecycle.STARTING) {
@@ -133,37 +133,37 @@ public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
 
         state = EnumValue.Lifecycle.STARTING;
         try {
-            Logger.info(
+            Logger.info(true, "Tempus",
                     "Initializing worker, endpoint: {}, queue: {}, maxConcurrent: {}",
                     binding.getEndpoint(),
                     binding.getTaskQueue(),
                     binding.getMaxConcurrent());
 
             serviceStubs = provider.createServiceStubs(binding);
-            Logger.debug("Created service stubs for endpoint: {}", binding.getEndpoint());
+            Logger.debug(false, "Tempus", "Created service stubs for endpoint: {}", binding.getEndpoint());
 
             WorkflowClient client = provider.createWorkflowClient(serviceStubs, binding);
-            Logger.debug("Created workflow client");
+            Logger.debug(false, "Tempus", "Created workflow client");
 
             workerFactory = WorkerFactory.newInstance(client);
-            Logger.debug("Created worker factory");
+            Logger.debug(false, "Tempus", "Created worker factory");
 
             WorkerOptions workerOptions = factory.createWorkerOptions(binding.getMaxConcurrent());
             Worker worker = workerFactory.newWorker(binding.getTaskQueue(), workerOptions);
-            Logger.debug("Created worker for queue: {}", binding.getTaskQueue());
+            Logger.debug(false, "Tempus", "Created worker for queue: {}", binding.getTaskQueue());
 
             binding.registerWorkflowsAndActivities(worker);
-            Logger.debug("Registered workflows and activities");
+            Logger.debug(true, "Tempus", "Registered workflows and activities");
 
             workerFactory.start();
             state = EnumValue.Lifecycle.RUNNING;
 
-            Logger.info("Worker started successfully, listening on queue: {}", binding.getTaskQueue());
+            Logger.info(false, "Tempus", "Worker started successfully, listening on queue: {}", binding.getTaskQueue());
 
         } catch (Exception e) {
             state = EnumValue.Lifecycle.UNKNOWN;
             cleanupResources();
-            Logger.error(
+            Logger.error(false, "Tempus",
                     "Failed to start worker, endpoint: {}, queue: {}, error: {}",
                     binding.getEndpoint(),
                     binding.getTaskQueue(),
@@ -209,23 +209,23 @@ public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
     private void cleanupResources() {
         try {
             if (workerFactory != null) {
-                Logger.info("Shutting down worker...");
+                Logger.info(false, "Tempus", "Shutting down worker...");
                 workerFactory.shutdown();
                 workerFactory.awaitTermination(10, TimeUnit.SECONDS);
-                Logger.info("Worker shutdown completed");
+                Logger.info(false, "Tempus", "Worker shutdown completed");
             }
         } catch (Exception e) {
             if (ExceptionKit.isCausedBy(e, InterruptedException.class)) {
                 Thread.currentThread().interrupt();
             }
-            Logger.warn("Worker shutdown encountered an error: {}", e.getMessage(), e);
+            Logger.warn(false, "Tempus", "Worker shutdown encountered an error: {}", e.getMessage(), e);
         } finally {
             workerFactory = null;
             if (serviceStubs != null) {
                 try {
-                    Logger.info("Shutting down service stubs for endpoint: {}", binding.getEndpoint());
+                    Logger.info(false, "Tempus", "Shutting down service stubs for endpoint: {}", binding.getEndpoint());
                     provider.shutdownServiceStubs(serviceStubs);
-                    Logger.info("Service stubs shutdown completed");
+                    Logger.info(false, "Tempus", "Service stubs shutdown completed");
                 } finally {
                     serviceStubs = null;
                 }

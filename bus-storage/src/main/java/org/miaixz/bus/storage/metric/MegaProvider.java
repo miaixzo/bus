@@ -130,7 +130,7 @@ public class MegaProvider extends AbstractProvider {
         // Check if session ID is provided in extension
         if (StringKit.isNotBlank(this.context.getExtension())) {
             this.sessionId = this.context.getExtension();
-            Logger.info("Using provided session ID for Mega authentication");
+            Logger.info(false, "Storage", "Using provided session ID for Mega authentication");
         } else {
             // Perform login to get session ID
             login();
@@ -145,7 +145,7 @@ public class MegaProvider extends AbstractProvider {
             // Note: Full Mega authentication requires complex cryptographic operations
             // including RSA key derivation, AES encryption, and challenge-response
             // This is a simplified placeholder that demonstrates the API structure
-            Logger.warn(
+            Logger.warn(false, "Storage",
                     "Mega authentication requires complex cryptographic operations. "
                             + "Please provide a valid session ID in the 'extension' field of the context.");
 
@@ -160,7 +160,7 @@ public class MegaProvider extends AbstractProvider {
             this.sessionId = null;
             this.rootHandle = null;
         } catch (Exception e) {
-            Logger.error("Failed to authenticate with Mega. Error: {}", e.getMessage(), e);
+            Logger.error(false, "Storage", "Failed to authenticate with Mega. Error: {}", e.getMessage(), e);
             throw new RuntimeException("Mega authentication failed: " + e.getMessage(), e);
         }
     }
@@ -271,7 +271,7 @@ public class MegaProvider extends AbstractProvider {
                         .data(content).build();
             }
         } catch (Exception e) {
-            Logger.error("Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
+            Logger.error(false, "Storage", "Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
         }
     }
@@ -308,7 +308,7 @@ public class MegaProvider extends AbstractProvider {
                 return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                         .build();
             } catch (IOException e) {
-                Logger.error("Failed to write file: {}. Error: {}", file.getPath(), e.getMessage(), e);
+                Logger.error(false, "Storage", "Failed to write file: {}. Error: {}", file.getPath(), e.getMessage(), e);
                 return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
             }
         }
@@ -377,7 +377,7 @@ public class MegaProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(blobs).build();
         } catch (Exception e) {
-            Logger.error("Failed to list files in bucket: {}. Error: {}", bucket, e.getMessage(), e);
+            Logger.error(false, "Storage", "Failed to list files in bucket: {}. Error: {}", bucket, e.getMessage(), e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
         }
     }
@@ -445,7 +445,7 @@ public class MegaProvider extends AbstractProvider {
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
-            Logger.error("Failed to rename file: {} to {}. Error: {}", oldName, newName, e.getMessage(), e);
+            Logger.error(false, "Storage", "Failed to rename file: {} to {}. Error: {}", oldName, newName, e.getMessage(), e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
         }
     }
@@ -542,7 +542,7 @@ public class MegaProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(Blob.builder().name(fileName).build()).build();
         } catch (Exception e) {
-            Logger.error("Failed to upload file: {} to bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
+            Logger.error(false, "Storage", "Failed to upload file: {} to bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
         }
     }
@@ -588,7 +588,7 @@ public class MegaProvider extends AbstractProvider {
             byte[] bytes = IoKit.readBytes(content);
             return upload(bucket, path, fileName, bytes);
         } catch (Exception e) {
-            Logger.error("Failed to read input stream. Error: {}", e.getMessage(), e);
+            Logger.error(false, "Storage", "Failed to read input stream. Error: {}", e.getMessage(), e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
         }
     }
@@ -652,7 +652,7 @@ public class MegaProvider extends AbstractProvider {
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
-            Logger.error("Failed to remove file: {}. Error: {}", fileName, e.getMessage(), e);
+            Logger.error(false, "Storage", "Failed to remove file: {}. Error: {}", fileName, e.getMessage(), e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
         }
     }

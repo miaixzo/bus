@@ -268,7 +268,7 @@ public class SpecificCharacterSet {
                         results[i] = "ISO 2022 " + code.substring(4);
                         continue;
                 }
-                Logger.info(
+                Logger.info(false, "Image",
                         "Invalid Specific Character Set: [{}] - treat as [{}]",
                         Builder.concat(codes, '\\'),
                         Builder.maskNull(codes[0], ""));
@@ -276,7 +276,7 @@ public class SpecificCharacterSet {
             }
         }
         if (codes != results) {
-            Logger.info(
+            Logger.info(false, "Image",
                     "Invalid Specific Character Set: [{}] - treat as [{}]",
                     Builder.concat(codes, '\\'),
                     Builder.concat(results, '\\'));
@@ -298,7 +298,7 @@ public class SpecificCharacterSet {
                 String[] clone = codes.clone();
                 clone[0] = codes[i];
                 clone[i] = codes[0];
-                Logger.info(
+                Logger.info(false, "Image",
                         "Invalid Specific Character Set: [{}] - treat as [{}]",
                         Builder.concat(codes, '\\'),
                         Builder.concat(clone, '\\'));
@@ -308,7 +308,7 @@ public class SpecificCharacterSet {
         String[] withASCII = new String[1 + codes.length];
         withASCII[0] = "";
         System.arraycopy(codes, 0, withASCII, 1, codes.length);
-        Logger.info(
+        Logger.info(false, "Image",
                 "Invalid Specific Character Set: [{}] - treat as [{}]",
                 Builder.concat(codes, '\\'),
                 Builder.concat(withASCII, '\\'));

@@ -255,6 +255,20 @@ public class Logger {
     }
 
     /**
+     * Logs an aligned message at the WARN level with an exception using the default prefix width.
+     *
+     * @param isEntry The direction: true (==&gt;) for entry/inbound, false (&lt;==) for exit/outbound.
+     * @param tag     The log tag (e.g., "Vetting").
+     * @param e       The exception to log.
+     * @param message The log message with SLF4J placeholders ({}).
+     * @param args    The arguments for the placeholders.
+     */
+    public static void warn(boolean isEntry, String tag, Throwable e, String message, Object... args) {
+        String formattedMessage = build(WIDTH, tag, isEntry) + Symbol.SPACE + message;
+        warn(Registry.get(CallerKit.getCallers()), e, formattedMessage, args);
+    }
+
+    /**
      * Logs an aligned message at the WARN level.
      *
      * @param isEntry The direction: true (==&gt;) for entry/inbound, false (&lt;==) for exit/outbound.
@@ -266,6 +280,21 @@ public class Logger {
     public static void warn(boolean isEntry, String tag, int width, String message, Object... args) {
         String formattedMessage = build(width, tag, isEntry) + Symbol.SPACE + message;
         warn(Registry.get(CallerKit.getCallers()), formattedMessage, args);
+    }
+
+    /**
+     * Logs an aligned message at the WARN level with an exception.
+     *
+     * @param isEntry The direction: true (==&gt;) for entry/inbound, false (&lt;==) for exit/outbound.
+     * @param tag     The log tag (e.g., "Vetting").
+     * @param width   The desired total width of the prefix.
+     * @param e       The exception to log.
+     * @param message The log message with SLF4J placeholders ({}).
+     * @param args    The arguments for the placeholders.
+     */
+    public static void warn(boolean isEntry, String tag, int width, Throwable e, String message, Object... args) {
+        String formattedMessage = build(width, tag, isEntry) + Symbol.SPACE + message;
+        warn(Registry.get(CallerKit.getCallers()), e, formattedMessage, args);
     }
 
     /**
@@ -346,6 +375,20 @@ public class Logger {
     }
 
     /**
+     * Logs an aligned message at the ERROR level with an exception using the default prefix width.
+     *
+     * @param isEntry The direction: true (==&gt;) for entry/inbound, false (&lt;==) for exit/outbound.
+     * @param tag     The log tag (e.g., "Vetting").
+     * @param e       The exception to log.
+     * @param message The log message with SLF4J placeholders ({}).
+     * @param args    The arguments for the placeholders.
+     */
+    public static void error(boolean isEntry, String tag, Throwable e, String message, Object... args) {
+        String formattedMessage = build(WIDTH, tag, isEntry) + Symbol.SPACE + message;
+        error(Registry.get(CallerKit.getCallers()), e, formattedMessage, args);
+    }
+
+    /**
      * Logs an aligned message at the ERROR level.
      *
      * @param isEntry The direction: true (==&gt;) for entry/inbound, false (&lt;==) for exit/outbound.
@@ -357,6 +400,21 @@ public class Logger {
     public static void error(boolean isEntry, String tag, int width, String message, Object... args) {
         String formattedMessage = build(width, tag, isEntry) + Symbol.SPACE + message;
         error(Registry.get(CallerKit.getCallers()), formattedMessage, args);
+    }
+
+    /**
+     * Logs an aligned message at the ERROR level with an exception.
+     *
+     * @param isEntry The direction: true (==&gt;) for entry/inbound, false (&lt;==) for exit/outbound.
+     * @param tag     The log tag (e.g., "Vetting").
+     * @param width   The desired total width of the prefix.
+     * @param e       The exception to log.
+     * @param message The log message with SLF4J placeholders ({}).
+     * @param args    The arguments for the placeholders.
+     */
+    public static void error(boolean isEntry, String tag, int width, Throwable e, String message, Object... args) {
+        String formattedMessage = build(width, tag, isEntry) + Symbol.SPACE + message;
+        error(Registry.get(CallerKit.getCallers()), e, formattedMessage, args);
     }
 
     /**

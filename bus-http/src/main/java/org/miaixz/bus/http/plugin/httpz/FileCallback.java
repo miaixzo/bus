@@ -81,7 +81,7 @@ public abstract class FileCallback implements Callback {
                 onSuccess(call, response.body().byteStream(), id);
             }
         } catch (IOException e) {
-            Logger.error(e.getMessage(), e);
+            Logger.error(false, "HTTP", e.getMessage(), e);
         }
     }
 

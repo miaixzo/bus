@@ -100,7 +100,7 @@ public class FixLO2UN extends SimpleFileVisitor<Path> {
             int length;
             while ((length = correctLength(mbb)) > 0) {
                 int position = mbb.position();
-                Logger.info(
+                Logger.info(false, "ImageTool",
                         "  %d: (%02X%02X,%02X%02X) LO #%d -> UN #%d%n",
                         position - 6,
                         mbb.get(position - 5),
@@ -120,9 +120,9 @@ public class FixLO2UN extends SimpleFileVisitor<Path> {
             mbb.reset();
             ofc.write(mbb);
         } catch (FileAlreadyExistsException e) {
-            Logger.warn("Destination file {} already exists, skipping.", dstFile);
+            Logger.warn(false, "ImageTool", "Destination file {} already exists, skipping.", dstFile);
         } catch (Exception e) {
-            Logger.error("Failed to process file {}: {}", srcFile, e.getMessage());
+            Logger.error(false, "ImageTool", "Failed to process file {}: {}", srcFile, e.getMessage());
         }
         return FileVisitResult.CONTINUE;
     }

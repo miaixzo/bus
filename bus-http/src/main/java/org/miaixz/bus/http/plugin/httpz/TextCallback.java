@@ -47,7 +47,7 @@ public abstract class TextCallback implements Callback {
         try {
             onSuccess(call, response.body().string(), id);
         } catch (IOException e) {
-            Logger.error(e.getMessage(), e);
+            Logger.error(false, "HTTP", e.getMessage(), e);
         }
     }
 
@@ -60,8 +60,8 @@ public abstract class TextCallback implements Callback {
      */
     @Override
     public void onFailure(NewCall call, Exception e, String id) {
-        Logger.error("onFailure id:{}", id);
-        Logger.error(e.getMessage(), e);
+        Logger.error(false, "HTTP", "onFailure id:{}", id);
+        Logger.error(false, "HTTP", e.getMessage(), e);
     }
 
     /**

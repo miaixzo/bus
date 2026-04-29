@@ -605,7 +605,7 @@ public class StoreBackedItemStore {
      * @param fallback   fallback behavior description
      */
     private void capabilityFallback(String operation, Trait capability, String fallback) {
-        Logger.warn(
+        Logger.warn(false, "Cortex",
                 "Setting item store capability missing: operation={}, capability={}, fallback={}",
                 operation,
                 capability == null ? null : capability.key(),

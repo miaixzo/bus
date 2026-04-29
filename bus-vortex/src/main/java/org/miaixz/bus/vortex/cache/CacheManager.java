@@ -101,7 +101,7 @@ public class CacheManager<K, V> {
         this.cache = new ConcurrentHashMap<>();
         this.cachex = new GuavaCache<>(cacheSize, cacheExpireMs);
 
-        Logger.debug(
+        Logger.debug(false, "Cache",
                 "Cache initialized: L1=ConcurrentHashMap, L2=GuavaCache(size={}, expireMs={})",
                 cacheSize,
                 cacheExpireMs);
@@ -120,7 +120,7 @@ public class CacheManager<K, V> {
         this.cache = new ConcurrentHashMap<>();
         this.cachex = new CaffeineCache(cacheSize, cacheExpireMs);
 
-        Logger.debug(
+        Logger.debug(false, "Cache",
                 "Cache initialized: L1=ConcurrentHashMap, L2=CaffeineCache(size={}, expireMs={})",
                 cacheSize,
                 cacheExpireMs);
@@ -133,7 +133,7 @@ public class CacheManager<K, V> {
      */
     public void setPerformanceMonitor(Monitor monitor) {
         this.monitor = monitor;
-        Logger.debug("Cache performance monitor configured");
+        Logger.debug(false, "Cache", "Cache performance monitor configured");
     }
 
     /**
@@ -180,7 +180,7 @@ public class CacheManager<K, V> {
             return null;
 
         } catch (Exception e) {
-            Logger.error("Cache read failed: key={}, error={}", key, e.getMessage(), e);
+            Logger.error(false, "Cache", "Cache read failed: key={}, error={}", key, e.getMessage(), e);
             return null;
         }
     }
@@ -196,7 +196,7 @@ public class CacheManager<K, V> {
             this.cache.put(key, value);
             this.cachex.write(key, value, cacheExpireMs);
         } catch (Exception e) {
-            Logger.error("Cache write failed: key={}, error={}", key, e.getMessage(), e);
+            Logger.error(false, "Cache", "Cache write failed: key={}, error={}", key, e.getMessage(), e);
             throw e;
         }
     }
@@ -211,7 +211,7 @@ public class CacheManager<K, V> {
             this.cache.remove(key);
             this.cachex.remove(key);
         } catch (Exception e) {
-            Logger.error("Cache removal failed: key={}, error={}", key, e.getMessage(), e);
+            Logger.error(false, "Cache", "Cache removal failed: key={}, error={}", key, e.getMessage(), e);
         }
     }
 

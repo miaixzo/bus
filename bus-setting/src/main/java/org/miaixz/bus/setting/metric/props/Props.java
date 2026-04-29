@@ -356,15 +356,15 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
      * {@code Props} object.
      * <p>
      * Example:
-     * 
+     *
      * <pre>
      * a.b = 1
      * a.c = 2
      * b.a = 3
      * </pre>
-     * 
+     *
      * Calling {@code getSubProps("a")} would return a {@code Props} object containing:
-     * 
+     *
      * <pre>
      * b = 1
      * c = 2
@@ -454,7 +454,7 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
                 BeanKit.setProperty(bean, StringKit.subSuf(key, prefix.length()), entry.getValue());
             } catch (final Exception e) {
                 // Ignore fields that fail to set (they might be for other configurations)
-                Logger.debug("Ignore property: [{}], because of: {}", key, e.getMessage());
+                Logger.debug(false, "Setting", "Ignore property: [{}], because of: {}", key, e.getMessage());
             }
         }
 
@@ -477,7 +477,7 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
      * properties from a bean's getters.
      * <p>
      * Example:
-     * 
+     *
      * <pre>
      * User user = new User("test", "Test User");
      * Props.of().setFields(user::getUsername, user::getNickname);

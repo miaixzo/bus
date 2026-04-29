@@ -46,13 +46,13 @@ public class ItemWatcher implements Listener<Watch<String>> {
     @Override
     public void onEvent(Watch<String> event) {
         for (String item : event.getAdded()) {
-            Logger.info("Setting added: {}", item);
+            Logger.info(false, "Cortex", "Setting added: {}", item);
         }
         for (String item : event.getRemoved()) {
-            Logger.info("Setting removed: {}", item);
+            Logger.info(false, "Cortex", "Setting removed: {}", item);
         }
         for (String item : event.getUpdated()) {
-            Logger.info("Setting updated: {}", item);
+            Logger.info(false, "Cortex", "Setting updated: {}", item);
         }
     }
 

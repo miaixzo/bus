@@ -68,7 +68,7 @@ public class ByteBuddyProxy {
      * @throws Exception if an error occurs during proxy creation.
      */
     public Object proxy() throws Exception {
-        Logger.debug("proxy {}.", originalClazz.getSimpleName());
+        Logger.debug(false, "Limiter", "proxy {}.", originalClazz.getSimpleName());
         return new ByteBuddy().subclass(originalClazz)
                 .name(StringKit.format("{}$ByteBuddy${}", originalClazz.getName(), DateKit.current()))
                 .method(ElementMatchers.any()).intercept(InvocationHandlerAdapter.of(new ByteBuddyHandler(this)))

@@ -110,7 +110,7 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
                 producer.close();
                 Logger.info(true, "MQ", "Producer evicted from cache: broker={}", key);
             } catch (Exception e) {
-                Logger.error("Failed to close evicted MQ Producer for broker: {}", key, e);
+                Logger.error(false, "MQ", "Failed to close evicted MQ Producer for broker: {}", key, e);
             }
         });
 
@@ -225,7 +225,7 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
             producer.send(message);
             return "{\"status\": \"Request forwarded to MQ\"}";
         }).subscribeOn(Schedulers.fromExecutor(this.executor))
-                .doOnError(e -> Logger.error("Failed to send message to topic '{}'", assets.getMethod(), e));
+                .doOnError(e -> Logger.error(false, "MQ", "Failed to send message to topic '{}'", assets.getMethod(), e));
     }
 
     /**
@@ -269,10 +269,10 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
     @Override
     public Mono<ServerResponse> destroy() {
         return Mono.fromRunnable(() -> {
-            Logger.info("MQ resources shutting down");
+            Logger.info(false, "MQ", "MQ resources shutting down");
             producerCache.clear();
             this.executor.shutdown();
-            Logger.info("MQ resources stopped");
+            Logger.info(false, "MQ", "MQ resources stopped");
         }).subscribeOn(Schedulers.boundedElastic()).then(Mono.empty());
     }
 

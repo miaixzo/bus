@@ -782,7 +782,7 @@ public class ImageProcessor {
             try {
                 return Imgcodecs.imwrite(file.getPath(), source);
             } catch (OutOfMemoryError | CvException e) {
-                Logger.error("Writing Image", e);
+                Logger.error(false, "Image", "Writing Image", e);
                 FileKit.remove(file);
             }
         }
@@ -810,7 +810,7 @@ public class ImageProcessor {
                     }
                 }
             } catch (OutOfMemoryError | CvException e) {
-                Logger.error("Writing thumbnail", e);
+                Logger.error(false, "Image", "Writing thumbnail", e);
                 FileKit.remove(file);
             }
         }
@@ -841,7 +841,7 @@ public class ImageProcessor {
             try {
                 return Imgcodecs.imwrite(file.getPath(), srcImg);
             } catch (OutOfMemoryError | CvException e) {
-                Logger.error("", e);
+                Logger.error(false, "Image", "", e);
                 FileKit.remove(file);
             } finally {
                 ImageConversion.releaseMat(dstImg);
@@ -862,7 +862,7 @@ public class ImageProcessor {
             try (ImageCV dstImg = ImageConversion.toMat(source)) {
                 return Imgcodecs.imwrite(file.getPath(), dstImg);
             } catch (OutOfMemoryError | CvException e) {
-                Logger.error("", e);
+                Logger.error(false, "Image", "", e);
                 FileKit.remove(file);
             }
         }
@@ -883,7 +883,7 @@ public class ImageProcessor {
             try {
                 return Imgcodecs.imwrite(file.getPath(), source, params);
             } catch (OutOfMemoryError | CvException e) {
-                Logger.error("Writing image", e);
+                Logger.error(false, "Image", "Writing image", e);
                 FileKit.remove(file);
             }
         }
@@ -901,7 +901,7 @@ public class ImageProcessor {
         try {
             return readImageWithCvException(file, tags);
         } catch (OutOfMemoryError | CvException e) {
-            Logger.error("Reading image", e);
+            Logger.error(false, "Image", "Reading image", e);
             return null;
         }
     }

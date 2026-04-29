@@ -98,7 +98,7 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
     private WorkflowClient createAndCacheClient(Binding binding) {
         String endpoint = binding.getEndpoint();
         Object serviceStubs = serviceStubsCache.computeIfAbsent(endpoint, key -> createServiceStubs(binding));
-        Logger.info(
+        Logger.info(true, "Tempus",
                 "Creating workflow client for endpoint: {}, namespace: {}, identity: {}",
                 endpoint,
                 binding.getNamespace(),
@@ -107,7 +107,7 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
         try {
             return stubsProvider.createWorkflowClient(serviceStubs, binding);
         } catch (Exception e) {
-            Logger.error(
+            Logger.error(false, "Tempus",
                     "Failed to create workflow client for endpoint: {}, namespace: {}, identity: {}, error: {}",
                     endpoint,
                     binding.getNamespace(),
@@ -126,7 +126,7 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
      */
     private Object createServiceStubs(Binding binding) {
         String endpoint = binding.getEndpoint();
-        Logger.info(
+        Logger.info(true, "Tempus",
                 "Creating workflow service stubs for endpoint: {}, namespace: {}, identity: {}",
                 endpoint,
                 binding.getNamespace(),
@@ -134,7 +134,7 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
         try {
             return stubsProvider.createServiceStubs(binding);
         } catch (Exception e) {
-            Logger.error(
+            Logger.error(false, "Tempus",
                     "Failed to create workflow service stubs for endpoint: {}, namespace: {}, identity: {}, error: {}",
                     endpoint,
                     binding.getNamespace(),
@@ -175,7 +175,7 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
         if (detached != null) {
             retiredServiceStubs.offer(detached);
         }
-        Logger.info("Invalidated cached clients and detached service stubs for endpoint: {}", endpoint);
+        Logger.info(false, "Tempus", "Invalidated cached clients and detached service stubs for endpoint: {}", endpoint);
     }
 
     /**
@@ -206,9 +206,9 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
         }
         try {
             stubsProvider.shutdownServiceStubs(serviceStubs);
-            Logger.debug("Closed workflow service stubs for endpoint: {}", endpoint);
+            Logger.debug(false, "Tempus", "Closed workflow service stubs for endpoint: {}", endpoint);
         } catch (Exception e) {
-            Logger.warn(
+            Logger.warn(false, "Tempus",
                     "Failed to close workflow service stubs for endpoint: {}, error: {}",
                     endpoint,
                     e.getMessage(),

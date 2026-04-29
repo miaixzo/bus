@@ -91,7 +91,7 @@ public class WorkflowPublisherManager implements Publisher {
      */
     @Override
     public String publish(Object... args) {
-        Logger.debug(
+        Logger.debug(false, "Tempus",
                 "Publishing workflow, type: {}, endpoint: {}, queue: {}, args: {}",
                 binding.getWorkflowType(),
                 binding.getEndpoint(),
@@ -108,7 +108,7 @@ public class WorkflowPublisherManager implements Publisher {
                 if (!retryable) {
                     break;
                 }
-                Logger.warn(
+                Logger.warn(false, "Tempus",
                         "Connection error detected, invalidating cached client and retrying. type: {}, endpoint: {}, attempt: {}, error: {}",
                         binding.getWorkflowType(),
                         binding.getEndpoint(),
@@ -131,13 +131,13 @@ public class WorkflowPublisherManager implements Publisher {
     private String doPublish(Object[] args) {
         try {
             WorkflowClient client = provider.createWorkflowClient(binding);
-            Logger.debug("Created workflow client for endpoint: {}", binding.getEndpoint());
+            Logger.debug(false, "Tempus", "Created workflow client for endpoint: {}", binding.getEndpoint());
 
             WorkflowStub workflow = client.newUntypedWorkflowStub(
                     binding.getWorkflowType(),
                     factory.createWorkflowOptions(
                             WorkflowOptionsSpec.of(binding.getTaskQueue(), binding.getWorkflowType())));
-            Logger.debug("Created workflow stub for type: {}", binding.getWorkflowType());
+            Logger.debug(false, "Tempus", "Created workflow stub for type: {}", binding.getWorkflowType());
 
             Object execution = workflow.start(args);
 
@@ -149,14 +149,14 @@ public class WorkflowPublisherManager implements Publisher {
                     binding.getWorkflowType(),
                     workflowId);
 
-            Logger.info(
+            Logger.info(false, "Tempus",
                     "Published workflow successfully, type: {}, workflowId: {}, runId: {}",
                     binding.getWorkflowType(),
                     workflowId,
                     runId);
             return runId;
         } catch (Exception e) {
-            Logger.error(
+            Logger.error(false, "Tempus",
                     "Failed to publish workflow, type: {}, endpoint: {}, queue: {}, error: {}",
                     binding.getWorkflowType(),
                     binding.getEndpoint(),
@@ -228,7 +228,7 @@ public class WorkflowPublisherManager implements Publisher {
         try {
             return MethodKit.invoke(obj, methodName);
         } catch (Exception e) {
-            Logger.warn("Failed to extract {} from {}: {}", methodName, obj.getClass().getSimpleName(), e.getMessage());
+            Logger.warn(false, "Tempus", "Failed to extract {} from {}: {}", methodName, obj.getClass().getSimpleName(), e.getMessage());
             return null;
         }
     }

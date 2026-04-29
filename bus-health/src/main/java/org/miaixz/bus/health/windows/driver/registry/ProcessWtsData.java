@@ -87,7 +87,7 @@ public final class ProcessWtsData {
                     Wtsapi32.WTS_ANY_SESSION,
                     ppProcessInfo,
                     pCount)) {
-                Logger.error("Failed to enumerate Processes. Error code: {}", Kernel32.INSTANCE.GetLastError());
+                Logger.error(false, "Health", "Failed to enumerate Processes. Error code: {}", Kernel32.INSTANCE.GetLastError());
                 return wtsMap;
             }
             // extract the pointed-to pointer and create array
@@ -106,7 +106,7 @@ public final class ProcessWtsData {
             // Clean up memory
             if (!Wtsapi32.INSTANCE
                     .WTSFreeMemoryEx(Wtsapi32.WTS_PROCESS_INFO_LEVEL_1, pProcessInfo, pCount.getValue())) {
-                Logger.warn("Failed to Free Memory for Processes. Error code: {}", Kernel32.INSTANCE.GetLastError());
+                Logger.warn(false, "Health", "Failed to Free Memory for Processes. Error code: {}", Kernel32.INSTANCE.GetLastError());
             }
         }
         return wtsMap;

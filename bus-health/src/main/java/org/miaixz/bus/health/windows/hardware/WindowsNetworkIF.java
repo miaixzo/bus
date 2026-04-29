@@ -137,7 +137,7 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
             try {
                 ifList.add(new WindowsNetworkIF(ni));
             } catch (InstantiationException e) {
-                Logger.debug("Network Interface Instantiation failed: {}", e.getMessage());
+                Logger.debug(false, "Health", "Network Interface Instantiation failed: {}", e.getMessage());
             }
         }
         return ifList;
@@ -307,7 +307,7 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
                 ifRow.InterfaceIndex = queryNetworkInterface().getIndex();
                 if (0 != IPHlpAPI.INSTANCE.GetIfEntry2(ifRow)) {
                     // Error, abort
-                    Logger.error(
+                    Logger.error(false, "Health",
                             "Failed to retrieve data for interface {}, {}",
                             queryNetworkInterface().getIndex(),
                             getName());
@@ -334,7 +334,7 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
                 ifRow.dwIndex = queryNetworkInterface().getIndex();
                 if (0 != IPHlpAPI.INSTANCE.GetIfEntry(ifRow)) {
                     // Error, abort
-                    Logger.error(
+                    Logger.error(false, "Health",
                             "Failed to retrieve data for interface {}, {}",
                             queryNetworkInterface().getIndex(),
                             getName());

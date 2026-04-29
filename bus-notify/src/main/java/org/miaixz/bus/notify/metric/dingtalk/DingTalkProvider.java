@@ -126,7 +126,7 @@ public class DingTalkProvider extends AbstractProvider<DingTalkNotice, Context> 
             return access_token;
         }
 
-        Logger.error("Failed to get DingTalk token: {}", JsonKit.getValue(response, Consts.ERRMSG));
+        Logger.error(false, "Notify", "Failed to get DingTalk token: {}", JsonKit.getValue(response, Consts.ERRMSG));
         return null;
     }
 

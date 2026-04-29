@@ -127,7 +127,7 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
         char[] buffer = new char[256];
         try (ByRef.CloseableIntByReference bufferSize = new ByRef.CloseableIntByReference(buffer.length)) {
             if (!Kernel32.INSTANCE.GetComputerNameEx(COMPUTER_NAME_DNS_DOMAIN_FULLY_QUALIFIED, buffer, bufferSize)) {
-                Logger.error("Failed to get dns domain name. Error code: {}", Kernel32.INSTANCE.GetLastError());
+                Logger.error(false, "Health", "Failed to get dns domain name. Error code: {}", Kernel32.INSTANCE.GetLastError());
                 return Normal.EMPTY;
             }
         }
@@ -144,14 +144,14 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
         try (ByRef.CloseableIntByReference bufferSize = new ByRef.CloseableIntByReference()) {
             int ret = IPHlpAPI.INSTANCE.GetNetworkParams(null, bufferSize);
             if (ret != WinError.ERROR_BUFFER_OVERFLOW) {
-                Logger.error("Failed to get network parameters buffer size. Error code: {}", ret);
+                Logger.error(false, "Health", "Failed to get network parameters buffer size. Error code: {}", ret);
                 return new String[0];
             }
 
             try (Memory buffer = new Memory(bufferSize.getValue())) {
                 ret = IPHlpAPI.INSTANCE.GetNetworkParams(buffer, bufferSize);
                 if (ret != 0) {
-                    Logger.error("Failed to get network parameters. Error code: {}", ret);
+                    Logger.error(false, "Health", "Failed to get network parameters. Error code: {}", ret);
                     return new String[0];
                 }
                 FIXED_INFO fixedInfo = new FIXED_INFO(buffer);

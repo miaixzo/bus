@@ -121,7 +121,7 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
      */
     private static List<UsbDevice> getUsbDevices() {
         if (!LinuxOperatingSystem.HAS_UDEV) {
-            Logger.warn("USB Device information requires libudev, which is not present.");
+            Logger.warn(false, "Health", "USB Device information requires libudev, which is not present.");
             return Collections.emptyList();
         }
         // Build a list of devices with no parent; these will be the roots
@@ -138,7 +138,7 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
         // Enumerate all usb devices and build information maps
         Udev.UdevContext udev = Udev.INSTANCE.udev_new();
         if (udev == null) {
-            Logger.warn("Failed to create udev context.");
+            Logger.warn(false, "Health", "Failed to create udev context.");
             return Collections.emptyList();
         }
         try {

@@ -61,7 +61,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
         if (this.queryHandle == null) {
             this.queryHandle = new ByRef.CloseableHANDLEByReference();
             if (!PerfDataKit.openQuery(this.queryHandle)) {
-                Logger.warn("Failed to open a query for PDH counter: {}", counter.getCounterPath());
+                Logger.warn(false, "Health", "Failed to open a query for PDH counter: {}", counter.getCounterPath());
                 this.queryHandle.close();
                 this.queryHandle = null;
                 return false;
@@ -70,7 +70,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
         // Get a new handle for the counter
         ByRef.CloseableHANDLEByReference p = new ByRef.CloseableHANDLEByReference();
         if (!PerfDataKit.addCounter(this.queryHandle, counter.getCounterPath(), p)) {
-            Logger.warn("Failed to add counter for PDH counter: {}", counter.getCounterPath());
+            Logger.warn(false, "Health", "Failed to add counter for PDH counter: {}", counter.getCounterPath());
             p.close();
             return false;
         }
@@ -126,7 +126,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
      */
     public long updateQuery() {
         if (this.queryHandle == null) {
-            Logger.warn("Query does not exist to update.");
+            Logger.warn(false, "Health", "Query does not exist to update.");
             return 0L;
         }
         return PerfDataKit.updateQueryTimestamp(queryHandle);
@@ -142,7 +142,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
     public long queryCounter(PerfCounter counter) {
         if (!counterHandleMap.containsKey(counter)) {
             if (Logger.isWarnEnabled()) {
-                Logger.warn("Counter {} does not exist to query.", counter.getCounterPath());
+                Logger.warn(false, "Health", "Counter {} does not exist to query.", counter.getCounterPath());
             }
             return 0;
         }
@@ -150,7 +150,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
                 : PerfDataKit.queryCounter(counterHandleMap.get(counter));
         if (value < 0) {
             if (Logger.isWarnEnabled()) {
-                Logger.warn(
+                Logger.warn(false, "Health",
                         "Error querying counter {}: {}",
                         counter.getCounterPath(),
                         String.format(Locale.ROOT, Formats.formatError((int) value)));

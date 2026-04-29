@@ -45,7 +45,7 @@ import reactor.core.publisher.Mono;
  * definition specifies an HTTP endpoint, method, and an input schema, which this client uses to translate MCP tool
  * calls into HTTP requests.
  *
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -98,7 +98,7 @@ public class OpenApiClient implements McpClient {
     @Override
     public Mono<Void> initialize() {
         return Mono.fromRunnable(() -> {
-            Logger.info("OpenAPI tool catalog initialized: baseUrl={}, tools={}", this.baseUrl, this.tools.size());
+            Logger.info(false, "MCP", "OpenAPI tool catalog initialized: baseUrl={}, tools={}", this.baseUrl, this.tools.size());
         });
     }
 
@@ -106,7 +106,7 @@ public class OpenApiClient implements McpClient {
      * Parses the tool definitions from the {@code metadata} of the {@link Assets} object.
      * <p>
      * The expected JSON structure in {@code assets.getMetadata()} is:
-     * 
+     *
      * <pre>
      * {
      *   "tools": [
@@ -128,7 +128,7 @@ public class OpenApiClient implements McpClient {
      */
     private Map<String, Tool> initializeTools() {
         if (StringKit.isEmpty(assets.getMetadata())) {
-            Logger.warn("OpenAPI metadata is missing; no tools loaded: asset={}", assets.getName());
+            Logger.warn(false, "MCP", "OpenAPI metadata is missing; no tools loaded: asset={}", assets.getName());
             return Collections.emptyMap();
         }
 
@@ -136,7 +136,7 @@ public class OpenApiClient implements McpClient {
         List<Map<String, Object>> toolConfigs = (List<Map<String, Object>>) rawConfig.get("tools");
 
         if (toolConfigs == null || toolConfigs.isEmpty()) {
-            Logger.warn("OpenAPI tool definition is missing; no tools loaded: asset={}", assets.getName());
+            Logger.warn(false, "MCP", "OpenAPI tool definition is missing; no tools loaded: asset={}", assets.getName());
             return Collections.emptyMap();
         }
 
@@ -162,7 +162,7 @@ public class OpenApiClient implements McpClient {
      */
     @Override
     public void close() {
-        Logger.info("Closing OpenAPI endpoint client: baseUrl={}", this.baseUrl);
+        Logger.info(false, "MCP", "Closing OpenAPI endpoint client: baseUrl={}", this.baseUrl);
     }
 
     /**
@@ -187,7 +187,7 @@ public class OpenApiClient implements McpClient {
      * <li>Constructs the final request URI, substituting path variables.</li>
      * <li>Executes the HTTP request and returns the response body as a {@code String}.</li>
      * </ol>
-     * 
+     *
      * @param toolName  The name of the tool to execute.
      * @param arguments A map of arguments for the tool, keyed by parameter name.
      * @return A {@link Mono} emitting the response body as a {@code String}, or an error if the tool is not found or
@@ -225,10 +225,10 @@ public class OpenApiClient implements McpClient {
             }
         }
 
-        Logger.info("Invoking OpenAPI tool: name={}, method={}, uri={}", toolName, httpMethod.value(), finalUri);
+        Logger.info(false, "MCP", "Invoking OpenAPI tool: name={}, method={}, uri={}", toolName, httpMethod.value(), finalUri);
 
         return requestSpec.retrieve().bodyToMono(String.class).map(response -> (Object) response)
-                .doOnSuccess(response -> Logger.info("OpenAPI tool completed: name={}", toolName));
+                .doOnSuccess(response -> Logger.info(false, "MCP", "OpenAPI tool completed: name={}", toolName));
     }
 
     /**
@@ -237,7 +237,7 @@ public class OpenApiClient implements McpClient {
      * An {@code OPTIONS} request is used as it is typically a low-overhead operation. The API is considered healthy if
      * the request completes without an error and does not return a 5xx server error status. The operation includes a
      * 5-second timeout to prevent the client from waiting indefinitely on an unresponsive host.
-     * 
+     *
      * @return A {@link Mono} emitting {@code true} if the API is reachable and returns a non-5xx status, {@code false}
      *         otherwise.
      */

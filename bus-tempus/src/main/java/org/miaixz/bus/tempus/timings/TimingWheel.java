@@ -115,7 +115,7 @@ public class TimingWheel {
             // The task fits within the current wheel's time span.
             final long virtualId = expiration / tickMs;
             final int index = (int) (virtualId % wheelSize);
-            Logger.debug("tickMs: {} ------index: {} ------expiration: {}", tickMs, index, expiration);
+            Logger.debug(false, "Tempus", "tickMs: {} ------index: {} ------expiration: {}", tickMs, index, expiration);
 
             final TimerTaskList timerTaskList = timerTaskLists[index];
             timerTaskList.addTask(timerCrontab);

@@ -189,7 +189,7 @@ public class GetSCU implements AutoCloseable {
      * @throws IOException if an I/O error occurs.
      */
     public static void storeTo(Association as, Attributes fmi, PDVInputStream data, File file) throws IOException {
-        Logger.debug("{}: M-WRITE {}", as, file);
+        Logger.debug(true, "ImageTool", "{}: M-WRITE {}", as, file);
         file.getParentFile().mkdirs();
         try (ImageOutputStream out = new ImageOutputStream(file)) {
             out.writeFileMetaInformation(fmi);
@@ -206,7 +206,7 @@ public class GetSCU implements AutoCloseable {
      * @throws IOException if the rename operation fails.
      */
     private static void renameTo(Association as, File from, File dest) throws IOException {
-        Logger.info("{}: M-RENAME {} to {}", as, from, dest);
+        Logger.info(false, "ImageTool", "{}: M-RENAME {} to {}", as, from, dest);
         Builder.prepareToWriteFile(dest);
         if (!from.renameTo(dest))
             throw new IOException("Failed to rename " + from + " to " + dest);
@@ -285,7 +285,7 @@ public class GetSCU implements AutoCloseable {
     public void setStorageDirectory(File storageDir) {
         if (storageDir != null) {
             if (storageDir.mkdirs()) {
-                Logger.info("M-WRITE {}", storageDir);
+                Logger.info(true, "ImageTool", "M-WRITE {}", storageDir);
             }
         }
         this.storageDir = storageDir;
@@ -444,7 +444,7 @@ public class GetSCU implements AutoCloseable {
                 try {
                     rspHandler.cancel(as);
                 } catch (IOException e) {
-                    Logger.error("Cancel C-GET", e);
+                    Logger.error(false, "ImageTool", "Cancel C-GET", e);
                 }
             }, cancelAfter, TimeUnit.MILLISECONDS);
         }
@@ -530,7 +530,7 @@ public class GetSCU implements AutoCloseable {
                 try {
                     rspHandler.cancel(as);
                 } catch (IOException e) {
-                    Logger.error("Cancel C-GET", e);
+                    Logger.error(false, "ImageTool", "Cancel C-GET", e);
                 }
             }
         }

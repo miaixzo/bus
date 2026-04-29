@@ -72,10 +72,10 @@ public class Vortex implements SmartLifecycle {
         if (running.compareAndSet(false, true)) {
             try {
                 disposableServer = httpServer.bindNow();
-                Logger.info("Gateway listener started: port={}", disposableServer.port());
+                Logger.info(true, "Vortex", "Gateway listener started: port={}", disposableServer.port());
             } catch (Exception e) {
                 running.set(false);
-                Logger.error("Gateway listener failed to start", e);
+                Logger.error(false, "Vortex", "Gateway listener failed to start", e);
                 throw new RuntimeException("Failed to bind Vortex server", e);
             }
         }
@@ -90,19 +90,19 @@ public class Vortex implements SmartLifecycle {
         if (running.compareAndSet(true, false) && disposableServer != null) {
             try {
                 disposableServer.disposeNow();
-                Logger.info("Gateway listener stopped: port={}", disposableServer.port());
+                Logger.info(false, "Vortex", "Gateway listener stopped: port={}", disposableServer.port());
             } catch (Exception e) {
-                Logger.error("Gateway listener stop failed", e);
+                Logger.error(false, "Vortex", "Gateway listener stop failed", e);
             }
 
             try {
                 ConnectionProvider connectionProvider = Holder.getConnectionProviderIfPresent();
                 if (connectionProvider != null) {
                     connectionProvider.dispose();
-                    Logger.info("Runtime HTTP connection pool closed");
+                    Logger.info(false, "Vortex", "Runtime HTTP connection pool closed");
                 }
             } catch (Exception e) {
-                Logger.error("Runtime HTTP connection pool close failed", e);
+                Logger.error(false, "Vortex", "Runtime HTTP connection pool close failed", e);
             }
         }
     }

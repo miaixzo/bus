@@ -222,7 +222,7 @@ public class Setting extends AbstractSetting implements Map<String, String> {
             }
         }, 600));
         this.watchMonitor.start();
-        Logger.debug("Auto-load enabled for [{}]", this.resource.getUrl());
+        Logger.debug(true, "Setting", "Auto-load enabled for [{}]", this.resource.getUrl());
     }
 
     /**
@@ -269,7 +269,7 @@ public class Setting extends AbstractSetting implements Map<String, String> {
          */
         final String result = this.groupedMap.get(group, key);
         if (result == null && logIfNull) {
-            Logger.debug("No data found for key [{}] in group [{}]", key, group);
+            Logger.debug(false, "Setting", "No data found for key [{}] in group [{}]", key, group);
         }
         return ObjectKit.defaultIfNull(result, defaultValue);
     }
@@ -569,7 +569,7 @@ public class Setting extends AbstractSetting implements Map<String, String> {
      * Sets multiple properties using an array of lambda method reference suppliers.
      * <p>
      * Example:
-     * 
+     *
      * <pre>
      * User user = new User("test", "Test User");
      * Setting.of().setFields(user::getUsername, user::getNickname);

@@ -194,7 +194,7 @@ public class DiskLruCache implements Closeable, Flushable {
                 initialized = true;
                 return;
             } catch (IOException journalIsCorrupt) {
-                Logger.warn(
+                Logger.warn(false, "HTTP",
                         "DiskLruCache " + directory + " is corrupt: " + journalIsCorrupt.getMessage() + ", removing",
                         journalIsCorrupt);
             }

@@ -89,7 +89,7 @@ public class PDUEncoder extends PDVOutputStream {
         try {
             write(PDUType.A_RELEASE_RP, 0, 0, 0, false);
         } catch (IOException e) {
-            Logger.info("{} << A-RELEASE-RP failed: {}", as, e.getMessage());
+            Logger.info(false, "PDU", "{} << A-RELEASE-RP failed: {}", as, e.getMessage());
         }
     }
 
@@ -97,7 +97,7 @@ public class PDUEncoder extends PDVOutputStream {
         try {
             write(PDUType.A_ABORT, 0, aa.getSource(), aa.getReason(), false);
         } catch (IOException e) {
-            Logger.info("{} << {} failed: {}", as, aa, e.getMessage());
+            Logger.info(false, "PDU", "{} << {} failed: {}", as, aa, e.getMessage());
         }
     }
 
@@ -107,18 +107,18 @@ public class PDUEncoder extends PDVOutputStream {
         } else {
             try {
                 int timeout = as.getConnection().getAbortTimeout();
-                Logger.debug("{}: start A-ABORT timeout of {}ms", as, timeout);
+                Logger.debug(false, "PDU", "{}: start A-ABORT timeout of {}ms", as, timeout);
                 if (!writeLock.tryLock(timeout, TimeUnit.MILLISECONDS)) {
-                    Logger.info("{}: A-ABORT timeout expired", as);
+                    Logger.info(false, "PDU", "{}: A-ABORT timeout expired", as);
                     return;
                 }
             } catch (InterruptedException e) {
                 if (!writeLock.tryLock()) {
-                    Logger.info("{}: A-ABORT timeout interrupted: {}", as, e.getMessage());
+                    Logger.info(false, "PDU", "{}: A-ABORT timeout interrupted: {}", as, e.getMessage());
                     return;
                 }
             }
-            Logger.debug("{}: stop A-ABORT timeout", as);
+            Logger.debug(false, "PDU", "{}: stop A-ABORT timeout", as);
         }
         byte[] b = { (byte) pdutype, 0, 0, 0, 0, 4, 0, (byte) result, (byte) source, (byte) reason };
         try {
@@ -386,7 +386,7 @@ public class PDUEncoder extends PDVOutputStream {
         put(pdvpcid);
         put(pdvcmd | last);
         pos = endpos;
-        Logger.trace("{} << PDV[len={}, pcid={}, mch={}]", as, pdvlen, pdvpcid, (pdvcmd | last));
+        Logger.trace(false, "PDU", "{} << PDV[len={}, pcid={}, mch={}]", as, pdvlen, pdvpcid, (pdvcmd | last));
     }
 
     public void writePDataTF() throws IOException {
@@ -395,7 +395,7 @@ public class PDUEncoder extends PDVOutputStream {
         put(PDUType.P_DATA_TF);
         put(0);
         putInt(pdulen);
-        Logger.trace("{} << P-DATA-TF[len={}]", as, pdulen);
+        Logger.trace(false, "PDU", "{} << P-DATA-TF[len={}]", as, pdulen);
         writePDU(pdulen);
     }
 
@@ -407,9 +407,9 @@ public class PDUEncoder extends PDVOutputStream {
             if (!dimse.isRSP() || !Status.isPending(cmd.getInt(Tag.Status, -1)))
                 as.incSentCount(dimse);
             if (Logger.isInfoEnabled()) {
-                Logger.info("{} << {}", as, dimse.toString(cmd, pcid, tsuid));
+                Logger.info(false, "PDU", "{} << {}", as, dimse.toString(cmd, pcid, tsuid));
                 if (Logger.isDebugEnabled()) {
-                    Logger.debug("{} << {} Command:\n{}", as, dimse.toString(cmd), cmd);
+                    Logger.debug(false, "PDU", "{} << {} Command:\n{}", as, dimse.toString(cmd), cmd);
                 }
             }
             this.th = Thread.currentThread();
@@ -432,17 +432,17 @@ public class PDUEncoder extends PDVOutputStream {
                 pdvcmd = PDVType.DATA;
                 if (Logger.isDebugEnabled()) {
                     if (dataWriter instanceof DataWriterAdapter)
-                        Logger.debug(
+                        Logger.debug(false, "PDU",
                                 "{} << {} Dataset:\n{}",
                                 as,
                                 dimse.toString(cmd),
                                 ((DataWriterAdapter) dataWriter).getDataset());
                     else
-                        Logger.debug("{} << {} Dataset sending...", as, dimse.toString(cmd));
+                        Logger.debug(true, "PDU", "{} << {} Dataset sending...", as, dimse.toString(cmd));
                 }
                 dataWriter.writeTo(this, tsuid);
                 if (Logger.isDebugEnabled() && !(dataWriter instanceof DataWriterAdapter))
-                    Logger.debug("{} << {} Dataset sent", as, dimse.toString(cmd));
+                    Logger.debug(false, "PDU", "{} << {} Dataset sent", as, dimse.toString(cmd));
                 close();
             }
             as.writePDataTF();

@@ -85,7 +85,7 @@ public class BufferPageMonitorPlugin<T> extends AbstractPlugin<T> {
         for (BufferPage page : pages) {
             logger += "\r\n" + page.toString();
         }
-        Logger.info(logger);
+        Logger.info(false, "Socket", logger);
     }
 
     /**
@@ -95,7 +95,7 @@ public class BufferPageMonitorPlugin<T> extends AbstractPlugin<T> {
         future = HashedWheelTimer.DEFAULT_TIMER.scheduleWithFixedDelay(() -> {
             {
                 if (server == null) {
-                    Logger.error("Unknown server or client needs to be monitored!");
+                    Logger.error(false, "Socket", "Unknown server or client needs to be monitored!");
                     shutdown();
                     return;
                 }
@@ -104,7 +104,7 @@ public class BufferPageMonitorPlugin<T> extends AbstractPlugin<T> {
                     bufferPoolField.setAccessible(true);
                     BufferPagePool writeBufferPool = (BufferPagePool) bufferPoolField.get(server);
                     if (writeBufferPool == null) {
-                        Logger.error("Server may not have started yet!");
+                        Logger.error(false, "Socket", "Server may not have started yet!");
                         shutdown();
                         return;
                     }
@@ -113,16 +113,16 @@ public class BufferPageMonitorPlugin<T> extends AbstractPlugin<T> {
                     BufferPagePool readBufferPool = (BufferPagePool) readBufferPoolField.get(server);
 
                     if (readBufferPool != null && readBufferPool != writeBufferPool) {
-                        Logger.info("Dumping writeBufferPool:");
+                        Logger.info(true, "Socket", "Dumping writeBufferPool:");
                         dumpBufferPool(writeBufferPool);
-                        Logger.info("Dumping readBufferPool:");
+                        Logger.info(true, "Socket", "Dumping readBufferPool:");
                         dumpBufferPool(readBufferPool);
                     } else {
-                        Logger.info("Dumping bufferPool:");
+                        Logger.info(true, "Socket", "Dumping bufferPool:");
                         dumpBufferPool(writeBufferPool);
                     }
                 } catch (Exception e) {
-                    Logger.error("Error during buffer pool monitoring", e);
+                    Logger.error(false, "Socket", "Error during buffer pool monitoring", e);
                 }
             }
         }, seconds, TimeUnit.SECONDS);

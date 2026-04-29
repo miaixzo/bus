@@ -368,7 +368,7 @@ public class SolarisOSProcess extends AbstractOSProcess {
                 return cwd;
             }
         } catch (IOException e) {
-            Logger.trace("Couldn't find cwd for pid {}: {}", getProcessID(), e.getMessage());
+            Logger.trace(false, "Health", "Couldn't find cwd for pid {}: {}", getProcessID(), e.getMessage());
         }
         return Normal.EMPTY;
     }

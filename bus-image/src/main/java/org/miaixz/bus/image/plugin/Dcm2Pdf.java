@@ -74,7 +74,7 @@ public class Dcm2Pdf {
             String sopCUID = attributes.getString(Tag.SOPClassUID);
             String ext = FileType.getFileExt(sopCUID);
             if (ext == null) {
-                Logger.info(
+                Logger.info(false, "ImageTool",
                         "DICOM file {} with {} SOP Class cannot be converted to bulkdata file",
                         src,
                         UID.nameOf(sopCUID));

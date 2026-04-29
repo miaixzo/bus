@@ -105,10 +105,10 @@ public class WmiQueryHandler {
         try {
             return customClass.getConstructor(EMPTY_CLASS_ARRAY).newInstance(EMPTY_OBJECT_ARRAY);
         } catch (NoSuchMethodException | SecurityException e) {
-            Logger.error("Failed to find or access a no-arg constructor for {}", customClass);
+            Logger.error(false, "Health", "Failed to find or access a no-arg constructor for {}", customClass);
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
-            Logger.error("Failed to create a new instance of {}", customClass);
+            Logger.error(false, "Health", "Failed to create a new instance of {}", customClass);
         }
         return null;
     }
@@ -163,15 +163,15 @@ public class WmiQueryHandler {
                 final int hresult = e.getHresult() == null ? -1 : e.getHresult().intValue();
                 switch (hresult) {
                     case Wbemcli.WBEM_E_INVALID_NAMESPACE:
-                        Logger.warn("COM exception: Invalid Namespace {}", query.getNameSpace());
+                        Logger.warn(false, "Health", "COM exception: Invalid Namespace {}", query.getNameSpace());
                         break;
 
                     case Wbemcli.WBEM_E_INVALID_CLASS:
-                        Logger.warn("COM exception: Invalid Class {}", query.getWmiClassName());
+                        Logger.warn(false, "Health", "COM exception: Invalid Class {}", query.getWmiClassName());
                         break;
 
                     case Wbemcli.WBEM_E_INVALID_QUERY:
-                        Logger.warn("COM exception: Invalid Query: {}", WmiKit.queryToString(query));
+                        Logger.warn(false, "Health", "COM exception: Invalid Query: {}", WmiKit.queryToString(query));
                         break;
 
                     default:
@@ -181,7 +181,7 @@ public class WmiQueryHandler {
                 failedWmiClassNames.add(query.getWmiClassName());
             }
         } catch (TimeoutException e) {
-            Logger.warn("WMI query timed out after {} ms: {}", wmiTimeout, WmiKit.queryToString(query));
+            Logger.warn(false, "Health", "WMI query timed out after {} ms: {}", wmiTimeout, WmiKit.queryToString(query));
         } finally {
             if (comInit) {
                 unInitCOM();
@@ -202,9 +202,9 @@ public class WmiQueryHandler {
         Object[] args = { query.getWmiClassName(), ex.getHresult() == null ? null : ex.getHresult().intValue(),
                 ex.getMessage() };
         if ("MSAcpi_ThermalZoneTemperature".equals(query.getWmiClassName())) {
-            Logger.debug(msg, args);
+            Logger.debug(false, "Health", msg, args);
         } else {
-            Logger.warn(msg, args);
+            Logger.warn(false, "Health", msg, args);
         }
     }
 

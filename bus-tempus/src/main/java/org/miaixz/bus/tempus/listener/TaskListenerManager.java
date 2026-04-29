@@ -112,7 +112,7 @@ public class TaskListenerManager implements Serializable {
                     listener.onFailed(executor, exception);
                 }
             } else {
-                Logger.error(exception, exception.getMessage());
+                Logger.error(false, "Tempus", exception, exception.getMessage());
             }
         }
     }

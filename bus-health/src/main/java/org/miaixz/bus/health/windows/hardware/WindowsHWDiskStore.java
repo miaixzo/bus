@@ -183,7 +183,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
             }
             return result;
         } catch (COMException e) {
-            Logger.warn("COM exception: {}", e.getMessage());
+            Logger.warn(false, "Health", "COM exception: {}", e.getMessage());
             return Collections.emptyList();
         } finally {
             if (comInit) {
@@ -303,7 +303,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
                         label = new String(labelChr).trim();
                     } else {
                         int error = Kernel32.INSTANCE.GetLastError();
-                        Logger.debug("Failed to get volume label for {}: error code {}", logicalDrive.getLeft(), error);
+                        Logger.debug(false, "Health", "Failed to get volume label for {}: error code {}", logicalDrive.getLeft(), error);
                     }
                     HWPartition pt = new HWPartition(
                             WmiKit.getString(hwPartitionQueryMap, DiskPartitionProperty.NAME, i),
@@ -441,7 +441,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
             // the code reaches this point, but just in case it does, here's the
             // correct response. If you get this log warning, the circumstances
             // would be of great interest to the project's maintainers.
-            Logger.warn("Couldn't match index for {}", getName());
+            Logger.warn(false, "Health", "Couldn't match index for {}", getName());
             return false;
         }
         DiskStats stats = queryReadWriteStats(index);

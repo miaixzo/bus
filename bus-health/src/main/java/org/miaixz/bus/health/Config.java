@@ -342,9 +342,9 @@ public final class Config {
             CONFIG = new Properties();
             try {
                 CONFIG = readProperties(_HEALTH_PROPERTIES);
-                Logger.info("Successfully loaded configuration from {}", _HEALTH_PROPERTIES);
+                Logger.info(false, "Health", "Successfully loaded configuration from {}", _HEALTH_PROPERTIES);
             } catch (Exception e) {
-                Logger.error("Failed to load configuration from {}: {}", _HEALTH_PROPERTIES, e.getMessage(), e);
+                Logger.error(false, "Health", "Failed to load configuration from {}: {}", _HEALTH_PROPERTIES, e.getMessage(), e);
             }
         }
         return CONFIG;

@@ -64,7 +64,7 @@ import org.miaixz.bus.storage.magic.ErrorCode;
  * </ul>
  * <p>
  * <strong>Usage Example:</strong>
- * 
+ *
  * <pre>{@code
  * Context context = Context.builder().bucket("/").extension("your-oauth-access-token").build();
  *
@@ -157,7 +157,7 @@ public class DropboxProvider extends AbstractProvider {
                         .data(content).build();
             }
         } catch (Exception e) {
-            Logger.error("Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
+            Logger.error(false, "Storage", "Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -210,7 +210,7 @@ public class DropboxProvider extends AbstractProvider {
                         .build();
             }
         } catch (Exception e) {
-            Logger.error(
+            Logger.error(false, "Storage",
                     "Failed to download file: {} from bucket: {} to local file: {}. Error: {}",
                     fileName,
                     bucket,
@@ -276,7 +276,7 @@ public class DropboxProvider extends AbstractProvider {
                         .data(blobs).build();
             }
         } catch (Exception e) {
-            Logger.error(
+            Logger.error(false, "Storage",
                     "Failed to list objects in bucket: {}. Error: {}",
                     this.context.getBucket(),
                     e.getMessage(),
@@ -349,7 +349,7 @@ public class DropboxProvider extends AbstractProvider {
                         .build();
             }
         } catch (Exception e) {
-            Logger.error(
+            Logger.error(false, "Storage",
                     "Failed to rename file from: {} to: {} in bucket: {}, error: {}",
                     oldName,
                     newName,
@@ -424,7 +424,7 @@ public class DropboxProvider extends AbstractProvider {
                         .data(Blob.builder().name(fileName).path(fileId).build()).build();
             }
         } catch (Exception e) {
-            Logger.error("Failed to upload file: {} to bucket: {}, error: {}", fileName, bucket, e.getMessage(), e);
+            Logger.error(false, "Storage", "Failed to upload file: {} to bucket: {}, error: {}", fileName, bucket, e.getMessage(), e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -469,7 +469,7 @@ public class DropboxProvider extends AbstractProvider {
             byte[] contentBytes = content.readAllBytes();
             return upload(bucket, path, fileName, contentBytes);
         } catch (Exception e) {
-            Logger.error("Failed to upload file: {} to bucket: {}, error: {}", fileName, bucket, e.getMessage(), e);
+            Logger.error(false, "Storage", "Failed to upload file: {} to bucket: {}, error: {}", fileName, bucket, e.getMessage(), e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -532,7 +532,7 @@ public class DropboxProvider extends AbstractProvider {
                         .build();
             }
         } catch (Exception e) {
-            Logger.error("Failed to remove file: {} from bucket: {}, error: {}", fileName, bucket, e.getMessage(), e);
+            Logger.error(false, "Storage", "Failed to remove file: {} from bucket: {}, error: {}", fileName, bucket, e.getMessage(), e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }

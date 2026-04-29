@@ -92,7 +92,7 @@ public final class SslService {
             // Network disconnection during handshake phase
             if (handshakeModel.getException() != null) {
                 if (debug) {
-                    Logger.info("the ssl handshake is terminated");
+                    Logger.info(false, "Socket", "the ssl handshake is terminated");
                 }
                 handshakeModel.getHandshakeCallback().callback();
                 return;
@@ -102,7 +102,7 @@ public final class SslService {
             while (!handshakeModel.isFinished()) {
                 handshakeStatus = engine.getHandshakeStatus();
                 if (debug) {
-                    Logger.info("Handshake status: " + handshakeStatus);
+                    Logger.info(false, "Socket", "Handshake status: " + handshakeStatus);
                 }
                 switch (handshakeStatus) {
                     case NEED_UNWRAP:
@@ -126,7 +126,7 @@ public final class SslService {
                                 break;
 
                             case BUFFER_OVERFLOW:
-                                Logger.warn("doHandshake BUFFER_OVERFLOW");
+                                Logger.warn(false, "Socket", "doHandshake BUFFER_OVERFLOW");
                                 break;
 
                             // BUFFER_UNDERFLOW can be triggered in two cases: 1. insufficient data read, 2.
@@ -136,7 +136,7 @@ public final class SslService {
                                     handshakeModel.getSocketChannel()
                                             .read(netReadBuffer, handshakeModel, handshakeCompletionHandler);
                                 } else {
-                                    Logger.warn("doHandshake BUFFER_UNDERFLOW");
+                                    Logger.warn(false, "Socket", "doHandshake BUFFER_UNDERFLOW");
                                 }
                                 return;
 
@@ -148,7 +148,7 @@ public final class SslService {
                     case NEED_WRAP:
                         if (netWriteBuffer.hasRemaining()) {
                             if (debug) {
-                                Logger.info("Data not fully written...");
+                                Logger.info(false, "Socket", "Data not fully written...");
                             }
                             handshakeModel.getSocketChannel()
                                     .write(netWriteBuffer, handshakeModel, handshakeCompletionHandler);
@@ -169,7 +169,7 @@ public final class SslService {
 
                             case BUFFER_OVERFLOW:
                                 if (debug) {
-                                    Logger.warn("NEED_WRAP BUFFER_OVERFLOW");
+                                    Logger.warn(false, "Socket", "NEED_WRAP BUFFER_OVERFLOW");
                                 }
                                 break;
 
@@ -179,14 +179,14 @@ public final class SslService {
 
                             case CLOSED:
                                 if (debug) {
-                                    Logger.warn("closed");
+                                    Logger.warn(false, "Socket", "closed");
                                 }
                                 try {
                                     netWriteBuffer.flip();
                                     netReadBuffer.clear();
                                 } catch (Exception e) {
                                     if (debug) {
-                                        Logger.error(
+                                        Logger.error(false, "Socket",
                                                 "Failed to send server's CLOSE message due to socket channel's failure.");
                                     }
                                 }
@@ -206,13 +206,13 @@ public final class SslService {
 
                     case FINISHED:
                         if (debug) {
-                            Logger.info("HandshakeFinished");
+                            Logger.info(false, "Socket", "HandshakeFinished");
                         }
                         break;
 
                     case NOT_HANDSHAKING:
                         if (debug) {
-                            Logger.error("NOT_HANDSHAKING");
+                            Logger.error(false, "Socket", "NOT_HANDSHAKING");
                         }
                         break;
 
@@ -223,7 +223,7 @@ public final class SslService {
             handshakeModel.getHandshakeCallback().callback();
         } catch (Exception e) {
             if (debug) {
-                Logger.error("ignore doHandshake exception:" + e.getMessage());
+                Logger.error(false, "Socket", "ignore doHandshake exception:" + e.getMessage());
             }
             handshakeCompletionHandler.failed(e, handshakeModel);
         }

@@ -41,7 +41,7 @@ public class Factory {
      */
     public static Provider getEngine() {
         final Provider engine = Instances.get(Provider.class.getName(), Factory::createEngine);
-        Logger.debug(
+        Logger.debug(false, "Proxy",
                 "Use [{}] Engine As Default.",
                 StringKit.removeSuffix(engine.getClass().getSimpleName(), "Engine"));
         return engine;

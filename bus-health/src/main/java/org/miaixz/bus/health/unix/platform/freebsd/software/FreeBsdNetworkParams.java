@@ -60,7 +60,7 @@ final class FreeBsdNetworkParams extends AbstractNetworkParams {
                 int res = LIBC.getaddrinfo(hostname, null, hint, ptr);
                 if (res > 0) {
                     if (Logger.isErrorEnabled()) {
-                        Logger.warn("Failed getaddrinfo(): {}", LIBC.gai_strerror(res));
+                        Logger.warn(false, "Health", "Failed getaddrinfo(): {}", LIBC.gai_strerror(res));
                     }
                     return Normal.EMPTY;
                 }

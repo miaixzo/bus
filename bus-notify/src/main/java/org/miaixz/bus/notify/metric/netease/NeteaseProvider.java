@@ -120,9 +120,9 @@ public abstract class NeteaseProvider<T extends Notice, K extends Context> exten
      */
     public Message post(String routerUrl, Map<String, String> map) {
         Map<String, String> header = getPostHeader();
-        Logger.debug("netease send：{}", map);
+        Logger.debug(false, "Notify", "netease send：{}", map);
         String response = Httpx.post(routerUrl, map, header);
-        Logger.debug("netease result：{}", response);
+        Logger.debug(false, "Notify", "netease result：{}", response);
         String code = JsonKit.getValue(response, "Code");
         return Message.builder().errcode(String.valueOf(HTTP.HTTP_OK).equals(code) ? ErrorCode._SUCCESS.getKey() : code)
                 .errmsg(JsonKit.getValue(response, "desc")).build();

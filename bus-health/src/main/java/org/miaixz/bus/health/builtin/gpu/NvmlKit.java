@@ -78,9 +78,9 @@ public final class NvmlKit {
             try {
                 lib = Native.load(Platform.isWindows() ? "nvml" : "nvidia-ml", Nvml.NvmlLibrary.class);
                 loaded = true;
-                Logger.debug("NVML library loaded");
+                Logger.debug(false, "Health", "NVML library loaded");
             } catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
-                Logger.debug("NVML library not available: {}", e.getMessage());
+                Logger.debug(false, "Health", "NVML library not available: {}", e.getMessage());
             }
             LIB = lib;
             LIBRARY_LOADED = loaded;
@@ -124,7 +124,7 @@ public final class NvmlKit {
         if (ret == Nvml.NVML_SUCCESS) {
             return true;
         }
-        Logger.debug("nvmlInit_v2 failed with code {}", ret);
+        Logger.debug(false, "Health", "nvmlInit_v2 failed with code {}", ret);
         return false;
     }
 
@@ -148,7 +148,7 @@ public final class NvmlKit {
         if (ids != null) {
             DEVICE_BUS_IDS.set(ids);
             devicesEnumerated = true;
-            Logger.debug("NVML enumerated {} device(s)", DEVICE_BUS_IDS.get().size());
+            Logger.debug(false, "Health", "NVML enumerated {} device(s)", DEVICE_BUS_IDS.get().size());
         }
     }
 
@@ -363,7 +363,7 @@ public final class NvmlKit {
                 return null;
             }
             if (matchCount > 1) {
-                Logger.warn(
+                Logger.warn(false, "Health",
                         "NVML name match for '{}' is ambiguous ({} devices match); use PCI bus ID for reliable"
                                 + " device identification",
                         gpuName,

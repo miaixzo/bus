@@ -687,7 +687,7 @@ public class DcmDir {
             Attributes dataset = new Attributes();
             String[] fields = parseFields(line);
             if (fields.length > tags.length) {
-                Logger.warn(
+                Logger.warn(false, "ImageTool",
                         "Number of values in line \"" + line
                                 + "\" does not match number of headers. Hence line is ignored.");
                 return null;

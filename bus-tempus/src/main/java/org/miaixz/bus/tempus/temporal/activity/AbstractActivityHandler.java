@@ -73,18 +73,18 @@ public abstract class AbstractActivityHandler<R, C>
         String taskId = getTaskId(request);
         CallbackNotifier<R> notifier = getCallbackNotifier();
         NotificationMode notificationMode = notifier == null ? NotificationMode.DISABLED : getNotificationMode();
-        Logger.info("Activity execution started. taskId: {}", taskId);
+        Logger.info(true, "Tempus", "Activity execution started. taskId: {}", taskId);
         try {
             heartbeat("processing", taskId);
 
             C context = create(request);
             ActivityExecutor<R, C> executor = resolve(request);
             Assert.state(executor != null, "No executor found for request: %s", request);
-            Logger.debug("Executor resolved. taskId: {}, executor: {}", taskId, executor.getClass().getSimpleName());
+            Logger.debug(false, "Tempus", "Executor resolved. taskId: {}, executor: {}", taskId, executor.getClass().getSimpleName());
 
             Object result = heartbeatDuring(() -> executor.execute(request, context), "processing", taskId);
             heartbeat("completed", taskId);
-            Logger.info("Activity execution phase completed. taskId: {}", taskId);
+            Logger.info(false, "Tempus", "Activity execution phase completed. taskId: {}", taskId);
 
             if (notifier != null && notificationMode == NotificationMode.INLINE_BEFORE_COMPLETE) {
                 notifySuccessBeforeComplete(notifier, request, result, taskId);
@@ -93,12 +93,12 @@ public abstract class AbstractActivityHandler<R, C>
             }
             return buildSuccessResponse(taskId, result);
         } catch (Exception e) {
-            Logger.error("Task failed, taskId: {}, error: {}", taskId, e.getMessage(), e);
+            Logger.error(false, "Tempus", "Task failed, taskId: {}, error: {}", taskId, e.getMessage(), e);
             if (notifier != null && notificationMode == NotificationMode.INLINE_BEFORE_COMPLETE) {
                 try {
                     notifier.failure(request, e.getMessage());
                 } catch (Exception notifierError) {
-                    Logger.error(
+                    Logger.error(false, "Tempus",
                             "Inline failure notifier failed. taskId: {}, error: {}",
                             taskId,
                             notifierError.getMessage(),
@@ -120,9 +120,9 @@ public abstract class AbstractActivityHandler<R, C>
      * @param taskId   the logical task identifier
      */
     protected void notifySuccessBeforeComplete(CallbackNotifier<R> notifier, R request, Object result, String taskId) {
-        Logger.debug("Inline notifier started. taskId: {}", taskId);
+        Logger.debug(true, "Tempus", "Inline notifier started. taskId: {}", taskId);
         heartbeatDuring(() -> notifier.success(request, result), "notifying", taskId);
-        Logger.debug("Inline notifier completed. taskId: {}", taskId);
+        Logger.debug(false, "Tempus", "Inline notifier completed. taskId: {}", taskId);
     }
 
     /**
@@ -142,7 +142,7 @@ public abstract class AbstractActivityHandler<R, C>
         try {
             completionClient.complete(response);
         } catch (ActivityCompletionException ex) {
-            Logger.error(
+            Logger.error(false, "Tempus",
                     "Manual completion for success failed. taskId: {}, activityId: {}, error: {}",
                     taskId,
                     ex.getActivityId().orElse(null),
@@ -151,11 +151,11 @@ public abstract class AbstractActivityHandler<R, C>
             throw ex;
         }
         try {
-            Logger.debug("Post-complete notifier started. taskId: {}", taskId);
+            Logger.debug(false, "Tempus", "Post-complete notifier started. taskId: {}", taskId);
             notifier.success(request, result);
-            Logger.debug("All post-complete processing completed. taskId: {}", taskId);
+            Logger.debug(false, "Tempus", "All post-complete processing completed. taskId: {}", taskId);
         } catch (Exception ex) {
-            Logger.error("Post-complete success notifier failed. taskId: {}, error: {}", taskId, ex.getMessage(), ex);
+            Logger.error(false, "Tempus", "Post-complete success notifier failed. taskId: {}, error: {}", taskId, ex.getMessage(), ex);
         }
         return response;
     }
@@ -181,7 +181,7 @@ public abstract class AbstractActivityHandler<R, C>
         try {
             completionClient.fail(completionError);
         } catch (ActivityCompletionException ex) {
-            Logger.error(
+            Logger.error(false, "Tempus",
                     "Manual completion for failure failed. taskId: {}, activityId: {}, error: {}",
                     taskId,
                     ex.getActivityId().orElse(null),
@@ -190,11 +190,11 @@ public abstract class AbstractActivityHandler<R, C>
             throw completionError;
         }
         try {
-            Logger.debug("Post-complete failure notifier started. taskId: {}", taskId);
+            Logger.debug(false, "Tempus", "Post-complete failure notifier started. taskId: {}", taskId);
             notifier.failure(request, error.getMessage());
-            Logger.debug("Post-complete failure notifier completed. taskId: {}", taskId);
+            Logger.debug(false, "Tempus", "Post-complete failure notifier completed. taskId: {}", taskId);
         } catch (Exception ex) {
-            Logger.error("Post-complete failure notifier failed. taskId: {}, error: {}", taskId, ex.getMessage(), ex);
+            Logger.error(false, "Tempus", "Post-complete failure notifier failed. taskId: {}, error: {}", taskId, ex.getMessage(), ex);
         }
         return null;
     }
@@ -265,7 +265,7 @@ public abstract class AbstractActivityHandler<R, C>
                     heartbeatFailure
                             .compareAndSet(null, new RuntimeException("Heartbeat failed: " + e.getMessage(), e));
                 }
-                Logger.warn("Heartbeat failed: {}", e.getMessage());
+                Logger.warn(false, "Tempus", "Heartbeat failed: {}", e.getMessage());
             }
         }, initialDelay, interval, TimeUnit.SECONDS);
         try {
@@ -300,7 +300,7 @@ public abstract class AbstractActivityHandler<R, C>
             if (isTerminalHeartbeatFailure(e)) {
                 throw ExceptionKit.wrapRuntime(e, "Heartbeat failed: %s", e.getMessage());
             }
-            Logger.warn("Heartbeat failed: {}", e.getMessage());
+            Logger.warn(false, "Tempus", "Heartbeat failed: {}", e.getMessage());
         }
     }
 

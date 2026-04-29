@@ -60,7 +60,7 @@ public class FileStreamSegment extends StreamSegment {
                 return (String) fpath.get(file);
             }
         } catch (Exception e) {
-            Logger.error("get path from RandomAccessFile", e);
+            Logger.error(false, "Image", "get path from RandomAccessFile", e);
         }
         return null;
     }
@@ -73,7 +73,7 @@ public class FileStreamSegment extends StreamSegment {
                 return (RandomAccessFile) fRaf.get(fstream);
             }
         } catch (Exception e) {
-            Logger.error("getFileDescriptor from FileImageInputStream", e);
+            Logger.error(false, "Image", "getFileDescriptor from FileImageInputStream", e);
         }
         return null;
     }
@@ -86,7 +86,7 @@ public class FileStreamSegment extends StreamSegment {
                 return (RandomAccessFile) fRaf.get(fstream);
             }
         } catch (Exception e) {
-            Logger.error("getFileDescriptor from FileImageOutputStream", e);
+            Logger.error(false, "Image", "getFileDescriptor from FileImageOutputStream", e);
         }
         return null;
     }

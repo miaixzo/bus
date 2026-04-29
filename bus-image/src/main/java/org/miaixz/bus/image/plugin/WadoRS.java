@@ -262,8 +262,8 @@ public class WadoRS {
      * @param headerFields The map of request headers.
      */
     private void logOutgoing(URL url, Map<String, List<String>> headerFields) {
-        Logger.info("> GET " + url.toString());
-        headerFields.forEach((k, v) -> Logger.info("> " + k + " : " + String.join(Symbol.COMMA, v)));
+        Logger.info(false, "ImageTool", "> GET " + url.toString());
+        headerFields.forEach((k, v) -> Logger.info(false, "ImageTool", "> " + k + " : " + String.join(Symbol.COMMA, v)));
     }
 
     /**
@@ -306,10 +306,10 @@ public class WadoRS {
      * @param headerFields The map of response headers.
      */
     private void logIncoming(int respCode, String respMsg, Map<String, List<String>> headerFields) {
-        Logger.info("< HTTP/1.1 Response: " + respCode + Symbol.SPACE + respMsg);
+        Logger.info(false, "ImageTool", "< HTTP/1.1 Response: " + respCode + Symbol.SPACE + respMsg);
         for (Map.Entry<String, List<String>> header : headerFields.entrySet())
             if (header.getKey() != null)
-                Logger.info("< " + header.getKey() + " : " + String.join(";", header.getValue()));
+                Logger.info(false, "ImageTool", "< " + header.getKey() + " : " + String.join(";", header.getValue()));
     }
 
     /**
@@ -328,7 +328,7 @@ public class WadoRS {
 
             String boundary = boundary(contentType);
             if (boundary == null) {
-                Logger.warn("Invalid response. Unpacking of parts not possible.");
+                Logger.warn(false, "ImageTool", "Invalid response. Unpacking of parts not possible.");
                 return;
             }
 
@@ -341,14 +341,14 @@ public class WadoRS {
                                     partNumber,
                                     uid,
                                     partExtension(headerParams.get(HTTP.CONTENT_TYPE).get(0)));
-                            Logger.info("Extract Part #{} {} \n{}", partNumber, fileName, headerParams);
+                            Logger.info(false, "ImageTool", "Extract Part #{} {} \n{}", partNumber, fileName, headerParams);
                             write(multipartInputStream, fileName);
                         } catch (Exception e) {
-                            Logger.warn("Failed to process Part #" + partNumber + headerParams, e);
+                            Logger.warn(false, "ImageTool", "Failed to process Part #" + partNumber + headerParams, e);
                         }
                     });
         } catch (Exception e) {
-            Logger.info("Exception caught on unpacking response \n", e);
+            Logger.info(false, "ImageTool", "Exception caught on unpacking response \n", e);
         }
     }
 
@@ -362,7 +362,7 @@ public class WadoRS {
      */
     private void write(String uid, String ext, InputStream is) throws IOException {
         String fileName = fileName(1, uid, ext);
-        Logger.info("Extract {} to {}", ext, fileName);
+        Logger.info(false, "ImageTool", "Extract {} to {}", ext, fileName);
         write(is, fileName);
     }
 

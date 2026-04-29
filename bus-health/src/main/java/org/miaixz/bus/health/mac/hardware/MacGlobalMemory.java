@@ -86,7 +86,7 @@ final class MacGlobalMemory extends AbstractGlobalMemory {
                 return pPageSize.getValue();
             }
         }
-        Logger.error("Failed to get host page size. Error code: {}", Native.getLastError());
+        Logger.error(false, "Health", "Failed to get host page size. Error code: {}", Native.getLastError());
         return 4098L;
     }
 
@@ -141,7 +141,7 @@ final class MacGlobalMemory extends AbstractGlobalMemory {
                         vmStats.size() / SystemB.INT_SIZE)) {
             if (0 != SystemB.INSTANCE
                     .host_statistics(SystemB.INSTANCE.mach_host_self(), SystemB.HOST_VM_INFO, vmStats, size)) {
-                Logger.error("Failed to get host VM info. Error code: {}", Native.getLastError());
+                Logger.error(false, "Health", "Failed to get host VM info. Error code: {}", Native.getLastError());
                 return 0L;
             }
             return (vmStats.free_count + vmStats.inactive_count) * getPageSize();

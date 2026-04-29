@@ -75,9 +75,13 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
 
     @Override
     public void configure(List<org.springframework.http.converter.HttpMessageConverter<?>> converters) {
-        Logger.debug("Configuring FastJson2HttpMessageConverter for Fastjson2");
+        Logger.debug(false, "HTTP", "Configuring FastJson2HttpMessageConverter for Fastjson2");
         converters.add(order(), new FastJson2HttpMessageConverter(this.autoType));
-        Logger.debug("FastJson2HttpMessageConverter configured with media types: {}", DEFAULT_MEDIA_TYPES);
+        Logger.debug(
+                false,
+                "HTTP",
+                "FastJson2HttpMessageConverter configured with media types: {}",
+                DEFAULT_MEDIA_TYPES);
     }
 
     @Override
@@ -119,9 +123,13 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
             super(Charset.UTF_8, DEFAULT_MEDIA_TYPES.toArray(new MediaType[0]));
             this.autoTypeMatcher = AutoBindingTypeMatcher.of(autoType);
             if (this.autoTypeMatcher == null) {
-                Logger.info("Fastjson2 autoType is not configured, @type deserialization is disabled");
+                Logger.info(false, "HTTP", "Fastjson2 autoType is not configured, @type deserialization is disabled");
             } else {
-                Logger.info("Fastjson2 autoType is enabled, whitelist patterns: {}", autoTypeMatcher.description());
+                Logger.info(
+                        false,
+                        "HTTP",
+                        "Fastjson2 autoType is enabled, whitelist patterns: {}",
+                        autoTypeMatcher.description());
             }
         }
 
@@ -135,7 +143,7 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
                 throws HttpMessageNotReadableException {
             try (var inputStream = inputMessage.getBody()) {
                 String jsonString = new String(IoKit.readBytes(inputStream), Charset.UTF_8);
-                Logger.debug("Fastjson deserializing JSON for class {}", clazz.getName());
+                Logger.debug(false, "HTTP", "Fastjson deserializing JSON for class {}", clazz.getName());
 
                 return autoTypeMatcher == null ? JSON.parseObject(jsonString, clazz, READER_FEATURES)
                         : JSON.parseObject(
@@ -145,6 +153,8 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
                                 READER_FEATURES);
             } catch (IOException e) {
                 Logger.error(
+                        false,
+                        "HTTP",
                         "Fastjson IO error occurred during JSON deserialization for class {}: {}",
                         clazz.getName(),
                         e.getMessage(),
@@ -153,6 +163,8 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
                         "IO error occurred during JSON deserialization: " + e.getMessage(), e, inputMessage);
             } catch (Exception e) {
                 Logger.error(
+                        false,
+                        "HTTP",
                         "Fastjson JSON deserialization failed for class {}: {}",
                         clazz.getName(),
                         e.getMessage(),
@@ -166,7 +178,7 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
         protected void writeInternal(Object object, HttpOutputMessage outputMessage)
                 throws HttpMessageNotWritableException {
             try {
-                Logger.debug("Result {}", object != null ? object.getClass().getName() : "null");
+                Logger.debug(false, "HTTP", "Result {}", object != null ? object.getClass().getName() : "null");
 
                 // The PropertyFilter now delegates all logic to the shouldSkipField method.
                 PropertyFilter filter = (source, name, value) -> {
@@ -177,6 +189,8 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
                         return !shouldSkipField(field, value);
                     } catch (Exception e) {
                         Logger.warn(
+                                false,
+                                "HTTP",
                                 "Fastjson failed to get field for annotation check: {}, error: {}",
                                 name,
                                 e.getMessage());
@@ -188,13 +202,13 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
 
                 String jsonString = JSON.toJSONString(object, filter, WRITER_FEATURES);
                 outputMessage.getBody().write(jsonString.getBytes(Charset.UTF_8));
-                Logger.info("Fastjson {}", jsonString.length());
+                Logger.info(false, "HTTP", "Fastjson {}", jsonString.length());
             } catch (IOException e) {
-                Logger.error("Fastjson IO error occurred during JSON serialization: {}", e.getMessage());
+                Logger.error(false, "HTTP", "Fastjson IO error occurred during JSON serialization: {}", e.getMessage());
                 throw new HttpMessageNotWritableException(
                         "IO error occurred during JSON serialization: " + e.getMessage(), e);
             } catch (Exception e) {
-                Logger.error("Fastjson JSON serialization failed: {}", e.getMessage());
+                Logger.error(false, "HTTP", "Fastjson JSON serialization failed: {}", e.getMessage());
                 throw new HttpMessageNotWritableException("JSON serialization failed: " + e.getMessage(), e);
             }
         }
@@ -211,6 +225,8 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
             public Class<?> apply(String typeName, Class<?> expectClass, long features) {
                 if (!autoTypeMatcher.matches(typeName)) {
                     Logger.error(
+                            false,
+                            "HTTP",
                             "Fastjson2 rejected @type '{}' by auto-type patterns: {}",
                             typeName,
                             autoTypeMatcher.description());
@@ -220,7 +236,7 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
                     ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
                     return resolveType(typeName, contextClassLoader);
                 } catch (ClassNotFoundException e) {
-                    Logger.error("Fastjson2 failed to resolve @type '{}': {}", typeName, e.getMessage());
+                    Logger.error(false, "HTTP", "Fastjson2 failed to resolve @type '{}': {}", typeName, e.getMessage());
                     return null;
                 }
             }

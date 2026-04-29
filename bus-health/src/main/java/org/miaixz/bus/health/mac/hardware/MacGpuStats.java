@@ -125,7 +125,7 @@ final class MacGpuStats implements GpuStats {
         this.cardName = cardName;
         this.ioReportClient = isAppleSilicon ? IOReportClient.create() : null;
         if (isAppleSilicon && ioReportClient == null) {
-            Logger.warn(
+            Logger.warn(false, "Health",
                     "IOReport subscription failed for '{}'; GPU ticks and power will be unavailable."
                             + " Utilization will fall back to IOAccelerator PerformanceStatistics.",
                     cardName);

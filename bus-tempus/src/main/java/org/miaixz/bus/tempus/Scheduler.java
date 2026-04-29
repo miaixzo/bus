@@ -221,7 +221,7 @@ public class Scheduler implements Serializable {
                         jobClass = group + Symbol.C_DOT + jobClass;
                     }
                     final String pattern = entry.getValue();
-                    Logger.debug("Load job: {} {}", pattern, jobClass);
+                    Logger.debug(true, "Tempus", "Load job: {} {}", pattern, jobClass);
                     try {
                         // Use a custom ID to avoid duplicates when reloading from the config file.
                         schedule("id_" + jobClass, pattern, new InvokeCrontab(jobClass));

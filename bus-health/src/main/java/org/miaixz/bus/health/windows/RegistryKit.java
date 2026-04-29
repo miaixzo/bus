@@ -78,7 +78,7 @@ public final class RegistryKit {
             Object val = Advapi32Util.registryGetValue(root, path, key);
             return registryValueToLong(val);
         } catch (Win32Exception e) {
-            Logger.trace("Unable to access " + path + ": " + e.getMessage());
+            Logger.trace(false, "Health", "Unable to access " + path + ": " + e.getMessage());
         }
         return 0L;
     }
@@ -116,7 +116,7 @@ public final class RegistryKit {
             Object value = Advapi32Util.registryGetValue(root, path, key);
             return Objects.isNull(value) ? null : value;
         } catch (Win32Exception e) {
-            Logger.trace("Unable to access " + path + " with flag " + accessFlag + ": " + e.getMessage());
+            Logger.trace(false, "Health", "Unable to access " + path + " with flag " + accessFlag + ": " + e.getMessage());
         } finally {
             if (hKey != null) {
                 int rc = ADV.RegCloseKey(hKey);
@@ -181,7 +181,7 @@ public final class RegistryKit {
             Object val = Advapi32Util.registryGetValue(root, path, key);
             return registryValueToString(val);
         } catch (Win32Exception e) {
-            Logger.trace("Unable to access " + path + ": " + e.getMessage());
+            Logger.trace(false, "Health", "Unable to access " + path + ": " + e.getMessage());
             return null;
         }
     }

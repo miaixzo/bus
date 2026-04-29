@@ -150,10 +150,10 @@ public class DingTalkRouter extends AbstractRouter {
             // Replace corp_id placeholder
             String url = this.tokenUrl.replace("{corp_id}", corpId);
 
-            Logger.debug("DingTalk client token request - URL: {}, Params: {}", url, params);
+            Logger.debug(true, "Auth", "DingTalk client token request - URL: {}, Params: {}", url, params);
 
             String body = postJson(url, params);
-            Logger.debug("DingTalk client token response: {}", body);
+            Logger.debug(false, "Auth", "DingTalk client token response: {}", body);
 
             Map<String, Object> data = JsonKit.toMap(body);
 
@@ -161,7 +161,7 @@ public class DingTalkRouter extends AbstractRouter {
                     .code(code) // Save code for subsequent user info retrieval
                     .build();
         } catch (Exception e) {
-            Logger.error("Failed to get DingTalk client token", e);
+            Logger.error(false, "Auth", "Failed to get DingTalk client token", e);
             throw new RuntimeException("Failed to get DingTalk client token: " + e.getMessage(), e);
         }
     }
@@ -186,17 +186,17 @@ public class DingTalkRouter extends AbstractRouter {
             params.put("clientSecret", clientSecret);
             params.put("code", callback.getCode());
 
-            Logger.debug("DingTalk user token request - URL: {}, Params: {}", tokenUrl, params);
+            Logger.debug(true, "Auth", "DingTalk user token request - URL: {}, Params: {}", tokenUrl, params);
 
             String body = postJson(tokenUrl, params);
-            Logger.debug("DingTalk user token response: {}", body);
+            Logger.debug(false, "Auth", "DingTalk user token response: {}", body);
 
             Map<String, Object> data = JsonKit.toMap(body);
 
             return Authorization.builder().token((String) data.get("accessToken")).expireIn(getInt(data, "expireIn"))
                     .build();
         } catch (Exception e) {
-            Logger.error("Failed to get DingTalk user token", e);
+            Logger.error(false, "Auth", "Failed to get DingTalk user token", e);
             throw new RuntimeException("Failed to get DingTalk user token: " + e.getMessage(), e);
         }
     }
@@ -243,10 +243,10 @@ public class DingTalkRouter extends AbstractRouter {
             Map<String, Object> body = new HashMap<>();
             body.put("code", code);
 
-            Logger.debug("DingTalk client userinfo (step 1) - URL: {}, Body: {}", userinfoUrl, body);
+            Logger.debug(false, "Auth", "DingTalk client userinfo (step 1) - URL: {}, Body: {}", userinfoUrl, body);
 
             String responseBody = postJson(userinfoUrl, body, headers);
-            Logger.debug("DingTalk client userinfo (step 1) response: {}", responseBody);
+            Logger.debug(false, "Auth", "DingTalk client userinfo (step 1) response: {}", responseBody);
 
             Map<String, Object> data = JsonKit.toMap(responseBody);
             Map<String, Object> result = (Map<String, Object>) data.get("result");
@@ -256,10 +256,10 @@ public class DingTalkRouter extends AbstractRouter {
             Map<String, Object> detailBody = new HashMap<>();
             detailBody.put("userid", userId);
 
-            Logger.debug("DingTalk client userinfo (step 2) - URL: {}, Body: {}", userdetailUrl, detailBody);
+            Logger.debug(false, "Auth", "DingTalk client userinfo (step 2) - URL: {}, Body: {}", userdetailUrl, detailBody);
 
             String detailBodyStr = postJson(userdetailUrl, detailBody, headers);
-            Logger.debug("DingTalk client userinfo (step 2) response: {}", detailBodyStr);
+            Logger.debug(false, "Auth", "DingTalk client userinfo (step 2) response: {}", detailBodyStr);
 
             Map<String, Object> detailData = JsonKit.toMap(detailBodyStr);
             Map<String, Object> detailResult = (Map<String, Object>) detailData.get("result");
@@ -268,7 +268,7 @@ public class DingTalkRouter extends AbstractRouter {
                     .email((String) detailResult.get("email")).avatar((String) detailResult.get("avatar"))
                     .rawJson(detailBodyStr).build();
         } catch (Exception e) {
-            Logger.error("Failed to get DingTalk client userinfo", e);
+            Logger.error(false, "Auth", "Failed to get DingTalk client userinfo", e);
             throw new RuntimeException("Failed to get DingTalk client userinfo: " + e.getMessage(), e);
         }
     }
@@ -288,16 +288,16 @@ public class DingTalkRouter extends AbstractRouter {
             Map<String, String> headers = new HashMap<>();
             headers.put("x-acs-dingtalk-access-token", authorization.getToken());
 
-            Logger.debug("DingTalk user userinfo - URL: {}", userinfoUrl);
+            Logger.debug(false, "Auth", "DingTalk user userinfo - URL: {}", userinfoUrl);
 
             String body = Httpx.get(userinfoUrl, null, headers);
-            Logger.debug("DingTalk user userinfo response: {}", body);
+            Logger.debug(false, "Auth", "DingTalk user userinfo response: {}", body);
 
             Map<String, Object> data = JsonKit.toMap(body);
 
             return Claims.builder().uuid((String) data.get("unionId")).rawJson(body).build();
         } catch (Exception e) {
-            Logger.error("Failed to get DingTalk user userinfo", e);
+            Logger.error(false, "Auth", "Failed to get DingTalk user userinfo", e);
             throw new RuntimeException("Failed to get DingTalk user userinfo: " + e.getMessage(), e);
         }
     }

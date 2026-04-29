@@ -72,7 +72,7 @@ public class UpsSCU {
             try {
                 as.writeDimseRSP(pc, Commands.mkNEventReportRSP(cmd, status));
             } catch (InternalException e) {
-                Logger.warn("{} << N-EVENT-RECORD-RSP failed: {}", as, e.getMessage());
+                Logger.warn(false, "ImageTool", "{} << N-EVENT-RECORD-RSP failed: {}", as, e.getMessage());
             }
         }
 

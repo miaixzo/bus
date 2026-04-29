@@ -123,7 +123,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
         // Open a DiskArbitration session
         DASessionRef session = DA.DASessionCreate(CF.CFAllocatorGetDefault());
         if (session == null) {
-            Logger.error("Unable to open session to DiskArbitration framework.");
+            Logger.error(false, "Health", "Unable to open session to DiskArbitration framework.");
             return Collections.emptyList();
         }
 
@@ -308,7 +308,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
         // Open a session and create CFStrings
         DASessionRef session = DA.DASessionCreate(CF.CFAllocatorGetDefault());
         if (session == null) {
-            Logger.error("Unable to open session to DiskArbitration framework.");
+            Logger.error(false, "Health", "Unable to open session to DiskArbitration framework.");
             return false;
         }
         Map<CFKey, CFStringRef> cfKeyMap = mapCFKeys();
@@ -393,7 +393,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                         } else {
                             // This is normal for FileVault drives, Fusion
                             // drives, and other virtual bsd names
-                            Logger.debug("Unable to find block storage driver properties for {}", bsdName);
+                            Logger.debug(false, "Health", "Unable to find block storage driver properties for {}", bsdName);
                         }
                         // Now get partitions for this disk.
                         List<HWPartition> partitions = new ArrayList<>();

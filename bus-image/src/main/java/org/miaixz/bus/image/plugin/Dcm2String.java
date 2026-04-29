@@ -71,9 +71,9 @@ public class Dcm2String extends SimpleFileVisitor<Path> {
         try (ImageInputStream dis = new ImageInputStream(path.toFile())) {
             Attributes dataset = dis.readDataset();
             dataset.addAll(cliAttrs);
-            Logger.info(format.format(dataset));
+            Logger.info(false, "ImageTool", format.format(dataset));
         } catch (IOException e) {
-            Logger.error("Failed to parse DICOM file " + path);
+            Logger.error(false, "ImageTool", "Failed to parse DICOM file " + path);
             e.printStackTrace();
         }
         return FileVisitResult.CONTINUE;

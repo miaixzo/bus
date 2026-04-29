@@ -39,7 +39,7 @@ import org.miaixz.bus.logger.Logger;
  * A writer for DICOMDIR files, extending {@link ImageDirReader} to provide write capabilities. This class allows
  * adding, modifying, and deleting directory records within a DICOMDIR file, managing file set information, and handling
  * consistency flags.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -106,7 +106,7 @@ public class ImageDirWriter extends ImageDirReader {
 
     /**
      * Constructs an {@code ImageDirWriter} for the specified DICOMDIR file.
-     * 
+     *
      * @param file The DICOMDIR file to write to.
      * @throws IOException if an I/O error occurs.
      */
@@ -128,7 +128,7 @@ public class ImageDirWriter extends ImageDirReader {
 
     /**
      * Opens an existing DICOMDIR file for writing.
-     * 
+     *
      * @param file The DICOMDIR file.
      * @return An {@code ImageDirWriter} instance.
      * @throws IOException if the file does not exist or an I/O error occurs.
@@ -142,7 +142,7 @@ public class ImageDirWriter extends ImageDirReader {
 
     /**
      * Creates an empty DICOMDIR file with the specified file set UID, ID, descriptor file, and character set.
-     * 
+     *
      * @param file     The DICOMDIR file to create.
      * @param iuid     The File Set UID.
      * @param id       The File Set ID.
@@ -160,7 +160,7 @@ public class ImageDirWriter extends ImageDirReader {
     /**
      * Creates an empty DICOMDIR file with the specified File Meta Information, File Set ID, descriptor file, and
      * character set.
-     * 
+     *
      * @param file     The DICOMDIR file to create.
      * @param fmi      The File Meta Information attributes.
      * @param id       The File Set ID.
@@ -181,7 +181,7 @@ public class ImageDirWriter extends ImageDirReader {
 
     /**
      * Creates the File Set Information attributes for a new DICOMDIR file.
-     * 
+     *
      * @param file     The DICOMDIR file.
      * @param id       The File Set ID.
      * @param descFile The File Set Descriptor File.
@@ -205,7 +205,7 @@ public class ImageDirWriter extends ImageDirReader {
 
     /**
      * Converts a file path relative to the DICOMDIR file into an array of file IDs.
-     * 
+     *
      * @param dfile The DICOMDIR file.
      * @param f     The file to get IDs for.
      * @return An array of strings representing the file IDs.
@@ -223,7 +223,7 @@ public class ImageDirWriter extends ImageDirReader {
 
     /**
      * Returns the current {@link ImageEncodingOptions} used by the writer.
-     * 
+     *
      * @return The encoding options.
      */
     public ImageEncodingOptions getEncodingOptions() {
@@ -232,7 +232,7 @@ public class ImageDirWriter extends ImageDirReader {
 
     /**
      * Sets the {@link ImageEncodingOptions} for the writer.
-     * 
+     *
      * @param encOpts The encoding options to set.
      */
     public void setEncodingOptions(ImageEncodingOptions encOpts) {
@@ -241,7 +241,7 @@ public class ImageDirWriter extends ImageDirReader {
 
     /**
      * Adds a new root directory record to the DICOMDIR file.
-     * 
+     *
      * @param rec The {@link Attributes} representing the new record.
      * @return The added record with its item position set.
      * @throws IOException if an I/O error occurs.
@@ -260,7 +260,7 @@ public class ImageDirWriter extends ImageDirReader {
 
     /**
      * Adds a new lower-level directory record as a child of the specified parent record.
-     * 
+     *
      * @param parentRec The parent {@link Attributes} record.
      * @param rec       The new child {@link Attributes} record.
      * @return The added record with its item position set.
@@ -282,7 +282,7 @@ public class ImageDirWriter extends ImageDirReader {
 
     /**
      * Finds an existing patient record by Patient ID, or adds a new one if not found.
-     * 
+     *
      * @param rec The {@link Attributes} representing the patient record to find or add.
      * @return The existing or newly added patient record.
      * @throws IOException if an I/O error occurs.
@@ -294,7 +294,7 @@ public class ImageDirWriter extends ImageDirReader {
 
     /**
      * Finds an existing study record under a patient record by Study Instance UID, or adds a new one if not found.
-     * 
+     *
      * @param patRec The parent patient record.
      * @param rec    The {@link Attributes} representing the study record to find or add.
      * @return The existing or newly added study record.
@@ -307,7 +307,7 @@ public class ImageDirWriter extends ImageDirReader {
 
     /**
      * Finds an existing series record under a study record by Series Instance UID, or adds a new one if not found.
-     * 
+     *
      * @param studyRec The parent study record.
      * @param rec      The {@link Attributes} representing the series record to find or add.
      * @return The existing or newly added series record.
@@ -321,7 +321,7 @@ public class ImageDirWriter extends ImageDirReader {
     /**
      * Deletes a directory record by setting its Record In Use Flag (0004,1410) to INACTIVE. Recursively deletes all
      * lower-level records associated with it.
-     * 
+     *
      * @param rec The {@link Attributes} representing the record to delete.
      * @return {@code true} if the record was deleted (i.e., was in use), {@code false} otherwise.
      * @throws IOException if an I/O error occurs.
@@ -342,7 +342,7 @@ public class ImageDirWriter extends ImageDirReader {
     /**
      * Rolls back all changes made since the last commit or opening of the writer. This restores the DICOMDIR to its
      * previous state.
-     * 
+     *
      * @throws IOException if an I/O error occurs.
      */
     public synchronized void rollback() throws IOException {
@@ -374,7 +374,7 @@ public class ImageDirWriter extends ImageDirReader {
     /**
      * Commits all pending changes to the DICOMDIR file. This writes all dirty records and updates the directory
      * information header.
-     * 
+     *
      * @throws IOException if an I/O error occurs.
      */
     public synchronized void commit() throws IOException {
@@ -406,7 +406,7 @@ public class ImageDirWriter extends ImageDirReader {
     /**
      * Converts a file path relative to the DICOMDIR file into an array of file IDs. This is a convenience method that
      * delegates to the static {@code toFileIDs} method.
-     * 
+     *
      * @param f The file to get IDs for.
      * @return An array of strings representing the file IDs.
      */
@@ -436,7 +436,7 @@ public class ImageDirWriter extends ImageDirReader {
 
     /**
      * Writes the Directory Information header to the DICOMDIR file.
-     * 
+     *
      * @throws IOException if an I/O error occurs.
      */
     private void writeDirInfoHeader() throws IOException {
@@ -447,7 +447,7 @@ public class ImageDirWriter extends ImageDirReader {
 
     /**
      * Writes the header of a directory record to the DICOMDIR file.
-     * 
+     *
      * @param rec The {@link Attributes} representing the directory record.
      * @throws IOException if an I/O error occurs.
      */
@@ -461,7 +461,7 @@ public class ImageDirWriter extends ImageDirReader {
 
     /**
      * Writes a Sequence Delimitation Item to the file, typically used when writing undefined length sequences.
-     * 
+     *
      * @throws IOException if an I/O error occurs.
      */
     private void writeSequenceDelimitationItem() throws IOException {
@@ -471,7 +471,7 @@ public class ImageDirWriter extends ImageDirReader {
 
     /**
      * Adds a new record and updates the offset of the previous record to point to it.
-     * 
+     *
      * @param tag     The tag to update in the previous record (e.g., Offset of the Next Directory Record).
      * @param prevRec The previous {@link Attributes} record.
      * @param rec     The new {@link Attributes} record to add.
@@ -485,15 +485,15 @@ public class ImageDirWriter extends ImageDirReader {
 
     /**
      * Writes a directory record to the DICOMDIR file at the specified offset.
-     * 
+     *
      * @param offset The offset in the file to write the record.
      * @param rec    The {@link Attributes} representing the record to write.
      * @throws IOException if an I/O error occurs.
      */
     private void writeRecord(int offset, Attributes rec) throws IOException {
         if (Logger.isInfoEnabled())
-            Logger.info("M-UPDATE {}: add {} Record", file, rec.getString(Tag.DirectoryRecordType, null));
-        Logger.debug("Directory Record:\n{}", rec);
+            Logger.info(false, "Image", "M-UPDATE {}: add {} Record", file, rec.getString(Tag.DirectoryRecordType, null));
+        Logger.debug(false, "Image", "Directory Record:\n{}", rec);
         rec.setItemPosition(offset);
         if (rollbackLen == -1) {
             rollbackLen = offset;
@@ -510,7 +510,7 @@ public class ImageDirWriter extends ImageDirReader {
 
     /**
      * Writes the File Set Consistency Flag (0004,1212) to the DICOMDIR file.
-     * 
+     *
      * @param flag The flag value to write.
      * @throws IOException if an I/O error occurs.
      */
@@ -522,7 +522,7 @@ public class ImageDirWriter extends ImageDirReader {
 
     /**
      * Marks a record as dirty, adding it to the list of records that need to be written during commit.
-     * 
+     *
      * @param rec The {@link Attributes} record to mark as dirty.
      */
     private void markAsDirty(Attributes rec) {
@@ -533,7 +533,7 @@ public class ImageDirWriter extends ImageDirReader {
 
     /**
      * Purges (deletes) inactive records from the DICOMDIR file.
-     * 
+     *
      * @return The number of records purged.
      * @throws IOException if an I/O error occurs.
      */
@@ -545,7 +545,7 @@ public class ImageDirWriter extends ImageDirReader {
 
     /**
      * Recursively purges inactive records starting from a given record.
-     * 
+     *
      * @param rec   The starting {@link Attributes} record.
      * @param count An array to store the total count of purged records.
      * @return {@code true} if the current record and its children were purged, {@code false} otherwise.

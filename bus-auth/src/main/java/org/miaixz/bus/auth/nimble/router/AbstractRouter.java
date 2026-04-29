@@ -94,7 +94,7 @@ public abstract class AbstractRouter implements OAuth2Router {
         }
 
         String authorizeUrl = builder.build();
-        Logger.debug("Built authorize URL: {}", authorizeUrl);
+        Logger.debug(true, "Auth", "Built authorize URL: {}", authorizeUrl);
         return authorizeUrl;
     }
 
@@ -125,18 +125,18 @@ public abstract class AbstractRouter implements OAuth2Router {
             }
 
             String url = builder.build();
-            Logger.debug("Token request URL: {}", url);
+            Logger.debug(true, "Auth", "Token request URL: {}", url);
 
             // Send request
             String body = Httpx.get(url);
-            Logger.debug("Token response body: {}", body);
+            Logger.debug(false, "Auth", "Token response body: {}", body);
 
             Map<String, Object> data = JsonKit.toMap(body);
 
             // Build Authorization object
             return buildAuthorization(data);
         } catch (Exception e) {
-            Logger.error("Failed to get token", e);
+            Logger.error(false, "Auth", "Failed to get token", e);
             throw new RuntimeException("Failed to get token: " + e.getMessage(), e);
         }
     }
@@ -153,18 +153,18 @@ public abstract class AbstractRouter implements OAuth2Router {
             addPlatformUserinfoParams(builder, authorization);
 
             String url = builder.build();
-            Logger.debug("Userinfo request URL: {}", url);
+            Logger.debug(true, "Auth", "Userinfo request URL: {}", url);
 
             // Send request
             String body = Httpx.get(url, null, headers);
-            Logger.debug("Userinfo response body: {}", body);
+            Logger.debug(false, "Auth", "Userinfo response body: {}", body);
 
             Map<String, Object> data = JsonKit.toMap(body);
 
             // Build Claims object
             return buildClaims(data, body);
         } catch (Exception e) {
-            Logger.error("Failed to get userinfo", e);
+            Logger.error(false, "Auth", "Failed to get userinfo", e);
             throw new RuntimeException("Failed to get userinfo: " + e.getMessage(), e);
         }
     }

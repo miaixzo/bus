@@ -107,7 +107,7 @@ public class SingleCacheReader extends AbstractReader {
      * @param annoHolder The annotation metadata.
      */
     private void doRecord(Object result, String key, AnnoHolder annoHolder) {
-        Logger.info("single cache hit rate: {}/1, key: {}", null == result ? 0 : 1, key);
+        Logger.info(false, "Cache", "single cache hit rate: {}/1, key: {}", null == result ? 0 : 1, key);
         if (null != this.collector) {
             String pattern = Builder.generatePattern(annoHolder);
             if (null != result) {

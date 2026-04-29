@@ -98,7 +98,7 @@ public class StrategyFactory {
         Logger.info(
                 true,
                 "Chain",
-                "gRPC Chain     ({} strategies): {}",
+                "gRPC Chain  ({} strategies): {}",
                 this.grpcChain.size(),
                 getStrategyNames(this.grpcChain));
 
@@ -106,7 +106,7 @@ public class StrategyFactory {
         Logger.info(
                 true,
                 "Chain",
-                "CST Chain     ({} strategies): {}",
+                "CST Chain   ({} strategies): {}",
                 this.cstChain.size(),
                 getStrategyNames(this.cstChain));
 
@@ -114,7 +114,7 @@ public class StrategyFactory {
         Logger.info(
                 true,
                 "Chain",
-                "MCP Chain     ({} strategies): {}",
+                "MCP Chain   ({} strategies): {}",
                 this.mcpChain.size(),
                 getStrategyNames(this.mcpChain));
 
@@ -122,7 +122,7 @@ public class StrategyFactory {
         Logger.info(
                 true,
                 "Chain",
-                "MQ Chain      ({} strategies): {}",
+                "MQ Chain    ({} strategies): {}",
                 this.mqChain.size(),
                 getStrategyNames(this.mqChain));
 
@@ -130,7 +130,7 @@ public class StrategyFactory {
         Logger.info(
                 true,
                 "Chain",
-                "WS Chain      ({} strategies): {}",
+                "WS Chain    ({} strategies): {}",
                 this.wsChain.size(),
                 getStrategyNames(this.wsChain));
 
@@ -138,7 +138,7 @@ public class StrategyFactory {
         Logger.info(
                 true,
                 "Chain",
-                "LLM Chain     ({} strategies): {}",
+                "LLM Chain   ({} strategies): {}",
                 this.llmChain.size(),
                 getStrategyNames(this.llmChain));
 

@@ -72,11 +72,11 @@ final class MacNetworkParams extends AbstractNetworkParams {
         try {
             hostname = InetAddress.getLocalHost().getHostName();
             if (hostname == null || hostname.isEmpty()) {
-                Logger.debug("Could not determine hostname");
+                Logger.debug(false, "Health", "Could not determine hostname");
                 return Normal.EMPTY;
             }
         } catch (UnknownHostException e) {
-            Logger.debug("Unknown host exception when getting address of local host: {}", e.getMessage());
+            Logger.debug(false, "Health", "Unknown host exception when getting address of local host: {}", e.getMessage());
             return Normal.EMPTY;
         }
         try (CLibrary.Addrinfo hint = new CLibrary.Addrinfo();
@@ -85,7 +85,7 @@ final class MacNetworkParams extends AbstractNetworkParams {
             int res = SYS.getaddrinfo(hostname, null, hint, ptr);
             if (res != 0) {
                 if (Logger.isDebugEnabled()) {
-                    Logger.debug("Failed getaddrinfo(): {}", SYS.gai_strerror(res));
+                    Logger.debug(false, "Health", "Failed getaddrinfo(): {}", SYS.gai_strerror(res));
                 }
                 return Normal.EMPTY;
             }

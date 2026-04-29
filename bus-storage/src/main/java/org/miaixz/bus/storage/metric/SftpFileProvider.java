@@ -143,7 +143,7 @@ public class SftpFileProvider extends AbstractProvider {
                         .data(content).build();
             }
         } catch (InternalException | IOException e) {
-            Logger.error("Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
+            Logger.error(false, "Storage", "Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -184,7 +184,7 @@ public class SftpFileProvider extends AbstractProvider {
             client.download(objectKey, file);
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (InternalException e) {
-            Logger.error(
+            Logger.error(false, "Storage",
                     "Failed to download file: {} from bucket: {} to local file: {}. Error: {}",
                     fileName,
                     bucket,
@@ -212,7 +212,7 @@ public class SftpFileProvider extends AbstractProvider {
                         return Blob.builder().name(fileName).extend(extend).build();
                     }).collect(Collectors.toList())).build();
         } catch (InternalException e) {
-            Logger.error("Failed to list files in path: {}. Error: {}", context.getPrefix(), e.getMessage(), e);
+            Logger.error(false, "Storage", "Failed to list files in path: {}. Error: {}", context.getPrefix(), e.getMessage(), e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -263,7 +263,7 @@ public class SftpFileProvider extends AbstractProvider {
             client.rename(oldObjectKey, newObjectKey);
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (InternalException e) {
-            Logger.error(
+            Logger.error(false, "Storage",
                     "Failed to rename file from {} to {} in bucket: {} path: {}. Error: {}",
                     oldName,
                     newName,
@@ -360,7 +360,7 @@ public class SftpFileProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(Blob.builder().name(fileName).path(objectKey).build()).build();
         } catch (InternalException e) {
-            Logger.error(
+            Logger.error(false, "Storage",
                     "Failed to upload file: {} to bucket: {} path: {}. Error: {}",
                     fileName,
                     bucket,
@@ -411,7 +411,7 @@ public class SftpFileProvider extends AbstractProvider {
             }
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (InternalException e) {
-            Logger.error(
+            Logger.error(false, "Storage",
                     "Failed to remove file: {} from bucket: {} path: {}. Error: {}",
                     fileName,
                     bucket,
@@ -478,7 +478,7 @@ public class SftpFileProvider extends AbstractProvider {
                 return Integer.parseInt(portStr);
             }
         } catch (NumberFormatException e) {
-            Logger.warn("Invalid port in endpoint: {}. Using default port 22.", endpoint);
+            Logger.warn(false, "Storage", "Invalid port in endpoint: {}. Using default port 22.", endpoint);
         }
         return 0; // Return 0 to indicate using the default port 22
     }
@@ -512,7 +512,7 @@ public class SftpFileProvider extends AbstractProvider {
             }
             return false;
         } catch (InternalException | IOException e) {
-            Logger.error("Failed to check existence of file: {}. Error: {}", path, e.getMessage(), e);
+            Logger.error(false, "Storage", "Failed to check existence of file: {}. Error: {}", path, e.getMessage(), e);
             return false;
         }
     }

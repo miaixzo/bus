@@ -902,7 +902,7 @@ public class Attributes implements Serializable {
         try {
             return (value instanceof BulkData) ? ((BulkData) value).toBytes(vr, bigEndian) : value;
         } catch (Exception e) {
-            Logger.info("Failed to load {}", value);
+            Logger.info(false, "Image", "Failed to load {}", value);
             return Value.NULL;
         }
     }
@@ -1244,7 +1244,7 @@ public class Attributes implements Serializable {
                 return ((Value) value).toBytes(vr, bigEndian);
             return vr.toBytes(value, getSpecificCharacterSet(vr));
         } catch (UnsupportedOperationException e) {
-            Logger.info("Attempt to access {} {} as bytes", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Attempt to access {} {} as bytes", Tag.toString(tag), vr);
             return null;
         }
     }
@@ -1270,7 +1270,7 @@ public class Attributes implements Serializable {
         try {
             return getBytes(privateCreator, tag);
         } catch (IOException e) {
-            Logger.info("Access " + Tag.toString(tag) + " throws i/o exception", e);
+            Logger.info(false, "Image", "Access " + Tag.toString(tag) + " throws i/o exception", e);
             return null;
         }
     }
@@ -1432,7 +1432,7 @@ public class Attributes implements Serializable {
         try {
             return vr.toString(value, bigEndian, valueIndex, defVal);
         } catch (UnsupportedOperationException e) {
-            Logger.info("Attempt to access {} {} as string", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Attempt to access {} {} as string", Tag.toString(tag), vr);
             return defVal;
         }
     }
@@ -1483,7 +1483,7 @@ public class Attributes implements Serializable {
         try {
             return toStrings(vr.toStrings(value, bigEndian, getSpecificCharacterSet(vr)));
         } catch (UnsupportedOperationException e) {
-            Logger.info("Attempt to access {} {} as string", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Attempt to access {} {} as string", Tag.toString(tag), vr);
             return null;
         }
     }
@@ -1583,10 +1583,10 @@ public class Attributes implements Serializable {
                 value = decodeISValue(index);
             return vr.toInt(value, bigEndian, valueIndex, defVal);
         } catch (UnsupportedOperationException e) {
-            Logger.info("Attempt to access {} {} as int", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Attempt to access {} {} as int", Tag.toString(tag), vr);
             return defVal;
         } catch (IllegalArgumentException e) {
-            Logger.info("Invalid value of {} {}", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Invalid value of {} {}", Tag.toString(tag), vr);
             return defVal;
         }
     }
@@ -1634,10 +1634,10 @@ public class Attributes implements Serializable {
                 value = decodeISValue(index);
             return vr.toInts(value, bigEndian);
         } catch (UnsupportedOperationException e) {
-            Logger.info("Attempt to access {} {} as int", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Attempt to access {} {} as int", Tag.toString(tag), vr);
             return null;
         } catch (IllegalArgumentException e) {
-            Logger.info("Invalid value of {} {}", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Invalid value of {} {}", Tag.toString(tag), vr);
             return null;
         }
     }
@@ -1727,10 +1727,10 @@ public class Attributes implements Serializable {
                 value = decodeISValue(index);
             return vr.toLong(value, bigEndian, valueIndex, defVal);
         } catch (UnsupportedOperationException e) {
-            Logger.info("Attempt to access {} {} as int", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Attempt to access {} {} as int", Tag.toString(tag), vr);
             return defVal;
         } catch (IllegalArgumentException e) {
-            Logger.info("Invalid value of {} {}", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Invalid value of {} {}", Tag.toString(tag), vr);
             return defVal;
         }
     }
@@ -1778,10 +1778,10 @@ public class Attributes implements Serializable {
                 value = decodeISValue(index);
             return vr.toLongs(value, bigEndian);
         } catch (UnsupportedOperationException e) {
-            Logger.info("Attempt to access {} {} as long", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Attempt to access {} {} as long", Tag.toString(tag), vr);
             return null;
         } catch (IllegalArgumentException e) {
-            Logger.info("Invalid value of {} {}", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Invalid value of {} {}", Tag.toString(tag), vr);
             return null;
         }
     }
@@ -1871,10 +1871,10 @@ public class Attributes implements Serializable {
                 value = decodeDSValue(index);
             return vr.toFloat(value, bigEndian, valueIndex, defVal);
         } catch (UnsupportedOperationException e) {
-            Logger.info("Attempt to access {} {} as float", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Attempt to access {} {} as float", Tag.toString(tag), vr);
             return defVal;
         } catch (IllegalArgumentException e) {
-            Logger.info("Invalid value of {} {}", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Invalid value of {} {}", Tag.toString(tag), vr);
             return defVal;
         }
     }
@@ -1922,10 +1922,10 @@ public class Attributes implements Serializable {
                 value = decodeDSValue(index);
             return vr.toFloats(value, bigEndian);
         } catch (UnsupportedOperationException e) {
-            Logger.info("Attempt to access {} {} as float", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Attempt to access {} {} as float", Tag.toString(tag), vr);
             return null;
         } catch (IllegalArgumentException e) {
-            Logger.info("Invalid value of {} {}", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Invalid value of {} {}", Tag.toString(tag), vr);
             return null;
         }
     }
@@ -2015,10 +2015,10 @@ public class Attributes implements Serializable {
                 value = decodeDSValue(index);
             return vr.toDouble(value, bigEndian, valueIndex, defVal);
         } catch (UnsupportedOperationException e) {
-            Logger.info("Attempt to access {} {} as double", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Attempt to access {} {} as double", Tag.toString(tag), vr);
             return defVal;
         } catch (IllegalArgumentException e) {
-            Logger.info("Invalid value of {} {}", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Invalid value of {} {}", Tag.toString(tag), vr);
             return defVal;
         }
     }
@@ -2066,10 +2066,10 @@ public class Attributes implements Serializable {
                 value = decodeDSValue(index);
             return vr.toDoubles(value, bigEndian);
         } catch (UnsupportedOperationException e) {
-            Logger.info("Attempt to access {} {} as double", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Attempt to access {} {} as double", Tag.toString(tag), vr);
             return null;
         } catch (IllegalArgumentException e) {
-            Logger.info("Invalid value of {} {}", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Invalid value of {} {}", Tag.toString(tag), vr);
             return null;
         }
     }
@@ -2121,7 +2121,7 @@ public class Attributes implements Serializable {
             return defVal;
         vr = updateVR(index, vr);
         if (!vr.isTemporalType()) {
-            Logger.info("Attempt to access {} {} as date/time", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Attempt to access {} {} as date/time", Tag.toString(tag), vr);
             return defVal;
         }
         value = decodeStringValue(index);
@@ -2132,7 +2132,7 @@ public class Attributes implements Serializable {
         try {
             t = vr.toTemporal(value, valueIndex, precision);
         } catch (IllegalArgumentException e) {
-            Logger.info("Invalid value of {} {}", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Invalid value of {} {}", Tag.toString(tag), vr);
             return defVal;
         }
         if (t == null) {
@@ -2441,7 +2441,7 @@ public class Attributes implements Serializable {
             return defVal;
         vr = updateVR(index, vr);
         if (!vr.isTemporalType()) {
-            Logger.info("Attempt to access {} {} as date", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Attempt to access {} {} as date", Tag.toString(tag), vr);
             return defVal;
         }
         value = decodeStringValue(index);
@@ -2450,7 +2450,7 @@ public class Attributes implements Serializable {
         try {
             return vr.toDate(value, getTimeZone(), valueIndex, false, defVal, precision);
         } catch (IllegalArgumentException e) {
-            Logger.info("Invalid value of {} {}", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Invalid value of {} {}", Tag.toString(tag), vr);
             return defVal;
         }
     }
@@ -2555,7 +2555,7 @@ public class Attributes implements Serializable {
         try {
             return VR.DT.toDate(da + tm, getTimeZone(), 0, false, null, precision);
         } catch (IllegalArgumentException e) {
-            Logger.info("Invalid value of {} DA or {} TM", Tag.toString(daTag), Tag.toString(tmTag));
+            Logger.info(false, "Image", "Invalid value of {} DA or {} TM", Tag.toString(daTag), Tag.toString(tmTag));
             return defVal;
         }
     }
@@ -2674,7 +2674,7 @@ public class Attributes implements Serializable {
             return Normal.EMPTY_DATE_OBJECT_ARRAY;
         vr = updateVR(index, vr);
         if (!vr.isTemporalType()) {
-            Logger.info("Attempt to access {} {} as date", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Attempt to access {} {} as date", Tag.toString(tag), vr);
             return Normal.EMPTY_DATE_OBJECT_ARRAY;
         }
         value = decodeStringValue(index);
@@ -2683,7 +2683,7 @@ public class Attributes implements Serializable {
         try {
             return vr.toDates(value, getTimeZone(), false, precisions);
         } catch (IllegalArgumentException e) {
-            Logger.info("Invalid value of {} {}", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Invalid value of {} {}", Tag.toString(tag), vr);
             return Normal.EMPTY_DATE_OBJECT_ARRAY;
         }
     }
@@ -2748,7 +2748,7 @@ public class Attributes implements Serializable {
             while (i < da.length)
                 dates[i++] = VR.DA.toDate(da[i], tz, 0, false, null, precision.precisions[i] = new DatePrecision());
         } catch (IllegalArgumentException e) {
-            Logger.info("Invalid value of {} DA or {} TM", Tag.toString(daTag), Tag.toString(tmTag));
+            Logger.info(false, "Image", "Invalid value of {} DA or {} TM", Tag.toString(daTag), Tag.toString(tmTag));
             dates = Arrays.copyOf(dates, i);
         }
         return dates;
@@ -2828,7 +2828,7 @@ public class Attributes implements Serializable {
             return defVal;
         vr = updateVR(index, vr);
         if (!vr.isTemporalType()) {
-            Logger.info("Attempt to access {} {} as date", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Attempt to access {} {} as date", Tag.toString(tag), vr);
             return defVal;
         }
         value = decodeStringValue(index);
@@ -2837,7 +2837,7 @@ public class Attributes implements Serializable {
         try {
             return toDateRange((value instanceof String) ? (String) value : ((String[]) value)[0], vr);
         } catch (IllegalArgumentException e) {
-            Logger.info("Invalid value of {} {}", Tag.toString(tag), vr);
+            Logger.info(false, "Image", "Invalid value of {} {}", Tag.toString(tag), vr);
             return defVal;
         }
     }
@@ -2930,7 +2930,7 @@ public class Attributes implements Serializable {
         try {
             return toDateRange(da, tm);
         } catch (IllegalArgumentException e) {
-            Logger.info("Invalid value of {} TM", Tag.toString((int) tag));
+            Logger.info(false, "Image", "Invalid value of {} TM", Tag.toString((int) tag));
             return defVal;
         }
     }
@@ -3052,7 +3052,7 @@ public class Attributes implements Serializable {
                 try {
                     tz = Format.timeZone(s);
                 } catch (IllegalArgumentException e) {
-                    Logger.info(e.getMessage());
+                    Logger.info(false, "Image", e.getMessage());
                 }
         } else if (parent != null)
             return parent.getTimeZone();
@@ -3077,7 +3077,7 @@ public class Attributes implements Serializable {
             try {
                 tz = Format.timeZone(s);
             } catch (IllegalArgumentException e) {
-                Logger.info(e.getMessage());
+                Logger.info(false, "Image", e.getMessage());
                 return null;
             }
             return tz.toZoneId();
@@ -4445,7 +4445,7 @@ public class Attributes implements Serializable {
                         destModified.addAll(srcModified);
                     }
                 } catch (InternalException e) {
-                    Logger.info("Failed to merge original attributes modified at {}: {}", dt, e.getMessage());
+                    Logger.info(false, "Image", "Failed to merge original attributes modified at {}: {}", dt, e.getMessage());
                 }
             } else {
                 sort.put(dt, new Attributes(srcItem));
@@ -5357,7 +5357,7 @@ public class Attributes implements Serializable {
                 if (!matches(privateCreator, tag, ignorePNCase, matchNoValue, (Sequence) keyValue))
                     return false;
             } else {
-                Logger.info("Matching Key {} with VR: {} not supported", Tag.toString(tag), keyVrs[i]);
+                Logger.info(false, "Image", "Matching Key {} with VR: {} not supported", Tag.toString(tag), keyVrs[i]);
             }
         }
         return true;
@@ -5451,7 +5451,7 @@ public class Attributes implements Serializable {
             Sequence keySeq) {
         int n = keySeq.size();
         if (n > 1)
-            Logger.info(
+            Logger.info(false, "Image",
                     "Matching Key {} with VR: SQ contains {} Items - only consider first Item",
                     Tag.toString(tag),
                     n);

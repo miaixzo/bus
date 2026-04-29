@@ -62,7 +62,7 @@ public final class OpenBsdSysctlKit {
         try (Memory p = new Memory(intSize);
                 ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(intSize)) {
             if (0 != OpenBsdLibc.INSTANCE.sysctl(name, name.length, p, size, null, size_t.ZERO)) {
-                Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
+                Logger.warn(false, "Health", SYSCTL_FAIL, name, Native.getLastError());
                 return def;
             }
             return p.getInt(0);
@@ -81,7 +81,7 @@ public final class OpenBsdSysctlKit {
         try (Memory p = new Memory(uint64Size);
                 ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(uint64Size)) {
             if (0 != OpenBsdLibc.INSTANCE.sysctl(name, name.length, p, size, null, size_t.ZERO)) {
-                Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
+                Logger.warn(false, "Health", SYSCTL_FAIL, name, Native.getLastError());
                 return def;
             }
             return p.getLong(0);
@@ -99,13 +99,13 @@ public final class OpenBsdSysctlKit {
         // Call first time with null pointer to get value of size
         try (ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference()) {
             if (0 != OpenBsdLibc.INSTANCE.sysctl(name, name.length, null, size, null, size_t.ZERO)) {
-                Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
+                Logger.warn(false, "Health", SYSCTL_FAIL, name, Native.getLastError());
                 return def;
             }
             // Add 1 to size for null terminated string
             try (Memory p = new Memory(size.longValue() + 1L)) {
                 if (0 != OpenBsdLibc.INSTANCE.sysctl(name, name.length, p, size, null, size_t.ZERO)) {
-                    Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
+                    Logger.warn(false, "Health", SYSCTL_FAIL, name, Native.getLastError());
                     return def;
                 }
                 return p.getString(0);
@@ -123,7 +123,7 @@ public final class OpenBsdSysctlKit {
     public static boolean sysctl(int[] name, Structure struct) {
         try (ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(struct.size())) {
             if (0 != OpenBsdLibc.INSTANCE.sysctl(name, name.length, struct.getPointer(), size, null, size_t.ZERO)) {
-                Logger.error(SYSCTL_FAIL, name, Native.getLastError());
+                Logger.error(false, "Health", SYSCTL_FAIL, name, Native.getLastError());
                 return false;
             }
         }
@@ -141,12 +141,12 @@ public final class OpenBsdSysctlKit {
     public static Memory sysctl(int[] name) {
         try (ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference()) {
             if (0 != OpenBsdLibc.INSTANCE.sysctl(name, name.length, null, size, null, size_t.ZERO)) {
-                Logger.error(SYSCTL_FAIL, name, Native.getLastError());
+                Logger.error(false, "Health", SYSCTL_FAIL, name, Native.getLastError());
                 return null;
             }
             Memory m = new Memory(size.longValue());
             if (0 != OpenBsdLibc.INSTANCE.sysctl(name, name.length, m, size, null, size_t.ZERO)) {
-                Logger.error(SYSCTL_FAIL, name, Native.getLastError());
+                Logger.error(false, "Health", SYSCTL_FAIL, name, Native.getLastError());
                 m.close();
                 return null;
             }

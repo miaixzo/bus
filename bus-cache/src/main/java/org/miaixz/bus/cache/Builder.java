@@ -124,7 +124,7 @@ public class Builder {
         Parameter[] parameters = method.getParameters();
         String[] argNames = Arrays.stream(parameters).map(Parameter::getName).toArray(String[]::new);
         if (isFirst.compareAndSet(true, false) && argNames.length != 0 && argNames[0].equals("arg0")) {
-            Logger.warn("compile not set '–parameters', used default method parameter names");
+            Logger.warn(false, "Cache", "compile not set '–parameters', used default method parameter names");
         }
         return argNames;
     }

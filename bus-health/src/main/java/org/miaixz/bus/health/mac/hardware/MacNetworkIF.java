@@ -147,7 +147,7 @@ public final class MacNetworkIF extends AbstractNetworkIF {
             try {
                 ifList.add(new MacNetworkIF(ni, data));
             } catch (InstantiationException e) {
-                Logger.debug("Network Interface Instantiation failed: {}", e.getMessage());
+                Logger.debug(false, "Health", "Network Interface Instantiation failed: {}", e.getMessage());
             }
         }
         return ifList;

@@ -343,7 +343,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
                         cpuLoadInfo.size() / SystemB.INT_SIZE)) {
             int ret = SystemB.INSTANCE.host_statistics(machPort, SystemB.HOST_CPU_LOAD_INFO, cpuLoadInfo, size);
             if (0 != ret) {
-                Logger.error("Failed to get System CPU ticks. Error code: {} ", ret);
+                Logger.error(false, "Health", "Failed to get System CPU ticks. Error code: {} ", ret);
                 return ticks;
             }
 
@@ -440,7 +440,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
                     procCpuLoadInfo,
                     procInfoCount);
             if (0 != ret) {
-                Logger.error("Failed to update CPU Load. Error code: {}", ret);
+                Logger.error(false, "Health", "Failed to update CPU Load. Error code: {}", ret);
                 return ticks;
             }
 
@@ -464,7 +464,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
                             Pointer.nativeValue(procCpuLoadInfo.getValue()),
                             (long) procInfoCount.getValue() * SystemB.INT_SIZE);
                 } catch (Exception e) {
-                    Logger.warn("Failed to vm_deallocate processor info buffer", e);
+                    Logger.warn(false, "Health", "Failed to vm_deallocate processor info buffer", e);
                 }
             }
         }

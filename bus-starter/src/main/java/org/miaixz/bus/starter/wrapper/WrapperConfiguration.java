@@ -20,6 +20,7 @@
 package org.miaixz.bus.starter.wrapper;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.CollKit;
@@ -39,6 +40,7 @@ import org.springframework.core.Ordered;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.filter.ForwardedHeaderFilter;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -197,6 +199,21 @@ public class WrapperConfiguration implements WebMvcRegistrations {
     class RequestMappingHandler extends RequestMappingHandlerMapping {
 
         /**
+         * Logs mapping initialization through the bus direction-aware logger instead of the inherited Spring logger.
+         *
+         * @param handlerMethods The initialized handler method mappings.
+         */
+        @Override
+        protected void handlerMethodsInitialized(Map<RequestMappingInfo, HandlerMethod> handlerMethods) {
+            Logger.debug(
+                    false,
+                    "Spring",
+                    "Request mappings initialized: count={}, mappingName={}",
+                    handlerMethods.size(),
+                    formatMappingName());
+        }
+
+        /**
          * Derives the mapping for a given handler method.
          * <p>
          * It checks if the controller's package matches any of the configured base packages. If it does, a URL prefix
@@ -223,6 +240,8 @@ public class WrapperConfiguration implements WebMvcRegistrations {
                         String prefix = StringKit.splitToArray(packName, arrays[arrays.length - 1])[1]
                                 .replace(Symbol.C_DOT, Symbol.C_SLASH);
                         Logger.debug(
+                                true,
+                                "Spring",
                                 "Create a URL request mapping '{}{}' for {}.{}",
                                 prefix,
                                 requestMappingInfo.getPathPatternsCondition().getPatterns(),

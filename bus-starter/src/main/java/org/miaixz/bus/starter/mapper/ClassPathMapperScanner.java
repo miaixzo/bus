@@ -19,14 +19,19 @@
 */
 package org.miaixz.bus.starter.mapper;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
@@ -34,6 +39,13 @@ import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
+import org.springframework.context.annotation.ScannedGenericBeanDefinition;
+import org.springframework.core.SpringProperties;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternUtils;
+import org.springframework.core.type.classreading.ClassFormatException;
+import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 
@@ -155,6 +167,83 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
         }
 
         return beanDefinitions;
+    }
+
+    /**
+     * Finds mapper candidates with bus direction-aware logging instead of Spring's inherited bare scanner debug output.
+     *
+     * @param basePackage The base package to scan.
+     * @return The candidate mapper bean definitions.
+     */
+    @Override
+    public Set<BeanDefinition> findCandidateComponents(String basePackage) {
+        Set<BeanDefinition> candidates = new LinkedHashSet<>();
+        try {
+            ResourcePatternResolver resolver = ResourcePatternUtils.getResourcePatternResolver(getResourceLoader());
+            String packageSearchPattern = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX
+                    + resolveBasePackage(basePackage) + "/**/*.class";
+            Resource[] resources = resolver.getResources(packageSearchPattern);
+            for (Resource resource : resources) {
+                String filename = resource.getFilename();
+                if (filename != null && filename.contains(Symbol.DOLLAR + Symbol.DOLLAR)) {
+                    continue;
+                }
+                Logger.trace(true, "Mapper", "Scanning mapper classpath resource: {}", resource);
+                try {
+                    MetadataReader metadataReader = getMetadataReaderFactory().getMetadataReader(resource);
+                    if (isCandidateComponent(metadataReader)) {
+                        ScannedGenericBeanDefinition beanDefinition = new ScannedGenericBeanDefinition(metadataReader);
+                        beanDefinition.setSource(resource);
+                        if (isCandidateComponent(beanDefinition)) {
+                            Logger.debug(
+                                    false,
+                                    "Mapper",
+                                    "Mapper candidate component identified: resource={}",
+                                    resource);
+                            candidates.add(beanDefinition);
+                        } else {
+                            Logger.debug(
+                                    false,
+                                    "Mapper",
+                                    "Mapper candidate ignored because it is not an independent interface: resource={}",
+                                    resource);
+                        }
+                    } else {
+                        Logger.trace(
+                                false,
+                                "Mapper",
+                                "Mapper classpath resource ignored by filters: resource={}",
+                                resource);
+                    }
+                } catch (FileNotFoundException e) {
+                    Logger.trace(
+                            false,
+                            "Mapper",
+                            "Mapper classpath resource is not readable: resource={}, reason={}",
+                            resource,
+                            e.getMessage());
+                } catch (ClassFormatException e) {
+                    if (SpringProperties.getFlag("spring.classformat.ignore")) {
+                        Logger.debug(
+                                false,
+                                "Mapper",
+                                "Mapper classpath resource has incompatible class format: resource={}, reason={}",
+                                resource,
+                                e.getMessage());
+                    } else {
+                        throw new BeanDefinitionStoreException("Incompatible class format in " + resource
+                                + ": set system property 'spring.classformat.ignore"
+                                + "' to 'true' if you mean to ignore such files during classpath scanning", e);
+                    }
+                } catch (Throwable e) {
+                    throw new BeanDefinitionStoreException(
+                            "Failed to read mapper candidate component class: " + resource, e);
+                }
+            }
+        } catch (IOException e) {
+            throw new BeanDefinitionStoreException("I/O failure during mapper classpath scanning", e);
+        }
+        return candidates;
     }
 
     /**

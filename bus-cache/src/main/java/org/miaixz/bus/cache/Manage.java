@@ -89,7 +89,7 @@ public class Manage {
         // Populate the cache pool
         caches.forEach((name, cache) -> this.cachePool.put(name, CachePair.of(name, cache)));
 
-        Logger.debug("Initialized cache pool with {} caches, default cache: {}", caches.size(), defaultCache.getLeft());
+        Logger.debug(false, "Cache", "Initialized cache pool with {} caches, default cache: {}", caches.size(), defaultCache.getLeft());
     }
 
     /**
@@ -109,13 +109,13 @@ public class Manage {
             CachePair<String, CacheX> cacheImpl = getCacheImpl(cache);
             long start = System.currentTimeMillis();
             Object result = cacheImpl.getRight().read(key);
-            Logger.debug(
+            Logger.debug(false, "Cache",
                     "cache [{}] read single cost: [{}] ms",
                     cacheImpl.getLeft(),
                     (System.currentTimeMillis() - start));
             return result;
         } catch (Throwable e) {
-            Logger.error("read single cache failed, key: {} ", key, e);
+            Logger.error(false, "Cache", "read single cache failed, key: {} ", key, e);
             return null;
         }
     }
@@ -138,12 +138,12 @@ public class Manage {
                 CachePair<String, CacheX> cacheImpl = getCacheImpl(cache);
                 long start = System.currentTimeMillis();
                 cacheImpl.getRight().write(key, value, expire);
-                Logger.debug(
+                Logger.debug(true, "Cache",
                         "cache [{}] write single cost: [{}] ms",
                         cacheImpl.getLeft(),
                         (System.currentTimeMillis() - start));
             } catch (Throwable e) {
-                Logger.error("write single cache failed, key: {} ", key, e);
+                Logger.error(false, "Cache", "write single cache failed, key: {} ", key, e);
             }
         }
     }
@@ -169,7 +169,7 @@ public class Manage {
                 CachePair<String, CacheX> cacheImpl = getCacheImpl(cache);
                 long start = System.currentTimeMillis();
                 Map<String, Object> cacheMap = cacheImpl.getRight().read(keys);
-                Logger.debug(
+                Logger.debug(false, "Cache",
                         "cache [{}] read batch cost: [{}] ms",
                         cacheImpl.getLeft(),
                         (System.currentTimeMillis() - start));
@@ -189,7 +189,7 @@ public class Manage {
 
                 cacheKeys = new CacheKeys(hitValueMap, notHitKeys);
             } catch (Throwable e) {
-                Logger.error("read multi cache failed, keys: {}", keys, e);
+                Logger.error(false, "Cache", "read multi cache failed, keys: {}", keys, e);
                 cacheKeys = new CacheKeys();
             }
         }
@@ -212,12 +212,12 @@ public class Manage {
             CachePair<String, CacheX> cacheImpl = getCacheImpl(cache);
             long start = System.currentTimeMillis();
             cacheImpl.getRight().write(keyValueMap, expire);
-            Logger.debug(
+            Logger.debug(true, "Cache",
                     "cache [{}] write batch cost: [{}] ms",
                     cacheImpl.getLeft(),
                     (System.currentTimeMillis() - start));
         } catch (Exception e) {
-            Logger.error("write map multi cache failed, keys: {}", keyValueMap.keySet(), e);
+            Logger.error(false, "Cache", "write map multi cache failed, keys: {}", keyValueMap.keySet(), e);
         }
     }
 
@@ -237,12 +237,12 @@ public class Manage {
                 CachePair<String, CacheX> cacheImpl = getCacheImpl(cache);
                 long start = System.currentTimeMillis();
                 cacheImpl.getRight().remove(keys);
-                Logger.debug(
+                Logger.debug(true, "Cache",
                         "cache [{}] remove cost: [{}] ms",
                         cacheImpl.getLeft(),
                         (System.currentTimeMillis() - start));
             } catch (Throwable e) {
-                Logger.error("remove cache failed, keys: {}: ", keys, e);
+                Logger.error(false, "Cache", "remove cache failed, keys: {}: ", keys, e);
             }
         }
     }

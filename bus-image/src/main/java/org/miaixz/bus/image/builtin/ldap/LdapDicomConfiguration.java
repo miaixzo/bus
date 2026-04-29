@@ -415,7 +415,7 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
 
         try {
             destroySubcontextWithChilds(configurationDN);
-            Logger.info("Purge DICOM Configuration at {}", configurationDN);
+            Logger.info(false, "Image", "Purge DICOM Configuration at {}", configurationDN);
             clearConfigurationDN();
         } catch (NamingException e) {
             throw new InternalException(e);
@@ -753,7 +753,7 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
                 try {
                     destroySubcontextWithChilds(deviceDN);
                 } catch (NamingException e) {
-                    Logger.warn("Rollback failed:", e);
+                    Logger.warn(false, "Image", "Rollback failed:", e);
                 }
             }
             unregister(destroyDNs);
@@ -772,7 +772,7 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             try {
                 destroySubcontext(dn);
             } catch (NamingException e) {
-                Logger.warn("Unregister {} failed:", dn, e);
+                Logger.warn(false, "Image", "Unregister {} failed:", dn, e);
             }
         }
     }
@@ -1075,7 +1075,7 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
                     webAppsRegistryDN,
                     LdapBuilder
                             .attrs("dcmUniqueWebAppNamesRegistryRoot", "cn", "Unique Web Application Names Registry"));
-            Logger.info("Create DICOM Configuration at {}", configurationDN);
+            Logger.info(true, "Image", "Create DICOM Configuration at {}", configurationDN);
         } catch (NamingException e) {
             clearConfigurationDN();
             throw new InternalException(e);

@@ -154,7 +154,7 @@ public class UdpChannel {
             }
             if (!send(responseUnit.response, responseUnit.session)) {
                 failResponseUnit = responseUnit;
-                Logger.warn("Send failed, will retry...");
+                Logger.warn(false, "Socket", "Send failed, will retry...");
                 break;
             }
         }
@@ -214,7 +214,7 @@ public class UdpChannel {
      * Closes the current connection.
      */
     public void close() {
-        Logger.info("Closing channel...");
+        Logger.info(false, "Socket", "Closing channel...");
         if (selectionKey != null) {
             Selector selector = selectionKey.selector();
             selectionKey.cancel();
@@ -226,7 +226,7 @@ public class UdpChannel {
                 channel.close();
             }
         } catch (IOException e) {
-            Logger.error(Normal.EMPTY, e);
+            Logger.error(false, "Socket", Normal.EMPTY, e);
         }
         // Clean up resources
         ResponseUnit task;

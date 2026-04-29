@@ -165,7 +165,7 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
             return Httpx.post(url, payload, MediaType.APPLICATION_JSON);
 
         } catch (Exception e) {
-            Logger.error("Failed to invoke gRPC method '{}'", assets.getMethod(), e);
+            Logger.error(false, "GRPC", "Failed to invoke gRPC method '{}'", assets.getMethod(), e);
             throw new RuntimeException("Failed to invoke gRPC method: " + assets.getMethod(), e);
         }
     }

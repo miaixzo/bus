@@ -227,7 +227,7 @@ public class MacFileSystem extends AbstractFileSystem {
             DASessionRef session = DiskArbitration.INSTANCE
                     .DASessionCreate(CoreFoundation.INSTANCE.CFAllocatorGetDefault());
             if (session == null) {
-                Logger.error("Unable to open session to DiskArbitration framework.");
+                Logger.error(false, "Health", "Unable to open session to DiskArbitration framework.");
             } else {
                 CFStringRef daVolumeNameKey = CFStringRef.createCFString("DAVolumeName");
 

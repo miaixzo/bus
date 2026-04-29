@@ -209,7 +209,7 @@ public final class HkeyPerformanceDataKit {
             String objectName,
             Class<T> counterEnum) {
         if (!COUNTER_INDEX_MAP.containsKey(objectName)) {
-            Logger.debug("Couldn't find counter index of {}.", objectName);
+            Logger.debug(false, "Health", "Couldn't find counter index of {}.", objectName);
             return null;
         }
         int counterIndex = COUNTER_INDEX_MAP.get(objectName);
@@ -221,7 +221,7 @@ public final class HkeyPerformanceDataKit {
             T key = enumConstants[i];
             String counterName = key.getCounter();
             if (!COUNTER_INDEX_MAP.containsKey(counterName)) {
-                Logger.debug("Couldn't find counter index of {}.", counterName);
+                Logger.debug(false, "Health", "Couldn't find counter index of {}.", counterName);
                 return null;
             }
             indexMap.put(key, COUNTER_INDEX_MAP.get(counterName));
@@ -248,7 +248,7 @@ public final class HkeyPerformanceDataKit {
             int ret = Advapi32.INSTANCE
                     .RegQueryValueEx(WinReg.HKEY_PERFORMANCE_DATA, objectIndexStr, 0, null, pPerfData, lpcbData);
             if (ret != WinError.ERROR_SUCCESS && ret != WinError.ERROR_MORE_DATA) {
-                Logger.error("Error reading performance data from registry for {}.", objectName);
+                Logger.error(false, "Health", "Error reading performance data from registry for {}.", objectName);
                 pPerfData.close();
                 return null;
             }
@@ -286,7 +286,7 @@ public final class HkeyPerformanceDataKit {
                 }
             }
         } catch (Win32Exception we) {
-            Logger.error(
+            Logger.error(false, "Health",
                     "Unable to locate English counter names in registry Perflib 009. Counters may need to be rebuilt: ",
                     we);
         }

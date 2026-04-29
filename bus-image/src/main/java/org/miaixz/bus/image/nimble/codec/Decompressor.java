@@ -114,7 +114,7 @@ public class Decompressor {
                 throw new UnsupportedOperationException("Unsupported Transfer Syntax: " + tsuid);
 
             this.decompressor = ImageReaderFactory.getImageReader(param);
-            Logger.debug("Decompressor: {}", decompressor.getClass().getName());
+            Logger.debug(false, "Image", "Decompressor: {}", decompressor.getClass().getName());
             this.readParam = decompressor.getDefaultReadParam();
             this.patchJpegLS = param.patchJPEGLS;
             this.pmiAfterDecompression = pmi.isYBR() && TransferSyntaxType.isYBRCompression(tsuid) ? Photometric.RGB
@@ -281,7 +281,7 @@ public class Decompressor {
         bi = decompressor.read(0, readParam);
         long end = System.currentTimeMillis();
         if (Logger.isDebugEnabled())
-            Logger.debug(
+            Logger.debug(false, "Image",
                     "Decompressed frame #{} 1:{} in {} ms",
                     index + 1,
                     (float) sizeOf(bi) / siis.getStreamPosition(),

@@ -186,13 +186,13 @@ public class Complex {
                 Map[] pair = Builder.generateMultiKey(annoHolder, args);
                 Set<String> keys = ((Map<String, Object>) pair[1]).keySet();
                 manage.remove(invalid.value(), keys.toArray(new String[0]));
-                Logger.info("multi cache clear, keys: {}", keys);
+                Logger.info(true, "Cache", "multi cache clear, keys: {}", keys);
             } else {
                 String key = Builder.generateSingleKey(annoHolder, args);
                 manage.remove(invalid.value(), key);
-                Logger.info("single cache clear, key: {}", key);
+                Logger.info(true, "Cache", "single cache clear, key: {}", key);
             }
-            Logger.debug("Cache clear completed: durationMs={}", (System.currentTimeMillis() - start));
+            Logger.debug(false, "Cache", "Cache clear completed: durationMs={}", (System.currentTimeMillis() - start));
         }
     }
 
@@ -284,7 +284,7 @@ public class Complex {
         } else {
             result = singleCacheReader.read(annoHolder, methodHolder, baseInvoker, needWrite);
         }
-        Logger.debug("cache read completed: durationMs={}", (System.currentTimeMillis() - start));
+        Logger.debug(false, "Cache", "cache read completed: durationMs={}", (System.currentTimeMillis() - start));
         return result;
     }
 

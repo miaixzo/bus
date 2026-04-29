@@ -161,7 +161,7 @@ public class BaiduBosProvider extends AbstractProvider {
                         .data(content).build();
             }
         } catch (Exception e) {
-            Logger.error("Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
+            Logger.error(false, "Storage", "Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -211,7 +211,7 @@ public class BaiduBosProvider extends AbstractProvider {
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
-            Logger.error(
+            Logger.error(false, "Storage",
                     "Failed to download file: {} from bucket: {} to local file: {}. Error: {}",
                     fileName,
                     bucket,
@@ -247,7 +247,7 @@ public class BaiduBosProvider extends AbstractProvider {
                                 .build();
                     }).collect(Collectors.toList())).build();
         } catch (Exception e) {
-            Logger.error(
+            Logger.error(false, "Storage",
                     "Failed to list objects in bucket: {}. Error: {}",
                     this.context.getBucket(),
                     e.getMessage(),
@@ -313,7 +313,7 @@ public class BaiduBosProvider extends AbstractProvider {
             }
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
-            Logger.error(
+            Logger.error(false, "Storage",
                     "Failed to rename file from: {} to: {} in bucket: {} with path: {}, error: {}",
                     oldName,
                     newName,
@@ -416,7 +416,7 @@ public class BaiduBosProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(Blob.builder().name(fileName).url(presignedUrl).path(objectKey).build()).build();
         } catch (Exception e) {
-            Logger.error(
+            Logger.error(false, "Storage",
                     "Failed to upload file: {} to bucket: {} with path: {}, error: {}",
                     fileName,
                     bucket,
@@ -467,7 +467,7 @@ public class BaiduBosProvider extends AbstractProvider {
             client.deleteObject(request);
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
-            Logger.error(
+            Logger.error(false, "Storage",
                     "Failed to remove file: {} from bucket: {} with path: {}, error: {}",
                     fileName,
                     bucket,

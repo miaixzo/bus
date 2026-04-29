@@ -116,7 +116,7 @@ public final class AixNetworkIF extends AbstractNetworkIF {
             try {
                 ifList.add(new AixNetworkIF(ni, netstats));
             } catch (InstantiationException e) {
-                Logger.debug("Network Interface Instantiation failed: {}", e.getMessage());
+                Logger.debug(false, "Health", "Network Interface Instantiation failed: {}", e.getMessage());
             }
         }
         return ifList;

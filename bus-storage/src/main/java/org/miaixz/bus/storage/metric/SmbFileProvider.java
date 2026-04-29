@@ -126,7 +126,7 @@ public class SmbFileProvider extends AbstractProvider {
                     connection.close();
                 }
             } catch (Exception ex) {
-                Logger.error("Error while closing SMB resources: {}", ex.getMessage(), ex);
+                Logger.error(false, "Storage", "Error while closing SMB resources: {}", ex.getMessage(), ex);
             }
             throw new IllegalArgumentException("Failed to initialize SMB client: " + e.getMessage(), e);
         }
@@ -200,7 +200,7 @@ public class SmbFileProvider extends AbstractProvider {
                         .data(content).build();
             }
         } catch (Exception e) {
-            Logger.error("Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
+            Logger.error(false, "Storage", "Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         } finally {
             // Close SMB file resource
@@ -208,7 +208,7 @@ public class SmbFileProvider extends AbstractProvider {
                 try {
                     smbFile.close();
                 } catch (Exception e) {
-                    Logger.warn("Failed to close SMB file: {}", e.getMessage());
+                    Logger.warn(false, "Storage", "Failed to close SMB file: {}", e.getMessage());
                 }
             }
         }
@@ -269,7 +269,7 @@ public class SmbFileProvider extends AbstractProvider {
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
-            Logger.error(
+            Logger.error(false, "Storage",
                     "Failed to download file: {} from bucket: {} to local file: {}. Error: {}",
                     fileName,
                     bucket,
@@ -283,7 +283,7 @@ public class SmbFileProvider extends AbstractProvider {
                 try {
                     smbFile.close();
                 } catch (Exception e) {
-                    Logger.warn("Failed to close SMB file: {}", e.getMessage());
+                    Logger.warn(false, "Storage", "Failed to close SMB file: {}", e.getMessage());
                 }
             }
         }
@@ -311,7 +311,7 @@ public class SmbFileProvider extends AbstractProvider {
                         return Blob.builder().name(fileName).extend(extend).build();
                     }).collect(Collectors.toList())).build();
         } catch (Exception e) {
-            Logger.error("Failed to list files in path: {}. Error: {}", context.getPrefix(), e.getMessage(), e);
+            Logger.error(false, "Storage", "Failed to list files in path: {}. Error: {}", context.getPrefix(), e.getMessage(), e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -387,7 +387,7 @@ public class SmbFileProvider extends AbstractProvider {
                 diskEntry.close();
             }
         } catch (Exception e) {
-            Logger.error(
+            Logger.error(false, "Storage",
                     "Failed to rename file from {} to {} in bucket: {} path: {}. Error: {}",
                     oldName,
                     newName,
@@ -497,7 +497,7 @@ public class SmbFileProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(Blob.builder().name(fileName).path(objectKey).build()).build();
         } catch (Exception e) {
-            Logger.error(
+            Logger.error(false, "Storage",
                     "Failed to upload file: {} to bucket: {} path: {}. Error: {}",
                     fileName,
                     bucket,
@@ -511,7 +511,7 @@ public class SmbFileProvider extends AbstractProvider {
                 try {
                     smbFile.close();
                 } catch (Exception e) {
-                    Logger.warn("Failed to close SMB file: {}", e.getMessage());
+                    Logger.warn(false, "Storage", "Failed to close SMB file: {}", e.getMessage());
                 }
             }
         }
@@ -557,7 +557,7 @@ public class SmbFileProvider extends AbstractProvider {
             }
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
-            Logger.error(
+            Logger.error(false, "Storage",
                     "Failed to remove file: {} from bucket: {} path: {}. Error: {}",
                     fileName,
                     bucket,
@@ -627,7 +627,7 @@ public class SmbFileProvider extends AbstractProvider {
                 return Integer.parseInt(portStr);
             }
         } catch (NumberFormatException e) {
-            Logger.warn("Invalid port in endpoint: {}. Using default port 445.", endpoint);
+            Logger.warn(false, "Storage", "Invalid port in endpoint: {}. Using default port 445.", endpoint);
         }
         return 445; // Default SMB port
     }
@@ -688,7 +688,7 @@ public class SmbFileProvider extends AbstractProvider {
                 share.mkdir(dirPath);
             }
         } catch (Exception e) {
-            Logger.error("Failed to ensure directory exists: {}. Error: {}", dirPath, e.getMessage(), e);
+            Logger.error(false, "Storage", "Failed to ensure directory exists: {}. Error: {}", dirPath, e.getMessage(), e);
             throw new InternalException("Failed to create directory: " + dirPath, e);
         }
     }

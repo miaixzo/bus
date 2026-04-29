@@ -114,7 +114,7 @@ public class Http2Reader implements Closeable {
         } else {
             ByteString connectionPreface = source.readByteString(Http2.CONNECTION_PREFACE.size());
             if (Logger.isDebugEnabled()) {
-                Logger.debug(String.format("<< CONNECTION %s" + connectionPreface.hex()));
+                Logger.debug(true, "HTTP", String.format("<< CONNECTION %s" + connectionPreface.hex()));
             }
             if (!Http2.CONNECTION_PREFACE.equals(connectionPreface)) {
                 throw Http2.ioException("Expected a connection header but was %s", connectionPreface.utf8());
@@ -148,7 +148,7 @@ public class Http2Reader implements Closeable {
         byte flags = (byte) (source.readByte() & 0xff);
         int streamId = (source.readInt() & 0x7fffffff);
         if (Logger.isDebugEnabled()) {
-            Logger.warn(Http2.frameLog(true, streamId, length, type, flags));
+            Logger.warn(false, "HTTP", Http2.frameLog(true, streamId, length, type, flags));
         }
 
         switch (type) {
@@ -486,7 +486,7 @@ public class Http2Reader implements Closeable {
 
         /**
          * Handles a DATA frame.
-         * 
+         *
          * @param inFinished True if this is the last frame of the stream.
          * @param streamId   The stream ID.
          * @param source     The source of the data.
@@ -508,7 +508,7 @@ public class Http2Reader implements Closeable {
 
         /**
          * Handles a RST_STREAM frame.
-         * 
+         *
          * @param streamId  The stream ID.
          * @param errorCode The error code.
          */
@@ -516,7 +516,7 @@ public class Http2Reader implements Closeable {
 
         /**
          * Handles a SETTINGS frame.
-         * 
+         *
          * @param clearPrevious True if the settings should be cleared before applying.
          * @param settings      The settings to apply.
          */
@@ -605,7 +605,7 @@ public class Http2Reader implements Closeable {
     static class ContinuationSource implements Source {
 
         /**
-         * 
+         *
          * The underlying source.
          */
         private final BufferSource source;
@@ -670,7 +670,7 @@ public class Http2Reader implements Closeable {
             byte type = (byte) (source.readByte() & 0xff);
             flags = (byte) (source.readByte() & 0xff);
             if (Logger.isDebugEnabled()) {
-                Logger.warn(Http2.frameLog(true, streamId, length, type, flags));
+                Logger.warn(false, "HTTP", Http2.frameLog(true, streamId, length, type, flags));
             }
             streamId = (source.readInt() & 0x7fffffff);
             if (type != Http2.TYPE_CONTINUATION)

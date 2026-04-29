@@ -79,14 +79,14 @@ public interface WorkflowServiceStubsProvider {
         Assert.notNull(binding, "binding must not be null");
         Assert.notNull(binding.getEndpoint(), "temporal.endpoint must not be null");
 
-        Logger.debug(
+        Logger.debug(true, "Tempus",
                 "Creating service stubs, endpoint: {}, namespace: {}, identity: {}",
                 binding.getEndpoint(),
                 binding.getNamespace(),
                 binding.getIdentity());
 
         try {
-            Logger.debug(
+            Logger.debug(true, "Tempus",
                     "Creating workflow client, endpoint: {}, namespace: {}, identity: {}",
                     binding.getEndpoint(),
                     binding.getNamespace(),
@@ -103,7 +103,7 @@ public interface WorkflowServiceStubsProvider {
                     Method factoryMethod = findWorkflowClientFactoryWithOptions(serviceStubs.getClass());
                     WorkflowClient client = MethodKit
                             .invokeStatic(factoryMethod, serviceStubs, builder.validateAndBuildWithDefaults());
-                    Logger.debug("Created workflow client with options successfully");
+                    Logger.debug(false, "Tempus", "Created workflow client with options successfully");
                     return client;
                 } catch (IllegalStateException ignore) {
                     // No compatible 2-arg overload; fall back to the low-level bridge.
@@ -112,7 +112,7 @@ public interface WorkflowServiceStubsProvider {
 
             return createWorkflowClientWithoutBinding(serviceStubs);
         } catch (RuntimeException e) {
-            Logger.error(
+            Logger.error(false, "Tempus",
                     "Failed to create WorkflowClient with binding, stubsType: {}, endpoint: {}, namespace: {}, identity: {}, error: {}",
                     serviceStubs.getClass().getName(),
                     binding.getEndpoint(),
@@ -146,11 +146,11 @@ public interface WorkflowServiceStubsProvider {
      */
     private WorkflowClient createWorkflowClientWithoutBinding(Object serviceStubs) {
         Assert.notNull(serviceStubs, "serviceStubs must not be null");
-        Logger.debug("Creating workflow client from service stubs, stubsType: {}", serviceStubs.getClass().getName());
+        Logger.debug(true, "Tempus", "Creating workflow client from service stubs, stubsType: {}", serviceStubs.getClass().getName());
 
         Method factoryMethod = findWorkflowClientFactory(serviceStubs.getClass());
         WorkflowClient client = MethodKit.invokeStatic(factoryMethod, serviceStubs);
-        Logger.debug("Created workflow client from service stubs successfully");
+        Logger.debug(false, "Tempus", "Created workflow client from service stubs successfully");
         return client;
     }
 
@@ -164,25 +164,25 @@ public interface WorkflowServiceStubsProvider {
             return;
         }
 
-        Logger.debug("Shutting down service stubs, stubsType: {}", serviceStubs.getClass().getName());
+        Logger.debug(false, "Tempus", "Shutting down service stubs, stubsType: {}", serviceStubs.getClass().getName());
 
         try {
             invokeNoArgIfPresent(serviceStubs, "shutdown");
             boolean terminated = invokeAwaitTerminationIfPresent(serviceStubs, 5L, TimeUnit.SECONDS);
             if (!terminated) {
-                Logger.warn(
+                Logger.warn(false, "Tempus",
                         "Service stubs did not terminate within timeout, forcing shutdown. stubsType: {}",
                         serviceStubs.getClass().getName());
                 invokeNoArgIfPresent(serviceStubs, "shutdownNow");
                 invokeAwaitTerminationIfPresent(serviceStubs, 2L, TimeUnit.SECONDS);
             }
 
-            Logger.debug("Service stubs shutdown completed, stubsType: {}", serviceStubs.getClass().getName());
+            Logger.debug(false, "Tempus", "Service stubs shutdown completed, stubsType: {}", serviceStubs.getClass().getName());
         } catch (RuntimeException e) {
             if (ExceptionKit.isCausedBy(e, InterruptedException.class)) {
                 Thread.currentThread().interrupt();
             }
-            Logger.error(
+            Logger.error(false, "Tempus",
                     "Failed to shut down WorkflowServiceStubs, stubsType: {}, error: {}",
                     serviceStubs.getClass().getName(),
                     e.getMessage(),

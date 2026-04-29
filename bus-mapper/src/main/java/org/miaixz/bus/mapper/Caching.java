@@ -189,7 +189,7 @@ public class Caching extends XMLLanguageDriver {
                     // For dynamic SQL, we don't generate SQL at this point
                     // Instead, we create a SqlSource that will generate SQL at runtime based on dialect
                     if (Logger.isTraceEnabled()) {
-                        Logger.trace("cacheKey - " + k + " : [Dynamic SQL - will be generated at runtime]\n");
+                        Logger.trace(false, "Mapper", "cacheKey - " + k + " : [Dynamic SQL - will be generated at runtime]\n");
                     }
                     // Create a placeholder SQL source that will be replaced by DynamicSqlSource
                     SqlSource originalSource = super.createSqlSource(configuration, "<script></script>", parameterType);
@@ -203,7 +203,7 @@ public class Caching extends XMLLanguageDriver {
                     // Static SQL - generate at cache time
                     String sqlScript = cache.getSqlScript();
                     if (Logger.isTraceEnabled()) {
-                        Logger.trace("cacheKey - " + k + " :\n" + sqlScript + "\n");
+                        Logger.trace(false, "Mapper", "cacheKey - " + k + " :\n" + sqlScript + "\n");
                     }
                     SqlSource sqlSource = super.createSqlSource(configuration, sqlScript, parameterType);
                     sqlSource = SqlSourceEnhancer.SPI

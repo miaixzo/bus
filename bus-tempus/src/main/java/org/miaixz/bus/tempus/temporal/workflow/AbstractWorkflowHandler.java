@@ -76,7 +76,7 @@ public abstract class AbstractWorkflowHandler<A, R> {
      */
     public String execute(R request) {
         try {
-            Logger.info(
+            Logger.info(true, "Tempus",
                     "Starting workflow. requestType: {}, maxDurationHours: {}",
                     request == null ? null : request.getClass().getName(),
                     getMaxDurationHours(request));
@@ -86,7 +86,7 @@ public abstract class AbstractWorkflowHandler<A, R> {
                 A dynamicActivity = Workflow
                         .newActivityStub(getActivityClass(), createDynamicActivityOptions(maxDurationHours));
                 String result = invokeActivity(dynamicActivity, request);
-                Logger.info(
+                Logger.info(false, "Tempus",
                         "Workflow completed. requestType: {}, dynamicTimeoutHours: {}",
                         request == null ? null : request.getClass().getName(),
                         maxDurationHours);
@@ -94,11 +94,11 @@ public abstract class AbstractWorkflowHandler<A, R> {
             }
 
             String result = invokeActivity(activity, request);
-            Logger.info("Workflow completed. requestType: {}", request == null ? null : request.getClass().getName());
+            Logger.info(false, "Tempus", "Workflow completed. requestType: {}", request == null ? null : request.getClass().getName());
             return result;
 
         } catch (Exception e) {
-            Logger.error(
+            Logger.error(false, "Tempus",
                     "Workflow failed. requestType: {}, error: {}",
                     request == null ? null : request.getClass().getName(),
                     e.getMessage(),

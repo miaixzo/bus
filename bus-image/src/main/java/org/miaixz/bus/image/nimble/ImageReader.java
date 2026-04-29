@@ -167,7 +167,7 @@ public class ImageReader extends javax.imageio.ImageReader {
         try {
             tsuid = parser.getTransferSyntaxUID();
         } catch (InternalException e) {
-            Logger.warn("Cannot parse jpeg type", e);
+            Logger.warn(false, "Image", "Cannot parse jpeg type", e);
         }
         if (tsuid != null && !TransferSyntaxType.isLossyCompression(tsuid)) {
             return false;
@@ -402,7 +402,7 @@ public class ImageReader extends javax.imageio.ImageReader {
             PlanarImage img = getPlanarImage(frameIndex, getDefaultReadParam(param));
             return ImageConversion.toBufferedImage(img).getRaster();
         } catch (Exception e) {
-            Logger.error("Reading image", e);
+            Logger.error(false, "Image", "Reading image", e);
             return null;
         }
     }
@@ -420,7 +420,7 @@ public class ImageReader extends javax.imageio.ImageReader {
             PlanarImage img = getPlanarImage(frameIndex, getDefaultReadParam(param));
             return ImageConversion.toBufferedImage(img);
         } catch (Exception e) {
-            Logger.error("Reading image", e);
+            Logger.error(false, "Image", "Reading image", e);
             return null;
         }
     }
@@ -494,7 +494,7 @@ public class ImageReader extends javax.imageio.ImageReader {
                 channel.position(seg.segmentPositions()[frame]);
                 return isYbrModel(channel, pmi, param);
             } catch (IOException e) {
-                Logger.error("Cannot read jpeg header", e);
+                Logger.error(false, "Image", "Cannot read jpeg header", e);
             }
             return false;
         };
@@ -515,7 +515,7 @@ public class ImageReader extends javax.imageio.ImageReader {
             try (SeekableInMemoryByteChannel channel = new SeekableInMemoryByteChannel(bdis.getBytes(frame).array())) {
                 return isYbrModel(channel, pmi, param);
             } catch (Exception e) {
-                Logger.error("Cannot read jpeg header", e);
+                Logger.error(false, "Image", "Cannot read jpeg header", e);
             }
             return false;
         };

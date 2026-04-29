@@ -108,9 +108,9 @@ public final class PerfCounterWildcardQuery {
             // If we are here, query returned no results
             if (StringKit.isBlank(customFilter)) {
                 if (PERF_DISABLE_ALL_ON_FAILURE) {
-                    Logger.info("Disabling further attempts to query performance counters.");
+                    Logger.info(false, "Health", "Disabling further attempts to query performance counters.");
                 } else {
-                    Logger.info("Disabling further attempts to query {}.", perfObject);
+                    Logger.info(false, "Health", "Disabling further attempts to query {}.", perfObject);
                 }
                 FAILED_QUERY_CACHE.add(perfObject);
             }
@@ -169,7 +169,7 @@ public final class PerfCounterWildcardQuery {
         try {
             objectItems = PdhUtil.PdhEnumObjectItems(null, null, perfObjectLocalized, 100);
         } catch (PdhException e) {
-            Logger.warn(
+            Logger.warn(false, "Health",
                     "Failed to locate performance object for {} in the registry. Performance counters may be corrupt. {}",
                     perfObjectLocalized,
                     e.getMessage());

@@ -142,7 +142,7 @@ final class WindowsSensors extends AbstractSensors {
         WmiResult<MSAcpiThermalZoneTemperature.TemperatureProperty> result = MSAcpiThermalZoneTemperature
                 .queryCurrentTemperature();
         if (result.getResultCount() > 0) {
-            Logger.debug("Found Temperature data in WMI");
+            Logger.debug(false, "Health", "Found Temperature data in WMI");
             tempK = WmiKit
                     .getUint32asLong(result, MSAcpiThermalZoneTemperature.TemperatureProperty.CURRENTTEMPERATURE, 0);
         }
@@ -230,19 +230,19 @@ final class WindowsSensors extends AbstractSensors {
                     double value = (double) getValueMethod.invoke(sensor);
                     return value > 0;
                 } catch (Exception e) {
-                    Logger.warn(REFLECT_EXCEPTION_MSG, e.getMessage());
+                    Logger.warn(false, "Health", REFLECT_EXCEPTION_MSG, e.getMessage());
                     return false;
                 }
             }).mapToInt(sensor -> {
                 try {
                     return (int) (double) getValueMethod.invoke(sensor);
                 } catch (Exception e) {
-                    Logger.warn(REFLECT_EXCEPTION_MSG, e.getMessage());
+                    Logger.warn(false, "Health", REFLECT_EXCEPTION_MSG, e.getMessage());
                     return 0;
                 }
             }).toArray();
         } catch (Exception e) {
-            Logger.warn(REFLECT_EXCEPTION_MSG, e.getMessage());
+            Logger.warn(false, "Health", REFLECT_EXCEPTION_MSG, e.getMessage());
         }
         return new int[0];
     }
@@ -255,7 +255,7 @@ final class WindowsSensors extends AbstractSensors {
     private static int[] getFansFromWMI() {
         WmiResult<Win32Fan.SpeedProperty> fan = Win32Fan.querySpeed();
         if (fan.getResultCount() > 1) {
-            Logger.debug("Found Fan data in WMI");
+            Logger.debug(false, "Health", "Found Fan data in WMI");
             int[] fanSpeeds = new int[fan.getResultCount()];
             for (int i = 0; i < fan.getResultCount(); i++) {
                 fanSpeeds[i] = (int) WmiKit.getUint64(fan, Win32Fan.SpeedProperty.DESIREDSPEED, i);
@@ -346,7 +346,7 @@ final class WindowsSensors extends AbstractSensors {
     private static double getVoltsFromWMI() {
         WmiResult<Win32Processor.VoltProperty> voltage = Win32Processor.queryVoltage();
         if (voltage.getResultCount() > 1) {
-            Logger.debug("Found Voltage data in WMI");
+            Logger.debug(false, "Health", "Found Voltage data in WMI");
             int decivolts = WmiKit.getUint16(voltage, Win32Processor.VoltProperty.CURRENTVOLTAGE, 0);
             // If the eighth bit is set, bits 0-6 contain the voltage
             // multiplied by 10. If the eighth bit is not set, then the bit
@@ -393,11 +393,11 @@ final class WindowsSensors extends AbstractSensors {
             WmiResult<OhmHardware.IdentifierProperty> ohmHardware = OhmHardware
                     .queryHwIdentifier(h, typeToQuery, typeName);
             if (ohmHardware.getResultCount() > 0) {
-                Logger.debug("Found {} data in Open Hardware Monitor", sensorType);
+                Logger.debug(false, "Health", "Found {} data in Open Hardware Monitor", sensorType);
                 ohmSensors = querySensorFunction.apply(h, ohmHardware);
             }
         } catch (COMException e) {
-            Logger.warn(COM_EXCEPTION_MSG, e.getMessage());
+            Logger.warn(false, "Health", COM_EXCEPTION_MSG, e.getMessage());
         } finally {
             if (comInit) {
                 h.unInitCOM();
@@ -441,7 +441,7 @@ final class WindowsSensors extends AbstractSensors {
             }
             return validCount > 0 ? sum / validCount : 0;
         } catch (Exception e) {
-            Logger.warn(REFLECT_EXCEPTION_MSG, e.getMessage());
+            Logger.warn(false, "Health", REFLECT_EXCEPTION_MSG, e.getMessage());
         }
         return 0;
     }
@@ -475,9 +475,9 @@ final class WindowsSensors extends AbstractSensors {
             Method querySensorsMethod = libreHardwareManagerClass.getMethod("querySensors", String.class, String.class);
             return (List<?>) querySensorsMethod.invoke(instance, hardwareType, sensorType);
         } catch (ClassNotFoundException e) {
-            Logger.trace("jLibreHardwareMonitor not available: {}", e.getMessage());
+            Logger.trace(false, "Health", "jLibreHardwareMonitor not available: {}", e.getMessage());
         } catch (Exception e) {
-            Logger.warn(REFLECT_EXCEPTION_MSG, e.getMessage());
+            Logger.warn(false, "Health", REFLECT_EXCEPTION_MSG, e.getMessage());
         }
         return Collections.emptyList();
     }

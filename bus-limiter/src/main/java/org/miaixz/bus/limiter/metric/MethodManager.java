@@ -52,7 +52,7 @@ public class MethodManager {
      *             method.
      */
     public static void addMethod(String name, Pair<StrategyMode, Annotation> pair) {
-        Logger.info("Register method:[{}][{}]", pair.getLeft().name(), name);
+        Logger.info(true, "Limiter", "Register method:[{}][{}]", pair.getLeft().name(), name);
         map.put(name, pair);
     }
 

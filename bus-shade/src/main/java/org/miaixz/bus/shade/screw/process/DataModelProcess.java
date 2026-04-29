@@ -68,23 +68,23 @@ public class DataModelProcess extends AbstractProcess {
         long start = System.currentTimeMillis();
         // Get database information.
         Database database = query.getDataBase();
-        Logger.debug("query the database time consuming:{}ms", (System.currentTimeMillis() - start));
+        Logger.debug(true, "Shade", "query the database time consuming:{}ms", (System.currentTimeMillis() - start));
         model.setDatabase(database.getDatabase());
 
         start = System.currentTimeMillis();
         // Get all tables.
         List<? extends Table> tables = query.getTables();
-        Logger.debug("query the table time consuming:{}ms", (System.currentTimeMillis() - start));
+        Logger.debug(true, "Shade", "query the table time consuming:{}ms", (System.currentTimeMillis() - start));
 
         start = System.currentTimeMillis();
         // Get all columns.
         List<? extends Column> columns = query.getTableColumns();
-        Logger.debug("query the column time consuming:{}ms", (System.currentTimeMillis() - start));
+        Logger.debug(true, "Shade", "query the column time consuming:{}ms", (System.currentTimeMillis() - start));
 
         start = System.currentTimeMillis();
         // Get all primary keys.
         List<? extends PrimaryKey> primaryKeys = query.getPrimaryKeys();
-        Logger.debug("query the primary key time consuming:{}ms", (System.currentTimeMillis() - start));
+        Logger.debug(true, "Shade", "query the primary key time consuming:{}ms", (System.currentTimeMillis() - start));
 
         start = System.currentTimeMillis();
         List<TableSchema> tableSchemas = new ArrayList<>();
@@ -122,7 +122,7 @@ public class DataModelProcess extends AbstractProcess {
         model.setTables(filterTables(tableSchemas));
         // Optimize data for presentation.
         optimizeData(model);
-        Logger.debug("encapsulation processing data time consuming:{}ms", (System.currentTimeMillis() - start));
+        Logger.debug(false, "Shade", "encapsulation processing data time consuming:{}ms", (System.currentTimeMillis() - start));
         return model;
     }
 

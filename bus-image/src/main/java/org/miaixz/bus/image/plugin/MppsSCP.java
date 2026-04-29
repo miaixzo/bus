@@ -167,11 +167,11 @@ public class MppsSCP {
         if (file.exists())
             throw new ImageServiceException(Status.DuplicateSOPinstance).setUID(Tag.AffectedSOPInstanceUID, iuid);
 
-        Logger.info("{}: M-WRITE {}", as, file);
+        Logger.info(true, "ImageTool", "{}: M-WRITE {}", as, file);
         try (ImageOutputStream out = new ImageOutputStream(file)) {
             out.writeDataset(Attributes.createFileMetaInformation(iuid, cuid, UID.ExplicitVRLittleEndian.uid), rqAttrs);
         } catch (IOException e) {
-            Logger.warn(as + ": Failed to store MPPS:", e);
+            Logger.warn(false, "ImageTool", as + ": Failed to store MPPS:", e);
             throw new ImageServiceException(Status.ProcessingFailure, e);
         }
         return null;
@@ -201,12 +201,12 @@ public class MppsSCP {
         if (!file.exists())
             throw new ImageServiceException(Status.NoSuchObjectInstance).setUID(Tag.AffectedSOPInstanceUID, iuid);
 
-        Logger.info("{}: M-UPDATE {}", as, file);
+        Logger.info(false, "ImageTool", "{}: M-UPDATE {}", as, file);
         Attributes data;
         try (ImageInputStream in = new ImageInputStream(file)) {
             data = in.readDataset();
         } catch (IOException e) {
-            Logger.warn(as + ": Failed to read MPPS:", e);
+            Logger.warn(false, "ImageTool", as + ": Failed to read MPPS:", e);
             throw new ImageServiceException(Status.ProcessingFailure, e);
         }
 
@@ -217,7 +217,7 @@ public class MppsSCP {
         try (ImageOutputStream out = new ImageOutputStream(file)) {
             out.writeDataset(Attributes.createFileMetaInformation(iuid, cuid, UID.ExplicitVRLittleEndian.uid), data);
         } catch (IOException e) {
-            Logger.warn(as + ": Failed to update MPPS:", e);
+            Logger.warn(false, "ImageTool", as + ": Failed to update MPPS:", e);
             throw new ImageServiceException(Status.ProcessingFailure, e);
         }
         return null;

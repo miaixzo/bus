@@ -84,7 +84,7 @@ final class LinuxSoundCard extends AbstractSoundCard {
                 }
             }
         } else {
-            Logger.warn("No Audio Cards Found");
+            Logger.warn(false, "Health", "No Audio Cards Found");
         }
         return cardFolders;
     }

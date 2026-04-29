@@ -74,7 +74,7 @@ public class LinuxLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
      */
     static List<LogicalVolumeGroup> getLogicalVolumeGroups() {
         if (!LinuxOperatingSystem.HAS_UDEV) {
-            Logger.warn("Logical Volume Group information requires libudev, which is not present.");
+            Logger.warn(false, "Health", "Logical Volume Group information requires libudev, which is not present.");
             return Collections.emptyList();
         }
         Map<String, Map<String, Set<String>>> logicalVolumesMap = new HashMap<>();

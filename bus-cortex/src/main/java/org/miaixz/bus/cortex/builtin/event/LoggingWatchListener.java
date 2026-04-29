@@ -48,13 +48,13 @@ public class LoggingWatchListener implements Listener<Watch<Object>> {
     @Override
     public void onEvent(Watch<Object> event) {
         for (Object item : event.getAdded()) {
-            Logger.info("Watch added: {}", item);
+            Logger.info(false, "Cortex", "Watch added: {}", item);
         }
         for (Object item : event.getRemoved()) {
-            Logger.info("Watch removed: {}", item);
+            Logger.info(false, "Cortex", "Watch removed: {}", item);
         }
         for (Object item : event.getUpdated()) {
-            Logger.info("Watch updated: {}", item);
+            Logger.info(false, "Cortex", "Watch updated: {}", item);
         }
     }
 

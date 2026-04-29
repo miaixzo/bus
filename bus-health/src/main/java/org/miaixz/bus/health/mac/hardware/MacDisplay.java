@@ -53,7 +53,7 @@ final class MacDisplay extends AbstractDisplay {
      */
     MacDisplay(byte[] edid) {
         super(edid);
-        Logger.debug("Initialized MacDisplay");
+        Logger.debug(false, "Health", "Initialized MacDisplay");
     }
 
     /**

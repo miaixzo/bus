@@ -78,7 +78,7 @@ public class GenericEmailProvider extends AbstractProvider<GenericNotice, Contex
                 final Address[] invalidAddresses = ((SendFailedException) e).getInvalidAddresses();
                 message = StringKit.format("Invalid Addresses: {}", ArrayKit.toString(invalidAddresses));
             }
-            Logger.error(message);
+            Logger.error(false, "Notify", message);
         }
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
     }

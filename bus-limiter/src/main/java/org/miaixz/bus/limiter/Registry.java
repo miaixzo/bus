@@ -55,7 +55,7 @@ public class Registry {
             rule.setLimitApp("default");
 
             FlowRuleManager.loadRules(ListKit.of(rule));
-            Logger.info("Add Fallback Rule [{}]", resourceKey);
+            Logger.info(false, "Limiter", "Add Fallback Rule [{}]", resourceKey);
         }
     }
 
@@ -80,7 +80,7 @@ public class Registry {
             // If hotspot functionality is needed, Sentinel needs to be extended or another framework used
 
             FlowRuleManager.loadRules(ListKit.of(rule));
-            Logger.info("Add Hot Rule [{}]", rule.getResource());
+            Logger.info(false, "Limiter", "Add Hot Rule [{}]", rule.getResource());
         }
     }
 
@@ -101,7 +101,7 @@ public class Registry {
             rule.setLimitApp("default");
 
             FlowRuleManager.loadRules(ListKit.of(rule));
-            Logger.info("Add Request Limit [{}]", resourceKey);
+            Logger.info(true, "Limiter", "Add Request Limit [{}]", resourceKey);
         }
     }
 

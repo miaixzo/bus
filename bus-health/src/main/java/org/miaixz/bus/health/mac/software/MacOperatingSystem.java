@@ -140,7 +140,7 @@ public abstract class MacOperatingSystem extends AbstractOperatingSystem {
             codeName = verProps.getProperty(this.major + "." + this.minor);
         }
         if (StringKit.isBlank(codeName)) {
-            Logger.warn("Unable to parse version {}.{} to a codename.", this.major, this.minor);
+            Logger.warn(false, "Health", "Unable to parse version {}.{} to a codename.", this.major, this.minor);
         }
         return codeName;
     }
@@ -242,13 +242,13 @@ public abstract class MacOperatingSystem extends AbstractOperatingSystem {
         if (dir.exists() && dir.isDirectory()) {
             files.addAll(Arrays.asList(dir.listFiles((f, name) -> name.toLowerCase(Locale.ROOT).endsWith(".plist"))));
         } else {
-            Logger.error("Directory: /System/Library/LaunchAgents does not exist");
+            Logger.error(false, "Health", "Directory: /System/Library/LaunchAgents does not exist");
         }
         dir = new File(SYSTEM_LIBRARY_LAUNCH_DAEMONS);
         if (dir.exists() && dir.isDirectory()) {
             files.addAll(Arrays.asList(dir.listFiles((f, name) -> name.toLowerCase(Locale.ROOT).endsWith(".plist"))));
         } else {
-            Logger.error("Directory: /System/Library/LaunchDaemons does not exist");
+            Logger.error(false, "Health", "Directory: /System/Library/LaunchDaemons does not exist");
         }
         for (File f : files) {
             // remove .plist extension

@@ -213,7 +213,7 @@ public final class Builder {
                 "%8s%8s",
                 Integer.toBinaryString(edid[8] & 0xFF),
                 Integer.toBinaryString(edid[9] & 0xFF)).replace(Symbol.C_SPACE, '0');
-        Logger.debug("Manufacurer ID: {}", temp);
+        Logger.debug(false, "Health", "Manufacurer ID: {}", temp);
         return String.format(
                 Locale.ROOT,
                 "%s%s%s",
@@ -243,7 +243,7 @@ public final class Builder {
     public static String getSerialNo(byte[] edid) {
         // Bytes 12-15 are serial number (last 4 chars)
         if (Logger.isDebugEnabled()) {
-            Logger.debug("Serial number: {}", Arrays.toString(Arrays.copyOfRange(edid, 12, 16)));
+            Logger.debug(false, "Health", "Serial number: {}", Arrays.toString(Arrays.copyOfRange(edid, 12, 16)));
         }
         return String.format(
                 Locale.ROOT,
@@ -285,7 +285,7 @@ public final class Builder {
     public static int getYear(byte[] edid) {
         // Byte 17 is year of manufacture minus 1990
         byte temp = edid[17];
-        Logger.debug("Year-1990: {}", temp);
+        Logger.debug(false, "Health", "Year-1990: {}", temp);
         return temp + 1990;
     }
 
@@ -525,19 +525,19 @@ public final class Builder {
         Path path = Paths.get(filename);
         if (Files.isReadable(path)) {
             if (Logger.isDebugEnabled()) {
-                Logger.debug(READING_LOG, filename);
+                Logger.debug(true, "Health", READING_LOG, filename);
             }
             try {
                 return Files.readAllLines(path, Charset.UTF_8);
             } catch (IOException e) {
                 if (reportError) {
-                    Logger.error("Error reading file {}. {}", filename, e.getMessage());
+                    Logger.error(false, "Health", "Error reading file {}. {}", filename, e.getMessage());
                 } else {
-                    Logger.debug("Error reading file {}. {}", filename, e.getMessage());
+                    Logger.debug(true, "Health", "Error reading file {}. {}", filename, e.getMessage());
                 }
             }
         } else if (reportError) {
-            Logger.warn("File not found or not readable: {}", filename);
+            Logger.warn(false, "Health", "File not found or not readable: {}", filename);
         }
         return Collections.emptyList();
     }
@@ -569,7 +569,7 @@ public final class Builder {
         Path file = Paths.get(filename);
         if (Files.isReadable(file)) {
             if (Logger.isDebugEnabled()) {
-                Logger.debug(READING_LOG, filename);
+                Logger.debug(true, "Health", READING_LOG, filename);
             }
             try (BufferedReader reader = Files.newBufferedReader(file, Charset.UTF_8)) {
                 List<String> lines = new ArrayList<>(count);
@@ -583,13 +583,13 @@ public final class Builder {
                 return lines;
             } catch (IOException e) {
                 if (reportError) {
-                    Logger.error("Error reading file {}. {}", filename, e.getMessage());
+                    Logger.error(false, "Health", "Error reading file {}. {}", filename, e.getMessage());
                 } else {
-                    Logger.debug("Error reading file {}. {}", filename, e.getMessage());
+                    Logger.debug(true, "Health", "Error reading file {}. {}", filename, e.getMessage());
                 }
             }
         } else if (reportError) {
-            Logger.warn("File not found or not readable: {}", filename);
+            Logger.warn(false, "Health", "File not found or not readable: {}", filename);
         }
         return Collections.emptyList();
     }
@@ -617,19 +617,19 @@ public final class Builder {
         Path path = Paths.get(filename);
         if (Files.isReadable(path)) {
             if (Logger.isDebugEnabled()) {
-                Logger.debug(READING_LOG, filename);
+                Logger.debug(true, "Health", READING_LOG, filename);
             }
             try {
                 return Files.readAllBytes(path);
             } catch (IOException e) {
                 if (reportError) {
-                    Logger.error("Error reading file {}. {}", filename, e.getMessage());
+                    Logger.error(false, "Health", "Error reading file {}. {}", filename, e.getMessage());
                 } else {
-                    Logger.debug("Error reading file {}. {}", filename, e.getMessage());
+                    Logger.debug(true, "Health", "Error reading file {}. {}", filename, e.getMessage());
                 }
             }
         } else if (reportError) {
-            Logger.warn("File not found or not readable: {}", filename);
+            Logger.warn(false, "Health", "File not found or not readable: {}", filename);
         }
         return new byte[0];
     }
@@ -757,12 +757,12 @@ public final class Builder {
      */
     public static long getLongFromFile(String filename) {
         if (Logger.isDebugEnabled()) {
-            Logger.debug(READING_LOG, filename);
+            Logger.debug(true, "Health", READING_LOG, filename);
         }
         List<String> read = readLines(filename, 1, false);
         if (!read.isEmpty()) {
             if (Logger.isTraceEnabled()) {
-                Logger.trace(READ_LOG, read.get(0));
+                Logger.trace(false, "Health", READ_LOG, read.get(0));
             }
             return Parsing.parseLongOrDefault(read.get(0), 0L);
         }
@@ -778,12 +778,12 @@ public final class Builder {
      */
     public static long getUnsignedLongFromFile(String filename) {
         if (Logger.isDebugEnabled()) {
-            Logger.debug(READING_LOG, filename);
+            Logger.debug(true, "Health", READING_LOG, filename);
         }
         List<String> read = readLines(filename, 1, false);
         if (!read.isEmpty()) {
             if (Logger.isTraceEnabled()) {
-                Logger.trace(READ_LOG, read.get(0));
+                Logger.trace(false, "Health", READ_LOG, read.get(0));
             }
             return Parsing.parseUnsignedLongOrDefault(read.get(0), 0L);
         }
@@ -798,18 +798,18 @@ public final class Builder {
      */
     public static int getIntFromFile(String filename) {
         if (Logger.isDebugEnabled()) {
-            Logger.debug(READING_LOG, filename);
+            Logger.debug(true, "Health", READING_LOG, filename);
         }
         try {
             List<String> read = readLines(filename, 1, false);
             if (!read.isEmpty()) {
                 if (Logger.isTraceEnabled()) {
-                    Logger.trace(READ_LOG, read.get(0));
+                    Logger.trace(false, "Health", READ_LOG, read.get(0));
                 }
                 return Parsing.parseIntOrDefault(read.get(0), 0);
             }
         } catch (NumberFormatException ex) {
-            Logger.warn("Unable to read value from {}. {}", filename, ex.getMessage());
+            Logger.warn(false, "Health", "Unable to read value from {}. {}", filename, ex.getMessage());
         }
         return 0;
     }
@@ -822,12 +822,12 @@ public final class Builder {
      */
     public static String getStringFromFile(String filename) {
         if (Logger.isDebugEnabled()) {
-            Logger.debug(READING_LOG, filename);
+            Logger.debug(true, "Health", READING_LOG, filename);
         }
         List<String> read = readLines(filename, 1, false);
         if (!read.isEmpty()) {
             if (Logger.isTraceEnabled()) {
-                Logger.trace(READ_LOG, read.get(0));
+                Logger.trace(false, "Health", READ_LOG, read.get(0));
             }
             return read.get(0);
         }
@@ -846,7 +846,7 @@ public final class Builder {
     public static Map<String, String> getKeyValueMapFromFile(String filename, String separator) {
         Map<String, String> map = new HashMap<>();
         if (Logger.isDebugEnabled()) {
-            Logger.debug(READING_LOG, filename);
+            Logger.debug(true, "Health", READING_LOG, filename);
         }
         List<String> lines = readFile(filename, false);
         for (String line : lines) {

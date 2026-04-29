@@ -97,7 +97,7 @@ public class ImageReaderFactory implements Serializable {
                 if (iter.hasNext())
                     reader = iter.next();
                 else {
-                    Logger.warn(
+                    Logger.warn(false, "Image",
                             "No preferred Reader {} for format: {} - use {}",
                             param.className,
                             param.formatName,
@@ -129,7 +129,7 @@ public class ImageReaderFactory implements Serializable {
                 if (iter.hasNext())
                     spi = iter.next();
                 else {
-                    Logger.warn(
+                    Logger.warn(false, "Image",
                             "No preferred Reader {} for format: {} - use {}",
                             param.className,
                             param.formatName,

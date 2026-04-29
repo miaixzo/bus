@@ -87,8 +87,8 @@ public class CortexExporter {
     /** Starts the background push scheduler. */
     public void start() {
         scheduler.scheduleAtFixedRate(this::push, intervalSeconds, intervalSeconds, TimeUnit.SECONDS);
-        Logger.info(
-                "[bus-metrics] CortexExporter started, interval={}s, ns={}, svc={}",
+        Logger.info(true, "Metrics",
+                "CortexExporter started, interval={}s, ns={}, svc={}",
                 intervalSeconds,
                 namespace,
                 serviceId);
@@ -117,7 +117,7 @@ public class CortexExporter {
                 store.write(key, value, intervalSeconds * Builder.CORTEX_TTL_MULTIPLIER * 1000L);
             }
         } catch (Exception e) {
-            Logger.warn("Cortex metrics export failed: {}", e.getMessage());
+            Logger.warn(false, "Metrics", "Cortex metrics export failed: {}", e.getMessage());
         }
     }
 

@@ -104,25 +104,25 @@ public final class Holder {
         Logger.info(
                 true,
                 "Runtime",
-                "  - Streaming Request Threshold: {} MB",
+                "- Streaming Request Threshold: {} MB",
                 performance.getStreamingRequestThreshold() / (1024 * 1024));
-        Logger.info(true, "Runtime", "  - Max Request Size: {} MB", performance.getMaxRequestSize() / (1024 * 1024));
+        Logger.info(true, "Runtime", "- Max Request Size: {} MB", performance.getMaxRequestSize() / (1024 * 1024));
         Logger.info(
                 true,
                 "Runtime",
-                "  - Max Multipart Request Size: {} MB",
+                "- Max Multipart Request Size: {} MB",
                 performance.getMaxMultipartRequestSize() / (1024 * 1024));
-        Logger.info(true, "Runtime", "  - Max Connections: {}", performance.getMaxConnections());
-        Logger.info(true, "Runtime", "  - Max Producer Cache Size: {}", performance.getMaxProducerCacheSize());
-        Logger.info(true, "Runtime", "  - L2 Cache Size: {}", performance.getCacheSize());
-        Logger.info(true, "Runtime", "  - L2 Cache Expire: {} ms", performance.getCacheExpireMs());
-        Logger.info(true, "Runtime", "  - Sync Interval: {} seconds", performance.getSyncIntervalSeconds());
-        Logger.info(true, "Runtime", "  - Full Sync On Startup: {}", performance.isFullSyncOnStartup());
-        Logger.info(true, "Runtime", "  - Startup Delay: {} seconds", performance.getStartupDelaySeconds());
+        Logger.info(true, "Runtime", "- Max Connections: {}", performance.getMaxConnections());
+        Logger.info(true, "Runtime", "- Max Producer Cache Size: {}", performance.getMaxProducerCacheSize());
+        Logger.info(true, "Runtime", "- L2 Cache Size: {}", performance.getCacheSize());
+        Logger.info(true, "Runtime", "- L2 Cache Expire: {} ms", performance.getCacheExpireMs());
+        Logger.info(true, "Runtime", "- Sync Interval: {} seconds", performance.getSyncIntervalSeconds());
+        Logger.info(true, "Runtime", "- Full Sync On Startup: {}", performance.isFullSyncOnStartup());
+        Logger.info(true, "Runtime", "- Startup Delay: {} seconds", performance.getStartupDelaySeconds());
         Logger.info(
                 true,
                 "Runtime",
-                "  - Sanitize Null-like Parameters: {}",
+                "- Sanitize Null-like Parameters: {}",
                 performance.isSanitizeNullLikeParameters());
     }
 

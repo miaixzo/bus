@@ -54,7 +54,7 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
      */
     public static final BiConsumer<AsynchronousSocketChannel, byte[]> BLUE_HEX_INPUT_STREAM = (channel, bytes) -> {
         try {
-            Logger.info(
+            Logger.info(false, "Socket",
                     ConsoleColors.BLUE + Formatter.NORM_DATETIME_MS_FORMAT.format(new Date()) + " [ "
                             + channel.getRemoteAddress() + " --> " + channel.getLocalAddress() + " ] [ read: "
                             + bytes.length + " bytes ]" + ByteKit.byteArrayToHexString(bytes) + ConsoleColors.RESET);
@@ -68,7 +68,7 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
      */
     public static final BiConsumer<AsynchronousSocketChannel, byte[]> RED_HEX_OUTPUT_STREAM = (channel, bytes) -> {
         try {
-            Logger.info(
+            Logger.info(false, "Socket",
                     ConsoleColors.RED + Formatter.NORM_DATETIME_MS_FORMAT.format(new Date()) + " [ "
                             + channel.getLocalAddress() + " --> " + channel.getRemoteAddress() + " ] [ write: "
                             + bytes.length + " bytes ]" + ByteKit.byteArrayToHexString(bytes) + ConsoleColors.RESET);
@@ -83,7 +83,7 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
      */
     public static final BiConsumer<AsynchronousSocketChannel, byte[]> BLUE_TEXT_INPUT_STREAM = (channel, bytes) -> {
         try {
-            Logger.info(
+            Logger.info(false, "Socket",
                     ConsoleColors.BLUE + Formatter.NORM_DATETIME_MS_FORMAT.format(new Date()) + " [ "
                             + channel.getRemoteAddress() + " --> " + channel.getLocalAddress() + " ] [ read: "
                             + bytes.length + " bytes ]\r\n" + new String(bytes) + ConsoleColors.RESET);
@@ -97,7 +97,7 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
      */
     public static final BiConsumer<AsynchronousSocketChannel, byte[]> RED_TEXT_OUTPUT_STREAM = (channel, bytes) -> {
         try {
-            Logger.info(
+            Logger.info(false, "Socket",
                     ConsoleColors.RED + Formatter.NORM_DATETIME_MS_FORMAT.format(new Date()) + " [ "
                             + channel.getLocalAddress() + " --> " + channel.getRemoteAddress() + " ] [ write: "
                             + bytes.length + " bytes ]\r\n" + new String(bytes) + ConsoleColors.RESET);

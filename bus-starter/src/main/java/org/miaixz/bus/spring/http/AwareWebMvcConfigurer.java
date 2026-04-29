@@ -162,11 +162,15 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
                     try {
                         configurer.autoType(this.autoType);
                         Logger.debug(
+                                false,
+                                "HTTP",
                                 "HTTP set autoType '{}' for custom JsonConverterConfigurer: {}",
                                 this.autoType,
                                 configurer.name());
                     } catch (Exception e) {
                         Logger.warn(
+                                false,
+                                "HTTP",
                                 "HTTP failed to set autoType for custom JsonConverterConfigurer {}: {}",
                                 configurer.name(),
                                 e.getMessage(),
@@ -174,6 +178,8 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
                     }
                 }).sorted(Comparator.comparingInt(HttpMessageConverter::order)).toList();
         Logger.debug(
+                false,
+                "HTTP",
                 "HTTP retrieved {} available custom JsonConverterConfigurer beans: {}",
                 configurers.size(),
                 configurers.stream().map(HttpMessageConverter::name).toList());
@@ -193,9 +199,9 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
             String name) {
         try {
             configurer.accept(converters);
-            Logger.info("HTTP successfully configured {} message converter", name);
+            Logger.info(false, "HTTP", "HTTP successfully configured {} message converter", name);
         } catch (Exception e) {
-            Logger.warn("HTTP failed to configure {}: {}", name, e.getMessage(), e);
+            Logger.warn(false, "HTTP", "HTTP failed to configure {}: {}", name, e.getMessage(), e);
         }
     }
 
@@ -226,7 +232,7 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
         StringHttpMessageConverter stringConverter = new StringHttpMessageConverter(Charset.UTF_8);
         stringConverter.setSupportedMediaTypes(DEFAULT_MEDIA_TYPES);
         converters.add(stringConverter);
-        Logger.debug("StringHttpMessageConverter configured with media types: {}", DEFAULT_MEDIA_TYPES);
+        Logger.debug(false, "HTTP", "StringHttpMessageConverter configured with media types: {}", DEFAULT_MEDIA_TYPES);
     }
 
 }

@@ -97,9 +97,9 @@ public final class AdlKit {
                     return addr == 0L ? Pointer.NULL : new Pointer(addr);
                 };
                 loaded = true;
-                Logger.debug("ADL library loaded");
+                Logger.debug(false, "Health", "ADL library loaded");
             } catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
-                Logger.debug("ADL library not available: {}", e.getMessage());
+                Logger.debug(false, "Health", "ADL library not available: {}", e.getMessage());
             }
             LIB = lib;
             LIBRARY_LOADED = loaded;
@@ -146,7 +146,7 @@ public final class AdlKit {
         if (ret == Adl.ADL_OK) {
             return ctxRef.getValue();
         }
-        Logger.debug("ADL2_Main_Control_Create failed with code {}", ret);
+        Logger.debug(false, "Health", "ADL2_Main_Control_Create failed with code {}", ret);
         return null;
     }
 
@@ -174,9 +174,9 @@ public final class AdlKit {
         if (result != null) {
             BUS_TO_INDEX.set(result);
             adaptersEnumerated = true;
-            Logger.debug("ADL enumerated {} adapter(s)", BUS_TO_INDEX.get().size());
+            Logger.debug(false, "Health", "ADL enumerated {} adapter(s)", BUS_TO_INDEX.get().size());
         } else {
-            Logger.debug("ADL adapter enumeration failed; will retry on next call");
+            Logger.debug(false, "Health", "ADL adapter enumeration failed; will retry on next call");
         }
     }
 

@@ -52,7 +52,7 @@ class ReconnectDirContext implements Closeable {
     }
 
     private void reconnect() throws NamingException {
-        Logger.info("Connection to {} broken - reconnect", env.get(Context.PROVIDER_URL));
+        Logger.info(true, "Image", "Connection to {} broken - reconnect", env.get(Context.PROVIDER_URL));
         close();
         ctx = new InitialDirContext(env);
     }

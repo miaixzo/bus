@@ -671,7 +671,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
                 listener.onEvent((Watch<Object>) event);
             } catch (Exception e) {
                 listener.onError((Watch<Object>) event, e);
-                Logger.warn("Global watch listener execution failed: {}", e.getMessage());
+                Logger.warn(false, "Cortex", "Global watch listener execution failed: {}", e.getMessage());
             }
         }
     }
@@ -704,12 +704,12 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
                     try {
                         subscription.getListener().onError(event, e);
                     } catch (Exception errorHandlerFailure) {
-                        Logger.warn(
+                        Logger.warn(false, "Cortex",
                                 "Watch listener error handler failed {}: {}",
                                 watchId,
                                 errorHandlerFailure.getMessage());
                     }
-                    Logger.warn("Watch listener execution failed {}: {}", watchId, e.getMessage());
+                    Logger.warn(false, "Cortex", "Watch listener execution failed {}: {}", watchId, e.getMessage());
                 } finally {
                     subscription.completeDelivery(System.currentTimeMillis());
                 }
@@ -719,7 +719,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
             subscription.releasePending();
             subscription.recordDrop(now, e.getMessage());
             event.setErrorMessage(e.getMessage());
-            Logger.warn("Watch dispatch rejected {}: {}", watchId, e.getMessage());
+            Logger.warn(false, "Cortex", "Watch dispatch rejected {}: {}", watchId, e.getMessage());
         }
     }
 
@@ -737,7 +737,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
         subscription.recordDrop(now, reason);
         event.setErrorMessage(reason);
         if (overflowStrategy == OverflowStrategy.DROP_LATEST) {
-            Logger.warn("Watch event dropped {}: {}", watchId, reason);
+            Logger.warn(false, "Cortex", "Watch event dropped {}: {}", watchId, reason);
         }
     }
 

@@ -134,7 +134,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
             }
         } catch (IOException e) {
             // No udev and no cpu info in sysfs? Bad.
-            Logger.warn("Unable to find CPU information in sysfs at path {}", SysPath.CPU);
+            Logger.warn(false, "Health", "Unable to find CPU information in sysfs at path {}", SysPath.CPU);
         }
         return new Tuple(logProcs, orderedProcCaches(caches), coreEfficiencyMap, modAliasMap);
     }

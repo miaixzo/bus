@@ -337,7 +337,7 @@ public class StoreSCU implements AutoCloseable {
                 System.out.print(b ? '.' : 'I');
             }
         } catch (Exception e) {
-            Logger.error("Failed to scan file {}", f, e);
+            Logger.error(false, "ImageTool", "Failed to scan file {}", f, e);
         }
     }
 
@@ -361,7 +361,7 @@ public class StoreSCU implements AutoCloseable {
                 as.waitForOutstandingRSP();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                Logger.error("Wait for outstanding RSP interrupted", e);
+                Logger.error(false, "ImageTool", "Wait for outstanding RSP interrupted", e);
             }
         }
     }
@@ -546,14 +546,14 @@ public class StoreSCU implements AutoCloseable {
             case Status.DataSetDoesNotMatchSOPClassWarning:
                 totalSize += f.length();
                 ps = ProgressStatus.WARNING;
-                Logger.warn("Received C-STORE-RSP with Status {}H for {}.", Tag.shortToHexString(status), f);
-                Logger.warn(cmd.toString());
+                Logger.warn(false, "ImageTool", "Received C-STORE-RSP with Status {}H for {}.", Tag.shortToHexString(status), f);
+                Logger.warn(false, "ImageTool", cmd.toString());
                 break;
 
             default:
                 ps = ProgressStatus.FAILED;
-                Logger.error("Received C-STORE-RSP with Status {}H for {}.", Tag.shortToHexString(status), f);
-                Logger.error(cmd.toString());
+                Logger.error(false, "ImageTool", "Received C-STORE-RSP with Status {}H for {}.", Tag.shortToHexString(status), f);
+                Logger.error(false, "ImageTool", cmd.toString());
         }
         Builder.notifyProgession(state.getProgress(), cmd, ps, filesScanned);
     }

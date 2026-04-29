@@ -154,7 +154,7 @@ public class Transcoder {
             if (!ImageOutputData.isNativeSyntax(dstTsuid)) {
                 writeParams = JpegWriteParam.buildDicomImageWriteParam(dstTsuid);
             }
-            Logger.warn("Transcoding into {} is not possible, decompressing {}", dstTsuid, srcPath);
+            Logger.warn(false, "Image", "Transcoding into {} is not possible, decompressing {}", dstTsuid, srcPath);
         }
         try (ImageOutputStream dos = new ImageOutputStream(outputStream, dstTsuid)) {
             dos.writeFileMetaInformation(dataSet.createFileMetaInformation(dstTsuid));
@@ -166,7 +166,7 @@ public class Transcoder {
                 imgData.writeCompressedImageData(dos, dataSet, jpegWriteParams);
             }
         } catch (Exception e) {
-            Logger.error("Transcoding image data", e);
+            Logger.error(false, "Image", "Transcoding image data", e);
         } finally {
             reader.dispose();
         }
@@ -237,12 +237,12 @@ public class Transcoder {
         outPath = addFileIndex(outPath, index, indexSize);
         if (map == null) {
             if (!ImageProcessor.writeImage(img.toMat(), outPath.toFile())) {
-                Logger.error("Cannot Transform to {} {}", ext, img);
+                Logger.error(false, "Image", "Cannot Transform to {} {}", ext, img);
                 FileKit.remove(outPath);
             }
         } else {
             if (!ImageProcessor.writeImage(img.toMat(), outPath.toFile(), map)) {
-                Logger.error("Cannot Transform to {} {}", ext, img);
+                Logger.error(false, "Image", "Cannot Transform to {} {}", ext, img);
                 FileKit.remove(outPath);
             }
         }

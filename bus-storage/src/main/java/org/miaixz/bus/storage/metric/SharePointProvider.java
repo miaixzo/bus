@@ -68,9 +68,9 @@ import org.miaixz.bus.storage.magic.ErrorCode;
  * </ul>
  * <p>
  * <strong>Usage Examples:</strong>
- * 
+ *
  * <pre>{@code
- * 
+ *
  * // SharePoint Site (Primary Use Case)
  * Context context = Context.builder().bucket("site:contoso.sharepoint.com,abc123,def456").accessKey("client-id")
  *         .secretKey("client-secret").region("tenant-id").build();
@@ -195,7 +195,7 @@ public class SharePointProvider extends AbstractProvider {
                         .data(content).build();
             }
         } catch (Exception e) {
-            Logger.error("Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
+            Logger.error(false, "Storage", "Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -255,7 +255,7 @@ public class SharePointProvider extends AbstractProvider {
                         .build();
             }
         } catch (Exception e) {
-            Logger.error(
+            Logger.error(false, "Storage",
                     "Failed to download file: {} from bucket: {} to local file: {}. Error: {}",
                     fileName,
                     bucket,
@@ -322,7 +322,7 @@ public class SharePointProvider extends AbstractProvider {
                         .data(files).build();
             }
         } catch (Exception e) {
-            Logger.error(
+            Logger.error(false, "Storage",
                     "Failed to list objects in bucket: {}. Error: {}",
                     this.context.getBucket(),
                     e.getMessage(),
@@ -393,7 +393,7 @@ public class SharePointProvider extends AbstractProvider {
                         .build();
             }
         } catch (Exception e) {
-            Logger.error(
+            Logger.error(false, "Storage",
                     "Failed to rename file from: {} to: {} in bucket: {} with path: {}, error: {}",
                     oldName,
                     newName,
@@ -451,7 +451,7 @@ public class SharePointProvider extends AbstractProvider {
             String objectKey = Builder.buildObjectKey(prefix, path, fileName);
             return chunkedUpload(bucket, objectKey, fileName, content);
         } catch (Exception e) {
-            Logger.error(
+            Logger.error(false, "Storage",
                     "Failed to upload file: {} to bucket: {} with path: {}, error: {}",
                     fileName,
                     bucket,
@@ -502,7 +502,7 @@ public class SharePointProvider extends AbstractProvider {
             byte[] contentBytes = content.readAllBytes();
             return upload(bucket, path, fileName, contentBytes);
         } catch (Exception e) {
-            Logger.error(
+            Logger.error(false, "Storage",
                     "Failed to upload file: {} to bucket: {} with path: {}, error: {}",
                     fileName,
                     bucket,
@@ -568,7 +568,7 @@ public class SharePointProvider extends AbstractProvider {
                         .build();
             }
         } catch (Exception e) {
-            Logger.error(
+            Logger.error(false, "Storage",
                     "Failed to remove file: {} from bucket: {} with path: {}, error: {}",
                     fileName,
                     bucket,

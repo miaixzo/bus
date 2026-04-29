@@ -221,7 +221,7 @@ public class StowRS {
         long t2 = System.currentTimeMillis();
         float s = (t2 - t1) / 1000F;
         float mb = stowChunk.getSize() / 1048576F;
-        Logger.info("Sent {} files, total size {:.2f} MB in {:.2f}s ({:.2f} MB/s)", stowChunk.sent, mb, s, mb / s);
+        Logger.info(false, "ImageTool", "Sent {} files, total size {:.2f} MB in {:.2f}s ({:.2f} MB/s)", stowChunk.sent, mb, s, mb / s);
     }
 
     /**
@@ -237,7 +237,7 @@ public class StowRS {
         long t2 = System.currentTimeMillis();
         float s = (t2 - t1) / 1000F;
         float mb = stowRS.totalSize / 1048576F;
-        Logger.info("Sent {} files, total size {:.2f} MB in {:.2f}s ({:.2f} MB/s)", stowRS.filesSent, mb, s, mb / s);
+        Logger.info(false, "ImageTool", "Sent {} files, total size {:.2f} MB in {:.2f}s ({:.2f} MB/s)", stowRS.filesSent, mb, s, mb / s);
     }
 
     /**
@@ -498,7 +498,7 @@ public class StowRS {
         long t1 = System.currentTimeMillis();
         scanFiles(files);
         long t2 = System.currentTimeMillis();
-        Logger.info("Scanned {} files in {}s", filesScanned, (t2 - t1) / 1000f);
+        Logger.info(true, "ImageTool", "Scanned {} files in {}s", filesScanned, (t2 - t1) / 1000f);
     }
 
     /**
@@ -575,7 +575,7 @@ public class StowRS {
                     parser.getAttributes(metadata);
                 stowRSBulkdata.setParser(parser);
             } catch (IOException e) {
-                Logger.info("Exception caught getting pixel data from file {}: {}", bulkdataFile, e.getMessage());
+                Logger.info(false, "ImageTool", "Exception caught getting pixel data from file {}: {}", bulkdataFile, e.getMessage());
             }
         }
         contentLocBulkdata.put(contentLoc, stowRSBulkdata);
@@ -588,7 +588,7 @@ public class StowRS {
      * @throws Exception if an error occurs.
      */
     private Attributes createStaticMetadata() throws Exception {
-        Logger.info("Creating static metadata. Set defaults, if essential attributes are not present.");
+        Logger.info(true, "ImageTool", "Creating static metadata. Set defaults, if essential attributes are not present.");
         Attributes metadata;
         metadata = SAXReader.parse(IoKit.openFileOrURL(firstBulkdataFileContentType.getSampleMetadataResourceURL()));
         addAttributesFromFile(metadata);
@@ -623,7 +623,7 @@ public class StowRS {
                     } else
                         filePaths.add(f);
                 } catch (Exception e) {
-                    Logger.info("Failed to list files of directory : {}\n", f, e);
+                    Logger.info(false, "ImageTool", "Failed to list files of directory : {}\n", f, e);
                 }
             }
             processFilesPerRequest(filePaths.equals(fPR) ? fPR : filePaths);
@@ -649,7 +649,7 @@ public class StowRS {
             }
             stowChunks.add(stowChunk);
         } catch (Exception e) {
-            Logger.info("Failed to scan files in tmp file\n", e);
+            Logger.info(false, "ImageTool", "Failed to scan files in tmp file\n", e);
         }
     }
 
@@ -672,7 +672,7 @@ public class StowRS {
                         try {
                             applyFunctionToFile(f, true, path -> writeDicomFile(out, path, stowChunk));
                         } catch (Exception e) {
-                            Logger.info("Failed to scan : {}\n", f, e);
+                            Logger.info(false, "ImageTool", "Failed to scan : {}\n", f, e);
                         }
                     });
                 else
@@ -681,7 +681,7 @@ public class StowRS {
             filesScanned += stowChunk.getScanned().get();
             stowChunks.add(stowChunk);
         } catch (Exception e) {
-            Logger.info("Failed to scan {} in tmp file\n", fPR, e);
+            Logger.info(false, "ImageTool", "Failed to scan {} in tmp file\n", fPR, e);
         }
     }
 
@@ -841,8 +841,8 @@ public class StowRS {
      * @param headerFields The map of request headers.
      */
     private void logOutgoing(URL url, Map<String, List<String>> headerFields) {
-        Logger.info("> POST " + url.toString());
-        headerFields.forEach((k, v) -> Logger.info("> " + k + " : " + String.join(Symbol.COMMA, v)));
+        Logger.info(false, "ImageTool", "> POST " + url.toString());
+        headerFields.forEach((k, v) -> Logger.info(false, "ImageTool", "> " + k + " : " + String.join(Symbol.COMMA, v)));
     }
 
     /**
@@ -854,16 +854,16 @@ public class StowRS {
      * @param is           The input stream of the response body.
      */
     private void logIncoming(int respCode, String respMsg, Map<String, List<String>> headerFields, InputStream is) {
-        Logger.info("< HTTP/1.1 Response: " + respCode + Symbol.SPACE + respMsg);
+        Logger.info(false, "ImageTool", "< HTTP/1.1 Response: " + respCode + Symbol.SPACE + respMsg);
         for (Map.Entry<String, List<String>> header : headerFields.entrySet())
             if (header.getKey() != null)
-                Logger.info("< " + header.getKey() + " : " + String.join(";", header.getValue()));
-        Logger.info("< Response Content: ");
+                Logger.info(false, "ImageTool", "< " + header.getKey() + " : " + String.join(";", header.getValue()));
+        Logger.info(false, "ImageTool", "< Response Content: ");
         try {
-            Logger.debug(readFullyAsString(is));
+            Logger.debug(false, "ImageTool", readFullyAsString(is));
             is.close();
         } catch (Exception e) {
-            Logger.info("Exception caught on reading response body \n", e);
+            Logger.info(false, "ImageTool", "Exception caught on reading response body \n", e);
         }
     }
 
@@ -909,7 +909,7 @@ public class StowRS {
             }
             return tmpFile.toPath();
         } catch (Exception e) {
-            Logger.info("Failed to update attributes for file {}\n", path, e);
+            Logger.info(false, "ImageTool", "Failed to update attributes for file {}\n", path, e);
         }
         return path;
     }
@@ -1024,7 +1024,7 @@ public class StowRS {
                 bulkdataFileContentType = FileContentType.valueOf(Files.probeContentType(path), path);
                 return !firstBulkdataFileContentType.equals(bulkdataFileContentType);
             } else
-                Logger.info("Ignoring checking of content type of subsequent file {}", path);
+                Logger.info(false, "ImageTool", "Ignoring checking of content type of subsequent file {}", path);
         }
         return false;
     }
@@ -1053,9 +1053,9 @@ public class StowRS {
      * @throws IOException if an I/O error occurs.
      */
     private void writeMetadata(OutputStream out, ByteArrayOutputStream bOut) throws IOException {
-        Logger.info("> Metadata Content Type: " + requestContentType);
+        Logger.info(true, "ImageTool", "> Metadata Content Type: " + requestContentType);
         writePartHeaders(out, requestContentType, null);
-        Logger.debug("Metadata being sent is : " + bOut.toString());
+        Logger.debug(false, "ImageTool", "Metadata being sent is : " + bOut.toString());
         out.write(bOut.toByteArray());
     }
 
@@ -1073,7 +1073,7 @@ public class StowRS {
         XPEGParser parser = stowRSBulkdata.getParser();
         if (bulkdataFileContentType.getBulkdataTypeTag() == Tag.PixelData && tsuid)
             bulkdataContentType1 = bulkdataContentType1 + "; transfer-syntax=" + parser.getTransferSyntaxUID(false);
-        Logger.info("> Bulkdata Content Type: " + bulkdataContentType1);
+        Logger.info(false, "ImageTool", "> Bulkdata Content Type: " + bulkdataContentType1);
         writePartHeaders(out, bulkdataContentType1, contentLocation);
 
         int offset = 0;

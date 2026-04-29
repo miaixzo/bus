@@ -180,7 +180,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Returns the number of {@link Http2Stream#isOpen() open streams} on this connection.
-     * 
+     *
      * @return the number of open streams.
      */
     public synchronized int openStreamCount() {
@@ -189,7 +189,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Gets the stream with the specified ID.
-     * 
+     *
      * @param id The stream ID.
      * @return The stream, or null if it does not exist.
      */
@@ -199,7 +199,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Removes the stream with the specified ID.
-     * 
+     *
      * @param streamId The stream ID.
      * @return The removed stream, or null if it did not exist.
      */
@@ -211,7 +211,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Returns the maximum number of concurrent streams that the remote peer is willing to accept.
-     * 
+     *
      * @return the maximum number of concurrent streams.
      */
     public synchronized int maxConcurrentStreams() {
@@ -220,7 +220,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Updates the connection flow control window by the number of bytes read.
-     * 
+     *
      * @param read the number of bytes read.
      */
     synchronized void updateConnectionFlowControl(long read) {
@@ -303,7 +303,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Writes headers for the given stream.
-     * 
+     *
      * @param streamId    The stream ID.
      * @param outFinished Whether this is the last frame to be sent on this stream.
      * @param alternating The list of header name-value pairs.
@@ -386,7 +386,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Writes a {@code RST_STREAM} frame to the peer.
-     * 
+     *
      * @param streamId   The stream ID.
      * @param statusCode The status code.
      * @throws IOException if an I/O error occurs.
@@ -424,7 +424,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Writes a {@code PING} frame to the peer.
-     * 
+     *
      * @param reply    Whether this is a reply to a ping from the peer.
      * @param payload1 The first payload integer.
      * @param payload2 The second payload integer.
@@ -439,7 +439,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * For testing: sends a ping and waits for a pong.
-     * 
+     *
      * @throws InterruptedException if the thread is interrupted.
      */
     void writePingAndAwaitPong() throws InterruptedException {
@@ -459,7 +459,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * For testing: awaits a pong.
-     * 
+     *
      * @throws InterruptedException if the thread is interrupted.
      */
     synchronized void awaitPong() throws InterruptedException {
@@ -470,7 +470,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Flushes all buffered data on the underlying writer.
-     * 
+     *
      * @throws IOException if an I/O error occurs.
      */
     public void flush() throws IOException {
@@ -481,7 +481,7 @@ public class Http2Connection implements Closeable {
      * Degrades this connection such that new streams can neither be created locally, nor accepted from the remote peer.
      * Existing streams are not impacted. This is intended to permit an endpoint to gracefully stop accepting new
      * requests without harming previously established streams.
-     * 
+     *
      * @param statusCode The error code to send in the GOAWAY frame.
      * @throws IOException if an I/O error occurs.
      */
@@ -510,7 +510,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Closes this connection with the specified error codes.
-     * 
+     *
      * @param connectionCode The error code for the connection.
      * @param streamCode     The error code for the streams.
      * @param cause          The cause of the closure.
@@ -558,7 +558,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Fails the connection with a protocol error.
-     * 
+     *
      * @param e The exception that caused the failure.
      */
     private void failConnection(IOException e) {
@@ -568,7 +568,7 @@ public class Http2Connection implements Closeable {
     /**
      * Sends any initial frames and starts reading frames from the remote peer. This should be called after
      * {@link Builder#build} for all new connections.
-     * 
+     *
      * @throws IOException if an I/O error occurs.
      */
     public void start() throws IOException {
@@ -577,7 +577,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Starts the connection.
-     * 
+     *
      * @param sendConnectionPreface true to send connection preface frames. This should always be true except for in
      *                              tests that don't check for a connection preface.
      * @throws IOException if an I/O error occurs.
@@ -596,7 +596,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Merges {@code settings} into this peer's settings and sends them to the remote peer.
-     * 
+     *
      * @param settings The settings to apply.
      * @throws IOException if an I/O error occurs.
      */
@@ -615,7 +615,7 @@ public class Http2Connection implements Closeable {
     /**
      * Returns true if this connection is healthy. A connection is unhealthy if it has been shut down or if a degraded
      * pong is overdue.
-     * 
+     *
      * @param nowNs The current time in nanoseconds.
      * @return true if the connection is healthy.
      */
@@ -665,7 +665,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Even, positive numbered streams are pushed streams in HTTP/2.
-     * 
+     *
      * @param streamId The stream ID.
      * @return true if the stream is a pushed stream.
      */
@@ -809,7 +809,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Executes a runnable on the push executor if the connection is not shut down.
-     * 
+     *
      * @param namedRunnable The runnable to execute.
      */
     private synchronized void pushExecutorExecute(NamedRunnable namedRunnable) {
@@ -895,7 +895,7 @@ public class Http2Connection implements Closeable {
          * Handle a new stream from this connection's peer. Implementations should respond by either
          * {@linkplain Http2Stream#writeHeaders replying to the stream} or {@linkplain Http2Stream#close closing it}.
          * This response does not need to be synchronous.
-         * 
+         *
          * @param stream The new stream.
          * @throws IOException if an I/O error occurs.
          */
@@ -906,7 +906,7 @@ public class Http2Connection implements Closeable {
          * action to handle the updated settings. It is the implementation's responsibility to handle concurrent calls
          * to this method. A remote peer that sends multiple settings frames will trigger multiple calls to this method,
          * and those calls are not necessarily serialized.
-         * 
+         *
          * @param connection The connection with the updated settings.
          */
         public void onSettings(Http2Connection connection) {
@@ -1075,7 +1075,7 @@ public class Http2Connection implements Closeable {
                             try {
                                 listener.onStream(newStream);
                             } catch (IOException e) {
-                                Logger.info("Http2Connection.Listener failure for " + connectionName, e);
+                                Logger.info(false, "HTTP", "Http2Connection.Listener failure for " + connectionName, e);
                                 try {
                                     newStream.close(Http2ErrorCode.PROTOCOL_ERROR, e);
                                 } catch (IOException ignored) {

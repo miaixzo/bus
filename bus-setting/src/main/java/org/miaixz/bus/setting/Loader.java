@@ -101,7 +101,7 @@ public class Loader {
 
     /**
      * Constructs a new Loader with a custom formatter factory.
-     * 
+     *
      * @param formatterFactory The factory to create the line formatter.
      */
     public Loader(Factory formatterFactory) {
@@ -201,7 +201,7 @@ public class Loader {
      */
     public void store(final GroupedMap groupedMap, final File file) {
         Assert.notNull(file, "File to store must be not null !");
-        Logger.debug("Store Setting to [{}]...", file.getAbsolutePath());
+        Logger.debug(false, "Setting", "Store Setting to [{}]...", file.getAbsolutePath());
         try (PrintWriter writer = FileKit.getPrintWriter(file, charset, false)) {
             store(groupedMap, writer);
         }
@@ -415,7 +415,7 @@ public class Loader {
 
     /**
      * Sets the supplier for the comment formatter.
-     * 
+     *
      * @param commentElementFormatterSupplier The new supplier.
      */
     public void setCommentElementFormatterSupplier(
@@ -432,7 +432,7 @@ public class Loader {
 
     /**
      * Sets the supplier for the section formatter.
-     * 
+     *
      * @param sectionElementFormatterSupplier The new supplier.
      */
     public void setSectionElementFormatterSupplier(
@@ -449,7 +449,7 @@ public class Loader {
 
     /**
      * Sets the supplier for the property formatter.
-     * 
+     *
      * @param propertyElementFormatterSupplier The new supplier.
      */
     public void setPropertyElementFormatterSupplier(

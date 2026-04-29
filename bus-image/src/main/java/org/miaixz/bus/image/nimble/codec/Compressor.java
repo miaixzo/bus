@@ -96,7 +96,7 @@ public class Compressor extends Decompressor implements Closeable {
             throw new UnsupportedOperationException("Unsupported Transfer Syntax: " + tsuid);
 
         this.compressor = ImageWriterFactory.getImageWriter(param);
-        Logger.debug("Compressor: {}", compressor.getClass().getName());
+        Logger.debug(false, "Image", "Compressor: {}", compressor.getClass().getName());
         this.patchJPEGLS = param.patchJPEGLS;
 
         this.compressParam = compressor.getDefaultWriteParam();
@@ -122,7 +122,7 @@ public class Compressor extends Decompressor implements Closeable {
 
             this.verifier = ImageReaderFactory.getImageReader(readerParam);
             this.verifyParam = verifier.getDefaultReadParam();
-            Logger.debug("Verifier: {}", verifier.getClass().getName());
+            Logger.debug(false, "Image", "Verifier: {}", verifier.getClass().getName());
         }
 
         TransferSyntaxType tstype = TransferSyntaxType.forUID(tsuid);
@@ -229,7 +229,7 @@ public class Compressor extends Decompressor implements Closeable {
         int maxDiff = maxDiff(bi.getRaster(), bi2.getRaster());
         long end = System.currentTimeMillis();
         if (Logger.isDebugEnabled())
-            Logger.debug(
+            Logger.debug(false, "Image",
                     "Verified compressed frame #{} in {} ms - max pixel value error: {}",
                     index + 1,
                     end - start,
@@ -362,7 +362,7 @@ public class Compressor extends Decompressor implements Closeable {
                 dataset.setBytes(Tag.OverlayData | gg0000, VR.OB, ovlyData);
             }
             Overlays.extractFromPixeldata(bi.getRaster(), mask, ovlyData, ovlyLength * frameIndex, ovlyLength);
-            Logger.debug(
+            Logger.debug(false, "Image",
                     "Extracted embedded overlay #{} from bit #{} of frame #{}",
                     (gg0000 >>> 17) + 1,
                     ovlyBitPosition,
@@ -398,7 +398,7 @@ public class Compressor extends Decompressor implements Closeable {
         @Override
         public void flush() throws IOException {
             // defer flush to writeTo()
-            Logger.debug("Ignore invoke of MemoryCacheImageOutputStream.flush()");
+            Logger.debug(false, "Image", "Ignore invoke of MemoryCacheImageOutputStream.flush()");
         }
 
         @Override
@@ -472,7 +472,7 @@ public class Compressor extends Decompressor implements Closeable {
                 if ((streamLength & 1) != 0)
                     out.write(0);
                 long end = System.currentTimeMillis();
-                Logger.debug("Flushed frame #{} from memory in {} ms", frameIndex + 1, end - start);
+                Logger.debug(false, "Image", "Flushed frame #{} from memory in {} ms", frameIndex + 1, end - start);
             } finally {
                 try {
                     cache.close();
@@ -504,7 +504,7 @@ public class Compressor extends Decompressor implements Closeable {
                 long end = System.currentTimeMillis();
                 streamLength = (int) cache.getStreamPosition();
                 if (Logger.isDebugEnabled())
-                    Logger.debug(
+                    Logger.debug(false, "Image",
                             "Compressed frame #{} {}:1 in {} ms",
                             frameIndex + 1,
                             (float) sizeOf(bi) / streamLength,

@@ -250,7 +250,7 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
         } catch (Exception e) {
             failureCount.incrementAndGet();
             lastError = e.getMessage();
-            Logger.warn(
+            Logger.warn(false, "Cortex",
                     "Health probe failed for {}/{}@{}:{}: {}",
                     instance.getMethod(),
                     instance.getVersion(),
@@ -269,7 +269,7 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
     private void awaitTermination(ExecutorService executorService, String name) {
         try {
             if (!executorService.awaitTermination(Math.max(timeoutMs, 1000L), TimeUnit.MILLISECONDS)) {
-                Logger.warn("Health timed out while stopping {}", name);
+                Logger.warn(false, "Cortex", "Health timed out while stopping {}", name);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

@@ -66,7 +66,7 @@ public class CronTimer extends Thread implements Serializable {
 
     /**
      * Checks if the sleep time is valid. A valid sleep time must be:
-     * 
+     *
      * <pre>
      * 1. Greater than 0, to prevent issues if the system time is moved forward.
      * 2. Less than twice the timer unit, to prevent long sleeps if the system time is moved backward.
@@ -140,7 +140,7 @@ public class CronTimer extends Thread implements Serializable {
             // unit and continuously correcting.
             thisTime = nextTime;
         }
-        Logger.debug("Cron timer stopped.");
+        Logger.debug(false, "Tempus", "Cron timer stopped.");
     }
 
     /**

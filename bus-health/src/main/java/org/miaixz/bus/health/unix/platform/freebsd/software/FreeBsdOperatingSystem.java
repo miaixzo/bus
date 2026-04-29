@@ -342,7 +342,7 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
                 }
             }
         } else {
-            Logger.error("Directory: /etc/init does not exist");
+            Logger.error(false, "Health", "Directory: /etc/init does not exist");
         }
         return services;
     }

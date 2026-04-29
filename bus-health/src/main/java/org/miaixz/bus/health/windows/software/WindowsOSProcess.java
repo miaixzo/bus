@@ -655,11 +655,11 @@ public class WindowsOSProcess extends AbstractOSProcess {
                         int error = Kernel32.INSTANCE.GetLastError();
                         // Access denied errors are common. Fail silently.
                         if (error != WinError.ERROR_ACCESS_DENIED) {
-                            Logger.error("Failed to get process token for process {}: {}", getProcessID(), error);
+                            Logger.error(false, "Health", "Failed to get process token for process {}: {}", getProcessID(), error);
                         }
                     }
                 } catch (Win32Exception e) {
-                    Logger.warn(
+                    Logger.warn(false, "Health",
                             "Failed to query user info for process {} ({}): {}",
                             getProcessID(),
                             getName(),
@@ -697,11 +697,11 @@ public class WindowsOSProcess extends AbstractOSProcess {
                         int error = Kernel32.INSTANCE.GetLastError();
                         // Access denied errors are common. Fail silently.
                         if (error != WinError.ERROR_ACCESS_DENIED) {
-                            Logger.error("Failed to get process token for process {}: {}", getProcessID(), error);
+                            Logger.error(false, "Health", "Failed to get process token for process {}: {}", getProcessID(), error);
                         }
                     }
                 } catch (Win32Exception e) {
-                    Logger.warn(
+                    Logger.warn(false, "Health",
                             "Failed to query group info for process {} ({}): {}",
                             getProcessID(),
                             getName(),

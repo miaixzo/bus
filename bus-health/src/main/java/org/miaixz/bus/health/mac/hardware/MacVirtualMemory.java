@@ -107,7 +107,7 @@ final class MacVirtualMemory extends AbstractVirtualMemory {
                 swapPagesIn = Parsing.unsignedIntToLong(vmStats.pageins);
                 swapPagesOut = Parsing.unsignedIntToLong(vmStats.pageouts);
             } else {
-                Logger.error("Failed to get host VM info. Error code: {}", Native.getLastError());
+                Logger.error(false, "Health", "Failed to get host VM info. Error code: {}", Native.getLastError());
             }
         }
         return Pair.of(swapPagesIn, swapPagesOut);

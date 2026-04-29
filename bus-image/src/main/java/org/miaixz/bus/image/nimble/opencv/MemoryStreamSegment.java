@@ -50,7 +50,7 @@ public class MemoryStreamSegment extends StreamSegment {
                     return (ByteArrayInputStream) fid.get(inputStream);
                 }
             } catch (Exception e) {
-                Logger.error("Cannot get inputstream", e);
+                Logger.error(false, "Image", "Cannot get inputstream", e);
             }
         }
         return null;

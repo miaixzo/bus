@@ -109,7 +109,11 @@ public class HealthService {
             // Validate TIDs; if none are valid, default to liveness and readiness.
             if (tidList.stream().noneMatch(TID.ALL_TID::contains)) {
                 tidList = Arrays.asList(TID.LIVENESS, TID.READINESS);
-                Logger.debug("Health invalid tid '{}', defaulting to liveness,readiness", effectiveTid);
+                Logger.debug(
+                        false,
+                        "Health",
+                        "Health invalid tid '{}', defaulting to liveness,readiness",
+                        effectiveTid);
             }
 
             // Gather monitoring information.
@@ -119,6 +123,8 @@ public class HealthService {
                 result.putAll(TID.ALL.equals(effectiveTid) ? provider.getAll() : provider.get(tidList));
             } catch (NumberFormatException e) {
                 Logger.warn(
+                        false,
+                        "Health",
                         "Health invalid number format in provider data for tid '{}': {}",
                         effectiveTid,
                         e.getMessage());
@@ -128,7 +134,13 @@ public class HealthService {
 
             return result;
         } catch (Exception e) {
-            Logger.error("Failed to retrieve health information for tid '{}': {}", tid, e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Health",
+                    "Failed to retrieve health information for tid '{}': {}",
+                    tid,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey())
                     .errmsg("Failed to retrieve health information: " + e.getMessage()).build();
         }
@@ -207,7 +219,13 @@ public class HealthService {
                 try {
                     provider.append(type, map);
                 } catch (Exception e) {
-                    Logger.error("Failed to append health data for type {}: {}", type, e.getMessage(), e);
+                    Logger.error(
+                            false,
+                            "Health",
+                            "Failed to append health data for type {}: {}",
+                            type,
+                            e.getMessage(),
+                            e);
                     map.put(type, "Error: " + e.getMessage());
                 }
                 break;

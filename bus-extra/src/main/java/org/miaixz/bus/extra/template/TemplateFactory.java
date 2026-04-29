@@ -43,7 +43,7 @@ public class TemplateFactory {
      */
     public static TemplateProvider get() {
         final TemplateProvider engine = Instances.get(TemplateProvider.class.getName(), TemplateFactory::of);
-        Logger.debug(
+        Logger.debug(false, "Extra",
                 "Use [{}] Template Engine As Default.",
                 StringKit.removeSuffix(engine.getClass().getSimpleName(), "Engine"));
         return engine;

@@ -96,12 +96,12 @@ public class LinuxFileSystem extends AbstractFileSystem {
                         vfsStat.f_blocks.longValue() * frsize, vfsStat.f_bavail.longValue() * frsize,
                         vfsStat.f_bfree.longValue() * frsize };
             }
-            Logger.warn(
+            Logger.warn(false, "Health",
                     "Failed to get information to use statvfs. path: {}, Error code: {}",
                     path,
                     Native.getLastError());
         } catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
-            Logger.error("Failed to get file counts from statvfs. {}", e.getMessage());
+            Logger.error(false, "Health", "Failed to get file counts from statvfs. {}", e.getMessage());
         }
         return null;
     }
@@ -188,7 +188,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
                         logicalVolume = full.normalize().toString();
                     }
                 } catch (IOException e) {
-                    Logger.warn("Couldn't access symbolic path  {}. {}", link, e.getMessage());
+                    Logger.warn(false, "Health", "Couldn't access symbolic path  {}. {}", link, e.getMessage());
                 }
             }
 
@@ -285,7 +285,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
                 try {
                     volumeDeviceMap.put(volume.getCanonicalPath(), volume.getAbsolutePath());
                 } catch (IOException e) {
-                    Logger.debug("Couldn't get canonical path for {}. {}", volume.getName(), e.getMessage());
+                    Logger.debug(false, "Health", "Couldn't get canonical path for {}. {}", volume.getName(), e.getMessage());
                 }
             }
         }
@@ -303,7 +303,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
                         uuidMap.put(volumeDeviceMap.get(canonicalPath), uuid.getName().toLowerCase(Locale.ROOT));
                     }
                 } catch (IOException e) {
-                    Logger.debug("Couldn't get canonical path for {}. {}", uuid.getName(), e.getMessage());
+                    Logger.debug(false, "Health", "Couldn't get canonical path for {}. {}", uuid.getName(), e.getMessage());
                 }
             }
         }

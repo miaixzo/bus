@@ -267,7 +267,7 @@ public class CacheInfoContainer {
      */
     private static boolean isInvalidIdentifier(boolean isMapReturn, boolean isCollectionReturn, String field) {
         if (isMapReturn && !StringKit.isEmpty(field)) {
-            Logger.warn("@CacheKey's 'field = \"{}\"' is useless.", field);
+            Logger.warn(false, "Cache", "@CacheKey's 'field = \"{}\"' is useless.", field);
             return false;
         }
         return !StringKit.isEmpty(field) && !isCollectionReturn;

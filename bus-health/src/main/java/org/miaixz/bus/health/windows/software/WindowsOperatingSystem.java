@@ -216,14 +216,14 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
                     WinNT.TOKEN_QUERY | WinNT.TOKEN_ADJUST_PRIVILEGES,
                     hToken);
             if (!success) {
-                Logger.error("OpenProcessToken failed. Error: {}", Native.getLastError());
+                Logger.error(false, "Health", "OpenProcessToken failed. Error: {}", Native.getLastError());
                 return false;
             }
             try {
                 LUID luid = new LUID();
                 success = Advapi32.INSTANCE.LookupPrivilegeValue(null, WinNT.SE_DEBUG_NAME, luid);
                 if (!success) {
-                    Logger.error("LookupPrivilegeValue failed. Error: {}", Native.getLastError());
+                    Logger.error(false, "Health", "LookupPrivilegeValue failed. Error: {}", Native.getLastError());
                     return false;
                 }
                 WinNT.TOKEN_PRIVILEGES tkp = new WinNT.TOKEN_PRIVILEGES(1);
@@ -231,10 +231,10 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
                 success = Advapi32.INSTANCE.AdjustTokenPrivileges(hToken.getValue(), false, tkp, 0, null, null);
                 int err = Native.getLastError();
                 if (!success) {
-                    Logger.error("AdjustTokenPrivileges failed. Error: {}", err);
+                    Logger.error(false, "Health", "AdjustTokenPrivileges failed. Error: {}", err);
                     return false;
                 } else if (err == WinError.ERROR_NOT_ALL_ASSIGNED) {
-                    Logger.debug("Debug privileges not enabled.");
+                    Logger.debug(false, "Health", "Debug privileges not enabled.");
                     return false;
                 }
             } finally {
@@ -258,7 +258,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         // Check whether it works
         HANDLE h = Advapi32.INSTANCE.OpenEventLog(null, systemLog);
         if (h == null) {
-            Logger.warn(
+            Logger.warn(false, "Health",
                     "Unable to open configured system Event log \"{}\". Calculating boot time from uptime.",
                     systemLog);
             return null;
@@ -335,7 +335,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
                     return event6005Time;
                 }
             } catch (Win32Exception e) {
-                Logger.warn("Can't open event log \"{}\".", eventLog);
+                Logger.warn(false, "Health", "Can't open event log \"{}\".", eventLog);
             }
         }
         // If we get this far, event log reading has failed, either from no log or no
@@ -519,7 +519,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     public int getProcessCount() {
         try (Struct.CloseablePerformanceInformation perfInfo = new Struct.CloseablePerformanceInformation()) {
             if (!Psapi.INSTANCE.GetPerformanceInfo(perfInfo, perfInfo.size())) {
-                Logger.error("Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
+                Logger.error(false, "Health", "Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
                 return 0;
             }
             return perfInfo.ProcessCount.intValue();
@@ -558,7 +558,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     public int getThreadCount() {
         try (Struct.CloseablePerformanceInformation perfInfo = new Struct.CloseablePerformanceInformation()) {
             if (!Psapi.INSTANCE.GetPerformanceInfo(perfInfo, perfInfo.size())) {
-                Logger.error("Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
+                Logger.error(false, "Health", "Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
                 return 0;
             }
             return perfInfo.ThreadCount.intValue();
@@ -753,7 +753,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
             }
             return svcArray;
         } catch (com.sun.jna.platform.win32.Win32Exception ex) {
-            Logger.error("Win32Exception: {}", ex.getMessage());
+            Logger.error(false, "Health", "Win32Exception: {}", ex.getMessage());
             return Collections.emptyList();
         }
     }

@@ -87,7 +87,7 @@ public class MLLPConnection implements Closeable {
     }
 
     private void writeACK() throws IOException {
-        Logger.debug("{} << <ACK>", sock);
+        Logger.debug(false, "HL7", "{} << <ACK>", sock);
         mllpOut.write(ACK);
         mllpOut.finish();
     }
@@ -99,15 +99,15 @@ public class MLLPConnection implements Closeable {
         if (b.length == 1) {
             switch (b[0]) {
                 case ACK:
-                    Logger.debug("{} >> <ACK>", sock);
+                    Logger.debug(false, "HL7", "{} >> <ACK>", sock);
                     return;
 
                 case NAK:
-                    Logger.info("{} >> <NAK>", sock);
+                    Logger.info(false, "HL7", "{} >> <NAK>", sock);
                     throw new IOException("NAK received");
             }
         }
-        Logger.info("{}: <ACK> or <NAK> expected, but received {} bytes", sock, b.length);
+        Logger.info(false, "HL7", "{}: <ACK> or <NAK> expected, but received {} bytes", sock, b.length);
         throw new IOException("<ACK> or <NAK> expected, but received " + b.length + " bytes");
     }
 
@@ -117,9 +117,9 @@ public class MLLPConnection implements Closeable {
         int mshlen = 0;
         while (mshlen < len && b[off + mshlen] != '\r')
             mshlen++;
-        Logger.info(format, sock, new String(b, off, mshlen));
+        Logger.info(false, "HL7", format, sock, new String(b, off, mshlen));
         if (Logger.isDebugEnabled())
-            Logger.debug(format, sock, new String(b, off, len).replace('\r', '\n'));
+            Logger.debug(false, "HL7", format, sock, new String(b, off, len).replace('\r', '\n'));
     }
 
     @Override

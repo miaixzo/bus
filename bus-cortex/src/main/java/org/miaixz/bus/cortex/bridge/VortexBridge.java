@@ -206,14 +206,14 @@ public class VortexBridge
             } catch (Exception e) {
                 failedAttemptCount.incrementAndGet();
                 lastError = e.getMessage();
-                Logger.warn(
+                Logger.warn(false, "Cortex",
                         "VortexBridge failed to append outbox record, falling back to local queue: {}",
                         e.getMessage());
             }
         }
         if (!queue.offer(transportEvent)) {
             droppedCount.incrementAndGet();
-            Logger.warn(
+            Logger.warn(false, "Cortex",
                     "VortexBridge queue full, dropping {} event for: {}/{}",
                     event.getAction(),
                     event.getMethod(),
@@ -265,7 +265,7 @@ public class VortexBridge
                 }
             } catch (Exception e) {
                 lastError = e.getMessage();
-                Logger.warn("Bridge worker execution failed: {}", e.getMessage());
+                Logger.warn(false, "Cortex", "Bridge worker execution failed: {}", e.getMessage());
             }
         }
     }
@@ -314,13 +314,13 @@ public class VortexBridge
             lastError = result.error();
             if (!result.retryable()) {
                 droppedCount.incrementAndGet();
-                Logger.warn("Bridge delivery dropped due to non-retryable response: {}", result.error());
+                Logger.warn(false, "Cortex", "Bridge delivery dropped due to non-retryable response: {}", result.error());
                 return;
             }
             attempt++;
             if (attempt >= maxRetries) {
                 droppedCount.incrementAndGet();
-                Logger.warn("Bridge delivery failed after {} retries: {}", maxRetries, result.error());
+                Logger.warn(false, "Cortex", "Bridge delivery failed after {} retries: {}", maxRetries, result.error());
             } else {
                 TimeUnit.MILLISECONDS.sleep(Math.min(1000L, 100L * attempt));
             }
@@ -548,7 +548,7 @@ public class VortexBridge
      */
     private void signalWorker(RegistryChange<Assets> event) {
         if (!queue.offer(event)) {
-            Logger.warn("Bridge wake-up queue is full; pending outbox records will be retried by polling");
+            Logger.warn(false, "Cortex", "Bridge wake-up queue is full; pending outbox records will be retried by polling");
         }
     }
 

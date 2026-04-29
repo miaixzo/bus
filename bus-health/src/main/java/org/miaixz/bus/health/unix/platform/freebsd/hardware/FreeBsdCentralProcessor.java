@@ -451,7 +451,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
             String name = "kern.cp_times";
             // Fetch
             if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, oldlenp, null, size_t.ZERO)) {
-                Logger.error("Failed sysctl call: {}, Error code: {}", name, Native.getLastError());
+                Logger.error(false, "Health", "Failed sysctl call: {}, Error code: {}", name, Native.getLastError());
                 return ticks;
             }
             // p now points to the data; need to copy each element

@@ -93,11 +93,11 @@ public class VoiLutModule {
         // the same number of values and shall be considered as pairs. Multiple values indicate that
         // multiple alternative views may be presented
         if (windowCenter.isEmpty() && !windowWidth.isEmpty()) {
-            Logger.debug("VOI Window Center is required if Window Width is present");
+            Logger.debug(false, "Image", "VOI Window Center is required if Window Width is present");
         } else if (!windowCenter.isEmpty() && windowWidth.isEmpty()) {
-            Logger.debug("VOI Window Width is required if Window Center is present");
+            Logger.debug(false, "Image", "VOI Window Width is required if Window Center is present");
         } else if (windowWidth.size() != windowCenter.size()) {
-            Logger.debug(
+            Logger.debug(false, "Image",
                     "VOI Window Center and Width attributes have different number of values : {} => {}",
                     windowCenter.size(),
                     windowWidth.size());

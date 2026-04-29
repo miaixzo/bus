@@ -166,7 +166,7 @@ public class CGet {
                 if (e instanceof InterruptedException) {
                     Thread.currentThread().interrupt();
                 }
-                Logger.error("getscu", e);
+                Logger.error(false, "ImageTool", "getscu", e);
                 Builder.forceGettingAttributes(getSCU.getState(), getSCU);
                 return Status.buildMessage(getSCU.getState(), null, e);
             } finally {
@@ -174,7 +174,7 @@ public class CGet {
                 service.stop();
             }
         } catch (Exception e) {
-            Logger.error("getscu", e);
+            Logger.error(false, "ImageTool", "getscu", e);
             return Status.buildMessage(
                     new Status(Status.UnableToProcess,
                             "DICOM Get failed" + Symbol.COLON + Symbol.SPACE + e.getMessage(), null),
@@ -199,7 +199,7 @@ public class CGet {
                 p.load(url.openStream());
             }
         } catch (IOException e) {
-            Logger.error("Cannot read sop-classes", e);
+            Logger.error(false, "ImageTool", "Cannot read sop-classes", e);
         }
 
         for (Entry<Object, Object> entry : p.entrySet()) {

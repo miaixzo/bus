@@ -46,7 +46,7 @@ import org.miaixz.bus.vortex.magic.Metrics;
  * <p>
  * <b>Usage:</b>
  * </p>
- * 
+ *
  * <pre>
  * // Use singleton instance (recommended for most cases)
  * Monitor monitor = DefaultMonitor.INSTANCE;
@@ -85,7 +85,7 @@ public class DefaultMonitor implements Monitor {
      * <p>
      * Example usage:
      * </p>
-     * 
+     *
      * <pre>
      * Monitor monitor = DefaultMonitor.INSTANCE;
      * cacheManager.setPerformanceMonitor(monitor);
@@ -146,7 +146,7 @@ public class DefaultMonitor implements Monitor {
             cacheHits.incrementAndGet();
         } else {
             cacheMisses.incrementAndGet();
-            Logger.debug("Cache miss: key={}, duration={}ns", key, durationNanos);
+            Logger.debug(false, "Vortex", "Cache miss: key={}, duration={}ns", key, durationNanos);
         }
     }
 
@@ -218,7 +218,7 @@ public class DefaultMonitor implements Monitor {
         dbOperationCount.set(0);
         dbDurationNs.set(0);
 
-        Logger.info("Performance monitor statistics reset");
+        Logger.info(false, "Vortex", "Performance monitor statistics reset");
     }
 
 }

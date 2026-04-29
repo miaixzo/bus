@@ -205,7 +205,7 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
      */
     private static List<HWDiskStore> getDisks(LinuxHWDiskStore storeToUpdate) {
         if (!LinuxOperatingSystem.HAS_UDEV) {
-            Logger.warn("Disk Store information requires libudev, which is not present.");
+            Logger.warn(false, "Health", "Disk Store information requires libudev, which is not present.");
             return Collections.emptyList();
         }
         LinuxHWDiskStore store = null;

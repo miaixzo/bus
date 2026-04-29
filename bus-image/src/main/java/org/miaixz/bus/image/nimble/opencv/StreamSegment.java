@@ -110,9 +110,9 @@ public abstract class StreamSegment {
                     }
                 }
             }
-            Logger.error("Cannot read SegmentedInputImageStream with {} ", fstream.getClass());
+            Logger.error(false, "Image", "Cannot read SegmentedInputImageStream with {} ", fstream.getClass());
         } catch (Exception e) {
-            Logger.error("Building FileStreamSegment from SegmentedInputImageStream", e);
+            Logger.error(false, "Image", "Building FileStreamSegment from SegmentedInputImageStream", e);
         }
         return null;
     }
@@ -161,7 +161,7 @@ public abstract class StreamSegment {
                     return (byte[]) fid.get(inputStream);
                 }
             } catch (Exception e) {
-                Logger.error("Cannot get bytes from inputstream", e);
+                Logger.error(false, "Image", "Cannot get bytes from inputstream", e);
             }
         }
         return null;

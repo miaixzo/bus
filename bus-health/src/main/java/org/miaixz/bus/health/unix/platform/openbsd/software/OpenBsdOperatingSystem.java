@@ -345,7 +345,7 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
                 }
             }
         } else {
-            Logger.error("Directory: /etc/rc.d does not exist");
+            Logger.error(false, "Health", "Directory: /etc/rc.d does not exist");
         }
         return services;
     }

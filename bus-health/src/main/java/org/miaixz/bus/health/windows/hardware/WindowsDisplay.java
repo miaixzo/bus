@@ -61,7 +61,7 @@ final class WindowsDisplay extends AbstractDisplay {
      */
     WindowsDisplay(byte[] edid) {
         super(edid);
-        Logger.debug("Initialized WindowsDisplay");
+        Logger.debug(false, "Health", "Initialized WindowsDisplay");
     }
 
     /**

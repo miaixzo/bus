@@ -72,7 +72,7 @@ public abstract class AbstractSerializer implements Serializer {
         try {
             return doSerialize(object);
         } catch (Throwable t) {
-            Logger.error("{} serialize error.", this.getClass().getName(), t);
+            Logger.error(false, "Cache", "{} serialize error.", this.getClass().getName(), t);
             return null;
         }
     }
@@ -96,7 +96,7 @@ public abstract class AbstractSerializer implements Serializer {
         try {
             return (T) doDeserialize(bytes);
         } catch (Throwable t) {
-            Logger.error("{} deserialize error.", this.getClass().getName(), t);
+            Logger.error(false, "Cache", "{} deserialize error.", this.getClass().getName(), t);
             return null;
         }
     }

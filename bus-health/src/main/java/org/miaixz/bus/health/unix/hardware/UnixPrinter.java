@@ -59,7 +59,7 @@ public final class UnixPrinter extends AbstractPrinter {
             Cups lib = Cups.INSTANCE;
             hasCups = true;
         } catch (UnsatisfiedLinkError e) {
-            Logger.debug("libcups not found. Falling back to lpstat command.");
+            Logger.debug(false, "Health", "libcups not found. Falling back to lpstat command.");
         }
         HAS_CUPS = hasCups;
     }

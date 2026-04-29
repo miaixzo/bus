@@ -197,7 +197,7 @@ public class CGetForward implements AutoCloseable {
                     if (e instanceof InterruptedException) {
                         Thread.currentThread().interrupt();
                     }
-                    Logger.error("Error when forwarding to the final destination", e);
+                    Logger.error(false, "ImageTool", "Error when forwarding to the final destination", e);
                     Builder.notifyProgession(
                             streamSCU.getState(),
                             rq.getString(Tag.AffectedSOPInstanceUID),
@@ -413,7 +413,7 @@ public class CGetForward implements AutoCloseable {
                 if (e instanceof InterruptedException) {
                     Thread.currentThread().interrupt();
                 }
-                Logger.error("getscu", e);
+                Logger.error(false, "ImageTool", "getscu", e);
                 Builder.forceGettingAttributes(forward.getState(), forward);
                 return Status.buildMessage(forward.getState(), null, e);
             } finally {
@@ -422,7 +422,7 @@ public class CGetForward implements AutoCloseable {
                 forward.getStreamSCUService().stop();
             }
         } catch (Exception e) {
-            Logger.error("getscu", e);
+            Logger.error(false, "ImageTool", "getscu", e);
             return new Status(Status.UnableToProcess, "DICOM Get failed" + Symbol.COLON + Symbol.SPACE + e.getMessage(),
                     null);
         }
@@ -444,7 +444,7 @@ public class CGetForward implements AutoCloseable {
                 p.load(url.openStream());
             }
         } catch (IOException e) {
-            Logger.error("Cannot read sop-classes", e);
+            Logger.error(false, "ImageTool", "Cannot read sop-classes", e);
         }
 
         for (Entry<Object, Object> entry : p.entrySet()) {
@@ -660,7 +660,7 @@ public class CGetForward implements AutoCloseable {
                         try {
                             this.cancel(as);
                         } catch (IOException e) {
-                            Logger.error("Cancel C-GET", e);
+                            Logger.error(false, "ImageTool", "Cancel C-GET", e);
                         }
                     }
                 }

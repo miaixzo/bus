@@ -374,7 +374,7 @@ public final class RealCall implements NewCall {
             } catch (IOException e) {
                 if (signalledCallback) {
                     // Do not signal the callback twice.
-                    Logger.info("Callback failure for " + toLoggableString(), e);
+                    Logger.info(false, "HTTP", "Callback failure for " + toLoggableString(), e);
                 } else {
                     responseCallback.onFailure(RealCall.this, e);
                 }

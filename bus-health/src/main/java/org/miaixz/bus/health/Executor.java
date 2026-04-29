@@ -103,7 +103,7 @@ public final class Executor {
             p = Runtime.getRuntime().exec(cmdToRunWithArgs, envp);
             return getProcessOutput(p, cmdToRunWithArgs);
         } catch (SecurityException | IOException e) {
-            Logger.trace("Couldn't run command {}: {}", Arrays.toString(cmdToRunWithArgs), e.getMessage());
+            Logger.trace(false, "Health", "Couldn't run command {}: {}", Arrays.toString(cmdToRunWithArgs), e.getMessage());
         } finally {
             // Ensure all resources are freed
             if (p != null) {
@@ -157,9 +157,9 @@ public final class Executor {
             }
             p.waitFor();
         } catch (IOException e) {
-            Logger.trace("Problem reading output from {}: {}", Arrays.toString(cmd), e.getMessage());
+            Logger.trace(true, "Health", "Problem reading output from {}: {}", Arrays.toString(cmd), e.getMessage());
         } catch (InterruptedException ie) {
-            Logger.trace("Interrupted while reading output from {}: {}", Arrays.toString(cmd), ie.getMessage());
+            Logger.trace(true, "Health", "Interrupted while reading output from {}: {}", Arrays.toString(cmd), ie.getMessage());
             Thread.currentThread().interrupt();
         }
         return sa;
@@ -187,11 +187,11 @@ public final class Executor {
             return runNative(cmdToRun);
         }
         if (!Privilege.isCommandAllowed(cmdToRun, Privilege.getCommandAllowlist())) {
-            Logger.debug("Command not in allowlist, running without prefix: {}", cmdToRun);
+            Logger.debug(false, "Health", "Command not in allowlist, running without prefix: {}", cmdToRun);
             return runNative(cmdToRun);
         }
         String privilegedCmd = prefix + Symbol.SPACE + cmdToRun;
-        Logger.debug("Executing privileged command: {}", privilegedCmd);
+        Logger.debug(true, "Health", "Executing privileged command: {}", privilegedCmd);
         return runNative(privilegedCmd);
     }
 

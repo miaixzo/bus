@@ -69,16 +69,16 @@ public class TCPListener implements Listener {
 
     public void listen() {
         SocketAddress sockAddr = ss.getLocalSocketAddress();
-        Logger.info("Start TCP Listener on {}", sockAddr);
+        Logger.info(true, "ImageNet", "Start TCP Listener on {}", sockAddr);
         try {
             while (!ss.isClosed()) {
-                Logger.debug("Wait for connection on {}", sockAddr);
+                Logger.debug(true, "ImageNet", "Wait for connection on {}", sockAddr);
                 Socket s = ss.accept();
                 ConnectionMonitor monitor = conn.getDevice() != null ? conn.getDevice().getConnectionMonitor() : null;
                 if (conn.isBlackListed(s.getInetAddress())) {
                     if (monitor != null)
                         monitor.onConnectionRejectedBlacklisted(conn, s);
-                    Logger.info("Reject blacklisted connection {}", s);
+                    Logger.info(true, "ImageNet", "Reject blacklisted connection {}", s);
                     conn.close(s);
                 } else {
                     try {
@@ -86,27 +86,27 @@ public class TCPListener implements Listener {
                     } catch (Throwable e) {
                         if (monitor != null)
                             monitor.onConnectionRejected(conn, s, e);
-                        Logger.warn("Reject connection {}:", s, e);
+                        Logger.warn(false, "ImageNet", "Reject connection {}:", s, e);
                         conn.close(s);
                         continue;
                     }
 
                     if (monitor != null)
                         monitor.onConnectionAccepted(conn, s);
-                    Logger.info("Accept connection {}", s);
+                    Logger.info(true, "ImageNet", "Accept connection {}", s);
                     try {
                         handler.onAccept(conn, s);
                     } catch (Throwable e) {
-                        Logger.warn("Exception on accepted connection {}:", s, e);
+                        Logger.warn(false, "ImageNet", "Exception on accepted connection {}:", s, e);
                         conn.close(s);
                     }
                 }
             }
         } catch (Throwable e) {
             if (!ss.isClosed())
-                Logger.error("Exception on listing on {}:", sockAddr, e);
+                Logger.error(false, "ImageNet", "Exception on listing on {}:", sockAddr, e);
         }
-        Logger.info("Stop TCP Listener on {}", sockAddr);
+        Logger.info(false, "ImageNet", "Stop TCP Listener on {}", sockAddr);
     }
 
     @Override
@@ -119,7 +119,7 @@ public class TCPListener implements Listener {
         try {
             ss.close();
         } catch (Throwable e) {
-            Logger.error(e.getMessage());
+            Logger.error(false, "ImageNet", e.getMessage());
             // Ignore errors when closing server socket
         }
     }

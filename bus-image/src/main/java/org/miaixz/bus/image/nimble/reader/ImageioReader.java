@@ -62,7 +62,7 @@ import org.miaixz.bus.logger.Logger;
  * read from them (mostly for the use case that it is unknown whether or not there is pixel data). Tag values after the
  * pixel data are not read up-front for performance reasons/ability to actually read them up front. Call the relevant
  * methods below to read that data.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -146,7 +146,7 @@ public class ImageioReader extends ImageReader implements Closeable {
                     if (offset < lastOffset)
                         offset += 0x100000000L;
                     lastOffset = offset;
-                    Logger.trace("Found offset {} for frame {}", offset, frame);
+                    Logger.trace(false, "Image", "Found offset {} for frame {}", offset, frame);
                 }
             }
             long position = -1;
@@ -357,12 +357,12 @@ public class ImageioReader extends ImageReader implements Closeable {
                 decompressor.setInput(iisOfFrame(frameIndex));
 
                 if (Logger.isDebugEnabled())
-                    Logger.debug("Start decompressing frame #" + (frameIndex + 1));
+                    Logger.debug(true, "Image", "Start decompressing frame #" + (frameIndex + 1));
                 Raster wr = pmiAfterDecompression == pmi && decompressor.canReadRaster()
                         ? decompressor.readRaster(0, decompressParam(param))
                         : decompressor.read(0, decompressParam(param)).getRaster();
                 if (Logger.isDebugEnabled())
-                    Logger.debug("Finished decompressing frame #" + (frameIndex + 1));
+                    Logger.debug(false, "Image", "Finished decompressing frame #" + (frameIndex + 1));
                 return wr;
             }
             WritableRaster wr = Raster.createWritableRaster(createSampleModel(dataType, banded), null);
@@ -437,9 +437,9 @@ public class ImageioReader extends ImageReader implements Closeable {
                 // performance wise
                 iisOfFrame.length();
                 decompressor.setInput(iisOfFrame);
-                Logger.debug("Start decompressing frame #{}", (frameIndex + 1));
+                Logger.debug(true, "Image", "Start decompressing frame #{}", (frameIndex + 1));
                 bi = decompressor.read(0, decompressParam(param));
-                Logger.debug("Finished decompressing frame #{}", (frameIndex + 1));
+                Logger.debug(false, "Image", "Finished decompressing frame #{}", (frameIndex + 1));
             } finally {
                 closeiis();
             }
@@ -463,7 +463,7 @@ public class ImageioReader extends ImageReader implements Closeable {
             try {
                 applyOverlayMonochrome(overlayGroupOffsets[i], raster, frameIndex, param, overlayData[i]);
             } catch (IllegalArgumentException e) {
-                Logger.info(ignoreInvalidOverlay(overlayGroupOffsets[i], e));
+                Logger.info(false, "Image", ignoreInvalidOverlay(overlayGroupOffsets[i], e));
             }
         }
         ColorModel cm = ColorModelFactory.createMonochromeColorModel(8, DataBuffer.TYPE_BYTE);
@@ -491,7 +491,7 @@ public class ImageioReader extends ImageReader implements Closeable {
         } else {
             if (bi == null) {
                 DirectColorModel directColorModel = new DirectColorModel(24, 0xff0000, 0xff00, 0xff);
-                Logger.info("Missing Color Model information, assume {}", directColorModel);
+                Logger.info(false, "Image", "Missing Color Model information, assume {}", directColorModel);
                 bi = new BufferedImage(directColorModel, bi.getRaster(), false, null);
             }
             bi = BufferedImages.convertColor(bi, cm);
@@ -511,7 +511,7 @@ public class ImageioReader extends ImageReader implements Closeable {
                         param,
                         bi.getColorModel().getColorSpace());
             } catch (IllegalArgumentException e) {
-                Logger.info(ignoreInvalidOverlay(overlayGroupOffsets[i], e));
+                Logger.info(false, "Image", ignoreInvalidOverlay(overlayGroupOffsets[i], e));
             }
         }
         return bi;
@@ -532,7 +532,7 @@ public class ImageioReader extends ImageReader implements Closeable {
 
         byte[] ovlyData = new byte[(((length + 7) >>> 3) + 1) & (~1)];
         if (bitPosition < bitsStored)
-            Logger.info(
+            Logger.info(false, "Image",
                     "Ignore embedded overlay #{} from bit #{} < bits stored: {}",
                     (gg0000 >>> 17) + 1,
                     bitPosition,
@@ -815,14 +815,14 @@ public class ImageioReader extends ImageReader implements Closeable {
                     throw new UnsupportedOperationException("Unsupported Transfer Syntax: " + tsuid);
                 TransferSyntaxType tsType = TransferSyntaxType.forUID(tsuid);
                 if (tsType.adjustBitsStoredTo12(ds)) {
-                    Logger.info("Adjust invalid Bits Stored: {} of {} to 12", bitsStored, tsType);
+                    Logger.info(false, "Image", "Adjust invalid Bits Stored: {} of {} to 12", bitsStored, tsType);
                     bitsStored = 12;
                 }
                 pmiAfterDecompression = pmi.isYBR() && TransferSyntaxType.isYBRCompression(tsuid) ? Photometric.RGB
                         : pmi;
                 this.rle = tsuid.equals(UID.RLELossless.uid);
                 this.decompressor = ImageReaderFactory.getImageReader(param);
-                Logger.debug("Decompressor: {}", decompressor.getClass().getName());
+                Logger.debug(false, "Image", "Decompressor: {}", decompressor.getClass().getName());
                 this.patchJpegLS = param.patchJPEGLS;
             }
         }

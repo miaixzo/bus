@@ -95,7 +95,7 @@ final class WindowsVirtualMemory extends AbstractVirtualMemory {
     private static Triplet<Long, Long, Long> querySwapTotalVirtMaxVirtUsed() {
         try (Struct.CloseablePerformanceInformation perfInfo = new Struct.CloseablePerformanceInformation()) {
             if (!Psapi.INSTANCE.GetPerformanceInfo(perfInfo, perfInfo.size())) {
-                Logger.error("Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
+                Logger.error(false, "Health", "Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
                 return Triplet.of(0L, 0L, 0L);
             }
             return Triplet.of(

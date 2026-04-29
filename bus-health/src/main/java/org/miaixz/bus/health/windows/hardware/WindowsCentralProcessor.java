@@ -255,7 +255,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
             WinBase.FILETIME lpKernelTime = new WinBase.FILETIME();
             WinBase.FILETIME lpUserTime = new WinBase.FILETIME();
             if (!Kernel32.INSTANCE.GetSystemTimes(lpIdleTime, lpKernelTime, lpUserTime)) {
-                Logger.error("Failed to update system idle/kernel/user times. Error code: {}", Native.getLastError());
+                Logger.error(false, "Health", "Failed to update system idle/kernel/user times. Error code: {}", Native.getLastError());
                 return ticks;
             }
             // IOwait:
@@ -354,7 +354,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
                 0,
                 ppiArray[0].getPointer(),
                 ppi.size() * ppiArray.length)) {
-            Logger.error("Unable to get Processor Information");
+            Logger.error(false, "Health", "Unable to get Processor Information");
             Arrays.fill(freqs, -1L);
             return freqs;
         }

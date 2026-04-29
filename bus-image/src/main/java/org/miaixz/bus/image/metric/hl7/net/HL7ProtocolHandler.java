@@ -75,7 +75,7 @@ public enum HL7ProtocolHandler implements TCPProtocolHandler {
                         if (monitor != null)
                             monitor.onMessageProcessed(conn, s, msg, rsp, null);
                     } catch (HL7Exception e) {
-                        Logger.info("{}: failed to process {}:\n", s, msg, e);
+                        Logger.info(false, "HL7", "{}: failed to process {}:\n", s, msg, e);
                         rsp = new UnparsedHL7Message(HL7Message.makeACK(msg.msh(), e).getBytes(null));
                         if (monitor != null)
                             monitor.onMessageProcessed(conn, s, msg, rsp, e);
@@ -84,9 +84,9 @@ public enum HL7ProtocolHandler implements TCPProtocolHandler {
                 }
             } catch (IOException e) {
                 if (e instanceof SocketException && messageCount == 0)
-                    Logger.info("Exception on accepted connection {}: {}", s, e.toString());
+                    Logger.info(false, "HL7", "Exception on accepted connection {}: {}", s, e.toString());
                 else
-                    Logger.warn("Exception on accepted connection {}:", s, e);
+                    Logger.warn(false, "HL7", "Exception on accepted connection {}:", s, e);
             } finally {
                 conn.close(s);
             }

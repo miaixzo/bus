@@ -786,11 +786,11 @@ public class WechatPayBuilder {
         String signature = response.getHeader("Wechatpay-Signature");
         String signatureType = response.getHeader("Wechatpay-Signature-Type");
         String body = response.getBody();
-        Logger.info("timestamp:" + timestamp);
-        Logger.info("nonceStr:" + nonceStr);
-        Logger.info("signature:" + signature);
-        Logger.info("signatureType:" + signatureType);
-        Logger.info("body:" + body);
+        Logger.info(false, "Pay", "timestamp:" + timestamp);
+        Logger.info(false, "Pay", "nonceStr:" + nonceStr);
+        Logger.info(false, "Pay", "signature:" + signature);
+        Logger.info(false, "Pay", "signatureType:" + signatureType);
+        Logger.info(false, "Pay", "body:" + body);
         return verifySignature(
                 signatureType,
                 signature,
@@ -980,8 +980,8 @@ public class WechatPayBuilder {
         map.put("publicKey", publicKey);
         map.put("privateKey", privateKey);
 
-        Logger.info("Public Key\r\n" + publicKey);
-        Logger.info("Private Key\r\n" + privateKey);
+        Logger.info(false, "Pay", "Public Key\r\n" + publicKey);
+        Logger.info(false, "Pay", "Private Key\r\n" + privateKey);
         return map;
     }
 

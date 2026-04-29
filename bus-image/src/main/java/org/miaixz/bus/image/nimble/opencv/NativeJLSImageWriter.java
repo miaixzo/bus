@@ -96,7 +96,7 @@ public class NativeJLSImageWriter extends ImageWriter {
                 boolean signed = desc.isSigned();
                 int dcmFlags = signed ? Imgcodecs.DICOM_FLAG_SIGNED : Imgcodecs.DICOM_FLAG_UNSIGNED;
                 if (signed) {
-                    Logger.warn("Force compression to JPEG-LS lossless as lossy is not adapted to signed data.");
+                    Logger.warn(false, "Image", "Force compression to JPEG-LS lossless as lossy is not adapted to signed data.");
                     jpeglsNLE = 0;
                     bitCompressed = 16; // Extend to bit allocated to avoid exception as negative values are treated as
                                         // large positive values

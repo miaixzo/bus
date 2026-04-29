@@ -74,14 +74,14 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
             try {
                 hostname = InetAddress.getLocalHost().getHostName();
             } catch (UnknownHostException e) {
-                Logger.warn("Unknown host exception when getting address of local host: {}", e.getMessage());
+                Logger.warn(false, "Health", "Unknown host exception when getting address of local host: {}", e.getMessage());
                 return Normal.EMPTY;
             }
             try (ByRef.CloseablePointerByReference ptr = new ByRef.CloseablePointerByReference()) {
                 int res = LIBC.getaddrinfo(hostname, null, hint, ptr);
                 if (res != 0) {
                     if (Logger.isErrorEnabled()) {
-                        Logger.error("Failed getaddrinfo(): {}", LIBC.gai_strerror(res));
+                        Logger.error(false, "Health", "Failed getaddrinfo(): {}", LIBC.gai_strerror(res));
                     }
                     return Normal.EMPTY;
                 }

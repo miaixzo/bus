@@ -99,6 +99,8 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
     @Override
     public void configure(List<org.springframework.http.converter.HttpMessageConverter<?>> converters) {
         Logger.debug(
+                false,
+                "HTTP",
                 "Configuring MappingJackson2HttpMessageConverter with autoType: {}",
                 autoTypeMatcher == null ? null : autoTypeMatcher.description());
         ObjectMapper jacksonMapper = new ObjectMapper();
@@ -118,6 +120,8 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
         // 4. Configure autoType restrictions
         if (autoTypeMatcher != null) {
             Logger.debug(
+                    false,
+                    "HTTP",
                     "Jackson autoType patterns are prepared but default polymorphic typing remains disabled: {}",
                     autoTypeMatcher.description());
         }
@@ -135,7 +139,11 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
         jacksonConverter.setSupportedMediaTypes(
                 List.of(MediaType.APPLICATION_JSON, new MediaType("application", "json+jackson")));
         converters.add(order(), jacksonConverter);
-        Logger.debug("Jackson converter configured with media types: {}", jacksonConverter.getSupportedMediaTypes());
+        Logger.debug(
+                false,
+                "HTTP",
+                "Jackson converter configured with media types: {}",
+                jacksonConverter.getSupportedMediaTypes());
     }
 
     /**
@@ -183,6 +191,8 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
                     // This can happen for virtual properties without a backing field.
                     // We'll proceed with 'field' as null, which shouldSkipField can handle.
                     Logger.debug(
+                            false,
+                            "HTTP",
                             "Jackson could not find backing field for property '{}' on class '{}'. Assuming inclusion.",
                             writer.getName(),
                             pojo.getClass().getName());

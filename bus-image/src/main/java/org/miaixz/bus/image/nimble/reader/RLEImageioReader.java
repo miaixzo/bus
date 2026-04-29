@@ -259,9 +259,9 @@ public class RLEImageioReader extends ImageReader {
                 }
             }
         } catch (EOFException e) {
-            Logger.info("RLE Segment #{} too short, set missing {} bytes to 0", seg, data.length - pos);
+            Logger.info(false, "Image", "RLE Segment #{} too short, set missing {} bytes to 0", seg, data.length - pos);
         } catch (IndexOutOfBoundsException e) {
-            Logger.info("RLE Segment #{} too long, truncate surplus bytes", seg);
+            Logger.info(false, "Image", "RLE Segment #{} too long, truncate surplus bytes", seg);
         }
     }
 
@@ -303,9 +303,9 @@ public class RLEImageioReader extends ImageReader {
                 }
             }
         } catch (EOFException e) {
-            Logger.info("RLE Segment #{} too short, set missing {} bytes to 0", seg, data.length - pos);
+            Logger.info(false, "Image", "RLE Segment #{} too short, set missing {} bytes to 0", seg, data.length - pos);
         } catch (IndexOutOfBoundsException e) {
-            Logger.info("RLE Segment #{} to long, truncate surplus bytes", seg);
+            Logger.info(false, "Image", "RLE Segment #{} to long, truncate surplus bytes", seg);
         }
     }
 

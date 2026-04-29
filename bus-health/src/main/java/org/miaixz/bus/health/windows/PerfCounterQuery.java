@@ -102,7 +102,7 @@ public final class PerfCounterQuery {
                 return valueMap;
             }
             // If we are here, query failed
-            Logger.info("Disabling further attempts to query {}.", perfObject);
+            Logger.info(false, "Health", "Disabling further attempts to query {}.", perfObject);
             FAILED_QUERY_CACHE.add(perfObject);
         }
         return queryValuesFromWMI(propertyEnum, perfWmiClass);
@@ -135,7 +135,7 @@ public final class PerfCounterQuery {
                 if (pdhQueryHandler.addCounterToQuery(counter)) {
                     counterMap.put(prop, counter);
                 } else {
-                    Logger.debug("Failed to add counter for {}", prop);
+                    Logger.debug(false, "Health", "Failed to add counter for {}", prop);
                 }
             }
             // And then query. Zero timestamp means update failed
@@ -216,12 +216,12 @@ public final class PerfCounterQuery {
         try {
             localized = PdhUtil.PdhLookupPerfNameByIndex(null, PdhUtil.PdhLookupPerfIndexByEnglishName(perfObject));
         } catch (Win32Exception e) {
-            Logger.warn(
+            Logger.warn(false, "Health",
                     "Unable to locate English counter names in registry Perflib 009. Assuming English counters. Error {}. {}",
                     String.format(Locale.ROOT, "0x%x", e.getHR().intValue()),
                     "See https://support.microsoft.com/en-us/help/300956/how-to-manually-rebuild-performance-counter-library-values");
         } catch (PdhException e) {
-            Logger.debug(
+            Logger.debug(false, "Health",
                     "Unable to localize {} performance counter.  Error {}.",
                     perfObject,
                     String.format(Locale.ROOT, "0x%x", e.getErrorCode()));
@@ -229,7 +229,7 @@ public final class PerfCounterQuery {
         if (localized.isEmpty()) {
             return perfObject;
         }
-        Logger.debug("Localized {} to {}", perfObject, localized);
+        Logger.debug(false, "Health", "Localized {} to {}", perfObject, localized);
         return localized;
     }
 

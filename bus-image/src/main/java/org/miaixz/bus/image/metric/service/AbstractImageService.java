@@ -61,7 +61,7 @@ public abstract class AbstractImageService implements ImageService {
             return null;
 
         Attributes dataset = data.readDataset(pc.getTransferSyntax());
-        Logger.debug("Dataset:\n{}", dataset);
+        Logger.debug(false, "Image", "Dataset:\n{}", dataset);
         return dataset;
     }
 

@@ -279,7 +279,7 @@ public abstract class AbstractCollector implements Collector, AutoCloseable {
             int retries = 0;
             while (update(column, pattern, getObjectCount(tally, column, count), tally.getVersion()) <= 0) {
                 if (++retries > 10) {
-                    Logger.warn("CAS update gave up after 10 retries, pattern: {}, column: {}", pattern, column);
+                    Logger.warn(false, "Cache", "CAS update gave up after 10 retries, pattern: {}, column: {}", pattern, column);
                     break;
                 }
                 // Re-fetch the latest version; abort if the record disappears concurrently.

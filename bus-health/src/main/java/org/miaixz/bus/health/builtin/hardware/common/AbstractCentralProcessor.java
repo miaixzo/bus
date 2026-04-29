@@ -532,7 +532,7 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
         // Calculate idle from difference in idle and IOwait
         long idle = ticks[TickType.IDLE.getIndex()] + ticks[TickType.IOWAIT.getIndex()]
                 - oldTicks[TickType.IDLE.getIndex()] - oldTicks[TickType.IOWAIT.getIndex()];
-        Logger.trace("Total ticks: {}  Idle ticks: {}", total, idle);
+        Logger.trace(false, "Health", "Total ticks: {}  Idle ticks: {}", total, idle);
 
         return total > 0 ? (double) (total - idle) / total : 0d;
     }
@@ -570,7 +570,7 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
             // Calculate idle from difference in idle and IOwait
             long idle = ticks[cpu][TickType.IDLE.getIndex()] + ticks[cpu][TickType.IOWAIT.getIndex()]
                     - oldTicks[cpu][TickType.IDLE.getIndex()] - oldTicks[cpu][TickType.IOWAIT.getIndex()];
-            Logger.trace("CPU: {}  Total ticks: {}  Idle ticks: {}", cpu, total, idle);
+            Logger.trace(false, "Health", "CPU: {}  Total ticks: {}  Idle ticks: {}", cpu, total, idle);
             // update
             load[cpu] = total > 0 && idle >= 0 ? (double) (total - idle) / total : 0d;
         }

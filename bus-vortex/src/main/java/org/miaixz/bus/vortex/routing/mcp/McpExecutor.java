@@ -126,7 +126,7 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
     @Override
     public Mono<Void> execute(Context context, Void input) {
         this.start();
-        return Mono.fromRunnable(() -> Logger.debug("MCP execute called for context: {}, object: {}", context, input))
+        return Mono.fromRunnable(() -> Logger.debug(true, "MCP", "MCP execute called for context: {}, object: {}", context, input))
                 .subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic()).then(Mono.empty());
     }
 
@@ -145,7 +145,7 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
     @Override
     public void start() {
         if (running.compareAndSet(false, true)) {
-            Logger.info(
+            Logger.info(true, "MCP",
                     "MCP runtime startup requested: running={}, cachedClients={}, processProvider={}, async=true",
                     running.get(),
                     clientCache.size(),
@@ -153,24 +153,24 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
 
             Mono.fromCallable(() -> this.assetsRegistry.getAll().stream().filter(McpExecutor::isMcpAsset).toList())
                     .subscribeOn(Schedulers.boundedElastic())
-                    .doOnNext(assets -> Logger.info(
+                    .doOnNext(assets -> Logger.info(false, "MCP",
                             "MCP asset discovery completed: candidateAssets={}, transports={}, assets={}",
                             assets.size(),
                             summarizeTransports(assets),
                             summarizeAssets(assets)))
                     .flatMapMany(Flux::fromIterable).flatMap(this::startAndRegisterClient)
-                    .then(Mono.fromRunnable(() -> Logger.info(
+                    .then(Mono.fromRunnable(() -> Logger.info(false, "MCP",
                             "MCP runtime startup completed: initializedClients={}, clientIds={}",
                             clientCache.size(),
                             summarizeClientIds())))
-                    .doOnError(e -> Logger.error(
+                    .doOnError(e -> Logger.error(false, "MCP",
                             "MCP runtime startup failed: cachedClients={}, error={}",
                             clientCache.size(),
                             e.getMessage(),
                             e))
                     .subscribe();
 
-            Logger.info("MCP asset discovery scheduled: scheduler=boundedElastic, async=true");
+            Logger.info(false, "MCP", "MCP asset discovery scheduled: scheduler=boundedElastic, async=true");
         }
     }
 
@@ -188,12 +188,12 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
     @Override
     public void stop() {
         if (running.compareAndSet(true, false)) {
-            Logger.info("MCP runtime shutdown requested: cachedClients={}, timeout=5s", clientCache.size());
+            Logger.info(false, "MCP", "MCP runtime shutdown requested: cachedClients={}, timeout=5s", clientCache.size());
 
             Mono<List<Assets>> mcpAssets = Mono
                     .fromCallable(() -> this.assetsRegistry.getAll().stream().filter(McpExecutor::isMcpAsset).toList())
                     .subscribeOn(Schedulers.boundedElastic())
-                    .doOnNext(assets -> Logger.info(
+                    .doOnNext(assets -> Logger.info(false, "MCP",
                             "MCP shutdown asset discovery completed: candidateAssets={}, stdioProcesses={}, transports={}",
                             assets.size(),
                             assets.stream().filter(asset -> "stdio".equals(resolveMcpTransport(asset))).count(),
@@ -201,20 +201,20 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
 
             Mono<Void> stopProcesses = mcpAssets.flatMapMany(Flux::fromIterable)
                     .filter(asset -> "stdio".equals(resolveMcpTransport(asset))).flatMap(processProvider::stop)
-                    .doOnError(e -> Logger.error("MCP process stop failed", e)).then();
+                    .doOnError(e -> Logger.error(false, "MCP", "MCP process stop failed", e)).then();
 
             Mono<Void> closeClients = Flux.fromIterable(clientCache.values())
                     .flatMap(
                             client -> Mono.fromRunnable(client::close).subscribeOn(Schedulers.boundedElastic())
-                                    .doOnError(e -> Logger.error("MCP client close failed", e)))
+                                    .doOnError(e -> Logger.error(false, "MCP", "MCP client close failed", e)))
                     .then();
 
-            Mono.when(stopProcesses, closeClients).doOnError(e -> Logger.error("MCP runtime shutdown failed", e))
+            Mono.when(stopProcesses, closeClients).doOnError(e -> Logger.error(false, "MCP", "MCP runtime shutdown failed", e))
                     .timeout(java.time.Duration.ofSeconds(5))
-                    .doOnError(e -> Logger.warn("MCP runtime shutdown timed out after 5 seconds")).block();
+                    .doOnError(e -> Logger.warn(false, "MCP", "MCP runtime shutdown timed out after 5 seconds")).block();
 
             clientCache.clear();
-            Logger.info("MCP runtime stopped: cachedClients=0");
+            Logger.info(false, "MCP", "MCP runtime stopped: cachedClients=0");
         }
     }
 
@@ -236,7 +236,7 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
      */
     private Mono<Void> startAndRegisterClient(Assets asset) {
         String transport = resolveMcpTransport(asset);
-        Logger.info(
+        Logger.info(true, "MCP",
                 "MCP client initialization started: assetId={}, assetName={}, transport={}, target={}",
                 asset.getId(),
                 asset.getName(),
@@ -250,14 +250,14 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
         }
         return clientMono.flatMap(client -> client.initialize().doOnSuccess(v -> {
             clientCache.put(asset.getId(), client);
-            Logger.info(
+            Logger.info(false, "MCP",
                     "MCP client ready: assetId={}, assetName={}, transport={}, clientType={}, cachedClients={}",
                     asset.getId(),
                     asset.getName(),
                     transport,
                     client.getClass().getSimpleName(),
                     clientCache.size());
-        })).doOnError(e -> Logger.error(
+        })).doOnError(e -> Logger.error(false, "MCP",
                 "MCP client initialization failed: assetId={}, assetName={}, transport={}, target={}, error={}",
                 asset.getId(),
                 asset.getName(),

@@ -171,25 +171,25 @@ public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
      */
     private void registerHeart(final Session session, final long heartRate) {
         if (heartRate <= 0) {
-            Logger.info(
+            Logger.info(false, "Socket",
                     "Session: {} heartbeat interval is {}, terminating heartbeat monitoring task.",
                     session,
                     heartRate);
             return;
         }
-        Logger.debug("Session: {} registering heartbeat task, heartbeat interval: {}", session, heartRate);
+        Logger.debug(true, "Socket", "Session: {} registering heartbeat task, heartbeat interval: {}", session, heartRate);
         HashedWheelTimer.DEFAULT_TIMER.schedule(new TimerTask() {
 
             @Override
             public void run() {
                 if (session.isInvalid()) {
                     sessionMap.remove(session);
-                    Logger.info("Session: {} is invalid, removing heartbeat task.", session);
+                    Logger.info(false, "Socket", "Session: {} is invalid, removing heartbeat task.", session);
                     return;
                 }
                 Long lastTime = sessionMap.get(session);
                 if (lastTime == null) {
-                    Logger.warn("Session: {} last activity time is null, initializing.", session);
+                    Logger.warn(false, "Socket", "Session: {} last activity time is null, initializing.", session);
                     lastTime = System.currentTimeMillis();
                     sessionMap.put(session, lastTime);
                 }
@@ -204,7 +204,7 @@ public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
                         sendHeartRequest(session);
                         session.writeBuffer().flush();
                     } catch (IOException e) {
-                        Logger.error("Heartbeat exception, will close session: {}", session, e);
+                        Logger.error(false, "Socket", "Heartbeat exception, will close session: {}", session, e);
                         session.close(true);
                     }
                 }

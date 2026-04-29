@@ -312,7 +312,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
                 return cwd;
             }
         } catch (IOException e) {
-            Logger.trace("Couldn't find cwd for pid {}: {}", getProcessID(), e.getMessage());
+            Logger.trace(false, "Health", "Couldn't find cwd for pid {}: {}", getProcessID(), e.getMessage());
         }
         return Normal.EMPTY;
     }
@@ -622,7 +622,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
                     return buffer[4] == 1 ? 32 : 64;
                 }
             } catch (IOException e) {
-                Logger.warn("Failed to read process file: {}", path);
+                Logger.warn(false, "Health", "Failed to read process file: {}", path);
             }
         }
         return 0;
@@ -675,7 +675,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
                 path = path.substring(0, index);
             }
         } catch (InvalidPathException | IOException | UnsupportedOperationException | SecurityException e) {
-            Logger.debug("Unable to open symbolic link {}", procPidExe);
+            Logger.debug(false, "Health", "Unable to open symbolic link {}", procPidExe);
         }
         // Fetch all the values here
         // check for terminated process race condition after last one.

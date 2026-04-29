@@ -47,11 +47,11 @@ public class PaypalBuilder {
             try {
                 v = retryCallable.call();
             } catch (Exception e) {
-                Logger.warn("retry on " + (i + 1) + " times v = " + (v == null ? null : v.getJson()), e);
+                Logger.warn(false, "Pay", "retry on " + (i + 1) + " times v = " + (v == null ? null : v.getJson()), e);
             }
             if (null != v && v.matching())
                 break;
-            Logger.error("retry on " + (i + 1) + " times but not matching v = " + (v == null ? null : v.getJson()));
+            Logger.error(false, "Pay", "retry on " + (i + 1) + " times but not matching v = " + (v == null ? null : v.getJson()));
         }
         return v;
     }
@@ -71,12 +71,12 @@ public class PaypalBuilder {
             try {
                 v = retryCallable.call();
             } catch (Exception e) {
-                Logger.warn("retry on " + (i + 1) + " times v = " + (v == null ? null : v.getJson()), e);
+                Logger.warn(false, "Pay", "retry on " + (i + 1) + " times v = " + (v == null ? null : v.getJson()), e);
             }
             if (null != v && v.matching()) {
                 break;
             }
-            Logger.error("retry on " + (i + 1) + " times but not matching v = " + (v == null ? null : v.getJson()));
+            Logger.error(false, "Pay", "retry on " + (i + 1) + " times but not matching v = " + (v == null ? null : v.getJson()));
             if (sleepMillis > 0) {
                 ThreadKit.sleep(sleepMillis);
             }
