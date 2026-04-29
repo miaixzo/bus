@@ -105,7 +105,7 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
                     return isFieldIgnored(field);
                 } catch (NoSuchFieldException | SecurityException e) {
                     Logger.warn(
-                            "Could not access field '{}' for annotation check. Defaulting to include.",
+                            "Gson could not access field '{}' for annotation check. Defaulting to include.",
                             f.getName(),
                             e.getMessage());
                     // If we can't inspect the field, don't skip it (default to including it).

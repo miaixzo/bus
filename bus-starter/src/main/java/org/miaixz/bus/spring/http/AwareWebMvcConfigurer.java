@@ -162,19 +162,19 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
                     try {
                         configurer.autoType(this.autoType);
                         Logger.debug(
-                                "Set autoType '{}' for custom JsonConverterConfigurer: {}",
+                                "HTTP set autoType '{}' for custom JsonConverterConfigurer: {}",
                                 this.autoType,
                                 configurer.name());
                     } catch (Exception e) {
                         Logger.warn(
-                                "Failed to set autoType for custom JsonConverterConfigurer {}: {}",
+                                "HTTP failed to set autoType for custom JsonConverterConfigurer {}: {}",
                                 configurer.name(),
                                 e.getMessage(),
                                 e);
                     }
                 }).sorted(Comparator.comparingInt(HttpMessageConverter::order)).toList();
         Logger.debug(
-                "Retrieved {} available custom JsonConverterConfigurer beans: {}",
+                "HTTP retrieved {} available custom JsonConverterConfigurer beans: {}",
                 configurers.size(),
                 configurers.stream().map(HttpMessageConverter::name).toList());
         return configurers;
@@ -193,9 +193,9 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
             String name) {
         try {
             configurer.accept(converters);
-            Logger.info("Successfully configured {} message converter", name);
+            Logger.info("HTTP successfully configured {} message converter", name);
         } catch (Exception e) {
-            Logger.warn("Failed to configure {}: {}", name, e.getMessage(), e);
+            Logger.warn("HTTP failed to configure {}: {}", name, e.getMessage(), e);
         }
     }
 

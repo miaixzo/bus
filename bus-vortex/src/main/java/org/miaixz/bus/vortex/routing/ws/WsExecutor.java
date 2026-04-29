@@ -174,8 +174,7 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
         sessionMetadata.put(sessionId, metadata);
 
         Logger.info(
-                "WebSocket",
-                "Session registered: {} -> {} (Total active: {})",
+                "WS session registered: {} -> {} (Total active: {})",
                 sessionId,
                 metadata.getUpstreamTarget(),
                 activeSessions.size());
@@ -196,8 +195,7 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
         if (session != null && metadata != null) {
             long duration = System.currentTimeMillis() - metadata.getConnectedAt();
             Logger.info(
-                    "WebSocket",
-                    "Session unregistered: {} -> {} (Duration: {}ms, Remaining: {})",
+                    "WS session unregistered: {} -> {} (Duration: {}ms, Remaining: {})",
                     sessionId,
                     metadata.getUpstreamTarget(),
                     duration,
@@ -244,25 +242,26 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
     @PreDestroy
     @Override
     public Mono<ServerResponse> destroy() {
-        Logger.info("WebSocket resources shutting down: activeSessions={}", activeSessions.size());
+        Logger.info("WS webSocket resources shutting down: activeSessions={}", activeSessions.size());
 
         return Flux.fromIterable(activeSessions.values()).flatMap(session -> {
             try {
                 if (session.isOpen()) {
                     return session.close().doOnError(
-                            error -> Logger.error("Error closing WebSocket session: {}", session.getId(), error))
-                            .doOnSuccess(v -> Logger.debug("WebSocket session closed: {}", session.getId()));
+                            error -> Logger
+                                    .error(false, "WS", "Error closing WebSocket session: {}", session.getId(), error))
+                            .doOnSuccess(v -> Logger.debug("WS webSocket session closed: {}", session.getId()));
                 } else {
                     return Mono.empty();
                 }
             } catch (Exception e) {
-                Logger.error("Failed to close WebSocket session: {}", session.getId(), e);
+                Logger.error("WS failed to close WebSocket session: {}", session.getId(), e);
                 return Mono.error(e);
             }
         }).doOnComplete(() -> {
             activeSessions.clear();
             sessionMetadata.clear();
-            Logger.info("WebSocket resources stopped");
+            Logger.info("WS webSocket resources stopped");
         }).then(Mono.empty());
     }
 

@@ -23,13 +23,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import lombok.*;
+import lombok.Builder;
 import org.miaixz.bus.cortex.builtin.Label;
 import org.miaixz.bus.cortex.builtin.LabelMapper;
 
 import jakarta.persistence.Transient;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
@@ -45,14 +44,9 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Assets extends Nature {
-
-    /**
-     * Creates an empty asset instance.
-     */
-    public Assets() {
-
-    }
 
     /**
      * Human-readable name of the asset. Used for display in dashboards and logs.

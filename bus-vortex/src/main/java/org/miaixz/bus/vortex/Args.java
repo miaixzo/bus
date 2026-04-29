@@ -21,6 +21,9 @@ package org.miaixz.bus.vortex;
 
 import java.util.Map;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.Specifics;
 import org.miaixz.bus.vortex.strategy.QualifierStrategy;
@@ -268,13 +271,10 @@ public class Args extends Specifics {
      */
     @Getter
     @Setter
+    @SuperBuilder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Limit {
-
-        /**
-         * Creates an empty rate-limit configuration.
-         */
-        public Limit() {
-        }
 
         /**
          * Whether rate limiting is globally enabled.

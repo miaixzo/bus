@@ -109,7 +109,7 @@ public class HealthService {
             // Validate TIDs; if none are valid, default to liveness and readiness.
             if (tidList.stream().noneMatch(TID.ALL_TID::contains)) {
                 tidList = Arrays.asList(TID.LIVENESS, TID.READINESS);
-                Logger.debug("Invalid tid '{}', defaulting to liveness,readiness", effectiveTid);
+                Logger.debug("Health invalid tid '{}', defaulting to liveness,readiness", effectiveTid);
             }
 
             // Gather monitoring information.
@@ -118,7 +118,10 @@ public class HealthService {
             try {
                 result.putAll(TID.ALL.equals(effectiveTid) ? provider.getAll() : provider.get(tidList));
             } catch (NumberFormatException e) {
-                Logger.warn("Invalid number format in provider data for tid '{}': {}", effectiveTid, e.getMessage());
+                Logger.warn(
+                        "Health invalid number format in provider data for tid '{}': {}",
+                        effectiveTid,
+                        e.getMessage());
                 // On error, fall back to appending individually.
                 tidList.forEach(type -> append(type, result));
             }

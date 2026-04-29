@@ -103,7 +103,7 @@ public class JdbcConfiguration {
         DataSourceHolder.setKey(this.properties.getName());
 
         if (ObjectKit.isNotEmpty(this.properties.getMulti())) {
-            Logger.info("Enable support for multiple data sources");
+            Logger.info("DataSource enable support for multiple data sources");
             List<JdbcProperties> list = this.properties.getMulti();
             for (JdbcProperties prop : list) {
                 Map<String, Object> config = beanToMap(prop);
@@ -176,7 +176,7 @@ public class JdbcConfiguration {
             for (String key : beanMap.keySet()) {
                 Object value = beanMap.get(key);
                 if (StringKit.isNotEmpty(this.properties.getPrivateKey())) {
-                    Logger.info("The database connection is securely enabled");
+                    Logger.info("DataSource the database connection is securely enabled");
                     if ("url".equals(key) || "username".equals(key) || "password".equals(key)) {
                         value = Builder.decrypt(
                                 Algorithm.AES.getValue(),

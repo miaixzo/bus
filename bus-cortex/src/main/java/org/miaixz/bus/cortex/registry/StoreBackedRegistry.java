@@ -455,13 +455,13 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
                     listener.onError(event, e);
                 } catch (Exception errorHandlerFailure) {
                     Logger.warn(
-                            "Registry listener error handler failed [{}:{}]: {}",
+                            "Registry listener error handler failed: type={}, listenerId={}, error={}",
                             registryType,
                             entry.getId(),
                             errorHandlerFailure.getMessage());
                 }
                 Logger.warn(
-                        "Registry listener execution failed [{}:{}]: {}",
+                        "Registry listener execution failed: type={}, listenerId={}, error={}",
                         registryType,
                         entry.getId(),
                         e.getMessage());
@@ -679,7 +679,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
      */
     protected void capabilityFallback(String operation, Trait capability, String fallback) {
         Logger.warn(
-                "Registry store capability missing [type={}, operation={}, capability={}], using {}",
+                "Registry store capability missing: type={}, operation={}, capability={}, fallback={}",
                 registryType,
                 operation,
                 capability == null ? null : capability.key(),

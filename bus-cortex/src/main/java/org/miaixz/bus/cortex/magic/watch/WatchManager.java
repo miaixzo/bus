@@ -705,11 +705,11 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
                         subscription.getListener().onError(event, e);
                     } catch (Exception errorHandlerFailure) {
                         Logger.warn(
-                                "Watch listener error handler failed [{}]: {}",
+                                "Watch listener error handler failed {}: {}",
                                 watchId,
                                 errorHandlerFailure.getMessage());
                     }
-                    Logger.warn("Watch listener execution failed [{}]: {}", watchId, e.getMessage());
+                    Logger.warn("Watch listener execution failed {}: {}", watchId, e.getMessage());
                 } finally {
                     subscription.completeDelivery(System.currentTimeMillis());
                 }
@@ -719,7 +719,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
             subscription.releasePending();
             subscription.recordDrop(now, e.getMessage());
             event.setErrorMessage(e.getMessage());
-            Logger.warn("Watch dispatch rejected [{}]: {}", watchId, e.getMessage());
+            Logger.warn("Watch dispatch rejected {}: {}", watchId, e.getMessage());
         }
     }
 
@@ -737,7 +737,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
         subscription.recordDrop(now, reason);
         event.setErrorMessage(reason);
         if (overflowStrategy == OverflowStrategy.DROP_LATEST) {
-            Logger.warn("Watch event dropped [{}]: {}", watchId, reason);
+            Logger.warn("Watch event dropped {}: {}", watchId, reason);
         }
     }
 

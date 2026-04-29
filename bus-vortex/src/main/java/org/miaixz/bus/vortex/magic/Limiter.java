@@ -22,6 +22,7 @@ package org.miaixz.bus.vortex.magic;
 import com.google.common.util.concurrent.RateLimiter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -44,14 +45,9 @@ import org.miaixz.bus.vortex.strategy.LimiterStrategy;
 @Getter
 @Setter
 @SuperBuilder
+@NoArgsConstructor
 @AllArgsConstructor
 public class Limiter {
-
-    /**
-     * Creates an empty rate limiter configuration.
-     */
-    public Limiter() {
-    }
 
     /**
      * The IP address of the request source. Used for creating per-IP limiters.

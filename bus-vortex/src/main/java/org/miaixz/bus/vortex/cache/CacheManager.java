@@ -133,7 +133,7 @@ public class CacheManager<K, V> {
      */
     public void setPerformanceMonitor(Monitor monitor) {
         this.monitor = monitor;
-        Logger.debug("Performance monitor configured");
+        Logger.debug("Cache performance monitor configured");
     }
 
     /**

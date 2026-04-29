@@ -107,7 +107,7 @@ public class RequestBodyAdvice extends BaseAdvice
                             this.properties.getDecrypt().getType(), Charset.DEFAULT_UTF_8);
                 }
             } catch (Exception e) {
-                Logger.error("Internal processing failure during request body decryption", e);
+                Logger.error("Sensitive internal processing failure during request body decryption", e);
             }
         }
         return inputMessage;
@@ -191,7 +191,7 @@ public class RequestBodyAdvice extends BaseAdvice
                 content = content.replaceAll(Symbol.SPACE, Symbol.PLUS);
 
                 if (StringKit.isNotEmpty(content)) {
-                    Logger.debug("Request data decryption enabled...");
+                    Logger.debug("Sensitive request data decryption enabled...");
                     // The content might be split by a delimiter if it was encrypted in chunks.
                     String[] contents = content.split("\\|");
                     for (String encryptedPart : contents) {

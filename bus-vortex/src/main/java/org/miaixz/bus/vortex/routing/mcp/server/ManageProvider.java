@@ -139,7 +139,7 @@ public class ManageProvider implements ProcessProvider, MetricsProvider {
                             new java.io.InputStreamReader(process.getInputStream()))) {
                         String line;
                         while ((line = reader.readLine()) != null) {
-                            Logger.trace("[Process-{}]: {}", serviceId, line);
+                            Logger.trace("MCP process output received: serviceId={}, line={}", serviceId, line);
                         }
                     } catch (IOException e) {
                         Logger.warn("Process output read failed: assetId={}, error={}", serviceId, e.getMessage());

@@ -22,6 +22,7 @@ package org.miaixz.bus.core.basic.entity;
 import java.io.Serial;
 import java.io.Serializable;
 
+import lombok.AllArgsConstructor;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.FieldKit;
 
@@ -41,6 +42,7 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Entity implements Serializable {
 
     @Serial

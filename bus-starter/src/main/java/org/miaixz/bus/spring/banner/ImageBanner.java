@@ -229,7 +229,7 @@ public class ImageBanner {
         double L = 116.0 * l - 16.0;
         double a = 500.0 * (f(colorvalue[0]) - l);
         double b = 200.0 * (l - f(colorvalue[2]));
-        return new float[] { (float) L, (float) a, (float) b };
+        return new float[]{(float) L, (float) a, (float) b};
     }
 
     /**
@@ -288,9 +288,8 @@ public class ImageBanner {
             BufferedImage resizedImage = resizeImage(sourceImage, maxWidth, aspectRatio);
             banner = imageToBanner(resizedImage, invert, cie94);
         } catch (Exception ex) {
-            Logger.warn(
-                    "WARNING ! Image banner not printable: " + this.image + " (" + ex.getClass() + ": '"
-                            + ex.getMessage() + "')");
+            Logger.warn("WARNING ! Image banner not printable: " + this.image + " (" + ex.getClass() + ": '"
+                    + ex.getMessage() + "')");
         } finally {
             if (null != headlessProperty) {
                 System.setProperty("java.awt.headless", headlessProperty);

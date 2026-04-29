@@ -65,7 +65,7 @@ public class HealthConfiguration {
         try {
             return new Provider();
         } catch (Exception e) {
-            Logger.error("Failed to initialize Provider: {}", e.getMessage(), e);
+            Logger.error("Health failed to initialize Provider: {}", e.getMessage(), e);
             throw new IllegalStateException("Failed to initialize Provider: " + e.getMessage(), e);
         }
     }

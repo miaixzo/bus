@@ -116,9 +116,12 @@ public class StdioClient implements McpClient {
                     }
                 } catch (IOException e) {
                     if (!process.isAlive()) {
-                        Logger.info("Process exited; stdout listener stopped: asset={}", assets.getName());
+                        Logger.info("MCP process exited; stdout listener stopped: asset={}", assets.getName());
                     } else {
-                        Logger.error("Stdout listener failed: asset={}, error={}", assets.getName(), e.getMessage());
+                        Logger.error(
+                                "MCP stdout listener failed: asset={}, error={}",
+                                assets.getName(),
+                                e.getMessage());
                     }
                 }
             });
@@ -178,14 +181,14 @@ public class StdioClient implements McpClient {
      */
     @Override
     public void close() {
-        Logger.info("Closing stdio session: asset={}", assets.getName());
+        Logger.info("MCP closing stdio session: asset={}", assets.getName());
         stdoutListenerExecutor.shutdownNow();
         try {
             if (process.isAlive()) {
                 process.destroy();
             }
         } catch (Exception e) {
-            Logger.error("Process termination failed during close: asset={}", assets.getName(), e);
+            Logger.error("MCP process termination failed during close: asset={}", assets.getName(), e);
         }
     }
 
@@ -216,15 +219,12 @@ public class StdioClient implements McpClient {
                         List<Map<String, Object>> toolMaps = (List<Map<String, Object>>) notification.params;
                         this.tools = toolMaps.stream().map(toolMap -> JsonKit.toPojo(toolMap, Tool.class))
                                 .collect(Collectors.toList());
-                        Logger.info(
-                                "Tool catalog received: asset={}, tools={}",
-                                assets.getName(),
-                                tools.size());
+                        Logger.info("MCP tool catalog received: asset={}, tools={}", assets.getName(), tools.size());
                     }
                 }
             }
         } catch (Exception e) {
-            Logger.warn("Malformed message received: asset={}, payload={}", assets.getName(), jsonLine, e);
+            Logger.warn("MCP malformed message received: asset={}, payload={}", assets.getName(), jsonLine, e);
         }
     }
 

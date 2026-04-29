@@ -21,6 +21,7 @@ package org.miaixz.bus.core.basic.entity;
 
 import java.io.Serial;
 
+import lombok.AllArgsConstructor;
 import org.miaixz.bus.core.lang.annotation.Logical;
 
 import lombok.Getter;
@@ -42,6 +43,7 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Lifecycle extends Entity {
 
     @Serial

@@ -78,7 +78,7 @@ public class ScenesEnvironmentPostProcessor implements EnvironmentPostProcessor,
                 propertySourceLoaders,
                 scenes);
 
-        Logger.info("Configs for scenes {} enable", scenes);
+        Logger.info("Env configs for scenes {} enable", scenes);
         processAndApply(sceneConfigDataReferences, environment);
 
     }

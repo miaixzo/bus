@@ -22,6 +22,7 @@ package org.miaixz.bus.core.basic.entity;
 import java.io.Serial;
 
 import jakarta.persistence.Transient;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -41,6 +42,7 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Query extends Lifecycle {
 
     @Serial

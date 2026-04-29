@@ -77,14 +77,15 @@ public class MqRouter implements Router<ServerRequest, ServerResponse> {
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
 
-            Logger.info("MQ Router: Routing request for topic: {}", context.getAssets().getMethod());
+            Logger.info(
+                    true, "MQ", "Router forwarding request: topic={}", context.getAssets().getMethod());
 
             return input.bodyToMono(String.class).switchIfEmpty(Mono.just(Normal.EMPTY))
                     .flatMap(body -> executor.execute(context, body)).doOnError(
                             error -> Logger.error(
                                     true,
                                     "MQ",
-                                    "[MQ_ROUTER_ERROR] - Failed to forward request to topic: {} - {}",
+                                    "Failed to forward request to topic: {} - {}",
                                     context.getAssets().getMethod(),
                                     error.getMessage()));
         });

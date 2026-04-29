@@ -122,7 +122,7 @@ public class ResponseBodyAdvice extends BaseAdvice
                     ((Message) body).setData(data);
                 }
             } catch (Exception e) {
-                Logger.error("Internal processing failure during response body modification", e);
+                Logger.error("Sensitive internal processing failure during response body modification", e);
             }
         }
         return body;
@@ -141,7 +141,7 @@ public class ResponseBodyAdvice extends BaseAdvice
         // Perform data desensitization
         if ((Builder.ALL.equals(sensitive.value()) || Builder.SENS.equals(sensitive.value()))
                 && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
-            Logger.debug("Response data desensitization enabled...");
+            Logger.debug("Sensitive response data desensitization enabled...");
             Builder.on(object, sensitive);
         }
         // Perform data encryption
@@ -159,7 +159,7 @@ public class ResponseBodyAdvice extends BaseAdvice
                                 throw new InternalException(
                                         "Encryption properties are not configured. Please check 'bus.sensitive.encrypt'.");
                             }
-                            Logger.debug("Response data encryption enabled for property: {}", property);
+                            Logger.debug("Sensitive response data encryption enabled for property: {}", property);
                             String encryptedValue = org.miaixz.bus.crypto.Builder.encrypt(
                                     this.properties.getEncrypt().getType(),
                                     this.properties.getEncrypt().getKey(),

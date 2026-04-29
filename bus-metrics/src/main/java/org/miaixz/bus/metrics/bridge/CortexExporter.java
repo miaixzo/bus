@@ -117,7 +117,7 @@ public class CortexExporter {
                 store.write(key, value, intervalSeconds * Builder.CORTEX_TTL_MULTIPLIER * 1000L);
             }
         } catch (Exception e) {
-            Logger.warn("[bus-metrics] CortexExporter push failed: {}", e.getMessage());
+            Logger.warn("Cortex metrics export failed: {}", e.getMessage());
         }
     }
 

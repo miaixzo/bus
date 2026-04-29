@@ -21,6 +21,8 @@ package org.miaixz.bus.cortex;
 
 import java.io.Serial;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.miaixz.bus.core.basic.entity.Namespace;
 
 import lombok.Getter;
@@ -40,6 +42,8 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Nature extends Namespace {
 
     /**
@@ -52,13 +56,6 @@ public class Nature extends Namespace {
      * Stable numeric asset type key used for persistence and business routing.
      */
     private Integer type;
-
-    /**
-     * Creates an empty shared Cortex domain base.
-     */
-    protected Nature() {
-
-    }
 
     /**
      * Returns whether the current entry belongs to the supplied type.

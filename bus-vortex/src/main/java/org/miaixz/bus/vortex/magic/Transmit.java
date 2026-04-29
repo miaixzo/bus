@@ -19,11 +19,9 @@
 */
 package org.miaixz.bus.vortex.magic;
 
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.lang.EnumValue;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 
 /**
  * A data transfer object (DTO) that provides a consolidated view of a single managed service, including its status and
@@ -35,16 +33,12 @@ import lombok.Data;
  * @author Kimi Liu
  * @since Java 21+
  */
-@Data
-@Builder
+@Getter
+@Setter
+@SuperBuilder
+@NoArgsConstructor
 @AllArgsConstructor
 public class Transmit {
-
-    /**
-     * Creates an empty service transmission snapshot.
-     */
-    public Transmit() {
-    }
 
     /**
      * The unique name or ID of the service, derived from {@link org.miaixz.bus.cortex.Assets#getName()}.

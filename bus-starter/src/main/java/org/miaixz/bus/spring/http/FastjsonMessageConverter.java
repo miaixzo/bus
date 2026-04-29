@@ -135,7 +135,7 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
                 throws HttpMessageNotReadableException {
             try (var inputStream = inputMessage.getBody()) {
                 String jsonString = new String(IoKit.readBytes(inputStream), Charset.UTF_8);
-                Logger.debug("Deserializing JSON for class {}", clazz.getName());
+                Logger.debug("Fastjson deserializing JSON for class {}", clazz.getName());
 
                 return autoTypeMatcher == null ? JSON.parseObject(jsonString, clazz, READER_FEATURES)
                         : JSON.parseObject(
@@ -145,14 +145,18 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
                                 READER_FEATURES);
             } catch (IOException e) {
                 Logger.error(
-                        "IO error occurred during JSON deserialization for class {}: {}",
+                        "Fastjson IO error occurred during JSON deserialization for class {}: {}",
                         clazz.getName(),
                         e.getMessage(),
                         e);
                 throw new HttpMessageNotReadableException(
                         "IO error occurred during JSON deserialization: " + e.getMessage(), e, inputMessage);
             } catch (Exception e) {
-                Logger.error("JSON deserialization failed for class {}: {}", clazz.getName(), e.getMessage(), e);
+                Logger.error(
+                        "Fastjson JSON deserialization failed for class {}: {}",
+                        clazz.getName(),
+                        e.getMessage(),
+                        e);
                 throw new HttpMessageNotReadableException("JSON deserialization failed: " + e.getMessage(), e,
                         inputMessage);
             }
@@ -162,7 +166,7 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
         protected void writeInternal(Object object, HttpOutputMessage outputMessage)
                 throws HttpMessageNotWritableException {
             try {
-                Logger.debug(false, "Result", "{}", object != null ? object.getClass().getName() : "null");
+                Logger.debug("Result {}", object != null ? object.getClass().getName() : "null");
 
                 // The PropertyFilter now delegates all logic to the shouldSkipField method.
                 PropertyFilter filter = (source, name, value) -> {
@@ -172,7 +176,10 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
                         // shouldSkipField returns true to SKIP, but PropertyFilter expects true to INCLUDE.
                         return !shouldSkipField(field, value);
                     } catch (Exception e) {
-                        Logger.warn("Failed to get field for annotation check: {}, error: {}", name, e.getMessage());
+                        Logger.warn(
+                                "Fastjson failed to get field for annotation check: {}, error: {}",
+                                name,
+                                e.getMessage());
                         // If an error occurs, default to including the field to be safe.
                         // shouldSkipField(null) returns false (don't skip), so !false is true (include).
                         return !shouldSkipField(null, null);
@@ -181,13 +188,13 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
 
                 String jsonString = JSON.toJSONString(object, filter, WRITER_FEATURES);
                 outputMessage.getBody().write(jsonString.getBytes(Charset.UTF_8));
-                Logger.info(false, "Fastjson", "{}", jsonString.length());
+                Logger.info("Fastjson {}", jsonString.length());
             } catch (IOException e) {
-                Logger.error(false, "Fastjson", "IO error occurred during JSON serialization: {}", e.getMessage());
+                Logger.error("Fastjson IO error occurred during JSON serialization: {}", e.getMessage());
                 throw new HttpMessageNotWritableException(
                         "IO error occurred during JSON serialization: " + e.getMessage(), e);
             } catch (Exception e) {
-                Logger.error(false, "Fastjson", "JSON serialization failed: {}", e.getMessage());
+                Logger.error("Fastjson JSON serialization failed: {}", e.getMessage());
                 throw new HttpMessageNotWritableException("JSON serialization failed: " + e.getMessage(), e);
             }
         }

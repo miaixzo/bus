@@ -145,14 +145,32 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
     @Override
     public void start() {
         if (running.compareAndSet(false, true)) {
-            Logger.info("MCP runtime startup initiated");
+            Logger.info(
+                    "MCP runtime startup requested: running={}, cachedClients={}, processProvider={}, async=true",
+                    running.get(),
+                    clientCache.size(),
+                    processProvider.getClass().getSimpleName());
 
             Mono.fromCallable(() -> this.assetsRegistry.getAll().stream().filter(McpExecutor::isMcpAsset).toList())
-                    .subscribeOn(Schedulers.boundedElastic()).flatMapMany(Flux::fromIterable)
-                    .flatMap(this::startAndRegisterClient)
-                    .doOnError(e -> Logger.error("MCP runtime startup failed", e)).subscribe();
+                    .subscribeOn(Schedulers.boundedElastic())
+                    .doOnNext(assets -> Logger.info(
+                            "MCP asset discovery completed: candidateAssets={}, transports={}, assets={}",
+                            assets.size(),
+                            summarizeTransports(assets),
+                            summarizeAssets(assets)))
+                    .flatMapMany(Flux::fromIterable).flatMap(this::startAndRegisterClient)
+                    .then(Mono.fromRunnable(() -> Logger.info(
+                            "MCP runtime startup completed: initializedClients={}, clientIds={}",
+                            clientCache.size(),
+                            summarizeClientIds())))
+                    .doOnError(e -> Logger.error(
+                            "MCP runtime startup failed: cachedClients={}, error={}",
+                            clientCache.size(),
+                            e.getMessage(),
+                            e))
+                    .subscribe();
 
-            Logger.info("MCP client discovery dispatched");
+            Logger.info("MCP asset discovery scheduled: scheduler=boundedElastic, async=true");
         }
     }
 
@@ -170,11 +188,16 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
     @Override
     public void stop() {
         if (running.compareAndSet(true, false)) {
-            Logger.info("MCP runtime shutdown initiated");
+            Logger.info("MCP runtime shutdown requested: cachedClients={}, timeout=5s", clientCache.size());
 
             Mono<List<Assets>> mcpAssets = Mono
                     .fromCallable(() -> this.assetsRegistry.getAll().stream().filter(McpExecutor::isMcpAsset).toList())
-                    .subscribeOn(Schedulers.boundedElastic());
+                    .subscribeOn(Schedulers.boundedElastic())
+                    .doOnNext(assets -> Logger.info(
+                            "MCP shutdown asset discovery completed: candidateAssets={}, stdioProcesses={}, transports={}",
+                            assets.size(),
+                            assets.stream().filter(asset -> "stdio".equals(resolveMcpTransport(asset))).count(),
+                            summarizeTransports(assets)));
 
             Mono<Void> stopProcesses = mcpAssets.flatMapMany(Flux::fromIterable)
                     .filter(asset -> "stdio".equals(resolveMcpTransport(asset))).flatMap(processProvider::stop)
@@ -191,7 +214,7 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
                     .doOnError(e -> Logger.warn("MCP runtime shutdown timed out after 5 seconds")).block();
 
             clientCache.clear();
-            Logger.info("MCP runtime stopped");
+            Logger.info("MCP runtime stopped: cachedClients=0");
         }
     }
 
@@ -213,6 +236,12 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
      */
     private Mono<Void> startAndRegisterClient(Assets asset) {
         String transport = resolveMcpTransport(asset);
+        Logger.info(
+                "MCP client initialization started: assetId={}, assetName={}, transport={}, target={}",
+                asset.getId(),
+                asset.getName(),
+                transport,
+                describeTarget(asset));
         Mono<McpClient> clientMono;
         if ("stdio".equals(transport)) {
             clientMono = processProvider.start(asset).map(process -> createClientForAsset(asset, process));
@@ -221,9 +250,21 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
         }
         return clientMono.flatMap(client -> client.initialize().doOnSuccess(v -> {
             clientCache.put(asset.getId(), client);
-            Logger.info("MCP client ready: asset={}", asset.getName());
-        })).doOnError(e -> Logger.error("MCP client initialization failed: asset={}", asset.getName(), e))
-                .then();
+            Logger.info(
+                    "MCP client ready: assetId={}, assetName={}, transport={}, clientType={}, cachedClients={}",
+                    asset.getId(),
+                    asset.getName(),
+                    transport,
+                    client.getClass().getSimpleName(),
+                    clientCache.size());
+        })).doOnError(e -> Logger.error(
+                "MCP client initialization failed: assetId={}, assetName={}, transport={}, target={}, error={}",
+                asset.getId(),
+                asset.getName(),
+                transport,
+                describeTarget(asset),
+                e.getMessage(),
+                e)).then();
     }
 
     /**
@@ -268,6 +309,77 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
             return transport.toLowerCase(Locale.ROOT);
         }
         return "sse";
+    }
+
+    /**
+     * Builds a compact transport summary for startup and shutdown diagnostics.
+     *
+     * @param assets MCP assets discovered from the runtime registry
+     * @return a comma-separated transport count summary
+     */
+    private static String summarizeTransports(List<Assets> assets) {
+        if (assets == null || assets.isEmpty()) {
+            return "none";
+        }
+        return assets.stream().collect(
+                Collectors.groupingBy(McpExecutor::resolveMcpTransport, java.util.TreeMap::new, Collectors.counting()))
+                .entrySet().stream().map(entry -> entry.getKey() + "=" + entry.getValue())
+                .collect(Collectors.joining(", "));
+    }
+
+    /**
+     * Builds a compact asset summary for startup diagnostics.
+     *
+     * @param assets MCP assets discovered from the runtime registry
+     * @return a compact asset list
+     */
+    private static String summarizeAssets(List<Assets> assets) {
+        if (assets == null || assets.isEmpty()) {
+            return "none";
+        }
+        return assets.stream().map(asset -> "id=" + asset.getId() + ",name=" + asset.getName() + ",transport="
+                + resolveMcpTransport(asset) + ",target=" + describeTarget(asset)).collect(Collectors.joining("; "));
+    }
+
+    /**
+     * Builds a compact client id summary for startup completion diagnostics.
+     *
+     * @return a compact client id list
+     */
+    private String summarizeClientIds() {
+        if (clientCache.isEmpty()) {
+            return "none";
+        }
+        return clientCache.keySet().stream().sorted().collect(Collectors.joining(", "));
+    }
+
+    /**
+     * Describes the most useful runtime target for an MCP asset.
+     *
+     * @param asset MCP runtime asset
+     * @return URL, host/port/path, or method identifier
+     */
+    private static String describeTarget(Assets asset) {
+        if (asset == null) {
+            return "none";
+        }
+        if (StringKit.isNotEmpty(asset.getUrl())) {
+            return asset.getUrl();
+        }
+        if (StringKit.isNotEmpty(asset.getHost())) {
+            StringBuilder target = new StringBuilder(asset.getHost());
+            if (asset.getPort() != null) {
+                target.append(":").append(asset.getPort());
+            }
+            if (StringKit.isNotEmpty(asset.getPath())) {
+                target.append(asset.getPath());
+            }
+            return target.toString();
+        }
+        if (StringKit.isNotEmpty(asset.getMethod())) {
+            return asset.getMethod();
+        }
+        return "none";
     }
 
     /**

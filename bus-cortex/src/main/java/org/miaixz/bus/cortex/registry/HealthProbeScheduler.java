@@ -269,7 +269,7 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
     private void awaitTermination(ExecutorService executorService, String name) {
         try {
             if (!executorService.awaitTermination(Math.max(timeoutMs, 1000L), TimeUnit.MILLISECONDS)) {
-                Logger.warn("Timed out while stopping {}", name);
+                Logger.warn("Health timed out while stopping {}", name);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

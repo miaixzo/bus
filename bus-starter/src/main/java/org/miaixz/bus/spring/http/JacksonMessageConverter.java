@@ -183,7 +183,7 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
                     // This can happen for virtual properties without a backing field.
                     // We'll proceed with 'field' as null, which shouldSkipField can handle.
                     Logger.debug(
-                            "Could not find backing field for property '{}' on class '{}'. Assuming inclusion.",
+                            "Jackson could not find backing field for property '{}' on class '{}'. Assuming inclusion.",
                             writer.getName(),
                             pojo.getClass().getName());
                 }

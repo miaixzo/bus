@@ -19,9 +19,8 @@
 */
 package org.miaixz.bus.vortex.magic;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 /**
  * Centralized performance configuration holder for the Vortex gateway.
@@ -59,16 +58,12 @@ import lombok.Data;
  * @author Kimi Liu
  * @since Java 21+
  */
-@Data
-@Builder
+@Getter
+@Setter
+@SuperBuilder
+@NoArgsConstructor
 @AllArgsConstructor
 public class Performance {
-
-    /**
-     * Creates a performance configuration with default values.
-     */
-    public Performance() {
-    }
 
     /**
      * The threshold in bytes for enabling streaming request body processing.

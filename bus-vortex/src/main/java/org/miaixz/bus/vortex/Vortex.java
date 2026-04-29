@@ -99,10 +99,10 @@ public class Vortex implements SmartLifecycle {
                 ConnectionProvider connectionProvider = Holder.getConnectionProviderIfPresent();
                 if (connectionProvider != null) {
                     connectionProvider.dispose();
-                    Logger.info("HTTP connection pool closed");
+                    Logger.info("Runtime HTTP connection pool closed");
                 }
             } catch (Exception e) {
-                Logger.error("HTTP connection pool close failed", e);
+                Logger.error("Runtime HTTP connection pool close failed", e);
             }
         }
     }

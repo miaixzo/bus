@@ -22,7 +22,9 @@ package org.miaixz.bus.core.basic.entity;
 import java.io.Serial;
 
 import jakarta.persistence.Transient;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -37,6 +39,8 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Tracer extends Authorize {
 
     @Serial
@@ -105,12 +109,6 @@ public class Tracer extends Authorize {
      */
     @Transient
     protected String x_request_terminal;
-
-    /**
-     * Constructs an empty tracer entity.
-     */
-    public Tracer() {
-    }
 
     /**
      * Gets the client IP address, preferring IPv4 over IPv6.

@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.vortex.magic;
 
+import lombok.NoArgsConstructor;
 import org.miaixz.bus.core.basic.entity.Authorize;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
@@ -42,14 +43,9 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
+@NoArgsConstructor
 @AllArgsConstructor
 public class Delegate {
-
-    /**
-     * Creates an empty delegate response.
-     */
-    public Delegate() {
-    }
 
     /**
      * The message object containing the result status. On failure, it holds the error code and error message. On

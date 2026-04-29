@@ -48,13 +48,6 @@ import lombok.Setter;
 public class CortexProperties {
 
     /**
-     * Creates a mutable Bus Cortex starter property holder.
-     */
-    public CortexProperties() {
-
-    }
-
-    /**
      * Enables the Cortex starter.
      */
     private boolean enabled = true;
@@ -62,7 +55,7 @@ public class CortexProperties {
     /**
      * Optional remote Cortex server address used by client-side integrations.
      */
-    private String serverAddr = "";
+    private String serverAddr = Normal.EMPTY;
 
     /**
      * Namespace used by the client.

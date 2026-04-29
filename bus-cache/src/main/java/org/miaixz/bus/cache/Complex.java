@@ -192,7 +192,7 @@ public class Complex {
                 manage.remove(invalid.value(), key);
                 Logger.info("single cache clear, key: {}", key);
             }
-            Logger.debug("cache clear total cost [{}] ms", (System.currentTimeMillis() - start));
+            Logger.debug("Cache clear completed: durationMs={}", (System.currentTimeMillis() - start));
         }
     }
 
@@ -284,7 +284,7 @@ public class Complex {
         } else {
             result = singleCacheReader.read(annoHolder, methodHolder, baseInvoker, needWrite);
         }
-        Logger.debug("cache read total cost [{}] ms", (System.currentTimeMillis() - start));
+        Logger.debug("cache read completed: durationMs={}", (System.currentTimeMillis() - start));
         return result;
     }
 
