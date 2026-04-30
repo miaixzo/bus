@@ -100,14 +100,19 @@ public class LimiterStrategy extends AbstractStrategy {
             String methodVersion = context.getAssets().getMethod() + context.getAssets().getVersion();
             String clientIp = context.getX_request_ip();
 
-            Logger.debug(true, "Limiter", "[{}] Applying rate limits for: {}", clientIp, methodVersion);
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "strategy=limiter, clientIp={}, rate limit check started: methodVersion={}",
+                    clientIp,
+                    methodVersion);
 
             return getLimiter(methodVersion, clientIp).flatMap(limiters -> {
                 if (limiters.isEmpty()) {
                     Logger.debug(
                             true,
-                            "Limiter",
-                            "[{}] No specific limiters found for {}. Bypassing.",
+                            "Vortex",
+                            "strategy=limiter, clientIp={}, no matching limiters found; bypassing rate limit: methodVersion={}",
                             clientIp,
                             methodVersion);
                     return chain.apply(exchange);
@@ -115,8 +120,8 @@ public class LimiterStrategy extends AbstractStrategy {
 
                 Logger.debug(
                         true,
-                        "Limiter",
-                        "[{}] Found {} limiter(s). Attempting to acquire...",
+                        "Vortex",
+                        "strategy=limiter, clientIp={}, limiters resolved; acquiring permits: limiterCount={}",
                         clientIp,
                         limiters.size());
 
@@ -129,16 +134,17 @@ public class LimiterStrategy extends AbstractStrategy {
                 return Mono.when(acquireMonos).doOnError(ex -> {
                     Logger.warn(
                             false,
-                            "Limiter",
-                            "[{}] Rate limit EXCEEDED for {}. Error: {}",
+                            "Vortex",
+                            ex,
+                            "strategy=limiter, clientIp={}, rate limit exceeded: methodVersion={}, exception={}",
                             clientIp,
                             methodVersion,
-                            ex.getMessage());
+                            ex.getClass().getSimpleName());
                 }).then(Mono.fromRunnable(() -> {
                     Logger.info(
                             true,
-                            "Limiter",
-                            "[{}] Rate limit(s) acquired successfully - Path: {}, Method: {}",
+                            "Vortex",
+                            "strategy=limiter, clientIp={}, rate limit permits acquired: path={}, methodVersion={}",
                             clientIp,
                             exchange.getRequest().getURI().getPath(),
                             methodVersion);
@@ -165,7 +171,12 @@ public class LimiterStrategy extends AbstractStrategy {
     private Mono<Set<Limiter>> getLimiter(String methodVersion, String ip) {
         Stream<String> limitKeys = Stream.of(methodVersion, ip + methodVersion);
 
-        Logger.debug(true, "Limiter", "[{}] Searching for limiter keys: [{}]", ip, methodVersion);
+        Logger.debug(
+                true,
+                "Vortex",
+                "strategy=limiter, clientIp={}, limiter key lookup started: methodVersion={}",
+                ip,
+                methodVersion);
 
         List<Mono<Limiter>> limiterMonos = limitKeys
                 .map(key -> Mono.fromCallable(() -> registry.get(key)).subscribeOn(Schedulers.boundedElastic()))

@@ -26,6 +26,7 @@ import org.lionsoul.jcseg.IWord;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.extra.nlp.AbstractResult;
 import org.miaixz.bus.extra.nlp.NLPWord;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Jcseg word segmentation result wrapper. This class adapts the Jcseg {@link ISegment} result to the common
@@ -64,6 +65,12 @@ public class JcsegResult extends AbstractResult {
         try {
             word = this.result.next();
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=nlp, Jcseg next word failed: exception={}",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         if (null == word) {

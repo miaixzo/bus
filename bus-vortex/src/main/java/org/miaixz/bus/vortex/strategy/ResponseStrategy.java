@@ -75,26 +75,44 @@ public class ResponseStrategy extends AbstractStrategy {
 
             Logger.info(
                     true,
-                    "Response",
-                    "[{}] Processing response - Format: {}, Channel: {}, Parameters count: {}",
+                    "Vortex",
+                    "strategy=response, clientIp={}, response processing started: format={}, channel={}, parameterCount={}",
                     ip,
                     context.getFormat(),
                     context.getChannel(),
                     context.getParameters().size());
 
             if (!context.getParameters().isEmpty()) {
-                Logger.info(true, "Response", "[{}] Response parameters: {}", ip, context.getParameters());
+                Logger.debug(
+                        true,
+                        "Vortex",
+                        "strategy=response, clientIp={}, response parameters prepared: parameterCount={}",
+                        ip,
+                        context.getParameters().size());
             }
 
-            Logger.debug(true, "Response", "[{}] Strategy applying for format: {}", ip, context.getFormat());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "strategy=response, clientIp={}, response strategy applying: format={}",
+                    ip,
+                    context.getFormat());
 
             if (Formats.XML.equals(context.getFormat())) {
-                Logger.debug(true, "Response", "[{}] Format is XML, applying response transformation.", ip);
+                Logger.debug(
+                        true,
+                        "Vortex",
+                        "strategy=response, clientIp={}, XML response transformation selected",
+                        ip);
                 newExchange = exchange.mutate().response(processXml(exchange, context)).build();
             }
 
             if (Formats.BINARY.equals(context.getFormat())) {
-                Logger.debug(true, "Response", "[{}] Format is BINARY, applying binary stream handling.", ip);
+                Logger.debug(
+                        true,
+                        "Vortex",
+                        "strategy=response, clientIp={}, binary response stream handling selected",
+                        ip);
                 newExchange = exchange.mutate().response(processBinary(exchange, context)).build();
             }
 
@@ -148,8 +166,8 @@ public class ResponseStrategy extends AbstractStrategy {
                         String xmlString = xmlBody.toString();
                         Logger.trace(
                                 false,
-                                "Response",
-                                "[{}] Response formatted to XML: {}",
+                                "Vortex",
+                                "strategy=response, clientIp={}, response formatted to XML: xml={}",
                                 context.getX_request_ip(),
                                 xmlString);
                         return bufferFactory().wrap(xmlString.getBytes(Charset.UTF_8));
@@ -188,15 +206,19 @@ public class ResponseStrategy extends AbstractStrategy {
              */
             @Override
             public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
-                Logger.debug(true, "Response", "[{}] Processing binary stream response", context.getX_request_ip());
+                Logger.debug(
+                        true,
+                        "Vortex",
+                        "strategy=response, clientIp={}, binary stream response processing started",
+                        context.getX_request_ip());
 
                 getDelegate().getHeaders().setContentType(Formats.BINARY.getMediaType());
 
                 if (body instanceof Flux) {
                     Logger.debug(
                             true,
-                            "Response",
-                            "[{}] Binary Flux detected, streaming directly",
+                            "Vortex",
+                            "strategy=response, clientIp={}, binary Flux detected, streaming directly",
                             context.getX_request_ip());
                     return super.writeWith(body);
                 }
@@ -206,8 +228,8 @@ public class ResponseStrategy extends AbstractStrategy {
                 return flux.doOnNext(dataBuffer -> {
                     Logger.debug(
                             true,
-                            "Response",
-                            "[{}] Binary data chunk: {} bytes",
+                            "Vortex",
+                            "strategy=response, clientIp={}, binary data chunk emitted: bytes={}",
                             context.getX_request_ip(),
                             dataBuffer.readableByteCount());
                 }).then(super.writeWith(flux));

@@ -71,7 +71,7 @@ public class LlmFactory {
         final String cacheKey = type + ":" + endpoint + ":" + apiKey;
 
         return providerCache.computeIfAbsent(cacheKey, key -> {
-            Logger.info(true, "LLM", "Creating provider: type={}, endpoint={}", type, endpoint);
+            Logger.info(true, "Vortex", "component=llm, Creating provider: type={}, endpoint={}", type, endpoint);
 
             return new OpenAIProvider(type, endpoint, apiKey, model);
         });
@@ -82,7 +82,7 @@ public class LlmFactory {
      */
     public void clearCache() {
         providerCache.clear();
-        Logger.info(true, "LLM", "Provider cache cleared");
+        Logger.info(true, "Vortex", "component=llm, Provider cache cleared");
     }
 
     /**

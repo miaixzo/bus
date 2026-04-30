@@ -148,13 +148,16 @@ public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTas
                     dataWriter = createDataWriter(inst, tsuid);
                 } catch (Exception e) {
                     status = Status.OneOrMoreFailures;
-                    Logger.info(false, "Image",
-                            "{}: Unable to retrieve {}/{} to {}",
+                    Logger.warn(
+                            false,
+                            "Image",
+                            e,
+                            "protocol=dimse, Retrieve instance preparation failed: requestAssociation={}, sopClass={}, transferSyntax={}, remoteAET={}, exception={}",
                             rqas,
                             UID.nameOf(inst.cuid),
                             UID.nameOf(inst.tsuid),
                             storeas.getRemoteAET(),
-                            e);
+                            e.getClass().getSimpleName());
                     failed.add(inst);
                     continue;
                 }
@@ -162,11 +165,15 @@ public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTas
                     cstore(storeas, inst, tsuid, dataWriter);
                 } catch (Exception e) {
                     status = Status.UnableToPerformSubOperations;
-                    Logger.warn(false, "Image",
-                            "{}: Unable to perform sub-operation on association to {}",
+                    Logger.warn(
+                            false,
+                            "Image",
+                            e,
+                            "protocol=dimse, Retrieve sub-operation failed: requestAssociation={}, remoteAET={}, transferSyntax={}, exception={}",
                             rqas,
                             storeas.getRemoteAET(),
-                            e);
+                            tsuid,
+                            e.getClass().getSimpleName());
                     failed.add(inst);
                     while (iter.hasNext())
                         failed.add(iter.next());
@@ -207,7 +214,13 @@ public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTas
                     outstandingRSPLock.wait();
             }
         } catch (InterruptedException e) {
-            Logger.warn(false, "Image", "{}: failed to wait for outstanding RSP on association to {}", rqas, storeas.getRemoteAET(), e);
+            Logger.warn(
+                    false,
+                    "Image",
+                    "{}: failed to wait for outstanding RSP on association to {}",
+                    rqas,
+                    storeas.getRemoteAET(),
+                    e);
         }
     }
 
@@ -271,7 +284,13 @@ public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTas
         } catch (IOException e) {
             pendingRSP = false;
             stopWritePendingRSP();
-            Logger.warn(false, "Image", "{}: Unable to send C-GET or C-MOVE RSP on association to {}", rqas, rqas.getRemoteAET(), e);
+            Logger.warn(
+                    false,
+                    "Image",
+                    "{}: Unable to send C-GET or C-MOVE RSP on association to {}",
+                    rqas,
+                    rqas.getRemoteAET(),
+                    e);
         }
     }
 

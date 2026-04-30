@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.xyz.XmlKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.pay.Complex;
 import org.miaixz.bus.pay.Context;
 import org.miaixz.bus.pay.Registry;
@@ -75,7 +76,21 @@ public class UnionPayProvider extends AbstractProvider<Voucher, Context> {
      * @return The response from the server.
      */
     public static String execution(String url, Map<String, String> params) {
-        return post(url, XmlKit.mapToXmlString(params));
+        Logger.info(
+                true,
+                "Pay",
+                "UnionPay request started: url={}, paramCount={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                params == null ? 0 : params.size());
+        String response = post(url, XmlKit.mapToXmlString(params));
+        Logger.info(
+                false,
+                "Pay",
+                "UnionPay request completed: url={}, paramCount={}, responseBytes={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                params == null ? 0 : params.size(),
+                response == null ? 0 : response.length());
+        return response;
     }
 
     /**

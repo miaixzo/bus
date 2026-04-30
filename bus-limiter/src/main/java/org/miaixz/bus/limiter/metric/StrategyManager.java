@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.miaixz.bus.limiter.Provider;
 import org.miaixz.bus.limiter.magic.StrategyMode;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Manages and provides access to different limiting strategy implementations. This class acts as a registry for
@@ -49,6 +50,13 @@ public class StrategyManager {
      */
     public static void add(Provider provider) {
         map.put(provider.get(), provider);
+        Logger.info(
+                false,
+                "Limiter",
+                "Limiter strategy provider registered: strategy={}, provider={}, providerCount={}",
+                provider.get().name(),
+                provider.getClass().getName(),
+                map.size());
     }
 
     /**

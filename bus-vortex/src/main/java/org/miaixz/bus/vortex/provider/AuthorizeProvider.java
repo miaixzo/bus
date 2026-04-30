@@ -61,7 +61,10 @@ public interface AuthorizeProvider {
      */
     default Mono<Delegate> authorize(Principal principal) {
         if (ObjectKit.isEmpty(principal)) {
-            Logger.warn(false, "Authorize", "Authorization failed: The principal entity is null or empty.");
+            Logger.warn(
+                    false,
+                    "Vortex",
+                    "component=authorize, Access validation failed: principal entity is null or empty.");
             return Mono.error(new ValidateException(ErrorCode._100806));
         }
 
@@ -85,8 +88,8 @@ public interface AuthorizeProvider {
         }
         Logger.warn(
                 false,
-                "Authorize",
-                "Unsupported principal type: {}. Override the 'authorize' method to handle it.",
+                "Vortex",
+                "component=authorize, Unsupported principal type: {}. Override the 'authorize' method to handle it.",
                 principal.getType());
         return Mono.just(
                 Delegate.builder()
@@ -111,8 +114,8 @@ public interface AuthorizeProvider {
     default Mono<Delegate> token(Principal principal) {
         Logger.debug(
                 true,
-                "Authorize",
-                "Executing default `token` method. This provides no security and should be overridden.");
+                "Vortex",
+                "component=authorize, Executing default credential validation method. This provides no security and should be overridden.");
         return Mono.just(
                 Delegate.builder()
                         .message(
@@ -136,8 +139,8 @@ public interface AuthorizeProvider {
     default Mono<Delegate> apiKey(Principal principal) {
         Logger.debug(
                 true,
-                "Authorize",
-                "Executing default `apiKey` method. This provides no security and should be overridden.");
+                "Vortex",
+                "component=authorize, Executing default `apiKey` method. This provides no security and should be overridden.");
         return Mono.just(
                 Delegate.builder()
                         .message(
@@ -161,8 +164,8 @@ public interface AuthorizeProvider {
     default Mono<Delegate> license(Principal principal) {
         Logger.debug(
                 true,
-                "Authorize",
-                "Executing default `license` method. This provides no security and should be overridden.");
+                "Vortex",
+                "component=authorize, Executing default `license` method. This provides no security and should be overridden.");
         return Mono.just(
                 Delegate.builder()
                         .message(

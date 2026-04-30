@@ -89,7 +89,12 @@ public class Manage {
         // Populate the cache pool
         caches.forEach((name, cache) -> this.cachePool.put(name, CachePair.of(name, cache)));
 
-        Logger.debug(false, "Cache", "Initialized cache pool with {} caches, default cache: {}", caches.size(), defaultCache.getLeft());
+        Logger.info(
+                false,
+                "Cache",
+                "Cache pool initialized: cacheCount={}, defaultCache={}",
+                caches.size(),
+                defaultCache.getLeft());
     }
 
     /**
@@ -108,14 +113,30 @@ public class Manage {
         try {
             CachePair<String, CacheX> cacheImpl = getCacheImpl(cache);
             long start = System.currentTimeMillis();
-            Object result = cacheImpl.getRight().read(key);
-            Logger.debug(false, "Cache",
-                    "cache [{}] read single cost: [{}] ms",
+            Logger.debug(
+                    true,
+                    "Cache",
+                    "Cache single read started: cache={}, keyPresent={}",
                     cacheImpl.getLeft(),
+                    key != null);
+            Object result = cacheImpl.getRight().read(key);
+            Logger.debug(
+                    false,
+                    "Cache",
+                    "Cache single read completed: cache={}, hit={}, costMs={}",
+                    cacheImpl.getLeft(),
+                    result != null,
                     (System.currentTimeMillis() - start));
             return result;
         } catch (Throwable e) {
-            Logger.error(false, "Cache", "read single cache failed, key: {} ", key, e);
+            Logger.error(
+                    false,
+                    "Cache",
+                    e,
+                    "Cache single read failed: cache={}, keyPresent={}, exception={}",
+                    cache,
+                    key != null,
+                    e.getClass().getSimpleName());
             return null;
         }
     }
@@ -137,13 +158,32 @@ public class Manage {
             try {
                 CachePair<String, CacheX> cacheImpl = getCacheImpl(cache);
                 long start = System.currentTimeMillis();
-                cacheImpl.getRight().write(key, value, expire);
-                Logger.debug(true, "Cache",
-                        "cache [{}] write single cost: [{}] ms",
+                Logger.debug(
+                        true,
+                        "Cache",
+                        "Cache single write started: cache={}, keyPresent={}, expireMs={}, valueType={}",
                         cacheImpl.getLeft(),
+                        key != null,
+                        expire,
+                        value.getClass().getName());
+                cacheImpl.getRight().write(key, value, expire);
+                Logger.debug(
+                        false,
+                        "Cache",
+                        "Cache single write completed: cache={}, expireMs={}, costMs={}",
+                        cacheImpl.getLeft(),
+                        expire,
                         (System.currentTimeMillis() - start));
             } catch (Throwable e) {
-                Logger.error(false, "Cache", "write single cache failed, key: {} ", key, e);
+                Logger.error(
+                        false,
+                        "Cache",
+                        e,
+                        "Cache single write failed: cache={}, keyPresent={}, expireMs={}, exception={}",
+                        cache,
+                        key != null,
+                        expire,
+                        e.getClass().getSimpleName());
             }
         }
     }
@@ -168,10 +208,19 @@ public class Manage {
             try {
                 CachePair<String, CacheX> cacheImpl = getCacheImpl(cache);
                 long start = System.currentTimeMillis();
-                Map<String, Object> cacheMap = cacheImpl.getRight().read(keys);
-                Logger.debug(false, "Cache",
-                        "cache [{}] read batch cost: [{}] ms",
+                Logger.debug(
+                        true,
+                        "Cache",
+                        "Cache batch read started: cache={}, keyCount={}",
                         cacheImpl.getLeft(),
+                        keys == null ? 0 : keys.size());
+                Map<String, Object> cacheMap = cacheImpl.getRight().read(keys);
+                Logger.debug(
+                        false,
+                        "Cache",
+                        "Cache batch read backend completed: cache={}, resultCount={}, costMs={}",
+                        cacheImpl.getLeft(),
+                        cacheMap == null ? 0 : cacheMap.size(),
                         (System.currentTimeMillis() - start));
 
                 // Collect missed keys, maintaining order
@@ -188,8 +237,23 @@ public class Manage {
                 }
 
                 cacheKeys = new CacheKeys(hitValueMap, notHitKeys);
+                Logger.debug(
+                        false,
+                        "Cache",
+                        "Cache batch read completed: cache={}, keyCount={}, hitCount={}, missCount={}",
+                        cacheImpl.getLeft(),
+                        keys.size(),
+                        hitValueMap.size(),
+                        notHitKeys.size());
             } catch (Throwable e) {
-                Logger.error(false, "Cache", "read multi cache failed, keys: {}", keys, e);
+                Logger.error(
+                        false,
+                        "Cache",
+                        e,
+                        "Cache batch read failed: cache={}, keyCount={}, exception={}",
+                        cache,
+                        keys == null ? 0 : keys.size(),
+                        e.getClass().getSimpleName());
                 cacheKeys = new CacheKeys();
             }
         }
@@ -211,13 +275,32 @@ public class Manage {
         try {
             CachePair<String, CacheX> cacheImpl = getCacheImpl(cache);
             long start = System.currentTimeMillis();
-            cacheImpl.getRight().write(keyValueMap, expire);
-            Logger.debug(true, "Cache",
-                    "cache [{}] write batch cost: [{}] ms",
+            Logger.debug(
+                    true,
+                    "Cache",
+                    "Cache batch write started: cache={}, keyCount={}, expireMs={}",
                     cacheImpl.getLeft(),
+                    keyValueMap == null ? 0 : keyValueMap.size(),
+                    expire);
+            cacheImpl.getRight().write(keyValueMap, expire);
+            Logger.debug(
+                    false,
+                    "Cache",
+                    "Cache batch write completed: cache={}, keyCount={}, expireMs={}, costMs={}",
+                    cacheImpl.getLeft(),
+                    keyValueMap == null ? 0 : keyValueMap.size(),
+                    expire,
                     (System.currentTimeMillis() - start));
         } catch (Exception e) {
-            Logger.error(false, "Cache", "write map multi cache failed, keys: {}", keyValueMap.keySet(), e);
+            Logger.error(
+                    false,
+                    "Cache",
+                    e,
+                    "Cache batch write failed: cache={}, keyCount={}, expireMs={}, exception={}",
+                    cache,
+                    keyValueMap == null ? 0 : keyValueMap.size(),
+                    expire,
+                    e.getClass().getSimpleName());
         }
     }
 
@@ -236,13 +319,29 @@ public class Manage {
             try {
                 CachePair<String, CacheX> cacheImpl = getCacheImpl(cache);
                 long start = System.currentTimeMillis();
-                cacheImpl.getRight().remove(keys);
-                Logger.debug(true, "Cache",
-                        "cache [{}] remove cost: [{}] ms",
+                Logger.debug(
+                        true,
+                        "Cache",
+                        "Cache remove started: cache={}, keyCount={}",
                         cacheImpl.getLeft(),
+                        keys.length);
+                cacheImpl.getRight().remove(keys);
+                Logger.debug(
+                        false,
+                        "Cache",
+                        "Cache remove completed: cache={}, keyCount={}, costMs={}",
+                        cacheImpl.getLeft(),
+                        keys.length,
                         (System.currentTimeMillis() - start));
             } catch (Throwable e) {
-                Logger.error(false, "Cache", "remove cache failed, keys: {}: ", keys, e);
+                Logger.error(
+                        false,
+                        "Cache",
+                        e,
+                        "Cache remove failed: cache={}, keyCount={}, exception={}",
+                        cache,
+                        keys.length,
+                        e.getClass().getSimpleName());
             }
         }
     }

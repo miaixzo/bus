@@ -216,7 +216,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
                     WinNT.TOKEN_QUERY | WinNT.TOKEN_ADJUST_PRIVILEGES,
                     hToken);
             if (!success) {
-                Logger.error(false, "Health", "OpenProcessToken failed. Error: {}", Native.getLastError());
+                Logger.error(false, "Health", "Open process credential failed. Error: {}", Native.getLastError());
                 return false;
             }
             try {
@@ -231,7 +231,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
                 success = Advapi32.INSTANCE.AdjustTokenPrivileges(hToken.getValue(), false, tkp, 0, null, null);
                 int err = Native.getLastError();
                 if (!success) {
-                    Logger.error(false, "Health", "AdjustTokenPrivileges failed. Error: {}", err);
+                    Logger.error(false, "Health", "Adjust process privileges failed. Error: {}", err);
                     return false;
                 } else if (err == WinError.ERROR_NOT_ALL_ASSIGNED) {
                     Logger.debug(false, "Health", "Debug privileges not enabled.");
@@ -258,7 +258,9 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         // Check whether it works
         HANDLE h = Advapi32.INSTANCE.OpenEventLog(null, systemLog);
         if (h == null) {
-            Logger.warn(false, "Health",
+            Logger.warn(
+                    false,
+                    "Health",
                     "Unable to open configured system Event log \"{}\". Calculating boot time from uptime.",
                     systemLog);
             return null;
@@ -519,7 +521,11 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     public int getProcessCount() {
         try (Struct.CloseablePerformanceInformation perfInfo = new Struct.CloseablePerformanceInformation()) {
             if (!Psapi.INSTANCE.GetPerformanceInfo(perfInfo, perfInfo.size())) {
-                Logger.error(false, "Health", "Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
+                Logger.error(
+                        false,
+                        "Health",
+                        "Failed to get Performance Info. Error code: {}",
+                        Kernel32.INSTANCE.GetLastError());
                 return 0;
             }
             return perfInfo.ProcessCount.intValue();
@@ -558,7 +564,11 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     public int getThreadCount() {
         try (Struct.CloseablePerformanceInformation perfInfo = new Struct.CloseablePerformanceInformation()) {
             if (!Psapi.INSTANCE.GetPerformanceInfo(perfInfo, perfInfo.size())) {
-                Logger.error(false, "Health", "Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
+                Logger.error(
+                        false,
+                        "Health",
+                        "Failed to get Performance Info. Error code: {}",
+                        Kernel32.INSTANCE.GetLastError());
                 return 0;
             }
             return perfInfo.ThreadCount.intValue();
@@ -753,7 +763,12 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
             }
             return svcArray;
         } catch (com.sun.jna.platform.win32.Win32Exception ex) {
-            Logger.error(false, "Health", "Win32Exception: {}", ex.getMessage());
+            Logger.error(
+                    false,
+                    "Health",
+                    ex,
+                    "Windows service query failed: exception={}",
+                    ex.getClass().getSimpleName());
             return Collections.emptyList();
         }
     }

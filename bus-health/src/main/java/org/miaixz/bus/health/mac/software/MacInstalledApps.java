@@ -122,14 +122,18 @@ public final class MacInstalledApps {
                                 new ApplicationInfo(dictValues.get("_name"), version, vendor, lastModifiedEpoch,
                                         additionalInfo));
                     } catch (Exception e) {
-                        Logger.trace(false, "Health", "Unable to parse dict values: " + e.getMessage() + " - " + dictValues, e);
+                        Logger.trace(
+                                false,
+                                "Health",
+                                "Unable to parse dict values: " + e.getClass().getSimpleName() + " - " + dictValues,
+                                e);
                     }
                 }
 
                 return new ArrayList<>(appInfoSet);
             }
         } catch (Exception e) {
-            Logger.trace(false, "Health", "Unable to read installed apps: " + e.getMessage(), e);
+            Logger.trace(false, "Health", "Unable to read installed apps: " + e.getClass().getSimpleName(), e);
         }
         return Collections.emptyList();
     }

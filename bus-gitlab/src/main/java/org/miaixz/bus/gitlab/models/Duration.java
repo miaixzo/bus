@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * This class represents a duration in time.
@@ -218,6 +219,13 @@ public class Duration implements Serializable {
                     try {
                         seconds += Long.parseLong(matcher.group(2)) * TIME_UNIT_MULTIPLIERS[nextUnitIndex];
                     } catch (NumberFormatException nfe) {
+                        Logger.debug(
+                                false,
+                                "GitLab",
+                                "GitLab duration segment parsing failed: unit={}, valueLength={}, exception={}",
+                                unit,
+                                matcher.group(2) == null ? -1 : matcher.group(2).length(),
+                                nfe.getClass().getSimpleName());
                         validDuration = false;
                     }
                 } else {

@@ -51,7 +51,6 @@ public class ZipSecurity {
 
         final long compressedSize = entry.getCompressedSize();
         final long uncompressedSize = entry.getSize();
-        // Console.logger(entry.getName(), compressedSize, uncompressedSize);
         if (compressedSize < 0 || uncompressedSize < 0 ||
         // Default compression ratio is 100 times. If the compression ratio exceeds this threshold, it is considered a
         // Zip bomb.

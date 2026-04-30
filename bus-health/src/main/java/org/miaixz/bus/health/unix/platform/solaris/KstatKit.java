@@ -148,7 +148,9 @@ public final class KstatKit {
         Pointer p = LibKstat.INSTANCE.kstat_data_lookup(ksp, name);
         if (p == null) {
             if (Logger.isDebugEnabled()) {
-                Logger.debug(false, "Health",
+                Logger.debug(
+                        false,
+                        "Health",
                         "Failed lo lookup kstat value on {}:{}:{} for key {}",
                         Native.toString(ksp.ks_module, Charset.US_ASCII),
                         ksp.ks_instance,
@@ -211,13 +213,15 @@ public final class KstatKit {
             }
         } catch (Kstat2StatusException e) {
             // Expected to end iteration
-            Logger.debug(false, "Health",
+            Logger.debug(
+                    false,
+                    "Health",
                     "Failed to get stats on {}{}{} for names {}: {}",
                     beforeStr,
                     s,
                     afterStr,
                     Arrays.toString(names),
-                    e.getMessage());
+                    e.getClass().getSimpleName());
         } finally {
             KstatKit.CHAIN.unlock();
             matchers.free();
@@ -252,7 +256,13 @@ public final class KstatKit {
                 handle.close();
             }
         } catch (Kstat2StatusException e) {
-            Logger.debug(false, "Health", "Failed to get stats on {} for names {}: {}", mapStr, Arrays.toString(names), e.getMessage());
+            Logger.debug(
+                    false,
+                    "Health",
+                    "Failed to get stats on {} for names {}: {}",
+                    mapStr,
+                    Arrays.toString(names),
+                    e.getClass().getSimpleName());
         } finally {
             KstatKit.CHAIN.unlock();
             matchers.free();
@@ -300,7 +310,9 @@ public final class KstatKit {
             while (0 > LibKstat.INSTANCE.kstat_read(localCtlRef, ksp, null)) {
                 if (LibKstat.EAGAIN != Native.getLastError() || 5 <= ++retry) {
                     if (Logger.isDebugEnabled()) {
-                        Logger.debug(false, "Health",
+                        Logger.debug(
+                                false,
+                                "Health",
                                 "Failed to read kstat {}:{}:{}",
                                 Native.toString(ksp.ks_module, Charset.US_ASCII),
                                 ksp.ks_instance,

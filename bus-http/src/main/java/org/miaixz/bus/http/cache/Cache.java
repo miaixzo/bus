@@ -52,6 +52,7 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.util.*;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Caches HTTP and HTTPS responses to the filesystem so they can be reused, saving time and bandwidth.
@@ -186,6 +187,14 @@ public class Cache implements Closeable, Flushable {
             }
             return (int) result;
         } catch (NumberFormatException e) {
+            Logger.warn(
+                    false,
+                    "Http",
+                    e,
+                    "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                    "Cache",
+                    true,
+                    e.getClass().getSimpleName());
             throw new IOException(e.getMessage());
         }
     }
@@ -206,6 +215,14 @@ public class Cache implements Closeable, Flushable {
                 return null;
             }
         } catch (IOException e) {
+            Logger.warn(
+                    false,
+                    "Http",
+                    e,
+                    "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                    "Cache",
+                    true,
+                    e.getClass().getSimpleName());
             // Give up because the cache cannot be read.
             return null;
         }
@@ -213,6 +230,14 @@ public class Cache implements Closeable, Flushable {
         try {
             entry = new Entry(snapshot.getSource(ENTRY_METADATA));
         } catch (IOException e) {
+            Logger.warn(
+                    false,
+                    "Http",
+                    e,
+                    "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                    "Cache",
+                    true,
+                    e.getClass().getSimpleName());
             IoKit.close(snapshot);
             return null;
         }
@@ -240,6 +265,14 @@ public class Cache implements Closeable, Flushable {
             try {
                 remove(response.request());
             } catch (IOException ignored) {
+                Logger.warn(
+                        false,
+                        "Http",
+                        ignored,
+                        "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                        "Cache",
+                        true,
+                        ignored.getClass().getSimpleName());
                 // Unable to write to cache.
             }
             return null;
@@ -264,6 +297,14 @@ public class Cache implements Closeable, Flushable {
             entry.writeTo(editor);
             return new CacheRequestImpl(editor);
         } catch (IOException e) {
+            Logger.warn(
+                    false,
+                    "Http",
+                    e,
+                    "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                    "Cache",
+                    true,
+                    e.getClass().getSimpleName());
             abortQuietly(editor);
             return null;
         }
@@ -296,6 +337,14 @@ public class Cache implements Closeable, Flushable {
                 editor.commit();
             }
         } catch (IOException e) {
+            Logger.warn(
+                    false,
+                    "Http",
+                    e,
+                    "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                    "Cache",
+                    true,
+                    e.getClass().getSimpleName());
             abortQuietly(editor);
         }
     }
@@ -312,6 +361,14 @@ public class Cache implements Closeable, Flushable {
                 editor.abort();
             }
         } catch (IOException ignored) {
+            Logger.warn(
+                    false,
+                    "Http",
+                    ignored,
+                    "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                    "Cache",
+                    true,
+                    ignored.getClass().getSimpleName());
         }
     }
 
@@ -378,6 +435,14 @@ public class Cache implements Closeable, Flushable {
                         nextUrl = metadata.readUtf8LineStrict();
                         return true;
                     } catch (IOException ignored) {
+                        Logger.warn(
+                                false,
+                                "Http",
+                                ignored,
+                                "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                                "Cache",
+                                true,
+                                ignored.getClass().getSimpleName());
                         // Could not read the metadata for this snapshot; possibly because the host filesystem has
                         // disappeared! Skip it.
                     }
@@ -709,6 +774,14 @@ public class Cache implements Closeable, Flushable {
                 }
                 return result;
             } catch (CertificateException e) {
+                Logger.warn(
+                        false,
+                        "Http",
+                        e,
+                        "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                        "Cache",
+                        true,
+                        e.getClass().getSimpleName());
                 throw new IOException(e.getMessage());
             }
         }
@@ -729,6 +802,14 @@ public class Cache implements Closeable, Flushable {
                     sink.writeUtf8(line).writeByte(Symbol.C_LF);
                 }
             } catch (CertificateEncodingException e) {
+                Logger.warn(
+                        false,
+                        "Http",
+                        e,
+                        "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                        "Cache",
+                        true,
+                        e.getClass().getSimpleName());
                 throw new IOException(e.getMessage());
             }
         }
@@ -821,6 +902,14 @@ public class Cache implements Closeable, Flushable {
             try {
                 return null != contentLength ? Long.parseLong(contentLength) : -1;
             } catch (NumberFormatException e) {
+                Logger.warn(
+                        false,
+                        "Http",
+                        e,
+                        "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                        "Cache",
+                        true,
+                        e.getClass().getSimpleName());
                 return -1;
             }
         }
@@ -892,6 +981,14 @@ public class Cache implements Closeable, Flushable {
             try {
                 editor.abort();
             } catch (IOException ignored) {
+                Logger.warn(
+                        false,
+                        "Http",
+                        ignored,
+                        "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                        "Cache",
+                        true,
+                        ignored.getClass().getSimpleName());
             }
         }
 

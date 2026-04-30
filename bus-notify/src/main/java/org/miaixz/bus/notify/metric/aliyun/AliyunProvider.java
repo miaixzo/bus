@@ -37,6 +37,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.magic.Notice;
@@ -120,6 +121,13 @@ public class AliyunProvider<T extends Notice, K extends Context> extends Abstrac
             byte[] signData = mac.doFinal(stringToSign.getBytes(Charset.UTF_8));
             return Base64.getEncoder().encodeToString(signData);
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+            Logger.error(
+                    false,
+                    "Notify",
+                    e,
+                    "Aliyun notify signature failed: stringBytes={}, exception={}",
+                    stringToSign == null ? 0 : stringToSign.getBytes(Charset.UTF_8).length,
+                    e.getClass().getSimpleName());
             throw new InternalException("Aliyun specialUrlEncode error");
         }
     }
@@ -132,6 +140,12 @@ public class AliyunProvider<T extends Notice, K extends Context> extends Abstrac
      */
     protected Message checkResponse(String response) {
         String code = JsonKit.getValue(response, "Code");
+        Logger.info(
+                false,
+                "Notify",
+                "Aliyun notify response received: code={}, responseBytes={}",
+                code,
+                response == null ? 0 : response.getBytes(Charset.UTF_8).length);
         return Message.builder().errcode(SUCCESS_RESULT.equals(code) ? ErrorCode._SUCCESS.getKey() : code).errmsg(code)
                 .build();
     }

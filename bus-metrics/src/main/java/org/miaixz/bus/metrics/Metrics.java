@@ -21,6 +21,7 @@ package org.miaixz.bus.metrics;
 
 import java.util.function.ToDoubleFunction;
 
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.metric.*;
 import org.miaixz.bus.metrics.observe.slo.SloTracker;
 import org.miaixz.bus.metrics.observe.tag.Tag;
@@ -70,7 +71,13 @@ public class Metrics {
         if (PROVIDER == null) {
             synchronized (Metrics.class) {
                 if (PROVIDER == null) {
+                    Logger.info(true, "Metrics", "Metrics provider initialization started");
                     PROVIDER = Factory.get();
+                    Logger.info(
+                            false,
+                            "Metrics",
+                            "Metrics provider initialization finished: providerClass={}",
+                            PROVIDER.getClass().getName());
                 }
             }
         }
@@ -81,7 +88,17 @@ public class Metrics {
      * Override the provider. Typically called by Spring auto-configuration.
      */
     public static void setProvider(Provider provider) {
+        Logger.info(
+                true,
+                "Metrics",
+                "Metrics provider override started: providerClass={}",
+                null == provider ? null : provider.getClass().getName());
         PROVIDER = provider;
+        Logger.info(
+                false,
+                "Metrics",
+                "Metrics provider override finished: providerClass={}",
+                null == provider ? null : provider.getClass().getName());
     }
 
     /**
@@ -96,6 +113,11 @@ public class Metrics {
             return new Tag[0];
         }
         if (kvPairs.length % 2 != 0) {
+            Logger.warn(
+                    false,
+                    "Metrics",
+                    "Metric tag conversion failed: pairCount={}, reason=odd-length",
+                    kvPairs.length);
             throw new IllegalArgumentException("Tags must be key-value pairs (even number of strings)");
         }
         Tag[] result = new Tag[kvPairs.length / 2];

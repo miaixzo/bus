@@ -191,7 +191,7 @@ final class WindowsLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
 
             return lvgList;
         } catch (COMException e) {
-            Logger.warn(false, "Health", "COM exception: {}", e.getMessage());
+            Logger.warn(false, "Health", "COM exception: {}", e.getClass().getSimpleName());
             return Collections.emptyList();
         } finally {
             if (comInit) {

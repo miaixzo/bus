@@ -29,6 +29,7 @@ import org.miaixz.bus.gitlab.support.ISO8601;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import jakarta.ws.rs.core.Response;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * This class implements the client side API for the GitLab Application Settings API. See
@@ -152,6 +153,14 @@ public class ApplicationSettingsApi extends AbstractApi {
                         String value = root.path(fieldName).asText();
                         appSettings.setCreatedAt(ISO8601.toDate(value));
                     } catch (ParseException pe) {
+                        Logger.warn(
+                                false,
+                                "GitLab",
+                                pe,
+                                "GitLab application setting date parsing failed: fieldName={}, valueLength={}, exception={}",
+                                fieldName,
+                                root.path(fieldName).asText().length(),
+                                pe.getClass().getSimpleName());
                         throw new GitLabApiException(pe);
                     }
                     break;
@@ -161,6 +170,14 @@ public class ApplicationSettingsApi extends AbstractApi {
                         String value = root.path(fieldName).asText();
                         appSettings.setUpdatedAt(ISO8601.toDate(value));
                     } catch (ParseException pe) {
+                        Logger.warn(
+                                false,
+                                "GitLab",
+                                pe,
+                                "GitLab application setting date parsing failed: fieldName={}, valueLength={}, exception={}",
+                                fieldName,
+                                root.path(fieldName).asText().length(),
+                                pe.getClass().getSimpleName());
                         throw new GitLabApiException(pe);
                     }
                     break;
@@ -170,11 +187,12 @@ public class ApplicationSettingsApi extends AbstractApi {
                     if (setting != null) {
                         appSettings.addSetting(setting, root.path(fieldName));
                     } else {
-                        GitLabApi.getLogger().warning(
-                                String.format(
-                                        "Unknown setting: %s, type: %s",
-                                        fieldName,
-                                        root.path(fieldName).getClass().getSimpleName()));
+                        Logger.warn(
+                                false,
+                                "GitLab",
+                                "GitLab application setting preserved as unknown field: fieldName={}, nodeType={}",
+                                fieldName,
+                                root.path(fieldName).getClass().getSimpleName());
                         appSettings.addSetting(fieldName, root.path(fieldName));
                     }
 

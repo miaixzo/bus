@@ -711,7 +711,12 @@ public final class Parsing {
                 // Otherwise error
                 if (numberFound) {
                     if (!noLog(s)) {
-                        Logger.error(false, "Health", "Illegal character parsing string '{}' to long array: {}", s, s.charAt(charIndex));
+                        Logger.error(
+                                false,
+                                "Health",
+                                "Illegal character parsing string '{}' to long array: {}",
+                                s,
+                                s.charAt(charIndex));
                     }
                     return new long[indices.length];
                 }
@@ -721,7 +726,9 @@ public final class Parsing {
         }
         if (parsedIndex > 0) {
             if (!noLog(s)) {
-                Logger.error(false, "Health",
+                Logger.error(
+                        false,
+                        "Health",
                         "Not enough fields in string '{}' parsing to long array: {}",
                         s,
                         indices.length - parsedIndex);

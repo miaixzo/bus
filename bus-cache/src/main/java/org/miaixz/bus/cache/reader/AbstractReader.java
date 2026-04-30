@@ -91,7 +91,11 @@ public abstract class AbstractReader {
         try {
             return throwableSupplier.get();
         } finally {
-            Logger.debug(false, "Cache", "Method invocation completed: durationMs={}", (System.currentTimeMillis() - start));
+            Logger.debug(
+                    false,
+                    "Cache",
+                    "Method invocation completed: durationMs={}",
+                    (System.currentTimeMillis() - start));
         }
     }
 

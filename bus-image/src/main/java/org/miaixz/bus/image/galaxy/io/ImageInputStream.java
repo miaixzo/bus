@@ -556,8 +556,10 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
                     if (vr == null) {
                         vr = ElementDictionary.getStandardElementDictionary().vrOf(tag);
                         if (!stopPredicate.test(this))
-                            Logger.warn(false, "Image",
-                                    "Unrecognized VR code: {}H for {} - treat as {}",
+                            Logger.warn(
+                                    false,
+                                    "Image",
+                                    "Unrecognized VR code: vrCode={}H for {} - treat as {}",
                                     Tag.shortToHexString(encodedVR),
                                     Tag.toString(tag),
                                     vr);

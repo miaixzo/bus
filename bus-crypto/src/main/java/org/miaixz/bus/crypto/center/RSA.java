@@ -35,6 +35,7 @@ import org.miaixz.bus.crypto.Holder;
 import org.miaixz.bus.crypto.Keeper;
 import org.miaixz.bus.crypto.builtin.asymmetric.Crypto;
 import org.miaixz.bus.crypto.builtin.asymmetric.KeyType;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * RSA public key/private key/signature encryption and decryption.
@@ -220,6 +221,15 @@ public class RSA extends Crypto {
         try {
             super.initCipher();
         } catch (final CryptoException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "algorithm",
+                    "RSA",
+                    false,
+                    e.getClass().getSimpleName());
             final Throwable cause = e.getCause();
             if (cause instanceof NoSuchAlgorithmException) {
                 // On Linux, if the BouncyCastle provider is not imported, the RSA/ECB/PKCS1Padding

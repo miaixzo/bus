@@ -39,6 +39,7 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Abstract class for DingTalk login providers. This class handles both DingTalk account login for third-party websites
@@ -144,6 +145,15 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
                             .gender(Gender.UNKNOWN).source(complex.toString()).token(token).build())
                     .build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "user info",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
     }

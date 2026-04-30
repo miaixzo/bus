@@ -27,6 +27,7 @@ import java.util.Properties;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * MySQL database implementation for cache hit rate statistics.
@@ -89,6 +90,13 @@ public class MySQLCollector extends AbstractCollector {
                                 + "version       BIGINT      NOT NULL     DEFAULT 0)");
                 return runner;
             } catch (Exception e) {
+                Logger.error(
+                        false,
+                        "Cache",
+                        e,
+                        "MySQL cache collector initialization failed: contextSize={}, exception={}",
+                        context == null ? 0 : context.size(),
+                        e.getClass().getSimpleName());
                 throw new InternalException(e);
             }
         };

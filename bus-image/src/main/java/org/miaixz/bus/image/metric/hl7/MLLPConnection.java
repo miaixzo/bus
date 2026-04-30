@@ -87,7 +87,7 @@ public class MLLPConnection implements Closeable {
     }
 
     private void writeACK() throws IOException {
-        Logger.debug(false, "HL7", "{} << <ACK>", sock);
+        Logger.debug(false, "Image", "protocol=hl7, {} << <ACK>", sock);
         mllpOut.write(ACK);
         mllpOut.finish();
     }
@@ -99,15 +99,15 @@ public class MLLPConnection implements Closeable {
         if (b.length == 1) {
             switch (b[0]) {
                 case ACK:
-                    Logger.debug(false, "HL7", "{} >> <ACK>", sock);
+                    Logger.debug(false, "Image", "protocol=hl7, {} >> <ACK>", sock);
                     return;
 
                 case NAK:
-                    Logger.info(false, "HL7", "{} >> <NAK>", sock);
+                    Logger.info(false, "Image", "protocol=hl7, {} >> <NAK>", sock);
                     throw new IOException("NAK received");
             }
         }
-        Logger.info(false, "HL7", "{}: <ACK> or <NAK> expected, but received {} bytes", sock, b.length);
+        Logger.info(false, "Image", "protocol=hl7, {}: <ACK> or <NAK> expected, but received {} bytes", sock, b.length);
         throw new IOException("<ACK> or <NAK> expected, but received " + b.length + " bytes");
     }
 
@@ -117,9 +117,22 @@ public class MLLPConnection implements Closeable {
         int mshlen = 0;
         while (mshlen < len && b[off + mshlen] != '\r')
             mshlen++;
-        Logger.info(false, "HL7", format, sock, new String(b, off, mshlen));
+        Logger.info(
+                false,
+                "Image",
+                "protocol=hl7, HL7 message observed: socket={}, direction={}, headerBytes={}, messageBytes={}",
+                sock,
+                format.contains("<<") ? "out" : "in",
+                mshlen,
+                len);
         if (Logger.isDebugEnabled())
-            Logger.debug(false, "HL7", format, sock, new String(b, off, len).replace('\r', '\n'));
+            Logger.debug(
+                    false,
+                    "Image",
+                    "protocol=hl7, HL7 message payload suppressed: socket={}, direction={}, messageBytes={}",
+                    sock,
+                    format.contains("<<") ? "out" : "in",
+                    len);
     }
 
     @Override

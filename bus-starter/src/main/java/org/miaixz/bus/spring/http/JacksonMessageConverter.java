@@ -100,8 +100,8 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
     public void configure(List<org.springframework.http.converter.HttpMessageConverter<?>> converters) {
         Logger.debug(
                 false,
-                "HTTP",
-                "Configuring MappingJackson2HttpMessageConverter with autoType: {}",
+                "Starter",
+                "component=http, Configuring MappingJackson2HttpMessageConverter with autoType: {}",
                 autoTypeMatcher == null ? null : autoTypeMatcher.description());
         ObjectMapper jacksonMapper = new ObjectMapper();
 
@@ -121,8 +121,8 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
         if (autoTypeMatcher != null) {
             Logger.debug(
                     false,
-                    "HTTP",
-                    "Jackson autoType patterns are prepared but default polymorphic typing remains disabled: {}",
+                    "Starter",
+                    "component=http, Jackson autoType patterns are prepared but default polymorphic typing remains disabled: {}",
                     autoTypeMatcher.description());
         }
 
@@ -141,8 +141,8 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
         converters.add(order(), jacksonConverter);
         Logger.debug(
                 false,
-                "HTTP",
-                "Jackson converter configured with media types: {}",
+                "Starter",
+                "component=http, Jackson converter configured with media types: {}",
                 jacksonConverter.getSupportedMediaTypes());
     }
 
@@ -192,8 +192,8 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
                     // We'll proceed with 'field' as null, which shouldSkipField can handle.
                     Logger.debug(
                             false,
-                            "HTTP",
-                            "Jackson could not find backing field for property '{}' on class '{}'. Assuming inclusion.",
+                            "Starter",
+                            "component=http, Jackson could not find backing field for property '{}' on class '{}'. Assuming inclusion.",
                             writer.getName(),
                             pojo.getClass().getName());
                 }

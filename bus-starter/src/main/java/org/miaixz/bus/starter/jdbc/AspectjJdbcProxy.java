@@ -59,16 +59,16 @@ public class AspectjJdbcProxy {
         if (dataSourceName.isEmpty()) {
             Logger.debug(
                     true,
-                    "AOP",
-                    "[{}.{}] No datasource specified, will use default datasource",
+                    "Starter",
+                    "component=aop, Datasource switch skipped: class={}, method={}, reason=no datasource specified",
                     className,
                     methodName);
             return;
         }
         Logger.info(
                 true,
-                "AOP",
-                "[{}.{}] starts execution, switching to datasource: [{}]",
+                "Starter",
+                "component=aop, Datasource switch started: class={}, method={}, datasource={}",
                 className,
                 methodName,
                 dataSourceName);
@@ -93,14 +93,19 @@ public class AspectjJdbcProxy {
         String methodName = joinPoint.getSignature().getName();
         String dataSourceName = dataSource.value();
         if (dataSourceName.isEmpty()) {
-            Logger.debug(false, "AOP", "[{}.{}] execution completed, no datasource switched", className, methodName);
+            Logger.debug(
+                    false,
+                    "Starter",
+                    "component=aop, Datasource switch completed: class={}, method={}, changed=false",
+                    className,
+                    methodName);
             return;
         }
         if (dataSource.clear()) {
             Logger.info(
                     false,
-                    "AOP",
-                    "[{}.{}] execution completed, clearing datasource setting: [{}], switching back to default",
+                    "Starter",
+                    "component=aop, Datasource switch completed: class={}, method={}, datasource={}, action=clear",
                     className,
                     methodName,
                     dataSourceName);
@@ -109,17 +114,21 @@ public class AspectjJdbcProxy {
             String defaultDataSource = DataSourceHolder.getDefault();
             if (StringKit.isEmpty(defaultDataSource)) {
                 DataSourceHolder.setKey(defaultDataSource);
-                Logger.debug(false, "AOP", "Switched back to default datasource: [{}]", defaultDataSource);
+                Logger.debug(
+                        false,
+                        "Starter",
+                        "component=aop, Switched back to default datasource: datasource={}",
+                        defaultDataSource);
             } else {
                 // If no default data source is configured, clear the context (fallback to original behavior)
                 DataSourceHolder.remove();
-                Logger.debug(false, "AOP", "No default datasource configured, context cleared");
+                Logger.debug(false, "Starter", "component=aop, No default datasource configured, context cleared");
             }
         } else {
             Logger.info(
                     false,
-                    "AOP",
-                    "[{}.{}] execution completed, keeping datasource setting: [{}]",
+                    "Starter",
+                    "component=aop, Datasource switch completed: class={}, method={}, datasource={}, action=keep",
                     className,
                     methodName,
                     dataSourceName);

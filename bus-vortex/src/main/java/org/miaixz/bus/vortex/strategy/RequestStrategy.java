@@ -94,11 +94,12 @@ public class RequestStrategy extends AbstractStrategy {
             ServerHttpRequest request = mutate.getRequest();
             Logger.debug(
                     true,
-                    "Request",
-                    "[{}] Request headers - Path: {}, Headers: {}",
+                    "Vortex",
+                    "strategy=request, clientIp={}, request headers captured: path={}, headerCount={}, contentType={}",
                     context.getX_request_ip(),
                     request.getURI().getPath(),
-                    request.getHeaders());
+                    request.getHeaders().size(),
+                    request.getHeaders().getContentType());
 
             if (context.getHttpMethod() == HTTP.Method.GET) {
                 return handleGetRequest(mutate, chain, context);
@@ -136,16 +137,16 @@ public class RequestStrategy extends AbstractStrategy {
             context.getParameters().putAll(context.getQuery());
             Logger.info(
                     true,
-                    "Request",
-                    "[{}] GET request processed - Path: {}, Params: {}",
+                    "Vortex",
+                    "strategy=request, clientIp={}, GET request parameters processed: path={}, parameterCount={}",
                     context.getX_request_ip(),
                     exchange.getRequest().getURI().getPath(),
-                    JsonKit.toJsonString(context.getParameters()));
+                    context.getParameters().size());
         }).then(chain.apply(exchange)).doFinally(
                 signalType -> Logger.info(
                         false,
-                        "Request",
-                        "[{}] Request processed - Path: {}, ExecutionTime: {}ms",
+                        "Vortex",
+                        "strategy=request, clientIp={}, request processing completed: path={}, executionTimeMs={}",
                         context.getX_request_ip(),
                         exchange.getRequest().getURI().getPath(),
                         (System.currentTimeMillis() - context.getTimestamp())));
@@ -171,8 +172,8 @@ public class RequestStrategy extends AbstractStrategy {
         if (shouldStream) {
             Logger.info(
                     true,
-                    "Request",
-                    "[{}] Large JSON request detected ({} bytes). Using optimized streaming processing.",
+                    "Vortex",
+                    "strategy=request, clientIp={}, large JSON request detected: bytes={}, mode=streaming",
                     context.getX_request_ip(),
                     contentLength);
         }
@@ -207,8 +208,8 @@ public class RequestStrategy extends AbstractStrategy {
             if (bytes.length > Holder.getStreamingRequestThreshold()) {
                 Logger.info(
                         true,
-                        "Request",
-                        "[{}] Large JSON body cached in memory: {} bytes",
+                        "Vortex",
+                        "strategy=request, clientIp={}, large JSON content cached in memory: bytes={}",
                         context.getX_request_ip(),
                         bytes.length);
             }
@@ -235,29 +236,29 @@ public class RequestStrategy extends AbstractStrategy {
 
             Logger.info(
                     true,
-                    "Request",
-                    "[{}] JSON request processed - Path: {}, Params: {}",
+                    "Vortex",
+                    "strategy=request, clientIp={}, JSON request processed: path={}, parameterCount={}",
                     context.getX_request_ip(),
                     exchange.getRequest().getURI().getPath(),
-                    JsonKit.toJsonString(context.getParameters()));
+                    context.getParameters().size());
 
             return exchange.mutate().request(newRequest).build();
-        }).flatMap(chain::apply)
-                .doFinally(
-                        signalType -> Logger.info(
-                                false,
-                                "Request",
-                                "[{}] Request processed - Path: {}, ExecutionTime: {}ms",
-                                context.getX_request_ip(),
-                                exchange.getRequest().getURI().getPath(),
-                                (System.currentTimeMillis() - context.getTimestamp())))
+        }).flatMap(chain::apply).doFinally(
+                signalType -> Logger.info(
+                        false,
+                        "Vortex",
+                        "strategy=request, clientIp={}, request processing completed: path={}, executionTimeMs={}",
+                        context.getX_request_ip(),
+                        exchange.getRequest().getURI().getPath(),
+                        (System.currentTimeMillis() - context.getTimestamp())))
                 .onErrorResume(e -> {
                     Logger.error(
                             false,
-                            "Request",
-                            "[{}] Failed to process JSON: {}",
+                            "Vortex",
+                            e,
+                            "strategy=request, clientIp={}, JSON request processing failed: exception={}",
                             context.getX_request_ip(),
-                            e.getMessage());
+                            e.getClass().getSimpleName());
                     return Mono.error(e);
                 });
     }
@@ -325,27 +326,28 @@ public class RequestStrategy extends AbstractStrategy {
             context.getParameters().putAll(params.toSingleValueMap());
             Logger.info(
                     true,
-                    "Request",
-                    "[{}] Form request processed - Path: {}, Params: {}",
+                    "Vortex",
+                    "strategy=request, clientIp={}, form request processed: path={}, parameterCount={}",
                     getClientIp(newExchange.getRequest()),
                     newExchange.getRequest().getURI().getPath(),
-                    JsonKit.toJsonString(context.getParameters()));
+                    context.getParameters().size());
             return chain.apply(newExchange);
         })).doFinally(
                 signalType -> Logger.info(
                         false,
-                        "Request",
-                        "[{}] Request processed - Path: {}, ExecutionTime: {}ms",
+                        "Vortex",
+                        "strategy=request, clientIp={}, request processing completed: path={}, executionTimeMs={}",
                         context.getX_request_ip(),
                         exchange.getRequest().getURI().getPath(),
                         (System.currentTimeMillis() - context.getTimestamp())))
                 .onErrorResume(e -> {
                     Logger.error(
                             false,
-                            "Request",
-                            "[{}] Failed to process form: {}",
+                            "Vortex",
+                            e,
+                            "strategy=request, clientIp={}, form request processing failed: exception={}",
                             context.getX_request_ip(),
-                            e.getMessage());
+                            e.getClass().getSimpleName());
                     return Mono.error(e);
                 });
     }
@@ -373,8 +375,8 @@ public class RequestStrategy extends AbstractStrategy {
         if (contentLength > 0) {
             Logger.info(
                     true,
-                    "Request",
-                    "[{}] Multipart request ({} bytes) - using streaming processing for file uploads",
+                    "Vortex",
+                    "strategy=request, clientIp={}, multipart request detected: bytes={}, mode=streaming",
                     context.getX_request_ip(),
                     contentLength);
         }
@@ -417,27 +419,27 @@ public class RequestStrategy extends AbstractStrategy {
 
             Logger.info(
                     true,
-                    "Request",
-                    "[{}] Multipart request processed - Path: {}, Params: {}",
+                    "Vortex",
+                    "strategy=request, clientIp={}, multipart request processed: path={}, parameterCount={}",
                     context.getX_request_ip(),
                     exchange.getRequest().getURI().getPath(),
-                    JsonKit.toJsonString(context.getParameters()));
-        }).then(chain.apply(exchange))
-                .doFinally(
-                        signalType -> Logger.info(
-                                false,
-                                "Request",
-                                "[{}] Request processed - Path: {}, ExecutionTime: {}ms",
-                                context.getX_request_ip(),
-                                exchange.getRequest().getURI().getPath(),
-                                (System.currentTimeMillis() - context.getTimestamp())))
+                    context.getParameters().size());
+        }).then(chain.apply(exchange)).doFinally(
+                signalType -> Logger.info(
+                        false,
+                        "Vortex",
+                        "strategy=request, clientIp={}, request processing completed: path={}, executionTimeMs={}",
+                        context.getX_request_ip(),
+                        exchange.getRequest().getURI().getPath(),
+                        (System.currentTimeMillis() - context.getTimestamp())))
                 .onErrorResume(e -> {
                     Logger.error(
                             false,
-                            "Request",
-                            "[{}] Failed to process multipart: {}",
+                            "Vortex",
+                            e,
+                            "strategy=request, clientIp={}, multipart request processing failed: exception={}",
                             context.getX_request_ip(),
-                            e.getMessage());
+                            e.getClass().getSimpleName());
                     return Mono.error(e);
                 });
     }

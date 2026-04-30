@@ -208,7 +208,9 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
                     return Collections.unmodifiableList(
                             Parsing.parseByteArrayToStrings(m.getByteArray(0, size.getValue().intValue())));
                 } else {
-                    Logger.warn(false, "Health",
+                    Logger.warn(
+                            false,
+                            "Health",
                             "Failed sysctl call for process arguments (kern.proc.args), process {} may not exist. Error code: {}",
                             getProcessID(),
                             Native.getLastError());
@@ -289,7 +291,9 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
                     return Collections.unmodifiableMap(
                             Parsing.parseByteArrayToStringMap(m.getByteArray(0, size.getValue().intValue())));
                 } else {
-                    Logger.warn(false, "Health",
+                    Logger.warn(
+                            false,
+                            "Health",
                             "Failed sysctl call for process environment variables (kern.proc.env), process {} may not exist. Error code: {}",
                             getProcessID(),
                             Native.getLastError());

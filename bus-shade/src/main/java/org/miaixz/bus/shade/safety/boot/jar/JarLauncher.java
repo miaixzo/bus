@@ -30,6 +30,7 @@ import java.security.ProtectionDomain;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.shade.safety.Builder;
 import org.miaixz.bus.shade.safety.Launcher;
 
@@ -74,36 +75,76 @@ public class JarLauncher {
      * @throws Exception If an error occurs during the launch process, such as failing to find the main class or method.
      */
     public void launch() throws Exception {
-        JarClassLoader jarClassLoader;
+        Logger.info(
+                true,
+                "Shade",
+                "Jar launcher started: component=launcher, argCount={}",
+                launcher.args == null ? 0 : launcher.args.length);
+        try {
+            JarClassLoader jarClassLoader;
 
-        ClassLoader classLoader = this.getClass().getClassLoader();
-        if (classLoader instanceof URLClassLoader) {
-            URLClassLoader urlClassLoader = (URLClassLoader) classLoader;
-            jarClassLoader = new JarClassLoader(urlClassLoader.getURLs(), classLoader.getParent(),
-                    launcher.decryptorProvider, launcher.encryptorProvider, launcher.key);
-        } else {
-            ProtectionDomain domain = this.getClass().getProtectionDomain();
-            CodeSource source = domain.getCodeSource();
-            URI location = (null == source ? null : source.getLocation().toURI());
-            String path = (null == location ? null : location.getSchemeSpecificPart());
-            if (null == path) {
-                throw new IllegalStateException("Unable to determine code source archive");
+            ClassLoader classLoader = this.getClass().getClassLoader();
+            if (classLoader instanceof URLClassLoader) {
+                URLClassLoader urlClassLoader = (URLClassLoader) classLoader;
+                jarClassLoader = new JarClassLoader(urlClassLoader.getURLs(), classLoader.getParent(),
+                        launcher.decryptorProvider, launcher.encryptorProvider, launcher.key);
+                Logger.debug(
+                        false,
+                        "Shade",
+                        "Jar launcher class loader prepared: component=launcher, source=urlClassLoader, urlCount={}",
+                        urlClassLoader.getURLs().length);
+            } else {
+                ProtectionDomain domain = this.getClass().getProtectionDomain();
+                CodeSource source = domain.getCodeSource();
+                URI location = (null == source ? null : source.getLocation().toURI());
+                String path = (null == location ? null : location.getSchemeSpecificPart());
+                if (null == path) {
+                    throw new IllegalStateException("Unable to determine code source archive");
+                }
+                File jar = new File(path);
+                URL url = jar.toURI().toURL();
+                jarClassLoader = new JarClassLoader(new URL[] { url }, classLoader.getParent(),
+                        launcher.decryptorProvider, launcher.encryptorProvider, launcher.key);
+                Logger.debug(
+                        false,
+                        "Shade",
+                        "Jar launcher class loader prepared: component=launcher, source=codeSource, jarFile={}",
+                        jar.getName());
             }
-            File jar = new File(path);
-            URL url = jar.toURI().toURL();
-            jarClassLoader = new JarClassLoader(new URL[] { url }, classLoader.getParent(), launcher.decryptorProvider,
-                    launcher.encryptorProvider, launcher.key);
-        }
 
-        Thread.currentThread().setContextClassLoader(jarClassLoader);
-        URL resource = jarClassLoader.findResource(Builder.META_INF_MANIFEST);
-        try (InputStream in = resource.openStream()) {
-            Manifest manifest = new Manifest(in);
-            Attributes attributes = manifest.getMainAttributes();
-            String jarMainClass = attributes.getValue("Jar-Main-Class");
-            Class<?> mainClass = jarClassLoader.loadClass(jarMainClass);
-            Method mainMethod = mainClass.getMethod("main", String[].class);
-            mainMethod.invoke(null, new Object[] { launcher.args });
+            Thread.currentThread().setContextClassLoader(jarClassLoader);
+            URL resource = jarClassLoader.findResource(Builder.META_INF_MANIFEST);
+            Logger.debug(
+                    false,
+                    "Shade",
+                    "Jar launcher manifest resolved: component=launcher, manifestPresent={}",
+                    resource != null);
+            try (InputStream in = resource.openStream()) {
+                Manifest manifest = new Manifest(in);
+                Attributes attributes = manifest.getMainAttributes();
+                String jarMainClass = attributes.getValue("Jar-Main-Class");
+                Logger.info(
+                        true,
+                        "Shade",
+                        "Jar application main invocation started: component=launcher, mainClass={}",
+                        jarMainClass);
+                Class<?> mainClass = jarClassLoader.loadClass(jarMainClass);
+                Method mainMethod = mainClass.getMethod("main", String[].class);
+                mainMethod.invoke(null, new Object[] { launcher.args });
+                Logger.info(
+                        false,
+                        "Shade",
+                        "Jar application main invocation finished: component=launcher, mainClass={}",
+                        jarMainClass);
+            }
+        } catch (Exception e) {
+            Logger.error(
+                    false,
+                    "Shade",
+                    e,
+                    "Jar launcher failed: component=launcher, exception={}",
+                    e.getClass().getSimpleName());
+            throw e;
         }
     }
 

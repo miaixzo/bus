@@ -43,6 +43,14 @@ public class UDPListener implements Listener {
         try {
             ds = new DatagramSocket(conn.getBindPoint());
         } catch (BindException e) {
+            Logger.error(
+                    false,
+                    "Image",
+                    e,
+                    "component=network, UDP listener bind failed: host={}, port={}, exception={}",
+                    conn.getBindPoint().getHostName(),
+                    conn.getBindPoint().getPort(),
+                    e.getClass().getSimpleName());
             throw new IOException("Cannot start UDP listener on " + conn.getBindPoint().getHostName() + ":"
                     + conn.getBindPoint().getPort(), e);
         }
@@ -52,30 +60,39 @@ public class UDPListener implements Listener {
 
     public void listen() {
         SocketAddress sockAddr = ds.getLocalSocketAddress();
-        Logger.info(true, "ImageNet", "Start UDP listener on {}", sockAddr);
+        Logger.info(true, "Image", "component=network, Start UDP listener on {}", sockAddr);
         byte[] data = new byte[MAX_PACKAGE_LEN];
         try {
             while (!ds.isClosed()) {
-                Logger.debug(false, "ImageNet", "Wait for UDP datagram package on {}", sockAddr);
+                Logger.debug(false, "Image", "component=network, Wait for UDP datagram package on {}", sockAddr);
                 DatagramPacket dp = new DatagramPacket(data, MAX_PACKAGE_LEN);
                 ds.receive(dp);
                 InetAddress senderAddr = dp.getAddress();
                 if (conn.isBlackListed(dp.getAddress())) {
-                    Logger.info(false, "ImageNet", "Ignore UDP datagram package received from blacklisted {}", senderAddr);
+                    Logger.info(
+                            false,
+                            "Image",
+                            "component=network, Ignore UDP datagram package received from blacklisted {}",
+                            senderAddr);
                 } else {
-                    Logger.info(false, "ImageNet", "Received UDP datagram package from {}", senderAddr);
+                    Logger.info(false, "Image", "component=network, Received UDP datagram package from {}", senderAddr);
                     try {
                         handler.onReceive(conn, dp);
                     } catch (Throwable e) {
-                        Logger.warn(false, "ImageNet", "Exception processing UDP received from {}:", senderAddr, e);
+                        Logger.warn(
+                                false,
+                                "Image",
+                                "component=network, Exception processing UDP received from {}:",
+                                senderAddr,
+                                e);
                     }
                 }
             }
         } catch (Throwable e) {
             if (!ds.isClosed()) // ignore exception caused by close()
-                Logger.error(false, "ImageNet", "Exception on listing on {}:", sockAddr, e);
+                Logger.error(false, "Image", "component=network, Exception on listing on {}:", sockAddr, e);
         }
-        Logger.info(false, "ImageNet", "Stop UDP listener on {}", sockAddr);
+        Logger.info(false, "Image", "component=network, Stop UDP listener on {}", sockAddr);
     }
 
     @Override
@@ -89,7 +106,13 @@ public class UDPListener implements Listener {
             ds.close();
         } catch (Throwable e) {
             // Ignore errors when closing datagram socket
-            Logger.error(false, "ImageNet", e.getMessage());
+            Logger.error(
+                    false,
+                    "Image",
+                    e,
+                    "component=network, UDP listener close failed: endpoint={}, exception={}",
+                    ds.getLocalSocketAddress(),
+                    e.getClass().getSimpleName());
         }
     }
 

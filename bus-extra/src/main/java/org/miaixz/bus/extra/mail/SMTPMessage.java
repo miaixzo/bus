@@ -39,6 +39,7 @@ import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
 import jakarta.mail.internet.MimeUtility;
 import jakarta.mail.util.ByteArrayDataSource;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Represents an SMTP message, extending {@link MimeMessage} to provide a fluent builder pattern for creating and
@@ -103,6 +104,13 @@ public class SMTPMessage extends MimeMessage {
             }
             super.setSentDate(DateKit.now());
         } catch (final MessagingException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=mail, Mail operation failed: provider={}, exception={}",
+                    "SMTPMessage",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -117,6 +125,13 @@ public class SMTPMessage extends MimeMessage {
         try {
             super.setSubject(title, ObjectKit.apply(mailAccount.getCharset(), Object::toString));
         } catch (final MessagingException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=mail, Mail operation failed: provider={}, exception={}",
+                    "SMTPMessage",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         return this;
@@ -163,6 +178,13 @@ public class SMTPMessage extends MimeMessage {
         try {
             super.setRecipients(type, InternalMail.parseAddressFromStrs(addresses, this.mailAccount.getCharset()));
         } catch (final MessagingException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=mail, Mail operation failed: provider={}, exception={}",
+                    "SMTPMessage",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         return this;
@@ -178,6 +200,13 @@ public class SMTPMessage extends MimeMessage {
         try {
             super.setReplyTo(InternalMail.parseAddressFromStrs(reply, this.mailAccount.getCharset()));
         } catch (final MessagingException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=mail, Mail operation failed: provider={}, exception={}",
+                    "SMTPMessage",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         return this;
@@ -194,6 +223,13 @@ public class SMTPMessage extends MimeMessage {
         try {
             super.setContent(buildContent(content, this.mailAccount.getCharset(), isHtml));
         } catch (final MessagingException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=mail, Mail operation failed: provider={}, exception={}",
+                    "SMTPMessage",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         return this;
@@ -240,6 +276,13 @@ public class SMTPMessage extends MimeMessage {
         try {
             imgSource = new ByteArrayDataSource(imageStream, ObjectKit.defaultIfNull(contentType, "image/jpeg"));
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=mail, Mail operation failed: provider={}, exception={}",
+                    "SMTPMessage",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         imgSource.setName(cid);
@@ -290,6 +333,13 @@ public class SMTPMessage extends MimeMessage {
         try {
             this.multipart.addBodyPart(bodyPart);
         } catch (final MessagingException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=mail, Mail operation failed: provider={}, exception={}",
+                    "SMTPMessage",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         return this;
@@ -306,6 +356,13 @@ public class SMTPMessage extends MimeMessage {
         try {
             this.multipart.addBodyPart(bodyPart, index);
         } catch (final MessagingException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=mail, Mail operation failed: provider={}, exception={}",
+                    "SMTPMessage",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         return this;
@@ -321,6 +378,13 @@ public class SMTPMessage extends MimeMessage {
         try {
             return doSend();
         } catch (final MessagingException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=mail, Mail operation failed: provider={}, exception={}",
+                    "SMTPMessage",
+                    e.getClass().getSimpleName());
             if (e instanceof SendFailedException) {
                 final Address[] invalidAddresses = ((SendFailedException) e).getInvalidAddresses();
                 final String msg = StringKit.format("Invalid Addresses: {}", ArrayKit.toString(invalidAddresses));
@@ -385,6 +449,13 @@ public class SMTPMessage extends MimeMessage {
                 bodyPart.setDisposition(MimeBodyPart.INLINE);
             }
         } catch (final MessagingException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=mail, Mail operation failed: provider={}, exception={}",
+                    "SMTPMessage",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         return bodyPart;

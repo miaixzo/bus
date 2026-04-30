@@ -30,6 +30,7 @@ import java.util.stream.StreamSupport;
 
 import org.miaixz.bus.gitlab.models.Constants;
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import org.miaixz.bus.logger.Logger;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -96,9 +97,23 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
     public Pager(AbstractApi api, Class<T> type, int itemsPerPage, MultivaluedMap<String, String> queryParams,
             Object... pathArgs) throws GitLabApiException {
 
+        Logger.info(
+                true,
+                "GitLab",
+                "GitLab pager initialization started: itemType={}, requestedItemsPerPage={}, queryParamCount={}, pathArgCount={}",
+                type == null ? "null" : type.getSimpleName(),
+                itemsPerPage,
+                queryParams == null ? 0 : queryParams.size(),
+                pathArgs == null ? 0 : pathArgs.length);
         javaType = mapper.getTypeFactory().constructCollectionType(List.class, type);
 
         if (itemsPerPage < 1) {
+            Logger.debug(
+                    true,
+                    "GitLab",
+                    "GitLab pager using default per-page setting: requestedItemsPerPage={}, defaultItemsPerPage={}",
+                    itemsPerPage,
+                    api.getDefaultPerPage());
             itemsPerPage = api.getDefaultPerPage();
         }
 
@@ -114,15 +129,38 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
         pageParam = new ArrayList<>();
         pageParam.add("1");
         queryParams.put(PAGE_PARAM, pageParam);
+        Logger.debug(
+                true,
+                "GitLab",
+                "GitLab pager first page request started: itemType={}, itemsPerPage={}, queryParamCount={}, pathArgCount={}",
+                type == null ? "null" : type.getSimpleName(),
+                itemsPerPage,
+                queryParams.size(),
+                pathArgs == null ? 0 : pathArgs.length);
         Response response = api.get(Response.Status.OK, queryParams, pathArgs);
 
         try {
             currentItems = mapper.readValue((InputStream) response.getEntity(), javaType);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab pager first page decoding failed: itemType={}, status={}, exception={}",
+                    type == null ? "null" : type.getSimpleName(),
+                    response.getStatus(),
+                    e.getClass().getSimpleName());
             throw new GitLabApiException(e);
         }
 
         if (currentItems == null) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    "GitLab pager first page rejected: itemType={}, status={}, reason={}",
+                    type == null ? "null" : type.getSimpleName(),
+                    response.getStatus(),
+                    "nullItems");
             throw new GitLabApiException("Invalid response from from GitLab server");
         }
 
@@ -137,6 +175,15 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
             this.itemsPerPage = itemsPerPage;
             totalPages = 1;
             totalItems = currentItems.size();
+            Logger.info(
+                    false,
+                    "GitLab",
+                    "GitLab pager initialized without pagination headers: itemType={}, itemsPerPage={}, currentItemCount={}, totalPages={}, totalItems={}",
+                    type == null ? "null" : type.getSimpleName(),
+                    this.itemsPerPage,
+                    currentItems.size(),
+                    totalPages,
+                    totalItems);
             return;
         }
 
@@ -152,10 +199,37 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
             if (nextPage < 2) {
                 totalPages = 1;
                 totalItems = currentItems.size();
+                Logger.info(
+                        false,
+                        "GitLab",
+                        "GitLab pager initialized with truncated total headers: itemType={}, nextPage={}, totalPages={}, totalItems={}, currentItemCount={}",
+                        type == null ? "null" : type.getSimpleName(),
+                        nextPage,
+                        totalPages,
+                        totalItems,
+                        currentItems.size());
             } else {
                 kaminariNextPage = 2;
+                Logger.warn(
+                        false,
+                        "GitLab",
+                        "GitLab pager using Kaminari continuation: itemType={}, nextPage={}, itemsPerPage={}, currentItemCount={}",
+                        type == null ? "null" : type.getSimpleName(),
+                        kaminariNextPage,
+                        this.itemsPerPage,
+                        currentItems.size());
             }
         }
+        Logger.info(
+                false,
+                "GitLab",
+                "GitLab pager initialization completed: itemType={}, itemsPerPage={}, totalPages={}, totalItems={}, currentItemCount={}, kaminariNextPage={}",
+                type == null ? "null" : type.getSimpleName(),
+                this.itemsPerPage,
+                totalPages,
+                totalItems,
+                currentItems.size(),
+                kaminariNextPage);
     }
 
     /**
@@ -189,12 +263,21 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
 
         String value = getHeaderValue(response, key);
         if (value == null) {
+            Logger.debug(false, "GitLab", "GitLab pager header missing: header={}", key);
             return -1;
         }
 
         try {
             return (Integer.parseInt(value));
         } catch (NumberFormatException nfe) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    nfe,
+                    "GitLab pager header parsing failed: header={}, valueLength={}, exception={}",
+                    key,
+                    value.length(),
+                    nfe.getClass().getSimpleName());
             throw new GitLabApiException("Invalid '" + key + "' header value (" + value + ") from server");
         }
     }
@@ -254,7 +337,16 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      */
     @Override
     public boolean hasNext() {
-        return (currentPage < totalPages || currentPage < kaminariNextPage);
+        boolean hasNext = currentPage < totalPages || currentPage < kaminariNextPage;
+        Logger.debug(
+                false,
+                "GitLab",
+                "GitLab pager hasNext evaluated: currentPage={}, totalPages={}, kaminariNextPage={}, hasNext={}",
+                currentPage,
+                totalPages,
+                kaminariNextPage,
+                hasNext);
+        return hasNext;
     }
 
     /**
@@ -267,6 +359,12 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      */
     @Override
     public List<T> next() {
+        Logger.debug(
+                true,
+                "GitLab",
+                "GitLab pager next page requested: currentPage={}, nextPage={}",
+                currentPage,
+                currentPage + 1);
         return (page(currentPage + 1));
     }
 
@@ -286,6 +384,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * @return the first page of List
      */
     public List<T> first() {
+        Logger.debug(true, "GitLab", "GitLab pager first page requested: currentPage={}", currentPage);
         return (page(1));
     }
 
@@ -298,9 +397,17 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
     public List<T> last() throws GitLabApiException {
 
         if (kaminariNextPage != 0) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    "GitLab pager last page rejected: reason={}, currentPage={}, kaminariNextPage={}",
+                    "kaminariCountLimitExceeded",
+                    currentPage,
+                    kaminariNextPage);
             throw new GitLabApiException("Kaminari count limit exceeded, unable to fetch last page");
         }
 
+        Logger.debug(true, "GitLab", "GitLab pager last page requested: totalPages={}", totalPages);
         return (page(totalPages));
     }
 
@@ -310,6 +417,12 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * @return the previous page of List
      */
     public List<T> previous() {
+        Logger.debug(
+                true,
+                "GitLab",
+                "GitLab pager previous page requested: currentPage={}, previousPage={}",
+                currentPage,
+                currentPage - 1);
         return (page(currentPage - 1));
     }
 
@@ -319,6 +432,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * @return the current page of List
      */
     public List<T> current() {
+        Logger.debug(true, "GitLab", "GitLab pager current page requested: currentPage={}", currentPage);
         return (page(currentPage));
     }
 
@@ -335,33 +449,93 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
 
         if (currentPage == 0 && pageNumber == 1) {
             currentPage = 1;
+            Logger.debug(
+                    false,
+                    "GitLab",
+                    "GitLab pager first page served from initial response: pageNumber={}, itemCount={}",
+                    pageNumber,
+                    currentItems == null ? 0 : currentItems.size());
             return (currentItems);
         }
 
         if (currentPage == pageNumber) {
+            Logger.debug(
+                    false,
+                    "GitLab",
+                    "GitLab pager page served from cache: pageNumber={}, itemCount={}",
+                    pageNumber,
+                    currentItems == null ? 0 : currentItems.size());
             return (currentItems);
         }
 
         if (pageNumber > totalPages && pageNumber > kaminariNextPage) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    "GitLab pager page rejected: pageNumber={}, currentPage={}, totalPages={}, kaminariNextPage={}, reason={}",
+                    pageNumber,
+                    currentPage,
+                    totalPages,
+                    kaminariNextPage,
+                    "afterLastPage");
             throw new NoSuchElementException();
         } else if (pageNumber < 1) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    "GitLab pager page rejected: pageNumber={}, currentPage={}, totalPages={}, reason={}",
+                    pageNumber,
+                    currentPage,
+                    totalPages,
+                    "beforeFirstPage");
             throw new NoSuchElementException();
         }
 
         try {
 
             setPageParam(pageNumber);
+            Logger.debug(
+                    true,
+                    "GitLab",
+                    "GitLab pager page request started: pageNumber={}, itemsPerPage={}, totalPages={}, kaminariNextPage={}",
+                    pageNumber,
+                    itemsPerPage,
+                    totalPages,
+                    kaminariNextPage);
             Response response = api.get(Response.Status.OK, queryParams, pathArgs);
             currentItems = mapper.readValue((InputStream) response.getEntity(), javaType);
             currentPage = pageNumber;
 
             if (kaminariNextPage > 0) {
                 kaminariNextPage = getIntHeaderValue(response, NEXT_PAGE_HEADER);
+                Logger.debug(
+                        false,
+                        "GitLab",
+                        "GitLab pager Kaminari continuation updated: pageNumber={}, nextPage={}",
+                        pageNumber,
+                        kaminariNextPage);
             }
 
+            Logger.debug(
+                    false,
+                    "GitLab",
+                    "GitLab pager page request completed: pageNumber={}, itemCount={}, status={}, kaminariNextPage={}",
+                    pageNumber,
+                    currentItems == null ? 0 : currentItems.size(),
+                    response.getStatus(),
+                    kaminariNextPage);
             return (currentItems);
 
         } catch (GitLabApiException | IOException e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab pager page request failed: pageNumber={}, currentPage={}, totalPages={}, exception={}",
+                    pageNumber,
+                    currentPage,
+                    totalPages,
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -374,6 +548,14 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      */
     public List<T> all() throws GitLabApiException {
 
+        Logger.info(
+                true,
+                "GitLab",
+                "GitLab pager all-items fetch started: currentPage={}, totalPages={}, totalItems={}, kaminariNextPage={}",
+                currentPage,
+                totalPages,
+                totalItems,
+                kaminariNextPage);
         // Make sure that current page is 0, this will ensure the whole list is fetched
         // regardless of what page the instance is currently on.
         currentPage = 0;
@@ -384,6 +566,13 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
             allItems.addAll(next());
         }
 
+        Logger.info(
+                false,
+                "GitLab",
+                "GitLab pager all-items fetch completed: itemCount={}, totalPages={}, totalItems={}",
+                allItems.size(),
+                totalPages,
+                totalItems);
         return (allItems);
     }
 
@@ -399,6 +588,13 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
         if (pagerStream == null) {
             synchronized (this) {
                 if (pagerStream == null) {
+                    Logger.info(
+                            true,
+                            "GitLab",
+                            "GitLab pager eager stream build started: currentPage={}, totalPages={}, totalItems={}",
+                            currentPage,
+                            totalPages,
+                            totalItems);
 
                     // Make sure that current page is 0, this will ensure the whole list is streamed
                     // regardless of what page the instance is currently on.
@@ -414,11 +610,18 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
                     }
 
                     pagerStream = streamBuilder.build();
+                    Logger.info(
+                            false,
+                            "GitLab",
+                            "GitLab pager eager stream build completed: totalPages={}, totalItems={}",
+                            totalPages,
+                            totalItems);
                     return (pagerStream);
                 }
             }
         }
 
+        Logger.warn(false, "GitLab", "GitLab pager eager stream rejected: reason={}", "streamAlreadyIssued");
         throw new IllegalStateException("Stream already issued");
     }
 
@@ -433,17 +636,32 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
         if (pagerStream == null) {
             synchronized (this) {
                 if (pagerStream == null) {
+                    Logger.info(
+                            true,
+                            "GitLab",
+                            "GitLab pager lazy stream creation started: currentPage={}, totalPages={}, totalItems={}",
+                            currentPage,
+                            totalPages,
+                            totalItems);
 
                     // Make sure that current page is 0, this will ensure the whole list is streamed
                     // regardless of what page the instance is currently on.
                     currentPage = 0;
 
                     pagerStream = StreamSupport.stream(new PagerSpliterator<T>(this), false);
+                    Logger.info(
+                            false,
+                            "GitLab",
+                            "GitLab pager lazy stream created: totalPages={}, totalItems={}, kaminariNextPage={}",
+                            totalPages,
+                            totalItems,
+                            kaminariNextPage);
                     return (pagerStream);
                 }
             }
         }
 
+        Logger.warn(false, "GitLab", "GitLab pager lazy stream rejected: reason={}", "streamAlreadyIssued");
         throw new IllegalStateException("Stream already issued");
     }
 

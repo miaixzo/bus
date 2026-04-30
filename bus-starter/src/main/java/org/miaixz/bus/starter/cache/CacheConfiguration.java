@@ -39,6 +39,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 
 import jakarta.annotation.Resource;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Auto-configuration for the cache system.
@@ -133,6 +134,14 @@ public class CacheConfiguration {
             }
             return new AspectjCacheProxy(context);
         } catch (Exception e) {
+            Logger.error(
+                    false,
+                    "Starter",
+                    e,
+                    "Cache auto configuration failed: propertiesPresent={}, providerPresent={}, exception={}",
+                    this.properties != null,
+                    this.properties != null && this.properties.getProvider() != null,
+                    e.getClass().getSimpleName());
             throw new IllegalArgumentException("Failed to configure cache: " + e.getMessage(), e);
         }
     }

@@ -136,6 +136,14 @@ public class OGNL {
                 try {
                     Args.SIMPLE_TYPE_SET.add(Class.forName(c));
                 } catch (ClassNotFoundException e) {
+                    Logger.warn(
+                            false,
+                            "Mapper",
+                            e,
+                            "Mapper operation failed: component={}, provider={}, exception={}",
+                            "ognl",
+                            "OGNL",
+                            e.getClass().getSimpleName());
                     throw new RuntimeException("Failed to register type: " + c, e);
                 }
             }
@@ -151,7 +159,12 @@ public class OGNL {
         try {
             Args.SIMPLE_TYPE_SET.add(Class.forName(clazz));
         } catch (ClassNotFoundException e) {
-            Logger.debug(true, "OGNL", "Class not found, ignored: {}", clazz);
+            Logger.debug(
+                    true,
+                    "Mapper",
+                    "OGNL simple type registration skipped: className={}, reason={}",
+                    clazz,
+                    "classNotFound");
         }
     }
 
@@ -200,9 +213,17 @@ public class OGNL {
         // Use cache to avoid repeated Lambda serialization operations
         return LAMBDA_CACHE.computeIfAbsent(fn, f -> {
             try {
-                Logger.debug(true, "OGNL", "Cache miss for lambda: {}", f.getClass().getName());
+                Logger.debug(true, "Mapper", "OGNL lambda field cache miss: lambdaType={}", f.getClass().getName());
                 return extractFieldInfo(f);
             } catch (Exception e) {
+                Logger.warn(
+                        false,
+                        "Mapper",
+                        e,
+                        "Mapper operation failed: component={}, provider={}, exception={}",
+                        "ognl",
+                        "OGNL",
+                        e.getClass().getSimpleName());
                 throw new MapperException("Failed to convert Fn to field name", e);
             }
         });
@@ -270,6 +291,14 @@ public class OGNL {
                     try {
                         return Class.forName(className);
                     } catch (ClassNotFoundException e) {
+                        Logger.warn(
+                                false,
+                                "Mapper",
+                                e,
+                                "Mapper operation failed: component={}, provider={}, exception={}",
+                                "ognl",
+                                "OGNL",
+                                e.getClass().getSimpleName());
                         throw new RuntimeException("Class not found: " + className, e);
                     }
                 });
@@ -278,6 +307,14 @@ public class OGNL {
             return new ClassField(clazz, field);
 
         } catch (ReflectiveOperationException e) {
+            Logger.warn(
+                    false,
+                    "Mapper",
+                    e,
+                    "Mapper operation failed: component={}, provider={}, exception={}",
+                    "ognl",
+                    "OGNL",
+                    e.getClass().getSimpleName());
             throw new RuntimeException("Failed to extract field info from Fn", e);
         }
     }
@@ -296,6 +333,14 @@ public class OGNL {
                 method.setAccessible(Boolean.TRUE);
                 return method;
             } catch (NoSuchMethodException e) {
+                Logger.warn(
+                        false,
+                        "Mapper",
+                        e,
+                        "Mapper operation failed: component={}, provider={}, exception={}",
+                        "ognl",
+                        "OGNL",
+                        e.getClass().getSimpleName());
                 throw new RuntimeException("writeReplace method not found in class: " + c.getName(), e);
             }
         });
@@ -319,7 +364,7 @@ public class OGNL {
 
         Logger.info(
                 false,
-                "OGNL",
+                "Mapper",
                 "Cache cleared: lambda={}, class={}, method={}",
                 lambdaCount,
                 classCount,
@@ -350,9 +395,9 @@ public class OGNL {
         if (SQL_COMMENT_PATTERN.matcher(value).find() || SQL_SYNTAX_PATTERN.matcher(value).find()) {
             Logger.warn(
                     false,
-                    "OGNL",
-                    "SQL injection check: The value '{}' contains SQL comment characters or sensitive SQL injection characters",
-                    value);
+                    "Mapper",
+                    "SQL injection risk detected: reason=commentOrSyntax, valueLength={}",
+                    value.length());
             return true;
         }
         // Convert to lower case for comparison
@@ -365,7 +410,12 @@ public class OGNL {
         // Check for sensitive SQL function patterns
         for (Pattern pattern : SQL_FUNCTION_PATTERN) {
             if (pattern.matcher(value).matches()) {
-                Logger.warn(false, "OGNL", MESSAGE_TEMPLATE, value, pattern.pattern());
+                Logger.warn(
+                        false,
+                        "Mapper",
+                        "SQL injection risk detected: reason=functionPattern, keyword={}, valueLength={}",
+                        pattern.pattern(),
+                        value.length());
                 return true;
             }
         }
@@ -398,7 +448,12 @@ public class OGNL {
     private static boolean keywords(String value, String[] keywords) {
         for (String keyword : keywords) {
             if (value.contains(keyword)) {
-                Logger.warn(false, "OGNL", MESSAGE_TEMPLATE, value, keyword);
+                Logger.warn(
+                        false,
+                        "Mapper",
+                        "SQL injection risk detected: reason=keyword, keyword={}, valueLength={}",
+                        keyword,
+                        value.length());
                 return true;
             }
         }

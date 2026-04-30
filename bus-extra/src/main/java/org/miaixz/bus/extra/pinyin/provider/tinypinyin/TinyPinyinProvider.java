@@ -21,6 +21,7 @@ package org.miaixz.bus.extra.pinyin.provider.tinypinyin;
 
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.pinyin.PinyinProvider;
+import org.miaixz.bus.logger.Logger;
 
 import com.github.promeg.pinyinhelper.Pinyin;
 
@@ -61,7 +62,17 @@ public class TinyPinyinProvider implements PinyinProvider {
      * @param config The {@link Pinyin.Config} to use for TinyPinyin initialization.
      */
     public TinyPinyinProvider(final Pinyin.Config config) {
+        Logger.info(
+                true,
+                "Extra",
+                "component=pinyin, TinyPinyin provider initialization started: customConfigPresent={}",
+                config != null);
         Pinyin.init(config);
+        Logger.info(
+                false,
+                "Extra",
+                "component=pinyin, TinyPinyin provider initialized: customConfigPresent={}",
+                config != null);
     }
 
     /**

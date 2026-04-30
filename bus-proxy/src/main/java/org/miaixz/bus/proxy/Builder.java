@@ -21,6 +21,7 @@ package org.miaixz.bus.proxy;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ClassKit;
+import org.miaixz.bus.logger.Logger;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -52,7 +53,20 @@ public final class Builder {
      * @return The proxied object.
      */
     public static <T> T proxy(final T target, final Class<? extends Aspect> aspectClass) {
-        return getEngine().proxy(target, aspectClass);
+        Logger.debug(
+                true,
+                "Proxy",
+                "Proxy creation requested: targetClass={}, aspectClass={}",
+                target == null ? null : target.getClass().getName(),
+                aspectClass == null ? null : aspectClass.getName());
+        T proxy = getEngine().proxy(target, aspectClass);
+        Logger.debug(
+                false,
+                "Proxy",
+                "Proxy creation completed: targetClass={}, proxyClass={}",
+                target == null ? null : target.getClass().getName(),
+                proxy == null ? null : proxy.getClass().getName());
+        return proxy;
     }
 
     /**
@@ -64,7 +78,20 @@ public final class Builder {
      * @return The proxied object.
      */
     public static <T> T proxy(final T target, final Aspect aspect) {
-        return getEngine().proxy(target, aspect);
+        Logger.debug(
+                true,
+                "Proxy",
+                "Proxy creation requested: targetClass={}, aspectClass={}",
+                target == null ? null : target.getClass().getName(),
+                aspect == null ? null : aspect.getClass().getName());
+        T proxy = getEngine().proxy(target, aspect);
+        Logger.debug(
+                false,
+                "Proxy",
+                "Proxy creation completed: targetClass={}, proxyClass={}",
+                target == null ? null : target.getClass().getName(),
+                proxy == null ? null : proxy.getClass().getName());
+        return proxy;
     }
 
     /**
@@ -90,7 +117,19 @@ public final class Builder {
             final ClassLoader classloader,
             final InvocationHandler invocationHandler,
             final Class<?>... interfaces) {
-        return (T) Proxy.newProxyInstance(classloader, interfaces, invocationHandler);
+        Logger.debug(
+                true,
+                "Proxy",
+                "JDK proxy instance creation started: interfaceCount={}, handlerClass={}",
+                interfaces == null ? 0 : interfaces.length,
+                invocationHandler == null ? null : invocationHandler.getClass().getName());
+        T proxy = (T) Proxy.newProxyInstance(classloader, interfaces, invocationHandler);
+        Logger.debug(
+                false,
+                "Proxy",
+                "JDK proxy instance creation completed: proxyClass={}",
+                proxy == null ? null : proxy.getClass().getName());
+        return proxy;
     }
 
     /**

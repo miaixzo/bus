@@ -103,15 +103,27 @@ public class RequestBodyAdvice extends BaseAdvice
                 // Decrypt the data if the stage is 'ALL' or 'IN'
                 if ((Builder.ALL.equals(sensitive.value()) || Builder.SAFE.equals(sensitive.value()))
                         && (Builder.ALL.equals(sensitive.stage()) || Builder.IN.equals(sensitive.stage()))) {
+                    Logger.debug(
+                            true,
+                            "Starter",
+                            "component=sensitive, Sensitive request body decryption selected: controller={}, method={}, mode={}, stage={}, targetType={}",
+                            parameter.getDeclaringClass().getName(),
+                            parameter.getExecutable().getName(),
+                            sensitive.value(),
+                            sensitive.stage(),
+                            targetType.getTypeName());
                     return new InputMessage(inputMessage, this.properties.getDecrypt().getKey(),
                             this.properties.getDecrypt().getType(), Charset.DEFAULT_UTF_8);
                 }
             } catch (Exception e) {
                 Logger.error(
                         false,
-                        "Sensitive",
-                        "Sensitive internal processing failure during request body decryption",
-                        e);
+                        "Starter",
+                        e,
+                        "component=sensitive, Sensitive request body decryption failed: controller={}, method={}, exception={}",
+                        parameter.getDeclaringClass().getName(),
+                        parameter.getExecutable().getName(),
+                        e.getClass().getSimpleName());
             }
         }
         return inputMessage;
@@ -195,12 +207,23 @@ public class RequestBodyAdvice extends BaseAdvice
                 content = content.replaceAll(Symbol.SPACE, Symbol.PLUS);
 
                 if (StringKit.isNotEmpty(content)) {
-                    Logger.debug(true, "Sensitive", "Sensitive request data decryption enabled...");
                     // The content might be split by a delimiter if it was encrypted in chunks.
                     String[] contents = content.split("\\|");
+                    Logger.debug(
+                            true,
+                            "Starter",
+                            "component=sensitive, Sensitive request body decryption started: algorithm={}, encryptedPartCount={}",
+                            type,
+                            contents.length);
                     for (String encryptedPart : contents) {
                         json.append(org.miaixz.bus.crypto.Builder.decrypt(type, key, encryptedPart, Charset.UTF_8));
                     }
+                    Logger.debug(
+                            false,
+                            "Starter",
+                            "component=sensitive, Sensitive request body decryption completed: algorithm={}, encryptedPartCount={}",
+                            type,
+                            contents.length);
                 }
                 decryptBody = json.toString();
             }

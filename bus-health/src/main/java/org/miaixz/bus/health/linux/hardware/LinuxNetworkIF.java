@@ -184,7 +184,11 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
             try {
                 ifList.add(new LinuxNetworkIF(ni));
             } catch (InstantiationException e) {
-                Logger.debug(false, "Health", "Network Interface Instantiation failed: {}", e.getMessage());
+                Logger.debug(
+                        false,
+                        "Health",
+                        "Network Interface Instantiation failed: {}",
+                        e.getClass().getSimpleName());
             }
         }
         return ifList;

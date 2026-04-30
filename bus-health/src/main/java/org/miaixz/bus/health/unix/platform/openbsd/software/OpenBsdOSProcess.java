@@ -73,7 +73,9 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
             if (OpenBsdLibc.INSTANCE.sysctl(mib, mib.length, m, size, null, size_t.ZERO) == 0) {
                 ARGMAX = m.getInt(0);
             } else {
-                Logger.warn(false, "Health",
+                Logger.warn(
+                        false,
+                        "Health",
                         "Failed sysctl call for process arguments max size (kern.argmax). Error code: {}",
                         Native.getLastError());
                 ARGMAX = 0;

@@ -38,6 +38,7 @@ import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 import java.util.Map;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Baidu login provider.
@@ -117,9 +118,16 @@ public class BaiduProvider extends AbstractProvider {
                                     .nickname(username).avatar(getAvatar(object)).remark(userDetail)
                                     .gender(Gender.of(sex)).token(authorization).source(complex.toString()).build())
                     .build();
-        } catch (
-
-        Exception e) {
+        } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "user info",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
     }
@@ -159,6 +167,15 @@ public class BaiduProvider extends AbstractProvider {
             Errors status = result == 1 ? ErrorCode._SUCCESS : ErrorCode._FAILURE;
             return Message.builder().errcode(status.getKey()).errmsg(status.getValue()).build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "revoke",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse revoke response: " + e.getMessage());
         }
     }
@@ -235,6 +252,15 @@ public class BaiduProvider extends AbstractProvider {
 
             return Authorization.builder().token(token).refresh(refresh).scope(scope).expireIn(expiresIn).build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "access token",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
     }

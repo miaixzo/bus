@@ -68,14 +68,26 @@ public class ByteBuddyProxy {
      * @throws Exception if an error occurs during proxy creation.
      */
     public Object proxy() throws Exception {
-        Logger.debug(false, "Limiter", "proxy {}.", originalClazz.getSimpleName());
-        return new ByteBuddy().subclass(originalClazz)
+        Logger.debug(
+                true,
+                "Limiter",
+                "ByteBuddy proxy creation started: originalClass={}, beanClass={}",
+                originalClazz.getName(),
+                bean.getClass().getName());
+        Object proxy = new ByteBuddy().subclass(originalClazz)
                 .name(StringKit.format("{}$ByteBuddy${}", originalClazz.getName(), DateKit.current()))
                 .method(ElementMatchers.any()).intercept(InvocationHandlerAdapter.of(new ByteBuddyHandler(this)))
                 .attribute(MethodAttributeAppender.ForInstrumentedMethod.INCLUDING_RECEIVER)
                 .annotateType(bean.getClass().getAnnotations()).make()
                 .load(ByteBuddyProxy.class.getClassLoader(), ClassLoadingStrategy.Default.INJECTION).getLoaded()
                 .getConstructor().newInstance();
+        Logger.debug(
+                false,
+                "Limiter",
+                "ByteBuddy proxy created: originalClass={}, proxyClass={}",
+                originalClazz.getName(),
+                proxy.getClass().getName());
+        return proxy;
     }
 
 }

@@ -22,6 +22,7 @@ package org.miaixz.bus.tempus.temporal.payload;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.MethodKit;
+import org.miaixz.bus.logger.Logger;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -67,8 +68,18 @@ public abstract class AbstractPayloadConverter implements PayloadConverter {
     protected PayloadAdapter resolveAdapter() {
         PayloadAdapter preferred = preferredAdapter();
         if (preferred != null) {
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Temporal payload adapter resolved: adapter={}, source=preferred",
+                    preferred.name());
             return preferred;
         }
+        Logger.debug(
+                false,
+                "Tempus",
+                "Temporal payload adapter resolved: adapter={}, source=default",
+                DefaultPayloadAdapterHolder.ADAPTER.name());
         return DefaultPayloadAdapterHolder.ADAPTER;
     }
 
@@ -103,7 +114,25 @@ public abstract class AbstractPayloadConverter implements PayloadConverter {
                  */
                 @Override
                 public byte[] toBytes(Object value) throws Exception {
-                    return MethodKit.invokeStatic(toJsonBytes, value);
+                    try {
+                        byte[] bytes = MethodKit.invokeStatic(toJsonBytes, value);
+                        Logger.debug(
+                                false,
+                                "Tempus",
+                                "Temporal payload serialized: adapter=fastjson2, valueType={}, byteCount={}",
+                                value == null ? null : value.getClass().getName(),
+                                bytes == null ? 0 : bytes.length);
+                        return bytes;
+                    } catch (Exception e) {
+                        Logger.error(
+                                false,
+                                "Tempus",
+                                e,
+                                "Temporal payload serialization failed: adapter=fastjson2, valueType={}, exception={}",
+                                value == null ? null : value.getClass().getName(),
+                                e.getClass().getSimpleName());
+                        throw e;
+                    }
                 }
 
                 /**
@@ -118,10 +147,35 @@ public abstract class AbstractPayloadConverter implements PayloadConverter {
                  */
                 @Override
                 public <T> T fromBytes(byte[] bytes, Class<T> valueClass, Type valueType) throws Exception {
-                    return MethodKit.invokeStatic(parseObject, bytes, valueType == null ? valueClass : valueType);
+                    try {
+                        T value = MethodKit
+                                .invokeStatic(parseObject, bytes, valueType == null ? valueClass : valueType);
+                        Logger.debug(
+                                false,
+                                "Tempus",
+                                "Temporal payload deserialized: adapter=fastjson2, targetType={}, byteCount={}",
+                                valueClass == null ? null : valueClass.getName(),
+                                bytes == null ? 0 : bytes.length);
+                        return value;
+                    } catch (Exception e) {
+                        Logger.error(
+                                false,
+                                "Tempus",
+                                e,
+                                "Temporal payload deserialization failed: adapter=fastjson2, targetType={}, byteCount={}, exception={}",
+                                valueClass == null ? null : valueClass.getName(),
+                                bytes == null ? 0 : bytes.length,
+                                e.getClass().getSimpleName());
+                        throw e;
+                    }
                 }
             };
-        } catch (Throwable ignored) {
+        } catch (Throwable e) {
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Temporal payload adapter unavailable: adapter=fastjson2, exception={}",
+                    e.getClass().getSimpleName());
             return null;
         }
     }
@@ -166,7 +220,25 @@ public abstract class AbstractPayloadConverter implements PayloadConverter {
                  */
                 @Override
                 public byte[] toBytes(Object value) throws Exception {
-                    return MethodKit.invoke(objectMapper, writeValueAsBytes, value);
+                    try {
+                        byte[] bytes = MethodKit.invoke(objectMapper, writeValueAsBytes, value);
+                        Logger.debug(
+                                false,
+                                "Tempus",
+                                "Temporal payload serialized: adapter=jackson, valueType={}, byteCount={}",
+                                value == null ? null : value.getClass().getName(),
+                                bytes == null ? 0 : bytes.length);
+                        return bytes;
+                    } catch (Exception e) {
+                        Logger.error(
+                                false,
+                                "Tempus",
+                                e,
+                                "Temporal payload serialization failed: adapter=jackson, valueType={}, exception={}",
+                                value == null ? null : value.getClass().getName(),
+                                e.getClass().getSimpleName());
+                        throw e;
+                    }
                 }
 
                 /**
@@ -181,12 +253,36 @@ public abstract class AbstractPayloadConverter implements PayloadConverter {
                  */
                 @Override
                 public <T> T fromBytes(byte[] bytes, Class<T> valueClass, Type valueType) throws Exception {
-                    Object javaType = MethodKit
-                            .invoke(objectMapper, constructType, valueType == null ? valueClass : valueType);
-                    return MethodKit.invoke(objectMapper, readValue, bytes, javaType);
+                    try {
+                        Object javaType = MethodKit
+                                .invoke(objectMapper, constructType, valueType == null ? valueClass : valueType);
+                        T value = MethodKit.invoke(objectMapper, readValue, bytes, javaType);
+                        Logger.debug(
+                                false,
+                                "Tempus",
+                                "Temporal payload deserialized: adapter=jackson, targetType={}, byteCount={}",
+                                valueClass == null ? null : valueClass.getName(),
+                                bytes == null ? 0 : bytes.length);
+                        return value;
+                    } catch (Exception e) {
+                        Logger.error(
+                                false,
+                                "Tempus",
+                                e,
+                                "Temporal payload deserialization failed: adapter=jackson, targetType={}, byteCount={}, exception={}",
+                                valueClass == null ? null : valueClass.getName(),
+                                bytes == null ? 0 : bytes.length,
+                                e.getClass().getSimpleName());
+                        throw e;
+                    }
                 }
             };
-        } catch (Throwable ignored) {
+        } catch (Throwable e) {
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Temporal payload adapter unavailable: adapter=jackson, exception={}",
+                    e.getClass().getSimpleName());
             return null;
         }
     }
@@ -223,7 +319,25 @@ public abstract class AbstractPayloadConverter implements PayloadConverter {
                  */
                 @Override
                 public byte[] toBytes(Object value) throws Exception {
-                    return MethodKit.<String>invoke(gson, toJson, value).getBytes(Charset.UTF_8);
+                    try {
+                        byte[] bytes = MethodKit.<String>invoke(gson, toJson, value).getBytes(Charset.UTF_8);
+                        Logger.debug(
+                                false,
+                                "Tempus",
+                                "Temporal payload serialized: adapter=gson, valueType={}, byteCount={}",
+                                value == null ? null : value.getClass().getName(),
+                                bytes.length);
+                        return bytes;
+                    } catch (Exception e) {
+                        Logger.error(
+                                false,
+                                "Tempus",
+                                e,
+                                "Temporal payload serialization failed: adapter=gson, valueType={}, exception={}",
+                                value == null ? null : value.getClass().getName(),
+                                e.getClass().getSimpleName());
+                        throw e;
+                    }
                 }
 
                 /**
@@ -238,14 +352,38 @@ public abstract class AbstractPayloadConverter implements PayloadConverter {
                  */
                 @Override
                 public <T> T fromBytes(byte[] bytes, Class<T> valueClass, Type valueType) throws Exception {
-                    return MethodKit.invoke(
-                            gson,
-                            fromJson,
-                            new String(bytes, Charset.UTF_8),
-                            valueType == null ? valueClass : valueType);
+                    try {
+                        T value = MethodKit.invoke(
+                                gson,
+                                fromJson,
+                                new String(bytes, Charset.UTF_8),
+                                valueType == null ? valueClass : valueType);
+                        Logger.debug(
+                                false,
+                                "Tempus",
+                                "Temporal payload deserialized: adapter=gson, targetType={}, byteCount={}",
+                                valueClass == null ? null : valueClass.getName(),
+                                bytes == null ? 0 : bytes.length);
+                        return value;
+                    } catch (Exception e) {
+                        Logger.error(
+                                false,
+                                "Tempus",
+                                e,
+                                "Temporal payload deserialization failed: adapter=gson, targetType={}, byteCount={}, exception={}",
+                                valueClass == null ? null : valueClass.getName(),
+                                bytes == null ? 0 : bytes.length,
+                                e.getClass().getSimpleName());
+                        throw e;
+                    }
                 }
             };
-        } catch (Throwable ignored) {
+        } catch (Throwable e) {
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Temporal payload adapter unavailable: adapter=gson, exception={}",
+                    e.getClass().getSimpleName());
             return null;
         }
     }
@@ -261,7 +399,20 @@ public abstract class AbstractPayloadConverter implements PayloadConverter {
         try {
             Method method = MethodKit.getPublicMethod(type, false, methodName);
             MethodKit.invoke(target, method);
-        } catch (Throwable ignored) {
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Temporal payload adapter optional method invoked: type={}, method={}",
+                    type == null ? null : type.getName(),
+                    methodName);
+        } catch (Throwable e) {
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Temporal payload adapter optional method skipped: type={}, method={}, exception={}",
+                    type == null ? null : type.getName(),
+                    methodName,
+                    e.getClass().getSimpleName());
         }
     }
 
@@ -275,9 +426,14 @@ public abstract class AbstractPayloadConverter implements PayloadConverter {
         for (PayloadAdapter adapter : List
                 .of(tryCreateFastjsonAdapter(), tryCreateJacksonAdapter(), tryCreateGsonAdapter())) {
             if (adapter != null) {
+                Logger.info(false, "Tempus", "Temporal default payload adapter selected: adapter={}", adapter.name());
                 return adapter;
             }
         }
+        Logger.error(
+                false,
+                "Tempus",
+                "Temporal default payload adapter resolution failed: candidates=fastjson2,jackson,gson");
         throw new IllegalStateException(
                 "No supported JSON framework found for Temporal payload conversion. Expected fastjson2, Jackson, or Gson.");
     }

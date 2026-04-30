@@ -29,6 +29,7 @@ import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
 import org.miaixz.bus.cortex.magic.event.CortexChangeRecord;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
 import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Version-domain publishing workflow.
@@ -340,6 +341,15 @@ public class VersionPublisher {
             Map<String, Object> root = JsonKit.toMap(metadata);
             return root == null ? new LinkedHashMap<>() : new LinkedHashMap<>(root);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Cortex",
+                    e,
+                    "Cortex operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "version",
+                    "VersionPublisher",
+                    false,
+                    e.getClass().getSimpleName());
             return new LinkedHashMap<>();
         }
     }

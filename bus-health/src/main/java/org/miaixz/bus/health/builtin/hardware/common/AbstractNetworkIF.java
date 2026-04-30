@@ -179,7 +179,12 @@ public abstract class AbstractNetworkIF implements NetworkIF {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
             return interfaces == null ? Collections.emptyList() : Collections.list(interfaces);
         } catch (SocketException ex) {
-            Logger.error(false, "Health", "Socket exception when retrieving interfaces: {}", ex.getMessage());
+            Logger.error(
+                    false,
+                    "Health",
+                    ex,
+                    "Network interface retrieval failed: exception={}",
+                    ex.getClass().getSimpleName());
         }
         return Collections.emptyList();
     }
@@ -195,10 +200,12 @@ public abstract class AbstractNetworkIF implements NetworkIF {
             // getHardwareAddress also checks for loopback
             return networkInterface.getHardwareAddress() == null;
         } catch (SocketException e) {
-            Logger.error(false, "Health",
+            Logger.error(
+                    false,
+                    "Health",
                     "Socket exception when retrieving interface information for {}: {}",
                     networkInterface,
-                    e.getMessage());
+                    e.getClass().getSimpleName());
         }
         return false;
     }

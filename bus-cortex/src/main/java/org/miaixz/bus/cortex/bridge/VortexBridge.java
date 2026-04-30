@@ -184,8 +184,18 @@ public class VortexBridge
     @Override
     public void onEvent(RegistryChange<ApiAssets> event) {
         if (event == null || event.getAction() == null || event.getAsset() == null) {
+            Logger.debug(false, "Cortex", "Bridge ignored invalid registry event: nullEvent={}", event == null);
             return;
         }
+        Logger.debug(
+                true,
+                "Cortex",
+                "Bridge event received: action={}, namespace={}, id={}, method={}, version={}",
+                event.getAction(),
+                event.getNamespace_id(),
+                event.getId(),
+                event.getMethod(),
+                event.getVersion());
         RegistryChange<Assets> transportEvent = new RegistryChange<>();
         transportEvent.setAction(event.getAction());
         transportEvent.setNamespace_id(event.getNamespace_id());
@@ -202,22 +212,43 @@ public class VortexBridge
             try {
                 changeLogStore.append(toOutboxRecord(transportEvent));
                 signalWorker(transportEvent);
+                Logger.debug(
+                        false,
+                        "Cortex",
+                        "Bridge event appended to outbox: action={}, namespace={}, id={}",
+                        event.getAction(),
+                        event.getNamespace_id(),
+                        event.getId());
                 return;
             } catch (Exception e) {
                 failedAttemptCount.incrementAndGet();
                 lastError = e.getMessage();
-                Logger.warn(false, "Cortex",
+                Logger.warn(
+                        false,
+                        "Cortex",
+                        e,
                         "VortexBridge failed to append outbox record, falling back to local queue: {}",
                         e.getMessage());
             }
         }
         if (!queue.offer(transportEvent)) {
             droppedCount.incrementAndGet();
-            Logger.warn(false, "Cortex",
+            Logger.warn(
+                    false,
+                    "Cortex",
                     "VortexBridge queue full, dropping {} event for: {}/{}",
                     event.getAction(),
                     event.getMethod(),
                     event.getVersion());
+        } else {
+            Logger.debug(
+                    false,
+                    "Cortex",
+                    "Bridge event queued: action={}, namespace={}, id={}, queueSize={}",
+                    event.getAction(),
+                    event.getNamespace_id(),
+                    event.getId(),
+                    queue.size());
         }
     }
 
@@ -225,13 +256,29 @@ public class VortexBridge
      * Stops the background sync worker.
      */
     public void stop() {
+        Logger.info(
+                true,
+                "Cortex",
+                "Bridge stop requested: queueSize={}, delivered={}, dropped={}",
+                queue.size(),
+                deliveredCount.get(),
+                droppedCount.get());
         running = false;
         workerThread.interrupt();
         try {
             workerThread.join(TimeUnit.SECONDS.toMillis(5));
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            Logger.warn(false, "Cortex", e, "Bridge stop interrupted: queueSize={}", queue.size());
         }
+        Logger.info(
+                false,
+                "Cortex",
+                "Bridge stop completed: running={}, delivered={}, dropped={}, failed={}",
+                isRunning(),
+                deliveredCount.get(),
+                droppedCount.get(),
+                failedAttemptCount.get());
     }
 
     /**
@@ -260,6 +307,15 @@ public class VortexBridge
                 }
                 deliverQueued(event);
             } catch (InterruptedException e) {
+                Logger.warn(
+                        false,
+                        "Cortex",
+                        e,
+                        "Cortex operation failed: component={}, provider={}, recoverable={}, exception={}",
+                        "bridge",
+                        "VortexBridge",
+                        false,
+                        e.getClass().getSimpleName());
                 if (running) {
                     continue;
                 }
@@ -289,9 +345,11 @@ public class VortexBridge
             return false;
         }
         claimedCount.addAndGet(records.size());
+        Logger.debug(true, "Cortex", "Bridge claimed outbox records: count={}, owner={}", records.size(), outboxOwner);
         for (CortexChangeRecord record : records) {
             deliverRecord(record);
         }
+        Logger.debug(false, "Cortex", "Bridge outbox drain completed: count={}, owner={}", records.size(), outboxOwner);
         return true;
     }
 
@@ -308,13 +366,24 @@ public class VortexBridge
             DeliveryResult result = deliverJson(json);
             if (result.success()) {
                 deliveredCount.incrementAndGet();
+                Logger.debug(
+                        false,
+                        "Cortex",
+                        "Bridge queued delivery completed: action={}, namespace={}, id={}",
+                        event.getAction(),
+                        event.getNamespace_id(),
+                        event.getId());
                 return;
             }
             failedAttemptCount.incrementAndGet();
             lastError = result.error();
             if (!result.retryable()) {
                 droppedCount.incrementAndGet();
-                Logger.warn(false, "Cortex", "Bridge delivery dropped due to non-retryable response: {}", result.error());
+                Logger.warn(
+                        false,
+                        "Cortex",
+                        "Bridge delivery dropped due to non-retryable response: {}",
+                        result.error());
                 return;
             }
             attempt++;
@@ -322,6 +391,15 @@ public class VortexBridge
                 droppedCount.incrementAndGet();
                 Logger.warn(false, "Cortex", "Bridge delivery failed after {} retries: {}", maxRetries, result.error());
             } else {
+                Logger.debug(
+                        true,
+                        "Cortex",
+                        "Bridge queued delivery retry scheduled: action={}, namespace={}, id={}, attempt={}, error={}",
+                        event.getAction(),
+                        event.getNamespace_id(),
+                        event.getId(),
+                        attempt,
+                        result.error());
                 TimeUnit.MILLISECONDS.sleep(Math.min(1000L, 100L * attempt));
             }
         }
@@ -337,6 +415,12 @@ public class VortexBridge
         if (result.success()) {
             deliveredCount.incrementAndGet();
             changeLogStore.markDelivered(record.getId());
+            Logger.debug(
+                    false,
+                    "Cortex",
+                    "Bridge outbox delivery completed: recordId={}, resourceId={}",
+                    record.getId(),
+                    record.getResourceId());
             return;
         }
         failedAttemptCount.incrementAndGet();
@@ -346,6 +430,20 @@ public class VortexBridge
         if (updated != null && updated.getStatus() == CortexChangeStatus.DEAD) {
             deadCount.incrementAndGet();
             droppedCount.incrementAndGet();
+            Logger.warn(
+                    false,
+                    "Cortex",
+                    "Bridge outbox delivery moved to dead letter: recordId={}, error={}",
+                    record.getId(),
+                    result.error());
+        } else {
+            Logger.warn(
+                    false,
+                    "Cortex",
+                    "Bridge outbox delivery failed and will retry: recordId={}, retryable={}, error={}",
+                    record.getId(),
+                    result.retryable(),
+                    result.error());
         }
     }
 
@@ -358,16 +456,48 @@ public class VortexBridge
     private DeliveryResult deliverJson(String json) {
         String url = syncUrl + Specifics.MAPPING_REGISTRY + Specifics.MAPPING_PUSH;
         try {
+            Logger.debug(
+                    true,
+                    "Cortex",
+                    "Bridge delivery HTTP call started: url={}, payloadChars={}",
+                    url,
+                    json == null ? 0 : json.length());
             Callout.Response response = Callout.postJson(url, json, timeoutMs);
             if (response.errorMessage() != null) {
+                Logger.warn(
+                        false,
+                        "Cortex",
+                        "Bridge delivery HTTP call failed: url={}, error={}",
+                        url,
+                        response.errorMessage());
                 return new DeliveryResult(false, true, response.errorMessage());
             }
             if (response.isSuccessful()) {
+                Logger.debug(
+                        false,
+                        "Cortex",
+                        "Bridge delivery HTTP call completed: url={}, status={}",
+                        url,
+                        response.statusCode());
                 return new DeliveryResult(true, false, null);
             }
             String error = "HTTP " + response.statusCode();
+            Logger.warn(
+                    false,
+                    "Cortex",
+                    "Bridge delivery HTTP call returned retryable status: url={}, status={}, retryable={}",
+                    url,
+                    response.statusCode(),
+                    shouldRetry(response.statusCode()));
             return new DeliveryResult(false, shouldRetry(response.statusCode()), error);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Cortex",
+                    e,
+                    "Bridge delivery HTTP call threw exception: url={}, error={}",
+                    url,
+                    e.getMessage());
             return new DeliveryResult(false, true, e.getMessage());
         }
     }
@@ -548,7 +678,18 @@ public class VortexBridge
      */
     private void signalWorker(RegistryChange<Assets> event) {
         if (!queue.offer(event)) {
-            Logger.warn(false, "Cortex", "Bridge wake-up queue is full; pending outbox records will be retried by polling");
+            Logger.warn(
+                    false,
+                    "Cortex",
+                    "Bridge wake-up queue is full; pending outbox records will be retried by polling");
+        } else {
+            Logger.trace(
+                    true,
+                    "Cortex",
+                    "Bridge worker signaled: namespace={}, id={}, queueSize={}",
+                    event.getNamespace_id(),
+                    event.getId(),
+                    queue.size());
         }
     }
 

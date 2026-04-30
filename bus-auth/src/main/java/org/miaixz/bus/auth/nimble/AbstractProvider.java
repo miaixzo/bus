@@ -41,6 +41,7 @@ import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Abstract base class for authorization processing, supporting various protocols such as OAuth2, SAML, and LDAP.
@@ -84,15 +85,38 @@ public abstract class AbstractProvider implements Provider {
      * @throws AuthorizedException if the configuration is incomplete or invalid
      */
     public AbstractProvider(Context context, Complex complex, CacheX cache) {
+        Logger.debug(
+                true,
+                "Auth",
+                "OAuth provider initialization started: provider={}, source={}, protocol={}",
+                getClass().getSimpleName(),
+                complex == null ? null : complex.getName(),
+                complex == null ? null : complex.getProtocol());
         this.context = context;
         this.complex = complex;
         this.cache = cache;
         // Validate authorization support
         if (!Checker.isSupportedAuth(this.context, this.complex)) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    "OAuth provider initialization rejected: provider={}, source={}, reason={}",
+                    getClass().getSimpleName(),
+                    complex == null ? null : complex.getName(),
+                    "unsupportedConfiguration");
             throw new AuthorizedException(ErrorCode._110002);
         }
         // Validate configuration
         this.validate(this.context);
+        Logger.debug(
+                false,
+                "Auth",
+                "OAuth provider initialized: provider={}, source={}, protocol={}, cacheType={}, ignoreState={}",
+                getClass().getSimpleName(),
+                complex == null ? null : complex.getName(),
+                complex == null ? null : complex.getProtocol(),
+                cache == null ? null : cache.getClass().getName(),
+                this.context.isIgnoreState());
     }
 
     /**
@@ -103,19 +127,56 @@ public abstract class AbstractProvider implements Provider {
      */
     @Override
     public Message authorize(Callback callback) {
-        // Validate callback data
-        this.validate(callback);
-        // For OAuth2, validate the state parameter (if not ignored)
-        if (!this.context.isIgnoreState() && Protocol.OIDC == this.complex.getProtocol()) {
-            Checker.check(callback.getState(), this.complex, this.cache);
+        try {
+            Logger.info(
+                    true,
+                    "Auth",
+                    "OAuth authorization started: provider={}, source={}, codePresent={}, statePresent={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    callback != null && StringKit.isNotEmpty(callback.getCode()),
+                    callback != null && StringKit.isNotEmpty(callback.getState()));
+            // Validate callback data
+            this.validate(callback);
+            // For OAuth2, validate the state parameter (if not ignored)
+            if (!this.context.isIgnoreState() && Protocol.OIDC == this.complex.getProtocol()) {
+                Checker.check(callback.getState(), this.complex, this.cache);
+            }
+
+            // Obtain access token
+            Message message = this.token(callback);
+            Logger.debug(
+                    false,
+                    "Auth",
+                    "OAuth token stage completed: provider={}, source={}, errcode={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    message == null ? null : message.getErrcode());
+
+            Authorization token = JsonKit.toPojo(JsonKit.toJsonString(message.getData()), Authorization.class);
+            // Retrieve user information
+            Message result = this.userInfo(token);
+            Logger.info(
+                    false,
+                    "Auth",
+                    "OAuth authorization completed: provider={}, source={}, errcode={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    result == null ? null : result.getErrcode());
+            return result;
+        } catch (RuntimeException e) {
+            Logger.error(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth authorization failed: provider={}, source={}, codePresent={}, statePresent={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    callback != null && StringKit.isNotEmpty(callback.getCode()),
+                    callback != null && StringKit.isNotEmpty(callback.getState()),
+                    e.getClass().getSimpleName());
+            throw e;
         }
-
-        // Obtain access token
-        Message message = this.token(callback);
-
-        Authorization token = JsonKit.toPojo(JsonKit.toJsonString(message.getData()), Authorization.class);
-        // Retrieve user information
-        return this.userInfo(token);
     }
 
     /**
@@ -126,9 +187,17 @@ public abstract class AbstractProvider implements Provider {
      */
     @Override
     public Message build(String state) {
+        Logger.info(
+                true,
+                "Auth",
+                "OAuth authorize URL build started: provider={}, source={}, protocol={}, statePresent={}",
+                getClass().getSimpleName(),
+                this.complex == null ? null : this.complex.getName(),
+                this.complex == null ? null : this.complex.getProtocol(),
+                StringKit.isNotEmpty(state));
         if (Protocol.OIDC == this.complex.getProtocol()) {
             // Build OAuth2 authorization URL
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            Message result = Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Builder.fromUrl(getEndpoint(Endpoint.AUTHORIZE)).queryParam("response_type", "code")
                                     .queryParam("client_id", this.context.getClientId())
@@ -136,14 +205,39 @@ public abstract class AbstractProvider implements Provider {
                                     .queryParam("state", getRealState(state))
                                     .queryParam("scope", getScopes(Symbol.SPACE, true, getScopes(null))).build())
                     .build();
+            Logger.info(
+                    false,
+                    "Auth",
+                    "OAuth authorize URL build completed: provider={}, source={}, protocol={}, urlBytes={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    this.complex == null ? null : this.complex.getProtocol(),
+                    result.getData() == null ? 0 : StringKit.toString(result.getData()).length());
+            return result;
         } else if (Protocol.SAML == this.complex.getProtocol()) {
             // Build SAML single sign-on URL
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            Message result = Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Builder.fromUrl(getEndpoint(Endpoint.AUTHORIZE))
                                     .queryParam("RelayState", getRealState(state)).build())
                     .build();
+            Logger.info(
+                    false,
+                    "Auth",
+                    "OAuth authorize URL build completed: provider={}, source={}, protocol={}, urlBytes={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    this.complex == null ? null : this.complex.getProtocol(),
+                    result.getData() == null ? 0 : StringKit.toString(result.getData()).length());
+            return result;
         }
+        Logger.warn(
+                false,
+                "Auth",
+                "OAuth authorize URL build skipped: provider={}, source={}, protocol={}",
+                getClass().getSimpleName(),
+                this.complex == null ? null : this.complex.getName(),
+                this.complex == null ? null : this.complex.getProtocol());
         return null; // LDAP does not use an authorization URL
     }
 
@@ -201,7 +295,37 @@ public abstract class AbstractProvider implements Provider {
      * @return the response content
      */
     protected String doPostToken(String code) {
-        return Httpx.post(tokenUrl(code));
+        String url = tokenUrl(code);
+        Logger.debug(
+                true,
+                "Auth",
+                "OAuth token request started: provider={}, source={}, method=POST, endpoint={}, codePresent={}",
+                getClass().getSimpleName(),
+                this.complex == null ? null : this.complex.getName(),
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                StringKit.isNotEmpty(code));
+        try {
+            String response = Httpx.post(url);
+            Logger.debug(
+                    false,
+                    "Auth",
+                    "OAuth token response received: provider={}, source={}, chars={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    response == null ? 0 : response.length());
+            return response;
+        } catch (RuntimeException e) {
+            Logger.error(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth token request failed: provider={}, source={}, method=POST, endpoint={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    e.getClass().getSimpleName());
+            throw e;
+        }
     }
 
     /**
@@ -211,7 +335,37 @@ public abstract class AbstractProvider implements Provider {
      * @return the response content
      */
     protected String doGetToken(String code) {
-        return Httpx.get(tokenUrl(code));
+        String url = tokenUrl(code);
+        Logger.debug(
+                true,
+                "Auth",
+                "OAuth token request started: provider={}, source={}, method=GET, endpoint={}, codePresent={}",
+                getClass().getSimpleName(),
+                this.complex == null ? null : this.complex.getName(),
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                StringKit.isNotEmpty(code));
+        try {
+            String response = Httpx.get(url);
+            Logger.debug(
+                    false,
+                    "Auth",
+                    "OAuth token response received: provider={}, source={}, chars={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    response == null ? 0 : response.length());
+            return response;
+        } catch (RuntimeException e) {
+            Logger.error(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth token request failed: provider={}, source={}, method=GET, endpoint={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    e.getClass().getSimpleName());
+            throw e;
+        }
     }
 
     /**
@@ -221,7 +375,37 @@ public abstract class AbstractProvider implements Provider {
      * @return the response content
      */
     protected String doGetUserInfo(Authorization authorization) {
-        return Httpx.get(userInfoUrl(authorization));
+        String url = userInfoUrl(authorization);
+        Logger.debug(
+                true,
+                "Auth",
+                "OAuth userinfo request started: provider={}, source={}, endpoint={}, tokenPresent={}",
+                getClass().getSimpleName(),
+                this.complex == null ? null : this.complex.getName(),
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                authorization != null && StringKit.isNotEmpty(authorization.getToken()));
+        try {
+            String response = Httpx.get(url);
+            Logger.debug(
+                    false,
+                    "Auth",
+                    "OAuth userinfo response received: provider={}, source={}, chars={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    response == null ? 0 : response.length());
+            return response;
+        } catch (RuntimeException e) {
+            Logger.error(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth userinfo request failed: provider={}, source={}, endpoint={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    e.getClass().getSimpleName());
+            throw e;
+        }
     }
 
     /**
@@ -231,7 +415,37 @@ public abstract class AbstractProvider implements Provider {
      * @return the response content
      */
     protected String doGetRevoke(Authorization authorization) {
-        return Httpx.get(revokeUrl(authorization));
+        String url = revokeUrl(authorization);
+        Logger.debug(
+                true,
+                "Auth",
+                "OAuth revoke request started: provider={}, source={}, endpoint={}, tokenPresent={}",
+                getClass().getSimpleName(),
+                this.complex == null ? null : this.complex.getName(),
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                authorization != null && StringKit.isNotEmpty(authorization.getToken()));
+        try {
+            String response = Httpx.get(url);
+            Logger.debug(
+                    false,
+                    "Auth",
+                    "OAuth revoke response received: provider={}, source={}, chars={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    response == null ? 0 : response.length());
+            return response;
+        } catch (RuntimeException e) {
+            Logger.error(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth revoke request failed: provider={}, source={}, endpoint={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    e.getClass().getSimpleName());
+            throw e;
+        }
     }
 
     /**

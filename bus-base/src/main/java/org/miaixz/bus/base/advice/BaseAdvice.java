@@ -296,12 +296,23 @@ public class BaseAdvice extends Controller {
      */
     public void defaultExceptionHandler(Exception ex) {
         try {
-            // Since this is an error handler, it's an "exit" (isEntry = false)
-            Logger.error(false, "Advice", "Errors: {}", ex.getMessage(), ex);
+            Logger.error(
+                    false,
+                    "Base",
+                    "Default exception handler captured error: exceptionType={}, status=failure, error={}",
+                    ex == null ? null : ex.getClass().getName(),
+                    ex == null ? null : ex.getMessage(),
+                    ex);
             Instances.singletion(ErrorAdvice.class).handler(ex);
         } catch (RuntimeException ignore) {
             // Prevents the exception handler itself from crashing the application.
-            Logger.error(false, "Advice", "Exception occurred in the defaultExceptionHandler itself.", ignore);
+            Logger.error(
+                    false,
+                    "Base",
+                    "Default exception handler failed while delegating error advice: handler={}, status=failure, error={}",
+                    "ErrorAdvice",
+                    ignore.getMessage(),
+                    ignore);
         }
     }
 

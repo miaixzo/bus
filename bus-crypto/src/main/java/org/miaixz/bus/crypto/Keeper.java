@@ -65,6 +65,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Key utility class for generating, reading, and managing cryptographic keys. This class provides a comprehensive set
@@ -246,6 +247,14 @@ public class Keeper {
         try {
             return keyFactory.generateSecret(keySpec);
         } catch (final InvalidKeySpecException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Secret key generation failed: algorithm={}, keySpecType={}, exception={}",
+                    algorithm,
+                    keySpec == null ? null : keySpec.getClass().getSimpleName(),
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
     }
@@ -347,6 +356,14 @@ public class Keeper {
         try {
             return getKeyFactory(algorithm).generatePrivate(keySpec);
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Private key generation failed: algorithm={}, keySpecType={}, exception={}",
+                    algorithm,
+                    keySpec == null ? null : keySpec.getClass().getSimpleName(),
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
     }
@@ -364,6 +381,15 @@ public class Keeper {
         try {
             return (PrivateKey) keyStore.getKey(alias, password);
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Private key load failed: keyStorePresent={}, aliasPresent={}, passwordPresent={}, exception={}",
+                    keyStore != null,
+                    alias != null,
+                    password != null,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
     }
@@ -418,6 +444,15 @@ public class Keeper {
         try {
             return getKeyFactory(algorithm).generatePublic(keySpec);
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "keeper",
+                    "Keeper",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
     }
@@ -461,6 +496,15 @@ public class Keeper {
         try {
             return getKeyFactory(Algorithm.RSA.getValue()).generatePublic(publicKeySpec);
         } catch (final InvalidKeySpecException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "keeper",
+                    "Keeper",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
     }
@@ -661,6 +705,15 @@ public class Keeper {
                         keyPairGen.initialize(param);
                     }
                 } catch (final InvalidAlgorithmParameterException e) {
+                    Logger.warn(
+                            false,
+                            "Crypto",
+                            e,
+                            "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                            "keeper",
+                            "Keeper",
+                            false,
+                            e.getClass().getSimpleName());
                     throw new CryptoException(e);
                 }
             }
@@ -704,6 +757,15 @@ public class Keeper {
             publicKey = keyStore.getCertificate(alias).getPublicKey();
             privateKey = (PrivateKey) keyStore.getKey(alias, password);
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Key pair load failed: keyStorePresent={}, aliasPresent={}, passwordPresent={}, exception={}",
+                    keyStore != null,
+                    alias != null,
+                    password != null,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
         return new KeyPair(publicKey, privateKey);
@@ -725,6 +787,15 @@ public class Keeper {
                     ? KeyPairGenerator.getInstance(getMainAlgorithm(algorithm)) //
                     : KeyPairGenerator.getInstance(getMainAlgorithm(algorithm), provider);//
         } catch (final NoSuchAlgorithmException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "keeper",
+                    "Keeper",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
         return keyPairGen;
@@ -743,6 +814,15 @@ public class Keeper {
             return (null == provider) ? KeyFactory.getInstance(getMainAlgorithm(algorithm))
                     : KeyFactory.getInstance(getMainAlgorithm(algorithm), provider);
         } catch (final NoSuchAlgorithmException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "keeper",
+                    "Keeper",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
     }
@@ -763,6 +843,15 @@ public class Keeper {
                     ? SecretKeyFactory.getInstance(getMainAlgorithm(algorithm)) //
                     : SecretKeyFactory.getInstance(getMainAlgorithm(algorithm), provider);
         } catch (final NoSuchAlgorithmException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "keeper",
+                    "Keeper",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
         return keyFactory;
@@ -783,6 +872,15 @@ public class Keeper {
                     ? KeyGenerator.getInstance(getMainAlgorithm(algorithm)) //
                     : KeyGenerator.getInstance(getMainAlgorithm(algorithm), provider);
         } catch (final NoSuchAlgorithmException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "keeper",
+                    "Keeper",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
         return generator;
@@ -973,6 +1071,15 @@ public class Keeper {
         try {
             keyStore.load(in, password);
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "KeyStore load failed: type={}, inputPresent={}, passwordPresent={}, exception={}",
+                    type,
+                    in != null,
+                    password != null,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
         return keyStore;
@@ -990,6 +1097,14 @@ public class Keeper {
         try {
             return null == provider ? KeyStore.getInstance(type) : KeyStore.getInstance(type, provider);
         } catch (final KeyStoreException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "KeyStore creation failed: type={}, provider={}, exception={}",
+                    type,
+                    provider == null ? null : provider.getName(),
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
     }
@@ -1035,6 +1150,15 @@ public class Keeper {
                     // Try PKCS#8
                     return generatePrivateKey("EC", object.getContent());
                 } catch (final Exception e) {
+                    Logger.warn(
+                            false,
+                            "Crypto",
+                            e,
+                            "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                            "keeper",
+                            "Keeper",
+                            false,
+                            e.getClass().getSimpleName());
                     // Try PKCS#1
                     return generatePrivateKey("EC", getOpenSSHPrivateKeySpec(object.getContent()));
                 }
@@ -1049,6 +1173,14 @@ public class Keeper {
                     // Try DER
                     return generatePublicKey("EC", object.getContent());
                 } catch (final Exception ignore) {
+                    Logger.debug(
+                            false,
+                            "Crypto",
+                            "Crypto operation skipped: component={}, provider={}, recoverable={}, exception={}",
+                            "keeper",
+                            "Keeper",
+                            true,
+                            ignore.getClass().getSimpleName());
                     // Try PKCS#1
                     return generatePublicKey("EC", getOpenSSHPublicKeySpec(object.getContent()));
                 }
@@ -1104,6 +1236,13 @@ public class Keeper {
             pemReader = new PemReader(reader);
             return pemReader.readPemObject();
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "PEM read failed: readerPresent={}, exception={}",
+                    reader != null,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         } finally {
             IoKit.closeQuietly(pemReader);
@@ -1171,6 +1310,15 @@ public class Keeper {
         try {
             pemWriter.writeObject(pemObject);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "keeper",
+                    "Keeper",
+                    false,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         } finally {
             IoKit.closeQuietly(pemWriter);
@@ -1452,6 +1600,14 @@ public class Keeper {
         try {
             return (ECPublicKeyParameters) ECUtil.generatePublicKeyParameter(publicKey);
         } catch (final InvalidKeyException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "EC public key conversion failed: algorithm={}, format={}, exception={}",
+                    publicKey.getAlgorithm(),
+                    publicKey.getFormat(),
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
     }
@@ -1550,6 +1706,14 @@ public class Keeper {
         try {
             return (ECPrivateKeyParameters) ECUtil.generatePrivateKeyParameter(privateKey);
         } catch (final InvalidKeyException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "EC private key conversion failed: algorithm={}, format={}, exception={}",
+                    privateKey.getAlgorithm(),
+                    privateKey.getFormat(),
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
     }
@@ -1569,6 +1733,13 @@ public class Keeper {
                     privateKey);
             return generatePrivateKey("SM2", info.getEncoded());
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "SM2 private key encoding failed: keyPresent={}, exception={}",
+                    privateKey != null,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -1597,6 +1768,14 @@ public class Keeper {
             keySpec = getPrivateKeySpec(privateKeyBytes, Builder.SM2_EC_SPEC);
             return generatePrivateKey(algorithm, keySpec);
         } catch (final Exception ignore) {
+            Logger.debug(
+                    false,
+                    "Crypto",
+                    "Crypto operation skipped: component={}, provider={}, recoverable={}, exception={}",
+                    "keeper",
+                    "Keeper",
+                    true,
+                    ignore.getClass().getSimpleName());
         }
 
         // Try PKCS#8
@@ -1604,6 +1783,14 @@ public class Keeper {
             keySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
             return generatePrivateKey(algorithm, keySpec);
         } catch (final Exception ignore) {
+            Logger.debug(
+                    false,
+                    "Crypto",
+                    "Crypto operation skipped: component={}, provider={}, recoverable={}, exception={}",
+                    "keeper",
+                    "Keeper",
+                    true,
+                    ignore.getClass().getSimpleName());
         }
 
         // Try PKCS#1 or OpenSSH format
@@ -1634,6 +1821,14 @@ public class Keeper {
             keySpec = getPublicKeySpec(publicKeyBytes, Builder.SM2_EC_SPEC);
             return generatePublicKey(algorithm, keySpec);
         } catch (final Exception ignore) {
+            Logger.debug(
+                    false,
+                    "Crypto",
+                    "Crypto operation skipped: component={}, provider={}, recoverable={}, exception={}",
+                    "keeper",
+                    "Keeper",
+                    true,
+                    ignore.getClass().getSimpleName());
             // ignore
         }
 
@@ -1642,6 +1837,14 @@ public class Keeper {
             keySpec = new X509EncodedKeySpec(publicKeyBytes);
             return generatePublicKey(algorithm, keySpec);
         } catch (final Exception ignore) {
+            Logger.debug(
+                    false,
+                    "Crypto",
+                    "Crypto operation skipped: component={}, provider={}, recoverable={}, exception={}",
+                    "keeper",
+                    "Keeper",
+                    true,
+                    ignore.getClass().getSimpleName());
         }
 
         // Try PKCS#1
@@ -1716,6 +1919,14 @@ public class Keeper {
         try {
             return keyStore.getCertificate(alias);
         } catch (final KeyStoreException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Certificate load failed: type={}, aliasPresent={}, exception={}",
+                    type,
+                    alias != null,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
     }
@@ -1734,6 +1945,14 @@ public class Keeper {
         try {
             return getCertificateFactory(type).generateCertificate(in);
         } catch (final CertificateException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Certificate read failed: type={}, inputPresent={}, exception={}",
+                    type,
+                    in != null,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
     }
@@ -1750,6 +1969,14 @@ public class Keeper {
         try {
             return keyStore.getCertificate(alias);
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Certificate lookup failed: keyStorePresent={}, aliasPresent={}, exception={}",
+                    keyStore != null,
+                    alias != null,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
     }
@@ -1769,6 +1996,14 @@ public class Keeper {
             factory = (null == provider) ? CertificateFactory.getInstance(type)
                     : CertificateFactory.getInstance(type, provider);
         } catch (final CertificateException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "CertificateFactory creation failed: type={}, provider={}, exception={}",
+                    type,
+                    provider == null ? null : provider.getName(),
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
         return factory;
@@ -1803,6 +2038,15 @@ public class Keeper {
             end.verify(ca.getPublicKey());
             return true;
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "keeper",
+                    "Keeper",
+                    false,
+                    e.getClass().getSimpleName());
             return false;
         }
     }

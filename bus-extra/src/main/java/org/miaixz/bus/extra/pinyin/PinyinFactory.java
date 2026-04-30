@@ -42,9 +42,12 @@ public class PinyinFactory {
      * @return A singleton instance of {@link PinyinProvider}.
      */
     public static PinyinProvider get() {
+        Logger.debug(true, "Extra", "component=pinyin, Default pinyin provider lookup started");
         final PinyinProvider engine = Instances.get(PinyinProvider.class.getName(), PinyinFactory::of);
-        Logger.debug(false, "Extra",
-                "Use [{}] Pinyin Provider As Default.",
+        Logger.debug(
+                false,
+                "Extra",
+                "component=pinyin, Default pinyin provider selected: provider={}",
                 StringKit.removeSuffix(engine.getClass().getSimpleName(), "Engine"));
         return engine;
     }
@@ -57,11 +60,18 @@ public class PinyinFactory {
      * @throws InternalException if no Pinyin library is found or available.
      */
     private static PinyinProvider of() {
+        Logger.debug(true, "Extra", "component=pinyin, SPI pinyin provider lookup started");
         final PinyinProvider engine = NormalSpiLoader.loadFirstAvailable(PinyinProvider.class);
         if (null != engine) {
+            Logger.debug(
+                    false,
+                    "Extra",
+                    "component=pinyin, SPI pinyin provider selected: provider={}",
+                    engine.getClass().getSimpleName());
             return engine;
         }
 
+        Logger.warn(false, "Extra", "component=pinyin, SPI pinyin provider lookup failed: providerPresent={}", false);
         throw new InternalException("No pinyin jar found !Please add one of it to your project !");
     }
 
@@ -74,15 +84,40 @@ public class PinyinFactory {
      * @throws InternalException if no engine with the specified name is found.
      */
     public static PinyinProvider of(String name) throws InternalException {
+        Logger.debug(
+                true,
+                "Extra",
+                "component=pinyin, Named pinyin provider lookup started: requestedProvider={}",
+                name);
         if (!StringKit.endWithIgnoreCase(name, "Provider")) {
             name = name + "Provider";
         }
         final ServiceLoader<PinyinProvider> list = NormalSpiLoader.loadList(PinyinProvider.class);
+        Logger.debug(
+                true,
+                "Extra",
+                "component=pinyin, Named pinyin provider candidates loaded: normalizedProvider={}, candidateCount={}",
+                name,
+                list.getServiceNames().size());
         for (final String serviceName : list.getServiceNames()) {
             if (StringKit.endWithIgnoreCase(serviceName, name)) {
-                return list.getService(serviceName);
+                final PinyinProvider provider = list.getService(serviceName);
+                Logger.debug(
+                        false,
+                        "Extra",
+                        "component=pinyin, Named pinyin provider selected: normalizedProvider={}, serviceName={}, provider={}",
+                        name,
+                        serviceName,
+                        provider == null ? "null" : provider.getClass().getSimpleName());
+                return provider;
             }
         }
+        Logger.warn(
+                false,
+                "Extra",
+                "component=pinyin, Named pinyin provider lookup failed: normalizedProvider={}, candidateCount={}",
+                name,
+                list.getServiceNames().size());
         throw new InternalException("No such provider named: " + name);
     }
 

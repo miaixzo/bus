@@ -100,8 +100,8 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
         return responseMono.flatMap(response -> {
             Logger.info(
                     false,
-                    "gRPC",
-                    "[GRPC_SUCCESS_STREAM] - Successfully invoked gRPC service: {} (streaming)",
+                    "Vortex",
+                    "protocol=grpc, event=GRPC_SUCCESS_STREAM, gRPC service invocation completed: service={}, mode=streaming",
                     assets.getMethod());
 
             DefaultDataBufferFactory bufferFactory = new DefaultDataBufferFactory();
@@ -129,8 +129,8 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
         return responseMono.flatMap(response -> {
             Logger.info(
                     false,
-                    "gRPC",
-                    "[GRPC_SUCCESS_ATOMIC] - Successfully invoked gRPC service: {} (atomic)",
+                    "Vortex",
+                    "protocol=grpc, event=GRPC_SUCCESS_ATOMIC, gRPC service invocation completed: service={}, mode=atomic",
                     assets.getMethod());
 
             return ServerResponse.ok().header(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON).bodyValue(response);
@@ -153,19 +153,19 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
 
             Logger.info(
                     true,
-                    "gRPC",
-                    "Invoking gRPC method via HTTP: {} on {}:{}",
+                    "Vortex",
+                    "protocol=grpc, Invoking gRPC method via HTTP: {} on {}:{}",
                     fullMethodName,
                     assets.getHost(),
                     assets.getPort());
 
             String url = buildGrpcUrl(assets, fullMethodName);
 
-            Logger.info(true, "gRPC", "gRPC method {} invoked successfully", fullMethodName);
+            Logger.info(true, "Vortex", "protocol=grpc, gRPC method {} invoked successfully", fullMethodName);
             return Httpx.post(url, payload, MediaType.APPLICATION_JSON);
 
         } catch (Exception e) {
-            Logger.error(false, "GRPC", "Failed to invoke gRPC method '{}'", assets.getMethod(), e);
+            Logger.error(false, "Vortex", "protocol=grpc, Failed to invoke gRPC method '{}'", assets.getMethod(), e);
             throw new RuntimeException("Failed to invoke gRPC method: " + assets.getMethod(), e);
         }
     }

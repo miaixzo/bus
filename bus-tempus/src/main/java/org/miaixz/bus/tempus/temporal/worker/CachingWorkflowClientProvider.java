@@ -86,7 +86,26 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
         Assert.notNull(binding.getEndpoint(), "temporal.endpoint must not be null");
 
         String cacheKey = toClientCacheKey(binding.getEndpoint(), binding.getNamespace(), binding.getIdentity());
-        return clientCache.computeIfAbsent(cacheKey, key -> createAndCacheClient(binding));
+        boolean cacheHit = clientCache.containsKey(cacheKey);
+        Logger.debug(
+                true,
+                "Tempus",
+                "Workflow client cache lookup started: endpoint={}, namespace={}, identity={}, cacheHit={}",
+                binding.getEndpoint(),
+                binding.getNamespace(),
+                binding.getIdentity(),
+                cacheHit);
+        WorkflowClient client = clientCache.computeIfAbsent(cacheKey, key -> createAndCacheClient(binding));
+        Logger.debug(
+                false,
+                "Tempus",
+                "Workflow client cache lookup completed: endpoint={}, namespace={}, identity={}, cacheHit={}, clientCacheSize={}",
+                binding.getEndpoint(),
+                binding.getNamespace(),
+                binding.getIdentity(),
+                cacheHit,
+                clientCache.size());
+        return client;
     }
 
     /**
@@ -98,22 +117,35 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
     private WorkflowClient createAndCacheClient(Binding binding) {
         String endpoint = binding.getEndpoint();
         Object serviceStubs = serviceStubsCache.computeIfAbsent(endpoint, key -> createServiceStubs(binding));
-        Logger.info(true, "Tempus",
-                "Creating workflow client for endpoint: {}, namespace: {}, identity: {}",
+        Logger.info(
+                true,
+                "Tempus",
+                "Workflow client creation started: endpoint={}, namespace={}, identity={}",
                 endpoint,
                 binding.getNamespace(),
                 binding.getIdentity());
 
         try {
-            return stubsProvider.createWorkflowClient(serviceStubs, binding);
-        } catch (Exception e) {
-            Logger.error(false, "Tempus",
-                    "Failed to create workflow client for endpoint: {}, namespace: {}, identity: {}, error: {}",
+            WorkflowClient client = stubsProvider.createWorkflowClient(serviceStubs, binding);
+            Logger.info(
+                    false,
+                    "Tempus",
+                    "Workflow client creation completed: endpoint={}, namespace={}, identity={}, clientType={}",
                     endpoint,
                     binding.getNamespace(),
                     binding.getIdentity(),
-                    e.getMessage(),
-                    e);
+                    client.getClass().getName());
+            return client;
+        } catch (Exception e) {
+            Logger.error(
+                    false,
+                    "Tempus",
+                    e,
+                    "Workflow client creation failed: endpoint={}, namespace={}, identity={}, exception={}",
+                    endpoint,
+                    binding.getNamespace(),
+                    binding.getIdentity(),
+                    e.getClass().getSimpleName());
             throw e;
         }
     }
@@ -126,21 +158,34 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
      */
     private Object createServiceStubs(Binding binding) {
         String endpoint = binding.getEndpoint();
-        Logger.info(true, "Tempus",
-                "Creating workflow service stubs for endpoint: {}, namespace: {}, identity: {}",
+        Logger.info(
+                true,
+                "Tempus",
+                "Workflow service stubs creation started: endpoint={}, namespace={}, identity={}",
                 endpoint,
                 binding.getNamespace(),
                 binding.getIdentity());
         try {
-            return stubsProvider.createServiceStubs(binding);
-        } catch (Exception e) {
-            Logger.error(false, "Tempus",
-                    "Failed to create workflow service stubs for endpoint: {}, namespace: {}, identity: {}, error: {}",
+            Object stubs = stubsProvider.createServiceStubs(binding);
+            Logger.info(
+                    false,
+                    "Tempus",
+                    "Workflow service stubs creation completed: endpoint={}, namespace={}, identity={}, stubsType={}",
                     endpoint,
                     binding.getNamespace(),
                     binding.getIdentity(),
-                    e.getMessage(),
-                    e);
+                    stubs == null ? null : stubs.getClass().getName());
+            return stubs;
+        } catch (Exception e) {
+            Logger.error(
+                    false,
+                    "Tempus",
+                    e,
+                    "Workflow service stubs creation failed: endpoint={}, namespace={}, identity={}, exception={}",
+                    endpoint,
+                    binding.getNamespace(),
+                    binding.getIdentity(),
+                    e.getClass().getSimpleName());
             throw e;
         }
     }
@@ -168,14 +213,26 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
      */
     public void invalidate(String endpoint) {
         if (endpoint == null) {
+            Logger.debug(false, "Tempus", "Workflow client cache invalidation skipped: endpointPresent=false");
             return;
         }
+        int beforeClientCount = clientCache.size();
+        int beforeStubCount = serviceStubsCache.size();
         clientCache.keySet().removeIf(key -> key.startsWith(endpoint + "|"));
         Object detached = serviceStubsCache.remove(endpoint);
         if (detached != null) {
             retiredServiceStubs.offer(detached);
         }
-        Logger.info(false, "Tempus", "Invalidated cached clients and detached service stubs for endpoint: {}", endpoint);
+        Logger.info(
+                false,
+                "Tempus",
+                "Workflow client cache invalidated: endpoint={}, beforeClientCount={}, afterClientCount={}, beforeStubCount={}, afterStubCount={}, retiredStubCount={}",
+                endpoint,
+                beforeClientCount,
+                clientCache.size(),
+                beforeStubCount,
+                serviceStubsCache.size(),
+                retiredServiceStubs.size());
     }
 
     /**
@@ -183,6 +240,13 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
      */
     @Override
     public void close() {
+        Logger.info(
+                true,
+                "Tempus",
+                "Workflow client provider close started: serviceStubCount={}, clientCount={}, retiredStubCount={}",
+                serviceStubsCache.size(),
+                clientCache.size(),
+                retiredServiceStubs.size());
         for (Map.Entry<String, Object> entry : serviceStubsCache.entrySet()) {
             closeServiceStubs(entry.getKey(), entry.getValue());
         }
@@ -192,6 +256,7 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
         serviceStubsCache.clear();
         clientCache.clear();
         retiredServiceStubs.clear();
+        Logger.info(false, "Tempus", "Workflow client provider close completed");
     }
 
     /**
@@ -205,14 +270,28 @@ public class CachingWorkflowClientProvider implements WorkflowClientProvider, Au
             return;
         }
         try {
-            stubsProvider.shutdownServiceStubs(serviceStubs);
-            Logger.debug(false, "Tempus", "Closed workflow service stubs for endpoint: {}", endpoint);
-        } catch (Exception e) {
-            Logger.warn(false, "Tempus",
-                    "Failed to close workflow service stubs for endpoint: {}, error: {}",
+            Logger.debug(
+                    true,
+                    "Tempus",
+                    "Workflow service stubs close started: endpoint={}, stubsType={}",
                     endpoint,
-                    e.getMessage(),
-                    e);
+                    serviceStubs.getClass().getName());
+            stubsProvider.shutdownServiceStubs(serviceStubs);
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Workflow service stubs close completed: endpoint={}, stubsType={}",
+                    endpoint,
+                    serviceStubs.getClass().getName());
+        } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Tempus",
+                    e,
+                    "Workflow service stubs close failed: endpoint={}, stubsType={}, exception={}",
+                    endpoint,
+                    serviceStubs.getClass().getName(),
+                    e.getClass().getSimpleName());
         }
     }
 

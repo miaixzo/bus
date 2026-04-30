@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.shade.safety.boot;
 
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.shade.safety.Launcher;
 import org.springframework.boot.loader.launch.JarLauncher;
 
@@ -63,7 +64,23 @@ public class BootJarLauncher extends JarLauncher {
      * @throws Exception If an error occurs during the launch process.
      */
     public void launch() throws Exception {
-        launch(launcher.args);
+        Logger.info(
+                true,
+                "Shade",
+                "Boot launcher started: component=launcher, argCount={}",
+                launcher.args == null ? 0 : launcher.args.length);
+        try {
+            launch(launcher.args);
+            Logger.info(false, "Shade", "Boot launcher finished: component=launcher");
+        } catch (Exception e) {
+            Logger.error(
+                    false,
+                    "Shade",
+                    e,
+                    "Boot launcher failed: component=launcher, exception={}",
+                    e.getClass().getSimpleName());
+            throw e;
+        }
     }
 
 }

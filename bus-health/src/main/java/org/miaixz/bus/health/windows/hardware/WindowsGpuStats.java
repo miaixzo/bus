@@ -211,7 +211,7 @@ final class WindowsGpuStats implements GpuStats {
                     }
                 }
             } catch (Exception e) {
-                Logger.debug(false, "Health", "LHM GPU utilization query failed: {}", e.getMessage());
+                Logger.debug(false, "Health", "LHM GPU utilization query failed: {}", e.getClass().getSimpleName());
             }
         }
         // Fallback: derive utilization from PDH tick counters
@@ -249,7 +249,7 @@ final class WindowsGpuStats implements GpuStats {
                     }
                 }
             } catch (Exception e) {
-                Logger.debug(false, "Health", "LHM GPU memory used query failed: {}", e.getMessage());
+                Logger.debug(false, "Health", "LHM GPU memory used query failed: {}", e.getClass().getSimpleName());
             }
         }
         return -1L;
@@ -500,7 +500,13 @@ final class WindowsGpuStats implements GpuStats {
                 }
             }
         } catch (Exception e) {
-            Logger.debug(false, "Health", "LHM {} {} query failed: {}", sensorType, sensorName, e.getMessage());
+            Logger.debug(
+                    false,
+                    "Health",
+                    "LHM {} {} query failed: {}",
+                    sensorType,
+                    sensorName,
+                    e.getClass().getSimpleName());
         }
         return -1d;
     }

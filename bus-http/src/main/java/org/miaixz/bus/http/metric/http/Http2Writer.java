@@ -99,7 +99,10 @@ public class Http2Writer implements Closeable {
         if (!client)
             return; // Nothing to write; servers don't send connection headers!
         if (Logger.isDebugEnabled()) {
-            Logger.warn(false, "HTTP", String.format(">> CONNECTION %s", Http2.CONNECTION_PREFACE.hex()));
+            Logger.warn(
+                    false,
+                    "Http",
+                    "protocol=http2, " + (String.format(">> CONNECTION %s", Http2.CONNECTION_PREFACE.hex())));
         }
         sink.write(Http2.CONNECTION_PREFACE.toByteArray());
         sink.flush();
@@ -346,7 +349,7 @@ public class Http2Writer implements Closeable {
      */
     public void frameHeader(int streamId, int length, byte type, byte flags) throws IOException {
         if (Logger.isDebugEnabled()) {
-            Logger.warn(false, "HTTP", Http2.frameLog(false, streamId, length, type, flags));
+            Logger.warn(false, "Http", "protocol=http2, " + (Http2.frameLog(false, streamId, length, type, flags)));
         }
         if (length > maxFrameSize) {
             throw Http2.illegalArgument("FRAME_SIZE_ERROR length > %d: %d", maxFrameSize, length);

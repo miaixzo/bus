@@ -69,15 +69,25 @@ public class Dcm2Pdf {
      * @param destIsDir A flag indicating if the destination path is a directory.
      */
     private void convert(Path src, Path dest, boolean destIsDir) {
+        long start = System.currentTimeMillis();
         try (ImageInputStream dis = new ImageInputStream(src.toFile())) {
+            Logger.debug(
+                    true,
+                    "Image",
+                    "DICOM encapsulated document extraction started: fileName={}, destIsDir={}",
+                    src.getFileName(),
+                    destIsDir);
             Attributes attributes = dis.readDataset();
             String sopCUID = attributes.getString(Tag.SOPClassUID);
             String ext = FileType.getFileExt(sopCUID);
             if (ext == null) {
-                Logger.info(false, "ImageTool",
-                        "DICOM file {} with {} SOP Class cannot be converted to bulkdata file",
-                        src,
-                        UID.nameOf(sopCUID));
+                Logger.info(
+                        false,
+                        "Image",
+                        "component=tool, Encapsulated document conversion skipped: fileName={}, sopClass={}, reason={}",
+                        src.getFileName(),
+                        UID.nameOf(sopCUID),
+                        "unsupported-sop-class");
                 return;
             }
             File destFile = destIsDir ? dest.resolve(src.getFileName() + ext).toFile() : dest.toFile();
@@ -88,8 +98,21 @@ public class Dcm2Pdf {
                 if (lastByte != 0)
                     fos.write(lastByte);
             }
+            Logger.info(
+                    false,
+                    "Image",
+                    "DICOM encapsulated document extraction finished: fileName={}, outputName={}, elapsedMs={}",
+                    src.getFileName(),
+                    destFile.getName(),
+                    System.currentTimeMillis() - start);
         } catch (Exception e) {
-            e.printStackTrace(System.out);
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM to PDF conversion failed: fileName={}, exception={}",
+                    src.getFileName(),
+                    e.getClass().getSimpleName());
         }
     }
 

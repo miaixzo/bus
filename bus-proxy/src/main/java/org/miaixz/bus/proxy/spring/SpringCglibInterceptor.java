@@ -21,6 +21,7 @@ package org.miaixz.bus.proxy.spring;
 
 import org.miaixz.bus.proxy.Aspect;
 import org.miaixz.bus.proxy.invoker.Interceptor;
+import org.miaixz.bus.logger.Logger;
 import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;
 
@@ -69,6 +70,13 @@ public class SpringCglibInterceptor extends Interceptor implements MethodInterce
 
         // "Before" advice
         if (aspect.before(target, method, args)) {
+            Logger.debug(
+                    true,
+                    "Proxy",
+                    "CGLIB proxy invocation started: targetClass={}, method={}, argumentCount={}",
+                    target == null ? null : target.getClass().getName(),
+                    method.getName(),
+                    args == null ? 0 : args.length);
             try {
                 result = proxy.invoke(target, args);
             } catch (final Throwable e) {
@@ -78,6 +86,14 @@ public class SpringCglibInterceptor extends Interceptor implements MethodInterce
                 }
 
                 // "After-throwing" advice
+                Logger.warn(
+                        false,
+                        "Proxy",
+                        throwable,
+                        "CGLIB proxy invocation failed: targetClass={}, method={}, exception={}",
+                        target == null ? null : target.getClass().getName(),
+                        method.getName(),
+                        throwable == null ? null : throwable.getClass().getSimpleName());
                 if (aspect.afterException(target, method, args, throwable)) {
                     throw throwable;
                 }
@@ -86,6 +102,13 @@ public class SpringCglibInterceptor extends Interceptor implements MethodInterce
 
         // "After" advice
         if (aspect.after(target, method, args, result)) {
+            Logger.debug(
+                    false,
+                    "Proxy",
+                    "CGLIB proxy invocation completed: targetClass={}, method={}, resultType={}",
+                    target == null ? null : target.getClass().getName(),
+                    method.getName(),
+                    result == null ? null : result.getClass().getName());
             return result;
         }
         return null;

@@ -532,8 +532,10 @@ public class ImageioReader extends ImageReader implements Closeable {
 
         byte[] ovlyData = new byte[(((length + 7) >>> 3) + 1) & (~1)];
         if (bitPosition < bitsStored)
-            Logger.info(false, "Image",
-                    "Ignore embedded overlay #{} from bit #{} < bits stored: {}",
+            Logger.info(
+                    false,
+                    "Image",
+                    "Ignore embedded overlay #{} from bit #{} < bits stored: bitsStored={}",
                     (gg0000 >>> 17) + 1,
                     bitPosition,
                     bitsStored);
@@ -815,14 +817,19 @@ public class ImageioReader extends ImageReader implements Closeable {
                     throw new UnsupportedOperationException("Unsupported Transfer Syntax: " + tsuid);
                 TransferSyntaxType tsType = TransferSyntaxType.forUID(tsuid);
                 if (tsType.adjustBitsStoredTo12(ds)) {
-                    Logger.info(false, "Image", "Adjust invalid Bits Stored: {} of {} to 12", bitsStored, tsType);
+                    Logger.info(
+                            false,
+                            "Image",
+                            "Adjust invalid Bits Stored: bitsStored={} of {} to 12",
+                            bitsStored,
+                            tsType);
                     bitsStored = 12;
                 }
                 pmiAfterDecompression = pmi.isYBR() && TransferSyntaxType.isYBRCompression(tsuid) ? Photometric.RGB
                         : pmi;
                 this.rle = tsuid.equals(UID.RLELossless.uid);
                 this.decompressor = ImageReaderFactory.getImageReader(param);
-                Logger.debug(false, "Image", "Decompressor: {}", decompressor.getClass().getName());
+                Logger.debug(false, "Image", "Decompressor: class={}", decompressor.getClass().getName());
                 this.patchJpegLS = param.patchJPEGLS;
             }
         }

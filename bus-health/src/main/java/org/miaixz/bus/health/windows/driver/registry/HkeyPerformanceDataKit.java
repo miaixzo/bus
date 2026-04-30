@@ -286,7 +286,9 @@ public final class HkeyPerformanceDataKit {
                 }
             }
         } catch (Win32Exception we) {
-            Logger.error(false, "Health",
+            Logger.error(
+                    false,
+                    "Health",
                     "Unable to locate English counter names in registry Perflib 009. Counters may need to be rebuilt: ",
                     we);
         }

@@ -255,7 +255,11 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
             WinBase.FILETIME lpKernelTime = new WinBase.FILETIME();
             WinBase.FILETIME lpUserTime = new WinBase.FILETIME();
             if (!Kernel32.INSTANCE.GetSystemTimes(lpIdleTime, lpKernelTime, lpUserTime)) {
-                Logger.error(false, "Health", "Failed to update system idle/kernel/user times. Error code: {}", Native.getLastError());
+                Logger.error(
+                        false,
+                        "Health",
+                        "Failed to update system idle/kernel/user times. Error code: {}",
+                        Native.getLastError());
                 return ticks;
             }
             // IOwait:

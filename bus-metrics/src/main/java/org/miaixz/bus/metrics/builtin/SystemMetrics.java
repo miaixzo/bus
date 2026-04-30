@@ -22,6 +22,7 @@ package org.miaixz.bus.metrics.builtin;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Metrics;
 
 /**
@@ -37,6 +38,7 @@ public class SystemMetrics {
      * multiple times; subsequent calls are no-ops due to provider-level deduplication.
      */
     public static void register() {
+        Logger.info(true, "Metrics", "System metrics registration started");
         OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
         Metrics.gauge("system.cpu.load", os, o -> o.getSystemLoadAverage() / o.getAvailableProcessors());
         Metrics.gauge("system.available.processors", os, o -> (double) o.getAvailableProcessors());
@@ -46,6 +48,11 @@ public class SystemMetrics {
                 "process.uptime.seconds",
                 rt,
                 h -> (double) ManagementFactory.getRuntimeMXBean().getUptime() / 1000.0);
+        Logger.info(
+                false,
+                "Metrics",
+                "System metrics registration finished: availableProcessors={}",
+                os.getAvailableProcessors());
     }
 
     // Holder to allow weak reference in gauge

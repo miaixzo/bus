@@ -53,7 +53,9 @@ public final class BlackListPlugin<T> extends AbstractPlugin<T> {
         }
         for (BlackListRule rule : ipBlackList) {
             if (!rule.access(inetSocketAddress)) {
-                Logger.warn(false, "Socket",
+                Logger.warn(
+                        false,
+                        "Socket",
                         "Connection from blacklisted IP: " + inetSocketAddress.getAddress().getHostAddress()
                                 + " rejected.");
                 return null;

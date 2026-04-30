@@ -396,7 +396,9 @@ public class MacOSProcess extends AbstractOSProcess {
             } else {
                 // Don't warn for pid 0
                 if (pid > 0 && LOG_MAC_SYSCTL_WARNING) {
-                    Logger.warn(false, "Health",
+                    Logger.warn(
+                            false,
+                            "Health",
                             "Failed sysctl call for process arguments (kern.procargs2), process {} may not exist. Error code: {}",
                             pid,
                             Native.getLastError());

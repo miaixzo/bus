@@ -32,6 +32,7 @@ import java.util.*;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * A utility class for mapping {@link ResultSet} data to Java objects.
@@ -60,11 +61,14 @@ public class Mapping {
         // Map to store column names and their corresponding values.
         Map<String, Object> values = new HashMap<>(Normal._16);
         try {
+            Logger.debug(true, "Shade", "Result set bean mapping started: targetClass={}", clazz.getName());
             // Get metadata from the result set.
             ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = metaData.getColumnCount();
+            int rowCount = 0;
             // Iterate through the result set.
             while (resultSet.next()) {
+                rowCount++;
                 // Store column values in the map.
                 for (int i = 1; i <= columnCount; i++) {
                     String columnName = metaData.getColumnName(i);
@@ -76,10 +80,33 @@ public class Mapping {
                 // Get field and method information for the target class.
                 List<FieldMethod> fieldMethods = getFieldMethods(clazz);
                 // Create and populate the object.
-                return getObject(clazz, fieldMethods, values);
+                T rsp = getObject(clazz, fieldMethods, values);
+                Logger.debug(
+                        false,
+                        "Shade",
+                        "Result set bean mapping finished: targetClass={}, rowCount={}, columnCount={}, fieldCount={}",
+                        clazz.getName(),
+                        rowCount,
+                        columnCount,
+                        fieldMethods.size());
+                return rsp;
             }
+            Logger.debug(
+                    false,
+                    "Shade",
+                    "Result set bean mapping returned empty object: targetClass={}, rowCount={}",
+                    clazz.getName(),
+                    rowCount);
             return clazz.getConstructor().newInstance();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Shade",
+                    e,
+                    "Result set bean mapping failed: targetClass={}, mappedColumnCount={}, exception={}",
+                    clazz.getName(),
+                    values.size(),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -99,6 +126,7 @@ public class Mapping {
         // List to store the resulting objects.
         List<T> list = new ArrayList<>();
         try {
+            Logger.debug(true, "Shade", "Result set list mapping started: targetClass={}", clazz.getName());
             // Get metadata from the result set.
             ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = metaData.getColumnCount();
@@ -120,7 +148,23 @@ public class Mapping {
                 T rsp = getObject(clazz, fieldMethods, map);
                 list.add(rsp);
             }
+            Logger.debug(
+                    false,
+                    "Shade",
+                    "Result set list mapping finished: targetClass={}, rowCount={}, columnCount={}, fieldCount={}",
+                    clazz.getName(),
+                    list.size(),
+                    columnCount,
+                    fieldMethods.size());
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Shade",
+                    e,
+                    "Result set list mapping failed: targetClass={}, rowCount={}, exception={}",
+                    clazz.getName(),
+                    values.size(),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         return list;

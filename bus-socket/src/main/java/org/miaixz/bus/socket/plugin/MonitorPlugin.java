@@ -169,7 +169,9 @@ public final class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnabl
         onlineCount += connectCount - disConnectCount;
         totalProcessMsgNum += curProcessMsgNum;
         totalConnect += connectCount;
-        Logger.info(false, "Socket",
+        Logger.info(
+                false,
+                "Socket",
                 "\r\n-----" + seconds + " seconds ----\r\nInflow:\t\t"
                         + String.format("%.2f", curInFlow * 1.0 / (1024 * 1024)) + "(MB)" + "\r\nOutflow:\t"
                         + String.format("%.2f", curOutFlow * 1.0 / (1024 * 1024)) + "(MB)" + "\r\nProcess Fail:\t"

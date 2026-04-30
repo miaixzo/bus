@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.Provider;
 import org.miaixz.bus.notify.magic.Notice;
@@ -54,6 +55,12 @@ public abstract class AbstractProvider<T extends Notice, K extends Context> impl
      */
     @Override
     public Message send(T entity) {
+        Logger.warn(
+                false,
+                "Notify",
+                "Notify send rejected: provider={}, noticeType={}, reason=notImplemented",
+                getClass().getSimpleName(),
+                entity == null ? null : entity.getClass().getSimpleName());
         return null;
     }
 
@@ -67,6 +74,13 @@ public abstract class AbstractProvider<T extends Notice, K extends Context> impl
      */
     @Override
     public Message send(T entity, List<String> mobile) {
+        Logger.warn(
+                false,
+                "Notify",
+                "Notify batch send rejected: provider={}, noticeType={}, targetCount={}, reason=notImplemented",
+                getClass().getSimpleName(),
+                entity == null ? null : entity.getClass().getSimpleName(),
+                mobile == null ? 0 : mobile.size());
         return null;
     }
 
@@ -88,7 +102,17 @@ public abstract class AbstractProvider<T extends Notice, K extends Context> impl
      * @return The URL for the notification.
      */
     protected String getUrl(K context, T entity) {
-        return ObjectKit.defaultIfNull(context.getEndpoint(), entity.getUrl());
+        String url = ObjectKit.defaultIfNull(context.getEndpoint(), entity.getUrl());
+        Logger.debug(
+                false,
+                "Notify",
+                "Notify endpoint resolved: provider={}, noticeType={}, contextEndpointPresent={}, noticeUrlPresent={}, endpointPresent={}",
+                getClass().getSimpleName(),
+                entity == null ? null : entity.getClass().getSimpleName(),
+                context != null && context.getEndpoint() != null,
+                entity != null && entity.getUrl() != null,
+                url != null);
+        return url;
     }
 
 }

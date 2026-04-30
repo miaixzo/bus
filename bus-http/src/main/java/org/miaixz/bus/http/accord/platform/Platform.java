@@ -252,7 +252,7 @@ public class Platform {
             message += " To see where this was allocated, set the Httpd logger level to DEBUG: "
                     + "Logger.getLogger(Httpd.class.getName()).setLevel(Level.DEBUG);";
         }
-        Logger.warn(false, "HTTP", message, stackTrace);
+        Logger.warn(false, "Http", "protocol=http, " + (message), stackTrace);
     }
 
     /**

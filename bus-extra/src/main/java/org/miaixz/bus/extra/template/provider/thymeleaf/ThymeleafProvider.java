@@ -25,6 +25,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.template.Template;
 import org.miaixz.bus.extra.template.TemplateConfig;
 import org.miaixz.bus.extra.template.TemplateProvider;
+import org.miaixz.bus.logger.Logger;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.*;
@@ -87,6 +88,14 @@ public class ThymeleafProvider implements TemplateProvider {
             config = new TemplateConfig();
         }
 
+        Logger.info(
+                true,
+                "Extra",
+                "component=template, Thymeleaf engine creation started: resourceMode={}, charset={}, useCache={}, pathPresent={}",
+                config.getResourceMode(),
+                config.getCharsetString(),
+                config.isUseCache(),
+                config.getPath() != null);
         final ITemplateResolver resolver;
         switch (config.getResourceMode()) {
             case CLASSPATH:
@@ -130,6 +139,14 @@ public class ThymeleafProvider implements TemplateProvider {
 
         final TemplateEngine engine = new TemplateEngine();
         engine.setTemplateResolver(resolver);
+        Logger.info(
+                false,
+                "Extra",
+                "component=template, Thymeleaf engine created: resourceMode={}, resolver={}, useCache={}, pathPresent={}",
+                config.getResourceMode(),
+                resolver == null ? "null" : resolver.getClass().getSimpleName(),
+                config.isUseCache(),
+                config.getPath() != null);
         return engine;
     }
 
@@ -148,8 +165,21 @@ public class ThymeleafProvider implements TemplateProvider {
         if (null == config) {
             config = TemplateConfig.DEFAULT;
         }
+        Logger.info(
+                true,
+                "Extra",
+                "component=template, Thymeleaf provider initialization started: resourceMode={}, charset={}, useCache={}, pathPresent={}",
+                config.getResourceMode(),
+                config.getCharsetString(),
+                config.isUseCache(),
+                config.getPath() != null);
         this.config = config;
         init(of(config));
+        Logger.info(
+                false,
+                "Extra",
+                "component=template, Thymeleaf provider initialized: rawPresent={}",
+                this.engine != null);
         return this;
     }
 
@@ -173,9 +203,25 @@ public class ThymeleafProvider implements TemplateProvider {
     @Override
     public Template getTemplate(final String resource) {
         if (null == this.engine) {
+            Logger.debug(true, "Extra", "component=template, Thymeleaf provider lazy initialization requested");
             init(TemplateConfig.DEFAULT);
         }
-        return ThymeleafTemplate.wrap(this.engine, resource, (null == this.config) ? null : this.config.getCharset());
+        Logger.debug(
+                true,
+                "Extra",
+                "component=template, Thymeleaf template wrapper creation started: resourcePresent={}, resourceLength={}",
+                resource != null,
+                resource == null ? 0 : resource.length());
+        final Template template = ThymeleafTemplate
+                .wrap(this.engine, resource, (null == this.config) ? null : this.config.getCharset());
+        Logger.debug(
+                false,
+                "Extra",
+                "component=template, Thymeleaf template wrapper created: resourcePresent={}, resourceLength={}, templatePresent={}",
+                resource != null,
+                resource == null ? 0 : resource.length(),
+                template != null);
+        return template;
     }
 
     /**

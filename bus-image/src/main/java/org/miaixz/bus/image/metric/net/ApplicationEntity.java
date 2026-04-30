@@ -746,7 +746,7 @@ public class ApplicationEntity implements Serializable {
             throws IOException {
         DimseRQHandler tmp = getDimseRQHandler();
         if (tmp == null) {
-            Logger.error(false, "ImageNet", "DimseRQHandler not initalized");
+            Logger.error(false, "Image", "component=network, DimseRQHandler not initalized");
             throw new AAbort();
         }
         tmp.onDimseRQ(as, pc, cmd, cmdAttrs, data);

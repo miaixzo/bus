@@ -26,6 +26,7 @@ import java.util.Objects;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.AbstractProvider;
@@ -56,6 +57,12 @@ public class YunpianSmsProvider extends AbstractProvider<YunpianNotice, Context>
      */
     @Override
     public Message send(YunpianNotice entity) {
+        Logger.info(
+                true,
+                "Notify",
+                "Yunpian SMS send started: template={}, targetCount={}",
+                entity == null ? null : entity.getTemplate(),
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length);
         Map<String, String> bodys = new HashMap<>();
         // The API key for Yunpian.
         bodys.put("apikey", entity.getApikey());
@@ -71,7 +78,16 @@ public class YunpianSmsProvider extends AbstractProvider<YunpianNotice, Context>
         String errcode = succeed ? ErrorCode._SUCCESS.getKey() : JsonKit.getValue(response, "code");
         String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : JsonKit.getValue(response, "msg");
 
-        return Message.builder().errcode(errcode).errmsg(errmsg).build();
+        Message result = Message.builder().errcode(errcode).errmsg(errmsg).build();
+        Logger.info(
+                false,
+                "Notify",
+                "Yunpian SMS send completed: template={}, targetCount={}, errcode={}, responseBytes={}",
+                entity == null ? null : entity.getTemplate(),
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                result.getErrcode(),
+                response == null ? 0 : response.length());
+        return result;
     }
 
 }

@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.socket.accord;
 
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.socket.Context;
 import org.miaixz.bus.socket.Session;
@@ -102,7 +101,12 @@ public class UdpChannel {
             try {
                 UdpChannel.this.selectionKey = channel.register(selector, SelectionKey.OP_READ, UdpChannel.this);
             } catch (ClosedChannelException e) {
-                e.printStackTrace();
+                Logger.warn(
+                        false,
+                        "Socket",
+                        e,
+                        "UDP channel registration failed: exception={}",
+                        e.getClass().getSimpleName());
             }
         });
     }
@@ -154,7 +158,11 @@ public class UdpChannel {
             }
             if (!send(responseUnit.response, responseUnit.session)) {
                 failResponseUnit = responseUnit;
-                Logger.warn(false, "Socket", "Send failed, will retry...");
+                Logger.warn(
+                        false,
+                        "Socket",
+                        "UDP send deferred for retry: remote={}",
+                        responseUnit.session.getRemoteAddress());
                 break;
             }
         }
@@ -214,7 +222,7 @@ public class UdpChannel {
      * Closes the current connection.
      */
     public void close() {
-        Logger.info(false, "Socket", "Closing channel...");
+        Logger.info(true, "Socket", "UDP channel close started: open={}", channel != null && channel.isOpen());
         if (selectionKey != null) {
             Selector selector = selectionKey.selector();
             selectionKey.cancel();
@@ -226,7 +234,7 @@ public class UdpChannel {
                 channel.close();
             }
         } catch (IOException e) {
-            Logger.error(false, "Socket", Normal.EMPTY, e);
+            Logger.error(false, "Socket", e, "UDP channel close failed: exception={}", e.getClass().getSimpleName());
         }
         // Clean up resources
         ResponseUnit task;
@@ -236,6 +244,7 @@ public class UdpChannel {
         if (failResponseUnit != null) {
             failResponseUnit.response.clean();
         }
+        Logger.info(false, "Socket", "UDP channel close finished");
     }
 
     /**

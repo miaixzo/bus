@@ -52,7 +52,15 @@ class ReconnectDirContext implements Closeable {
     }
 
     private void reconnect() throws NamingException {
-        Logger.info(true, "Image", "Connection to {} broken - reconnect", env.get(Context.PROVIDER_URL));
+        Logger.info(
+                true,
+                "Image",
+                "Image LDAP reconnect started: component={}, operation={}, protocol={}, status={}, recoverable={}",
+                "ldap-context",
+                "reconnect",
+                "LDAP",
+                "started",
+                true);
         close();
         ctx = new InitialDirContext(env);
     }
@@ -62,6 +70,16 @@ class ReconnectDirContext implements Closeable {
         try {
             ctx.close();
         } catch (NamingException ignore) {
+            Logger.debug(
+                    false,
+                    "Image",
+                    "Image LDAP close skipped: component={}, operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "ldap-context",
+                    "close",
+                    "LDAP",
+                    "ignored",
+                    true,
+                    ignore.getClass().getSimpleName());
         }
     }
 
@@ -71,6 +89,16 @@ class ReconnectDirContext implements Closeable {
         } catch (NamingException e) {
             if (!isLdap_connection_has_been_closed(e))
                 throw e;
+            Logger.debug(
+                    false,
+                    "Image",
+                    "Image LDAP retry scheduled: component={}, operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "ldap-context",
+                    "getAttributes",
+                    "LDAP",
+                    "reconnect",
+                    true,
+                    e.getClass().getSimpleName());
             reconnect();
             return ctx.getAttributes(name);
         }
@@ -82,6 +110,16 @@ class ReconnectDirContext implements Closeable {
         } catch (NamingException e) {
             if (!isLdap_connection_has_been_closed(e))
                 throw e;
+            Logger.debug(
+                    false,
+                    "Image",
+                    "Image LDAP retry scheduled: component={}, operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "ldap-context",
+                    "getAttributesByIds",
+                    "LDAP",
+                    "reconnect",
+                    true,
+                    e.getClass().getSimpleName());
             reconnect();
             return ctx.getAttributes(name, attrIds);
         }
@@ -93,6 +131,16 @@ class ReconnectDirContext implements Closeable {
         } catch (NamingException e) {
             if (!isLdap_connection_has_been_closed(e))
                 throw e;
+            Logger.debug(
+                    false,
+                    "Image",
+                    "Image LDAP retry scheduled: component={}, operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "ldap-context",
+                    "destroySubcontext",
+                    "LDAP",
+                    "reconnect",
+                    true,
+                    e.getClass().getSimpleName());
             reconnect();
             ctx.destroySubcontext(name);
         }
@@ -105,6 +153,16 @@ class ReconnectDirContext implements Closeable {
         } catch (NamingException e) {
             if (!isLdap_connection_has_been_closed(e))
                 throw e;
+            Logger.debug(
+                    false,
+                    "Image",
+                    "Image LDAP retry scheduled: component={}, operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "ldap-context",
+                    "search",
+                    "LDAP",
+                    "reconnect",
+                    true,
+                    e.getClass().getSimpleName());
             reconnect();
             return ctx.search(name, filter, cons);
         }
@@ -116,6 +174,16 @@ class ReconnectDirContext implements Closeable {
         } catch (NamingException e) {
             if (!isLdap_connection_has_been_closed(e))
                 throw e;
+            Logger.debug(
+                    false,
+                    "Image",
+                    "Image LDAP retry scheduled: component={}, operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "ldap-context",
+                    "createSubcontext",
+                    "LDAP",
+                    "reconnect",
+                    true,
+                    e.getClass().getSimpleName());
             reconnect();
             ctx.createSubcontext(name, attrs).close();
         }
@@ -127,6 +195,16 @@ class ReconnectDirContext implements Closeable {
         } catch (NamingException e) {
             if (!isLdap_connection_has_been_closed(e))
                 throw e;
+            Logger.debug(
+                    false,
+                    "Image",
+                    "Image LDAP retry scheduled: component={}, operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "ldap-context",
+                    "list",
+                    "LDAP",
+                    "reconnect",
+                    true,
+                    e.getClass().getSimpleName());
             reconnect();
             return ctx.list(name);
         }
@@ -138,6 +216,16 @@ class ReconnectDirContext implements Closeable {
         } catch (NamingException e) {
             if (!isLdap_connection_has_been_closed(e))
                 throw e;
+            Logger.debug(
+                    false,
+                    "Image",
+                    "Image LDAP retry scheduled: component={}, operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "ldap-context",
+                    "modifyAttributes",
+                    "LDAP",
+                    "reconnect",
+                    true,
+                    e.getClass().getSimpleName());
             reconnect();
             ctx.modifyAttributes(name, mods);
         }
@@ -149,6 +237,16 @@ class ReconnectDirContext implements Closeable {
         } catch (NamingException e) {
             if (!isLdap_connection_has_been_closed(e))
                 throw e;
+            Logger.debug(
+                    false,
+                    "Image",
+                    "Image LDAP retry scheduled: component={}, operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "ldap-context",
+                    "modifyAttributesByMode",
+                    "LDAP",
+                    "reconnect",
+                    true,
+                    e.getClass().getSimpleName());
             reconnect();
             ctx.modifyAttributes(name, mod_op, attrs);
         }

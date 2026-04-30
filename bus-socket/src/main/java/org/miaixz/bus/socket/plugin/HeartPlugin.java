@@ -171,13 +171,20 @@ public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
      */
     private void registerHeart(final Session session, final long heartRate) {
         if (heartRate <= 0) {
-            Logger.info(false, "Socket",
+            Logger.info(
+                    false,
+                    "Socket",
                     "Session: {} heartbeat interval is {}, terminating heartbeat monitoring task.",
                     session,
                     heartRate);
             return;
         }
-        Logger.debug(true, "Socket", "Session: {} registering heartbeat task, heartbeat interval: {}", session, heartRate);
+        Logger.debug(
+                true,
+                "Socket",
+                "Session: {} registering heartbeat task, heartbeat interval: {}",
+                session,
+                heartRate);
         HashedWheelTimer.DEFAULT_TIMER.schedule(new TimerTask() {
 
             @Override

@@ -22,6 +22,7 @@ package org.miaixz.bus.extra.nlp.provider.mmseg;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;
+import org.miaixz.bus.logger.Logger;
 
 import com.chenlb.mmseg4j.ComplexSeg;
 import com.chenlb.mmseg4j.Dictionary;
@@ -58,7 +59,17 @@ public class MmsegProvider implements NLPProvider {
      *            {@link com.chenlb.mmseg4j.SimpleSeg}).
      */
     public MmsegProvider(final Seg seg) {
+        Logger.info(
+                true,
+                "Extra",
+                "component=nlp, Mmseg provider initialization started: segmenterType={}",
+                seg == null ? "null" : seg.getClass().getSimpleName());
         this.seg = seg;
+        Logger.info(
+                false,
+                "Extra",
+                "component=nlp, Mmseg provider initialized: segmenterType={}",
+                this.seg == null ? "null" : this.seg.getClass().getSimpleName());
     }
 
     /**
@@ -71,7 +82,19 @@ public class MmsegProvider implements NLPProvider {
      */
     @Override
     public NLPResult parse(final CharSequence text) {
+        Logger.debug(
+                true,
+                "Extra",
+                "component=nlp, Mmseg parse started: textLength={}, segmenterType={}",
+                text == null ? 0 : text.length(),
+                seg == null ? "null" : seg.getClass().getSimpleName());
         final MMSeg mmSeg = new MMSeg(StringKit.getReader(text), seg);
+        Logger.debug(
+                false,
+                "Extra",
+                "component=nlp, Mmseg parse completed: textLength={}, resultPresent={}",
+                text == null ? 0 : text.length(),
+                mmSeg != null);
         return new MmsegResult(mmSeg);
     }
 

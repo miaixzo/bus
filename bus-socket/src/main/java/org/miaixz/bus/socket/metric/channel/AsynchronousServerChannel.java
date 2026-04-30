@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.socket.metric.channel;
 
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.socket.metric.handler.FutureCompletionHandler;
 
 import java.io.IOException;
@@ -592,11 +593,21 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
             }
         } catch (Throwable e) {
             if (writeCompletionHandler == null) {
-                e.printStackTrace();
+                Logger.warn(
+                        false,
+                        "Socket",
+                        e,
+                        "Asynchronous server channel write failed: exception={}",
+                        e.getClass().getSimpleName());
                 try {
                     close();
                 } catch (IOException ioException) {
-                    ioException.printStackTrace();
+                    Logger.warn(
+                            false,
+                            "Socket",
+                            ioException,
+                            "Asynchronous server channel close after write failure failed: exception={}",
+                            ioException.getClass().getSimpleName());
                 }
             } else {
                 writeCompletionHandler.failed(e, writeAttachment);

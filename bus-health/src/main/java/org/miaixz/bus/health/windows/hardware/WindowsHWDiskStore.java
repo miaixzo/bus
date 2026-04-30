@@ -183,7 +183,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
             }
             return result;
         } catch (COMException e) {
-            Logger.warn(false, "Health", "COM exception: {}", e.getMessage());
+            Logger.warn(false, "Health", "COM exception: {}", e.getClass().getSimpleName());
             return Collections.emptyList();
         } finally {
             if (comInit) {
@@ -303,7 +303,12 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
                         label = new String(labelChr).trim();
                     } else {
                         int error = Kernel32.INSTANCE.GetLastError();
-                        Logger.debug(false, "Health", "Failed to get volume label for {}: error code {}", logicalDrive.getLeft(), error);
+                        Logger.debug(
+                                false,
+                                "Health",
+                                "Failed to get volume label for {}: error code {}",
+                                logicalDrive.getLeft(),
+                                error);
                     }
                     HWPartition pt = new HWPartition(
                             WmiKit.getString(hwPartitionQueryMap, DiskPartitionProperty.NAME, i),

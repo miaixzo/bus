@@ -29,6 +29,7 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ReflectKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
 import org.miaixz.bus.starter.annotation.EnableMapper;
@@ -161,7 +162,20 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
 
         // Register default filters and perform the component scan.
         scanner.registerFilters();
-        scanner.doScan(ArrayKit.ofArray(basePackage, String.class));
+        Logger.debug(
+                true,
+                "Starter",
+                "component=mapper, Mapper scanner registration started: basePackageCount={}, annotationClass={}",
+                basePackage.size(),
+                annotationClass.getName());
+        java.util.Set<org.springframework.beans.factory.config.BeanDefinitionHolder> beanDefinitions = scanner
+                .doScan(ArrayKit.ofArray(basePackage, String.class));
+        Logger.info(
+                false,
+                "Starter",
+                "component=mapper, Mapper scanner registration finished: basePackageCount={}, mapperBeanCount={}",
+                basePackage.size(),
+                beanDefinitions.size());
     }
 
     /**

@@ -114,7 +114,10 @@ public class Module {
         Assert.isTrue(null != config, "context param can not be null.");
         Module module = getInstance();
         if (module.initialized) {
-            Logger.warn(false, "Cache", "Cache module already initialized; ignoring new context and returning existing Complex.");
+            Logger.warn(
+                    false,
+                    "Cache",
+                    "Cache module already initialized; ignoring new context and returning existing Complex.");
             return module.complex;
         }
         module.initialize(config);
@@ -144,7 +147,11 @@ public class Module {
 
         // Initialize Collector
         collector = config.getCollector();
-        Logger.debug(false, "Cache", "Initialized collector: {}", collector != null ? collector.getClass().getSimpleName() : "null");
+        Logger.debug(
+                false,
+                "Cache",
+                "Initialized collector: {}",
+                collector != null ? collector.getClass().getSimpleName() : "null");
 
         // Initialize Manage instance
         manage = new Manage(caches, collector);
@@ -184,7 +191,9 @@ public class Module {
             throw new IllegalStateException("CacheFactory not initialized");
         }
         CacheX cache = caches.get(name);
-        Logger.debug(false, "Cache",
+        Logger.debug(
+                false,
+                "Cache",
                 "Retrieved cache: {} for name: {}",
                 cache != null ? cache.getClass().getSimpleName() : "null",
                 name);
@@ -198,7 +207,11 @@ public class Module {
      *         configured.
      */
     public Optional<Collector> getCollector() {
-        Logger.debug(false, "Cache", "Retrieved collector: {}", collector != null ? collector.getClass().getSimpleName() : "null");
+        Logger.debug(
+                false,
+                "Cache",
+                "Retrieved collector: {}",
+                collector != null ? collector.getClass().getSimpleName() : "null");
         return Optional.ofNullable(collector);
     }
 

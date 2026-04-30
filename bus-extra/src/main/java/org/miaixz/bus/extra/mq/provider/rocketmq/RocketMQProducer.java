@@ -25,6 +25,7 @@ import org.apache.rocketmq.client.producer.MQProducer;
 import org.miaixz.bus.core.lang.exception.MQueueException;
 import org.miaixz.bus.extra.mq.Message;
 import org.miaixz.bus.extra.mq.Producer;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * RocketMQ producer implementation class. This class provides an adapter for sending messages to Apache RocketMQ,
@@ -60,11 +61,35 @@ public class RocketMQProducer implements Producer {
      */
     @Override
     public void send(final Message message) {
+        final long startedAt = System.nanoTime();
+        final byte[] content = message.content();
+        Logger.debug(
+                true,
+                "Extra",
+                "component=mq, RocketMQ send started: topic={}, messageBytes={}",
+                message.topic(),
+                content == null ? 0 : content.length);
         final org.apache.rocketmq.common.message.Message rocketMessage = new org.apache.rocketmq.common.message.Message(
-                message.topic(), message.content());
+                message.topic(), content);
         try {
             this.producer.send(rocketMessage);
+            Logger.debug(
+                    false,
+                    "Extra",
+                    "component=mq, RocketMQ send completed: topic={}, messageBytes={}, elapsedMs={}",
+                    message.topic(),
+                    content == null ? 0 : content.length,
+                    (System.nanoTime() - startedAt) / 1_000_000L);
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=mq, RocketMQ send failed: topic={}, messageBytes={}, exception={}, elapsedMs={}",
+                    message.topic(),
+                    content == null ? 0 : content.length,
+                    e.getClass().getSimpleName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
             throw new MQueueException(e);
         }
     }
@@ -78,9 +103,16 @@ public class RocketMQProducer implements Producer {
      */
     @Override
     public void close() throws IOException {
+        final long startedAt = System.nanoTime();
+        Logger.debug(true, "Extra", "component=mq, RocketMQ producer close requested");
         if (null != this.producer) {
             this.producer.shutdown();
         }
+        Logger.debug(
+                false,
+                "Extra",
+                "component=mq, RocketMQ producer closed: elapsedMs={}",
+                (System.nanoTime() - startedAt) / 1_000_000L);
     }
 
 }

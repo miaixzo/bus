@@ -769,7 +769,12 @@ public class Builder {
         try {
             return dicom.getFloat(privateCreatorID, tag, defaultValue == null ? 0.0F : defaultValue);
         } catch (NumberFormatException e) {
-            Logger.error(false, "Image", "Cannot parse Float of {}: {} ", Tag.toString(tag), e.getMessage());
+            Logger.error(
+                    false,
+                    "Image",
+                    "Cannot parse Float of {}: exception={} ",
+                    Tag.toString(tag),
+                    e.getClass().getSimpleName());
         }
         return defaultValue;
     }
@@ -806,7 +811,12 @@ public class Builder {
         try {
             return dicom.getInt(privateCreatorID, tag, defaultValue == null ? 0 : defaultValue);
         } catch (NumberFormatException e) {
-            Logger.error(false, "Image", "Cannot parse Integer of {}: {} ", Tag.toString(tag), e.getMessage());
+            Logger.error(
+                    false,
+                    "Image",
+                    "Cannot parse Integer of {}: exception={} ",
+                    Tag.toString(tag),
+                    e.getClass().getSimpleName());
         }
         return defaultValue;
     }
@@ -843,7 +853,12 @@ public class Builder {
         try {
             return dicom.getDouble(privateCreatorID, tag, defaultValue == null ? 0.0 : defaultValue);
         } catch (NumberFormatException e) {
-            Logger.error(false, "Image", "Cannot parse Double of {}: {} ", Tag.toString(tag), e.getMessage());
+            Logger.error(
+                    false,
+                    "Image",
+                    "Cannot parse Double of {}: exception={} ",
+                    Tag.toString(tag),
+                    e.getClass().getSimpleName());
         }
         return defaultValue;
     }
@@ -883,7 +898,12 @@ public class Builder {
                 return val;
             }
         } catch (NumberFormatException e) {
-            Logger.error(false, "Image", "Cannot parse int[] of {}: {} ", Tag.toString(tag), e.getMessage());
+            Logger.error(
+                    false,
+                    "Image",
+                    "Cannot parse int array: tag={}, exception={}",
+                    Tag.toString(tag),
+                    e.getClass().getSimpleName());
         }
         return defaultValue;
     }
@@ -923,7 +943,12 @@ public class Builder {
                 return val;
             }
         } catch (NumberFormatException e) {
-            Logger.error(false, "Image", "Cannot parse float[] of {}: {} ", Tag.toString(tag), e.getMessage());
+            Logger.error(
+                    false,
+                    "Image",
+                    "Cannot parse float array: tag={}, exception={}",
+                    Tag.toString(tag),
+                    e.getClass().getSimpleName());
         }
         return defaultValue;
     }
@@ -963,7 +988,12 @@ public class Builder {
                 return val;
             }
         } catch (NumberFormatException e) {
-            Logger.error(false, "Image", "Cannot parse double[] of {}: {} ", Tag.toString(tag), e.getMessage());
+            Logger.error(
+                    false,
+                    "Image",
+                    "Cannot parse double array: tag={}, exception={}",
+                    Tag.toString(tag),
+                    e.getClass().getSimpleName());
         }
         return defaultValue;
     }
@@ -1065,7 +1095,13 @@ public class Builder {
             try {
                 return Format.parseDA(date);
             } catch (Exception e) {
-                Logger.error(false, "Image", "Failed to parse DICOM date: {}", date, e);
+                Logger.error(
+                        false,
+                        "Image",
+                        e,
+                        "DICOM date parse failed: valueChars={}, exception={}",
+                        date.length(),
+                        e.getClass().getSimpleName());
             }
         }
         return null;
@@ -1082,7 +1118,13 @@ public class Builder {
             try {
                 return Format.parseTM(time);
             } catch (Exception e1) {
-                Logger.error(false, "Image", "Failed to parse DICOM time: {}", time, e1);
+                Logger.error(
+                        false,
+                        "Image",
+                        e1,
+                        "DICOM time parse failed: valueChars={}, exception={}",
+                        time.length(),
+                        e1.getClass().getSimpleName());
             }
         }
         return null;

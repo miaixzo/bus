@@ -26,6 +26,7 @@ import org.miaixz.bus.socket.buffer.BufferPage;
 import org.miaixz.bus.socket.buffer.VirtualBuffer;
 import org.miaixz.bus.socket.buffer.WriteBuffer;
 import org.miaixz.bus.socket.metric.channel.AsynchronousChannelProvider;
+import org.miaixz.bus.logger.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -165,6 +166,7 @@ public class TcpSession extends Session {
         if (status == SESSION_STATUS_CLOSED) {
             return;
         }
+        Logger.debug(true, "Socket", "TCP session close requested: session={}, immediate={}", this, immediate);
         status = immediate ? SESSION_STATUS_CLOSED : SESSION_STATUS_CLOSING;
         if (immediate) {
             try {
@@ -180,6 +182,7 @@ public class TcpSession extends Session {
             } finally {
                 IoKit.close(channel);
                 context.getProcessor().stateEvent(this, Status.SESSION_CLOSED, null);
+                Logger.debug(false, "Socket", "TCP session closed: session={}, immediate={}", this, immediate);
             }
         } else if ((writeBuffer == null || !writeBuffer.buffer().hasRemaining()) && byteBuf.isEmpty()) {
             close(true);
@@ -261,12 +264,24 @@ public class TcpSession extends Session {
             try {
                 session.context.getProcessor().stateEvent(session, Status.INPUT_EXCEPTION, exc);
             } catch (Exception e) {
-                e.printStackTrace();
+                Logger.warn(
+                        false,
+                        "Socket",
+                        e,
+                        "TCP input exception callback failed: session={}, exception={}",
+                        session,
+                        e.getClass().getSimpleName());
             }
             try {
                 session.close(false);
             } catch (Exception e) {
-                e.printStackTrace();
+                Logger.warn(
+                        false,
+                        "Socket",
+                        e,
+                        "TCP input failure close failed: session={}, exception={}",
+                        session,
+                        e.getClass().getSimpleName());
             }
         }
     };
@@ -544,12 +559,24 @@ public class TcpSession extends Session {
             try {
                 session.context.getProcessor().stateEvent(session, Status.OUTPUT_EXCEPTION, exc);
             } catch (Exception e) {
-                e.printStackTrace();
+                Logger.warn(
+                        false,
+                        "Socket",
+                        e,
+                        "TCP output exception callback failed: session={}, exception={}",
+                        session,
+                        e.getClass().getSimpleName());
             }
             try {
                 session.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                Logger.warn(
+                        false,
+                        "Socket",
+                        e,
+                        "TCP output failure close failed: session={}, exception={}",
+                        session,
+                        e.getClass().getSimpleName());
             }
         }
     };

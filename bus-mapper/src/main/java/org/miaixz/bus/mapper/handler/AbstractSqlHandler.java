@@ -32,6 +32,7 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.FieldKit;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * An abstract base class for SQL interception and handling in MyBatis.
@@ -187,6 +188,14 @@ public abstract class AbstractSqlHandler {
             FieldKit.setFieldValue(boundSql, "sql", actualSql);
             return true;
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Mapper",
+                    e,
+                    "Mapper operation failed: component={}, provider={}, exception={}",
+                    "handler",
+                    "AbstractSqlHandler",
+                    e.getClass().getSimpleName());
             return false;
         }
     }

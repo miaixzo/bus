@@ -20,6 +20,7 @@
 package org.miaixz.bus.office.builtin;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.office.Context;
 
 /**
@@ -32,7 +33,18 @@ public class LocalMadeInOffice extends AbstractOffice {
 
     @Override
     public void execute(Context context) throws InternalException {
+        Logger.debug(
+                true,
+                "Office",
+                "Local office execution started: contextType={}",
+                context == null ? null : context.getClass().getName());
         // No specific implementation for local office execution in this abstract class.
+        Logger.debug(
+                false,
+                "Office",
+                "Local office execution completed: contextType={}, result={}",
+                context == null ? null : context.getClass().getName(),
+                "noSpecificImplementation");
     }
 
 }

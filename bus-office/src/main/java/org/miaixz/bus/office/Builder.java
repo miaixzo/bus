@@ -30,6 +30,7 @@ import org.apache.poi.ss.usermodel.ExcelNumberFormat;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Provides auxiliary functions for office documents, such as Excel date judgment, reading, and processing.
@@ -149,6 +150,13 @@ public class Builder {
         try {
             return FileMagic.valueOf(file) == FileMagic.OOXML;
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Office file magic detection failed: file={}, exception={}",
+                    file == null ? null : file.getName(),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -168,6 +176,13 @@ public class Builder {
         try {
             magic = FileMagic.valueOf(in);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Office stream magic detection failed: streamType={}, exception={}",
+                    in == null ? null : in.getClass().getName(),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
 

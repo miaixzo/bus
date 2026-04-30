@@ -31,6 +31,7 @@ import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.XmlKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.pay.*;
 import org.miaixz.bus.pay.magic.Voucher;
 import org.miaixz.bus.pay.magic.Message;
@@ -286,6 +287,14 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
             long timestamp,
             String authType,
             File file) throws Exception {
+        Logger.info(
+                true,
+                "Pay",
+                "WeChat v3 request started: method={}, api={}, merchantPresent={}, upload={}",
+                method,
+                suffix,
+                StringKit.isNotEmpty(mchId),
+                file != null);
         String authorization = WechatPayBuilder
                 .buildAuthorization(method, suffix, mchId, serialNo, keyPath, body, nonceStr, timestamp, authType);
 
@@ -293,18 +302,36 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
             platSerialNo = serialNo;
         }
 
+        Message response;
         if (HTTP.GET.equals(method)) {
-            return get(prefix.concat(suffix), authorization, platSerialNo, null);
+            response = get(prefix.concat(suffix), authorization, platSerialNo, null);
         } else if (HTTP.POST.equals(method)) {
-            return post(prefix.concat(suffix), authorization, platSerialNo, body);
+            response = post(prefix.concat(suffix), authorization, platSerialNo, body);
         } else if (HTTP.DELETE.equals(method)) {
-            return delete(prefix.concat(suffix), authorization, platSerialNo, body);
+            response = delete(prefix.concat(suffix), authorization, platSerialNo, body);
         } else if (HTTP.PATCH.equals(method)) {
-            return patch(prefix.concat(suffix), authorization, platSerialNo, body);
+            response = patch(prefix.concat(suffix), authorization, platSerialNo, body);
         } else if (HTTP.PUT.equals(method)) {
-            return put(prefix.concat(suffix), authorization, platSerialNo, body);
+            response = put(prefix.concat(suffix), authorization, platSerialNo, body);
+        } else {
+            Logger.info(
+                    true,
+                    "Pay",
+                    "WeChat v3 upload request dispatched: method={}, api={}, fileName={}",
+                    method,
+                    suffix,
+                    file == null ? null : file.getName());
+            response = upload(prefix.concat(suffix), authorization, platSerialNo, body, file);
         }
-        return upload(prefix.concat(suffix), authorization, platSerialNo, body, file);
+        Logger.info(
+                false,
+                "Pay",
+                "WeChat v3 request completed: method={}, api={}, status={}, responseBytes={}",
+                method,
+                suffix,
+                response == null ? null : response.getStatus(),
+                response == null || response.getBody() == null ? 0 : response.getBody().length());
+        return response;
     }
 
     /**
@@ -338,6 +365,14 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
             long timestamp,
             String authType,
             File file) throws Exception {
+        Logger.info(
+                true,
+                "Pay",
+                "WeChat v3 request started: method={}, api={}, merchantPresent={}, upload={}",
+                method,
+                suffix,
+                StringKit.isNotEmpty(mchId),
+                file != null);
         String authorization = WechatPayBuilder
                 .buildAuthorization(method, suffix, mchId, serialNo, privateKey, body, nonceStr, timestamp, authType);
 
@@ -345,18 +380,36 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
             platSerialNo = serialNo;
         }
 
+        Message response;
         if (HTTP.GET.equals(method)) {
-            return get(prefix.concat(suffix), authorization, platSerialNo, null);
+            response = get(prefix.concat(suffix), authorization, platSerialNo, null);
         } else if (HTTP.POST.equals(method)) {
-            return post(prefix.concat(suffix), authorization, platSerialNo, body);
+            response = post(prefix.concat(suffix), authorization, platSerialNo, body);
         } else if (HTTP.DELETE.equals(method)) {
-            return delete(prefix.concat(suffix), authorization, platSerialNo, body);
+            response = delete(prefix.concat(suffix), authorization, platSerialNo, body);
         } else if (HTTP.PATCH.equals(method)) {
-            return patch(prefix.concat(suffix), authorization, platSerialNo, body);
+            response = patch(prefix.concat(suffix), authorization, platSerialNo, body);
         } else if (HTTP.PUT.equals(method)) {
-            return put(prefix.concat(suffix), authorization, platSerialNo, body);
+            response = put(prefix.concat(suffix), authorization, platSerialNo, body);
+        } else {
+            Logger.info(
+                    true,
+                    "Pay",
+                    "WeChat v3 upload request dispatched: method={}, api={}, fileName={}",
+                    method,
+                    suffix,
+                    file == null ? null : file.getName());
+            response = upload(prefix.concat(suffix), authorization, platSerialNo, body, file);
         }
-        return upload(prefix.concat(suffix), authorization, platSerialNo, body, file);
+        Logger.info(
+                false,
+                "Pay",
+                "WeChat v3 request completed: method={}, api={}, status={}, responseBytes={}",
+                method,
+                suffix,
+                response == null ? null : response.getStatus(),
+                response == null || response.getBody() == null ? 0 : response.getBody().length());
+        return response;
     }
 
     /**
@@ -1987,11 +2040,26 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
      * @return A {@link Message} with the result of the request.
      */
     public Message xPay(Complex apiEnum, String appKey, String accessToken, String postBody) {
+        Logger.info(
+                true,
+                "Pay",
+                "WeChat xPay request started: api={}, bodyBytes={}, accessTokenPresent={}",
+                apiEnum == null ? null : apiEnum.method(),
+                postBody == null ? 0 : postBody.length(),
+                StringKit.isNotEmpty(accessToken));
         String url = apiEnum.service();
         String needSignMsg = url.concat("&").concat(postBody);
         String paySig = org.miaixz.bus.crypto.Builder.hmacSha256(appKey).digestHex(needSignMsg);
         url = url.concat("?access_token=").concat(accessToken).concat("&pay_sig=").concat(paySig);
-        return post(url, postBody, null);
+        Message response = post(url, postBody, null);
+        Logger.info(
+                false,
+                "Pay",
+                "WeChat xPay request completed: api={}, status={}, responseBytes={}",
+                apiEnum == null ? null : apiEnum.method(),
+                response == null ? null : response.getStatus(),
+                response == null || response.getBody() == null ? 0 : response.getBody().length());
+        return response;
     }
 
     /**
@@ -2002,7 +2070,20 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
      * @return The result of the request.
      */
     public String doGet(String url, Map<String, String> params) {
-        return get(url, params);
+        Logger.info(
+                true,
+                "Pay",
+                "WeChat v2 request started: method=GET, url={}, paramCount={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                params == null ? 0 : params.size());
+        String response = get(url, params);
+        Logger.info(
+                false,
+                "Pay",
+                "WeChat v2 request completed: method=GET, url={}, responseBytes={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                response == null ? 0 : response.length());
+        return response;
     }
 
     /**
@@ -2015,7 +2096,22 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
      * @return A {@link Message} with the result of the request.
      */
     public Message get(String url, String authorization, String serialNumber, Map<String, String> params) {
-        return get(url, params, WechatPayBuilder.getHeaders(authorization, serialNumber));
+        Logger.info(
+                true,
+                "Pay",
+                "WeChat v3 HTTP request started: method=GET, url={}, paramCount={}, serialPresent={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                params == null ? 0 : params.size(),
+                StringKit.isNotEmpty(serialNumber));
+        Message response = get(url, params, WechatPayBuilder.getHeaders(authorization, serialNumber));
+        Logger.info(
+                false,
+                "Pay",
+                "WeChat v3 HTTP request completed: method=GET, url={}, status={}, responseBytes={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                response == null ? null : response.getStatus(),
+                response == null || response.getBody() == null ? 0 : response.getBody().length());
+        return response;
     }
 
     /**
@@ -2028,7 +2124,22 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
      * @return A {@link Message} with the result of the request.
      */
     public Message post(String url, String authorization, String serialNumber, String data) {
-        return post(url, data, WechatPayBuilder.getHeaders(authorization, serialNumber));
+        Logger.info(
+                true,
+                "Pay",
+                "WeChat v3 HTTP request started: method=POST, url={}, dataBytes={}, serialPresent={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                data == null ? 0 : data.length(),
+                StringKit.isNotEmpty(serialNumber));
+        Message response = post(url, data, WechatPayBuilder.getHeaders(authorization, serialNumber));
+        Logger.info(
+                false,
+                "Pay",
+                "WeChat v3 HTTP request completed: method=POST, url={}, status={}, responseBytes={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                response == null ? null : response.getStatus(),
+                response == null || response.getBody() == null ? 0 : response.getBody().length());
+        return response;
     }
 
     /**
@@ -2041,7 +2152,22 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
      * @return A {@link Message} with the result of the request.
      */
     public Message delete(String url, String authorization, String serialNumber, String data) {
-        return post(url, data, WechatPayBuilder.getHeaders(authorization, serialNumber));
+        Logger.info(
+                true,
+                "Pay",
+                "WeChat v3 HTTP request started: method=DELETE, url={}, dataBytes={}, serialPresent={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                data == null ? 0 : data.length(),
+                StringKit.isNotEmpty(serialNumber));
+        Message response = post(url, data, WechatPayBuilder.getHeaders(authorization, serialNumber));
+        Logger.info(
+                false,
+                "Pay",
+                "WeChat v3 HTTP request completed: method=DELETE, url={}, status={}, responseBytes={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                response == null ? null : response.getStatus(),
+                response == null || response.getBody() == null ? 0 : response.getBody().length());
+        return response;
     }
 
     /**
@@ -2053,7 +2179,22 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
      * @return A {@link Message} with the result of the request.
      */
     public Message upload(String url, Map<String, String> params, Map<String, String> headers) {
-        return post(url, params, headers);
+        Logger.info(
+                true,
+                "Pay",
+                "WeChat upload request started: url={}, paramCount={}, headerCount={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                params == null ? 0 : params.size(),
+                headers == null ? 0 : headers.size());
+        Message response = post(url, params, headers);
+        Logger.info(
+                false,
+                "Pay",
+                "WeChat upload request completed: url={}, status={}, responseBytes={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                response == null ? null : response.getStatus(),
+                response == null || response.getBody() == null ? 0 : response.getBody().length());
+        return response;
     }
 
     /**
@@ -2067,9 +2208,26 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
      * @return A {@link Message} with the result of the request.
      */
     public Message upload(String url, String authorization, String serialNumber, String data, File file) {
+        Logger.info(
+                true,
+                "Pay",
+                "WeChat v3 file upload started: url={}, file={}, dataBytes={}, serialPresent={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                file == null ? null : file.getName(),
+                data == null ? 0 : data.length(),
+                StringKit.isNotEmpty(serialNumber));
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put("meta", data);
-        return post(url, paramMap, WechatPayBuilder.getUploadHeaders(authorization, serialNumber), file);
+        Message response = post(url, paramMap, WechatPayBuilder.getUploadHeaders(authorization, serialNumber), file);
+        Logger.info(
+                false,
+                "Pay",
+                "WeChat v3 file upload completed: url={}, file={}, status={}, responseBytes={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                file == null ? null : file.getName(),
+                response == null ? null : response.getStatus(),
+                response == null || response.getBody() == null ? 0 : response.getBody().length());
+        return response;
     }
 
     /**
@@ -2082,7 +2240,22 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
      * @return A {@link Message} with the result of the request.
      */
     public Message patch(String url, String authorization, String serialNumber, String data) {
-        return post(url, data, WechatPayBuilder.getHeaders(authorization, serialNumber));
+        Logger.info(
+                true,
+                "Pay",
+                "WeChat v3 HTTP request started: method=PATCH, url={}, dataBytes={}, serialPresent={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                data == null ? 0 : data.length(),
+                StringKit.isNotEmpty(serialNumber));
+        Message response = post(url, data, WechatPayBuilder.getHeaders(authorization, serialNumber));
+        Logger.info(
+                false,
+                "Pay",
+                "WeChat v3 HTTP request completed: method=PATCH, url={}, status={}, responseBytes={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                response == null ? null : response.getStatus(),
+                response == null || response.getBody() == null ? 0 : response.getBody().length());
+        return response;
     }
 
     /**
@@ -2095,7 +2268,22 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
      * @return A {@link Message} with the result of the request.
      */
     public Message put(String url, String authorization, String serialNumber, String data) {
-        return put(url, data, WechatPayBuilder.getHeaders(authorization, serialNumber));
+        Logger.info(
+                true,
+                "Pay",
+                "WeChat v3 HTTP request started: method=PUT, url={}, dataBytes={}, serialPresent={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                data == null ? 0 : data.length(),
+                StringKit.isNotEmpty(serialNumber));
+        Message response = put(url, data, WechatPayBuilder.getHeaders(authorization, serialNumber));
+        Logger.info(
+                false,
+                "Pay",
+                "WeChat v3 HTTP request completed: method=PUT, url={}, status={}, responseBytes={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                response == null ? null : response.getStatus(),
+                response == null || response.getBody() == null ? 0 : response.getBody().length());
+        return response;
     }
 
     /**
@@ -2106,7 +2294,20 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
      * @return The result of the request.
      */
     public String doPost(String url, Map<String, String> params) {
-        return post(url, XmlKit.mapToXmlString(params));
+        Logger.info(
+                true,
+                "Pay",
+                "WeChat v2 request started: method=POST, url={}, paramCount={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                params == null ? 0 : params.size());
+        String response = post(url, XmlKit.mapToXmlString(params));
+        Logger.info(
+                false,
+                "Pay",
+                "WeChat v2 request completed: method=POST, url={}, responseBytes={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                response == null ? 0 : response.length());
+        return response;
     }
 
     /**
@@ -2119,7 +2320,21 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
      * @return The result of the request.
      */
     public String doPostSsl(String url, Map<String, String> params, String certPath, String certPass) {
-        return post(url, XmlKit.mapToXmlString(params), certPath, certPass, null);
+        Logger.info(
+                true,
+                "Pay",
+                "WeChat v2 SSL request started: url={}, paramCount={}, certSource={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                params == null ? 0 : params.size(),
+                certPath == null ? "stream" : "path");
+        String response = post(url, XmlKit.mapToXmlString(params), certPath, certPass, null);
+        Logger.info(
+                false,
+                "Pay",
+                "WeChat v2 SSL request completed: url={}, responseBytes={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                response == null ? 0 : response.length());
+        return response;
     }
 
     /**
@@ -2138,7 +2353,23 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
             String certPath,
             String certPass,
             String protocol) {
-        return post(url, XmlKit.mapToXmlString(params), certPath, certPass, protocol);
+        Logger.info(
+                true,
+                "Pay",
+                "WeChat v2 SSL request started: url={}, paramCount={}, certSource={}, protocol={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                params == null ? 0 : params.size(),
+                certPath == null ? "stream" : "path",
+                protocol);
+        String response = post(url, XmlKit.mapToXmlString(params), certPath, certPass, protocol);
+        Logger.info(
+                false,
+                "Pay",
+                "WeChat v2 SSL request completed: url={}, protocol={}, responseBytes={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                protocol,
+                response == null ? 0 : response.length());
+        return response;
     }
 
     /**
@@ -2151,6 +2382,12 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
      */
     public String doPostSsl(String url, Map<String, String> params, String certPath) {
         if (params.isEmpty() || !params.containsKey("mch_id")) {
+            Logger.warn(
+                    false,
+                    "Pay",
+                    "WeChat v2 SSL request rejected: url={}, reason=missingMchId, paramCount={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    params == null ? 0 : params.size());
             throw new RuntimeException(
                     "Request parameters must contain mch_id. If the API does not include mch_id, please use another constructor.");
         }
@@ -2169,6 +2406,12 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
      */
     public String doPostSslByProtocol(String url, Map<String, String> params, String certPath, String protocol) {
         if (params.isEmpty() || !params.containsKey("mch_id")) {
+            Logger.warn(
+                    false,
+                    "Pay",
+                    "WeChat v2 SSL request rejected: url={}, reason=missingMchId, paramCount={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    params == null ? 0 : params.size());
             throw new RuntimeException(
                     "Request parameters must contain mch_id. If the API does not include mch_id, please use another constructor.");
         }
@@ -2186,6 +2429,12 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
      */
     public String doPostSsl(String url, Map<String, String> params, InputStream certFile) {
         if (params.isEmpty() || !params.containsKey("mch_id")) {
+            Logger.warn(
+                    false,
+                    "Pay",
+                    "WeChat v2 SSL request rejected: url={}, reason=missingMchId, paramCount={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    params == null ? 0 : params.size());
             throw new RuntimeException(
                     "Request parameters must contain mch_id. If the API does not include mch_id, please use another constructor.");
         }
@@ -2204,6 +2453,12 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
      */
     public String doPostSslByProtocol(String url, Map<String, String> params, InputStream certFile, String protocol) {
         if (params.isEmpty() || !params.containsKey("mch_id")) {
+            Logger.warn(
+                    false,
+                    "Pay",
+                    "WeChat v2 SSL request rejected: url={}, reason=missingMchId, paramCount={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    params == null ? 0 : params.size());
             throw new RuntimeException(
                     "Request parameters must contain mch_id. If the API does not include mch_id, please use another constructor.");
         }
@@ -2221,7 +2476,21 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
      * @return The result of the request.
      */
     public String doPostSsl(String url, Map<String, String> params, InputStream certFile, String certPass) {
-        return post(url, XmlKit.mapToXmlString(params), certFile, certPass, null);
+        Logger.info(
+                true,
+                "Pay",
+                "WeChat v2 SSL request started: url={}, paramCount={}, certSource={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                params == null ? 0 : params.size(),
+                "stream");
+        String response = post(url, XmlKit.mapToXmlString(params), certFile, certPass, null);
+        Logger.info(
+                false,
+                "Pay",
+                "WeChat v2 SSL request completed: url={}, responseBytes={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                response == null ? 0 : response.length());
+        return response;
     }
 
     /**
@@ -2240,7 +2509,23 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
             InputStream certFile,
             String certPass,
             String protocol) {
-        return post(url, XmlKit.mapToXmlString(params), certFile, certPass, protocol);
+        Logger.info(
+                true,
+                "Pay",
+                "WeChat v2 SSL request started: url={}, paramCount={}, certSource={}, protocol={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                params == null ? 0 : params.size(),
+                "stream",
+                protocol);
+        String response = post(url, XmlKit.mapToXmlString(params), certFile, certPass, protocol);
+        Logger.info(
+                false,
+                "Pay",
+                "WeChat v2 SSL request completed: url={}, protocol={}, responseBytes={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                protocol,
+                response == null ? 0 : response.length());
+        return response;
     }
 
     /**
@@ -2254,6 +2539,13 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
      */
     public String doUploadSsl(String url, Map<String, String> params, String certPath, String filePath) {
         if (params.isEmpty() || !params.containsKey("mch_id")) {
+            Logger.warn(
+                    false,
+                    "Pay",
+                    "WeChat v2 upload rejected: url={}, reason=missingMchId, paramCount={}, file={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    params == null ? 0 : params.size(),
+                    filePath);
             throw new RuntimeException(
                     "Request parameters must contain mch_id. If the API does not include mch_id, please use another constructor.");
         }
@@ -2278,6 +2570,13 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
             String filePath,
             String protocol) {
         if (params.isEmpty() || !params.containsKey("mch_id")) {
+            Logger.warn(
+                    false,
+                    "Pay",
+                    "WeChat v2 upload rejected: url={}, reason=missingMchId, paramCount={}, file={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    params == null ? 0 : params.size(),
+                    filePath);
             throw new RuntimeException(
                     "Request parameters must contain mch_id. If the API does not include mch_id, please use another constructor.");
         }
@@ -2301,7 +2600,23 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
             String certPath,
             String certPass,
             String filePath) {
-        return upload(url, XmlKit.mapToXmlString(params), certPath, certPass, filePath);
+        Logger.info(
+                true,
+                "Pay",
+                "WeChat v2 upload started: url={}, paramCount={}, certSource={}, file={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                params == null ? 0 : params.size(),
+                certPath == null ? "stream" : "path",
+                filePath);
+        String response = upload(url, XmlKit.mapToXmlString(params), certPath, certPass, filePath);
+        Logger.info(
+                false,
+                "Pay",
+                "WeChat v2 upload completed: url={}, file={}, responseBytes={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                filePath,
+                response == null ? 0 : response.length());
+        return response;
     }
 
     /**
@@ -2322,7 +2637,25 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
             String certPass,
             String filePath,
             String protocol) {
-        return upload(url, XmlKit.mapToXmlString(params), certPath, certPass, filePath, protocol);
+        Logger.info(
+                true,
+                "Pay",
+                "WeChat v2 upload started: url={}, paramCount={}, certSource={}, file={}, protocol={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                params == null ? 0 : params.size(),
+                certPath == null ? "stream" : "path",
+                filePath,
+                protocol);
+        String response = upload(url, XmlKit.mapToXmlString(params), certPath, certPass, filePath, protocol);
+        Logger.info(
+                false,
+                "Pay",
+                "WeChat v2 upload completed: url={}, file={}, protocol={}, responseBytes={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                filePath,
+                protocol,
+                response == null ? 0 : response.length());
+        return response;
     }
 
 }

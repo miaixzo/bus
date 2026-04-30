@@ -22,6 +22,8 @@ package org.miaixz.bus.office.builtin;
 import java.io.File;
 import java.io.InputStream;
 
+import org.miaixz.bus.logger.Logger;
+
 /**
  * An online converter that sends conversion requests to a LibreOffice online server. To work as expected, it must be
  * used with an online office manager.
@@ -39,6 +41,11 @@ public class OnlineOfficeProvider extends AbstractProvider {
      */
     @Override
     public Object convert(File source) {
+        Logger.warn(
+                false,
+                "Office",
+                "Online office file conversion rejected: reason=notImplemented, file={}",
+                source == null ? null : source.getName());
         throw new UnsupportedOperationException("Online office conversion is not implemented yet");
     }
 
@@ -50,6 +57,11 @@ public class OnlineOfficeProvider extends AbstractProvider {
      */
     @Override
     public Object convert(InputStream source) {
+        Logger.warn(
+                false,
+                "Office",
+                "Online office stream conversion rejected: reason=notImplemented, streamType={}",
+                source == null ? null : source.getClass().getName());
         throw new UnsupportedOperationException("Online office conversion is not implemented yet");
     }
 
@@ -62,6 +74,12 @@ public class OnlineOfficeProvider extends AbstractProvider {
      */
     @Override
     public Object convert(InputStream source, boolean closeStream) {
+        Logger.warn(
+                false,
+                "Office",
+                "Online office stream conversion rejected: reason=notImplemented, streamType={}, closeStream={}",
+                source == null ? null : source.getClass().getName(),
+                closeStream);
         throw new UnsupportedOperationException("Online office conversion is not implemented yet");
     }
 

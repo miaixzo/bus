@@ -88,7 +88,7 @@ public abstract class AbstractStrategy implements Strategy {
                     .filter(part -> part.toLowerCase().startsWith("host="))
                     .map(part -> part.substring(5).trim().replace("\"", Normal.EMPTY)).findFirst();
             if (authority.isPresent()) {
-                Logger.debug(true, "Strategy", "{} found in 'Forwarded' header", authority.get());
+                Logger.debug(true, "Vortex", "component=strategy, {} found in 'Forwarded' header", authority.get());
                 return authority.map(host -> appendPortIfMissing(host, protocol));
             }
         }
@@ -96,26 +96,30 @@ public abstract class AbstractStrategy implements Strategy {
         String forwardedHostHeader = headers.getFirst("X-Forwarded-Host");
         if (StringKit.hasText(forwardedHostHeader)) {
             String authority = forwardedHostHeader.split(Symbol.COMMA)[0].trim();
-            Logger.debug(true, "Strategy", "{} found in 'X-Forwarded-Host' header", authority);
+            Logger.debug(true, "Vortex", "component=strategy, {} found in 'X-Forwarded-Host' header", authority);
             return Optional.of(appendPortIfMissing(authority, protocol));
         }
 
         String hostHeader = headers.getFirst(HTTP.HOST);
         if (StringKit.hasText(hostHeader)) {
-            Logger.debug(true, "Strategy", "{} found in 'Host' header", hostHeader);
+            Logger.debug(true, "Vortex", "component=strategy, {} found in 'Host' header", hostHeader);
             return Optional.of(appendPortIfMissing(hostHeader, protocol));
         }
 
         String uriHost = request.getURI().getHost();
         if (StringKit.hasText(uriHost)) {
-            Logger.debug(true, "Strategy", "{} found via request.getURI().getHost() as fallback", uriHost);
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "component=strategy, {} found via request.getURI().getHost() as fallback",
+                    uriHost);
             return Optional.of(appendPortIfMissing(uriHost, protocol));
         }
 
         Logger.debug(
                 true,
-                "Strategy",
-                "Could not determine a valid authority from any source for request: {}",
+                "Vortex",
+                "component=strategy, Could not determine a valid authority from any source for request: {}",
                 request.getPath());
         return Optional.empty();
     }
@@ -146,41 +150,53 @@ public abstract class AbstractStrategy implements Strategy {
                 for (String ipSegment : ips) {
                     String trimmedIp = ipSegment.trim();
                     if (StringKit.hasText(trimmedIp) && !Normal.UNKNOWN.equalsIgnoreCase(trimmedIp)) {
-                        Logger.debug(true, "Strategy", "Client IP: '{}' found in {} (list)", trimmedIp, source);
+                        Logger.debug(
+                                true,
+                                "Vortex",
+                                "component=strategy, Client IP: '{}' found in {} (list)",
+                                trimmedIp,
+                                source);
                         return trimmedIp;
                     }
                 }
             }
-            Logger.debug(true, "Strategy", "Client IP: '{}' found in {}", ip.trim(), source);
+            Logger.debug(true, "Vortex", "component=strategy, Client IP: '{}' found in {}", ip.trim(), source);
             return ip.trim();
         }
 
         ip = headers.getFirst("X-Real-IP");
         if (StringKit.hasText(ip) && !Normal.UNKNOWN.equalsIgnoreCase(ip)) {
-            Logger.debug(true, "Strategy", "Client IP: '{}' found in X-Real-IP", ip.trim());
+            Logger.debug(true, "Vortex", "component=strategy, Client IP: '{}' found in X-Real-IP", ip.trim());
             return ip.trim();
         }
 
         ip = headers.getFirst("Proxy-Client-IP");
         if (StringKit.hasText(ip) && !Normal.UNKNOWN.equalsIgnoreCase(ip)) {
-            Logger.debug(true, "Strategy", "Client IP: '{}' found in Proxy-Client-IP", ip.trim());
+            Logger.debug(true, "Vortex", "component=strategy, Client IP: '{}' found in Proxy-Client-IP", ip.trim());
             return ip.trim();
         }
 
         ip = headers.getFirst("WL-Proxy-Client-IP");
         if (StringKit.hasText(ip) && !Normal.UNKNOWN.equalsIgnoreCase(ip)) {
-            Logger.debug(true, "Strategy", "Client IP: '{}' found in WL-Proxy-Client-IP", ip.trim());
+            Logger.debug(true, "Vortex", "component=strategy, Client IP: '{}' found in WL-Proxy-Client-IP", ip.trim());
             return ip.trim();
         }
 
         InetSocketAddress remoteAddress = request.getRemoteAddress();
         if (remoteAddress != null) {
             String hostString = remoteAddress.getHostString();
-            Logger.debug(true, "Strategy", "Client IP: '{}' found via fallback getRemoteAddress()", hostString);
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "component=strategy, Client IP: '{}' found via fallback getRemoteAddress()",
+                    hostString);
             return hostString;
         }
 
-        Logger.warn(true, "Strategy", "Client IP could not be determined. Falling back to 'unknown'.");
+        Logger.warn(
+                false,
+                "Vortex",
+                "component=strategy, Client IP could not be determined. Falling back to 'unknown'.");
         return Normal.UNKNOWN;
     }
 
@@ -203,7 +219,11 @@ public abstract class AbstractStrategy implements Strategy {
                     .map(part -> part.substring(6).trim().replace("\"", Normal.EMPTY)).findFirst();
             if (proto.isPresent()) {
                 String protocol = proto.get();
-                Logger.debug(true, "Strategy", "Protocol: '{}' found in 'Forwarded' header", protocol);
+                Logger.debug(
+                        true,
+                        "Vortex",
+                        "component=strategy, Protocol: '{}' found in 'Forwarded' header",
+                        protocol);
                 return protocol;
             }
         }
@@ -211,12 +231,20 @@ public abstract class AbstractStrategy implements Strategy {
         String forwardedProtoHeader = headers.getFirst("X-Forwarded-Proto");
         if (StringKit.hasText(forwardedProtoHeader)) {
             String protocol = forwardedProtoHeader.split(Symbol.COMMA)[0].trim();
-            Logger.debug(true, "Strategy", "Protocol: '{}' found in 'X-Forwarded-Proto' header", protocol);
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "component=strategy, Protocol: '{}' found in 'X-Forwarded-Proto' header",
+                    protocol);
             return protocol;
         }
 
         String protocol = request.getURI().getScheme();
-        Logger.debug(true, "Strategy", "Protocol: '{}' found via fallback getURI().getScheme()", protocol);
+        Logger.debug(
+                true,
+                "Vortex",
+                "component=strategy, Protocol: '{}' found via fallback getURI().getScheme()",
+                protocol);
         return protocol;
     }
 
@@ -231,6 +259,13 @@ public abstract class AbstractStrategy implements Strategy {
         try {
             return HTTP.Method.of(type);
         } catch (IllegalArgumentException e) {
+            Logger.warn(
+                    false,
+                    "Vortex",
+                    e,
+                    "HTTP method mapping failed: component=strategy, methodCode={}, exception={}",
+                    type,
+                    e.getClass().getSimpleName());
             throw new ValidateException(ErrorCode._100802);
         }
     }
@@ -247,7 +282,7 @@ public abstract class AbstractStrategy implements Strategy {
         MediaType mediaType = request.getHeaders().getContentType();
         if (null == mediaType) {
             mediaType = MediaType.APPLICATION_FORM_URLENCODED;
-            Logger.debug(true, "Strategy", "Content-Type is missing. Defaulting to: {}", mediaType);
+            Logger.debug(true, "Vortex", "component=strategy, Content-Type is missing. Defaulting to: {}", mediaType);
 
             HttpHeaders headers = new HttpHeaders();
             headers.putAll(exchange.getRequest().getHeaders());

@@ -60,7 +60,11 @@ public class PersonName {
                 case Symbol.C_EQUAL:
                     if (++gindex > 2)
                         if (lenient) {
-                            Logger.info(false, "Image", "illegal PN: {} - truncate illegal component group(s)", s);
+                            Logger.info(
+                                    false,
+                                    "Image",
+                                    "illegal PN: valueChars={} - truncate illegal component group(s)",
+                                    s == null ? 0 : s.length());
                             return;
                         } else
                             throw new IllegalArgumentException(s);
@@ -76,7 +80,12 @@ public class PersonName {
                         set(gindex, cindex, tk);
                     else if (lenient) {
                         if ((tk = trim(tk)) != null) {
-                            Logger.info(false, "Image", "illegal PN: {} - subsumes {}th component in suffix", s, cindex + 1);
+                            Logger.info(
+                                    false,
+                                    "Image",
+                                    "illegal PN: valueChars={} - subsumes {}th component in suffix",
+                                    s == null ? 0 : s.length(),
+                                    cindex + 1);
                             set(gindex, 4, Builder.maskNull(get(gindex, 4), "") + ' ' + tk);
                         }
                     } else

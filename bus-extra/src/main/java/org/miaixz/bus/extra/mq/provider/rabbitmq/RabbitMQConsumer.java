@@ -27,6 +27,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.extra.mq.Consumer;
 import org.miaixz.bus.extra.mq.MessageHandler;
 import org.miaixz.bus.extra.mq.RawMessage;
+import org.miaixz.bus.logger.Logger;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DeliverCallback;
@@ -81,17 +82,54 @@ public class RabbitMQConsumer implements Consumer {
      */
     @Override
     public void subscribe(final MessageHandler messageHandler) {
+        final long startedAt = System.nanoTime();
+        Logger.info(true, "Extra", "component=mq, RabbitMQ subscription started: topic={}", this.topic);
         // Declare a non-durable, non-exclusive, non-auto-delete queue by default
         queueDeclare(false, false, false, null);
 
         try {
-            this.channel.basicConsume(
+            this.channel.basicConsume(this.topic, true, (consumerTag, delivery) -> {
+                final long handleStartedAt = System.nanoTime();
+                try {
+                    messageHandler.handle(new RawMessage(consumerTag, delivery.getBody()));
+                    Logger.debug(
+                            false,
+                            "Extra",
+                            "component=mq, RabbitMQ message handled: topic={}, consumerTag={}, messageBytes={}, elapsedMs={}",
+                            this.topic,
+                            consumerTag,
+                            delivery.getBody() == null ? 0 : delivery.getBody().length,
+                            (System.nanoTime() - handleStartedAt) / 1_000_000L);
+                } catch (RuntimeException e) {
+                    Logger.warn(
+                            false,
+                            "Extra",
+                            e,
+                            "component=mq, RabbitMQ message handling failed: topic={}, consumerTag={}, messageBytes={}, exception={}, elapsedMs={}",
+                            this.topic,
+                            consumerTag,
+                            delivery.getBody() == null ? 0 : delivery.getBody().length,
+                            e.getClass().getSimpleName(),
+                            (System.nanoTime() - handleStartedAt) / 1_000_000L);
+                    throw e;
+                }
+            }, consumerTag -> {
+            });
+            Logger.info(
+                    false,
+                    "Extra",
+                    "component=mq, RabbitMQ subscription registered: topic={}, elapsedMs={}",
                     this.topic,
-                    true,
-                    (consumerTag, delivery) -> messageHandler.handle(new RawMessage(consumerTag, delivery.getBody())),
-                    consumerTag -> {
-                    });
+                    (System.nanoTime() - startedAt) / 1_000_000L);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=mq, RabbitMQ subscription failed: topic={}, exception={}, elapsedMs={}",
+                    this.topic,
+                    e.getClass().getSimpleName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
             throw new MQueueException(e);
         }
     }
@@ -102,7 +140,15 @@ public class RabbitMQConsumer implements Consumer {
      */
     @Override
     public void close() {
+        final long startedAt = System.nanoTime();
+        Logger.debug(true, "Extra", "component=mq, RabbitMQ consumer close requested: topic={}", this.topic);
         IoKit.closeQuietly(this.channel);
+        Logger.debug(
+                false,
+                "Extra",
+                "component=mq, RabbitMQ consumer closed: topic={}, elapsedMs={}",
+                this.topic,
+                (System.nanoTime() - startedAt) / 1_000_000L);
     }
 
     /**
@@ -122,9 +168,32 @@ public class RabbitMQConsumer implements Consumer {
             final boolean exclusive,
             final boolean autoDelete,
             final Map<String, Object> arguments) {
+        final long startedAt = System.nanoTime();
+        Logger.debug(
+                true,
+                "Extra",
+                "component=mq, RabbitMQ queue declaration started: queue={}, durable={}, exclusive={}, autoDelete={}",
+                this.topic,
+                durable,
+                exclusive,
+                autoDelete);
         try {
             this.channel.queueDeclare(this.topic, durable, exclusive, autoDelete, arguments);
+            Logger.debug(
+                    false,
+                    "Extra",
+                    "component=mq, RabbitMQ queue declared: queue={}, elapsedMs={}",
+                    this.topic,
+                    (System.nanoTime() - startedAt) / 1_000_000L);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=mq, RabbitMQ queue declaration failed: queue={}, exception={}, elapsedMs={}",
+                    this.topic,
+                    e.getClass().getSimpleName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
             throw new MQueueException(e);
         }
     }

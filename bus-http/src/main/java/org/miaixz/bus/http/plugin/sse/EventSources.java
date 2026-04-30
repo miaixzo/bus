@@ -23,6 +23,7 @@ import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.bodys.ResponseBody;
 import org.miaixz.bus.http.metric.sse.RealEventSource;
 import org.miaixz.bus.http.metric.sse.ServerSentEventReader;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * A utility class for Server-Sent Events (SSE), providing static methods for creating event source factories and
@@ -95,6 +96,13 @@ public final class EventSources {
                     // Continue processing events.
                 }
             } catch (Exception e) {
+                Logger.warn(
+                        false,
+                        "Http",
+                        e,
+                        "SSE event processing failed: responsePresent={}, exception={}",
+                        modifiedResponse != null,
+                        e.getClass().getSimpleName());
                 listener.onFailure(null, e, modifiedResponse);
                 return;
             }

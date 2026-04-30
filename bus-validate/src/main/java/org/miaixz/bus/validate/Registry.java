@@ -21,6 +21,7 @@ package org.miaixz.bus.validate;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.validate.metric.*;
 
 import java.util.Map;
@@ -108,15 +109,35 @@ public class Registry {
      * @throws InternalException if a validator with the same name or type is already registered.
      */
     public static void register(String name, Object object) {
+        Logger.debug(
+                true,
+                "Validate",
+                "Validator registration started: name={}, validator={}",
+                name,
+                object == null ? null : object.getClass().getSimpleName());
         if (COMPLEX_CACHE.containsKey(name)) {
+            Logger.warn(false, "Validate", "Validator registration rejected: name={}, reason=duplicateName", name);
             throw new InternalException("Duplicate registration of validator with the same name: " + name);
         }
         Class<?> clazz = object.getClass();
         if (COMPLEX_CACHE.containsKey(clazz.getSimpleName())) {
+            Logger.warn(
+                    false,
+                    "Validate",
+                    "Validator registration rejected: name={}, validator={}, reason=duplicateType",
+                    name,
+                    clazz.getSimpleName());
             throw new InternalException("Duplicate registration of validator with the same type: " + clazz);
         }
         COMPLEX_CACHE.putIfAbsent(name, object);
         COMPLEX_CACHE.putIfAbsent(clazz.getSimpleName(), object);
+        Logger.debug(
+                false,
+                "Validate",
+                "Validator registered: name={}, validator={}, registeredKeyCount={}",
+                name,
+                clazz.getSimpleName(),
+                COMPLEX_CACHE.size());
     }
 
     /**
@@ -136,7 +157,15 @@ public class Registry {
      * @return the validator object, or {@code null} if not found.
      */
     public Object require(String name) {
-        return COMPLEX_CACHE.get(name);
+        Logger.debug(true, "Validate", "Validator lookup started: name={}", name);
+        Object object = COMPLEX_CACHE.get(name);
+        Logger.debug(
+                false,
+                "Validate",
+                "Validator lookup completed: name={}, found={}",
+                name,
+                ObjectKit.isNotEmpty(object));
+        return object;
     }
 
     /**
@@ -147,10 +176,18 @@ public class Registry {
      * @return the validator object, or {@code null} if not found by either name or class.
      */
     public Object require(String name, Class<?> clazz) {
+        Logger.debug(true, "Validate", "Validator lookup started: name={}, type={}", name, clazz.getSimpleName());
         Object object = this.require(name);
         if (ObjectKit.isEmpty(object)) {
             object = this.require(clazz.getSimpleName());
         }
+        Logger.debug(
+                false,
+                "Validate",
+                "Validator lookup completed: name={}, type={}, found={}",
+                name,
+                clazz.getSimpleName(),
+                ObjectKit.isNotEmpty(object));
         return object;
     }
 

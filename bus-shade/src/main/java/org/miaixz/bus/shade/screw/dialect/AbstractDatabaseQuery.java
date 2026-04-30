@@ -30,6 +30,7 @@ import javax.sql.DataSource;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.shade.screw.Builder;
 import org.miaixz.bus.shade.screw.metadata.Column;
 import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
@@ -80,6 +81,12 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
             try {
                 rs.close();
             } catch (SQLException e) {
+                Logger.warn(
+                        false,
+                        "Shade",
+                        e,
+                        "Database result set close failed: exception={}",
+                        e.getClass().getSimpleName());
                 throw new InternalException(e);
             }
         }
@@ -96,6 +103,12 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
             try {
                 conn.close();
             } catch (SQLException e) {
+                Logger.warn(
+                        false,
+                        "Shade",
+                        e,
+                        "Database connection close failed: exception={}",
+                        e.getClass().getSimpleName());
                 throw new InternalException(e);
             }
         }
@@ -127,6 +140,12 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
             try {
                 st.close();
             } catch (SQLException e) {
+                Logger.warn(
+                        false,
+                        "Shade",
+                        e,
+                        "Database statement close failed: exception={}",
+                        e.getClass().getSimpleName());
                 throw new InternalException(e);
             }
         }
@@ -148,10 +167,22 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
             synchronized (AbstractDatabaseQuery.class) {
                 if (connection == null || connection.isClosed()) {
                     this.connection = this.getDataSource().getConnection();
+                    Logger.debug(
+                            false,
+                            "Shade",
+                            "Database connection opened: dataSourceClass={}",
+                            this.getDataSource().getClass().getName());
                 }
             }
             return this.connection;
         } catch (SQLException e) {
+            Logger.warn(
+                    false,
+                    "Shade",
+                    e,
+                    "Database connection open failed: dataSourceClass={}, exception={}",
+                    this.getDataSource().getClass().getName(),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -170,6 +201,13 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
             }
             return catalog;
         } catch (SQLException e) {
+            Logger.warn(
+                    false,
+                    "Shade",
+                    e,
+                    "Database catalog read failed: queryClass={}, exception={}",
+                    getClass().getName(),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -197,6 +235,13 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
             }
             return schema;
         } catch (SQLException e) {
+            Logger.warn(
+                    false,
+                    "Shade",
+                    e,
+                    "Database schema read failed: queryClass={}, exception={}",
+                    getClass().getName(),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -234,6 +279,13 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
         try {
             return this.getConnection().getMetaData();
         } catch (SQLException e) {
+            Logger.warn(
+                    false,
+                    "Shade",
+                    e,
+                    "Database metadata read failed: queryClass={}, exception={}",
+                    getClass().getName(),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -250,6 +302,14 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
         try {
             return this.getConnection().prepareStatement(sql);
         } catch (SQLException e) {
+            Logger.warn(
+                    false,
+                    "Shade",
+                    e,
+                    "Database statement prepare failed: queryClass={}, sqlLength={}, exception={}",
+                    getClass().getName(),
+                    sql.length(),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }

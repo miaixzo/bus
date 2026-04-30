@@ -34,6 +34,7 @@ import org.miaixz.bus.http.metric.EventListener;
 import org.miaixz.bus.http.metric.Internal;
 import org.miaixz.bus.http.metric.NewChain;
 import org.miaixz.bus.http.metric.http.*;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.http.secure.CertificatePinner;
 import org.miaixz.bus.http.socket.Handshake;
 import org.miaixz.bus.http.socket.RealWebSocket;
@@ -172,6 +173,16 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         RouteException routeException = null;
         List<ConnectionSuite> connectionSuites = route.address().connectionSpecs();
         ConnectionSelector connectionSelector = new ConnectionSelector(connectionSuites);
+        Logger.debug(
+                true,
+                "Http",
+                "protocol=http, Physical connection starting: host={}, port={}, proxy={}, tunnel={}, connectTimeoutMs={}, readTimeoutMs={}",
+                route.address().url().host(),
+                route.address().url().port(),
+                route.proxy().type(),
+                route.requiresTunnel(),
+                connectTimeout,
+                readTimeout);
 
         if (route.address().sslSocketFactory() == null) {
             if (!connectionSuites.contains(ConnectionSuite.CLEARTEXT)) {
@@ -201,6 +212,15 @@ public final class RealConnection extends Http2Connection.Listener implements Co
                 }
                 establishProtocol(connectionSelector, pingIntervalMillis, call, eventListener);
                 eventListener.connectEnd(call, route.socketAddress(), route.proxy(), protocol);
+                Logger.debug(
+                        false,
+                        "Http",
+                        "protocol=http, Physical connection established: host={}, port={}, proxy={}, protocol={}, tunnel={}",
+                        route.address().url().host(),
+                        route.address().url().port(),
+                        route.proxy().type(),
+                        protocol,
+                        route.requiresTunnel());
                 break;
             } catch (IOException e) {
                 IoKit.close(socket);
@@ -214,6 +234,16 @@ public final class RealConnection extends Http2Connection.Listener implements Co
                 http2Connection = null;
 
                 eventListener.connectFailed(call, route.socketAddress(), route.proxy(), null, e);
+                Logger.warn(
+                        false,
+                        "Http",
+                        e,
+                        "protocol=http, Physical connection attempt failed: host={}, port={}, proxy={}, retryEnabled={}, exception={}",
+                        route.address().url().host(),
+                        route.address().url().port(),
+                        route.proxy().type(),
+                        connectionRetryEnabled,
+                        e.getClass().getSimpleName());
 
                 if (routeException == null) {
                     routeException = new RouteException(e);
@@ -222,6 +252,14 @@ public final class RealConnection extends Http2Connection.Listener implements Co
                 }
 
                 if (!connectionRetryEnabled || !connectionSelector.connectionFailed(e)) {
+                    Logger.error(
+                            false,
+                            "Http",
+                            routeException,
+                            "protocol=http, Physical connection failed without retry: host={}, port={}, proxy={}",
+                            route.address().url().host(),
+                            route.address().url().port(),
+                            route.proxy().type());
                     throw routeException;
                 }
             }
@@ -299,8 +337,29 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         eventListener.connectStart(call, route.socketAddress(), proxy);
         rawSocket.setSoTimeout(readTimeout);
         try {
+            Logger.debug(
+                    true,
+                    "Http",
+                    "protocol=http, Socket connect starting: address={}, proxy={}, connectTimeoutMs={}",
+                    route.socketAddress(),
+                    proxy.type(),
+                    connectTimeout);
             Platform.get().connectSocket(rawSocket, route.socketAddress(), connectTimeout);
+            Logger.debug(
+                    false,
+                    "Http",
+                    "protocol=http, Socket connect completed: address={}, proxy={}",
+                    route.socketAddress(),
+                    proxy.type());
         } catch (ConnectException e) {
+            Logger.warn(
+                    false,
+                    "Http",
+                    e,
+                    "HTTP connection operation failed: component=connection, provider={}, recoverable={}, exception={}",
+                    "RealConnection",
+                    false,
+                    e.getClass().getSimpleName());
             ConnectException ce = new ConnectException("Failed to connect to " + route.socketAddress());
             ce.initCause(e);
             throw ce;
@@ -311,6 +370,14 @@ public final class RealConnection extends Http2Connection.Listener implements Co
             source = IoKit.buffer(IoKit.source(rawSocket));
             sink = IoKit.buffer(IoKit.sink(rawSocket));
         } catch (NullPointerException npe) {
+            Logger.warn(
+                    false,
+                    "Http",
+                    npe,
+                    "HTTP connection operation failed: component=connection, provider={}, recoverable={}, exception={}",
+                    "RealConnection",
+                    false,
+                    npe.getClass().getSimpleName());
             if (NPE_THROW_WITH_NULL.equals(npe.getMessage())) {
                 throw new IOException(npe);
             }
@@ -336,8 +403,21 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         }
 
         eventListener.secureConnectStart(call);
+        Logger.debug(
+                true,
+                "Http",
+                "protocol=http, TLS handshake starting: host={}, port={}",
+                route.address().url().host(),
+                route.address().url().port());
         connectTls(connectionSelector);
         eventListener.secureConnectEnd(call, handshake);
+        Logger.debug(
+                false,
+                "Http",
+                "protocol=http, TLS handshake completed: host={}, port={}, protocol={}",
+                route.address().url().host(),
+                route.address().url().port(),
+                protocol);
 
         if (protocol == Protocol.HTTP_2) {
             startHttp2(pingIntervalMillis);
@@ -403,6 +483,14 @@ public final class RealConnection extends Http2Connection.Listener implements Co
             protocol = null != maybeProtocol ? Protocol.get(maybeProtocol) : Protocol.HTTP_1_1;
             success = true;
         } catch (AssertionError e) {
+            Logger.warn(
+                    false,
+                    "Http",
+                    e,
+                    "HTTP connection operation failed: component=connection, provider={}, recoverable={}, exception={}",
+                    "RealConnection",
+                    false,
+                    e.getClass().getSimpleName());
             if (IoKit.isAndroidGetsocknameError(e))
                 throw new IOException(e);
             throw e;
@@ -530,6 +618,14 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         try {
             address.certificatePinner().check(address.url().host(), handshake().peerCertificates());
         } catch (SSLPeerUnverifiedException e) {
+            Logger.warn(
+                    false,
+                    "Http",
+                    e,
+                    "HTTP connection operation failed: component=connection, provider={}, recoverable={}, exception={}",
+                    "RealConnection",
+                    false,
+                    e.getClass().getSimpleName());
             return false;
         }
 
@@ -667,8 +763,24 @@ public final class RealConnection extends Http2Connection.Listener implements Co
                     socket.setSoTimeout(readTimeout);
                 }
             } catch (SocketTimeoutException ignored) {
+                Logger.warn(
+                        false,
+                        "Http",
+                        ignored,
+                        "HTTP connection operation failed: component=connection, provider={}, recoverable={}, exception={}",
+                        "RealConnection",
+                        false,
+                        ignored.getClass().getSimpleName());
                 // Read timed out; the socket is good.
             } catch (IOException e) {
+                Logger.warn(
+                        false,
+                        "Http",
+                        e,
+                        "HTTP connection operation failed: component=connection, provider={}, recoverable={}, exception={}",
+                        "RealConnection",
+                        false,
+                        e.getClass().getSimpleName());
                 // Unable to read; the socket is closed.
                 return false;
             }

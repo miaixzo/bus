@@ -41,6 +41,7 @@ import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Ximalaya login provider.
@@ -137,6 +138,15 @@ public class XimalayaProvider extends AbstractProvider {
                     .data(Authorization.builder().token(token).refresh(refresh).expireIn(expiresIn).uid(uid).build())
                     .build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "access token",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
     }
@@ -209,6 +219,15 @@ public class XimalayaProvider extends AbstractProvider {
                             .source(complex.toString()).token(authorization).gender(Gender.UNKNOWN).build())
                     .build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "user info",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
     }

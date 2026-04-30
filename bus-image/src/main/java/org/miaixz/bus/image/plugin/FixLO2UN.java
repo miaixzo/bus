@@ -100,8 +100,10 @@ public class FixLO2UN extends SimpleFileVisitor<Path> {
             int length;
             while ((length = correctLength(mbb)) > 0) {
                 int position = mbb.position();
-                Logger.info(false, "ImageTool",
-                        "  %d: (%02X%02X,%02X%02X) LO #%d -> UN #%d%n",
+                Logger.info(
+                        false,
+                        "Image",
+                        "component=tool,   %d: (%02X%02X,%02X%02X) LO #%d -> UN #%d%n",
                         position - 6,
                         mbb.get(position - 5),
                         mbb.get(position - 6),
@@ -120,9 +122,21 @@ public class FixLO2UN extends SimpleFileVisitor<Path> {
             mbb.reset();
             ofc.write(mbb);
         } catch (FileAlreadyExistsException e) {
-            Logger.warn(false, "ImageTool", "Destination file {} already exists, skipping.", dstFile);
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "component=tool, DICOM LO fix destination exists: fileName={}, exception={}",
+                    dstFile.getFileName(),
+                    e.getClass().getSimpleName());
         } catch (Exception e) {
-            Logger.error(false, "ImageTool", "Failed to process file {}: {}", srcFile, e.getMessage());
+            Logger.error(
+                    false,
+                    "Image",
+                    e,
+                    "component=tool, DICOM LO fix failed: fileName={}, exception={}",
+                    srcFile.getFileName(),
+                    e.getClass().getSimpleName());
         }
         return FileVisitResult.CONTINUE;
     }

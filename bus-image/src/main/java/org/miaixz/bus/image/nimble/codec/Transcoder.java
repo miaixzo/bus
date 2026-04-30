@@ -136,8 +136,10 @@ public class Transcoder implements Closeable {
                 dos.writeHeader(Tag.Item, null, (int) (length + 1) & ~1);
                 IoKit.copy(dis, dos, length, buffer());
                 if ((length & 1) != 0) {
-                    Logger.info(false, "Image",
-                            "Odd length of Pixel Data Fragment: {} - append NULL byte to ensure even length",
+                    Logger.info(
+                            false,
+                            "Image",
+                            "Odd length of Pixel Data Fragment: length={} - append NULL byte to ensure even length",
                             length);
                     dos.write(0);
                 }
@@ -377,7 +379,7 @@ public class Transcoder implements Closeable {
             throw new UnsupportedOperationException("Unsupported Transfer Syntax: " + srcTransferSyntax);
 
         this.decompressor = ImageReaderFactory.getImageReader(decompressorParam);
-        Logger.debug(false, "Image", "Decompressor: {}", decompressor.getClass().getName());
+        Logger.debug(false, "Image", "Decompressor: class={}", decompressor.getClass().getName());
 
         this.decompressParam = decompressor.getDefaultReadParam();
     }
@@ -388,7 +390,7 @@ public class Transcoder implements Closeable {
             throw new UnsupportedOperationException("Unsupported Transfer Syntax: " + tsuid);
 
         this.compressor = ImageWriterFactory.getImageWriter(compressorParam);
-        Logger.debug(false, "Image", "Compressor: {}", compressor.getClass().getName());
+        Logger.debug(false, "Image", "Compressor: class={}", compressor.getClass().getName());
 
         this.compressParam = compressor.getDefaultWriteParam();
         setCompressParams(compressorParam.getImageWriteParams());
@@ -419,7 +421,7 @@ public class Transcoder implements Closeable {
 
             this.verifier = ImageReaderFactory.getImageReader(readerParam);
             this.verifyParam = verifier.getDefaultReadParam();
-            Logger.debug(false, "Image", "Verifier: {}", verifier.getClass().getName());
+            Logger.debug(false, "Image", "Verifier: class={}", verifier.getClass().getName());
         }
     }
 
@@ -516,7 +518,11 @@ public class Transcoder implements Closeable {
             else
                 IoKit.copy(dis, dos, length, dis.vr().numEndianBytes(), buffer());
             if ((length & 1) != 0) {
-                Logger.info(false, "Image", "Odd length of Pixel Data: {} - append NULL byte to ensure even length", length);
+                Logger.info(
+                        false,
+                        "Image",
+                        "Odd length of Pixel Data: length={} - append NULL byte to ensure even length",
+                        length);
                 dos.write(0);
             }
         }
@@ -565,8 +571,10 @@ public class Transcoder implements Closeable {
                 dataset.setInt(Tag.PlanarConfiguration, VR.US, srcTransferSyntaxType.getPlanarConfiguration());
             } else {
                 if (srcTransferSyntaxType.adjustBitsStoredTo12(dataset)) {
-                    Logger.info(false, "Image",
-                            "Adjust invalid Bits Stored: {} of {} to 12",
+                    Logger.info(
+                            false,
+                            "Image",
+                            "Adjust invalid Bits Stored: bitsStored={} of {} to 12",
                             imageDescriptor.getBitsStored(),
                             srcTransferSyntaxType);
                 }
@@ -581,7 +589,9 @@ public class Transcoder implements Closeable {
                 dataset.setInt(Tag.BitsStored, VR.US, 8);
                 dataset.setInt(Tag.HighBit, VR.US, 7);
                 pmi = Photometric.RGB;
-                Logger.warn(false, "Image",
+                Logger.warn(
+                        false,
+                        "Image",
                         "Converting PALETTE_COLOR model into a lossy format is not recommended, prefer a lossless format");
             } else if ((pmi.isSubSampled() && !srcTransferSyntaxType.isPixeldataEncapsulated())
                     || (pmi == Photometric.YBR_FULL && (TransferSyntaxType.isYBRCompression(destTransferSyntax)
@@ -591,8 +601,10 @@ public class Transcoder implements Closeable {
                 Logger.debug(false, "Image", "Conversion to an RGB color model is required before compression.");
             } else {
                 if (destTransferSyntaxType.adjustBitsStoredTo12(dataset)) {
-                    Logger.debug(false, "Image",
-                            "Adjust Bits Stored: {} for {} to 12",
+                    Logger.debug(
+                            false,
+                            "Image",
+                            "Adjust Bits Stored: bitsStored={} for {} to 12",
                             imageDescriptor.getBitsStored(),
                             destTransferSyntaxType);
                 }
@@ -634,7 +646,12 @@ public class Transcoder implements Closeable {
             dataset.setInt(Tag.OverlayBitsAllocated | gg0000, VR.US, 1);
             dataset.setInt(Tag.OverlayBitPosition | gg0000, VR.US, 0);
             dataset.setBytes(Tag.OverlayData | gg0000, VR.OB, ovlyData);
-            Logger.debug(false, "Image", "Extracted embedded overlay #{} from bit #{}", (gg0000 >>> 17) + 1, ovlyBitPosition);
+            Logger.debug(
+                    false,
+                    "Image",
+                    "Extracted embedded overlay #{} from bit #{}",
+                    (gg0000 >>> 17) + 1,
+                    ovlyBitPosition);
         }
     }
 
@@ -677,7 +694,9 @@ public class Transcoder implements Closeable {
         originalBi = adjustColorModel(decompressor.read(0, decompressParam));
         long end = System.currentTimeMillis();
         if (Logger.isDebugEnabled())
-            Logger.debug(false, "Image",
+            Logger.debug(
+                    false,
+                    "Image",
                     "Decompressed frame #{} in {} ms, ratio 1:{}",
                     frameIndex + 1,
                     end - start,
@@ -712,7 +731,9 @@ public class Transcoder implements Closeable {
         long end = System.currentTimeMillis();
         int length = (int) ios.getStreamPosition();
         if (Logger.isDebugEnabled())
-            Logger.debug(false, "Image",
+            Logger.debug(
+                    false,
+                    "Image",
                     "Compressed frame #{} in {} ms, ratio {}:1",
                     frameIndex + 1,
                     end - start,
@@ -925,8 +946,10 @@ public class Transcoder implements Closeable {
         int maxDiff = maxDiff(bi.getRaster(), bi2.getRaster());
         long end = System.currentTimeMillis();
         if (Logger.isDebugEnabled())
-            Logger.debug(false, "Image",
-                    "Verified compressed frame #{} in {} ms - max pixel value error: {}",
+            Logger.debug(
+                    false,
+                    "Image",
+                    "Verified compressed frame #{} in {} ms - max pixel value error: maxPixelValueError={}",
                     index + 1,
                     end - start,
                     maxDiff);

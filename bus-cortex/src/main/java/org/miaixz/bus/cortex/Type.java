@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Supported Cortex resource types.
@@ -274,6 +275,14 @@ public enum Type {
         try {
             return tryFromKey(Integer.valueOf(value));
         } catch (NumberFormatException ignore) {
+            Logger.debug(
+                    false,
+                    "Cortex",
+                    "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
+                    "cortex",
+                    "Type",
+                    true,
+                    ignore.getClass().getSimpleName());
         }
         for (Type type : values()) {
             if (type.name().equalsIgnoreCase(value) || type.desc.equalsIgnoreCase(value)) {

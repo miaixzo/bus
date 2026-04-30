@@ -103,7 +103,12 @@ public final class Executor {
             p = Runtime.getRuntime().exec(cmdToRunWithArgs, envp);
             return getProcessOutput(p, cmdToRunWithArgs);
         } catch (SecurityException | IOException e) {
-            Logger.trace(false, "Health", "Couldn't run command {}: {}", Arrays.toString(cmdToRunWithArgs), e.getMessage());
+            Logger.trace(
+                    false,
+                    "Health",
+                    "Couldn't run command {}: {}",
+                    Arrays.toString(cmdToRunWithArgs),
+                    e.getClass().getSimpleName());
         } finally {
             // Ensure all resources are freed
             if (p != null) {
@@ -157,9 +162,19 @@ public final class Executor {
             }
             p.waitFor();
         } catch (IOException e) {
-            Logger.trace(true, "Health", "Problem reading output from {}: {}", Arrays.toString(cmd), e.getMessage());
+            Logger.trace(
+                    true,
+                    "Health",
+                    "Problem reading output from {}: {}",
+                    Arrays.toString(cmd),
+                    e.getClass().getSimpleName());
         } catch (InterruptedException ie) {
-            Logger.trace(true, "Health", "Interrupted while reading output from {}: {}", Arrays.toString(cmd), ie.getMessage());
+            Logger.trace(
+                    true,
+                    "Health",
+                    "Interrupted while reading output from {}: {}",
+                    Arrays.toString(cmd),
+                    ie.getClass().getSimpleName());
             Thread.currentThread().interrupt();
         }
         return sa;
@@ -184,14 +199,29 @@ public final class Executor {
     public static List<String> runPrivilegedNative(String cmdToRun) {
         String prefix = Privilege.getPrefix();
         if (prefix.isEmpty() || IdGroup.isElevated()) {
+            Logger.debug(
+                    false,
+                    "Health",
+                    "Privileged command prefix skipped: prefixConfigured={}, elevated={}",
+                    !prefix.isEmpty(),
+                    IdGroup.isElevated());
             return runNative(cmdToRun);
         }
         if (!Privilege.isCommandAllowed(cmdToRun, Privilege.getCommandAllowlist())) {
-            Logger.debug(false, "Health", "Command not in allowlist, running without prefix: {}", cmdToRun);
+            Logger.debug(
+                    false,
+                    "Health",
+                    "Privileged command not allowlisted, running without prefix: command={}",
+                    cmdToRun.split(Symbol.SPACE)[0]);
             return runNative(cmdToRun);
         }
         String privilegedCmd = prefix + Symbol.SPACE + cmdToRun;
-        Logger.debug(true, "Health", "Executing privileged command: {}", privilegedCmd);
+        Logger.debug(
+                true,
+                "Health",
+                "Executing privileged command: command={}, prefixConfigured={}",
+                cmdToRun.split(Symbol.SPACE)[0],
+                !prefix.isEmpty());
         return runNative(privilegedCmd);
     }
 

@@ -41,6 +41,7 @@ import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Feishu (Lark) login provider.
@@ -164,6 +165,15 @@ public class FeishuProvider extends AbstractProvider {
                                     .token(authorization).source(complex.toString()).build())
                     .build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "user info",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
     }
@@ -220,6 +230,15 @@ public class FeishuProvider extends AbstractProvider {
             return Authorization.builder().token(token).refresh(refresh).expireIn(expiresIn).token_type(tokenType)
                     .openId(openId).build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "token",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse token response: " + e.getMessage());
         }
     }

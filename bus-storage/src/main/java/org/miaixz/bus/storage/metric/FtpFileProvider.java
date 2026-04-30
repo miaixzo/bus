@@ -147,7 +147,15 @@ public class FtpFileProvider extends AbstractProvider {
                         .data(content).build();
             }
         } catch (InternalException | IOException e) {
-            Logger.error(false, "Storage", "Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage download failed; provider={}, bucket={}, object={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    fileName,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -188,11 +196,14 @@ public class FtpFileProvider extends AbstractProvider {
             client.download(objectKey, file);
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (InternalException e) {
-            Logger.error(false, "Storage",
-                    "Failed to download file: {} from bucket: {} to local file: {}. Error: {}",
-                    fileName,
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage download-to-local failed; provider={}, bucket={}, object={}, targetProvided={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
                     bucket,
-                    file.getAbsolutePath(),
+                    fileName,
+                    file != null,
                     e.getMessage(),
                     e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
@@ -216,7 +227,15 @@ public class FtpFileProvider extends AbstractProvider {
                         return Blob.builder().name(fileName).extend(extend).build();
                     }).collect(Collectors.toList())).build();
         } catch (InternalException e) {
-            Logger.error(false, "Storage", "Failed to list files in path: {}. Error: {}", context.getPrefix(), e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage list failed; provider={}, bucket={}, prefix={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    this.context.getBucket(),
+                    context.getPrefix(),
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -266,12 +285,15 @@ public class FtpFileProvider extends AbstractProvider {
             client.rename(oldObjectKey, newObjectKey);
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (InternalException e) {
-            Logger.error(false, "Storage",
-                    "Failed to rename file from {} to {} in bucket: {} path: {}. Error: {}",
-                    oldName,
-                    newName,
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage rename failed; provider={}, bucket={}, path={}, sourceObject={}, targetObject={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
                     bucket,
                     path,
+                    oldName,
+                    newName,
                     e.getMessage(),
                     e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
@@ -372,11 +394,14 @@ public class FtpFileProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(Blob.builder().name(fileName).path(objectKey).build()).build();
         } catch (InternalException | IOException e) {
-            Logger.error(false, "Storage",
-                    "Failed to upload file: {} to bucket: {} path: {}. Error: {}",
-                    fileName,
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage upload failed; provider={}, bucket={}, path={}, object={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
                     bucket,
                     path,
+                    fileName,
                     e.getMessage(),
                     e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
@@ -428,11 +453,14 @@ public class FtpFileProvider extends AbstractProvider {
             }
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (InternalException e) {
-            Logger.error(false, "Storage",
-                    "Failed to remove file: {} from bucket: {} path: {}. Error: {}",
-                    fileName,
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage remove failed; provider={}, bucket={}, path={}, object={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
                     bucket,
                     path,
+                    fileName,
                     e.getMessage(),
                     e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
@@ -496,7 +524,12 @@ public class FtpFileProvider extends AbstractProvider {
                 return Integer.parseInt(portStr);
             }
         } catch (NumberFormatException e) {
-            Logger.warn(false, "Storage", "Invalid port in endpoint: {}. Using default port 21.", endpoint);
+            Logger.warn(
+                    false,
+                    "Storage",
+                    "Storage endpoint port invalid; provider={}, defaultPort=21, endpointProvided={}, status=fallback",
+                    this.getClass().getSimpleName(),
+                    StringKit.isNotBlank(endpoint));
         }
         return 0; // Return 0 to indicate that the default port 21 should be used
     }

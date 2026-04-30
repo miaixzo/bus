@@ -185,14 +185,41 @@ public class Complex {
             if (annoHolder.isMulti()) {
                 Map[] pair = Builder.generateMultiKey(annoHolder, args);
                 Set<String> keys = ((Map<String, Object>) pair[1]).keySet();
+                Logger.info(
+                        true,
+                        "Cache",
+                        "Cache invalidation started: method={}, mode=multi, cache={}, keyCount={}",
+                        method == null ? null : method.getName(),
+                        invalid.value(),
+                        keys.size());
                 manage.remove(invalid.value(), keys.toArray(new String[0]));
-                Logger.info(true, "Cache", "multi cache clear, keys: {}", keys);
+                Logger.info(
+                        false,
+                        "Cache",
+                        "Cache invalidation completed: method={}, mode=multi, cache={}, keyCount={}, durationMs={}",
+                        method == null ? null : method.getName(),
+                        invalid.value(),
+                        keys.size(),
+                        (System.currentTimeMillis() - start));
             } else {
                 String key = Builder.generateSingleKey(annoHolder, args);
+                Logger.info(
+                        true,
+                        "Cache",
+                        "Cache invalidation started: method={}, mode=single, cache={}, keyPresent={}",
+                        method == null ? null : method.getName(),
+                        invalid.value(),
+                        key != null);
                 manage.remove(invalid.value(), key);
-                Logger.info(true, "Cache", "single cache clear, key: {}", key);
+                Logger.info(
+                        false,
+                        "Cache",
+                        "Cache invalidation completed: method={}, mode=single, cache={}, keyPresent={}, durationMs={}",
+                        method == null ? null : method.getName(),
+                        invalid.value(),
+                        key != null,
+                        (System.currentTimeMillis() - start));
             }
-            Logger.debug(false, "Cache", "Cache clear completed: durationMs={}", (System.currentTimeMillis() - start));
         }
     }
 
@@ -279,12 +306,29 @@ public class Complex {
         AnnoHolder annoHolder = pair.getLeft();
         MethodHolder methodHolder = pair.getRight();
         Object result;
+        Logger.debug(
+                true,
+                "Cache",
+                "Cache read workflow started: method={}, mode={}, cache={}, writeOnMiss={}",
+                method == null ? null : method.getName(),
+                annoHolder.isMulti() ? "multi" : "single",
+                annoHolder.getCache(),
+                needWrite);
         if (annoHolder.isMulti()) {
             result = multiCacheReader.read(annoHolder, methodHolder, baseInvoker, needWrite);
         } else {
             result = singleCacheReader.read(annoHolder, methodHolder, baseInvoker, needWrite);
         }
-        Logger.debug(false, "Cache", "cache read completed: durationMs={}", (System.currentTimeMillis() - start));
+        Logger.debug(
+                false,
+                "Cache",
+                "Cache read workflow completed: method={}, mode={}, cache={}, writeOnMiss={}, resultType={}, durationMs={}",
+                method == null ? null : method.getName(),
+                annoHolder.isMulti() ? "multi" : "single",
+                annoHolder.getCache(),
+                needWrite,
+                result == null ? null : result.getClass().getSimpleName(),
+                (System.currentTimeMillis() - start));
         return result;
     }
 

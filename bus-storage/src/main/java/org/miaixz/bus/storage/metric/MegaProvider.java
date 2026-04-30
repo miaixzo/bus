@@ -130,7 +130,12 @@ public class MegaProvider extends AbstractProvider {
         // Check if session ID is provided in extension
         if (StringKit.isNotBlank(this.context.getExtension())) {
             this.sessionId = this.context.getExtension();
-            Logger.info(false, "Storage", "Using provided session ID for Mega authentication");
+            Logger.info(
+                    false,
+                    "Storage",
+                    "Storage provider authentication configured; provider={}, sessionCredentialSupplied={}, status=configured",
+                    this.getClass().getSimpleName(),
+                    true);
         } else {
             // Perform login to get session ID
             login();
@@ -145,9 +150,12 @@ public class MegaProvider extends AbstractProvider {
             // Note: Full Mega authentication requires complex cryptographic operations
             // including RSA key derivation, AES encryption, and challenge-response
             // This is a simplified placeholder that demonstrates the API structure
-            Logger.warn(false, "Storage",
-                    "Mega authentication requires complex cryptographic operations. "
-                            + "Please provide a valid session ID in the 'extension' field of the context.");
+            Logger.warn(
+                    false,
+                    "Storage",
+                    "Storage provider authentication unavailable; provider={}, sessionCredentialSupplied={}, status=skipped",
+                    this.getClass().getSimpleName(),
+                    false);
 
             // Placeholder for actual authentication
             // Real implementation would need:
@@ -160,7 +168,13 @@ public class MegaProvider extends AbstractProvider {
             this.sessionId = null;
             this.rootHandle = null;
         } catch (Exception e) {
-            Logger.error(false, "Storage", "Failed to authenticate with Mega. Error: {}", e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage provider authentication failed; provider={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    e.getMessage(),
+                    e);
             throw new RuntimeException("Mega authentication failed: " + e.getMessage(), e);
         }
     }
@@ -271,7 +285,15 @@ public class MegaProvider extends AbstractProvider {
                         .data(content).build();
             }
         } catch (Exception e) {
-            Logger.error(false, "Storage", "Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage download failed; provider={}, bucket={}, object={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    fileName,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
         }
     }
@@ -308,7 +330,16 @@ public class MegaProvider extends AbstractProvider {
                 return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                         .build();
             } catch (IOException e) {
-                Logger.error(false, "Storage", "Failed to write file: {}. Error: {}", file.getPath(), e.getMessage(), e);
+                Logger.error(
+                        false,
+                        "Storage",
+                        "Storage download-to-local write failed; provider={}, bucket={}, object={}, targetProvided={}, status=failure, error={}",
+                        this.getClass().getSimpleName(),
+                        bucket,
+                        fileName,
+                        file != null,
+                        e.getMessage(),
+                        e);
                 return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
             }
         }
@@ -377,7 +408,14 @@ public class MegaProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(blobs).build();
         } catch (Exception e) {
-            Logger.error(false, "Storage", "Failed to list files in bucket: {}. Error: {}", bucket, e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage list failed; provider={}, bucket={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
         }
     }
@@ -445,7 +483,16 @@ public class MegaProvider extends AbstractProvider {
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
-            Logger.error(false, "Storage", "Failed to rename file: {} to {}. Error: {}", oldName, newName, e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage rename failed; provider={}, bucket={}, sourceObject={}, targetObject={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    oldName,
+                    newName,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
         }
     }
@@ -542,7 +589,15 @@ public class MegaProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(Blob.builder().name(fileName).build()).build();
         } catch (Exception e) {
-            Logger.error(false, "Storage", "Failed to upload file: {} to bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage upload failed; provider={}, bucket={}, object={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    fileName,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
         }
     }
@@ -588,7 +643,15 @@ public class MegaProvider extends AbstractProvider {
             byte[] bytes = IoKit.readBytes(content);
             return upload(bucket, path, fileName, bytes);
         } catch (Exception e) {
-            Logger.error(false, "Storage", "Failed to read input stream. Error: {}", e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage upload stream read failed; provider={}, bucket={}, object={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    fileName,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
         }
     }
@@ -652,7 +715,15 @@ public class MegaProvider extends AbstractProvider {
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
-            Logger.error(false, "Storage", "Failed to remove file: {}. Error: {}", fileName, e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage remove failed; provider={}, bucket={}, object={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    fileName,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(e.getMessage()).build();
         }
     }

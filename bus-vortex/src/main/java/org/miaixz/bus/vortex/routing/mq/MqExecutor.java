@@ -108,9 +108,19 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
         this.producerCache.setListener((key, producer) -> {
             try {
                 producer.close();
-                Logger.info(true, "MQ", "Producer evicted from cache: broker={}", key);
+                Logger.info(
+                        true,
+                        "Vortex",
+                        "protocol=mq, Producer evicted from cache: brokerKeyChars={}",
+                        key == null ? 0 : key.length());
             } catch (Exception e) {
-                Logger.error(false, "MQ", "Failed to close evicted MQ Producer for broker: {}", key, e);
+                Logger.error(
+                        false,
+                        "Vortex",
+                        e,
+                        "protocol=mq, Failed to close evicted MQ Producer: brokerKeyChars={}, exception={}",
+                        key == null ? 0 : key.length(),
+                        e.getClass().getSimpleName());
             }
         });
 
@@ -165,8 +175,8 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
         return ackMono.flatMap(ack -> {
             Logger.info(
                     false,
-                    "MQ",
-                    "[MQ_SUCCESS_STREAM] - Message forwarded to MQ topic: {} (streaming)",
+                    "Vortex",
+                    "protocol=mq, event=MQ_SUCCESS_STREAM, message forwarded to MQ topic: topic={}, mode=streaming",
                     assets.getMethod());
 
             return ServerResponse.ok().header(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON).bodyValue(ack);
@@ -183,7 +193,7 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
      */
     private Mono<ServerResponse> executeBuffering(Mono<String> ackMono) {
         return ackMono.flatMap(ack -> {
-            Logger.info(false, "MQ", "Message accepted for buffered delivery");
+            Logger.info(false, "Vortex", "protocol=mq, Message accepted for buffered delivery");
 
             return ServerResponse.ok().header(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON).bodyValue(ack);
         });
@@ -224,8 +234,13 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
             Producer producer = getOrCreateProducer(assets);
             producer.send(message);
             return "{\"status\": \"Request forwarded to MQ\"}";
-        }).subscribeOn(Schedulers.fromExecutor(this.executor))
-                .doOnError(e -> Logger.error(false, "MQ", "Failed to send message to topic '{}'", assets.getMethod(), e));
+        }).subscribeOn(Schedulers.fromExecutor(this.executor)).doOnError(
+                e -> Logger.error(
+                        false,
+                        "Vortex",
+                        "protocol=mq, Failed to send message to topic '{}'",
+                        assets.getMethod(),
+                        e));
     }
 
     /**
@@ -242,18 +257,23 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
         String brokerUrl = assets.getHost() + Symbol.COLON + assets.getPort();
 
         return producerCache.get(brokerUrl, true, 0, () -> {
-            Logger.info(true, "MQ", "Producer not found in cache; creating: broker={}", brokerUrl);
+            Logger.info(
+                    true,
+                    "Vortex",
+                    "protocol=mq, Producer not found in cache; creating: brokerUrlChars={}",
+                    brokerUrl.length());
             try {
                 MQConfig config = MQConfig.of(brokerUrl);
                 Producer producer = MQFactory.createEngine(config).getProducer();
                 return producer;
             } catch (Exception e) {
                 Logger.error(
-                        true,
-                        "MQ",
-                        "Producer creation failed: broker={}, error={}",
-                        brokerUrl,
-                        e.getMessage());
+                        false,
+                        "Vortex",
+                        e,
+                        "protocol=mq, Producer creation failed: brokerUrlChars={}, exception={}",
+                        brokerUrl.length(),
+                        e.getClass().getSimpleName());
                 throw new RuntimeException("Failed to get or create MQ Producer", e);
             }
         });
@@ -269,10 +289,10 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
     @Override
     public Mono<ServerResponse> destroy() {
         return Mono.fromRunnable(() -> {
-            Logger.info(false, "MQ", "MQ resources shutting down");
+            Logger.info(false, "Vortex", "protocol=mq, MQ resources shutting down");
             producerCache.clear();
             this.executor.shutdown();
-            Logger.info(false, "MQ", "MQ resources stopped");
+            Logger.info(false, "Vortex", "protocol=mq, MQ resources stopped");
         }).subscribeOn(Schedulers.boundedElastic()).then(Mono.empty());
     }
 

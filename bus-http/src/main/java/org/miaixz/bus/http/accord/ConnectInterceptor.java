@@ -26,6 +26,7 @@ import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.NewChain;
 import org.miaixz.bus.http.metric.http.RealInterceptorChain;
+import org.miaixz.bus.logger.Logger;
 
 import java.io.IOException;
 
@@ -66,9 +67,35 @@ public final class ConnectInterceptor implements Interceptor {
 
         // We need the network to satisfy this request. This may be used to validate a conditional GET.
         boolean doExtensiveHealthChecks = !HTTP.GET.equals(request.method());
-        Exchange exchange = transmitter.newExchange(chain, doExtensiveHealthChecks);
+        Logger.debug(
+                true,
+                "Http",
+                "protocol=http, Connection exchange requested: method={}, url={}, extensiveHealthCheck={}",
+                request.method(),
+                request.url().redact(),
+                doExtensiveHealthChecks);
+        try {
+            Exchange exchange = transmitter.newExchange(chain, doExtensiveHealthChecks);
+            Logger.debug(
+                    false,
+                    "Http",
+                    "protocol=http, Connection exchange ready: method={}, url={}, extensiveHealthCheck={}",
+                    request.method(),
+                    request.url().redact(),
+                    doExtensiveHealthChecks);
 
-        return realChain.proceed(request, transmitter, exchange);
+            return realChain.proceed(request, transmitter, exchange);
+        } catch (IOException e) {
+            Logger.error(
+                    false,
+                    "Http",
+                    e,
+                    "protocol=http, Connection exchange failed: method={}, url={}, exception={}",
+                    request.method(),
+                    request.url().redact(),
+                    e.getClass().getSimpleName());
+            throw e;
+        }
     }
 
 }

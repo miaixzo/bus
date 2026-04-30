@@ -28,6 +28,7 @@ import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.extra.template.Template;
 import org.miaixz.bus.extra.template.TemplateConfig;
 import org.miaixz.bus.extra.template.TemplateProvider;
+import org.miaixz.bus.logger.Logger;
 
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
@@ -88,6 +89,13 @@ public class FreemarkerProvider implements TemplateProvider {
             config = new TemplateConfig();
         }
 
+        Logger.info(
+                true,
+                "Extra",
+                "component=template, Freemarker configuration creation started: resourceMode={}, charset={}, pathPresent={}",
+                config.getResourceMode(),
+                config.getCharsetString(),
+                config.getPath() != null);
         final Configuration cfg = new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
         cfg.setLocalizedLookup(false);
         cfg.setDefaultEncoding(config.getCharset().toString());
@@ -101,6 +109,14 @@ public class FreemarkerProvider implements TemplateProvider {
                 try {
                     cfg.setTemplateLoader(new FileTemplateLoader(FileKit.file(config.getPath())));
                 } catch (final IOException e) {
+                    Logger.warn(
+                            false,
+                            "Extra",
+                            e,
+                            "component=template, Freemarker file template loader creation failed: resourceMode={}, pathPresent={}, exception={}",
+                            config.getResourceMode(),
+                            config.getPath() != null,
+                            e.getClass().getSimpleName());
                     throw new InternalException(e);
                 }
                 break;
@@ -109,6 +125,14 @@ public class FreemarkerProvider implements TemplateProvider {
                 try {
                     cfg.setTemplateLoader(new FileTemplateLoader(FileKit.file(FileKit.getWebRoot(), config.getPath())));
                 } catch (final IOException e) {
+                    Logger.warn(
+                            false,
+                            "Extra",
+                            e,
+                            "component=template, Freemarker web-root template loader creation failed: resourceMode={}, pathPresent={}, exception={}",
+                            config.getResourceMode(),
+                            config.getPath() != null,
+                            e.getClass().getSimpleName());
                     throw new InternalException(e);
                 }
                 break;
@@ -121,6 +145,13 @@ public class FreemarkerProvider implements TemplateProvider {
                 break;
         }
 
+        Logger.info(
+                false,
+                "Extra",
+                "component=template, Freemarker configuration created: resourceMode={}, charset={}, pathPresent={}",
+                config.getResourceMode(),
+                config.getCharsetString(),
+                config.getPath() != null);
         return cfg;
     }
 
@@ -139,7 +170,19 @@ public class FreemarkerProvider implements TemplateProvider {
         if (null == config) {
             config = TemplateConfig.DEFAULT;
         }
+        Logger.info(
+                true,
+                "Extra",
+                "component=template, Freemarker provider initialization started: resourceMode={}, charset={}, pathPresent={}",
+                config.getResourceMode(),
+                config.getCharsetString(),
+                config.getPath() != null);
         init(of(config));
+        Logger.info(
+                false,
+                "Extra",
+                "component=template, Freemarker provider initialized: rawPresent={}",
+                this.cfg != null);
         return this;
     }
 
@@ -164,11 +207,34 @@ public class FreemarkerProvider implements TemplateProvider {
     @Override
     public Template getTemplate(final String resource) {
         if (null == this.cfg) {
+            Logger.debug(true, "Extra", "component=template, Freemarker provider lazy initialization requested");
             init(TemplateConfig.DEFAULT);
         }
+        Logger.debug(
+                true,
+                "Extra",
+                "component=template, Freemarker template loading started: resourcePresent={}, resourceLength={}",
+                resource != null,
+                resource == null ? 0 : resource.length());
         try {
-            return FreemarkerTemplate.wrap(this.cfg.getTemplate(resource));
+            final Template template = FreemarkerTemplate.wrap(this.cfg.getTemplate(resource));
+            Logger.debug(
+                    false,
+                    "Extra",
+                    "component=template, Freemarker template loaded: resourcePresent={}, resourceLength={}, templatePresent={}",
+                    resource != null,
+                    resource == null ? 0 : resource.length(),
+                    template != null);
+            return template;
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=template, Freemarker template loading failed: resourcePresent={}, resourceLength={}, exception={}",
+                    resource != null,
+                    resource == null ? 0 : resource.length(),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }

@@ -71,10 +71,21 @@ public class Dcm2String extends SimpleFileVisitor<Path> {
         try (ImageInputStream dis = new ImageInputStream(path.toFile())) {
             Attributes dataset = dis.readDataset();
             dataset.addAll(cliAttrs);
-            Logger.info(false, "ImageTool", format.format(dataset));
+            Logger.info(
+                    false,
+                    "Image",
+                    "component=tool, DICOM string conversion completed: fileName={}, attributeCount={}, formattedChars={}",
+                    path.getFileName(),
+                    dataset.size(),
+                    format.format(dataset).length());
         } catch (IOException e) {
-            Logger.error(false, "ImageTool", "Failed to parse DICOM file " + path);
-            e.printStackTrace();
+            Logger.error(
+                    false,
+                    "Image",
+                    e,
+                    "component=tool, DICOM string conversion failed: fileName={}, exception={}",
+                    path.getFileName(),
+                    e.getClass().getSimpleName());
         }
         return FileVisitResult.CONTINUE;
     }

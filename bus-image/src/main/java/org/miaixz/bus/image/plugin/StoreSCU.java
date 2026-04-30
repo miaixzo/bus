@@ -331,13 +331,26 @@ public class StoreSCU implements AutoCloseable {
                 fmi = ds.createFileMetaInformation(in.getTransferSyntax());
             }
             boolean b = addFile(fileInfos, f, dsPos, fmi);
+            Logger.debug(
+                    false,
+                    "Image",
+                    "DICOM send file scan finished: fileName={}, datasetPosition={}, accepted={}",
+                    f.getName(),
+                    dsPos,
+                    b);
             if (b)
                 filesScanned++;
             if (printout) {
                 System.out.print(b ? '.' : 'I');
             }
         } catch (Exception e) {
-            Logger.error(false, "ImageTool", "Failed to scan file {}", f, e);
+            Logger.error(
+                    false,
+                    "Image",
+                    e,
+                    "component=tool, DICOM send file scan failed: fileName={}, exception={}",
+                    f == null ? null : f.getName(),
+                    e.getClass().getSimpleName());
         }
     }
 
@@ -348,21 +361,44 @@ public class StoreSCU implements AutoCloseable {
      */
     public void sendFiles() throws IOException {
         try (BufferedReader fileInfos = new BufferedReader(new InputStreamReader(new FileInputStream(tmpFile)))) {
+            Logger.info(
+                    true,
+                    "Image",
+                    "DICOM file send loop started: tempFile={}, filesScanned={}",
+                    tmpFile.getName(),
+                    filesScanned);
             String line;
+            int sentCount = 0;
             while (as.isReadyForDataTransfer() && (line = fileInfos.readLine()) != null) {
                 String[] ss = StringKit.splitToArray(line, Symbol.HT);
                 try {
                     send(new File(ss[4]), Long.parseLong(ss[3]), ss[1], ss[0], ss[2]);
+                    sentCount++;
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Logger.warn(
+                            false,
+                            "Image",
+                            e,
+                            "DICOM send failed: fileName={}, sopInstanceUid={}, exception={}",
+                            ss.length > 4 ? new File(ss[4]).getName() : null,
+                            ss.length > 0 ? ss[0] : null,
+                            e.getClass().getSimpleName());
                 }
             }
             try {
                 as.waitForOutstandingRSP();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                Logger.error(false, "ImageTool", "Wait for outstanding RSP interrupted", e);
+                Logger.error(false, "Image", "component=tool, Wait for outstanding RSP interrupted", e);
             }
+            Logger.info(
+                    false,
+                    "Image",
+                    "DICOM file send loop finished: tempFile={}, sentCount={}, filesScanned={}, totalBytes={}",
+                    tmpFile.getName(),
+                    sentCount,
+                    filesScanned,
+                    totalSize);
         }
     }
 
@@ -505,10 +541,21 @@ public class StoreSCU implements AutoCloseable {
     @Override
     public void close() throws IOException, InterruptedException {
         if (as != null) {
+            Logger.debug(
+                    true,
+                    "Image",
+                    "DICOM store association close started: associationReady={}",
+                    as.isReadyForDataTransfer());
             if (as.isReadyForDataTransfer()) {
                 as.release();
             }
             as.waitForSocketClose();
+            Logger.info(
+                    false,
+                    "Image",
+                    "DICOM store association closed: filesScanned={}, totalBytes={}",
+                    filesScanned,
+                    totalSize);
         }
     }
 
@@ -521,7 +568,18 @@ public class StoreSCU implements AutoCloseable {
      * @throws GeneralSecurityException if a security error occurs.
      */
     public void open() throws IOException, InterruptedException, InternalException, GeneralSecurityException {
+        Logger.info(
+                true,
+                "Image",
+                "DICOM store association open started: presentationContextCount={}",
+                rq.getNumberOfPresentationContexts());
         as = ae.connect(remote, rq);
+        Logger.info(
+                false,
+                "Image",
+                "DICOM store association opened: associationReady={}, presentationContextCount={}",
+                as.isReadyForDataTransfer(),
+                rq.getNumberOfPresentationContexts());
     }
 
     /**
@@ -546,14 +604,24 @@ public class StoreSCU implements AutoCloseable {
             case Status.DataSetDoesNotMatchSOPClassWarning:
                 totalSize += f.length();
                 ps = ProgressStatus.WARNING;
-                Logger.warn(false, "ImageTool", "Received C-STORE-RSP with Status {}H for {}.", Tag.shortToHexString(status), f);
-                Logger.warn(false, "ImageTool", cmd.toString());
+                Logger.warn(
+                        false,
+                        "Image",
+                        "component=tool, Received C-STORE-RSP with Status {}H for {}.",
+                        Tag.shortToHexString(status),
+                        f);
+                Logger.warn(false, "Image", "component=tool, " + (cmd.toString()));
                 break;
 
             default:
                 ps = ProgressStatus.FAILED;
-                Logger.error(false, "ImageTool", "Received C-STORE-RSP with Status {}H for {}.", Tag.shortToHexString(status), f);
-                Logger.error(false, "ImageTool", cmd.toString());
+                Logger.error(
+                        false,
+                        "Image",
+                        "component=tool, Received C-STORE-RSP with Status {}H for {}.",
+                        Tag.shortToHexString(status),
+                        f);
+                Logger.error(false, "Image", "component=tool, " + (cmd.toString()));
         }
         Builder.notifyProgession(state.getProgress(), cmd, ps, filesScanned);
     }

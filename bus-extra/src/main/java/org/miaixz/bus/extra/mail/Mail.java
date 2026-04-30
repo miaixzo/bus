@@ -37,6 +37,7 @@ import jakarta.activation.FileDataSource;
 import jakarta.activation.FileTypeMap;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.util.ByteArrayDataSource;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Represents a mail client for sending emails, designed with a fluent builder pattern. It simplifies the process of
@@ -302,6 +303,14 @@ public class Mail implements Builder<MimeMessage> {
         try {
             imgSource = new ByteArrayDataSource(imageStream, ObjectKit.defaultIfNull(contentType, "image/jpeg"));
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=mail, Mail embedded image creation failed: contentTypePresent={}, streamPresent={}, exception={}",
+                    contentType != null,
+                    imageStream != null,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         imgSource.setName(cid);

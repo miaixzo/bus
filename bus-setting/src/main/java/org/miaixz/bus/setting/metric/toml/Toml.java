@@ -20,6 +20,7 @@
 package org.miaixz.bus.setting.metric.toml;
 
 import org.miaixz.bus.core.io.resource.Resource;
+import org.miaixz.bus.logger.Logger;
 
 import java.io.Writer;
 import java.time.format.DateTimeFormatter;
@@ -49,7 +50,19 @@ public class Toml {
      * @return A map representing the parsed TOML data.
      */
     public static Map<String, Object> read(final Resource resource) {
-        return new TomlReader(resource.readString(), false).read();
+        Logger.info(
+                true,
+                "Setting",
+                "TOML resource read started: resourceUrl={}",
+                resource == null ? null : resource.getUrl());
+        final Map<String, Object> data = new TomlReader(resource.readString(), false).read();
+        Logger.info(
+                false,
+                "Setting",
+                "TOML resource read completed: resourceUrl={}, keyCount={}",
+                resource == null ? null : resource.getUrl(),
+                data == null ? 0 : data.size());
+        return data;
     }
 
     /**
@@ -59,7 +72,14 @@ public class Toml {
      * @param writer The writer to which the TOML data will be written.
      */
     public static void write(final Map<String, Object> data, final Writer writer) {
+        Logger.info(
+                true,
+                "Setting",
+                "TOML write requested: keyCount={}, writerPresent={}",
+                data == null ? 0 : data.size(),
+                writer != null);
         new TomlWriter(writer).write(data);
+        Logger.info(false, "Setting", "TOML write completed: keyCount={}", data == null ? 0 : data.size());
     }
 
 }

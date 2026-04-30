@@ -26,6 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.miaixz.bus.gitlab.models.User;
+import org.miaixz.bus.logger.Logger;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.*;
@@ -252,12 +253,29 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
         try {
             results = writer.writeValueAsString(object);
         } catch (JsonGenerationException e) {
-            System.err.println("JsonGenerationException, message=" + e.getMessage());
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "JSON serialization failed: objectType={}, exception={}",
+                    object.getClass().getName(),
+                    e.getClass().getSimpleName());
         } catch (JsonMappingException e) {
-            e.printStackTrace();
-            System.err.println("JsonMappingException, message=" + e.getMessage());
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "JSON serialization mapping failed: objectType={}, exception={}",
+                    object.getClass().getName(),
+                    e.getClass().getSimpleName());
         } catch (IOException e) {
-            System.err.println("IOException, message=" + e.getMessage());
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "JSON serialization I/O failed: objectType={}, exception={}",
+                    object.getClass().getName(),
+                    e.getClass().getSimpleName());
         }
 
         return (results);
@@ -301,6 +319,13 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
             try {
                 return (ISO8601.toDate(jsonparser.getText()));
             } catch (ParseException e) {
+                Logger.warn(
+                        false,
+                        "GitLab",
+                        e,
+                        "GitLab JSON date deserialization failed: valueLength={}, exception={}",
+                        jsonparser.getText() == null ? -1 : jsonparser.getText().length(),
+                        e.getClass().getSimpleName());
                 throw new RuntimeException(e);
             }
         }

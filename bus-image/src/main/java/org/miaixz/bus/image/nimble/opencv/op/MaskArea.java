@@ -58,7 +58,7 @@ public class MaskArea {
                     r = r.intersection(new Rectangle(0, 0, srcImg.width(), srcImg.height()));
                     Rect rect2d = new Rect(r.x, r.y, r.width, r.height);
                     if (r.width < 3 || r.height < 3) {
-                        Logger.warn(false, "Image", "The masking shape is not applicable: {}", r);
+                        Logger.warn(false, "Image", "The masking shape is not applicable: shape={}", r);
                     } else {
                         Imgproc.blur(srcImg.submat(rect2d), dstImg.submat(rect2d), new Size(7, 7));
                     }

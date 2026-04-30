@@ -150,7 +150,9 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
                 : PerfDataKit.queryCounter(counterHandleMap.get(counter));
         if (value < 0) {
             if (Logger.isWarnEnabled()) {
-                Logger.warn(false, "Health",
+                Logger.warn(
+                        false,
+                        "Health",
                         "Error querying counter {}: {}",
                         counter.getCounterPath(),
                         String.format(Locale.ROOT, Formats.formatError((int) value)));

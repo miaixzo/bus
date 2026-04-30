@@ -95,7 +95,9 @@ public final class IdleStatePlugin<T> extends AbstractPlugin<T> {
                         || (currentTime - writeTimestamp) > IdleStatePlugin.this.idleTimeout) {
                     try {
                         if (asynchronousSocketChannel.isOpen() && Logger.isDebugEnabled()) {
-                            Logger.debug(false, "Socket",
+                            Logger.debug(
+                                    false,
+                                    "Socket",
                                     "close session:{} by IdleStatePlugin",
                                     asynchronousSocketChannel.getRemoteAddress());
                         }

@@ -120,6 +120,11 @@
             <version>8.6.3</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
+            <artifactId>bus-logger</artifactId>
+            <version>${bus.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -55,16 +55,43 @@ public class ProduceExecute extends AbstractExecute {
     public void execute() {
         try {
             long start = System.currentTimeMillis();
+            Logger.info(
+                    true,
+                    "Shade",
+                    "Database document generation started: fileType={}, templateType={}, openOutputDir={}",
+                    config.getEngineConfig().getFileType(),
+                    config.getEngineConfig().getProduceType(),
+                    config.getEngineConfig().isOpenOutputDir());
             // Process the data model from the database schema.
             DataSchema dataModel = new DataModelProcess(config).process();
+            Logger.debug(
+                    false,
+                    "Shade",
+                    "Database document data model prepared: database={}, tableCount={}",
+                    dataModel.getDatabase(),
+                    dataModel.getTables().size());
             // Get a new template engine instance from the factory.
             TemplateEngine produce = new EngineFactory(config.getEngineConfig()).newInstance();
+            String docName = getDocName(dataModel.getDatabase());
             // Generate the document.
-            produce.produce(dataModel, getDocName(dataModel.getDatabase()));
-            Logger.debug(false, "Shade",
-                    "database document generation complete time consuming:{}ms",
+            produce.produce(dataModel, docName);
+            Logger.info(
+                    false,
+                    "Shade",
+                    "Database document generation finished: database={}, docName={}, fileType={}, elapsedMs={}",
+                    dataModel.getDatabase(),
+                    docName,
+                    config.getEngineConfig().getFileType(),
                     System.currentTimeMillis() - start);
         } catch (Exception e) {
+            Logger.error(
+                    false,
+                    "Shade",
+                    e,
+                    "Database document generation failed: fileType={}, templateType={}, exception={}",
+                    config.getEngineConfig().getFileType(),
+                    config.getEngineConfig().getProduceType(),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }

@@ -101,8 +101,10 @@ public class CacheManager<K, V> {
         this.cache = new ConcurrentHashMap<>();
         this.cachex = new GuavaCache<>(cacheSize, cacheExpireMs);
 
-        Logger.debug(false, "Cache",
-                "Cache initialized: L1=ConcurrentHashMap, L2=GuavaCache(size={}, expireMs={})",
+        Logger.debug(
+                false,
+                "Vortex",
+                "component=cache, Cache initialized: L1=ConcurrentHashMap, L2=GuavaCache(size={}, expireMs={})",
                 cacheSize,
                 cacheExpireMs);
     }
@@ -120,8 +122,10 @@ public class CacheManager<K, V> {
         this.cache = new ConcurrentHashMap<>();
         this.cachex = new CaffeineCache(cacheSize, cacheExpireMs);
 
-        Logger.debug(false, "Cache",
-                "Cache initialized: L1=ConcurrentHashMap, L2=CaffeineCache(size={}, expireMs={})",
+        Logger.debug(
+                false,
+                "Vortex",
+                "component=cache, Cache initialized: L1=ConcurrentHashMap, L2=CaffeineCache(size={}, expireMs={})",
                 cacheSize,
                 cacheExpireMs);
     }
@@ -133,7 +137,7 @@ public class CacheManager<K, V> {
      */
     public void setPerformanceMonitor(Monitor monitor) {
         this.monitor = monitor;
-        Logger.debug(false, "Cache", "Cache performance monitor configured");
+        Logger.debug(false, "Vortex", "component=cache, Cache performance monitor configured");
     }
 
     /**
@@ -180,7 +184,13 @@ public class CacheManager<K, V> {
             return null;
 
         } catch (Exception e) {
-            Logger.error(false, "Cache", "Cache read failed: key={}, error={}", key, e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Vortex",
+                    e,
+                    "component=cache, Cache read failed: keyChars={}, exception={}",
+                    key == null ? 0 : String.valueOf(key).length(),
+                    e.getClass().getSimpleName());
             return null;
         }
     }
@@ -196,7 +206,13 @@ public class CacheManager<K, V> {
             this.cache.put(key, value);
             this.cachex.write(key, value, cacheExpireMs);
         } catch (Exception e) {
-            Logger.error(false, "Cache", "Cache write failed: key={}, error={}", key, e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Vortex",
+                    e,
+                    "component=cache, Cache write failed: keyChars={}, exception={}",
+                    key == null ? 0 : String.valueOf(key).length(),
+                    e.getClass().getSimpleName());
             throw e;
         }
     }
@@ -211,7 +227,13 @@ public class CacheManager<K, V> {
             this.cache.remove(key);
             this.cachex.remove(key);
         } catch (Exception e) {
-            Logger.error(false, "Cache", "Cache removal failed: key={}, error={}", key, e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Vortex",
+                    e,
+                    "component=cache, Cache removal failed: keyChars={}, exception={}",
+                    key == null ? 0 : String.valueOf(key).length(),
+                    e.getClass().getSimpleName());
         }
     }
 

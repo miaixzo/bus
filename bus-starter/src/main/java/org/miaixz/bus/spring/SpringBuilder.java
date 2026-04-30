@@ -240,7 +240,12 @@ public class SpringBuilder implements ApplicationContextAware {
             registerSingleton(clazz, clazz.getConstructor().newInstance());
         } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException
                 | InstantiationException e) {
-            Logger.error(false, "Spring", "Spring failed to register singleton for class: {}", clazz.getName(), e);
+            Logger.error(
+                    false,
+                    "Starter",
+                    "component=spring, Spring failed to register singleton for class: {}",
+                    clazz.getName(),
+                    e);
         }
     }
 
@@ -413,7 +418,7 @@ public class SpringBuilder implements ApplicationContextAware {
             try {
                 clazz = ClassKit.forName(className, null);
             } catch (Throwable e) {
-                Logger.debug(false, "Spring", "Spring failed to load class: {}", className, e);
+                Logger.debug(false, "Starter", "component=spring, Spring failed to load class: {}", className, e);
             }
         }
 
@@ -422,7 +427,11 @@ public class SpringBuilder implements ApplicationContextAware {
             try {
                 clazz = abstractBeanDefinition.getBeanClass();
             } catch (IllegalStateException e) {
-                Logger.debug(false, "Spring", "Spring failed to get bean class from AbstractBeanDefinition", e);
+                Logger.debug(
+                        false,
+                        "Starter",
+                        "component=spring, Spring failed to get bean class from AbstractBeanDefinition",
+                        e);
                 className = beanDefinition.getBeanClassName();
                 if (StringKit.hasText(className)) {
                     try {
@@ -430,8 +439,8 @@ public class SpringBuilder implements ApplicationContextAware {
                     } catch (Throwable ex) {
                         Logger.debug(
                                 false,
-                                "Spring",
-                                "Spring failed to load class from bean class name: {}",
+                                "Starter",
+                                "component=spring, Spring failed to load class from bean class name: {}",
                                 className,
                                 ex);
                     }

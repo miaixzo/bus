@@ -28,6 +28,7 @@ import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.accord.Exchange;
 import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.NewChain;
+import org.miaixz.bus.logger.Logger;
 
 import java.io.IOException;
 import java.net.ProtocolException;
@@ -70,6 +71,13 @@ public class CallServerInterceptor implements Interceptor {
         Request request = realChain.request();
 
         long sentRequestMillis = System.currentTimeMillis();
+        Logger.debug(
+                true,
+                "Http",
+                "protocol=http, Network request writing started: method={}, url={}, webSocket={}",
+                request.method(),
+                request.url().redact(),
+                forWebSocket);
 
         exchange.writeRequestHeaders(request);
 
@@ -137,6 +145,14 @@ public class CallServerInterceptor implements Interceptor {
         }
 
         exchange.responseHeadersEnd(response);
+        Logger.debug(
+                false,
+                "Http",
+                "protocol=http, Network response headers received: method={}, url={}, status={}, durationMs={}",
+                request.method(),
+                request.url().redact(),
+                code,
+                System.currentTimeMillis() - sentRequestMillis);
 
         if (forWebSocket && code == 101) {
             // The connection is upgrading, but we need to ensure interceptors see a non-null response body.
@@ -151,10 +167,26 @@ public class CallServerInterceptor implements Interceptor {
         }
 
         if ((code == 204 || code == 205) && response.body().contentLength() > 0) {
+            Logger.error(
+                    false,
+                    "Http",
+                    "protocol=http, Invalid empty-body response length: method={}, url={}, status={}, length={}",
+                    request.method(),
+                    request.url().redact(),
+                    code,
+                    response.body().contentLength());
             throw new ProtocolException(
                     "HTTP " + code + " had non-zero Content-Length: " + response.body().contentLength());
         }
 
+        Logger.debug(
+                false,
+                "Http",
+                "protocol=http, Network call completed: method={}, url={}, status={}, durationMs={}",
+                request.method(),
+                request.url().redact(),
+                code,
+                System.currentTimeMillis() - sentRequestMillis);
         return response;
     }
 

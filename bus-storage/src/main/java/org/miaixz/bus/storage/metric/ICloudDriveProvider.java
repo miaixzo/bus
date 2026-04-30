@@ -114,10 +114,13 @@ public class ICloudDriveProvider extends AbstractProvider {
         this.environment = StringKit.isBlank(this.context.getRegion()) ? "production" : this.context.getRegion();
         this.client = new Httpd();
 
-        Logger.info(false, "Storage",
-                "iCloud Drive provider initialized with container: {}, environment: {}",
-                containerIdentifier,
-                environment);
+        Logger.info(
+                false,
+                "Storage",
+                "Storage provider initialized; provider={}, environment={}, containerConfigured={}",
+                this.getClass().getSimpleName(),
+                environment,
+                StringKit.isNotBlank(containerIdentifier));
     }
 
     @Override
@@ -151,7 +154,15 @@ public class ICloudDriveProvider extends AbstractProvider {
                         .data(content).build();
             }
         } catch (Exception e) {
-            Logger.error(false, "Storage", "Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    e,
+                    "Storage download failed; provider={}, bucket={}, object={}, status=failure, exception={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    fileName,
+                    e.getClass().getSimpleName());
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -171,7 +182,16 @@ public class ICloudDriveProvider extends AbstractProvider {
                 return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                         .build();
             } catch (IOException e) {
-                Logger.error(false, "Storage", "Failed to write file: {}. Error: {}", file.getPath(), e.getMessage(), e);
+                Logger.error(
+                        false,
+                        "Storage",
+                        e,
+                        "Storage download-to-local write failed; provider={}, bucket={}, object={}, targetProvided={}, status=failure, exception={}",
+                        this.getClass().getSimpleName(),
+                        bucket,
+                        fileName,
+                        file != null,
+                        e.getClass().getSimpleName());
                 return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
                         .build();
             }
@@ -193,7 +213,14 @@ public class ICloudDriveProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(blobs).build();
         } catch (Exception e) {
-            Logger.error(false, "Storage", "Failed to list files. Error: {}", e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    e,
+                    "Storage list failed; provider={}, bucket={}, status=failure, exception={}",
+                    this.getClass().getSimpleName(),
+                    this.context.getBucket(),
+                    e.getClass().getSimpleName());
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -228,7 +255,16 @@ public class ICloudDriveProvider extends AbstractProvider {
                 return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("Failed to rename file").build();
             }
         } catch (Exception e) {
-            Logger.error(false, "Storage", "Failed to rename file: {} to {}. Error: {}", oldName, newName, e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    e,
+                    "Storage rename failed; provider={}, bucket={}, sourceObject={}, targetObject={}, status=failure, exception={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    oldName,
+                    newName,
+                    e.getClass().getSimpleName());
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -268,7 +304,15 @@ public class ICloudDriveProvider extends AbstractProvider {
                         .build();
             }
         } catch (Exception e) {
-            Logger.error(false, "Storage", "Failed to upload file: {} to bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    e,
+                    "Storage upload failed; provider={}, bucket={}, object={}, status=failure, exception={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    fileName,
+                    e.getClass().getSimpleName());
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -289,7 +333,15 @@ public class ICloudDriveProvider extends AbstractProvider {
             byte[] bytes = IoKit.readBytes(content);
             return upload(bucket, path, fileName, bytes);
         } catch (Exception e) {
-            Logger.error(false, "Storage", "Failed to read input stream. Error: {}", e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    e,
+                    "Storage upload stream read failed; provider={}, bucket={}, object={}, status=failure, exception={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    fileName,
+                    e.getClass().getSimpleName());
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -322,7 +374,15 @@ public class ICloudDriveProvider extends AbstractProvider {
                 return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("Failed to delete file").build();
             }
         } catch (Exception e) {
-            Logger.error(false, "Storage", "Failed to remove file: {}. Error: {}", fileName, e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    e,
+                    "Storage remove failed; provider={}, bucket={}, object={}, status=failure, exception={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    fileName,
+                    e.getClass().getSimpleName());
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -363,7 +423,14 @@ public class ICloudDriveProvider extends AbstractProvider {
                 }
             }
         } catch (Exception e) {
-            Logger.error(false, "Storage", "Failed to query file record. Error: {}", e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    e,
+                    "Storage file record query failed; provider={}, pathProvided={}, status=failure, exception={}",
+                    this.getClass().getSimpleName(),
+                    StringKit.isNotBlank(path),
+                    e.getClass().getSimpleName());
         }
         return null;
     }
@@ -399,7 +466,14 @@ public class ICloudDriveProvider extends AbstractProvider {
                 }
             }
         } catch (Exception e) {
-            Logger.error(false, "Storage", "Failed to query folder records. Error: {}", e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    e,
+                    "Storage folder records query failed; provider={}, bucket={}, status=failure, exception={}",
+                    this.getClass().getSimpleName(),
+                    folder,
+                    e.getClass().getSimpleName());
         }
         return new ArrayList<>();
     }
@@ -411,7 +485,14 @@ public class ICloudDriveProvider extends AbstractProvider {
             Map<String, Object> value = (Map<String, Object>) asset.get("value");
             return (String) value.get("downloadURL");
         } catch (Exception e) {
-            Logger.error(false, "Storage", "Failed to extract download URL. Error: {}", e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    e,
+                    "Storage asset link extraction failed; provider={}, recordProvided={}, status=failure, exception={}",
+                    this.getClass().getSimpleName(),
+                    record != null,
+                    e.getClass().getSimpleName());
             return null;
         }
     }
@@ -444,7 +525,14 @@ public class ICloudDriveProvider extends AbstractProvider {
                 }
             }
         } catch (Exception e) {
-            Logger.error(false, "Storage", "Failed to request asset upload. Error: {}", e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    e,
+                    "Storage asset upload request failed; provider={}, fileSize={}, status=failure, exception={}",
+                    this.getClass().getSimpleName(),
+                    fileSize,
+                    e.getClass().getSimpleName());
         }
         return null;
     }
@@ -457,7 +545,14 @@ public class ICloudDriveProvider extends AbstractProvider {
                 return response.isSuccessful();
             }
         } catch (Exception e) {
-            Logger.error(false, "Storage", "Failed to upload asset. Error: {}", e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    e,
+                    "Storage asset upload failed; provider={}, payloadBytes={}, status=failure, exception={}",
+                    this.getClass().getSimpleName(),
+                    content == null ? 0 : content.length,
+                    e.getClass().getSimpleName());
             return false;
         }
     }
@@ -509,7 +604,15 @@ public class ICloudDriveProvider extends AbstractProvider {
                 return response.isSuccessful();
             }
         } catch (Exception e) {
-            Logger.error(false, "Storage", "Failed to create file record. Error: {}", e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    e,
+                    "Storage file record create failed; provider={}, pathProvided={}, fileSize={}, status=failure, exception={}",
+                    this.getClass().getSimpleName(),
+                    StringKit.isNotBlank(path),
+                    fileSize,
+                    e.getClass().getSimpleName());
             return false;
         }
     }
@@ -544,7 +647,14 @@ public class ICloudDriveProvider extends AbstractProvider {
                 return response.isSuccessful();
             }
         } catch (Exception e) {
-            Logger.error(false, "Storage", "Failed to update file record. Error: {}", e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    e,
+                    "Storage file record update failed; provider={}, pathProvided={}, status=failure, exception={}",
+                    this.getClass().getSimpleName(),
+                    StringKit.isNotBlank(newPath),
+                    e.getClass().getSimpleName());
             return false;
         }
     }
@@ -571,7 +681,14 @@ public class ICloudDriveProvider extends AbstractProvider {
                 return response.isSuccessful();
             }
         } catch (Exception e) {
-            Logger.error(false, "Storage", "Failed to delete file record. Error: {}", e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    e,
+                    "Storage file record delete failed; provider={}, recordProvided={}, status=failure, exception={}",
+                    this.getClass().getSimpleName(),
+                    record != null,
+                    e.getClass().getSimpleName());
             return false;
         }
     }
@@ -585,7 +702,14 @@ public class ICloudDriveProvider extends AbstractProvider {
 
             return Blob.builder().name(path.substring(path.lastIndexOf('/') + 1)).size(sizeStr).build();
         } catch (Exception e) {
-            Logger.error(false, "Storage", "Failed to convert record to blob. Error: {}", e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    e,
+                    "Storage file record conversion failed; provider={}, recordProvided={}, status=failure, exception={}",
+                    this.getClass().getSimpleName(),
+                    record != null,
+                    e.getClass().getSimpleName());
             return null;
         }
     }

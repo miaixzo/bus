@@ -97,8 +97,10 @@ public class VoiLutModule {
         } else if (!windowCenter.isEmpty() && windowWidth.isEmpty()) {
             Logger.debug(false, "Image", "VOI Window Width is required if Window Center is present");
         } else if (windowWidth.size() != windowCenter.size()) {
-            Logger.debug(false, "Image",
-                    "VOI Window Center and Width attributes have different number of values : {} => {}",
+            Logger.debug(
+                    false,
+                    "Image",
+                    "VOI Window Center and Width attributes have different number of values: centerCount={} => widthCount={}",
                     windowCenter.size(),
                     windowWidth.size());
         }

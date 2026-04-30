@@ -230,19 +230,19 @@ final class WindowsSensors extends AbstractSensors {
                     double value = (double) getValueMethod.invoke(sensor);
                     return value > 0;
                 } catch (Exception e) {
-                    Logger.warn(false, "Health", REFLECT_EXCEPTION_MSG, e.getMessage());
+                    Logger.warn(false, "Health", REFLECT_EXCEPTION_MSG, e.getClass().getSimpleName());
                     return false;
                 }
             }).mapToInt(sensor -> {
                 try {
                     return (int) (double) getValueMethod.invoke(sensor);
                 } catch (Exception e) {
-                    Logger.warn(false, "Health", REFLECT_EXCEPTION_MSG, e.getMessage());
+                    Logger.warn(false, "Health", REFLECT_EXCEPTION_MSG, e.getClass().getSimpleName());
                     return 0;
                 }
             }).toArray();
         } catch (Exception e) {
-            Logger.warn(false, "Health", REFLECT_EXCEPTION_MSG, e.getMessage());
+            Logger.warn(false, "Health", REFLECT_EXCEPTION_MSG, e.getClass().getSimpleName());
         }
         return new int[0];
     }
@@ -397,7 +397,7 @@ final class WindowsSensors extends AbstractSensors {
                 ohmSensors = querySensorFunction.apply(h, ohmHardware);
             }
         } catch (COMException e) {
-            Logger.warn(false, "Health", COM_EXCEPTION_MSG, e.getMessage());
+            Logger.warn(false, "Health", COM_EXCEPTION_MSG, e.getClass().getSimpleName());
         } finally {
             if (comInit) {
                 h.unInitCOM();
@@ -441,7 +441,7 @@ final class WindowsSensors extends AbstractSensors {
             }
             return validCount > 0 ? sum / validCount : 0;
         } catch (Exception e) {
-            Logger.warn(false, "Health", REFLECT_EXCEPTION_MSG, e.getMessage());
+            Logger.warn(false, "Health", REFLECT_EXCEPTION_MSG, e.getClass().getSimpleName());
         }
         return 0;
     }
@@ -475,9 +475,9 @@ final class WindowsSensors extends AbstractSensors {
             Method querySensorsMethod = libreHardwareManagerClass.getMethod("querySensors", String.class, String.class);
             return (List<?>) querySensorsMethod.invoke(instance, hardwareType, sensorType);
         } catch (ClassNotFoundException e) {
-            Logger.trace(false, "Health", "jLibreHardwareMonitor not available: {}", e.getMessage());
+            Logger.trace(false, "Health", "jLibreHardwareMonitor not available: {}", e.getClass().getSimpleName());
         } catch (Exception e) {
-            Logger.warn(false, "Health", REFLECT_EXCEPTION_MSG, e.getMessage());
+            Logger.warn(false, "Health", REFLECT_EXCEPTION_MSG, e.getClass().getSimpleName());
         }
         return Collections.emptyList();
     }

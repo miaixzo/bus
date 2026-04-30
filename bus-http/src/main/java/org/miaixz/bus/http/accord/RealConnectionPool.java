@@ -24,6 +24,7 @@ import org.miaixz.bus.http.Address;
 import org.miaixz.bus.http.Builder;
 import org.miaixz.bus.http.Route;
 import org.miaixz.bus.http.accord.platform.Platform;
+import org.miaixz.bus.logger.Logger;
 
 import java.io.IOException;
 import java.lang.ref.Reference;
@@ -86,6 +87,13 @@ public final class RealConnectionPool {
                     try {
                         RealConnectionPool.this.wait(waitMillis, (int) waitNanos);
                     } catch (InterruptedException ignored) {
+                        Logger.debug(
+                                false,
+                                "Http",
+                                "protocol=http, Connection pool cleanup wait interrupted: idleConnections={}, connectionCount={}, exception={}",
+                                idleConnectionCount(),
+                                connectionCount(),
+                                ignored.getClass().getSimpleName());
                     }
                 }
             }

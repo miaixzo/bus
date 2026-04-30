@@ -26,6 +26,7 @@ import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Jsch (Java Secure Channel) utility class. JSch is a pure Java implementation of the SSH2 protocol, enabling
@@ -54,6 +55,15 @@ public class JschKit {
             session = jsch.getSession(connector.getUser(), connector.getHost(), connector.getPort());
             session.setTimeout((int) connector.getTimeout());
         } catch (final JSchException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=ssh, JSch session creation failed: hostPresent={}, port={}, timeoutMs={}, exception={}",
+                    connector.getHost() != null,
+                    connector.getPort(),
+                    connector.getTimeout(),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
 
@@ -82,6 +92,14 @@ public class JschKit {
         try {
             channel.connect((int) Math.max(timeout, 0));
         } catch (final JSchException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=ssh, JSch channel connect failed: channelType={}, timeoutMs={}, exception={}",
+                    channelType,
+                    timeout,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         return channel;
@@ -106,6 +124,15 @@ public class JschKit {
             }
             channel = session.openChannel(channelType.getValue());
         } catch (final JSchException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=ssh, JSch channel creation failed: channelType={}, timeoutMs={}, sessionConnected={}, exception={}",
+                    channelType,
+                    timeout,
+                    session.isConnected(),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         return channel;

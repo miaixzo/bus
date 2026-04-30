@@ -40,6 +40,7 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * LinkedIn login provider.
@@ -119,6 +120,15 @@ public class LinkedinProvider extends AbstractProvider {
                                     .gender(Gender.UNKNOWN).source(complex.toString()).build())
                     .build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "user info",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
     }
@@ -211,6 +221,15 @@ public class LinkedinProvider extends AbstractProvider {
             Map<String, Object> handleInnerObj = (Map<String, Object>) handleObj.get("handle~");
             return handleInnerObj != null ? (String) handleInnerObj.get("emailAddress") : null;
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "email",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse email response: " + e.getMessage());
         }
     }
@@ -285,6 +304,15 @@ public class LinkedinProvider extends AbstractProvider {
 
             return Authorization.builder().token(token).expireIn(expiresIn).refresh(refresh).build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "access token",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
     }

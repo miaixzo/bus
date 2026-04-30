@@ -41,6 +41,7 @@ import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Okta login provider.
@@ -120,6 +121,15 @@ public class OktaProvider extends AbstractProvider {
             return Authorization.builder().token(token).token_type(tokenType).expireIn(expiresIn).scope(scope)
                     .refresh(refresh).idToken(idToken).build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "access token",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
     }
@@ -178,6 +188,15 @@ public class OktaProvider extends AbstractProvider {
                                     .token(authorization).source(complex.toString()).build())
                     .build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "user info",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
     }

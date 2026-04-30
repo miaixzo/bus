@@ -20,6 +20,7 @@
 package org.miaixz.bus.notify.metric.wechat;
 
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
@@ -49,6 +50,12 @@ public class WechatMpProvider extends AbstractProvider<WechatNotice, Context> {
      */
     @Override
     public Message send(WechatNotice entity) {
+        Logger.warn(
+                false,
+                "Notify",
+                "WeChat MP notify send rejected: template={}, targetPresent={}, reason=notImplemented",
+                entity == null ? null : entity.getTemplate(),
+                entity != null && entity.getReceive() != null);
         return null;
     }
 

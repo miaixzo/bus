@@ -33,6 +33,7 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.io.Serial;
+import org.miaixz.bus.logger.Logger;
 
 public class CommitAction implements Serializable {
 
@@ -174,6 +175,15 @@ public class CommitAction implements Serializable {
         try {
             content = getFileContentAsString(file, this.encoding);
         } catch (IOException e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab commit action file content read failed: fileNamePresent={}, filePathLength={}, encoding={}, exception={}",
+                    file != null && file.getName() != null,
+                    filePath == null ? -1 : filePath.length(),
+                    this.encoding,
+                    e.getClass().getSimpleName());
             throw new IllegalStateException(e);
         }
 

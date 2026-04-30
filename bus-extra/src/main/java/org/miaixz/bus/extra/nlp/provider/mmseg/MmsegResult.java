@@ -24,6 +24,7 @@ import java.io.IOException;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.extra.nlp.AbstractResult;
 import org.miaixz.bus.extra.nlp.NLPWord;
+import org.miaixz.bus.logger.Logger;
 
 import com.chenlb.mmseg4j.MMSeg;
 
@@ -64,6 +65,12 @@ public class MmsegResult extends AbstractResult {
         try {
             next = this.mmSeg.next();
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=nlp, Mmseg next word failed: exception={}",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         if (null == next) {

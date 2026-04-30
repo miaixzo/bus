@@ -127,7 +127,11 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
         char[] buffer = new char[256];
         try (ByRef.CloseableIntByReference bufferSize = new ByRef.CloseableIntByReference(buffer.length)) {
             if (!Kernel32.INSTANCE.GetComputerNameEx(COMPUTER_NAME_DNS_DOMAIN_FULLY_QUALIFIED, buffer, bufferSize)) {
-                Logger.error(false, "Health", "Failed to get dns domain name. Error code: {}", Kernel32.INSTANCE.GetLastError());
+                Logger.error(
+                        false,
+                        "Health",
+                        "Failed to get dns domain name. Error code: {}",
+                        Kernel32.INSTANCE.GetLastError());
                 return Normal.EMPTY;
             }
         }

@@ -23,6 +23,7 @@ import java.io.Reader;
 import java.io.StringReader;
 
 import freemarker.cache.TemplateLoader;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * A {@link TemplateLoader} implementation that loads templates directly from a string. This is useful for situations
@@ -43,6 +44,11 @@ public class SimpleStringTemplateLoader implements TemplateLoader {
      */
     @Override
     public Object findTemplateSource(final String name) {
+        Logger.debug(
+                false,
+                "Extra",
+                "component=template, Freemarker string template source selected: templateLength={}",
+                name == null ? 0 : name.length());
         return name;
     }
 
@@ -72,6 +78,12 @@ public class SimpleStringTemplateLoader implements TemplateLoader {
      */
     @Override
     public Reader getReader(final Object templateSource, final String encoding) {
+        Logger.debug(
+                true,
+                "Extra",
+                "component=template, Freemarker string template reader requested: templateLength={}, encoding={}",
+                templateSource == null ? 0 : templateSource.toString().length(),
+                encoding);
         return new StringReader((String) templateSource);
     }
 

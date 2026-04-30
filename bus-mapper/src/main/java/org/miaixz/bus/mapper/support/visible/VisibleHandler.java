@@ -109,7 +109,7 @@ public class VisibleHandler<T> extends ConditionHandler<T, VisibleConfig> {
 
         // Set provider if found
         if (provider == null) {
-            Logger.warn(false, getHandler(), "Provider not found, feature will not be enabled");
+            Logger.warn(false, "Mapper", "Provider not found, feature will not be enabled");
             return false;
         }
 
@@ -209,25 +209,25 @@ public class VisibleHandler<T> extends ConditionHandler<T, VisibleConfig> {
 
         // Skip if perimeter control is disabled
         if (currentConfig == null) {
-            Logger.debug(true, getHandler(), "Visibility control disabled: method={}", ms.getId());
+            Logger.debug(true, "Mapper", "Visibility control disabled: method={}", ms.getId());
             return true;
         }
 
         // Skip if perimeter filtering is ignored
         if (VisibleContext.isIgnore()) {
-            Logger.debug(true, getHandler(), "Visibility filtering ignored: method={}", ms.getId());
+            Logger.debug(true, "Mapper", "Visibility filtering ignored: method={}", ms.getId());
             return true;
         }
 
         // Skip if provider is not configured
         if (currentConfig.getProvider() == null) {
-            Logger.warn(true, getHandler(), "Visibility provider not configured: method={}", ms.getId());
+            Logger.warn(true, "Mapper", "Visibility provider not configured: method={}", ms.getId());
             return true;
         }
 
         // Only handle SELECT queries
         if (ms.getSqlCommandType() != SqlCommandType.SELECT) {
-            Logger.debug(true, getHandler(), "Skipped non-SELECT: method={}", ms.getId());
+            Logger.debug(true, "Mapper", "Skipped non-SELECT: method={}", ms.getId());
             return true;
         }
 
@@ -243,20 +243,20 @@ public class VisibleHandler<T> extends ConditionHandler<T, VisibleConfig> {
 
         // If SQL was modified, update the bound SQL
         if (!originalSql.equals(actualSql)) {
-            Logger.debug(false, getHandler(), "Applied visibility filter: method={}", mapperId);
+            Logger.debug(false, "Mapper", "Applied visibility filter: method={}", mapperId);
             // Step 1: Use reflection to update SQL in the original boundSql (from interceptor)
             if (setBoundSql(boundSql, actualSql)) {
-                Logger.debug(false, getHandler(), "Modified BoundSql.sql");
+                Logger.debug(false, "Mapper", "Modified BoundSql.sql");
             } else {
                 // If reflection fails, log warning and continue with original SQL
-                Logger.warn(false, getHandler(), "Failed to update SQL");
+                Logger.warn(false, "Mapper", "Failed to update SQL");
             }
 
             // Step 2: Replace the SqlSource in MappedStatement
             // This ensures subsequent getBoundSql() calls return the actual SQL
             replaceSqlSource(ms, boundSql, actualSql);
         } else {
-            Logger.debug(false, getHandler(), "SQL unchanged: method={}", mapperId);
+            Logger.debug(false, "Mapper", "SQL unchanged: method={}", mapperId);
         }
 
         return true;

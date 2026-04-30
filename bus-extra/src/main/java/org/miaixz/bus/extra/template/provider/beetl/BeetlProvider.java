@@ -30,6 +30,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.extra.template.Template;
 import org.miaixz.bus.extra.template.TemplateConfig;
 import org.miaixz.bus.extra.template.TemplateProvider;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Beetl template engine encapsulation. This class provides an implementation of {@link TemplateProvider} for the Beetl
@@ -84,26 +85,52 @@ public class BeetlProvider implements TemplateProvider {
             config = TemplateConfig.DEFAULT;
         }
 
+        Logger.info(
+                true,
+                "Extra",
+                "component=template, Beetl group template creation started: resourceMode={}, charset={}, pathPresent={}",
+                config.getResourceMode(),
+                config.getCharsetString(),
+                config.getPath() != null);
+        final GroupTemplate groupTemplate;
         switch (config.getResourceMode()) {
             case CLASSPATH:
-                return createGroupTemplate(new ClasspathResourceLoader(config.getPath(), config.getCharsetString()));
+                groupTemplate = createGroupTemplate(
+                        new ClasspathResourceLoader(config.getPath(), config.getCharsetString()));
+                break;
 
             case FILE:
-                return createGroupTemplate(new FileResourceLoader(config.getPath(), config.getCharsetString()));
+                groupTemplate = createGroupTemplate(
+                        new FileResourceLoader(config.getPath(), config.getCharsetString()));
+                break;
 
             case WEB_ROOT:
-                return createGroupTemplate(new WebAppResourceLoader(config.getPath(), config.getCharsetString()));
+                groupTemplate = createGroupTemplate(
+                        new WebAppResourceLoader(config.getPath(), config.getCharsetString()));
+                break;
 
             case STRING:
-                return createGroupTemplate(new StringTemplateResourceLoader());
+                groupTemplate = createGroupTemplate(new StringTemplateResourceLoader());
+                break;
 
             case COMPOSITE:
                 // TODO Need to define a composite resource loader
-                return createGroupTemplate(new CompositeResourceLoader());
+                groupTemplate = createGroupTemplate(new CompositeResourceLoader());
+                break;
 
             default:
-                return new GroupTemplate();
+                groupTemplate = new GroupTemplate();
+                break;
         }
+        Logger.info(
+                false,
+                "Extra",
+                "component=template, Beetl group template created: resourceMode={}, charset={}, pathPresent={}, groupTemplatePresent={}",
+                config.getResourceMode(),
+                config.getCharsetString(),
+                config.getPath() != null,
+                groupTemplate != null);
+        return groupTemplate;
     }
 
     /**
@@ -116,8 +143,20 @@ public class BeetlProvider implements TemplateProvider {
      */
     private static GroupTemplate createGroupTemplate(final ResourceLoader<?> loader) {
         try {
+            Logger.debug(
+                    true,
+                    "Extra",
+                    "component=template, Beetl group template default configuration loading started: loader={}",
+                    loader == null ? "null" : loader.getClass().getSimpleName());
             return createGroupTemplate(loader, Configuration.defaultConfiguration());
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=template, Beetl group template default configuration loading failed: loader={}, exception={}",
+                    loader == null ? "null" : loader.getClass().getSimpleName(),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -145,7 +184,20 @@ public class BeetlProvider implements TemplateProvider {
      */
     @Override
     public TemplateProvider init(final TemplateConfig config) {
+        Logger.info(
+                true,
+                "Extra",
+                "component=template, Beetl provider initialization started: configPresent={}, resourceMode={}, charset={}, pathPresent={}",
+                config != null,
+                config == null ? null : config.getResourceMode(),
+                config == null ? null : config.getCharsetString(),
+                config != null && config.getPath() != null);
         init(of(config));
+        Logger.info(
+                false,
+                "Extra",
+                "component=template, Beetl provider initialized: rawPresent={}",
+                this.engine != null);
         return this;
     }
 
@@ -169,9 +221,24 @@ public class BeetlProvider implements TemplateProvider {
     @Override
     public Template getTemplate(final String resource) {
         if (null == this.engine) {
+            Logger.debug(true, "Extra", "component=template, Beetl provider lazy initialization requested");
             init(TemplateConfig.DEFAULT);
         }
-        return BeetlTemplate.wrap(engine.getTemplate(resource));
+        Logger.debug(
+                true,
+                "Extra",
+                "component=template, Beetl template loading started: resourcePresent={}, resourceLength={}",
+                resource != null,
+                resource == null ? 0 : resource.length());
+        final Template template = BeetlTemplate.wrap(engine.getTemplate(resource));
+        Logger.debug(
+                false,
+                "Extra",
+                "component=template, Beetl template loaded: resourcePresent={}, resourceLength={}, templatePresent={}",
+                resource != null,
+                resource == null ? 0 : resource.length(),
+                template != null);
+        return template;
     }
 
     /**

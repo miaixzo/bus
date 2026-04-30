@@ -216,12 +216,16 @@ public final class PerfCounterQuery {
         try {
             localized = PdhUtil.PdhLookupPerfNameByIndex(null, PdhUtil.PdhLookupPerfIndexByEnglishName(perfObject));
         } catch (Win32Exception e) {
-            Logger.warn(false, "Health",
+            Logger.warn(
+                    false,
+                    "Health",
                     "Unable to locate English counter names in registry Perflib 009. Assuming English counters. Error {}. {}",
                     String.format(Locale.ROOT, "0x%x", e.getHR().intValue()),
                     "See https://support.microsoft.com/en-us/help/300956/how-to-manually-rebuild-performance-counter-library-values");
         } catch (PdhException e) {
-            Logger.debug(false, "Health",
+            Logger.debug(
+                    false,
+                    "Health",
                     "Unable to localize {} performance counter.  Error {}.",
                     perfObject,
                     String.format(Locale.ROOT, "0x%x", e.getErrorCode()));

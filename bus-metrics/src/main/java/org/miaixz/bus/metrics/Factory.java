@@ -22,6 +22,7 @@ package org.miaixz.bus.metrics;
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Factory for obtaining the active {@link Provider}. Follows the same singleton + SPI pattern as {@code JsonFactory} in
@@ -46,11 +47,22 @@ public class Factory {
      * @throws InternalException if no implementation is found on the classpath
      */
     public static Provider of() {
+        Logger.debug(true, "Metrics", "Metrics provider SPI lookup started: serviceClass={}", Provider.class.getName());
         final Provider provider = NormalSpiLoader.loadFirstAvailable(Provider.class);
         if (null == provider) {
+            Logger.error(
+                    false,
+                    "Metrics",
+                    "Metrics provider SPI lookup failed: serviceClass={}, reason=not-found",
+                    Provider.class.getName());
             throw new InternalException(
                     "No metrics Provider found! Add bus-metrics native provider or configure micrometer.");
         }
+        Logger.debug(
+                false,
+                "Metrics",
+                "Metrics provider SPI lookup finished: providerClass={}",
+                provider.getClass().getName());
         return provider;
     }
 

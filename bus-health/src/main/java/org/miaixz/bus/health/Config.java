@@ -341,10 +341,22 @@ public final class Config {
         if (CONFIG == null) {
             CONFIG = new Properties();
             try {
+                Logger.debug(true, "Health", "Health configuration loading started: resource={}", _HEALTH_PROPERTIES);
                 CONFIG = readProperties(_HEALTH_PROPERTIES);
-                Logger.info(false, "Health", "Successfully loaded configuration from {}", _HEALTH_PROPERTIES);
+                Logger.info(
+                        false,
+                        "Health",
+                        "Health configuration loaded: resource={}, propertyCount={}",
+                        _HEALTH_PROPERTIES,
+                        CONFIG.size());
             } catch (Exception e) {
-                Logger.error(false, "Health", "Failed to load configuration from {}: {}", _HEALTH_PROPERTIES, e.getMessage(), e);
+                Logger.error(
+                        false,
+                        "Health",
+                        "Health configuration load failed: resource={}, exception={}",
+                        _HEALTH_PROPERTIES,
+                        e.getClass().getSimpleName(),
+                        e);
             }
         }
         return CONFIG;
@@ -445,6 +457,11 @@ public final class Config {
      */
     public static void load(Properties properties) {
         getConfig().putAll(properties);
+        Logger.debug(
+                false,
+                "Health",
+                "Health configuration merged: propertyCount={}",
+                properties == null ? 0 : properties.size());
     }
 
     /**

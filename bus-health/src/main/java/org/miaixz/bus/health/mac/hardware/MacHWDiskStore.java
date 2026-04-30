@@ -393,7 +393,11 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                         } else {
                             // This is normal for FileVault drives, Fusion
                             // drives, and other virtual bsd names
-                            Logger.debug(false, "Health", "Unable to find block storage driver properties for {}", bsdName);
+                            Logger.debug(
+                                    false,
+                                    "Health",
+                                    "Unable to find block storage driver properties for {}",
+                                    bsdName);
                         }
                         // Now get partitions for this disk.
                         List<HWPartition> partitions = new ArrayList<>();

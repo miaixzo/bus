@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.xyz.XmlKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.pay.Complex;
 import org.miaixz.bus.pay.Context;
 import org.miaixz.bus.pay.Registry;
@@ -292,7 +293,22 @@ public class TenpayProvider extends AbstractProvider<Voucher, Context> {
      * @return The response from the server.
      */
     public String doPost(Complex complex, Map<String, String> params) {
-        return post(getUrl(complex), XmlKit.mapToXmlString(params));
+        Logger.info(
+                true,
+                "Pay",
+                "Tenpay request started: api={}, paramCount={}, certSource={}",
+                complex == null ? null : complex.method(),
+                params == null ? 0 : params.size(),
+                "none");
+        String response = post(getUrl(complex), XmlKit.mapToXmlString(params));
+        Logger.info(
+                false,
+                "Pay",
+                "Tenpay request completed: api={}, paramCount={}, responseBytes={}",
+                complex == null ? null : complex.method(),
+                params == null ? 0 : params.size(),
+                response == null ? 0 : response.length());
+        return response;
     }
 
     /**
@@ -305,7 +321,22 @@ public class TenpayProvider extends AbstractProvider<Voucher, Context> {
      * @return The response from the server.
      */
     public String doPost(Complex complex, Map<String, String> params, String certPath, String certPass) {
-        return post(getUrl(complex), XmlKit.mapToXmlString(params), certPath, certPass, null);
+        Logger.info(
+                true,
+                "Pay",
+                "Tenpay certificate request started: api={}, paramCount={}, certSource={}",
+                complex == null ? null : complex.method(),
+                params == null ? 0 : params.size(),
+                certPath == null ? "stream" : "path");
+        String response = post(getUrl(complex), XmlKit.mapToXmlString(params), certPath, certPass, null);
+        Logger.info(
+                false,
+                "Pay",
+                "Tenpay certificate request completed: api={}, paramCount={}, responseBytes={}",
+                complex == null ? null : complex.method(),
+                params == null ? 0 : params.size(),
+                response == null ? 0 : response.length());
+        return response;
     }
 
     /**
@@ -318,7 +349,22 @@ public class TenpayProvider extends AbstractProvider<Voucher, Context> {
      * @return The response from the server.
      */
     public String doPost(Complex complex, Map<String, String> params, InputStream certFile, String certPass) {
-        return post(getUrl(complex), XmlKit.mapToXmlString(params), certFile, certPass, null);
+        Logger.info(
+                true,
+                "Pay",
+                "Tenpay certificate request started: api={}, paramCount={}, certSource={}",
+                complex == null ? null : complex.method(),
+                params == null ? 0 : params.size(),
+                "stream");
+        String response = post(getUrl(complex), XmlKit.mapToXmlString(params), certFile, certPass, null);
+        Logger.info(
+                false,
+                "Pay",
+                "Tenpay certificate request completed: api={}, paramCount={}, responseBytes={}",
+                complex == null ? null : complex.method(),
+                params == null ? 0 : params.size(),
+                response == null ? 0 : response.length());
+        return response;
     }
 
 }

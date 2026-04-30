@@ -84,8 +84,8 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
     public void configure(List<org.springframework.http.converter.HttpMessageConverter<?>> converters) {
         Logger.debug(
                 false,
-                "HTTP",
-                "Configuring GsonHttpMessageConverter with autoType: {}",
+                "Starter",
+                "component=http, Configuring GsonHttpMessageConverter with autoType: {}",
                 autoTypeMatcher == null ? null : autoTypeMatcher.description());
 
         // Configure Gson, adding autoType restriction
@@ -108,10 +108,10 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
                 } catch (NoSuchFieldException | SecurityException e) {
                     Logger.warn(
                             false,
-                            "HTTP",
-                            "Gson could not access field '{}' for annotation check. Defaulting to include.",
+                            "Starter",
+                            "component=http, Gson could not access field '{}' for annotation check. Defaulting to include.",
                             f.getName(),
-                            e.getMessage());
+                            e.getClass().getSimpleName());
                     // If we can't inspect the field, don't skip it (default to including it).
                     return false;
                 }
@@ -128,8 +128,8 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
             gsonBuilder.registerTypeAdapterFactory(new AutoTypeAdapterFactory(autoTypeMatcher));
             Logger.debug(
                     false,
-                    "HTTP",
-                    "Gson autoType enabled for package patterns: {}",
+                    "Starter",
+                    "component=http, Gson autoType enabled for package patterns: {}",
                     autoTypeMatcher.description());
         }
 
@@ -142,8 +142,8 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
         converters.add(order(), converter);
         Logger.debug(
                 false,
-                "HTTP",
-                "Gson converter configured with media types: {}",
+                "Starter",
+                "component=http, Gson converter configured with media types: {}",
                 converter.getSupportedMediaTypes());
     }
 

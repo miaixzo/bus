@@ -22,6 +22,7 @@ package org.miaixz.bus.cache;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Cache wrapper that preserves scan, counter and renew semantics when the primary backend does not provide them
@@ -96,7 +97,18 @@ public class Hybrid implements CacheX<String, Object> {
     @Override
     public Object read(String key) {
         Object value = cache.read(key);
-        return value != null || mirror == null ? value : mirror.read(key);
+        if (value != null || mirror == null) {
+            return value;
+        }
+        Logger.debug(true, "Cache", "Hybrid cache fallback read started: mode=single, keyPresent={}", key != null);
+        Object fallback = mirror.read(key);
+        Logger.debug(
+                false,
+                "Cache",
+                "Hybrid cache fallback read completed: mode=single, keyPresent={}, hit={}",
+                key != null,
+                fallback != null);
+        return fallback;
     }
 
     /**
@@ -111,11 +123,30 @@ public class Hybrid implements CacheX<String, Object> {
         if (mirror == null || values.size() == keys.size()) {
             return values;
         }
+        Logger.debug(
+                true,
+                "Cache",
+                "Hybrid cache fallback read started: mode=batch, keyCount={}, primaryHitCount={}",
+                keys.size(),
+                values.size());
         Map<String, Object> fallback = mirror.read(keys);
         if (fallback.isEmpty()) {
+            Logger.debug(
+                    false,
+                    "Cache",
+                    "Hybrid cache fallback read completed: mode=batch, keyCount={}, primaryHitCount={}, fallbackHitCount=0",
+                    keys.size(),
+                    values.size());
             return values;
         }
         fallback.putAll(values);
+        Logger.debug(
+                false,
+                "Cache",
+                "Hybrid cache fallback read completed: mode=batch, keyCount={}, primaryHitCount={}, resultCount={}",
+                keys.size(),
+                values.size(),
+                fallback.size());
         return fallback;
     }
 
@@ -191,7 +222,23 @@ public class Hybrid implements CacheX<String, Object> {
      */
     @Override
     public Map<String, Object> scan(String prefix) {
-        return primaryScan ? cache.scan(prefix) : mirror == null ? Map.of() : mirror.scan(prefix);
+        Logger.debug(
+                true,
+                "Cache",
+                "Hybrid cache scan started: primaryScan={}, mirrorPresent={}, prefixPresent={}",
+                primaryScan,
+                mirror != null,
+                prefix != null);
+        Map<String, Object> result = primaryScan ? cache.scan(prefix) : mirror == null ? Map.of() : mirror.scan(prefix);
+        Logger.debug(
+                false,
+                "Cache",
+                "Hybrid cache scan completed: primaryScan={}, mirrorPresent={}, prefixPresent={}, resultCount={}",
+                primaryScan,
+                mirror != null,
+                prefix != null,
+                result.size());
+        return result;
     }
 
     /**
@@ -202,7 +249,23 @@ public class Hybrid implements CacheX<String, Object> {
      */
     @Override
     public List<String> keys(String prefix) {
-        return primaryScan ? cache.keys(prefix) : mirror == null ? List.of() : mirror.keys(prefix);
+        Logger.debug(
+                true,
+                "Cache",
+                "Hybrid cache key scan started: primaryScan={}, mirrorPresent={}, prefixPresent={}",
+                primaryScan,
+                mirror != null,
+                prefix != null);
+        List<String> result = primaryScan ? cache.keys(prefix) : mirror == null ? List.of() : mirror.keys(prefix);
+        Logger.debug(
+                false,
+                "Cache",
+                "Hybrid cache key scan completed: primaryScan={}, mirrorPresent={}, prefixPresent={}, resultCount={}",
+                primaryScan,
+                mirror != null,
+                prefix != null,
+                result.size());
+        return result;
     }
 
     /**
@@ -213,7 +276,17 @@ public class Hybrid implements CacheX<String, Object> {
      */
     @Override
     public long increment(String key) {
-        return primaryCounter ? cache.increment(key) : mirror == null ? cache.increment(key) : mirror.increment(key);
+        long value = primaryCounter ? cache.increment(key)
+                : mirror == null ? cache.increment(key) : mirror.increment(key);
+        Logger.debug(
+                false,
+                "Cache",
+                "Hybrid cache counter incremented: primaryCounter={}, mirrorPresent={}, keyPresent={}, counterValue={}",
+                primaryCounter,
+                mirror != null,
+                key != null,
+                value);
+        return value;
     }
 
     /**
@@ -226,7 +299,18 @@ public class Hybrid implements CacheX<String, Object> {
     @Override
     public boolean renew(String key, long expire) {
         boolean renewed = cache.renew(key, expire);
-        return mirror == null ? renewed : mirror.renew(key, expire) || renewed;
+        boolean mirrorRenewed = mirror != null && mirror.renew(key, expire);
+        boolean result = mirrorRenewed || renewed;
+        Logger.debug(
+                false,
+                "Cache",
+                "Hybrid cache ttl renewed: keyPresent={}, expireMs={}, primaryRenewed={}, mirrorRenewed={}, renewed={}",
+                key != null,
+                expire,
+                renewed,
+                mirrorRenewed,
+                result);
+        return result;
     }
 
 }

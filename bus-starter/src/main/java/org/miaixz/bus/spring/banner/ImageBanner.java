@@ -290,9 +290,10 @@ public class ImageBanner {
         } catch (Exception ex) {
             Logger.warn(
                     false,
-                    "Spring",
-                    "WARNING ! Image banner not printable: " + this.image + " (" + ex.getClass() + ": '"
-                            + ex.getMessage() + "')");
+                    "Starter",
+                    "component=spring, Image banner not printable: imagePresent={}, exception={}",
+                    this.image != null,
+                    ex.getClass().getSimpleName());
         } finally {
             if (null != headlessProperty) {
                 System.setProperty("java.awt.headless", headlessProperty);

@@ -20,6 +20,7 @@
 package org.miaixz.bus.spring;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.starter.Nexus;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Conditional;
@@ -78,13 +79,32 @@ public class SpringHolder {
                     handlerSet.add(clazz);
                 } catch (Exception e) {
                     // Log the exception but continue scanning other resources
-                    e.printStackTrace();
+                    Logger.warn(
+                            false,
+                            "Starter",
+                            e,
+                            "component=spring, Spring class scan resource failed: packageName={}, resource={}, exception={}",
+                            packageName,
+                            resource,
+                            e.getClass().getSimpleName());
                 }
             }
         } catch (Exception e) {
             // Log the exception if resource pattern resolution fails
-            e.printStackTrace();
+            Logger.warn(
+                    false,
+                    "Starter",
+                    e,
+                    "component=spring, Spring class scan failed: packageName={}, exception={}",
+                    packageName,
+                    e.getClass().getSimpleName());
         }
+        Logger.debug(
+                false,
+                "Starter",
+                "component=spring, Spring class scan completed: packageName={}, classCount={}",
+                packageName,
+                handlerSet.size());
         return handlerSet;
     }
 

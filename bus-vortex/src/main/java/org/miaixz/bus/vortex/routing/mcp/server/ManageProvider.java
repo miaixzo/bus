@@ -98,7 +98,7 @@ public class ManageProvider implements ProcessProvider, MetricsProvider {
 
             Process existingProcess = processMap.get(serviceId);
             if (existingProcess != null && existingProcess.isAlive()) {
-                Logger.info(false, "MCP", "Local process already running: assetId={}", serviceId);
+                Logger.info(false, "Vortex", "component=mcp, Local process already running: assetId={}", serviceId);
                 return existingProcess;
             }
 
@@ -117,10 +117,12 @@ public class ManageProvider implements ProcessProvider, MetricsProvider {
                         envMap.forEach((key, value) -> processBuilder.environment().put(key, String.valueOf(value)));
                     }
                 } catch (Exception e) {
-                    Logger.error(false, "MCP",
-                            "Failed to parse environment variables: assetId={}, payload={}",
+                    Logger.error(
+                            false,
+                            "Vortex",
+                            "component=mcp, Failed to parse environment variables: assetId={}, envChars={}",
                             serviceId,
-                            envJson,
+                            envJson == null ? 0 : envJson.length(),
                             e);
                     throw new IllegalArgumentException(
                             "Invalid environment variables JSON for asset '" + serviceId + "'", e);
@@ -130,7 +132,12 @@ public class ManageProvider implements ProcessProvider, MetricsProvider {
             processBuilder.redirectErrorStream(true);
 
             try {
-                Logger.info(false, "MCP", "Launching local process: assetId={}, command={}", serviceId, commandString);
+                Logger.info(
+                        false,
+                        "Vortex",
+                        "component=mcp, Launching local process: assetId={}, command={}",
+                        serviceId,
+                        commandString);
                 Process process = processBuilder.start();
                 processMap.put(serviceId, process);
 
@@ -139,15 +146,25 @@ public class ManageProvider implements ProcessProvider, MetricsProvider {
                             new java.io.InputStreamReader(process.getInputStream()))) {
                         String line;
                         while ((line = reader.readLine()) != null) {
-                            Logger.trace(false, "MCP", "MCP process output received: serviceId={}, line={}", serviceId, line);
+                            Logger.trace(
+                                    false,
+                                    "Vortex",
+                                    "component=mcp, MCP process output received: serviceId={}, line={}",
+                                    serviceId,
+                                    line);
                         }
                     } catch (IOException e) {
-                        Logger.warn(false, "MCP", "Process output read failed: assetId={}, error={}", serviceId, e.getMessage());
+                        Logger.warn(
+                                false,
+                                "Vortex",
+                                "component=mcp, Process output read failed: assetId={}, exception={}",
+                                serviceId,
+                                e.getClass().getSimpleName());
                     }
                 });
                 return process;
             } catch (IOException e) {
-                Logger.error(false, "MCP", "Local process launch failed: assetId={}", serviceId, e);
+                Logger.error(false, "Vortex", "component=mcp, Local process launch failed: assetId={}", serviceId, e);
                 throw new RuntimeException("Failed to start service: " + serviceId, e);
             }
         }).subscribeOn(Schedulers.boundedElastic());
@@ -174,16 +191,25 @@ public class ManageProvider implements ProcessProvider, MetricsProvider {
             Process process = processMap.get(serviceId);
 
             if (process != null && process.isAlive()) {
-                Logger.info(false, "MCP", "Stopping local process: assetId={}", serviceId);
+                Logger.info(false, "Vortex", "component=mcp, Stopping local process: assetId={}", serviceId);
                 process.destroy();
                 try {
                     if (!process.waitFor(5, java.util.concurrent.TimeUnit.SECONDS)) {
-                        Logger.warn(false, "MCP", "Process did not exit gracefully; forcing termination: assetId={}", serviceId);
+                        Logger.warn(
+                                false,
+                                "Vortex",
+                                "component=mcp, Process did not exit gracefully; forcing termination: assetId={}",
+                                serviceId);
                         process.destroyForcibly();
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                    Logger.error(false, "MCP", "Interrupted while waiting for process shutdown: assetId={}", serviceId, e);
+                    Logger.error(
+                            false,
+                            "Vortex",
+                            "component=mcp, Interrupted while waiting for process shutdown: assetId={}",
+                            serviceId,
+                            e);
                     process.destroyForcibly();
                 }
                 processMap.remove(serviceId);

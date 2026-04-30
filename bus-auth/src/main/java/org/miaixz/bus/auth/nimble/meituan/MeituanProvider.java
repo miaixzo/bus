@@ -36,6 +36,7 @@ import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Meituan login provider.
@@ -99,6 +100,15 @@ public class MeituanProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(Authorization.builder().token(token).refresh(refresh).expireIn(expiresIn).build()).build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "access token",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
     }
@@ -140,6 +150,15 @@ public class MeituanProvider extends AbstractProvider {
                                     .source(complex.toString()).build())
                     .build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "user info",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
     }
@@ -179,6 +198,15 @@ public class MeituanProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(Authorization.builder().token(token).refresh(refresh).expireIn(expiresIn).build()).build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "refresh token",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse refresh token response: " + e.getMessage());
         }
     }

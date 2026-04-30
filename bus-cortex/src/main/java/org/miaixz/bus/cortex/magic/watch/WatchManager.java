@@ -704,7 +704,9 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
                     try {
                         subscription.getListener().onError(event, e);
                     } catch (Exception errorHandlerFailure) {
-                        Logger.warn(false, "Cortex",
+                        Logger.warn(
+                                false,
+                                "Cortex",
                                 "Watch listener error handler failed {}: {}",
                                 watchId,
                                 errorHandlerFailure.getMessage());

@@ -236,7 +236,11 @@ public final class PsInfo {
             ssize_t result = LIBC.pread(fd, buffer, bufSize, new NativeLong(newStart));
             // May return less than asked but should be at least a full page
             if (result.longValue() < PAGE_SIZE) {
-                Logger.debug(false, "Health", "Failed to read page from address space: {} bytes read", result.longValue());
+                Logger.debug(
+                        false,
+                        "Health",
+                        "Failed to read page from address space: {} bytes read",
+                        result.longValue());
                 return 0;
             }
             return newStart;

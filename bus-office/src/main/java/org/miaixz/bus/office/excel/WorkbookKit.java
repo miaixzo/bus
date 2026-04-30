@@ -32,6 +32,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Utility class for Excel {@link Workbook}.
@@ -130,6 +131,13 @@ public class WorkbookKit {
         try {
             return WorkbookFactory.create(excelFile, password, readOnly);
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "WorkbookKit",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -155,6 +163,13 @@ public class WorkbookKit {
         try {
             return WorkbookFactory.create(IoKit.toMarkSupport(in), password);
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "WorkbookKit",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         } finally {
             IoKit.closeQuietly(in);
@@ -171,6 +186,13 @@ public class WorkbookKit {
         try {
             return WorkbookFactory.create(isXlsx);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "WorkbookKit",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -307,6 +329,13 @@ public class WorkbookKit {
         try {
             book.write(out);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "WorkbookKit",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }

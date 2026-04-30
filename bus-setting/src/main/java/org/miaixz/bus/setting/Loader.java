@@ -130,14 +130,40 @@ public class Loader {
         Assert.notNull(resource, "Null setting resource define!");
 
         GroupedMap groupedMap;
+        final long startedAt = System.nanoTime();
+        Logger.info(
+                true,
+                "Setting",
+                "Setting resource load started: resourceUrl={}, charset={}, useVariable={}",
+                resource.getUrl(),
+                this.charset,
+                this.isUseVariable);
         try (InputStream settingStream = resource.getStream()) {
             groupedMap = load(settingStream);
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Setting",
+                    e,
+                    "Setting resource load failed: resourceUrl={}, charset={}, useVariable={}, exception={}, elapsedMs={}",
+                    resource.getUrl(),
+                    this.charset,
+                    this.isUseVariable,
+                    e.getClass().getSimpleName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
             if (e instanceof NotFoundException) {
                 throw (NotFoundException) e;
             }
             throw new NotFoundException(e);
         }
+        Logger.info(
+                false,
+                "Setting",
+                "Setting resource load completed: resourceUrl={}, groupCount={}, keyCount={}, elapsedMs={}",
+                resource.getUrl(),
+                groupedMap.keySet().size(),
+                groupedMap.size(),
+                (System.nanoTime() - startedAt) / 1_000_000L);
         return groupedMap;
     }
 
@@ -150,22 +176,43 @@ public class Loader {
      */
     public synchronized GroupedMap load(final InputStream inputStream) throws IOException {
         final GroupedMap groupedMap = new GroupedMap();
+        final long startedAt = System.nanoTime();
+        int lineNumber = 0;
+        int ignoredLineCount = 0;
+        int variableReplacementCount = 0;
+        Logger.debug(
+                true,
+                "Setting",
+                "Setting stream load started: charset={}, useVariable={}, inputPresent={}",
+                this.charset,
+                this.isUseVariable,
+                inputStream != null);
         try (LineReader reader = new LineReader(inputStream, this.charset)) {
             String group = null;
             String line;
             while ((line = reader.readLine()) != null) {
+                lineNumber++;
                 line = StringKit.trim(line);
                 if (StringKit.isBlank(line) || StringKit.startWith(line, COMMENT_FLAG_PRE)) {
+                    ignoredLineCount++;
                     continue;
                 }
                 if (StringKit.isWrap(line, Symbol.C_BRACKET_LEFT, Symbol.C_BRACKET_RIGHT)) {
                     group = StringKit.trim(line.substring(1, line.length() - 1));
+                    Logger.debug(true, "Setting", "Setting group detected: group={}, line={}", group, lineNumber);
                     continue;
                 }
 
                 final String[] keyValue = CharsBacker.split(line, String.valueOf(this.assignFlag), 2, true, false)
                         .toArray(new String[0]);
                 if (keyValue.length < 2) {
+                    ignoredLineCount++;
+                    Logger.debug(
+                            false,
+                            "Setting",
+                            "Setting line ignored: line={}, reason={}",
+                            lineNumber,
+                            "missingAssignment");
                     continue;
                 }
 
@@ -175,11 +222,35 @@ public class Loader {
                     value = this.valueEditor.edit(group, key, value);
                 }
                 if (this.isUseVariable) {
+                    variableReplacementCount++;
                     value = replaceVar(groupedMap, group, value);
                 }
                 groupedMap.put(group, key, value);
             }
+        } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Setting",
+                    e,
+                    "Setting stream load failed: lineCount={}, ignoredLineCount={}, groupCount={}, keyCount={}, exception={}, elapsedMs={}",
+                    lineNumber,
+                    ignoredLineCount,
+                    groupedMap.keySet().size(),
+                    groupedMap.size(),
+                    e.getClass().getSimpleName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
+            throw e;
         }
+        Logger.debug(
+                false,
+                "Setting",
+                "Setting stream load completed: lineCount={}, ignoredLineCount={}, variableReplacementCount={}, groupCount={}, keyCount={}, elapsedMs={}",
+                lineNumber,
+                ignoredLineCount,
+                variableReplacementCount,
+                groupedMap.keySet().size(),
+                groupedMap.size(),
+                (System.nanoTime() - startedAt) / 1_000_000L);
         return groupedMap;
     }
 
@@ -201,10 +272,37 @@ public class Loader {
      */
     public void store(final GroupedMap groupedMap, final File file) {
         Assert.notNull(file, "File to store must be not null !");
-        Logger.debug(false, "Setting", "Store Setting to [{}]...", file.getAbsolutePath());
+        final long startedAt = System.nanoTime();
+        Logger.info(
+                true,
+                "Setting",
+                "Setting store started: file={}, groupCount={}, keyCount={}",
+                file.getAbsolutePath(),
+                groupedMap == null ? 0 : groupedMap.keySet().size(),
+                groupedMap == null ? 0 : groupedMap.size());
         try (PrintWriter writer = FileKit.getPrintWriter(file, charset, false)) {
             store(groupedMap, writer);
+        } catch (final RuntimeException e) {
+            Logger.warn(
+                    false,
+                    "Setting",
+                    e,
+                    "Setting store failed: file={}, groupCount={}, keyCount={}, exception={}, elapsedMs={}",
+                    file.getAbsolutePath(),
+                    groupedMap == null ? 0 : groupedMap.keySet().size(),
+                    groupedMap == null ? 0 : groupedMap.size(),
+                    e.getClass().getSimpleName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
+            throw e;
         }
+        Logger.info(
+                false,
+                "Setting",
+                "Setting store completed: file={}, groupCount={}, keyCount={}, elapsedMs={}",
+                file.getAbsolutePath(),
+                groupedMap == null ? 0 : groupedMap.keySet().size(),
+                groupedMap == null ? 0 : groupedMap.size(),
+                (System.nanoTime() - startedAt) / 1_000_000L);
     }
 
     /**
@@ -371,16 +469,20 @@ public class Loader {
      * @throws IOException if an I/O error occurs.
      */
     protected IniSetting defaultFormat(java.io.Reader reader, int builderCapacity) throws IOException {
+        final long startedAt = System.nanoTime();
         Format format = getFormatter();
         List<IniElement> iniElements = new ArrayList<>();
         String newLineSplit = System.getProperty(Keys.LINE_SEPARATOR, Symbol.LF);
         StringBuilder line = new StringBuilder(builderCapacity);
+        int lineCount = 0;
+        Logger.debug(true, "Setting", "INI default format started: builderCapacity={}", builderCapacity);
 
         int ch;
         while ((ch = reader.read()) != -1) {
             line.append((char) ch);
             String nowStr = line.toString();
             if (nowStr.endsWith(newLineSplit)) {
+                lineCount++;
                 IniElement element = format.formatLine(nowStr);
                 if (null != element) {
                     iniElements.add(element);
@@ -389,10 +491,19 @@ public class Loader {
             }
         }
         if (!line.isEmpty()) {
+            lineCount++;
             iniElements.add(format.formatLine(line.toString()));
         }
 
-        return new IniSetting(iniElements);
+        final IniSetting setting = new IniSetting(iniElements);
+        Logger.debug(
+                false,
+                "Setting",
+                "INI default format completed: lineCount={}, elementCount={}, elapsedMs={}",
+                lineCount,
+                iniElements.size(),
+                (System.nanoTime() - startedAt) / 1_000_000L);
+        return setting;
     }
 
     /**
@@ -403,7 +514,14 @@ public class Loader {
      * @throws IOException if an I/O error occurs.
      */
     private IniSetting bufferedRead(BufferedReader reader) throws IOException {
-        return defaultFormat(reader);
+        Logger.debug(true, "Setting", "INI buffered read started: readerPresent={}", reader != null);
+        final IniSetting setting = defaultFormat(reader);
+        Logger.debug(
+                false,
+                "Setting",
+                "INI buffered read completed: elementCount={}",
+                setting == null ? 0 : setting.size());
+        return setting;
     }
 
     /**

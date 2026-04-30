@@ -128,7 +128,7 @@ public class CMove {
                 if (e instanceof InterruptedException) {
                     Thread.currentThread().interrupt();
                 }
-                Logger.error(false, "ImageTool", "movescu", e);
+                Logger.error(false, "Image", "component=tool, movescu", e);
                 Builder.forceGettingAttributes(moveSCU.getState(), moveSCU);
                 return Status.buildMessage(moveSCU.getState(), null, e);
             } finally {
@@ -139,7 +139,7 @@ public class CMove {
             if (e instanceof InterruptedException) {
                 Thread.currentThread().interrupt();
             }
-            Logger.error(false, "ImageTool", "movescu", e);
+            Logger.error(false, "Image", "component=tool, movescu", e);
             return Status.buildMessage(
                     new Status(Status.UnableToProcess,
                             "DICOM Move failed" + Symbol.COLON + Symbol.SPACE + e.getMessage(), null),

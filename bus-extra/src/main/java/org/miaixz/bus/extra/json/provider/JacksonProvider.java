@@ -32,6 +32,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * A {@link org.miaixz.bus.extra.json.JsonProvider} implementation based on the Jackson library. This class provides
@@ -64,6 +65,13 @@ public class JacksonProvider extends AbstractJsonProvider {
         try {
             return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=json, JSON operation failed: provider={}, exception={}",
+                    "JacksonProvider",
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -77,6 +85,13 @@ public class JacksonProvider extends AbstractJsonProvider {
         try {
             return objectMapper.writer(sdf).writeValueAsString(object);
         } catch (JsonProcessingException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=json, JSON operation failed: provider={}, exception={}",
+                    "JacksonProvider",
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -89,6 +104,13 @@ public class JacksonProvider extends AbstractJsonProvider {
         try {
             return objectMapper.readValue(json, valueType);
         } catch (IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=json, JSON operation failed: provider={}, exception={}",
+                    "JacksonProvider",
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -109,6 +131,13 @@ public class JacksonProvider extends AbstractJsonProvider {
         try {
             return objectMapper.readValue(json, LinkedList.class);
         } catch (IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=json, JSON operation failed: provider={}, exception={}",
+                    "JacksonProvider",
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -121,6 +150,13 @@ public class JacksonProvider extends AbstractJsonProvider {
         try {
             return (List<T>) objectMapper.readValue(json, clazz);
         } catch (IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=json, JSON operation failed: provider={}, exception={}",
+                    "JacksonProvider",
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -143,6 +179,13 @@ public class JacksonProvider extends AbstractJsonProvider {
         try {
             return objectMapper.readValue(json, typeReference);
         } catch (IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=json, JSON operation failed: provider={}, exception={}",
+                    "JacksonProvider",
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -155,6 +198,13 @@ public class JacksonProvider extends AbstractJsonProvider {
         try {
             return objectMapper.readValue(json, Map.class);
         } catch (IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=json, JSON operation failed: provider={}, exception={}",
+                    "JacksonProvider",
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -175,6 +225,13 @@ public class JacksonProvider extends AbstractJsonProvider {
         try {
             return (T) objectMapper.readTree(json).get(field);
         } catch (JsonProcessingException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=json, JSON operation failed: provider={}, exception={}",
+                    "JacksonProvider",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -188,6 +245,13 @@ public class JacksonProvider extends AbstractJsonProvider {
             objectMapper.readTree(json);
             return true;
         } catch (IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=json, JSON operation failed: provider={}, exception={}",
+                    "JacksonProvider",
+                    e.getClass().getSimpleName());
             return false;
         }
     }

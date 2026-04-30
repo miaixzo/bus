@@ -221,7 +221,14 @@ public class StowRS {
         long t2 = System.currentTimeMillis();
         float s = (t2 - t1) / 1000F;
         float mb = stowChunk.getSize() / 1048576F;
-        Logger.info(false, "ImageTool", "Sent {} files, total size {:.2f} MB in {:.2f}s ({:.2f} MB/s)", stowChunk.sent, mb, s, mb / s);
+        Logger.info(
+                false,
+                "Image",
+                "component=tool, Sent {} files, total size {:.2f} MB in {:.2f}s ({:.2f} MB/s)",
+                stowChunk.sent,
+                mb,
+                s,
+                mb / s);
     }
 
     /**
@@ -237,7 +244,14 @@ public class StowRS {
         long t2 = System.currentTimeMillis();
         float s = (t2 - t1) / 1000F;
         float mb = stowRS.totalSize / 1048576F;
-        Logger.info(false, "ImageTool", "Sent {} files, total size {:.2f} MB in {:.2f}s ({:.2f} MB/s)", stowRS.filesSent, mb, s, mb / s);
+        Logger.info(
+                false,
+                "Image",
+                "component=tool, Sent {} files, total size {:.2f} MB in {:.2f}s ({:.2f} MB/s)",
+                stowRS.filesSent,
+                mb,
+                s,
+                mb / s);
     }
 
     /**
@@ -498,7 +512,7 @@ public class StowRS {
         long t1 = System.currentTimeMillis();
         scanFiles(files);
         long t2 = System.currentTimeMillis();
-        Logger.info(true, "ImageTool", "Scanned {} files in {}s", filesScanned, (t2 - t1) / 1000f);
+        Logger.info(true, "Image", "component=tool, Scanned {} files in {}s", filesScanned, (t2 - t1) / 1000f);
     }
 
     /**
@@ -575,7 +589,13 @@ public class StowRS {
                     parser.getAttributes(metadata);
                 stowRSBulkdata.setParser(parser);
             } catch (IOException e) {
-                Logger.info(false, "ImageTool", "Exception caught getting pixel data from file {}: {}", bulkdataFile, e.getMessage());
+                Logger.warn(
+                        false,
+                        "Image",
+                        e,
+                        "component=tool, Pixel metadata parse failed: fileName={}, exception={}",
+                        bulkdataFile == null ? null : bulkdataFile.getName(),
+                        e.getClass().getSimpleName());
             }
         }
         contentLocBulkdata.put(contentLoc, stowRSBulkdata);
@@ -588,7 +608,10 @@ public class StowRS {
      * @throws Exception if an error occurs.
      */
     private Attributes createStaticMetadata() throws Exception {
-        Logger.info(true, "ImageTool", "Creating static metadata. Set defaults, if essential attributes are not present.");
+        Logger.info(
+                true,
+                "Image",
+                "component=tool, Creating static metadata. Set defaults, if essential attributes are not present.");
         Attributes metadata;
         metadata = SAXReader.parse(IoKit.openFileOrURL(firstBulkdataFileContentType.getSampleMetadataResourceURL()));
         addAttributesFromFile(metadata);
@@ -623,7 +646,13 @@ public class StowRS {
                     } else
                         filePaths.add(f);
                 } catch (Exception e) {
-                    Logger.info(false, "ImageTool", "Failed to list files of directory : {}\n", f, e);
+                    Logger.warn(
+                            false,
+                            "Image",
+                            e,
+                            "component=tool, Directory file list failed: pathPresent={}, exception={}",
+                            f != null,
+                            e.getClass().getSimpleName());
                 }
             }
             processFilesPerRequest(filePaths.equals(fPR) ? fPR : filePaths);
@@ -649,7 +678,14 @@ public class StowRS {
             }
             stowChunks.add(stowChunk);
         } catch (Exception e) {
-            Logger.info(false, "ImageTool", "Failed to scan files in tmp file\n", e);
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "component=tool, STOW scan failed: fileCount={}, requestContentType={}, exception={}",
+                    files == null ? 0 : files.size(),
+                    requestContentType,
+                    e.getClass().getSimpleName());
         }
     }
 
@@ -672,7 +708,14 @@ public class StowRS {
                         try {
                             applyFunctionToFile(f, true, path -> writeDicomFile(out, path, stowChunk));
                         } catch (Exception e) {
-                            Logger.info(false, "ImageTool", "Failed to scan : {}\n", f, e);
+                            Logger.warn(
+                                    false,
+                                    "Image",
+                                    e,
+                                    "component=tool, STOW file scan failed: filePresent={}, requestContentType={}, exception={}",
+                                    f != null,
+                                    requestContentType,
+                                    e.getClass().getSimpleName());
                         }
                     });
                 else
@@ -681,7 +724,14 @@ public class StowRS {
             filesScanned += stowChunk.getScanned().get();
             stowChunks.add(stowChunk);
         } catch (Exception e) {
-            Logger.info(false, "ImageTool", "Failed to scan {} in tmp file\n", fPR, e);
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "component=tool, STOW chunk scan failed: fileCount={}, requestContentType={}, exception={}",
+                    fPR == null ? 0 : fPR.size(),
+                    requestContentType,
+                    e.getClass().getSimpleName());
         }
     }
 
@@ -841,8 +891,9 @@ public class StowRS {
      * @param headerFields The map of request headers.
      */
     private void logOutgoing(URL url, Map<String, List<String>> headerFields) {
-        Logger.info(false, "ImageTool", "> POST " + url.toString());
-        headerFields.forEach((k, v) -> Logger.info(false, "ImageTool", "> " + k + " : " + String.join(Symbol.COMMA, v)));
+        Logger.info(false, "Image", "component=tool, > POST " + url.toString());
+        headerFields.forEach(
+                (k, v) -> Logger.info(false, "Image", "component=tool, > " + k + " : " + String.join(Symbol.COMMA, v)));
     }
 
     /**
@@ -854,16 +905,23 @@ public class StowRS {
      * @param is           The input stream of the response body.
      */
     private void logIncoming(int respCode, String respMsg, Map<String, List<String>> headerFields, InputStream is) {
-        Logger.info(false, "ImageTool", "< HTTP/1.1 Response: " + respCode + Symbol.SPACE + respMsg);
+        Logger.info(false, "Image", "component=tool, < HTTP/1.1 Response: " + respCode + Symbol.SPACE + respMsg);
         for (Map.Entry<String, List<String>> header : headerFields.entrySet())
             if (header.getKey() != null)
-                Logger.info(false, "ImageTool", "< " + header.getKey() + " : " + String.join(";", header.getValue()));
-        Logger.info(false, "ImageTool", "< Response Content: ");
+                Logger.info(
+                        false,
+                        "Image",
+                        "component=tool, < " + header.getKey() + " : " + String.join(";", header.getValue()));
+        Logger.info(false, "Image", "component=tool, < Response content captured");
         try {
-            Logger.debug(false, "ImageTool", readFullyAsString(is));
+            Logger.debug(
+                    false,
+                    "Image",
+                    "component=tool, Response content captured: chars={}",
+                    readFullyAsString(is).length());
             is.close();
         } catch (Exception e) {
-            Logger.info(false, "ImageTool", "Exception caught on reading response body \n", e);
+            Logger.info(false, "Image", "component=tool, Exception caught on reading response content \n", e);
         }
     }
 
@@ -909,7 +967,7 @@ public class StowRS {
             }
             return tmpFile.toPath();
         } catch (Exception e) {
-            Logger.info(false, "ImageTool", "Failed to update attributes for file {}\n", path, e);
+            Logger.info(false, "Image", "component=tool, Failed to update attributes for file {}\n", path, e);
         }
         return path;
     }
@@ -1024,7 +1082,11 @@ public class StowRS {
                 bulkdataFileContentType = FileContentType.valueOf(Files.probeContentType(path), path);
                 return !firstBulkdataFileContentType.equals(bulkdataFileContentType);
             } else
-                Logger.info(false, "ImageTool", "Ignoring checking of content type of subsequent file {}", path);
+                Logger.info(
+                        false,
+                        "Image",
+                        "component=tool, Ignoring checking of content type of subsequent file {}",
+                        path);
         }
         return false;
     }
@@ -1053,9 +1115,19 @@ public class StowRS {
      * @throws IOException if an I/O error occurs.
      */
     private void writeMetadata(OutputStream out, ByteArrayOutputStream bOut) throws IOException {
-        Logger.info(true, "ImageTool", "> Metadata Content Type: " + requestContentType);
+        Logger.info(
+                true,
+                "Image",
+                "component=tool, Metadata part write started: contentType={}, bytes={}",
+                requestContentType,
+                bOut.size());
         writePartHeaders(out, requestContentType, null);
-        Logger.debug(false, "ImageTool", "Metadata being sent is : " + bOut.toString());
+        Logger.debug(
+                false,
+                "Image",
+                "component=tool, Metadata part prepared: contentType={}, bytes={}",
+                requestContentType,
+                bOut.size());
         out.write(bOut.toByteArray());
     }
 
@@ -1073,7 +1145,7 @@ public class StowRS {
         XPEGParser parser = stowRSBulkdata.getParser();
         if (bulkdataFileContentType.getBulkdataTypeTag() == Tag.PixelData && tsuid)
             bulkdataContentType1 = bulkdataContentType1 + "; transfer-syntax=" + parser.getTransferSyntaxUID(false);
-        Logger.info(false, "ImageTool", "> Bulkdata Content Type: " + bulkdataContentType1);
+        Logger.info(false, "Image", "component=tool, > Bulkdata Content Type: " + bulkdataContentType1);
         writePartHeaders(out, bulkdataContentType1, contentLocation);
 
         int offset = 0;

@@ -20,6 +20,7 @@
 package org.miaixz.bus.spring.http;
 
 import java.io.*;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.lang.Charset;
@@ -56,7 +57,7 @@ import lombok.Setter;
  *
  * <p>
  * <strong>Usage Example:</strong>
- * 
+ *
  * <pre>{@code
  * // In a Servlet Vector:
  * public class XSSFilter implements Vector {
@@ -134,7 +135,13 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
             logOut = UrlKit.decodeQuery(((String) logOut).replaceAll("\\s+", Normal.EMPTY), Charset.UTF_8);
         }
 
-        Logger.info(true, "Request", "Parameters: {}", JsonKit.toJsonString(logOut));
+        Logger.debug(true, "Starter", "component=request, Parameters: {}", JsonKit.toJsonString(logOut));
+        Logger.info(
+                true,
+                "Starter",
+                "component=request, Request parameters captured: parameterCount={}, contentChars={}",
+                logOut instanceof Map<?, ?> map ? map.size() : 0,
+                logOut instanceof CharSequence sequence ? sequence.length() : 0);
     }
 
     /**
@@ -282,7 +289,7 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
             try {
                 return inputStream.available() == 0;
             } catch (IOException e) {
-                Logger.error(false, "Request", "Error checking if input stream is finished", e);
+                Logger.error(false, "Starter", "component=request, Error checking if input stream is finished", e);
                 return true; // Assume finished on error
             }
         }

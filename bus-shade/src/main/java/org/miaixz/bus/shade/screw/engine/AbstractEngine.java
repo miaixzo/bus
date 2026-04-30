@@ -25,6 +25,7 @@ import java.io.IOException;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.shade.screw.Builder;
 
 import lombok.Getter;
@@ -81,13 +82,31 @@ public abstract class AbstractEngine implements TemplateEngine {
         }
         // Create the directory if it does not exist.
         if (!file.exists()) {
+            Logger.debug(
+                    true,
+                    "Shade",
+                    "Template output directory creation started: outputDir={}",
+                    file.getAbsolutePath());
             file.mkdirs();
+            Logger.debug(
+                    false,
+                    "Shade",
+                    "Template output directory creation finished: outputDir={}, exists={}",
+                    file.getAbsolutePath(),
+                    file.exists());
         }
         // Get the file suffix from the configuration.
         String suffix = getEngineConfig().getFileType().getFileSuffix();
         file = new File(file, docName + suffix);
         // Update the output directory path in the configuration.
         getEngineConfig().setFileOutputDir(file.getParent());
+        Logger.debug(
+                false,
+                "Shade",
+                "Template output file resolved: docName={}, fileType={}, filePath={}",
+                docName,
+                getEngineConfig().getFileType(),
+                file.getAbsolutePath());
         return file;
     }
 
@@ -103,12 +122,43 @@ public abstract class AbstractEngine implements TemplateEngine {
                 String osName = System.getProperty("os.name");
                 if (null != osName) {
                     if (osName.contains(Builder.MAC)) {
+                        Logger.debug(
+                                true,
+                                "Shade",
+                                "Opening template output directory: osName={}, outputDir={}",
+                                osName,
+                                getEngineConfig().getFileOutputDir());
                         Runtime.getRuntime().exec("open " + getEngineConfig().getFileOutputDir());
+                        Logger.debug(
+                                false,
+                                "Shade",
+                                "Template output directory open command dispatched: osName={}, outputDir={}",
+                                osName,
+                                getEngineConfig().getFileOutputDir());
                     } else if (osName.contains(Builder.WINDOWS)) {
+                        Logger.debug(
+                                true,
+                                "Shade",
+                                "Opening template output directory: osName={}, outputDir={}",
+                                osName,
+                                getEngineConfig().getFileOutputDir());
                         Runtime.getRuntime().exec("cmd /c start " + getEngineConfig().getFileOutputDir());
+                        Logger.debug(
+                                false,
+                                "Shade",
+                                "Template output directory open command dispatched: osName={}, outputDir={}",
+                                osName,
+                                getEngineConfig().getFileOutputDir());
                     }
                 }
             } catch (IOException e) {
+                Logger.warn(
+                        false,
+                        "Shade",
+                        e,
+                        "Template output directory open failed: outputDir={}, exception={}",
+                        getEngineConfig().getFileOutputDir(),
+                        e.getClass().getSimpleName());
                 throw new InternalException(e);
             }
         }

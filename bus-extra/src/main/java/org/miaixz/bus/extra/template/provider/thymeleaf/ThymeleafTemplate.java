@@ -32,6 +32,7 @@ import org.miaixz.bus.core.lang.reflect.TypeReference;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.extra.template.Template;
+import org.miaixz.bus.logger.Logger;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
@@ -100,10 +101,25 @@ public class ThymeleafTemplate implements Template, Serializable {
      */
     @Override
     public void render(final Map<?, ?> bindingMap, final Writer writer) {
+        final long startedAt = System.nanoTime();
+        Logger.debug(
+                true,
+                "Extra",
+                "component=template, Thymeleaf render started: bindingCount={}, writerPresent={}, templateLength={}, charset={}",
+                bindingMap == null ? 0 : bindingMap.size(),
+                writer != null,
+                template == null ? 0 : template.length(),
+                charset);
         final Map<String, Object> map = Convert.convert(new TypeReference<>() {
         }, bindingMap);
         final Context context = new Context(Locale.getDefault(), map);
         this.engine.process(this.template, context, writer);
+        Logger.debug(
+                false,
+                "Extra",
+                "component=template, Thymeleaf render completed: bindingCount={}, elapsedMs={}",
+                bindingMap == null ? 0 : bindingMap.size(),
+                (System.nanoTime() - startedAt) / 1_000_000L);
     }
 
     /**
@@ -118,6 +134,12 @@ public class ThymeleafTemplate implements Template, Serializable {
      */
     @Override
     public void render(final Map<?, ?> bindingMap, final OutputStream out) {
+        Logger.debug(
+                true,
+                "Extra",
+                "component=template, Thymeleaf stream render requested: bindingCount={}, outputPresent={}",
+                bindingMap == null ? 0 : bindingMap.size(),
+                out != null);
         render(bindingMap, IoKit.toWriter(out, this.charset));
     }
 

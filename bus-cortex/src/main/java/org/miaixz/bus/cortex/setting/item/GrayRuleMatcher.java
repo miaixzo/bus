@@ -20,6 +20,7 @@
 package org.miaixz.bus.cortex.setting.item;
 
 import java.util.Map;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Gray rule matcher.
@@ -140,6 +141,15 @@ public class GrayRuleMatcher {
             try {
                 segment = Integer.parseInt(part);
             } catch (NumberFormatException e) {
+                Logger.warn(
+                        false,
+                        "Cortex",
+                        e,
+                        "Cortex operation failed: component={}, provider={}, recoverable={}, exception={}",
+                        "setting",
+                        "GrayRuleMatcher",
+                        false,
+                        e.getClass().getSimpleName());
                 return -1L;
             }
             if (segment < 0 || segment > 255) {

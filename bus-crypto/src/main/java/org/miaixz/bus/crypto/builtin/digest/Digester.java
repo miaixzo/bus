@@ -32,6 +32,7 @@ import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
 import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.Holder;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Abstract base class for digest algorithms. This class provides common functionality for computing message digests,
@@ -319,6 +320,15 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
                 result = digestWithSalt(data, bufferLength);
             }
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "digest",
+                    "Digester",
+                    false,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
 

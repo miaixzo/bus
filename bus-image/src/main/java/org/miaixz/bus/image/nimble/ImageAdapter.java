@@ -474,7 +474,9 @@ public class ImageAdapter {
                         && minMax.maxVal < mLUTSeq.getOffset() + mLUTSeq.getNumEntries()) {
                     return mLUTSeq;
                 } else if (prModLut == null) {
-                    Logger.warn(false, "Image",
+                    Logger.warn(
+                            false,
+                            "Image",
                             "Pixel values doesn't match to Modality LUT sequence table. So the Modality LUT is not applied.");
                 }
             } else {

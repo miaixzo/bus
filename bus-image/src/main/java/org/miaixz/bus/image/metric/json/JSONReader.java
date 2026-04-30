@@ -162,7 +162,13 @@ public class JSONReader {
                         el.vr = VR.valueOf(valueString());
                     } catch (IllegalArgumentException e) {
                         el.vr = ElementDictionary.getStandardElementDictionary().vrOf(tag);
-                        Logger.info(false, "Image", "Invalid vr: '{}' at {} - treat as '{}'", getString(), parser.getLocation(), el.vr);
+                        Logger.info(
+                                false,
+                                "Image",
+                                "Invalid vr: '{}' at {} - treat as '{}'",
+                                getString(),
+                                parser.getLocation(),
+                                el.vr);
                     }
                     break;
 
@@ -488,7 +494,7 @@ public class JSONReader {
     }
 
     public void skipUnknownProperty() {
-        Logger.warn(false, "Image", "Skip unknown property: {}", text);
+        Logger.warn(false, "Image", "Skip unknown property: property={}", text);
         skipValue();
     }
 

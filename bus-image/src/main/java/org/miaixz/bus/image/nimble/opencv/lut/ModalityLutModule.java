@@ -104,14 +104,19 @@ public class ModalityLutModule {
 
     private void logModalityLutConsistency() {
         if (rescaleIntercept.isPresent() && lut.isPresent()) {
-            Logger.warn(false, "Image",
+            Logger.warn(
+                    false,
+                    "Image",
                     "Either a Modality LUT Sequence or Rescale Slope and Intercept values shall be present but not both!");
         }
 
         if (Logger.isTraceEnabled()) {
             if (lut.isPresent()) {
                 if (rescaleIntercept.isPresent()) {
-                    Logger.trace(false, "Image", "Modality LUT Sequence shall NOT be present if Rescale Intercept is present");
+                    Logger.trace(
+                            false,
+                            "Image",
+                            "Modality LUT Sequence shall NOT be present if Rescale Intercept is present");
                 }
                 if (lutType.isEmpty()) {
                     Logger.trace(false, "Image", "Modality Type is required if Modality LUT Sequence is present.");

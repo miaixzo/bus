@@ -26,6 +26,7 @@ import java.util.*;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * A reader for TOML (Tom's Obvious, Minimal Language) files. This implementation is based on the TOML-javalib project.
@@ -86,107 +87,144 @@ public class TomlReader {
      * @return A map representing the parsed TOML data.
      */
     public Map<String, Object> read() {
-        final Map<String, Object> map = nextTableContent();
+        final long startedAt = System.nanoTime();
+        Logger.debug(
+                true,
+                "Setting",
+                "TOML read started: dataLength={}, strictAsciiBareKeys={}",
+                data == null ? 0 : data.length(),
+                strictAsciiBareKeys);
+        final Map<String, Object> map;
+        try {
+            map = nextTableContent();
 
-        if (!hasNext() && pos > 0 && data.charAt(pos - 1) == '[') {
-            throw new InternalException("Invalid table declaration at line " + line + ": it never ends");
+            if (!hasNext() && pos > 0 && data.charAt(pos - 1) == '[') {
+                Logger.warn(
+                        false,
+                        "Setting",
+                        "TOML read failed: line={}, position={}, reason={}",
+                        line,
+                        pos,
+                        "unterminatedTable");
+                throw new InternalException("Invalid table declaration at line " + line + ": it never ends");
+            }
+
+            while (hasNext()) {
+                char c = nextUseful(true);
+                final boolean twoBrackets;
+                if (c == '[') {
+                    twoBrackets = true;
+                    c = nextUseful(false);
+                } else {
+                    twoBrackets = false;
+                }
+                pos--;
+
+                // Reads the key
+                final List<String> keyParts = new ArrayList<>(4);
+                boolean insideSquareBrackets = true;
+                while (insideSquareBrackets) {
+                    if (!hasNext())
+                        throw new InternalException("Invalid table declaration at line " + line + ": it never ends");
+
+                    String name;
+                    final char nameFirstChar = nextUseful(false);
+                    switch (nameFirstChar) {
+                        case '"':
+                            if (pos + 1 < data.length() && data.charAt(pos) == '"' && data.charAt(pos + 1) == '"') {
+                                pos += 2;
+                                name = nextBasicMultilineString();
+                            } else {
+                                name = nextBasicString();
+                            }
+                            break;
+
+                        case '\'':
+                            if (pos + 1 < data.length() && data.charAt(pos) == '\'' && data.charAt(pos + 1) == '\'') {
+                                pos += 2;
+                                name = nextLiteralMultilineString();
+                            } else {
+                                name = nextLiteralString();
+                            }
+                            break;
+
+                        default:
+                            pos--; // Go back to include the first character.
+                            name = nextBareKey(']', '.').trim();
+                            if (data.charAt(pos) == ']') {
+                                if (!name.isEmpty())
+                                    keyParts.add(name);
+                                insideSquareBrackets = false;
+                            } else if (name.isEmpty()) {
+                                throw new InternalException("Invalid empty key at line " + line);
+                            }
+                            pos++; // Move past the character we stopped at.
+                            break;
+                    }
+                    if (insideSquareBrackets)
+                        keyParts.add(name.trim());
+                }
+
+                if (keyParts.isEmpty())
+                    throw new InternalException("Invalid empty key at line " + line);
+
+                if (twoBrackets && next() != ']') {
+                    throw new InternalException("Missing character ']' at line " + line);
+                }
+
+                // Reads the table content
+                final Map<String, Object> value = nextTableContent();
+
+                // Saves the value
+                Map<String, Object> currentMap = map;
+                for (int i = 0; i < keyParts.size() - 1; i++) {
+                    final String part = keyParts.get(i);
+                    final Object child = currentMap.get(part);
+                    final Map<String, Object> childMap;
+                    if (child == null) { // Implicit table
+                        childMap = new LinkedHashMap<>(4);
+                        currentMap.put(part, childMap);
+                    } else if (child instanceof Map) { // Existing table
+                        childMap = (Map<String, Object>) child;
+                    } else { // Array of tables
+                        final List<Map<String, Object>> list = (List<Map<String, Object>>) child;
+                        childMap = list.get(list.size() - 1);
+                    }
+                    currentMap = childMap;
+                }
+                if (twoBrackets) { // Array of tables
+                    final String name = keyParts.get(keyParts.size() - 1);
+                    Collection<Map<String, Object>> tableArray = (Collection<Map<String, Object>>) currentMap.get(name);
+                    if (tableArray == null) {
+                        tableArray = new ArrayList<>(2);
+                        currentMap.put(name, tableArray);
+                    }
+                    tableArray.add(value);
+                } else { // Standard table
+                    currentMap.put(keyParts.get(keyParts.size() - 1), value);
+                }
+            }
+        } catch (final RuntimeException e) {
+            Logger.warn(
+                    false,
+                    "Setting",
+                    e,
+                    "TOML read failed: line={}, position={}, dataLength={}, exception={}, elapsedMs={}",
+                    line,
+                    pos,
+                    data == null ? 0 : data.length(),
+                    e.getClass().getSimpleName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
+            throw e;
         }
-
-        while (hasNext()) {
-            char c = nextUseful(true);
-            final boolean twoBrackets;
-            if (c == '[') {
-                twoBrackets = true;
-                c = nextUseful(false);
-            } else {
-                twoBrackets = false;
-            }
-            pos--;
-
-            // Reads the key
-            final List<String> keyParts = new ArrayList<>(4);
-            boolean insideSquareBrackets = true;
-            while (insideSquareBrackets) {
-                if (!hasNext())
-                    throw new InternalException("Invalid table declaration at line " + line + ": it never ends");
-
-                String name;
-                final char nameFirstChar = nextUseful(false);
-                switch (nameFirstChar) {
-                    case '"':
-                        if (pos + 1 < data.length() && data.charAt(pos) == '"' && data.charAt(pos + 1) == '"') {
-                            pos += 2;
-                            name = nextBasicMultilineString();
-                        } else {
-                            name = nextBasicString();
-                        }
-                        break;
-
-                    case '\'':
-                        if (pos + 1 < data.length() && data.charAt(pos) == '\'' && data.charAt(pos + 1) == '\'') {
-                            pos += 2;
-                            name = nextLiteralMultilineString();
-                        } else {
-                            name = nextLiteralString();
-                        }
-                        break;
-
-                    default:
-                        pos--; // Go back to include the first character.
-                        name = nextBareKey(']', '.').trim();
-                        if (data.charAt(pos) == ']') {
-                            if (!name.isEmpty())
-                                keyParts.add(name);
-                            insideSquareBrackets = false;
-                        } else if (name.isEmpty()) {
-                            throw new InternalException("Invalid empty key at line " + line);
-                        }
-                        pos++; // Move past the character we stopped at.
-                        break;
-                }
-                if (insideSquareBrackets)
-                    keyParts.add(name.trim());
-            }
-
-            if (keyParts.isEmpty())
-                throw new InternalException("Invalid empty key at line " + line);
-
-            if (twoBrackets && next() != ']') {
-                throw new InternalException("Missing character ']' at line " + line);
-            }
-
-            // Reads the table content
-            final Map<String, Object> value = nextTableContent();
-
-            // Saves the value
-            Map<String, Object> currentMap = map;
-            for (int i = 0; i < keyParts.size() - 1; i++) {
-                final String part = keyParts.get(i);
-                final Object child = currentMap.get(part);
-                final Map<String, Object> childMap;
-                if (child == null) { // Implicit table
-                    childMap = new LinkedHashMap<>(4);
-                    currentMap.put(part, childMap);
-                } else if (child instanceof Map) { // Existing table
-                    childMap = (Map<String, Object>) child;
-                } else { // Array of tables
-                    final List<Map<String, Object>> list = (List<Map<String, Object>>) child;
-                    childMap = list.get(list.size() - 1);
-                }
-                currentMap = childMap;
-            }
-            if (twoBrackets) { // Array of tables
-                final String name = keyParts.get(keyParts.size() - 1);
-                Collection<Map<String, Object>> tableArray = (Collection<Map<String, Object>>) currentMap.get(name);
-                if (tableArray == null) {
-                    tableArray = new ArrayList<>(2);
-                    currentMap.put(name, tableArray);
-                }
-                tableArray.add(value);
-            } else { // Standard table
-                currentMap.put(keyParts.get(keyParts.size() - 1), value);
-            }
-        }
+        Logger.debug(
+                false,
+                "Setting",
+                "TOML read completed: keyCount={}, line={}, position={}, elapsedMs={}",
+                map.size(),
+                line,
+                pos,
+                (System.nanoTime() - startedAt) / 1_000_000L);
         return map;
     }
 

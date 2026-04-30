@@ -154,18 +154,30 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
      */
     @Override
     public Set<BeanDefinitionHolder> doScan(String... basePackages) {
+        Logger.debug(
+                true,
+                "Starter",
+                "component=mapper, Mapper classpath scan started: basePackageCount={}, basePackages={}",
+                basePackages == null ? 0 : basePackages.length,
+                Arrays.toString(basePackages));
         Set<BeanDefinitionHolder> beanDefinitions = super.doScan(basePackages);
 
         if (beanDefinitions.isEmpty()) {
             Logger.warn(
                     false,
-                    "Mapper",
-                    "No MyBatis mapper found in '{}' package. Please check configuration",
+                    "Starter",
+                    "component=mapper, No MyBatis mapper found in '{}' package. Please check configuration",
                     Arrays.toString(basePackages));
         } else {
             processBeanDefinitions(beanDefinitions);
         }
 
+        Logger.info(
+                false,
+                "Starter",
+                "component=mapper, Mapper classpath scan finished: basePackageCount={}, mapperBeanCount={}",
+                basePackages == null ? 0 : basePackages.length,
+                beanDefinitions.size());
         return beanDefinitions;
     }
 
@@ -188,7 +200,7 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
                 if (filename != null && filename.contains(Symbol.DOLLAR + Symbol.DOLLAR)) {
                     continue;
                 }
-                Logger.trace(true, "Mapper", "Scanning mapper classpath resource: {}", resource);
+                Logger.trace(true, "Starter", "component=mapper, Scanning mapper classpath resource: {}", resource);
                 try {
                     MetadataReader metadataReader = getMetadataReaderFactory().getMetadataReader(resource);
                     if (isCandidateComponent(metadataReader)) {
@@ -197,40 +209,47 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
                         if (isCandidateComponent(beanDefinition)) {
                             Logger.debug(
                                     false,
-                                    "Mapper",
-                                    "Mapper candidate component identified: resource={}",
-                                    resource);
+                                    "Starter",
+                                    "component=mapper, Mapper candidate component identified: className={}",
+                                    metadataReader.getClassMetadata().getClassName());
                             candidates.add(beanDefinition);
                         } else {
                             Logger.debug(
                                     false,
-                                    "Mapper",
-                                    "Mapper candidate ignored because it is not an independent interface: resource={}",
-                                    resource);
+                                    "Starter",
+                                    "component=mapper, Mapper candidate ignored because it is not an independent interface: className={}",
+                                    metadataReader.getClassMetadata().getClassName());
                         }
                     } else {
                         Logger.trace(
                                 false,
-                                "Mapper",
-                                "Mapper classpath resource ignored by filters: resource={}",
+                                "Starter",
+                                "component=mapper, Mapper classpath resource ignored by filters: resource={}",
                                 resource);
                     }
                 } catch (FileNotFoundException e) {
                     Logger.trace(
                             false,
-                            "Mapper",
-                            "Mapper classpath resource is not readable: resource={}, reason={}",
+                            "Starter",
+                            "component=mapper, Mapper classpath resource is not readable: resource={}, reason={}",
                             resource,
-                            e.getMessage());
+                            e.getClass().getSimpleName());
                 } catch (ClassFormatException e) {
                     if (SpringProperties.getFlag("spring.classformat.ignore")) {
                         Logger.debug(
                                 false,
-                                "Mapper",
-                                "Mapper classpath resource has incompatible class format: resource={}, reason={}",
+                                "Starter",
+                                "component=mapper, Mapper classpath resource has incompatible class format: resource={}, reason={}",
                                 resource,
-                                e.getMessage());
+                                e.getClass().getSimpleName());
                     } else {
+                        Logger.warn(
+                                false,
+                                "Starter",
+                                e,
+                                "component=mapper, Mapper classpath resource has incompatible class format: resource={}, exception={}",
+                                resource,
+                                e.getClass().getSimpleName());
                         throw new BeanDefinitionStoreException("Incompatible class format in " + resource
                                 + ": set system property 'spring.classformat.ignore"
                                 + "' to 'true' if you mean to ignore such files during classpath scanning", e);
@@ -241,6 +260,13 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
                 }
             }
         } catch (IOException e) {
+            Logger.warn(
+                    false,
+                    "Starter",
+                    e,
+                    "component=mapper, Mapper classpath scan failed: basePackage={}, exception={}",
+                    basePackage,
+                    e.getClass().getSimpleName());
             throw new BeanDefinitionStoreException("I/O failure during mapper classpath scanning", e);
         }
         return candidates;
@@ -282,8 +308,8 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
                 if (explicitFactoryUsed) {
                     Logger.warn(
                             false,
-                            "Mapper",
-                            "Cannot use both sqlSessionTemplate and sqlSessionFactory together. sqlSessionFactory is ignored");
+                            "Starter",
+                            "component=mapper, Cannot use both sqlSessionTemplate and sqlSessionFactory together. sqlSessionFactory is ignored");
                 }
                 definition.getPropertyValues()
                         .add("sqlSessionTemplate", new RuntimeBeanReference(this.sqlSessionTemplateBeanName));
@@ -292,8 +318,8 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
                 if (explicitFactoryUsed) {
                     Logger.warn(
                             false,
-                            "Mapper",
-                            "Cannot use both sqlSessionTemplate and sqlSessionFactory together. sqlSessionFactory is ignored");
+                            "Starter",
+                            "component=mapper, Cannot use both sqlSessionTemplate and sqlSessionFactory together. sqlSessionFactory is ignored");
                 }
                 definition.getPropertyValues().add("sqlSessionTemplate", this.sqlSessionTemplate);
                 explicitFactoryUsed = true;
@@ -332,8 +358,8 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
         } else {
             Logger.warn(
                     false,
-                    "Mapper",
-                    "Skipping MapperFactoryBean '{}' with '{}' mapperInterface. Bean already defined with same name",
+                    "Starter",
+                    "component=mapper, Skipping MapperFactoryBean '{}' with '{}' mapperInterface. Bean already defined with same name",
                     beanName,
                     beanDefinition.getBeanClassName());
             return false;

@@ -1270,7 +1270,13 @@ public class Attributes implements Serializable {
         try {
             return getBytes(privateCreator, tag);
         } catch (IOException e) {
-            Logger.info(false, "Image", "Access " + Tag.toString(tag) + " throws i/o exception", e);
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM attribute access failed: tag={}, exception={}",
+                    Tag.toString(tag),
+                    e.getClass().getSimpleName());
             return null;
         }
     }
@@ -3052,7 +3058,14 @@ public class Attributes implements Serializable {
                 try {
                     tz = Format.timeZone(s);
                 } catch (IllegalArgumentException e) {
-                    Logger.info(false, "Image", e.getMessage());
+                    Logger.warn(
+                            false,
+                            "Image",
+                            e,
+                            "DICOM timezone parse failed: tag={}, valueChars={}, exception={}",
+                            Tag.toString(Tag.TimezoneOffsetFromUTC),
+                            s.length(),
+                            e.getClass().getSimpleName());
                 }
         } else if (parent != null)
             return parent.getTimeZone();
@@ -3077,7 +3090,14 @@ public class Attributes implements Serializable {
             try {
                 tz = Format.timeZone(s);
             } catch (IllegalArgumentException e) {
-                Logger.info(false, "Image", e.getMessage());
+                Logger.warn(
+                        false,
+                        "Image",
+                        e,
+                        "DICOM zone parse failed: tag={}, valueChars={}, exception={}",
+                        Tag.toString(Tag.TimezoneOffsetFromUTC),
+                        s.length(),
+                        e.getClass().getSimpleName());
                 return null;
             }
             return tz.toZoneId();
@@ -4445,7 +4465,13 @@ public class Attributes implements Serializable {
                         destModified.addAll(srcModified);
                     }
                 } catch (InternalException e) {
-                    Logger.info(false, "Image", "Failed to merge original attributes modified at {}: {}", dt, e.getMessage());
+                    Logger.warn(
+                            false,
+                            "Image",
+                            e,
+                            "DICOM original attributes merge failed: modifiedAtPresent={}, exception={}",
+                            dt != null,
+                            e.getClass().getSimpleName());
                 }
             } else {
                 sort.put(dt, new Attributes(srcItem));
@@ -5357,7 +5383,12 @@ public class Attributes implements Serializable {
                 if (!matches(privateCreator, tag, ignorePNCase, matchNoValue, (Sequence) keyValue))
                     return false;
             } else {
-                Logger.info(false, "Image", "Matching Key {} with VR: {} not supported", Tag.toString(tag), keyVrs[i]);
+                Logger.info(
+                        false,
+                        "Image",
+                        "Matching Key {} with VR: vr={} not supported",
+                        Tag.toString(tag),
+                        keyVrs[i]);
             }
         }
         return true;
@@ -5451,7 +5482,9 @@ public class Attributes implements Serializable {
             Sequence keySeq) {
         int n = keySeq.size();
         if (n > 1)
-            Logger.info(false, "Image",
+            Logger.info(
+                    false,
+                    "Image",
                     "Matching Key {} with VR: SQ contains {} Items - only consider first Item",
                     Tag.toString(tag),
                     n);

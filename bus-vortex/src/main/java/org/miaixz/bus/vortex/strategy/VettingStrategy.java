@@ -216,11 +216,14 @@ public class VettingStrategy extends AbstractStrategy {
      * @param difference The difference in milliseconds.
      */
     private void logTimestampMismatch(long clientTime, long serverTime, long difference) {
-        Logger.info(true, "Vetting", "*************************************************");
-        Logger.info(true, "Vetting", "*" + String.format("%-" + 47 + "s", "  Client Time (ms): " + clientTime) + "*");
-        Logger.info(true, "Vetting", "*" + String.format("%-" + 47 + "s", "  Server Time (ms): " + serverTime) + "*");
-        Logger.info(true, "Vetting", "*" + String.format("%-" + 47 + "s", "  Difference  (ms): " + difference) + "*");
-        Logger.info(true, "Vetting", "*************************************************");
+        Logger.warn(
+                false,
+                "Vortex",
+                "component=strategy, Timestamp validation failed: clientTimestampMs={}, serverTimestampMs={}, differenceMs={}, toleranceMinutes={}",
+                clientTime,
+                serverTime,
+                difference,
+                Holder.getTimestampToleranceMinutes());
     }
 
     /**
@@ -260,15 +263,29 @@ public class VettingStrategy extends AbstractStrategy {
         }
 
         String clientSign = String.valueOf(params.get(Args.SIGN));
-        Logger.info(true, "Vetting", "Client Sign: {}", clientSign);
+        Logger.debug(
+                true,
+                "Vortex",
+                "component=strategy, Signature validation started: httpMethod={}, parameterCount={}, clientSignatureLength={}",
+                httpMethod,
+                params.size(),
+                clientSign.length());
 
         Map<String, Object> paramsForSign = new TreeMap<>(params);
         paramsForSign.remove(Args.SIGN);
 
         String serverSign = this.generateSignature(key, httpMethod, paramsForSign);
-        Logger.info(true, "Vetting", "Server Sign: {}", serverSign);
+        boolean matched = Objects.equals(clientSign, serverSign);
+        Logger.info(
+                false,
+                "Vortex",
+                "component=strategy, Signature validation completed: httpMethod={}, signedParameterCount={}, matched={}, serverSignatureLength={}",
+                httpMethod,
+                paramsForSign.size(),
+                matched,
+                serverSign.length());
 
-        return Objects.equals(clientSign, serverSign);
+        return matched;
     }
 
     /**
@@ -348,8 +365,8 @@ public class VettingStrategy extends AbstractStrategy {
         return getAuthority(request).orElseGet(() -> {
             Logger.warn(
                     true,
-                    "Vetting",
-                    "Unable to determine request domain (host:port). Using default value: {}",
+                    "Vortex",
+                    "strategy=vetting, Unable to determine request domain (host:port). Using default value: {}",
                     (Normal.UNKNOWN + Symbol.COLON + Symbol.ZERO));
             return Normal.UNKNOWN + Symbol.COLON + Symbol.ZERO;
         });

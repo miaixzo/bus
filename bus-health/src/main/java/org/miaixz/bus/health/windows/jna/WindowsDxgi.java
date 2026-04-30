@@ -117,9 +117,9 @@ public final class WindowsDxgi {
             DxgiLib lib = DxgiLib.INSTANCE;
             available = true;
         } catch (UnsatisfiedLinkError e) {
-            Logger.debug(false, "Health", "dxgi.dll not available: {}", e.getMessage());
+            Logger.debug(false, "Health", "dxgi.dll not available: {}", e.getClass().getSimpleName());
         } catch (NoClassDefFoundError e) {
-            Logger.debug(false, "Health", "JNA DxgiLib class failed to load: {}", e.getMessage());
+            Logger.debug(false, "Health", "JNA DxgiLib class failed to load: {}", e.getClass().getSimpleName());
         }
         DXGI_AVAILABLE = available;
     }
@@ -341,7 +341,9 @@ public final class WindowsDxgi {
                     break;
                 }
                 if (COMUtils.FAILED(enumHr)) {
-                    Logger.debug(false, "Health",
+                    Logger.debug(
+                            false,
+                            "Health",
                             "IDXGIFactory::EnumAdapters({}) failed: 0x{}",
                             i,
                             Integer.toHexString(enumHr.intValue()));
@@ -359,7 +361,9 @@ public final class WindowsDxgi {
                         result.add(
                                 new DxgiAdapterInfo(name, desc.VendorId, desc.DeviceId, vram, desc.AdapterLuidLowPart,
                                         desc.AdapterLuidHighPart));
-                        Logger.debug(false, "Health",
+                        Logger.debug(
+                                false,
+                                "Health",
                                 "DXGI adapter {}: '{}' vendor=0x{} device=0x{} vram={} luid=0x{}_0x{}",
                                 i,
                                 name,
@@ -369,7 +373,9 @@ public final class WindowsDxgi {
                                 Integer.toHexString(desc.AdapterLuidHighPart),
                                 Integer.toHexString(desc.AdapterLuidLowPart));
                     } else {
-                        Logger.debug(false, "Health",
+                        Logger.debug(
+                                false,
+                                "Health",
                                 "IDXGIAdapter::GetDesc({}) failed: 0x{}",
                                 i,
                                 Integer.toHexString(descHr.intValue()));

@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.core.xyz.ListKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.tempus.crontab.CronCrontab;
 
 /**
@@ -93,6 +94,13 @@ public class Manager implements Serializable {
         final Executor executor = new Executor(this.scheduler, crontab);
         synchronized (this.executors) {
             this.executors.add(executor);
+            Logger.debug(
+                    true,
+                    "Tempus",
+                    "Scheduler executor spawned: taskId={}, pattern={}, runningExecutorCount={}",
+                    crontab == null ? null : crontab.getId(),
+                    crontab == null ? null : crontab.getPattern(),
+                    this.executors.size());
         }
         this.scheduler.threadExecutor.execute(executor);
         return executor;
@@ -108,6 +116,12 @@ public class Manager implements Serializable {
         final Launcher launcher = new Launcher(this.scheduler, millis);
         synchronized (this.launchers) {
             this.launchers.add(launcher);
+            Logger.debug(
+                    true,
+                    "Tempus",
+                    "Scheduler launcher spawned: millis={}, activeLauncherCount={}",
+                    millis,
+                    this.launchers.size());
         }
         this.scheduler.threadExecutor.execute(launcher);
         return launcher;
@@ -123,6 +137,12 @@ public class Manager implements Serializable {
     public void notifyExecutorCompleted(final Executor executor) {
         synchronized (executors) {
             executors.remove(executor);
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Scheduler executor completed: taskId={}, runningExecutorCount={}",
+                    executor == null || executor.task() == null ? null : executor.task().getId(),
+                    executors.size());
         }
     }
 
@@ -134,6 +154,12 @@ public class Manager implements Serializable {
     protected void notifyLauncherCompleted(final Launcher launcher) {
         synchronized (launchers) {
             launchers.remove(launcher);
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Scheduler launcher completed: millis={}, activeLauncherCount={}",
+                    launcher == null ? null : launcher.millis(),
+                    launchers.size());
         }
     }
 

@@ -343,6 +343,14 @@ public class Http2Connection implements Closeable {
                         Http2Connection.this.wait();
                     }
                 } catch (InterruptedException e) {
+                    Logger.warn(
+                            false,
+                            "Http",
+                            e,
+                            "HTTP/2 operation failed: component=http2, provider={}, recoverable={}, exception={}",
+                            "Http2Connection",
+                            false,
+                            e.getClass().getSimpleName());
                     Thread.currentThread().interrupt();
                     throw new InterruptedIOException();
                 }
@@ -375,11 +383,27 @@ public class Http2Connection implements Closeable {
                     try {
                         writeSynReset(streamId, errorCode);
                     } catch (IOException e) {
+                        Logger.warn(
+                                false,
+                                "Http",
+                                e,
+                                "HTTP/2 operation failed: component=http2, provider={}, recoverable={}, exception={}",
+                                "Http2Connection",
+                                false,
+                                e.getClass().getSimpleName());
                         failConnection(e);
                     }
                 }
             });
         } catch (RejectedExecutionException ignored) {
+            Logger.warn(
+                    false,
+                    "Http",
+                    ignored,
+                    "HTTP/2 operation failed: component=http2, provider={}, recoverable={}, exception={}",
+                    "Http2Connection",
+                    false,
+                    ignored.getClass().getSimpleName());
             // This connection has been closed.
         }
     }
@@ -413,11 +437,27 @@ public class Http2Connection implements Closeable {
                     try {
                         writer.windowUpdate(streamId, unacknowledgedBytesRead);
                     } catch (IOException e) {
+                        Logger.warn(
+                                false,
+                                "Http",
+                                e,
+                                "HTTP/2 operation failed: component=http2, provider={}, recoverable={}, exception={}",
+                                "Http2Connection",
+                                false,
+                                e.getClass().getSimpleName());
                         failConnection(e);
                     }
                 }
             });
         } catch (RejectedExecutionException ignored) {
+            Logger.warn(
+                    false,
+                    "Http",
+                    ignored,
+                    "HTTP/2 operation failed: component=http2, provider={}, recoverable={}, exception={}",
+                    "Http2Connection",
+                    false,
+                    ignored.getClass().getSimpleName());
             // This connection has been closed.
         }
     }
@@ -433,6 +473,14 @@ public class Http2Connection implements Closeable {
         try {
             writer.ping(reply, payload1, payload2);
         } catch (IOException e) {
+            Logger.warn(
+                    false,
+                    "Http",
+                    e,
+                    "HTTP/2 operation failed: component=http2, provider={}, recoverable={}, exception={}",
+                    "Http2Connection",
+                    false,
+                    e.getClass().getSimpleName());
             failConnection(e);
         }
     }
@@ -520,6 +568,14 @@ public class Http2Connection implements Closeable {
         try {
             shutdown(connectionCode);
         } catch (IOException ignored) {
+            Logger.debug(
+                    false,
+                    "Http",
+                    "protocol=http2, HTTP/2 shutdown ignored during close: connection={}, connectionCode={}, streamCode={}, exception={}",
+                    connectionName,
+                    connectionCode,
+                    streamCode,
+                    ignored.getClass().getSimpleName());
         }
 
         Http2Stream[] streamsToClose = null;
@@ -535,6 +591,14 @@ public class Http2Connection implements Closeable {
                 try {
                     stream.close(streamCode, cause);
                 } catch (IOException ignored) {
+                    Logger.debug(
+                            false,
+                            "Http",
+                            "protocol=http2, HTTP/2 stream close ignored during connection close: connection={}, streamId={}, streamCode={}, exception={}",
+                            connectionName,
+                            stream.getId(),
+                            streamCode,
+                            ignored.getClass().getSimpleName());
                 }
             }
         }
@@ -543,12 +607,24 @@ public class Http2Connection implements Closeable {
         try {
             writer.close();
         } catch (IOException ignored) {
+            Logger.debug(
+                    false,
+                    "Http",
+                    "protocol=http2, HTTP/2 writer close ignored: connection={}, exception={}",
+                    connectionName,
+                    ignored.getClass().getSimpleName());
         }
 
         // Close the socket to break out the reader thread, which will clean up after itself.
         try {
             socket.close();
         } catch (IOException ignored) {
+            Logger.debug(
+                    false,
+                    "Http",
+                    "protocol=http2, HTTP/2 socket close ignored: connection={}, exception={}",
+                    connectionName,
+                    ignored.getClass().getSimpleName());
         }
 
         // Release the threads.
@@ -659,6 +735,12 @@ public class Http2Connection implements Closeable {
                 }
             });
         } catch (RejectedExecutionException ignored) {
+            Logger.debug(
+                    false,
+                    "Http",
+                    "protocol=http2, HTTP/2 degraded ping rejected after failure: connection={}, exception={}",
+                    connectionName,
+                    ignored.getClass().getSimpleName());
             // This connection has been closed.
         }
     }
@@ -704,10 +786,24 @@ public class Http2Connection implements Closeable {
                             }
                         }
                     } catch (IOException ignored) {
+                        Logger.debug(
+                                false,
+                                "Http",
+                                "protocol=http2, HTTP/2 push request reset failed: connection={}, streamId={}, exception={}",
+                                connectionName,
+                                streamId,
+                                ignored.getClass().getSimpleName());
                     }
                 }
             });
         } catch (RejectedExecutionException ignored) {
+            Logger.debug(
+                    false,
+                    "Http",
+                    "protocol=http2, HTTP/2 push request rejected: connection={}, streamId={}, exception={}",
+                    connectionName,
+                    streamId,
+                    ignored.getClass().getSimpleName());
             // This connection has been closed.
         }
     }
@@ -738,10 +834,26 @@ public class Http2Connection implements Closeable {
                             }
                         }
                     } catch (IOException ignored) {
+                        Logger.warn(
+                                false,
+                                "Http",
+                                ignored,
+                                "HTTP/2 operation failed: component=http2, provider={}, recoverable={}, exception={}",
+                                "Http2Connection",
+                                false,
+                                ignored.getClass().getSimpleName());
                     }
                 }
             });
         } catch (RejectedExecutionException ignored) {
+            Logger.warn(
+                    false,
+                    "Http",
+                    ignored,
+                    "HTTP/2 operation failed: component=http2, provider={}, recoverable={}, exception={}",
+                    "Http2Connection",
+                    false,
+                    ignored.getClass().getSimpleName());
             // This connection has been closed.
         }
     }
@@ -780,6 +892,14 @@ public class Http2Connection implements Closeable {
                         }
                     }
                 } catch (IOException ignored) {
+                    Logger.debug(
+                            false,
+                            "Http",
+                            "protocol=http2, HTTP/2 push data callback failed: connection={}, streamId={}, byteCount={}, exception={}",
+                            connectionName,
+                            streamId,
+                            byteCount,
+                            ignored.getClass().getSimpleName());
                 }
             }
         });
@@ -991,6 +1111,14 @@ public class Http2Connection implements Closeable {
                 connectionErrorCode = Http2ErrorCode.NO_ERROR;
                 streamErrorCode = Http2ErrorCode.CANCEL;
             } catch (IOException e) {
+                Logger.warn(
+                        false,
+                        "Http",
+                        e,
+                        "HTTP/2 operation failed: component=http2, provider={}, recoverable={}, exception={}",
+                        "Http2Connection",
+                        false,
+                        e.getClass().getSimpleName());
                 errorException = e;
                 connectionErrorCode = Http2ErrorCode.PROTOCOL_ERROR;
                 streamErrorCode = Http2ErrorCode.PROTOCOL_ERROR;
@@ -1075,10 +1203,22 @@ public class Http2Connection implements Closeable {
                             try {
                                 listener.onStream(newStream);
                             } catch (IOException e) {
-                                Logger.info(false, "HTTP", "Http2Connection.Listener failure for " + connectionName, e);
+                                Logger.info(
+                                        false,
+                                        "Http",
+                                        "protocol=http2, Http2Connection.Listener failure for " + connectionName,
+                                        e);
                                 try {
                                     newStream.close(Http2ErrorCode.PROTOCOL_ERROR, e);
                                 } catch (IOException ignored) {
+                                    Logger.warn(
+                                            false,
+                                            "Http",
+                                            ignored,
+                                            "HTTP/2 operation failed: component=http2, provider={}, recoverable={}, exception={}",
+                                            "Http2Connection",
+                                            false,
+                                            ignored.getClass().getSimpleName());
                                 }
                             }
                         }
@@ -1129,6 +1269,12 @@ public class Http2Connection implements Closeable {
                     }
                 });
             } catch (RejectedExecutionException ignored) {
+                Logger.debug(
+                        false,
+                        "Http",
+                        "protocol=http2, HTTP/2 settings ACK rejected: connection={}, exception={}",
+                        connectionName,
+                        ignored.getClass().getSimpleName());
                 // This connection has been closed.
             }
         }
@@ -1152,6 +1298,14 @@ public class Http2Connection implements Closeable {
                 try {
                     writer.applyAndAckSettings(peerSettings);
                 } catch (IOException e) {
+                    Logger.warn(
+                            false,
+                            "Http",
+                            e,
+                            "HTTP/2 operation failed: component=http2, provider={}, recoverable={}, exception={}",
+                            "Http2Connection",
+                            false,
+                            e.getClass().getSimpleName());
                     failConnection(e);
                 }
             }
@@ -1207,6 +1361,14 @@ public class Http2Connection implements Closeable {
                     // Send a reply to a client ping if this is a server and vice versa.
                     writerExecutor.execute(new PingRunnable(true, payload1, payload2));
                 } catch (RejectedExecutionException ignored) {
+                    Logger.debug(
+                            false,
+                            "Http",
+                            "protocol=http2, HTTP/2 ping reply rejected: connection={}, payload1={}, payload2={}, exception={}",
+                            connectionName,
+                            payload1,
+                            payload2,
+                            ignored.getClass().getSimpleName());
                     // This connection has been closed.
                 }
             }

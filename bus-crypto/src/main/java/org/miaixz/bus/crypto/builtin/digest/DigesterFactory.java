@@ -24,6 +24,7 @@ import java.security.Provider;
 
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.Holder;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * A simple factory for creating {@link Digester} objects. Inspired by Guava, this factory holds a prototype
@@ -96,6 +97,15 @@ public class DigesterFactory {
             messageDigest.clone();
             return true;
         } catch (final CloneNotSupportedException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "digest",
+                    "DigesterFactory",
+                    false,
+                    e.getClass().getSimpleName());
             return false;
         }
     }
@@ -121,6 +131,14 @@ public class DigesterFactory {
             try {
                 return (MessageDigest) prototype.clone();
             } catch (final CloneNotSupportedException ignore) {
+                Logger.debug(
+                        false,
+                        "Crypto",
+                        "Crypto operation skipped: component={}, provider={}, recoverable={}, exception={}",
+                        "digest",
+                        "DigesterFactory",
+                        true,
+                        ignore.getClass().getSimpleName());
                 // ignore
             }
         }

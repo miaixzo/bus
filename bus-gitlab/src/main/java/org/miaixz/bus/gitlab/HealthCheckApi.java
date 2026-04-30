@@ -25,6 +25,7 @@ import java.net.URL;
 import org.miaixz.bus.gitlab.models.HealthCheckInfo;
 
 import jakarta.ws.rs.core.Response;
+import org.miaixz.bus.logger.Logger;
 
 public class HealthCheckApi extends AbstractApi {
 
@@ -67,6 +68,13 @@ public class HealthCheckApi extends AbstractApi {
             Response response = get(Response.Status.OK, formData.asMap(), livenessUrl);
             return (response.readEntity(HealthCheckInfo.class));
         } catch (IOException ioe) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    ioe,
+                    "GitLab health check URL build failed: operation=getLiveness, tokenPresent={}, exception={}",
+                    token != null && !token.isEmpty(),
+                    ioe.getClass().getSimpleName());
             throw (new GitLabApiException(ioe));
         }
     }
@@ -106,6 +114,13 @@ public class HealthCheckApi extends AbstractApi {
             Response response = get(Response.Status.OK, formData.asMap(), readinessUrl);
             return (response.readEntity(HealthCheckInfo.class));
         } catch (IOException ioe) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    ioe,
+                    "GitLab health check URL build failed: operation=getReadiness, tokenPresent={}, exception={}",
+                    token != null && !token.isEmpty(),
+                    ioe.getClass().getSimpleName());
             throw (new GitLabApiException(ioe));
         }
     }

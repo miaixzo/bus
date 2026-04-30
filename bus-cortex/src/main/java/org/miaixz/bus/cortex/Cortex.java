@@ -32,6 +32,7 @@ import org.miaixz.bus.cortex.magic.runtime.CortexDiagnostics;
 import org.miaixz.bus.cortex.magic.runtime.CortexLifecycle;
 import org.miaixz.bus.cortex.magic.runtime.DiagnosticsSnapshot;
 import org.miaixz.bus.cortex.version.VersionAssets;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Unified static facade exposing registry and setting operations.
@@ -156,7 +157,13 @@ public final class Cortex {
      * @param runtime runtime bundle to expose through {@code Cortex}
      */
     public static void init(Runtime runtime) {
+        Logger.info(
+                true,
+                "Cortex",
+                "Runtime initialization requested: runtimeType={}",
+                runtime == null ? null : runtime.getClass().getName());
         install(Objects.requireNonNull(runtime, "runtime"));
+        Logger.info(false, "Cortex", "Runtime initialization completed: initialized={}", isInitialized());
     }
 
     /**
@@ -201,7 +208,9 @@ public final class Cortex {
      */
     public static RuntimeHandle bind(Runtime runtime) {
         Runtime next = Objects.requireNonNull(runtime, "runtime");
+        Logger.info(true, "Cortex", "Runtime binding requested: runtimeType={}", next.getClass().getName());
         install(next);
+        Logger.info(false, "Cortex", "Runtime binding completed: initialized={}", isInitialized());
         return new RuntimeHandle(next);
     }
 
@@ -254,6 +263,7 @@ public final class Cortex {
      * Clears the current facade binding and releases all runtime-managed resources.
      */
     public static void reset() {
+        Logger.info(true, "Cortex", "Runtime reset requested: initialized={}", current != null);
         Runtime previous;
         synchronized (MONITOR) {
             previous = current;
@@ -261,9 +271,11 @@ public final class Cortex {
         }
         if (previous != null) {
             previous.stopComponents();
+            Logger.info(false, "Cortex", "Runtime reset completed: stoppedComponents={}", previous.components().size());
             return;
         }
         Callout.shutdown();
+        Logger.info(false, "Cortex", "Runtime reset completed: calloutShutdown=true");
     }
 
     /**
@@ -387,8 +399,22 @@ public final class Cortex {
      * @param assets assets to persist
      */
     public static void register(Assets assets) {
+        Logger.info(
+                true,
+                "Cortex",
+                "Facade register requested: type={}, namespace={}, id={}",
+                assets == null ? null : assets.getClass().getSimpleName(),
+                assets == null ? null : assets.getNamespace_id(),
+                assets == null ? null : assets.getId());
         Registry<Assets> registry = (Registry<Assets>) registry((Class<? extends Assets>) assets.getClass());
         registry.register(assets);
+        Logger.info(
+                false,
+                "Cortex",
+                "Facade register completed: type={}, namespace={}, id={}",
+                assets.getClass().getSimpleName(),
+                assets.getNamespace_id(),
+                assets.getId());
     }
 
     /**
@@ -398,9 +424,21 @@ public final class Cortex {
      * @param id        entry identifier
      */
     public static void deregister(String namespace, String id) {
+        Logger.info(
+                true,
+                "Cortex",
+                "Facade deregister requested across registries: namespace={}, id={}",
+                namespace,
+                id);
         api().deregister(namespace, id);
         mcp().deregister(namespace, id);
         prompt().deregister(namespace, id);
+        Logger.info(
+                false,
+                "Cortex",
+                "Facade deregister completed across registries: namespace={}, id={}",
+                namespace,
+                id);
     }
 
     /**
@@ -411,7 +449,9 @@ public final class Cortex {
      * @param id        entry identifier
      */
     public static void deregister(Type type, String namespace, String id) {
+        Logger.info(true, "Cortex", "Facade deregister requested: type={}, namespace={}, id={}", type, namespace, id);
         registry(type).deregister(namespace, id);
+        Logger.info(false, "Cortex", "Facade deregister completed: type={}, namespace={}, id={}", type, namespace, id);
     }
 
     /**
@@ -423,7 +463,23 @@ public final class Cortex {
      * @return matching entries
      */
     public static <T extends Assets> List<T> query(Vector vector, Class<T> type) {
-        return registry(type).query(vector);
+        Logger.debug(
+                true,
+                "Cortex",
+                "Facade query requested: type={}, namespace={}, id={}",
+                type == null ? null : type.getSimpleName(),
+                vector == null ? null : vector.getNamespace_id(),
+                vector == null ? null : vector.getId());
+        List<T> result = registry(type).query(vector);
+        Logger.debug(
+                false,
+                "Cortex",
+                "Facade query completed: type={}, namespace={}, id={}, resultSize={}",
+                type == null ? null : type.getSimpleName(),
+                vector == null ? null : vector.getNamespace_id(),
+                vector == null ? null : vector.getId(),
+                result.size());
+        return result;
     }
 
     /**
@@ -434,7 +490,16 @@ public final class Cortex {
      * @return published setting content, or {@code null} if absent
      */
     public static String get(String group, String data_id) {
-        return curator().get(group, data_id);
+        Logger.debug(true, "Cortex", "Setting get requested: group={}, dataId={}", group, data_id);
+        String content = curator().get(group, data_id);
+        Logger.debug(
+                false,
+                "Cortex",
+                "Setting get completed: group={}, dataId={}, contentChars={}",
+                group,
+                data_id,
+                content == null ? 0 : content.length());
+        return content;
     }
 
     /**
@@ -445,7 +510,15 @@ public final class Cortex {
      * @param content setting content to publish
      */
     public static void publish(String group, String data_id, String content) {
+        Logger.info(
+                true,
+                "Cortex",
+                "Setting publish requested: group={}, dataId={}, contentChars={}",
+                group,
+                data_id,
+                content == null ? 0 : content.length());
         curator().publish(group, data_id, content);
+        Logger.info(false, "Cortex", "Setting publish completed: group={}, dataId={}", group, data_id);
     }
 
     /**
@@ -457,6 +530,15 @@ public final class Cortex {
         synchronized (MONITOR) {
             if (current == null) {
                 current = next;
+                Logger.debug(
+                        false,
+                        "Cortex",
+                        "Runtime installed: api={}, mcp={}, prompt={}, version={}, components={}",
+                        next.api().getClass().getSimpleName(),
+                        next.mcp().getClass().getSimpleName(),
+                        next.prompt().getClass().getSimpleName(),
+                        next.version() == null ? null : next.version().getClass().getSimpleName(),
+                        next.components().size());
                 return;
             }
             if (!current.sameAs(next)) {
@@ -754,6 +836,14 @@ public final class Cortex {
                     closeable.close();
                 }
             } catch (Exception ignored) {
+                Logger.debug(
+                        false,
+                        "Cortex",
+                        "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
+                        "cortex",
+                        "Cortex",
+                        true,
+                        ignored.getClass().getSimpleName());
             }
         }
 

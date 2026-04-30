@@ -113,7 +113,10 @@ public class NativeJPEGImageWriter extends ImageWriter {
                 int dcmFlags = signed ? Imgcodecs.DICOM_FLAG_SIGNED : Imgcodecs.DICOM_FLAG_UNSIGNED;
                 int bitCompressed = desc.getBitsCompressed();
                 if (signed && jpegParams.getPrediction() > 1) {
-                    Logger.warn(false, "Image", "Force JPEGLosslessNonHierarchical14 compression to 16-bit with signed data.");
+                    Logger.warn(
+                            false,
+                            "Image",
+                            "Force JPEGLosslessNonHierarchical14 compression to 16-bit with signed data.");
                     bitCompressed = 16;
                 }
                 // Specific case not well supported by jpeg and jpeg-ls encoder that reduce the stream to 8-bit

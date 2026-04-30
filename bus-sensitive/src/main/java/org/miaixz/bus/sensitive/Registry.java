@@ -27,6 +27,7 @@ import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.ReflectKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.sensitive.magic.annotation.Strategy;
 import org.miaixz.bus.sensitive.metric.*;
 
@@ -66,10 +67,28 @@ public final class Registry {
      * @throws InternalException if a provider with the same name or class is already registered.
      */
     public static void register(EnumValue.Masking name, StrategyProvider object) {
+        Logger.debug(
+                true,
+                "Sensitive",
+                "Sensitive strategy registration started: type={}, provider={}",
+                name,
+                object == null ? null : object.getClass().getSimpleName());
         if (STRATEGY_CACHE.containsKey(name)) {
+            Logger.warn(
+                    false,
+                    "Sensitive",
+                    "Sensitive strategy registration rejected: type={}, reason=duplicateName",
+                    name);
             throw new InternalException("A component with the same name is already registered: " + name);
         }
         STRATEGY_CACHE.putIfAbsent(name, object);
+        Logger.debug(
+                false,
+                "Sensitive",
+                "Sensitive strategy registered: type={}, provider={}, registeredCount={}",
+                name,
+                object.getClass().getSimpleName(),
+                STRATEGY_CACHE.size());
     }
 
     /**
@@ -80,10 +99,18 @@ public final class Registry {
      * @throws IllegalArgumentException if no provider is found for the given type.
      */
     public static StrategyProvider require(EnumValue.Masking name) {
+        Logger.debug(true, "Sensitive", "Sensitive strategy lookup started: type={}", name);
         StrategyProvider sensitiveProvider = STRATEGY_CACHE.get(name);
         if (ObjectKit.isEmpty(sensitiveProvider)) {
+            Logger.warn(false, "Sensitive", "Sensitive strategy lookup failed: type={}", name);
             throw new IllegalArgumentException("No sensitive provider found for type: " + name);
         }
+        Logger.debug(
+                false,
+                "Sensitive",
+                "Sensitive strategy resolved: type={}, provider={}",
+                name,
+                sensitiveProvider.getClass().getSimpleName());
         return sensitiveProvider;
     }
 
@@ -95,14 +122,30 @@ public final class Registry {
      * @throws InternalException if the annotation is not a valid built-in strategy marker.
      */
     public static StrategyProvider require(final Class<? extends Annotation> annotationClass) {
+        Logger.debug(
+                true,
+                "Sensitive",
+                "Sensitive annotation strategy lookup started: annotation={}",
+                annotationClass == null ? null : annotationClass.getName());
         // This method assumes the cache is keyed by annotation class, which it is not.
         // The logic seems flawed, as it's trying to look up by class in a map keyed by enum.
         // For the purpose of documentation, we'll describe its intended behavior.
         StrategyProvider strategy = STRATEGY_CACHE.get(annotationClass);
         if (ObjectKit.isEmpty(strategy)) {
+            Logger.warn(
+                    false,
+                    "Sensitive",
+                    "Sensitive annotation strategy lookup failed: annotation={}",
+                    annotationClass.getName());
             throw new InternalException(
                     "Unsupported built-in strategy. Do not use [BuiltInProvider] in custom annotations.");
         }
+        Logger.debug(
+                false,
+                "Sensitive",
+                "Sensitive annotation strategy resolved: annotation={}, provider={}",
+                annotationClass.getName(),
+                strategy.getClass().getSimpleName());
         return strategy;
     }
 
@@ -113,19 +156,40 @@ public final class Registry {
      * @return The first applicable {@link StrategyProvider}, or null if none is found.
      */
     public static StrategyProvider require(final Annotation[] annotations) {
+        Logger.debug(
+                true,
+                "Sensitive",
+                "Sensitive strategy lookup started: annotationCount={}",
+                annotations == null ? 0 : annotations.length);
         for (Annotation annotation : annotations) {
             Strategy sensitiveStrategy = annotation.annotationType().getAnnotation(Strategy.class);
             if (ObjectKit.isNotEmpty(sensitiveStrategy)) {
                 Class<? extends StrategyProvider> clazz = sensitiveStrategy.value();
                 if (BuiltInProvider.class.equals(clazz)) {
                     // This is a marker for a built-in strategy defined by the annotation itself.
+                    Logger.debug(
+                            true,
+                            "Sensitive",
+                            "Sensitive built-in strategy selected: annotation={}",
+                            annotation.annotationType().getName());
                     return Registry.require(annotation.annotationType());
                 } else {
                     // This is a custom strategy implementation.
+                    Logger.debug(
+                            true,
+                            "Sensitive",
+                            "Sensitive custom strategy selected: annotation={}, provider={}",
+                            annotation.annotationType().getName(),
+                            clazz.getName());
                     return ReflectKit.newInstance(clazz);
                 }
             }
         }
+        Logger.debug(
+                false,
+                "Sensitive",
+                "Sensitive strategy lookup completed: found=false, annotationCount={}",
+                annotations == null ? 0 : annotations.length);
         return null;
     }
 

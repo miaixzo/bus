@@ -40,6 +40,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.net.PORT;
 import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.extra.ssh.Connector;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * FTP client wrapper based on Apache Commons Net. Common tools for setting up FTP servers include:
@@ -213,6 +214,13 @@ public class CommonsFtp extends AbstractFtp {
             // Log in to the FTP server
             client.login(connector.getUser(), connector.getPassword());
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "CommonsFtp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         final int replyCode = client.getReplyCode(); // Check if login was successful
@@ -220,6 +228,13 @@ public class CommonsFtp extends AbstractFtp {
             try {
                 client.disconnect();
             } catch (final IOException e) {
+                Logger.warn(
+                        false,
+                        "Extra",
+                        e,
+                        "component=ftp, FTP operation failed: provider={}, exception={}",
+                        "CommonsFtp",
+                        e.getClass().getSimpleName());
                 // ignore
             }
             throw new InternalException("Login failed for user [{}], reply code is: [{}]", connector.getUser(),
@@ -286,6 +301,13 @@ public class CommonsFtp extends AbstractFtp {
         try {
             pwd = pwd();
         } catch (final InternalException fex) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    fex,
+                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "CommonsFtp",
+                    fex.getClass().getSimpleName());
             // ignore
         }
 
@@ -311,6 +333,13 @@ public class CommonsFtp extends AbstractFtp {
         try {
             return client.changeWorkingDirectory(directory);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "CommonsFtp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -325,6 +354,13 @@ public class CommonsFtp extends AbstractFtp {
         try {
             return client.printWorkingDirectory();
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "CommonsFtp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -403,6 +439,13 @@ public class CommonsFtp extends AbstractFtp {
         try {
             ftpFiles = this.client.listFiles();
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "CommonsFtp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         } finally {
             // Return to the original directory
@@ -428,6 +471,13 @@ public class CommonsFtp extends AbstractFtp {
         try {
             return this.client.rename(oldPath, newPath);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "CommonsFtp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -447,6 +497,13 @@ public class CommonsFtp extends AbstractFtp {
         try {
             return this.client.makeDirectory(dir);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "CommonsFtp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -462,6 +519,13 @@ public class CommonsFtp extends AbstractFtp {
         try {
             return this.client.stat(path);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "CommonsFtp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -478,6 +542,13 @@ public class CommonsFtp extends AbstractFtp {
         try {
             ftpFileArr = client.listFiles(path);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "CommonsFtp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         return ArrayKit.isNotEmpty(ftpFileArr);
@@ -507,6 +578,13 @@ public class CommonsFtp extends AbstractFtp {
         try {
             isSuccess = client.deleteFile(fileName);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "CommonsFtp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         } finally {
             // Return to the original directory
@@ -532,6 +610,13 @@ public class CommonsFtp extends AbstractFtp {
         try {
             dirs = client.listFiles(dirPath);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "CommonsFtp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         String name;
@@ -553,6 +638,13 @@ public class CommonsFtp extends AbstractFtp {
         try {
             return this.client.removeDirectory(dirPath);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "CommonsFtp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -593,6 +685,13 @@ public class CommonsFtp extends AbstractFtp {
         try (final InputStream in = FileKit.getInputStream(file)) {
             return uploadFile(remotePath, fileName, in);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "CommonsFtp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -611,6 +710,13 @@ public class CommonsFtp extends AbstractFtp {
         try {
             client.setFileType(FTPClient.BINARY_FILE_TYPE);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "CommonsFtp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
 
@@ -629,6 +735,13 @@ public class CommonsFtp extends AbstractFtp {
         try {
             return client.storeFile(fileName, fileStream);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "CommonsFtp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         } finally {
             if (this.backToPwd) {
@@ -733,6 +846,13 @@ public class CommonsFtp extends AbstractFtp {
         try (final OutputStream out = FileKit.getOutputStream(outFile)) {
             return download(path, fileName, out);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "CommonsFtp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -780,6 +900,13 @@ public class CommonsFtp extends AbstractFtp {
             client.setFileType(FTPClient.BINARY_FILE_TYPE);
             return client.retrieveFile(fileName, out);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "CommonsFtp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         } finally {
             if (backToPwd) {
@@ -827,6 +954,13 @@ public class CommonsFtp extends AbstractFtp {
             client.setFileType(FTPClient.BINARY_FILE_TYPE);
             return client.retrieveFileStream(fileName);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "CommonsFtp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         } finally {
             if (isBackToPwd()) {

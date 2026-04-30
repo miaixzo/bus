@@ -293,7 +293,7 @@ public class Stomp {
      */
     public synchronized Stomp subscribe(String destination, List<Header> headers, Callback<Message> callback) {
         if (subscribers.containsKey(destination)) {
-            Logger.error(false, "HTTP", "Attempted to subscribe to already-subscribed path!");
+            Logger.error(false, "Http", "protocol=stomp, Attempted to subscribe to already-subscribed path!");
             return this;
         }
         Subscriber subscriber = new Subscriber(UUID.randomUUID().toString(), destination, callback, headers);
@@ -316,7 +316,11 @@ public class Stomp {
             headers.add(msgId);
             send(new Message(Builder.ACK, headers, null));
         } else {
-            Logger.error(false, "HTTP", "subscription and message-id not found in " + message.toString() + ", so it can not be ack!");
+            Logger.error(
+                    false,
+                    "Http",
+                    "protocol=stomp, subscription and message-id not found in " + message.toString()
+                            + ", so it can not be ack!");
         }
     }
 
@@ -529,7 +533,7 @@ public class Stomp {
             int mhIndex = data.indexOf("\n\n");
 
             if (cmdIndex >= mhIndex) {
-                Logger.error(false, "HTTP", "Invalid STOMP message: " + data);
+                Logger.error(false, "Http", "protocol=stomp, Invalid STOMP message: " + data);
                 return null;
             }
             String command = data.substring(0, cmdIndex);

@@ -26,6 +26,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.logger.Logger;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -75,12 +76,32 @@ public class EngineFactory implements Serializable {
         try {
             // Get the implementation class from the configuration.
             Class<? extends TemplateEngine> query = this.engineConfig.getProduceType().getImplClass();
+            Logger.debug(
+                    true,
+                    "Shade",
+                    "Template engine creation started: templateType={}, engineClass={}",
+                    this.engineConfig.getProduceType(),
+                    query.getName());
             // Get the constructor that accepts an EngineConfig.
             Constructor<? extends TemplateEngine> constructor = query.getConstructor(EngineConfig.class);
             // Instantiate the engine class.
-            return constructor.newInstance(engineConfig);
+            TemplateEngine engine = constructor.newInstance(engineConfig);
+            Logger.debug(
+                    false,
+                    "Shade",
+                    "Template engine creation finished: templateType={}, engineClass={}",
+                    this.engineConfig.getProduceType(),
+                    query.getName());
+            return engine;
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException
                 | InvocationTargetException e) {
+            Logger.warn(
+                    false,
+                    "Shade",
+                    e,
+                    "Template engine creation failed: templateType={}, exception={}",
+                    this.engineConfig.getProduceType(),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }

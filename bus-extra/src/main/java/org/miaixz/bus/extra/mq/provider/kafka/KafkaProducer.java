@@ -26,6 +26,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.extra.mq.Message;
 import org.miaixz.bus.extra.mq.Producer;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Kafka producer implementation class. This class acts as an adapter for sending messages to Apache Kafka, integrating
@@ -72,7 +73,35 @@ public class KafkaProducer implements Producer {
      */
     @Override
     public void send(final Message message) {
-        this.producer.send(new ProducerRecord<>(message.topic(), message.content()));
+        final long startedAt = System.nanoTime();
+        final byte[] content = message.content();
+        Logger.debug(
+                true,
+                "Extra",
+                "component=mq, Kafka send started: topic={}, messageBytes={}",
+                message.topic(),
+                content == null ? 0 : content.length);
+        try {
+            this.producer.send(new ProducerRecord<>(message.topic(), content));
+            Logger.debug(
+                    false,
+                    "Extra",
+                    "component=mq, Kafka send dispatched: topic={}, messageBytes={}, elapsedMs={}",
+                    message.topic(),
+                    content == null ? 0 : content.length,
+                    (System.nanoTime() - startedAt) / 1_000_000L);
+        } catch (RuntimeException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=mq, Kafka send failed: topic={}, messageBytes={}, exception={}, elapsedMs={}",
+                    message.topic(),
+                    content == null ? 0 : content.length,
+                    e.getClass().getSimpleName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
+            throw e;
+        }
     }
 
     /**
@@ -84,7 +113,25 @@ public class KafkaProducer implements Producer {
      */
     @Override
     public void close() throws IOException {
-        IoKit.nullSafeClose(this.producer);
+        final long startedAt = System.nanoTime();
+        Logger.debug(true, "Extra", "component=mq, Kafka producer close requested");
+        try {
+            IoKit.nullSafeClose(this.producer);
+            Logger.debug(
+                    false,
+                    "Extra",
+                    "component=mq, Kafka producer closed: elapsedMs={}",
+                    (System.nanoTime() - startedAt) / 1_000_000L);
+        } catch (IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=mq, Kafka producer close failed: exception={}, elapsedMs={}",
+                    e.getClass().getSimpleName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
+            throw e;
+        }
     }
 
 }

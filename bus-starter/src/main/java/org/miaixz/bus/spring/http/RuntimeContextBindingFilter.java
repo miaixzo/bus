@@ -21,6 +21,7 @@ package org.miaixz.bus.spring.http;
 
 import java.io.IOException;
 
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.ContextBuilder;
 import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
 import org.springframework.stereotype.Component;
@@ -129,6 +130,13 @@ public class RuntimeContextBindingFilter implements Filter {
     private void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         try {
+            Logger.debug(
+                    true,
+                    "Starter",
+                    "component=http, Runtime context binding started: method={}, uri={}, dispatcher={}",
+                    request.getMethod(),
+                    request.getRequestURI(),
+                    request.getDispatcherType());
             ContextBuilder.init();
 
             if (this.options.shouldWrap(request) && !(request instanceof MutableRequestWrapper)) {
@@ -138,6 +146,15 @@ public class RuntimeContextBindingFilter implements Filter {
                 response = new MutableResponseWrapper(response);
             }
             filterChain.doFilter(request, response);
+            Logger.debug(
+                    false,
+                    "Starter",
+                    "component=http, Runtime context binding completed: method={}, uri={}, status={}, requestWrapped={}, responseWrapped={}",
+                    request.getMethod(),
+                    request.getRequestURI(),
+                    response.getStatus(),
+                    request instanceof MutableRequestWrapper,
+                    response instanceof MutableResponseWrapper);
         } finally {
             ContextBuilder.clear();
         }

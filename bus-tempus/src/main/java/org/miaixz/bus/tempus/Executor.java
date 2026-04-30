@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.tempus;
 
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.tempus.crontab.CronCrontab;
 
 /**
@@ -39,10 +40,31 @@ public record Executor(Scheduler scheduler, CronCrontab task) implements Runnabl
     @Override
     public void run() {
         try {
+            Logger.info(
+                    true,
+                    "Tempus",
+                    "Scheduler task execution started: taskId={}, pattern={}, taskType={}",
+                    task == null ? null : task.getId(),
+                    task == null ? null : task.getPattern(),
+                    task == null || task.getRaw() == null ? null : task.getRaw().getClass().getName());
             scheduler.listenerManager.notifyTaskStart(this);
             task.execute();
             scheduler.listenerManager.notifyTaskSucceeded(this);
+            Logger.info(
+                    false,
+                    "Tempus",
+                    "Scheduler task execution completed: taskId={}, pattern={}",
+                    task.getId(),
+                    task.getPattern());
         } catch (final Exception e) {
+            Logger.error(
+                    false,
+                    "Tempus",
+                    e,
+                    "Scheduler task execution failed: taskId={}, pattern={}, exception={}",
+                    task == null ? null : task.getId(),
+                    task == null ? null : task.getPattern(),
+                    e.getClass().getSimpleName());
             scheduler.listenerManager.notifyTaskFailed(this, e);
         } finally {
             scheduler.manager.notifyExecutorCompleted(this);

@@ -48,6 +48,13 @@ public class Registry {
      */
     public static void register(Downgrade downgrade, String resourceKey) {
         if (!FlowRuleManager.hasConfig(resourceKey)) {
+            Logger.debug(
+                    true,
+                    "Limiter",
+                    "Fallback rule registration started: resource={}, grade={}, count={}",
+                    resourceKey,
+                    downgrade.grade().getGrade(),
+                    downgrade.count());
             FlowRule rule = new FlowRule();
             rule.setResource(resourceKey);
             rule.setGrade(downgrade.grade().getGrade());
@@ -55,7 +62,15 @@ public class Registry {
             rule.setLimitApp("default");
 
             FlowRuleManager.loadRules(ListKit.of(rule));
-            Logger.info(false, "Limiter", "Add Fallback Rule [{}]", resourceKey);
+            Logger.info(
+                    false,
+                    "Limiter",
+                    "Fallback rule registered: resource={}, grade={}, count={}, limitApp={}, submittedRules={}",
+                    rule.getResource(),
+                    rule.getGrade(),
+                    rule.getCount(),
+                    rule.getLimitApp(),
+                    1);
         }
     }
 
@@ -70,6 +85,14 @@ public class Registry {
      */
     public static void register(Hotspot hotspot, String resourceKey) {
         if (!FlowRuleManager.hasConfig(resourceKey)) {
+            Logger.debug(
+                    true,
+                    "Limiter",
+                    "Hotspot rule registration started: resource={}, grade={}, count={}, durationSeconds={}",
+                    resourceKey,
+                    hotspot.grade().getGrade(),
+                    hotspot.count(),
+                    hotspot.duration());
             FlowRule rule = new FlowRule();
             rule.setResource(resourceKey);
             rule.setGrade(hotspot.grade().getGrade());
@@ -80,7 +103,16 @@ public class Registry {
             // If hotspot functionality is needed, Sentinel needs to be extended or another framework used
 
             FlowRuleManager.loadRules(ListKit.of(rule));
-            Logger.info(false, "Limiter", "Add Hot Rule [{}]", rule.getResource());
+            Logger.info(
+                    false,
+                    "Limiter",
+                    "Hotspot rule registered: resource={}, grade={}, count={}, durationSeconds={}, limitApp={}, submittedRules={}",
+                    rule.getResource(),
+                    rule.getGrade(),
+                    rule.getCount(),
+                    hotspot.duration(),
+                    rule.getLimitApp(),
+                    1);
         }
     }
 
@@ -94,6 +126,14 @@ public class Registry {
      */
     public static void register(Limiting limiting, String resourceKey) {
         if (!FlowRuleManager.hasConfig(resourceKey)) {
+            Logger.debug(
+                    true,
+                    "Limiter",
+                    "Request limit rule registration started: resource={}, grade={}, count={}, durationSeconds={}",
+                    resourceKey,
+                    RuleConstant.FLOW_GRADE_QPS,
+                    limiting.count(),
+                    limiting.duration());
             FlowRule rule = new FlowRule();
             rule.setResource(resourceKey);
             rule.setGrade(RuleConstant.FLOW_GRADE_QPS); // Default QPS limiting
@@ -101,7 +141,16 @@ public class Registry {
             rule.setLimitApp("default");
 
             FlowRuleManager.loadRules(ListKit.of(rule));
-            Logger.info(true, "Limiter", "Add Request Limit [{}]", resourceKey);
+            Logger.info(
+                    false,
+                    "Limiter",
+                    "Request limit rule registered: resource={}, grade={}, count={}, durationSeconds={}, limitApp={}, submittedRules={}",
+                    rule.getResource(),
+                    rule.getGrade(),
+                    rule.getCount(),
+                    limiting.duration(),
+                    rule.getLimitApp(),
+                    1);
         }
     }
 

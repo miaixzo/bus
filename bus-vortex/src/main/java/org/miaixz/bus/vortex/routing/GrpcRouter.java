@@ -79,16 +79,16 @@ public class GrpcRouter implements Router<ServerRequest, ServerResponse> {
 
             Logger.info(
                     true,
-                    "gRPC",
-                    "[GRPC_ROUTER_START] - Routing request to gRPC service: {}",
+                    "Vortex",
+                    "protocol=grpc, event=GRPC_ROUTER_START, gRPC routing started: service={}",
                     context.getAssets().getMethod());
 
             return input.bodyToMono(String.class).switchIfEmpty(Mono.just("{}"))
                     .flatMap(body -> executor.execute(context, body)).doOnError(
                             error -> Logger.error(
                                     true,
-                                    "gRPC",
-                                    "[GRPC_ROUTER_ERROR] - Failed to invoke gRPC service: {} - {}",
+                                    "Vortex",
+                                    "protocol=grpc, event=GRPC_ROUTER_ERROR, gRPC routing failed: service={}, exception={}",
                                     context.getAssets().getMethod(),
                                     error.getMessage()));
         });

@@ -76,7 +76,11 @@ final class MacNetworkParams extends AbstractNetworkParams {
                 return Normal.EMPTY;
             }
         } catch (UnknownHostException e) {
-            Logger.debug(false, "Health", "Unknown host exception when getting address of local host: {}", e.getMessage());
+            Logger.debug(
+                    false,
+                    "Health",
+                    "Unknown host exception when getting address of local host: {}",
+                    e.getClass().getSimpleName());
             return Normal.EMPTY;
         }
         try (CLibrary.Addrinfo hint = new CLibrary.Addrinfo();

@@ -202,7 +202,12 @@ public class Centre {
             device.bindConnections();
         } catch (IOException | GeneralSecurityException e) {
             stop();
-            Logger.error(false, "Image", "Failed to start DICOM service: {}", e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Image",
+                    "Failed to start DICOM service: exception={}",
+                    e.getClass().getSimpleName(),
+                    e);
         }
     }
 

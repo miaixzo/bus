@@ -23,6 +23,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 import org.miaixz.bus.mapper.builder.GenericTypeResolver;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Represents the metadata of an entity class field, providing field-related operations similar to
@@ -138,6 +139,14 @@ public class FieldMeta {
         try {
             return field.get(object);
         } catch (IllegalAccessException e) {
+            Logger.warn(
+                    false,
+                    "Mapper",
+                    e,
+                    "Mapper operation failed: component={}, provider={}, exception={}",
+                    "metadata",
+                    "FieldMeta",
+                    e.getClass().getSimpleName());
             throw new RuntimeException("Error getting field value by reflection", e);
         }
     }
@@ -153,6 +162,14 @@ public class FieldMeta {
         try {
             field.set(object, value);
         } catch (IllegalAccessException e) {
+            Logger.warn(
+                    false,
+                    "Mapper",
+                    e,
+                    "Mapper operation failed: component={}, provider={}, exception={}",
+                    "metadata",
+                    "FieldMeta",
+                    e.getClass().getSimpleName());
             throw new RuntimeException("Error in reflection setting field value", e);
         }
     }

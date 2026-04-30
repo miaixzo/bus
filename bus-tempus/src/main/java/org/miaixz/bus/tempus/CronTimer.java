@@ -103,6 +103,13 @@ public class CronTimer extends Thread implements Serializable {
     public void run() {
         final long timerUnit = this.scheduler.config.isMatchSecond() ? TIMER_UNIT_SECOND : TIMER_UNIT_MINUTE;
         final long doubleTimeUnit = 2 * timerUnit;
+        Logger.info(
+                true,
+                "Tempus",
+                "Cron timer started: matchSecond={}, timerUnitMs={}, taskCount={}",
+                this.scheduler.config.isMatchSecond(),
+                timerUnit,
+                this.scheduler.repertoire.size());
 
         long thisTime = System.currentTimeMillis();
         while (!isStop) {
@@ -116,6 +123,7 @@ public class CronTimer extends Thread implements Serializable {
             if (sleep < 0) {
                 // Possible slow loop execution causing time points to lag behind system time,
                 // catch up with system time and execute the intermediate time points
+                Logger.warn(false, "Tempus", "Cron timer lag detected: sleepMs={}, timerUnitMs={}", sleep, timerUnit);
                 thisTime = System.currentTimeMillis();
                 while (nextTime <= thisTime) {
                     // Catch up with system time and run execution points
@@ -126,10 +134,17 @@ public class CronTimer extends Thread implements Serializable {
             } else if (sleep > doubleTimeUnit) {
                 // Time rollback, possibly the user turned back time or the system automatically corrected time,
                 // recalculate
+                Logger.warn(
+                        false,
+                        "Tempus",
+                        "Cron timer rollback detected: sleepMs={}, thresholdMs={}",
+                        sleep,
+                        doubleTimeUnit);
                 thisTime = System.currentTimeMillis();
                 continue;
             } else if (!ThreadKit.safeSleep(sleep)) {
                 // Wait until the next time point, exit Timer directly if interrupted by user
+                Logger.warn(false, "Tempus", "Cron timer interrupted during sleep: sleepMs={}", sleep);
                 break;
             }
 
@@ -147,6 +162,7 @@ public class CronTimer extends Thread implements Serializable {
      * Stops the timer thread gracefully.
      */
     synchronized public void stopTimer() {
+        Logger.info(true, "Tempus", "Cron timer stop requested: alive={}, stopped={}", this.isAlive(), this.isStop);
         this.isStop = true;
         ThreadKit.interrupt(this, true);
     }
@@ -157,7 +173,9 @@ public class CronTimer extends Thread implements Serializable {
      * @param millis The current time in milliseconds.
      */
     private void spawnLauncher(final long millis) {
+        Logger.debug(true, "Tempus", "Cron timer launcher dispatch started: millis={}", millis);
         this.scheduler.manager.spawnLauncher(millis);
+        Logger.debug(false, "Tempus", "Cron timer launcher dispatch completed: millis={}", millis);
     }
 
 }

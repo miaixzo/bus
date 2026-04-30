@@ -106,7 +106,11 @@ public final class SolarisNetworkIF extends AbstractNetworkIF {
             try {
                 ifList.add(new SolarisNetworkIF(ni));
             } catch (InstantiationException e) {
-                Logger.debug(false, "Health", "Network Interface Instantiation failed: {}", e.getMessage());
+                Logger.debug(
+                        false,
+                        "Health",
+                        "Network Interface Instantiation failed: {}",
+                        e.getClass().getSimpleName());
             }
         }
         return ifList;

@@ -116,12 +116,18 @@ public class StdioClient implements McpClient {
                     }
                 } catch (IOException e) {
                     if (!process.isAlive()) {
-                        Logger.info(false, "MCP", "MCP process exited; stdout listener stopped: asset={}", assets.getName());
+                        Logger.info(
+                                false,
+                                "Vortex",
+                                "component=mcp, MCP process exited; stdout listener stopped: asset={}",
+                                assets.getName());
                     } else {
-                        Logger.error(false, "MCP",
-                                "MCP stdout listener failed: asset={}, error={}",
+                        Logger.error(
+                                false,
+                                "Vortex",
+                                "component=mcp, MCP stdout listener failed: asset={}, exception={}",
                                 assets.getName(),
-                                e.getMessage());
+                                e.getClass().getSimpleName());
                     }
                 }
             });
@@ -142,18 +148,50 @@ public class StdioClient implements McpClient {
             McpRequest request = new McpRequest("2.0", requestId, toolName, arguments);
             CompletableFuture<String> future = new CompletableFuture<>();
             pendingRequests.put(requestId, future);
+            Logger.info(
+                    true,
+                    "Vortex",
+                    "component=mcp, MCP stdio tool invocation started: asset={}, tool={}, requestId={}, argumentCount={}",
+                    assets.getName(),
+                    toolName,
+                    requestId,
+                    arguments == null ? 0 : arguments.size());
 
             try {
                 String jsonRequest = JsonKit.toJsonString(request);
                 writer.write(jsonRequest + "\n");
                 writer.flush();
+                Logger.debug(
+                        false,
+                        "Vortex",
+                        "component=mcp, MCP stdio tool request dispatched: asset={}, tool={}, requestId={}",
+                        assets.getName(),
+                        toolName,
+                        requestId);
             } catch (IOException e) {
                 pendingRequests.remove(requestId);
+                Logger.error(
+                        false,
+                        "Vortex",
+                        e,
+                        "component=mcp, MCP stdio tool dispatch failed: asset={}, tool={}, requestId={}, exception={}",
+                        assets.getName(),
+                        toolName,
+                        requestId,
+                        e.getClass().getSimpleName());
                 future.completeExceptionally(e);
             }
 
             return future;
-        }).map(response -> (Object) response);
+        }).doOnSuccess(
+                response -> Logger.info(
+                        false,
+                        "Vortex",
+                        "component=mcp, MCP stdio tool invocation completed: asset={}, tool={}, responseChars={}",
+                        assets.getName(),
+                        toolName,
+                        response == null ? 0 : response.length()))
+                .map(response -> (Object) response);
     }
 
     /**
@@ -181,14 +219,19 @@ public class StdioClient implements McpClient {
      */
     @Override
     public void close() {
-        Logger.info(false, "MCP", "MCP closing stdio session: asset={}", assets.getName());
+        Logger.info(false, "Vortex", "component=mcp, MCP closing stdio session: asset={}", assets.getName());
         stdoutListenerExecutor.shutdownNow();
         try {
             if (process.isAlive()) {
                 process.destroy();
             }
         } catch (Exception e) {
-            Logger.error(false, "MCP", "MCP process termination failed during close: asset={}", assets.getName(), e);
+            Logger.error(
+                    false,
+                    "Vortex",
+                    "component=mcp, MCP process termination failed during close: asset={}",
+                    assets.getName(),
+                    e);
         }
     }
 
@@ -219,12 +262,23 @@ public class StdioClient implements McpClient {
                         List<Map<String, Object>> toolMaps = (List<Map<String, Object>>) notification.params;
                         this.tools = toolMaps.stream().map(toolMap -> JsonKit.toPojo(toolMap, Tool.class))
                                 .collect(Collectors.toList());
-                        Logger.info(false, "MCP", "MCP tool catalog received: asset={}, tools={}", assets.getName(), tools.size());
+                        Logger.info(
+                                false,
+                                "Vortex",
+                                "component=mcp, MCP tool catalog received: asset={}, tools={}",
+                                assets.getName(),
+                                tools.size());
                     }
                 }
             }
         } catch (Exception e) {
-            Logger.warn(false, "MCP", "MCP malformed message received: asset={}, payload={}", assets.getName(), jsonLine, e);
+            Logger.warn(
+                    false,
+                    "Vortex",
+                    "component=mcp, MCP malformed message received: asset={}, messageChars={}",
+                    assets.getName(),
+                    jsonLine == null ? 0 : jsonLine.length(),
+                    e);
         }
     }
 

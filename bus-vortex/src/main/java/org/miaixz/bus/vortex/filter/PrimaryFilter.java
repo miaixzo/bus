@@ -90,15 +90,19 @@ public class PrimaryFilter extends AbstractFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String path = exchange.getRequest().getPath().value();
-        Logger.info(true, "Filter", "[N/A] Request to path: {} ", path);
+        Logger.info(true, "Vortex", "component=filter, clientIp=N/A, request received: path={}", path);
 
         if (!Args.isKnownRequest(path)) {
-            Logger.warn(false, "Filter", "[N/A] Blocked request to unknown path: {}", path);
+            Logger.warn(false, "Vortex", "component=filter, clientIp=N/A, unknown path blocked: path={}", path);
             throw new ValidateException(ErrorCode._BLOCKED);
         }
 
         if (isPathTraversalAttempt(path)) {
-            Logger.warn(false, "Filter", "[N/A] Path traversal attempt detected: {}", path);
+            Logger.warn(
+                    false,
+                    "Vortex",
+                    "component=filter, clientIp=N/A, path traversal attempt detected: path={}",
+                    path);
             throw new ValidateException(ErrorCode._LIMITER);
         }
 
@@ -111,6 +115,13 @@ public class PrimaryFilter extends AbstractFilter {
                     try {
                         context.setHttpMethod(HTTP.Method.of(exchange.getRequest().getMethod().name()));
                     } catch (IllegalArgumentException e) {
+                        Logger.warn(
+                                false,
+                                "Vortex",
+                                e,
+                                "HTTP method mapping failed: component=filter, methodPresent={}, exception={}",
+                                exchange.getRequest().getMethod() != null,
+                                e.getClass().getSimpleName());
                         throw new ValidateException(ErrorCode._100802);
                     }
 
@@ -118,8 +129,8 @@ public class PrimaryFilter extends AbstractFilter {
 
                     Logger.info(
                             true,
-                            "Filter",
-                            "[{}] Strategy chain selected for path {}: {}",
+                            "Vortex",
+                            "component=filter, requestId={}, strategy chain selected: path={}, strategies={}",
                             context.getX_request_id(),
                             path,
                             strategies.stream().map(strategy -> strategy.getClass().getSimpleName())
@@ -195,8 +206,8 @@ public class PrimaryFilter extends AbstractFilter {
                 Strategy strategy = this.list.get(this.index);
                 Logger.info(
                         true,
-                        "Filter",
-                        "[{}] Executing strategy {}/{}: {}",
+                        "Vortex",
+                        "component=filter, requestId={}, strategy execution started: index={}, total={}, strategy={}",
                         exchange.getRequest().getId(),
                         this.index + 1,
                         this.list.size(),

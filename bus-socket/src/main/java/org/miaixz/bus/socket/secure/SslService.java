@@ -51,6 +51,11 @@ public final class SslService {
 
     HandshakeModel createSSLEngine(AsynchronousSocketChannel socketChannel, BufferPage bufferPage) {
         try {
+            Logger.debug(
+                    true,
+                    "Socket",
+                    "SSL engine creation started: channelClass={}",
+                    socketChannel.getClass().getName());
             HandshakeModel handshakeModel = new HandshakeModel();
             SSLEngine sslEngine = sslContext.createSSLEngine();
             SSLSession session = sslEngine.getSession();
@@ -67,8 +72,16 @@ public final class SslService {
             sslEngine.beginHandshake();
 
             handshakeModel.setSocketChannel(socketChannel);
+            Logger.debug(
+                    false,
+                    "Socket",
+                    "SSL engine creation finished: applicationBufferSize={}, packetBufferSize={}, handshakeStatus={}",
+                    session.getApplicationBufferSize(),
+                    session.getPacketBufferSize(),
+                    sslEngine.getHandshakeStatus());
             return handshakeModel;
         } catch (Exception e) {
+            Logger.warn(false, "Socket", e, "SSL engine creation failed: exception={}", e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
 
@@ -88,12 +101,20 @@ public final class SslService {
             ByteBuffer netWriteBuffer = handshakeModel.getNetWriteBuffer().buffer();
             ByteBuffer appWriteBuffer = handshakeModel.getAppWriteBuffer().buffer();
             SSLEngine engine = handshakeModel.getSslEngine();
+            Logger.debug(
+                    true,
+                    "Socket",
+                    "SSL handshake started: status={}, finished={}",
+                    engine.getHandshakeStatus(),
+                    handshakeModel.isFinished());
 
             // Network disconnection during handshake phase
             if (handshakeModel.getException() != null) {
-                if (debug) {
-                    Logger.info(false, "Socket", "the ssl handshake is terminated");
-                }
+                Logger.warn(
+                        false,
+                        "Socket",
+                        "SSL handshake terminated before completion: exception={}",
+                        handshakeModel.getException().getClass().getSimpleName());
                 handshakeModel.getHandshakeCallback().callback();
                 return;
             }
@@ -102,7 +123,7 @@ public final class SslService {
             while (!handshakeModel.isFinished()) {
                 handshakeStatus = engine.getHandshakeStatus();
                 if (debug) {
-                    Logger.info(false, "Socket", "Handshake status: " + handshakeStatus);
+                    Logger.debug(false, "Socket", "SSL handshake status observed: status={}", handshakeStatus);
                 }
                 switch (handshakeStatus) {
                     case NEED_UNWRAP:
@@ -126,7 +147,11 @@ public final class SslService {
                                 break;
 
                             case BUFFER_OVERFLOW:
-                                Logger.warn(false, "Socket", "doHandshake BUFFER_OVERFLOW");
+                                Logger.warn(
+                                        false,
+                                        "Socket",
+                                        "SSL handshake unwrap buffer overflow: status={}",
+                                        result.getHandshakeStatus());
                                 break;
 
                             // BUFFER_UNDERFLOW can be triggered in two cases: 1. insufficient data read, 2.
@@ -136,7 +161,11 @@ public final class SslService {
                                     handshakeModel.getSocketChannel()
                                             .read(netReadBuffer, handshakeModel, handshakeCompletionHandler);
                                 } else {
-                                    Logger.warn(false, "Socket", "doHandshake BUFFER_UNDERFLOW");
+                                    Logger.warn(
+                                            false,
+                                            "Socket",
+                                            "SSL handshake unwrap buffer underflow: status={}",
+                                            result.getHandshakeStatus());
                                 }
                                 return;
 
@@ -148,7 +177,11 @@ public final class SslService {
                     case NEED_WRAP:
                         if (netWriteBuffer.hasRemaining()) {
                             if (debug) {
-                                Logger.info(false, "Socket", "Data not fully written...");
+                                Logger.debug(
+                                        false,
+                                        "Socket",
+                                        "SSL handshake write pending: remainingBytes={}",
+                                        netWriteBuffer.remaining());
                             }
                             handshakeModel.getSocketChannel()
                                     .write(netWriteBuffer, handshakeModel, handshakeCompletionHandler);
@@ -169,7 +202,11 @@ public final class SslService {
 
                             case BUFFER_OVERFLOW:
                                 if (debug) {
-                                    Logger.warn(false, "Socket", "NEED_WRAP BUFFER_OVERFLOW");
+                                    Logger.warn(
+                                            false,
+                                            "Socket",
+                                            "SSL handshake wrap buffer overflow: status={}",
+                                            result.getHandshakeStatus());
                                 }
                                 break;
 
@@ -179,15 +216,23 @@ public final class SslService {
 
                             case CLOSED:
                                 if (debug) {
-                                    Logger.warn(false, "Socket", "closed");
+                                    Logger.warn(
+                                            false,
+                                            "Socket",
+                                            "SSL handshake wrap closed: status={}",
+                                            result.getHandshakeStatus());
                                 }
                                 try {
                                     netWriteBuffer.flip();
                                     netReadBuffer.clear();
                                 } catch (Exception e) {
                                     if (debug) {
-                                        Logger.error(false, "Socket",
-                                                "Failed to send server's CLOSE message due to socket channel's failure.");
+                                        Logger.error(
+                                                false,
+                                                "Socket",
+                                                e,
+                                                "SSL handshake close notification failed: exception={}",
+                                                e.getClass().getSimpleName());
                                     }
                                 }
                                 break;
@@ -206,13 +251,13 @@ public final class SslService {
 
                     case FINISHED:
                         if (debug) {
-                            Logger.info(false, "Socket", "HandshakeFinished");
+                            Logger.debug(false, "Socket", "SSL handshake engine reported finished");
                         }
                         break;
 
                     case NOT_HANDSHAKING:
                         if (debug) {
-                            Logger.error(false, "Socket", "NOT_HANDSHAKING");
+                            Logger.warn(false, "Socket", "SSL handshake skipped by engine status");
                         }
                         break;
 
@@ -220,11 +265,9 @@ public final class SslService {
                         throw new IllegalStateException("Invalid SSL status: " + handshakeStatus);
                 }
             }
+            Logger.info(false, "Socket", "SSL handshake finished: status={}", engine.getHandshakeStatus());
             handshakeModel.getHandshakeCallback().callback();
         } catch (Exception e) {
-            if (debug) {
-                Logger.error(false, "Socket", "ignore doHandshake exception:" + e.getMessage());
-            }
             handshakeCompletionHandler.failed(e, handshakeModel);
         }
     }
@@ -260,6 +303,12 @@ public final class SslService {
          */
         @Override
         public void failed(Throwable exc, HandshakeModel attachment) {
+            Logger.warn(
+                    false,
+                    "Socket",
+                    exc,
+                    "SSL handshake step failed: exception={}",
+                    exc == null ? null : exc.getClass().getSimpleName());
             attachment.setException(exc);
             attachment.getHandshakeCallback().callback();
         }

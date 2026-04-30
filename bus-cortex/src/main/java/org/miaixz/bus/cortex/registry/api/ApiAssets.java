@@ -31,6 +31,7 @@ import org.miaixz.bus.extra.json.JsonKit;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * API service assets persisted in registry.
@@ -243,6 +244,14 @@ public class ApiAssets extends Assets {
                 Meta meta = JsonKit.toPojo(metadata, Meta.class);
                 return meta == null ? new Meta() : meta;
             } catch (Exception ignore) {
+                Logger.debug(
+                        false,
+                        "Cortex",
+                        "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
+                        "registry",
+                        "ApiAssets",
+                        true,
+                        ignore.getClass().getSimpleName());
                 return new Meta();
             }
         }

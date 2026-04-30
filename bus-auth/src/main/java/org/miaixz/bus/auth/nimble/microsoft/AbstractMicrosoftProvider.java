@@ -41,6 +41,7 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Abstract class for Microsoft login providers. This class handles login methods for both Microsoft International and
@@ -117,6 +118,15 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
             return Authorization.builder().token(token).expireIn(expiresIn).scope(scope).token_type(tokenType)
                     .refresh(refresh).build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "access token",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
     }
@@ -171,6 +181,15 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
                                     .token(authorization).source(complex.toString()).build())
                     .build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "user info",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
     }

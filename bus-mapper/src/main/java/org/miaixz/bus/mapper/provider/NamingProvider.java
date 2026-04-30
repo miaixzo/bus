@@ -28,6 +28,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.parsing.FieldMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Naming provider class based on {@link EnumValue.Naming}.
@@ -115,6 +116,14 @@ public class NamingProvider implements Provider {
             EnumValue.Naming naming = EnumValue.Naming.fromString(style);
             return new NamingProvider(naming);
         } catch (IllegalArgumentException e) {
+            Logger.warn(
+                    false,
+                    "Mapper",
+                    e,
+                    "Mapper operation failed: component={}, provider={}, exception={}",
+                    "provider",
+                    "NamingProvider",
+                    e.getClass().getSimpleName());
             throw new IllegalArgumentException("illegal style：" + style);
         }
     }

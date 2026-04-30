@@ -21,6 +21,7 @@ package org.miaixz.bus.metrics.bridge;
 
 import java.util.concurrent.TimeUnit;
 
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Metrics;
 
 /**
@@ -45,8 +46,20 @@ public class TempusMetrics {
      * @param success    true if job completed normally
      */
     public static void recordExecution(String jobName, long durationMs, boolean success) {
+        Logger.debug(
+                true,
+                "Metrics",
+                "Tempus job metrics recording started: durationMs={}, success={}",
+                durationMs,
+                success);
         Metrics.timer("tempus.job.duration", "job", jobName).record(durationMs, TimeUnit.MILLISECONDS);
         Metrics.meter("tempus.job.executions", "job", jobName, "result", success ? "success" : "fail").increment();
+        Logger.debug(
+                false,
+                "Metrics",
+                "Tempus job metrics recording finished: durationMs={}, success={}",
+                durationMs,
+                success);
     }
 
     /**
@@ -58,11 +71,18 @@ public class TempusMetrics {
     public static void timed(String jobName, Runnable action) {
         long start = System.currentTimeMillis();
         boolean success = false;
+        Logger.debug(true, "Metrics", "Tempus timed metrics block started");
         try {
             action.run();
             success = true;
         } finally {
             recordExecution(jobName, System.currentTimeMillis() - start, success);
+            Logger.debug(
+                    false,
+                    "Metrics",
+                    "Tempus timed metrics block finished: success={}, elapsedMs={}",
+                    success,
+                    System.currentTimeMillis() - start);
         }
     }
 

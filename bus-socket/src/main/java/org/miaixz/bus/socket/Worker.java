@@ -31,6 +31,7 @@ import java.util.function.Consumer;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.socket.accord.UdpChannel;
 import org.miaixz.bus.socket.accord.UdpSession;
 import org.miaixz.bus.socket.buffer.BufferPage;
@@ -149,7 +150,12 @@ public final class Worker implements Runnable {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.warn(
+                    false,
+                    "Socket",
+                    e,
+                    "UDP worker exited with failure: exception={}",
+                    e.getClass().getSimpleName());
         }
     }
 
@@ -221,7 +227,13 @@ public final class Worker implements Runnable {
                         }
                     } while (buffer.hasRemaining());
                 } catch (Throwable e) {
-                    e.printStackTrace();
+                    Logger.warn(
+                            false,
+                            "Socket",
+                            e,
+                            "UDP packet handling failed: remote={}, exception={}",
+                            remote,
+                            e.getClass().getSimpleName());
                     context.getProcessor().stateEvent(session, Status.DECODE_EXCEPTION, e);
                 } finally {
                     session.writeBuffer().flush();
@@ -239,9 +251,16 @@ public final class Worker implements Runnable {
      * Shuts down the worker and its associated resources.
      */
     public void shutdown() {
+        Logger.info(true, "Socket", "UDP worker shutdown started");
         try {
             requestQueue.put(SHUTDOWN_CHANNEL);
         } catch (InterruptedException e) {
+            Logger.warn(
+                    false,
+                    "Socket",
+                    e,
+                    "UDP worker shutdown interrupted: exception={}",
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
         selector.wakeup();
@@ -249,8 +268,15 @@ public final class Worker implements Runnable {
         try {
             selector.close();
         } catch (IOException e) {
+            Logger.warn(
+                    false,
+                    "Socket",
+                    e,
+                    "UDP worker selector close failed: exception={}",
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
+        Logger.info(false, "Socket", "UDP worker shutdown finished");
     }
 
 }

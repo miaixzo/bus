@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.logger.Logger;
 import org.ofdrw.converter.export.*;
 import org.ofdrw.converter.ofdconverter.ImageConverter;
 import org.ofdrw.converter.ofdconverter.PDFConverter;
@@ -55,11 +56,34 @@ public class OfdConverter {
      * @throws InternalException if an I/O error occurs during conversion.
      */
     public static void pdfToOfd(final Path src, final Path target, final int... pages) {
+        Logger.info(
+                true,
+                "Office",
+                "PDF to OFD conversion started: sourceFile={}, targetFile={}, pageCount={}",
+                src == null ? null : src.getFileName(),
+                target == null ? null : target.getFileName(),
+                pages == null ? 0 : pages.length);
         try (final org.ofdrw.converter.ofdconverter.DocConverter converter = new PDFConverter(target)) {
             converter.convert(src, pages);
         } catch (final IOException e) {
+            Logger.error(
+                    false,
+                    "Office",
+                    e,
+                    "PDF to OFD conversion failed: sourceFile={}, targetFile={}, pageCount={}, exception={}",
+                    src == null ? null : src.getFileName(),
+                    target == null ? null : target.getFileName(),
+                    pages == null ? 0 : pages.length,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
+        Logger.info(
+                false,
+                "Office",
+                "PDF to OFD conversion completed: sourceFile={}, targetFile={}, pageCount={}",
+                src == null ? null : src.getFileName(),
+                target == null ? null : target.getFileName(),
+                pages == null ? 0 : pages.length);
     }
 
     /**
@@ -71,12 +95,35 @@ public class OfdConverter {
      * @throws InternalException if an I/O error occurs during conversion.
      */
     public static void textToOfd(final Path src, final Path target, final double fontSize) {
+        Logger.info(
+                true,
+                "Office",
+                "Text to OFD conversion started: sourceFile={}, targetFile={}, fontSize={}",
+                src == null ? null : src.getFileName(),
+                target == null ? null : target.getFileName(),
+                fontSize);
         try (final TextConverter converter = new TextConverter(target)) {
             converter.setFontSize(fontSize);
             converter.convert(src);
         } catch (final IOException e) {
+            Logger.error(
+                    false,
+                    "Office",
+                    e,
+                    "Text to OFD conversion failed: sourceFile={}, targetFile={}, fontSize={}, exception={}",
+                    src == null ? null : src.getFileName(),
+                    target == null ? null : target.getFileName(),
+                    fontSize,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
+        Logger.info(
+                false,
+                "Office",
+                "Text to OFD conversion completed: sourceFile={}, targetFile={}, fontSize={}",
+                src == null ? null : src.getFileName(),
+                target == null ? null : target.getFileName(),
+                fontSize);
     }
 
     /**
@@ -87,13 +134,33 @@ public class OfdConverter {
      * @throws InternalException if an I/O error occurs during conversion.
      */
     public static void imgToOfd(final Path target, final Path... images) {
+        Logger.info(
+                true,
+                "Office",
+                "Image to OFD conversion started: targetFile={}, imageCount={}",
+                target == null ? null : target.getFileName(),
+                images == null ? 0 : images.length);
         try (final org.ofdrw.converter.ofdconverter.DocConverter converter = new ImageConverter(target)) {
             for (final Path image : images) {
                 converter.convert(image);
             }
         } catch (final IOException e) {
+            Logger.error(
+                    false,
+                    "Office",
+                    e,
+                    "Image to OFD conversion failed: targetFile={}, imageCount={}, exception={}",
+                    target == null ? null : target.getFileName(),
+                    images == null ? 0 : images.length,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
+        Logger.info(
+                false,
+                "Office",
+                "Image to OFD conversion completed: targetFile={}, imageCount={}",
+                target == null ? null : target.getFileName(),
+                images == null ? 0 : images.length);
     }
 
     /**
@@ -106,14 +173,40 @@ public class OfdConverter {
      * @throws InternalException if an I/O error occurs during conversion.
      */
     public static void odfToImage(final Path src, final Path targetDir, final String imgType, final double ppm) {
+        Logger.info(
+                true,
+                "Office",
+                "OFD to image conversion started: sourceFile={}, targetDir={}, imageType={}, ppm={}",
+                src == null ? null : src.getFileName(),
+                targetDir == null ? null : targetDir.getFileName(),
+                imgType,
+                ppm);
         if ("svg".equalsIgnoreCase(imgType)) {
             odfToSvg(src, targetDir, ppm);
         }
         try (final ImageExporter exporter = new ImageExporter(src, targetDir, imgType, ppm)) {
             exporter.export();
         } catch (final IOException e) {
+            Logger.error(
+                    false,
+                    "Office",
+                    e,
+                    "OFD to image conversion failed: sourceFile={}, targetDir={}, imageType={}, ppm={}, exception={}",
+                    src == null ? null : src.getFileName(),
+                    targetDir == null ? null : targetDir.getFileName(),
+                    imgType,
+                    ppm,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
+        Logger.info(
+                false,
+                "Office",
+                "OFD to image conversion completed: sourceFile={}, targetDir={}, imageType={}, ppm={}",
+                src == null ? null : src.getFileName(),
+                targetDir == null ? null : targetDir.getFileName(),
+                imgType,
+                ppm);
     }
 
     /**
@@ -124,11 +217,31 @@ public class OfdConverter {
      * @throws InternalException if an I/O error occurs during conversion.
      */
     public static void odfToHtml(final Path src, final Path targetPath) {
+        Logger.info(
+                true,
+                "Office",
+                "OFD to HTML conversion started: sourceFile={}, targetFile={}",
+                src == null ? null : src.getFileName(),
+                targetPath == null ? null : targetPath.getFileName());
         try (final HTMLExporter exporter = new HTMLExporter(src, targetPath)) {
             exporter.export();
         } catch (final IOException e) {
+            Logger.error(
+                    false,
+                    "Office",
+                    e,
+                    "OFD to HTML conversion failed: sourceFile={}, targetFile={}, exception={}",
+                    src == null ? null : src.getFileName(),
+                    targetPath == null ? null : targetPath.getFileName(),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
+        Logger.info(
+                false,
+                "Office",
+                "OFD to HTML conversion completed: sourceFile={}, targetFile={}",
+                src == null ? null : src.getFileName(),
+                targetPath == null ? null : targetPath.getFileName());
     }
 
     /**
@@ -139,11 +252,31 @@ public class OfdConverter {
      * @throws InternalException if an I/O error occurs during conversion.
      */
     public static void odfToText(final Path src, final Path targetPath) {
+        Logger.info(
+                true,
+                "Office",
+                "OFD to text conversion started: sourceFile={}, targetFile={}",
+                src == null ? null : src.getFileName(),
+                targetPath == null ? null : targetPath.getFileName());
         try (final TextExporter exporter = new TextExporter(src, targetPath)) {
             exporter.export();
         } catch (final IOException e) {
+            Logger.error(
+                    false,
+                    "Office",
+                    e,
+                    "OFD to text conversion failed: sourceFile={}, targetFile={}, exception={}",
+                    src == null ? null : src.getFileName(),
+                    targetPath == null ? null : targetPath.getFileName(),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
+        Logger.info(
+                false,
+                "Office",
+                "OFD to text conversion completed: sourceFile={}, targetFile={}",
+                src == null ? null : src.getFileName(),
+                targetPath == null ? null : targetPath.getFileName());
     }
 
     /**
@@ -154,18 +287,57 @@ public class OfdConverter {
      * @throws InternalException if an I/O error occurs during conversion, or if required PDF libraries are missing.
      */
     public static void odfToPdf(final Path src, final Path targetPath) {
+        Logger.info(
+                true,
+                "Office",
+                "OFD to PDF conversion started: sourceFile={}, targetFile={}",
+                src == null ? null : src.getFileName(),
+                targetPath == null ? null : targetPath.getFileName());
         try (final OFDExporter exporter = new PDFExporterPDFBox(src, targetPath)) {
             exporter.export();
         } catch (final IOException e) {
+            Logger.error(
+                    false,
+                    "Office",
+                    e,
+                    "OFD to PDF conversion failed: sourceFile={}, targetFile={}, exporter={}, exception={}",
+                    src == null ? null : src.getFileName(),
+                    targetPath == null ? null : targetPath.getFileName(),
+                    "PDFBox",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "OFD to PDF conversion fallback requested: sourceFile={}, targetFile={}, failedExporter={}, exception={}",
+                    src == null ? null : src.getFileName(),
+                    targetPath == null ? null : targetPath.getFileName(),
+                    "PDFBox",
+                    e.getClass().getSimpleName());
             // If PDF-BOX is not introduced by the user, try iText.
             try (final OFDExporter exporter = new PDFExporterIText(src, targetPath)) {
                 exporter.export();
             } catch (final IOException e2) {
+                Logger.error(
+                        false,
+                        "Office",
+                        e2,
+                        "OFD to PDF conversion failed: sourceFile={}, targetFile={}, exporter={}, exception={}",
+                        src == null ? null : src.getFileName(),
+                        targetPath == null ? null : targetPath.getFileName(),
+                        "IText",
+                        e2.getClass().getSimpleName());
                 throw new InternalException(e);
             }
         }
+        Logger.info(
+                false,
+                "Office",
+                "OFD to PDF conversion completed: sourceFile={}, targetFile={}",
+                src == null ? null : src.getFileName(),
+                targetPath == null ? null : targetPath.getFileName());
     }
 
     /**
@@ -177,11 +349,34 @@ public class OfdConverter {
      * @throws InternalException if an I/O error occurs during conversion.
      */
     private static void odfToSvg(final Path src, final Path targetDir, final double ppm) {
+        Logger.info(
+                true,
+                "Office",
+                "OFD to SVG conversion started: sourceFile={}, targetDir={}, ppm={}",
+                src == null ? null : src.getFileName(),
+                targetDir == null ? null : targetDir.getFileName(),
+                ppm);
         try (final SVGExporter exporter = new SVGExporter(src, targetDir, ppm)) {
             exporter.export();
         } catch (final IOException e) {
+            Logger.error(
+                    false,
+                    "Office",
+                    e,
+                    "OFD to SVG conversion failed: sourceFile={}, targetDir={}, ppm={}, exception={}",
+                    src == null ? null : src.getFileName(),
+                    targetDir == null ? null : targetDir.getFileName(),
+                    ppm,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
+        Logger.info(
+                false,
+                "Office",
+                "OFD to SVG conversion completed: sourceFile={}, targetDir={}, ppm={}",
+                src == null ? null : src.getFileName(),
+                targetDir == null ? null : targetDir.getFileName(),
+                ppm);
     }
 
 }

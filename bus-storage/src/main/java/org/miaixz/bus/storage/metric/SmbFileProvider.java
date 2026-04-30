@@ -126,7 +126,13 @@ public class SmbFileProvider extends AbstractProvider {
                     connection.close();
                 }
             } catch (Exception ex) {
-                Logger.error(false, "Storage", "Error while closing SMB resources: {}", ex.getMessage(), ex);
+                Logger.error(
+                        false,
+                        "Storage",
+                        "Storage resource close failed; provider={}, resource=smb-client, status=failure, error={}",
+                        this.getClass().getSimpleName(),
+                        ex.getMessage(),
+                        ex);
             }
             throw new IllegalArgumentException("Failed to initialize SMB client: " + e.getMessage(), e);
         }
@@ -200,7 +206,15 @@ public class SmbFileProvider extends AbstractProvider {
                         .data(content).build();
             }
         } catch (Exception e) {
-            Logger.error(false, "Storage", "Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage download failed; provider={}, bucket={}, object={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    fileName,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         } finally {
             // Close SMB file resource
@@ -208,7 +222,12 @@ public class SmbFileProvider extends AbstractProvider {
                 try {
                     smbFile.close();
                 } catch (Exception e) {
-                    Logger.warn(false, "Storage", "Failed to close SMB file: {}", e.getMessage());
+                    Logger.warn(
+                            false,
+                            "Storage",
+                            "Storage resource close failed; provider={}, resource=smb-file, status=failure, error={}",
+                            this.getClass().getSimpleName(),
+                            e.getMessage());
                 }
             }
         }
@@ -269,11 +288,14 @@ public class SmbFileProvider extends AbstractProvider {
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
-            Logger.error(false, "Storage",
-                    "Failed to download file: {} from bucket: {} to local file: {}. Error: {}",
-                    fileName,
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage download-to-local failed; provider={}, bucket={}, object={}, targetProvided={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
                     bucket,
-                    file.getAbsolutePath(),
+                    fileName,
+                    file != null,
                     e.getMessage(),
                     e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
@@ -283,7 +305,12 @@ public class SmbFileProvider extends AbstractProvider {
                 try {
                     smbFile.close();
                 } catch (Exception e) {
-                    Logger.warn(false, "Storage", "Failed to close SMB file: {}", e.getMessage());
+                    Logger.warn(
+                            false,
+                            "Storage",
+                            "Storage resource close failed; provider={}, resource=smb-file, status=failure, error={}",
+                            this.getClass().getSimpleName(),
+                            e.getMessage());
                 }
             }
         }
@@ -311,7 +338,15 @@ public class SmbFileProvider extends AbstractProvider {
                         return Blob.builder().name(fileName).extend(extend).build();
                     }).collect(Collectors.toList())).build();
         } catch (Exception e) {
-            Logger.error(false, "Storage", "Failed to list files in path: {}. Error: {}", context.getPrefix(), e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage list failed; provider={}, bucket={}, prefix={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    this.context.getBucket(),
+                    context.getPrefix(),
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -387,12 +422,15 @@ public class SmbFileProvider extends AbstractProvider {
                 diskEntry.close();
             }
         } catch (Exception e) {
-            Logger.error(false, "Storage",
-                    "Failed to rename file from {} to {} in bucket: {} path: {}. Error: {}",
-                    oldName,
-                    newName,
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage rename failed; provider={}, bucket={}, path={}, sourceObject={}, targetObject={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
                     bucket,
                     path,
+                    oldName,
+                    newName,
                     e.getMessage(),
                     e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
@@ -497,11 +535,14 @@ public class SmbFileProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(Blob.builder().name(fileName).path(objectKey).build()).build();
         } catch (Exception e) {
-            Logger.error(false, "Storage",
-                    "Failed to upload file: {} to bucket: {} path: {}. Error: {}",
-                    fileName,
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage upload failed; provider={}, bucket={}, path={}, object={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
                     bucket,
                     path,
+                    fileName,
                     e.getMessage(),
                     e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
@@ -511,7 +552,12 @@ public class SmbFileProvider extends AbstractProvider {
                 try {
                     smbFile.close();
                 } catch (Exception e) {
-                    Logger.warn(false, "Storage", "Failed to close SMB file: {}", e.getMessage());
+                    Logger.warn(
+                            false,
+                            "Storage",
+                            "Storage resource close failed; provider={}, resource=smb-file, status=failure, error={}",
+                            this.getClass().getSimpleName(),
+                            e.getMessage());
                 }
             }
         }
@@ -557,11 +603,14 @@ public class SmbFileProvider extends AbstractProvider {
             }
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
-            Logger.error(false, "Storage",
-                    "Failed to remove file: {} from bucket: {} path: {}. Error: {}",
-                    fileName,
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage remove failed; provider={}, bucket={}, path={}, object={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
                     bucket,
                     path,
+                    fileName,
                     e.getMessage(),
                     e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
@@ -627,7 +676,12 @@ public class SmbFileProvider extends AbstractProvider {
                 return Integer.parseInt(portStr);
             }
         } catch (NumberFormatException e) {
-            Logger.warn(false, "Storage", "Invalid port in endpoint: {}. Using default port 445.", endpoint);
+            Logger.warn(
+                    false,
+                    "Storage",
+                    "Storage endpoint port invalid; provider={}, defaultPort=445, endpointProvided={}, status=fallback",
+                    this.getClass().getSimpleName(),
+                    StringKit.isNotBlank(endpoint));
         }
         return 445; // Default SMB port
     }
@@ -688,7 +742,15 @@ public class SmbFileProvider extends AbstractProvider {
                 share.mkdir(dirPath);
             }
         } catch (Exception e) {
-            Logger.error(false, "Storage", "Failed to ensure directory exists: {}. Error: {}", dirPath, e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage directory preparation failed; provider={}, bucket={}, directoryProvided={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    this.context.getBucket(),
+                    StringKit.isNotBlank(dirPath),
+                    e.getMessage(),
+                    e);
             throw new InternalException("Failed to create directory: " + dirPath, e);
         }
     }

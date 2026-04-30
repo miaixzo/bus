@@ -51,8 +51,10 @@ public record EmbeddedOverlay(int groupOffset, int bitPosition) {
             if (dcm.getInt(Tag.OverlayBitsAllocated | gg0000, 1) != 1) {
                 int bitPosition = dcm.getInt(Tag.OverlayBitPosition | gg0000, 0);
                 if (bitPosition < bitsStored) {
-                    Logger.info(false, "Image",
-                            "Ignore embedded overlay #{} from bit #{} < bits stored: {}",
+                    Logger.info(
+                            false,
+                            "Image",
+                            "Ignore embedded overlay #{} from bit #{} < bits stored: bitsStored={}",
                             (gg0000 >>> 17) + 1,
                             bitPosition,
                             bitsStored);

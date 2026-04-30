@@ -786,11 +786,15 @@ public class WechatPayBuilder {
         String signature = response.getHeader("Wechatpay-Signature");
         String signatureType = response.getHeader("Wechatpay-Signature-Type");
         String body = response.getBody();
-        Logger.info(false, "Pay", "timestamp:" + timestamp);
-        Logger.info(false, "Pay", "nonceStr:" + nonceStr);
-        Logger.info(false, "Pay", "signature:" + signature);
-        Logger.info(false, "Pay", "signatureType:" + signatureType);
-        Logger.info(false, "Pay", "body:" + body);
+        Logger.info(
+                false,
+                "Pay",
+                "WechatPay response verification context: timestampPresent={}, noncePresent={}, signPresent={}, signType={}, contentChars={}",
+                timestamp != null,
+                nonceStr != null,
+                signature != null,
+                signatureType,
+                body == null ? 0 : body.length());
         return verifySignature(
                 signatureType,
                 signature,
@@ -980,8 +984,12 @@ public class WechatPayBuilder {
         map.put("publicKey", publicKey);
         map.put("privateKey", privateKey);
 
-        Logger.info(false, "Pay", "Public Key\r\n" + publicKey);
-        Logger.info(false, "Pay", "Private Key\r\n" + privateKey);
+        Logger.info(
+                false,
+                "Pay",
+                "RSA key pair generated: publicMaterialBytes={}, protectedMaterialBytes={}",
+                keyPair.getPublic().getEncoded().length,
+                keyPair.getPrivate().getEncoded().length);
         return map;
     }
 
@@ -1002,7 +1010,14 @@ public class WechatPayBuilder {
             RSAPublicKeySpec keySpec = new RSAPublicKeySpec(b1, b2);
             return (RSAPublicKey) keyFactory.generatePublic(keySpec);
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.warn(
+                    false,
+                    "Pay",
+                    e,
+                    "RSA public key generation failed: modulusPresent={}, exponentPresent={}, exception={}",
+                    modulus != null,
+                    exponent != null,
+                    e.getClass().getSimpleName());
             return null;
         }
     }
@@ -1024,7 +1039,14 @@ public class WechatPayBuilder {
             RSAPrivateKeySpec keySpec = new RSAPrivateKeySpec(b1, b2);
             return (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.warn(
+                    false,
+                    "Pay",
+                    e,
+                    "RSA private key generation failed: modulusPresent={}, exponentPresent={}, exception={}",
+                    modulus != null,
+                    exponent != null,
+                    e.getClass().getSimpleName());
             return null;
         }
     }

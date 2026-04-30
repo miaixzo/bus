@@ -225,7 +225,14 @@ public class Association {
         if (!isSCPFor(cuid)) {
             NoRolesException ex = new NoRolesException(cuid, TransferCapability.Role.SCP);
             if (ae.isRoleSelectionNegotiationLenient() && ac.getRoleSelectionFor(cuid) == null)
-                Logger.info(false, "Image", "{}: {}", this, ex.getMessage());
+                Logger.warn(
+                        false,
+                        "Image",
+                        ex,
+                        "protocol=dimse, Role selection check failed: association={}, role={}, exception={}",
+                        name,
+                        "SCP",
+                        ex.getClass().getSimpleName());
             else
                 throw ex;
         }
@@ -242,7 +249,14 @@ public class Association {
         if (!isSCUFor(cuid)) {
             NoRolesException ex = new NoRolesException(cuid, TransferCapability.Role.SCU);
             if (ae.isRoleSelectionNegotiationLenient() && ac.getRoleSelectionFor(cuid) == null)
-                Logger.info(false, "Image", "{}: {}", this, ex.getMessage());
+                Logger.warn(
+                        false,
+                        "Image",
+                        ex,
+                        "protocol=dimse, Role selection check failed: association={}, role={}, exception={}",
+                        name,
+                        "SCU",
+                        ex.getClass().getSimpleName());
             else
                 throw ex;
         }
@@ -341,7 +355,14 @@ public class Association {
             return;
 
         ex = e;
-        Logger.info(false, "Image", "{}: i/o exception: {} in State: {}", name, e, state);
+        Logger.warn(
+                false,
+                "Image",
+                e,
+                "protocol=dimse, Association I/O failed: association={}, state={}, exception={}",
+                name,
+                state,
+                e.getClass().getSimpleName());
         closeSocket();
     }
 
@@ -498,7 +519,12 @@ public class Association {
     }
 
     private synchronized void enterState(State newState) {
-        Logger.debug(false, "Image", "{}: enter state: {}", name, newState);
+        Logger.debug(
+                false,
+                "Image",
+                "protocol=dimse, Association state changed: association={}, state={}",
+                name,
+                newState);
         this.state = newState;
         notifyAll();
     }
@@ -678,7 +704,13 @@ public class Association {
     }
 
     public void unexpectedPDU(String pdu) throws AAbort {
-        Logger.warn(false, "Image", "{} >> unexpected {} in state: {}", name, pdu, state);
+        Logger.warn(
+                false,
+                "Image",
+                "protocol=dimse, Unexpected PDU received: association={}, pduType={}, state={}",
+                name,
+                pdu,
+                state);
         throw new AAbort(AAbort.UL_SERIVE_PROVIDER, AAbort.UNEXPECTED_PDU);
     }
 
@@ -721,8 +753,14 @@ public class Association {
         boolean pending = Status.isPending(status);
         DimseRSPHandler rspHandler = getDimseRSPHandler(msgId);
         if (rspHandler == null) {
-            Logger.info(false, "Image", "{}: unexpected message ID in DIMSE RSP:", name);
-            Logger.info(false, "Image", "\n{}", cmd);
+            Logger.warn(
+                    false,
+                    "Image",
+                    "protocol=dimse, Unexpected DIMSE response message id: association={}, messageId={}, status={}, commandAttributes={}",
+                    name,
+                    msgId,
+                    status,
+                    cmd == null ? 0 : cmd.size());
             throw new AAbort();
         }
         rspHandler.onDimseRSP(this, cmd, data);
@@ -783,7 +821,14 @@ public class Association {
             writeDimseRSP(pc, cmd, data);
             return true;
         } catch (IOException e) {
-            Logger.warn(false, "Image", "{} << {} failed: {}", this, Dimse.valueOf(cmd.getInt(Tag.CommandField, 0)), e.getMessage());
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "protocol=dimse, DIMSE response write failed: association={}, dimse={}, exception={}",
+                    this,
+                    Dimse.valueOf(cmd.getInt(Tag.CommandField, 0)),
+                    e.getClass().getSimpleName());
             return false;
         }
     }

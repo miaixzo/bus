@@ -39,6 +39,7 @@ import org.miaixz.bus.core.xyz.HexKit;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.Keeper;
 import org.miaixz.bus.crypto.builtin.asymmetric.Asymmetric;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Signature wrapper class for {@link Signature}.
@@ -180,6 +181,15 @@ public class Sign extends Asymmetric<Sign> {
         try {
             this.signature.setParameter(params);
         } catch (final InvalidAlgorithmParameterException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "algorithm",
+                    "Sign",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
         return this;
@@ -266,10 +276,28 @@ public class Sign extends Asymmetric<Sign> {
                 }
                 result = signature.sign();
             } catch (final Exception e) {
+                Logger.warn(
+                        false,
+                        "Crypto",
+                        e,
+                        "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                        "algorithm",
+                        "Sign",
+                        false,
+                        e.getClass().getSimpleName());
                 throw new CryptoException(e);
             }
             return result;
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "algorithm",
+                    "Sign",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         } finally {
             lock.unlock();
@@ -291,6 +319,15 @@ public class Sign extends Asymmetric<Sign> {
             signature.update(data);
             return signature.verify(sign);
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "algorithm",
+                    "Sign",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         } finally {
             lock.unlock();

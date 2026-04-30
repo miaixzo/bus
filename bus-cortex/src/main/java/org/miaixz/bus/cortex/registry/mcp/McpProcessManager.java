@@ -21,6 +21,7 @@ package org.miaixz.bus.cortex.registry.mcp;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Manages stdio MCP sub-processes.
@@ -55,6 +56,15 @@ public class McpProcessManager {
             Process process = pb.start();
             processes.put(id, process);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Cortex",
+                    e,
+                    "Cortex operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "registry",
+                    "McpProcessManager",
+                    false,
+                    e.getClass().getSimpleName());
             throw new RuntimeException("Failed to start process " + id, e);
         }
     }

@@ -99,7 +99,7 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
         // 1. Highest priority: Runtime configuration (ThreadLocal/InheritableThreadLocal)
         C captured = capture();
         if (captured != null) {
-            Logger.debug(false, getHandler(), "Using Runtime configuration");
+            Logger.debug(false, "Mapper", "Using Runtime configuration");
             return captured;
         }
 
@@ -112,7 +112,7 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
 
             C derived = derived(key, properties);
             if (derived != null) {
-                Logger.debug(false, getHandler(), "Using Datasource configuration");
+                Logger.debug(false, "Mapper", "Using Datasource configuration");
                 return derived;
             }
         }
@@ -120,9 +120,9 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
         // 3. Lowest priority: Default configuration (from properties file global settings)
         C defaults = defaults();
         if (defaults != null) {
-            Logger.debug(false, getHandler(), "Using Default configuration");
+            Logger.debug(false, "Mapper", "Using Default configuration");
         } else {
-            Logger.debug(true, getHandler(), "No configuration available");
+            Logger.debug(true, "Mapper", "No configuration available");
         }
         return defaults();
     }
@@ -213,7 +213,7 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
             try {
                 return (org.apache.ibatis.mapping.SqlSource) FieldKit.getFieldValue(customSqlSource, "sqlSource");
             } catch (Exception e) {
-                Logger.warn(false, getHandler(), "Failed to get original SqlSource: {}", e.getMessage());
+                Logger.warn(false, "Mapper", "Failed to get original SqlSource: {}", e.getMessage());
                 return currentSqlSource;
             }
         }
@@ -262,9 +262,9 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
             MetaObject msMetaObject = SystemMetaObject.forObject(ms);
             msMetaObject.setValue("sqlSource", newSqlSource);
 
-            Logger.debug(false, getHandler(), "Replaced SqlSource: method={}", ms.getId());
+            Logger.debug(false, "Mapper", "Replaced SqlSource: method={}", ms.getId());
         } catch (Exception e) {
-            Logger.warn(false, getHandler(), "Failed to replace SqlSource: {}", e.getMessage());
+            Logger.warn(false, "Mapper", "Failed to replace SqlSource: {}", e.getMessage());
         }
     }
 

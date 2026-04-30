@@ -169,10 +169,12 @@ public final class PerfCounterWildcardQuery {
         try {
             objectItems = PdhUtil.PdhEnumObjectItems(null, null, perfObjectLocalized, 100);
         } catch (PdhException e) {
-            Logger.warn(false, "Health",
+            Logger.warn(
+                    false,
+                    "Health",
                     "Failed to locate performance object for {} in the registry. Performance counters may be corrupt. {}",
                     perfObjectLocalized,
-                    e.getMessage());
+                    e.getClass().getSimpleName());
         }
         if (objectItems == null) {
             return Pair.of(Collections.emptyList(), Collections.emptyMap());

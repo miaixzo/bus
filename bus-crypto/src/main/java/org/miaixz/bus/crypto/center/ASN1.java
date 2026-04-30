@@ -31,6 +31,7 @@ import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.miaixz.bus.core.io.stream.FastByteArrayOutputStream;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * ASN.1 (Abstract Syntax Notation One) utility class. ASN.1 describes a data format for representing, encoding,
@@ -98,6 +99,15 @@ public class ASN1 {
         try {
             sequence.encodeTo(out);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "algorithm",
+                    "ASN1",
+                    false,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -114,6 +124,15 @@ public class ASN1 {
         try {
             return asn1In.readObject();
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "algorithm",
+                    "ASN1",
+                    false,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }

@@ -22,6 +22,7 @@ package org.miaixz.bus.validate;
 import org.miaixz.bus.core.lang.exception.NoSuchException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.validate.magic.Criterion;
 import org.miaixz.bus.validate.magic.ErrorCode;
 import org.miaixz.bus.validate.magic.annotation.Complex;
@@ -183,6 +184,13 @@ public class Provider {
      * @throws NoSuchException if the custom exception class does not meet the requirements (e.g., missing constructor).
      */
     public static ValidateException resolve(Criterion criterion, Context context) {
+        Logger.debug(
+                true,
+                "Validate",
+                "Validation exception resolution started: field={}, validator={}, errcode={}",
+                criterion == null ? null : criterion.getField(),
+                criterion == null ? null : criterion.getName(),
+                criterion == null ? null : criterion.getErrcode());
         // 1. Determine the exception class: Priority is given to the context's exception class, then the criterion's,
         // and finally ValidateException.
         Class<? extends ValidateException> exceptionClass = ObjectKit
@@ -201,19 +209,54 @@ public class Provider {
 
         // 5. Create the exception instance.
         if (exceptionClass == null) {
+            Logger.debug(
+                    false,
+                    "Validate",
+                    "Validation exception resolved: exceptionClass={}, errcode={}, field={}, validator={}",
+                    ValidateException.class.getName(),
+                    errcode,
+                    criterion.getField(),
+                    criterion.getName());
             return new ValidateException(errcode, criterion.getMessage());
         }
         try {
             Constructor<? extends ValidateException> constructor = exceptionClass
                     .getConstructor(String.class, String.class);
-            return constructor.newInstance(errcode, criterion.getMessage());
+            ValidateException exception = constructor.newInstance(errcode, criterion.getMessage());
+            Logger.debug(
+                    false,
+                    "Validate",
+                    "Validation exception resolved: exceptionClass={}, errcode={}, field={}, validator={}",
+                    exceptionClass.getName(),
+                    errcode,
+                    criterion.getField(),
+                    criterion.getName());
+            return exception;
         } catch (NoSuchMethodException e) {
+            Logger.warn(
+                    false,
+                    "Validate",
+                    e,
+                    "Validation exception resolution failed: exceptionClass={}, reason=missingConstructor",
+                    exceptionClass.getName());
             throw new NoSuchException("Illegal custom validation exception, no constructor(String, String) found: "
                     + exceptionClass.getName());
         } catch (IllegalAccessException e) {
+            Logger.warn(
+                    false,
+                    "Validate",
+                    e,
+                    "Validation exception resolution failed: exceptionClass={}, reason=constructorAccess",
+                    exceptionClass.getName());
             throw new NoSuchException(
                     "Unable to access constructor of custom validation exception: " + exceptionClass.getName());
         } catch (InstantiationException | InvocationTargetException e) {
+            Logger.warn(
+                    false,
+                    "Validate",
+                    e,
+                    "Validation exception resolution failed: exceptionClass={}, reason=instantiateFailed",
+                    exceptionClass.getName());
             throw new NoSuchException("Failed to instantiate custom validation exception: " + exceptionClass.getName(),
                     e);
         }

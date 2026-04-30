@@ -26,6 +26,7 @@ import java.util.Map;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.extra.template.Template;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Freemarker template implementation. This class wraps a FreeMarker {@link freemarker.template.Template} object,
@@ -76,11 +77,41 @@ public class FreemarkerTemplate implements Template, Serializable {
      */
     @Override
     public void render(final Map<?, ?> bindingMap, final Writer writer) {
+        final long startedAt = System.nanoTime();
+        Logger.debug(
+                true,
+                "Extra",
+                "component=template, Freemarker render started: bindingCount={}, writerPresent={}, encoding={}",
+                bindingMap == null ? 0 : bindingMap.size(),
+                writer != null,
+                rawTemplate == null ? null : rawTemplate.getEncoding());
         try {
             rawTemplate.process(bindingMap, writer);
+            Logger.debug(
+                    false,
+                    "Extra",
+                    "component=template, Freemarker render completed: bindingCount={}, elapsedMs={}",
+                    bindingMap == null ? 0 : bindingMap.size(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
         } catch (final freemarker.template.TemplateException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=template, Freemarker render failed: bindingCount={}, exception={}, elapsedMs={}",
+                    bindingMap == null ? 0 : bindingMap.size(),
+                    e.getClass().getSimpleName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
             throw new InternalException(e);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=template, Freemarker render I/O failed: bindingCount={}, exception={}, elapsedMs={}",
+                    bindingMap == null ? 0 : bindingMap.size(),
+                    e.getClass().getSimpleName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
             throw new InternalException(e);
         }
     }
@@ -97,6 +128,12 @@ public class FreemarkerTemplate implements Template, Serializable {
      */
     @Override
     public void render(final Map<?, ?> bindingMap, final OutputStream out) {
+        Logger.debug(
+                true,
+                "Extra",
+                "component=template, Freemarker stream render requested: bindingCount={}, outputPresent={}",
+                bindingMap == null ? 0 : bindingMap.size(),
+                out != null);
         render(bindingMap, IoKit.toWriter(out, Charset.forName(this.rawTemplate.getEncoding())));
     }
 

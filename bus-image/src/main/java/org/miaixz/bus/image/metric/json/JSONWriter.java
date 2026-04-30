@@ -284,7 +284,11 @@ public class JSONWriter implements ImageInputHandler {
                             try {
                                 gen.write(Builder.parseDS(s));
                             } catch (NumberFormatException e) {
-                                Logger.info(false, "Image", "illegal DS value: {} - encoded as string", s);
+                                Logger.info(
+                                        false,
+                                        "Image",
+                                        "illegal DS value: valueChars={} - encoded as string",
+                                        s == null ? 0 : s.length());
                                 gen.write(s);
                             }
                         } else {
@@ -319,7 +323,11 @@ public class JSONWriter implements ImageInputHandler {
                 return;
             }
         } catch (NumberFormatException e) {
-            Logger.info(false, "Image", "illegal IS value: {} - encoded as string", s);
+            Logger.info(
+                    false,
+                    "Image",
+                    "illegal IS value: valueChars={} - encoded as string",
+                    s == null ? 0 : s.length());
         }
         gen.write(s);
     }

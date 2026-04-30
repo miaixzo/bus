@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.tempus;
 
+import org.miaixz.bus.logger.Logger;
+
 /**
  * Task launcher responsible for checking if the {@link Repertoire} has any tasks that match the current execution time.
  * The launcher's thread terminates after the check is complete.
@@ -36,8 +38,15 @@ public record Launcher(Scheduler scheduler, long millis) implements Runnable {
      */
     @Override
     public void run() {
+        Logger.debug(
+                true,
+                "Tempus",
+                "Scheduler launcher execution started: millis={}, taskCount={}",
+                this.millis,
+                this.scheduler.repertoire.size());
         // Execute tasks that match the given millisecond timestamp.
         this.scheduler.repertoire.execute(this.scheduler, this.millis);
+        Logger.debug(false, "Tempus", "Scheduler launcher execution completed: millis={}", this.millis);
 
         // Notify the manager that this launcher has completed its run.
         this.scheduler.manager.notifyLauncherCompleted(this);

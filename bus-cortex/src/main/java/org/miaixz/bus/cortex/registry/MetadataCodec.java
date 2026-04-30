@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Small JSON helper for metadata payloads.
@@ -72,6 +73,14 @@ public final class MetadataCodec {
             Map<String, Object> root = JsonKit.toMap(metadata);
             return root == null ? new LinkedHashMap<>() : new LinkedHashMap<>(root);
         } catch (Exception ignore) {
+            Logger.debug(
+                    false,
+                    "Cortex",
+                    "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
+                    "registry",
+                    "MetadataCodec",
+                    true,
+                    ignore.getClass().getSimpleName());
             return new LinkedHashMap<>();
         }
     }
@@ -121,6 +130,14 @@ public final class MetadataCodec {
             Map<String, Object> result = JsonKit.toMap(JsonKit.toJsonString(value));
             return result == null ? null : new LinkedHashMap<>(result);
         } catch (Exception ignore) {
+            Logger.debug(
+                    false,
+                    "Cortex",
+                    "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
+                    "registry",
+                    "MetadataCodec",
+                    true,
+                    ignore.getClass().getSimpleName());
             return null;
         }
     }
@@ -169,6 +186,14 @@ public final class MetadataCodec {
         try {
             return Long.parseLong(value.toString());
         } catch (NumberFormatException ignore) {
+            Logger.debug(
+                    false,
+                    "Cortex",
+                    "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
+                    "registry",
+                    "MetadataCodec",
+                    true,
+                    ignore.getClass().getSimpleName());
             return null;
         }
     }
@@ -189,6 +214,14 @@ public final class MetadataCodec {
         try {
             return Integer.parseInt(value.toString());
         } catch (NumberFormatException ignore) {
+            Logger.debug(
+                    false,
+                    "Cortex",
+                    "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
+                    "registry",
+                    "MetadataCodec",
+                    true,
+                    ignore.getClass().getSimpleName());
             return null;
         }
     }
@@ -209,6 +242,14 @@ public final class MetadataCodec {
         try {
             return Enum.valueOf(type, text.toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException ignore) {
+            Logger.debug(
+                    false,
+                    "Cortex",
+                    "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
+                    "registry",
+                    "MetadataCodec",
+                    true,
+                    ignore.getClass().getSimpleName());
             return null;
         }
     }
@@ -247,6 +288,14 @@ public final class MetadataCodec {
             }
             return result;
         } catch (Exception ignore) {
+            Logger.debug(
+                    false,
+                    "Cortex",
+                    "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
+                    "registry",
+                    "MetadataCodec",
+                    true,
+                    ignore.getClass().getSimpleName());
             return null;
         }
     }
@@ -267,6 +316,14 @@ public final class MetadataCodec {
         try {
             return JsonKit.toPojo(JsonKit.toJsonString(value), String.class);
         } catch (Exception ignore) {
+            Logger.debug(
+                    false,
+                    "Cortex",
+                    "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
+                    "registry",
+                    "MetadataCodec",
+                    true,
+                    ignore.getClass().getSimpleName());
             return value.toString();
         }
     }

@@ -71,8 +71,8 @@ public class AccessHandler extends AbstractHandler {
 
             Logger.info(
                     true,
-                    "Access",
-                    "[{}] [{}] [{}] [ACCESS_PREHANDLE] - Performing async preHandle validation for request",
+                    "Vortex",
+                    "component=access, clientIp={}, method={}, path={}, event=ACCESS_PREHANDLE, pre-handle validation started",
                     ip,
                     method,
                     path);
@@ -105,8 +105,8 @@ public class AccessHandler extends AbstractHandler {
 
             Logger.info(
                     false,
-                    "Access",
-                    "[{}] [{}] [{}] [ACCESS_POSTHANDLE] - Post-processing response for request",
+                    "Vortex",
+                    "component=access, clientIp={}, method={}, path={}, event=ACCESS_POSTHANDLE, response post-processing completed",
                     ip,
                     method,
                     path);
@@ -146,8 +146,8 @@ public class AccessHandler extends AbstractHandler {
 
             Logger.info(
                     false,
-                    "Access",
-                    "[{}] [{}] [{}] [ACCESS_COMPLETION] - Request completed, exception: {}",
+                    "Vortex",
+                    "component=access, clientIp={}, method={}, path={}, event=ACCESS_COMPLETION, request completed: exception={}",
                     ip,
                     method,
                     path,

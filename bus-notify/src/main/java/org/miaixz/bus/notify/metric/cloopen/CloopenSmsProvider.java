@@ -27,6 +27,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.AbstractProvider;
@@ -56,6 +57,13 @@ public class CloopenSmsProvider extends AbstractProvider<CloopenNotice, Context>
      */
     @Override
     public Message send(CloopenNotice entity) {
+        Logger.info(
+                true,
+                "Notify",
+                "Cloopen SMS send started: template={}, targetCount={}, appKeyPresent={}",
+                entity == null ? null : entity.getTemplate(),
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                this.context != null && this.context.getAppKey() != null);
         Map<String, String> bodys = MapKit.newHashMap(4, true);
         // The recipient's mobile number(s), comma-separated.
 
@@ -69,8 +77,17 @@ public class CloopenSmsProvider extends AbstractProvider<CloopenNotice, Context>
 
         String response = Httpx.post(this.getUrl(entity), bodys);
         String errcode = JsonKit.getValue(response, Consts.ERRCODE);
-        return Message.builder().errcode("200".equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
+        Message result = Message.builder().errcode("200".equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
                 .errmsg(JsonKit.getValue(response, Consts.ERRMSG)).build();
+        Logger.info(
+                false,
+                "Notify",
+                "Cloopen SMS send completed: template={}, targetCount={}, errcode={}, responseBytes={}",
+                entity == null ? null : entity.getTemplate(),
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                result.getErrcode(),
+                response == null ? 0 : response.length());
+        return result;
     }
 
 }

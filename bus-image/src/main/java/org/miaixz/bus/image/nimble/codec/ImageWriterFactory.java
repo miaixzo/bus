@@ -113,8 +113,10 @@ public class ImageWriterFactory implements Serializable {
                 if (iter.hasNext())
                     writer = iter.next();
                 else {
-                    Logger.warn(false, "Image",
-                            "No preferred Writer {} for format: {} - use {}",
+                    Logger.warn(
+                            false,
+                            "Image",
+                            "No preferred Writer {} for format: format={} - use {}",
                             param.className,
                             param.formatName,
                             writer.getClass().getName());
@@ -145,8 +147,10 @@ public class ImageWriterFactory implements Serializable {
                 if (iter.hasNext())
                     spi = iter.next();
                 else {
-                    Logger.warn(false, "Image",
-                            "No preferred Writer {} for format: {} - use {}",
+                    Logger.warn(
+                            false,
+                            "Image",
+                            "No preferred Writer {} for format: format={} - use {}",
                             param.className,
                             param.formatName,
                             spi.getPluginClassName());

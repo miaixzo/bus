@@ -67,6 +67,7 @@ import org.miaixz.bus.crypto.builtin.digest.mac.Mac;
 import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 import org.miaixz.bus.crypto.center.*;
 import org.w3c.dom.Element;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Security-related utility class.
@@ -667,6 +668,15 @@ public class Builder {
         try {
             cipher = (null == provider) ? Cipher.getInstance(algorithm) : Cipher.getInstance(algorithm, provider);
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "builder",
+                    "Builder",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
 
@@ -693,6 +703,15 @@ public class Builder {
             messageDigest = (null == provider) ? MessageDigest.getInstance(algorithm)
                     : MessageDigest.getInstance(algorithm, provider);
         } catch (final NoSuchAlgorithmException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "builder",
+                    "Builder",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
 
@@ -710,6 +729,15 @@ public class Builder {
         try {
             return MessageDigest.getInstance(algorithm);
         } catch (final NoSuchAlgorithmException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "builder",
+                    "Builder",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
     }
@@ -730,6 +758,15 @@ public class Builder {
             mac = (null == provider) ? javax.crypto.Mac.getInstance(algorithm)
                     : javax.crypto.Mac.getInstance(algorithm, provider);
         } catch (final NoSuchAlgorithmException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "builder",
+                    "Builder",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
 
@@ -1007,6 +1044,15 @@ public class Builder {
         try {
             decode = StandardDSAEncoding.INSTANCE.decode(SM2_DOMAIN_PARAMS.getN(), rsDer);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "builder",
+                    "Builder",
+                    false,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
 
@@ -1034,6 +1080,15 @@ public class Builder {
         try {
             return StandardDSAEncoding.INSTANCE.encode(SM2_DOMAIN_PARAMS.getN(), r, s);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "builder",
+                    "Builder",
+                    false,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -1113,6 +1168,15 @@ public class Builder {
             signature = (null == provider) ? Signature.getInstance(algorithm)
                     : Signature.getInstance(algorithm, provider);
         } catch (final NoSuchAlgorithmException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "builder",
+                    "Builder",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
 
@@ -1725,6 +1789,15 @@ public class Builder {
         try {
             return pkInfo.parsePrivateKey().toASN1Primitive().getEncoded();
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "builder",
+                    "Builder",
+                    false,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -1741,6 +1814,15 @@ public class Builder {
         try {
             return spkInfo.parsePublicKey().getEncoded();
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "builder",
+                    "Builder",
+                    false,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -1819,6 +1901,15 @@ public class Builder {
                 return new DESKeySpec(key);
             }
         } catch (final InvalidKeyException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "builder",
+                    "Builder",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
 

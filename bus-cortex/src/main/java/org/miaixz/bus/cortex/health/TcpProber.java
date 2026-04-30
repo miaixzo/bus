@@ -26,6 +26,7 @@ import org.miaixz.bus.cortex.Builder;
 import org.miaixz.bus.cortex.Instance;
 import org.miaixz.bus.cortex.Prober;
 import org.miaixz.bus.cortex.Status;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * TCP connectivity prober.
@@ -78,11 +79,27 @@ public class TcpProber implements Prober {
         String host = instance.getHost();
         int port = instance.getPort() != null ? instance.getPort() : 80;
         long start = System.currentTimeMillis();
+        Logger.debug(true, "Cortex", "TCP health probe started: host={}, port={}, timeoutMs={}", host, port, timeoutMs);
         try (Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress(host, port), timeoutMs);
             long latency = System.currentTimeMillis() - start;
+            Logger.debug(
+                    false,
+                    "Cortex",
+                    "TCP health probe passed: host={}, port={}, latencyMs={}",
+                    host,
+                    port,
+                    latency);
             return Status.ok(latency, name()).detail("host", host).detail("port", Integer.toString(port));
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Cortex",
+                    e,
+                    "TCP health probe failed: host={}, port={}, error={}",
+                    host,
+                    port,
+                    e.getMessage());
             return Status.fail("TCP check failed: " + e.getMessage(), name()).detail("host", host)
                     .detail("port", Integer.toString(port));
         }

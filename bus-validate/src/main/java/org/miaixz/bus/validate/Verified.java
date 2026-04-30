@@ -27,6 +27,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.validate.magic.Checker;
 import org.miaixz.bus.validate.magic.Criterion;
 import org.miaixz.bus.validate.magic.annotation.*;
@@ -169,6 +170,12 @@ public class Verified extends Provider {
      * @return The configured context.
      */
     private Context resolve(Context context, Annotation[] annotations) {
+        Logger.debug(
+                true,
+                "Validate",
+                "Validation context resolution started: objectClass={}, annotationCount={}",
+                this.object == null ? null : this.object.getClass().getName(),
+                annotations == null ? 0 : annotations.length);
         if (ObjectKit.isNotEmpty(this.object)) {
             Class<?> clazz = this.object.getClass();
             Inside inside = clazz.getAnnotation(Inside.class);
@@ -189,6 +196,14 @@ public class Verified extends Provider {
                 context.setInside(true);
             }
         }
+        Logger.debug(
+                false,
+                "Validate",
+                "Validation context resolved: inside={}, groupCount={}, selectedFieldCount={}, skippedFieldCount={}",
+                context.isInside(),
+                context.getGroup() == null ? 0 : context.getGroup().size(),
+                context.getField() == null ? 0 : context.getField().length,
+                context.getSkip() == null ? 0 : context.getSkip().length);
         return context;
     }
 
@@ -199,6 +214,13 @@ public class Verified extends Provider {
      * @return The validation result collector.
      */
     public Collector access() {
+        Logger.debug(
+                true,
+                "Validate",
+                "Validation execution started: objectClass={}, criterionCount={}, inside={}",
+                this.object == null ? null : this.object.getClass().getName(),
+                this.list.size(),
+                context.isInside());
         Collector collector = new Collector(this);
         Checker checker = context.getChecker();
         for (Criterion p : this.list) {
@@ -209,6 +231,13 @@ public class Verified extends Provider {
             Collector result = checker.inside(this);
             collector.collect(result);
         }
+        Logger.debug(
+                false,
+                "Validate",
+                "Validation execution completed: objectClass={}, resultCount={}, passed={}",
+                this.object == null ? null : this.object.getClass().getName(),
+                collector.getResult().size(),
+                collector.isPass());
         return collector;
     }
 
@@ -269,12 +298,31 @@ public class Verified extends Provider {
                 }
             }
             if (ObjectKit.isEmpty(criterion.getClazz()) || StringKit.isEmpty(criterion.getName())) {
+                Logger.warn(
+                        false,
+                        "Validate",
+                        "Validation annotation parsing failed: annotation={}, reason=missingComplexMetadata",
+                        annotationType.getName());
                 throw new InternalException(
                         "Invalid validation annotation, missing Complex meta-annotation to specify validator:"
                                 + annotationType.getName());
             }
+            Logger.debug(
+                    false,
+                    "Validate",
+                    "Validation criterion built: annotation={}, field={}, validator={}",
+                    annotationType.getName(),
+                    this.field,
+                    criterion.getName());
             return criterion;
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            Logger.warn(
+                    false,
+                    "Validate",
+                    e,
+                    "Validation annotation parsing failed: annotation={}, exception={}",
+                    annotationType.getName(),
+                    e.getClass().getSimpleName());
             throw new InternalException(
                     "Invalid validation annotation, missing common validation attributes:" + annotationType.getName(),
                     e);

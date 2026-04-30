@@ -497,7 +497,14 @@ public class ContentHandlerAdapter extends DefaultHandler {
                         vr,
                         Arrays.toString(value));
                 if (lenient) {
-                    Logger.info(false, "Image", "{} - ignored", message);
+                    Logger.info(
+                            false,
+                            "Image",
+                            "component=parser, Invalid attribute ignored: tagGroup={}, tagElement={}, vr={}, valueCount={}",
+                            Tag.groupNumber(tag),
+                            Tag.elementNumber(tag),
+                            vr,
+                            value == null ? 0 : value.length);
                 } else {
                     throw new SAXException(message, e);
                 }

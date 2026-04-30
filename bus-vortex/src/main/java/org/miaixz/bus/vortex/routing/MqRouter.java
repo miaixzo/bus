@@ -78,14 +78,17 @@ public class MqRouter implements Router<ServerRequest, ServerResponse> {
             final Context context = contextView.get(Context.class);
 
             Logger.info(
-                    true, "MQ", "Router forwarding request: topic={}", context.getAssets().getMethod());
+                    true,
+                    "Vortex",
+                    "protocol=mq, Router forwarding request: topic={}",
+                    context.getAssets().getMethod());
 
             return input.bodyToMono(String.class).switchIfEmpty(Mono.just(Normal.EMPTY))
                     .flatMap(body -> executor.execute(context, body)).doOnError(
                             error -> Logger.error(
                                     true,
-                                    "MQ",
-                                    "Failed to forward request to topic: {} - {}",
+                                    "Vortex",
+                                    "protocol=mq, Failed to forward request to topic: {} - {}",
                                     context.getAssets().getMethod(),
                                     error.getMessage()));
         });

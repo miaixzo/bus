@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Predicate;
 
-import org.miaixz.bus.core.lang.Console;
 import org.miaixz.bus.core.lang.thread.SimpleScheduler;
 import org.miaixz.bus.core.xyz.RuntimeKit;
 
@@ -113,7 +112,6 @@ public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue
          */
         @Override
         public boolean test(final E e) {
-            Console.log(FreeMemoryCalculator.INSTANCE.getResult());
             return FreeMemoryCalculator.INSTANCE.getResult() > maxFreeMemory;
         }
     }

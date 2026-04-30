@@ -24,6 +24,7 @@ import org.miaixz.bus.health.builtin.Disk;
 import org.miaixz.bus.health.builtin.hardware.CentralProcessor;
 import org.miaixz.bus.health.builtin.hardware.GlobalMemory;
 import org.miaixz.bus.health.builtin.hardware.NetworkIF;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.Metrics;
 
@@ -112,6 +113,7 @@ public class HealthMetrics {
      * Register all health-backed gauges and start the background refresh scheduler.
      */
     public void register() {
+        Logger.info(true, "Metrics", "Health metrics registration started: refreshSeconds={}", refreshSeconds);
         // ── JVM ────────────────────────────────────────────────────────────
         Runtime rt = Runtime.getRuntime();
         Metrics.gauge("jvm.memory.used", rt, r -> (double) (r.totalMemory() - r.freeMemory()));
@@ -176,11 +178,22 @@ public class HealthMetrics {
 
         // Start background refresh for CPU tick-based metrics
         scheduler.scheduleAtFixedRate(this::refreshCpu, refreshSeconds, refreshSeconds, TimeUnit.SECONDS);
+        Logger.info(false, "Metrics", "Health metrics registration finished: refreshSeconds={}", refreshSeconds);
     }
 
     /** Stops the background CPU refresh scheduler. */
     public void stop() {
+        Logger.info(
+                true,
+                "Metrics",
+                "Health metrics refresh scheduler stop started: refreshSeconds={}",
+                refreshSeconds);
         scheduler.shutdown();
+        Logger.info(
+                false,
+                "Metrics",
+                "Health metrics refresh scheduler stop finished: refreshSeconds={}",
+                refreshSeconds);
     }
 
     // ── Internals ─────────────────────────────────────────────────────────
@@ -204,13 +217,22 @@ public class HealthMetrics {
             long softirq = delta(curr, prev, CentralProcessor.TickType.SOFTIRQ);
             long steal = delta(curr, prev, CentralProcessor.TickType.STEAL);
             long total = user + nice + sys + idle + iowait + irq + softirq + steal;
-            if (total <= 0)
+            if (total <= 0) {
+                Logger.debug(false, "Metrics", "Health CPU metrics refresh skipped: reason=non-positive-total");
                 return;
+            }
 
             cpuSnapshot.set(
                     new CpuSnapshot(round2((user + nice) * 100.0 / total), round2(sys * 100.0 / total),
                             round2(iowait * 100.0 / total), round2((total - idle) * 100.0 / total)));
-        } catch (Exception ignored) {
+            Logger.debug(false, "Metrics", "Health CPU metrics refresh finished: totalTicks={}", total);
+        } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Metrics",
+                    e,
+                    "Health CPU metrics refresh failed: exception={}",
+                    e.getClass().getSimpleName());
         }
     }
 

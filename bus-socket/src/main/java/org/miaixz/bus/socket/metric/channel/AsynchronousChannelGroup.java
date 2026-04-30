@@ -28,6 +28,8 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+import org.miaixz.bus.logger.Logger;
+
 /**
  * An asynchronous channel group implementation.
  * <p>
@@ -303,16 +305,31 @@ class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChannelGrou
                     try {
                         consumer.accept(key);
                     } catch (Throwable throwable) {
-                        throwable.printStackTrace();
+                        Logger.warn(
+                                false,
+                                "Socket",
+                                throwable,
+                                "Asynchronous channel key cleanup failed: exception={}",
+                                throwable.getClass().getSimpleName());
                     }
                 });
             } catch (Exception e) {
-                e.printStackTrace();
+                Logger.warn(
+                        false,
+                        "Socket",
+                        e,
+                        "Asynchronous channel worker failed: exception={}",
+                        e.getClass().getSimpleName());
             } finally {
                 try {
                     selector.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Logger.warn(
+                            false,
+                            "Socket",
+                            e,
+                            "Asynchronous channel selector close failed: exception={}",
+                            e.getClass().getSimpleName());
                 }
             }
         }

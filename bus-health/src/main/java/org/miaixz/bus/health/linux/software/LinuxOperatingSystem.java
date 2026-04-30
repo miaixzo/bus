@@ -129,10 +129,16 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                     Udev lib = Udev.INSTANCE;
                     hasUdev = true;
                 } catch (UnsatisfiedLinkError e) {
-                    Logger.warn(false, "Health", "Did not find udev library in operating system. Some features may not work.");
+                    Logger.warn(
+                            false,
+                            "Health",
+                            "Did not find udev library in operating system. Some features may not work.");
                 }
             } else {
-                Logger.info(false, "Health", "Loading of udev not allowed by configuration. Some features may not work.");
+                Logger.info(
+                        false,
+                        "Health",
+                        "Loading of udev not allowed by configuration. Some features may not work.");
             }
 
             try {
@@ -147,11 +153,17 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 try {
                     hasSyscallGettid = LinuxLibc.INSTANCE.syscall(LinuxLibc.SYS_GETTID).intValue() > 0;
                 } catch (UnsatisfiedLinkError e) {
-                    Logger.debug(false, "Health", "Did not find working syscall gettid function in operating system. Using procfs");
+                    Logger.debug(
+                            false,
+                            "Health",
+                            "Did not find working syscall gettid function in operating system. Using procfs");
                 }
             }
         } catch (NoClassDefFoundError e) {
-            Logger.error(false, "Health", "Did not JNA classes. Investigate incompatible version or missing native dll.");
+            Logger.error(
+                    false,
+                    "Health",
+                    "Did not JNA classes. Investigate incompatible version or missing native dll.");
         }
         HAS_UDEV = hasUdev;
         HAS_GETTID = hasGettid;
@@ -733,12 +745,16 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     public int getThreadCount() {
         try (Struct.CloseableSysinfo info = new Struct.CloseableSysinfo()) {
             if (0 != LibC.INSTANCE.sysinfo(info)) {
-                Logger.error(false, "Health", "Failed to get process thread count. Error code: {}", Native.getLastError());
+                Logger.error(
+                        false,
+                        "Health",
+                        "Failed to get process thread count. Error code: {}",
+                        Native.getLastError());
                 return 0;
             }
             return Short.toUnsignedInt(info.procs);
         } catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
-            Logger.error(false, "Health", "Failed to get procs from sysinfo. {}", e.getMessage());
+            Logger.error(false, "Health", "Failed to get procs from sysinfo. {}", e.getClass().getSimpleName());
         }
         return 0;
     }

@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.miaixz.bus.core.xyz.MethodKit;
 import org.miaixz.bus.limiter.Builder;
+import org.miaixz.bus.limiter.Holder;
 import org.miaixz.bus.limiter.Registry;
 import org.miaixz.bus.limiter.Sentinel;
 import org.miaixz.bus.limiter.magic.StrategyMode;
@@ -34,6 +35,7 @@ import org.miaixz.bus.limiter.magic.annotation.Downgrade;
 import org.miaixz.bus.limiter.magic.annotation.Hotspot;
 import org.miaixz.bus.limiter.magic.annotation.Limiting;
 import org.miaixz.bus.limiter.metric.MethodManager;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * An {@link InvocationHandler} implementation that intercepts method calls to apply limiting rules based on
@@ -82,6 +84,15 @@ public class ByteBuddyHandler implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         // Get the unique name for the method
         String name = Builder.resolveMethodName(method);
+        if (Holder.load().isLogger()) {
+            Logger.debug(
+                    true,
+                    "Limiter",
+                    "Limiter proxy invocation started: method={}, argCount={}, targetClass={}",
+                    name,
+                    args == null ? 0 : args.length,
+                    byteBuddyProxy.bean.getClass().getName());
+        }
         // Check if the real method is already cached in this object
         Method realMethod;
         if (methodCache.containsKey(name)) {
@@ -98,6 +109,16 @@ public class ByteBuddyHandler implements InvocationHandler {
             // Retrieve the cached strategy and annotation information for the method
             StrategyMode strategyMode = MethodManager.getAnnoInfo(name).getLeft();
             Annotation anno = MethodManager.getAnnoInfo(name).getRight();
+            if (Holder.load().isLogger()) {
+                Logger.debug(
+                        true,
+                        "Limiter",
+                        "Limiter proxy rule selected: method={}, strategy={}, annotation={}, targetClass={}",
+                        name,
+                        strategyMode.name(),
+                        anno.annotationType().getName(),
+                        byteBuddyProxy.bean.getClass().getName());
+            }
 
             // Register the rule with Sentinel based on the annotation type
             if (anno instanceof Downgrade) {
@@ -110,10 +131,28 @@ public class ByteBuddyHandler implements InvocationHandler {
                 throw new RuntimeException("annotation type error");
             }
             // Process the method invocation through Sentinel to apply limiting rules
-            return Sentinel.process(byteBuddyProxy.bean, realMethod, args, name, strategyMode);
+            Object result = Sentinel.process(byteBuddyProxy.bean, realMethod, args, name, strategyMode);
+            if (Holder.load().isLogger()) {
+                Logger.debug(
+                        false,
+                        "Limiter",
+                        "Limiter proxy invocation completed: method={}, resultType={}",
+                        name,
+                        result == null ? "null" : result.getClass().getName());
+            }
+            return result;
         } else {
             // If no limiting rules are configured, invoke the real method directly
-            return MethodKit.invoke(byteBuddyProxy.bean, realMethod, args);
+            Object result = MethodKit.invoke(byteBuddyProxy.bean, realMethod, args);
+            if (Holder.load().isLogger()) {
+                Logger.debug(
+                        false,
+                        "Limiter",
+                        "Limiter proxy invocation bypassed: method={}, resultType={}",
+                        name,
+                        result == null ? "null" : result.getClass().getName());
+            }
+            return result;
         }
     }
 

@@ -31,6 +31,7 @@ import org.miaixz.bus.extra.mq.Consumer;
 import org.miaixz.bus.extra.mq.Message;
 import org.miaixz.bus.extra.mq.MessageHandler;
 import org.miaixz.bus.extra.mq.RawMessage;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * RocketMQ consumer implementation class. This class provides an adapter for consuming messages from Apache RocketMQ,
@@ -65,9 +66,25 @@ public class RocketMQConsumer implements Consumer {
      * @throws MQueueException if subscribing to the topic fails due to an underlying RocketMQ client exception.
      */
     public RocketMQConsumer setTopic(final String topic) {
+        final long startedAt = System.nanoTime();
+        Logger.info(true, "Extra", "component=mq, RocketMQ topic subscription started: topic={}", topic);
         try {
             this.consumer.subscribe(topic, "*");
+            Logger.info(
+                    false,
+                    "Extra",
+                    "component=mq, RocketMQ topic subscription registered: topic={}, elapsedMs={}",
+                    topic,
+                    (System.nanoTime() - startedAt) / 1_000_000L);
         } catch (final MQClientException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=mq, RocketMQ topic subscription failed: topic={}, exception={}, elapsedMs={}",
+                    topic,
+                    e.getClass().getSimpleName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
             throw new MQueueException(e);
         }
         return this;
@@ -82,12 +99,33 @@ public class RocketMQConsumer implements Consumer {
      */
     @Override
     public void subscribe(final MessageHandler messageHandler) {
+        Logger.info(true, "Extra", "component=mq, RocketMQ message listener registration started");
         this.consumer.registerMessageListener((MessageListenerConcurrently) (msgs, context) -> {
-            for (final MessageExt msg : msgs) {
-                messageHandler.handle(new RawMessage(msg.getTopic(), msg.getBody()));
+            final long startedAt = System.nanoTime();
+            try {
+                for (final MessageExt msg : msgs) {
+                    messageHandler.handle(new RawMessage(msg.getTopic(), msg.getBody()));
+                }
+                Logger.debug(
+                        false,
+                        "Extra",
+                        "component=mq, RocketMQ batch handled: batchSize={}, elapsedMs={}",
+                        msgs == null ? 0 : msgs.size(),
+                        (System.nanoTime() - startedAt) / 1_000_000L);
+            } catch (RuntimeException e) {
+                Logger.warn(
+                        false,
+                        "Extra",
+                        e,
+                        "component=mq, RocketMQ batch handling failed: batchSize={}, exception={}, elapsedMs={}",
+                        msgs == null ? 0 : msgs.size(),
+                        e.getClass().getSimpleName(),
+                        (System.nanoTime() - startedAt) / 1_000_000L);
+                throw e;
             }
             return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
         });
+        Logger.info(false, "Extra", "component=mq, RocketMQ message listener registered");
     }
 
     /**
@@ -99,9 +137,16 @@ public class RocketMQConsumer implements Consumer {
      */
     @Override
     public void close() throws IOException {
+        final long startedAt = System.nanoTime();
+        Logger.debug(true, "Extra", "component=mq, RocketMQ consumer close requested");
         if (null != this.consumer) {
             this.consumer.shutdown();
         }
+        Logger.debug(
+                false,
+                "Extra",
+                "component=mq, RocketMQ consumer closed: elapsedMs={}",
+                (System.nanoTime() - startedAt) / 1_000_000L);
     }
 
 }

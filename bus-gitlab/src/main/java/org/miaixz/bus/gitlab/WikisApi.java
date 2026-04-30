@@ -30,6 +30,7 @@ import org.miaixz.bus.gitlab.models.WikiAttachment;
 import org.miaixz.bus.gitlab.models.WikiPage;
 
 import jakarta.ws.rs.core.Response;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * This class implements the client side API for the GitLab Wikis API. See
@@ -296,6 +297,15 @@ public class WikisApi extends AbstractApi {
         try {
             url = getApiClient().getApiUrl("projects", getProjectIdOrPath(projectIdOrPath), "wikis", "attachments");
         } catch (IOException ioe) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    ioe,
+                    "GitLab wiki attachment upload URL build failed: projectPresent={}, branchPresent={}, fileNamePresent={}, exception={}",
+                    projectIdOrPath != null,
+                    branch != null && !branch.isEmpty(),
+                    fileToUpload != null && fileToUpload.getName() != null,
+                    ioe.getClass().getSimpleName());
             throw new GitLabApiException(ioe);
         }
 

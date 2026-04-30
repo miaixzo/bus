@@ -29,6 +29,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.http.Builder;
 import org.miaixz.bus.http.NewCall;
 import org.miaixz.bus.http.RealCall;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Policy on when async requests are executed.
@@ -177,6 +178,14 @@ public class Dispatcher {
                 if (existingCall != null)
                     call.reuseCallsPerHostFrom(existingCall);
             }
+            Logger.debug(
+                    true,
+                    "Http",
+                    "protocol=http, Dispatcher queued async call: host={}, ready={}, running={}, maxRequests={}",
+                    call.host(),
+                    readyAsyncCalls.size(),
+                    runningAsyncCalls.size(),
+                    maxRequests);
         }
         promoteAndExecute();
     }
@@ -204,6 +213,13 @@ public class Dispatcher {
      * asynchronously {@linkplain NewCall#enqueue}.
      */
     public synchronized void cancelAll() {
+        Logger.warn(
+                false,
+                "Http",
+                "protocol=http, Dispatcher cancel all requested: ready={}, runningAsync={}, runningSync={}",
+                readyAsyncCalls.size(),
+                runningAsyncCalls.size(),
+                runningSyncCalls.size());
         for (RealCall.AsyncCall call : readyAsyncCalls) {
             call.get().cancel();
         }
@@ -247,6 +263,12 @@ public class Dispatcher {
 
         for (int i = 0, size = executableCalls.size(); i < size; i++) {
             RealCall.AsyncCall asyncCall = executableCalls.get(i);
+            Logger.debug(
+                    false,
+                    "Http",
+                    "protocol=http, Dispatcher promoting async call: host={}, promoted={}",
+                    asyncCall.host(),
+                    size);
             asyncCall.executeOn(executorService());
         }
 
@@ -260,6 +282,12 @@ public class Dispatcher {
      */
     public synchronized void executed(RealCall call) {
         runningSyncCalls.add(call);
+        Logger.debug(
+                true,
+                "Http",
+                "protocol=http, Dispatcher registered sync call: runningSync={}, runningAsync={}",
+                runningSyncCalls.size(),
+                runningAsyncCalls.size());
     }
 
     /**
@@ -269,6 +297,12 @@ public class Dispatcher {
      */
     public void finished(RealCall.AsyncCall call) {
         call.callsPerHost().decrementAndGet();
+        Logger.debug(
+                false,
+                "Http",
+                "protocol=http, Dispatcher async call finished: host={}, callsPerHost={}",
+                call.host(),
+                call.callsPerHost().get());
         finished(runningAsyncCalls, call);
     }
 
@@ -278,6 +312,7 @@ public class Dispatcher {
      * @param call the call that has finished.
      */
     public void finished(RealCall call) {
+        Logger.debug(false, "Http", "protocol=http, Dispatcher sync call finished");
         finished(runningSyncCalls, call);
     }
 

@@ -137,7 +137,12 @@ public class ImageAdapter {
     public static void checkSyntax(AdaptTransferSyntax syntax, ImageOutputData imgData) {
         if (!syntax.requested.equals(imgData.getTsuid())) {
             syntax.suitable = imgData.getTsuid();
-            Logger.warn(false, "Image", "Transcoding into {} is not possible, used instead {}", syntax.requested, syntax.suitable);
+            Logger.warn(
+                    false,
+                    "Image",
+                    "Transcoding into {} is not possible, used instead {}",
+                    syntax.requested,
+                    syntax.suitable);
         }
     }
 

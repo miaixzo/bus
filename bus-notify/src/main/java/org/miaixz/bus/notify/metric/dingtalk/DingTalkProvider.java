@@ -76,6 +76,14 @@ public class DingTalkProvider extends AbstractProvider<DingTalkNotice, Context> 
      */
     @Override
     public Message send(DingTalkNotice entity) {
+        Logger.info(
+                true,
+                "Notify",
+                "DingTalk notify send started: agentId={}, toAll={}, userTargetsPresent={}, deptTargetsPresent={}",
+                entity == null ? null : entity.getAgentId(),
+                entity != null && entity.isToAllUser(),
+                entity != null && StringKit.isNotBlank(entity.getUserIdList()),
+                entity != null && StringKit.isNotBlank(entity.getDeptIdList()));
         Map<String, String> bodys = new HashMap<>();
         bodys.put("access_token", entity.getToken());
         bodys.put("agent_id", entity.getAgentId());
@@ -89,9 +97,17 @@ public class DingTalkProvider extends AbstractProvider<DingTalkNotice, Context> 
         bodys.put("to_all_user", String.valueOf(entity.isToAllUser()));
         String response = Httpx.post(this.getUrl(entity), bodys);
         String errcode = JsonKit.getValue(response, Consts.ERRCODE);
-        return Message.builder()
+        Message result = Message.builder()
                 .errcode(String.valueOf(HTTP.HTTP_OK).equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
                 .errmsg(JsonKit.getValue(response, Consts.ERRMSG)).build();
+        Logger.info(
+                false,
+                "Notify",
+                "DingTalk notify send completed: agentId={}, errcode={}, responseBytes={}",
+                entity == null ? null : entity.getAgentId(),
+                result.getErrcode(),
+                response == null ? 0 : response.length());
+        return result;
     }
 
     /**
@@ -102,8 +118,15 @@ public class DingTalkProvider extends AbstractProvider<DingTalkNotice, Context> 
      */
     private String getToken(String url) {
         if (System.currentTimeMillis() - refreshTokenTime > tokenTimeOut || null == accessToken.get()) {
+            Logger.info(
+                    true,
+                    "Notify",
+                    "DingTalk token refresh started: urlPresent={}, tokenExpired={}",
+                    url != null,
+                    System.currentTimeMillis() - refreshTokenTime > tokenTimeOut);
             return requestToken(url);
         }
+        Logger.debug(false, "Notify", "DingTalk token resolved from cache: tokenPresent={}", true);
         return accessToken.get();
     }
 
@@ -123,10 +146,21 @@ public class DingTalkProvider extends AbstractProvider<DingTalkNotice, Context> 
             String access_token = JsonKit.getValue(response, "access_token");
             refreshTokenTime = System.currentTimeMillis();
             accessToken.set(access_token);
+            Logger.info(
+                    false,
+                    "Notify",
+                    "DingTalk token refresh completed: errcode={}, tokenPresent={}",
+                    errcode,
+                    StringKit.isNotEmpty(access_token));
             return access_token;
         }
 
-        Logger.error(false, "Notify", "Failed to get DingTalk token: {}", JsonKit.getValue(response, Consts.ERRMSG));
+        Logger.error(
+                false,
+                "Notify",
+                "DingTalk token refresh failed: errcode={}, responseBytes={}",
+                errcode,
+                response == null ? 0 : response.length());
         return null;
     }
 

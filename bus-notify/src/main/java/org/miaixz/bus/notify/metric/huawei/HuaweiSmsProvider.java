@@ -32,6 +32,7 @@ import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.AbstractProvider;
@@ -97,6 +98,13 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiNotice, Context> {
      */
     @Override
     public Message send(HuaweiNotice entity) {
+        Logger.info(
+                true,
+                "Notify",
+                "Huawei SMS send started: template={}, targetCount={}, senderPresent={}",
+                entity == null ? null : entity.getTemplate(),
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity != null && entity.getSender() != null);
         Map<String, String> bodys = new HashMap<>();
         // The sender's number.
         bodys.put("from", entity.getSender());
@@ -116,8 +124,18 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiNotice, Context> {
 
         String response = Httpx.post(this.getUrl(entity), bodys, headers);
         String errcode = JsonKit.getValue(response, "code");
-        return Message.builder().errcode(SUCCESS_CODE.equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
+        Message result = Message.builder().errcode(SUCCESS_CODE.equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
                 .errmsg(JsonKit.getValue(response, "description")).build();
+        Logger.info(
+                false,
+                "Notify",
+                "Huawei SMS send completed: template={}, targetCount={}, code={}, errcode={}, responseBytes={}",
+                entity == null ? null : entity.getTemplate(),
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                errcode,
+                result.getErrcode(),
+                response == null ? 0 : response.length());
+        return result;
     }
 
     /**
@@ -138,6 +156,12 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiNotice, Context> {
             String passwordDigestBase64Str = Base64.getEncoder().encodeToString(hexDigest.getBytes());
             return String.format(WSSE_HEADER_FORMAT, context.getAppKey(), passwordDigestBase64Str, nonce, time);
         } catch (Exception e) {
+            Logger.error(
+                    false,
+                    "Notify",
+                    e,
+                    "Huawei SMS WSSE header build failed: exception={}",
+                    e.getClass().getSimpleName());
             throw new InternalException(e.getLocalizedMessage(), e);
         }
     }

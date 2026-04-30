@@ -45,6 +45,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.http.bodys.ResponseBody;
 import org.miaixz.bus.http.metric.Internal;
 import org.miaixz.bus.http.metric.http.Http2Header;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Utility class for HTTP-related operations.
@@ -163,6 +164,11 @@ public class Builder {
         try {
             m = Throwable.class.getDeclaredMethod("addSuppressed", Throwable.class);
         } catch (Exception e) {
+            Logger.debug(
+                    false,
+                    "Http",
+                    "protocol=http, Suppressed exception method unavailable: exception={}",
+                    e.getClass().getSimpleName());
             m = null;
         }
         addSuppressedExceptionMethod = m;
@@ -185,6 +191,13 @@ public class Builder {
             try {
                 addSuppressedExceptionMethod.invoke(e, suppressed);
             } catch (InvocationTargetException | IllegalAccessException ignored) {
+                Logger.debug(
+                        false,
+                        "Http",
+                        "protocol=http, Suppressed exception attach failed: primaryException={}, suppressedException={}, exception={}",
+                        e == null ? null : e.getClass().getSimpleName(),
+                        suppressed == null ? null : suppressed.getClass().getSimpleName(),
+                        ignored.getClass().getSimpleName());
             }
         }
     }
@@ -215,6 +228,13 @@ public class Builder {
         try {
             return skipAll(source, timeout, timeUnit);
         } catch (IOException e) {
+            Logger.debug(
+                    false,
+                    "Http",
+                    "protocol=http, Source discard failed: timeout={}, unit={}, exception={}",
+                    timeout,
+                    timeUnit,
+                    e.getClass().getSimpleName());
             return false;
         }
     }
@@ -240,6 +260,13 @@ public class Builder {
             }
             return true;
         } catch (InterruptedIOException e) {
+            Logger.debug(
+                    false,
+                    "Http",
+                    "protocol=http, Source skip timed out: duration={}, unit={}, exception={}",
+                    duration,
+                    timeUnit,
+                    e.getClass().getSimpleName());
             return false;
         } finally {
             if (originalDuration == Long.MAX_VALUE) {
@@ -515,6 +542,12 @@ public class Builder {
             }
             return result;
         } catch (IllegalArgumentException e) {
+            Logger.debug(
+                    false,
+                    "Http",
+                    "protocol=http, Host canonicalization failed: hostChars={}, exception={}",
+                    host == null ? 0 : host.length(),
+                    e.getClass().getSimpleName());
             return null;
         }
     }

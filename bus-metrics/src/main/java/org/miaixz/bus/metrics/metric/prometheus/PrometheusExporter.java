@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.metrics.metric.prometheus;
 
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Provider;
 import org.miaixz.bus.metrics.magic.TimerSnapshot;
 import org.miaixz.bus.metrics.metric.*;
@@ -54,28 +55,57 @@ public class PrometheusExporter {
      * @return the scrape body as a UTF-8 string
      */
     public String scrape() {
+        long start = System.currentTimeMillis();
+        Logger.info(
+                true,
+                "Metrics",
+                "Prometheus metrics scrape started: providerClass={}",
+                null == provider ? null : provider.getClass().getName());
         StringBuilder sb = new StringBuilder(4096);
         if (!(provider instanceof NativeProvider np)) {
+            Logger.warn(
+                    false,
+                    "Metrics",
+                    "Prometheus metrics scrape skipped: providerClass={}, reason=native-required",
+                    null == provider ? null : provider.getClass().getName());
             return "# NativeProvider required for Prometheus scrape\n";
         }
+        int counterCount = 0;
+        int timerCount = 0;
+        int histogramCount = 0;
+        int gaugeCount = 0;
         // Counters
         for (Counter c : np.counters()) {
             // name is not exposed from Counter interface; use registry iteration
+            counterCount++;
         }
         // Export via timer snapshots
         for (Timer t : np.timers()) {
             TimerSnapshot snap = t.snapshot();
             exportTimer(sb, snap);
+            timerCount++;
         }
         // Histograms
         for (Histogram h : np.histograms()) {
             TimerSnapshot snap = h.snapshot();
             exportHistogram(sb, snap);
+            histogramCount++;
         }
         // Gauges
         for (Gauge g : np.gauges()) {
             // Gauge name not exposed directly; skip for now
+            gaugeCount++;
         }
+        Logger.info(
+                false,
+                "Metrics",
+                "Prometheus metrics scrape finished: counters={}, timers={}, histograms={}, gauges={}, payloadChars={}, elapsedMs={}",
+                counterCount,
+                timerCount,
+                histogramCount,
+                gaugeCount,
+                sb.length(),
+                System.currentTimeMillis() - start);
         return sb.toString();
     }
 

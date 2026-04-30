@@ -170,7 +170,11 @@ public class Httpx {
                     try {
                         return dns.lookup(hostname);
                     } catch (Exception e) {
-                        Logger.error(false, "HTTP", "DNS lookup failed: {}", e.getMessage());
+                        Logger.error(
+                                false,
+                                "Http",
+                                "protocol=http, DNS lookup failed: {}",
+                                e.getClass().getSimpleName());
                     }
                     return DnsX.SYSTEM.lookup(hostname);
                 });
@@ -721,7 +725,12 @@ public class Httpx {
             }
             response.close();
         } catch (Exception e) {
-            Logger.error(false, "HTTP", "HEAD request failed for URL [{}]: {}", url, e.getMessage());
+            Logger.error(
+                    false,
+                    "Http",
+                    "protocol=http, HEAD request failed: url={}, exception={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    e.getClass().getSimpleName());
         }
         return result.toString();
     }
@@ -747,7 +756,7 @@ public class Httpx {
             if (file.exists()) {
                 requestBodyBuilder.addFormDataPart("file", file.getName(), RequestBody.of(contentType, file));
             } else {
-                Logger.warn(false, "HTTP", "File not found: {}", path);
+                Logger.warn(false, "Http", "protocol=http, File not found: {}", path);
             }
         }
         RequestBody requestBody = requestBodyBuilder.build();
@@ -761,7 +770,12 @@ public class Httpx {
             }
             response.close();
         } catch (Exception e) {
-            Logger.error(false, "HTTP", "Requesting HTTP Error for URL [{}]: {}", url, e.getMessage());
+            Logger.error(
+                    false,
+                    "Http",
+                    "protocol=http, Multipart HTTP request failed: url={}, exception={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    e.getClass().getSimpleName());
         }
         return result;
     }
@@ -786,7 +800,16 @@ public class Httpx {
             builder.contentType = MediaType.APPLICATION_FORM_URLENCODED;
         }
         if (builder.tracer) {
-            Logger.info(true, "HTTP", "Request Builder: {}", builder);
+            Logger.info(
+                    true,
+                    "Http",
+                    "protocol=http, HTTP request builder prepared: method={}, url={}, contentType={}, headerCount={}, formCount={}, hasContent={}",
+                    builder.method,
+                    builder.url,
+                    builder.contentType,
+                    builder.headerMap == null ? 0 : builder.headerMap.size(),
+                    builder.formMap == null ? 0 : builder.formMap.size(),
+                    StringKit.isNotEmpty(builder.data));
         }
 
         Request.Builder request = new Request.Builder();
@@ -842,11 +865,21 @@ public class Httpx {
                 result = new String(bytes, builder.responseCharset);
             }
             if (builder.tracer) {
-                Logger.info(false, "HTTP", "Response for URL [{}]: {}", builder.url, result);
+                Logger.info(
+                        false,
+                        "Http",
+                        "protocol=http, HTTP response received: url={}, contentChars={}",
+                        builder.url == null ? null : builder.url.replaceFirst("\\?.*$", ""),
+                        result == null ? 0 : result.length());
             }
             response.close();
         } catch (Exception e) {
-            Logger.error(false, "HTTP", "Request failed for URL [{}]: {}", builder.url, e.getMessage());
+            Logger.error(
+                    false,
+                    "Http",
+                    "protocol=http, HTTP request failed: url={}, exception={}",
+                    builder.url == null ? null : builder.url.replaceFirst("\\?.*$", ""),
+                    e.getClass().getSimpleName());
         }
         return result;
     }
@@ -874,7 +907,12 @@ public class Httpx {
              */
             @Override
             public void onFailure(NewCall call, IOException e) {
-                Logger.error(false, "HTTP", "Async request failed for URL [{}]: {}", builder.url, e.getMessage());
+                Logger.error(
+                        false,
+                        "Http",
+                        "protocol=http, Async HTTP request failed: url={}, exception={}",
+                        builder.url == null ? null : builder.url.replaceFirst("\\?.*$", ""),
+                        e.getClass().getSimpleName());
             }
 
             /**
@@ -895,7 +933,12 @@ public class Httpx {
                         byte[] bytes = response.body().bytes();
                         result[0] = new String(bytes, builder.responseCharset);
                         if (builder.tracer) {
-                            Logger.info(false, "HTTP", "Async response for URL [{}]: {}", builder.url, result[0]);
+                            Logger.info(
+                                    false,
+                                    "Http",
+                                    "protocol=http, Async response received: url={}, contentChars={}",
+                                    builder.url,
+                                    result[0] == null ? 0 : result[0].length());
                         }
                     }
                 } finally {

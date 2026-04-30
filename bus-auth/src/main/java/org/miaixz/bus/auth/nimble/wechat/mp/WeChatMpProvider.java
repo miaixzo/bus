@@ -39,6 +39,7 @@ import org.miaixz.bus.auth.nimble.wechat.AbstractWeChatProvider;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * WeChat Official Account (MP) login provider.
@@ -138,6 +139,15 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
                                     .token(authorization).source(complex.toString()).build())
                     .build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "user info",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
     }
@@ -200,6 +210,15 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
             return Authorization.builder().token(token).refresh(refresh).expireIn(expiresIn).openId(openId).scope(scope)
                     .snapshotUser(snapshotUser).build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "token",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse token response: " + e.getMessage());
         }
     }

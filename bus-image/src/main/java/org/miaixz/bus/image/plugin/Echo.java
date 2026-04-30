@@ -119,7 +119,7 @@ public class Echo {
                 Thread.currentThread().interrupt();
             }
             String message = "DICOM Echo failed, storescu: " + e.getMessage();
-            Logger.error(false, "ImageTool", message, e);
+            Logger.error(false, "Image", "component=tool, " + (message), e);
             return Status.buildMessage(new Status(Status.UnableToProcess, message, null), null, e);
         }
     }

@@ -35,6 +35,7 @@ import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.AbstractProvider;
@@ -101,6 +102,13 @@ public class CtyunSmsProvider extends AbstractProvider<CtyunNotice, Context> {
      */
     @Override
     public Message send(CtyunNotice entity) {
+        Logger.info(
+                true,
+                "Notify",
+                "CTYUN SMS send started: action={}, template={}, targetCount={}",
+                entity == null ? null : entity.getAction(),
+                entity == null ? null : entity.getTemplate(),
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length);
         Map<String, String> bodys = new HashMap<>(5);
         // The API action to be performed.
         bodys.put("action", entity.getAction());
@@ -119,8 +127,18 @@ public class CtyunSmsProvider extends AbstractProvider<CtyunNotice, Context> {
                 signHeader(JsonKit.toJsonString(bodys), this.context.getAppKey(), this.context.getAppSecret()));
 
         String errcode = JsonKit.getValue(response, Consts.ERRCODE);
-        return Message.builder().errcode("200".equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
+        Message result = Message.builder().errcode("200".equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
                 .errmsg(JsonKit.getValue(response, Consts.ERRMSG)).build();
+        Logger.info(
+                false,
+                "Notify",
+                "CTYUN SMS send completed: action={}, template={}, targetCount={}, errcode={}, responseBytes={}",
+                entity == null ? null : entity.getAction(),
+                entity == null ? null : entity.getTemplate(),
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                result.getErrcode(),
+                response == null ? 0 : response.length());
+        return result;
     }
 
 }

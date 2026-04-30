@@ -28,6 +28,7 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.logger.Logger;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -77,14 +78,35 @@ public class DatabaseQueryFactory implements Serializable {
         try {
             // Get the database URL to determine the database type
             String url = this.getDataSource().getConnection().getMetaData().getURL();
+            DatabaseType databaseType = DatabaseType.getDbType(url);
             // Get the implementation class for the database type
-            Class<? extends DatabaseQuery> query = DatabaseType.getDbType(url).getImplClass();
+            Class<? extends DatabaseQuery> query = databaseType.getImplClass();
+            Logger.debug(
+                    true,
+                    "Shade",
+                    "Database query creation started: databaseType={}, queryClass={}",
+                    databaseType.getName(),
+                    query.getName());
             // Get the constructor that accepts a DataSource
             Constructor<? extends DatabaseQuery> constructor = query.getConstructor(DataSource.class);
             // Instantiate the query class
-            return constructor.newInstance(dataSource);
+            DatabaseQuery databaseQuery = constructor.newInstance(dataSource);
+            Logger.debug(
+                    false,
+                    "Shade",
+                    "Database query creation finished: databaseType={}, queryClass={}",
+                    databaseType.getName(),
+                    query.getName());
+            return databaseQuery;
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException
                 | SQLException e) {
+            Logger.warn(
+                    false,
+                    "Shade",
+                    e,
+                    "Database query creation failed: dataSourceClass={}, exception={}",
+                    this.getDataSource().getClass().getName(),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }

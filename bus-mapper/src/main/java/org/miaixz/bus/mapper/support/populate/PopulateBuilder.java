@@ -115,12 +115,7 @@ public class PopulateBuilder {
             }
 
         } catch (Exception e) {
-            Logger.error(
-                    false,
-                    "Populate",
-                    "Failed to fill insert data for entity: {}",
-                    entity.getClass().getName(),
-                    e);
+            Logger.error(false, "Mapper", "Failed to fill insert data for entity: {}", entity.getClass().getName(), e);
         }
     }
 
@@ -158,12 +153,7 @@ public class PopulateBuilder {
             }
 
         } catch (Exception e) {
-            Logger.error(
-                    false,
-                    "Populate",
-                    "Failed to fill update data for entity: {}",
-                    entity.getClass().getName(),
-                    e);
+            Logger.error(false, "Mapper", "Failed to fill update data for entity: {}", entity.getClass().getName(), e);
         }
     }
 
@@ -274,6 +264,14 @@ public class PopulateBuilder {
             try {
                 return Long.parseLong(user.toString());
             } catch (NumberFormatException e) {
+                Logger.warn(
+                        false,
+                        "Mapper",
+                        e,
+                        "Mapper operation failed: component={}, provider={}, exception={}",
+                        "populate",
+                        "PopulateBuilder",
+                        e.getClass().getSimpleName());
                 return null;
             }
         }
@@ -286,6 +284,14 @@ public class PopulateBuilder {
             try {
                 return Integer.parseInt(user.toString());
             } catch (NumberFormatException e) {
+                Logger.warn(
+                        false,
+                        "Mapper",
+                        e,
+                        "Mapper operation failed: component={}, provider={}, exception={}",
+                        "populate",
+                        "PopulateBuilder",
+                        e.getClass().getSimpleName());
                 return null;
             }
         }

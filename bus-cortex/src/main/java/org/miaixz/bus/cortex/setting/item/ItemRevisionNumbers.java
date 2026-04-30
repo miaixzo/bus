@@ -20,6 +20,7 @@
 package org.miaixz.bus.cortex.setting.item;
 
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Utility methods for converting string-based {@code setting.item.revision} numbers at storage boundaries.
@@ -60,6 +61,15 @@ public final class ItemRevisionNumbers {
         try {
             return Long.valueOf(revision.trim());
         } catch (NumberFormatException e) {
+            Logger.warn(
+                    false,
+                    "Cortex",
+                    e,
+                    "Cortex operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "setting",
+                    "ItemRevisionNumbers",
+                    false,
+                    e.getClass().getSimpleName());
             throw new IllegalArgumentException("Setting item revision must be numeric: " + revision, e);
         }
     }

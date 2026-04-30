@@ -23,6 +23,7 @@ import java.lang.reflect.Constructor;
 
 import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.ReflectKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.proxy.Aspect;
 import org.miaixz.bus.proxy.Provider;
 import org.springframework.cglib.proxy.Enhancer;
@@ -50,15 +51,37 @@ public class SpringCglibProvider implements Provider {
     private static <T> T create(final Enhancer enhancer, final Class<?> targetClass) {
         final Constructor<?>[] constructors = ReflectKit.getConstructors(targetClass);
         IllegalArgumentException finalException = null;
+        Logger.debug(
+                true,
+                "Proxy",
+                "CGLIB proxy constructor selection started: targetClass={}, constructorCount={}",
+                targetClass.getName(),
+                constructors.length);
         for (final Constructor<?> constructor : constructors) {
             final Class<?>[] parameterTypes = constructor.getParameterTypes();
             final Object[] values = ClassKit.getDefaultValues(parameterTypes);
 
             try {
-                return (T) enhancer.create(parameterTypes, values);
+                T proxy = (T) enhancer.create(parameterTypes, values);
+                Logger.debug(
+                        false,
+                        "Proxy",
+                        "CGLIB proxy constructor selected: targetClass={}, constructorParameterCount={}, proxyClass={}",
+                        targetClass.getName(),
+                        parameterTypes.length,
+                        proxy.getClass().getName());
+                return proxy;
             } catch (final IllegalArgumentException e) {
                 // Keep the last exception to throw if all constructors fail.
                 finalException = e;
+                Logger.warn(
+                        false,
+                        "Proxy",
+                        e,
+                        "CGLIB proxy constructor failed: targetClass={}, constructorParameterCount={}, exception={}",
+                        targetClass.getName(),
+                        parameterTypes.length,
+                        e.getClass().getSimpleName());
             }
         }
         if (null != finalException) {
@@ -79,12 +102,25 @@ public class SpringCglibProvider implements Provider {
      */
     public <T> T proxy(final T target, final Aspect aspect) {
         final Class<?> targetClass = target.getClass();
+        Logger.debug(
+                true,
+                "Proxy",
+                "CGLIB proxy creation started: targetClass={}, aspectClass={}",
+                targetClass.getName(),
+                aspect == null ? null : aspect.getClass().getName());
 
         final Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(targetClass);
         enhancer.setCallback(new SpringCglibInterceptor(target, aspect));
 
-        return create(enhancer, targetClass);
+        T proxy = create(enhancer, targetClass);
+        Logger.debug(
+                false,
+                "Proxy",
+                "CGLIB proxy creation completed: targetClass={}, proxyClass={}",
+                targetClass.getName(),
+                proxy == null ? null : proxy.getClass().getName());
+        return proxy;
     }
 
 }

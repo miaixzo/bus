@@ -46,6 +46,7 @@ import org.miaixz.bus.mapper.builder.GenericTypeResolver;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Represents the metadata of an entity table, recording the relationship between an entity and its corresponding table.
@@ -358,6 +359,14 @@ public class TableMeta extends PropertyMeta<TableMeta> {
                 try {
                     builder.typeHandler(getTypeHandlerInstance(columnMeta.javaType(), columnMeta.typeHandler));
                 } catch (Exception e) {
+                    Logger.warn(
+                            false,
+                            "Mapper",
+                            e,
+                            "Mapper operation failed: component={}, provider={}, exception={}",
+                            "metadata",
+                            "TableMeta",
+                            e.getClass().getSimpleName());
                     throw new RuntimeException(e);
                 }
             }
@@ -387,7 +396,22 @@ public class TableMeta extends PropertyMeta<TableMeta> {
                 Constructor<?> c = typeHandlerClass.getConstructor(Class.class);
                 return (TypeHandler) c.newInstance(javaTypeClass);
             } catch (NoSuchMethodException ignored) {
+                Logger.debug(
+                        false,
+                        "Mapper",
+                        "Mapper operation skipped: component={}, provider={}, exception={}",
+                        "metadata",
+                        "TableMeta",
+                        ignored.getClass().getSimpleName());
             } catch (Exception e) {
+                Logger.warn(
+                        false,
+                        "Mapper",
+                        e,
+                        "Mapper operation failed: component={}, provider={}, exception={}",
+                        "metadata",
+                        "TableMeta",
+                        e.getClass().getSimpleName());
                 throw new TypeException("Failed invoking constructor for handler " + typeHandlerClass, e);
             }
         }
@@ -395,6 +419,14 @@ public class TableMeta extends PropertyMeta<TableMeta> {
             Constructor<?> c = typeHandlerClass.getConstructor();
             return (TypeHandler) c.newInstance();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Mapper",
+                    e,
+                    "Mapper operation failed: component={}, provider={}, exception={}",
+                    "metadata",
+                    "TableMeta",
+                    e.getClass().getSimpleName());
             throw new TypeException("Unable to find a usable constructor for " + typeHandlerClass, e);
         }
     }

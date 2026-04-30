@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.ToDoubleFunction;
 
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.Provider;
 import org.miaixz.bus.metrics.guard.CardinalityGuard;
@@ -59,7 +60,17 @@ public class MicrometerProvider implements Provider {
      * @param registry the Micrometer MeterRegistry to delegate to
      */
     public MicrometerProvider(MeterRegistry registry) {
+        Logger.info(
+                true,
+                "Metrics",
+                "Micrometer metrics provider initialization started: registryClass={}",
+                null == registry ? null : registry.getClass().getName());
         this.registry = registry;
+        Logger.info(
+                false,
+                "Metrics",
+                "Micrometer metrics provider initialization finished: registryClass={}",
+                null == registry ? null : registry.getClass().getName());
     }
 
     /**

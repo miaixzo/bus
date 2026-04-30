@@ -409,7 +409,11 @@ public final class WindowsGraphicsCard extends AbstractGraphicsCard {
                 }
             }
         } catch (Exception e) {
-            Logger.debug(false, "Health", "LHM GPU hardware query failed (LHM may not be running): {}", e.getMessage());
+            Logger.debug(
+                    false,
+                    "Health",
+                    "LHM GPU hardware query failed (LHM may not be running): {}",
+                    e.getClass().getSimpleName());
         }
         return map;
     }
@@ -546,7 +550,9 @@ public final class WindowsGraphicsCard extends AbstractGraphicsCard {
         // Multiple adapters: we cannot reliably match by name here since GPU Adapter Memory
         // instances do not carry a name. Return empty; callers will get -1 for PDH metrics.
         // A future improvement could correlate via DXGI LUID enumeration.
-        Logger.debug(false, "Health",
+        Logger.debug(
+                false,
+                "Health",
                 "Multiple GPU Adapter Memory instances found ({}); LUID matching not yet implemented for multi-GPU",
                 instances.size());
         return Normal.EMPTY;

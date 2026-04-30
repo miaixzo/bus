@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import org.miaixz.bus.cortex.magic.runtime.DiagnosticsSnapshot;
 import org.miaixz.bus.http.Httpv;
 import org.miaixz.bus.http.plugin.httpv.CoverResult;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Shared static HTTP entry points for the small set of synchronous cortex runtime calls.
@@ -78,8 +79,10 @@ public final class Callout {
      * Cancels outstanding calls and clears all shared HTTP clients.
      */
     public static void shutdown() {
+        Logger.info(true, "Cortex", "Callout shutdown requested: clientCount={}", CLIENTS.size());
         CLIENTS.values().forEach(Callout::cancelQuietly);
         CLIENTS.clear();
+        Logger.info(false, "Cortex", "Callout shutdown completed: clientCount={}", CLIENTS.size());
     }
 
     /**
@@ -116,11 +119,14 @@ public final class Callout {
      * @return configured HTTP client
      */
     private static Httpv newHttpv(long timeoutMs) {
-        return Httpv.builder().config(
+        Logger.debug(true, "Cortex", "Callout HTTP client creation started: timeoutMs={}", timeoutMs);
+        Httpv client = Httpv.builder().config(
                 builder -> builder.callTimeout(timeoutMs, TimeUnit.MILLISECONDS)
                         .connectTimeout(timeoutMs, TimeUnit.MILLISECONDS).readTimeout(timeoutMs, TimeUnit.MILLISECONDS)
                         .writeTimeout(timeoutMs, TimeUnit.MILLISECONDS))
                 .preprocTimeoutTimes(1).build();
+        Logger.debug(false, "Cortex", "Callout HTTP client created: timeoutMs={}", timeoutMs);
+        return client;
     }
 
     /**
@@ -132,6 +138,12 @@ public final class Callout {
         try {
             client.cancelAll();
         } catch (RuntimeException ignored) {
+            Logger.warn(
+                    false,
+                    "Cortex",
+                    ignored,
+                    "Callout HTTP client cancel failed: exception={}",
+                    ignored.getClass().getSimpleName());
         }
     }
 

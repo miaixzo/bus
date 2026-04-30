@@ -107,7 +107,13 @@ public final class HkeyUserData {
                     }
                     sessions.add(new OSSession(name, device, loginTime, host));
                 } catch (Win32Exception ex) {
-                    Logger.warn(false, "Health", "Error querying SID {} from registry: {}", sidKey, ex.getMessage());
+                    Logger.warn(
+                            false,
+                            "Health",
+                            ex,
+                            "Registry SID query failed: sidPresent={}, exception={}",
+                            sidKey != null,
+                            ex.getClass().getSimpleName());
                 }
             }
         }

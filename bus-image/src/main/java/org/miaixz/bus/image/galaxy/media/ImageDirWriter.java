@@ -492,7 +492,12 @@ public class ImageDirWriter extends ImageDirReader {
      */
     private void writeRecord(int offset, Attributes rec) throws IOException {
         if (Logger.isInfoEnabled())
-            Logger.info(false, "Image", "M-UPDATE {}: add {} Record", file, rec.getString(Tag.DirectoryRecordType, null));
+            Logger.info(
+                    false,
+                    "Image",
+                    "M-UPDATE {}: add {} Record",
+                    file,
+                    rec.getString(Tag.DirectoryRecordType, null));
         Logger.debug(false, "Image", "Directory Record:\n{}", rec);
         rec.setItemPosition(offset);
         if (rollbackLen == -1) {

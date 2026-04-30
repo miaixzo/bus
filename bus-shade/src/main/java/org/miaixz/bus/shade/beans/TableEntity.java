@@ -22,6 +22,7 @@ package org.miaixz.bus.shade.beans;
 import lombok.Getter;
 import lombok.Setter;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.logger.Logger;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -234,6 +235,13 @@ public class TableEntity implements Serializable {
         String sql = "select column_name,data_type,column_comment from information_schema.columns where table_schema='"
                 + entity.getDatabase() + "' and table_name='" + entity.getTable() + Symbol.SINGLE_QUOTE;
         try {
+            Logger.debug(
+                    true,
+                    "Shade",
+                    "Table entity metadata scan started: database={}, tableName={}, hump={}",
+                    entity.getDatabase(),
+                    entity.getTable(),
+                    entity.isHump());
             // Establish database connection
             con = DriverManager.getConnection(entity.url, entity.user, entity.password);
             pstemt = con.prepareStatement(sql);
@@ -273,9 +281,26 @@ public class TableEntity implements Serializable {
                 throw new RuntimeException(
                         "Failed to read table or columns. Please check the connection URL, database account, password, and table name.");
             }
+            Logger.info(
+                    false,
+                    "Shade",
+                    "Table entity metadata scan finished: database={}, tableName={}, columnCount={}, idType={}, idJdbcType={}",
+                    entity.getDatabase(),
+                    entity.getTable(),
+                    columns.size(),
+                    entity.getIdType(),
+                    entity.getIdJdbcType());
             return entity;
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.warn(
+                    false,
+                    "Shade",
+                    e,
+                    "Table entity generation failed: database={}, tableName={}, columnCount={}, exception={}",
+                    entity.getDatabase(),
+                    entity.getTable(),
+                    columns.size(),
+                    e.getClass().getSimpleName());
             throw new RuntimeException("Error generating entity class: " + e.getMessage());
         } finally {
             // Ensure resources are closed in finally block
@@ -283,19 +308,37 @@ public class TableEntity implements Serializable {
                 if (null != rs)
                     rs.close();
             } catch (SQLException se2) {
-                // Log or handle exception if closing fails
+                Logger.warn(
+                        false,
+                        "Shade",
+                        se2,
+                        "Result set close failed: tableName={}, exception={}",
+                        entity.getTable(),
+                        se2.getClass().getSimpleName());
             }
             try {
                 if (null != pstemt)
                     pstemt.close();
             } catch (SQLException se2) {
-                // Log or handle exception if closing fails
+                Logger.warn(
+                        false,
+                        "Shade",
+                        se2,
+                        "Prepared statement close failed: tableName={}, exception={}",
+                        entity.getTable(),
+                        se2.getClass().getSimpleName());
             }
             try {
                 if (null != con)
                     con.close();
             } catch (SQLException se) {
-                se.printStackTrace();
+                Logger.warn(
+                        false,
+                        "Shade",
+                        se,
+                        "Database connection close failed: tableName={}, exception={}",
+                        entity.getTable(),
+                        se.getClass().getSimpleName());
             }
         }
     }

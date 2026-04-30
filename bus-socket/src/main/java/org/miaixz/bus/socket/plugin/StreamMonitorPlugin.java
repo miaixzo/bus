@@ -20,7 +20,6 @@
 package org.miaixz.bus.socket.plugin;
 
 import org.miaixz.bus.core.center.date.Formatter;
-import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.socket.metric.channel.AsynchronousSocketChannelProxy;
 import org.miaixz.bus.socket.metric.channel.UnsupportedAsynchronousSocketChannel;
@@ -54,12 +53,20 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
      */
     public static final BiConsumer<AsynchronousSocketChannel, byte[]> BLUE_HEX_INPUT_STREAM = (channel, bytes) -> {
         try {
-            Logger.info(false, "Socket",
-                    ConsoleColors.BLUE + Formatter.NORM_DATETIME_MS_FORMAT.format(new Date()) + " [ "
-                            + channel.getRemoteAddress() + " --> " + channel.getLocalAddress() + " ] [ read: "
-                            + bytes.length + " bytes ]" + ByteKit.byteArrayToHexString(bytes) + ConsoleColors.RESET);
+            Logger.info(
+                    false,
+                    "Socket",
+                    ConsoleColors.BLUE + "timestamp=" + Formatter.NORM_DATETIME_MS_FORMAT.format(new Date())
+                            + ", remoteAddress=" + channel.getRemoteAddress() + ", localAddress="
+                            + channel.getLocalAddress() + ", direction=read, bytes=" + bytes.length
+                            + ConsoleColors.RESET);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.warn(
+                    false,
+                    "Socket",
+                    e,
+                    "Stream monitor input hex logging failed: exception={}",
+                    e.getClass().getSimpleName());
         }
     };
     /**
@@ -68,12 +75,20 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
      */
     public static final BiConsumer<AsynchronousSocketChannel, byte[]> RED_HEX_OUTPUT_STREAM = (channel, bytes) -> {
         try {
-            Logger.info(false, "Socket",
-                    ConsoleColors.RED + Formatter.NORM_DATETIME_MS_FORMAT.format(new Date()) + " [ "
-                            + channel.getLocalAddress() + " --> " + channel.getRemoteAddress() + " ] [ write: "
-                            + bytes.length + " bytes ]" + ByteKit.byteArrayToHexString(bytes) + ConsoleColors.RESET);
+            Logger.info(
+                    false,
+                    "Socket",
+                    ConsoleColors.RED + "timestamp=" + Formatter.NORM_DATETIME_MS_FORMAT.format(new Date())
+                            + ", localAddress=" + channel.getLocalAddress() + ", remoteAddress="
+                            + channel.getRemoteAddress() + ", direction=write, bytes=" + bytes.length
+                            + ConsoleColors.RESET);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.warn(
+                    false,
+                    "Socket",
+                    e,
+                    "Stream monitor output hex logging failed: exception={}",
+                    e.getClass().getSimpleName());
         }
     };
 
@@ -83,12 +98,20 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
      */
     public static final BiConsumer<AsynchronousSocketChannel, byte[]> BLUE_TEXT_INPUT_STREAM = (channel, bytes) -> {
         try {
-            Logger.info(false, "Socket",
-                    ConsoleColors.BLUE + Formatter.NORM_DATETIME_MS_FORMAT.format(new Date()) + " [ "
-                            + channel.getRemoteAddress() + " --> " + channel.getLocalAddress() + " ] [ read: "
-                            + bytes.length + " bytes ]\r\n" + new String(bytes) + ConsoleColors.RESET);
+            Logger.info(
+                    false,
+                    "Socket",
+                    ConsoleColors.BLUE + "timestamp=" + Formatter.NORM_DATETIME_MS_FORMAT.format(new Date())
+                            + ", remoteAddress=" + channel.getRemoteAddress() + ", localAddress="
+                            + channel.getLocalAddress() + ", direction=read, bytes=" + bytes.length
+                            + ConsoleColors.RESET);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.warn(
+                    false,
+                    "Socket",
+                    e,
+                    "Stream monitor input text logging failed: exception={}",
+                    e.getClass().getSimpleName());
         }
     };
     /**
@@ -97,12 +120,20 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
      */
     public static final BiConsumer<AsynchronousSocketChannel, byte[]> RED_TEXT_OUTPUT_STREAM = (channel, bytes) -> {
         try {
-            Logger.info(false, "Socket",
-                    ConsoleColors.RED + Formatter.NORM_DATETIME_MS_FORMAT.format(new Date()) + " [ "
-                            + channel.getLocalAddress() + " --> " + channel.getRemoteAddress() + " ] [ write: "
-                            + bytes.length + " bytes ]\r\n" + new String(bytes) + ConsoleColors.RESET);
+            Logger.info(
+                    false,
+                    "Socket",
+                    ConsoleColors.RED + "timestamp=" + Formatter.NORM_DATETIME_MS_FORMAT.format(new Date())
+                            + ", localAddress=" + channel.getLocalAddress() + ", remoteAddress="
+                            + channel.getRemoteAddress() + ", direction=write, bytes=" + bytes.length
+                            + ConsoleColors.RESET);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.warn(
+                    false,
+                    "Socket",
+                    e,
+                    "Stream monitor output text logging failed: exception={}",
+                    e.getClass().getSimpleName());
         }
     };
     /**

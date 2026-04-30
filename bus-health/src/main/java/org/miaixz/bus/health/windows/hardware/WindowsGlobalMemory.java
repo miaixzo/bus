@@ -270,7 +270,11 @@ final class WindowsGlobalMemory extends AbstractGlobalMemory {
     private static Triplet<Long, Long, Long> readPerfInfo() {
         try (Struct.CloseablePerformanceInformation performanceInfo = new Struct.CloseablePerformanceInformation()) {
             if (!Psapi.INSTANCE.GetPerformanceInfo(performanceInfo, performanceInfo.size())) {
-                Logger.error(false, "Health", "Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
+                Logger.error(
+                        false,
+                        "Health",
+                        "Failed to get Performance Info. Error code: {}",
+                        Kernel32.INSTANCE.GetLastError());
                 return Triplet.of(0L, 0L, 4098L);
             }
             long pageSize = performanceInfo.PageSize.longValue();

@@ -140,11 +140,15 @@ public class IanSCP extends Device {
         if (file.exists())
             throw new ImageServiceException(Status.DuplicateSOPinstance).setUID(Tag.AffectedSOPInstanceUID, iuid);
 
-        Logger.info(true, "ImageTool", "{}: M-WRITE {}", as, file);
+        Logger.info(true, "Image", "component=tool, {}: M-WRITE {}", as, file);
         try (ImageOutputStream out = new ImageOutputStream(file)) {
             out.writeDataset(Attributes.createFileMetaInformation(iuid, cuid, UID.ExplicitVRLittleEndian.uid), rqAttrs);
         } catch (IOException e) {
-            Logger.warn(false, "ImageTool", as + ": Failed to store Instance Available Notification:", e);
+            Logger.warn(
+                    false,
+                    "Image",
+                    "component=tool, " + (as + ": Failed to store Instance Available Notification:"),
+                    e);
             throw new ImageServiceException(Status.ProcessingFailure, e);
         } finally {
             // The try-with-resources statement handles closing the stream.

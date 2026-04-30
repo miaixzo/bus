@@ -24,6 +24,7 @@ import java.io.InputStream;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.CryptoException;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * MAC (Message Authentication Code) algorithm engine interface. This interface defines the contract for MAC algorithm
@@ -95,6 +96,15 @@ public interface Mac {
             }
             result = doFinal();
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
+                    "digest",
+                    "Mac",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         } finally {
             reset();

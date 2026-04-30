@@ -230,7 +230,7 @@ public final class ImageDescriptor {
 
     public Core.MinMaxLocResult getMinMaxPixelValue(int frame) {
         if (frame < 0 || frame >= minMaxPixelValues.size()) {
-            Logger.error(false, "Image", "Invalid frame index: {}", frame);
+            Logger.error(false, "Image", "Invalid frame index: frameIndex={}", frame);
             return null;
         }
         return minMaxPixelValues.get(frame);
@@ -238,7 +238,11 @@ public final class ImageDescriptor {
 
     public void setMinMaxPixelValue(int frame, Core.MinMaxLocResult minMaxPixelValue) {
         if (frame < 0 || frame >= minMaxPixelValues.size()) {
-            Logger.error(false, "Image", "Unable to set MinMaxPixelValue for invalid frame index: {}", frame);
+            Logger.error(
+                    false,
+                    "Image",
+                    "Unable to set MinMaxPixelValue for invalid frame index: frameIndex={}",
+                    frame);
             return;
         }
         minMaxPixelValues.set(frame, minMaxPixelValue);
@@ -251,7 +255,7 @@ public final class ImageDescriptor {
     private static <T> T getLutModule(List<T> list, T baseLut, int frame) {
         if (frame < 0 || frame >= list.size()) {
             if (frame != 0) {
-                Logger.error(false, "Image", "Invalid frame index for LUT: {}", frame);
+                Logger.error(false, "Image", "Invalid frame index for LUT: frameIndex={}", frame);
             }
             return baseLut;
         }
@@ -260,7 +264,7 @@ public final class ImageDescriptor {
 
     public void setVoiLutForFrame(int frame, VoiLutModule voiLut) {
         if (frame < 0 || frame >= voiLutPerFrame.size()) {
-            Logger.error(false, "Image", "Unable to set VoiLutModule for invalid frame index: {}", frame);
+            Logger.error(false, "Image", "Unable to set VoiLutModule for invalid frame index: frameIndex={}", frame);
             return;
         }
         voiLutPerFrame.set(frame, voiLut);
@@ -272,7 +276,11 @@ public final class ImageDescriptor {
 
     public void setModalityLutForFrame(int frame, ModalityLutModule modalityLut) {
         if (frame < 0 || frame >= modalityLutPerFrame.size()) {
-            Logger.error(false, "Image", "Unable to set ModalityLutModule for invalid frame index: {}", frame);
+            Logger.error(
+                    false,
+                    "Image",
+                    "Unable to set ModalityLutModule for invalid frame index: frameIndex={}",
+                    frame);
             return;
         }
         modalityLutPerFrame.set(frame, modalityLut);

@@ -80,7 +80,7 @@ public final class NvmlKit {
                 loaded = true;
                 Logger.debug(false, "Health", "NVML library loaded");
             } catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
-                Logger.debug(false, "Health", "NVML library not available: {}", e.getMessage());
+                Logger.debug(false, "Health", "NVML library not available: {}", e.getClass().getSimpleName());
             }
             LIB = lib;
             LIBRARY_LOADED = loaded;
@@ -149,6 +149,8 @@ public final class NvmlKit {
             DEVICE_BUS_IDS.set(ids);
             devicesEnumerated = true;
             Logger.debug(false, "Health", "NVML enumerated {} device(s)", DEVICE_BUS_IDS.get().size());
+        } else {
+            Logger.debug(false, "Health", "NVML device enumeration failed; will retry on next call");
         }
     }
 
@@ -363,7 +365,9 @@ public final class NvmlKit {
                 return null;
             }
             if (matchCount > 1) {
-                Logger.warn(false, "Health",
+                Logger.warn(
+                        false,
+                        "Health",
                         "NVML name match for '{}' is ambiguous ({} devices match); use PCI bus ID for reliable"
                                 + " device identification",
                         gpuName,

@@ -32,6 +32,7 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.shade.safety.algorithm.Key;
 import org.miaixz.bus.shade.safety.provider.DecryptorProvider;
 import org.miaixz.bus.shade.safety.provider.EncryptorProvider;
@@ -75,6 +76,11 @@ public class Launcher {
      */
     public Launcher(String... args) throws Exception {
         this.args = args;
+        Logger.debug(
+                true,
+                "Shade",
+                "Safety launcher initialization started: component=launcher, argCount={}",
+                args == null ? 0 : args.length);
         String algorithm = Builder.ALGORITHM;
         int keysize = Builder.DEFAULT_KEYSIZE;
         int ivsize = Builder.DEFAULT_IVSIZE;
@@ -107,6 +113,12 @@ public class Launcher {
             JarFile jar = new JarFile(file, false);
             Manifest manifest = jar.getManifest();
             Attributes attributes = manifest.getMainAttributes();
+            Logger.debug(
+                    false,
+                    "Shade",
+                    "Safety launcher manifest loaded: component=launcher, jarFile={}, attributeCount={}",
+                    file.getName(),
+                    attributes.size());
             if (null != attributes.getValue(Builder.XJAR_ALGORITHM_KEY)) {
                 algorithm = attributes.getValue(Builder.XJAR_ALGORITHM_KEY);
             }
@@ -132,7 +144,20 @@ public class Launcher {
                     key = new Properties();
                     key.load(in);
                 }
+                Logger.debug(
+                        false,
+                        "Shade",
+                        "Safety launcher key file loaded: component=launcher, configuredPath={}, keyFile={}, keyCount={}",
+                        true,
+                        file.getName(),
+                        key.size());
             } else {
+                Logger.warn(
+                        false,
+                        "Shade",
+                        "Safety launcher key file missing: component=launcher, configuredPath={}, keyFile={}",
+                        true,
+                        file.getName());
                 throw new FileNotFoundException("could not find key file at path: " + file.getCanonicalPath());
             }
         } else {
@@ -144,6 +169,13 @@ public class Launcher {
                     key = new Properties();
                     key.load(in);
                 }
+                Logger.debug(
+                        false,
+                        "Shade",
+                        "Safety launcher key file loaded: component=launcher, configuredPath={}, keyFile={}, keyCount={}",
+                        false,
+                        file.getName(),
+                        key.size());
             }
         }
 
@@ -178,6 +210,11 @@ public class Launcher {
 
         if (null == hold || !Arrays.asList("true", Symbol.ONE, "yes", "y").contains(hold.trim().toLowerCase())) {
             if (null != keyfile && keyfile.exists() && !keyfile.delete() && keyfile.exists()) {
+                Logger.warn(
+                        false,
+                        "Shade",
+                        "Safety launcher key file delete failed: component=launcher, keyFile={}",
+                        keyfile.getName());
                 throw new IOException("could not delete key file : " + keyfile.getCanonicalPath());
             }
         }
@@ -194,6 +231,16 @@ public class Launcher {
         this.decryptorProvider = new JdkDecryptorProvider(algorithm);
         this.encryptorProvider = new JdkEncryptorProvider(algorithm);
         this.key = Builder.key(algorithm, keysize, ivsize, password);
+        boolean credentialPresent = password != null;
+        Logger.debug(
+                false,
+                "Shade",
+                "Safety launcher initialization finished: component=launcher, algorithm={}, keySize={}, ivSize={}, credentialPresent={}, keyFilePresent={}",
+                algorithm,
+                keysize,
+                ivsize,
+                credentialPresent,
+                keyfile != null);
     }
 
 }

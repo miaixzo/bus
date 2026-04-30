@@ -22,6 +22,7 @@ package org.miaixz.bus.socket.plugin;
 import org.miaixz.bus.socket.Session;
 import org.miaixz.bus.socket.Status;
 import org.miaixz.bus.socket.accord.AioClient;
+import org.miaixz.bus.logger.Logger;
 
 import java.nio.channels.AsynchronousChannelGroup;
 
@@ -76,14 +77,27 @@ class ReconnectPlugin extends AbstractPlugin {
             return;
         }
         try {
+            Logger.info(
+                    true,
+                    "Socket",
+                    "Reconnect attempt started: session={}, sharedGroup={}",
+                    session,
+                    asynchronousChannelGroup != null);
             if (asynchronousChannelGroup == null) {
                 client.start();
             } else {
                 client.start(asynchronousChannelGroup);
             }
+            Logger.info(false, "Socket", "Reconnect attempt completed: session={}", session);
         } catch (Exception e) {
             shutdown = true;
-            e.printStackTrace();
+            Logger.warn(
+                    false,
+                    "Socket",
+                    e,
+                    "Reconnect attempt failed: session={}, exception={}",
+                    session,
+                    e.getClass().getSimpleName());
         }
 
     }

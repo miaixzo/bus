@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.core.data.id.ID;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Access point for creating, describing, fetching, and releasing archived bundle data.
@@ -120,10 +121,31 @@ public interface Broker<T> {
             final File handleDir = resolveHandleDir(handleId);
             final long expiresAt = Instant.now().plusMillis(Math.max(ttlMillis, 0L)).toEpochMilli();
             try {
+                Logger.debug(
+                        true,
+                        "Office",
+                        "Archived bundle session opening: handleId={}, previewRows={}, ttlMs={}",
+                        handleId,
+                        previewRows,
+                        ttlMillis);
                 Archive.Writer writer = new Archive.Writer(handleDir, handleId, expiresAt, previewRows);
+                Logger.debug(
+                        false,
+                        "Office",
+                        "Archived bundle session opened: handleId={}, handleDir={}",
+                        handleId,
+                        handleDir.getName());
                 return new Session<>(handleId, handleDir, expiresAt, Math.max(previewRows, 0), writer,
                         new LinkedHashMap<>(), 0L, 0L, false);
             } catch (Exception e) {
+                Logger.error(
+                        false,
+                        "Office",
+                        e,
+                        "Archived bundle session open failed: handleId={}, handleDir={}, exception={}",
+                        handleId,
+                        handleDir.getName(),
+                        e.getClass().getSimpleName());
                 deleteRecursively(handleDir);
                 throw new IllegalStateException("Failed to open archived bundle session", e);
             }
@@ -155,6 +177,16 @@ public interface Broker<T> {
                 segmentState.increment(1L, payload != null ? payload.length : 0L);
                 session.increment(1L, payload != null ? payload.length : 0L);
             } catch (Exception e) {
+                Logger.error(
+                        false,
+                        "Office",
+                        e,
+                        "Archived bundle item append failed: handleId={}, segmentIndex={}, attributes={}, itemPresent={}, exception={}",
+                        session == null ? null : session.handleId(),
+                        segmentIndex,
+                        attributes == null ? 0 : attributes.size(),
+                        item != null,
+                        e.getClass().getSimpleName());
                 throw new IllegalStateException("Failed to append archived bundle item", e);
             }
         }
@@ -191,6 +223,16 @@ public interface Broker<T> {
                 segmentState.increment(items.size(), writtenBytes);
                 session.increment(items.size(), writtenBytes);
             } catch (Exception e) {
+                Logger.error(
+                        false,
+                        "Office",
+                        e,
+                        "Archived bundle items append failed: handleId={}, segmentIndex={}, itemCount={}, attributes={}, exception={}",
+                        session == null ? null : session.handleId(),
+                        segmentIndex,
+                        items == null ? 0 : items.size(),
+                        attributes == null ? 0 : attributes.size(),
+                        e.getClass().getSimpleName());
                 throw new IllegalStateException("Failed to append archived bundle items", e);
             }
         }
@@ -206,10 +248,25 @@ public interface Broker<T> {
                 ensureWritable(session);
                 Archive.Manifest manifest = session.writer().finish();
                 session.markFinished();
+                Logger.debug(
+                        false,
+                        "Office",
+                        "Archived bundle session finished: handleId={}, segments={}, items={}, bytes={}",
+                        session.handleId(),
+                        manifest.segments().size(),
+                        session.writtenItems(),
+                        session.writtenBytes());
                 return Bundle.Paged.<T>builder().handleId(session.handleId()).segmentCount(manifest.segments().size())
                         .totalItems(session.writtenItems()).expiresAt(manifest.expiresAt())
                         .previewRows(manifest.previewRows()).total(session.writtenItems()).items(List.of()).build();
             } catch (Exception e) {
+                Logger.error(
+                        false,
+                        "Office",
+                        e,
+                        "Archived bundle session finish failed: handleId={}, exception={}",
+                        session == null ? null : session.handleId(),
+                        e.getClass().getSimpleName());
                 abort(session);
                 throw new IllegalStateException("Failed to finish archived bundle session", e);
             }
@@ -229,7 +286,13 @@ public interface Broker<T> {
                     session.writer().close();
                 }
             } catch (Exception ignored) {
-                // ignore close failure during abort
+                Logger.warn(
+                        false,
+                        "Office",
+                        ignored,
+                        "Archived bundle abort close failed: handleId={}, exception={}",
+                        session.handleId(),
+                        ignored.getClass().getSimpleName());
             }
             session.markFinished();
             deleteRecursively(session.handleDir());
@@ -249,8 +312,16 @@ public interface Broker<T> {
                 final int previewRows,
                 final long ttlMillis) {
             if (null == segments || segments.isEmpty()) {
+                Logger.debug(false, "Office", "Archived bundle create skipped: reason=emptySegments");
                 return null;
             }
+            Logger.debug(
+                    true,
+                    "Office",
+                    "Archived bundle create requested: segments={}, previewRows={}, ttlMs={}",
+                    segments.size(),
+                    previewRows,
+                    ttlMillis);
             final Session<T> session = open(previewRows, ttlMillis);
             try {
                 for (Bundle.Segment<T> segment : segments) {
@@ -264,8 +335,23 @@ public interface Broker<T> {
                             segment.attributes(),
                             segment.items());
                 }
-                return finish(session);
+                Bundle.Paged<T> result = finish(session);
+                Logger.debug(
+                        false,
+                        "Office",
+                        "Archived bundle create completed: handleId={}, segments={}, items={}",
+                        result.getHandleId(),
+                        result.getSegmentCount(),
+                        result.getTotalItems());
+                return result;
             } catch (Exception e) {
+                Logger.error(
+                        false,
+                        "Office",
+                        e,
+                        "Archived bundle create failed: handleId={}, exception={}",
+                        session.handleId(),
+                        e.getClass().getSimpleName());
                 abort(session);
                 throw new IllegalStateException("Failed to create archived bundle", e);
             }
@@ -283,12 +369,27 @@ public interface Broker<T> {
                 return null;
             }
             try {
+                Logger.debug(true, "Office", "Archived bundle describe requested: handleId={}", handleId);
                 Archive.Manifest manifest = this.reader.readManifest(resolveHandleDir(handleId));
                 long totalItems = manifest.segments().stream().mapToLong(item -> item.totalRecords()).sum();
+                Logger.debug(
+                        false,
+                        "Office",
+                        "Archived bundle describe completed: handleId={}, segments={}, items={}",
+                        handleId,
+                        manifest.segments().size(),
+                        totalItems);
                 return Bundle.Paged.<T>builder().handleId(manifest.handleId()).segmentCount(manifest.segments().size())
                         .totalItems(totalItems).expiresAt(manifest.expiresAt()).previewRows(manifest.previewRows())
                         .total(totalItems).items(List.of()).build();
             } catch (Exception e) {
+                Logger.warn(
+                        false,
+                        "Office",
+                        e,
+                        "Archived bundle describe failed: handleId={}, exception={}",
+                        handleId,
+                        e.getClass().getSimpleName());
                 return null;
             }
         }
@@ -309,15 +410,41 @@ public interface Broker<T> {
                 final int pageNo,
                 final int pageSize) {
             try {
+                Logger.debug(
+                        true,
+                        "Office",
+                        "Archived bundle page fetch requested: handleId={}, segmentIndex={}, pageNo={}, pageSize={}",
+                        handleId,
+                        segmentIndex,
+                        pageNo,
+                        pageSize);
                 Archive.Slice slice = this.reader.readPage(resolveHandleDir(handleId), segmentIndex, pageNo, pageSize);
                 List<T> items = new ArrayList<>(slice.items().size());
                 for (Archive.Record record : slice.items()) {
                     items.add(this.codec.decode(record.payload()));
                 }
-                return Bundle.Paged.<T>builder().handleId(handleId).segmentIndex(slice.segmentIndex())
+                Bundle.Paged<T> result = Bundle.Paged.<T>builder().handleId(handleId).segmentIndex(slice.segmentIndex())
                         .segmentName(slice.segmentName()).pageNo(slice.pageNo()).pageSize(slice.pageSize())
                         .total(slice.totalRecords()).attributes(slice.attributes()).items(items).build();
+                Logger.debug(
+                        false,
+                        "Office",
+                        "Archived bundle page fetch completed: handleId={}, segmentIndex={}, items={}, total={}",
+                        handleId,
+                        slice.segmentIndex(),
+                        items.size(),
+                        slice.totalRecords());
+                return result;
             } catch (Exception e) {
+                Logger.error(
+                        false,
+                        "Office",
+                        e,
+                        "Archived bundle page fetch failed: handleId={}, segmentIndex={}, pageNo={}, exception={}",
+                        handleId,
+                        segmentIndex,
+                        pageNo,
+                        e.getClass().getSimpleName());
                 throw new IllegalStateException("Failed to fetch archived bundle page", e);
             }
         }
@@ -331,8 +458,21 @@ public interface Broker<T> {
         @Override
         public boolean release(final String handleId) {
             final File handleDir = resolveHandleDir(handleId);
+            Logger.debug(
+                    true,
+                    "Office",
+                    "Archived bundle release requested: handleId={}, exists={}",
+                    handleId,
+                    handleDir.exists());
             deleteRecursively(handleDir);
-            return !handleDir.exists();
+            boolean released = !handleDir.exists();
+            Logger.debug(
+                    false,
+                    "Office",
+                    "Archived bundle release completed: handleId={}, released={}",
+                    handleId,
+                    released);
+            return released;
         }
 
         /**
@@ -347,8 +487,19 @@ public interface Broker<T> {
             File rootDir = resolveRootDir();
             File[] dirs = rootDir.listFiles(File::isDirectory);
             if (null == dirs) {
+                Logger.debug(
+                        false,
+                        "Office",
+                        "Archived bundle cleanup skipped: rootDir={}, reason=noDirectories",
+                        rootDir.getName());
                 return 0;
             }
+            Logger.debug(
+                    true,
+                    "Office",
+                    "Archived bundle cleanup started: rootDir={}, candidates={}",
+                    rootDir.getName(),
+                    dirs.length);
             for (File dir : dirs) {
                 try {
                     Archive.Manifest manifest = this.reader.readManifest(dir);
@@ -357,9 +508,21 @@ public interface Broker<T> {
                         removed++;
                     }
                 } catch (Exception ignored) {
-                    // ignore broken handle and keep scanning
+                    Logger.warn(
+                            false,
+                            "Office",
+                            ignored,
+                            "Archived bundle cleanup skipped broken handle: handleDir={}, exception={}",
+                            dir.getName(),
+                            ignored.getClass().getSimpleName());
                 }
             }
+            Logger.debug(
+                    false,
+                    "Office",
+                    "Archived bundle cleanup completed: rootDir={}, removed={}",
+                    rootDir.getName(),
+                    removed);
             return removed;
         }
 
@@ -401,11 +564,23 @@ public interface Broker<T> {
                             try {
                                 Files.deleteIfExists(current);
                             } catch (Exception ignored) {
-                                // ignore best effort cleanup
+                                Logger.warn(
+                                        false,
+                                        "Office",
+                                        ignored,
+                                        "Archived bundle cleanup delete failed: path={}, exception={}",
+                                        current.getFileName(),
+                                        ignored.getClass().getSimpleName());
                             }
                         });
             } catch (Exception ignored) {
-                // ignore best effort cleanup
+                Logger.warn(
+                        false,
+                        "Office",
+                        ignored,
+                        "Archived bundle cleanup walk failed: path={}, exception={}",
+                        path.getName(),
+                        ignored.getClass().getSimpleName());
             }
         }
 

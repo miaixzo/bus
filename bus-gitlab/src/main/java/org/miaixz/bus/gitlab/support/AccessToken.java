@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.gitlab.GitLabApiException;
+import org.miaixz.bus.logger.Logger;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -278,6 +279,17 @@ public final class AccessToken {
             return (personalAccessToken);
 
         } catch (IOException ioe) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    ioe,
+                    "GitLab access token operation failed: operation=createPersonalAccessToken, baseUrlPresent={}, usernamePresent={}, tokenNamePresent={}, scopeCount={}, statusPresent={}, exception={}",
+                    baseUrl != null,
+                    username != null && !username.isEmpty(),
+                    tokenName != null && !tokenName.isEmpty(),
+                    scopes == null ? 0 : scopes.size(),
+                    false,
+                    ioe.getClass().getSimpleName());
             throw new GitLabApiException(ioe);
         } finally {
 
@@ -285,6 +297,13 @@ public final class AccessToken {
                 try {
                     logout(baseUrl, cookies);
                 } catch (Exception ignore) {
+                    Logger.debug(
+                            false,
+                            "GitLab",
+                            "GitLab access token cleanup failed: operation=createPersonalAccessToken, baseUrlPresent={}, cookiesPresent={}, exception={}",
+                            baseUrl != null,
+                            true,
+                            ignore.getClass().getSimpleName());
                 }
             }
 
@@ -452,6 +471,17 @@ public final class AccessToken {
             }
 
         } catch (IOException ioe) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    ioe,
+                    "GitLab access token operation failed: operation=revokePersonalAccessToken, baseUrlPresent={}, usernamePresent={}, tokenNamePresent={}, scopeCount={}, statusPresent={}, exception={}",
+                    baseUrl != null,
+                    username != null && !username.isEmpty(),
+                    tokenName != null && !tokenName.isEmpty(),
+                    scopes == null ? 0 : scopes.size(),
+                    false,
+                    ioe.getClass().getSimpleName());
             throw new GitLabApiException(ioe);
         } finally {
 
@@ -459,6 +489,13 @@ public final class AccessToken {
                 try {
                     logout(baseUrl, cookies);
                 } catch (Exception ignore) {
+                    Logger.debug(
+                            false,
+                            "GitLab",
+                            "GitLab access token cleanup failed: operation=revokePersonalAccessToken, baseUrlPresent={}, cookiesPresent={}, exception={}",
+                            baseUrl != null,
+                            true,
+                            ignore.getClass().getSimpleName());
                 }
             }
 
@@ -524,6 +561,15 @@ public final class AccessToken {
             return (feedToken);
 
         } catch (IOException ioe) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    ioe,
+                    "GitLab access token operation failed: operation=fetchFeedToken, baseUrlPresent={}, usernamePresent={}, statusPresent={}, exception={}",
+                    baseUrl != null,
+                    username != null && !username.isEmpty(),
+                    false,
+                    ioe.getClass().getSimpleName());
             throw new GitLabApiException(ioe);
         } finally {
 
@@ -531,6 +577,13 @@ public final class AccessToken {
                 try {
                     logout(baseUrl, cookies);
                 } catch (Exception ignore) {
+                    Logger.debug(
+                            false,
+                            "GitLab",
+                            "GitLab access token cleanup failed: operation=fetchFeedToken, baseUrlPresent={}, cookiesPresent={}, exception={}",
+                            baseUrl != null,
+                            true,
+                            ignore.getClass().getSimpleName());
                 }
             }
 
@@ -598,6 +651,15 @@ public final class AccessToken {
             return (healthCheckAccessToken);
 
         } catch (IOException ioe) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    ioe,
+                    "GitLab access token operation failed: operation=fetchHealthCheckAccessToken, baseUrlPresent={}, usernamePresent={}, statusPresent={}, exception={}",
+                    baseUrl != null,
+                    username != null && !username.isEmpty(),
+                    false,
+                    ioe.getClass().getSimpleName());
             throw new GitLabApiException(ioe);
         } finally {
 
@@ -605,6 +667,13 @@ public final class AccessToken {
                 try {
                     logout(baseUrl, cookies);
                 } catch (Exception ignore) {
+                    Logger.debug(
+                            false,
+                            "GitLab",
+                            "GitLab access token cleanup failed: operation=fetchHealthCheckAccessToken, baseUrlPresent={}, cookiesPresent={}, exception={}",
+                            baseUrl != null,
+                            true,
+                            ignore.getClass().getSimpleName());
                 }
             }
 
@@ -721,6 +790,15 @@ public final class AccessToken {
             return (cookies);
 
         } catch (IOException ioe) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    ioe,
+                    "GitLab access token login failed: baseUrlPresent={}, usernamePresent={}, statusPresent={}, exception={}",
+                    baseUrl != null,
+                    username != null && !username.isEmpty(),
+                    false,
+                    ioe.getClass().getSimpleName());
             throw new GitLabApiException(ioe);
         } finally {
             if (savedFollowRedirects) {
@@ -764,6 +842,14 @@ public final class AccessToken {
             }
 
         } catch (IOException ioe) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    ioe,
+                    "GitLab access token logout failed: baseUrlPresent={}, cookiesPresent={}, exception={}",
+                    baseUrl != null,
+                    cookies != null && !cookies.isEmpty(),
+                    ioe.getClass().getSimpleName());
             throw new GitLabApiException(ioe);
         } finally {
             if (savedFollowRedirects) {
@@ -797,6 +883,14 @@ public final class AccessToken {
             formData.append(URLEncoder.encode(value, "UTF-8"));
             return (formData);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab access token form encoding failed: fieldName={}, valuePresent={}, exception={}",
+                    name,
+                    value != null,
+                    e.getClass().getSimpleName());
             throw new GitLabApiException(e);
         }
     }
@@ -815,6 +909,13 @@ public final class AccessToken {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
             reader.lines().forEach(b -> buf.append(b));
         } catch (IOException ioe) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    ioe,
+                    "GitLab access token content read failed: connectionType={}, exception={}",
+                    connection == null ? null : connection.getClass().getName(),
+                    ioe.getClass().getSimpleName());
             throw new GitLabApiException(ioe);
         }
 

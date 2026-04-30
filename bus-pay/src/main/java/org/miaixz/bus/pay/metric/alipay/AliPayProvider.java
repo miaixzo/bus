@@ -33,6 +33,7 @@ import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.pay.Complex;
 import org.miaixz.bus.pay.Context;
 import org.miaixz.bus.pay.Registry;
@@ -1376,6 +1377,14 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
      * @return the signed request parameter string
      */
     private String buildAppRequest(Map<String, String> model, String notifyUrl, String authToken, String method) {
+        Logger.info(
+                true,
+                "Pay",
+                "Alipay app request build started: method={}, paramCount={}, notifyPresent={}, authTokenPresent={}",
+                method,
+                model == null ? 0 : model.size(),
+                StringKit.isNotEmpty(notifyUrl),
+                StringKit.isNotEmpty(authToken));
         Map<String, String> params = buildCommonParams(method, notifyUrl, authToken);
         params.put("biz_content", JsonKit.toJsonString(model));
         params = AliPayBuilder.buildRequestPara(params, context.getPrivateKey(), Algorithm.RSA2.getValue());
@@ -1384,7 +1393,15 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
             result.append(entry.getKey()).append("=").append(URLEncoder.encode(entry.getValue(), Charset.UTF_8))
                     .append("&");
         }
-        return result.substring(0, result.length() - 1);
+        String request = result.substring(0, result.length() - 1);
+        Logger.info(
+                false,
+                "Pay",
+                "Alipay app request build completed: method={}, fieldCount={}, requestBytes={}",
+                method,
+                params.size(),
+                request.getBytes(Charset.UTF_8).length);
+        return request;
     }
 
     /**
@@ -1397,6 +1414,14 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
      * @return the HTML form
      */
     private String buildWapPay(Map<String, String> model, String returnUrl, String notifyUrl, String authToken) {
+        Logger.info(
+                true,
+                "Pay",
+                "Alipay WAP request build started: paramCount={}, returnPresent={}, notifyPresent={}, authTokenPresent={}",
+                model == null ? 0 : model.size(),
+                StringKit.isNotEmpty(returnUrl),
+                StringKit.isNotEmpty(notifyUrl),
+                StringKit.isNotEmpty(authToken));
         Map<String, String> params = buildCommonParams("alipay.trade.wap.pay", notifyUrl, authToken);
         params.put("return_url", returnUrl);
         params.put("biz_content", JsonKit.toJsonString(model));
@@ -1409,7 +1434,14 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
         }
         form.append("</form>");
         form.append("<script>document.getElementById('alipay_form').submit();</script>");
-        return form.toString();
+        String request = form.toString();
+        Logger.info(
+                false,
+                "Pay",
+                "Alipay WAP request build completed: fieldCount={}, formBytes={}",
+                params.size(),
+                request.getBytes(Charset.UTF_8).length);
+        return request;
     }
 
     /**
@@ -1428,6 +1460,15 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
             String notifyUrl,
             String returnUrl,
             String authToken) {
+        Logger.info(
+                true,
+                "Pay",
+                "Alipay page request build started: method={}, paramCount={}, returnPresent={}, notifyPresent={}, authTokenPresent={}",
+                method,
+                model == null ? 0 : model.size(),
+                StringKit.isNotEmpty(returnUrl),
+                StringKit.isNotEmpty(notifyUrl),
+                StringKit.isNotEmpty(authToken));
         Map<String, String> params = buildCommonParams("alipay.trade.page.pay", notifyUrl, authToken);
         params.put("return_url", returnUrl);
         params.put("biz_content", JsonKit.toJsonString(model));
@@ -1438,7 +1479,15 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
                 url.append(entry.getKey()).append("=").append(URLEncoder.encode(entry.getValue(), Charset.UTF_8))
                         .append("&");
             }
-            return url.substring(0, url.length() - 1);
+            String request = url.substring(0, url.length() - 1);
+            Logger.info(
+                    false,
+                    "Pay",
+                    "Alipay page request build completed: method={}, fieldCount={}, requestBytes={}",
+                    method,
+                    params.size(),
+                    request.getBytes(Charset.UTF_8).length);
+            return request;
         } else {
             StringBuilder form = new StringBuilder();
             form.append("<form id='alipay_form' action='").append(getUrl()).append("' method='POST'>");
@@ -1448,7 +1497,15 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
             }
             form.append("</form>");
             form.append("<script>document.getElementById('alipay_form').submit();</script>");
-            return form.toString();
+            String request = form.toString();
+            Logger.info(
+                    false,
+                    "Pay",
+                    "Alipay page request build completed: method={}, fieldCount={}, formBytes={}",
+                    method,
+                    params.size(),
+                    request.getBytes(Charset.UTF_8).length);
+            return request;
         }
     }
 
@@ -1509,6 +1566,15 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
             String notifyUrl,
             String authToken,
             String method) {
+        Logger.info(
+                true,
+                "Pay",
+                "Alipay API request started: method={}, certMode={}, paramCount={}, notifyPresent={}, authTokenPresent={}",
+                method,
+                certModel,
+                model == null ? 0 : model.size(),
+                StringKit.isNotEmpty(notifyUrl),
+                StringKit.isNotEmpty(authToken));
         Map<String, String> params = buildCommonParams(method, notifyUrl, authToken);
         params.put("biz_content", JsonKit.toJsonString(model));
         params = AliPayBuilder.buildRequestPara(params, context.getPrivateKey(), Algorithm.RSA2.getValue());
@@ -1517,6 +1583,12 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
             String response = certModel ? executeCertRequest(params) : executeHttpRequest(params);
             Map<String, Object> responseMap = JsonKit.toMap(response);
             if (responseMap == null) {
+                Logger.warn(
+                        false,
+                        "Pay",
+                        "Alipay API response parse failed: method={}, responseBytes={}",
+                        method,
+                        response == null ? 0 : response.getBytes(Charset.UTF_8).length);
                 throw new RuntimeException("Failed to parse response: " + response);
             }
 
@@ -1533,12 +1605,34 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
                     context.getPublicKey(),
                     Charset.DEFAULT_UTF_8,
                     Algorithm.RSA2.getValue());
+            Logger.info(
+                    false,
+                    "Pay",
+                    "Alipay API signature verification completed: method={}, valid={}, responseFieldCount={}",
+                    method,
+                    isValid,
+                    responseMap.size());
             if (!isValid) {
                 throw new RuntimeException("Signature verification failed");
             }
 
+            Logger.info(
+                    false,
+                    "Pay",
+                    "Alipay API request completed: method={}, certMode={}, responseFieldCount={}",
+                    method,
+                    certModel,
+                    responseMap.size());
             return responseMap;
         } catch (Exception e) {
+            Logger.error(
+                    false,
+                    "Pay",
+                    e,
+                    "Alipay API request failed: method={}, certMode={}, exception={}",
+                    method,
+                    certModel,
+                    e.getClass().getSimpleName());
             throw new RuntimeException("API request failed: " + e.getMessage(), e);
         }
     }
@@ -1550,7 +1644,20 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
      * @return the response string
      */
     private String executeHttpRequest(Map<String, String> params) {
-        return Httpx.post(getUrl(), params);
+        Logger.info(
+                true,
+                "Pay",
+                "Alipay HTTP request dispatched: url={}, paramCount={}",
+                getUrl() == null ? null : getUrl().replaceFirst("\\?.*$", ""),
+                params == null ? 0 : params.size());
+        String response = Httpx.post(getUrl(), params);
+        Logger.info(
+                false,
+                "Pay",
+                "Alipay HTTP request completed: url={}, responseBytes={}",
+                getUrl() == null ? null : getUrl().replaceFirst("\\?.*$", ""),
+                response == null ? 0 : response.getBytes(Charset.UTF_8).length);
+        return response;
     }
 
     /**
@@ -1560,6 +1667,11 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
      * @return the response string
      */
     private String executeCertRequest(Map<String, String> params) {
+        Logger.warn(
+                false,
+                "Pay",
+                "Alipay certificate request rejected: reason=notImplemented, paramCount={}",
+                params == null ? 0 : params.size());
         throw new UnsupportedOperationException("Certificate mode not implemented");
     }
 

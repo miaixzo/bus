@@ -31,6 +31,7 @@ import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.AbstractProvider;
@@ -60,6 +61,13 @@ public class UpyunSmsProvider extends AbstractProvider<UpyunNotice, Context> {
      */
     @Override
     public Message send(UpyunNotice entity) {
+        Logger.info(
+                true,
+                "Notify",
+                "Upyun SMS send started: template={}, targetCount={}, tokenPresent={}",
+                entity == null ? null : entity.getTemplate(),
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity != null && StringKit.isNotBlank(entity.getToken()));
         Map<String, String> bodys = new HashMap<>();
         // The template ID for the SMS message.
         bodys.put("template_id", entity.getTemplate());
@@ -75,13 +83,29 @@ public class UpyunSmsProvider extends AbstractProvider<UpyunNotice, Context> {
 
         Collection<UpyunNotice.MessageId> list = JsonKit.toList(response, UpyunNotice.MessageId.class);
         if (CollKit.isEmpty(list)) {
+            Logger.warn(
+                    false,
+                    "Notify",
+                    "Upyun SMS response empty: template={}, responseBytes={}",
+                    entity == null ? null : entity.getTemplate(),
+                    response == null ? 0 : response.length());
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
         boolean succeed = list.stream().filter(Objects::nonNull).anyMatch(UpyunNotice.MessageId::succeed);
         String errcode = succeed ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
         String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : ErrorCode._FAILURE.getValue();
 
-        return Message.builder().errcode(errcode).errmsg(errmsg).build();
+        Message result = Message.builder().errcode(errcode).errmsg(errmsg).build();
+        Logger.info(
+                false,
+                "Notify",
+                "Upyun SMS send completed: template={}, targetCount={}, resultCount={}, errcode={}, responseBytes={}",
+                entity == null ? null : entity.getTemplate(),
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                list.size(),
+                result.getErrcode(),
+                response == null ? 0 : response.length());
+        return result;
     }
 
     /**

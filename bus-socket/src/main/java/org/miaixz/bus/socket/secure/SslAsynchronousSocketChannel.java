@@ -229,7 +229,10 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
                 switch (result.getStatus()) {
                     case BUFFER_OVERFLOW:
                         if (sslService.isDebug()) {
-                            Logger.info(false, "Socket", "BUFFER_OVERFLOW error, net:" + netBuffer + " app:" + appBuffer);
+                            Logger.info(
+                                    false,
+                                    "Socket",
+                                    "BUFFER_OVERFLOW error, net:" + netBuffer + " app:" + appBuffer);
                         }
                         break;
 
@@ -354,7 +357,12 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
             try {
                 this.wait();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Logger.warn(
+                        false,
+                        "Socket",
+                        e,
+                        "SSL initialization wait interrupted: exception={}",
+                        e.getClass().getSimpleName());
             }
         }
     }

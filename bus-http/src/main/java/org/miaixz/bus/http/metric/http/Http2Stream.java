@@ -35,6 +35,7 @@ import org.miaixz.bus.core.io.timout.AsyncTimeout;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.http.Builder;
 import org.miaixz.bus.http.Headers;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * A logical bidirectional stream.
@@ -470,6 +471,13 @@ public class Http2Stream {
         try {
             wait();
         } catch (InterruptedException e) {
+            Logger.warn(
+                    false,
+                    "Http",
+                    "protocol=http2, HTTP/2 stream wait interrupted: streamId={}, connection={}, exception={}",
+                    id,
+                    connection.connectionName,
+                    e.getClass().getSimpleName());
             Thread.currentThread().interrupt(); // Retain interrupted status.
             throw new InterruptedIOException();
         }

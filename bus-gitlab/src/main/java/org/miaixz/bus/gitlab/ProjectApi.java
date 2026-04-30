@@ -30,6 +30,7 @@ import org.miaixz.bus.gitlab.models.*;
 import org.miaixz.bus.gitlab.support.ISO8601;
 
 import jakarta.ws.rs.core.*;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * This class provides an entry point to all the GitLab API project calls.
@@ -114,9 +115,12 @@ public class ProjectApi extends AbstractApi implements Constants {
 
         String url = this.gitLabApi.getGitLabServerUrl();
         if (url.startsWith("https://gitlab.com")) {
-            GitLabApi.getLogger().warning(
-                    "Fetching all projects from " + url
-                            + " may take many hours to complete, use Pager<Project> getProjects(int) instead.");
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    "GitLab bulk projects fetch requested against public GitLab: serverUrl={}, defaultPerPage={}",
+                    url,
+                    getDefaultPerPage());
         }
 
         return (getProjects(getDefaultPerPage()).all());
@@ -863,6 +867,14 @@ public class ProjectApi extends AbstractApi implements Constants {
         try {
             projectPath = URLEncoder.encode(namespace + "/" + project, "UTF-8");
         } catch (UnsupportedEncodingException uee) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    uee,
+                    "GitLab project path encoding failed: namespacePresent={}, projectPresent={}, exception={}",
+                    namespace != null && !namespace.isEmpty(),
+                    project != null && !project.isEmpty(),
+                    uee.getClass().getSimpleName());
             throw (new GitLabApiException(uee));
         }
 
@@ -916,6 +928,15 @@ public class ProjectApi extends AbstractApi implements Constants {
         try {
             projectPath = URLEncoder.encode(namespace + "/" + project, "UTF-8");
         } catch (UnsupportedEncodingException uee) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    uee,
+                    "GitLab project path encoding failed: namespacePresent={}, projectPresent={}, includeStatistics={}, exception={}",
+                    namespace != null && !namespace.isEmpty(),
+                    project != null && !project.isEmpty(),
+                    includeStatistics,
+                    uee.getClass().getSimpleName());
             throw (new GitLabApiException(uee));
         }
 

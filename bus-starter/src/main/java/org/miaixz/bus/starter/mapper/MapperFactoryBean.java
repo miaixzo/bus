@@ -72,8 +72,8 @@ public class MapperFactoryBean<T> extends SqlSessionDaoSupport implements Factor
             } catch (Exception e) {
                 Logger.error(
                         false,
-                        "Mapper",
-                        "Error while adding mapper '{}' to configuration",
+                        "Starter",
+                        "component=mapper, Error while adding mapper '{}' to configuration",
                         this.mapperInterface,
                         e);
                 throw new IllegalArgumentException(e);

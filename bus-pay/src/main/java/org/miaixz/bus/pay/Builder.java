@@ -52,6 +52,7 @@ import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.builtin.Certificate;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.pay.metric.wechat.AuthType;
 import org.miaixz.bus.pay.metric.wechat.WechatPayBuilder;
 
@@ -319,7 +320,13 @@ public class Builder {
         try {
             return URLEncoder.encode(src, Charset.DEFAULT_UTF_8).replace("+", "%20");
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            Logger.warn(
+                    false,
+                    "Pay",
+                    e,
+                    "URL encoding failed: inputPresent={}, exception={}",
+                    src != null,
+                    e.getClass().getSimpleName());
             return null;
         }
     }
@@ -565,10 +572,28 @@ public class Builder {
             cert.checkValidity();
             return cert;
         } catch (CertificateExpiredException e) {
+            Logger.warn(
+                    false,
+                    "Pay",
+                    e,
+                    "Payment certificate load failed: reason=expired, exception={}",
+                    e.getClass().getSimpleName());
             throw new RuntimeException("Certificate has expired", e);
         } catch (CertificateNotYetValidException e) {
+            Logger.warn(
+                    false,
+                    "Pay",
+                    e,
+                    "Payment certificate load failed: reason=notYetValid, exception={}",
+                    e.getClass().getSimpleName());
             throw new RuntimeException("Certificate is not yet valid", e);
         } catch (CertificateException e) {
+            Logger.warn(
+                    false,
+                    "Pay",
+                    e,
+                    "Payment certificate load failed: reason=invalidCertificate, exception={}",
+                    e.getClass().getSimpleName());
             throw new RuntimeException("Invalid certificate", e);
         }
     }
@@ -587,6 +612,13 @@ public class Builder {
         try {
             inputStream = getCertFileInputStream(path);
         } catch (IOException e) {
+            Logger.warn(
+                    false,
+                    "Pay",
+                    e,
+                    "Payment certificate stream open failed: path={}, exception={}",
+                    path,
+                    e.getClass().getSimpleName());
             throw new RuntimeException("Please check if the certificate path is correct", e);
         }
         return getCertificate(inputStream);
@@ -698,10 +730,31 @@ public class Builder {
             byte[] cipherData = cipher.doFinal(dataByte);
             return Base64.encode(cipherData);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            Logger.warn(
+                    false,
+                    "Pay",
+                    e,
+                    "Payment RSA encryption failed: reason=unsupportedAlgorithm, dataBytes={}, exception={}",
+                    data == null ? 0 : data.getBytes(Charset.UTF_8).length,
+                    e.getClass().getSimpleName());
             throw new RuntimeException("Current Java environment does not support RSA v1.5/OAEP", e);
         } catch (InvalidKeyException e) {
+            Logger.warn(
+                    false,
+                    "Pay",
+                    e,
+                    "Payment RSA encryption failed: reason=invalidCertificate, dataBytes={}, exception={}",
+                    data == null ? 0 : data.getBytes(Charset.UTF_8).length,
+                    e.getClass().getSimpleName());
             throw new IllegalArgumentException("Invalid certificate", e);
         } catch (IllegalBlockSizeException | BadPaddingException e) {
+            Logger.warn(
+                    false,
+                    "Pay",
+                    e,
+                    "Payment RSA encryption failed: reason=blockSize, dataBytes={}, exception={}",
+                    data == null ? 0 : data.getBytes(Charset.UTF_8).length,
+                    e.getClass().getSimpleName());
             throw new IllegalBlockSizeException(
                     "The length of the original string to be encrypted cannot exceed 214 bytes");
         }
@@ -722,10 +775,31 @@ public class Builder {
             byte[] data = Base64.decode(cipherText);
             return new String(cipher.doFinal(data), Charset.UTF_8);
         } catch (NoSuchPaddingException | NoSuchAlgorithmException e) {
+            Logger.warn(
+                    false,
+                    "Pay",
+                    e,
+                    "Payment RSA decryption failed: reason=unsupportedAlgorithm, cipherBytes={}, exception={}",
+                    cipherText == null ? 0 : cipherText.length(),
+                    e.getClass().getSimpleName());
             throw new RuntimeException("Current Java environment does not support RSA v1.5/OAEP", e);
         } catch (InvalidKeyException e) {
+            Logger.warn(
+                    false,
+                    "Pay",
+                    e,
+                    "Payment RSA decryption failed: reason=invalidPrivateKey, cipherBytes={}, exception={}",
+                    cipherText == null ? 0 : cipherText.length(),
+                    e.getClass().getSimpleName());
             throw new IllegalArgumentException("Invalid private key", e);
         } catch (BadPaddingException | IllegalBlockSizeException e) {
+            Logger.warn(
+                    false,
+                    "Pay",
+                    e,
+                    "Payment RSA decryption failed: reason=decryptFailed, cipherBytes={}, exception={}",
+                    cipherText == null ? 0 : cipherText.length(),
+                    e.getClass().getSimpleName());
             throw new BadPaddingException("Decryption failed");
         }
     }

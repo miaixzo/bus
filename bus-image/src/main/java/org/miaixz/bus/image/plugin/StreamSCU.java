@@ -161,7 +161,11 @@ public class StreamSCU {
                     if (lastStatusCode != status && nbStatusLog < 3) {
                         nbStatusLog++;
                         lastStatusCode = status;
-                        Logger.warn(false, "ImageTool", "Received C-STORE-RSP with Status {}H", Tag.shortToHexString(status));
+                        Logger.warn(
+                                false,
+                                "Image",
+                                "component=tool, Received C-STORE-RSP with Status {}H",
+                                Tag.shortToHexString(status));
                     }
                     break;
 
@@ -170,7 +174,11 @@ public class StreamSCU {
                     if (lastStatusCode != status && nbStatusLog < 3) {
                         nbStatusLog++;
                         lastStatusCode = status;
-                        Logger.error(false, "ImageTool", "Received C-STORE-RSP with Status {}H", Tag.shortToHexString(status));
+                        Logger.error(
+                                false,
+                                "Image",
+                                "component=tool, Received C-STORE-RSP with Status {}H",
+                                Tag.shortToHexString(status));
                     }
             }
             Builder.notifyProgession(state.getProgress(), cmd, ps, numberOfSuboperations);
@@ -485,13 +493,29 @@ public class StreamSCU {
     public synchronized void open() throws IOException {
         countdown.set(false);
         try {
+            Logger.info(
+                    true,
+                    "Image",
+                    "DICOM stream association open started: presentationContextCount={}",
+                    rq.getNumberOfPresentationContexts());
             as = ae.connect(remote, rq);
+            Logger.info(
+                    false,
+                    "Image",
+                    "DICOM stream association opened: associationReady={}, presentationContextCount={}",
+                    as.isReadyForDataTransfer(),
+                    rq.getNumberOfPresentationContexts());
         } catch (Exception e) {
             if (e instanceof InterruptedException) {
                 Thread.currentThread().interrupt();
             }
             as = null;
-            Logger.trace(true, "ImageTool", "Connecting to remote destination", e);
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM stream association open failed: exception={}",
+                    e.getClass().getSimpleName());
         }
         if (as == null) {
             throw new IOException("Cannot connect to the remote destination");
@@ -508,16 +532,28 @@ public class StreamSCU {
         if (force || countdown.compareAndSet(true, false)) {
             if (as != null) {
                 try {
-                    Logger.info(false, "ImageTool", "Closing DICOM association");
+                    Logger.debug(
+                            true,
+                            "Image",
+                            "DICOM stream association close started: force={}, associationReady={}",
+                            force,
+                            as.isReadyForDataTransfer());
                     if (as.isReadyForDataTransfer()) {
                         as.release();
                     }
                     as.waitForSocketClose();
+                    Logger.info(false, "Image", "DICOM stream association closed: force={}", force);
                 } catch (Exception e) {
                     if (e instanceof InterruptedException) {
                         Thread.currentThread().interrupt();
                     }
-                    Logger.trace(false, "ImageTool", "Cannot close association", e);
+                    Logger.warn(
+                            false,
+                            "Image",
+                            e,
+                            "DICOM stream association close failed: force={}, exception={}",
+                            force,
+                            e.getClass().getSimpleName());
                 }
                 as = null;
             }
@@ -584,6 +620,13 @@ public class StreamSCU {
      */
     public void prepareTransfer(Centre service, String iuid, String cuid, String dstTsuid) throws IOException {
         synchronized (this) {
+            Logger.debug(
+                    true,
+                    "Image",
+                    "DICOM stream transfer preparation started: sopClassUid={}, transferSyntaxUid={}, hasAssociation={}",
+                    cuid,
+                    dstTsuid,
+                    hasAssociation());
             if (hasAssociation()) {
                 checkNewSopClassUID(cuid, dstTsuid);
                 addData(cuid, dstTsuid);
@@ -606,6 +649,13 @@ public class StreamSCU {
                 open();
             }
             addIUIDProcessed(iuid);
+            Logger.debug(
+                    false,
+                    "Image",
+                    "DICOM stream transfer preparation finished: sopClassUid={}, transferSyntaxUid={}, associationReady={}",
+                    cuid,
+                    dstTsuid,
+                    isReadyForDataTransfer());
         }
     }
 
@@ -630,12 +680,16 @@ public class StreamSCU {
                     TimeUnit.MILLISECONDS.sleep(20);
                     loop++;
                     if (loop > 3000) { // Let 1 min max
-                        Logger.warn(false, "ImageTool", "prepareTransfer: StreamSCU timeout reached");
+                        Logger.warn(false, "Image", "component=tool, prepareTransfer: StreamSCU timeout reached");
                         instanceUidsCurrentlyProcessed.clear();
                         break;
                     }
                 } catch (InterruptedException e) {
-                    Logger.error(false, "ImageTool", "prepareTransfer: InterruptedException {}", e.getMessage());
+                    Logger.error(
+                            false,
+                            "Image",
+                            "component=tool, prepareTransfer: InterruptedException {}",
+                            e.getClass().getSimpleName());
                     Thread.currentThread().interrupt();
                     break;
                 }

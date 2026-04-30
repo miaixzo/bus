@@ -83,9 +83,9 @@ public class ErrorsHandler implements WebExceptionHandler {
 
         Context context = exchange.getAttribute(Context.$);
         if (context != null) {
-            Logger.info(false, "Errors", "Context format is: {}", context.getFormat());
+            Logger.info(false, "Vortex", "component=errors, Context format is: {}", context.getFormat());
         } else {
-            Logger.info(false, "Errors", "Context is null, defaulting to JSON format.");
+            Logger.info(false, "Vortex", "component=errors, Context is null, defaulting to JSON format.");
         }
 
         String path = request.getPath().value();
@@ -113,8 +113,8 @@ public class ErrorsHandler implements WebExceptionHandler {
                 long executionTime = System.currentTimeMillis() - context.getTimestamp();
                 Logger.error(
                         false,
-                        "Errors",
-                        "[{}] [{}] [{}] [ERROR_COMPLETION] - Error handled, execution time: {}ms, exception: {}",
+                        "Vortex",
+                        "component=errors, clientIp={}, method={}, path={}, event=ERROR_COMPLETION, error response handled: executionTimeMs={}, exception={}",
                         ip,
                         method,
                         path,
@@ -123,8 +123,8 @@ public class ErrorsHandler implements WebExceptionHandler {
             } else {
                 Logger.error(
                         false,
-                        "Errors",
-                        "[{}] [{}] [{}] [ERROR_COMPLETION] - Error handled, exception: {}",
+                        "Vortex",
+                        "component=errors, clientIp={}, method={}, path={}, event=ERROR_COMPLETION, error response handled: exception={}",
                         ip,
                         method,
                         path,
@@ -150,8 +150,8 @@ public class ErrorsHandler implements WebExceptionHandler {
             if (StringKit.isNotBlank(errcode)) {
                 Logger.error(
                         false,
-                        "Errors",
-                        "[N/A] [{}] [{}] [ERROR_UNCHECKED] - ErrorCode: {}, Message: {}",
+                        "Vortex",
+                        "component=errors, clientIp=N/A, method={}, path={}, event=ERROR_UNCHECKED, errorCode={}, message={}",
                         method,
                         path,
                         errcode,
@@ -162,33 +162,36 @@ public class ErrorsHandler implements WebExceptionHandler {
             if (ex.getCause() instanceof UnknownHostException) {
                 Logger.error(
                         false,
-                        "Errors",
-                        "[N/A] [{}] [{}] [ERROR_WEBCLIENT] - UnknownHostException: {}",
+                        "Vortex",
+                        ex.getCause(),
+                        "component=errors, clientIp=N/A, method={}, path={}, event=ERROR_WEBCLIENT, unknown host: exception={}",
                         method,
                         path,
-                        ex.getCause().getMessage());
+                        ex.getCause().getClass().getSimpleName());
                 return Message.builder().errcode(ErrorCode._100811.getKey()).errmsg(ErrorCode._100811.getValue())
                         .build();
             } else {
                 Logger.error(
                         false,
-                        "Errors",
-                        "[N/A] [{}] [{}] [ERROR_WEBCLIENT] - WebClientException: {}",
+                        "Vortex",
+                        ex,
+                        "component=errors, clientIp=N/A, method={}, path={}, event=ERROR_WEBCLIENT, web client failure: exception={}",
                         method,
                         path,
-                        ex.getMessage());
+                        ex.getClass().getSimpleName());
                 return Message.builder().errcode(ErrorCode._116000.getKey()).errmsg(ErrorCode._116000.getValue())
                         .build();
             }
         }
         Logger.error(
                 false,
-                "Errors",
-                "[N/A] [{}] [{}] [ERROR_UNKNOWN] - Unknown exception type: {}, Message: {}",
+                "Vortex",
+                ex,
+                "component=errors, clientIp=N/A, method={}, path={}, event=ERROR_UNKNOWN, unknown exception type: exceptionType={}, exception={}",
                 method,
                 path,
                 ex.getClass().getName(),
-                ex.getMessage());
+                ex.getClass().getSimpleName());
         return Message.builder().errcode(ErrorCode._100807.getKey()).errmsg(ErrorCode._100807.getValue()).build();
     }
 

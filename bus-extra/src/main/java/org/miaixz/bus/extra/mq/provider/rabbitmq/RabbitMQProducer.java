@@ -26,6 +26,7 @@ import org.miaixz.bus.core.lang.exception.MQueueException;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.extra.mq.Message;
 import org.miaixz.bus.extra.mq.Producer;
+import org.miaixz.bus.logger.Logger;
 import com.rabbitmq.client.Channel;
 
 /**
@@ -89,9 +90,32 @@ public class RabbitMQProducer implements Producer {
             final boolean exclusive,
             final boolean autoDelete,
             final Map<String, Object> arguments) {
+        final long startedAt = System.nanoTime();
+        Logger.debug(
+                true,
+                "Extra",
+                "component=mq, RabbitMQ queue declaration started: queue={}, durable={}, exclusive={}, autoDelete={}",
+                queue,
+                durable,
+                exclusive,
+                autoDelete);
         try {
             this.channel.queueDeclare(queue, durable, exclusive, autoDelete, arguments);
+            Logger.debug(
+                    false,
+                    "Extra",
+                    "component=mq, RabbitMQ queue declared: queue={}, elapsedMs={}",
+                    queue,
+                    (System.nanoTime() - startedAt) / 1_000_000L);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=mq, RabbitMQ queue declaration failed: queue={}, exception={}, elapsedMs={}",
+                    queue,
+                    e.getClass().getSimpleName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
             throw new MQueueException(e);
         }
         return this;
@@ -106,9 +130,36 @@ public class RabbitMQProducer implements Producer {
      */
     @Override
     public void send(final Message message) {
+        final long startedAt = System.nanoTime();
+        final byte[] content = message.content();
+        Logger.debug(
+                true,
+                "Extra",
+                "component=mq, RabbitMQ send started: exchange={}, routingKey={}, messageBytes={}",
+                exchange,
+                message.topic(),
+                content == null ? 0 : content.length);
         try {
-            this.channel.basicPublish(exchange, message.topic(), null, message.content());
+            this.channel.basicPublish(exchange, message.topic(), null, content);
+            Logger.debug(
+                    false,
+                    "Extra",
+                    "component=mq, RabbitMQ send completed: exchange={}, routingKey={}, messageBytes={}, elapsedMs={}",
+                    exchange,
+                    message.topic(),
+                    content == null ? 0 : content.length,
+                    (System.nanoTime() - startedAt) / 1_000_000L);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=mq, RabbitMQ send failed: exchange={}, routingKey={}, messageBytes={}, exception={}, elapsedMs={}",
+                    exchange,
+                    message.topic(),
+                    content == null ? 0 : content.length,
+                    e.getClass().getSimpleName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
             throw new MQueueException(e);
         }
     }
@@ -119,7 +170,14 @@ public class RabbitMQProducer implements Producer {
      */
     @Override
     public void close() {
+        final long startedAt = System.nanoTime();
+        Logger.debug(true, "Extra", "component=mq, RabbitMQ producer close requested");
         IoKit.closeQuietly(this.channel);
+        Logger.debug(
+                false,
+                "Extra",
+                "component=mq, RabbitMQ producer closed: elapsedMs={}",
+                (System.nanoTime() - startedAt) / 1_000_000L);
     }
 
 }

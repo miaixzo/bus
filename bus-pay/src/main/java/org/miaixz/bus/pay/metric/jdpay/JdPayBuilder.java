@@ -38,6 +38,7 @@ import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.XmlKit;
 import org.miaixz.bus.crypto.Builder;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.pay.metric.wechat.WechatPayBuilder;
 
 import lombok.SneakyThrows;
@@ -250,7 +251,14 @@ public class JdPayBuilder {
             byte[] newK = encryptByPrivateKey(sha256SourceSignString.getBytes("UTF-8"), rsaPriKey);
             result = Base64.encode(newK);
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.warn(
+                    false,
+                    "Pay",
+                    e,
+                    "JD Pay signing failed: objectType={}, excludedKeys={}, exception={}",
+                    object == null ? null : object.getClass().getName(),
+                    signKeyList == null ? 0 : signKeyList.size(),
+                    e.getClass().getSimpleName());
         }
         return result;
     }
@@ -327,6 +335,13 @@ public class JdPayBuilder {
                         + sign + XML_SIGN_END + XML_JDPAY_END;
                 return Base64.encode(Builder.des(Base64.decode(strDesKey)).encryptHex(data));
             } catch (Exception e) {
+                Logger.warn(
+                        false,
+                        "Pay",
+                        e,
+                        "JD Pay payload encryption failed: dataBytes={}, exception={}",
+                        genSignStr == null ? 0 : genSignStr.length(),
+                        e.getClass().getSimpleName());
                 throw new SignatureException("signature failed");
             }
         }
@@ -352,6 +367,13 @@ public class JdPayBuilder {
             }
             return reqBody;
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Pay",
+                    e,
+                    "JD Pay encrypted response verification failed: payloadBytes={}, exception={}",
+                    encrypt == null ? 0 : encrypt.length(),
+                    e.getClass().getSimpleName());
             throw new PaymentException("data decrypt failed");
         }
     }
@@ -373,6 +395,13 @@ public class JdPayBuilder {
             }
             return req;
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Pay",
+                    e,
+                    "JD Pay response verification failed: payloadBytes={}, exception={}",
+                    reqBody == null ? 0 : reqBody.length(),
+                    e.getClass().getSimpleName());
             throw new PaymentException("data decrypt failed");
         }
     }
@@ -390,6 +419,13 @@ public class JdPayBuilder {
             byte[] newsks = encryptByPrivateKey(sha256SourceSignString.getBytes("UTF-8"), rsaPriKey);
             return Base64.encode(newsks);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Pay",
+                    e,
+                    "JD Pay merchant signing failed: dataBytes={}, exception={}",
+                    sourceSignString == null ? 0 : sourceSignString.length(),
+                    e.getClass().getSimpleName());
             throw new SignatureException("verify signature failed.", e);
         }
     }
@@ -420,6 +456,14 @@ public class JdPayBuilder {
                 throw new SignatureException("Signature verification failed.");
             }
         } catch (RuntimeException e) {
+            Logger.warn(
+                    false,
+                    "Pay",
+                    e,
+                    "JD Pay merchant signature verification failed: dataBytes={}, signaturePresent={}, exception={}",
+                    strSourceData == null ? 0 : strSourceData.length(),
+                    signData != null,
+                    e.getClass().getSimpleName());
             throw new SignatureException("verify signature failed.", e);
         }
     }

@@ -94,9 +94,22 @@ public class Factory {
         Options effective = options == null ? new Options() : options;
         String type = normalizeType(effective.getType());
         if (StringKit.isBlank(type)) {
+            Logger.warn(
+                    false,
+                    "Cache",
+                    "Cache backend creation rejected: typePresent=false, extendedMode={}",
+                    extendedMode);
             throw new IllegalArgumentException("Cache backend type is required");
         }
-        return switch (type) {
+        Logger.info(
+                true,
+                "Cache",
+                "Cache backend creation started: type={}, extendedMode={}, maxSize={}, expireMs={}",
+                type,
+                extendedMode,
+                maxSize(effective),
+                expireMs(effective));
+        Backend backend = switch (type) {
             case "memory" -> new Backend(memoryCache(effective), true, true, false, maxSize(effective),
                     expireMs(effective));
             case "noop" -> new Backend(new NoOpCache<>(), false, false, false, maxSize(effective), expireMs(effective));
@@ -107,8 +120,27 @@ public class Factory {
             case "redis-cluster" -> new Backend(redisClusterCache(effective), true, true, false, maxSize(effective),
                     expireMs(effective));
             case "memcached" -> memcachedBackend(effective, extendedMode);
-            default -> throw new IllegalArgumentException("Unknown cache backend type: " + type);
+            default -> {
+                Logger.warn(
+                        false,
+                        "Cache",
+                        "Cache backend creation rejected: type={}, extendedMode={}",
+                        type,
+                        extendedMode);
+                throw new IllegalArgumentException("Unknown cache backend type: " + type);
+            }
         };
+        Logger.info(
+                false,
+                "Cache",
+                "Cache backend creation completed: type={}, backend={}, scan={}, counter={}, mirror={}, extendedMode={}",
+                type,
+                backend.cache().getClass().getSimpleName(),
+                backend.scan(),
+                backend.counter(),
+                backend.mirror(),
+                extendedMode);
+        return backend;
     }
 
     /**
@@ -123,7 +155,15 @@ public class Factory {
             return new Backend(new CaffeineCache<>(maxSize(options), expireMs(options)), !extendedMode, !extendedMode,
                     extendedMode, maxSize(options), expireMs(options));
         } catch (Throwable e) {
-            Logger.warn(true, "Cache", "Failed to initialize CaffeineCache, falling back to MemoryCache");
+            Logger.warn(
+                    false,
+                    "Cache",
+                    e,
+                    "Caffeine cache initialization failed; falling back to memory: maxSize={}, expireMs={}, extendedMode={}, exception={}",
+                    maxSize(options),
+                    expireMs(options),
+                    extendedMode,
+                    e.getClass().getSimpleName());
             return new Backend(memoryCache(options), true, true, false, maxSize(options), expireMs(options));
         }
     }
@@ -140,7 +180,15 @@ public class Factory {
             return new Backend(new GuavaCache<>(maxSize(options), expireMs(options)), !extendedMode, !extendedMode,
                     extendedMode, maxSize(options), expireMs(options));
         } catch (Throwable e) {
-            Logger.warn(true, "Cache", "Failed to initialize GuavaCache, falling back to MemoryCache");
+            Logger.warn(
+                    false,
+                    "Cache",
+                    e,
+                    "Guava cache initialization failed; falling back to memory: maxSize={}, expireMs={}, extendedMode={}, exception={}",
+                    maxSize(options),
+                    expireMs(options),
+                    extendedMode,
+                    e.getClass().getSimpleName());
             return new Backend(memoryCache(options), true, true, false, maxSize(options), expireMs(options));
         }
     }
@@ -155,12 +203,45 @@ public class Factory {
     private Backend memcachedBackend(Options options, boolean extendedMode) {
         String nodes = options.getNodes();
         if (StringKit.isBlank(nodes)) {
+            Logger.warn(
+                    false,
+                    "Cache",
+                    "Memcached cache initialization rejected: nodeCount=0, extendedMode={}",
+                    extendedMode);
             throw new IllegalArgumentException("cache.nodes is required for memcached cache");
         }
+        Logger.info(
+                true,
+                "Cache",
+                "Memcached cache initialization started: nodeCount={}, maxSize={}, expireMs={}, extendedMode={}",
+                Arrays.stream(nodes.split(",")).map(String::trim).filter(StringKit::isNotBlank).count(),
+                maxSize(options),
+                expireMs(options),
+                extendedMode);
         try {
-            return new Backend(new MemcachedCache<>(nodes), !extendedMode, !extendedMode, extendedMode,
+            Backend backend = new Backend(new MemcachedCache<>(nodes), !extendedMode, !extendedMode, extendedMode,
                     maxSize(options), expireMs(options));
+            Logger.info(
+                    false,
+                    "Cache",
+                    "Memcached cache initialization completed: nodeCount={}, scan={}, counter={}, mirror={}, extendedMode={}",
+                    Arrays.stream(nodes.split(",")).map(String::trim).filter(StringKit::isNotBlank).count(),
+                    backend.scan(),
+                    backend.counter(),
+                    backend.mirror(),
+                    extendedMode);
+            return backend;
         } catch (Exception e) {
+            Logger.error(
+                    false,
+                    "Cache",
+                    e,
+                    "Memcached cache initialization failed: nodeCount={}, maxSize={}, expireMs={}, extendedMode={}, exception={}",
+                    Arrays.stream(nodes.split(",")).map(String::trim).filter(StringKit::isNotBlank).count(),
+                    maxSize(options),
+                    expireMs(options),
+                    extendedMode,
+                    e.getClass().getSimpleName());
             throw new IllegalArgumentException("Failed to initialize Memcached cache: " + e.getMessage(), e);
         }
     }
@@ -183,12 +264,31 @@ public class Factory {
      */
     private CacheX<String, Object> redisCache(Options options) {
         Options.Redis redis = redis(options);
+        Logger.info(
+                true,
+                "Cache",
+                "Redis cache initialization started: hostPresent={}, port={}, timeoutMs={}, passwordPresent={}",
+                StringKit.isNotBlank(redis.getHost()),
+                redis.getPort(),
+                redis.getTimeout(),
+                StringKit.isNotBlank(redis.getPassword()));
         JedisPoolConfig config = new JedisPoolConfig();
         config.setMaxTotal(redis.getMaxActive());
         config.setMaxIdle(redis.getMaxIdle());
         config.setMinIdle(redis.getMinIdle());
-        return new RedisCache<>(
+        CacheX<String, Object> cache = new RedisCache<>(
                 new JedisPool(config, redis.getHost(), redis.getPort(), redis.getTimeout(), redis.getPassword()));
+        Logger.info(
+                false,
+                "Cache",
+                "Redis cache initialization completed: hostPresent={}, port={}, timeoutMs={}, maxActive={}, maxIdle={}, minIdle={}",
+                StringKit.isNotBlank(redis.getHost()),
+                redis.getPort(),
+                redis.getTimeout(),
+                redis.getMaxActive(),
+                redis.getMaxIdle(),
+                redis.getMinIdle());
+        return cache;
     }
 
     /**
@@ -201,11 +301,16 @@ public class Factory {
         Options.Redis redis = redis(options);
         String nodes = StringKit.isNotBlank(redis.getNodes()) ? redis.getNodes() : options.getNodes();
         if (StringKit.isBlank(nodes)) {
+            Logger.warn(false, "Cache", "Redis cluster cache initialization rejected: nodeCount=0");
             throw new IllegalArgumentException("cache.redis.nodes is required for redis-cluster cache");
         }
+        long nodeCount = Arrays.stream(nodes.split(",")).map(String::trim).filter(StringKit::isNotBlank).count();
+        Logger.info(true, "Cache", "Redis cluster cache initialization started: nodeCount={}", nodeCount);
         Set<HostAndPort> hostAndPorts = Arrays.stream(nodes.split(",")).map(String::trim).filter(StringKit::isNotBlank)
                 .map(this::hostAndPort).collect(Collectors.toSet());
-        return new RedisClusterCache<>(new JedisCluster(hostAndPorts));
+        CacheX<String, Object> cache = new RedisClusterCache<>(new JedisCluster(hostAndPorts));
+        Logger.info(false, "Cache", "Redis cluster cache initialization completed: nodeCount={}", hostAndPorts.size());
+        return cache;
     }
 
     /**
@@ -217,11 +322,25 @@ public class Factory {
     private HostAndPort hostAndPort(String value) {
         String[] parts = value.split(":");
         if (parts.length != 2) {
+            Logger.warn(
+                    false,
+                    "Cache",
+                    "Cache node parsing rejected: partCount={}, nodePresent={}",
+                    parts.length,
+                    StringKit.isNotBlank(value));
             throw new IllegalArgumentException("Invalid cache node format, expected host:port: " + value);
         }
         try {
             return new HostAndPort(parts[0], Integer.parseInt(parts[1]));
         } catch (NumberFormatException e) {
+            Logger.warn(
+                    false,
+                    "Cache",
+                    e,
+                    "Cache node parsing failed: hostPresent={}, portPresent={}, exception={}",
+                    StringKit.isNotBlank(parts[0]),
+                    StringKit.isNotBlank(parts[1]),
+                    e.getClass().getSimpleName());
             throw new IllegalArgumentException("Invalid port in cache node: " + value, e);
         }
     }

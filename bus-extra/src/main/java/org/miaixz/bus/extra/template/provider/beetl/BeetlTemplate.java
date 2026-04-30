@@ -26,6 +26,7 @@ import java.io.Writer;
 import java.util.Map;
 
 import org.miaixz.bus.extra.template.Template;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Beetl template implementation. This class wraps a Beetl {@link org.beetl.core.Template} object, providing a unified
@@ -74,8 +75,21 @@ public class BeetlTemplate implements Template, Serializable {
      */
     @Override
     public void render(final Map<?, ?> bindingMap, final Writer writer) {
+        final long startedAt = System.nanoTime();
+        Logger.debug(
+                true,
+                "Extra",
+                "component=template, Beetl render started: bindingCount={}, writerPresent={}",
+                bindingMap == null ? 0 : bindingMap.size(),
+                writer != null);
         rawTemplate.binding(bindingMap);
         rawTemplate.renderTo(writer);
+        Logger.debug(
+                false,
+                "Extra",
+                "component=template, Beetl render completed: bindingCount={}, elapsedMs={}",
+                bindingMap == null ? 0 : bindingMap.size(),
+                (System.nanoTime() - startedAt) / 1_000_000L);
     }
 
     /**
@@ -89,8 +103,21 @@ public class BeetlTemplate implements Template, Serializable {
      */
     @Override
     public void render(final Map<?, ?> bindingMap, final OutputStream out) {
+        final long startedAt = System.nanoTime();
+        Logger.debug(
+                true,
+                "Extra",
+                "component=template, Beetl stream render started: bindingCount={}, outputPresent={}",
+                bindingMap == null ? 0 : bindingMap.size(),
+                out != null);
         rawTemplate.binding(bindingMap);
         rawTemplate.renderTo(out);
+        Logger.debug(
+                false,
+                "Extra",
+                "component=template, Beetl stream render completed: bindingCount={}, elapsedMs={}",
+                bindingMap == null ? 0 : bindingMap.size(),
+                (System.nanoTime() - startedAt) / 1_000_000L);
     }
 
 }

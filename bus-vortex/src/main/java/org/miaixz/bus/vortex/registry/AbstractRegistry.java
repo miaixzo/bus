@@ -107,7 +107,11 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
      */
     public void setMonitor(Monitor monitor) {
         this.cacheManager.setPerformanceMonitor(monitor);
-        Logger.debug(false, "Registry", "Performance monitor set: {}", monitor.getClass().getSimpleName());
+        Logger.debug(
+                false,
+                "Vortex",
+                "component=registry, Performance monitor set: {}",
+                monitor.getClass().getSimpleName());
     }
 
     /**

@@ -22,6 +22,7 @@ package org.miaixz.bus.sensitive;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.sensitive.magic.annotation.*;
 import org.miaixz.bus.sensitive.metric.BuiltInProvider;
 import org.miaixz.bus.sensitive.metric.ConditionProvider;
@@ -68,6 +69,13 @@ public class Provider<T> {
                 return (T) ois.readObject();
             }
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Sensitive",
+                    e,
+                    "Sensitive object clone failed: objectClass={}, exception={}",
+                    object.getClass().getName(),
+                    e.getClass().getSimpleName());
             throw new InternalException("Deep clone failed: " + e.getMessage(), e);
         }
     }
@@ -95,6 +103,13 @@ public class Provider<T> {
         if (ObjectKit.isEmpty(object)) {
             return object;
         }
+        Logger.debug(
+                true,
+                "Sensitive",
+                "Sensitive object processing started: objectClass={}, annotation={}, clone={}",
+                object.getClass().getName(),
+                annotation == null ? null : annotation.annotationType().getName(),
+                clone);
 
         if (ObjectKit.isNotEmpty(annotation)) {
             Sensitive sensitive = (Sensitive) annotation;
@@ -105,6 +120,13 @@ public class Provider<T> {
 
         T result = clone ? clone(object) : object;
         handleClassField(context, result, result.getClass());
+        Logger.debug(
+                false,
+                "Sensitive",
+                "Sensitive object processing completed: objectClass={}, selectedFieldCount={}, clone={}",
+                result.getClass().getName(),
+                this.value == null ? 0 : this.value.length,
+                clone);
         return result;
     }
 
@@ -119,6 +141,12 @@ public class Provider<T> {
         if (ObjectKit.isEmpty(object)) {
             return JsonKit.toJsonString(null);
         }
+        Logger.debug(
+                true,
+                "Sensitive",
+                "Sensitive JSON processing started: objectClass={}, annotation={}",
+                object.getClass().getName(),
+                annotation == null ? null : annotation.annotationType().getName());
 
         if (ObjectKit.isNotEmpty(annotation)) {
             Sensitive sensitive = (Sensitive) annotation;
@@ -128,7 +156,14 @@ public class Provider<T> {
         final Context context = new Context();
         T copy = clone(object);
         handleClassField(context, copy, copy.getClass());
-        return JsonKit.toJsonString(copy);
+        String json = JsonKit.toJsonString(copy);
+        Logger.debug(
+                false,
+                "Sensitive",
+                "Sensitive JSON processing completed: objectClass={}, jsonChars={}",
+                copy.getClass().getName(),
+                json == null ? 0 : json.length());
+        return json;
     }
 
     /**
@@ -175,6 +210,14 @@ public class Provider<T> {
                 }
             }
         } catch (IllegalAccessException e) {
+            Logger.warn(
+                    false,
+                    "Sensitive",
+                    e,
+                    "Sensitive class field processing failed: objectClass={}, currentField={}, exception={}",
+                    clazz.getName(),
+                    context.getCurrentField() == null ? null : context.getCurrentField().getName(),
+                    e.getClass().getSimpleName());
             throw new InternalException("Field access failed: " + e.getMessage(), e);
         }
     }
@@ -264,6 +307,13 @@ public class Provider<T> {
                 if (condition.valid(context)) {
                     context.setShield(sensitive);
                     StrategyProvider strategy = ReflectKit.newInstance(sensitive.strategy());
+                    Logger.debug(
+                            false,
+                            "Sensitive",
+                            "Sensitive entry strategy matched: field={}, annotation=Shield, strategy={}, condition={}",
+                            field.getName(),
+                            strategy.getClass().getSimpleName(),
+                            condition.getClass().getSimpleName());
                     return strategy.build(entry, context);
                 }
             }
@@ -274,12 +324,27 @@ public class Provider<T> {
                 if (ObjectKit.isNull(condition) || condition.valid(context)) {
                     StrategyProvider strategy = getStrategy(annotations);
                     if (ObjectKit.isNotNull(strategy)) {
+                        Logger.debug(
+                                false,
+                                "Sensitive",
+                                "Sensitive entry strategy matched: field={}, annotationCount={}, strategy={}",
+                                field.getName(),
+                                annotations.length,
+                                strategy.getClass().getSimpleName());
                         return strategy.build(entry, context);
                     }
                 }
             }
             return entry;
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Sensitive",
+                    e,
+                    "Sensitive entry processing failed: field={}, entryType={}, exception={}",
+                    field.getName(),
+                    entry == null ? null : entry.getClass().getName(),
+                    e.getClass().getSimpleName());
             throw new InternalException("Desensitization failed: " + e.getMessage(), e);
         }
     }
@@ -302,6 +367,14 @@ public class Provider<T> {
                     final Object originalFieldVal = field.get(copyObject);
                     final Object result = strategy.build(originalFieldVal, context);
                     field.set(copyObject, result);
+                    Logger.debug(
+                            false,
+                            "Sensitive",
+                            "Sensitive field strategy applied: objectClass={}, field={}, annotation=Shield, strategy={}, condition={}",
+                            copyObject.getClass().getName(),
+                            field.getName(),
+                            strategy.getClass().getSimpleName(),
+                            condition.getClass().getSimpleName());
                     return; // Avoid processing other annotations if @Shield is present and applied.
                 }
             }
@@ -315,10 +388,26 @@ public class Provider<T> {
                         final Object originalFieldVal = field.get(copyObject);
                         final Object result = strategy.build(originalFieldVal, context);
                         field.set(copyObject, result);
+                        Logger.debug(
+                                false,
+                                "Sensitive",
+                                "Sensitive field strategy applied: objectClass={}, field={}, annotationCount={}, strategy={}",
+                                copyObject.getClass().getName(),
+                                field.getName(),
+                                annotations.length,
+                                strategy.getClass().getSimpleName());
                     }
                 }
             }
         } catch (IllegalAccessException e) {
+            Logger.warn(
+                    false,
+                    "Sensitive",
+                    e,
+                    "Sensitive field processing failed: objectClass={}, field={}, exception={}",
+                    copyObject.getClass().getName(),
+                    field.getName(),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }

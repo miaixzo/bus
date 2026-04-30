@@ -89,8 +89,8 @@ public class WsRouter implements Router<ServerRequest, ServerResponse> {
 
             Logger.info(
                     true,
-                    "WebSocket",
-                    "[{}] [{}] [{}] [WS_ROUTER_START] - Connecting to WebSocket target: {}",
+                    "Vortex",
+                    "protocol=ws, clientIp={}, method={}, path={}, event=WS_ROUTER_START, WebSocket target connection started: target={}",
                     ip,
                     method,
                     path,
@@ -102,8 +102,8 @@ public class WsRouter implements Router<ServerRequest, ServerResponse> {
             if (!isWebSocketUpgrade) {
                 Logger.warn(
                         true,
-                        "WebSocket",
-                        "[{}] [{}] [{}] [WS_NOT_UPGRADE] - Request is not a WebSocket upgrade request",
+                        "Vortex",
+                        "protocol=ws, clientIp={}, method={}, path={}, event=WS_NOT_UPGRADE, WebSocket upgrade header missing",
                         ip,
                         method,
                         path);
@@ -115,8 +115,8 @@ public class WsRouter implements Router<ServerRequest, ServerResponse> {
 
             Logger.info(
                     true,
-                    "WebSocket",
-                    "[{}] [{}] [{}] [WS_UPGRADE_DETECTED] - WebSocket upgrade request detected",
+                    "Vortex",
+                    "protocol=ws, clientIp={}, method={}, path={}, event=WS_UPGRADE_DETECTED, WebSocket upgrade request accepted",
                     ip,
                     method,
                     path);

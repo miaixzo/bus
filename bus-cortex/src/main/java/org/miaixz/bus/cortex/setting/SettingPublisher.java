@@ -38,6 +38,7 @@ import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
 import org.miaixz.bus.cortex.magic.event.CortexChangeRecord;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
 import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Setting publisher responsible for current-state updates and item revision history.
@@ -201,12 +202,32 @@ public class SettingPublisher {
     private Item publish(Item entry, boolean forceRevision, String source, String eventType, String summary) {
         Item prepared = prepare(entry);
         String profile = ItemBindingProjection.firstProfileId(prepared);
+        Logger.info(
+                true,
+                "Cortex",
+                "Setting publish started: namespace={}, group={}, dataId={}, profile={}, forceRevision={}, contentChars={}",
+                prepared.getNamespace_id(),
+                prepared.getGroup(),
+                prepared.getData_id(),
+                profile,
+                forceRevision,
+                prepared.getContent() == null ? 0 : prepared.getContent().length());
         Item current = entryStore.find(prepared.getNamespace_id(), prepared.getGroup(), prepared.getData_id(), profile);
         if (!matchesExactProfile(current, profile)) {
             current = null;
         }
         if (!forceRevision && current != null && current.getChecksum() != null
                 && current.getChecksum().equals(prepared.getChecksum())) {
+            Logger.info(
+                    false,
+                    "Cortex",
+                    "Setting publish skipped: namespace={}, group={}, dataId={}, profile={}, reason={}, revision={}",
+                    prepared.getNamespace_id(),
+                    prepared.getGroup(),
+                    prepared.getData_id(),
+                    profile,
+                    "checksumUnchanged",
+                    current.getRevision());
             return current;
         }
         prepared.setRevision(ItemRevisionNumbers.next(current == null ? null : current.getRevision()));
@@ -227,6 +248,17 @@ public class SettingPublisher {
                     profile,
                     maxRevisions);
         } catch (RuntimeException | Error e) {
+            Logger.error(
+                    false,
+                    "Cortex",
+                    e,
+                    "Setting revision persistence failed: namespace={}, group={}, dataId={}, profile={}, revision={}, exception={}",
+                    stored.getNamespace_id(),
+                    stored.getGroup(),
+                    stored.getData_id(),
+                    profile,
+                    stored.getRevision(),
+                    e.getClass().getSimpleName());
             compensateCurrentState(current, stored, revision, e);
             throw e;
         }
@@ -249,6 +281,16 @@ public class SettingPublisher {
                         summary);
             }
         }
+        Logger.info(
+                false,
+                "Cortex",
+                "Setting publish completed: namespace={}, group={}, dataId={}, profileCount={}, revision={}, encrypted={}",
+                stored.getNamespace_id(),
+                stored.getGroup(),
+                stored.getData_id(),
+                profiles == null ? 0 : profiles.size(),
+                stored.getRevision(),
+                stored.getEncrypted());
         return stored;
     }
 
@@ -262,6 +304,14 @@ public class SettingPublisher {
      * @return deleted entry or {@code null}
      */
     public Item delete(String namespace, String group, String data_id, String profile) {
+        Logger.info(
+                true,
+                "Cortex",
+                "Setting delete started: namespace={}, group={}, dataId={}, profile={}",
+                namespace,
+                group,
+                data_id,
+                profile);
         Item deleted = entryStore.delete(namespace, group, data_id, profile);
         if (deleted != null) {
             appendChangeLog("delete", deleted, null);
@@ -272,6 +322,15 @@ public class SettingPublisher {
                     DURABLE_DELETE_EVENT,
                     "Setting deleted");
         }
+        Logger.info(
+                false,
+                "Cortex",
+                "Setting delete completed: namespace={}, group={}, dataId={}, profile={}, deleted={}",
+                namespace,
+                group,
+                data_id,
+                profile,
+                deleted != null);
         return deleted;
     }
 
@@ -286,8 +345,27 @@ public class SettingPublisher {
      * @return newly stored current entry or {@code null} when the revision does not exist
      */
     public Item rollback(String namespace, String group, String data_id, String profile, String revision) {
+        Logger.info(
+                true,
+                "Cortex",
+                "Setting rollback started: namespace={}, group={}, dataId={}, profile={}, revision={}",
+                namespace,
+                group,
+                data_id,
+                profile,
+                revision);
         ItemRevision snapshot = revisionStore.find(namespace, group, data_id, profile, revision);
         if (snapshot == null) {
+            Logger.warn(
+                    false,
+                    "Cortex",
+                    "Setting rollback skipped: namespace={}, group={}, dataId={}, profile={}, revision={}, reason={}",
+                    namespace,
+                    group,
+                    data_id,
+                    profile,
+                    revision,
+                    "missingRevision");
             return null;
         }
         Item entry = new Item();
@@ -316,6 +394,16 @@ public class SettingPublisher {
                 revisionStore.markRollback(namespace, group, data_id, profile, latest.getRevision(), revision);
             }
         }
+        Logger.info(
+                false,
+                "Cortex",
+                "Setting rollback completed: namespace={}, group={}, dataId={}, profile={}, fromRevision={}, newRevision={}",
+                namespace,
+                group,
+                data_id,
+                profile,
+                revision,
+                published == null ? null : published.getRevision());
         return published;
     }
 
@@ -347,6 +435,16 @@ public class SettingPublisher {
                         ItemBindingProjection.firstProfileId(stored));
             }
         } catch (RuntimeException | Error compensationFailure) {
+            Logger.error(
+                    false,
+                    "Cortex",
+                    compensationFailure,
+                    "Setting publish compensation failed: namespace={}, group={}, dataId={}, profile={}, exception={}",
+                    stored == null ? null : stored.getNamespace_id(),
+                    stored == null ? null : stored.getGroup(),
+                    stored == null ? null : stored.getData_id(),
+                    stored == null ? null : ItemBindingProjection.firstProfileId(stored),
+                    compensationFailure.getClass().getSimpleName());
             failure.addSuppressed(compensationFailure);
         }
     }

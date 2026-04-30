@@ -146,9 +146,9 @@ public class TempusConfiguration {
         } catch (Exception e) {
             Logger.warn(
                     false,
-                    "Tempus",
-                    "Tempus temporal Worker failed to start, app continues without worker. error: {}",
-                    e.getMessage());
+                    "Starter",
+                    "component=tempus, Tempus temporal Worker failed to start, app continues without worker. exception={}",
+                    e.getClass().getSimpleName());
         }
         return manager;
     }

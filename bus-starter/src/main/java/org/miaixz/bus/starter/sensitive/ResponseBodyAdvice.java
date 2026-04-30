@@ -103,6 +103,16 @@ public class ResponseBodyAdvice extends BaseAdvice
                 }
 
                 Object data = ((Message) body).getData();
+                Logger.debug(
+                        true,
+                        "Starter",
+                        "component=sensitive, Sensitive response processing started: controller={}, method={}, mode={}, stage={}, dataType={}, contentType={}",
+                        returnType.getDeclaringClass().getName(),
+                        returnType.getExecutable().getName(),
+                        sensitive.value(),
+                        sensitive.stage(),
+                        data == null ? null : data.getClass().getName(),
+                        selectedContentType);
                 if (data instanceof Result) {
                     List<Object> processedRows = new ArrayList<>();
                     for (Object row : ((Result) data).getRows()) {
@@ -110,6 +120,13 @@ public class ResponseBodyAdvice extends BaseAdvice
                         processedRows.add(row);
                     }
                     ((Result) data).setRows(processedRows);
+                    Logger.debug(
+                            false,
+                            "Starter",
+                            "component=sensitive, Sensitive response processing completed: controller={}, method={}, resultRowCount={}",
+                            returnType.getDeclaringClass().getName(),
+                            returnType.getExecutable().getName(),
+                            processedRows.size());
                 } else if (data instanceof List) {
                     List<Object> processedList = new ArrayList<>();
                     for (Object item : (List<?>) data) {
@@ -117,16 +134,33 @@ public class ResponseBodyAdvice extends BaseAdvice
                         processedList.add(item);
                     }
                     ((Message) body).setData(processedList);
+                    Logger.debug(
+                            false,
+                            "Starter",
+                            "component=sensitive, Sensitive response processing completed: controller={}, method={}, listSize={}",
+                            returnType.getDeclaringClass().getName(),
+                            returnType.getExecutable().getName(),
+                            processedList.size());
                 } else {
                     processObject(sensitive, data);
                     ((Message) body).setData(data);
+                    Logger.debug(
+                            false,
+                            "Starter",
+                            "component=sensitive, Sensitive response processing completed: controller={}, method={}, dataType={}",
+                            returnType.getDeclaringClass().getName(),
+                            returnType.getExecutable().getName(),
+                            data == null ? null : data.getClass().getName());
                 }
             } catch (Exception e) {
                 Logger.error(
                         false,
-                        "Sensitive",
-                        "Sensitive internal processing failure during response body modification",
-                        e);
+                        "Starter",
+                        e,
+                        "component=sensitive, Sensitive response processing failed: controller={}, method={}, exception={}",
+                        returnType.getDeclaringClass().getName(),
+                        returnType.getExecutable().getName(),
+                        e.getClass().getSimpleName());
             }
         }
         return body;
@@ -145,7 +179,7 @@ public class ResponseBodyAdvice extends BaseAdvice
         // Perform data desensitization
         if ((Builder.ALL.equals(sensitive.value()) || Builder.SENS.equals(sensitive.value()))
                 && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
-            Logger.debug(false, "Sensitive", "Sensitive response data desensitization enabled...");
+            Logger.debug(false, "Starter", "component=sensitive, Sensitive response data desensitization enabled...");
             Builder.on(object, sensitive);
         }
         // Perform data encryption
@@ -165,8 +199,8 @@ public class ResponseBodyAdvice extends BaseAdvice
                             }
                             Logger.debug(
                                     false,
-                                    "Sensitive",
-                                    "Sensitive response data encryption enabled for property: {}",
+                                    "Starter",
+                                    "component=sensitive, Sensitive response data encryption enabled for property: {}",
                                     property);
                             String encryptedValue = org.miaixz.bus.crypto.Builder.encrypt(
                                     this.properties.getEncrypt().getType(),

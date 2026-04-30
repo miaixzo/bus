@@ -531,9 +531,9 @@ public final class Builder {
                 return Files.readAllLines(path, Charset.UTF_8);
             } catch (IOException e) {
                 if (reportError) {
-                    Logger.error(false, "Health", "Error reading file {}. {}", filename, e.getMessage());
+                    Logger.error(false, "Health", "Error reading file {}. {}", filename, e.getClass().getSimpleName());
                 } else {
-                    Logger.debug(true, "Health", "Error reading file {}. {}", filename, e.getMessage());
+                    Logger.debug(true, "Health", "Error reading file {}. {}", filename, e.getClass().getSimpleName());
                 }
             }
         } else if (reportError) {
@@ -583,9 +583,9 @@ public final class Builder {
                 return lines;
             } catch (IOException e) {
                 if (reportError) {
-                    Logger.error(false, "Health", "Error reading file {}. {}", filename, e.getMessage());
+                    Logger.error(false, "Health", "Error reading file {}. {}", filename, e.getClass().getSimpleName());
                 } else {
-                    Logger.debug(true, "Health", "Error reading file {}. {}", filename, e.getMessage());
+                    Logger.debug(true, "Health", "Error reading file {}. {}", filename, e.getClass().getSimpleName());
                 }
             }
         } else if (reportError) {
@@ -623,9 +623,9 @@ public final class Builder {
                 return Files.readAllBytes(path);
             } catch (IOException e) {
                 if (reportError) {
-                    Logger.error(false, "Health", "Error reading file {}. {}", filename, e.getMessage());
+                    Logger.error(false, "Health", "Error reading file {}. {}", filename, e.getClass().getSimpleName());
                 } else {
-                    Logger.debug(true, "Health", "Error reading file {}. {}", filename, e.getMessage());
+                    Logger.debug(true, "Health", "Error reading file {}. {}", filename, e.getClass().getSimpleName());
                 }
             }
         } else if (reportError) {
@@ -809,7 +809,13 @@ public final class Builder {
                 return Parsing.parseIntOrDefault(read.get(0), 0);
             }
         } catch (NumberFormatException ex) {
-            Logger.warn(false, "Health", "Unable to read value from {}. {}", filename, ex.getMessage());
+            Logger.warn(
+                    false,
+                    "Health",
+                    ex,
+                    "Unable to read value: filePresent={}, exception={}",
+                    filename != null,
+                    ex.getClass().getSimpleName());
         }
         return 0;
     }

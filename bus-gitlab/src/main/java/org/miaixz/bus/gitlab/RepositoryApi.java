@@ -32,6 +32,7 @@ import java.util.stream.Stream;
 import org.miaixz.bus.gitlab.models.*;
 
 import jakarta.ws.rs.core.*;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * <p>
@@ -676,6 +677,15 @@ public class RepositoryApi extends AbstractApi {
             return (file);
 
         } catch (IOException ioe) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    ioe,
+                    "GitLab repository archive download failed: operation=getRepositoryArchive, projectPresent={}, paramsPresent={}, directoryPresent={}, exception={}",
+                    projectIdOrPath != null,
+                    params != null,
+                    directory != null,
+                    ioe.getClass().getSimpleName());
             throw new GitLabApiException(ioe);
         }
     }
@@ -762,6 +772,16 @@ public class RepositoryApi extends AbstractApi {
             return (file);
 
         } catch (IOException ioe) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    ioe,
+                    "GitLab repository archive download failed: operation=getRepositoryArchive, projectPresent={}, paramsPresent={}, format={}, directoryPresent={}, exception={}",
+                    projectIdOrPath != null,
+                    params != null,
+                    format,
+                    directory != null,
+                    ioe.getClass().getSimpleName());
             throw new GitLabApiException(ioe);
         }
     }

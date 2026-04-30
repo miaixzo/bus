@@ -36,6 +36,7 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * An in-memory cache implementation based on {@link ConcurrentHashMap} and {@link ReentrantReadWriteLock}.
@@ -138,6 +139,14 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
         if (schedulePrune) {
             this.schedulePrune(timeout);
         }
+        Logger.info(
+                false,
+                "Cache",
+                "Memory cache initialized: maximumSize={}, expireAfterWriteMs={}, expireAfterAccessMs={}, schedulePrune={}",
+                maximumSize,
+                expireAfterWrite,
+                expireAfterAccess,
+                schedulePrune);
     }
 
     /**
@@ -154,6 +163,14 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
         if (schedulePrune) {
             this.schedulePrune(expire);
         }
+        Logger.info(
+                false,
+                "Cache",
+                "Memory cache initialized: maximumSize={}, expireAfterWriteMs={}, expireAfterAccessMs={}, schedulePrune={}",
+                maximumSize,
+                expireAfterWrite,
+                expireAfterAccess,
+                schedulePrune);
     }
 
     /**
@@ -187,6 +204,15 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
                     .min(this.expireAfterWrite, this.expireAfterAccess > 0 ? this.expireAfterAccess : Long.MAX_VALUE);
             this.schedulePrune(effectiveExpire);
         }
+        Logger.info(
+                false,
+                "Cache",
+                "Memory cache initialized: maximumSize={}, expireAfterWriteMs={}, expireAfterAccessMs={}, initialCapacity={}, schedulePrune={}",
+                maximumSize,
+                expireAfterWrite,
+                expireAfterAccess,
+                initCapacity,
+                schedulePrune);
     }
 
     /**
@@ -218,6 +244,12 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
                     CacheState recheck = map.get(key);
                     if (recheck != null && recheck.isExpired(expireAfterWrite, expireAfterAccess)) {
                         map.remove(key);
+                        Logger.debug(
+                                false,
+                                "Cache",
+                                "Memory cache expired entry evicted: mode=single, keyPresent={}, cacheSize={}",
+                                key != null,
+                                map.size());
                     }
                 } finally {
                     // Downgrade: re-acquire read lock before releasing write lock so caller stays within a lock.
@@ -275,12 +307,21 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
         if (expiredKeys != null) {
             writeLock.lock();
             try {
+                int removedCount = 0;
                 for (K key : expiredKeys) {
                     CacheState recheck = map.get(key);
                     if (recheck != null && recheck.isExpired(expireAfterWrite, expireAfterAccess)) {
                         map.remove(key);
+                        removedCount++;
                     }
                 }
+                Logger.debug(
+                        false,
+                        "Cache",
+                        "Memory cache expired entries evicted: mode=batch, expiredCount={}, removedCount={}, cacheSize={}",
+                        expiredKeys.size(),
+                        removedCount,
+                        map.size());
             } finally {
                 writeLock.unlock();
             }
@@ -353,7 +394,15 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
     public void clear() {
         writeLock.lock();
         try {
+            int before = map.size();
             map.entrySet().removeIf(entry -> entry.getValue().isExpired(expireAfterWrite, expireAfterAccess));
+            Logger.info(
+                    false,
+                    "Cache",
+                    "Memory cache prune completed: beforeSize={}, afterSize={}, removedCount={}",
+                    before,
+                    map.size(),
+                    before - map.size());
         } finally {
             writeLock.unlock();
         }
@@ -368,10 +417,21 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
     public void remove(K... keys) {
         writeLock.lock();
         try {
+            int removedCount = 0;
             for (K key : keys) {
-                map.remove(key);
+                if (map.remove(key) != null) {
+                    removedCount++;
+                }
                 counters.remove(key);
             }
+            Logger.debug(
+                    false,
+                    "Cache",
+                    "Memory cache remove completed: keyCount={}, removedCount={}, cacheSize={}, counterSize={}",
+                    keys.length,
+                    removedCount,
+                    map.size(),
+                    counters.size());
         } finally {
             writeLock.unlock();
         }
@@ -387,6 +447,12 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
     public Map<K, V> scan(K prefix) {
         readLock.lock();
         try {
+            Logger.debug(
+                    true,
+                    "Cache",
+                    "Memory cache scan started: prefixPresent={}, cacheSize={}",
+                    prefix != null,
+                    map.size());
             Map<K, V> result = new HashMap<>();
             map.forEach((k, state) -> {
                 if (k.toString().startsWith(prefix.toString())
@@ -394,6 +460,13 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
                     result.put(k, (V) state.getState());
                 }
             });
+            Logger.debug(
+                    false,
+                    "Cache",
+                    "Memory cache scan completed: prefixPresent={}, resultCount={}, cacheSize={}",
+                    prefix != null,
+                    result.size(),
+                    map.size());
             return result;
         } finally {
             readLock.unlock();
@@ -420,6 +493,7 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
      * Schedules a periodic task to prune expired entries from the cache.
      */
     public void schedulePrune(long delay) {
+        Logger.info(false, "Cache", "Memory cache prune scheduled: delayMs={}", delay);
         CacheScheduler.INSTANCE.schedule(this::clear, delay);
     }
 
@@ -466,7 +540,15 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
      */
     private void evictOldest() {
         map.entrySet().stream().min(Comparator.comparingLong(entry -> entry.getValue().getWriteTime()))
-                .ifPresent(oldest -> map.remove(oldest.getKey()));
+                .ifPresent(oldest -> {
+                    map.remove(oldest.getKey());
+                    Logger.debug(
+                            false,
+                            "Cache",
+                            "Memory cache capacity eviction completed: maximumSize={}, cacheSize={}",
+                            maximumSize,
+                            map.size());
+                });
     }
 
     /**

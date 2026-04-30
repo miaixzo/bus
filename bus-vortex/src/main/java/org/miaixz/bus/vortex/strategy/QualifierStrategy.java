@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Type;
-import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Channel;
@@ -140,8 +139,8 @@ public class QualifierStrategy extends AbstractStrategy {
                     .switchIfEmpty(Mono.defer(() -> {
                         Logger.warn(
                                 false,
-                                "Qualifier",
-                                "[{}] Assets not found for namespace: {}, type: {}, appId: {}, method: {}, version: {}, verb: {}",
+                                "Vortex",
+                                "strategy=qualifier, clientIp={}, assets not found: namespace={}, type={}, appId={}, method={}, version={}, verb={}",
                                 context.getX_request_ip(),
                                 namespace,
                                 type == null ? null : type.key(),
@@ -167,8 +166,8 @@ public class QualifierStrategy extends AbstractStrategy {
                         }
                         Logger.info(
                                 true,
-                                "Qualifier",
-                                "[{}] Assets resolved: namespace={}, type={}, appId={}, method={}, version={}, verb={}, matchedLevel={}, matchedRoute={}, policy={}, sign={}, mode={}, host={}, port={}, path={}, url={}",
+                                "Vortex",
+                                "strategy=qualifier, clientIp={}, assets resolved: namespace={}, type={}, appId={}, method={}, version={}, verb={}, matchedLevel={}, matchedRoute={}, policy={}, sign={}, mode={}, host={}, port={}, path={}, url={}",
                                 context.getX_request_ip(),
                                 assets.getNamespace_id(),
                                 assets.getType(),
@@ -202,8 +201,8 @@ public class QualifierStrategy extends AbstractStrategy {
                         context.getParameters().remove(Args.SIGN);
                         Logger.info(
                                 true,
-                                "Qualifier",
-                                "[{}] Namespace: {}, Type: {}, AppId: {}, Method: {}, Version: {} validated successfully",
+                                "Vortex",
+                                "strategy=qualifier, clientIp={}, qualifier validation completed: namespace={}, type={}, appId={}, method={}, version={}",
                                 context.getX_request_ip(),
                                 namespace,
                                 type == null ? null : type.key(),
@@ -247,8 +246,8 @@ public class QualifierStrategy extends AbstractStrategy {
             if (!Objects.equals(actualMethod, expectedMethod)) {
                 Logger.warn(
                         false,
-                        "Qualifier",
-                        "[{}] HTTP method mismatch, expected: {}, actual: {}",
+                        "Vortex",
+                        "strategy=qualifier, clientIp={}, HTTP method mismatch: expected={}, actual={}",
                         context.getX_request_ip(),
                         expectedMethod,
                         actualMethod);
@@ -285,15 +284,19 @@ public class QualifierStrategy extends AbstractStrategy {
         if (policy == null || policy < Consts.ZERO || policy > Consts.SIX) {
             Logger.error(
                     false,
-                    "Qualifier",
-                    "[{}] Invalid policy value: {}. Must be between 0 and 6.",
+                    "Vortex",
+                    "strategy=qualifier, clientIp={}, invalid policy value: policy={}, allowedRange=0..6",
                     context.getX_request_ip(),
                     policy);
             return Mono.error(new ValidateException(ErrorCode._116002));
         }
 
         if (Consts.ZERO.equals(policy)) {
-            Logger.info(true, "Qualifier", "[{}] Anonymous access granted.", context.getX_request_ip());
+            Logger.info(
+                    true,
+                    "Vortex",
+                    "strategy=qualifier, clientIp={}, anonymous access granted",
+                    context.getX_request_ip());
             return Mono.empty();
         }
 
@@ -310,8 +313,8 @@ public class QualifierStrategy extends AbstractStrategy {
                 context.setBearer(credentialValue);
                 Logger.info(
                         true,
-                        "Qualifier",
-                        "[{}] Using Token (required by policy={}).",
+                        "Vortex",
+                        "strategy=qualifier, clientIp={}, bearer credential selected: policy={}",
                         context.getX_request_ip(),
                         policy);
             }
@@ -322,8 +325,8 @@ public class QualifierStrategy extends AbstractStrategy {
             if (StringKit.isNotBlank(credentialValue)) {
                 Logger.info(
                         true,
-                        "Qualifier",
-                        "[{}] Using API Key (required by policy={}).",
+                        "Vortex",
+                        "strategy=qualifier, clientIp={}, API key credential selected: policy={}",
                         context.getX_request_ip(),
                         policy);
             }
@@ -332,8 +335,8 @@ public class QualifierStrategy extends AbstractStrategy {
         if (credentialValue == null) {
             Logger.warn(
                     false,
-                    "Qualifier",
-                    "[{}] Required credential not provided for policy={}.",
+                    "Vortex",
+                    "strategy=qualifier, clientIp={}, required credential missing: policy={}",
                     context.getX_request_ip(),
                     policy);
             return Mono.error(new ValidateException(ErrorCode._116002));
@@ -352,10 +355,10 @@ public class QualifierStrategy extends AbstractStrategy {
                                         .setIgnoreProperties("id"));
                         Logger.info(
                                 true,
-                                "Qualifier",
-                                "[{}] Auth map after conversion: {}",
+                                "Vortex",
+                                "strategy=qualifier, clientIp={}, credential attributes converted: attributeCount={}",
                                 context.getX_request_ip(),
-                                JsonKit.toJsonString(authMap));
+                                authMap.size());
                         Map<String, Object> nonNullAuthMap = authMap.entrySet().stream()
                                 .filter(entry -> entry.getKey() != null && entry.getValue() != null)
                                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -363,23 +366,23 @@ public class QualifierStrategy extends AbstractStrategy {
                         context.getParameters().putAll(nonNullAuthMap);
                         Logger.info(
                                 true,
-                                "Qualifier",
-                                "[{}] Authentication successful (policy={}).",
+                                "Vortex",
+                                "strategy=qualifier, clientIp={}, authentication completed: policy={}",
                                 context.getX_request_ip(),
                                 policy);
                         return Mono.empty();
                     }
 
+                    var message = delegate.getMessage();
                     Logger.error(
                             false,
-                            "Qualifier",
-                            "[{}] Authentication failed (policy={}) - Error code: {}, message: {}",
+                            "Vortex",
+                            "strategy=qualifier, clientIp={}, authentication failed: policy={}, errorCode={}, message={}",
                             context.getX_request_ip(),
                             policy,
-                            delegate.getMessage().errcode,
-                            delegate.getMessage().errmsg);
-                    return Mono
-                            .error(new ValidateException(delegate.getMessage().errcode, delegate.getMessage().errmsg));
+                            message.errcode,
+                            message.errmsg);
+                    return Mono.error(new ValidateException(message.errcode, message.errmsg));
                 });
     }
 

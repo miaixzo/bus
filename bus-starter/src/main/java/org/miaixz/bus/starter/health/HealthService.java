@@ -111,8 +111,8 @@ public class HealthService {
                 tidList = Arrays.asList(TID.LIVENESS, TID.READINESS);
                 Logger.debug(
                         false,
-                        "Health",
-                        "Health invalid tid '{}', defaulting to liveness,readiness",
+                        "Starter",
+                        "component=health, Health invalid tid '{}', defaulting to liveness,readiness",
                         effectiveTid);
             }
 
@@ -124,10 +124,10 @@ public class HealthService {
             } catch (NumberFormatException e) {
                 Logger.warn(
                         false,
-                        "Health",
-                        "Health invalid number format in provider data for tid '{}': {}",
+                        "Starter",
+                        "component=health, Health invalid number format in provider data for tid '{}': {}",
                         effectiveTid,
-                        e.getMessage());
+                        e.getClass().getSimpleName());
                 // On error, fall back to appending individually.
                 tidList.forEach(type -> append(type, result));
             }
@@ -136,10 +136,10 @@ public class HealthService {
         } catch (Exception e) {
             Logger.error(
                     false,
-                    "Health",
-                    "Failed to retrieve health information for tid '{}': {}",
+                    "Starter",
+                    "component=health, Failed to retrieve health information for tid '{}': {}",
                     tid,
-                    e.getMessage(),
+                    e.getClass().getSimpleName(),
                     e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey())
                     .errmsg("Failed to retrieve health information: " + e.getMessage()).build();
@@ -221,10 +221,10 @@ public class HealthService {
                 } catch (Exception e) {
                     Logger.error(
                             false,
-                            "Health",
-                            "Failed to append health data for type {}: {}",
+                            "Starter",
+                            "component=health, Failed to append health data for type {}: {}",
                             type,
-                            e.getMessage(),
+                            e.getClass().getSimpleName(),
                             e);
                     map.put(type, "Error: " + e.getMessage());
                 }

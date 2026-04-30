@@ -21,6 +21,7 @@ package org.miaixz.bus.setting.format;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.setting.metric.ini.IniComment;
 import org.miaixz.bus.setting.metric.ini.IniSection;
 import org.miaixz.bus.setting.metric.ini.IniSectionService;
@@ -109,6 +110,13 @@ public class SectionFormatter extends AbstractFormatter<IniSection> {
     public IniSection format(String value, int line) {
         int indexOfEnd = value.indexOf(end);
         if (indexOfEnd <= 0) {
+            Logger.warn(
+                    false,
+                    "Setting",
+                    "INI section parse failed: line={}, lineLength={}, reason={}",
+                    line,
+                    value == null ? 0 : value.length(),
+                    "missingEndCharacter");
             throw new InternalException(
                     "Cannot find the end character '" + end + "' for section on line " + line + ": " + value);
         }
@@ -121,6 +129,13 @@ public class SectionFormatter extends AbstractFormatter<IniSection> {
             if (commentElementFormatter.check(endOfValue)) {
                 comment = commentElementFormatter.format(endOfValue, line);
             } else {
+                Logger.warn(
+                        false,
+                        "Setting",
+                        "INI section parse failed: line={}, lineLength={}, reason={}",
+                        line,
+                        value == null ? 0 : value.length(),
+                        "invalidTrailingContent");
                 throw new InternalException("Cannot format the trailing content after section on line " + line
                         + " at column " + (indexOfEnd + 1) + ": " + endOfValue);
             }

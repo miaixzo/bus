@@ -181,7 +181,12 @@ public class WmiQueryHandler {
                 failedWmiClassNames.add(query.getWmiClassName());
             }
         } catch (TimeoutException e) {
-            Logger.warn(false, "Health", "WMI query timed out after {} ms: {}", wmiTimeout, WmiKit.queryToString(query));
+            Logger.warn(
+                    false,
+                    "Health",
+                    "WMI query timed out after {} ms: {}",
+                    wmiTimeout,
+                    WmiKit.queryToString(query));
         } finally {
             if (comInit) {
                 unInitCOM();

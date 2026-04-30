@@ -74,7 +74,11 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
             try {
                 hostname = InetAddress.getLocalHost().getHostName();
             } catch (UnknownHostException e) {
-                Logger.warn(false, "Health", "Unknown host exception when getting address of local host: {}", e.getMessage());
+                Logger.warn(
+                        false,
+                        "Health",
+                        "Unknown host exception when getting address of local host: {}",
+                        e.getClass().getSimpleName());
                 return Normal.EMPTY;
             }
             try (ByRef.CloseablePointerByReference ptr = new ByRef.CloseablePointerByReference()) {

@@ -146,7 +146,12 @@ public class DefaultMonitor implements Monitor {
             cacheHits.incrementAndGet();
         } else {
             cacheMisses.incrementAndGet();
-            Logger.debug(false, "Vortex", "Cache miss: key={}, duration={}ns", key, durationNanos);
+            Logger.debug(
+                    false,
+                    "Vortex",
+                    "Cache miss: keyChars={}, durationNanos={}",
+                    key == null ? 0 : key.length(),
+                    durationNanos);
         }
     }
 
@@ -180,7 +185,13 @@ public class DefaultMonitor implements Monitor {
         dbOperationCount.incrementAndGet();
         dbDurationNs.addAndGet(duration.toNanos());
 
-        Logger.debug(true, "Operation", "type={}, duration={}ms, rows={}", type, duration.toMillis(), rowCount);
+        Logger.debug(
+                true,
+                "Vortex",
+                "component=operation, type={}, duration={}ms, rows={}",
+                type,
+                duration.toMillis(),
+                rowCount);
     }
 
     /**

@@ -347,7 +347,14 @@ public class MultiCacheReader extends AbstractReader {
         Set<String> missKeys = cacheKeys.getMissKeySet();
         int hitCount = cacheKeys.getHitKeyMap().size();
         int totalCount = hitCount + missKeys.size();
-        Logger.info(false, "Cache", "multi cache hit rate: {}/{}, missed keys: {}", hitCount, totalCount, missKeys);
+        Logger.info(
+                false,
+                "Cache",
+                "Cache multi hit recorded: cache={}, hitCount={}, missCount={}, requestCount={}",
+                annoHolder.getCache(),
+                hitCount,
+                missKeys.size(),
+                totalCount);
         if (null != this.collector) {
             String pattern = Builder.generatePattern(annoHolder);
             this.collector.hitIncr(pattern, hitCount);

@@ -128,11 +128,36 @@ public final class RealCall implements NewCall {
                 throw new IllegalStateException("Already Executed");
             executed = true;
         }
+        Logger.debug(
+                true,
+                "Http",
+                "protocol=http, Synchronous call starting: method={}, url={}, webSocket={}",
+                originalRequest.method(),
+                redactedUrl(),
+                forWebSocket);
         transmitter.timeoutEnter();
         transmitter.callStart();
         try {
             client.dispatcher().executed(this);
-            return getResponseWithInterceptorChain();
+            Response response = getResponseWithInterceptorChain();
+            Logger.debug(
+                    false,
+                    "Http",
+                    "protocol=http, Synchronous call completed: method={}, url={}, status={}",
+                    originalRequest.method(),
+                    redactedUrl(),
+                    response.code());
+            return response;
+        } catch (IOException e) {
+            Logger.error(
+                    false,
+                    "Http",
+                    e,
+                    "protocol=http, Synchronous call failed: method={}, url={}, exception={}",
+                    originalRequest.method(),
+                    redactedUrl(),
+                    e.getClass().getSimpleName());
+            throw e;
         } finally {
             client.dispatcher().finished(this);
         }
@@ -151,6 +176,13 @@ public final class RealCall implements NewCall {
                 throw new IllegalStateException("Already Executed");
             executed = true;
         }
+        Logger.debug(
+                true,
+                "Http",
+                "protocol=http, Async call enqueued: method={}, url={}, webSocket={}",
+                originalRequest.method(),
+                redactedUrl(),
+                forWebSocket);
         transmitter.callStart();
         client.dispatcher().enqueue(new AsyncCall(responseCallback));
     }
@@ -160,6 +192,12 @@ public final class RealCall implements NewCall {
      */
     @Override
     public void cancel() {
+        Logger.debug(
+                false,
+                "Http",
+                "protocol=http, Call cancellation requested: method={}, url={}",
+                originalRequest.method(),
+                redactedUrl());
         transmitter.cancel();
     }
 
@@ -251,15 +289,37 @@ public final class RealCall implements NewCall {
                 client.connectTimeoutMillis(), client.readTimeoutMillis(), client.writeTimeoutMillis());
 
         boolean calledNoMoreExchanges = false;
+        Logger.debug(
+                true,
+                "Http",
+                "protocol=http, Interceptor chain starting: method={}, url={}, interceptorCount={}",
+                originalRequest.method(),
+                redactedUrl(),
+                interceptors.size());
         try {
             Response response = chain.proceed(originalRequest);
             if (transmitter.isCanceled()) {
                 IoKit.close(response);
                 throw new IOException("Canceled");
             }
+            Logger.debug(
+                    false,
+                    "Http",
+                    "protocol=http, Interceptor chain completed: method={}, url={}, status={}",
+                    originalRequest.method(),
+                    redactedUrl(),
+                    response.code());
             return response;
         } catch (IOException e) {
             calledNoMoreExchanges = true;
+            Logger.error(
+                    false,
+                    "Http",
+                    e,
+                    "protocol=http, Interceptor chain failed: method={}, url={}, exception={}",
+                    originalRequest.method(),
+                    redactedUrl(),
+                    e.getClass().getSimpleName());
             throw transmitter.noMoreExchanges(e);
         } finally {
             if (!calledNoMoreExchanges) {
@@ -346,12 +406,25 @@ public final class RealCall implements NewCall {
             assert (!Thread.holdsLock(client.dispatcher()));
             boolean success = false;
             try {
+                Logger.debug(
+                        true,
+                        "Http",
+                        "protocol=http, Async call dispatching to executor: method={}, url={}",
+                        originalRequest.method(),
+                        redactedUrl());
                 executorService.execute(this);
                 success = true;
             } catch (RejectedExecutionException e) {
                 InterruptedIOException ioException = new InterruptedIOException("executor rejected");
                 ioException.initCause(e);
                 transmitter.noMoreExchanges(ioException);
+                Logger.error(
+                        false,
+                        "Http",
+                        ioException,
+                        "protocol=http, Async call rejected by executor: method={}, url={}",
+                        originalRequest.method(),
+                        redactedUrl());
                 responseCallback.onFailure(RealCall.this, ioException);
             } finally {
                 if (!success) {
@@ -368,18 +441,47 @@ public final class RealCall implements NewCall {
             boolean signalledCallback = false;
             transmitter.timeoutEnter();
             try {
+                Logger.debug(
+                        true,
+                        "Http",
+                        "protocol=http, Async call execution started: method={}, url={}",
+                        originalRequest.method(),
+                        redactedUrl());
                 Response response = getResponseWithInterceptorChain();
                 signalledCallback = true;
+                Logger.debug(
+                        false,
+                        "Http",
+                        "protocol=http, Async call response ready: method={}, url={}, status={}",
+                        originalRequest.method(),
+                        redactedUrl(),
+                        response.code());
                 responseCallback.onResponse(RealCall.this, response);
             } catch (IOException e) {
                 if (signalledCallback) {
                     // Do not signal the callback twice.
-                    Logger.info(false, "HTTP", "Callback failure for " + toLoggableString(), e);
+                    Logger.error(false, "Http", e, "protocol=http, Callback failure: call={}", toLoggableString());
                 } else {
+                    Logger.error(
+                            false,
+                            "Http",
+                            e,
+                            "protocol=http, Async call failed before callback: method={}, url={}, exception={}",
+                            originalRequest.method(),
+                            redactedUrl(),
+                            e.getClass().getSimpleName());
                     responseCallback.onFailure(RealCall.this, e);
                 }
             } catch (Throwable t) {
                 cancel(); // Cancel the call on any unexpected error.
+                Logger.error(
+                        false,
+                        "Http",
+                        t,
+                        "Async call canceled due to unexpected error: method={}, url={}, exception={}",
+                        originalRequest.method(),
+                        redactedUrl(),
+                        t.getClass().getSimpleName());
                 if (!signalledCallback) {
                     IOException canceledException = new IOException("canceled due to " + t);
                     canceledException.addSuppressed(t);

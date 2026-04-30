@@ -26,6 +26,7 @@ import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.extra.nlp.AbstractResult;
 import org.miaixz.bus.extra.nlp.NLPWord;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Abstract result wrapper for Lucene-analysis word segmentation. This class adapts the Lucene {@link TokenStream} to
@@ -65,6 +66,12 @@ public class AnalysisResult extends AbstractResult {
                 return new AnalysisWord(this.stream.getAttribute(CharTermAttribute.class));
             }
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "component=nlp, Lucene analysis next word failed: exception={}",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         return null;

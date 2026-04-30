@@ -31,6 +31,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.health.builtin.hardware.HardwareAbstractionLayer;
 import org.miaixz.bus.health.builtin.software.OperatingSystem;
 import org.miaixz.bus.health.linux.hardware.LinuxHardwareAbstractionLayer;
@@ -589,32 +590,57 @@ public class Platform {
      * @throws UnsupportedOperationException if the platform is not supported.
      */
     private OperatingSystem createOperatingSystem() {
+        Logger.debug(
+                true,
+                "Health",
+                "Operating system collector creation started: platform={}",
+                CURRENT_PLATFORM.getName());
+        OperatingSystem operatingSystem;
         switch (CURRENT_PLATFORM) {
             case WINDOWS:
-                return new WindowsOperatingSystem();
+                operatingSystem = new WindowsOperatingSystem();
+                break;
 
             case LINUX:
             case ANDROID:
-                return new LinuxOperatingSystem();
+                operatingSystem = new LinuxOperatingSystem();
+                break;
 
             case MACOS:
-                return new MacOperatingSystemJNA();
+                operatingSystem = new MacOperatingSystemJNA();
+                break;
 
             case SOLARIS:
-                return new SolarisOperatingSystem();
+                operatingSystem = new SolarisOperatingSystem();
+                break;
 
             case FREEBSD:
-                return new FreeBsdOperatingSystem();
+                operatingSystem = new FreeBsdOperatingSystem();
+                break;
 
             case AIX:
-                return new AixOperatingSystem();
+                operatingSystem = new AixOperatingSystem();
+                break;
 
             case OPENBSD:
-                return new OpenBsdOperatingSystem();
+                operatingSystem = new OpenBsdOperatingSystem();
+                break;
 
             default:
+                Logger.warn(
+                        false,
+                        "Health",
+                        "Operating system collector unavailable: platform={}",
+                        CURRENT_PLATFORM.getName());
                 throw new UnsupportedOperationException(NOT_SUPPORTED + CURRENT_PLATFORM.getName());
         }
+        Logger.debug(
+                false,
+                "Health",
+                "Operating system collector created: platform={}, collector={}",
+                CURRENT_PLATFORM.getName(),
+                operatingSystem.getClass().getName());
+        return operatingSystem;
     }
 
     /**
@@ -624,32 +650,49 @@ public class Platform {
      * @throws UnsupportedOperationException if the platform is not supported.
      */
     private HardwareAbstractionLayer createHardware() {
+        Logger.debug(true, "Health", "Hardware collector creation started: platform={}", CURRENT_PLATFORM.getName());
+        HardwareAbstractionLayer hardwareLayer;
         switch (CURRENT_PLATFORM) {
             case WINDOWS:
-                return new WindowsHardwareAbstractionLayer();
+                hardwareLayer = new WindowsHardwareAbstractionLayer();
+                break;
 
             case LINUX:
             case ANDROID:
-                return new LinuxHardwareAbstractionLayer();
+                hardwareLayer = new LinuxHardwareAbstractionLayer();
+                break;
 
             case MACOS:
-                return new MacHardwareAbstractionLayer();
+                hardwareLayer = new MacHardwareAbstractionLayer();
+                break;
 
             case SOLARIS:
-                return new SolarisHardwareAbstractionLayer();
+                hardwareLayer = new SolarisHardwareAbstractionLayer();
+                break;
 
             case FREEBSD:
-                return new FreeBsdHardwareAbstractionLayer();
+                hardwareLayer = new FreeBsdHardwareAbstractionLayer();
+                break;
 
             case AIX:
-                return new AixHardwareAbstractionLayer();
+                hardwareLayer = new AixHardwareAbstractionLayer();
+                break;
 
             case OPENBSD:
-                return new OpenBsdHardwareAbstractionLayer();
+                hardwareLayer = new OpenBsdHardwareAbstractionLayer();
+                break;
 
             default:
+                Logger.warn(false, "Health", "Hardware collector unavailable: platform={}", CURRENT_PLATFORM.getName());
                 throw new UnsupportedOperationException(NOT_SUPPORTED + CURRENT_PLATFORM.getName());
         }
+        Logger.debug(
+                false,
+                "Health",
+                "Hardware collector created: platform={}, collector={}",
+                CURRENT_PLATFORM.getName(),
+                hardwareLayer.getClass().getName());
+        return hardwareLayer;
     }
 
     /**

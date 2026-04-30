@@ -295,7 +295,7 @@ public final class Privilege {
             if (e instanceof InterruptedException) {
                 Thread.currentThread().interrupt();
             }
-            Logger.debug(false, "Health", "Failed to execute privileged cat command: {}", e.getMessage());
+            Logger.debug(false, "Health", "Failed to execute privileged cat command: {}", e.getClass().getSimpleName());
         }
         return new byte[0];
     }
@@ -318,6 +318,7 @@ public final class Privilege {
         COMMAND_ALLOWLIST.set(Memoizer.memoize(Privilege::queryCommandAllowlist, Memoizer.defaultExpiration()));
         FILE_ALLOWLIST.set(Memoizer.memoize(Privilege::queryFileAllowlist, Memoizer.defaultExpiration()));
         PREFIX.set(Memoizer.memoize(Privilege::queryPrefix, Memoizer.defaultExpiration()));
+        Logger.debug(false, "Health", "Privileged access caches reset");
     }
 
     /**
@@ -326,7 +327,14 @@ public final class Privilege {
      * @return the query prefix result
      */
     private static String queryPrefix() {
-        return Platform.isLinux() ? Config.get(Config._LINUX_PRIVILEGED_PREFIX, Normal.EMPTY) : Normal.EMPTY;
+        String prefix = Platform.isLinux() ? Config.get(Config._LINUX_PRIVILEGED_PREFIX, Normal.EMPTY) : Normal.EMPTY;
+        Logger.debug(
+                false,
+                "Health",
+                "Privileged command prefix resolved: platformLinux={}, prefixConfigured={}",
+                Platform.isLinux(),
+                !prefix.isEmpty());
+        return prefix;
     }
 
     /**
@@ -335,8 +343,16 @@ public final class Privilege {
      * @return the query command allowlist result
      */
     private static Set<String> queryCommandAllowlist() {
-        return Platform.isLinux() ? parseAllowlist(Config.get(Config._LINUX_PRIVILEGED_ALLOWLIST, Normal.EMPTY))
+        Set<String> allowlist = Platform.isLinux()
+                ? parseAllowlist(Config.get(Config._LINUX_PRIVILEGED_ALLOWLIST, Normal.EMPTY))
                 : Collections.emptySet();
+        Logger.debug(
+                false,
+                "Health",
+                "Privileged command allowlist resolved: platformLinux={}, allowedCommands={}",
+                Platform.isLinux(),
+                allowlist.size());
+        return allowlist;
     }
 
     /**
@@ -345,8 +361,16 @@ public final class Privilege {
      * @return the query file allowlist result
      */
     private static Set<String> queryFileAllowlist() {
-        return Platform.isLinux() ? parseAllowlist(Config.get(Config._LINUX_PRIVILEGED_FILE_ALLOWLIST, Normal.EMPTY))
+        Set<String> allowlist = Platform.isLinux()
+                ? parseAllowlist(Config.get(Config._LINUX_PRIVILEGED_FILE_ALLOWLIST, Normal.EMPTY))
                 : Collections.emptySet();
+        Logger.debug(
+                false,
+                "Health",
+                "Privileged file allowlist resolved: platformLinux={}, allowedFiles={}",
+                Platform.isLinux(),
+                allowlist.size());
+        return allowlist;
     }
 
     /**
@@ -364,7 +388,12 @@ public final class Privilege {
         cmdList.add("cat");
         cmdList.add(filePath);
         String[] cmdArray = cmdList.toArray(new String[0]);
-        Logger.debug(false, "Health", "Attempting privileged file read: {}", Arrays.toString(cmdArray));
+        Logger.debug(
+                true,
+                "Health",
+                "Privileged file read command prepared: file={}, prefixConfigured={}",
+                filePath,
+                !getPrefix().isEmpty());
         return cmdArray;
     }
 

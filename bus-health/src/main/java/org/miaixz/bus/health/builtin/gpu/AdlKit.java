@@ -99,7 +99,7 @@ public final class AdlKit {
                 loaded = true;
                 Logger.debug(false, "Health", "ADL library loaded");
             } catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
-                Logger.debug(false, "Health", "ADL library not available: {}", e.getMessage());
+                Logger.debug(false, "Health", "ADL library not available: {}", e.getClass().getSimpleName());
             }
             LIB = lib;
             LIBRARY_LOADED = loaded;

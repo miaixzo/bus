@@ -24,6 +24,7 @@ import org.miaixz.bus.cortex.Status;
 import org.miaixz.bus.cortex.Instance;
 import org.miaixz.bus.cortex.Builder;
 import org.miaixz.bus.cortex.Callout;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * HTTP-based prober.
@@ -79,15 +80,50 @@ public class HttpProber implements Prober {
         String path = instance.getHealthPath() != null ? instance.getHealthPath() : "/health";
         String url = scheme + "://" + host + ":" + port + path;
         long start = System.currentTimeMillis();
+        Logger.debug(
+                true,
+                "Cortex",
+                "HTTP health probe started: host={}, port={}, path={}, timeoutMs={}",
+                host,
+                port,
+                path,
+                timeoutMs);
         Callout.Response response = Callout.get(url, timeoutMs);
         long latency = System.currentTimeMillis() - start;
         if (response.errorMessage() != null) {
+            Logger.warn(
+                    false,
+                    "Cortex",
+                    "HTTP health probe failed: host={}, port={}, path={}, latencyMs={}, error={}",
+                    host,
+                    port,
+                    path,
+                    latency,
+                    response.errorMessage());
             return Status.fail("HTTP check failed: " + response.errorMessage(), name()).detail("url", url);
         }
         if (response.isSuccessful()) {
+            Logger.debug(
+                    false,
+                    "Cortex",
+                    "HTTP health probe passed: host={}, port={}, path={}, status={}, latencyMs={}",
+                    host,
+                    port,
+                    path,
+                    response.statusCode(),
+                    latency);
             return Status.ok(latency, name()).detail("url", url)
                     .detail("statusCode", Integer.toString(response.statusCode()));
         }
+        Logger.warn(
+                false,
+                "Cortex",
+                "HTTP health probe returned unhealthy status: host={}, port={}, path={}, status={}, latencyMs={}",
+                host,
+                port,
+                path,
+                response.statusCode(),
+                latency);
         return Status.fail("HTTP status " + response.statusCode() + " from " + url, name()).detail("url", url)
                 .detail("statusCode", Integer.toString(response.statusCode()));
     }

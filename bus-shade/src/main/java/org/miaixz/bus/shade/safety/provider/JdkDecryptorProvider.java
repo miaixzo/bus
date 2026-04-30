@@ -26,6 +26,7 @@ import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.shade.safety.Builder;
 import org.miaixz.bus.shade.safety.algorithm.Key;
 
@@ -58,12 +59,26 @@ public class JdkDecryptorProvider implements DecryptorProvider {
      */
     @Override
     public void decrypt(Key key, File src, File dest) throws IOException {
+        Logger.debug(
+                true,
+                "Shade",
+                "JDK decrypt file started: component=safety, algorithm={}, sourceFile={}, targetFile={}",
+                algorithm,
+                src == null ? null : src.getName(),
+                dest == null ? null : dest.getName());
         if (!dest.getParentFile().exists() && !dest.getParentFile().mkdirs()) {
             throw new IOException("could not make directory: " + dest.getParentFile());
         }
         try (InputStream in = new FileInputStream(src); OutputStream out = new FileOutputStream(dest)) {
             decrypt(key, in, out);
         }
+        Logger.debug(
+                false,
+                "Shade",
+                "JDK decrypt file finished: component=safety, algorithm={}, sourceFile={}, targetFile={}",
+                algorithm,
+                src == null ? null : src.getName(),
+                dest == null ? null : dest.getName());
     }
 
     /**
@@ -83,6 +98,14 @@ public class JdkDecryptorProvider implements DecryptorProvider {
             cis = new CipherInputStream(in, cipher);
             Builder.transfer(cis, out);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Shade",
+                    e,
+                    "JDK decrypt stream failed: component=safety, algorithm={}, operation={}, exception={}",
+                    algorithm,
+                    "streamToStream",
+                    e.getClass().getSimpleName());
             throw new IOException(e);
         } finally {
             Builder.close(cis);
@@ -104,6 +127,14 @@ public class JdkDecryptorProvider implements DecryptorProvider {
             cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key.getDecryptKey(), algorithm));
             return new CipherInputStream(in, cipher);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Shade",
+                    e,
+                    "JDK decrypt input wrapper failed: component=safety, algorithm={}, operation={}, exception={}",
+                    algorithm,
+                    "inputWrapper",
+                    e.getClass().getSimpleName());
             throw new IOException(e);
         }
     }
@@ -123,6 +154,14 @@ public class JdkDecryptorProvider implements DecryptorProvider {
             cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key.getDecryptKey(), algorithm));
             return new CipherOutputStream(out, cipher);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Shade",
+                    e,
+                    "JDK decrypt output wrapper failed: component=safety, algorithm={}, operation={}, exception={}",
+                    algorithm,
+                    "outputWrapper",
+                    e.getClass().getSimpleName());
             throw new IOException(e);
         }
     }

@@ -133,12 +133,14 @@ public final class CardinalityGuard {
         Long last = LAST_LOG_TS.get(tagKey);
         if (last == null || now - last > Builder.CARDINALITY_LOG_THROTTLE_MS) {
             LAST_LOG_TS.put(tagKey, now);
-            Logger.warn(false, "Metrics",
-                    "Cardinality violation on metric={} tagKey={} value={} -> {}",
+            Logger.warn(
+                    false,
+                    "Metrics",
+                    "Cardinality violation on metric={} tagKey={} replacedWith={} originalLength={}",
                     metricName,
                     tagKey,
-                    original,
-                    replaced);
+                    replaced,
+                    null == original ? 0 : original.length());
         }
     }
 

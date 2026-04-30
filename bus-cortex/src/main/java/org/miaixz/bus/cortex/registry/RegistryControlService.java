@@ -43,6 +43,7 @@ import org.miaixz.bus.cortex.registry.mcp.McpRegistry;
 import org.miaixz.bus.cortex.registry.prompt.PromptAssets;
 import org.miaixz.bus.cortex.registry.prompt.PromptRegistry;
 import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Control-plane service for registry content management.
@@ -123,10 +124,27 @@ public class RegistryControlService {
      */
     public List<Assets> list(Vector query) {
         Vector criteria = vector(query);
+        Logger.debug(
+                true,
+                "Cortex",
+                "Registry control list requested: type={}, namespace={}, id={}",
+                criteria.getType(),
+                criteria.getNamespace_id(),
+                criteria.getId());
+        List<Assets> result;
         if (criteria.getType() == null) {
-            return snapshot(criteria);
+            result = snapshot(criteria);
+        } else {
+            result = assets(registry(RegistryIdentity.type(criteria.getType())).refresh(criteria));
         }
-        return assets(registry(RegistryIdentity.type(criteria.getType())).refresh(criteria));
+        Logger.debug(
+                false,
+                "Cortex",
+                "Registry control list completed: type={}, namespace={}, resultSize={}",
+                criteria.getType(),
+                criteria.getNamespace_id(),
+                result.size());
+        return result;
     }
 
     /**
@@ -137,10 +155,30 @@ public class RegistryControlService {
      */
     public Assets get(Vector query) {
         Vector criteria = vector(query);
+        Logger.debug(
+                true,
+                "Cortex",
+                "Registry control get requested: type={}, namespace={}, id={}, method={}, version={}",
+                criteria.getType(),
+                criteria.getNamespace_id(),
+                criteria.getId(),
+                criteria.getMethod(),
+                criteria.getVersion());
+        Assets result;
         if (criteria.getType() == null) {
-            return firstAcrossTypes(criteria, this::getSingle);
+            result = firstAcrossTypes(criteria, this::getSingle);
+        } else {
+            result = getSingle(criteria);
         }
-        return getSingle(criteria);
+        Logger.debug(
+                false,
+                "Cortex",
+                "Registry control get completed: type={}, namespace={}, id={}, found={}",
+                criteria.getType(),
+                criteria.getNamespace_id(),
+                criteria.getId(),
+                result != null);
+        return result;
     }
 
     /**
@@ -155,6 +193,15 @@ public class RegistryControlService {
         }
         Type type = RegistryIdentity.type(asset);
         Assets prepared = RegistryIdentity.normalize(RegistryAssets.normalize(asset), type);
+        Logger.info(
+                true,
+                "Cortex",
+                "Registry control upsert requested: type={}, namespace={}, id={}, method={}, version={}",
+                type,
+                prepared.getNamespace_id(),
+                prepared.getId(),
+                prepared.getMethod(),
+                prepared.getVersion());
         enforceRegistry("upsert", type, prepared);
         if (prepared.getId() == null && prepared.getMethod() != null && prepared.getVersion() != null) {
             Assets existing = getByRoute(
@@ -167,12 +214,20 @@ public class RegistryControlService {
                 prepared.setId(existing.getId());
             }
         }
-        return switch (type) {
+        Assets stored = switch (type) {
             case API -> upsertApi((ApiAssets) prepared);
             case MCP -> upsertMcp((McpAssets) prepared);
             case PROMPT -> upsertPrompt((PromptAssets) prepared);
             default -> throw new IllegalArgumentException("Unsupported admin registry type: " + type);
         };
+        Logger.info(
+                false,
+                "Cortex",
+                "Registry control upsert completed: type={}, namespace={}, id={}",
+                type,
+                stored == null ? prepared.getNamespace_id() : stored.getNamespace_id(),
+                stored == null ? prepared.getId() : stored.getId());
+        return stored;
     }
 
     /**
@@ -183,8 +238,22 @@ public class RegistryControlService {
      * @param id        entry identifier
      */
     public void delete(Type type, String namespace, String id) {
+        Logger.info(
+                true,
+                "Cortex",
+                "Registry control delete requested: type={}, namespace={}, id={}",
+                type,
+                namespace,
+                id);
         enforceRegistry("delete", type, namespace, id, null, null, null);
         registry(type).deregister(namespace, id);
+        Logger.info(
+                false,
+                "Cortex",
+                "Registry control delete completed: type={}, namespace={}, id={}",
+                type,
+                namespace,
+                id);
     }
 
     /**
@@ -197,8 +266,16 @@ public class RegistryControlService {
         long start = System.currentTimeMillis();
         BatchResult result = new BatchResult();
         if (operation == null || operation.getEntries() == null || operation.getEntries().isEmpty()) {
+            Logger.debug(false, "Cortex", "Registry batch skipped: reason=empty");
             return result;
         }
+        Logger.info(
+                true,
+                "Cortex",
+                "Registry batch requested: operation={}, namespace={}, entries={}",
+                operation.getOperationType(),
+                operation.getNamespace_id(),
+                operation.getEntries().size());
         for (Assets source : operation.getEntries()) {
             if (source == null) {
                 result.recordFailure(
@@ -225,6 +302,16 @@ public class RegistryControlService {
                         entry);
                 applyBatchEntry(operation, entry, result);
             } catch (Exception e) {
+                Logger.warn(
+                        false,
+                        "Cortex",
+                        e,
+                        "Registry batch entry failed: operation={}, type={}, namespace={}, id={}, error={}",
+                        operation.getOperationType(),
+                        RegistryIdentity.type(entry),
+                        entry.getNamespace_id(),
+                        entry.getId(),
+                        e.getMessage());
                 result.recordFailure(
                         BatchResult.Failure.of(
                                 RegistryIdentity.type(entry),
@@ -239,6 +326,15 @@ public class RegistryControlService {
             }
         }
         result.setElapsedMs(System.currentTimeMillis() - start);
+        Logger.info(
+                false,
+                "Cortex",
+                "Registry batch completed: operation={}, entries={}, success={}, failed={}, elapsedMs={}",
+                operation.getOperationType(),
+                operation.getEntries().size(),
+                result.getSuccessCount(),
+                result.getFailCount(),
+                result.getElapsedMs());
         return result;
     }
 
@@ -250,8 +346,18 @@ public class RegistryControlService {
      */
     public List<Assets> impact(Vector scope) {
         Vector criteria = vector(scope);
+        Logger.debug(
+                true,
+                "Cortex",
+                "Registry impact requested: type={}, namespace={}, id={}, method={}, version={}",
+                criteria.getType(),
+                criteria.getNamespace_id(),
+                criteria.getId(),
+                criteria.getMethod(),
+                criteria.getVersion());
         Assets source = resolveImpactSource(criteria);
         if (source == null) {
+            Logger.debug(false, "Cortex", "Registry impact completed: sourceFound=false");
             return List.of();
         }
         List<Assets> snapshot = normalizedSnapshot(criteria);
@@ -280,6 +386,7 @@ public class RegistryControlService {
         }
         String sourceKey = canonicalDependencyKey(source);
         if (sourceKey == null) {
+            Logger.debug(false, "Cortex", "Registry impact completed: sourceKeyMissing=true");
             return List.of();
         }
         List<String> impactedKeys = new ImpactAnalysis(graph).findImpacted(sourceKey);
@@ -290,6 +397,12 @@ public class RegistryControlService {
                 impacted.add(asset);
             }
         }
+        Logger.debug(
+                false,
+                "Cortex",
+                "Registry impact completed: sourceKey={}, impactedCount={}",
+                sourceKey,
+                impacted.size());
         return impacted;
     }
 
@@ -791,6 +904,14 @@ public class RegistryControlService {
         try {
             return token == null || token.isBlank() ? null : Integer.valueOf(token);
         } catch (NumberFormatException ignored) {
+            Logger.debug(
+                    false,
+                    "Cortex",
+                    "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
+                    "registry",
+                    "RegistryControlService",
+                    true,
+                    ignored.getClass().getSimpleName());
             return null;
         }
     }
@@ -861,6 +982,14 @@ public class RegistryControlService {
             }
             return result;
         } catch (Exception ignore) {
+            Logger.debug(
+                    false,
+                    "Cortex",
+                    "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
+                    "registry",
+                    "RegistryControlService",
+                    true,
+                    ignore.getClass().getSimpleName());
             return List.of();
         }
     }
@@ -881,6 +1010,14 @@ public class RegistryControlService {
         try {
             return JsonKit.toPojo(JsonKit.toJsonString(value), String.class);
         } catch (Exception ignore) {
+            Logger.debug(
+                    false,
+                    "Cortex",
+                    "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
+                    "registry",
+                    "RegistryControlService",
+                    true,
+                    ignore.getClass().getSimpleName());
             return value.toString();
         }
     }
@@ -908,6 +1045,14 @@ public class RegistryControlService {
             Map<String, Object> result = JsonKit.toMap(JsonKit.toJsonString(value));
             return result == null ? null : new LinkedHashMap<>(result);
         } catch (Exception ignore) {
+            Logger.debug(
+                    false,
+                    "Cortex",
+                    "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
+                    "registry",
+                    "RegistryControlService",
+                    true,
+                    ignore.getClass().getSimpleName());
             return null;
         }
     }
