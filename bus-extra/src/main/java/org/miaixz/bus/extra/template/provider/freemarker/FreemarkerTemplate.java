@@ -81,7 +81,7 @@ public class FreemarkerTemplate implements Template, Serializable {
         Logger.debug(
                 true,
                 "Extra",
-                "component=template, Freemarker render started: bindingCount={}, writerPresent={}, encoding={}",
+                "Freemarker render started: bindingCount={}, writerPresent={}, encoding={}",
                 bindingMap == null ? 0 : bindingMap.size(),
                 writer != null,
                 rawTemplate == null ? null : rawTemplate.getEncoding());
@@ -90,7 +90,7 @@ public class FreemarkerTemplate implements Template, Serializable {
             Logger.debug(
                     false,
                     "Extra",
-                    "component=template, Freemarker render completed: bindingCount={}, elapsedMs={}",
+                    "Freemarker render completed: bindingCount={}, elapsedMs={}",
                     bindingMap == null ? 0 : bindingMap.size(),
                     (System.nanoTime() - startedAt) / 1_000_000L);
         } catch (final freemarker.template.TemplateException e) {
@@ -98,7 +98,7 @@ public class FreemarkerTemplate implements Template, Serializable {
                     false,
                     "Extra",
                     e,
-                    "component=template, Freemarker render failed: bindingCount={}, exception={}, elapsedMs={}",
+                    "Freemarker render failed: bindingCount={}, exception={}, elapsedMs={}",
                     bindingMap == null ? 0 : bindingMap.size(),
                     e.getClass().getSimpleName(),
                     (System.nanoTime() - startedAt) / 1_000_000L);
@@ -108,7 +108,7 @@ public class FreemarkerTemplate implements Template, Serializable {
                     false,
                     "Extra",
                     e,
-                    "component=template, Freemarker render I/O failed: bindingCount={}, exception={}, elapsedMs={}",
+                    "Freemarker render I/O failed: bindingCount={}, exception={}, elapsedMs={}",
                     bindingMap == null ? 0 : bindingMap.size(),
                     e.getClass().getSimpleName(),
                     (System.nanoTime() - startedAt) / 1_000_000L);
@@ -131,7 +131,7 @@ public class FreemarkerTemplate implements Template, Serializable {
         Logger.debug(
                 true,
                 "Extra",
-                "component=template, Freemarker stream render requested: bindingCount={}, outputPresent={}",
+                "Freemarker stream render requested: bindingCount={}, outputPresent={}",
                 bindingMap == null ? 0 : bindingMap.size(),
                 out != null);
         render(bindingMap, IoKit.toWriter(out, Charset.forName(this.rawTemplate.getEncoding())));

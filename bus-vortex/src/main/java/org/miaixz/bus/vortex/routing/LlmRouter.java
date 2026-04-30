@@ -78,23 +78,14 @@ public class LlmRouter implements Router<ServerRequest, ServerResponse> {
             final String modelName = extractModelName(path);
 
             if (StringKit.isBlank(modelName)) {
-                Logger.warn(
-                        false,
-                        "Vortex",
-                        "component=llm, {} Model name is missing in path: {}",
-                        context.getX_request_ip(),
-                        path);
+                Logger.warn(false, "Vortex", "{} Model name is missing in path: {}", context.getX_request_ip(), path);
                 return ServerResponse.status(HttpStatus.BAD_REQUEST).bodyValue(
                         "{\"error\":{\"message\":\"Model name is required in path: /router/llm/{model}\",\"type\":\"invalid_request_error\",\"code\":\"model_name_missing\"}}");
             }
 
             final String projectApiKey = input.headers().firstHeader("X-API-Key");
             if (StringKit.isBlank(projectApiKey)) {
-                Logger.warn(
-                        false,
-                        "Vortex",
-                        "component=llm, {} Project API key is missing in header",
-                        context.getX_request_ip());
+                Logger.warn(false, "Vortex", "{} Project API key is missing in header", context.getX_request_ip());
                 return ServerResponse.status(HttpStatus.UNAUTHORIZED).bodyValue(
                         "{\"error\":{\"message\":\"Project API key is required in X-API-Key header\",\"type\":\"authentication_error\",\"code\":\"api_key_missing\"}}");
             }
@@ -106,9 +97,23 @@ public class LlmRouter implements Router<ServerRequest, ServerResponse> {
             Logger.debug(
                     true,
                     "Vortex",
-                    "component=llm, {} Routing request to model: {}",
+                    "Request header snapshot: clientIp={}, path={}, model={}",
                     context.getX_request_ip(),
+                    path,
                     modelName);
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request headers: clientIp={}, headers={}",
+                    context.getX_request_ip(),
+                    input.headers().asHttpHeaders().toSingleValueMap());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request parameters: clientIp={}, parameters={}",
+                    context.getX_request_ip(),
+                    input.queryParams().toSingleValueMap());
+            Logger.debug(true, "Vortex", "{} Routing request to model: {}", context.getX_request_ip(), modelName);
 
             return executor.execute(context, null);
         });

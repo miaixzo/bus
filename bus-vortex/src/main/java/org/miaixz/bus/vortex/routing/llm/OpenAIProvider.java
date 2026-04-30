@@ -126,7 +126,7 @@ public class OpenAIProvider implements LlmProvider {
                 .defaultHeader(HTTP.AUTHORIZATION, HTTP.BEARER + this.apiKey)
                 .defaultHeader(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON).build();
 
-        Logger.info(true, "Vortex", "component=llm, Initialized {} provider: endpoint={}", type, endpoint);
+        Logger.info(true, "Vortex", "Initialized {} provider: endpoint={}", type, endpoint);
     }
 
     /**
@@ -145,20 +145,11 @@ public class OpenAIProvider implements LlmProvider {
     public Mono<LlmResponse> chat(final LlmRequest request) {
         final Map<String, Object> requestBody = toRequestBody(request, false);
 
-        Logger.debug(
-                true,
-                "Vortex",
-                "component=llm, Sending non-streaming request to {}: model={}",
-                type,
-                request.getModel());
+        Logger.debug(true, "Vortex", "Sending non-streaming request to {}: model={}", type, request.getModel());
 
         return webClient.post().uri("/v1/chat/completions").bodyValue(requestBody).retrieve().bodyToMono(String.class)
-                .map(this::parseResponse).doOnError(
-                        e -> Logger.error(
-                                false,
-                                "Vortex",
-                                "component=llm, Request failed: {}",
-                                e.getClass().getSimpleName()));
+                .map(this::parseResponse)
+                .doOnError(e -> Logger.error(false, "Vortex", "Request failed: {}", e.getClass().getSimpleName()));
     }
 
     /**
@@ -181,20 +172,12 @@ public class OpenAIProvider implements LlmProvider {
     public Flux<String> stream(final LlmRequest request) {
         final Map<String, Object> requestBody = toRequestBody(request, true);
 
-        Logger.debug(
-                true,
-                "Vortex",
-                "component=llm, Sending streaming request to {}: model={}",
-                type,
-                request.getModel());
+        Logger.debug(true, "Vortex", "Sending streaming request to {}: model={}", type, request.getModel());
 
         return webClient.post().uri("/v1/chat/completions").bodyValue(requestBody).retrieve().bodyToFlux(String.class)
                 .map(chunk -> "data: " + chunk + "\n\n").doOnError(
-                        e -> Logger.error(
-                                false,
-                                "Vortex",
-                                "component=llm, Streaming request failed: {}",
-                                e.getClass().getSimpleName()));
+                        e -> Logger
+                                .error(false, "Vortex", "Streaming request failed: {}", e.getClass().getSimpleName()));
     }
 
     /**
@@ -288,7 +271,7 @@ public class OpenAIProvider implements LlmProvider {
         try {
             return JsonKit.toPojo(json, LlmResponse.class);
         } catch (Exception e) {
-            Logger.error(false, "Vortex", "component=llm, Failed to parse response: {}", e.getClass().getSimpleName());
+            Logger.error(false, "Vortex", "Failed to parse response: {}", e.getClass().getSimpleName());
             throw new RuntimeException("Failed to parse LLM response", e);
         }
     }

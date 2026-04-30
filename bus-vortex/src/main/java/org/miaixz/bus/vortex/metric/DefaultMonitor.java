@@ -185,13 +185,7 @@ public class DefaultMonitor implements Monitor {
         dbOperationCount.incrementAndGet();
         dbDurationNs.addAndGet(duration.toNanos());
 
-        Logger.debug(
-                true,
-                "Vortex",
-                "component=operation, type={}, duration={}ms, rows={}",
-                type,
-                duration.toMillis(),
-                rowCount);
+        Logger.debug(true, "Vortex", "type={}, duration={}ms, rows={}", type, duration.toMillis(), rowCount);
     }
 
     /**

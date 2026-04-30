@@ -68,13 +68,13 @@ public class WordProvider implements NLPProvider {
         Logger.info(
                 true,
                 "Extra",
-                "component=nlp, Word provider initialization started: segmentationType={}",
+                "Word provider initialization started: segmentationType={}",
                 segmentation == null ? "null" : segmentation.getClass().getSimpleName());
         this.segmentation = segmentation;
         Logger.info(
                 false,
                 "Extra",
-                "component=nlp, Word provider initialized: segmentationType={}",
+                "Word provider initialized: segmentationType={}",
                 this.segmentation == null ? "null" : this.segmentation.getClass().getSimpleName());
     }
 
@@ -87,16 +87,12 @@ public class WordProvider implements NLPProvider {
      */
     @Override
     public NLPResult parse(final CharSequence text) {
-        Logger.debug(
-                true,
-                "Extra",
-                "component=nlp, Word parse started: textLength={}",
-                text == null ? 0 : text.length());
+        Logger.debug(true, "Extra", "Word parse started: textLength={}", text == null ? 0 : text.length());
         final NLPResult result = new WordResult(this.segmentation.seg(StringKit.toStringOrEmpty(text)));
         Logger.debug(
                 false,
                 "Extra",
-                "component=nlp, Word parse completed: textLength={}, resultPresent={}",
+                "Word parse completed: textLength={}, resultPresent={}",
                 text == null ? 0 : text.length(),
                 result != null);
         return result;

@@ -112,7 +112,7 @@ public class HealthService {
                 Logger.debug(
                         false,
                         "Starter",
-                        "component=health, Health invalid tid '{}', defaulting to liveness,readiness",
+                        "Health invalid tid '{}', defaulting to liveness,readiness",
                         effectiveTid);
             }
 
@@ -125,7 +125,7 @@ public class HealthService {
                 Logger.warn(
                         false,
                         "Starter",
-                        "component=health, Health invalid number format in provider data for tid '{}': {}",
+                        "Health invalid number format in provider data for tid '{}': {}",
                         effectiveTid,
                         e.getClass().getSimpleName());
                 // On error, fall back to appending individually.
@@ -137,7 +137,7 @@ public class HealthService {
             Logger.error(
                     false,
                     "Starter",
-                    "component=health, Failed to retrieve health information for tid '{}': {}",
+                    "Failed to retrieve health information for tid '{}': {}",
                     tid,
                     e.getClass().getSimpleName(),
                     e);
@@ -222,7 +222,7 @@ public class HealthService {
                     Logger.error(
                             false,
                             "Starter",
-                            "component=health, Failed to append health data for type {}: {}",
+                            "Failed to append health data for type {}: {}",
                             type,
                             e.getClass().getSimpleName(),
                             e);

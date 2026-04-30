@@ -88,7 +88,7 @@ public class BeetlProvider implements TemplateProvider {
         Logger.info(
                 true,
                 "Extra",
-                "component=template, Beetl group template creation started: resourceMode={}, charset={}, pathPresent={}",
+                "Beetl group template creation started: resourceMode={}, charset={}, pathPresent={}",
                 config.getResourceMode(),
                 config.getCharsetString(),
                 config.getPath() != null);
@@ -125,7 +125,7 @@ public class BeetlProvider implements TemplateProvider {
         Logger.info(
                 false,
                 "Extra",
-                "component=template, Beetl group template created: resourceMode={}, charset={}, pathPresent={}, groupTemplatePresent={}",
+                "Beetl group template created: resourceMode={}, charset={}, pathPresent={}, groupTemplatePresent={}",
                 config.getResourceMode(),
                 config.getCharsetString(),
                 config.getPath() != null,
@@ -146,7 +146,7 @@ public class BeetlProvider implements TemplateProvider {
             Logger.debug(
                     true,
                     "Extra",
-                    "component=template, Beetl group template default configuration loading started: loader={}",
+                    "Beetl group template default configuration loading started: loader={}",
                     loader == null ? "null" : loader.getClass().getSimpleName());
             return createGroupTemplate(loader, Configuration.defaultConfiguration());
         } catch (final IOException e) {
@@ -154,7 +154,7 @@ public class BeetlProvider implements TemplateProvider {
                     false,
                     "Extra",
                     e,
-                    "component=template, Beetl group template default configuration loading failed: loader={}, exception={}",
+                    "Beetl group template default configuration loading failed: loader={}, exception={}",
                     loader == null ? "null" : loader.getClass().getSimpleName(),
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -187,17 +187,13 @@ public class BeetlProvider implements TemplateProvider {
         Logger.info(
                 true,
                 "Extra",
-                "component=template, Beetl provider initialization started: configPresent={}, resourceMode={}, charset={}, pathPresent={}",
+                "Beetl provider initialization started: configPresent={}, resourceMode={}, charset={}, pathPresent={}",
                 config != null,
                 config == null ? null : config.getResourceMode(),
                 config == null ? null : config.getCharsetString(),
                 config != null && config.getPath() != null);
         init(of(config));
-        Logger.info(
-                false,
-                "Extra",
-                "component=template, Beetl provider initialized: rawPresent={}",
-                this.engine != null);
+        Logger.info(false, "Extra", "Beetl provider initialized: rawPresent={}", this.engine != null);
         return this;
     }
 
@@ -221,20 +217,20 @@ public class BeetlProvider implements TemplateProvider {
     @Override
     public Template getTemplate(final String resource) {
         if (null == this.engine) {
-            Logger.debug(true, "Extra", "component=template, Beetl provider lazy initialization requested");
+            Logger.debug(true, "Extra", "Beetl provider lazy initialization requested");
             init(TemplateConfig.DEFAULT);
         }
         Logger.debug(
                 true,
                 "Extra",
-                "component=template, Beetl template loading started: resourcePresent={}, resourceLength={}",
+                "Beetl template loading started: resourcePresent={}, resourceLength={}",
                 resource != null,
                 resource == null ? 0 : resource.length());
         final Template template = BeetlTemplate.wrap(engine.getTemplate(resource));
         Logger.debug(
                 false,
                 "Extra",
-                "component=template, Beetl template loaded: resourcePresent={}, resourceLength={}, templatePresent={}",
+                "Beetl template loaded: resourcePresent={}, resourceLength={}, templatePresent={}",
                 resource != null,
                 resource == null ? 0 : resource.length(),
                 template != null);

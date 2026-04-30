@@ -62,7 +62,7 @@ public class MQFactory {
         Logger.info(
                 true,
                 "Extra",
-                "component=mq, MQ provider discovery started: configPresent={}, brokerPresent={}, customEnginePresent={}, propertyCount={}",
+                "MQ provider discovery started: configPresent={}, brokerPresent={}, customEnginePresent={}, propertyCount={}",
                 config != null,
                 config != null && config.getBrokerUrl() != null,
                 config != null && config.getCustomEngine() != null,
@@ -74,26 +74,26 @@ public class MQFactory {
             Logger.debug(
                     true,
                     "Extra",
-                    "component=mq, MQ custom provider creation started: provider={}",
+                    "MQ custom provider creation started: provider={}",
                     customEngineClass.getName());
             engine = ReflectKit.newInstance(customEngineClass);
         } else {
             // SPI engine lookup
-            Logger.debug(true, "Extra", "component=mq, MQ SPI provider lookup started");
+            Logger.debug(true, "Extra", "MQ SPI provider lookup started");
             engine = NormalSpiLoader.loadFirstAvailable(MQProvider.class);
         }
         if (null != engine) {
             Logger.info(
                     false,
                     "Extra",
-                    "component=mq, MQ provider discovered: provider={}, elapsedMs={}",
+                    "MQ provider discovered: provider={}, elapsedMs={}",
                     engine.getClass().getName(),
                     (System.nanoTime() - startedAt) / 1_000_000L);
             final MQProvider provider = engine.init(config);
             Logger.info(
                     false,
                     "Extra",
-                    "component=mq, MQ provider initialized by factory: provider={}, elapsedMs={}",
+                    "MQ provider initialized by factory: provider={}, elapsedMs={}",
                     provider == null ? "null" : provider.getClass().getName(),
                     (System.nanoTime() - startedAt) / 1_000_000L);
             return provider;
@@ -102,7 +102,7 @@ public class MQFactory {
         Logger.error(
                 false,
                 "Extra",
-                "component=mq, MQ provider discovery failed: customEnginePresent={}, elapsedMs={}",
+                "MQ provider discovery failed: customEnginePresent={}, elapsedMs={}",
                 customEngineClass != null,
                 (System.nanoTime() - startedAt) / 1_000_000L);
         throw new MQueueException("No MQ implement found! Please add one of MQ jar to your project !");

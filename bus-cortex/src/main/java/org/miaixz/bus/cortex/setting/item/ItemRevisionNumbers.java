@@ -65,8 +65,7 @@ public final class ItemRevisionNumbers {
                     false,
                     "Cortex",
                     e,
-                    "Cortex operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "setting",
+                    "Cortex operation failed: provider={}, recoverable={}, exception={}",
                     "ItemRevisionNumbers",
                     false,
                     e.getClass().getSimpleName());

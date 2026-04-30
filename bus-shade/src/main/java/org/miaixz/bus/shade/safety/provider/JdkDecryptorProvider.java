@@ -62,7 +62,7 @@ public class JdkDecryptorProvider implements DecryptorProvider {
         Logger.debug(
                 true,
                 "Shade",
-                "JDK decrypt file started: component=safety, algorithm={}, sourceFile={}, targetFile={}",
+                "JDK decrypt file started: algorithm={}, sourceFile={}, targetFile={}",
                 algorithm,
                 src == null ? null : src.getName(),
                 dest == null ? null : dest.getName());
@@ -75,7 +75,7 @@ public class JdkDecryptorProvider implements DecryptorProvider {
         Logger.debug(
                 false,
                 "Shade",
-                "JDK decrypt file finished: component=safety, algorithm={}, sourceFile={}, targetFile={}",
+                "JDK decrypt file finished: algorithm={}, sourceFile={}, targetFile={}",
                 algorithm,
                 src == null ? null : src.getName(),
                 dest == null ? null : dest.getName());
@@ -102,7 +102,7 @@ public class JdkDecryptorProvider implements DecryptorProvider {
                     false,
                     "Shade",
                     e,
-                    "JDK decrypt stream failed: component=safety, algorithm={}, operation={}, exception={}",
+                    "JDK decrypt stream failed: algorithm={}, operation={}, exception={}",
                     algorithm,
                     "streamToStream",
                     e.getClass().getSimpleName());
@@ -131,7 +131,7 @@ public class JdkDecryptorProvider implements DecryptorProvider {
                     false,
                     "Shade",
                     e,
-                    "JDK decrypt input wrapper failed: component=safety, algorithm={}, operation={}, exception={}",
+                    "JDK decrypt input wrapper failed: algorithm={}, operation={}, exception={}",
                     algorithm,
                     "inputWrapper",
                     e.getClass().getSimpleName());
@@ -158,7 +158,7 @@ public class JdkDecryptorProvider implements DecryptorProvider {
                     false,
                     "Shade",
                     e,
-                    "JDK decrypt output wrapper failed: component=safety, algorithm={}, operation={}, exception={}",
+                    "JDK decrypt output wrapper failed: algorithm={}, operation={}, exception={}",
                     algorithm,
                     "outputWrapper",
                     e.getClass().getSimpleName());

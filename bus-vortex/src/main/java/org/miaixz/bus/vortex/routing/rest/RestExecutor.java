@@ -101,7 +101,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             synchronized (RestExecutor.class) {
                 if (CACHED_HTTP_CLIENT == null) {
                     CACHED_HTTP_CLIENT = HttpClient.create(Holder.connectionProvider());
-                    Logger.info(true, "Vortex", "protocol=http, Shared HTTP client initialized");
+                    Logger.info(true, "Vortex", "Shared HTTP client initialized: protocol=http");
                 }
             }
         }
@@ -131,7 +131,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
         Logger.info(
                 true,
                 "Vortex",
-                "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_BASEURL, Base URL: {}",
+                "Base URL: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_BASEURL, {}",
                 ip,
                 method,
                 path,
@@ -144,7 +144,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
         Logger.info(
                 true,
                 "Vortex",
-                "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_URI, Target URI: {}",
+                "Target URI: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_URI, {}",
                 ip,
                 method,
                 path,
@@ -155,7 +155,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
         Logger.info(
                 true,
                 "Vortex",
-                "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_METHOD, HTTP method: {}",
+                "HTTP method: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_METHOD, {}",
                 ip,
                 method,
                 path,
@@ -166,10 +166,34 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             headers.remove(HttpHeaders.HOST);
             headers.clearContentHeaders();
         });
+        Logger.debug(
+                true,
+                "Vortex",
+                "Request header snapshot: protocol=http, clientIp={}, method={}, path={}, targetUri={}",
+                ip,
+                method,
+                path,
+                targetUri);
+        Logger.debug(
+                true,
+                "Vortex",
+                "Request headers: protocol=http, clientIp={}, method={}, path={}, headers={}",
+                ip,
+                method,
+                path,
+                request.headers().asHttpHeaders().toSingleValueMap());
+        Logger.debug(
+                true,
+                "Vortex",
+                "Request parameters: protocol=http, clientIp={}, method={}, path={}, parameters={}",
+                ip,
+                method,
+                path,
+                context.getParameters());
         Logger.info(
                 true,
                 "Vortex",
-                "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_HEADERS, Headers configured",
+                "Headers configured: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_HEADERS",
                 ip,
                 method,
                 path);
@@ -187,7 +211,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                     Logger.info(
                             true,
                             "Vortex",
-                            "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_UNSUPPORTED, Unsupported media type: {}",
+                            "Unsupported media type: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_UNSUPPORTED, {}",
                             ip,
                             method,
                             path,
@@ -198,7 +222,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 Logger.info(
                         true,
                         "Vortex",
-                        "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_DEFAULT, No Content-Type header, defaulting to form data",
+                        "No Content-Type header, defaulting to form data: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_DEFAULT",
                         ip,
                         method,
                         path);
@@ -208,7 +232,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             Logger.info(
                     true,
                     "Vortex",
-                    "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_GET, GET request, no content processing",
+                    "GET request, no content processing: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_GET",
                     ip,
                     method,
                     path);
@@ -217,7 +241,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
         Logger.info(
                 true,
                 "Vortex",
-                "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_SEND, Sending request",
+                "Sending request: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_SEND",
                 ip,
                 method,
                 path);
@@ -228,7 +252,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             Logger.info(
                     true,
                     "Vortex",
-                    "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_STRATEGY, Using STREAMING mode (stream=2, exchangeToMono)",
+                    "Using STREAMING mode (stream=2, exchangeToMono): protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_STRATEGY",
                     ip,
                     method,
                     path);
@@ -237,7 +261,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             Logger.info(
                     true,
                     "Vortex",
-                    "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_STRATEGY, Using ATOMIC mode (stream=1, retrieve.toEntity)",
+                    "Using ATOMIC mode (stream=1, retrieve.toEntity): protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_STRATEGY",
                     ip,
                     method,
                     path);
@@ -269,7 +293,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 Logger.debug(
                         true,
                         "Vortex",
-                        "protocol=http, clientIp={}, method={}, path={}, event=HTTP_BEFORE_SEND, JSON prepared: backslashes={}, chars={}",
+                        "JSON prepared: protocol=http, clientIp={}, method={}, path={}, event=HTTP_BEFORE_SEND, backslashes={}, chars={}",
                         ip,
                         method,
                         path,
@@ -280,7 +304,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 Logger.debug(
                         true,
                         "Vortex",
-                        "protocol=http, clientIp={}, method={}, path={}, event=HTTP_JSON_AFTER_FIX, JSON normalized: chars={}",
+                        "JSON normalized: protocol=http, clientIp={}, method={}, path={}, event=HTTP_JSON_AFTER_FIX, chars={}",
                         ip,
                         method,
                         path,
@@ -292,7 +316,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             Logger.info(
                     true,
                     "Vortex",
-                    "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_JSON, JSON content configured: parameterCount={}",
+                    "JSON content configured: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_JSON, parameterCount={}",
                     ip,
                     method,
                     path,
@@ -301,7 +325,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             Logger.info(
                     true,
                     "Vortex",
-                    "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_JSON, No JSON parameters to configure",
+                    "No JSON parameters to configure: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_JSON",
                     ip,
                     method,
                     path);
@@ -331,7 +355,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             Logger.info(
                     true,
                     "Vortex",
-                    "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_FORM, Form content configured: parameterCount={}",
+                    "Form content configured: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_FORM, parameterCount={}",
                     ip,
                     method,
                     path,
@@ -340,7 +364,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             Logger.info(
                     true,
                     "Vortex",
-                    "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_FORM, No form parameters to configure",
+                    "No form parameters to configure: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_FORM",
                     ip,
                     method,
                     path);
@@ -372,7 +396,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             Logger.info(
                     true,
                     "Vortex",
-                    "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_MULTIPART, Multipart content configured: fileCount={}, parameterCount={}",
+                    "Multipart content configured: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_MULTIPART, fileCount={}, parameterCount={}",
                     ip,
                     method,
                     path,
@@ -429,7 +453,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             Logger.debug(
                     false,
                     "Vortex",
-                    "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_HEADERS, Downstream response headers: {}",
+                    "Downstream response headers: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_HEADERS, {}",
                     ip,
                     method,
                     path,
@@ -446,7 +470,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 Logger.debug(
                         false,
                         "Vortex",
-                        "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_STREAM_CHUNK, Received data chunk, size: {} bytes",
+                        "Received data chunk, size: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_STREAM_CHUNK, {} bytes",
                         ip,
                         method,
                         path,
@@ -458,7 +482,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 subscription -> Logger.info(
                         true,
                         "Vortex",
-                        "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_SUBSCRIBE, Request subscribed (Streaming).",
+                        "Request subscribed (Streaming).: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_SUBSCRIBE",
                         ip,
                         method,
                         path))
@@ -466,7 +490,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                         serverResponse -> Logger.info(
                                 false,
                                 "Vortex",
-                                "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_SUCCESS, Successfully built ServerResponse with status: {} (Streaming)",
+                                "Successfully built ServerResponse with status: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_SUCCESS, {} (Streaming)",
                                 ip,
                                 method,
                                 path,
@@ -475,7 +499,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                         error -> Logger.error(
                                 false,
                                 "Vortex",
-                                "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_ERROR, Request FAILED (Streaming): {}",
+                                "Request FAILED (Streaming): protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_ERROR, {}",
                                 ip,
                                 method,
                                 path,
@@ -485,7 +509,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                         () -> Logger.warn(
                                 false,
                                 "Vortex",
-                                "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_CANCEL, Request was cancelled by client (Streaming).",
+                                "Request was cancelled by client (Streaming).: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_CANCEL",
                                 ip,
                                 method,
                                 path));
@@ -504,7 +528,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             Logger.info(
                     false,
                     "Vortex",
-                    "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_BUFFERED, Received buffered status: {}",
+                    "Received buffered status: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_BUFFERED, {}",
                     ip,
                     method,
                     path,
@@ -512,7 +536,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             Logger.info(
                     false,
                     "Vortex",
-                    "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_HEADERS, Downstream response headers: {}",
+                    "Downstream response headers: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_HEADERS, {}",
                     ip,
                     method,
                     path,
@@ -523,7 +547,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 Logger.info(
                         false,
                         "Vortex",
-                        "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_CONTENT_BUFFERED, received buffered content: bytes={}",
+                        "Received buffered content: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_CONTENT_BUFFERED, bytes={}",
                         ip,
                         method,
                         path,
@@ -532,7 +556,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 Logger.warn(
                         false,
                         "Vortex",
-                        "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_CONTENT_BUFFERED, received buffered content is empty",
+                        "Received buffered content is empty: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_CONTENT_BUFFERED",
                         ip,
                         method,
                         path);
@@ -555,7 +579,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 subscription -> Logger.info(
                         true,
                         "Vortex",
-                        "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_SUBSCRIBE, Request subscribed (Buffering).",
+                        "Request subscribed (Buffering).: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_SUBSCRIBE",
                         ip,
                         method,
                         path))
@@ -563,7 +587,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                         serverResponse -> Logger.info(
                                 false,
                                 "Vortex",
-                                "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_SUCCESS, Successfully built ServerResponse with status: {} (Buffering)",
+                                "Successfully built ServerResponse with status: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_SUCCESS, {} (Buffering)",
                                 ip,
                                 method,
                                 path,
@@ -572,7 +596,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                         error -> Logger.error(
                                 false,
                                 "Vortex",
-                                "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROOVER_ERROR, Request FAILED (Buffering): {}",
+                                "Request FAILED (Buffering): protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROOVER_ERROR, {}",
                                 ip,
                                 method,
                                 path,
@@ -582,7 +606,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                         () -> Logger.warn(
                                 false,
                                 "Vortex",
-                                "protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_CANCEL, Request was cancelled by client (Buffering).",
+                                "Request was cancelled by client (Buffering).: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_CANCEL",
                                 ip,
                                 method,
                                 path));

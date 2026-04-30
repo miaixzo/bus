@@ -65,12 +65,7 @@ public class HealthConfiguration {
         try {
             return new Provider();
         } catch (Exception e) {
-            Logger.error(
-                    false,
-                    "Starter",
-                    "component=health, Health failed to initialize Provider: {}",
-                    e.getClass().getSimpleName(),
-                    e);
+            Logger.error(false, "Starter", "Health failed to initialize Provider: {}", e.getClass().getSimpleName(), e);
             throw new IllegalStateException("Failed to initialize Provider: " + e.getMessage(), e);
         }
     }
@@ -144,7 +139,7 @@ public class HealthConfiguration {
             Logger.error(
                     false,
                     "Starter",
-                    "component=health, Failed to register HealthController mappings: {}",
+                    "Failed to register HealthController mappings: {}",
                     e.getClass().getSimpleName(),
                     e);
             throw new RuntimeException("Failed to register health mappings", e);

@@ -42,7 +42,7 @@ import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombi
  *
  * <p>
  * To introduce (dependency):
- * 
+ *
  * <pre>
  * &lt;dependency&gt;
  *     &lt;groupId&gt;com.belerweb&lt;/groupId&gt;
@@ -88,9 +88,9 @@ public class Pinyin4JProvider implements PinyinProvider {
      */
     public Pinyin4JProvider() {
         // Check if the library is introduced when loading via SPI
-        Logger.info(true, "Extra", "component=pinyin, Pinyin4J provider dependency check started");
+        Logger.info(true, "Extra", "Pinyin4J provider dependency check started");
         Assert.notNull(PinyinHelper.class);
-        Logger.info(false, "Extra", "component=pinyin, Pinyin4J provider dependency check completed");
+        Logger.info(false, "Extra", "Pinyin4J provider dependency check completed");
     }
 
     /**
@@ -114,7 +114,7 @@ public class Pinyin4JProvider implements PinyinProvider {
                     false,
                     "Extra",
                     e,
-                    "component=pinyin, Pinyin4J char conversion fallback used: tone={}, exception={}",
+                    "Pinyin4J char conversion fallback used: tone={}, exception={}",
                     tone,
                     e.getClass().getSimpleName());
             result = String.valueOf(c);
@@ -138,7 +138,7 @@ public class Pinyin4JProvider implements PinyinProvider {
         Logger.debug(
                 true,
                 "Extra",
-                "component=pinyin, Pinyin4J string conversion started: textLength={}, separatorPresent={}, tone={}",
+                "Pinyin4J string conversion started: textLength={}, separatorPresent={}, tone={}",
                 str == null ? 0 : str.length(),
                 separator != null,
                 tone);
@@ -165,7 +165,7 @@ public class Pinyin4JProvider implements PinyinProvider {
                     false,
                     "Extra",
                     e,
-                    "component=pinyin, Pinyin4J string conversion failed: textLength={}, separatorPresent={}, tone={}, exception={}",
+                    "Pinyin4J string conversion failed: textLength={}, separatorPresent={}, tone={}, exception={}",
                     str == null ? 0 : str.length(),
                     separator != null,
                     tone,
@@ -175,7 +175,7 @@ public class Pinyin4JProvider implements PinyinProvider {
         Logger.debug(
                 false,
                 "Extra",
-                "component=pinyin, Pinyin4J string conversion completed: textLength={}, resultLength={}, tone={}",
+                "Pinyin4J string conversion completed: textLength={}, resultLength={}, tone={}",
                 str == null ? 0 : str.length(),
                 result.length(),
                 tone);

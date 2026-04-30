@@ -176,7 +176,7 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
         Logger.info(
                 true,
                 "Vortex",
-                "protocol=ws, WS session registered: {} -> {} (Total active: {})",
+                "WS session registered: protocol=ws, {} -> {} (Total active: {})",
                 sessionId,
                 metadata.getUpstreamTarget(),
                 activeSessions.size());
@@ -199,7 +199,7 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
             Logger.info(
                     true,
                     "Vortex",
-                    "protocol=ws, WS session unregistered: {} -> {} (Duration: {}ms, Remaining: {})",
+                    "WS session unregistered: protocol=ws, {} -> {} (Duration: {}ms, Remaining: {})",
                     sessionId,
                     metadata.getUpstreamTarget(),
                     duration,
@@ -249,7 +249,7 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
         Logger.info(
                 false,
                 "Vortex",
-                "protocol=ws, WS webSocket resources shutting down: activeSessions={}",
+                "WS webSocket resources shutting down: protocol=ws, activeSessions={}",
                 activeSessions.size());
 
         return Flux.fromIterable(activeSessions.values()).flatMap(session -> {
@@ -260,14 +260,14 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
                                     error -> Logger.error(
                                             false,
                                             "Vortex",
-                                            "protocol=ws, Error closing WebSocket session: {}",
+                                            "Error closing WebSocket session: protocol=ws, {}",
                                             session.getId(),
                                             error))
                             .doOnSuccess(
                                     v -> Logger.debug(
                                             false,
                                             "Vortex",
-                                            "protocol=ws, WS webSocket session closed: {}",
+                                            "WS webSocket session closed: protocol=ws, {}",
                                             session.getId()));
                 } else {
                     return Mono.empty();
@@ -276,7 +276,7 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
                 Logger.error(
                         false,
                         "Vortex",
-                        "protocol=ws, WS failed to close WebSocket session: {}",
+                        "WS failed to close WebSocket session: protocol=ws, {}",
                         session.getId(),
                         e);
                 return Mono.error(e);
@@ -284,7 +284,7 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
         }).doOnComplete(() -> {
             activeSessions.clear();
             sessionMetadata.clear();
-            Logger.info(false, "Vortex", "protocol=ws, WS webSocket resources stopped");
+            Logger.info(false, "Vortex", "WS webSocket resources stopped: protocol=ws");
         }).then(Mono.empty());
     }
 

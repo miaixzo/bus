@@ -95,11 +95,23 @@ public class RequestStrategy extends AbstractStrategy {
             Logger.debug(
                     true,
                     "Vortex",
-                    "strategy=request, clientIp={}, request headers captured: path={}, headerCount={}, contentType={}",
+                    "Request headers captured: strategy=request, clientIp={}, path={}, headerCount={}, contentType={}",
                     context.getX_request_ip(),
                     request.getURI().getPath(),
                     request.getHeaders().size(),
                     request.getHeaders().getContentType());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request header snapshot: strategy=request, clientIp={}, path={}",
+                    context.getX_request_ip(),
+                    request.getURI().getPath());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request headers: strategy=request, clientIp={}, headers={}",
+                    context.getX_request_ip(),
+                    request.getHeaders().toSingleValueMap());
 
             if (context.getHttpMethod() == HTTP.Method.GET) {
                 return handleGetRequest(mutate, chain, context);
@@ -135,10 +147,22 @@ public class RequestStrategy extends AbstractStrategy {
     private Mono<Void> handleGetRequest(ServerWebExchange exchange, Chain chain, Context context) {
         return Mono.fromRunnable(() -> {
             context.getParameters().putAll(context.getQuery());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "GET request parameter snapshot: strategy=request, clientIp={}, path={}",
+                    context.getX_request_ip(),
+                    exchange.getRequest().getURI().getPath());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request parameters: strategy=request, clientIp={}, parameters={}",
+                    context.getX_request_ip(),
+                    context.getParameters());
             Logger.info(
                     true,
                     "Vortex",
-                    "strategy=request, clientIp={}, GET request parameters processed: path={}, parameterCount={}",
+                    "GET request parameters processed: strategy=request, clientIp={}, path={}, parameterCount={}",
                     context.getX_request_ip(),
                     exchange.getRequest().getURI().getPath(),
                     context.getParameters().size());
@@ -146,7 +170,7 @@ public class RequestStrategy extends AbstractStrategy {
                 signalType -> Logger.info(
                         false,
                         "Vortex",
-                        "strategy=request, clientIp={}, request processing completed: path={}, executionTimeMs={}",
+                        "Request processing completed: strategy=request, clientIp={}, path={}, executionTimeMs={}",
                         context.getX_request_ip(),
                         exchange.getRequest().getURI().getPath(),
                         (System.currentTimeMillis() - context.getTimestamp())));
@@ -173,7 +197,7 @@ public class RequestStrategy extends AbstractStrategy {
             Logger.info(
                     true,
                     "Vortex",
-                    "strategy=request, clientIp={}, large JSON request detected: bytes={}, mode=streaming",
+                    "Large JSON request detected: strategy=request, clientIp={}, bytes={}, mode=streaming",
                     context.getX_request_ip(),
                     contentLength);
         }
@@ -209,7 +233,7 @@ public class RequestStrategy extends AbstractStrategy {
                 Logger.info(
                         true,
                         "Vortex",
-                        "strategy=request, clientIp={}, large JSON content cached in memory: bytes={}",
+                        "Large JSON content cached in memory: strategy=request, clientIp={}, bytes={}",
                         context.getX_request_ip(),
                         bytes.length);
             }
@@ -217,6 +241,19 @@ public class RequestStrategy extends AbstractStrategy {
             String jsonBody = new String(bytes, Charset.UTF_8);
             Map<String, Object> jsonMap = JsonKit.toMap(jsonBody);
             context.getParameters().putAll(jsonMap);
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "JSON request parameter snapshot: strategy=request, clientIp={}, path={}, bytes={}",
+                    context.getX_request_ip(),
+                    exchange.getRequest().getURI().getPath(),
+                    bytes.length);
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request parameters: strategy=request, clientIp={}, parameters={}",
+                    context.getX_request_ip(),
+                    context.getParameters());
 
             ServerHttpRequest newRequest = new ServerHttpRequestDecorator(exchange.getRequest()) {
 
@@ -237,7 +274,7 @@ public class RequestStrategy extends AbstractStrategy {
             Logger.info(
                     true,
                     "Vortex",
-                    "strategy=request, clientIp={}, JSON request processed: path={}, parameterCount={}",
+                    "JSON request processed: strategy=request, clientIp={}, path={}, parameterCount={}",
                     context.getX_request_ip(),
                     exchange.getRequest().getURI().getPath(),
                     context.getParameters().size());
@@ -247,7 +284,7 @@ public class RequestStrategy extends AbstractStrategy {
                 signalType -> Logger.info(
                         false,
                         "Vortex",
-                        "strategy=request, clientIp={}, request processing completed: path={}, executionTimeMs={}",
+                        "Request processing completed: strategy=request, clientIp={}, path={}, executionTimeMs={}",
                         context.getX_request_ip(),
                         exchange.getRequest().getURI().getPath(),
                         (System.currentTimeMillis() - context.getTimestamp())))
@@ -256,7 +293,7 @@ public class RequestStrategy extends AbstractStrategy {
                             false,
                             "Vortex",
                             e,
-                            "strategy=request, clientIp={}, JSON request processing failed: exception={}",
+                            "JSON request processing failed: strategy=request, clientIp={}, exception={}",
                             context.getX_request_ip(),
                             e.getClass().getSimpleName());
                     return Mono.error(e);
@@ -324,10 +361,22 @@ public class RequestStrategy extends AbstractStrategy {
             return exchange.mutate().request(newRequest).build();
         }).flatMap(newExchange -> newExchange.getFormData().flatMap(params -> {
             context.getParameters().putAll(params.toSingleValueMap());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Form request parameter snapshot: strategy=request, clientIp={}, path={}",
+                    getClientIp(newExchange.getRequest()),
+                    newExchange.getRequest().getURI().getPath());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request parameters: strategy=request, clientIp={}, parameters={}",
+                    context.getX_request_ip(),
+                    context.getParameters());
             Logger.info(
                     true,
                     "Vortex",
-                    "strategy=request, clientIp={}, form request processed: path={}, parameterCount={}",
+                    "Form request processed: strategy=request, clientIp={}, path={}, parameterCount={}",
                     getClientIp(newExchange.getRequest()),
                     newExchange.getRequest().getURI().getPath(),
                     context.getParameters().size());
@@ -336,7 +385,7 @@ public class RequestStrategy extends AbstractStrategy {
                 signalType -> Logger.info(
                         false,
                         "Vortex",
-                        "strategy=request, clientIp={}, request processing completed: path={}, executionTimeMs={}",
+                        "Request processing completed: strategy=request, clientIp={}, path={}, executionTimeMs={}",
                         context.getX_request_ip(),
                         exchange.getRequest().getURI().getPath(),
                         (System.currentTimeMillis() - context.getTimestamp())))
@@ -345,7 +394,7 @@ public class RequestStrategy extends AbstractStrategy {
                             false,
                             "Vortex",
                             e,
-                            "strategy=request, clientIp={}, form request processing failed: exception={}",
+                            "Form request processing failed: strategy=request, clientIp={}, exception={}",
                             context.getX_request_ip(),
                             e.getClass().getSimpleName());
                     return Mono.error(e);
@@ -376,7 +425,7 @@ public class RequestStrategy extends AbstractStrategy {
             Logger.info(
                     true,
                     "Vortex",
-                    "strategy=request, clientIp={}, multipart request detected: bytes={}, mode=streaming",
+                    "Multipart request detected: strategy=request, clientIp={}, bytes={}, mode=streaming",
                     context.getX_request_ip(),
                     contentLength);
         }
@@ -416,11 +465,29 @@ public class RequestStrategy extends AbstractStrategy {
 
             context.getParameters().putAll(formMap);
             context.setFileParts(fileMap);
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Multipart request parameter snapshot: strategy=request, clientIp={}, path={}",
+                    context.getX_request_ip(),
+                    exchange.getRequest().getURI().getPath());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request parameters: strategy=request, clientIp={}, parameters={}",
+                    context.getX_request_ip(),
+                    context.getParameters());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request file fields: strategy=request, clientIp={}, fileFields={}",
+                    context.getX_request_ip(),
+                    fileMap.keySet());
 
             Logger.info(
                     true,
                     "Vortex",
-                    "strategy=request, clientIp={}, multipart request processed: path={}, parameterCount={}",
+                    "Multipart request processed: strategy=request, clientIp={}, path={}, parameterCount={}",
                     context.getX_request_ip(),
                     exchange.getRequest().getURI().getPath(),
                     context.getParameters().size());
@@ -428,7 +495,7 @@ public class RequestStrategy extends AbstractStrategy {
                 signalType -> Logger.info(
                         false,
                         "Vortex",
-                        "strategy=request, clientIp={}, request processing completed: path={}, executionTimeMs={}",
+                        "Request processing completed: strategy=request, clientIp={}, path={}, executionTimeMs={}",
                         context.getX_request_ip(),
                         exchange.getRequest().getURI().getPath(),
                         (System.currentTimeMillis() - context.getTimestamp())))
@@ -437,7 +504,7 @@ public class RequestStrategy extends AbstractStrategy {
                             false,
                             "Vortex",
                             e,
-                            "strategy=request, clientIp={}, multipart request processing failed: exception={}",
+                            "Multipart request processing failed: strategy=request, clientIp={}, exception={}",
                             context.getX_request_ip(),
                             e.getClass().getSimpleName());
                     return Mono.error(e);

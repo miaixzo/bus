@@ -116,12 +116,7 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
             Set<String> targets = aliasIndex.computeIfAbsent(key, ignored -> ConcurrentHashMap.newKeySet());
             targets.add(primary);
             if (targets.size() > 1) {
-                Logger.warn(
-                        false,
-                        "Vortex",
-                        "component=registry, Assets route key '{}' is ambiguous across {}",
-                        key,
-                        targets);
+                Logger.warn(false, "Vortex", "Assets route key '{}' is ambiguous across {}", key, targets);
             }
         }
     }
@@ -211,12 +206,7 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
                     continue;
                 }
                 if (resolved != null) {
-                    Logger.warn(
-                            false,
-                            "Vortex",
-                            "component=registry, Assets route key '{}' is ambiguous across {}",
-                            routeKey,
-                            targets);
+                    Logger.warn(false, "Vortex", "Assets route key '{}' is ambiguous across {}", routeKey, targets);
                     return null;
                 }
                 resolved = candidate;
@@ -328,7 +318,7 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
             Logger.warn(
                     false,
                     "Vortex",
-                    "component=registry, Assets skipped registration because method/version/verb are required for runtime route keys: {}",
+                    "Assets skipped registration because method/version/verb are required for runtime route keys: {}",
                     spec);
             return false;
         }
@@ -336,7 +326,7 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
             Logger.warn(
                     false,
                     "Vortex",
-                    "component=registry, Assets skipped registration because the strongest runtime route key is missing: {}",
+                    "Assets skipped registration because the strongest runtime route key is missing: {}",
                     spec);
             return false;
         }
@@ -348,14 +338,14 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
             Logger.warn(
                     false,
                     "Vortex",
-                    "component=registry, Assets skipped registration because primary route key '{}' is already owned and incoming route '{}' was rejected",
+                    "Assets skipped registration because primary route key '{}' is already owned and incoming route '{}' was rejected",
                     primary,
                     spec);
         } else {
             Logger.warn(
                     false,
                     "Vortex",
-                    "component=registry, Assets skipped update because primary route key '{}' is already owned and source '{}' was kept",
+                    "Assets skipped update because primary route key '{}' is already owned and source '{}' was kept",
                     primary,
                     retainedPrimary);
         }

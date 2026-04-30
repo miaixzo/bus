@@ -67,18 +67,13 @@ public class BootJarLauncher extends JarLauncher {
         Logger.info(
                 true,
                 "Shade",
-                "Boot launcher started: component=launcher, argCount={}",
+                "Boot launcher started: argCount={}",
                 launcher.args == null ? 0 : launcher.args.length);
         try {
             launch(launcher.args);
-            Logger.info(false, "Shade", "Boot launcher finished: component=launcher");
+            Logger.info(false, "Shade", "Boot launcher finished");
         } catch (Exception e) {
-            Logger.error(
-                    false,
-                    "Shade",
-                    e,
-                    "Boot launcher failed: component=launcher, exception={}",
-                    e.getClass().getSimpleName());
+            Logger.error(false, "Shade", e, "Boot launcher failed: exception={}", e.getClass().getSimpleName());
             throw e;
         }
     }

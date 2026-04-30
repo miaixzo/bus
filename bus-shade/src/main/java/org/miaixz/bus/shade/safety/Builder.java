@@ -422,7 +422,7 @@ public abstract class Builder {
         Logger.debug(
                 true,
                 "Shade",
-                "Safety key generation started: component=safety, algorithm={}, keySize={}, ivSize={}, credentialPresent={}",
+                "Safety key generation started: algorithm={}, keySize={}, ivSize={}, credentialPresent={}",
                 algorithm,
                 keysize,
                 ivsize,
@@ -438,7 +438,7 @@ public abstract class Builder {
         Logger.debug(
                 false,
                 "Shade",
-                "Safety key generation finished: component=safety, algorithm={}, keySize={}, ivSize={}",
+                "Safety key generation finished: algorithm={}, keySize={}, ivSize={}",
                 algorithm,
                 keysize,
                 ivsize);

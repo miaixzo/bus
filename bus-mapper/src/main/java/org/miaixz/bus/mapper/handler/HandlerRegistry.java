@@ -283,8 +283,7 @@ public class HandlerRegistry {
                     false,
                     "Mapper",
                     e,
-                    "Mapper operation failed: component={}, provider={}, exception={}",
-                    "handler",
+                    "Mapper operation failed: provider={}, exception={}",
                     "HandlerRegistry",
                     e.getClass().getSimpleName());
             // Conservative handling on exception: assume not overridden

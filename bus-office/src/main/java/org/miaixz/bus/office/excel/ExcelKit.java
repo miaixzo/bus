@@ -203,7 +203,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
@@ -225,7 +225,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
@@ -247,7 +247,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
@@ -269,7 +269,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
@@ -302,7 +302,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
@@ -324,7 +324,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
@@ -346,7 +346,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
@@ -367,7 +367,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
@@ -388,7 +388,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
@@ -409,7 +409,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
@@ -430,7 +430,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
@@ -452,7 +452,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
@@ -474,7 +474,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
@@ -495,7 +495,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
@@ -516,7 +516,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
@@ -537,7 +537,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
@@ -558,7 +558,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
@@ -580,7 +580,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
@@ -602,7 +602,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
@@ -633,7 +633,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
@@ -665,7 +665,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
@@ -687,7 +687,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
@@ -719,7 +719,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
@@ -741,7 +741,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
@@ -773,7 +773,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
@@ -795,7 +795,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
@@ -972,7 +972,7 @@ public class ExcelKit {
                             false,
                             "Office",
                             e,
-                            "Excel operation failed: component=excel, provider={}, exception={}",
+                            "Excel operation failed: provider={}, exception={}",
                             "ExcelKit",
                             e.getClass().getSimpleName());
                     Thread.currentThread().interrupt();
@@ -984,7 +984,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             error.compareAndSet(null, e);
@@ -1248,7 +1248,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             error.compareAndSet(null, e);
@@ -1275,7 +1275,7 @@ public class ExcelKit {
                         false,
                         "Office",
                         e,
-                        "Excel operation failed: component=excel, provider={}, exception={}",
+                        "Excel operation failed: provider={}, exception={}",
                         "ExcelKit",
                         e.getClass().getSimpleName());
                 Thread.currentThread().interrupt();
@@ -1298,7 +1298,7 @@ public class ExcelKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "ExcelKit",
                     e.getClass().getSimpleName());
             Thread.currentThread().interrupt();

@@ -119,13 +119,13 @@ public class StdioClient implements McpClient {
                         Logger.info(
                                 false,
                                 "Vortex",
-                                "component=mcp, MCP process exited; stdout listener stopped: asset={}",
+                                "MCP process exited; stdout listener stopped: asset={}",
                                 assets.getName());
                     } else {
                         Logger.error(
                                 false,
                                 "Vortex",
-                                "component=mcp, MCP stdout listener failed: asset={}, exception={}",
+                                "MCP stdout listener failed: asset={}, exception={}",
                                 assets.getName(),
                                 e.getClass().getSimpleName());
                     }
@@ -151,7 +151,7 @@ public class StdioClient implements McpClient {
             Logger.info(
                     true,
                     "Vortex",
-                    "component=mcp, MCP stdio tool invocation started: asset={}, tool={}, requestId={}, argumentCount={}",
+                    "MCP stdio tool invocation started: asset={}, tool={}, requestId={}, argumentCount={}",
                     assets.getName(),
                     toolName,
                     requestId,
@@ -164,7 +164,7 @@ public class StdioClient implements McpClient {
                 Logger.debug(
                         false,
                         "Vortex",
-                        "component=mcp, MCP stdio tool request dispatched: asset={}, tool={}, requestId={}",
+                        "MCP stdio tool request dispatched: asset={}, tool={}, requestId={}",
                         assets.getName(),
                         toolName,
                         requestId);
@@ -174,7 +174,7 @@ public class StdioClient implements McpClient {
                         false,
                         "Vortex",
                         e,
-                        "component=mcp, MCP stdio tool dispatch failed: asset={}, tool={}, requestId={}, exception={}",
+                        "MCP stdio tool dispatch failed: asset={}, tool={}, requestId={}, exception={}",
                         assets.getName(),
                         toolName,
                         requestId,
@@ -187,7 +187,7 @@ public class StdioClient implements McpClient {
                 response -> Logger.info(
                         false,
                         "Vortex",
-                        "component=mcp, MCP stdio tool invocation completed: asset={}, tool={}, responseChars={}",
+                        "MCP stdio tool invocation completed: asset={}, tool={}, responseChars={}",
                         assets.getName(),
                         toolName,
                         response == null ? 0 : response.length()))
@@ -219,19 +219,14 @@ public class StdioClient implements McpClient {
      */
     @Override
     public void close() {
-        Logger.info(false, "Vortex", "component=mcp, MCP closing stdio session: asset={}", assets.getName());
+        Logger.info(false, "Vortex", "MCP closing stdio session: asset={}", assets.getName());
         stdoutListenerExecutor.shutdownNow();
         try {
             if (process.isAlive()) {
                 process.destroy();
             }
         } catch (Exception e) {
-            Logger.error(
-                    false,
-                    "Vortex",
-                    "component=mcp, MCP process termination failed during close: asset={}",
-                    assets.getName(),
-                    e);
+            Logger.error(false, "Vortex", "MCP process termination failed during close: asset={}", assets.getName(), e);
         }
     }
 
@@ -265,7 +260,7 @@ public class StdioClient implements McpClient {
                         Logger.info(
                                 false,
                                 "Vortex",
-                                "component=mcp, MCP tool catalog received: asset={}, tools={}",
+                                "MCP tool catalog received: asset={}, tools={}",
                                 assets.getName(),
                                 tools.size());
                     }
@@ -275,7 +270,7 @@ public class StdioClient implements McpClient {
             Logger.warn(
                     false,
                     "Vortex",
-                    "component=mcp, MCP malformed message received: asset={}, messageChars={}",
+                    "MCP malformed message received: asset={}, messageChars={}",
                     assets.getName(),
                     jsonLine == null ? 0 : jsonLine.length(),
                     e);

@@ -53,13 +53,13 @@ public class AnalysisProvider implements NLPProvider {
         Logger.info(
                 true,
                 "Extra",
-                "component=nlp, Lucene analysis provider initialization started: analyzerType={}",
+                "Lucene analysis provider initialization started: analyzerType={}",
                 analyzer == null ? "null" : analyzer.getClass().getSimpleName());
         this.analyzer = analyzer;
         Logger.info(
                 false,
                 "Extra",
-                "component=nlp, Lucene analysis provider initialized: analyzerType={}",
+                "Lucene analysis provider initialized: analyzerType={}",
                 this.analyzer == null ? "null" : this.analyzer.getClass().getSimpleName());
     }
 
@@ -77,7 +77,7 @@ public class AnalysisProvider implements NLPProvider {
         Logger.debug(
                 true,
                 "Extra",
-                "component=nlp, Lucene analysis parse started: textLength={}, analyzerType={}",
+                "Lucene analysis parse started: textLength={}, analyzerType={}",
                 text == null ? 0 : text.length(),
                 analyzer == null ? "null" : analyzer.getClass().getSimpleName());
         try {
@@ -88,7 +88,7 @@ public class AnalysisProvider implements NLPProvider {
                     false,
                     "Extra",
                     e,
-                    "component=nlp, Lucene analysis parse failed: textLength={}, analyzerType={}, exception={}",
+                    "Lucene analysis parse failed: textLength={}, analyzerType={}, exception={}",
                     text == null ? 0 : text.length(),
                     analyzer == null ? "null" : analyzer.getClass().getSimpleName(),
                     e.getClass().getSimpleName());
@@ -97,7 +97,7 @@ public class AnalysisProvider implements NLPProvider {
         Logger.debug(
                 false,
                 "Extra",
-                "component=nlp, Lucene analysis parse completed: textLength={}, streamPresent={}",
+                "Lucene analysis parse completed: textLength={}, streamPresent={}",
                 text == null ? 0 : text.length(),
                 stream != null);
         return new AnalysisResult(stream);

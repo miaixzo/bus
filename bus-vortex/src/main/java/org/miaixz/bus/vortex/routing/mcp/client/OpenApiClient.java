@@ -101,7 +101,7 @@ public class OpenApiClient implements McpClient {
             Logger.info(
                     false,
                     "Vortex",
-                    "component=mcp, OpenAPI tool catalog initialized: baseUrl={}, tools={}",
+                    "OpenAPI tool catalog initialized: baseUrl={}, tools={}",
                     this.baseUrl,
                     this.tools.size());
         });
@@ -133,11 +133,7 @@ public class OpenApiClient implements McpClient {
      */
     private Map<String, Tool> initializeTools() {
         if (StringKit.isEmpty(assets.getMetadata())) {
-            Logger.warn(
-                    false,
-                    "Vortex",
-                    "component=mcp, OpenAPI metadata is missing; no tools loaded: asset={}",
-                    assets.getName());
+            Logger.warn(false, "Vortex", "OpenAPI metadata is missing; no tools loaded: asset={}", assets.getName());
             return Collections.emptyMap();
         }
 
@@ -148,7 +144,7 @@ public class OpenApiClient implements McpClient {
             Logger.warn(
                     false,
                     "Vortex",
-                    "component=mcp, OpenAPI tool definition is missing; no tools loaded: asset={}",
+                    "OpenAPI tool definition is missing; no tools loaded: asset={}",
                     assets.getName());
             return Collections.emptyMap();
         }
@@ -175,7 +171,7 @@ public class OpenApiClient implements McpClient {
      */
     @Override
     public void close() {
-        Logger.info(false, "Vortex", "component=mcp, Closing OpenAPI endpoint client: baseUrl={}", this.baseUrl);
+        Logger.info(false, "Vortex", "Closing OpenAPI endpoint client: baseUrl={}", this.baseUrl);
     }
 
     /**
@@ -241,7 +237,7 @@ public class OpenApiClient implements McpClient {
         Logger.info(
                 true,
                 "Vortex",
-                "component=mcp, OpenAPI tool invocation started: name={}, method={}, endpoint={}, queryParameterCount={}, bodyPresent={}",
+                "OpenAPI tool invocation started: name={}, method={}, endpoint={}, queryParameterCount={}, bodyPresent={}",
                 toolName,
                 httpMethod.value(),
                 endpoint,
@@ -252,7 +248,7 @@ public class OpenApiClient implements McpClient {
                 response -> Logger.info(
                         false,
                         "Vortex",
-                        "component=mcp, OpenAPI tool completed: name={}, responseType={}",
+                        "OpenAPI tool completed: name={}, responseType={}",
                         toolName,
                         response == null ? null : response.getClass().getName()));
     }

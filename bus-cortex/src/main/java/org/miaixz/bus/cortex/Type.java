@@ -278,8 +278,7 @@ public enum Type {
             Logger.debug(
                     false,
                     "Cortex",
-                    "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
-                    "cortex",
+                    "Cortex operation skipped: provider={}, recoverable={}, exception={}",
                     "Type",
                     true,
                     ignore.getClass().getSimpleName());

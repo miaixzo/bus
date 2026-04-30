@@ -218,7 +218,7 @@ public final class ServerSentEventReader {
             Logger.debug(
                     false,
                     "Http",
-                    "protocol=sse, SSE retry field ignored: valueChars={}, exception={}",
+                    "SSE retry field ignored: protocol=sse, valueChars={}, exception={}",
                     retryString.length(),
                     e.getClass().getSimpleName());
             return -1L;

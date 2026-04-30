@@ -140,8 +140,7 @@ public class OGNL {
                             false,
                             "Mapper",
                             e,
-                            "Mapper operation failed: component={}, provider={}, exception={}",
-                            "ognl",
+                            "Mapper operation failed: provider={}, exception={}",
                             "OGNL",
                             e.getClass().getSimpleName());
                     throw new RuntimeException("Failed to register type: " + c, e);
@@ -220,8 +219,7 @@ public class OGNL {
                         false,
                         "Mapper",
                         e,
-                        "Mapper operation failed: component={}, provider={}, exception={}",
-                        "ognl",
+                        "Mapper operation failed: provider={}, exception={}",
                         "OGNL",
                         e.getClass().getSimpleName());
                 throw new MapperException("Failed to convert Fn to field name", e);
@@ -295,8 +293,7 @@ public class OGNL {
                                 false,
                                 "Mapper",
                                 e,
-                                "Mapper operation failed: component={}, provider={}, exception={}",
-                                "ognl",
+                                "Mapper operation failed: provider={}, exception={}",
                                 "OGNL",
                                 e.getClass().getSimpleName());
                         throw new RuntimeException("Class not found: " + className, e);
@@ -311,8 +308,7 @@ public class OGNL {
                     false,
                     "Mapper",
                     e,
-                    "Mapper operation failed: component={}, provider={}, exception={}",
-                    "ognl",
+                    "Mapper operation failed: provider={}, exception={}",
                     "OGNL",
                     e.getClass().getSimpleName());
             throw new RuntimeException("Failed to extract field info from Fn", e);
@@ -337,8 +333,7 @@ public class OGNL {
                         false,
                         "Mapper",
                         e,
-                        "Mapper operation failed: component={}, provider={}, exception={}",
-                        "ognl",
+                        "Mapper operation failed: provider={}, exception={}",
                         "OGNL",
                         e.getClass().getSimpleName());
                 throw new RuntimeException("writeReplace method not found in class: " + c.getName(), e);
@@ -747,7 +742,7 @@ public class OGNL {
      * <p>
      * Example:
      * </p>
-     * 
+     *
      * <pre>{@code
      * // Before formatting:
      * SELECT id, name

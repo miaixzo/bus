@@ -143,8 +143,7 @@ public class FieldMeta {
                     false,
                     "Mapper",
                     e,
-                    "Mapper operation failed: component={}, provider={}, exception={}",
-                    "metadata",
+                    "Mapper operation failed: provider={}, exception={}",
                     "FieldMeta",
                     e.getClass().getSimpleName());
             throw new RuntimeException("Error getting field value by reflection", e);
@@ -166,8 +165,7 @@ public class FieldMeta {
                     false,
                     "Mapper",
                     e,
-                    "Mapper operation failed: component={}, provider={}, exception={}",
-                    "metadata",
+                    "Mapper operation failed: provider={}, exception={}",
                     "FieldMeta",
                     e.getClass().getSimpleName());
             throw new RuntimeException("Error in reflection setting field value", e);

@@ -94,7 +94,7 @@ public class JmsConsumer implements Consumer {
     @Override
     public void subscribe(final MessageHandler messageHandler) {
         final long startedAt = System.nanoTime();
-        Logger.info(true, "Extra", "component=mq, JMS subscription started: group={}", consumerGroup);
+        Logger.info(true, "Extra", "JMS subscription started: group={}", consumerGroup);
         try {
             this.consumer.setMessageListener(message -> {
                 final long handleStartedAt = System.nanoTime();
@@ -103,7 +103,7 @@ public class JmsConsumer implements Consumer {
                     Logger.debug(
                             false,
                             "Extra",
-                            "component=mq, JMS message handled: group={}, batchSize={}, elapsedMs={}",
+                            "JMS message handled: group={}, batchSize={}, elapsedMs={}",
                             consumerGroup,
                             1,
                             (System.nanoTime() - handleStartedAt) / 1_000_000L);
@@ -112,7 +112,7 @@ public class JmsConsumer implements Consumer {
                             false,
                             "Extra",
                             e,
-                            "component=mq, JMS message handling failed: group={}, batchSize={}, exception={}, elapsedMs={}",
+                            "JMS message handling failed: group={}, batchSize={}, exception={}, elapsedMs={}",
                             consumerGroup,
                             1,
                             e.getClass().getSimpleName(),
@@ -123,7 +123,7 @@ public class JmsConsumer implements Consumer {
             Logger.info(
                     false,
                     "Extra",
-                    "component=mq, JMS subscription registered: group={}, elapsedMs={}",
+                    "JMS subscription registered: group={}, elapsedMs={}",
                     consumerGroup,
                     (System.nanoTime() - startedAt) / 1_000_000L);
         } catch (final JMSException e) {
@@ -131,7 +131,7 @@ public class JmsConsumer implements Consumer {
                     false,
                     "Extra",
                     e,
-                    "component=mq, JMS subscription failed: group={}, exception={}, elapsedMs={}",
+                    "JMS subscription failed: group={}, exception={}, elapsedMs={}",
                     consumerGroup,
                     e.getClass().getSimpleName(),
                     (System.nanoTime() - startedAt) / 1_000_000L);
@@ -147,12 +147,12 @@ public class JmsConsumer implements Consumer {
     @Override
     public void close() throws IOException {
         final long startedAt = System.nanoTime();
-        Logger.debug(true, "Extra", "component=mq, JMS consumer close requested: group={}", consumerGroup);
+        Logger.debug(true, "Extra", "JMS consumer close requested: group={}", consumerGroup);
         IoKit.closeQuietly(this.consumer);
         Logger.debug(
                 false,
                 "Extra",
-                "component=mq, JMS consumer closed: group={}, elapsedMs={}",
+                "JMS consumer closed: group={}, elapsedMs={}",
                 consumerGroup,
                 (System.nanoTime() - startedAt) / 1_000_000L);
     }
@@ -193,7 +193,7 @@ public class JmsConsumer implements Consumer {
                         false,
                         "Extra",
                         e,
-                        "component=mq, JMS message content read failed: topic={}, messageType={}, exception={}",
+                        "JMS message content read failed: topic={}, messageType={}, exception={}",
                         topic,
                         jmsMessage == null ? null : jmsMessage.getClass().getSimpleName(),
                         e.getClass().getSimpleName());

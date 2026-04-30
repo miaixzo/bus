@@ -85,7 +85,7 @@ public abstract class FileCallback implements Callback {
                     false,
                     "Http",
                     e,
-                    "protocol=http, File callback response read failed: callbackId={}, exception={}",
+                    "File callback response read failed: protocol=http, callbackId={}, exception={}",
                     id,
                     e.getClass().getSimpleName());
         }

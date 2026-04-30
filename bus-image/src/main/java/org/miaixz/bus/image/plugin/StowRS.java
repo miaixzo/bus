@@ -224,7 +224,7 @@ public class StowRS {
         Logger.info(
                 false,
                 "Image",
-                "component=tool, Sent {} files, total size {:.2f} MB in {:.2f}s ({:.2f} MB/s)",
+                "Sent {} files, total size {:.2f} MB in {:.2f}s ({:.2f} MB/s)",
                 stowChunk.sent,
                 mb,
                 s,
@@ -247,7 +247,7 @@ public class StowRS {
         Logger.info(
                 false,
                 "Image",
-                "component=tool, Sent {} files, total size {:.2f} MB in {:.2f}s ({:.2f} MB/s)",
+                "Sent {} files, total size {:.2f} MB in {:.2f}s ({:.2f} MB/s)",
                 stowRS.filesSent,
                 mb,
                 s,
@@ -512,7 +512,7 @@ public class StowRS {
         long t1 = System.currentTimeMillis();
         scanFiles(files);
         long t2 = System.currentTimeMillis();
-        Logger.info(true, "Image", "component=tool, Scanned {} files in {}s", filesScanned, (t2 - t1) / 1000f);
+        Logger.info(true, "Image", "Scanned {} files in {}s", filesScanned, (t2 - t1) / 1000f);
     }
 
     /**
@@ -593,7 +593,7 @@ public class StowRS {
                         false,
                         "Image",
                         e,
-                        "component=tool, Pixel metadata parse failed: fileName={}, exception={}",
+                        "Pixel metadata parse failed: fileName={}, exception={}",
                         bulkdataFile == null ? null : bulkdataFile.getName(),
                         e.getClass().getSimpleName());
             }
@@ -608,10 +608,7 @@ public class StowRS {
      * @throws Exception if an error occurs.
      */
     private Attributes createStaticMetadata() throws Exception {
-        Logger.info(
-                true,
-                "Image",
-                "component=tool, Creating static metadata. Set defaults, if essential attributes are not present.");
+        Logger.info(true, "Image", "Creating static metadata. Set defaults, if essential attributes are not present.");
         Attributes metadata;
         metadata = SAXReader.parse(IoKit.openFileOrURL(firstBulkdataFileContentType.getSampleMetadataResourceURL()));
         addAttributesFromFile(metadata);
@@ -650,7 +647,7 @@ public class StowRS {
                             false,
                             "Image",
                             e,
-                            "component=tool, Directory file list failed: pathPresent={}, exception={}",
+                            "Directory file list failed: pathPresent={}, exception={}",
                             f != null,
                             e.getClass().getSimpleName());
                 }
@@ -682,7 +679,7 @@ public class StowRS {
                     false,
                     "Image",
                     e,
-                    "component=tool, STOW scan failed: fileCount={}, requestContentType={}, exception={}",
+                    "STOW scan failed: fileCount={}, requestContentType={}, exception={}",
                     files == null ? 0 : files.size(),
                     requestContentType,
                     e.getClass().getSimpleName());
@@ -712,7 +709,7 @@ public class StowRS {
                                     false,
                                     "Image",
                                     e,
-                                    "component=tool, STOW file scan failed: filePresent={}, requestContentType={}, exception={}",
+                                    "STOW file scan failed: filePresent={}, requestContentType={}, exception={}",
                                     f != null,
                                     requestContentType,
                                     e.getClass().getSimpleName());
@@ -728,7 +725,7 @@ public class StowRS {
                     false,
                     "Image",
                     e,
-                    "component=tool, STOW chunk scan failed: fileCount={}, requestContentType={}, exception={}",
+                    "STOW chunk scan failed: fileCount={}, requestContentType={}, exception={}",
                     fPR == null ? 0 : fPR.size(),
                     requestContentType,
                     e.getClass().getSimpleName());
@@ -891,9 +888,8 @@ public class StowRS {
      * @param headerFields The map of request headers.
      */
     private void logOutgoing(URL url, Map<String, List<String>> headerFields) {
-        Logger.info(false, "Image", "component=tool, > POST " + url.toString());
-        headerFields.forEach(
-                (k, v) -> Logger.info(false, "Image", "component=tool, > " + k + " : " + String.join(Symbol.COMMA, v)));
+        Logger.info(false, "Image", "> POST " + url.toString());
+        headerFields.forEach((k, v) -> Logger.info(false, "Image", "> " + k + " : " + String.join(Symbol.COMMA, v)));
     }
 
     /**
@@ -905,23 +901,16 @@ public class StowRS {
      * @param is           The input stream of the response body.
      */
     private void logIncoming(int respCode, String respMsg, Map<String, List<String>> headerFields, InputStream is) {
-        Logger.info(false, "Image", "component=tool, < HTTP/1.1 Response: " + respCode + Symbol.SPACE + respMsg);
+        Logger.info(false, "Image", "< HTTP/1.1 Response: " + respCode + Symbol.SPACE + respMsg);
         for (Map.Entry<String, List<String>> header : headerFields.entrySet())
             if (header.getKey() != null)
-                Logger.info(
-                        false,
-                        "Image",
-                        "component=tool, < " + header.getKey() + " : " + String.join(";", header.getValue()));
-        Logger.info(false, "Image", "component=tool, < Response content captured");
+                Logger.info(false, "Image", "< " + header.getKey() + " : " + String.join(";", header.getValue()));
+        Logger.info(false, "Image", "< Response content captured");
         try {
-            Logger.debug(
-                    false,
-                    "Image",
-                    "component=tool, Response content captured: chars={}",
-                    readFullyAsString(is).length());
+            Logger.debug(false, "Image", "Response content captured: chars={}", readFullyAsString(is).length());
             is.close();
         } catch (Exception e) {
-            Logger.info(false, "Image", "component=tool, Exception caught on reading response content \n", e);
+            Logger.info(false, "Image", "Exception caught on reading response content \n", e);
         }
     }
 
@@ -967,7 +956,7 @@ public class StowRS {
             }
             return tmpFile.toPath();
         } catch (Exception e) {
-            Logger.info(false, "Image", "component=tool, Failed to update attributes for file {}\n", path, e);
+            Logger.info(false, "Image", "Failed to update attributes for file {}\n", path, e);
         }
         return path;
     }
@@ -1082,11 +1071,7 @@ public class StowRS {
                 bulkdataFileContentType = FileContentType.valueOf(Files.probeContentType(path), path);
                 return !firstBulkdataFileContentType.equals(bulkdataFileContentType);
             } else
-                Logger.info(
-                        false,
-                        "Image",
-                        "component=tool, Ignoring checking of content type of subsequent file {}",
-                        path);
+                Logger.info(false, "Image", "Ignoring checking of content type of subsequent file {}", path);
         }
         return false;
     }
@@ -1118,14 +1103,14 @@ public class StowRS {
         Logger.info(
                 true,
                 "Image",
-                "component=tool, Metadata part write started: contentType={}, bytes={}",
+                "Metadata part write started: contentType={}, bytes={}",
                 requestContentType,
                 bOut.size());
         writePartHeaders(out, requestContentType, null);
         Logger.debug(
                 false,
                 "Image",
-                "component=tool, Metadata part prepared: contentType={}, bytes={}",
+                "Metadata part prepared: contentType={}, bytes={}",
                 requestContentType,
                 bOut.size());
         out.write(bOut.toByteArray());
@@ -1145,7 +1130,7 @@ public class StowRS {
         XPEGParser parser = stowRSBulkdata.getParser();
         if (bulkdataFileContentType.getBulkdataTypeTag() == Tag.PixelData && tsuid)
             bulkdataContentType1 = bulkdataContentType1 + "; transfer-syntax=" + parser.getTransferSyntaxUID(false);
-        Logger.info(false, "Image", "component=tool, > Bulkdata Content Type: " + bulkdataContentType1);
+        Logger.info(false, "Image", "> Bulkdata Content Type: " + bulkdataContentType1);
         writePartHeaders(out, bulkdataContentType1, contentLocation);
 
         int offset = 0;

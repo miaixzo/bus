@@ -131,13 +131,19 @@ public class PDUDecoder extends PDVInputStream {
 
     public void nextPDU() throws IOException {
         checkThread();
-        Logger.trace(false, "Image", "protocol=pdu, {}: waiting for PDU", as);
+        Logger.trace(false, "Image", "PDU wait started: protocol=pdu, association={}", as);
         readFully(0, 10);
         pos = 0;
         pdutype = get();
         get();
         pdulen = getInt();
-        Logger.trace(false, "Image", "protocol=pdu, {} >> PDU: type={}, len={}", as, pdutype, pdulen & 0xFFFFFFFFL);
+        Logger.trace(
+                false,
+                "Image",
+                "PDU received: protocol=pdu, association={}, type={}, length={}",
+                as,
+                pdutype,
+                pdulen & 0xFFFFFFFFL);
         switch (pdutype) {
             case PDUType.A_ASSOCIATE_RQ:
                 readPDU();
@@ -225,7 +231,7 @@ public class PDUDecoder extends PDVInputStream {
         Logger.warn(
                 false,
                 "Image",
-                "protocol=pdu, PDU validation failed: association={}, pduType={}, pduLength={}, reasonCode={}, rule={}",
+                "PDU validation failed: protocol=pdu, association={}, pduType={}, pduLength={}, reasonCode={}, rule={}",
                 as,
                 pdutype,
                 pdulen & 0xFFFFFFFFL,
@@ -431,7 +437,12 @@ public class PDUDecoder extends PDVInputStream {
 
         PresentationContext pc = as.getPresentationContext(pcid);
         if (pc == null) {
-            Logger.warn(false, "Image", "protocol=pdu, {}: No Presentation Context with given ID - {}", as, pcid);
+            Logger.warn(
+                    false,
+                    "Image",
+                    "Presentation context missing: protocol=pdu, association={}, pcid={}",
+                    as,
+                    pcid);
             throw new AAbort();
         }
 
@@ -439,7 +450,7 @@ public class PDUDecoder extends PDVInputStream {
             Logger.warn(
                     false,
                     "Image",
-                    "protocol=pdu, {}: No accepted Presentation Context with given ID - {}",
+                    "Accepted presentation context missing: protocol=pdu, association={}, pcid={}",
                     as,
                     pcid);
             throw new AAbort();
@@ -449,12 +460,17 @@ public class PDUDecoder extends PDVInputStream {
         Dimse dimse = dimseOf(cmd);
         String tsuid = pc.getTransferSyntax();
         if (Logger.isInfoEnabled()) {
-            Logger.info(false, "Image", "protocol=pdu, {} >> {}", as, dimse.toString(cmd, pcid, tsuid));
+            Logger.info(
+                    false,
+                    "Image",
+                    "DIMSE message received: protocol=pdu, association={}, dimse={}",
+                    as,
+                    dimse.toString(cmd, pcid, tsuid));
             if (Logger.isDebugEnabled()) {
                 Logger.debug(
                         false,
                         "Image",
-                        "protocol=pdu, {} >> {} command received: commandAttributes={}, pcid={}, transferSyntax={}",
+                        "DIMSE command received: protocol=pdu, association={}, dimse={}, commandAttributes={}, pcid={}, transferSyntax={}",
                         as,
                         dimse.toString(cmd),
                         cmd == null ? 0 : cmd.size(),
@@ -472,7 +488,7 @@ public class PDUDecoder extends PDVInputStream {
                     Logger.debug(
                             false,
                             "Image",
-                            "protocol=pdu, {} >> {} dataset received: datasetAttributes={}, transferSyntax={}",
+                            "DIMSE dataset received: protocol=pdu, association={}, dimse={}, datasetAttributes={}, transferSyntax={}",
                             as,
                             dimse.toString(cmd),
                             data == null ? 0 : data.size(),
@@ -484,7 +500,7 @@ public class PDUDecoder extends PDVInputStream {
                     Logger.debug(
                             false,
                             "Image",
-                            "protocol=pdu, {} >> {} Dataset receiving...",
+                            "DIMSE dataset receiving: protocol=pdu, association={}, dimse={}",
                             as,
                             dimse.toString(cmd));
                 }
@@ -494,7 +510,7 @@ public class PDUDecoder extends PDVInputStream {
                     Logger.debug(
                             false,
                             "Image",
-                            "protocol=pdu, {}: Service User did not consume {} bytes of DIMSE data.",
+                            "DIMSE data left unread: protocol=pdu, association={}, bytes={}",
                             as,
                             skipped);
             }
@@ -515,7 +531,7 @@ public class PDUDecoder extends PDVInputStream {
             Logger.info(
                     false,
                     "Image",
-                    "protocol=pdu, Illegal DIMSE received: association={}, commandAttributes={}",
+                    "Illegal DIMSE received: protocol=pdu, association={}, commandAttributes={}",
                     as,
                     cmd == null ? 0 : cmd.size());
             throw new AAbort();
@@ -548,7 +564,7 @@ public class PDUDecoder extends PDVInputStream {
                 Logger.info(
                         false,
                         "Image",
-                        "protocol=pdu, {}: Expected P-DATA-TF PDU but received PDU: type={}",
+                        "Unexpected PDU type received: protocol=pdu, association={}, pduType={}",
                         as,
                         pdutype);
                 throw new EOFException();
@@ -562,7 +578,14 @@ public class PDUDecoder extends PDVInputStream {
             abort(AAbort.INVALID_PDU_PARAMETER_VALUE, INVALID_PDV);
         this.pcid = get();
         this.pdvmch = get();
-        Logger.trace(false, "Image", "protocol=pdu, {} >> PDV: len={}, pcid={}, mch={}", as, pdvlen, pcid, pdvmch);
+        Logger.trace(
+                false,
+                "Image",
+                "PDV received: protocol=pdu, association={}, length={}, pcid={}, messageControlHeader={}",
+                as,
+                pdvlen,
+                pcid,
+                pdvmch);
         if ((pdvmch & PDVType.COMMAND) != expectedPDVType)
             abort(AAbort.UNEXPECTED_PDU_PARAMETER, UNEXPECTED_PDV_TYPE);
         if (expectedPCID != -1 && pcid != expectedPCID)

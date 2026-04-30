@@ -125,7 +125,7 @@ public class MapperPluginBuilder {
         MapperProperties.OperationProperties operationProps = properties != null ? properties.getOperation() : null;
 
         if (operationProps != null && !operationProps.isEnabled()) {
-            Logger.info(false, "Starter", "component=mapper, Operation handler is disabled by configuration");
+            Logger.info(false, "Starter", "Operation handler is disabled by configuration");
             return;
         }
 
@@ -134,7 +134,7 @@ public class MapperPluginBuilder {
             handler.setStrictMode(operationProps.isStrictMode());
         }
         handlers.add(handler);
-        Logger.info(false, "Starter", "component=mapper, Operation handler configured successfully");
+        Logger.info(false, "Starter", "Operation handler configured successfully");
     }
 
     /**
@@ -174,7 +174,7 @@ public class MapperPluginBuilder {
         PageHandler pageHandler = new PageHandler();
         pageHandler.setProperties(props);
         handlers.add(pageHandler);
-        Logger.info(false, "Starter", "component=mapper, Pagination handler configured");
+        Logger.info(false, "Starter", "Pagination handler configured");
     }
 
     /**
@@ -203,7 +203,7 @@ public class MapperPluginBuilder {
 
         // Check if explicitly disabled
         if (tenantProps != null && !tenantProps.isEnabled()) {
-            Logger.info(false, "Starter", "component=mapper, Tenant handler is disabled by configuration");
+            Logger.info(false, "Starter", "Tenant handler is disabled by configuration");
             return;
         }
 
@@ -219,7 +219,7 @@ public class MapperPluginBuilder {
         // If simplified config is enabled, convert to Properties format
         Properties props = new Properties();
         if (hasSimplifiedConfig) {
-            Logger.info(false, "Starter", "component=mapper, Loading tenant config from simplified YAML configuration");
+            Logger.info(false, "Starter", "Loading tenant config from simplified YAML configuration");
             String defaultKey = "default";
             props.setProperty(
                     defaultKey + Symbol.DOT + Args.TENANT_KEY + Symbol.DOT + Args.TENANT_COLUMN,
@@ -230,7 +230,7 @@ public class MapperPluginBuilder {
                         tenantProps.getIgnore());
             }
         } else if (hasConfigFile) {
-            Logger.info(false, "Starter", "component=mapper, Loading tenant config from configuration file");
+            Logger.info(false, "Starter", "Loading tenant config from configuration file");
             props.putAll(properties.resolveConfigurationProperties());
         }
 
@@ -244,10 +244,10 @@ public class MapperPluginBuilder {
 
         // Step 2: Use Provider.getConfig() if available
         if (provider != null) {
-            Logger.info(false, "Starter", "component=mapper, TenantProvider bean found");
+            Logger.info(false, "Starter", "TenantProvider bean found");
             TenantConfig providerConfig = provider.getConfig();
             if (providerConfig != null) {
-                Logger.info(false, "Starter", "component=mapper, Using tenant config from Provider.getConfig()");
+                Logger.info(false, "Starter", "Using tenant config from Provider.getConfig()");
                 handlers.add(new TenantHandler(providerConfig));
                 return;
             }
@@ -261,7 +261,7 @@ public class MapperPluginBuilder {
         TenantHandler<?> handler = new TenantHandler<>();
         if (handler.setProperties(props)) {
             handlers.add(handler);
-            Logger.info(false, "Starter", "component=mapper, Tenant handler configured successfully");
+            Logger.info(false, "Starter", "Tenant handler configured successfully");
         }
     }
 
@@ -291,7 +291,7 @@ public class MapperPluginBuilder {
 
         // Check if explicitly disabled
         if (populateProps != null && !populateProps.isEnabled()) {
-            Logger.info(false, "Starter", "component=mapper, Populate handler is disabled by configuration");
+            Logger.info(false, "Starter", "Populate handler is disabled by configuration");
             return;
         }
 
@@ -307,10 +307,7 @@ public class MapperPluginBuilder {
         // If simplified config is enabled, convert to Properties format
         Properties props = new Properties();
         if (hasSimplifiedConfig) {
-            Logger.info(
-                    false,
-                    "Starter",
-                    "component=mapper, Loading populate config from simplified YAML configuration");
+            Logger.info(false, "Starter", "Loading populate config from simplified YAML configuration");
             String defaultKey = "default";
             props.setProperty(
                     defaultKey + Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT + Args.POPULATE_CREATED,
@@ -325,7 +322,7 @@ public class MapperPluginBuilder {
                     defaultKey + Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT + Args.POPULATE_MODIFIER,
                     String.valueOf(populateProps.isModifier()));
         } else if (hasConfigFile) {
-            Logger.info(false, "Starter", "component=mapper, Loading populate config from configuration file");
+            Logger.info(false, "Starter", "Loading populate config from configuration file");
             props.putAll(properties.resolveConfigurationProperties());
         }
 
@@ -339,10 +336,10 @@ public class MapperPluginBuilder {
 
         // Step 2: Use Provider.getConfig() if available
         if (provider != null) {
-            Logger.info(false, "Starter", "component=mapper, PopulateProvider bean found");
+            Logger.info(false, "Starter", "PopulateProvider bean found");
             PopulateConfig providerConfig = provider.getConfig();
             if (providerConfig != null) {
-                Logger.info(false, "Starter", "component=mapper, Using populate config from Provider.getConfig()");
+                Logger.info(false, "Starter", "Using populate config from Provider.getConfig()");
                 handlers.add(new PopulateHandler(providerConfig));
                 return;
             }
@@ -356,7 +353,7 @@ public class MapperPluginBuilder {
         PopulateHandler<?> handler = new PopulateHandler<>();
         if (handler.setProperties(props)) {
             handlers.add(handler);
-            Logger.info(false, "Starter", "component=mapper, Populate handler configured successfully");
+            Logger.info(false, "Starter", "Populate handler configured successfully");
         }
     }
 
@@ -386,7 +383,7 @@ public class MapperPluginBuilder {
 
         // Check if explicitly disabled
         if (visibleProps != null && !visibleProps.isEnabled()) {
-            Logger.info(false, "Starter", "component=mapper, Visible handler is disabled by configuration");
+            Logger.info(false, "Starter", "Visible handler is disabled by configuration");
             return;
         }
 
@@ -402,10 +399,7 @@ public class MapperPluginBuilder {
         // If simplified config is enabled, convert to Properties format
         Properties props = new Properties();
         if (hasSimplifiedConfig) {
-            Logger.info(
-                    false,
-                    "Starter",
-                    "component=mapper, Loading visible config from simplified YAML configuration");
+            Logger.info(false, "Starter", "Loading visible config from simplified YAML configuration");
             String defaultKey = "default";
             if (StringKit.isNotEmpty(visibleProps.getIgnore())) {
                 props.setProperty(
@@ -413,7 +407,7 @@ public class MapperPluginBuilder {
                         visibleProps.getIgnore());
             }
         } else if (hasConfigFile) {
-            Logger.info(false, "Starter", "component=mapper, Loading visible config from configuration file");
+            Logger.info(false, "Starter", "Loading visible config from configuration file");
             props.putAll(properties.resolveConfigurationProperties());
         }
 
@@ -427,10 +421,10 @@ public class MapperPluginBuilder {
 
         // Step 2: Use Provider.getConfig() if available
         if (provider != null) {
-            Logger.info(false, "Starter", "component=mapper, VisibleProvider bean found");
+            Logger.info(false, "Starter", "VisibleProvider bean found");
             VisibleConfig providerConfig = provider.getConfig();
             if (providerConfig != null) {
-                Logger.info(false, "Starter", "component=mapper, Using visible config from Provider.getConfig()");
+                Logger.info(false, "Starter", "Using visible config from Provider.getConfig()");
                 handlers.add(new VisibleHandler(providerConfig));
                 return;
             }
@@ -444,7 +438,7 @@ public class MapperPluginBuilder {
         VisibleHandler<?> handler = new VisibleHandler<>();
         if (handler.setProperties(props)) {
             handlers.add(handler);
-            Logger.info(false, "Starter", "component=mapper, Visible handler configured successfully");
+            Logger.info(false, "Starter", "Visible handler configured successfully");
         }
     }
 
@@ -474,7 +468,7 @@ public class MapperPluginBuilder {
 
         // Check if explicitly disabled
         if (prefixProps != null && !prefixProps.isEnabled()) {
-            Logger.info(false, "Starter", "component=mapper, Prefix handler is disabled by configuration");
+            Logger.info(false, "Starter", "Prefix handler is disabled by configuration");
             return;
         }
 
@@ -490,7 +484,7 @@ public class MapperPluginBuilder {
         // If simplified config is enabled, convert to Properties format
         Properties props = new Properties();
         if (hasSimplifiedConfig) {
-            Logger.info(false, "Starter", "component=mapper, Loading prefix config from simplified YAML configuration");
+            Logger.info(false, "Starter", "Loading prefix config from simplified YAML configuration");
             String defaultKey = "default";
             if (StringKit.isNotEmpty(prefixProps.getPrefix())) {
                 props.setProperty(
@@ -503,7 +497,7 @@ public class MapperPluginBuilder {
                         prefixProps.getIgnore());
             }
         } else if (hasConfigFile) {
-            Logger.info(false, "Starter", "component=mapper, Loading prefix config from configuration file");
+            Logger.info(false, "Starter", "Loading prefix config from configuration file");
             props.putAll(properties.resolveConfigurationProperties());
         }
 
@@ -517,10 +511,10 @@ public class MapperPluginBuilder {
 
         // Step 2: Use Provider.getConfig() if available
         if (provider != null) {
-            Logger.info(false, "Starter", "component=mapper, TablePrefixProvider bean found");
+            Logger.info(false, "Starter", "TablePrefixProvider bean found");
             TablePrefixConfig providerConfig = provider.getConfig();
             if (providerConfig != null) {
-                Logger.info(false, "Starter", "component=mapper, Using prefix config from Provider.getConfig()");
+                Logger.info(false, "Starter", "Using prefix config from Provider.getConfig()");
                 handlers.add(new TablePrefixHandler(providerConfig));
                 return;
             }
@@ -535,7 +529,7 @@ public class MapperPluginBuilder {
         boolean configured = handler.setProperties(props);
         if (configured) {
             handlers.add(handler);
-            Logger.info(false, "Starter", "component=mapper, Prefix handler configured successfully");
+            Logger.info(false, "Starter", "Prefix handler configured successfully");
         }
     }
 
@@ -565,7 +559,7 @@ public class MapperPluginBuilder {
 
         // Check if explicitly disabled
         if (auditProps != null && !auditProps.isEnabled()) {
-            Logger.info(false, "Starter", "component=mapper, Audit handler is disabled by configuration");
+            Logger.info(false, "Starter", "Audit handler is disabled by configuration");
             return;
         }
 
@@ -581,7 +575,7 @@ public class MapperPluginBuilder {
         // If simplified config is enabled, convert to Properties format
         Properties props = new Properties();
         if (hasSimplifiedConfig) {
-            Logger.info(false, "Starter", "component=mapper, Loading audit config from simplified YAML configuration");
+            Logger.info(false, "Starter", "Loading audit config from simplified YAML configuration");
             String defaultKey = "default";
             props.setProperty(
                     defaultKey + Symbol.DOT + Args.AUDIT_KEY + Symbol.DOT + Args.AUDIT_SLOW_SQL_THRESHOLD,
@@ -599,7 +593,7 @@ public class MapperPluginBuilder {
                     defaultKey + Symbol.DOT + Args.AUDIT_KEY + Symbol.DOT + Args.AUDIT_PRINT_CONSOLE,
                     String.valueOf(auditProps.isPrintConsole()));
         } else if (hasConfigFile) {
-            Logger.info(false, "Starter", "component=mapper, Loading audit config from configuration file");
+            Logger.info(false, "Starter", "Loading audit config from configuration file");
             props.putAll(properties.resolveConfigurationProperties());
         }
 
@@ -613,10 +607,10 @@ public class MapperPluginBuilder {
 
         // Step 2: Use Provider.getConfig() if available
         if (provider != null) {
-            Logger.info(false, "Starter", "component=mapper, AuditProvider bean found");
+            Logger.info(false, "Starter", "AuditProvider bean found");
             AuditConfig providerConfig = provider.getConfig();
             if (providerConfig != null) {
-                Logger.info(false, "Starter", "component=mapper, Using audit config from Provider.getConfig()");
+                Logger.info(false, "Starter", "Using audit config from Provider.getConfig()");
                 handlers.add(new AuditHandler(providerConfig));
                 return;
             }
@@ -630,7 +624,7 @@ public class MapperPluginBuilder {
         AuditHandler<?> handler = new AuditHandler<>();
         if (handler.setProperties(props)) {
             handlers.add(handler);
-            Logger.info(false, "Starter", "component=mapper, Audit handler configured successfully");
+            Logger.info(false, "Starter", "Audit handler configured successfully");
         }
     }
 

@@ -25,6 +25,9 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.accord.ConnectInterceptor;
 import org.miaixz.bus.http.accord.Transmitter;
 import org.miaixz.bus.http.cache.CacheInterceptor;
+import org.miaixz.bus.http.bodys.FormBody;
+import org.miaixz.bus.http.bodys.MultipartBody;
+import org.miaixz.bus.http.bodys.RequestBody;
 import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.NamedRunnable;
 import org.miaixz.bus.http.metric.NewChain;
@@ -37,7 +40,9 @@ import org.miaixz.bus.logger.Logger;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -131,7 +136,7 @@ public final class RealCall implements NewCall {
         Logger.debug(
                 true,
                 "Http",
-                "protocol=http, Synchronous call starting: method={}, url={}, webSocket={}",
+                "Synchronous call starting: protocol=http, method={}, url={}, webSocket={}",
                 originalRequest.method(),
                 redactedUrl(),
                 forWebSocket);
@@ -143,7 +148,7 @@ public final class RealCall implements NewCall {
             Logger.debug(
                     false,
                     "Http",
-                    "protocol=http, Synchronous call completed: method={}, url={}, status={}",
+                    "Synchronous call completed: protocol=http, method={}, url={}, status={}",
                     originalRequest.method(),
                     redactedUrl(),
                     response.code());
@@ -153,7 +158,7 @@ public final class RealCall implements NewCall {
                     false,
                     "Http",
                     e,
-                    "protocol=http, Synchronous call failed: method={}, url={}, exception={}",
+                    "Synchronous call failed: protocol=http, method={}, url={}, exception={}",
                     originalRequest.method(),
                     redactedUrl(),
                     e.getClass().getSimpleName());
@@ -179,7 +184,7 @@ public final class RealCall implements NewCall {
         Logger.debug(
                 true,
                 "Http",
-                "protocol=http, Async call enqueued: method={}, url={}, webSocket={}",
+                "Async call enqueued: protocol=http, method={}, url={}, webSocket={}",
                 originalRequest.method(),
                 redactedUrl(),
                 forWebSocket);
@@ -195,7 +200,7 @@ public final class RealCall implements NewCall {
         Logger.debug(
                 false,
                 "Http",
-                "protocol=http, Call cancellation requested: method={}, url={}",
+                "Call cancellation requested: protocol=http, method={}, url={}",
                 originalRequest.method(),
                 redactedUrl());
         transmitter.cancel();
@@ -289,10 +294,69 @@ public final class RealCall implements NewCall {
                 client.connectTimeoutMillis(), client.readTimeoutMillis(), client.writeTimeoutMillis());
 
         boolean calledNoMoreExchanges = false;
+        RequestBody body = originalRequest.body();
+        long bodyLength = -1L;
+        if (body != null) {
+            try {
+                bodyLength = body.contentLength();
+            } catch (IOException ignored) {
+                bodyLength = -1L;
+            }
+        }
+        Map<String, Object> parameters = new LinkedHashMap<>();
+        Map<String, Object> query = new LinkedHashMap<>();
+        for (String name : originalRequest.url().queryParameterNames()) {
+            query.put(name, originalRequest.url().queryParameterValues(name));
+        }
+        parameters.put("query", query);
+        if (body instanceof FormBody formBody) {
+            Map<String, Object> form = new LinkedHashMap<>();
+            for (int i = 0; i < formBody.size(); i++) {
+                form.put(formBody.name(i), formBody.value(i));
+            }
+            parameters.put("form", form);
+        } else if (body instanceof MultipartBody multipartBody) {
+            parameters.put("multipartPartCount", multipartBody.size());
+            parameters.put("multipartType", multipartBody.type());
+        } else if (body != null) {
+            parameters.put("bodyType", body.getClass().getName());
+            parameters.put("bodyLength", bodyLength);
+            parameters.put("contentType", body.contentType());
+        }
         Logger.debug(
                 true,
                 "Http",
-                "protocol=http, Interceptor chain starting: method={}, url={}, interceptorCount={}",
+                "Request header snapshot: protocol=http, method={}, url={}, headerCount={}",
+                originalRequest.method(),
+                redactedUrl(),
+                originalRequest.headers().size());
+        Logger.debug(
+                true,
+                "Http",
+                "Request headers: protocol=http, method={}, url={}, headers={}",
+                originalRequest.method(),
+                redactedUrl(),
+                originalRequest.headers().toMultimap());
+        Logger.debug(
+                true,
+                "Http",
+                "Request parameter snapshot: protocol=http, method={}, url={}, queryCount={}, bodyType={}, bodyLength={}",
+                originalRequest.method(),
+                redactedUrl(),
+                originalRequest.url().querySize(),
+                body == null ? null : body.getClass().getName(),
+                bodyLength);
+        Logger.debug(
+                true,
+                "Http",
+                "Request parameters: protocol=http, method={}, url={}, parameters={}",
+                originalRequest.method(),
+                redactedUrl(),
+                parameters);
+        Logger.debug(
+                true,
+                "Http",
+                "Interceptor chain starting: protocol=http, method={}, url={}, interceptorCount={}",
                 originalRequest.method(),
                 redactedUrl(),
                 interceptors.size());
@@ -305,7 +369,7 @@ public final class RealCall implements NewCall {
             Logger.debug(
                     false,
                     "Http",
-                    "protocol=http, Interceptor chain completed: method={}, url={}, status={}",
+                    "Interceptor chain completed: protocol=http, method={}, url={}, status={}",
                     originalRequest.method(),
                     redactedUrl(),
                     response.code());
@@ -316,7 +380,7 @@ public final class RealCall implements NewCall {
                     false,
                     "Http",
                     e,
-                    "protocol=http, Interceptor chain failed: method={}, url={}, exception={}",
+                    "Interceptor chain failed: protocol=http, method={}, url={}, exception={}",
                     originalRequest.method(),
                     redactedUrl(),
                     e.getClass().getSimpleName());
@@ -409,7 +473,7 @@ public final class RealCall implements NewCall {
                 Logger.debug(
                         true,
                         "Http",
-                        "protocol=http, Async call dispatching to executor: method={}, url={}",
+                        "Async call dispatching to executor: protocol=http, method={}, url={}",
                         originalRequest.method(),
                         redactedUrl());
                 executorService.execute(this);
@@ -422,7 +486,7 @@ public final class RealCall implements NewCall {
                         false,
                         "Http",
                         ioException,
-                        "protocol=http, Async call rejected by executor: method={}, url={}",
+                        "Async call rejected by executor: protocol=http, method={}, url={}",
                         originalRequest.method(),
                         redactedUrl());
                 responseCallback.onFailure(RealCall.this, ioException);
@@ -444,7 +508,7 @@ public final class RealCall implements NewCall {
                 Logger.debug(
                         true,
                         "Http",
-                        "protocol=http, Async call execution started: method={}, url={}",
+                        "Async call execution started: protocol=http, method={}, url={}",
                         originalRequest.method(),
                         redactedUrl());
                 Response response = getResponseWithInterceptorChain();
@@ -452,7 +516,7 @@ public final class RealCall implements NewCall {
                 Logger.debug(
                         false,
                         "Http",
-                        "protocol=http, Async call response ready: method={}, url={}, status={}",
+                        "Async call response ready: protocol=http, method={}, url={}, status={}",
                         originalRequest.method(),
                         redactedUrl(),
                         response.code());
@@ -460,13 +524,13 @@ public final class RealCall implements NewCall {
             } catch (IOException e) {
                 if (signalledCallback) {
                     // Do not signal the callback twice.
-                    Logger.error(false, "Http", e, "protocol=http, Callback failure: call={}", toLoggableString());
+                    Logger.error(false, "Http", e, "Callback failure: protocol=http, call={}", toLoggableString());
                 } else {
                     Logger.error(
                             false,
                             "Http",
                             e,
-                            "protocol=http, Async call failed before callback: method={}, url={}, exception={}",
+                            "Async call failed before callback: protocol=http, method={}, url={}, exception={}",
                             originalRequest.method(),
                             redactedUrl(),
                             e.getClass().getSimpleName());

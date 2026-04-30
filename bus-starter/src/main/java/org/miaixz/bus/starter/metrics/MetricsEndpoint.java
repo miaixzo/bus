@@ -19,8 +19,10 @@
 */
 package org.miaixz.bus.starter.metrics;
 
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Metrics;
 import org.miaixz.bus.metrics.metric.prometheus.PrometheusExporter;
+import org.miaixz.bus.spring.ContextBuilder;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,6 +53,9 @@ public class MetricsEndpoint {
     @ResponseBody
     @GetMapping(path = "${bus.metrics.path:/metricz}", produces = MediaType.TEXT_PLAIN_VALUE)
     public String scrape() {
+        Logger.debug(true, "Starter", "request header snapshot: endpoint={}", this.properties.getPath());
+        Logger.debug(true, "Starter", "Request headers: headers={}", ContextBuilder.getHeaders());
+        Logger.debug(true, "Starter", "Request parameters: parameters={}", ContextBuilder.getParameters());
         PrometheusExporter exporter = new PrometheusExporter(Metrics.getProvider());
         return exporter.scrape();
     }

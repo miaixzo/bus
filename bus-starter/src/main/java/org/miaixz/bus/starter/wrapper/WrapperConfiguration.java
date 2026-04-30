@@ -121,7 +121,7 @@ public class WrapperConfiguration implements WebMvcRegistrations {
         Logger.debug(
                 true,
                 "Starter",
-                "component=http, Runtime context filter registration started: enabled={}, order={}, name={}",
+                "Runtime context filter registration started: enabled={}, order={}, name={}",
                 this.properties.isEnabled(),
                 this.properties.getOrder(),
                 this.properties.getName());
@@ -144,7 +144,7 @@ public class WrapperConfiguration implements WebMvcRegistrations {
         Logger.info(
                 false,
                 "Starter",
-                "component=http, Runtime context filter registration finished: enabled={}, order={}, initParameterCount={}, servletNameCount={}",
+                "Runtime context filter registration finished: enabled={}, order={}, initParameterCount={}, servletNameCount={}",
                 registrationBean.isEnabled(),
                 registrationBean.getOrder(),
                 this.properties.getInitParameters() == null ? 0 : this.properties.getInitParameters().size(),
@@ -185,13 +185,13 @@ public class WrapperConfiguration implements WebMvcRegistrations {
      */
     @Bean("wrapperRuntimeOptions")
     public WrapperRuntimeOptions wrapperRuntimeOptions() {
-        Logger.debug(true, "Starter", "component=http, Wrapper runtime options publishing started");
+        Logger.debug(true, "Starter", "Wrapper runtime options publishing started");
         WrapperRuntimeOptions options = this.properties.runtimeOptions();
         WrapperRuntimeOptions.update(options);
         Logger.info(
                 false,
                 "Starter",
-                "component=http, Wrapper runtime options published: sanitizeInputValues={}, synthesizeFormBody={}, wrapMode={}",
+                "Wrapper runtime options published: sanitizeInputValues={}, synthesizeFormBody={}, wrapMode={}",
                 options.isSanitizeInputValues(),
                 options.isSynthesizeFormBody(),
                 options.getWrapContentTypes());
@@ -231,7 +231,7 @@ public class WrapperConfiguration implements WebMvcRegistrations {
             Logger.debug(
                     false,
                     "Starter",
-                    "component=spring, Request mappings initialized: count={}, mappingName={}",
+                    "Request mappings initialized: count={}, mappingName={}",
                     handlerMethods.size(),
                     formatMappingName());
         }
@@ -265,7 +265,7 @@ public class WrapperConfiguration implements WebMvcRegistrations {
                         Logger.debug(
                                 true,
                                 "Starter",
-                                "component=spring, Create a URL request mapping '{}{}' for {}.{}",
+                                "Create a URL request mapping '{}{}' for {}.{}",
                                 prefix,
                                 requestMappingInfo.getPathPatternsCondition().getPatterns(),
                                 packName,

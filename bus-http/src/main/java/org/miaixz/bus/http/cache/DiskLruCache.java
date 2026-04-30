@@ -112,7 +112,7 @@ public class DiskLruCache implements Closeable, Flushable {
                             false,
                             "Http",
                             ignored,
-                            "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
                             "DiskLruCache",
                             true,
                             ignored.getClass().getSimpleName());
@@ -129,7 +129,7 @@ public class DiskLruCache implements Closeable, Flushable {
                             false,
                             "Http",
                             e,
-                            "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
                             "DiskLruCache",
                             true,
                             e.getClass().getSimpleName());
@@ -213,8 +213,8 @@ public class DiskLruCache implements Closeable, Flushable {
                 Logger.warn(
                         false,
                         "Http",
-                        "protocol=http, DiskLruCache " + directory + " is corrupt: " + journalIsCorrupt.getMessage()
-                                + ", removing",
+                        "DiskLruCache journal corrupt: protocol=http, directory=" + directory + ", message="
+                                + journalIsCorrupt.getMessage() + ", removing",
                         journalIsCorrupt);
             }
 
@@ -256,7 +256,7 @@ public class DiskLruCache implements Closeable, Flushable {
                             false,
                             "Http",
                             endOfJournal,
-                            "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
                             "DiskLruCache",
                             true,
                             endOfJournal.getClass().getSimpleName());
@@ -821,7 +821,7 @@ public class DiskLruCache implements Closeable, Flushable {
                             false,
                             "Http",
                             ignored,
-                            "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
                             "DiskLruCache",
                             true,
                             ignored.getClass().getSimpleName());
@@ -867,7 +867,7 @@ public class DiskLruCache implements Closeable, Flushable {
                             false,
                             "Http",
                             e,
-                            "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
                             "DiskLruCache",
                             true,
                             e.getClass().getSimpleName());
@@ -886,7 +886,7 @@ public class DiskLruCache implements Closeable, Flushable {
                             false,
                             "Http",
                             e,
-                            "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
                             "DiskLruCache",
                             true,
                             e.getClass().getSimpleName());
@@ -1107,7 +1107,7 @@ public class DiskLruCache implements Closeable, Flushable {
                                 false,
                                 "Http",
                                 e,
-                                "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                                "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
                                 "DiskLruCache",
                                 true,
                                 e.getClass().getSimpleName());
@@ -1139,7 +1139,7 @@ public class DiskLruCache implements Closeable, Flushable {
                             false,
                             "Http",
                             e,
-                            "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
                             "DiskLruCache",
                             true,
                             e.getClass().getSimpleName());
@@ -1176,7 +1176,7 @@ public class DiskLruCache implements Closeable, Flushable {
                             false,
                             "Http",
                             e,
-                            "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
                             "DiskLruCache",
                             true,
                             e.getClass().getSimpleName());
@@ -1251,7 +1251,7 @@ public class DiskLruCache implements Closeable, Flushable {
                                 false,
                                 "Http",
                                 ignored,
-                                "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                                "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
                                 "DiskLruCache",
                                 true,
                                 ignored.getClass().getSimpleName());
@@ -1322,7 +1322,7 @@ public class DiskLruCache implements Closeable, Flushable {
                         false,
                         "Http",
                         e,
-                        "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                        "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
                         "DiskLruCache",
                         true,
                         e.getClass().getSimpleName());
@@ -1368,7 +1368,7 @@ public class DiskLruCache implements Closeable, Flushable {
                         false,
                         "Http",
                         e,
-                        "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                        "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
                         "DiskLruCache",
                         true,
                         e.getClass().getSimpleName());
@@ -1388,7 +1388,7 @@ public class DiskLruCache implements Closeable, Flushable {
                             false,
                             "Http",
                             ignored,
-                            "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
                             "DiskLruCache",
                             true,
                             ignored.getClass().getSimpleName());

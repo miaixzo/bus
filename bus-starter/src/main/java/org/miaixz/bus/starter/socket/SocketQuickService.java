@@ -80,13 +80,9 @@ public class SocketQuickService {
         this.aioQuickServer = new AioServer(this.properties.getPort(), message, handler);
         try {
             aioQuickServer.start();
-            Logger.info(
-                    true,
-                    "Starter",
-                    "component=socket, AIO socket server started on port: {}",
-                    this.properties.getPort());
+            Logger.info(true, "Starter", "AIO socket server started on port: {}", this.properties.getPort());
         } catch (IOException e) {
-            Logger.error(false, "Starter", "component=socket, Failed to start AIO socket server", e);
+            Logger.error(false, "Starter", "Failed to start AIO socket server", e);
         }
     }
 
@@ -100,7 +96,7 @@ public class SocketQuickService {
     public void stop() {
         if (aioQuickServer != null) {
             aioQuickServer.shutdown();
-            Logger.info(false, "Starter", "component=socket, AIO socket server stopped.");
+            Logger.info(false, "Starter", "AIO socket server stopped.");
         }
     }
 

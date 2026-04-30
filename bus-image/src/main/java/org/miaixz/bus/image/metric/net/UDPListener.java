@@ -47,7 +47,7 @@ public class UDPListener implements Listener {
                     false,
                     "Image",
                     e,
-                    "component=network, UDP listener bind failed: host={}, port={}, exception={}",
+                    "UDP listener bind failed: host={}, port={}, exception={}",
                     conn.getBindPoint().getHostName(),
                     conn.getBindPoint().getPort(),
                     e.getClass().getSimpleName());
@@ -60,39 +60,30 @@ public class UDPListener implements Listener {
 
     public void listen() {
         SocketAddress sockAddr = ds.getLocalSocketAddress();
-        Logger.info(true, "Image", "component=network, Start UDP listener on {}", sockAddr);
+        Logger.info(true, "Image", "Start UDP listener on {}", sockAddr);
         byte[] data = new byte[MAX_PACKAGE_LEN];
         try {
             while (!ds.isClosed()) {
-                Logger.debug(false, "Image", "component=network, Wait for UDP datagram package on {}", sockAddr);
+                Logger.debug(false, "Image", "Wait for UDP datagram package on {}", sockAddr);
                 DatagramPacket dp = new DatagramPacket(data, MAX_PACKAGE_LEN);
                 ds.receive(dp);
                 InetAddress senderAddr = dp.getAddress();
                 if (conn.isBlackListed(dp.getAddress())) {
-                    Logger.info(
-                            false,
-                            "Image",
-                            "component=network, Ignore UDP datagram package received from blacklisted {}",
-                            senderAddr);
+                    Logger.info(false, "Image", "Ignore UDP datagram package received from blacklisted {}", senderAddr);
                 } else {
-                    Logger.info(false, "Image", "component=network, Received UDP datagram package from {}", senderAddr);
+                    Logger.info(false, "Image", "Received UDP datagram package from {}", senderAddr);
                     try {
                         handler.onReceive(conn, dp);
                     } catch (Throwable e) {
-                        Logger.warn(
-                                false,
-                                "Image",
-                                "component=network, Exception processing UDP received from {}:",
-                                senderAddr,
-                                e);
+                        Logger.warn(false, "Image", "Exception processing UDP received from {}:", senderAddr, e);
                     }
                 }
             }
         } catch (Throwable e) {
             if (!ds.isClosed()) // ignore exception caused by close()
-                Logger.error(false, "Image", "component=network, Exception on listing on {}:", sockAddr, e);
+                Logger.error(false, "Image", "Exception on listing on {}:", sockAddr, e);
         }
-        Logger.info(false, "Image", "component=network, Stop UDP listener on {}", sockAddr);
+        Logger.info(false, "Image", "Stop UDP listener on {}", sockAddr);
     }
 
     @Override
@@ -110,7 +101,7 @@ public class UDPListener implements Listener {
                     false,
                     "Image",
                     e,
-                    "component=network, UDP listener close failed: endpoint={}, exception={}",
+                    "UDP listener close failed: endpoint={}, exception={}",
                     ds.getLocalSocketAddress(),
                     e.getClass().getSimpleName());
         }

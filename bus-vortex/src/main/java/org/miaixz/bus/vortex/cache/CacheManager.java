@@ -104,7 +104,7 @@ public class CacheManager<K, V> {
         Logger.debug(
                 false,
                 "Vortex",
-                "component=cache, Cache initialized: L1=ConcurrentHashMap, L2=GuavaCache(size={}, expireMs={})",
+                "Cache initialized: L1=ConcurrentHashMap, L2=GuavaCache(size={}, expireMs={})",
                 cacheSize,
                 cacheExpireMs);
     }
@@ -125,7 +125,7 @@ public class CacheManager<K, V> {
         Logger.debug(
                 false,
                 "Vortex",
-                "component=cache, Cache initialized: L1=ConcurrentHashMap, L2=CaffeineCache(size={}, expireMs={})",
+                "Cache initialized: L1=ConcurrentHashMap, L2=CaffeineCache(size={}, expireMs={})",
                 cacheSize,
                 cacheExpireMs);
     }
@@ -137,7 +137,7 @@ public class CacheManager<K, V> {
      */
     public void setPerformanceMonitor(Monitor monitor) {
         this.monitor = monitor;
-        Logger.debug(false, "Vortex", "component=cache, Cache performance monitor configured");
+        Logger.debug(false, "Vortex", "Cache performance monitor configured");
     }
 
     /**
@@ -188,7 +188,7 @@ public class CacheManager<K, V> {
                     false,
                     "Vortex",
                     e,
-                    "component=cache, Cache read failed: keyChars={}, exception={}",
+                    "Cache read failed: keyChars={}, exception={}",
                     key == null ? 0 : String.valueOf(key).length(),
                     e.getClass().getSimpleName());
             return null;
@@ -210,7 +210,7 @@ public class CacheManager<K, V> {
                     false,
                     "Vortex",
                     e,
-                    "component=cache, Cache write failed: keyChars={}, exception={}",
+                    "Cache write failed: keyChars={}, exception={}",
                     key == null ? 0 : String.valueOf(key).length(),
                     e.getClass().getSimpleName());
             throw e;
@@ -231,7 +231,7 @@ public class CacheManager<K, V> {
                     false,
                     "Vortex",
                     e,
-                    "component=cache, Cache removal failed: keyChars={}, exception={}",
+                    "Cache removal failed: keyChars={}, exception={}",
                     key == null ? 0 : String.valueOf(key).length(),
                     e.getClass().getSimpleName());
         }

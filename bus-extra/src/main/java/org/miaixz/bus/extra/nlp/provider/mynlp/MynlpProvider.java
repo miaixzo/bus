@@ -51,9 +51,9 @@ public class MynlpProvider implements NLPProvider {
         // CORE tokenizer builder
         // Enable part-of-speech tagging
         // Enable person name recognition
-        Logger.info(true, "Extra", "component=nlp, Mynlp provider initialization started: mode={}", "bigramLexer");
+        Logger.info(true, "Extra", "Mynlp provider initialization started: mode={}", "bigramLexer");
         this.lexer = Mynlp.instance().bigramLexer();
-        Logger.info(false, "Extra", "component=nlp, Mynlp provider initialized: lexerPresent={}", this.lexer != null);
+        Logger.info(false, "Extra", "Mynlp provider initialized: lexerPresent={}", this.lexer != null);
     }
 
     /**
@@ -62,13 +62,9 @@ public class MynlpProvider implements NLPProvider {
      * @param lexer The custom {@link Lexer} object to use for word segmentation.
      */
     public MynlpProvider(final Lexer lexer) {
-        Logger.info(
-                true,
-                "Extra",
-                "component=nlp, Mynlp provider initialization started: customLexerPresent={}",
-                lexer != null);
+        Logger.info(true, "Extra", "Mynlp provider initialization started: customLexerPresent={}", lexer != null);
         this.lexer = lexer;
-        Logger.info(false, "Extra", "component=nlp, Mynlp provider initialized: customLexerPresent={}", lexer != null);
+        Logger.info(false, "Extra", "Mynlp provider initialized: customLexerPresent={}", lexer != null);
     }
 
     /**
@@ -80,17 +76,13 @@ public class MynlpProvider implements NLPProvider {
      */
     @Override
     public NLPResult parse(final CharSequence text) {
-        Logger.debug(
-                true,
-                "Extra",
-                "component=nlp, Mynlp parse started: textLength={}",
-                text == null ? 0 : text.length());
+        Logger.debug(true, "Extra", "Mynlp parse started: textLength={}", text == null ? 0 : text.length());
         final Sentence sentence = this.lexer.scan(StringKit.toStringOrEmpty(text));
         final NLPResult result = new MynlpResult(sentence);
         Logger.debug(
                 false,
                 "Extra",
-                "component=nlp, Mynlp parse completed: textLength={}, sentencePresent={}",
+                "Mynlp parse completed: textLength={}, sentencePresent={}",
                 text == null ? 0 : text.length(),
                 sentence != null);
         return result;

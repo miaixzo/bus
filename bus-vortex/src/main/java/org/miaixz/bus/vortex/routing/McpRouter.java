@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Router;
 import org.miaixz.bus.vortex.routing.mcp.McpExecutor;
@@ -77,6 +78,27 @@ public class McpRouter implements Router<ServerRequest, ServerResponse> {
     public Mono<ServerResponse> route(ServerRequest input) {
         ServerRequest request = input;
         String action = request.queryParam("action").orElse("listTools");
+        Context context = request.exchange().getAttribute(Context.$);
+        String ip = context == null || context.getX_request_ip() == null ? "N/A" : context.getX_request_ip();
+        Logger.debug(
+                true,
+                "Vortex",
+                "Request header snapshot: clientIp={}, path={}, action={}",
+                ip,
+                request.path(),
+                action);
+        Logger.debug(
+                true,
+                "Vortex",
+                "Request headers: clientIp={}, headers={}",
+                ip,
+                request.headers().asHttpHeaders().toSingleValueMap());
+        Logger.debug(
+                true,
+                "Vortex",
+                "Request parameters: clientIp={}, parameters={}",
+                ip,
+                request.queryParams().toSingleValueMap());
         if ("listTools".equalsIgnoreCase(action)) {
             return listTools();
         } else if ("callTool".equalsIgnoreCase(action)) {
@@ -126,6 +148,20 @@ public class McpRouter implements Router<ServerRequest, ServerResponse> {
                     .filter(entry -> !entry.getKey().equals("action") && !entry.getKey().equals("toolName"))
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request parameter snapshot: clientIp={}, path={}, service={}, tool={}",
+                    context.getX_request_ip(),
+                    request.path(),
+                    serviceName,
+                    actualToolName);
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request parameters: clientIp={}, parameters={}",
+                    context.getX_request_ip(),
+                    arguments);
             return this.executor.callToolAndFormat(serviceName, actualToolName, arguments, assets.getStream());
         });
     }

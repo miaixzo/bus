@@ -448,8 +448,7 @@ public class Keeper {
                     false,
                     "Crypto",
                     e,
-                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "keeper",
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
                     "Keeper",
                     false,
                     e.getClass().getSimpleName());
@@ -500,8 +499,7 @@ public class Keeper {
                     false,
                     "Crypto",
                     e,
-                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "keeper",
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
                     "Keeper",
                     false,
                     e.getClass().getSimpleName());
@@ -609,7 +607,7 @@ public class Keeper {
      * For asymmetric encryption algorithms, key lengths have strict restrictions, as follows:
      * <p>
      * <b>RSA:</b>
-     * 
+     *
      * <pre>
      * RS256, PS256: 2048 bits
      * RS384, PS384: 3072 bits
@@ -617,7 +615,7 @@ public class Keeper {
      * </pre>
      * <p>
      * <b>EC (Elliptic Curve):</b>
-     * 
+     *
      * <pre>
      * EC256: 256 bits
      * EC384: 384 bits
@@ -648,7 +646,7 @@ public class Keeper {
      * For asymmetric encryption algorithms, key lengths have strict restrictions, as follows:
      * <p>
      * <b>RSA:</b>
-     * 
+     *
      * <pre>
      * RS256, PS256: 2048 bits
      * RS384, PS384: 3072 bits
@@ -656,7 +654,7 @@ public class Keeper {
      * </pre>
      * <p>
      * <b>EC (Elliptic Curve):</b>
-     * 
+     *
      * <pre>
      * EC256: 256 bits
      * EC384: 384 bits
@@ -709,8 +707,7 @@ public class Keeper {
                             false,
                             "Crypto",
                             e,
-                            "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
-                            "keeper",
+                            "Crypto operation failed: provider={}, recoverable={}, exception={}",
                             "Keeper",
                             false,
                             e.getClass().getSimpleName());
@@ -791,8 +788,7 @@ public class Keeper {
                     false,
                     "Crypto",
                     e,
-                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "keeper",
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
                     "Keeper",
                     false,
                     e.getClass().getSimpleName());
@@ -818,8 +814,7 @@ public class Keeper {
                     false,
                     "Crypto",
                     e,
-                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "keeper",
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
                     "Keeper",
                     false,
                     e.getClass().getSimpleName());
@@ -847,8 +842,7 @@ public class Keeper {
                     false,
                     "Crypto",
                     e,
-                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "keeper",
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
                     "Keeper",
                     false,
                     e.getClass().getSimpleName());
@@ -876,8 +870,7 @@ public class Keeper {
                     false,
                     "Crypto",
                     e,
-                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "keeper",
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
                     "Keeper",
                     false,
                     e.getClass().getSimpleName());
@@ -1013,7 +1006,7 @@ public class Keeper {
     /**
      * Reads a KeyStore file, automatically determining the type based on the file extension. KeyStore files are used to
      * store key pairs for digital certificates. The type is determined as follows:
-     * 
+     *
      * <pre>
      *     .jks, .keystore -> JKS
      *     .p12, .pfx, etc. -> PKCS12
@@ -1154,8 +1147,7 @@ public class Keeper {
                             false,
                             "Crypto",
                             e,
-                            "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
-                            "keeper",
+                            "Crypto operation failed: provider={}, recoverable={}, exception={}",
                             "Keeper",
                             false,
                             e.getClass().getSimpleName());
@@ -1176,8 +1168,7 @@ public class Keeper {
                     Logger.debug(
                             false,
                             "Crypto",
-                            "Crypto operation skipped: component={}, provider={}, recoverable={}, exception={}",
-                            "keeper",
+                            "Crypto operation skipped: provider={}, recoverable={}, exception={}",
                             "Keeper",
                             true,
                             ignore.getClass().getSimpleName());
@@ -1314,8 +1305,7 @@ public class Keeper {
                     false,
                     "Crypto",
                     e,
-                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "keeper",
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
                     "Keeper",
                     false,
                     e.getClass().getSimpleName());
@@ -1771,8 +1761,7 @@ public class Keeper {
             Logger.debug(
                     false,
                     "Crypto",
-                    "Crypto operation skipped: component={}, provider={}, recoverable={}, exception={}",
-                    "keeper",
+                    "Crypto operation skipped: provider={}, recoverable={}, exception={}",
                     "Keeper",
                     true,
                     ignore.getClass().getSimpleName());
@@ -1786,8 +1775,7 @@ public class Keeper {
             Logger.debug(
                     false,
                     "Crypto",
-                    "Crypto operation skipped: component={}, provider={}, recoverable={}, exception={}",
-                    "keeper",
+                    "Crypto operation skipped: provider={}, recoverable={}, exception={}",
                     "Keeper",
                     true,
                     ignore.getClass().getSimpleName());
@@ -1824,8 +1812,7 @@ public class Keeper {
             Logger.debug(
                     false,
                     "Crypto",
-                    "Crypto operation skipped: component={}, provider={}, recoverable={}, exception={}",
-                    "keeper",
+                    "Crypto operation skipped: provider={}, recoverable={}, exception={}",
                     "Keeper",
                     true,
                     ignore.getClass().getSimpleName());
@@ -1840,8 +1827,7 @@ public class Keeper {
             Logger.debug(
                     false,
                     "Crypto",
-                    "Crypto operation skipped: component={}, provider={}, recoverable={}, exception={}",
-                    "keeper",
+                    "Crypto operation skipped: provider={}, recoverable={}, exception={}",
                     "Keeper",
                     true,
                     ignore.getClass().getSimpleName());
@@ -2042,8 +2028,7 @@ public class Keeper {
                     false,
                     "Crypto",
                     e,
-                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "keeper",
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
                     "Keeper",
                     false,
                     e.getClass().getSimpleName());

@@ -106,7 +106,7 @@ public class ResponseBodyAdvice extends BaseAdvice
                 Logger.debug(
                         true,
                         "Starter",
-                        "component=sensitive, Sensitive response processing started: controller={}, method={}, mode={}, stage={}, dataType={}, contentType={}",
+                        "Sensitive response processing started: controller={}, method={}, mode={}, stage={}, dataType={}, contentType={}",
                         returnType.getDeclaringClass().getName(),
                         returnType.getExecutable().getName(),
                         sensitive.value(),
@@ -123,7 +123,7 @@ public class ResponseBodyAdvice extends BaseAdvice
                     Logger.debug(
                             false,
                             "Starter",
-                            "component=sensitive, Sensitive response processing completed: controller={}, method={}, resultRowCount={}",
+                            "Sensitive response processing completed: controller={}, method={}, resultRowCount={}",
                             returnType.getDeclaringClass().getName(),
                             returnType.getExecutable().getName(),
                             processedRows.size());
@@ -137,7 +137,7 @@ public class ResponseBodyAdvice extends BaseAdvice
                     Logger.debug(
                             false,
                             "Starter",
-                            "component=sensitive, Sensitive response processing completed: controller={}, method={}, listSize={}",
+                            "Sensitive response processing completed: controller={}, method={}, listSize={}",
                             returnType.getDeclaringClass().getName(),
                             returnType.getExecutable().getName(),
                             processedList.size());
@@ -147,7 +147,7 @@ public class ResponseBodyAdvice extends BaseAdvice
                     Logger.debug(
                             false,
                             "Starter",
-                            "component=sensitive, Sensitive response processing completed: controller={}, method={}, dataType={}",
+                            "Sensitive response processing completed: controller={}, method={}, dataType={}",
                             returnType.getDeclaringClass().getName(),
                             returnType.getExecutable().getName(),
                             data == null ? null : data.getClass().getName());
@@ -157,7 +157,7 @@ public class ResponseBodyAdvice extends BaseAdvice
                         false,
                         "Starter",
                         e,
-                        "component=sensitive, Sensitive response processing failed: controller={}, method={}, exception={}",
+                        "Sensitive response processing failed: controller={}, method={}, exception={}",
                         returnType.getDeclaringClass().getName(),
                         returnType.getExecutable().getName(),
                         e.getClass().getSimpleName());
@@ -179,7 +179,7 @@ public class ResponseBodyAdvice extends BaseAdvice
         // Perform data desensitization
         if ((Builder.ALL.equals(sensitive.value()) || Builder.SENS.equals(sensitive.value()))
                 && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
-            Logger.debug(false, "Starter", "component=sensitive, Sensitive response data desensitization enabled...");
+            Logger.debug(false, "Starter", "Sensitive response data desensitization enabled...");
             Builder.on(object, sensitive);
         }
         // Perform data encryption
@@ -200,7 +200,7 @@ public class ResponseBodyAdvice extends BaseAdvice
                             Logger.debug(
                                     false,
                                     "Starter",
-                                    "component=sensitive, Sensitive response data encryption enabled for property: {}",
+                                    "Sensitive response data encryption enabled for property: {}",
                                     property);
                             String encryptedValue = org.miaixz.bus.crypto.Builder.encrypt(
                                     this.properties.getEncrypt().getType(),

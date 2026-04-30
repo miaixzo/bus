@@ -143,7 +143,7 @@ public class CacheInterceptor implements Interceptor {
         Logger.debug(
                 true,
                 "Http",
-                "protocol=http, Cache strategy evaluation started: method={}, url={}, cacheCandidate={}",
+                "Cache strategy evaluation started: protocol=http, method={}, url={}, cacheCandidate={}",
                 chain.request().method(),
                 chain.request().url().redact(),
                 cacheCandidate != null);
@@ -165,7 +165,7 @@ public class CacheInterceptor implements Interceptor {
             Logger.debug(
                     false,
                     "Http",
-                    "protocol=http, Cache strategy rejected network and cache: method={}, url={}, status=504",
+                    "Cache strategy rejected network and cache: protocol=http, method={}, url={}, status=504",
                     chain.request().method(),
                     chain.request().url().redact());
             return new Response.Builder().request(chain.request()).protocol(Protocol.HTTP_1_1).code(504)
@@ -178,7 +178,7 @@ public class CacheInterceptor implements Interceptor {
             Logger.debug(
                     false,
                     "Http",
-                    "protocol=http, Cache hit served without network: method={}, url={}, status={}",
+                    "Cache hit served without network: protocol=http, method={}, url={}, status={}",
                     chain.request().method(),
                     chain.request().url().redact(),
                     cacheResponse.code());
@@ -190,7 +190,7 @@ public class CacheInterceptor implements Interceptor {
             Logger.debug(
                     true,
                     "Http",
-                    "protocol=http, Cache strategy forwarding to network: method={}, url={}, conditionalCache={}",
+                    "Cache strategy forwarding to network: protocol=http, method={}, url={}, conditionalCache={}",
                     networkRequest.method(),
                     networkRequest.url().redact(),
                     cacheResponse != null);
@@ -201,7 +201,7 @@ public class CacheInterceptor implements Interceptor {
                 Logger.warn(
                         false,
                         "Http",
-                        "protocol=http, Network response missing; closing cache candidate: method={}, url={}",
+                        "Network response missing; closing cache candidate: protocol=http, method={}, url={}",
                         chain.request().method(),
                         chain.request().url().redact());
                 IoKit.close(cacheCandidate.body());
@@ -224,7 +224,7 @@ public class CacheInterceptor implements Interceptor {
                 Logger.debug(
                         false,
                         "Http",
-                        "protocol=http, Conditional cache hit: method={}, url={}, status={}",
+                        "Conditional cache hit: protocol=http, method={}, url={}, status={}",
                         networkRequest.method(),
                         networkRequest.url().redact(),
                         response.code());
@@ -244,7 +244,7 @@ public class CacheInterceptor implements Interceptor {
                 Logger.debug(
                         false,
                         "Http",
-                        "protocol=http, Network response offered to cache: method={}, url={}, status={}",
+                        "Network response offered to cache: protocol=http, method={}, url={}, status={}",
                         networkRequest.method(),
                         networkRequest.url().redact(),
                         response.code());
@@ -258,8 +258,8 @@ public class CacheInterceptor implements Interceptor {
                     Logger.warn(
                             false,
                             "Http",
-                            "protocol=http, " + (ignored),
-                            "Cache invalidation failed: method={}, url={}, exception={}",
+                            ignored,
+                            "Cache invalidation failed: protocol=http, method={}, url={}, exception={}",
                             networkRequest.method(),
                             networkRequest.url().redact(),
                             ignored.getMessage());
@@ -270,7 +270,7 @@ public class CacheInterceptor implements Interceptor {
         Logger.debug(
                 false,
                 "Http",
-                "protocol=http, Cache strategy completed with network response: method={}, url={}, status={}",
+                "Cache strategy completed with network response: protocol=http, method={}, url={}, status={}",
                 networkRequest.method(),
                 networkRequest.url().redact(),
                 response.code());
@@ -324,7 +324,7 @@ public class CacheInterceptor implements Interceptor {
                             false,
                             "Http",
                             e,
-                            "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
                             "CacheInterceptor",
                             true,
                             e.getClass().getSimpleName());

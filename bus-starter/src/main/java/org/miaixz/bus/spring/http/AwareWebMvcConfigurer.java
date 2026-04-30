@@ -164,14 +164,14 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
                         Logger.debug(
                                 false,
                                 "Starter",
-                                "component=http, HTTP set autoType '{}' for custom JsonConverterConfigurer: {}",
+                                "HTTP set autoType '{}' for custom JsonConverterConfigurer: {}",
                                 this.autoType,
                                 configurer.name());
                     } catch (Exception e) {
                         Logger.warn(
                                 false,
                                 "Starter",
-                                "component=http, HTTP failed to set autoType for custom JsonConverterConfigurer {}: {}",
+                                "HTTP failed to set autoType for custom JsonConverterConfigurer {}: {}",
                                 configurer.name(),
                                 e.getClass().getSimpleName(),
                                 e);
@@ -180,7 +180,7 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
         Logger.debug(
                 false,
                 "Starter",
-                "component=http, HTTP retrieved {} available custom JsonConverterConfigurer beans: {}",
+                "HTTP retrieved {} available custom JsonConverterConfigurer beans: {}",
                 configurers.size(),
                 configurers.stream().map(HttpMessageConverter::name).toList());
         return configurers;
@@ -199,15 +199,9 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
             String name) {
         try {
             configurer.accept(converters);
-            Logger.info(false, "Starter", "component=http, HTTP successfully configured {} message converter", name);
+            Logger.info(false, "Starter", "HTTP successfully configured {} message converter", name);
         } catch (Exception e) {
-            Logger.warn(
-                    false,
-                    "Starter",
-                    "component=http, HTTP failed to configure {}: {}",
-                    name,
-                    e.getClass().getSimpleName(),
-                    e);
+            Logger.warn(false, "Starter", "HTTP failed to configure {}: {}", name, e.getClass().getSimpleName(), e);
         }
     }
 
@@ -241,7 +235,7 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
         Logger.debug(
                 false,
                 "Starter",
-                "component=http, StringHttpMessageConverter configured with media types: {}",
+                "StringHttpMessageConverter configured with media types: {}",
                 DEFAULT_MEDIA_TYPES);
     }
 

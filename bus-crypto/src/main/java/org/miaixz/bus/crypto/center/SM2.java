@@ -411,8 +411,7 @@ public class SM2 extends AbstractCrypto<SM2> {
                     false,
                     "Crypto",
                     e,
-                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "algorithm",
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
                     "SM2",
                     false,
                     e.getClass().getSimpleName());
@@ -562,8 +561,7 @@ public class SM2 extends AbstractCrypto<SM2> {
                     false,
                     "Crypto",
                     e,
-                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "algorithm",
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
                     "SM2",
                     false,
                     e.getClass().getSimpleName());
@@ -866,8 +864,7 @@ public class SM2 extends AbstractCrypto<SM2> {
                     false,
                     "Crypto",
                     e,
-                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "algorithm",
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
                     "SM2",
                     false,
                     e.getClass().getSimpleName());

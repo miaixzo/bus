@@ -98,8 +98,7 @@ public class JCEMac extends SimpleWrapper<javax.crypto.Mac> implements Mac {
                     false,
                     "Crypto",
                     e,
-                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "digest",
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
                     "JCEMac",
                     false,
                     e.getClass().getSimpleName());

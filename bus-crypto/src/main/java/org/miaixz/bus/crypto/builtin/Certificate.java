@@ -184,8 +184,7 @@ public class Certificate implements Serializable {
                     false,
                     "Crypto",
                     e,
-                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "builtin",
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
                     "Certificate",
                     false,
                     e.getClass().getSimpleName());

@@ -345,8 +345,7 @@ public class VersionPublisher {
                     false,
                     "Cortex",
                     e,
-                    "Cortex operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "version",
+                    "Cortex operation failed: provider={}, recoverable={}, exception={}",
                     "VersionPublisher",
                     false,
                     e.getClass().getSimpleName());

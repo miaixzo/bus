@@ -62,13 +62,13 @@ public class BinaryProvider implements Provider<Object, byte[]> {
     public Mono<byte[]> serialize(Object input) {
         return Mono.fromCallable(() -> {
             if (input == null) {
-                Logger.debug(true, "Vortex", "component=binary, Binary input is empty; returning zero-length buffer");
+                Logger.debug(true, "Vortex", "Binary input is empty; returning zero-length buffer");
                 return new byte[0];
             }
 
             if (input instanceof byte[]) {
                 byte[] bytes = (byte[]) input;
-                Logger.debug(true, "Vortex", "component=binary, Serializing byte-array input: size={}", bytes.length);
+                Logger.debug(true, "Vortex", "Serializing byte-array input: size={}", bytes.length);
                 return bytes;
             }
 
@@ -76,15 +76,12 @@ public class BinaryProvider implements Provider<Object, byte[]> {
                 DataBuffer dataBuffer = (DataBuffer) input;
                 byte[] bytes = new byte[dataBuffer.readableByteCount()];
                 dataBuffer.read(bytes);
-                Logger.debug(true, "Vortex", "component=binary, Serializing data-buffer input: size={}", bytes.length);
+                Logger.debug(true, "Vortex", "Serializing data-buffer input: size={}", bytes.length);
                 return bytes;
             }
 
             if (input instanceof Flux) {
-                Logger.debug(
-                        true,
-                        "Vortex",
-                        "component=binary, Streaming binary input detected; delegating to the streaming pipeline");
+                Logger.debug(true, "Vortex", "Streaming binary input detected; delegating to the streaming pipeline");
                 return "BINARY_STREAM_MARKER".getBytes(Charset.ISO_8859_1);
             }
 
@@ -92,7 +89,7 @@ public class BinaryProvider implements Provider<Object, byte[]> {
             Logger.debug(
                     true,
                     "Vortex",
-                    "component=binary, Serializing fallback input: type={}, size={}",
+                    "Serializing fallback input: type={}, size={}",
                     input.getClass().getSimpleName(),
                     result.length);
             return result;

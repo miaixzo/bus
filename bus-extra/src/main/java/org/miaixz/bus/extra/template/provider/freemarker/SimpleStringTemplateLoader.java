@@ -47,7 +47,7 @@ public class SimpleStringTemplateLoader implements TemplateLoader {
         Logger.debug(
                 false,
                 "Extra",
-                "component=template, Freemarker string template source selected: templateLength={}",
+                "Freemarker string template source selected: templateLength={}",
                 name == null ? 0 : name.length());
         return name;
     }
@@ -81,7 +81,7 @@ public class SimpleStringTemplateLoader implements TemplateLoader {
         Logger.debug(
                 true,
                 "Extra",
-                "component=template, Freemarker string template reader requested: templateLength={}, encoding={}",
+                "Freemarker string template reader requested: templateLength={}, encoding={}",
                 templateSource == null ? 0 : templateSource.toString().length(),
                 encoding);
         return new StringReader((String) templateSource);

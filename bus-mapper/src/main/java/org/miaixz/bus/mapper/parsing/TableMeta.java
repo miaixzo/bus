@@ -363,8 +363,7 @@ public class TableMeta extends PropertyMeta<TableMeta> {
                             false,
                             "Mapper",
                             e,
-                            "Mapper operation failed: component={}, provider={}, exception={}",
-                            "metadata",
+                            "Mapper operation failed: provider={}, exception={}",
                             "TableMeta",
                             e.getClass().getSimpleName());
                     throw new RuntimeException(e);
@@ -399,8 +398,7 @@ public class TableMeta extends PropertyMeta<TableMeta> {
                 Logger.debug(
                         false,
                         "Mapper",
-                        "Mapper operation skipped: component={}, provider={}, exception={}",
-                        "metadata",
+                        "Mapper operation skipped: provider={}, exception={}",
                         "TableMeta",
                         ignored.getClass().getSimpleName());
             } catch (Exception e) {
@@ -408,8 +406,7 @@ public class TableMeta extends PropertyMeta<TableMeta> {
                         false,
                         "Mapper",
                         e,
-                        "Mapper operation failed: component={}, provider={}, exception={}",
-                        "metadata",
+                        "Mapper operation failed: provider={}, exception={}",
                         "TableMeta",
                         e.getClass().getSimpleName());
                 throw new TypeException("Failed invoking constructor for handler " + typeHandlerClass, e);
@@ -423,8 +420,7 @@ public class TableMeta extends PropertyMeta<TableMeta> {
                     false,
                     "Mapper",
                     e,
-                    "Mapper operation failed: component={}, provider={}, exception={}",
-                    "metadata",
+                    "Mapper operation failed: provider={}, exception={}",
                     "TableMeta",
                     e.getClass().getSimpleName());
             throw new TypeException("Unable to find a usable constructor for " + typeHandlerClass, e);

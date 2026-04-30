@@ -35,7 +35,7 @@ import com.github.promeg.pinyinhelper.Pinyin;
  *
  * <p>
  * To introduce (dependency):
- * 
+ *
  * <pre>
  * &lt;dependency&gt;
  *     &lt;groupId&gt;io.github.biezhi&lt;/groupId&gt;
@@ -65,14 +65,10 @@ public class TinyPinyinProvider implements PinyinProvider {
         Logger.info(
                 true,
                 "Extra",
-                "component=pinyin, TinyPinyin provider initialization started: customConfigPresent={}",
+                "TinyPinyin provider initialization started: customConfigPresent={}",
                 config != null);
         Pinyin.init(config);
-        Logger.info(
-                false,
-                "Extra",
-                "component=pinyin, TinyPinyin provider initialized: customConfigPresent={}",
-                config != null);
+        Logger.info(false, "Extra", "TinyPinyin provider initialized: customConfigPresent={}", config != null);
     }
 
     /**

@@ -26,12 +26,17 @@ import org.miaixz.bus.http.Builder;
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.accord.Exchange;
+import org.miaixz.bus.http.bodys.FormBody;
+import org.miaixz.bus.http.bodys.MultipartBody;
+import org.miaixz.bus.http.bodys.RequestBody;
 import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.NewChain;
 import org.miaixz.bus.logger.Logger;
 
 import java.io.IOException;
 import java.net.ProtocolException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * This is the last interceptor in the chain. It makes a network call to the server.
@@ -71,13 +76,72 @@ public class CallServerInterceptor implements Interceptor {
         Request request = realChain.request();
 
         long sentRequestMillis = System.currentTimeMillis();
+        RequestBody body = request.body();
+        long bodyLength = -1L;
+        if (body != null) {
+            try {
+                bodyLength = body.contentLength();
+            } catch (IOException ignored) {
+                bodyLength = -1L;
+            }
+        }
+        Map<String, Object> parameters = new LinkedHashMap<>();
+        Map<String, Object> query = new LinkedHashMap<>();
+        for (String name : request.url().queryParameterNames()) {
+            query.put(name, request.url().queryParameterValues(name));
+        }
+        parameters.put("query", query);
+        if (body instanceof FormBody formBody) {
+            Map<String, Object> form = new LinkedHashMap<>();
+            for (int i = 0; i < formBody.size(); i++) {
+                form.put(formBody.name(i), formBody.value(i));
+            }
+            parameters.put("form", form);
+        } else if (body instanceof MultipartBody multipartBody) {
+            parameters.put("multipartPartCount", multipartBody.size());
+            parameters.put("multipartType", multipartBody.type());
+        } else if (body != null) {
+            parameters.put("bodyType", body.getClass().getName());
+            parameters.put("bodyLength", bodyLength);
+            parameters.put("contentType", body.contentType());
+        }
         Logger.debug(
                 true,
                 "Http",
-                "protocol=http, Network request writing started: method={}, url={}, webSocket={}",
+                "Network request writing started: protocol=http, method={}, url={}, webSocket={}",
                 request.method(),
                 request.url().redact(),
                 forWebSocket);
+        Logger.debug(
+                true,
+                "Http",
+                "Request header snapshot: protocol=http, method={}, url={}, headerCount={}",
+                request.method(),
+                request.url().redact(),
+                request.headers().size());
+        Logger.debug(
+                true,
+                "Http",
+                "Request headers: protocol=http, method={}, url={}, headers={}",
+                request.method(),
+                request.url().redact(),
+                request.headers().toMultimap());
+        Logger.debug(
+                true,
+                "Http",
+                "Request parameter snapshot: protocol=http, method={}, url={}, queryCount={}, bodyType={}, bodyLength={}",
+                request.method(),
+                request.url().redact(),
+                request.url().querySize(),
+                body == null ? null : body.getClass().getName(),
+                bodyLength);
+        Logger.debug(
+                true,
+                "Http",
+                "Request parameters: protocol=http, method={}, url={}, parameters={}",
+                request.method(),
+                request.url().redact(),
+                parameters);
 
         exchange.writeRequestHeaders(request);
 
@@ -148,7 +212,7 @@ public class CallServerInterceptor implements Interceptor {
         Logger.debug(
                 false,
                 "Http",
-                "protocol=http, Network response headers received: method={}, url={}, status={}, durationMs={}",
+                "Network response headers received: protocol=http, method={}, url={}, status={}, durationMs={}",
                 request.method(),
                 request.url().redact(),
                 code,
@@ -170,7 +234,7 @@ public class CallServerInterceptor implements Interceptor {
             Logger.error(
                     false,
                     "Http",
-                    "protocol=http, Invalid empty-body response length: method={}, url={}, status={}, length={}",
+                    "Invalid empty-body response length: protocol=http, method={}, url={}, status={}, length={}",
                     request.method(),
                     request.url().redact(),
                     code,
@@ -182,7 +246,7 @@ public class CallServerInterceptor implements Interceptor {
         Logger.debug(
                 false,
                 "Http",
-                "protocol=http, Network call completed: method={}, url={}, status={}, durationMs={}",
+                "Network call completed: protocol=http, method={}, url={}, status={}, durationMs={}",
                 request.method(),
                 request.url().redact(),
                 code,

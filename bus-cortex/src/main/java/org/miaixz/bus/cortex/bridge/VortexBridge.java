@@ -311,8 +311,7 @@ public class VortexBridge
                         false,
                         "Cortex",
                         e,
-                        "Cortex operation failed: component={}, provider={}, recoverable={}, exception={}",
-                        "bridge",
+                        "Cortex operation failed: provider={}, recoverable={}, exception={}",
                         "VortexBridge",
                         false,
                         e.getClass().getSimpleName());

@@ -423,7 +423,7 @@ public class DcmDir {
                     false,
                     "Image",
                     e,
-                    "component=tool, DICOMDIR reference skipped: operation=add, fileName={}, exception={}",
+                    "DICOMDIR reference skipped: operation=add, fileName={}, exception={}",
                     f.getName(),
                     e.getClass().getSimpleName());
             return 0;
@@ -551,7 +551,7 @@ public class DcmDir {
                     false,
                     "Image",
                     e,
-                    "component=tool, DICOMDIR reference skipped: operation=remove, fileName={}, exception={}",
+                    "DICOMDIR reference skipped: operation=remove, fileName={}, exception={}",
                     f.getName(),
                     e.getClass().getSimpleName());
             return 0;
@@ -648,7 +648,7 @@ public class DcmDir {
                     false,
                     "Image",
                     e,
-                    "component=tool, DICOMDIR custom configuration load failed: configPresent={}, exception={}",
+                    "DICOMDIR custom configuration load failed: configPresent={}, exception={}",
                     recordConfig != null,
                     e.getClass().getSimpleName());
             throw new RuntimeException(e);
@@ -711,7 +711,7 @@ public class DcmDir {
                 Logger.warn(
                         false,
                         "Image",
-                        "component=tool, CSV line ignored: valueCount={}, headerCount={}, lineChars={}",
+                        "CSV line ignored: valueCount={}, headerCount={}, lineChars={}",
                         fields.length,
                         tags.length,
                         line == null ? 0 : line.length());

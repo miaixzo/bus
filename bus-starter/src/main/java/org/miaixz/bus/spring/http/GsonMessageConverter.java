@@ -85,7 +85,7 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
         Logger.debug(
                 false,
                 "Starter",
-                "component=http, Configuring GsonHttpMessageConverter with autoType: {}",
+                "Configuring GsonHttpMessageConverter with autoType: {}",
                 autoTypeMatcher == null ? null : autoTypeMatcher.description());
 
         // Configure Gson, adding autoType restriction
@@ -109,7 +109,7 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
                     Logger.warn(
                             false,
                             "Starter",
-                            "component=http, Gson could not access field '{}' for annotation check. Defaulting to include.",
+                            "Gson could not access field '{}' for annotation check. Defaulting to include.",
                             f.getName(),
                             e.getClass().getSimpleName());
                     // If we can't inspect the field, don't skip it (default to including it).
@@ -129,7 +129,7 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
             Logger.debug(
                     false,
                     "Starter",
-                    "component=http, Gson autoType enabled for package patterns: {}",
+                    "Gson autoType enabled for package patterns: {}",
                     autoTypeMatcher.description());
         }
 
@@ -143,7 +143,7 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
         Logger.debug(
                 false,
                 "Starter",
-                "component=http, Gson converter configured with media types: {}",
+                "Gson converter configured with media types: {}",
                 converter.getSupportedMediaTypes());
     }
 

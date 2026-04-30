@@ -77,7 +77,7 @@ public class JmsProducer implements Producer {
         Logger.debug(
                 true,
                 "Extra",
-                "component=mq, JMS send started: topic={}, messageBytes={}",
+                "JMS send started: topic={}, messageBytes={}",
                 message.topic(),
                 content == null ? 0 : content.length);
         try {
@@ -90,7 +90,7 @@ public class JmsProducer implements Producer {
             Logger.debug(
                     false,
                     "Extra",
-                    "component=mq, JMS send completed: topic={}, messageBytes={}, elapsedMs={}",
+                    "JMS send completed: topic={}, messageBytes={}, elapsedMs={}",
                     message.topic(),
                     content == null ? 0 : content.length,
                     (System.nanoTime() - startedAt) / 1_000_000L);
@@ -99,7 +99,7 @@ public class JmsProducer implements Producer {
                     false,
                     "Extra",
                     e,
-                    "component=mq, JMS send failed: topic={}, messageBytes={}, exception={}, elapsedMs={}",
+                    "JMS send failed: topic={}, messageBytes={}, exception={}, elapsedMs={}",
                     message.topic(),
                     content == null ? 0 : content.length,
                     e.getClass().getSimpleName(),
@@ -117,14 +117,10 @@ public class JmsProducer implements Producer {
     @Override
     public void close() throws IOException {
         final long startedAt = System.nanoTime();
-        Logger.debug(true, "Extra", "component=mq, JMS producer close requested");
+        Logger.debug(true, "Extra", "JMS producer close requested");
         // Safely close the JMS producer, suppressing any exceptions
         IoKit.closeQuietly(this.producer);
-        Logger.debug(
-                false,
-                "Extra",
-                "component=mq, JMS producer closed: elapsedMs={}",
-                (System.nanoTime() - startedAt) / 1_000_000L);
+        Logger.debug(false, "Extra", "JMS producer closed: elapsedMs={}", (System.nanoTime() - startedAt) / 1_000_000L);
     }
 
 }

@@ -66,7 +66,7 @@ public class RocketMQProducer implements Producer {
         Logger.debug(
                 true,
                 "Extra",
-                "component=mq, RocketMQ send started: topic={}, messageBytes={}",
+                "RocketMQ send started: topic={}, messageBytes={}",
                 message.topic(),
                 content == null ? 0 : content.length);
         final org.apache.rocketmq.common.message.Message rocketMessage = new org.apache.rocketmq.common.message.Message(
@@ -76,7 +76,7 @@ public class RocketMQProducer implements Producer {
             Logger.debug(
                     false,
                     "Extra",
-                    "component=mq, RocketMQ send completed: topic={}, messageBytes={}, elapsedMs={}",
+                    "RocketMQ send completed: topic={}, messageBytes={}, elapsedMs={}",
                     message.topic(),
                     content == null ? 0 : content.length,
                     (System.nanoTime() - startedAt) / 1_000_000L);
@@ -85,7 +85,7 @@ public class RocketMQProducer implements Producer {
                     false,
                     "Extra",
                     e,
-                    "component=mq, RocketMQ send failed: topic={}, messageBytes={}, exception={}, elapsedMs={}",
+                    "RocketMQ send failed: topic={}, messageBytes={}, exception={}, elapsedMs={}",
                     message.topic(),
                     content == null ? 0 : content.length,
                     e.getClass().getSimpleName(),
@@ -104,14 +104,14 @@ public class RocketMQProducer implements Producer {
     @Override
     public void close() throws IOException {
         final long startedAt = System.nanoTime();
-        Logger.debug(true, "Extra", "component=mq, RocketMQ producer close requested");
+        Logger.debug(true, "Extra", "RocketMQ producer close requested");
         if (null != this.producer) {
             this.producer.shutdown();
         }
         Logger.debug(
                 false,
                 "Extra",
-                "component=mq, RocketMQ producer closed: elapsedMs={}",
+                "RocketMQ producer closed: elapsedMs={}",
                 (System.nanoTime() - startedAt) / 1_000_000L);
     }
 

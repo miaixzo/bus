@@ -70,7 +70,7 @@ public final class ConnectInterceptor implements Interceptor {
         Logger.debug(
                 true,
                 "Http",
-                "protocol=http, Connection exchange requested: method={}, url={}, extensiveHealthCheck={}",
+                "Connection exchange requested: protocol=http, method={}, url={}, extensiveHealthCheck={}",
                 request.method(),
                 request.url().redact(),
                 doExtensiveHealthChecks);
@@ -79,7 +79,7 @@ public final class ConnectInterceptor implements Interceptor {
             Logger.debug(
                     false,
                     "Http",
-                    "protocol=http, Connection exchange ready: method={}, url={}, extensiveHealthCheck={}",
+                    "Connection exchange ready: protocol=http, method={}, url={}, extensiveHealthCheck={}",
                     request.method(),
                     request.url().redact(),
                     doExtensiveHealthChecks);
@@ -90,7 +90,7 @@ public final class ConnectInterceptor implements Interceptor {
                     false,
                     "Http",
                     e,
-                    "protocol=http, Connection exchange failed: method={}, url={}, exception={}",
+                    "Connection exchange failed: protocol=http, method={}, url={}, exception={}",
                     request.method(),
                     request.url().redact(),
                     e.getClass().getSimpleName());

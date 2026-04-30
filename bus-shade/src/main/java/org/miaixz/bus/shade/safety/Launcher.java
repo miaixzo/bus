@@ -79,7 +79,7 @@ public class Launcher {
         Logger.debug(
                 true,
                 "Shade",
-                "Safety launcher initialization started: component=launcher, argCount={}",
+                "Safety launcher initialization started: argCount={}",
                 args == null ? 0 : args.length);
         String algorithm = Builder.ALGORITHM;
         int keysize = Builder.DEFAULT_KEYSIZE;
@@ -116,7 +116,7 @@ public class Launcher {
             Logger.debug(
                     false,
                     "Shade",
-                    "Safety launcher manifest loaded: component=launcher, jarFile={}, attributeCount={}",
+                    "Safety launcher manifest loaded: jarFile={}, attributeCount={}",
                     file.getName(),
                     attributes.size());
             if (null != attributes.getValue(Builder.XJAR_ALGORITHM_KEY)) {
@@ -147,7 +147,7 @@ public class Launcher {
                 Logger.debug(
                         false,
                         "Shade",
-                        "Safety launcher key file loaded: component=launcher, configuredPath={}, keyFile={}, keyCount={}",
+                        "Safety launcher key file loaded: configuredPath={}, keyFile={}, keyCount={}",
                         true,
                         file.getName(),
                         key.size());
@@ -155,7 +155,7 @@ public class Launcher {
                 Logger.warn(
                         false,
                         "Shade",
-                        "Safety launcher key file missing: component=launcher, configuredPath={}, keyFile={}",
+                        "Safety launcher key file missing: configuredPath={}, keyFile={}",
                         true,
                         file.getName());
                 throw new FileNotFoundException("could not find key file at path: " + file.getCanonicalPath());
@@ -172,7 +172,7 @@ public class Launcher {
                 Logger.debug(
                         false,
                         "Shade",
-                        "Safety launcher key file loaded: component=launcher, configuredPath={}, keyFile={}, keyCount={}",
+                        "Safety launcher key file loaded: configuredPath={}, keyFile={}, keyCount={}",
                         false,
                         file.getName(),
                         key.size());
@@ -210,11 +210,7 @@ public class Launcher {
 
         if (null == hold || !Arrays.asList("true", Symbol.ONE, "yes", "y").contains(hold.trim().toLowerCase())) {
             if (null != keyfile && keyfile.exists() && !keyfile.delete() && keyfile.exists()) {
-                Logger.warn(
-                        false,
-                        "Shade",
-                        "Safety launcher key file delete failed: component=launcher, keyFile={}",
-                        keyfile.getName());
+                Logger.warn(false, "Shade", "Safety launcher key file delete failed: keyFile={}", keyfile.getName());
                 throw new IOException("could not delete key file : " + keyfile.getCanonicalPath());
             }
         }
@@ -235,7 +231,7 @@ public class Launcher {
         Logger.debug(
                 false,
                 "Shade",
-                "Safety launcher initialization finished: component=launcher, algorithm={}, keySize={}, ivSize={}, credentialPresent={}, keyFilePresent={}",
+                "Safety launcher initialization finished: algorithm={}, keySize={}, ivSize={}, credentialPresent={}, keyFilePresent={}",
                 algorithm,
                 keysize,
                 ivsize,

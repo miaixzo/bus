@@ -55,8 +55,7 @@ class ReconnectDirContext implements Closeable {
         Logger.info(
                 true,
                 "Image",
-                "Image LDAP reconnect started: component={}, operation={}, protocol={}, status={}, recoverable={}",
-                "ldap-context",
+                "Image LDAP reconnect started: operation={}, protocol={}, status={}, recoverable={}",
                 "reconnect",
                 "LDAP",
                 "started",
@@ -73,8 +72,7 @@ class ReconnectDirContext implements Closeable {
             Logger.debug(
                     false,
                     "Image",
-                    "Image LDAP close skipped: component={}, operation={}, protocol={}, status={}, recoverable={}, exception={}",
-                    "ldap-context",
+                    "Image LDAP close skipped: operation={}, protocol={}, status={}, recoverable={}, exception={}",
                     "close",
                     "LDAP",
                     "ignored",
@@ -92,8 +90,7 @@ class ReconnectDirContext implements Closeable {
             Logger.debug(
                     false,
                     "Image",
-                    "Image LDAP retry scheduled: component={}, operation={}, protocol={}, status={}, recoverable={}, exception={}",
-                    "ldap-context",
+                    "Image LDAP retry scheduled: operation={}, protocol={}, status={}, recoverable={}, exception={}",
                     "getAttributes",
                     "LDAP",
                     "reconnect",
@@ -113,8 +110,7 @@ class ReconnectDirContext implements Closeable {
             Logger.debug(
                     false,
                     "Image",
-                    "Image LDAP retry scheduled: component={}, operation={}, protocol={}, status={}, recoverable={}, exception={}",
-                    "ldap-context",
+                    "Image LDAP retry scheduled: operation={}, protocol={}, status={}, recoverable={}, exception={}",
                     "getAttributesByIds",
                     "LDAP",
                     "reconnect",
@@ -134,8 +130,7 @@ class ReconnectDirContext implements Closeable {
             Logger.debug(
                     false,
                     "Image",
-                    "Image LDAP retry scheduled: component={}, operation={}, protocol={}, status={}, recoverable={}, exception={}",
-                    "ldap-context",
+                    "Image LDAP retry scheduled: operation={}, protocol={}, status={}, recoverable={}, exception={}",
                     "destroySubcontext",
                     "LDAP",
                     "reconnect",
@@ -156,8 +151,7 @@ class ReconnectDirContext implements Closeable {
             Logger.debug(
                     false,
                     "Image",
-                    "Image LDAP retry scheduled: component={}, operation={}, protocol={}, status={}, recoverable={}, exception={}",
-                    "ldap-context",
+                    "Image LDAP retry scheduled: operation={}, protocol={}, status={}, recoverable={}, exception={}",
                     "search",
                     "LDAP",
                     "reconnect",
@@ -177,8 +171,7 @@ class ReconnectDirContext implements Closeable {
             Logger.debug(
                     false,
                     "Image",
-                    "Image LDAP retry scheduled: component={}, operation={}, protocol={}, status={}, recoverable={}, exception={}",
-                    "ldap-context",
+                    "Image LDAP retry scheduled: operation={}, protocol={}, status={}, recoverable={}, exception={}",
                     "createSubcontext",
                     "LDAP",
                     "reconnect",
@@ -198,8 +191,7 @@ class ReconnectDirContext implements Closeable {
             Logger.debug(
                     false,
                     "Image",
-                    "Image LDAP retry scheduled: component={}, operation={}, protocol={}, status={}, recoverable={}, exception={}",
-                    "ldap-context",
+                    "Image LDAP retry scheduled: operation={}, protocol={}, status={}, recoverable={}, exception={}",
                     "list",
                     "LDAP",
                     "reconnect",
@@ -219,8 +211,7 @@ class ReconnectDirContext implements Closeable {
             Logger.debug(
                     false,
                     "Image",
-                    "Image LDAP retry scheduled: component={}, operation={}, protocol={}, status={}, recoverable={}, exception={}",
-                    "ldap-context",
+                    "Image LDAP retry scheduled: operation={}, protocol={}, status={}, recoverable={}, exception={}",
                     "modifyAttributes",
                     "LDAP",
                     "reconnect",
@@ -240,8 +231,7 @@ class ReconnectDirContext implements Closeable {
             Logger.debug(
                     false,
                     "Image",
-                    "Image LDAP retry scheduled: component={}, operation={}, protocol={}, status={}, recoverable={}, exception={}",
-                    "ldap-context",
+                    "Image LDAP retry scheduled: operation={}, protocol={}, status={}, recoverable={}, exception={}",
                     "modifyAttributesByMode",
                     "LDAP",
                     "reconnect",

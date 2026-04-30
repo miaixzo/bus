@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.vortex.routing;
 
+import java.util.Map;
+
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Router;
@@ -80,17 +82,43 @@ public class GrpcRouter implements Router<ServerRequest, ServerResponse> {
             Logger.info(
                     true,
                     "Vortex",
-                    "protocol=grpc, event=GRPC_ROUTER_START, gRPC routing started: service={}",
+                    "GRPC routing started: protocol=grpc, event=GRPC_ROUTER_START, service={}",
                     context.getAssets().getMethod());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request header snapshot: protocol=grpc, clientIp={}, path={}",
+                    context.getX_request_ip(),
+                    input.path());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request headers: protocol=grpc, clientIp={}, headers={}",
+                    context.getX_request_ip(),
+                    input.headers().asHttpHeaders().toSingleValueMap());
 
-            return input.bodyToMono(String.class).switchIfEmpty(Mono.just("{}"))
-                    .flatMap(body -> executor.execute(context, body)).doOnError(
-                            error -> Logger.error(
-                                    true,
-                                    "Vortex",
-                                    "protocol=grpc, event=GRPC_ROUTER_ERROR, gRPC routing failed: service={}, exception={}",
-                                    context.getAssets().getMethod(),
-                                    error.getMessage()));
+            return input.bodyToMono(String.class).switchIfEmpty(Mono.just("{}")).flatMap(body -> {
+                Logger.debug(
+                        true,
+                        "Vortex",
+                        "Request parameter snapshot: protocol=grpc, clientIp={}, path={}, bodyChars={}",
+                        context.getX_request_ip(),
+                        input.path(),
+                        body.length());
+                Logger.debug(
+                        true,
+                        "Vortex",
+                        "Request parameters: protocol=grpc, clientIp={}, parameters={}",
+                        context.getX_request_ip(),
+                        Map.of("body", body));
+                return executor.execute(context, body);
+            }).doOnError(
+                    error -> Logger.error(
+                            true,
+                            "Vortex",
+                            "GRPC routing failed: protocol=grpc, event=GRPC_ROUTER_ERROR, service={}, exception={}",
+                            context.getAssets().getMethod(),
+                            error.getMessage()));
         });
     }
 

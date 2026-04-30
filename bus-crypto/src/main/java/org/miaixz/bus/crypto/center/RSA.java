@@ -225,8 +225,7 @@ public class RSA extends Crypto {
                     false,
                     "Crypto",
                     e,
-                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "algorithm",
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
                     "RSA",
                     false,
                     e.getClass().getSimpleName());

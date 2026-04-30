@@ -465,8 +465,7 @@ public class BCrypt {
             Logger.debug(
                     false,
                     "Crypto",
-                    "Crypto operation skipped: component={}, provider={}, recoverable={}, exception={}",
-                    "algorithm",
+                    "Crypto operation skipped: provider={}, recoverable={}, exception={}",
                     "BCrypt",
                     true,
                     ignore.getClass().getSimpleName());

@@ -73,7 +73,7 @@ public class RetryAndFollowUp implements Interceptor {
         Logger.debug(
                 true,
                 "Http",
-                "protocol=http, Retry interceptor starting: method={}, url={}",
+                "Retry interceptor starting: protocol=http, method={}, url={}",
                 request.method(),
                 request.url().redact());
         while (true) {
@@ -83,7 +83,7 @@ public class RetryAndFollowUp implements Interceptor {
                 Logger.warn(
                         false,
                         "Http",
-                        "protocol=http, Retry interceptor canceled before network attempt: method={}, url={}",
+                        "Retry interceptor canceled before network attempt: protocol=http, method={}, url={}",
                         request.method(),
                         request.url().redact());
                 throw new IOException("Canceled");
@@ -100,8 +100,8 @@ public class RetryAndFollowUp implements Interceptor {
                     Logger.error(
                             false,
                             "Http",
-                            "protocol=http, " + (e.getFirstConnectException()),
-                            "Route connection failed without recovery: method={}, url={}, exception={}",
+                            e.getFirstConnectException(),
+                            "Route connection failed without recovery: protocol=http, method={}, url={}, exception={}",
                             request.method(),
                             request.url().redact(),
                             e.getFirstConnectException().getMessage());
@@ -110,7 +110,7 @@ public class RetryAndFollowUp implements Interceptor {
                 Logger.warn(
                         false,
                         "Http",
-                        "protocol=http, Route connection failed; retrying: method={}, url={}, exception={}",
+                        "Route connection failed; retrying: protocol=http, method={}, url={}, exception={}",
                         request.method(),
                         request.url().redact(),
                         e.getLastConnectException().getMessage());
@@ -123,7 +123,7 @@ public class RetryAndFollowUp implements Interceptor {
                             false,
                             "Http",
                             e,
-                            "protocol=http, HTTP exchange failed without recovery: method={}, url={}, exception={}",
+                            "HTTP exchange failed without recovery: protocol=http, method={}, url={}, exception={}",
                             request.method(),
                             request.url().redact(),
                             e.getClass().getSimpleName());
@@ -132,7 +132,7 @@ public class RetryAndFollowUp implements Interceptor {
                 Logger.warn(
                         false,
                         "Http",
-                        "protocol=http, HTTP exchange failed; retrying: method={}, url={}, exception={}",
+                        "HTTP exchange failed; retrying: protocol=http, method={}, url={}, exception={}",
                         request.method(),
                         request.url().redact(),
                         e.getClass().getSimpleName());
@@ -160,7 +160,7 @@ public class RetryAndFollowUp implements Interceptor {
                 Logger.debug(
                         false,
                         "Http",
-                        "protocol=http, Retry interceptor completed: method={}, url={}, status={}, followUps={}",
+                        "Retry interceptor completed: protocol=http, method={}, url={}, status={}, followUps={}",
                         request.method(),
                         request.url().redact(),
                         response.code(),
@@ -173,7 +173,7 @@ public class RetryAndFollowUp implements Interceptor {
                 Logger.debug(
                         false,
                         "Http",
-                        "protocol=http, Retry interceptor stopped because follow-up body is one-shot: method={}, url={}, status={}, followUps={}",
+                        "Retry interceptor stopped because follow-up body is one-shot: protocol=http, method={}, url={}, status={}, followUps={}",
                         request.method(),
                         request.url().redact(),
                         response.code(),
@@ -190,7 +190,7 @@ public class RetryAndFollowUp implements Interceptor {
                 Logger.error(
                         false,
                         "Http",
-                        "protocol=http, Too many follow-up requests: method={}, url={}, followUps={}",
+                        "Too many follow-up requests: protocol=http, method={}, url={}, followUps={}",
                         request.method(),
                         request.url().redact(),
                         followUpCount);
@@ -200,7 +200,7 @@ public class RetryAndFollowUp implements Interceptor {
             Logger.debug(
                     true,
                     "Http",
-                    "protocol=http, Following HTTP response: fromStatus={}, nextMethod={}, nextUrl={}, followUps={}",
+                    "Following HTTP response: protocol=http, fromStatus={}, nextMethod={}, nextUrl={}, followUps={}",
                     response.code(),
                     followUp.method(),
                     followUp.url().redact(),

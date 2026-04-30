@@ -98,7 +98,7 @@ final class ExchangeFinder {
             Logger.debug(
                     true,
                     "Http",
-                    "protocol=http, Connection lookup started: host={}, port={}, connectTimeoutMs={}, readTimeoutMs={}, retry={}",
+                    "Connection lookup started: protocol=http, host={}, port={}, connectTimeoutMs={}, readTimeoutMs={}, retry={}",
                     address.url().host(),
                     address.url().port(),
                     connectTimeout,
@@ -115,7 +115,7 @@ final class ExchangeFinder {
             Logger.debug(
                     false,
                     "Http",
-                    "protocol=http, Connection lookup completed: host={}, port={}, protocol={}, extensiveHealthCheck={}",
+                    "Connection lookup completed: protocol=http, host={}, port={}, protocol={}, extensiveHealthCheck={}",
                     address.url().host(),
                     address.url().port(),
                     resultConnection.protocol(),
@@ -127,7 +127,7 @@ final class ExchangeFinder {
                     false,
                     "Http",
                     e,
-                    "protocol=http, Connection lookup failed by route: host={}, port={}, exception={}",
+                    "Connection lookup failed by route: protocol=http, host={}, port={}, exception={}",
                     address.url().host(),
                     address.url().port(),
                     e.getClass().getSimpleName());
@@ -138,7 +138,7 @@ final class ExchangeFinder {
                     false,
                     "Http",
                     e,
-                    "protocol=http, Connection lookup failed by IO: host={}, port={}, exception={}",
+                    "Connection lookup failed by IO: protocol=http, host={}, port={}, exception={}",
                     address.url().host(),
                     address.url().port(),
                     e.getClass().getSimpleName());

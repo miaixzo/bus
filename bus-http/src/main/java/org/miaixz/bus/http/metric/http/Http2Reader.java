@@ -117,7 +117,8 @@ public class Http2Reader implements Closeable {
                 Logger.debug(
                         true,
                         "Http",
-                        "protocol=http2, " + (String.format("<< CONNECTION %s" + connectionPreface.hex())));
+                        "HTTP/2 connection preface received: protocol=http2, preface={}",
+                        connectionPreface.hex());
             }
             if (!Http2.CONNECTION_PREFACE.equals(connectionPreface)) {
                 throw Http2.ioException("Expected a connection header but was %s", connectionPreface.utf8());
@@ -151,7 +152,11 @@ public class Http2Reader implements Closeable {
         byte flags = (byte) (source.readByte() & 0xff);
         int streamId = (source.readInt() & 0x7fffffff);
         if (Logger.isDebugEnabled()) {
-            Logger.warn(false, "Http", "protocol=http2, " + (Http2.frameLog(true, streamId, length, type, flags)));
+            Logger.warn(
+                    false,
+                    "Http",
+                    "HTTP/2 frame received: protocol=http2, frame={}",
+                    Http2.frameLog(true, streamId, length, type, flags));
         }
 
         switch (type) {
@@ -673,7 +678,11 @@ public class Http2Reader implements Closeable {
             byte type = (byte) (source.readByte() & 0xff);
             flags = (byte) (source.readByte() & 0xff);
             if (Logger.isDebugEnabled()) {
-                Logger.warn(false, "Http", "protocol=http2, " + (Http2.frameLog(true, streamId, length, type, flags)));
+                Logger.warn(
+                        false,
+                        "Http",
+                        "HTTP/2 continuation frame received: protocol=http2, frame={}",
+                        Http2.frameLog(true, streamId, length, type, flags));
             }
             streamId = (source.readInt() & 0x7fffffff);
             if (type != Http2.TYPE_CONTINUATION)

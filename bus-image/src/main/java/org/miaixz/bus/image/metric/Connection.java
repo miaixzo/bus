@@ -938,7 +938,7 @@ public class Connection implements Serializable {
                     false,
                     "Image",
                     e,
-                    "component=network, Connection unbind close failed: protocol={}, exception={}",
+                    "Connection unbind close failed: protocol={}, exception={}",
                     protocol,
                     e.getClass().getSimpleName());
             // 关闭服务器套接字时忽略错误.

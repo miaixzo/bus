@@ -292,8 +292,7 @@ public class VersionAssets extends Assets {
                 Logger.debug(
                         false,
                         "Cortex",
-                        "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
-                        "version",
+                        "Cortex operation skipped: provider={}, recoverable={}, exception={}",
                         "VersionAssets",
                         true,
                         ignore.getClass().getSimpleName());

@@ -201,8 +201,7 @@ public class PromptAssets extends Assets {
                 Logger.debug(
                         false,
                         "Cortex",
-                        "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
-                        "registry",
+                        "Cortex operation skipped: provider={}, recoverable={}, exception={}",
                         "PromptAssets",
                         true,
                         ignore.getClass().getSimpleName());

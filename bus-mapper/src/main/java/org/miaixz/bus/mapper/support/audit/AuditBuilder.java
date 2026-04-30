@@ -188,8 +188,7 @@ public class AuditBuilder {
                     false,
                     "Mapper",
                     e,
-                    "Mapper operation failed: component={}, provider={}, exception={}",
-                    "audit",
+                    "Mapper operation failed: provider={}, exception={}",
                     "AuditBuilder",
                     e.getClass().getSimpleName());
             // If check fails, default to not ignoring

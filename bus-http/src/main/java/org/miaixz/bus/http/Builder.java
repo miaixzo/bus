@@ -167,7 +167,7 @@ public class Builder {
             Logger.debug(
                     false,
                     "Http",
-                    "protocol=http, Suppressed exception method unavailable: exception={}",
+                    "Suppressed exception method unavailable: protocol=http, exception={}",
                     e.getClass().getSimpleName());
             m = null;
         }
@@ -194,7 +194,7 @@ public class Builder {
                 Logger.debug(
                         false,
                         "Http",
-                        "protocol=http, Suppressed exception attach failed: primaryException={}, suppressedException={}, exception={}",
+                        "Suppressed exception attach failed: protocol=http, primaryException={}, suppressedException={}, exception={}",
                         e == null ? null : e.getClass().getSimpleName(),
                         suppressed == null ? null : suppressed.getClass().getSimpleName(),
                         ignored.getClass().getSimpleName());
@@ -231,7 +231,7 @@ public class Builder {
             Logger.debug(
                     false,
                     "Http",
-                    "protocol=http, Source discard failed: timeout={}, unit={}, exception={}",
+                    "Source discard failed: protocol=http, timeout={}, unit={}, exception={}",
                     timeout,
                     timeUnit,
                     e.getClass().getSimpleName());
@@ -263,7 +263,7 @@ public class Builder {
             Logger.debug(
                     false,
                     "Http",
-                    "protocol=http, Source skip timed out: duration={}, unit={}, exception={}",
+                    "Source skip timed out: protocol=http, duration={}, unit={}, exception={}",
                     duration,
                     timeUnit,
                     e.getClass().getSimpleName());
@@ -545,7 +545,7 @@ public class Builder {
             Logger.debug(
                     false,
                     "Http",
-                    "protocol=http, Host canonicalization failed: hostChars={}, exception={}",
+                    "Host canonicalization failed: protocol=http, hostChars={}, exception={}",
                     host == null ? 0 : host.length(),
                     e.getClass().getSimpleName());
             return null;

@@ -234,6 +234,32 @@ public class Stomp {
         if (null == websocket) {
             throw new IllegalArgumentException("You must call connect before send");
         }
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("payload", message.getPayload());
+        Logger.debug(
+                true,
+                "Http",
+                "Request header snapshot: protocol=stomp, command={}, headerCount={}",
+                message.getCommand(),
+                message.getHeaders() == null ? 0 : message.getHeaders().size());
+        Logger.debug(
+                true,
+                "Http",
+                "Request headers: protocol=stomp, command={}, headers={}",
+                message.getCommand(),
+                message.getHeaders());
+        Logger.debug(
+                true,
+                "Http",
+                "Request parameter snapshot: protocol=stomp, command={}, payloadChars={}",
+                message.getCommand(),
+                message.getPayload() == null ? 0 : message.getPayload().length());
+        Logger.debug(
+                true,
+                "Http",
+                "Request parameters: protocol=stomp, command={}, parameters={}",
+                message.getCommand(),
+                parameters);
         websocket.send(message.compile(legacyWhitespace));
     }
 
@@ -293,7 +319,7 @@ public class Stomp {
      */
     public synchronized Stomp subscribe(String destination, List<Header> headers, Callback<Message> callback) {
         if (subscribers.containsKey(destination)) {
-            Logger.error(false, "Http", "protocol=stomp, Attempted to subscribe to already-subscribed path!");
+            Logger.error(false, "Http", "Attempted to subscribe to already-subscribed path!: protocol=stomp");
             return this;
         }
         Subscriber subscriber = new Subscriber(UUID.randomUUID().toString(), destination, callback, headers);
@@ -319,7 +345,7 @@ public class Stomp {
             Logger.error(
                     false,
                     "Http",
-                    "protocol=stomp, subscription and message-id not found in " + message.toString()
+                    "Subscription and message-id not found in : protocol=stomp" + message.toString()
                             + ", so it can not be ack!");
         }
     }
@@ -361,6 +387,32 @@ public class Stomp {
      */
     private void receive(Message msg) {
         String command = msg.getCommand();
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("payload", msg.getPayload());
+        Logger.debug(
+                false,
+                "Http",
+                "Response header snapshot: protocol=stomp, command={}, headerCount={}",
+                command,
+                msg.getHeaders() == null ? 0 : msg.getHeaders().size());
+        Logger.debug(
+                false,
+                "Http",
+                "Request headers: protocol=stomp, command={}, headers={}",
+                command,
+                msg.getHeaders());
+        Logger.debug(
+                false,
+                "Http",
+                "Response parameter snapshot: protocol=stomp, command={}, payloadChars={}",
+                command,
+                msg.getPayload() == null ? 0 : msg.getPayload().length());
+        Logger.debug(
+                false,
+                "Http",
+                "Request parameters: protocol=stomp, command={}, parameters={}",
+                command,
+                parameters);
         if (Builder.CONNECTED.equals(command)) {
             String hbHeader = msg.headerValue(Header.HEART_BEAT);
             if (null != hbHeader) {
@@ -533,7 +585,7 @@ public class Stomp {
             int mhIndex = data.indexOf("\n\n");
 
             if (cmdIndex >= mhIndex) {
-                Logger.error(false, "Http", "protocol=stomp, Invalid STOMP message: " + data);
+                Logger.error(false, "Http", "Invalid STOMP message: protocol=stomp" + data);
                 return null;
             }
             String command = data.substring(0, cmdIndex);

@@ -218,7 +218,7 @@ public class CommonsFtp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "FTP operation failed: provider={}, exception={}",
                     "CommonsFtp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -232,7 +232,7 @@ public class CommonsFtp extends AbstractFtp {
                         false,
                         "Extra",
                         e,
-                        "component=ftp, FTP operation failed: provider={}, exception={}",
+                        "FTP operation failed: provider={}, exception={}",
                         "CommonsFtp",
                         e.getClass().getSimpleName());
                 // ignore
@@ -305,7 +305,7 @@ public class CommonsFtp extends AbstractFtp {
                     false,
                     "Extra",
                     fex,
-                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "FTP operation failed: provider={}, exception={}",
                     "CommonsFtp",
                     fex.getClass().getSimpleName());
             // ignore
@@ -337,7 +337,7 @@ public class CommonsFtp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "FTP operation failed: provider={}, exception={}",
                     "CommonsFtp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -358,7 +358,7 @@ public class CommonsFtp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "FTP operation failed: provider={}, exception={}",
                     "CommonsFtp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -443,7 +443,7 @@ public class CommonsFtp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "FTP operation failed: provider={}, exception={}",
                     "CommonsFtp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -475,7 +475,7 @@ public class CommonsFtp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "FTP operation failed: provider={}, exception={}",
                     "CommonsFtp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -501,7 +501,7 @@ public class CommonsFtp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "FTP operation failed: provider={}, exception={}",
                     "CommonsFtp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -523,7 +523,7 @@ public class CommonsFtp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "FTP operation failed: provider={}, exception={}",
                     "CommonsFtp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -546,7 +546,7 @@ public class CommonsFtp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "FTP operation failed: provider={}, exception={}",
                     "CommonsFtp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -582,7 +582,7 @@ public class CommonsFtp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "FTP operation failed: provider={}, exception={}",
                     "CommonsFtp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -614,7 +614,7 @@ public class CommonsFtp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "FTP operation failed: provider={}, exception={}",
                     "CommonsFtp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -642,7 +642,7 @@ public class CommonsFtp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "FTP operation failed: provider={}, exception={}",
                     "CommonsFtp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -689,7 +689,7 @@ public class CommonsFtp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "FTP operation failed: provider={}, exception={}",
                     "CommonsFtp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -714,7 +714,7 @@ public class CommonsFtp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "FTP operation failed: provider={}, exception={}",
                     "CommonsFtp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -739,7 +739,7 @@ public class CommonsFtp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "FTP operation failed: provider={}, exception={}",
                     "CommonsFtp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -850,7 +850,7 @@ public class CommonsFtp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "FTP operation failed: provider={}, exception={}",
                     "CommonsFtp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -904,7 +904,7 @@ public class CommonsFtp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "FTP operation failed: provider={}, exception={}",
                     "CommonsFtp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -958,7 +958,7 @@ public class CommonsFtp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ftp, FTP operation failed: provider={}, exception={}",
+                    "FTP operation failed: provider={}, exception={}",
                     "CommonsFtp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);

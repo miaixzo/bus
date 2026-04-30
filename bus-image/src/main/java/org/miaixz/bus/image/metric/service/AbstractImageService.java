@@ -64,7 +64,7 @@ public abstract class AbstractImageService implements ImageService {
         Logger.debug(
                 false,
                 "Image",
-                "protocol=pdu, Dataset read completed: transferSyntax={}, attributeCount={}",
+                "Dataset read completed: protocol=pdu, transferSyntax={}, attributeCount={}",
                 pc.getTransferSyntax(),
                 dataset == null ? 0 : dataset.size());
         return dataset;

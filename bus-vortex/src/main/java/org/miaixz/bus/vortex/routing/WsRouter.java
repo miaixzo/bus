@@ -87,10 +87,29 @@ public class WsRouter implements Router<ServerRequest, ServerResponse> {
             String method = input.methodName();
             String path = input.path();
 
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request header snapshot: protocol=ws, clientIp={}, method={}, path={}",
+                    ip,
+                    method,
+                    path);
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request headers: protocol=ws, clientIp={}, headers={}",
+                    ip,
+                    input.headers().asHttpHeaders().toSingleValueMap());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request parameters: protocol=ws, clientIp={}, parameters={}",
+                    ip,
+                    input.queryParams().toSingleValueMap());
             Logger.info(
                     true,
                     "Vortex",
-                    "protocol=ws, clientIp={}, method={}, path={}, event=WS_ROUTER_START, WebSocket target connection started: target={}",
+                    "WebSocket target connection started: protocol=ws, clientIp={}, method={}, path={}, event=WS_ROUTER_START, target={}",
                     ip,
                     method,
                     path,
@@ -103,7 +122,7 @@ public class WsRouter implements Router<ServerRequest, ServerResponse> {
                 Logger.warn(
                         true,
                         "Vortex",
-                        "protocol=ws, clientIp={}, method={}, path={}, event=WS_NOT_UPGRADE, WebSocket upgrade header missing",
+                        "WebSocket upgrade header missing: protocol=ws, clientIp={}, method={}, path={}, event=WS_NOT_UPGRADE",
                         ip,
                         method,
                         path);
@@ -116,7 +135,7 @@ public class WsRouter implements Router<ServerRequest, ServerResponse> {
             Logger.info(
                     true,
                     "Vortex",
-                    "protocol=ws, clientIp={}, method={}, path={}, event=WS_UPGRADE_DETECTED, WebSocket upgrade request accepted",
+                    "WebSocket upgrade request accepted: protocol=ws, clientIp={}, method={}, path={}, event=WS_UPGRADE_DETECTED",
                     ip,
                     method,
                     path);

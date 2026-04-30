@@ -163,7 +163,7 @@ public class SshjSftp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ssh, SSH operation failed: provider={}, exception={}",
+                    "SSH operation failed: provider={}, exception={}",
                     "SshjSftp",
                     e.getClass().getSimpleName());
             throw new InternalException("sftp initialization failed.", e);
@@ -192,7 +192,7 @@ public class SshjSftp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ssh, SSH operation failed: provider={}, exception={}",
+                    "SSH operation failed: provider={}, exception={}",
                     "SshjSftp",
                     e.getClass().getSimpleName());
             close();
@@ -223,7 +223,7 @@ public class SshjSftp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ssh, SSH operation failed: provider={}, exception={}",
+                    "SSH operation failed: provider={}, exception={}",
                     "SshjSftp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -264,7 +264,7 @@ public class SshjSftp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ssh, SSH operation failed: provider={}, exception={}",
+                    "SSH operation failed: provider={}, exception={}",
                     "SshjSftp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -290,7 +290,7 @@ public class SshjSftp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ssh, SSH operation failed: provider={}, exception={}",
+                    "SSH operation failed: provider={}, exception={}",
                     "SshjSftp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -318,7 +318,7 @@ public class SshjSftp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ssh, SSH operation failed: provider={}, exception={}",
+                    "SSH operation failed: provider={}, exception={}",
                     "SshjSftp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -349,7 +349,7 @@ public class SshjSftp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ssh, SSH operation failed: provider={}, exception={}",
+                    "SSH operation failed: provider={}, exception={}",
                     "SshjSftp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -376,7 +376,7 @@ public class SshjSftp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ssh, SSH operation failed: provider={}, exception={}",
+                    "SSH operation failed: provider={}, exception={}",
                     "SshjSftp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -410,7 +410,7 @@ public class SshjSftp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ssh, SSH operation failed: provider={}, exception={}",
+                    "SSH operation failed: provider={}, exception={}",
                     "SshjSftp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -436,7 +436,7 @@ public class SshjSftp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ssh, SSH operation failed: provider={}, exception={}",
+                    "SSH operation failed: provider={}, exception={}",
                     "SshjSftp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -490,7 +490,7 @@ public class SshjSftp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ssh, SSH operation failed: provider={}, exception={}",
+                    "SSH operation failed: provider={}, exception={}",
                     "SshjSftp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -527,7 +527,7 @@ public class SshjSftp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ssh, SSH operation failed: provider={}, exception={}",
+                    "SSH operation failed: provider={}, exception={}",
                     "SshjSftp",
                     e.getClass().getSimpleName());
             return false;
@@ -554,7 +554,7 @@ public class SshjSftp extends AbstractFtp {
                     false,
                     "Extra",
                     e,
-                    "component=ssh, SSH operation failed: provider={}, exception={}",
+                    "SSH operation failed: provider={}, exception={}",
                     "SshjSftp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -580,7 +580,7 @@ public class SshjSftp extends AbstractFtp {
                         false,
                         "Extra",
                         e,
-                        "component=ssh, SSH operation failed: provider={}, exception={}",
+                        "SSH operation failed: provider={}, exception={}",
                         "SshjSftp",
                         e.getClass().getSimpleName());
                 throw new InternalException(e);
@@ -606,7 +606,7 @@ public class SshjSftp extends AbstractFtp {
                         false,
                         "Extra",
                         e,
-                        "component=ssh, SSH operation failed: provider={}, exception={}",
+                        "SSH operation failed: provider={}, exception={}",
                         "SshjSftp",
                         e.getClass().getSimpleName());
                 throw new InternalException(e);

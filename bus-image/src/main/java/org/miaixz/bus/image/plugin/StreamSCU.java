@@ -164,7 +164,7 @@ public class StreamSCU {
                         Logger.warn(
                                 false,
                                 "Image",
-                                "component=tool, Received C-STORE-RSP with Status {}H",
+                                "Received C-STORE-RSP with Status {}H",
                                 Tag.shortToHexString(status));
                     }
                     break;
@@ -177,7 +177,7 @@ public class StreamSCU {
                         Logger.error(
                                 false,
                                 "Image",
-                                "component=tool, Received C-STORE-RSP with Status {}H",
+                                "Received C-STORE-RSP with Status {}H",
                                 Tag.shortToHexString(status));
                     }
             }
@@ -680,7 +680,7 @@ public class StreamSCU {
                     TimeUnit.MILLISECONDS.sleep(20);
                     loop++;
                     if (loop > 3000) { // Let 1 min max
-                        Logger.warn(false, "Image", "component=tool, prepareTransfer: StreamSCU timeout reached");
+                        Logger.warn(false, "Image", "prepareTransfer: StreamSCU timeout reached");
                         instanceUidsCurrentlyProcessed.clear();
                         break;
                     }
@@ -688,7 +688,7 @@ public class StreamSCU {
                     Logger.error(
                             false,
                             "Image",
-                            "component=tool, prepareTransfer: InterruptedException {}",
+                            "prepareTransfer: InterruptedException {}",
                             e.getClass().getSimpleName());
                     Thread.currentThread().interrupt();
                     break;

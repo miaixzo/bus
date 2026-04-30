@@ -191,7 +191,7 @@ public class Cache implements Closeable, Flushable {
                     false,
                     "Http",
                     e,
-                    "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                    "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
                     "Cache",
                     true,
                     e.getClass().getSimpleName());
@@ -219,7 +219,7 @@ public class Cache implements Closeable, Flushable {
                     false,
                     "Http",
                     e,
-                    "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                    "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
                     "Cache",
                     true,
                     e.getClass().getSimpleName());
@@ -234,7 +234,7 @@ public class Cache implements Closeable, Flushable {
                     false,
                     "Http",
                     e,
-                    "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                    "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
                     "Cache",
                     true,
                     e.getClass().getSimpleName());
@@ -269,7 +269,7 @@ public class Cache implements Closeable, Flushable {
                         false,
                         "Http",
                         ignored,
-                        "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                        "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
                         "Cache",
                         true,
                         ignored.getClass().getSimpleName());
@@ -301,7 +301,7 @@ public class Cache implements Closeable, Flushable {
                     false,
                     "Http",
                     e,
-                    "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                    "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
                     "Cache",
                     true,
                     e.getClass().getSimpleName());
@@ -341,7 +341,7 @@ public class Cache implements Closeable, Flushable {
                     false,
                     "Http",
                     e,
-                    "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                    "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
                     "Cache",
                     true,
                     e.getClass().getSimpleName());
@@ -365,7 +365,7 @@ public class Cache implements Closeable, Flushable {
                     false,
                     "Http",
                     ignored,
-                    "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                    "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
                     "Cache",
                     true,
                     ignored.getClass().getSimpleName());
@@ -439,7 +439,7 @@ public class Cache implements Closeable, Flushable {
                                 false,
                                 "Http",
                                 ignored,
-                                "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                                "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
                                 "Cache",
                                 true,
                                 ignored.getClass().getSimpleName());
@@ -778,7 +778,7 @@ public class Cache implements Closeable, Flushable {
                         false,
                         "Http",
                         e,
-                        "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                        "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
                         "Cache",
                         true,
                         e.getClass().getSimpleName());
@@ -806,7 +806,7 @@ public class Cache implements Closeable, Flushable {
                         false,
                         "Http",
                         e,
-                        "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                        "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
                         "Cache",
                         true,
                         e.getClass().getSimpleName());
@@ -906,7 +906,7 @@ public class Cache implements Closeable, Flushable {
                         false,
                         "Http",
                         e,
-                        "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                        "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
                         "Cache",
                         true,
                         e.getClass().getSimpleName());
@@ -985,7 +985,7 @@ public class Cache implements Closeable, Flushable {
                         false,
                         "Http",
                         ignored,
-                        "HTTP cache operation failed: component=cache, provider={}, recoverable={}, exception={}",
+                        "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
                         "Cache",
                         true,
                         ignored.getClass().getSimpleName());

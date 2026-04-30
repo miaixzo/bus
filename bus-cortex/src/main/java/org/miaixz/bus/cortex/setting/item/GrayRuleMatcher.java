@@ -145,8 +145,7 @@ public class GrayRuleMatcher {
                         false,
                         "Cortex",
                         e,
-                        "Cortex operation failed: component={}, provider={}, recoverable={}, exception={}",
-                        "setting",
+                        "Cortex operation failed: provider={}, recoverable={}, exception={}",
                         "GrayRuleMatcher",
                         false,
                         e.getClass().getSimpleName());

@@ -907,8 +907,7 @@ public class RegistryControlService {
             Logger.debug(
                     false,
                     "Cortex",
-                    "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
-                    "registry",
+                    "Cortex operation skipped: provider={}, recoverable={}, exception={}",
                     "RegistryControlService",
                     true,
                     ignored.getClass().getSimpleName());
@@ -985,8 +984,7 @@ public class RegistryControlService {
             Logger.debug(
                     false,
                     "Cortex",
-                    "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
-                    "registry",
+                    "Cortex operation skipped: provider={}, recoverable={}, exception={}",
                     "RegistryControlService",
                     true,
                     ignore.getClass().getSimpleName());
@@ -1013,8 +1011,7 @@ public class RegistryControlService {
             Logger.debug(
                     false,
                     "Cortex",
-                    "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
-                    "registry",
+                    "Cortex operation skipped: provider={}, recoverable={}, exception={}",
                     "RegistryControlService",
                     true,
                     ignore.getClass().getSimpleName());
@@ -1048,8 +1045,7 @@ public class RegistryControlService {
             Logger.debug(
                     false,
                     "Cortex",
-                    "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
-                    "registry",
+                    "Cortex operation skipped: provider={}, recoverable={}, exception={}",
                     "RegistryControlService",
                     true,
                     ignore.getClass().getSimpleName());

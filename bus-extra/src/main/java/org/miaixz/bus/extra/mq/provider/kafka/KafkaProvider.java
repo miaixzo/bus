@@ -89,7 +89,7 @@ public class KafkaProvider implements MQProvider {
         Logger.info(
                 true,
                 "Extra",
-                "component=mq, Kafka provider initialization requested: brokerPresent={}",
+                "Kafka provider initialization requested: brokerPresent={}",
                 config != null && config.getBrokerUrl() != null);
         return init(buidProperties(config));
     }
@@ -106,7 +106,7 @@ public class KafkaProvider implements MQProvider {
         Logger.info(
                 false,
                 "Extra",
-                "component=mq, Kafka provider initialized: propertyCount={}",
+                "Kafka provider initialized: propertyCount={}",
                 properties == null ? 0 : properties.size());
         return this;
     }
@@ -123,14 +123,14 @@ public class KafkaProvider implements MQProvider {
         Logger.debug(
                 true,
                 "Extra",
-                "component=mq, Kafka provider property update started: key={}, propertyCountBefore={}",
+                "Kafka provider property update started: key={}, propertyCountBefore={}",
                 key,
                 this.properties == null ? 0 : this.properties.size());
         this.properties.put(key, value);
         Logger.debug(
                 false,
                 "Extra",
-                "component=mq, Kafka provider property updated: key={}, propertyCountAfter={}",
+                "Kafka provider property updated: key={}, propertyCountAfter={}",
                 key,
                 this.properties == null ? 0 : this.properties.size());
         return this;
@@ -148,13 +148,13 @@ public class KafkaProvider implements MQProvider {
         Logger.debug(
                 true,
                 "Extra",
-                "component=mq, Kafka producer creation started: propertyCount={}",
+                "Kafka producer creation started: propertyCount={}",
                 this.properties == null ? 0 : this.properties.size());
         Producer producer = new KafkaProducer(this.properties);
         Logger.debug(
                 false,
                 "Extra",
-                "component=mq, Kafka producer created: propertyCount={}, elapsedMs={}",
+                "Kafka producer created: propertyCount={}, elapsedMs={}",
                 this.properties == null ? 0 : this.properties.size(),
                 (System.nanoTime() - startedAt) / 1_000_000L);
         return producer;
@@ -172,13 +172,13 @@ public class KafkaProvider implements MQProvider {
         Logger.debug(
                 true,
                 "Extra",
-                "component=mq, Kafka consumer creation started: propertyCount={}",
+                "Kafka consumer creation started: propertyCount={}",
                 this.properties == null ? 0 : this.properties.size());
         Consumer consumer = new KafkaConsumer(this.properties);
         Logger.debug(
                 false,
                 "Extra",
-                "component=mq, Kafka consumer created: propertyCount={}, elapsedMs={}",
+                "Kafka consumer created: propertyCount={}, elapsedMs={}",
                 this.properties == null ? 0 : this.properties.size(),
                 (System.nanoTime() - startedAt) / 1_000_000L);
         return consumer;
@@ -195,7 +195,7 @@ public class KafkaProvider implements MQProvider {
         Logger.debug(
                 true,
                 "Extra",
-                "component=mq, Kafka provider property build started: brokerPresent={}, extraPropertyCount={}",
+                "Kafka provider property build started: brokerPresent={}, extraPropertyCount={}",
                 config != null && config.getBrokerUrl() != null,
                 config == null || config.getProperties() == null ? 0 : config.getProperties().size());
         final Properties properties = new Properties();
@@ -203,11 +203,7 @@ public class KafkaProvider implements MQProvider {
         properties.setProperty(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, config.getBrokerUrl());
         // Add other configuration properties from MQConfig
         properties.putAll(config.getProperties());
-        Logger.debug(
-                false,
-                "Extra",
-                "component=mq, Kafka provider property build completed: propertyCount={}",
-                properties.size());
+        Logger.debug(false, "Extra", "Kafka provider property build completed: propertyCount={}", properties.size());
         return properties;
     }
 

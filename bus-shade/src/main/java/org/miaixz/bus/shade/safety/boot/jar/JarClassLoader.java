@@ -90,7 +90,7 @@ public class JarClassLoader extends URLClassLoader {
                     false,
                     "Shade",
                     e,
-                    "Jar resource URL wrap failed: component=jar, resourceName={}, protocol={}, exception={}",
+                    "Jar resource URL wrap failed: resourceName={}, protocol={}, exception={}",
                     name,
                     url.getProtocol(),
                     e.getClass().getSimpleName());
@@ -132,7 +132,7 @@ public class JarClassLoader extends URLClassLoader {
             Logger.debug(
                     true,
                     "Shade",
-                    "Jar encrypted class fallback started: component=jar, className={}, loader={}",
+                    "Jar encrypted class fallback started: className={}, loader={}",
                     name,
                     getClass().getName());
             URL resource = findResource(name.replace(Symbol.C_DOT, Symbol.C_SLASH) + ".class");
@@ -140,7 +140,7 @@ public class JarClassLoader extends URLClassLoader {
                 Logger.warn(
                         false,
                         "Shade",
-                        "Jar encrypted class fallback failed: component=jar, className={}, reason={}",
+                        "Jar encrypted class fallback failed: className={}, reason={}",
                         name,
                         "resourceMissing");
                 throw new ClassNotFoundException(name, e);
@@ -153,7 +153,7 @@ public class JarClassLoader extends URLClassLoader {
                 Logger.debug(
                         false,
                         "Shade",
-                        "Jar encrypted class fallback finished: component=jar, className={}, byteCount={}",
+                        "Jar encrypted class fallback finished: className={}, byteCount={}",
                         name,
                         bytes.length);
                 return definedClass;
@@ -162,7 +162,7 @@ public class JarClassLoader extends URLClassLoader {
                         false,
                         "Shade",
                         t,
-                        "Jar encrypted class fallback failed: component=jar, className={}, exception={}",
+                        "Jar encrypted class fallback failed: className={}, exception={}",
                         name,
                         t.getClass().getSimpleName());
                 throw new ClassNotFoundException(name, t);
@@ -215,7 +215,7 @@ public class JarClassLoader extends URLClassLoader {
                         false,
                         "Shade",
                         e,
-                        "Jar resource enumeration URL wrap failed: component=jar, protocol={}, exception={}",
+                        "Jar resource enumeration URL wrap failed: protocol={}, exception={}",
                         url.getProtocol(),
                         e.getClass().getSimpleName());
                 return url;

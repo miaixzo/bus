@@ -93,11 +93,7 @@ public class BootURLHandler extends Handler {
                 }
             }
         }
-        Logger.debug(
-                false,
-                "Shade",
-                "Boot URL handler initialized: component=boot, encryptedResourceCount={}",
-                indexes.size());
+        Logger.debug(false, "Shade", "Boot URL handler initialized: encryptedResourceCount={}", indexes.size());
     }
 
     /**
@@ -116,7 +112,7 @@ public class BootURLHandler extends Handler {
             Logger.trace(
                     true,
                     "Shade",
-                    "Boot encrypted resource connection opened: component=boot, protocol={}, resourceChars={}",
+                    "Boot encrypted resource connection opened: protocol={}, resourceChars={}",
                     url.getProtocol(),
                     url.toString().length());
             return new BootURLConnection((JarURLConnection) urlConnection, decryptorProvider, encryptorProvider, key);

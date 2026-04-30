@@ -84,7 +84,7 @@ public class Dcm2Pdf {
                 Logger.info(
                         false,
                         "Image",
-                        "component=tool, Encapsulated document conversion skipped: fileName={}, sopClass={}, reason={}",
+                        "Encapsulated document conversion skipped: fileName={}, sopClass={}, reason={}",
                         src.getFileName(),
                         UID.nameOf(sopCUID),
                         "unsupported-sop-class");

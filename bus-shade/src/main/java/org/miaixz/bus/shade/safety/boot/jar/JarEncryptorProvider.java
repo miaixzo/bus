@@ -145,7 +145,7 @@ public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry
         Logger.info(
                 true,
                 "Shade",
-                "Jar encryption started: component=jar, sourceFile={}, targetFile={}, algorithm={}, mode={}",
+                "Jar encryption started: sourceFile={}, targetFile={}, algorithm={}, mode={}",
                 src == null ? null : src.getName(),
                 dest == null ? null : dest.getName(),
                 key == null ? null : key.getAlgorithm(),
@@ -156,7 +156,7 @@ public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry
         Logger.info(
                 false,
                 "Shade",
-                "Jar encryption finished: component=jar, sourceFile={}, targetFile={}, algorithm={}, mode={}",
+                "Jar encryption finished: sourceFile={}, targetFile={}, algorithm={}, mode={}",
                 src == null ? null : src.getName(),
                 dest == null ? null : dest.getName(),
                 key == null ? null : key.getAlgorithm(),
@@ -182,7 +182,7 @@ public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry
             Logger.debug(
                     true,
                     "Shade",
-                    "Jar encryption stream started: component=jar, algorithm={}, level={}, mode={}",
+                    "Jar encryption stream started: algorithm={}, level={}, mode={}",
                     key == null ? null : key.getAlgorithm(),
                     level,
                     mode);
@@ -268,7 +268,7 @@ public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry
             Logger.debug(
                     false,
                     "Shade",
-                    "Jar encryption stream finished: component=jar, encryptedEntryCount={}, frameworkInjected={}",
+                    "Jar encryption stream finished: encryptedEntryCount={}, frameworkInjected={}",
                     indexes.size(),
                     mainClass != null);
         } catch (IOException e) {
@@ -276,7 +276,7 @@ public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry
                     false,
                     "Shade",
                     e,
-                    "Jar encryption stream failed: component=jar, encryptedEntryCount={}, exception={}",
+                    "Jar encryption stream failed: encryptedEntryCount={}, exception={}",
                     indexes.size(),
                     e.getClass().getSimpleName());
             throw e;

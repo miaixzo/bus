@@ -78,7 +78,7 @@ public class KafkaProducer implements Producer {
         Logger.debug(
                 true,
                 "Extra",
-                "component=mq, Kafka send started: topic={}, messageBytes={}",
+                "Kafka send started: topic={}, messageBytes={}",
                 message.topic(),
                 content == null ? 0 : content.length);
         try {
@@ -86,7 +86,7 @@ public class KafkaProducer implements Producer {
             Logger.debug(
                     false,
                     "Extra",
-                    "component=mq, Kafka send dispatched: topic={}, messageBytes={}, elapsedMs={}",
+                    "Kafka send dispatched: topic={}, messageBytes={}, elapsedMs={}",
                     message.topic(),
                     content == null ? 0 : content.length,
                     (System.nanoTime() - startedAt) / 1_000_000L);
@@ -95,7 +95,7 @@ public class KafkaProducer implements Producer {
                     false,
                     "Extra",
                     e,
-                    "component=mq, Kafka send failed: topic={}, messageBytes={}, exception={}, elapsedMs={}",
+                    "Kafka send failed: topic={}, messageBytes={}, exception={}, elapsedMs={}",
                     message.topic(),
                     content == null ? 0 : content.length,
                     e.getClass().getSimpleName(),
@@ -114,20 +114,20 @@ public class KafkaProducer implements Producer {
     @Override
     public void close() throws IOException {
         final long startedAt = System.nanoTime();
-        Logger.debug(true, "Extra", "component=mq, Kafka producer close requested");
+        Logger.debug(true, "Extra", "Kafka producer close requested");
         try {
             IoKit.nullSafeClose(this.producer);
             Logger.debug(
                     false,
                     "Extra",
-                    "component=mq, Kafka producer closed: elapsedMs={}",
+                    "Kafka producer closed: elapsedMs={}",
                     (System.nanoTime() - startedAt) / 1_000_000L);
         } catch (IOException e) {
             Logger.warn(
                     false,
                     "Extra",
                     e,
-                    "component=mq, Kafka producer close failed: exception={}, elapsedMs={}",
+                    "Kafka producer close failed: exception={}, elapsedMs={}",
                     e.getClass().getSimpleName(),
                     (System.nanoTime() - startedAt) / 1_000_000L);
             throw e;

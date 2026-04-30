@@ -92,11 +92,7 @@ public class JarURLHandler extends URLStreamHandler {
                 }
             }
         }
-        Logger.debug(
-                false,
-                "Shade",
-                "Jar URL handler initialized: component=jar, encryptedResourceCount={}",
-                indexes.size());
+        Logger.debug(false, "Shade", "Jar URL handler initialized: encryptedResourceCount={}", indexes.size());
     }
 
     /**
@@ -115,7 +111,7 @@ public class JarURLHandler extends URLStreamHandler {
             Logger.trace(
                     true,
                     "Shade",
-                    "Jar encrypted resource connection opened: component=jar, protocol={}, resourceChars={}",
+                    "Jar encrypted resource connection opened: protocol={}, resourceChars={}",
                     url.getProtocol(),
                     url.toString().length());
             return new JarURLConnection((java.net.JarURLConnection) urlConnection, decryptorProvider, encryptorProvider,

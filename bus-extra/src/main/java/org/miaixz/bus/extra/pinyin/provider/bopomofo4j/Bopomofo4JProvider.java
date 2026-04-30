@@ -36,7 +36,7 @@ import com.rnkrsoft.bopomofo4j.ToneType;
  *
  * <p>
  * To introduce (dependency):
- * 
+ *
  * <pre>
  * &lt;dependency&gt;
  *     &lt;groupId&gt;com.rnkrsoft.bopomofo4j&lt;/groupId&gt;
@@ -54,9 +54,9 @@ public class Bopomofo4JProvider implements PinyinProvider {
      * Constructs a new Bopomofo4JProvider instance. Initializes the Bopomofo4j library for local use.
      */
     public Bopomofo4JProvider() {
-        Logger.info(true, "Extra", "component=pinyin, Bopomofo4J provider initialization started");
+        Logger.info(true, "Extra", "Bopomofo4J provider initialization started");
         Bopomofo4j.local();
-        Logger.info(false, "Extra", "component=pinyin, Bopomofo4J provider initialized");
+        Logger.info(false, "Extra", "Bopomofo4J provider initialized");
     }
 
     /**

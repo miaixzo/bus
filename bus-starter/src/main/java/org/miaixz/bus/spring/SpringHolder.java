@@ -83,7 +83,7 @@ public class SpringHolder {
                             false,
                             "Starter",
                             e,
-                            "component=spring, Spring class scan resource failed: packageName={}, resource={}, exception={}",
+                            "Spring class scan resource failed: packageName={}, resource={}, exception={}",
                             packageName,
                             resource,
                             e.getClass().getSimpleName());
@@ -95,14 +95,14 @@ public class SpringHolder {
                     false,
                     "Starter",
                     e,
-                    "component=spring, Spring class scan failed: packageName={}, exception={}",
+                    "Spring class scan failed: packageName={}, exception={}",
                     packageName,
                     e.getClass().getSimpleName());
         }
         Logger.debug(
                 false,
                 "Starter",
-                "component=spring, Spring class scan completed: packageName={}, classCount={}",
+                "Spring class scan completed: packageName={}, classCount={}",
                 packageName,
                 handlerSet.size());
         return handlerSet;

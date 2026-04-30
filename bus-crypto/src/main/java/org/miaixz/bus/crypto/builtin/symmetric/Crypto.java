@@ -443,8 +443,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
                     false,
                     "Crypto",
                     e,
-                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "symmetric",
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
                     "Crypto",
                     false,
                     e.getClass().getSimpleName());
@@ -541,8 +540,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
                     false,
                     "Crypto",
                     e,
-                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "symmetric",
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
                     "Crypto",
                     false,
                     e.getClass().getSimpleName());

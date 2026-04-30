@@ -90,7 +90,7 @@ public final class RealConnectionPool {
                         Logger.debug(
                                 false,
                                 "Http",
-                                "protocol=http, Connection pool cleanup wait interrupted: idleConnections={}, connectionCount={}, exception={}",
+                                "Connection pool cleanup wait interrupted: protocol=http, idleConnections={}, connectionCount={}, exception={}",
                                 idleConnectionCount(),
                                 connectionCount(),
                                 ignored.getClass().getSimpleName());

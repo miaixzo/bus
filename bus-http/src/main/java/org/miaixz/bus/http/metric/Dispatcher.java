@@ -181,7 +181,7 @@ public class Dispatcher {
             Logger.debug(
                     true,
                     "Http",
-                    "protocol=http, Dispatcher queued async call: host={}, ready={}, running={}, maxRequests={}",
+                    "Dispatcher queued async call: protocol=http, host={}, ready={}, running={}, maxRequests={}",
                     call.host(),
                     readyAsyncCalls.size(),
                     runningAsyncCalls.size(),
@@ -216,7 +216,7 @@ public class Dispatcher {
         Logger.warn(
                 false,
                 "Http",
-                "protocol=http, Dispatcher cancel all requested: ready={}, runningAsync={}, runningSync={}",
+                "Dispatcher cancel all requested: protocol=http, ready={}, runningAsync={}, runningSync={}",
                 readyAsyncCalls.size(),
                 runningAsyncCalls.size(),
                 runningSyncCalls.size());
@@ -266,7 +266,7 @@ public class Dispatcher {
             Logger.debug(
                     false,
                     "Http",
-                    "protocol=http, Dispatcher promoting async call: host={}, promoted={}",
+                    "Dispatcher promoting async call: protocol=http, host={}, promoted={}",
                     asyncCall.host(),
                     size);
             asyncCall.executeOn(executorService());
@@ -285,7 +285,7 @@ public class Dispatcher {
         Logger.debug(
                 true,
                 "Http",
-                "protocol=http, Dispatcher registered sync call: runningSync={}, runningAsync={}",
+                "Dispatcher registered sync call: protocol=http, runningSync={}, runningAsync={}",
                 runningSyncCalls.size(),
                 runningAsyncCalls.size());
     }
@@ -300,7 +300,7 @@ public class Dispatcher {
         Logger.debug(
                 false,
                 "Http",
-                "protocol=http, Dispatcher async call finished: host={}, callsPerHost={}",
+                "Dispatcher async call finished: protocol=http, host={}, callsPerHost={}",
                 call.host(),
                 call.callsPerHost().get());
         finished(runningAsyncCalls, call);
@@ -312,7 +312,7 @@ public class Dispatcher {
      * @param call the call that has finished.
      */
     public void finished(RealCall call) {
-        Logger.debug(false, "Http", "protocol=http, Dispatcher sync call finished");
+        Logger.debug(false, "Http", "Dispatcher sync call finished: protocol=http");
         finished(runningSyncCalls, call);
     }
 

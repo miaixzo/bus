@@ -60,13 +60,13 @@ public class ActiveMQProvider extends JmsProvider {
         Logger.info(
                 true,
                 "Extra",
-                "component=mq, ActiveMQ connection factory creation started: brokerPresent={}",
+                "ActiveMQ connection factory creation started: brokerPresent={}",
                 config != null && config.getBrokerUrl() != null);
         final ConnectionFactory factory = new ActiveMQConnectionFactory(config.getBrokerUrl());
         Logger.info(
                 false,
                 "Extra",
-                "component=mq, ActiveMQ connection factory created: factoryType={}",
+                "ActiveMQ connection factory created: factoryType={}",
                 factory.getClass().getSimpleName());
         return factory;
     }

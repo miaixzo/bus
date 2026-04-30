@@ -192,8 +192,7 @@ public abstract class AbstractSqlHandler {
                     false,
                     "Mapper",
                     e,
-                    "Mapper operation failed: component={}, provider={}, exception={}",
-                    "handler",
+                    "Mapper operation failed: provider={}, exception={}",
                     "AbstractSqlHandler",
                     e.getClass().getSimpleName());
             return false;

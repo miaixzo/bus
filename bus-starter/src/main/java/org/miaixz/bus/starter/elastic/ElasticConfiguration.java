@@ -71,7 +71,7 @@ public class ElasticConfiguration {
             Logger.error(
                     false,
                     "Starter",
-                    "component=spring, Elasticsearch RestClient initialization failed because cluster host information is not configured.");
+                    "Elasticsearch RestClient initialization failed because cluster host information is not configured.");
             throw new InternalException(
                     "Initialization of RestClient failed: Elasticsearch cluster host information is not configured.");
         }

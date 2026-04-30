@@ -111,14 +111,14 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
                 Logger.info(
                         true,
                         "Vortex",
-                        "protocol=mq, Producer evicted from cache: brokerKeyChars={}",
+                        "Producer evicted from cache: protocol=mq, brokerKeyChars={}",
                         key == null ? 0 : key.length());
             } catch (Exception e) {
                 Logger.error(
                         false,
                         "Vortex",
                         e,
-                        "protocol=mq, Failed to close evicted MQ Producer: brokerKeyChars={}, exception={}",
+                        "Failed to close evicted MQ Producer: protocol=mq, brokerKeyChars={}, exception={}",
                         key == null ? 0 : key.length(),
                         e.getClass().getSimpleName());
             }
@@ -176,7 +176,7 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
             Logger.info(
                     false,
                     "Vortex",
-                    "protocol=mq, event=MQ_SUCCESS_STREAM, message forwarded to MQ topic: topic={}, mode=streaming",
+                    "Message forwarded to MQ topic: protocol=mq, event=MQ_SUCCESS_STREAM, topic={}, mode=streaming",
                     assets.getMethod());
 
             return ServerResponse.ok().header(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON).bodyValue(ack);
@@ -193,7 +193,7 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
      */
     private Mono<ServerResponse> executeBuffering(Mono<String> ackMono) {
         return ackMono.flatMap(ack -> {
-            Logger.info(false, "Vortex", "protocol=mq, Message accepted for buffered delivery");
+            Logger.info(false, "Vortex", "Message accepted for buffered delivery: protocol=mq");
 
             return ServerResponse.ok().header(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON).bodyValue(ack);
         });
@@ -238,7 +238,7 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
                 e -> Logger.error(
                         false,
                         "Vortex",
-                        "protocol=mq, Failed to send message to topic '{}'",
+                        "Failed to send message to topic '{}': protocol=mq",
                         assets.getMethod(),
                         e));
     }
@@ -260,7 +260,7 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
             Logger.info(
                     true,
                     "Vortex",
-                    "protocol=mq, Producer not found in cache; creating: brokerUrlChars={}",
+                    "Producer not found in cache; creating: protocol=mq, brokerUrlChars={}",
                     brokerUrl.length());
             try {
                 MQConfig config = MQConfig.of(brokerUrl);
@@ -271,7 +271,7 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
                         false,
                         "Vortex",
                         e,
-                        "protocol=mq, Producer creation failed: brokerUrlChars={}, exception={}",
+                        "Producer creation failed: protocol=mq, brokerUrlChars={}, exception={}",
                         brokerUrl.length(),
                         e.getClass().getSimpleName());
                 throw new RuntimeException("Failed to get or create MQ Producer", e);
@@ -289,10 +289,10 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
     @Override
     public Mono<ServerResponse> destroy() {
         return Mono.fromRunnable(() -> {
-            Logger.info(false, "Vortex", "protocol=mq, MQ resources shutting down");
+            Logger.info(false, "Vortex", "MQ resources shutting down: protocol=mq");
             producerCache.clear();
             this.executor.shutdown();
-            Logger.info(false, "Vortex", "protocol=mq, MQ resources stopped");
+            Logger.info(false, "Vortex", "MQ resources stopped: protocol=mq");
         }).subscribeOn(Schedulers.boundedElastic()).then(Mono.empty());
     }
 

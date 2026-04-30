@@ -500,7 +500,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
                     Logger.info(
                             false,
                             "Image",
-                            "component=parser, Invalid attribute ignored: tagGroup={}, tagElement={}, vr={}, valueCount={}",
+                            "Invalid attribute ignored: tagGroup={}, tagElement={}, vr={}, valueCount={}",
                             Tag.groupNumber(tag),
                             Tag.elementNumber(tag),
                             vr,

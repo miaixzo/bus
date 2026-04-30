@@ -80,10 +80,10 @@ public abstract class HttpClient implements McpClient {
      */
     @Override
     public Mono<Void> initialize() {
-        Logger.info(true, "Vortex", "component=mcp, Initializing remote HTTP tool client: url={}", assets.getUrl());
+        Logger.info(true, "Vortex", "Initializing remote HTTP tool client: url={}", assets.getUrl());
         return listToolsFromRemote().doOnSuccess(toolList -> {
             this.tools = toolList;
-            Logger.info(false, "Vortex", "component=mcp, Remote tool catalog loaded: count={}", toolList.size());
+            Logger.info(false, "Vortex", "Remote tool catalog loaded: count={}", toolList.size());
         }).then();
     }
 
@@ -93,7 +93,7 @@ public abstract class HttpClient implements McpClient {
      */
     @Override
     public void close() {
-        Logger.info(false, "Vortex", "component=mcp, Closing remote HTTP tool client: url={}", assets.getUrl());
+        Logger.info(false, "Vortex", "Closing remote HTTP tool client: url={}", assets.getUrl());
     }
 
     /**
@@ -123,7 +123,7 @@ public abstract class HttpClient implements McpClient {
         Logger.info(
                 true,
                 "Vortex",
-                "component=mcp, Remote HTTP tool invocation started: name={}, argumentCount={}",
+                "Remote HTTP tool invocation started: name={}, argumentCount={}",
                 toolName,
                 arguments == null ? 0 : arguments.size());
         return this.webClient.post().uri("/mcp/call").bodyValue(Map.of("toolName", toolName, "arguments", arguments))
@@ -132,7 +132,7 @@ public abstract class HttpClient implements McpClient {
                         response -> Logger.info(
                                 false,
                                 "Vortex",
-                                "component=mcp, Remote HTTP tool invocation completed: name={}, responseChars={}",
+                                "Remote HTTP tool invocation completed: name={}, responseChars={}",
                                 toolName,
                                 response == null ? 0 : response.length()))
                 .map(response -> response);

@@ -62,7 +62,7 @@ public class SshjKit {
                     false,
                     "Extra",
                     e,
-                    "component=ssh, SSHJ client open failed: hostPresent={}, port={}, timeoutMs={}, exception={}",
+                    "SSHJ client open failed: hostPresent={}, port={}, timeoutMs={}, exception={}",
                     connector.getHost() != null,
                     connector.getPort(),
                     connector.getTimeout(),

@@ -330,7 +330,7 @@ public class MoveSCU extends Device implements AutoCloseable {
                         try {
                             this.cancel(as);
                         } catch (IOException e) {
-                            Logger.error(false, "Image", "component=tool, Cancel C-MOVE", e);
+                            Logger.error(false, "Image", "Cancel C-MOVE", e);
                         }
                     }
                 }
@@ -345,7 +345,7 @@ public class MoveSCU extends Device implements AutoCloseable {
                         as.release();
                     }
                 } catch (IOException e) {
-                    Logger.error(false, "Image", "component=tool, Cancel after C-MOVE", e);
+                    Logger.error(false, "Image", "Cancel after C-MOVE", e);
                 }
             }, cancelAfter, TimeUnit.MILLISECONDS);
         }

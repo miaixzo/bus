@@ -79,7 +79,7 @@ public enum HL7ProtocolHandler implements TCPProtocolHandler {
                                 false,
                                 "Image",
                                 e,
-                                "protocol=hl7, HL7 message processing failed: socketPresent={}, messageBytes={}, exception={}",
+                                "HL7 message processing failed: protocol=hl7, socketPresent={}, messageBytes={}, exception={}",
                                 s != null,
                                 msg == null ? 0 : msg.data().length,
                                 e.getClass().getSimpleName());
@@ -95,7 +95,7 @@ public enum HL7ProtocolHandler implements TCPProtocolHandler {
                             false,
                             "Image",
                             e,
-                            "protocol=hl7, Accepted connection closed before message: socketPresent={}, exception={}",
+                            "Accepted connection closed before message: protocol=hl7, socketPresent={}, exception={}",
                             s != null,
                             e.getClass().getSimpleName());
                 else
@@ -103,7 +103,7 @@ public enum HL7ProtocolHandler implements TCPProtocolHandler {
                             false,
                             "Image",
                             e,
-                            "protocol=hl7, Accepted connection failed: socketPresent={}, messageCount={}, exception={}",
+                            "Accepted connection failed: protocol=hl7, socketPresent={}, messageCount={}, exception={}",
                             s != null,
                             messageCount,
                             e.getClass().getSimpleName());

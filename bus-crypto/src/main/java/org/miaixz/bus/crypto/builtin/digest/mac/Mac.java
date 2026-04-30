@@ -100,8 +100,7 @@ public interface Mac {
                     false,
                     "Crypto",
                     e,
-                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "digest",
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
                     "Mac",
                     false,
                     e.getClass().getSimpleName());

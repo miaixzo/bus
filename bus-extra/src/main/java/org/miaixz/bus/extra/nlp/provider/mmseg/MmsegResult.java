@@ -65,12 +65,7 @@ public class MmsegResult extends AbstractResult {
         try {
             next = this.mmSeg.next();
         } catch (final IOException e) {
-            Logger.warn(
-                    false,
-                    "Extra",
-                    e,
-                    "component=nlp, Mmseg next word failed: exception={}",
-                    e.getClass().getSimpleName());
+            Logger.warn(false, "Extra", e, "Mmseg next word failed: exception={}", e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         if (null == next) {

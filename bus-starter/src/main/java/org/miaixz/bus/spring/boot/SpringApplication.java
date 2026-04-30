@@ -137,18 +137,13 @@ public class SpringApplication extends org.springframework.boot.SpringApplicatio
                 initializerStartupStatList.add(stat);
 
                 // Log the initialization time.
-                Logger.debug(
-                        false,
-                        "Starter",
-                        "component=spring, Spring initialized {} in {} ms",
-                        stat.getName(),
-                        stat.getCost());
+                Logger.debug(false, "Starter", "Spring initialized {} in {} ms", stat.getName(), stat.getCost());
             } catch (Exception e) {
                 // Log any exceptions that occur during initialization.
                 Logger.warn(
                         false,
                         "Starter",
-                        "component=spring, Spring failed to initialize {}: {}",
+                        "Spring failed to initialize {}: {}",
                         initializer.getClass().getName(),
                         e.getClass().getSimpleName());
             }

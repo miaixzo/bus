@@ -33,7 +33,7 @@ import com.github.stuxuhai.jpinyin.PinyinHelper;
  * Encapsulates the Jpinyin engine.
  * <p>
  * To introduce (dependency):
- * 
+ *
  * <pre>
  * &lt;dependency&gt;
  *     &lt;groupId&gt;com.github.stuxuhai&lt;/groupId&gt;
@@ -53,9 +53,9 @@ public class JPinyinProvider implements PinyinProvider {
      */
     public JPinyinProvider() {
         // Check if the library is introduced when loading via SPI
-        Logger.info(true, "Extra", "component=pinyin, JPinyin provider dependency check started");
+        Logger.info(true, "Extra", "JPinyin provider dependency check started");
         Assert.notNull(PinyinHelper.class);
-        Logger.info(false, "Extra", "component=pinyin, JPinyin provider dependency check completed");
+        Logger.info(false, "Extra", "JPinyin provider dependency check completed");
     }
 
     /**
@@ -91,7 +91,7 @@ public class JPinyinProvider implements PinyinProvider {
         Logger.debug(
                 true,
                 "Extra",
-                "component=pinyin, JPinyin string conversion started: textLength={}, separatorPresent={}, tone={}",
+                "JPinyin string conversion started: textLength={}, separatorPresent={}, tone={}",
                 str == null ? 0 : str.length(),
                 separator != null,
                 tone);
@@ -103,7 +103,7 @@ public class JPinyinProvider implements PinyinProvider {
             Logger.debug(
                     false,
                     "Extra",
-                    "component=pinyin, JPinyin string conversion completed: textLength={}, resultLength={}, tone={}",
+                    "JPinyin string conversion completed: textLength={}, resultLength={}, tone={}",
                     str == null ? 0 : str.length(),
                     result == null ? 0 : result.length(),
                     tone);
@@ -113,7 +113,7 @@ public class JPinyinProvider implements PinyinProvider {
                     false,
                     "Extra",
                     e,
-                    "component=pinyin, JPinyin string conversion failed: textLength={}, separatorPresent={}, tone={}, exception={}",
+                    "JPinyin string conversion failed: textLength={}, separatorPresent={}, tone={}, exception={}",
                     str == null ? 0 : str.length(),
                     separator != null,
                     tone,

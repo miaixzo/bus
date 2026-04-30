@@ -229,7 +229,7 @@ public class Association {
                         false,
                         "Image",
                         ex,
-                        "protocol=dimse, Role selection check failed: association={}, role={}, exception={}",
+                        "Role selection check failed: protocol=dimse, association={}, role={}, exception={}",
                         name,
                         "SCP",
                         ex.getClass().getSimpleName());
@@ -253,7 +253,7 @@ public class Association {
                         false,
                         "Image",
                         ex,
-                        "protocol=dimse, Role selection check failed: association={}, role={}, exception={}",
+                        "Role selection check failed: protocol=dimse, association={}, role={}, exception={}",
                         name,
                         "SCU",
                         ex.getClass().getSimpleName());
@@ -359,7 +359,7 @@ public class Association {
                 false,
                 "Image",
                 e,
-                "protocol=dimse, Association I/O failed: association={}, state={}, exception={}",
+                "Association I/O failed: protocol=dimse, association={}, state={}, exception={}",
                 name,
                 state,
                 e.getClass().getSimpleName());
@@ -522,7 +522,7 @@ public class Association {
         Logger.debug(
                 false,
                 "Image",
-                "protocol=dimse, Association state changed: association={}, state={}",
+                "Association state changed: protocol=dimse, association={}, state={}",
                 name,
                 newState);
         this.state = newState;
@@ -707,7 +707,7 @@ public class Association {
         Logger.warn(
                 false,
                 "Image",
-                "protocol=dimse, Unexpected PDU received: association={}, pduType={}, state={}",
+                "Unexpected PDU received: protocol=dimse, association={}, pduType={}, state={}",
                 name,
                 pdu,
                 state);
@@ -756,7 +756,7 @@ public class Association {
             Logger.warn(
                     false,
                     "Image",
-                    "protocol=dimse, Unexpected DIMSE response message id: association={}, messageId={}, status={}, commandAttributes={}",
+                    "Unexpected DIMSE response message id: protocol=dimse, association={}, messageId={}, status={}, commandAttributes={}",
                     name,
                     msgId,
                     status,
@@ -825,7 +825,7 @@ public class Association {
                     false,
                     "Image",
                     e,
-                    "protocol=dimse, DIMSE response write failed: association={}, dimse={}, exception={}",
+                    "DIMSE response write failed: protocol=dimse, association={}, dimse={}, exception={}",
                     this,
                     Dimse.valueOf(cmd.getInt(Tag.CommandField, 0)),
                     e.getClass().getSimpleName());

@@ -123,13 +123,13 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
     /**
      * Sets the position at which the salt is inserted into the data. This is only effective if a salt is present. The
      * salt position refers to the index within the data byte array where the salt is inserted. For example:
-     * 
+     *
      * <pre>
      * data: 0123456
      * </pre>
-     * 
+     *
      * If {@code saltPosition = 2}, the salt is inserted between '1' and '2', resulting in:
-     * 
+     *
      * <pre>
      * data: 01[salt]23456
      * </pre>
@@ -324,8 +324,7 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
                     false,
                     "Crypto",
                     e,
-                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "digest",
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
                     "Digester",
                     false,
                     e.getClass().getSimpleName());

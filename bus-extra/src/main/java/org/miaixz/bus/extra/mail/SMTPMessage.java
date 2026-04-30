@@ -108,7 +108,7 @@ public class SMTPMessage extends MimeMessage {
                     false,
                     "Extra",
                     e,
-                    "component=mail, Mail operation failed: provider={}, exception={}",
+                    "Mail operation failed: provider={}, exception={}",
                     "SMTPMessage",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -129,7 +129,7 @@ public class SMTPMessage extends MimeMessage {
                     false,
                     "Extra",
                     e,
-                    "component=mail, Mail operation failed: provider={}, exception={}",
+                    "Mail operation failed: provider={}, exception={}",
                     "SMTPMessage",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -182,7 +182,7 @@ public class SMTPMessage extends MimeMessage {
                     false,
                     "Extra",
                     e,
-                    "component=mail, Mail operation failed: provider={}, exception={}",
+                    "Mail operation failed: provider={}, exception={}",
                     "SMTPMessage",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -204,7 +204,7 @@ public class SMTPMessage extends MimeMessage {
                     false,
                     "Extra",
                     e,
-                    "component=mail, Mail operation failed: provider={}, exception={}",
+                    "Mail operation failed: provider={}, exception={}",
                     "SMTPMessage",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -227,7 +227,7 @@ public class SMTPMessage extends MimeMessage {
                     false,
                     "Extra",
                     e,
-                    "component=mail, Mail operation failed: provider={}, exception={}",
+                    "Mail operation failed: provider={}, exception={}",
                     "SMTPMessage",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -280,7 +280,7 @@ public class SMTPMessage extends MimeMessage {
                     false,
                     "Extra",
                     e,
-                    "component=mail, Mail operation failed: provider={}, exception={}",
+                    "Mail operation failed: provider={}, exception={}",
                     "SMTPMessage",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -337,7 +337,7 @@ public class SMTPMessage extends MimeMessage {
                     false,
                     "Extra",
                     e,
-                    "component=mail, Mail operation failed: provider={}, exception={}",
+                    "Mail operation failed: provider={}, exception={}",
                     "SMTPMessage",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -360,7 +360,7 @@ public class SMTPMessage extends MimeMessage {
                     false,
                     "Extra",
                     e,
-                    "component=mail, Mail operation failed: provider={}, exception={}",
+                    "Mail operation failed: provider={}, exception={}",
                     "SMTPMessage",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -382,7 +382,7 @@ public class SMTPMessage extends MimeMessage {
                     false,
                     "Extra",
                     e,
-                    "component=mail, Mail operation failed: provider={}, exception={}",
+                    "Mail operation failed: provider={}, exception={}",
                     "SMTPMessage",
                     e.getClass().getSimpleName());
             if (e instanceof SendFailedException) {
@@ -453,7 +453,7 @@ public class SMTPMessage extends MimeMessage {
                     false,
                     "Extra",
                     e,
-                    "component=mail, Mail operation failed: provider={}, exception={}",
+                    "Mail operation failed: provider={}, exception={}",
                     "SMTPMessage",
                     e.getClass().getSimpleName());
             throw new InternalException(e);

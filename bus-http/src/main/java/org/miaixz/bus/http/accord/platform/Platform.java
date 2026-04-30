@@ -252,7 +252,12 @@ public class Platform {
             message += " To see where this was allocated, set the Httpd logger level to DEBUG: "
                     + "Logger.getLogger(Httpd.class.getName()).setLevel(Level.DEBUG);";
         }
-        Logger.warn(false, "Http", "protocol=http, " + (message), stackTrace);
+        Logger.warn(
+                false,
+                "Http",
+                "Closeable leak reported: protocol=http, message={}, allocationTrace={}",
+                message,
+                stackTrace);
     }
 
     /**

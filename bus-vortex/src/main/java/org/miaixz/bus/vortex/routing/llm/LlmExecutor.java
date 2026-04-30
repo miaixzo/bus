@@ -76,15 +76,10 @@ public class LlmExecutor extends Coordinator {
         final String modelName = (String) context.getParameters().get("modelName");
         final Assets assets = context.getAssets();
 
-        Logger.debug(
-                true,
-                "Vortex",
-                "component=llm, {} Executing LLM request for model: {}",
-                context.getX_request_ip(),
-                modelName);
+        Logger.debug(true, "Vortex", "{} Executing LLM request for model: {}", context.getX_request_ip(), modelName);
 
         if (assets == null) {
-            Logger.warn(false, "Vortex", "component=llm, {} No Assets found in context", context.getX_request_ip());
+            Logger.warn(false, "Vortex", "{} No Assets found in context", context.getX_request_ip());
             return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).bodyValue(
                     "{\"error\":{\"message\":\"Assets configuration not found\",\"type\":\"server_error\",\"code\":\"assets_not_found\"}}");
         }
@@ -97,7 +92,7 @@ public class LlmExecutor extends Coordinator {
                     false,
                     "Vortex",
                     e,
-                    "component=llm, {} Failed to parse provider config: exception={}",
+                    "{} Failed to parse provider config: exception={}",
                     context.getX_request_ip(),
                     e.getClass().getSimpleName());
             return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).bodyValue(
@@ -108,7 +103,7 @@ public class LlmExecutor extends Coordinator {
             Logger.warn(
                     false,
                     "Vortex",
-                    "component=llm, {} Model not found in any provider: {}",
+                    "{} Model not found in any provider: {}",
                     context.getX_request_ip(),
                     modelName);
             return ServerResponse.status(HttpStatus.NOT_FOUND).bodyValue(
@@ -119,7 +114,7 @@ public class LlmExecutor extends Coordinator {
         Logger.debug(
                 true,
                 "Vortex",
-                "component=llm, {} Found provider for model {}: type={}, baseUrl={}",
+                "{} Found provider for model {}: type={}, baseUrl={}",
                 context.getX_request_ip(),
                 modelName,
                 providerConfig.type,
@@ -137,7 +132,7 @@ public class LlmExecutor extends Coordinator {
                     false,
                     "Vortex",
                     e,
-                    "component=llm, {} Failed to create provider: exception={}",
+                    "{} Failed to create provider: exception={}",
                     context.getX_request_ip(),
                     e.getClass().getSimpleName());
             return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).bodyValue(
@@ -146,6 +141,19 @@ public class LlmExecutor extends Coordinator {
 
         final ServerRequest serverRequest = (ServerRequest) context.getParameters().get("serverRequest");
         return serverRequest.bodyToMono(String.class).flatMap(body -> {
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request parameter snapshot: clientIp={}, model={}, bodyChars={}",
+                    context.getX_request_ip(),
+                    modelName,
+                    body.length());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request parameters: clientIp={}, parameters={}",
+                    context.getX_request_ip(),
+                    Map.of("body", body));
             final LlmRequest request;
             try {
                 request = parseRequest(body, modelName);
@@ -154,7 +162,7 @@ public class LlmExecutor extends Coordinator {
                         false,
                         "Vortex",
                         e,
-                        "component=llm, {} Failed to parse request: exception={}",
+                        "{} Failed to parse request: exception={}",
                         context.getX_request_ip(),
                         e.getClass().getSimpleName());
                 return ServerResponse.status(HttpStatus.BAD_REQUEST).bodyValue(
@@ -167,7 +175,7 @@ public class LlmExecutor extends Coordinator {
                 Logger.debug(
                         true,
                         "Vortex",
-                        "component=llm, {} Streaming response for model: {}",
+                        "{} Streaming response for model: {}",
                         context.getX_request_ip(),
                         modelName);
                 return ServerResponse.ok().contentType(org.springframework.http.MediaType.TEXT_EVENT_STREAM)
@@ -176,7 +184,7 @@ public class LlmExecutor extends Coordinator {
                 Logger.debug(
                         true,
                         "Vortex",
-                        "component=llm, {} Non-streaming response for model: {}",
+                        "{} Non-streaming response for model: {}",
                         context.getX_request_ip(),
                         modelName);
                 return provider.chat(request).flatMap(
@@ -187,7 +195,7 @@ public class LlmExecutor extends Coordinator {
                                     false,
                                     "Vortex",
                                     e,
-                                    "component=llm, {} LLM request failed: exception={}",
+                                    "{} LLM request failed: exception={}",
                                     context.getX_request_ip(),
                                     e.getClass().getSimpleName());
                             return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).bodyValue(
@@ -218,7 +226,7 @@ public class LlmExecutor extends Coordinator {
         final Object providersObj = root.get("providers");
 
         if (!(providersObj instanceof List)) {
-            Logger.warn(false, "Vortex", "component=llm, Invalid metadata format: 'providers' array not found");
+            Logger.warn(false, "Vortex", "Invalid metadata format: 'providers' array not found");
             return null;
         }
 

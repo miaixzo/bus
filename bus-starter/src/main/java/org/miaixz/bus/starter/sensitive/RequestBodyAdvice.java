@@ -21,6 +21,7 @@ package org.miaixz.bus.starter.sensitive;
 
 import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.base.advice.BaseAdvice;
@@ -106,7 +107,7 @@ public class RequestBodyAdvice extends BaseAdvice
                     Logger.debug(
                             true,
                             "Starter",
-                            "component=sensitive, Sensitive request body decryption selected: controller={}, method={}, mode={}, stage={}, targetType={}",
+                            "Sensitive request body decryption selected: controller={}, method={}, mode={}, stage={}, targetType={}",
                             parameter.getDeclaringClass().getName(),
                             parameter.getExecutable().getName(),
                             sensitive.value(),
@@ -120,7 +121,7 @@ public class RequestBodyAdvice extends BaseAdvice
                         false,
                         "Starter",
                         e,
-                        "component=sensitive, Sensitive request body decryption failed: controller={}, method={}, exception={}",
+                        "Sensitive request body decryption failed: controller={}, method={}, exception={}",
                         parameter.getDeclaringClass().getName(),
                         parameter.getExecutable().getName(),
                         e.getClass().getSimpleName());
@@ -196,6 +197,14 @@ public class RequestBodyAdvice extends BaseAdvice
 
             String content = IoKit.toUtf8Reader(inputMessage.getBody()).lines()
                     .collect(Collectors.joining(System.lineSeparator()));
+            Logger.debug(
+                    true,
+                    "Starter",
+                    "request header snapshot: contentType={}, bodyChars={}",
+                    this.headers.getContentType(),
+                    content.length());
+            Logger.debug(true, "Starter", "Request headers: headers={}", this.headers.toSingleValueMap());
+            Logger.debug(true, "Starter", "Request parameters: parameters={}", Map.of("body", content));
 
             String decryptBody;
             if (content.startsWith(Symbol.BRACE_LEFT)) {
@@ -212,7 +221,7 @@ public class RequestBodyAdvice extends BaseAdvice
                     Logger.debug(
                             true,
                             "Starter",
-                            "component=sensitive, Sensitive request body decryption started: algorithm={}, encryptedPartCount={}",
+                            "Sensitive request body decryption started: algorithm={}, encryptedPartCount={}",
                             type,
                             contents.length);
                     for (String encryptedPart : contents) {
@@ -221,7 +230,7 @@ public class RequestBodyAdvice extends BaseAdvice
                     Logger.debug(
                             false,
                             "Starter",
-                            "component=sensitive, Sensitive request body decryption completed: algorithm={}, encryptedPartCount={}",
+                            "Sensitive request body decryption completed: algorithm={}, encryptedPartCount={}",
                             type,
                             contents.length);
                 }

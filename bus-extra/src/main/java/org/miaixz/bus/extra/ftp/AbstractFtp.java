@@ -119,7 +119,7 @@ public abstract class AbstractFtp implements Ftp {
             Logger.debug(
                     false,
                     "Extra",
-                    "component=ftp, FTP path existence probe failed: pathPresent={}, parentPresent={}, exception={}",
+                    "FTP path existence probe failed: pathPresent={}, parentPresent={}, exception={}",
                     path != null,
                     dir != null,
                     ignore.getClass().getSimpleName());
@@ -157,7 +157,7 @@ public abstract class AbstractFtp implements Ftp {
                     Logger.debug(
                             false,
                             "Extra",
-                            "component=ftp, FTP directory probe failed: segmentPresent={}, exception={}",
+                            "FTP directory probe failed: segmentPresent={}, exception={}",
                             s != null,
                             e.getClass().getSimpleName());
                     // If changing directory throws an exception, it likely doesn't exist.
@@ -213,7 +213,7 @@ public abstract class AbstractFtp implements Ftp {
                     false,
                     "Extra",
                     e,
-                    "component=ftp, FTP download failed: remotePathPresent={}, outputName={}, exception={}",
+                    "FTP download failed: remotePathPresent={}, outputName={}, exception={}",
                     path != null,
                     outFile == null ? null : outFile.getName(),
                     e.getClass().getSimpleName());

@@ -96,8 +96,7 @@ public class SaltMagic {
                     false,
                     "Crypto",
                     e,
-                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "builtin",
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
                     "SaltMagic",
                     false,
                     e.getClass().getSimpleName());
@@ -121,7 +120,7 @@ public class SaltMagic {
 
     /**
      * Adds a magic header to the encrypted data. The generated ciphertext format is:
-     * 
+     *
      * <pre>
      * Salted__[salt][data]
      * </pre>
@@ -142,7 +141,7 @@ public class SaltMagic {
 
     /**
      * Retrieves the magic header, which includes the "Salted__" prefix and the salt value. The generated format is:
-     * 
+     *
      * <pre>
      * Salted__[salt]
      * </pre>

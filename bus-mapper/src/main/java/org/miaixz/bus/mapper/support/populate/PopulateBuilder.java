@@ -268,8 +268,7 @@ public class PopulateBuilder {
                         false,
                         "Mapper",
                         e,
-                        "Mapper operation failed: component={}, provider={}, exception={}",
-                        "populate",
+                        "Mapper operation failed: provider={}, exception={}",
                         "PopulateBuilder",
                         e.getClass().getSimpleName());
                 return null;
@@ -288,8 +287,7 @@ public class PopulateBuilder {
                         false,
                         "Mapper",
                         e,
-                        "Mapper operation failed: component={}, provider={}, exception={}",
-                        "populate",
+                        "Mapper operation failed: provider={}, exception={}",
                         "PopulateBuilder",
                         e.getClass().getSimpleName());
                 return null;

@@ -100,46 +100,26 @@ public final class Holder {
 
         Instances.put(PERFORMANCE_KEY, performance);
         Instances.put(INIT_MARKER_KEY, Boolean.TRUE);
-        Logger.info(true, "Vortex", "component=runtime, Performance profile applied");
+        Logger.info(true, "Vortex", "Performance profile applied");
         Logger.info(
                 true,
                 "Vortex",
-                "component=runtime, - Streaming Request Threshold: {} MB",
+                "- Streaming Request Threshold: {} MB",
                 performance.getStreamingRequestThreshold() / (1024 * 1024));
+        Logger.info(true, "Vortex", "- Max Request Size: {} MB", performance.getMaxRequestSize() / (1024 * 1024));
         Logger.info(
                 true,
                 "Vortex",
-                "component=runtime, - Max Request Size: {} MB",
-                performance.getMaxRequestSize() / (1024 * 1024));
-        Logger.info(
-                true,
-                "Vortex",
-                "component=runtime, - Max Multipart Request Size: {} MB",
+                "- Max Multipart Request Size: {} MB",
                 performance.getMaxMultipartRequestSize() / (1024 * 1024));
-        Logger.info(true, "Vortex", "component=runtime, - Max Connections: {}", performance.getMaxConnections());
-        Logger.info(
-                true,
-                "Vortex",
-                "component=runtime, - Max Producer Cache Size: {}",
-                performance.getMaxProducerCacheSize());
-        Logger.info(true, "Vortex", "component=runtime, - L2 Cache Size: {}", performance.getCacheSize());
-        Logger.info(true, "Vortex", "component=runtime, - L2 Cache Expire: {} ms", performance.getCacheExpireMs());
-        Logger.info(
-                true,
-                "Vortex",
-                "component=runtime, - Sync Interval: {} seconds",
-                performance.getSyncIntervalSeconds());
-        Logger.info(true, "Vortex", "component=runtime, - Full Sync On Startup: {}", performance.isFullSyncOnStartup());
-        Logger.info(
-                true,
-                "Vortex",
-                "component=runtime, - Startup Delay: {} seconds",
-                performance.getStartupDelaySeconds());
-        Logger.info(
-                true,
-                "Vortex",
-                "component=runtime, - Sanitize Null-like Parameters: {}",
-                performance.isSanitizeNullLikeParameters());
+        Logger.info(true, "Vortex", "- Max Connections: {}", performance.getMaxConnections());
+        Logger.info(true, "Vortex", "- Max Producer Cache Size: {}", performance.getMaxProducerCacheSize());
+        Logger.info(true, "Vortex", "- L2 Cache Size: {}", performance.getCacheSize());
+        Logger.info(true, "Vortex", "- L2 Cache Expire: {} ms", performance.getCacheExpireMs());
+        Logger.info(true, "Vortex", "- Sync Interval: {} seconds", performance.getSyncIntervalSeconds());
+        Logger.info(true, "Vortex", "- Full Sync On Startup: {}", performance.isFullSyncOnStartup());
+        Logger.info(true, "Vortex", "- Startup Delay: {} seconds", performance.getStartupDelaySeconds());
+        Logger.info(true, "Vortex", "- Sanitize Null-like Parameters: {}", performance.isSanitizeNullLikeParameters());
     }
 
     /**
@@ -153,9 +133,9 @@ public final class Holder {
     public static ConnectionProvider connectionProvider() {
         return Instances.get(CONNECTION_PROVIDER_KEY, () -> {
             Performance perf = get();
-            Logger.info(true, "Vortex", "component=runtime, HTTP connection pool initialized");
-            Logger.info(true, "Vortex", "component=runtime,   - Pool Name: vortex-http-pool");
-            Logger.info(true, "Vortex", "component=runtime,   - Max Connections: {}", perf.getMaxConnections());
+            Logger.info(true, "Vortex", "HTTP connection pool initialized");
+            Logger.info(true, "Vortex", "  - Pool Name: vortex-http-pool");
+            Logger.info(true, "Vortex", "  - Max Connections: {}", perf.getMaxConnections());
             return ConnectionProvider.builder("vortex-http-pool").maxConnections(perf.getMaxConnections())
                     .pendingAcquireTimeout(Duration.ofSeconds(45)).pendingAcquireMaxCount(-1)
                     .maxIdleTime(Duration.ofSeconds(20)).maxLifeTime(Duration.ofMinutes(5)).build();

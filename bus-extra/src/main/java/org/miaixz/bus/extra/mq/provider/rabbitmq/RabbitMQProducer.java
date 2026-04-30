@@ -94,7 +94,7 @@ public class RabbitMQProducer implements Producer {
         Logger.debug(
                 true,
                 "Extra",
-                "component=mq, RabbitMQ queue declaration started: queue={}, durable={}, exclusive={}, autoDelete={}",
+                "RabbitMQ queue declaration started: queue={}, durable={}, exclusive={}, autoDelete={}",
                 queue,
                 durable,
                 exclusive,
@@ -104,7 +104,7 @@ public class RabbitMQProducer implements Producer {
             Logger.debug(
                     false,
                     "Extra",
-                    "component=mq, RabbitMQ queue declared: queue={}, elapsedMs={}",
+                    "RabbitMQ queue declared: queue={}, elapsedMs={}",
                     queue,
                     (System.nanoTime() - startedAt) / 1_000_000L);
         } catch (final IOException e) {
@@ -112,7 +112,7 @@ public class RabbitMQProducer implements Producer {
                     false,
                     "Extra",
                     e,
-                    "component=mq, RabbitMQ queue declaration failed: queue={}, exception={}, elapsedMs={}",
+                    "RabbitMQ queue declaration failed: queue={}, exception={}, elapsedMs={}",
                     queue,
                     e.getClass().getSimpleName(),
                     (System.nanoTime() - startedAt) / 1_000_000L);
@@ -135,7 +135,7 @@ public class RabbitMQProducer implements Producer {
         Logger.debug(
                 true,
                 "Extra",
-                "component=mq, RabbitMQ send started: exchange={}, routingKey={}, messageBytes={}",
+                "RabbitMQ send started: exchange={}, routingKey={}, messageBytes={}",
                 exchange,
                 message.topic(),
                 content == null ? 0 : content.length);
@@ -144,7 +144,7 @@ public class RabbitMQProducer implements Producer {
             Logger.debug(
                     false,
                     "Extra",
-                    "component=mq, RabbitMQ send completed: exchange={}, routingKey={}, messageBytes={}, elapsedMs={}",
+                    "RabbitMQ send completed: exchange={}, routingKey={}, messageBytes={}, elapsedMs={}",
                     exchange,
                     message.topic(),
                     content == null ? 0 : content.length,
@@ -154,7 +154,7 @@ public class RabbitMQProducer implements Producer {
                     false,
                     "Extra",
                     e,
-                    "component=mq, RabbitMQ send failed: exchange={}, routingKey={}, messageBytes={}, exception={}, elapsedMs={}",
+                    "RabbitMQ send failed: exchange={}, routingKey={}, messageBytes={}, exception={}, elapsedMs={}",
                     exchange,
                     message.topic(),
                     content == null ? 0 : content.length,
@@ -171,12 +171,12 @@ public class RabbitMQProducer implements Producer {
     @Override
     public void close() {
         final long startedAt = System.nanoTime();
-        Logger.debug(true, "Extra", "component=mq, RabbitMQ producer close requested");
+        Logger.debug(true, "Extra", "RabbitMQ producer close requested");
         IoKit.closeQuietly(this.channel);
         Logger.debug(
                 false,
                 "Extra",
-                "component=mq, RabbitMQ producer closed: elapsedMs={}",
+                "RabbitMQ producer closed: elapsedMs={}",
                 (System.nanoTime() - startedAt) / 1_000_000L);
     }
 

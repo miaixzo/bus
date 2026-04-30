@@ -140,7 +140,7 @@ public class QualifierStrategy extends AbstractStrategy {
                         Logger.warn(
                                 false,
                                 "Vortex",
-                                "strategy=qualifier, clientIp={}, assets not found: namespace={}, type={}, appId={}, method={}, version={}, verb={}",
+                                "Assets not found: strategy=qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}, verb={}",
                                 context.getX_request_ip(),
                                 namespace,
                                 type == null ? null : type.key(),
@@ -167,7 +167,7 @@ public class QualifierStrategy extends AbstractStrategy {
                         Logger.info(
                                 true,
                                 "Vortex",
-                                "strategy=qualifier, clientIp={}, assets resolved: namespace={}, type={}, appId={}, method={}, version={}, verb={}, matchedLevel={}, matchedRoute={}, policy={}, sign={}, mode={}, host={}, port={}, path={}, url={}",
+                                "Assets resolved: strategy=qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}, verb={}, matchedLevel={}, matchedRoute={}, policy={}, sign={}, mode={}, host={}, port={}, path={}, url={}",
                                 context.getX_request_ip(),
                                 assets.getNamespace_id(),
                                 assets.getType(),
@@ -202,7 +202,7 @@ public class QualifierStrategy extends AbstractStrategy {
                         Logger.info(
                                 true,
                                 "Vortex",
-                                "strategy=qualifier, clientIp={}, qualifier validation completed: namespace={}, type={}, appId={}, method={}, version={}",
+                                "Qualifier validation completed: strategy=qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}",
                                 context.getX_request_ip(),
                                 namespace,
                                 type == null ? null : type.key(),
@@ -247,7 +247,7 @@ public class QualifierStrategy extends AbstractStrategy {
                 Logger.warn(
                         false,
                         "Vortex",
-                        "strategy=qualifier, clientIp={}, HTTP method mismatch: expected={}, actual={}",
+                        "HTTP method mismatch: strategy=qualifier, clientIp={}, expected={}, actual={}",
                         context.getX_request_ip(),
                         expectedMethod,
                         actualMethod);
@@ -285,7 +285,7 @@ public class QualifierStrategy extends AbstractStrategy {
             Logger.error(
                     false,
                     "Vortex",
-                    "strategy=qualifier, clientIp={}, invalid policy value: policy={}, allowedRange=0..6",
+                    "Invalid policy value: strategy=qualifier, clientIp={}, policy={}, allowedRange=0..6",
                     context.getX_request_ip(),
                     policy);
             return Mono.error(new ValidateException(ErrorCode._116002));
@@ -295,7 +295,7 @@ public class QualifierStrategy extends AbstractStrategy {
             Logger.info(
                     true,
                     "Vortex",
-                    "strategy=qualifier, clientIp={}, anonymous access granted",
+                    "Anonymous access granted: strategy=qualifier, clientIp={}",
                     context.getX_request_ip());
             return Mono.empty();
         }
@@ -314,7 +314,7 @@ public class QualifierStrategy extends AbstractStrategy {
                 Logger.info(
                         true,
                         "Vortex",
-                        "strategy=qualifier, clientIp={}, bearer credential selected: policy={}",
+                        "Bearer credential selected: strategy=qualifier, clientIp={}, policy={}",
                         context.getX_request_ip(),
                         policy);
             }
@@ -326,7 +326,7 @@ public class QualifierStrategy extends AbstractStrategy {
                 Logger.info(
                         true,
                         "Vortex",
-                        "strategy=qualifier, clientIp={}, API key credential selected: policy={}",
+                        "API key credential selected: strategy=qualifier, clientIp={}, policy={}",
                         context.getX_request_ip(),
                         policy);
             }
@@ -336,7 +336,7 @@ public class QualifierStrategy extends AbstractStrategy {
             Logger.warn(
                     false,
                     "Vortex",
-                    "strategy=qualifier, clientIp={}, required credential missing: policy={}",
+                    "Required credential missing: strategy=qualifier, clientIp={}, policy={}",
                     context.getX_request_ip(),
                     policy);
             return Mono.error(new ValidateException(ErrorCode._116002));
@@ -356,7 +356,7 @@ public class QualifierStrategy extends AbstractStrategy {
                         Logger.info(
                                 true,
                                 "Vortex",
-                                "strategy=qualifier, clientIp={}, credential attributes converted: attributeCount={}",
+                                "Credential attributes converted: strategy=qualifier, clientIp={}, attributeCount={}",
                                 context.getX_request_ip(),
                                 authMap.size());
                         Map<String, Object> nonNullAuthMap = authMap.entrySet().stream()
@@ -367,7 +367,7 @@ public class QualifierStrategy extends AbstractStrategy {
                         Logger.info(
                                 true,
                                 "Vortex",
-                                "strategy=qualifier, clientIp={}, authentication completed: policy={}",
+                                "Authentication completed: strategy=qualifier, clientIp={}, policy={}",
                                 context.getX_request_ip(),
                                 policy);
                         return Mono.empty();
@@ -377,7 +377,7 @@ public class QualifierStrategy extends AbstractStrategy {
                     Logger.error(
                             false,
                             "Vortex",
-                            "strategy=qualifier, clientIp={}, authentication failed: policy={}, errorCode={}, message={}",
+                            "Authentication failed: strategy=qualifier, clientIp={}, policy={}, errorCode={}, message={}",
                             context.getX_request_ip(),
                             policy,
                             message.errcode,

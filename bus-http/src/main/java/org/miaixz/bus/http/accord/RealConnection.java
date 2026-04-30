@@ -176,7 +176,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         Logger.debug(
                 true,
                 "Http",
-                "protocol=http, Physical connection starting: host={}, port={}, proxy={}, tunnel={}, connectTimeoutMs={}, readTimeoutMs={}",
+                "Physical connection starting: protocol=http, host={}, port={}, proxy={}, tunnel={}, connectTimeoutMs={}, readTimeoutMs={}",
                 route.address().url().host(),
                 route.address().url().port(),
                 route.proxy().type(),
@@ -215,7 +215,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
                 Logger.debug(
                         false,
                         "Http",
-                        "protocol=http, Physical connection established: host={}, port={}, proxy={}, protocol={}, tunnel={}",
+                        "Physical connection established: protocol=http, host={}, port={}, proxy={}, protocol={}, tunnel={}",
                         route.address().url().host(),
                         route.address().url().port(),
                         route.proxy().type(),
@@ -238,7 +238,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
                         false,
                         "Http",
                         e,
-                        "protocol=http, Physical connection attempt failed: host={}, port={}, proxy={}, retryEnabled={}, exception={}",
+                        "Physical connection attempt failed: protocol=http, host={}, port={}, proxy={}, retryEnabled={}, exception={}",
                         route.address().url().host(),
                         route.address().url().port(),
                         route.proxy().type(),
@@ -256,7 +256,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
                             false,
                             "Http",
                             routeException,
-                            "protocol=http, Physical connection failed without retry: host={}, port={}, proxy={}",
+                            "Physical connection failed without retry: protocol=http, host={}, port={}, proxy={}",
                             route.address().url().host(),
                             route.address().url().port(),
                             route.proxy().type());
@@ -340,7 +340,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
             Logger.debug(
                     true,
                     "Http",
-                    "protocol=http, Socket connect starting: address={}, proxy={}, connectTimeoutMs={}",
+                    "Socket connect starting: protocol=http, address={}, proxy={}, connectTimeoutMs={}",
                     route.socketAddress(),
                     proxy.type(),
                     connectTimeout);
@@ -348,7 +348,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
             Logger.debug(
                     false,
                     "Http",
-                    "protocol=http, Socket connect completed: address={}, proxy={}",
+                    "Socket connect completed: protocol=http, address={}, proxy={}",
                     route.socketAddress(),
                     proxy.type());
         } catch (ConnectException e) {
@@ -356,7 +356,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
                     false,
                     "Http",
                     e,
-                    "HTTP connection operation failed: component=connection, provider={}, recoverable={}, exception={}",
+                    "HTTP connection operation failed: provider={}, recoverable={}, exception={}",
                     "RealConnection",
                     false,
                     e.getClass().getSimpleName());
@@ -374,7 +374,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
                     false,
                     "Http",
                     npe,
-                    "HTTP connection operation failed: component=connection, provider={}, recoverable={}, exception={}",
+                    "HTTP connection operation failed: provider={}, recoverable={}, exception={}",
                     "RealConnection",
                     false,
                     npe.getClass().getSimpleName());
@@ -406,7 +406,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         Logger.debug(
                 true,
                 "Http",
-                "protocol=http, TLS handshake starting: host={}, port={}",
+                "TLS handshake starting: protocol=http, host={}, port={}",
                 route.address().url().host(),
                 route.address().url().port());
         connectTls(connectionSelector);
@@ -414,7 +414,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         Logger.debug(
                 false,
                 "Http",
-                "protocol=http, TLS handshake completed: host={}, port={}, protocol={}",
+                "TLS handshake completed: protocol=http, host={}, port={}, protocol={}",
                 route.address().url().host(),
                 route.address().url().port(),
                 protocol);
@@ -487,7 +487,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
                     false,
                     "Http",
                     e,
-                    "HTTP connection operation failed: component=connection, provider={}, recoverable={}, exception={}",
+                    "HTTP connection operation failed: provider={}, recoverable={}, exception={}",
                     "RealConnection",
                     false,
                     e.getClass().getSimpleName());
@@ -622,7 +622,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
                     false,
                     "Http",
                     e,
-                    "HTTP connection operation failed: component=connection, provider={}, recoverable={}, exception={}",
+                    "HTTP connection operation failed: provider={}, recoverable={}, exception={}",
                     "RealConnection",
                     false,
                     e.getClass().getSimpleName());
@@ -767,7 +767,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
                         false,
                         "Http",
                         ignored,
-                        "HTTP connection operation failed: component=connection, provider={}, recoverable={}, exception={}",
+                        "HTTP connection operation failed: provider={}, recoverable={}, exception={}",
                         "RealConnection",
                         false,
                         ignored.getClass().getSimpleName());
@@ -777,7 +777,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
                         false,
                         "Http",
                         e,
-                        "HTTP connection operation failed: component=connection, provider={}, recoverable={}, exception={}",
+                        "HTTP connection operation failed: provider={}, recoverable={}, exception={}",
                         "RealConnection",
                         false,
                         e.getClass().getSimpleName());

@@ -78,7 +78,7 @@ public class JarLauncher {
         Logger.info(
                 true,
                 "Shade",
-                "Jar launcher started: component=launcher, argCount={}",
+                "Jar launcher started: argCount={}",
                 launcher.args == null ? 0 : launcher.args.length);
         try {
             JarClassLoader jarClassLoader;
@@ -91,7 +91,7 @@ public class JarLauncher {
                 Logger.debug(
                         false,
                         "Shade",
-                        "Jar launcher class loader prepared: component=launcher, source=urlClassLoader, urlCount={}",
+                        "Jar launcher class loader prepared: source=urlClassLoader, urlCount={}",
                         urlClassLoader.getURLs().length);
             } else {
                 ProtectionDomain domain = this.getClass().getProtectionDomain();
@@ -108,42 +108,25 @@ public class JarLauncher {
                 Logger.debug(
                         false,
                         "Shade",
-                        "Jar launcher class loader prepared: component=launcher, source=codeSource, jarFile={}",
+                        "Jar launcher class loader prepared: source=codeSource, jarFile={}",
                         jar.getName());
             }
 
             Thread.currentThread().setContextClassLoader(jarClassLoader);
             URL resource = jarClassLoader.findResource(Builder.META_INF_MANIFEST);
-            Logger.debug(
-                    false,
-                    "Shade",
-                    "Jar launcher manifest resolved: component=launcher, manifestPresent={}",
-                    resource != null);
+            Logger.debug(false, "Shade", "Jar launcher manifest resolved: manifestPresent={}", resource != null);
             try (InputStream in = resource.openStream()) {
                 Manifest manifest = new Manifest(in);
                 Attributes attributes = manifest.getMainAttributes();
                 String jarMainClass = attributes.getValue("Jar-Main-Class");
-                Logger.info(
-                        true,
-                        "Shade",
-                        "Jar application main invocation started: component=launcher, mainClass={}",
-                        jarMainClass);
+                Logger.info(true, "Shade", "Jar application main invocation started: mainClass={}", jarMainClass);
                 Class<?> mainClass = jarClassLoader.loadClass(jarMainClass);
                 Method mainMethod = mainClass.getMethod("main", String[].class);
                 mainMethod.invoke(null, new Object[] { launcher.args });
-                Logger.info(
-                        false,
-                        "Shade",
-                        "Jar application main invocation finished: component=launcher, mainClass={}",
-                        jarMainClass);
+                Logger.info(false, "Shade", "Jar application main invocation finished: mainClass={}", jarMainClass);
             }
         } catch (Exception e) {
-            Logger.error(
-                    false,
-                    "Shade",
-                    e,
-                    "Jar launcher failed: component=launcher, exception={}",
-                    e.getClass().getSimpleName());
+            Logger.error(false, "Shade", e, "Jar launcher failed: exception={}", e.getClass().getSimpleName());
             throw e;
         }
     }

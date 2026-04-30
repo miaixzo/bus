@@ -135,11 +135,12 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
             logOut = UrlKit.decodeQuery(((String) logOut).replaceAll("\\s+", Normal.EMPTY), Charset.UTF_8);
         }
 
-        Logger.debug(true, "Starter", "component=request, Parameters: {}", JsonKit.toJsonString(logOut));
+        Logger.debug(true, "Starter", "request parameter snapshot: contentType={}", contentType);
+        Logger.debug(true, "Starter", "Request parameters: parameters={}", JsonKit.toJsonString(logOut));
         Logger.info(
                 true,
                 "Starter",
-                "component=request, Request parameters captured: parameterCount={}, contentChars={}",
+                "Request parameters captured: parameterCount={}, contentChars={}",
                 logOut instanceof Map<?, ?> map ? map.size() : 0,
                 logOut instanceof CharSequence sequence ? sequence.length() : 0);
     }
@@ -289,7 +290,7 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
             try {
                 return inputStream.available() == 0;
             } catch (IOException e) {
-                Logger.error(false, "Starter", "component=request, Error checking if input stream is finished", e);
+                Logger.error(false, "Starter", "Error checking if input stream is finished", e);
                 return true; // Assume finished on error
             }
         }

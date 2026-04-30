@@ -219,7 +219,7 @@ public class VettingStrategy extends AbstractStrategy {
         Logger.warn(
                 false,
                 "Vortex",
-                "component=strategy, Timestamp validation failed: clientTimestampMs={}, serverTimestampMs={}, differenceMs={}, toleranceMinutes={}",
+                "Timestamp validation failed: clientTimestampMs={}, serverTimestampMs={}, differenceMs={}, toleranceMinutes={}",
                 clientTime,
                 serverTime,
                 difference,
@@ -266,7 +266,7 @@ public class VettingStrategy extends AbstractStrategy {
         Logger.debug(
                 true,
                 "Vortex",
-                "component=strategy, Signature validation started: httpMethod={}, parameterCount={}, clientSignatureLength={}",
+                "Signature validation started: httpMethod={}, parameterCount={}, clientSignatureLength={}",
                 httpMethod,
                 params.size(),
                 clientSign.length());
@@ -279,7 +279,7 @@ public class VettingStrategy extends AbstractStrategy {
         Logger.info(
                 false,
                 "Vortex",
-                "component=strategy, Signature validation completed: httpMethod={}, signedParameterCount={}, matched={}, serverSignatureLength={}",
+                "Signature validation completed: httpMethod={}, signedParameterCount={}, matched={}, serverSignatureLength={}",
                 httpMethod,
                 paramsForSign.size(),
                 matched,
@@ -366,7 +366,7 @@ public class VettingStrategy extends AbstractStrategy {
             Logger.warn(
                     true,
                     "Vortex",
-                    "strategy=vetting, Unable to determine request domain (host:port). Using default value: {}",
+                    "Unable to determine request domain (host:port). Using default value: strategy=vetting, {}",
                     (Normal.UNKNOWN + Symbol.COLON + Symbol.ZERO));
             return Normal.UNKNOWN + Symbol.COLON + Symbol.ZERO;
         });

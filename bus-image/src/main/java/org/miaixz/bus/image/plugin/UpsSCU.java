@@ -76,7 +76,7 @@ public class UpsSCU {
                         false,
                         "Image",
                         e,
-                        "component=tool, N-EVENT-REPORT response failed: requestor={}, state={}, exception={}",
+                        "N-EVENT-REPORT response failed: requestor={}, state={}, exception={}",
                         as.isRequestor(),
                         as.getState(),
                         e.getClass().getSimpleName());

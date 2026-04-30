@@ -135,7 +135,7 @@ public class WorkbookKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "WorkbookKit",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -167,7 +167,7 @@ public class WorkbookKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "WorkbookKit",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -190,7 +190,7 @@ public class WorkbookKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "WorkbookKit",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -333,7 +333,7 @@ public class WorkbookKit {
                     false,
                     "Office",
                     e,
-                    "Excel operation failed: component=excel, provider={}, exception={}",
+                    "Excel operation failed: provider={}, exception={}",
                     "WorkbookKit",
                     e.getClass().getSimpleName());
             throw new InternalException(e);

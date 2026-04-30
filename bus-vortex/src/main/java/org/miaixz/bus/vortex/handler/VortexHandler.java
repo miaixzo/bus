@@ -122,7 +122,7 @@ public class VortexHandler {
                 Logger.info(
                         true,
                         "Vortex",
-                        "component=gateway, clientIp=N/A, method={}, path={}, event=CONTEXT_ERROR, Request context is null",
+                        "Request context is null: clientIp=N/A, method={}, path={}, event=CONTEXT_ERROR",
                         method,
                         path);
                 throw new ValidateException(ErrorCode._116000);
@@ -132,17 +132,25 @@ public class VortexHandler {
             Logger.info(
                     true,
                     "Vortex",
-                    "component=gateway, clientIp={}, method={}, path={}, event=REQUEST_START, Request received",
+                    "Request received: clientIp={}, method={}, path={}, event=REQUEST_START",
                     ip,
                     method,
                     path);
+            Logger.debug(true, "Vortex", "Request header snapshot: clientIp={}, method={}, path={}", ip, method, path);
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request headers: clientIp={}, headers={}",
+                    ip,
+                    request.headers().asHttpHeaders().toSingleValueMap());
+            Logger.debug(true, "Vortex", "Request parameters: clientIp={}, parameters={}", ip, context.getParameters());
 
             Assets assets = context.getAssets();
             if (assets == null) {
                 Logger.info(
                         true,
                         "Vortex",
-                        "clientIp={}, method={}, path={}, event=ASSETS_ERROR, Assets is null in request context",
+                        "Assets is null in request context: clientIp={}, method={}, path={}, event=ASSETS_ERROR",
                         ip,
                         method,
                         path);
@@ -154,7 +162,7 @@ public class VortexHandler {
                 Logger.info(
                         true,
                         "Vortex",
-                        "clientIp={}, method={}, path={}, event=INVALID_MODE, Invalid mode: {}",
+                        "Invalid mode: clientIp={}, method={}, path={}, event=INVALID_MODE, {}",
                         ip,
                         method,
                         path,
@@ -167,7 +175,7 @@ public class VortexHandler {
                 Logger.info(
                         true,
                         "Vortex",
-                        "clientIp={}, method={}, path={}, event=ROUTER_NOT_FOUND, No router found for mode key: {}",
+                        "No router found for mode key: clientIp={}, method={}, path={}, event=ROUTER_NOT_FOUND, {}",
                         ip,
                         method,
                         path,
@@ -178,7 +186,7 @@ public class VortexHandler {
             Logger.info(
                     true,
                     "Vortex",
-                    "clientIp={}, method={}, path={}, event=ROUTER_SELECT, Using router: {}",
+                    "Using router: clientIp={}, method={}, path={}, event=ROUTER_SELECT, {}",
                     ip,
                     method,
                     path,
@@ -189,7 +197,7 @@ public class VortexHandler {
                     Logger.info(
                             true,
                             "Vortex",
-                            "clientIp={}, method={}, path={}, event=PREHANDLE_ERROR, Pre-handle validation failed",
+                            "Pre-handle validation failed: clientIp={}, method={}, path={}, event=PREHANDLE_ERROR",
                             ip,
                             method,
                             path);
@@ -200,7 +208,7 @@ public class VortexHandler {
                     Logger.info(
                             true,
                             "Vortex",
-                            "clientIp={}, method={}, path={}, event=MOCK_MODE, Returning mock data for method: {}",
+                            "Returning mock data for method: clientIp={}, method={}, path={}, event=MOCK_MODE, {}",
                             ip,
                             method,
                             path,
@@ -213,7 +221,7 @@ public class VortexHandler {
                                 Logger.info(
                                         false,
                                         "Vortex",
-                                        "clientIp={}, method={}, path={}, event=MOCK_SUCCESS, Method: {}, Duration: {}ms",
+                                        "Method: clientIp={}, method={}, path={}, event=MOCK_SUCCESS, {}, Duration: {}ms",
                                         ip,
                                         method,
                                         path,
@@ -223,7 +231,7 @@ public class VortexHandler {
                                     Logger.info(
                                             false,
                                             "Vortex",
-                                            "clientIp={}, method={}, path={}, event=MOCK_COMPLETE, Status: {}",
+                                            "Status: clientIp={}, method={}, path={}, event=MOCK_COMPLETE, {}",
                                             ip,
                                             method,
                                             path,
@@ -233,7 +241,7 @@ public class VortexHandler {
                                 Logger.error(
                                         false,
                                         "Vortex",
-                                        "clientIp={}, method={}, path={}, event=MOCK_ERROR, Error: {}",
+                                        "Error: clientIp={}, method={}, path={}, event=MOCK_ERROR, {}",
                                         ip,
                                         method,
                                         path,
@@ -251,7 +259,7 @@ public class VortexHandler {
                             Logger.info(
                                     false,
                                     "Vortex",
-                                    "clientIp={}, method={}, path={}, event=REQUEST_SUCCESS, Method: {}, Duration: {}ms",
+                                    "Method: clientIp={}, method={}, path={}, event=REQUEST_SUCCESS, {}, Duration: {}ms",
                                     ip,
                                     method,
                                     path,
@@ -261,7 +269,7 @@ public class VortexHandler {
                                 Logger.info(
                                         false,
                                         "Vortex",
-                                        "clientIp={}, method={}, path={}, event=REQUEST_COMPLETE, Status: {}",
+                                        "Status: clientIp={}, method={}, path={}, event=REQUEST_COMPLETE, {}",
                                         ip,
                                         method,
                                         path,
@@ -271,7 +279,7 @@ public class VortexHandler {
                             Logger.info(
                                     false,
                                     "Vortex",
-                                    "clientIp={}, method={}, path={}, event=REQUEST_ERROR, Error: {}",
+                                    "Error: clientIp={}, method={}, path={}, event=REQUEST_ERROR, {}",
                                     ip,
                                     method,
                                     path,
@@ -379,7 +387,7 @@ public class VortexHandler {
             Logger.warn(
                     true,
                     "Vortex",
-                    "clientIp={}, method={}, path={}, event=RETRY_ATTEMPT, Retry attempt {}/{} after error: {}",
+                    "Retry attempt {}/{} after error: clientIp={}, method={}, path={}, event=RETRY_ATTEMPT, {}",
                     ip,
                     method,
                     path,
@@ -390,7 +398,7 @@ public class VortexHandler {
             Logger.error(
                     true,
                     "Vortex",
-                    "clientIp={}, method={}, path={}, event=RETRY_EXHAUSTED, All {} retry attempts exhausted",
+                    "All {} retry attempts exhausted: clientIp={}, method={}, path={}, event=RETRY_EXHAUSTED",
                     ip,
                     method,
                     path,
@@ -407,7 +415,7 @@ public class VortexHandler {
      * specified in the context.
      * </p>
      *
-     * 
+     *
      * @param context The request context
      * @param assets  The asset configuration containing the mock data in result field
      * @return A Mono of ServerResponse containing the mock data
@@ -420,7 +428,7 @@ public class VortexHandler {
                 Logger.warn(
                         true,
                         "Vortex",
-                        "clientIp={}, mock mode has no result data: method={}",
+                        "Mock mode has no result data: clientIp={}, method={}",
                         context.getX_request_ip(),
                         assets.getMethod());
                 mockData = "{}";
@@ -429,7 +437,7 @@ public class VortexHandler {
             Logger.info(
                     true,
                     "Vortex",
-                    "clientIp={}, mock data prepared: chars={}",
+                    "Mock data prepared: clientIp={}, chars={}",
                     context.getX_request_ip(),
                     mockData.length());
 
@@ -446,7 +454,7 @@ public class VortexHandler {
             Logger.info(
                     false,
                     "Vortex",
-                    "clientIp={}, mock response returned: durationMs={}",
+                    "Mock response returned: clientIp={}, durationMs={}",
                     context.getX_request_ip(),
                     duration);
         });

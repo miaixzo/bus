@@ -165,7 +165,7 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
         Logger.debug(
                 true,
                 "Starter",
-                "component=mapper, Mapper scanner registration started: basePackageCount={}, annotationClass={}",
+                "Mapper scanner registration started: basePackageCount={}, annotationClass={}",
                 basePackage.size(),
                 annotationClass.getName());
         java.util.Set<org.springframework.beans.factory.config.BeanDefinitionHolder> beanDefinitions = scanner
@@ -173,7 +173,7 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
         Logger.info(
                 false,
                 "Starter",
-                "component=mapper, Mapper scanner registration finished: basePackageCount={}, mapperBeanCount={}",
+                "Mapper scanner registration finished: basePackageCount={}, mapperBeanCount={}",
                 basePackage.size(),
                 beanDefinitions.size());
     }

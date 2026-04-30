@@ -173,7 +173,7 @@ public class Httpx {
                         Logger.error(
                                 false,
                                 "Http",
-                                "protocol=http, DNS lookup failed: {}",
+                                "DNS lookup failed: protocol=http, {}",
                                 e.getClass().getSimpleName());
                     }
                     return DnsX.SYSTEM.lookup(hostname);
@@ -728,7 +728,7 @@ public class Httpx {
             Logger.error(
                     false,
                     "Http",
-                    "protocol=http, HEAD request failed: url={}, exception={}",
+                    "HEAD request failed: protocol=http, url={}, exception={}",
                     url == null ? null : url.replaceFirst("\\?.*$", ""),
                     e.getClass().getSimpleName());
         }
@@ -756,7 +756,7 @@ public class Httpx {
             if (file.exists()) {
                 requestBodyBuilder.addFormDataPart("file", file.getName(), RequestBody.of(contentType, file));
             } else {
-                Logger.warn(false, "Http", "protocol=http, File not found: {}", path);
+                Logger.warn(false, "Http", "File not found: protocol=http, {}", path);
             }
         }
         RequestBody requestBody = requestBodyBuilder.build();
@@ -773,7 +773,7 @@ public class Httpx {
             Logger.error(
                     false,
                     "Http",
-                    "protocol=http, Multipart HTTP request failed: url={}, exception={}",
+                    "Multipart HTTP request failed: protocol=http, url={}, exception={}",
                     url == null ? null : url.replaceFirst("\\?.*$", ""),
                     e.getClass().getSimpleName());
         }
@@ -803,7 +803,7 @@ public class Httpx {
             Logger.info(
                     true,
                     "Http",
-                    "protocol=http, HTTP request builder prepared: method={}, url={}, contentType={}, headerCount={}, formCount={}, hasContent={}",
+                    "HTTP request builder prepared: protocol=http, method={}, url={}, contentType={}, headerCount={}, formCount={}, hasContent={}",
                     builder.method,
                     builder.url,
                     builder.contentType,
@@ -868,7 +868,7 @@ public class Httpx {
                 Logger.info(
                         false,
                         "Http",
-                        "protocol=http, HTTP response received: url={}, contentChars={}",
+                        "HTTP response received: protocol=http, url={}, contentChars={}",
                         builder.url == null ? null : builder.url.replaceFirst("\\?.*$", ""),
                         result == null ? 0 : result.length());
             }
@@ -877,7 +877,7 @@ public class Httpx {
             Logger.error(
                     false,
                     "Http",
-                    "protocol=http, HTTP request failed: url={}, exception={}",
+                    "HTTP request failed: protocol=http, url={}, exception={}",
                     builder.url == null ? null : builder.url.replaceFirst("\\?.*$", ""),
                     e.getClass().getSimpleName());
         }
@@ -910,7 +910,7 @@ public class Httpx {
                 Logger.error(
                         false,
                         "Http",
-                        "protocol=http, Async HTTP request failed: url={}, exception={}",
+                        "Async HTTP request failed: protocol=http, url={}, exception={}",
                         builder.url == null ? null : builder.url.replaceFirst("\\?.*$", ""),
                         e.getClass().getSimpleName());
             }
@@ -936,7 +936,7 @@ public class Httpx {
                             Logger.info(
                                     false,
                                     "Http",
-                                    "protocol=http, Async response received: url={}, contentChars={}",
+                                    "Async response received: protocol=http, url={}, contentChars={}",
                                     builder.url,
                                     result[0] == null ? 0 : result[0].length());
                         }

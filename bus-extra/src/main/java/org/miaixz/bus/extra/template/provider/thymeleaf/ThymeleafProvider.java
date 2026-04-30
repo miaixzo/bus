@@ -91,7 +91,7 @@ public class ThymeleafProvider implements TemplateProvider {
         Logger.info(
                 true,
                 "Extra",
-                "component=template, Thymeleaf engine creation started: resourceMode={}, charset={}, useCache={}, pathPresent={}",
+                "Thymeleaf engine creation started: resourceMode={}, charset={}, useCache={}, pathPresent={}",
                 config.getResourceMode(),
                 config.getCharsetString(),
                 config.isUseCache(),
@@ -142,7 +142,7 @@ public class ThymeleafProvider implements TemplateProvider {
         Logger.info(
                 false,
                 "Extra",
-                "component=template, Thymeleaf engine created: resourceMode={}, resolver={}, useCache={}, pathPresent={}",
+                "Thymeleaf engine created: resourceMode={}, resolver={}, useCache={}, pathPresent={}",
                 config.getResourceMode(),
                 resolver == null ? "null" : resolver.getClass().getSimpleName(),
                 config.isUseCache(),
@@ -168,18 +168,14 @@ public class ThymeleafProvider implements TemplateProvider {
         Logger.info(
                 true,
                 "Extra",
-                "component=template, Thymeleaf provider initialization started: resourceMode={}, charset={}, useCache={}, pathPresent={}",
+                "Thymeleaf provider initialization started: resourceMode={}, charset={}, useCache={}, pathPresent={}",
                 config.getResourceMode(),
                 config.getCharsetString(),
                 config.isUseCache(),
                 config.getPath() != null);
         this.config = config;
         init(of(config));
-        Logger.info(
-                false,
-                "Extra",
-                "component=template, Thymeleaf provider initialized: rawPresent={}",
-                this.engine != null);
+        Logger.info(false, "Extra", "Thymeleaf provider initialized: rawPresent={}", this.engine != null);
         return this;
     }
 
@@ -203,13 +199,13 @@ public class ThymeleafProvider implements TemplateProvider {
     @Override
     public Template getTemplate(final String resource) {
         if (null == this.engine) {
-            Logger.debug(true, "Extra", "component=template, Thymeleaf provider lazy initialization requested");
+            Logger.debug(true, "Extra", "Thymeleaf provider lazy initialization requested");
             init(TemplateConfig.DEFAULT);
         }
         Logger.debug(
                 true,
                 "Extra",
-                "component=template, Thymeleaf template wrapper creation started: resourcePresent={}, resourceLength={}",
+                "Thymeleaf template wrapper creation started: resourcePresent={}, resourceLength={}",
                 resource != null,
                 resource == null ? 0 : resource.length());
         final Template template = ThymeleafTemplate
@@ -217,7 +213,7 @@ public class ThymeleafProvider implements TemplateProvider {
         Logger.debug(
                 false,
                 "Extra",
-                "component=template, Thymeleaf template wrapper created: resourcePresent={}, resourceLength={}, templatePresent={}",
+                "Thymeleaf template wrapper created: resourcePresent={}, resourceLength={}, templatePresent={}",
                 resource != null,
                 resource == null ? 0 : resource.length(),
                 template != null);

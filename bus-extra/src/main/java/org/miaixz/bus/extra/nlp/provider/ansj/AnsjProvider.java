@@ -57,13 +57,13 @@ public class AnsjProvider implements NLPProvider {
         Logger.info(
                 true,
                 "Extra",
-                "component=nlp, Ansj provider initialization started: analysisType={}",
+                "Ansj provider initialization started: analysisType={}",
                 analysis == null ? "null" : analysis.getClass().getSimpleName());
         this.analysis = analysis;
         Logger.info(
                 false,
                 "Extra",
-                "component=nlp, Ansj provider initialized: analysisType={}",
+                "Ansj provider initialized: analysisType={}",
                 this.analysis == null ? "null" : this.analysis.getClass().getSimpleName());
     }
 
@@ -76,16 +76,12 @@ public class AnsjProvider implements NLPProvider {
      */
     @Override
     public NLPResult parse(final CharSequence text) {
-        Logger.debug(
-                true,
-                "Extra",
-                "component=nlp, Ansj parse started: textLength={}",
-                text == null ? 0 : text.length());
+        Logger.debug(true, "Extra", "Ansj parse started: textLength={}", text == null ? 0 : text.length());
         final NLPResult result = new AnsjResult(analysis.parseStr(StringKit.toStringOrEmpty(text)));
         Logger.debug(
                 false,
                 "Extra",
-                "component=nlp, Ansj parse completed: textLength={}, resultPresent={}",
+                "Ansj parse completed: textLength={}, resultPresent={}",
                 text == null ? 0 : text.length(),
                 result != null);
         return result;

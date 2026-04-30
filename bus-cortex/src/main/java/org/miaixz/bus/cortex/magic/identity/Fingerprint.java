@@ -60,8 +60,7 @@ public final class Fingerprint {
                     false,
                     "Cortex",
                     e,
-                    "Cortex operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "magic",
+                    "Cortex operation failed: provider={}, recoverable={}, exception={}",
                     "Fingerprint",
                     false,
                     e.getClass().getSimpleName());

@@ -101,8 +101,7 @@ public class DigesterFactory {
                     false,
                     "Crypto",
                     e,
-                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "digest",
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
                     "DigesterFactory",
                     false,
                     e.getClass().getSimpleName());
@@ -134,8 +133,7 @@ public class DigesterFactory {
                 Logger.debug(
                         false,
                         "Crypto",
-                        "Crypto operation skipped: component={}, provider={}, recoverable={}, exception={}",
-                        "digest",
+                        "Crypto operation skipped: provider={}, recoverable={}, exception={}",
                         "DigesterFactory",
                         true,
                         ignore.getClass().getSimpleName());

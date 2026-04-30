@@ -98,7 +98,7 @@ public class ManageProvider implements ProcessProvider, MetricsProvider {
 
             Process existingProcess = processMap.get(serviceId);
             if (existingProcess != null && existingProcess.isAlive()) {
-                Logger.info(false, "Vortex", "component=mcp, Local process already running: assetId={}", serviceId);
+                Logger.info(false, "Vortex", "Local process already running: assetId={}", serviceId);
                 return existingProcess;
             }
 
@@ -120,7 +120,7 @@ public class ManageProvider implements ProcessProvider, MetricsProvider {
                     Logger.error(
                             false,
                             "Vortex",
-                            "component=mcp, Failed to parse environment variables: assetId={}, envChars={}",
+                            "Failed to parse environment variables: assetId={}, envChars={}",
                             serviceId,
                             envJson == null ? 0 : envJson.length(),
                             e);
@@ -135,7 +135,7 @@ public class ManageProvider implements ProcessProvider, MetricsProvider {
                 Logger.info(
                         false,
                         "Vortex",
-                        "component=mcp, Launching local process: assetId={}, command={}",
+                        "Launching local process: assetId={}, command={}",
                         serviceId,
                         commandString);
                 Process process = processBuilder.start();
@@ -149,7 +149,7 @@ public class ManageProvider implements ProcessProvider, MetricsProvider {
                             Logger.trace(
                                     false,
                                     "Vortex",
-                                    "component=mcp, MCP process output received: serviceId={}, line={}",
+                                    "MCP process output received: serviceId={}, line={}",
                                     serviceId,
                                     line);
                         }
@@ -157,14 +157,14 @@ public class ManageProvider implements ProcessProvider, MetricsProvider {
                         Logger.warn(
                                 false,
                                 "Vortex",
-                                "component=mcp, Process output read failed: assetId={}, exception={}",
+                                "Process output read failed: assetId={}, exception={}",
                                 serviceId,
                                 e.getClass().getSimpleName());
                     }
                 });
                 return process;
             } catch (IOException e) {
-                Logger.error(false, "Vortex", "component=mcp, Local process launch failed: assetId={}", serviceId, e);
+                Logger.error(false, "Vortex", "Local process launch failed: assetId={}", serviceId, e);
                 throw new RuntimeException("Failed to start service: " + serviceId, e);
             }
         }).subscribeOn(Schedulers.boundedElastic());
@@ -191,14 +191,14 @@ public class ManageProvider implements ProcessProvider, MetricsProvider {
             Process process = processMap.get(serviceId);
 
             if (process != null && process.isAlive()) {
-                Logger.info(false, "Vortex", "component=mcp, Stopping local process: assetId={}", serviceId);
+                Logger.info(false, "Vortex", "Stopping local process: assetId={}", serviceId);
                 process.destroy();
                 try {
                     if (!process.waitFor(5, java.util.concurrent.TimeUnit.SECONDS)) {
                         Logger.warn(
                                 false,
                                 "Vortex",
-                                "component=mcp, Process did not exit gracefully; forcing termination: assetId={}",
+                                "Process did not exit gracefully; forcing termination: assetId={}",
                                 serviceId);
                         process.destroyForcibly();
                     }
@@ -207,7 +207,7 @@ public class ManageProvider implements ProcessProvider, MetricsProvider {
                     Logger.error(
                             false,
                             "Vortex",
-                            "component=mcp, Interrupted while waiting for process shutdown: assetId={}",
+                            "Interrupted while waiting for process shutdown: assetId={}",
                             serviceId,
                             e);
                     process.destroyForcibly();

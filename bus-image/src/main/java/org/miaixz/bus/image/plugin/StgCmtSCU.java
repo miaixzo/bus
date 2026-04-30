@@ -120,7 +120,7 @@ public class StgCmtSCU {
                         false,
                         "Image",
                         e,
-                        "component=tool, N-EVENT-REPORT response failed: requestor={}, state={}, exception={}",
+                        "N-EVENT-REPORT response failed: requestor={}, state={}, exception={}",
                         as.isRequestor(),
                         as.getState(),
                         e.getClass().getSimpleName());
@@ -424,13 +424,13 @@ public class StgCmtSCU {
         String iuid = cmd.getString(Tag.AffectedSOPInstanceUID);
         String tuid = eventInfo.getString(Tag.TransactionUID);
         File file = new File(storageDir, tuid);
-        Logger.info(true, "Image", "component=tool, {}: M-WRITE {}", as, file);
+        Logger.info(true, "Image", "{}: M-WRITE {}", as, file);
         try (ImageOutputStream out = new ImageOutputStream(file)) {
             out.writeDataset(
                     Attributes.createFileMetaInformation(iuid, cuid, UID.ExplicitVRLittleEndian.uid),
                     eventInfo);
         } catch (IOException e) {
-            Logger.warn(false, "Image", "component=tool, " + (as + ": Failed to store Storage Commitment Result:"), e);
+            Logger.warn(false, "Image", as + ": Failed to store Storage Commitment Result:", e);
             throw new ImageServiceException(Status.ProcessingFailure, e);
         }
         return null;

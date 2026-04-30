@@ -133,11 +133,19 @@ public class RuntimeContextBindingFilter implements Filter {
             Logger.debug(
                     true,
                     "Starter",
-                    "component=http, Runtime context binding started: method={}, uri={}, dispatcher={}",
+                    "Runtime context binding started: method={}, uri={}, dispatcher={}",
                     request.getMethod(),
                     request.getRequestURI(),
                     request.getDispatcherType());
             ContextBuilder.init();
+            Logger.debug(
+                    true,
+                    "Starter",
+                    "request header snapshot: method={}, uri={}",
+                    request.getMethod(),
+                    request.getRequestURI());
+            Logger.debug(true, "Starter", "Request headers: headers={}", ContextBuilder.getHeaders());
+            Logger.debug(true, "Starter", "Request parameters: parameters={}", ContextBuilder.getParameters());
 
             if (this.options.shouldWrap(request) && !(request instanceof MutableRequestWrapper)) {
                 request = new MutableRequestWrapper(request);
@@ -149,7 +157,7 @@ public class RuntimeContextBindingFilter implements Filter {
             Logger.debug(
                     false,
                     "Starter",
-                    "component=http, Runtime context binding completed: method={}, uri={}, status={}, requestWrapped={}, responseWrapped={}",
+                    "Runtime context binding completed: method={}, uri={}, status={}, requestWrapped={}, responseWrapped={}",
                     request.getMethod(),
                     request.getRequestURI(),
                     response.getStatus(),

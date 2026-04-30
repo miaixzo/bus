@@ -278,8 +278,7 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
                     false,
                     "Cortex",
                     e,
-                    "Cortex operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "registry",
+                    "Cortex operation failed: provider={}, recoverable={}, exception={}",
                     "HealthProbeScheduler",
                     false,
                     e.getClass().getSimpleName());

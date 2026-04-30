@@ -105,7 +105,7 @@ public class ThymeleafTemplate implements Template, Serializable {
         Logger.debug(
                 true,
                 "Extra",
-                "component=template, Thymeleaf render started: bindingCount={}, writerPresent={}, templateLength={}, charset={}",
+                "Thymeleaf render started: bindingCount={}, writerPresent={}, templateLength={}, charset={}",
                 bindingMap == null ? 0 : bindingMap.size(),
                 writer != null,
                 template == null ? 0 : template.length(),
@@ -117,7 +117,7 @@ public class ThymeleafTemplate implements Template, Serializable {
         Logger.debug(
                 false,
                 "Extra",
-                "component=template, Thymeleaf render completed: bindingCount={}, elapsedMs={}",
+                "Thymeleaf render completed: bindingCount={}, elapsedMs={}",
                 bindingMap == null ? 0 : bindingMap.size(),
                 (System.nanoTime() - startedAt) / 1_000_000L);
     }
@@ -137,7 +137,7 @@ public class ThymeleafTemplate implements Template, Serializable {
         Logger.debug(
                 true,
                 "Extra",
-                "component=template, Thymeleaf stream render requested: bindingCount={}, outputPresent={}",
+                "Thymeleaf stream render requested: bindingCount={}, outputPresent={}",
                 bindingMap == null ? 0 : bindingMap.size(),
                 out != null);
         render(bindingMap, IoKit.toWriter(out, this.charset));

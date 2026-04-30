@@ -117,8 +117,7 @@ public class KeySqlRegistry implements Registry {
                             false,
                             "Mapper",
                             e,
-                            "Mapper operation failed: component={}, provider={}, exception={}",
-                            "keygen",
+                            "Mapper operation failed: provider={}, exception={}",
                             "KeySqlRegistry",
                             e.getClass().getSimpleName());
                     throw new RuntimeException(e);

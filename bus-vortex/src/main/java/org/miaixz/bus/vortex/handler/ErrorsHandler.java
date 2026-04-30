@@ -83,9 +83,9 @@ public class ErrorsHandler implements WebExceptionHandler {
 
         Context context = exchange.getAttribute(Context.$);
         if (context != null) {
-            Logger.info(false, "Vortex", "component=errors, Context format is: {}", context.getFormat());
+            Logger.info(false, "Vortex", "Context format is: {}", context.getFormat());
         } else {
-            Logger.info(false, "Vortex", "component=errors, Context is null, defaulting to JSON format.");
+            Logger.info(false, "Vortex", "Context is null, defaulting to JSON format.");
         }
 
         String path = request.getPath().value();
@@ -114,7 +114,7 @@ public class ErrorsHandler implements WebExceptionHandler {
                 Logger.error(
                         false,
                         "Vortex",
-                        "component=errors, clientIp={}, method={}, path={}, event=ERROR_COMPLETION, error response handled: executionTimeMs={}, exception={}",
+                        "Error response handled: clientIp={}, method={}, path={}, event=ERROR_COMPLETION, executionTimeMs={}, exception={}",
                         ip,
                         method,
                         path,
@@ -124,7 +124,7 @@ public class ErrorsHandler implements WebExceptionHandler {
                 Logger.error(
                         false,
                         "Vortex",
-                        "component=errors, clientIp={}, method={}, path={}, event=ERROR_COMPLETION, error response handled: exception={}",
+                        "Error response handled: clientIp={}, method={}, path={}, event=ERROR_COMPLETION, exception={}",
                         ip,
                         method,
                         path,
@@ -151,7 +151,7 @@ public class ErrorsHandler implements WebExceptionHandler {
                 Logger.error(
                         false,
                         "Vortex",
-                        "component=errors, clientIp=N/A, method={}, path={}, event=ERROR_UNCHECKED, errorCode={}, message={}",
+                        "Unchecked error returned: clientIp=N/A, method={}, path={}, event=ERROR_UNCHECKED, errorCode={}, message={}",
                         method,
                         path,
                         errcode,
@@ -164,7 +164,7 @@ public class ErrorsHandler implements WebExceptionHandler {
                         false,
                         "Vortex",
                         ex.getCause(),
-                        "component=errors, clientIp=N/A, method={}, path={}, event=ERROR_WEBCLIENT, unknown host: exception={}",
+                        "Unknown host: clientIp=N/A, method={}, path={}, event=ERROR_WEBCLIENT, exception={}",
                         method,
                         path,
                         ex.getCause().getClass().getSimpleName());
@@ -175,7 +175,7 @@ public class ErrorsHandler implements WebExceptionHandler {
                         false,
                         "Vortex",
                         ex,
-                        "component=errors, clientIp=N/A, method={}, path={}, event=ERROR_WEBCLIENT, web client failure: exception={}",
+                        "Web client failure: clientIp=N/A, method={}, path={}, event=ERROR_WEBCLIENT, exception={}",
                         method,
                         path,
                         ex.getClass().getSimpleName());
@@ -187,7 +187,7 @@ public class ErrorsHandler implements WebExceptionHandler {
                 false,
                 "Vortex",
                 ex,
-                "component=errors, clientIp=N/A, method={}, path={}, event=ERROR_UNKNOWN, unknown exception type: exceptionType={}, exception={}",
+                "Unknown exception type: clientIp=N/A, method={}, path={}, event=ERROR_UNKNOWN, exceptionType={}, exception={}",
                 method,
                 path,
                 ex.getClass().getName(),

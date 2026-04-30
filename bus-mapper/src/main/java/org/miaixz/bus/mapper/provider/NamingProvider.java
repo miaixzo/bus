@@ -56,7 +56,7 @@ import org.miaixz.bus.logger.Logger;
  * </p>
  *
  * <pre>{@code
- * 
+ *
  * // Get naming provider instance
  * NamingProvider provider = NamingProvider.type("camel_underline_lower_case");
  *
@@ -120,8 +120,7 @@ public class NamingProvider implements Provider {
                     false,
                     "Mapper",
                     e,
-                    "Mapper operation failed: component={}, provider={}, exception={}",
-                    "provider",
+                    "Mapper operation failed: provider={}, exception={}",
                     "NamingProvider",
                     e.getClass().getSimpleName());
             throw new IllegalArgumentException("illegal style：" + style);

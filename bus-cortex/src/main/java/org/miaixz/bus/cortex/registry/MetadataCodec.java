@@ -76,8 +76,7 @@ public final class MetadataCodec {
             Logger.debug(
                     false,
                     "Cortex",
-                    "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
-                    "registry",
+                    "Cortex operation skipped: provider={}, recoverable={}, exception={}",
                     "MetadataCodec",
                     true,
                     ignore.getClass().getSimpleName());
@@ -133,8 +132,7 @@ public final class MetadataCodec {
             Logger.debug(
                     false,
                     "Cortex",
-                    "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
-                    "registry",
+                    "Cortex operation skipped: provider={}, recoverable={}, exception={}",
                     "MetadataCodec",
                     true,
                     ignore.getClass().getSimpleName());
@@ -189,8 +187,7 @@ public final class MetadataCodec {
             Logger.debug(
                     false,
                     "Cortex",
-                    "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
-                    "registry",
+                    "Cortex operation skipped: provider={}, recoverable={}, exception={}",
                     "MetadataCodec",
                     true,
                     ignore.getClass().getSimpleName());
@@ -217,8 +214,7 @@ public final class MetadataCodec {
             Logger.debug(
                     false,
                     "Cortex",
-                    "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
-                    "registry",
+                    "Cortex operation skipped: provider={}, recoverable={}, exception={}",
                     "MetadataCodec",
                     true,
                     ignore.getClass().getSimpleName());
@@ -245,8 +241,7 @@ public final class MetadataCodec {
             Logger.debug(
                     false,
                     "Cortex",
-                    "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
-                    "registry",
+                    "Cortex operation skipped: provider={}, recoverable={}, exception={}",
                     "MetadataCodec",
                     true,
                     ignore.getClass().getSimpleName());
@@ -291,8 +286,7 @@ public final class MetadataCodec {
             Logger.debug(
                     false,
                     "Cortex",
-                    "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
-                    "registry",
+                    "Cortex operation skipped: provider={}, recoverable={}, exception={}",
                     "MetadataCodec",
                     true,
                     ignore.getClass().getSimpleName());
@@ -319,8 +313,7 @@ public final class MetadataCodec {
             Logger.debug(
                     false,
                     "Cortex",
-                    "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
-                    "registry",
+                    "Cortex operation skipped: provider={}, recoverable={}, exception={}",
                     "MetadataCodec",
                     true,
                     ignore.getClass().getSimpleName());

@@ -81,7 +81,7 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
         Logger.info(
                 true,
                 "Http",
-                "protocol=sse, SSE connection starting: method={}, url={}",
+                "SSE connection starting: protocol=sse, method={}, url={}",
                 request.method(),
                 request.url().redact());
         call = callFactory.newCall(request);
@@ -99,7 +99,7 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
         Logger.debug(
                 false,
                 "Http",
-                "protocol=sse, SSE HTTP response received: url={}, status={}",
+                "SSE HTTP response received: protocol=sse, url={}, status={}",
                 request.url().redact(),
                 response.code());
         processResponse(response);
@@ -117,7 +117,7 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
                 Logger.warn(
                         false,
                         "Http",
-                        "protocol=sse, SSE connection rejected: url={}, status={}",
+                        "SSE connection rejected: protocol=sse, url={}, status={}",
                         request.url().redact(),
                         response.code());
                 listener.onFailure(this, null, response);
@@ -129,7 +129,7 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
                 Logger.warn(
                         false,
                         "Http",
-                        "protocol=sse, SSE response body missing: url={}, status={}",
+                        "SSE response body missing: protocol=sse, url={}, status={}",
                         request.url().redact(),
                         response.code());
                 listener.onFailure(this, new IllegalStateException("Response body is null"), response);
@@ -140,7 +140,7 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
                 Logger.warn(
                         false,
                         "Http",
-                        "protocol=sse, SSE invalid content type: url={}, contentType={}",
+                        "SSE invalid content type: protocol=sse, url={}, contentType={}",
                         request.url().redact(),
                         body.contentType());
                 listener.onFailure(
@@ -164,7 +164,7 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
                 Logger.info(
                         false,
                         "Http",
-                        "protocol=sse, SSE stream opened: url={}, status={}",
+                        "SSE stream opened: protocol=sse, url={}, status={}",
                         request.url().redact(),
                         response.code());
                 while (reader.processNextEvent()) {
@@ -175,13 +175,13 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
                         false,
                         "Http",
                         e,
-                        "protocol=sse, SSE stream failed while reading: url={}, exception={}",
+                        "SSE stream failed while reading: protocol=sse, url={}, exception={}",
                         request.url().redact(),
                         e.getClass().getSimpleName());
                 listener.onFailure(this, e, modifiedResponse);
                 return;
             }
-            Logger.info(false, "Http", "protocol=sse, SSE stream closed: url={}", request.url().redact());
+            Logger.info(false, "Http", "SSE stream closed: protocol=sse, url={}", request.url().redact());
             listener.onClosed(this);
         }
     }
@@ -211,7 +211,7 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
                 false,
                 "Http",
                 e,
-                "protocol=sse, SSE connection failed: url={}, exception={}",
+                "SSE connection failed: protocol=sse, url={}, exception={}",
                 request.url().redact(),
                 e.getClass().getSimpleName());
         listener.onFailure(this, e, null);
@@ -235,7 +235,7 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
     public void cancel() {
         if (call != null && !canceled) {
             canceled = true;
-            Logger.info(false, "Http", "protocol=sse, SSE cancellation requested: url={}", request.url().redact());
+            Logger.info(false, "Http", "SSE cancellation requested: protocol=sse, url={}", request.url().redact());
             call.cancel();
         }
     }
@@ -252,7 +252,7 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
         Logger.trace(
                 false,
                 "Http",
-                "protocol=sse, SSE event received: url={}, id={}, type={}, chars={}",
+                "SSE event received: protocol=sse, url={}, id={}, type={}, chars={}",
                 request.url().redact(),
                 id,
                 type,

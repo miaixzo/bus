@@ -42,6 +42,7 @@ import org.miaixz.bus.http.bodys.FormBody;
 import org.miaixz.bus.http.bodys.MultipartBody;
 import org.miaixz.bus.http.bodys.RequestBody;
 import org.miaixz.bus.http.bodys.ResponseBody;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * An abstract base class for building HTTP requests, providing a fluent interface. It supports synchronous,
@@ -658,7 +659,8 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     protected Request prepareRequest(String method) {
         boolean bodyCanUsed = HTTP.permitsRequestBody(method);
         assertNotConflict(!bodyCanUsed);
-        Request.Builder builder = new Request.Builder().url(buildUrlPath());
+        String requestUrl = buildUrlPath();
+        Request.Builder builder = new Request.Builder().url(requestUrl);
         buildHeaders(builder);
         if (bodyCanUsed) {
             RequestBody reqBody = buildRequestBody();
@@ -680,7 +682,46 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         if (null != tag) {
             builder.tag(String.class, tag);
         }
-        return builder.build();
+        Request request = builder.build();
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("pathParams", pathParams);
+        parameters.put("urlParams", urlParams);
+        parameters.put("bodyParams", bodyParams);
+        parameters.put("fileCount", files == null ? 0 : files.size());
+        parameters.put("bodyType", bodyType);
+        parameters.put("requestBodyType", requestBody == null ? null : requestBody.getClass().getName());
+        Logger.debug(
+                true,
+                "Http",
+                "Request header snapshot: protocol=httpv, method={}, url={}, headerCount={}",
+                method,
+                request.url().redact(),
+                headers == null ? 0 : headers.size());
+        Logger.debug(
+                true,
+                "Http",
+                "Request headers: protocol=httpv, method={}, url={}, headers={}",
+                method,
+                request.url().redact(),
+                headers);
+        Logger.debug(
+                true,
+                "Http",
+                "Request parameter snapshot: protocol=httpv, method={}, url={}, pathParameterCount={}, urlParameterCount={}, bodyParameterCount={}, fileCount={}",
+                method,
+                request.url().redact(),
+                pathParams == null ? 0 : pathParams.size(),
+                urlParams == null ? 0 : urlParams.size(),
+                bodyParams == null ? 0 : bodyParams.size(),
+                files == null ? 0 : files.size());
+        Logger.debug(
+                true,
+                "Http",
+                "Request parameters: protocol=httpv, method={}, url={}, parameters={}",
+                method,
+                request.url().redact(),
+                parameters);
+        return request;
     }
 
     /**
@@ -1117,7 +1158,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
             /**
              * Cancels the synchronous call.
-             * 
+             *
              * @return True if cancellation was successful.
              */
             @Override
@@ -1392,7 +1433,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
             /**
              * Sets the actual GiveCall once it's created.
-             * 
+             *
              * @param call The actual call.
              */
             void setCall(GiveCall call) {
@@ -1434,7 +1475,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
             /**
              * Constructs a new OkGiveCall.
-             * 
+             *
              * @param call The Httpd call.
              */
             OkGiveCall(NewCall call) {
@@ -1473,7 +1514,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
             /**
              * Sets the result of the call and releases the latch.
-             * 
+             *
              * @param result The call result.
              */
             void setResult(CoverResult result) {

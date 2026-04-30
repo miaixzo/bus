@@ -60,8 +60,7 @@ public class McpProcessManager {
                     false,
                     "Cortex",
                     e,
-                    "Cortex operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "registry",
+                    "Cortex operation failed: provider={}, recoverable={}, exception={}",
                     "McpProcessManager",
                     false,
                     e.getClass().getSimpleName());

@@ -103,7 +103,7 @@ public class FixLO2UN extends SimpleFileVisitor<Path> {
                 Logger.info(
                         false,
                         "Image",
-                        "component=tool,   %d: (%02X%02X,%02X%02X) LO #%d -> UN #%d%n",
+                        "  %d: (%02X%02X,%02X%02X) LO #%d -> UN #%d%n",
                         position - 6,
                         mbb.get(position - 5),
                         mbb.get(position - 6),
@@ -126,7 +126,7 @@ public class FixLO2UN extends SimpleFileVisitor<Path> {
                     false,
                     "Image",
                     e,
-                    "component=tool, DICOM LO fix destination exists: fileName={}, exception={}",
+                    "DICOM LO fix destination exists: fileName={}, exception={}",
                     dstFile.getFileName(),
                     e.getClass().getSimpleName());
         } catch (Exception e) {
@@ -134,7 +134,7 @@ public class FixLO2UN extends SimpleFileVisitor<Path> {
                     false,
                     "Image",
                     e,
-                    "component=tool, DICOM LO fix failed: fileName={}, exception={}",
+                    "DICOM LO fix failed: fileName={}, exception={}",
                     srcFile.getFileName(),
                     e.getClass().getSimpleName());
         }

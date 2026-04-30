@@ -79,7 +79,7 @@ public abstract class JmsProvider implements MQProvider, Closeable {
         Logger.info(
                 true,
                 "Extra",
-                "component=mq, JMS provider initialization started: provider={}, brokerPresent={}, mode={}",
+                "JMS provider initialization started: provider={}, brokerPresent={}, mode={}",
                 getClass().getSimpleName(),
                 config != null && config.getBrokerUrl() != null,
                 isTopic ? "topic" : "queue");
@@ -89,7 +89,7 @@ public abstract class JmsProvider implements MQProvider, Closeable {
             Logger.info(
                     false,
                     "Extra",
-                    "component=mq, JMS provider initialized: provider={}, mode={}, elapsedMs={}",
+                    "JMS provider initialized: provider={}, mode={}, elapsedMs={}",
                     getClass().getSimpleName(),
                     isTopic ? "topic" : "queue",
                     (System.nanoTime() - startedAt) / 1_000_000L);
@@ -98,7 +98,7 @@ public abstract class JmsProvider implements MQProvider, Closeable {
                     false,
                     "Extra",
                     e,
-                    "component=mq, JMS provider initialization failed: provider={}, mode={}, exception={}, elapsedMs={}",
+                    "JMS provider initialization failed: provider={}, mode={}, exception={}, elapsedMs={}",
                     getClass().getSimpleName(),
                     isTopic ? "topic" : "queue",
                     e.getClass().getSimpleName(),
@@ -163,7 +163,7 @@ public abstract class JmsProvider implements MQProvider, Closeable {
         Logger.debug(
                 true,
                 "Extra",
-                "component=mq, JMS producer creation started: provider={}, group={}, mode={}",
+                "JMS producer creation started: provider={}, group={}, mode={}",
                 getClass().getSimpleName(),
                 producerGroup,
                 isTopic ? "topic" : "queue");
@@ -174,7 +174,7 @@ public abstract class JmsProvider implements MQProvider, Closeable {
                     false,
                     "Extra",
                     e,
-                    "component=mq, JMS producer creation failed: provider={}, group={}, mode={}, exception={}, elapsedMs={}",
+                    "JMS producer creation failed: provider={}, group={}, mode={}, exception={}, elapsedMs={}",
                     getClass().getSimpleName(),
                     producerGroup,
                     isTopic ? "topic" : "queue",
@@ -185,7 +185,7 @@ public abstract class JmsProvider implements MQProvider, Closeable {
         Logger.debug(
                 false,
                 "Extra",
-                "component=mq, JMS producer created: provider={}, group={}, mode={}, elapsedMs={}",
+                "JMS producer created: provider={}, group={}, mode={}, elapsedMs={}",
                 getClass().getSimpleName(),
                 producerGroup,
                 isTopic ? "topic" : "queue",
@@ -206,7 +206,7 @@ public abstract class JmsProvider implements MQProvider, Closeable {
         Logger.debug(
                 true,
                 "Extra",
-                "component=mq, JMS consumer creation started: provider={}, group={}, mode={}",
+                "JMS consumer creation started: provider={}, group={}, mode={}",
                 getClass().getSimpleName(),
                 consumerGroup,
                 isTopic ? "topic" : "queue");
@@ -217,7 +217,7 @@ public abstract class JmsProvider implements MQProvider, Closeable {
                     false,
                     "Extra",
                     e,
-                    "component=mq, JMS consumer creation failed: provider={}, group={}, mode={}, exception={}, elapsedMs={}",
+                    "JMS consumer creation failed: provider={}, group={}, mode={}, exception={}, elapsedMs={}",
                     getClass().getSimpleName(),
                     consumerGroup,
                     isTopic ? "topic" : "queue",
@@ -228,7 +228,7 @@ public abstract class JmsProvider implements MQProvider, Closeable {
         Logger.debug(
                 false,
                 "Extra",
-                "component=mq, JMS consumer created: provider={}, group={}, mode={}, elapsedMs={}",
+                "JMS consumer created: provider={}, group={}, mode={}, elapsedMs={}",
                 getClass().getSimpleName(),
                 consumerGroup,
                 isTopic ? "topic" : "queue",
@@ -244,17 +244,13 @@ public abstract class JmsProvider implements MQProvider, Closeable {
     @Override
     public void close() throws IOException {
         final long startedAt = System.nanoTime();
-        Logger.info(
-                true,
-                "Extra",
-                "component=mq, JMS provider close requested: provider={}",
-                getClass().getSimpleName());
+        Logger.info(true, "Extra", "JMS provider close requested: provider={}", getClass().getSimpleName());
         IoKit.closeQuietly(this.session);
         IoKit.closeQuietly(this.connection);
         Logger.info(
                 false,
                 "Extra",
-                "component=mq, JMS provider closed: provider={}, elapsedMs={}",
+                "JMS provider closed: provider={}, elapsedMs={}",
                 getClass().getSimpleName(),
                 (System.nanoTime() - startedAt) / 1_000_000L);
     }
@@ -271,7 +267,7 @@ public abstract class JmsProvider implements MQProvider, Closeable {
             Logger.debug(
                     true,
                     "Extra",
-                    "component=mq, JMS destination creation started: provider={}, group={}, mode={}",
+                    "JMS destination creation started: provider={}, group={}, mode={}",
                     getClass().getSimpleName(),
                     group,
                     isTopic ? "topic" : "queue");
@@ -279,7 +275,7 @@ public abstract class JmsProvider implements MQProvider, Closeable {
             Logger.debug(
                     false,
                     "Extra",
-                    "component=mq, JMS destination created: provider={}, group={}, mode={}, destinationType={}",
+                    "JMS destination created: provider={}, group={}, mode={}, destinationType={}",
                     getClass().getSimpleName(),
                     group,
                     isTopic ? "topic" : "queue",
@@ -290,7 +286,7 @@ public abstract class JmsProvider implements MQProvider, Closeable {
                     false,
                     "Extra",
                     e,
-                    "component=mq, JMS destination creation failed: provider={}, group={}, mode={}, exception={}",
+                    "JMS destination creation failed: provider={}, group={}, mode={}, exception={}",
                     getClass().getSimpleName(),
                     group,
                     isTopic ? "topic" : "queue",

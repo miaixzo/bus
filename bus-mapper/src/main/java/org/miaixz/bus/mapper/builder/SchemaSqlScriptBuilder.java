@@ -95,8 +95,7 @@ public class SchemaSqlScriptBuilder implements SqlScriptWrapper {
                     false,
                     "Mapper",
                     e,
-                    "Mapper operation failed: component={}, provider={}, exception={}",
-                    "builder",
+                    "Mapper operation failed: provider={}, exception={}",
                     "SchemaSqlScriptBuilder",
                     e.getClass().getSimpleName());
             throw new RuntimeException("instance [ " + instanceClass + " ] error", e);

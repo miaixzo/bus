@@ -67,13 +67,13 @@ public class RocketMQConsumer implements Consumer {
      */
     public RocketMQConsumer setTopic(final String topic) {
         final long startedAt = System.nanoTime();
-        Logger.info(true, "Extra", "component=mq, RocketMQ topic subscription started: topic={}", topic);
+        Logger.info(true, "Extra", "RocketMQ topic subscription started: topic={}", topic);
         try {
             this.consumer.subscribe(topic, "*");
             Logger.info(
                     false,
                     "Extra",
-                    "component=mq, RocketMQ topic subscription registered: topic={}, elapsedMs={}",
+                    "RocketMQ topic subscription registered: topic={}, elapsedMs={}",
                     topic,
                     (System.nanoTime() - startedAt) / 1_000_000L);
         } catch (final MQClientException e) {
@@ -81,7 +81,7 @@ public class RocketMQConsumer implements Consumer {
                     false,
                     "Extra",
                     e,
-                    "component=mq, RocketMQ topic subscription failed: topic={}, exception={}, elapsedMs={}",
+                    "RocketMQ topic subscription failed: topic={}, exception={}, elapsedMs={}",
                     topic,
                     e.getClass().getSimpleName(),
                     (System.nanoTime() - startedAt) / 1_000_000L);
@@ -99,7 +99,7 @@ public class RocketMQConsumer implements Consumer {
      */
     @Override
     public void subscribe(final MessageHandler messageHandler) {
-        Logger.info(true, "Extra", "component=mq, RocketMQ message listener registration started");
+        Logger.info(true, "Extra", "RocketMQ message listener registration started");
         this.consumer.registerMessageListener((MessageListenerConcurrently) (msgs, context) -> {
             final long startedAt = System.nanoTime();
             try {
@@ -109,7 +109,7 @@ public class RocketMQConsumer implements Consumer {
                 Logger.debug(
                         false,
                         "Extra",
-                        "component=mq, RocketMQ batch handled: batchSize={}, elapsedMs={}",
+                        "RocketMQ batch handled: batchSize={}, elapsedMs={}",
                         msgs == null ? 0 : msgs.size(),
                         (System.nanoTime() - startedAt) / 1_000_000L);
             } catch (RuntimeException e) {
@@ -117,7 +117,7 @@ public class RocketMQConsumer implements Consumer {
                         false,
                         "Extra",
                         e,
-                        "component=mq, RocketMQ batch handling failed: batchSize={}, exception={}, elapsedMs={}",
+                        "RocketMQ batch handling failed: batchSize={}, exception={}, elapsedMs={}",
                         msgs == null ? 0 : msgs.size(),
                         e.getClass().getSimpleName(),
                         (System.nanoTime() - startedAt) / 1_000_000L);
@@ -125,7 +125,7 @@ public class RocketMQConsumer implements Consumer {
             }
             return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
         });
-        Logger.info(false, "Extra", "component=mq, RocketMQ message listener registered");
+        Logger.info(false, "Extra", "RocketMQ message listener registered");
     }
 
     /**
@@ -138,14 +138,14 @@ public class RocketMQConsumer implements Consumer {
     @Override
     public void close() throws IOException {
         final long startedAt = System.nanoTime();
-        Logger.debug(true, "Extra", "component=mq, RocketMQ consumer close requested");
+        Logger.debug(true, "Extra", "RocketMQ consumer close requested");
         if (null != this.consumer) {
             this.consumer.shutdown();
         }
         Logger.debug(
                 false,
                 "Extra",
-                "component=mq, RocketMQ consumer closed: elapsedMs={}",
+                "RocketMQ consumer closed: elapsedMs={}",
                 (System.nanoTime() - startedAt) / 1_000_000L);
     }
 

@@ -90,7 +90,7 @@ public class BootClassLoader extends LaunchedClassLoader {
                     false,
                     "Shade",
                     e,
-                    "Boot resource URL wrap failed: component=boot, resourceName={}, protocol={}, exception={}",
+                    "Boot resource URL wrap failed: resourceName={}, protocol={}, exception={}",
                     name,
                     url.getProtocol(),
                     e.getClass().getSimpleName());
@@ -132,7 +132,7 @@ public class BootClassLoader extends LaunchedClassLoader {
             Logger.debug(
                     true,
                     "Shade",
-                    "Boot encrypted class fallback started: component=boot, className={}, loader={}",
+                    "Boot encrypted class fallback started: className={}, loader={}",
                     name,
                     getClass().getName());
             URL resource = findResource(name.replace(Symbol.C_DOT, Symbol.C_SLASH) + ".class");
@@ -140,7 +140,7 @@ public class BootClassLoader extends LaunchedClassLoader {
                 Logger.warn(
                         false,
                         "Shade",
-                        "Boot encrypted class fallback failed: component=boot, className={}, reason={}",
+                        "Boot encrypted class fallback failed: className={}, reason={}",
                         name,
                         "resourceMissing");
                 throw new ClassNotFoundException(name, e);
@@ -153,7 +153,7 @@ public class BootClassLoader extends LaunchedClassLoader {
                 Logger.debug(
                         false,
                         "Shade",
-                        "Boot encrypted class fallback finished: component=boot, className={}, byteCount={}",
+                        "Boot encrypted class fallback finished: className={}, byteCount={}",
                         name,
                         bytes.length);
                 return definedClass;
@@ -162,7 +162,7 @@ public class BootClassLoader extends LaunchedClassLoader {
                         false,
                         "Shade",
                         t,
-                        "Boot encrypted class fallback failed: component=boot, className={}, exception={}",
+                        "Boot encrypted class fallback failed: className={}, exception={}",
                         name,
                         t.getClass().getSimpleName());
                 throw new ClassNotFoundException(name, t);
@@ -215,7 +215,7 @@ public class BootClassLoader extends LaunchedClassLoader {
                         false,
                         "Shade",
                         e,
-                        "Boot resource enumeration URL wrap failed: component=boot, protocol={}, exception={}",
+                        "Boot resource enumeration URL wrap failed: protocol={}, exception={}",
                         url.getProtocol(),
                         e.getClass().getSimpleName());
                 return url;

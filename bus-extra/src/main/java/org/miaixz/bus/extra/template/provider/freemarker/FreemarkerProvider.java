@@ -92,7 +92,7 @@ public class FreemarkerProvider implements TemplateProvider {
         Logger.info(
                 true,
                 "Extra",
-                "component=template, Freemarker configuration creation started: resourceMode={}, charset={}, pathPresent={}",
+                "Freemarker configuration creation started: resourceMode={}, charset={}, pathPresent={}",
                 config.getResourceMode(),
                 config.getCharsetString(),
                 config.getPath() != null);
@@ -113,7 +113,7 @@ public class FreemarkerProvider implements TemplateProvider {
                             false,
                             "Extra",
                             e,
-                            "component=template, Freemarker file template loader creation failed: resourceMode={}, pathPresent={}, exception={}",
+                            "Freemarker file template loader creation failed: resourceMode={}, pathPresent={}, exception={}",
                             config.getResourceMode(),
                             config.getPath() != null,
                             e.getClass().getSimpleName());
@@ -129,7 +129,7 @@ public class FreemarkerProvider implements TemplateProvider {
                             false,
                             "Extra",
                             e,
-                            "component=template, Freemarker web-root template loader creation failed: resourceMode={}, pathPresent={}, exception={}",
+                            "Freemarker web-root template loader creation failed: resourceMode={}, pathPresent={}, exception={}",
                             config.getResourceMode(),
                             config.getPath() != null,
                             e.getClass().getSimpleName());
@@ -148,7 +148,7 @@ public class FreemarkerProvider implements TemplateProvider {
         Logger.info(
                 false,
                 "Extra",
-                "component=template, Freemarker configuration created: resourceMode={}, charset={}, pathPresent={}",
+                "Freemarker configuration created: resourceMode={}, charset={}, pathPresent={}",
                 config.getResourceMode(),
                 config.getCharsetString(),
                 config.getPath() != null);
@@ -173,16 +173,12 @@ public class FreemarkerProvider implements TemplateProvider {
         Logger.info(
                 true,
                 "Extra",
-                "component=template, Freemarker provider initialization started: resourceMode={}, charset={}, pathPresent={}",
+                "Freemarker provider initialization started: resourceMode={}, charset={}, pathPresent={}",
                 config.getResourceMode(),
                 config.getCharsetString(),
                 config.getPath() != null);
         init(of(config));
-        Logger.info(
-                false,
-                "Extra",
-                "component=template, Freemarker provider initialized: rawPresent={}",
-                this.cfg != null);
+        Logger.info(false, "Extra", "Freemarker provider initialized: rawPresent={}", this.cfg != null);
         return this;
     }
 
@@ -207,13 +203,13 @@ public class FreemarkerProvider implements TemplateProvider {
     @Override
     public Template getTemplate(final String resource) {
         if (null == this.cfg) {
-            Logger.debug(true, "Extra", "component=template, Freemarker provider lazy initialization requested");
+            Logger.debug(true, "Extra", "Freemarker provider lazy initialization requested");
             init(TemplateConfig.DEFAULT);
         }
         Logger.debug(
                 true,
                 "Extra",
-                "component=template, Freemarker template loading started: resourcePresent={}, resourceLength={}",
+                "Freemarker template loading started: resourcePresent={}, resourceLength={}",
                 resource != null,
                 resource == null ? 0 : resource.length());
         try {
@@ -221,7 +217,7 @@ public class FreemarkerProvider implements TemplateProvider {
             Logger.debug(
                     false,
                     "Extra",
-                    "component=template, Freemarker template loaded: resourcePresent={}, resourceLength={}, templatePresent={}",
+                    "Freemarker template loaded: resourcePresent={}, resourceLength={}, templatePresent={}",
                     resource != null,
                     resource == null ? 0 : resource.length(),
                     template != null);
@@ -231,7 +227,7 @@ public class FreemarkerProvider implements TemplateProvider {
                     false,
                     "Extra",
                     e,
-                    "component=template, Freemarker template loading failed: resourcePresent={}, resourceLength={}, exception={}",
+                    "Freemarker template loading failed: resourcePresent={}, resourceLength={}, exception={}",
                     resource != null,
                     resource == null ? 0 : resource.length(),
                     e.getClass().getSimpleName());

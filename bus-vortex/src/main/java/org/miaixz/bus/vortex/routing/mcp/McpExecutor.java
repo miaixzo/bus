@@ -131,7 +131,7 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
                         () -> Logger.debug(
                                 true,
                                 "Vortex",
-                                "component=mcp, MCP execute requested: clientIp={}, assetId={}, inputPresent={}",
+                                "MCP execute requested: clientIp={}, assetId={}, inputPresent={}",
                                 context == null ? null : context.getX_request_ip(),
                                 context == null || context.getAssets() == null ? null : context.getAssets().getId(),
                                 input != null))
@@ -156,7 +156,7 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
             Logger.info(
                     true,
                     "Vortex",
-                    "component=mcp, MCP runtime startup requested: running={}, cachedClients={}, processProvider={}, async=true",
+                    "MCP runtime startup requested: running={}, cachedClients={}, processProvider={}, async=true",
                     running.get(),
                     clientCache.size(),
                     processProvider.getClass().getSimpleName());
@@ -167,7 +167,7 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
                             assets -> Logger.info(
                                     false,
                                     "Vortex",
-                                    "component=mcp, MCP asset discovery completed: candidateAssets={}, transports={}, assets={}",
+                                    "MCP asset discovery completed: candidateAssets={}, transports={}, assets={}",
                                     assets.size(),
                                     summarizeTransports(assets),
                                     summarizeAssets(assets)))
@@ -177,23 +177,20 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
                                     () -> Logger.info(
                                             false,
                                             "Vortex",
-                                            "component=mcp, MCP runtime startup completed: initializedClients={}, clientIds={}",
+                                            "MCP runtime startup completed: initializedClients={}, clientIds={}",
                                             clientCache.size(),
                                             summarizeClientIds())))
                     .doOnError(
                             e -> Logger.error(
                                     false,
                                     "Vortex",
-                                    "component=mcp, MCP runtime startup failed: cachedClients={}, exception={}",
+                                    "MCP runtime startup failed: cachedClients={}, exception={}",
                                     clientCache.size(),
                                     e.getClass().getSimpleName(),
                                     e))
                     .subscribe();
 
-            Logger.info(
-                    false,
-                    "Vortex",
-                    "component=mcp, MCP asset discovery scheduled: scheduler=boundedElastic, async=true");
+            Logger.info(false, "Vortex", "MCP asset discovery scheduled: scheduler=boundedElastic, async=true");
         }
     }
 
@@ -214,7 +211,7 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
             Logger.info(
                     false,
                     "Vortex",
-                    "component=mcp, MCP runtime shutdown requested: cachedClients={}, timeout=5s",
+                    "MCP runtime shutdown requested: cachedClients={}, timeout=5s",
                     clientCache.size());
 
             Mono<List<Assets>> mcpAssets = Mono
@@ -223,32 +220,29 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
                             assets -> Logger.info(
                                     false,
                                     "Vortex",
-                                    "component=mcp, MCP shutdown asset discovery completed: candidateAssets={}, stdioProcesses={}, transports={}",
+                                    "MCP shutdown asset discovery completed: candidateAssets={}, stdioProcesses={}, transports={}",
                                     assets.size(),
                                     assets.stream().filter(asset -> "stdio".equals(resolveMcpTransport(asset))).count(),
                                     summarizeTransports(assets)));
 
             Mono<Void> stopProcesses = mcpAssets.flatMapMany(Flux::fromIterable)
                     .filter(asset -> "stdio".equals(resolveMcpTransport(asset))).flatMap(processProvider::stop)
-                    .doOnError(e -> Logger.error(false, "Vortex", "component=mcp, MCP process stop failed", e)).then();
+                    .doOnError(e -> Logger.error(false, "Vortex", "MCP process stop failed", e)).then();
 
-            Mono<Void> closeClients = Flux.fromIterable(clientCache.values()).flatMap(
-                    client -> Mono.fromRunnable(client::close).subscribeOn(Schedulers.boundedElastic())
-                            .doOnError(e -> Logger.error(false, "Vortex", "component=mcp, MCP client close failed", e)))
+            Mono<Void> closeClients = Flux.fromIterable(clientCache.values())
+                    .flatMap(
+                            client -> Mono.fromRunnable(client::close).subscribeOn(Schedulers.boundedElastic())
+                                    .doOnError(e -> Logger.error(false, "Vortex", "MCP client close failed", e)))
                     .then();
 
             Mono.when(stopProcesses, closeClients)
-                    .doOnError(e -> Logger.error(false, "Vortex", "component=mcp, MCP runtime shutdown failed", e))
+                    .doOnError(e -> Logger.error(false, "Vortex", "MCP runtime shutdown failed", e))
                     .timeout(java.time.Duration.ofSeconds(5))
-                    .doOnError(
-                            e -> Logger.warn(
-                                    false,
-                                    "Vortex",
-                                    "component=mcp, MCP runtime shutdown timed out after 5 seconds"))
+                    .doOnError(e -> Logger.warn(false, "Vortex", "MCP runtime shutdown timed out after 5 seconds"))
                     .block();
 
             clientCache.clear();
-            Logger.info(false, "Vortex", "component=mcp, MCP runtime stopped: cachedClients=0");
+            Logger.info(false, "Vortex", "MCP runtime stopped: cachedClients=0");
         }
     }
 
@@ -273,7 +267,7 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
         Logger.info(
                 true,
                 "Vortex",
-                "component=mcp, MCP client initialization started: assetId={}, assetName={}, transport={}, target={}",
+                "MCP client initialization started: assetId={}, assetName={}, transport={}, target={}",
                 asset.getId(),
                 asset.getName(),
                 transport,
@@ -289,7 +283,7 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
             Logger.info(
                     false,
                     "Vortex",
-                    "component=mcp, MCP client ready: assetId={}, assetName={}, transport={}, clientType={}, cachedClients={}",
+                    "MCP client ready: assetId={}, assetName={}, transport={}, clientType={}, cachedClients={}",
                     asset.getId(),
                     asset.getName(),
                     transport,
@@ -299,7 +293,7 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
                 e -> Logger.error(
                         false,
                         "Vortex",
-                        "component=mcp, MCP client initialization failed: assetId={}, assetName={}, transport={}, targetPresent={}, exception={}",
+                        "MCP client initialization failed: assetId={}, assetName={}, transport={}, targetPresent={}, exception={}",
                         asset.getId(),
                         asset.getName(),
                         transport,

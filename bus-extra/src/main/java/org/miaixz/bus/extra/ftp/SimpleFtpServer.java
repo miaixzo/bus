@@ -158,7 +158,7 @@ public class SimpleFtpServer {
                     false,
                     "Extra",
                     e,
-                    "component=ftp, FTP user save failed: userPresent={}, exception={}",
+                    "FTP user save failed: userPresent={}, exception={}",
                     user != null,
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -199,7 +199,7 @@ public class SimpleFtpServer {
                     false,
                     "Extra",
                     e,
-                    "component=ftp, FTP user delete failed: userNamePresent={}, exception={}",
+                    "FTP user delete failed: userNamePresent={}, exception={}",
                     userName != null,
                     e.getClass().getSimpleName());
             throw new InternalException(e);
@@ -277,7 +277,7 @@ public class SimpleFtpServer {
                     false,
                     "Extra",
                     e,
-                    "component=ftp, FTP server start failed: listenerConfigured={}, exception={}",
+                    "FTP server start failed: listenerConfigured={}, exception={}",
                     serverFactory.getListeners().containsKey("default"),
                     e.getClass().getSimpleName());
             throw new InternalException(e);

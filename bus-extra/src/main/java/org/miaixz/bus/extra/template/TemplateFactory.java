@@ -42,12 +42,12 @@ public class TemplateFactory {
      * @return A singleton instance of {@link TemplateProvider}.
      */
     public static TemplateProvider get() {
-        Logger.debug(true, "Extra", "component=template, Default template provider lookup started");
+        Logger.debug(true, "Extra", "Default template provider lookup started");
         final TemplateProvider engine = Instances.get(TemplateProvider.class.getName(), TemplateFactory::of);
         Logger.debug(
                 false,
                 "Extra",
-                "component=template, Default template engine selected: engine={}",
+                "Default template engine selected: engine={}",
                 StringKit.removeSuffix(engine.getClass().getSimpleName(), "Engine"));
         return engine;
     }
@@ -59,7 +59,7 @@ public class TemplateFactory {
      * @return A new {@link TemplateProvider} instance.
      */
     public static TemplateProvider of() {
-        Logger.debug(true, "Extra", "component=template, Template provider creation requested with default config");
+        Logger.debug(true, "Extra", "Template provider creation requested with default config");
         return of(TemplateConfig.DEFAULT);
     }
 
@@ -74,7 +74,7 @@ public class TemplateFactory {
         Logger.debug(
                 true,
                 "Extra",
-                "component=template, Template provider creation requested: configPresent={}, resourceMode={}, charset={}, useCache={}, customProviderPresent={}",
+                "Template provider creation requested: configPresent={}, resourceMode={}, charset={}, useCache={}, customProviderPresent={}",
                 config != null,
                 config == null ? null : config.getResourceMode(),
                 config == null ? null : config.getCharsetString(),
@@ -100,7 +100,7 @@ public class TemplateFactory {
             Logger.debug(
                     true,
                     "Extra",
-                    "component=template, Custom template provider creation started: provider={}",
+                    "Custom template provider creation started: provider={}",
                     customEngineClass.getName());
             engine = ReflectKit.newInstance(customEngineClass);
         } else {
@@ -108,7 +108,7 @@ public class TemplateFactory {
             Logger.debug(
                     true,
                     "Extra",
-                    "component=template, SPI template provider lookup started: resourceMode={}",
+                    "SPI template provider lookup started: resourceMode={}",
                     config.getResourceMode());
             engine = NormalSpiLoader.loadFirstAvailable(TemplateProvider.class);
         }
@@ -116,14 +116,14 @@ public class TemplateFactory {
             Logger.debug(
                     false,
                     "Extra",
-                    "component=template, Template provider discovered: provider={}, elapsedMs={}",
+                    "Template provider discovered: provider={}, elapsedMs={}",
                     engine.getClass().getName(),
                     (System.nanoTime() - startedAt) / 1_000_000L);
             final TemplateProvider provider = engine.init(config);
             Logger.info(
                     false,
                     "Extra",
-                    "component=template, Template provider initialized by factory: provider={}, resourceMode={}, charset={}, useCache={}, pathPresent={}, elapsedMs={}",
+                    "Template provider initialized by factory: provider={}, resourceMode={}, charset={}, useCache={}, pathPresent={}, elapsedMs={}",
                     provider == null ? "null" : provider.getClass().getName(),
                     config.getResourceMode(),
                     config.getCharsetString(),
@@ -136,7 +136,7 @@ public class TemplateFactory {
         Logger.warn(
                 false,
                 "Extra",
-                "component=template, Template provider lookup failed: customProviderPresent={}, elapsedMs={}",
+                "Template provider lookup failed: customProviderPresent={}, elapsedMs={}",
                 customEngineClass != null,
                 (System.nanoTime() - startedAt) / 1_000_000L);
         throw new InternalException("No template found! Please add one of template jar to your project !");

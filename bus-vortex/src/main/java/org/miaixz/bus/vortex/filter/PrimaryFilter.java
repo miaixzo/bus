@@ -90,19 +90,26 @@ public class PrimaryFilter extends AbstractFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String path = exchange.getRequest().getPath().value();
-        Logger.info(true, "Vortex", "component=filter, clientIp=N/A, request received: path={}", path);
+        Logger.info(true, "Vortex", "Request received: clientIp=N/A, path={}", path);
+        Logger.debug(true, "Vortex", "Request header snapshot: clientIp=N/A, path={}", path);
+        Logger.debug(
+                true,
+                "Vortex",
+                "Request headers: clientIp=N/A, headers={}",
+                exchange.getRequest().getHeaders().toSingleValueMap());
+        Logger.debug(
+                true,
+                "Vortex",
+                "Request parameters: clientIp=N/A, parameters={}",
+                exchange.getRequest().getQueryParams().toSingleValueMap());
 
         if (!Args.isKnownRequest(path)) {
-            Logger.warn(false, "Vortex", "component=filter, clientIp=N/A, unknown path blocked: path={}", path);
+            Logger.warn(false, "Vortex", "Unknown path blocked: clientIp=N/A, path={}", path);
             throw new ValidateException(ErrorCode._BLOCKED);
         }
 
         if (isPathTraversalAttempt(path)) {
-            Logger.warn(
-                    false,
-                    "Vortex",
-                    "component=filter, clientIp=N/A, path traversal attempt detected: path={}",
-                    path);
+            Logger.warn(false, "Vortex", "Path traversal attempt detected: clientIp=N/A, path={}", path);
             throw new ValidateException(ErrorCode._LIMITER);
         }
 
@@ -119,7 +126,7 @@ public class PrimaryFilter extends AbstractFilter {
                                 false,
                                 "Vortex",
                                 e,
-                                "HTTP method mapping failed: component=filter, methodPresent={}, exception={}",
+                                "HTTP method mapping failed: methodPresent={}, exception={}",
                                 exchange.getRequest().getMethod() != null,
                                 e.getClass().getSimpleName());
                         throw new ValidateException(ErrorCode._100802);
@@ -130,7 +137,7 @@ public class PrimaryFilter extends AbstractFilter {
                     Logger.info(
                             true,
                             "Vortex",
-                            "component=filter, requestId={}, strategy chain selected: path={}, strategies={}",
+                            "Strategy chain selected: requestId={}, path={}, strategies={}",
                             context.getX_request_id(),
                             path,
                             strategies.stream().map(strategy -> strategy.getClass().getSimpleName())
@@ -207,7 +214,7 @@ public class PrimaryFilter extends AbstractFilter {
                 Logger.info(
                         true,
                         "Vortex",
-                        "component=filter, requestId={}, strategy execution started: index={}, total={}, strategy={}",
+                        "Strategy execution started: requestId={}, index={}, total={}, strategy={}",
                         exchange.getRequest().getId(),
                         this.index + 1,
                         this.list.size(),

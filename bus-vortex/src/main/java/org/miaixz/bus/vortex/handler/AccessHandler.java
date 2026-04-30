@@ -72,10 +72,23 @@ public class AccessHandler extends AbstractHandler {
             Logger.info(
                     true,
                     "Vortex",
-                    "component=access, clientIp={}, method={}, path={}, event=ACCESS_PREHANDLE, pre-handle validation started",
+                    "Pre-handle validation started: clientIp={}, method={}, path={}, event=ACCESS_PREHANDLE",
                     ip,
                     method,
                     path);
+            Logger.debug(true, "Vortex", "Request header snapshot: clientIp={}, method={}, path={}", ip, method, path);
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request headers: clientIp={}, headers={}",
+                    ip,
+                    request.getHeaders().toSingleValueMap());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request parameters: clientIp={}, parameters={}",
+                    ip,
+                    request.getQueryParams().toSingleValueMap());
 
             return true;
         });
@@ -106,7 +119,7 @@ public class AccessHandler extends AbstractHandler {
             Logger.info(
                     false,
                     "Vortex",
-                    "component=access, clientIp={}, method={}, path={}, event=ACCESS_POSTHANDLE, response post-processing completed",
+                    "Response post-processing completed: clientIp={}, method={}, path={}, event=ACCESS_POSTHANDLE",
                     ip,
                     method,
                     path);
@@ -147,7 +160,7 @@ public class AccessHandler extends AbstractHandler {
             Logger.info(
                     false,
                     "Vortex",
-                    "component=access, clientIp={}, method={}, path={}, event=ACCESS_COMPLETION, request completed: exception={}",
+                    "Request completed: clientIp={}, method={}, path={}, event=ACCESS_COMPLETION, exception={}",
                     ip,
                     method,
                     path,

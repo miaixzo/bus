@@ -103,7 +103,7 @@ public class RocketMQProvider implements MQProvider {
         Logger.info(
                 true,
                 "Extra",
-                "component=mq, RocketMQ provider initialization started: brokerPresent={}, producerGroup={}, consumerGroup={}",
+                "RocketMQ provider initialization started: brokerPresent={}, producerGroup={}, consumerGroup={}",
                 config != null && config.getBrokerUrl() != null,
                 producerGroup,
                 consumerGroup);
@@ -111,7 +111,7 @@ public class RocketMQProvider implements MQProvider {
         Logger.info(
                 false,
                 "Extra",
-                "component=mq, RocketMQ provider initialized: brokerPresent={}, producerGroup={}, consumerGroup={}",
+                "RocketMQ provider initialized: brokerPresent={}, producerGroup={}, consumerGroup={}",
                 config != null && config.getBrokerUrl() != null,
                 producerGroup,
                 consumerGroup);
@@ -131,7 +131,7 @@ public class RocketMQProvider implements MQProvider {
         Logger.debug(
                 true,
                 "Extra",
-                "component=mq, RocketMQ producer creation started: producerGroup={}, brokerPresent={}",
+                "RocketMQ producer creation started: producerGroup={}, brokerPresent={}",
                 producerGroup,
                 config != null && config.getBrokerUrl() != null);
         final DefaultMQProducer defaultMQProducer = new DefaultMQProducer(producerGroup);
@@ -143,7 +143,7 @@ public class RocketMQProvider implements MQProvider {
                     false,
                     "Extra",
                     e,
-                    "component=mq, RocketMQ producer creation failed: producerGroup={}, exception={}, elapsedMs={}",
+                    "RocketMQ producer creation failed: producerGroup={}, exception={}, elapsedMs={}",
                     producerGroup,
                     e.getClass().getSimpleName(),
                     (System.nanoTime() - startedAt) / 1_000_000L);
@@ -152,7 +152,7 @@ public class RocketMQProvider implements MQProvider {
         Logger.debug(
                 false,
                 "Extra",
-                "component=mq, RocketMQ producer created: producerGroup={}, elapsedMs={}",
+                "RocketMQ producer created: producerGroup={}, elapsedMs={}",
                 producerGroup,
                 (System.nanoTime() - startedAt) / 1_000_000L);
         return new RocketMQProducer(defaultMQProducer);
@@ -170,7 +170,7 @@ public class RocketMQProvider implements MQProvider {
         Logger.debug(
                 true,
                 "Extra",
-                "component=mq, RocketMQ consumer creation started: consumerGroup={}, brokerPresent={}",
+                "RocketMQ consumer creation started: consumerGroup={}, brokerPresent={}",
                 consumerGroup,
                 config != null && config.getBrokerUrl() != null);
         final DefaultMQPushConsumer defaultMQPushConsumer = new DefaultMQPushConsumer(consumerGroup);
@@ -179,7 +179,7 @@ public class RocketMQProvider implements MQProvider {
         Logger.debug(
                 false,
                 "Extra",
-                "component=mq, RocketMQ consumer created: consumerGroup={}, elapsedMs={}",
+                "RocketMQ consumer created: consumerGroup={}, elapsedMs={}",
                 consumerGroup,
                 (System.nanoTime() - startedAt) / 1_000_000L);
         return consumer;

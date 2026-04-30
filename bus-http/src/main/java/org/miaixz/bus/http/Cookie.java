@@ -214,7 +214,7 @@ public final class Cookie {
             Logger.debug(
                     false,
                     "Http",
-                    "protocol=http, Cookie ignored without name/value separator: url={}, cookieChars={}",
+                    "Cookie ignored without name/value separator: protocol=http, url={}, cookieChars={}",
                     url.redact(),
                     setCookie.length());
             return null;
@@ -225,7 +225,7 @@ public final class Cookie {
             Logger.debug(
                     false,
                     "Http",
-                    "protocol=http, Cookie ignored with invalid name: url={}, nameChars={}",
+                    "Cookie ignored with invalid name: protocol=http, url={}, nameChars={}",
                     url.redact(),
                     cookieName.length());
             return null;
@@ -236,7 +236,7 @@ public final class Cookie {
             Logger.debug(
                     false,
                     "Http",
-                    "protocol=http, Cookie ignored with invalid value: url={}, nameChars={}",
+                    "Cookie ignored with invalid value: protocol=http, url={}, nameChars={}",
                     url.redact(),
                     cookieName.length());
             return null;
@@ -271,7 +271,7 @@ public final class Cookie {
                     Logger.debug(
                             false,
                             "Http",
-                            "protocol=http, Cookie attribute ignored: url={}, attribute=expires, valueChars={}, exception={}",
+                            "Cookie attribute ignored: protocol=http, url={}, attribute=expires, valueChars={}, exception={}",
                             url.redact(),
                             attributeValue.length(),
                             e.getClass().getSimpleName());
@@ -285,7 +285,7 @@ public final class Cookie {
                     Logger.debug(
                             false,
                             "Http",
-                            "protocol=http, Cookie attribute ignored: url={}, attribute=max-age, valueChars={}, exception={}",
+                            "Cookie attribute ignored: protocol=http, url={}, attribute=max-age, valueChars={}, exception={}",
                             url.redact(),
                             attributeValue.length(),
                             e.getClass().getSimpleName());
@@ -299,7 +299,7 @@ public final class Cookie {
                     Logger.debug(
                             false,
                             "Http",
-                            "protocol=http, Cookie attribute ignored: url={}, attribute=domain, valueChars={}, exception={}",
+                            "Cookie attribute ignored: protocol=http, url={}, attribute=domain, valueChars={}, exception={}",
                             url.redact(),
                             attributeValue.length(),
                             e.getClass().getSimpleName());

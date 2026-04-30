@@ -70,7 +70,7 @@ public class AnalysisResult extends AbstractResult {
                     false,
                     "Extra",
                     e,
-                    "component=nlp, Lucene analysis next word failed: exception={}",
+                    "Lucene analysis next word failed: exception={}",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
         }

@@ -110,7 +110,7 @@ public class JarDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntry
         Logger.info(
                 true,
                 "Shade",
-                "Jar decryption started: component=jar, sourceFile={}, targetFile={}, algorithm={}",
+                "Jar decryption started: sourceFile={}, targetFile={}, algorithm={}",
                 src == null ? null : src.getName(),
                 dest == null ? null : dest.getName(),
                 key == null ? null : key.getAlgorithm());
@@ -120,7 +120,7 @@ public class JarDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntry
         Logger.info(
                 false,
                 "Shade",
-                "Jar decryption finished: component=jar, sourceFile={}, targetFile={}, algorithm={}",
+                "Jar decryption finished: sourceFile={}, targetFile={}, algorithm={}",
                 src == null ? null : src.getName(),
                 dest == null ? null : dest.getName(),
                 key == null ? null : key.getAlgorithm());
@@ -143,7 +143,7 @@ public class JarDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntry
             Logger.debug(
                     true,
                     "Shade",
-                    "Jar decryption stream started: component=jar, algorithm={}, level={}",
+                    "Jar decryption stream started: algorithm={}, level={}",
                     key == null ? null : key.getAlgorithm(),
                     level);
             zis = new JarArchiveInputStream(in);
@@ -197,16 +197,11 @@ public class JarDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntry
             Logger.debug(
                     false,
                     "Shade",
-                    "Jar decryption stream finished: component=jar, algorithm={}, level={}",
+                    "Jar decryption stream finished: algorithm={}, level={}",
                     key == null ? null : key.getAlgorithm(),
                     level);
         } catch (IOException e) {
-            Logger.warn(
-                    false,
-                    "Shade",
-                    e,
-                    "Jar decryption stream failed: component=jar, exception={}",
-                    e.getClass().getSimpleName());
+            Logger.warn(false, "Shade", e, "Jar decryption stream failed: exception={}", e.getClass().getSimpleName());
             throw e;
         } finally {
             Builder.close(zis);

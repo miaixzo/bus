@@ -85,7 +85,7 @@ public class InternalMail {
                         false,
                         "Extra",
                         e,
-                        "component=mail, Mail address parse failed: addressChars={}, charsetPresent={}, exception={}",
+                        "Mail address parse failed: addressChars={}, charsetPresent={}, exception={}",
                         address == null ? 0 : address.length(),
                         charset != null,
                         e.getClass().getSimpleName());
@@ -116,7 +116,7 @@ public class InternalMail {
                     false,
                     "Extra",
                     e,
-                    "component=mail, Mail address list parse failed: addressChars={}, charsetPresent={}, exception={}",
+                    "Mail address list parse failed: addressChars={}, charsetPresent={}, exception={}",
                     address.length(),
                     charset != null,
                     e.getClass().getSimpleName());
@@ -133,7 +133,7 @@ public class InternalMail {
                             false,
                             "Extra",
                             e,
-                            "component=mail, Mail address personal encoding failed: charsetPresent={}, exception={}",
+                            "Mail address personal encoding failed: charsetPresent={}, exception={}",
                             charsetStr != null,
                             e.getClass().getSimpleName());
                     throw new InternalException(e);
@@ -160,7 +160,7 @@ public class InternalMail {
                 Logger.debug(
                         false,
                         "Extra",
-                        "component=mail, Mail header text encoding fallback used: textChars={}, charsetPresent={}, exception={}",
+                        "Mail header text encoding fallback used: textChars={}, charsetPresent={}, exception={}",
                         text.length(),
                         charset != null,
                         e.getClass().getSimpleName());

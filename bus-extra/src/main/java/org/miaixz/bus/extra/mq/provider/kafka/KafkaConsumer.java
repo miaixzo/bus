@@ -77,16 +77,12 @@ public class KafkaConsumer implements Consumer {
      * @return This {@code KafkaConsumer} instance, allowing for method chaining.
      */
     public KafkaConsumer setTopics(final String... topics) {
-        Logger.info(
-                true,
-                "Extra",
-                "component=mq, Kafka topic subscription started: topics={}",
-                topics == null ? 0 : topics.length);
+        Logger.info(true, "Extra", "Kafka topic subscription started: topics={}", topics == null ? 0 : topics.length);
         this.consumer.subscribe(ListKit.of(topics));
         Logger.info(
                 false,
                 "Extra",
-                "component=mq, Kafka topic subscription registered: topics={}",
+                "Kafka topic subscription registered: topics={}",
                 topics == null ? 0 : topics.length);
         return this;
     }
@@ -99,16 +95,12 @@ public class KafkaConsumer implements Consumer {
      * @return This {@code KafkaConsumer} instance, allowing for method chaining.
      */
     public KafkaConsumer setTopicPattern(final Pattern topicPattern) {
-        Logger.info(
-                true,
-                "Extra",
-                "component=mq, Kafka topic pattern subscription started: patternPresent={}",
-                topicPattern != null);
+        Logger.info(true, "Extra", "Kafka topic pattern subscription started: patternPresent={}", topicPattern != null);
         this.consumer.subscribe(topicPattern);
         Logger.info(
                 false,
                 "Extra",
-                "component=mq, Kafka topic pattern subscription registered: patternPresent={}",
+                "Kafka topic pattern subscription registered: patternPresent={}",
                 topicPattern != null);
         return this;
     }
@@ -123,7 +115,7 @@ public class KafkaConsumer implements Consumer {
     @Override
     public void subscribe(final MessageHandler messageHandler) {
         final long startedAt = System.nanoTime();
-        Logger.debug(true, "Extra", "component=mq, Kafka poll started: timeoutMs={}", 3000);
+        Logger.debug(true, "Extra", "Kafka poll started: timeoutMs={}", 3000);
         var records = this.consumer.poll(Duration.ofMillis(3000));
         int batchSize = records.count();
         try {
@@ -133,7 +125,7 @@ public class KafkaConsumer implements Consumer {
             Logger.debug(
                     false,
                     "Extra",
-                    "component=mq, Kafka poll handled: batchSize={}, elapsedMs={}",
+                    "Kafka poll handled: batchSize={}, elapsedMs={}",
                     batchSize,
                     (System.nanoTime() - startedAt) / 1_000_000L);
         } catch (RuntimeException e) {
@@ -141,7 +133,7 @@ public class KafkaConsumer implements Consumer {
                     false,
                     "Extra",
                     e,
-                    "component=mq, Kafka poll handling failed: batchSize={}, exception={}, elapsedMs={}",
+                    "Kafka poll handling failed: batchSize={}, exception={}, elapsedMs={}",
                     batchSize,
                     e.getClass().getSimpleName(),
                     (System.nanoTime() - startedAt) / 1_000_000L);
@@ -159,20 +151,20 @@ public class KafkaConsumer implements Consumer {
     @Override
     public void close() throws IOException {
         final long startedAt = System.nanoTime();
-        Logger.debug(true, "Extra", "component=mq, Kafka consumer close requested");
+        Logger.debug(true, "Extra", "Kafka consumer close requested");
         try {
             IoKit.nullSafeClose(this.consumer);
             Logger.debug(
                     false,
                     "Extra",
-                    "component=mq, Kafka consumer closed: elapsedMs={}",
+                    "Kafka consumer closed: elapsedMs={}",
                     (System.nanoTime() - startedAt) / 1_000_000L);
         } catch (IOException e) {
             Logger.warn(
                     false,
                     "Extra",
                     e,
-                    "component=mq, Kafka consumer close failed: exception={}, elapsedMs={}",
+                    "Kafka consumer close failed: exception={}, elapsedMs={}",
                     e.getClass().getSimpleName(),
                     (System.nanoTime() - startedAt) / 1_000_000L);
             throw e;

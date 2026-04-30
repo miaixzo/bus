@@ -62,7 +62,7 @@ public class JdkEncryptorProvider implements EncryptorProvider {
         Logger.debug(
                 true,
                 "Shade",
-                "JDK encrypt file started: component=safety, algorithm={}, sourceFile={}, targetFile={}",
+                "JDK encrypt file started: algorithm={}, sourceFile={}, targetFile={}",
                 algorithm,
                 src == null ? null : src.getName(),
                 dest == null ? null : dest.getName());
@@ -75,7 +75,7 @@ public class JdkEncryptorProvider implements EncryptorProvider {
         Logger.debug(
                 false,
                 "Shade",
-                "JDK encrypt file finished: component=safety, algorithm={}, sourceFile={}, targetFile={}",
+                "JDK encrypt file finished: algorithm={}, sourceFile={}, targetFile={}",
                 algorithm,
                 src == null ? null : src.getName(),
                 dest == null ? null : dest.getName());
@@ -102,7 +102,7 @@ public class JdkEncryptorProvider implements EncryptorProvider {
                     false,
                     "Shade",
                     e,
-                    "JDK encrypt stream failed: component=safety, algorithm={}, operation={}, exception={}",
+                    "JDK encrypt stream failed: algorithm={}, operation={}, exception={}",
                     algorithm,
                     "streamToStream",
                     e.getClass().getSimpleName());
@@ -131,7 +131,7 @@ public class JdkEncryptorProvider implements EncryptorProvider {
                     false,
                     "Shade",
                     e,
-                    "JDK encrypt input wrapper failed: component=safety, algorithm={}, operation={}, exception={}",
+                    "JDK encrypt input wrapper failed: algorithm={}, operation={}, exception={}",
                     algorithm,
                     "inputWrapper",
                     e.getClass().getSimpleName());
@@ -158,7 +158,7 @@ public class JdkEncryptorProvider implements EncryptorProvider {
                     false,
                     "Shade",
                     e,
-                    "JDK encrypt output wrapper failed: component=safety, algorithm={}, operation={}, exception={}",
+                    "JDK encrypt output wrapper failed: algorithm={}, operation={}, exception={}",
                     algorithm,
                     "outputWrapper",
                     e.getClass().getSimpleName());

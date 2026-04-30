@@ -79,7 +79,7 @@ public class BeetlTemplate implements Template, Serializable {
         Logger.debug(
                 true,
                 "Extra",
-                "component=template, Beetl render started: bindingCount={}, writerPresent={}",
+                "Beetl render started: bindingCount={}, writerPresent={}",
                 bindingMap == null ? 0 : bindingMap.size(),
                 writer != null);
         rawTemplate.binding(bindingMap);
@@ -87,7 +87,7 @@ public class BeetlTemplate implements Template, Serializable {
         Logger.debug(
                 false,
                 "Extra",
-                "component=template, Beetl render completed: bindingCount={}, elapsedMs={}",
+                "Beetl render completed: bindingCount={}, elapsedMs={}",
                 bindingMap == null ? 0 : bindingMap.size(),
                 (System.nanoTime() - startedAt) / 1_000_000L);
     }
@@ -107,7 +107,7 @@ public class BeetlTemplate implements Template, Serializable {
         Logger.debug(
                 true,
                 "Extra",
-                "component=template, Beetl stream render started: bindingCount={}, outputPresent={}",
+                "Beetl stream render started: bindingCount={}, outputPresent={}",
                 bindingMap == null ? 0 : bindingMap.size(),
                 out != null);
         rawTemplate.binding(bindingMap);
@@ -115,7 +115,7 @@ public class BeetlTemplate implements Template, Serializable {
         Logger.debug(
                 false,
                 "Extra",
-                "component=template, Beetl stream render completed: bindingCount={}, elapsedMs={}",
+                "Beetl stream render completed: bindingCount={}, elapsedMs={}",
                 bindingMap == null ? 0 : bindingMap.size(),
                 (System.nanoTime() - startedAt) / 1_000_000L);
     }

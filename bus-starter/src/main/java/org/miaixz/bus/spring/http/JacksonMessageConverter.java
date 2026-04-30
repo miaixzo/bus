@@ -101,7 +101,7 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
         Logger.debug(
                 false,
                 "Starter",
-                "component=http, Configuring MappingJackson2HttpMessageConverter with autoType: {}",
+                "Configuring MappingJackson2HttpMessageConverter with autoType: {}",
                 autoTypeMatcher == null ? null : autoTypeMatcher.description());
         ObjectMapper jacksonMapper = new ObjectMapper();
 
@@ -122,7 +122,7 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
             Logger.debug(
                     false,
                     "Starter",
-                    "component=http, Jackson autoType patterns are prepared but default polymorphic typing remains disabled: {}",
+                    "Jackson autoType patterns are prepared but default polymorphic typing remains disabled: {}",
                     autoTypeMatcher.description());
         }
 
@@ -142,7 +142,7 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
         Logger.debug(
                 false,
                 "Starter",
-                "component=http, Jackson converter configured with media types: {}",
+                "Jackson converter configured with media types: {}",
                 jacksonConverter.getSupportedMediaTypes());
     }
 
@@ -193,7 +193,7 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
                     Logger.debug(
                             false,
                             "Starter",
-                            "component=http, Jackson could not find backing field for property '{}' on class '{}'. Assuming inclusion.",
+                            "Jackson could not find backing field for property '{}' on class '{}'. Assuming inclusion.",
                             writer.getName(),
                             pojo.getClass().getName());
                 }

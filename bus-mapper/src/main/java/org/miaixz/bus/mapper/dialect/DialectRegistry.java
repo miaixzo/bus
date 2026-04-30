@@ -191,8 +191,7 @@ public final class DialectRegistry {
                     false,
                     "Mapper",
                     e,
-                    "Mapper operation failed: component={}, provider={}, exception={}",
-                    "dialect",
+                    "Mapper operation failed: provider={}, exception={}",
                     "DialectRegistry",
                     e.getClass().getSimpleName());
             return UNKNOWN;
@@ -219,8 +218,7 @@ public final class DialectRegistry {
                     false,
                     "Mapper",
                     e,
-                    "Mapper operation failed: component={}, provider={}, exception={}",
-                    "dialect",
+                    "Mapper operation failed: provider={}, exception={}",
                     "DialectRegistry",
                     e.getClass().getSimpleName());
             return UNKNOWN;
@@ -324,8 +322,7 @@ public final class DialectRegistry {
                     false,
                     "Mapper",
                     e,
-                    "Mapper operation failed: component={}, provider={}, exception={}",
-                    "dialect",
+                    "Mapper operation failed: provider={}, exception={}",
                     "DialectRegistry",
                     e.getClass().getSimpleName());
             // Ignore: DynamicDataSource may not be available
@@ -358,8 +355,7 @@ public final class DialectRegistry {
                     false,
                     "Mapper",
                     e,
-                    "Mapper operation failed: component={}, provider={}, exception={}",
-                    "dialect",
+                    "Mapper operation failed: provider={}, exception={}",
                     "DialectRegistry",
                     e.getClass().getSimpleName());
             // DynamicDataSource not available

@@ -839,8 +839,7 @@ public final class Cortex {
                 Logger.debug(
                         false,
                         "Cortex",
-                        "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
-                        "cortex",
+                        "Cortex operation skipped: provider={}, recoverable={}, exception={}",
                         "Cortex",
                         true,
                         ignored.getClass().getSimpleName());

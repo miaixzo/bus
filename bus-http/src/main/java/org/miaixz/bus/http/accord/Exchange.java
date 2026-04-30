@@ -119,7 +119,7 @@ public final class Exchange {
                     false,
                     "Http",
                     e,
-                    "protocol=http, Exchange request headers write failed: method={}, url={}, exception={}",
+                    "Exchange request headers write failed: protocol=http, method={}, url={}, exception={}",
                     request.method(),
                     request.url().redact(),
                     e.getClass().getSimpleName());
@@ -158,7 +158,7 @@ public final class Exchange {
                     false,
                     "Http",
                     e,
-                    "protocol=http, Exchange request flush failed: method={}, url={}, exception={}",
+                    "Exchange request flush failed: protocol=http, method={}, url={}, exception={}",
                     call.request().method(),
                     call.request().url().redact(),
                     e.getClass().getSimpleName());
@@ -181,7 +181,7 @@ public final class Exchange {
                     false,
                     "Http",
                     e,
-                    "protocol=http, Exchange request finish failed: method={}, url={}, exception={}",
+                    "Exchange request finish failed: protocol=http, method={}, url={}, exception={}",
                     call.request().method(),
                     call.request().url().redact(),
                     e.getClass().getSimpleName());
@@ -217,7 +217,7 @@ public final class Exchange {
                     false,
                     "Http",
                     e,
-                    "protocol=http, Exchange response headers read failed: method={}, url={}, expectContinue={}, exception={}",
+                    "Exchange response headers read failed: protocol=http, method={}, url={}, expectContinue={}, exception={}",
                     call.request().method(),
                     call.request().url().redact(),
                     expectContinue,
@@ -257,7 +257,7 @@ public final class Exchange {
                     false,
                     "Http",
                     e,
-                    "protocol=http, Exchange response body open failed: method={}, url={}, status={}, exception={}",
+                    "Exchange response body open failed: protocol=http, method={}, url={}, status={}, exception={}",
                     call.request().method(),
                     call.request().url().redact(),
                     response.code(),
@@ -351,7 +351,7 @@ public final class Exchange {
                     false,
                     "Http",
                     e,
-                    "protocol=http, Exchange body failed: method={}, url={}, requestDone={}, responseDone={}, bytes={}, exception={}",
+                    "Exchange body failed: protocol=http, method={}, url={}, requestDone={}, responseDone={}, bytes={}, exception={}",
                     call.request().method(),
                     call.request().url().redact(),
                     requestDone,
@@ -418,7 +418,7 @@ public final class Exchange {
                         false,
                         "Http",
                         e,
-                        "HTTP exchange operation failed: component=exchange, provider={}, recoverable={}, exception={}",
+                        "HTTP exchange operation failed: provider={}, recoverable={}, exception={}",
                         "Exchange",
                         false,
                         e.getClass().getSimpleName());
@@ -435,7 +435,7 @@ public final class Exchange {
                         false,
                         "Http",
                         e,
-                        "HTTP exchange operation failed: component=exchange, provider={}, recoverable={}, exception={}",
+                        "HTTP exchange operation failed: provider={}, recoverable={}, exception={}",
                         "Exchange",
                         false,
                         e.getClass().getSimpleName());
@@ -459,7 +459,7 @@ public final class Exchange {
                         false,
                         "Http",
                         e,
-                        "HTTP exchange operation failed: component=exchange, provider={}, recoverable={}, exception={}",
+                        "HTTP exchange operation failed: provider={}, recoverable={}, exception={}",
                         "Exchange",
                         false,
                         e.getClass().getSimpleName());
@@ -522,7 +522,7 @@ public final class Exchange {
                         false,
                         "Http",
                         e,
-                        "HTTP exchange operation failed: component=exchange, provider={}, recoverable={}, exception={}",
+                        "HTTP exchange operation failed: provider={}, recoverable={}, exception={}",
                         "Exchange",
                         false,
                         e.getClass().getSimpleName());
@@ -543,7 +543,7 @@ public final class Exchange {
                         false,
                         "Http",
                         e,
-                        "HTTP exchange operation failed: component=exchange, provider={}, recoverable={}, exception={}",
+                        "HTTP exchange operation failed: provider={}, recoverable={}, exception={}",
                         "Exchange",
                         false,
                         e.getClass().getSimpleName());

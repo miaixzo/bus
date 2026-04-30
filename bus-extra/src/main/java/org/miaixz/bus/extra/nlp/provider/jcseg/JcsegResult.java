@@ -65,12 +65,7 @@ public class JcsegResult extends AbstractResult {
         try {
             word = this.result.next();
         } catch (final IOException e) {
-            Logger.warn(
-                    false,
-                    "Extra",
-                    e,
-                    "component=nlp, Jcseg next word failed: exception={}",
-                    e.getClass().getSimpleName());
+            Logger.warn(false, "Extra", e, "Jcseg next word failed: exception={}", e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         if (null == word) {

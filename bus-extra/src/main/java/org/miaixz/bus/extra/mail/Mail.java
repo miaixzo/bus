@@ -45,7 +45,7 @@ import org.miaixz.bus.logger.Logger;
  * and image attachments.
  * <p>
  * Usage Example:
- * 
+ *
  * <pre>
  * {@code
  * // Create a mail client
@@ -307,7 +307,7 @@ public class Mail implements Builder<MimeMessage> {
                     false,
                     "Extra",
                     e,
-                    "component=mail, Mail embedded image creation failed: contentTypePresent={}, streamPresent={}, exception={}",
+                    "Mail embedded image creation failed: contentTypePresent={}, streamPresent={}, exception={}",
                     contentType != null,
                     imageStream != null,
                     e.getClass().getSimpleName());

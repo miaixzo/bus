@@ -225,8 +225,7 @@ public class McpAssets extends Assets {
                 Logger.debug(
                         false,
                         "Cortex",
-                        "Cortex operation skipped: component={}, provider={}, recoverable={}, exception={}",
-                        "registry",
+                        "Cortex operation skipped: provider={}, recoverable={}, exception={}",
                         "McpAssets",
                         true,
                         ignore.getClass().getSimpleName());

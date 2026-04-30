@@ -347,7 +347,7 @@ public class Http2Connection implements Closeable {
                             false,
                             "Http",
                             e,
-                            "HTTP/2 operation failed: component=http2, provider={}, recoverable={}, exception={}",
+                            "HTTP/2 operation failed: provider={}, recoverable={}, exception={}",
                             "Http2Connection",
                             false,
                             e.getClass().getSimpleName());
@@ -387,7 +387,7 @@ public class Http2Connection implements Closeable {
                                 false,
                                 "Http",
                                 e,
-                                "HTTP/2 operation failed: component=http2, provider={}, recoverable={}, exception={}",
+                                "HTTP/2 operation failed: provider={}, recoverable={}, exception={}",
                                 "Http2Connection",
                                 false,
                                 e.getClass().getSimpleName());
@@ -400,7 +400,7 @@ public class Http2Connection implements Closeable {
                     false,
                     "Http",
                     ignored,
-                    "HTTP/2 operation failed: component=http2, provider={}, recoverable={}, exception={}",
+                    "HTTP/2 operation failed: provider={}, recoverable={}, exception={}",
                     "Http2Connection",
                     false,
                     ignored.getClass().getSimpleName());
@@ -441,7 +441,7 @@ public class Http2Connection implements Closeable {
                                 false,
                                 "Http",
                                 e,
-                                "HTTP/2 operation failed: component=http2, provider={}, recoverable={}, exception={}",
+                                "HTTP/2 operation failed: provider={}, recoverable={}, exception={}",
                                 "Http2Connection",
                                 false,
                                 e.getClass().getSimpleName());
@@ -454,7 +454,7 @@ public class Http2Connection implements Closeable {
                     false,
                     "Http",
                     ignored,
-                    "HTTP/2 operation failed: component=http2, provider={}, recoverable={}, exception={}",
+                    "HTTP/2 operation failed: provider={}, recoverable={}, exception={}",
                     "Http2Connection",
                     false,
                     ignored.getClass().getSimpleName());
@@ -477,7 +477,7 @@ public class Http2Connection implements Closeable {
                     false,
                     "Http",
                     e,
-                    "HTTP/2 operation failed: component=http2, provider={}, recoverable={}, exception={}",
+                    "HTTP/2 operation failed: provider={}, recoverable={}, exception={}",
                     "Http2Connection",
                     false,
                     e.getClass().getSimpleName());
@@ -571,7 +571,7 @@ public class Http2Connection implements Closeable {
             Logger.debug(
                     false,
                     "Http",
-                    "protocol=http2, HTTP/2 shutdown ignored during close: connection={}, connectionCode={}, streamCode={}, exception={}",
+                    "HTTP/2 shutdown ignored during close: protocol=http2, connection={}, connectionCode={}, streamCode={}, exception={}",
                     connectionName,
                     connectionCode,
                     streamCode,
@@ -594,7 +594,7 @@ public class Http2Connection implements Closeable {
                     Logger.debug(
                             false,
                             "Http",
-                            "protocol=http2, HTTP/2 stream close ignored during connection close: connection={}, streamId={}, streamCode={}, exception={}",
+                            "HTTP/2 stream close ignored during connection close: protocol=http2, connection={}, streamId={}, streamCode={}, exception={}",
                             connectionName,
                             stream.getId(),
                             streamCode,
@@ -610,7 +610,7 @@ public class Http2Connection implements Closeable {
             Logger.debug(
                     false,
                     "Http",
-                    "protocol=http2, HTTP/2 writer close ignored: connection={}, exception={}",
+                    "HTTP/2 writer close ignored: protocol=http2, connection={}, exception={}",
                     connectionName,
                     ignored.getClass().getSimpleName());
         }
@@ -622,7 +622,7 @@ public class Http2Connection implements Closeable {
             Logger.debug(
                     false,
                     "Http",
-                    "protocol=http2, HTTP/2 socket close ignored: connection={}, exception={}",
+                    "HTTP/2 socket close ignored: protocol=http2, connection={}, exception={}",
                     connectionName,
                     ignored.getClass().getSimpleName());
         }
@@ -738,7 +738,7 @@ public class Http2Connection implements Closeable {
             Logger.debug(
                     false,
                     "Http",
-                    "protocol=http2, HTTP/2 degraded ping rejected after failure: connection={}, exception={}",
+                    "HTTP/2 degraded ping rejected after failure: protocol=http2, connection={}, exception={}",
                     connectionName,
                     ignored.getClass().getSimpleName());
             // This connection has been closed.
@@ -789,7 +789,7 @@ public class Http2Connection implements Closeable {
                         Logger.debug(
                                 false,
                                 "Http",
-                                "protocol=http2, HTTP/2 push request reset failed: connection={}, streamId={}, exception={}",
+                                "HTTP/2 push request reset failed: protocol=http2, connection={}, streamId={}, exception={}",
                                 connectionName,
                                 streamId,
                                 ignored.getClass().getSimpleName());
@@ -800,7 +800,7 @@ public class Http2Connection implements Closeable {
             Logger.debug(
                     false,
                     "Http",
-                    "protocol=http2, HTTP/2 push request rejected: connection={}, streamId={}, exception={}",
+                    "HTTP/2 push request rejected: protocol=http2, connection={}, streamId={}, exception={}",
                     connectionName,
                     streamId,
                     ignored.getClass().getSimpleName());
@@ -838,7 +838,7 @@ public class Http2Connection implements Closeable {
                                 false,
                                 "Http",
                                 ignored,
-                                "HTTP/2 operation failed: component=http2, provider={}, recoverable={}, exception={}",
+                                "HTTP/2 operation failed: provider={}, recoverable={}, exception={}",
                                 "Http2Connection",
                                 false,
                                 ignored.getClass().getSimpleName());
@@ -850,7 +850,7 @@ public class Http2Connection implements Closeable {
                     false,
                     "Http",
                     ignored,
-                    "HTTP/2 operation failed: component=http2, provider={}, recoverable={}, exception={}",
+                    "HTTP/2 operation failed: provider={}, recoverable={}, exception={}",
                     "Http2Connection",
                     false,
                     ignored.getClass().getSimpleName());
@@ -895,7 +895,7 @@ public class Http2Connection implements Closeable {
                     Logger.debug(
                             false,
                             "Http",
-                            "protocol=http2, HTTP/2 push data callback failed: connection={}, streamId={}, byteCount={}, exception={}",
+                            "HTTP/2 push data callback failed: protocol=http2, connection={}, streamId={}, byteCount={}, exception={}",
                             connectionName,
                             streamId,
                             byteCount,
@@ -1115,7 +1115,7 @@ public class Http2Connection implements Closeable {
                         false,
                         "Http",
                         e,
-                        "HTTP/2 operation failed: component=http2, provider={}, recoverable={}, exception={}",
+                        "HTTP/2 operation failed: provider={}, recoverable={}, exception={}",
                         "Http2Connection",
                         false,
                         e.getClass().getSimpleName());
@@ -1206,7 +1206,7 @@ public class Http2Connection implements Closeable {
                                 Logger.info(
                                         false,
                                         "Http",
-                                        "protocol=http2, Http2Connection.Listener failure for " + connectionName,
+                                        "Http2Connection.Listener failure for : protocol=http2" + connectionName,
                                         e);
                                 try {
                                     newStream.close(Http2ErrorCode.PROTOCOL_ERROR, e);
@@ -1215,7 +1215,7 @@ public class Http2Connection implements Closeable {
                                             false,
                                             "Http",
                                             ignored,
-                                            "HTTP/2 operation failed: component=http2, provider={}, recoverable={}, exception={}",
+                                            "HTTP/2 operation failed: provider={}, recoverable={}, exception={}",
                                             "Http2Connection",
                                             false,
                                             ignored.getClass().getSimpleName());
@@ -1272,7 +1272,7 @@ public class Http2Connection implements Closeable {
                 Logger.debug(
                         false,
                         "Http",
-                        "protocol=http2, HTTP/2 settings ACK rejected: connection={}, exception={}",
+                        "HTTP/2 settings ACK rejected: protocol=http2, connection={}, exception={}",
                         connectionName,
                         ignored.getClass().getSimpleName());
                 // This connection has been closed.
@@ -1302,7 +1302,7 @@ public class Http2Connection implements Closeable {
                             false,
                             "Http",
                             e,
-                            "HTTP/2 operation failed: component=http2, provider={}, recoverable={}, exception={}",
+                            "HTTP/2 operation failed: provider={}, recoverable={}, exception={}",
                             "Http2Connection",
                             false,
                             e.getClass().getSimpleName());
@@ -1364,7 +1364,7 @@ public class Http2Connection implements Closeable {
                     Logger.debug(
                             false,
                             "Http",
-                            "protocol=http2, HTTP/2 ping reply rejected: connection={}, payload1={}, payload2={}, exception={}",
+                            "HTTP/2 ping reply rejected: protocol=http2, connection={}, payload1={}, payload2={}, exception={}",
                             connectionName,
                             payload1,
                             payload2,

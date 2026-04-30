@@ -103,7 +103,7 @@ public class LimiterStrategy extends AbstractStrategy {
             Logger.debug(
                     true,
                     "Vortex",
-                    "strategy=limiter, clientIp={}, rate limit check started: methodVersion={}",
+                    "Rate limit check started: strategy=limiter, clientIp={}, methodVersion={}",
                     clientIp,
                     methodVersion);
 
@@ -112,7 +112,7 @@ public class LimiterStrategy extends AbstractStrategy {
                     Logger.debug(
                             true,
                             "Vortex",
-                            "strategy=limiter, clientIp={}, no matching limiters found; bypassing rate limit: methodVersion={}",
+                            "No matching limiters found; bypassing rate limit: strategy=limiter, clientIp={}, methodVersion={}",
                             clientIp,
                             methodVersion);
                     return chain.apply(exchange);
@@ -121,7 +121,7 @@ public class LimiterStrategy extends AbstractStrategy {
                 Logger.debug(
                         true,
                         "Vortex",
-                        "strategy=limiter, clientIp={}, limiters resolved; acquiring permits: limiterCount={}",
+                        "Limiters resolved; acquiring permits: strategy=limiter, clientIp={}, limiterCount={}",
                         clientIp,
                         limiters.size());
 
@@ -136,7 +136,7 @@ public class LimiterStrategy extends AbstractStrategy {
                             false,
                             "Vortex",
                             ex,
-                            "strategy=limiter, clientIp={}, rate limit exceeded: methodVersion={}, exception={}",
+                            "Rate limit exceeded: strategy=limiter, clientIp={}, methodVersion={}, exception={}",
                             clientIp,
                             methodVersion,
                             ex.getClass().getSimpleName());
@@ -144,7 +144,7 @@ public class LimiterStrategy extends AbstractStrategy {
                     Logger.info(
                             true,
                             "Vortex",
-                            "strategy=limiter, clientIp={}, rate limit permits acquired: path={}, methodVersion={}",
+                            "Rate limit permits acquired: strategy=limiter, clientIp={}, path={}, methodVersion={}",
                             clientIp,
                             exchange.getRequest().getURI().getPath(),
                             methodVersion);
@@ -174,7 +174,7 @@ public class LimiterStrategy extends AbstractStrategy {
         Logger.debug(
                 true,
                 "Vortex",
-                "strategy=limiter, clientIp={}, limiter key lookup started: methodVersion={}",
+                "Limiter key lookup started: strategy=limiter, clientIp={}, methodVersion={}",
                 ip,
                 methodVersion);
 

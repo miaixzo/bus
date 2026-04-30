@@ -169,7 +169,7 @@ public class MapperConfiguration implements InitializingBean {
         Logger.info(
                 true,
                 "Starter",
-                "component=mapper, Mapper configuration initialization started: customizerCount={}",
+                "Mapper configuration initialization started: customizerCount={}",
                 this.configurationCustomizers == null ? 0 : this.configurationCustomizers.size());
     }
 
@@ -185,11 +185,7 @@ public class MapperConfiguration implements InitializingBean {
                     resource.exists(),
                     "Cannot find config location: " + resource
                             + " (please add config file or check your Mybatis configuration)");
-            Logger.debug(
-                    true,
-                    "Starter",
-                    "component=mapper, Checked MyBatis config location: {}",
-                    this.properties.getConfigLocation());
+            Logger.debug(true, "Starter", "Checked MyBatis config location: {}", this.properties.getConfigLocation());
         }
     }
 
@@ -206,7 +202,7 @@ public class MapperConfiguration implements InitializingBean {
         Logger.info(
                 true,
                 "Starter",
-                "component=mapper, SqlSessionFactory creation started: dataSourceClass={}, configLocation={}, typeAliasesPackage={}, typeHandlersPackage={}",
+                "SqlSessionFactory creation started: dataSourceClass={}, configLocation={}, typeAliasesPackage={}, typeHandlersPackage={}",
                 dataSource.getClass().getName(),
                 this.properties.getConfigLocation(),
                 this.properties.getTypeAliasesPackage(),
@@ -268,7 +264,7 @@ public class MapperConfiguration implements InitializingBean {
         Logger.info(
                 false,
                 "Starter",
-                "component=mapper, SqlSessionFactory created: factoryClass={}",
+                "SqlSessionFactory created: factoryClass={}",
                 sqlSessionFactory == null ? null : sqlSessionFactory.getClass().getName());
         return sqlSessionFactory;
     }
@@ -286,14 +282,10 @@ public class MapperConfiguration implements InitializingBean {
         SqlSessionTemplate template;
         if (executorType != null) {
             template = new SqlSessionTemplate(sqlSessionFactory, executorType);
-            Logger.info(
-                    false,
-                    "Starter",
-                    "component=mapper, Created SqlSessionTemplate with executor type: {}",
-                    executorType);
+            Logger.info(false, "Starter", "Created SqlSessionTemplate with executor type: {}", executorType);
         } else {
             template = new SqlSessionTemplate(sqlSessionFactory);
-            Logger.info(false, "Starter", "component=mapper, Created SqlSessionTemplate with default executor type");
+            Logger.info(false, "Starter", "Created SqlSessionTemplate with default executor type");
         }
         return template;
     }
@@ -314,7 +306,7 @@ public class MapperConfiguration implements InitializingBean {
          */
         public SpringBootVFS() {
             this.resourceResolver = new PathMatchingResourcePatternResolver(getClass().getClassLoader());
-            Logger.debug(true, "Starter", "component=mapper, Initialized SpringBootVFS with resource resolver");
+            Logger.debug(true, "Starter", "Initialized SpringBootVFS with resource resolver");
         }
 
         /**
@@ -343,7 +335,7 @@ public class MapperConfiguration implements InitializingBean {
             for (org.springframework.core.io.Resource resource : resources) {
                 resourcePaths.add(preserveSubpackageName(resource.getURI(), path));
             }
-            Logger.debug(false, "Starter", "component=mapper, Listed resources for path: {}", path);
+            Logger.debug(false, "Starter", "Listed resources for path: {}", path);
             return resourcePaths;
         }
 
@@ -439,13 +431,13 @@ public class MapperConfiguration implements InitializingBean {
                                 Logger.debug(
                                         false,
                                         "Starter",
-                                        "component=mapper, Failed to load mapper interface class: {}",
+                                        "Failed to load mapper interface class: {}",
                                         mapperInterfaceValue);
                                 Logger.warn(
                                         false,
                                         "Starter",
                                         e,
-                                        "component=mapper, Mapper interface class loading failed: mapperInterface={}, exception={}",
+                                        "Mapper interface class loading failed: mapperInterface={}, exception={}",
                                         mapperInterfaceValue,
                                         e.getClass().getSimpleName());
                                 continue;
@@ -601,7 +593,7 @@ public class MapperConfiguration implements InitializingBean {
             Logger.debug(
                     true,
                     "Starter",
-                    "component=mapper, Mapper interface conversion started: beanDefinitionCount={}",
+                    "Mapper interface conversion started: beanDefinitionCount={}",
                     allBeanNames.length);
 
             for (String beanName : allBeanNames) {
@@ -619,7 +611,7 @@ public class MapperConfiguration implements InitializingBean {
                             Logger.debug(
                                     false,
                                     "Starter",
-                                    "component=mapper, Mapper factory bean discovered: beanName={}, mapperInterfaceType={}",
+                                    "Mapper factory bean discovered: beanName={}, mapperInterfaceType={}",
                                     beanName,
                                     mapperInterfaceValue == null ? null : mapperInterfaceValue.getClass().getName());
 
@@ -628,7 +620,7 @@ public class MapperConfiguration implements InitializingBean {
                                 Logger.debug(
                                         true,
                                         "Starter",
-                                        "component=mapper, Mapper interface class conversion started: className={}",
+                                        "Mapper interface class conversion started: className={}",
                                         mapperInterfaceClassName);
                                 try {
                                     Class<?> mapperInterface = ClassUtils
@@ -645,7 +637,7 @@ public class MapperConfiguration implements InitializingBean {
                                     Logger.debug(
                                             false,
                                             "Starter",
-                                            "component=mapper, Mapper interface class conversion completed: beanName={}, className={}",
+                                            "Mapper interface class conversion completed: beanName={}, className={}",
                                             beanName,
                                             mapperInterface.getName());
                                     processedCount++;
@@ -654,7 +646,7 @@ public class MapperConfiguration implements InitializingBean {
                                             false,
                                             "Starter",
                                             e,
-                                            "component=mapper, Mapper interface class conversion failed: className={}, exception={}",
+                                            "Mapper interface class conversion failed: className={}, exception={}",
                                             mapperInterfaceClassName,
                                             e.getClass().getSimpleName());
                                 }
@@ -662,13 +654,13 @@ public class MapperConfiguration implements InitializingBean {
                                 Logger.debug(
                                         false,
                                         "Starter",
-                                        "component=mapper, Mapper interface conversion skipped: beanName={}, reason=alreadyClass",
+                                        "Mapper interface conversion skipped: beanName={}, reason=alreadyClass",
                                         beanName);
                             } else {
                                 Logger.debug(
                                         false,
                                         "Starter",
-                                        "component=mapper, Mapper interface conversion skipped: beanName={}, mapperInterfaceType={}",
+                                        "Mapper interface conversion skipped: beanName={}, mapperInterfaceType={}",
                                         beanName,
                                         mapperInterfaceValue == null ? null : mapperInterfaceValue.getClass());
                             }
@@ -679,7 +671,7 @@ public class MapperConfiguration implements InitializingBean {
                             false,
                             "Starter",
                             e,
-                            "component=mapper, Mapper interface conversion failed for bean definition: beanName={}, exception={}",
+                            "Mapper interface conversion failed for bean definition: beanName={}, exception={}",
                             beanName,
                             e.getClass().getSimpleName());
                 }
@@ -687,7 +679,7 @@ public class MapperConfiguration implements InitializingBean {
             Logger.debug(
                     false,
                     "Starter",
-                    "component=mapper, Mapper interface conversion finished: processedMapperFactoryBeanCount={}",
+                    "Mapper interface conversion finished: processedMapperFactoryBeanCount={}",
                     processedCount);
         }
     }

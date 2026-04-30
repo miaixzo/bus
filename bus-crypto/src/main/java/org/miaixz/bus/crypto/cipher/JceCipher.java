@@ -161,8 +161,7 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
                     false,
                     "Crypto",
                     e,
-                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "cipher",
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
                     "JceCipher",
                     false,
                     e.getClass().getSimpleName());
@@ -228,8 +227,7 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
                     false,
                     "Crypto",
                     e,
-                    "Crypto operation failed: component={}, provider={}, recoverable={}, exception={}",
-                    "cipher",
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
                     "JceCipher",
                     false,
                     e.getClass().getSimpleName());

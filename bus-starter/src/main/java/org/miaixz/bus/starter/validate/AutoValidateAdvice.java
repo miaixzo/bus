@@ -70,7 +70,7 @@ public class AutoValidateAdvice {
                 Logger.info(
                         false,
                         "Starter",
-                        "component=validate, Cannot find the specified method in the implementation class, skipping validation for method: {}",
+                        "Cannot find the specified method in the implementation class, skipping validation for method: {}",
                         method.getName());
                 return proceed(joinPoint, arguments); // Skip validation and proceed
             }
@@ -115,7 +115,7 @@ public class AutoValidateAdvice {
         Logger.warn(
                 false,
                 "Starter",
-                "component=validate, AutoValidateAdvice used with a non-proceeding join point type: {}. The original method cannot be executed by this advice.",
+                "AutoValidateAdvice used with a non-proceeding join point type: {}. The original method cannot be executed by this advice.",
                 joinPoint.getKind());
         return null;
     }

@@ -195,7 +195,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
                         false,
                         "Http",
                         e,
-                        "WebSocket operation failed: component=websocket, provider={}, recoverable={}, exception={}",
+                        "WebSocket operation failed: provider={}, recoverable={}, exception={}",
                         "RealWebSocket",
                         false,
                         e.getClass().getSimpleName());
@@ -232,7 +232,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         Logger.info(
                 false,
                 "Http",
-                "protocol=websocket, WebSocket cancellation requested: url={}",
+                "WebSocket cancellation requested: protocol=websocket, url={}",
                 originalRequest.url().redact());
         call.cancel();
     }
@@ -246,7 +246,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         Logger.info(
                 true,
                 "Http",
-                "protocol=websocket, WebSocket handshake starting: url={}, pingIntervalMs={}",
+                "WebSocket handshake starting: protocol=websocket, url={}, pingIntervalMs={}",
                 originalRequest.url().redact(),
                 pingIntervalMillis);
         client = client.newBuilder().eventListener(EventListener.NONE).protocols(ONLY_HTTP1).build();
@@ -276,7 +276,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
                             false,
                             "Http",
                             e,
-                            "protocol=websocket, WebSocket upgrade failed: url={}, status={}, exception={}",
+                            "WebSocket upgrade failed: protocol=websocket, url={}, status={}, exception={}",
                             request.url().redact(),
                             response.code(),
                             e.getClass().getSimpleName());
@@ -293,7 +293,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
                     Logger.info(
                             false,
                             "Http",
-                            "protocol=websocket, WebSocket opened: url={}, status={}",
+                            "WebSocket opened: protocol=websocket, url={}, status={}",
                             request.url().redact(),
                             response.code());
                     loopReader();
@@ -302,7 +302,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
                             false,
                             "Http",
                             e,
-                            "protocol=websocket, WebSocket reader failed: url={}, exception={}",
+                            "WebSocket reader failed: protocol=websocket, url={}, exception={}",
                             request.url().redact(),
                             e.getClass().getSimpleName());
                     failWebSocket(e, null);
@@ -321,7 +321,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
                         false,
                         "Http",
                         e,
-                        "protocol=websocket, WebSocket handshake call failed: url={}, exception={}",
+                        "WebSocket handshake call failed: protocol=websocket, url={}, exception={}",
                         request.url().redact(),
                         e.getClass().getSimpleName());
                 failWebSocket(e, null);
@@ -417,7 +417,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
                     false,
                     "Http",
                     e,
-                    "WebSocket operation failed: component=websocket, provider={}, recoverable={}, exception={}",
+                    "WebSocket operation failed: provider={}, recoverable={}, exception={}",
                     "RealWebSocket",
                     false,
                     e.getClass().getSimpleName());
@@ -548,7 +548,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
             Logger.info(
                     false,
                     "Http",
-                    "protocol=websocket, WebSocket close received: url={}, code={}, reasonChars={}",
+                    "WebSocket close received: protocol=websocket, url={}, code={}, reasonChars={}",
                     originalRequest.url().redact(),
                     code,
                     reason == null ? 0 : reason.length());
@@ -558,7 +558,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
                 Logger.info(
                         false,
                         "Http",
-                        "protocol=websocket, WebSocket closed after peer close: url={}, code={}",
+                        "WebSocket closed after peer close: protocol=websocket, url={}, code={}",
                         originalRequest.url().redact(),
                         code);
             }
@@ -608,7 +608,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
             Logger.warn(
                     false,
                     "Http",
-                    "protocol=websocket, WebSocket outbound queue limit reached: url={}, queuedBytes={}, messageBytes={}",
+                    "WebSocket outbound queue limit reached: protocol=websocket, url={}, queuedBytes={}, messageBytes={}",
                     originalRequest.url().redact(),
                     queueSize,
                     data.size());
@@ -621,7 +621,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         Logger.trace(
                 true,
                 "Http",
-                "protocol=websocket, WebSocket message queued: url={}, opcode={}, bytes={}, queueBytes={}",
+                "WebSocket message queued: protocol=websocket, url={}, opcode={}, bytes={}, queueBytes={}",
                 originalRequest.url().redact(),
                 formatOpcode,
                 data.size(),
@@ -686,7 +686,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         Logger.info(
                 true,
                 "Http",
-                "protocol=websocket, WebSocket close queued: url={}, code={}, reasonChars={}, cancelAfterMs={}",
+                "WebSocket close queued: protocol=websocket, url={}, code={}, reasonChars={}, cancelAfterMs={}",
                 originalRequest.url().redact(),
                 code,
                 reasonBytes == null ? 0 : reasonBytes.size(),
@@ -814,7 +814,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
                     false,
                     "Http",
                     e,
-                    "WebSocket operation failed: component=websocket, provider={}, recoverable={}, exception={}",
+                    "WebSocket operation failed: provider={}, recoverable={}, exception={}",
                     "RealWebSocket",
                     false,
                     e.getClass().getSimpleName());
@@ -847,7 +847,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
                     false,
                     "Http",
                     e,
-                    "protocol=websocket, WebSocket failed: url={}, status={}, exception={}",
+                    "WebSocket failed: protocol=websocket, url={}, status={}, exception={}",
                     originalRequest.url().redact(),
                     response == null ? null : response.code(),
                     e.getClass().getSimpleName());

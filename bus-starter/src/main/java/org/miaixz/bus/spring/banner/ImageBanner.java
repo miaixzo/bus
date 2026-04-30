@@ -291,7 +291,7 @@ public class ImageBanner {
             Logger.warn(
                     false,
                     "Starter",
-                    "component=spring, Image banner not printable: imagePresent={}, exception={}",
+                    "Image banner not printable: imagePresent={}, exception={}",
                     this.image != null,
                     ex.getClass().getSimpleName());
         } finally {

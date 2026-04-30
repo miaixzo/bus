@@ -57,7 +57,7 @@ public class TCPListener implements Listener {
                     false,
                     "Image",
                     e,
-                    "component=network, TCP listener start failed: host={}, port={}, tls={}, backlog={}, exception={}",
+                    "TCP listener start failed: host={}, port={}, tls={}, backlog={}, exception={}",
                     conn.getHostname(),
                     conn.getPort(),
                     conn.isTls(),
@@ -79,16 +79,16 @@ public class TCPListener implements Listener {
 
     public void listen() {
         SocketAddress sockAddr = ss.getLocalSocketAddress();
-        Logger.info(true, "Image", "component=network, Start TCP Listener on {}", sockAddr);
+        Logger.info(true, "Image", "Start TCP Listener on {}", sockAddr);
         try {
             while (!ss.isClosed()) {
-                Logger.debug(true, "Image", "component=network, Wait for connection on {}", sockAddr);
+                Logger.debug(true, "Image", "Wait for connection on {}", sockAddr);
                 Socket s = ss.accept();
                 ConnectionMonitor monitor = conn.getDevice() != null ? conn.getDevice().getConnectionMonitor() : null;
                 if (conn.isBlackListed(s.getInetAddress())) {
                     if (monitor != null)
                         monitor.onConnectionRejectedBlacklisted(conn, s);
-                    Logger.info(true, "Image", "component=network, Reject blacklisted connection {}", s);
+                    Logger.info(true, "Image", "Reject blacklisted connection {}", s);
                     conn.close(s);
                 } else {
                     try {
@@ -100,7 +100,7 @@ public class TCPListener implements Listener {
                                 false,
                                 "Image",
                                 e,
-                                "component=network, Connection rejected during socket option setup: socketPresent={}, exception={}",
+                                "Connection rejected during socket option setup: socketPresent={}, exception={}",
                                 s != null,
                                 e.getClass().getSimpleName());
                         conn.close(s);
@@ -109,7 +109,7 @@ public class TCPListener implements Listener {
 
                     if (monitor != null)
                         monitor.onConnectionAccepted(conn, s);
-                    Logger.info(true, "Image", "component=network, Accept connection {}", s);
+                    Logger.info(true, "Image", "Accept connection {}", s);
                     try {
                         handler.onAccept(conn, s);
                     } catch (Throwable e) {
@@ -117,7 +117,7 @@ public class TCPListener implements Listener {
                                 false,
                                 "Image",
                                 e,
-                                "component=network, Accepted connection handling failed: socketPresent={}, exception={}",
+                                "Accepted connection handling failed: socketPresent={}, exception={}",
                                 s != null,
                                 e.getClass().getSimpleName());
                         conn.close(s);
@@ -126,9 +126,9 @@ public class TCPListener implements Listener {
             }
         } catch (Throwable e) {
             if (!ss.isClosed())
-                Logger.error(false, "Image", "component=network, Exception on listing on {}:", sockAddr, e);
+                Logger.error(false, "Image", "Exception on listing on {}:", sockAddr, e);
         }
-        Logger.info(false, "Image", "component=network, Stop TCP Listener on {}", sockAddr);
+        Logger.info(false, "Image", "Stop TCP Listener on {}", sockAddr);
     }
 
     @Override
@@ -145,7 +145,7 @@ public class TCPListener implements Listener {
                     false,
                     "Image",
                     e,
-                    "component=network, TCP listener close failed: endpoint={}, exception={}",
+                    "TCP listener close failed: endpoint={}, exception={}",
                     ss.getLocalSocketAddress(),
                     e.getClass().getSimpleName());
             // Ignore errors when closing server socket

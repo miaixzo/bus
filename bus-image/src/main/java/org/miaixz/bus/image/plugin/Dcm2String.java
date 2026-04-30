@@ -74,7 +74,7 @@ public class Dcm2String extends SimpleFileVisitor<Path> {
             Logger.info(
                     false,
                     "Image",
-                    "component=tool, DICOM string conversion completed: fileName={}, attributeCount={}, formattedChars={}",
+                    "DICOM string conversion completed: fileName={}, attributeCount={}, formattedChars={}",
                     path.getFileName(),
                     dataset.size(),
                     format.format(dataset).length());
@@ -83,7 +83,7 @@ public class Dcm2String extends SimpleFileVisitor<Path> {
                     false,
                     "Image",
                     e,
-                    "component=tool, DICOM string conversion failed: fileName={}, exception={}",
+                    "DICOM string conversion failed: fileName={}, exception={}",
                     path.getFileName(),
                     e.getClass().getSimpleName());
         }

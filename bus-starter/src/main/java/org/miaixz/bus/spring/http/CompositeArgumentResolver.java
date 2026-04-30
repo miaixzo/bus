@@ -33,6 +33,8 @@ import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.spring.ContextBuilder;
 import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
 import org.miaixz.bus.validate.magic.annotation.Valid;
 import org.springframework.beans.MutablePropertyValues;
@@ -171,6 +173,22 @@ public class CompositeArgumentResolver implements HandlerMethodArgumentResolver 
                 body = new byte[0];
             }
         }
+
+        Logger.debug(
+                true,
+                "Starter",
+                "request header snapshot: method={}, uri={}, contentType={}",
+                request.getMethod(),
+                request.getRequestURI(),
+                contentType);
+        Logger.debug(true, "Starter", "Request headers: headers={}", ContextBuilder.getHeaders());
+        Logger.debug(
+                true,
+                "Starter",
+                "request parameter snapshot: parameterType={}, bodyBytes={}",
+                methodParameter.getParameterType().getName(),
+                body.length);
+        Logger.debug(true, "Starter", "Request parameters: parameters={}", ContextBuilder.getParameters());
 
         // Create target object instance
         Class<?> parameterType = methodParameter.getParameterType();

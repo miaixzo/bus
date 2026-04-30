@@ -60,13 +60,13 @@ public class HanLPProvider implements NLPProvider {
         Logger.info(
                 true,
                 "Extra",
-                "component=nlp, HanLP provider initialization started: segmenterType={}",
+                "HanLP provider initialization started: segmenterType={}",
                 seg == null ? "null" : seg.getClass().getSimpleName());
         this.seg = seg;
         Logger.info(
                 false,
                 "Extra",
-                "component=nlp, HanLP provider initialized: segmenterType={}",
+                "HanLP provider initialized: segmenterType={}",
                 this.seg == null ? "null" : this.seg.getClass().getSimpleName());
     }
 
@@ -79,16 +79,12 @@ public class HanLPProvider implements NLPProvider {
      */
     @Override
     public NLPResult parse(final CharSequence text) {
-        Logger.debug(
-                true,
-                "Extra",
-                "component=nlp, HanLP parse started: textLength={}",
-                text == null ? 0 : text.length());
+        Logger.debug(true, "Extra", "HanLP parse started: textLength={}", text == null ? 0 : text.length());
         final NLPResult result = new HanLPResult(this.seg.seg(StringKit.toStringOrEmpty(text)));
         Logger.debug(
                 false,
                 "Extra",
-                "component=nlp, HanLP parse completed: textLength={}, resultPresent={}",
+                "HanLP parse completed: textLength={}, resultPresent={}",
                 text == null ? 0 : text.length(),
                 result != null);
         return result;

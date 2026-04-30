@@ -35,7 +35,7 @@ import com.github.houbb.pinyin.util.PinyinHelper;
  *
  * <p>
  * To introduce (dependency):
- * 
+ *
  * <pre>
  * &lt;dependency&gt;
  *     &lt;groupId&gt;com.github.houbb&lt;/groupId&gt;
@@ -55,9 +55,9 @@ public class HoubbProvider implements PinyinProvider {
      */
     public HoubbProvider() {
         // Check if the library is introduced when loading via SPI
-        Logger.info(true, "Extra", "component=pinyin, Houbb pinyin provider dependency check started");
+        Logger.info(true, "Extra", "Houbb pinyin provider dependency check started");
         Assert.notNull(PinyinHelper.class);
-        Logger.info(false, "Extra", "component=pinyin, Houbb pinyin provider dependency check completed");
+        Logger.info(false, "Extra", "Houbb pinyin provider dependency check completed");
     }
 
     /**

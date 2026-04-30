@@ -22,6 +22,7 @@ package org.miaixz.bus.vortex.routing;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Router;
 import org.miaixz.bus.vortex.routing.rest.RestExecutor;
+import org.miaixz.bus.logger.Logger;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
@@ -73,6 +74,24 @@ public class RestRouter implements Router<ServerRequest, ServerResponse> {
         ServerRequest request = input;
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request header snapshot: protocol=http, clientIp={}, path={}",
+                    context.getX_request_ip(),
+                    request.path());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request headers: protocol=http, clientIp={}, headers={}",
+                    context.getX_request_ip(),
+                    request.headers().asHttpHeaders().toSingleValueMap());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request parameters: protocol=http, clientIp={}, parameters={}",
+                    context.getX_request_ip(),
+                    context.getParameters());
             return this.executor.execute(context, request);
         });
     }

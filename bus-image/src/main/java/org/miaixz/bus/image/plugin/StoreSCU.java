@@ -348,7 +348,7 @@ public class StoreSCU implements AutoCloseable {
                     false,
                     "Image",
                     e,
-                    "component=tool, DICOM send file scan failed: fileName={}, exception={}",
+                    "DICOM send file scan failed: fileName={}, exception={}",
                     f == null ? null : f.getName(),
                     e.getClass().getSimpleName());
         }
@@ -389,7 +389,7 @@ public class StoreSCU implements AutoCloseable {
                 as.waitForOutstandingRSP();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                Logger.error(false, "Image", "component=tool, Wait for outstanding RSP interrupted", e);
+                Logger.error(false, "Image", "Wait for outstanding RSP interrupted", e);
             }
             Logger.info(
                     false,
@@ -607,10 +607,10 @@ public class StoreSCU implements AutoCloseable {
                 Logger.warn(
                         false,
                         "Image",
-                        "component=tool, Received C-STORE-RSP with Status {}H for {}.",
+                        "Received C-STORE-RSP with Status {}H for {}.",
                         Tag.shortToHexString(status),
                         f);
-                Logger.warn(false, "Image", "component=tool, " + (cmd.toString()));
+                Logger.warn(false, "Image", cmd.toString());
                 break;
 
             default:
@@ -618,10 +618,10 @@ public class StoreSCU implements AutoCloseable {
                 Logger.error(
                         false,
                         "Image",
-                        "component=tool, Received C-STORE-RSP with Status {}H for {}.",
+                        "Received C-STORE-RSP with Status {}H for {}.",
                         Tag.shortToHexString(status),
                         f);
-                Logger.error(false, "Image", "component=tool, " + (cmd.toString()));
+                Logger.error(false, "Image", cmd.toString());
         }
         Builder.notifyProgession(state.getProgress(), cmd, ps, filesScanned);
     }
