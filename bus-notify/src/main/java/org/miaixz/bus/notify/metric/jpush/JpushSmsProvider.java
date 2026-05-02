@@ -31,6 +31,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.AbstractProvider;
@@ -61,6 +62,13 @@ public class JpushSmsProvider extends AbstractProvider<JpushNotice, Context> {
      */
     @Override
     public Message send(JpushNotice entity) {
+        Logger.info(
+                true,
+                "Notify",
+                "JPush SMS send started: template={}, targetCount={}, signaturePresent={}",
+                entity == null ? null : entity.getTemplate(),
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity != null && entity.getSignature() != null);
         Map<String, String> bodys = new HashMap<>();
         /**
          * The signature ID for the SMS.
@@ -88,7 +96,17 @@ public class JpushSmsProvider extends AbstractProvider<JpushNotice, Context> {
         String errcode = succeed ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
         String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : JsonKit.getValue(response, "error.message");
 
-        return Message.builder().errcode(errcode).errmsg(errmsg).build();
+        Message result = Message.builder().errcode(errcode).errmsg(errmsg).build();
+        Logger.info(
+                false,
+                "Notify",
+                "JPush SMS send completed: template={}, targetCount={}, successCount={}, errcode={}, responseBytes={}",
+                entity == null ? null : entity.getTemplate(),
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                JsonKit.getValue(response, "success_count"),
+                result.getErrcode(),
+                response == null ? 0 : response.length());
+        return result;
     }
 
     /**

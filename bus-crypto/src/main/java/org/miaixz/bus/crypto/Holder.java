@@ -22,6 +22,7 @@ package org.miaixz.bus.crypto;
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.crypto.metric.BouncyCastleProvider;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Global singleton {@link java.security.Provider} object holder.
@@ -64,8 +65,15 @@ public class Holder implements org.miaixz.bus.core.Holder {
     public static java.security.Provider getProvider() {
         // In GraalVM native image, always return null to avoid JCE verification issues
         if (Keys.IS_GRAALVM_NATIVE) {
+            Logger.debug(false, "Crypto", "Crypto custom provider disabled: reason=graalvmNativeImage");
             return null;
         }
+        Logger.debug(
+                false,
+                "Crypto",
+                "Crypto provider resolved: enabled={}, provider={}",
+                useCustomProvider,
+                useCustomProvider && provider != null ? provider.getName() : null);
         return useCustomProvider ? provider : null;
     }
 
@@ -76,7 +84,9 @@ public class Holder implements org.miaixz.bus.core.Holder {
      * @param isUseCustomProvider {@code true} to use the custom provider, {@code false} to use JDK's default.
      */
     public static void setUseCustomProvider(final boolean isUseCustomProvider) {
+        Logger.info(true, "Crypto", "Crypto custom provider switch requested: enabled={}", isUseCustomProvider);
         useCustomProvider = isUseCustomProvider;
+        Logger.info(false, "Crypto", "Crypto custom provider switch applied: enabled={}", useCustomProvider);
     }
 
     /**
@@ -87,14 +97,26 @@ public class Holder implements org.miaixz.bus.core.Holder {
      *         the JDK's default JCE providers will be used).
      */
     private static java.security.Provider _createProvider() {
+        Logger.debug(
+                true,
+                "Crypto",
+                "Crypto SPI provider lookup started: providerType={}",
+                BouncyCastleProvider.class.getName());
         final BouncyCastleProvider factory = NormalSpiLoader.loadFirstAvailable(BouncyCastleProvider.class);
         if (null == factory) {
             // Default to JCE
+            Logger.info(false, "Crypto", "Crypto SPI provider lookup completed: providerFound=false");
             return null;
         }
 
         final java.security.Provider provider = factory.create();
         Builder.addProvider(provider);
+        Logger.info(
+                false,
+                "Crypto",
+                "Crypto SPI provider initialized: providerName={}, providerVersion={}",
+                provider.getName(),
+                provider.getVersionStr());
         return provider;
     }
 

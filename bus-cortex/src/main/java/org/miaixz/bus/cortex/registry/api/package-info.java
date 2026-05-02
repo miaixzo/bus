@@ -18,22 +18,19 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * HTTP API service registration, instance tracking and query support for distributed service discovery.
+ * HTTP API service-definition and runtime-instance registry support.
  * <p>
- * When a service node starts, it calls {@code ApiRegistry.register(definition, instance)} to persist both the routing
- * definition and the live instance snapshot under separate CacheX keys. A uniqueness lock key
- * ({@code reg:{ns}:unique:{method}:{version}}) prevents two nodes with different fingerprints from registering as the
- * same logical endpoint. Instance metadata is stored under {@code reg:{ns}:instance:{method}:{version}:{fingerprint}}
- * with a TTL derived from the definition's {@code ttl} field (default 3 600 000 ms). On shutdown, the node calls
- * {@code deregisterInstance(namespace, method, version, fingerprint)}, which removes both the instance entry and the
- * lock key, leaving the shared routing definition in place.
+ * {@code ApiAssets} defaults its type to API. Optional runtime hints such as heartbeat interval, lease duration and
+ * route key are carried by the typed {@code ApiAssets.Meta} payload in metadata. {@code ApiRegistry} persists service
+ * definitions through the shared {@code StoreBackedRegistry} path and separately projects runtime instances to
+ * {@code reg:{ns}:instance:{method}:{version}:{fingerprint}} cache keys. When a durable {@code RegistryStore} is
+ * present, instance queries read from that store first and warm the cache projection from the returned snapshots.
  * <p>
- * {@code ApiDefinition} is the persisted routing definition that extends the base asset class; its no-arg constructor
- * pre-sets {@code species} to API. All gateway-facing fields — path, HTTP method, auth policy, timeout, throttle rate,
- * load-balance strategy and signature flag — are declared in the parent and inherited unchanged. {@code ApiRegistry} is
- * the concrete CacheX-backed registry that provides {@code register}, {@code deregisterInstance} and
- * {@code queryInstances(namespace, method, version)}, which scans all matching instance keys and deserialises them into
- * a list; passing {@code null} for method or version broadens the scan to all values within the namespace.
+ * {@code register(service, instance)} upserts the logical service definition and one live instance snapshot.
+ * {@code deregisterInstance(namespace, method, version, fingerprint)} removes one runtime instance while leaving the
+ * shared route definition intact. {@code queryInstances(namespace, method, version)} always scopes reads to the
+ * resolved namespace, defaulting blank values to {@code Normal.DEFAULT}; omitting method and version broadens the scan
+ * only within that namespace.
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -46,14 +46,26 @@ import com.sun.jna.platform.win32.Psapi;
 @ThreadSafe
 final class WindowsVirtualMemory extends AbstractVirtualMemory {
 
+    /**
+     * The global value.
+     */
     private final WindowsGlobalMemory global;
 
+    /**
+     * The used value.
+     */
     private final Supplier<Long> used = Memoizer
             .memoize(WindowsVirtualMemory::querySwapUsed, Memoizer.defaultExpiration());
 
+    /**
+     * The totalVmaxVused value.
+     */
     private final Supplier<Triplet<Long, Long, Long>> totalVmaxVused = Memoizer
             .memoize(WindowsVirtualMemory::querySwapTotalVirtMaxVirtUsed, Memoizer.defaultExpiration());
 
+    /**
+     * The swapInOut value.
+     */
     private final Supplier<Pair<Long, Long>> swapInOut = Memoizer
             .memoize(WindowsVirtualMemory::queryPageSwaps, Memoizer.defaultExpiration());
 
@@ -66,14 +78,28 @@ final class WindowsVirtualMemory extends AbstractVirtualMemory {
         this.global = windowsGlobalMemory;
     }
 
+    /**
+     * Queries the swap used.
+     *
+     * @return the query swap used result
+     */
     private static long querySwapUsed() {
         return PagingFile.querySwapUsed().getOrDefault(PagingPercentProperty.PERCENTUSAGE, 0L);
     }
 
+    /**
+     * Queries the swap total virt max virt used.
+     *
+     * @return the query swap total virt max virt used result
+     */
     private static Triplet<Long, Long, Long> querySwapTotalVirtMaxVirtUsed() {
         try (Struct.CloseablePerformanceInformation perfInfo = new Struct.CloseablePerformanceInformation()) {
             if (!Psapi.INSTANCE.GetPerformanceInfo(perfInfo, perfInfo.size())) {
-                Logger.error("Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
+                Logger.error(
+                        false,
+                        "Health",
+                        "Failed to get Performance Info. Error code: {}",
+                        Kernel32.INSTANCE.GetLastError());
                 return Triplet.of(0L, 0L, 0L);
             }
             return Triplet.of(
@@ -83,6 +109,11 @@ final class WindowsVirtualMemory extends AbstractVirtualMemory {
         }
     }
 
+    /**
+     * Queries the page swaps.
+     *
+     * @return the query page swaps result
+     */
     private static Pair<Long, Long> queryPageSwaps() {
         Map<PageSwapProperty, Long> valueMap = MemoryInformation.queryPageSwaps();
         return Pair.of(
@@ -90,31 +121,61 @@ final class WindowsVirtualMemory extends AbstractVirtualMemory {
                 valueMap.getOrDefault(PageSwapProperty.PAGESOUTPUTPERSEC, 0L));
     }
 
+    /**
+     * Returns the swap used.
+     *
+     * @return the get swap used result
+     */
     @Override
     public long getSwapUsed() {
         return this.global.getPageSize() * used.get();
     }
 
+    /**
+     * Returns the swap total.
+     *
+     * @return the get swap total result
+     */
     @Override
     public long getSwapTotal() {
         return this.global.getPageSize() * totalVmaxVused.get().getLeft();
     }
 
+    /**
+     * Returns the virtual max.
+     *
+     * @return the get virtual max result
+     */
     @Override
     public long getVirtualMax() {
         return this.global.getPageSize() * totalVmaxVused.get().getMiddle();
     }
 
+    /**
+     * Returns the virtual in use.
+     *
+     * @return the get virtual in use result
+     */
     @Override
     public long getVirtualInUse() {
         return this.global.getPageSize() * totalVmaxVused.get().getRight();
     }
 
+    /**
+     * Returns the swap pages in.
+     *
+     * @return the get swap pages in result
+     */
     @Override
     public long getSwapPagesIn() {
         return swapInOut.get().getLeft();
     }
 
+    /**
+     * Returns the swap pages out.
+     *
+     * @return the get swap pages out result
+     */
     @Override
     public long getSwapPagesOut() {
         return swapInOut.get().getRight();

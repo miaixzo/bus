@@ -20,6 +20,7 @@
 package org.miaixz.bus.pay.metric.jdpay;
 
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.pay.Complex;
 import org.miaixz.bus.pay.Context;
 import org.miaixz.bus.pay.Registry;
@@ -153,7 +154,20 @@ public class JdPayProvider extends AbstractProvider<Voucher, Context> {
      * @return The response from the server.
      */
     public static String doPost(String url, String reqXml) {
-        return post(url, reqXml);
+        Logger.info(
+                true,
+                "Pay",
+                "JD Pay request started: url={}, requestBytes={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                reqXml == null ? 0 : reqXml.length());
+        String response = post(url, reqXml);
+        Logger.info(
+                false,
+                "Pay",
+                "JD Pay request completed: url={}, responseBytes={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                response == null ? 0 : response.length());
+        return response;
     }
 
     /**

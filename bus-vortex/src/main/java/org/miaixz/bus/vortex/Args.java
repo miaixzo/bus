@@ -21,15 +21,17 @@ package org.miaixz.bus.vortex;
 
 import java.util.Map;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.net.Specifics;
 import org.miaixz.bus.vortex.strategy.QualifierStrategy;
 import org.miaixz.bus.vortex.strategy.RequestStrategy;
 import org.miaixz.bus.vortex.strategy.VettingStrategy;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 /**
  * A central repository for constants defining the gateway's public API contract and for binding configuration
@@ -45,53 +47,38 @@ import lombok.experimental.SuperBuilder;
  * @see RequestStrategy
  * @since Java 21+
  */
-@Getter
-@Setter
-@SuperBuilder
-@AllArgsConstructor
-public class Args {
+public class Args extends Specifics {
 
     /**
-     * The mandatory parameter name for the logical API method to be invoked (e.g., "user.getProfile").
+     * Creates an empty gateway argument contract holder.
      */
-    public static final String METHOD = "method";
+    public Args() {
+    }
 
     /**
-     * The parameter name for specifying the desired response format (e.g., "json", "xml").
+     * The parameter name for selecting the logical namespace used to resolve registry assets.
      */
-    public static final String FORMAT = "format";
+    public static final String NAMESPACE = "namespace";
 
     /**
-     * The parameter name for specifying the version of the requested API method (e.g., "v1", "1.0.0").
+     * The parameter name for selecting the application-specific route scope.
      */
-    public static final String VERSION = "v";
+    public static final String APP_ID = "app_id";
 
     /**
-     * The parameter name for the request signature, used for validation and integrity checks.
+     * The parameter name for selecting the numeric or legacy textual registry type scope.
      */
-    public static final String SIGN = "sign";
-
-    /**
-     * The parameter name for the request timestamp (milliseconds since epoch), used for replay attack prevention.
-     */
-    public static final String TIMESTAMP = "timestamp";
-
-    /**
-     * Candidate parameter and header names for backward-compatible access-token transport.
-     */
-    public static final String[] TOKEN_KEYS = { "Authorization", "authorization", "AUTHORIZATION", "X-Access-Token",
-            "X-ACCESS-TOKEN", "x-access-token", "X_Access_Token", "X_ACCESS_TOKEN", "x_access_token" };
-
-    /**
-     * Candidate parameter and header names for API-key transport.
-     */
-    public static final String[] API_KEY_KEYS = { "apiKey", "apikey", "api_key", "x_api_key", "api_id", "x_api_id",
-            "X-API-ID", "X-API-KEY", "API-KEY", "API-ID" };
+    public static final String TYPE = "type";
 
     /**
      * The HTTP header name for identifying the client channel (e.g., "web", "app", "mobile").
      */
     public static final String X_REMOTE_CHANNEL = "x_remote_channel";
+
+    /**
+     * Optional header fallback for application-specific route scope.
+     */
+    public static final String X_APP_ID = "x_app_id";
 
     /**
      * The base URI path for standard RESTful API requests.
@@ -139,21 +126,51 @@ public class Args {
     public static final String DEFAULT_VERSION = "1.0";
 
     /**
+     * Route mode for HTTP assets.
+     */
+    public static final int MODE_HTTP = 1;
+
+    /**
+     * Route mode for MQ assets.
+     */
+    public static final int MODE_MQ = 2;
+
+    /**
+     * Route mode for MCP assets.
+     */
+    public static final int MODE_MCP = 3;
+
+    /**
+     * Route mode for gRPC assets.
+     */
+    public static final int MODE_GRPC = 4;
+
+    /**
+     * Route mode for WebSocket assets.
+     */
+    public static final int MODE_WS = 5;
+
+    /**
+     * Route mode for LLM assets.
+     */
+    public static final int MODE_LLM = 6;
+
+    /**
      * Pre-built mapping table for mode to router key. Using static map for O(1) lookup instead of switch expression
      * evaluation on every request.
      */
     public static final Map<Integer, String> MODE_TO_ROUTER = Map.of(
-            1,
+            MODE_HTTP,
             Protocol.HTTP.getName(),
-            2,
+            MODE_MQ,
             Protocol.MQ.getName(),
-            3,
+            MODE_MCP,
             Protocol.MCP.getName(),
-            4,
+            MODE_GRPC,
             Protocol.GRPC.getName(),
-            5,
+            MODE_WS,
             Protocol.WS.getName(),
-            6,
+            MODE_LLM,
             "llm");
 
     /**
@@ -254,6 +271,9 @@ public class Args {
      */
     @Getter
     @Setter
+    @SuperBuilder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Limit {
 
         /**

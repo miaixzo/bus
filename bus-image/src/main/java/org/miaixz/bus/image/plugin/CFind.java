@@ -235,7 +235,7 @@ public class CFind {
                 if (e instanceof InterruptedException) {
                     Thread.currentThread().interrupt();
                 }
-                Logger.error("findscu", e);
+                Logger.error(false, "Image", "findscu", e);
                 Builder.forceGettingAttributes(findSCU.getState(), findSCU);
                 return Status.buildMessage(findSCU.getState(), null, e);
             } finally {
@@ -246,7 +246,7 @@ public class CFind {
             if (e instanceof InterruptedException) {
                 Thread.currentThread().interrupt();
             }
-            Logger.error("findscu", e);
+            Logger.error(false, "Image", "findscu", e);
             return Status.buildMessage(
                     new Status(Status.UnableToProcess,
                             "DICOM Find failed" + Symbol.COLON + Symbol.SPACE + e.getMessage(), null),

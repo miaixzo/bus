@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -58,20 +58,53 @@ import com.sun.jna.platform.unix.Resource;
 @ThreadSafe
 public class MacOSProcess extends AbstractOSProcess {
 
+    /**
+     * The ARGMAX constant.
+     */
     private static final int ARGMAX = SysctlKit.sysctl("kern.argmax", 0);
+    /**
+     * The TICKS_PER_MS constant.
+     */
     private static final long TICKS_PER_MS;
+    /**
+     * The LOG_MAC_SYSCTL_WARNING constant.
+     */
     private static final boolean LOG_MAC_SYSCTL_WARNING = Config.get(Config._MAC_SYSCTL_LOGWARNING, false);
+    /**
+     * The MAC_RLIMIT_NOFILE constant.
+     */
     private static final int MAC_RLIMIT_NOFILE = 8;
     // 64-bit flag
+    /**
+     * The P_LP64 constant.
+     */
     private static final int P_LP64 = 0x4;
     /*
      * macOS States:
      */
+    /**
+     * The SSLEEP constant.
+     */
     private static final int SSLEEP = 1; // sleeping on high priority
+    /**
+     * The SWAIT constant.
+     */
     private static final int SWAIT = 2; // sleeping on low priority
+    /**
+     * The SRUN constant.
+     */
     private static final int SRUN = 3; // running
+    /**
+     * The SIDL constant.
+     */
     private static final int SIDL = 4; // intermediate state in process creation
+    /**
+     * The SZOMB constant.
+     */
     private static final int SZOMB = 5; // intermediate state in process termination
+    /**
+     * The SSTOP constant.
+     */
     private static final int SSTOP = 6; // process being traced
 
     static {
@@ -101,38 +134,136 @@ public class MacOSProcess extends AbstractOSProcess {
         TICKS_PER_MS = ticksPerSec / 1000L;
     }
 
+    /**
+     * The os value.
+     */
     private final MacOperatingSystem os;
+    /**
+     * The argsEnviron value.
+     */
     private final Supplier<Pair<List<String>, Map<String, String>>> argsEnviron = Memoizer
             .memoize(this::queryArgsAndEnvironment);
+    /**
+     * The commandLine value.
+     */
     private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
+    /**
+     * The majorVersion value.
+     */
     private int majorVersion;
+    /**
+     * The minorVersion value.
+     */
     private int minorVersion;
+    /**
+     * The name value.
+     */
     private String name = Normal.EMPTY;
+    /**
+     * The path value.
+     */
     private String path = Normal.EMPTY;
+    /**
+     * The currentWorkingDirectory value.
+     */
     private String currentWorkingDirectory;
+    /**
+     * The user value.
+     */
     private String user;
+    /**
+     * The userID value.
+     */
     private String userID;
+    /**
+     * The group value.
+     */
     private String group;
+    /**
+     * The groupID value.
+     */
     private String groupID;
+    /**
+     * The state value.
+     */
     private State state = State.INVALID;
+    /**
+     * The parentProcessID value.
+     */
     private int parentProcessID;
+    /**
+     * The threadCount value.
+     */
     private int threadCount;
+    /**
+     * The priority value.
+     */
     private int priority;
+    /**
+     * The virtualSize value.
+     */
     private long virtualSize;
+    /**
+     * The residentSetSize value.
+     */
     private long residentSetSize;
+    /**
+     * The memoryFootprint value.
+     */
     private long memoryFootprint;
+    /**
+     * The kernelTime value.
+     */
     private long kernelTime;
+    /**
+     * The userTime value.
+     */
     private long userTime;
+    /**
+     * The startTime value.
+     */
     private long startTime;
+    /**
+     * The upTime value.
+     */
     private long upTime;
+    /**
+     * The bytesRead value.
+     */
     private long bytesRead;
+    /**
+     * The bytesWritten value.
+     */
     private long bytesWritten;
+    /**
+     * The openFiles value.
+     */
     private long openFiles;
+    /**
+     * The bitness value.
+     */
     private int bitness;
+    /**
+     * The minorFaults value.
+     */
     private long minorFaults;
+    /**
+     * The majorFaults value.
+     */
     private long majorFaults;
+    /**
+     * The contextSwitches value.
+     */
     private long contextSwitches;
 
+    /**
+     * Creates a new MacOSProcess instance.
+     *
+     * @param pid   the pid
+     * @param major the major
+     * @param minor the minor
+     * @param os    the os
+     */
     public MacOSProcess(int pid, int major, int minor, MacOperatingSystem os) {
         super(pid);
         this.majorVersion = major;
@@ -171,6 +302,11 @@ public class MacOSProcess extends AbstractOSProcess {
         return this.commandLine.get();
     }
 
+    /**
+     * Queries the command line.
+     *
+     * @return the query command line result
+     */
     private String queryCommandLine() {
         return String.join(Symbol.SPACE, getArguments());
     }
@@ -195,6 +331,11 @@ public class MacOSProcess extends AbstractOSProcess {
         return argsEnviron.get().getRight();
     }
 
+    /**
+     * Queries the args and environment.
+     *
+     * @return the query args and environment result
+     */
     private Pair<List<String>, Map<String, String>> queryArgsAndEnvironment() {
         int pid = getProcessID();
         // Set up return objects
@@ -256,6 +397,8 @@ public class MacOSProcess extends AbstractOSProcess {
                 // Don't warn for pid 0
                 if (pid > 0 && LOG_MAC_SYSCTL_WARNING) {
                     Logger.warn(
+                            false,
+                            "Health",
                             "Failed sysctl call for process arguments (kern.procargs2), process {} may not exist. Error code: {}",
                             pid,
                             Native.getLastError());
@@ -381,11 +524,21 @@ public class MacOSProcess extends AbstractOSProcess {
         return this.virtualSize;
     }
 
+    /**
+     * Returns the resident memory.
+     *
+     * @return the get resident memory result
+     */
     @Override
     public long getResidentMemory() {
         return this.residentSetSize;
     }
 
+    /**
+     * Returns the private resident memory.
+     *
+     * @return the get private resident memory result
+     */
     @Override
     public long getPrivateResidentMemory() {
         return this.memoryFootprint;

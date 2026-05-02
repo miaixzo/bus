@@ -19,7 +19,10 @@
 */
 package org.miaixz.bus.starter.wrapper;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.miaixz.bus.spring.GeniusBuilder;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.CollKit;
@@ -39,6 +42,7 @@ import org.springframework.core.Ordered;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.filter.ForwardedHeaderFilter;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -83,6 +87,7 @@ import jakarta.annotation.Resource;
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { WrapperProperties.class })
+@ConditionalOnProperty(prefix = GeniusBuilder.WRAPPER, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class WrapperConfiguration implements WebMvcRegistrations {
 
     /**
@@ -116,6 +121,13 @@ public class WrapperConfiguration implements WebMvcRegistrations {
     @Bean("registrationBodyCacheFilter")
     public FilterRegistrationBean<RuntimeContextBindingFilter> registrationBodyCacheFilter(
             WrapperRuntimeOptions options) {
+        Logger.debug(
+                true,
+                "Starter",
+                "Runtime context filter registration started: enabled={}, order={}, name={}",
+                this.properties.isEnabled(),
+                this.properties.getOrder(),
+                this.properties.getName());
         FilterRegistrationBean<RuntimeContextBindingFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setEnabled(this.properties.isEnabled());
         registrationBean.setOrder(this.properties.getOrder());
@@ -132,6 +144,14 @@ public class WrapperConfiguration implements WebMvcRegistrations {
         if (CollKit.isNotEmpty(this.properties.getServletNames())) {
             registrationBean.setServletNames(this.properties.getServletNames());
         }
+        Logger.info(
+                false,
+                "Starter",
+                "Runtime context filter registration finished: enabled={}, order={}, initParameterCount={}, servletNameCount={}",
+                registrationBean.isEnabled(),
+                registrationBean.getOrder(),
+                this.properties.getInitParameters() == null ? 0 : this.properties.getInitParameters().size(),
+                this.properties.getServletNames() == null ? 0 : this.properties.getServletNames().size());
         return registrationBean;
     }
 
@@ -168,8 +188,16 @@ public class WrapperConfiguration implements WebMvcRegistrations {
      */
     @Bean("wrapperRuntimeOptions")
     public WrapperRuntimeOptions wrapperRuntimeOptions() {
+        Logger.debug(true, "Starter", "Wrapper runtime options publishing started");
         WrapperRuntimeOptions options = this.properties.runtimeOptions();
         WrapperRuntimeOptions.update(options);
+        Logger.info(
+                false,
+                "Starter",
+                "Wrapper runtime options published: sanitizeInputValues={}, synthesizeFormBody={}, wrapMode={}",
+                options.isSanitizeInputValues(),
+                options.isSynthesizeFormBody(),
+                options.getWrapContentTypes());
         return options;
     }
 
@@ -195,6 +223,21 @@ public class WrapperConfiguration implements WebMvcRegistrations {
      * names.
      */
     class RequestMappingHandler extends RequestMappingHandlerMapping {
+
+        /**
+         * Logs mapping initialization through the bus direction-aware logger instead of the inherited Spring logger.
+         *
+         * @param handlerMethods The initialized handler method mappings.
+         */
+        @Override
+        protected void handlerMethodsInitialized(Map<RequestMappingInfo, HandlerMethod> handlerMethods) {
+            Logger.debug(
+                    false,
+                    "Starter",
+                    "Request mappings initialized: count={}, mappingName={}",
+                    handlerMethods.size(),
+                    formatMappingName());
+        }
 
         /**
          * Derives the mapping for a given handler method.
@@ -223,6 +266,8 @@ public class WrapperConfiguration implements WebMvcRegistrations {
                         String prefix = StringKit.splitToArray(packName, arrays[arrays.length - 1])[1]
                                 .replace(Symbol.C_DOT, Symbol.C_SLASH);
                         Logger.debug(
+                                true,
+                                "Starter",
                                 "Create a URL request mapping '{}{}' for {}.{}",
                                 prefix,
                                 requestMappingInfo.getPathPatternsCondition().getPatterns(),

@@ -1,0 +1,45 @@
+name: Build Project
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to validate. Leave empty to read VERSION.'
+        required: false
+        default: ''
+        type: string
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+    tags-ignore:
+      - '*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build Modules
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v4
+
+      - name: Set Up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Build Project
+        uses: ./.github/actions/build-project
+        with:
+          version: ${{ inputs.version || '' }}

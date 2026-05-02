@@ -80,14 +80,19 @@ public interface WorkflowServiceStubsProvider {
         Assert.notNull(binding.getEndpoint(), "temporal.endpoint must not be null");
 
         Logger.debug(
-                "Creating service stubs, endpoint: {}, namespace: {}, identity: {}",
+                true,
+                "Tempus",
+                "Workflow client creation with binding started: endpoint={}, namespace={}, identity={}, stubsType={}",
                 binding.getEndpoint(),
                 binding.getNamespace(),
-                binding.getIdentity());
+                binding.getIdentity(),
+                serviceStubs.getClass().getName());
 
         try {
             Logger.debug(
-                    "Creating workflow client, endpoint: {}, namespace: {}, identity: {}",
+                    true,
+                    "Tempus",
+                    "Workflow client options creation started: endpoint={}, namespace={}, identity={}",
                     binding.getEndpoint(),
                     binding.getNamespace(),
                     binding.getIdentity());
@@ -103,23 +108,44 @@ public interface WorkflowServiceStubsProvider {
                     Method factoryMethod = findWorkflowClientFactoryWithOptions(serviceStubs.getClass());
                     WorkflowClient client = MethodKit
                             .invokeStatic(factoryMethod, serviceStubs, builder.validateAndBuildWithDefaults());
-                    Logger.debug("Created workflow client with options successfully");
+                    Logger.debug(
+                            false,
+                            "Tempus",
+                            "Workflow client creation with options completed: endpoint={}, namespace={}, identity={}",
+                            binding.getEndpoint(),
+                            binding.getNamespace(),
+                            binding.getIdentity());
                     return client;
                 } catch (IllegalStateException ignore) {
                     // No compatible 2-arg overload; fall back to the low-level bridge.
+                    Logger.debug(
+                            false,
+                            "Tempus",
+                            "Workflow client creation with options skipped: stubsType={}, reason=noCompatibleFactory",
+                            serviceStubs.getClass().getName());
                 }
             }
 
-            return createWorkflowClientWithoutBinding(serviceStubs);
+            WorkflowClient client = createWorkflowClientWithoutBinding(serviceStubs);
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Workflow client creation with binding completed: endpoint={}, namespace={}, identity={}, fallback=true",
+                    binding.getEndpoint(),
+                    binding.getNamespace(),
+                    binding.getIdentity());
+            return client;
         } catch (RuntimeException e) {
             Logger.error(
-                    "Failed to create WorkflowClient with binding, stubsType: {}, endpoint: {}, namespace: {}, identity: {}, error: {}",
+                    false,
+                    "Tempus",
+                    e,
+                    "Workflow client creation with binding failed: stubsType={}, endpoint={}, namespace={}, identity={}, exception={}",
                     serviceStubs.getClass().getName(),
                     binding.getEndpoint(),
                     binding.getNamespace(),
                     binding.getIdentity(),
-                    e.getMessage(),
-                    e);
+                    e.getClass().getSimpleName());
             throw new IllegalStateException("Failed to create WorkflowClient with binding", e);
         }
     }
@@ -146,11 +172,19 @@ public interface WorkflowServiceStubsProvider {
      */
     private WorkflowClient createWorkflowClientWithoutBinding(Object serviceStubs) {
         Assert.notNull(serviceStubs, "serviceStubs must not be null");
-        Logger.debug("Creating workflow client from service stubs, stubsType: {}", serviceStubs.getClass().getName());
+        Logger.debug(
+                true,
+                "Tempus",
+                "Workflow client creation from service stubs started: stubsType={}",
+                serviceStubs.getClass().getName());
 
         Method factoryMethod = findWorkflowClientFactory(serviceStubs.getClass());
         WorkflowClient client = MethodKit.invokeStatic(factoryMethod, serviceStubs);
-        Logger.debug("Created workflow client from service stubs successfully");
+        Logger.debug(
+                false,
+                "Tempus",
+                "Workflow client creation from service stubs completed: stubsType={}",
+                serviceStubs.getClass().getName());
         return client;
     }
 
@@ -164,29 +198,41 @@ public interface WorkflowServiceStubsProvider {
             return;
         }
 
-        Logger.debug("Shutting down service stubs, stubsType: {}", serviceStubs.getClass().getName());
+        Logger.debug(
+                true,
+                "Tempus",
+                "Workflow service stubs shutdown started: stubsType={}",
+                serviceStubs.getClass().getName());
 
         try {
             invokeNoArgIfPresent(serviceStubs, "shutdown");
             boolean terminated = invokeAwaitTerminationIfPresent(serviceStubs, 5L, TimeUnit.SECONDS);
             if (!terminated) {
                 Logger.warn(
-                        "Service stubs did not terminate within timeout, forcing shutdown. stubsType: {}",
+                        false,
+                        "Tempus",
+                        "Workflow service stubs shutdown timeout: stubsType={}, forceShutdown=true",
                         serviceStubs.getClass().getName());
                 invokeNoArgIfPresent(serviceStubs, "shutdownNow");
                 invokeAwaitTerminationIfPresent(serviceStubs, 2L, TimeUnit.SECONDS);
             }
 
-            Logger.debug("Service stubs shutdown completed, stubsType: {}", serviceStubs.getClass().getName());
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Workflow service stubs shutdown completed: stubsType={}",
+                    serviceStubs.getClass().getName());
         } catch (RuntimeException e) {
             if (ExceptionKit.isCausedBy(e, InterruptedException.class)) {
                 Thread.currentThread().interrupt();
             }
             Logger.error(
-                    "Failed to shut down WorkflowServiceStubs, stubsType: {}, error: {}",
+                    false,
+                    "Tempus",
+                    e,
+                    "Workflow service stubs shutdown failed: stubsType={}, exception={}",
                     serviceStubs.getClass().getName(),
-                    e.getMessage(),
-                    e);
+                    e.getClass().getSimpleName());
             throw new IllegalStateException("Failed to shut down WorkflowServiceStubs", e);
         }
     }
@@ -211,9 +257,19 @@ public interface WorkflowServiceStubsProvider {
             return null;
         });
         if (method == null) {
+            Logger.warn(
+                    false,
+                    "Tempus",
+                    "Workflow client factory lookup failed: stubsType={}, mode=singleArg",
+                    serviceStubsType.getName());
             throw new IllegalStateException(
                     "No WorkflowClient.newInstance method accepts " + serviceStubsType.getName());
         }
+        Logger.debug(
+                false,
+                "Tempus",
+                "Workflow client factory lookup completed: stubsType={}, mode=singleArg",
+                serviceStubsType.getName());
         return method;
     }
 
@@ -239,9 +295,19 @@ public interface WorkflowServiceStubsProvider {
             return null;
         });
         if (method == null) {
+            Logger.warn(
+                    false,
+                    "Tempus",
+                    "Workflow client factory lookup failed: stubsType={}, mode=withOptions",
+                    serviceStubsType.getName());
             throw new IllegalStateException(
                     "No WorkflowClient.newInstance(stubs, options) method accepts " + serviceStubsType.getName());
         }
+        Logger.debug(
+                false,
+                "Tempus",
+                "Workflow client factory lookup completed: stubsType={}, mode=withOptions",
+                serviceStubsType.getName());
         return method;
     }
 
@@ -276,10 +342,28 @@ public interface WorkflowServiceStubsProvider {
     private static void invoke(Object target, String methodName, Class<?>[] parameterTypes, Object... args) {
         Method method = MethodKit.getPublicMethod(target.getClass(), false, methodName, parameterTypes);
         if (method == null) {
+            Logger.warn(
+                    false,
+                    "Tempus",
+                    "Workflow service stubs method invocation failed: stubsType={}, method={}",
+                    target.getClass().getName(),
+                    methodName);
             throw new IllegalStateException(
                     "Method " + methodName + " not found on service stubs type " + target.getClass().getName());
         }
+        Logger.debug(
+                true,
+                "Tempus",
+                "Workflow service stubs method invocation started: stubsType={}, method={}",
+                target.getClass().getName(),
+                methodName);
         MethodKit.invoke(target, method, args);
+        Logger.debug(
+                false,
+                "Tempus",
+                "Workflow service stubs method invocation completed: stubsType={}, method={}",
+                target.getClass().getName(),
+                methodName);
     }
 
     /**
@@ -293,7 +377,26 @@ public interface WorkflowServiceStubsProvider {
     private static void invokeIfPresent(Object target, String methodName, Class<?>[] parameterTypes, Object... args) {
         Method method = MethodKit.getPublicMethod(target.getClass(), false, methodName, parameterTypes);
         if (method != null) {
+            Logger.debug(
+                    true,
+                    "Tempus",
+                    "Workflow service stubs optional method invocation started: stubsType={}, method={}",
+                    target.getClass().getName(),
+                    methodName);
             MethodKit.invoke(target, method, args);
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Workflow service stubs optional method invocation completed: stubsType={}, method={}",
+                    target.getClass().getName(),
+                    methodName);
+        } else {
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Workflow service stubs optional method skipped: stubsType={}, method={}, reason=missing",
+                    target.getClass().getName(),
+                    methodName);
         }
     }
 
@@ -309,10 +412,31 @@ public interface WorkflowServiceStubsProvider {
         Method method = MethodKit
                 .getPublicMethod(target.getClass(), false, "awaitTermination", long.class, TimeUnit.class);
         if (method == null) {
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Workflow service stubs await termination skipped: stubsType={}, reason=missingMethod",
+                    target.getClass().getName());
             return true;
         }
+        Logger.debug(
+                true,
+                "Tempus",
+                "Workflow service stubs await termination started: stubsType={}, timeout={}, unit={}",
+                target.getClass().getName(),
+                timeout,
+                unit);
         Object result = MethodKit.invoke(target, method, timeout, unit);
-        return !(result instanceof Boolean terminated) || terminated;
+        boolean terminated = !(result instanceof Boolean value) || value;
+        Logger.debug(
+                false,
+                "Tempus",
+                "Workflow service stubs await termination completed: stubsType={}, timeout={}, unit={}, terminated={}",
+                target.getClass().getName(),
+                timeout,
+                unit,
+                terminated);
+        return terminated;
     }
 
 }

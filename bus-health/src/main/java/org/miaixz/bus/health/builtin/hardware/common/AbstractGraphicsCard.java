@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -34,10 +34,25 @@ import org.miaixz.bus.health.builtin.hardware.GraphicsCard;
 @Immutable
 public abstract class AbstractGraphicsCard implements GraphicsCard {
 
+    /**
+     * The name value.
+     */
     private final String name;
+    /**
+     * The deviceId value.
+     */
     private final String deviceId;
+    /**
+     * The vendor value.
+     */
     private final String vendor;
+    /**
+     * The versionInfo value.
+     */
     private final String versionInfo;
+    /**
+     * The vram value.
+     */
     private final long vram;
 
     /**
@@ -57,31 +72,61 @@ public abstract class AbstractGraphicsCard implements GraphicsCard {
         this.vram = vram;
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return the get name result
+     */
     @Override
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns the device id.
+     *
+     * @return the get device id result
+     */
     @Override
     public String getDeviceId() {
         return deviceId;
     }
 
+    /**
+     * Returns the vendor.
+     *
+     * @return the get vendor result
+     */
     @Override
     public String getVendor() {
         return vendor;
     }
 
+    /**
+     * Returns the version info.
+     *
+     * @return the get version info result
+     */
     @Override
     public String getVersionInfo() {
         return versionInfo;
     }
 
+    /**
+     * Returns the v ram.
+     *
+     * @return the get v ram result
+     */
     @Override
     public long getVRam() {
         return vram;
     }
 
+    /**
+     * Creates the stats session.
+     *
+     * @return the create stats session result
+     */
     @Override
     public GpuStats createStatsSession() {
         return new NoOpGpuStats();

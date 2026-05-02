@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -45,10 +45,16 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 @ThreadSafe
 public final class PerfCounterWildcardQuery {
 
+    /**
+     * The PERF_DISABLE_ALL_ON_FAILURE constant.
+     */
     private static final boolean PERF_DISABLE_ALL_ON_FAILURE = Config
             .get(Config._WINDOWS_PERF_DISABLE_ALL_ON_FAILURE, false);
 
     // Use a thread safe set to cache failed pdh queries
+    /**
+     * The FAILED_QUERY_CACHE constant.
+     */
     private static final Set<String> FAILED_QUERY_CACHE = ConcurrentHashMap.newKeySet();
 
     /**
@@ -102,9 +108,9 @@ public final class PerfCounterWildcardQuery {
             // If we are here, query returned no results
             if (StringKit.isBlank(customFilter)) {
                 if (PERF_DISABLE_ALL_ON_FAILURE) {
-                    Logger.info("Disabling further attempts to query performance counters.");
+                    Logger.info(false, "Health", "Disabling further attempts to query performance counters.");
                 } else {
-                    Logger.info("Disabling further attempts to query {}.", perfObject);
+                    Logger.info(false, "Health", "Disabling further attempts to query {}.", perfObject);
                 }
                 FAILED_QUERY_CACHE.add(perfObject);
             }
@@ -164,9 +170,11 @@ public final class PerfCounterWildcardQuery {
             objectItems = PdhUtil.PdhEnumObjectItems(null, null, perfObjectLocalized, 100);
         } catch (PdhException e) {
             Logger.warn(
+                    false,
+                    "Health",
                     "Failed to locate performance object for {} in the registry. Performance counters may be corrupt. {}",
                     perfObjectLocalized,
-                    e.getMessage());
+                    e.getClass().getSimpleName());
         }
         if (objectItems == null) {
             return Pair.of(Collections.emptyList(), Collections.emptyMap());

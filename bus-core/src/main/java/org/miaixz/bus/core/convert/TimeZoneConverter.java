@@ -38,6 +38,12 @@ public class TimeZoneConverter extends AbstractConverter implements MatcherConve
     private static final long serialVersionUID = 2852272228100L;
 
     /**
+     * Constructs a new time-zone converter.
+     */
+    public TimeZoneConverter() {
+    }
+
+    /**
      * Singleton instance
      */
     public static final TimeZoneConverter INSTANCE = new TimeZoneConverter();

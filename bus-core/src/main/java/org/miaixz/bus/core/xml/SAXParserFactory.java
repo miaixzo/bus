@@ -31,6 +31,13 @@ import org.miaixz.bus.core.lang.loader.LazyFunLoader;
 public class SAXParserFactory {
 
     /**
+     * Constructs a new SAX parser factory utility.
+     */
+    public SAXParserFactory() {
+
+    }
+
+    /**
      * Cache for the SAX parser factory.
      */
     private static final Loader<javax.xml.parsers.SAXParserFactory> factory = LazyFunLoader

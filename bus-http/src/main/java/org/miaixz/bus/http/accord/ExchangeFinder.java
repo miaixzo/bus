@@ -24,6 +24,7 @@ import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.metric.EventListener;
 import org.miaixz.bus.http.metric.NewChain;
 import org.miaixz.bus.http.metric.http.HttpCodec;
+import org.miaixz.bus.logger.Logger;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -94,6 +95,15 @@ final class ExchangeFinder {
         boolean connectionRetryEnabled = client.retryOnConnectionFailure();
 
         try {
+            Logger.debug(
+                    true,
+                    "Http",
+                    "Connection lookup started: protocol=http, host={}, port={}, connectTimeoutMs={}, readTimeoutMs={}, retry={}",
+                    address.url().host(),
+                    address.url().port(),
+                    connectTimeout,
+                    readTimeout,
+                    connectionRetryEnabled);
             RealConnection resultConnection = findHealthyConnection(
                     connectTimeout,
                     readTimeout,
@@ -101,12 +111,37 @@ final class ExchangeFinder {
                     pingIntervalMillis,
                     connectionRetryEnabled,
                     doExtensiveHealthChecks);
-            return resultConnection.newCodec(client, chain);
+            HttpCodec codec = resultConnection.newCodec(client, chain);
+            Logger.debug(
+                    false,
+                    "Http",
+                    "Connection lookup completed: protocol=http, host={}, port={}, protocol={}, extensiveHealthCheck={}",
+                    address.url().host(),
+                    address.url().port(),
+                    resultConnection.protocol(),
+                    doExtensiveHealthChecks);
+            return codec;
         } catch (RouteException e) {
             trackFailure();
+            Logger.error(
+                    false,
+                    "Http",
+                    e,
+                    "Connection lookup failed by route: protocol=http, host={}, port={}, exception={}",
+                    address.url().host(),
+                    address.url().port(),
+                    e.getClass().getSimpleName());
             throw e;
         } catch (IOException e) {
             trackFailure();
+            Logger.error(
+                    false,
+                    "Http",
+                    e,
+                    "Connection lookup failed by IO: protocol=http, host={}, port={}, exception={}",
+                    address.url().host(),
+                    address.url().port(),
+                    e.getClass().getSimpleName());
             throw new RouteException(e);
         }
     }

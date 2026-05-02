@@ -30,6 +30,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Jcseg word segmentation engine implementation. This class serves as a concrete {@link NLPProvider} for the Jcseg NLP
@@ -65,9 +66,11 @@ public class JcsegProvider implements NLPProvider {
      * @param config The custom {@link SegmenterConfig} to use for word segmentation.
      */
     public JcsegProvider(final SegmenterConfig config) {
+        Logger.info(true, "Extra", "Jcseg provider initialization started: customConfigPresent={}", config != null);
         this.config = config;
         // Create a default singleton dictionary instance and load the dictionary according to the config
         this.dic = DictionaryFactory.createSingletonDictionary(config);
+        Logger.info(false, "Extra", "Jcseg provider initialized: dictionaryPresent={}", this.dic != null);
     }
 
     /**
@@ -82,12 +85,26 @@ public class JcsegProvider implements NLPProvider {
     @Override
     public NLPResult parse(final CharSequence text) {
         // Create an ISegment instance based on the given ADictionary and SegmenterConfig
+        Logger.debug(true, "Extra", "Jcseg parse started: textLength={}", text == null ? 0 : text.length());
         final ISegment segment = ISegment.COMPLEX.factory.create(config, dic);
         try {
             segment.reset(new StringReader(StringKit.toStringOrEmpty(text)));
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "Jcseg parse failed: textLength={}, exception={}",
+                    text == null ? 0 : text.length(),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
+        Logger.debug(
+                false,
+                "Extra",
+                "Jcseg parse completed: textLength={}, segmentPresent={}",
+                text == null ? 0 : text.length(),
+                segment != null);
         return new JcsegResult(segment);
     }
 

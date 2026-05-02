@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -41,6 +41,9 @@ import com.sun.jna.platform.win32.WinReg;
 @Immutable
 final class WindowsSoundCard extends AbstractSoundCard {
 
+    /**
+     * The REGISTRY_SOUNDCARDS constant.
+     */
     private static final String REGISTRY_SOUNDCARDS = "SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e96c-e325-11ce-bfc1-08002be10318}\\";
 
     /**

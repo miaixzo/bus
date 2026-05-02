@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.builder.annotation.ProviderContext;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.SqlScript;
@@ -40,22 +41,20 @@ public class ListProvider {
     /**
      * Batch inserts a list of entities.
      *
-     * @param providerContext The provider context, containing method and interface information.
-     * @param entityList      The list of entities, which must be annotated with {@code @Param("entityList")}.
+     * @param context The provider context, containing method and interface information.
+     * @param list    The list of entities, which must be annotated with {@code @Param("list")}.
      * @return The cache key.
-     * @throws NullPointerException if entityList is null or empty.
+     * @throws NullPointerException if list is null or empty.
      */
-    public static String insertList(ProviderContext providerContext, @Param("entityList") List<?> entityList) {
-        if (entityList == null || entityList.size() == 0) {
-            throw new NullPointerException("Parameter cannot be empty");
-        }
-        return SqlScript.caching(providerContext, new SqlScript() {
+    public static String insertList(ProviderContext context, @Param("list") List<?> list) {
+        Assert.notEmpty(list, "Parameter cannot be empty");
+        return SqlScript.caching(context, new SqlScript() {
 
             @Override
             public String getSql(TableMeta entity) {
                 return "INSERT INTO " + entity.tableName() + "(" + entity.insertColumnList() + ")" + " VALUES "
                         + foreach(
-                                "entityList",
+                                "list",
                                 "entity",
                                 Symbol.COMMA,
                                 () -> trimSuffixOverrides(
@@ -71,16 +70,14 @@ public class ListProvider {
     /**
      * Batch updates a list of entities.
      *
-     * @param providerContext The provider context, containing method and interface information.
-     * @param entityList      The list of entities, which must be annotated with {@code @Param("entityList")}.
+     * @param context The provider context, containing method and interface information.
+     * @param list    The list of entities, which must be annotated with {@code @Param("list")}.
      * @return The cache key.
-     * @throws NullPointerException if entityList is null or empty.
+     * @throws NullPointerException if list is null or empty.
      */
-    public static String updateList(ProviderContext providerContext, @Param("entityList") List<?> entityList) {
-        if (entityList == null || entityList.size() == 0) {
-            throw new NullPointerException("Parameter cannot be empty");
-        }
-        return SqlScript.caching(providerContext, new SqlScript() {
+    public static String updateList(ProviderContext context, @Param("list") List<?> list) {
+        Assert.notEmpty(list, "Parameter cannot be empty");
+        return SqlScript.caching(context, new SqlScript() {
 
             @Override
             public String getSql(TableMeta entity) {
@@ -97,7 +94,7 @@ public class ListProvider {
                                                         "end, ",
                                                         "",
                                                         () -> foreach(
-                                                                "entityList",
+                                                                "list",
                                                                 "entity",
                                                                 Symbol.SPACE,
                                                                 () -> "WHEN ( " + idColumns.stream()
@@ -111,7 +108,7 @@ public class ListProvider {
                                         .stream().map(ColumnMeta::column).collect(Collectors.joining(Symbol.COMMA))
                                         + ") in " + " ("
                                         + foreach(
-                                                "entityList",
+                                                "list",
                                                 "entity",
                                                 "),(",
                                                 "(",
@@ -127,16 +124,14 @@ public class ListProvider {
     /**
      * Batch updates non-null fields of a list of entities.
      *
-     * @param providerContext The provider context, containing method and interface information.
-     * @param entityList      The list of entities, which must be annotated with {@code @Param("entityList")}.
+     * @param context The provider context, containing method and interface information.
+     * @param list    The list of entities, which must be annotated with {@code @Param("list")}.
      * @return The cache key.
-     * @throws NullPointerException if entityList is null or empty.
+     * @throws NullPointerException if list is null or empty.
      */
-    public static String updateListSelective(ProviderContext providerContext, @Param("entityList") List<?> entityList) {
-        if (entityList == null || entityList.size() == 0) {
-            throw new NullPointerException("Parameter cannot be empty");
-        }
-        return SqlScript.caching(providerContext, new SqlScript() {
+    public static String updateListSelective(ProviderContext context, @Param("list") List<?> list) {
+        Assert.notEmpty(list, "Parameter cannot be empty");
+        return SqlScript.caching(context, new SqlScript() {
 
             @Override
             public String getSql(TableMeta entity) {
@@ -151,7 +146,7 @@ public class ListProvider {
                                         "end, ",
                                         "",
                                         () -> foreach(
-                                                "entityList",
+                                                "list",
                                                 "entity",
                                                 Symbol.SPACE,
                                                 () -> choose(
@@ -177,7 +172,7 @@ public class ListProvider {
                                         .stream().map(ColumnMeta::column).collect(Collectors.joining(Symbol.COMMA))
                                         + ") in " + " ("
                                         + foreach(
-                                                "entityList",
+                                                "list",
                                                 "entity",
                                                 "),(",
                                                 "(",

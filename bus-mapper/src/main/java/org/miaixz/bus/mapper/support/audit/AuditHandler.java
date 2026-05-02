@@ -125,12 +125,23 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
 
         // Set provider if found
         if (provider == null) {
-            Logger.warn(false, getHandler(), "Provider not found, feature will not be enabled");
+            Logger.warn(false, "Mapper", "Audit provider not found, feature disabled: datasource={}", datasourceKey);
             return false;
         }
 
         // Build initial static config
         this.config = buildAuditConfig(datasourceKey, properties, provider);
+        Logger.info(
+                false,
+                "Mapper",
+                "Audit handler configured: datasource={}, slowSqlThreshold={}, logParameters={}, logResults={}, logAllSql={}, printConsole={}, provider={}",
+                datasourceKey,
+                config.getSlowSqlThreshold(),
+                config.isLogParameters(),
+                config.isLogResults(),
+                config.isLogAllSql(),
+                config.isPrintConsole(),
+                provider.getClass().getName());
         return true;
     }
 
@@ -245,18 +256,33 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
         // Get current configuration
         AuditConfig currentConfig = current();
         if (currentConfig == null || AuditContext.isIgnore()) {
-            Logger.debug(true, getHandler(), "Audit disabled or ignored for update: {}", mappedStatement.getId());
+            Logger.debug(
+                    true,
+                    "Mapper",
+                    "Audit update skipped: method={}, reason={}",
+                    mappedStatement.getId(),
+                    currentConfig == null ? "configMissing" : "contextIgnored");
             return true;
         }
 
         // Create builder on-demand for current config and check if should ignore
         AuditBuilder builder = new AuditBuilder(currentConfig);
         if (builder.shouldIgnoreAudit(mappedStatement)) {
-            Logger.debug(true, getHandler(), "Audit ignored for mapper: {}", mappedStatement.getId());
+            Logger.debug(
+                    true,
+                    "Mapper",
+                    "Audit update skipped by mapper ignore rule: method={}",
+                    mappedStatement.getId());
             return true;
         }
 
-        Logger.debug(false, getHandler(), "Starting audit for update: {}", mappedStatement.getId());
+        Logger.debug(
+                true,
+                "Mapper",
+                "Audit update started: method={}, sqlType={}, parameterPresent={}",
+                mappedStatement.getId(),
+                mappedStatement.getSqlCommandType(),
+                parameter != null);
         // Start audit record
         builder.before(mappedStatement, parameter);
         return true;
@@ -284,18 +310,35 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
         // Get current configuration
         AuditConfig currentConfig = current();
         if (currentConfig == null || AuditContext.isIgnore()) {
-            Logger.debug(true, getHandler(), "Audit disabled or ignored for query: {}", mappedStatement.getId());
+            Logger.debug(
+                    true,
+                    "Mapper",
+                    "Audit query skipped: method={}, reason={}",
+                    mappedStatement.getId(),
+                    currentConfig == null ? "configMissing" : "contextIgnored");
             return true;
         }
 
         // Create builder on-demand for current config and check if should ignore
         AuditBuilder builder = new AuditBuilder(currentConfig);
         if (builder.shouldIgnoreAudit(mappedStatement)) {
-            Logger.debug(true, getHandler(), "Audit ignored for mapper: {}", mappedStatement.getId());
+            Logger.debug(
+                    true,
+                    "Mapper",
+                    "Audit query skipped by mapper ignore rule: method={}",
+                    mappedStatement.getId());
             return true;
         }
 
-        Logger.debug(false, getHandler(), "Starting audit for query: {}", mappedStatement.getId());
+        Logger.debug(
+                true,
+                "Mapper",
+                "Audit query started: method={}, rowOffset={}, rowLimit={}, parameterMappings={}, parameterPresent={}",
+                mappedStatement.getId(),
+                rowBounds.getOffset(),
+                rowBounds.getLimit(),
+                boundSql.getParameterMappings().size(),
+                parameter != null);
         // Start audit record
         builder.before(mappedStatement, parameter, boundSql);
         return true;
@@ -324,7 +367,12 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
         // End audit record
         AuditConfig currentConfig = current();
         if (currentConfig != null) {
-            Logger.debug(false, getHandler(), "Completing audit for query: {}", mappedStatement.getId());
+            Logger.debug(
+                    false,
+                    "Mapper",
+                    "Audit query completed: method={}, resultType={}",
+                    mappedStatement.getId(),
+                    result == null ? "null" : result.getClass().getName());
             AuditBuilder builder = new AuditBuilder(currentConfig);
             builder.after(result, null);
         }

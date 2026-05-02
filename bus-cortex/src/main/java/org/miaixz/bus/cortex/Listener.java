@@ -19,25 +19,30 @@
 */
 package org.miaixz.bus.cortex;
 
-import java.util.List;
-
 /**
- * Callback interface notified when watched values change.
+ * Generic callback for typed Cortex change notifications.
  *
- * @param <T> watched value type
+ * @param <C> concrete change notification type
  * @author Kimi Liu
  * @since Java 21+
  */
 @FunctionalInterface
-public interface Listener<T> {
+public interface Listener<C extends Change<?>> {
 
     /**
-     * Receives the diff produced for a watch subscription after a registry or config change.
+     * Handles one change notification.
      *
-     * @param added   values newly appearing in the watched result set
-     * @param removed values no longer present in the watched result set
-     * @param updated values that remain present but changed content
+     * @param event change notification to consume
      */
-    void accept(List<T> added, List<T> removed, List<T> updated);
+    void onEvent(C event);
+
+    /**
+     * Handles one listener failure while preserving the original event context.
+     *
+     * @param event watched event that triggered the failure
+     * @param error listener error
+     */
+    default void onError(C event, Exception error) {
+    }
 
 }

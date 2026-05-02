@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.net.ssl.*;
 
@@ -48,6 +47,7 @@ import org.miaixz.bus.gitlab.support.MaskingLoggingFilter;
 
 import jakarta.ws.rs.client.*;
 import jakarta.ws.rs.core.*;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * This class utilizes the Jersey client package to communicate with a GitLab API endpoint.
@@ -248,6 +248,15 @@ public class GitLabApiClient implements AutoCloseable {
 
         clientConfig.register(JacksonJson.class);
         clientConfig.register(MultiPartFeature.class);
+        Logger.info(
+                false,
+                "GitLab",
+                "GitLab API client initialized: apiVersion={}, hostUrl={}, tokenType={}, secretTokenPresent={}, customPropertyCount={}",
+                apiVersion,
+                this.hostUrl,
+                tokenType,
+                this.secretToken != null,
+                clientConfigProperties == null ? 0 : clientConfigProperties.size());
     }
 
     /**
@@ -256,7 +265,9 @@ public class GitLabApiClient implements AutoCloseable {
     @Override
     public void close() {
         if (apiClient != null) {
+            Logger.info(true, "GitLab", "GitLab Jersey client close started: hostUrl={}", hostUrl);
             apiClient.close();
+            Logger.info(false, "GitLab", "GitLab Jersey client close completed: hostUrl={}", hostUrl);
         }
     }
 
@@ -271,8 +282,19 @@ public class GitLabApiClient implements AutoCloseable {
      *                          disabled
      * @param maskedHeaderNames a list of header names that should have the values masked
      */
-    void enableRequestResponseLogging(Logger logger, Level level, int maxEntityLength, List<String> maskedHeaderNames) {
+    void enableRequestResponseLogging(
+            java.util.logging.Logger logger,
+            Level level,
+            int maxEntityLength,
+            List<String> maskedHeaderNames) {
 
+        Logger.info(
+                true,
+                "GitLab",
+                "GitLab request response logging enabled: level={}, maxEntityLength={}, maskedHeaderCount={}",
+                level,
+                maxEntityLength,
+                maskedHeaderNames == null ? 0 : maskedHeaderNames.size());
         MaskingLoggingFilter loggingFilter = new MaskingLoggingFilter(logger, level, maxEntityLength,
                 maskedHeaderNames);
         clientConfig.register(loggingFilter);
@@ -281,6 +303,12 @@ public class GitLabApiClient implements AutoCloseable {
         if (apiClient != null) {
             createApiClient();
         }
+        Logger.info(
+                false,
+                "GitLab",
+                "GitLab request response logging configured: level={}, maxEntityLength={}",
+                level,
+                maxEntityLength);
     }
 
     /**
@@ -292,6 +320,12 @@ public class GitLabApiClient implements AutoCloseable {
     void setRequestTimeout(Integer connectTimeout, Integer readTimeout) {
         this.connectTimeout = connectTimeout;
         this.readTimeout = readTimeout;
+        Logger.info(
+                false,
+                "GitLab",
+                "GitLab request timeout configured: connectTimeoutMs={}, readTimeoutMs={}",
+                connectTimeout,
+                readTimeout);
     }
 
     /**
@@ -335,6 +369,7 @@ public class GitLabApiClient implements AutoCloseable {
      */
     void setSudoAsId(Long sudoAsId) {
         this.sudoAsId = sudoAsId;
+        Logger.info(false, "GitLab", "GitLab sudo user configured: sudoAsId={}", sudoAsId);
     }
 
     /**
@@ -385,10 +420,23 @@ public class GitLabApiClient implements AutoCloseable {
             return (true);
 
         String secretToken = response.getHeaderString(X_GITLAB_TOKEN_HEADER);
-        if (secretToken == null)
+        if (secretToken == null) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    "GitLab response secret token validation failed: reason=missingHeader, status={}",
+                    response.getStatus());
             return (false);
+        }
 
-        return (this.secretToken.equals(secretToken));
+        boolean valid = this.secretToken.equals(secretToken);
+        Logger.debug(
+                false,
+                "GitLab",
+                "GitLab response secret token validation completed: status={}, valid={}",
+                response.getStatus(),
+                valid);
+        return valid;
     }
 
     /**
@@ -414,7 +462,21 @@ public class GitLabApiClient implements AutoCloseable {
      * @return a ClientResponse instance with the data returned from the endpoint
      */
     protected Response get(MultivaluedMap<String, String> queryParams, URL url) {
-        return (invocation(url, queryParams).get());
+        Logger.debug(
+                true,
+                "GitLab",
+                "GitLab HTTP request started: method=GET, urlPath={}, queryParamCount={}",
+                url == null ? null : url.getPath(),
+                queryParams == null ? 0 : queryParams.size());
+        Response response = invocation(url, queryParams).get();
+        Logger.debug(
+                false,
+                "GitLab",
+                "GitLab HTTP response received: method=GET, urlPath={}, status={}, rateLimitRemaining={}",
+                url == null ? null : url.getPath(),
+                response.getStatus(),
+                response.getHeaderString("RateLimit-Remaining"));
+        return response;
     }
 
     /**
@@ -443,7 +505,22 @@ public class GitLabApiClient implements AutoCloseable {
      * @return a ClientResponse instance with the data returned from the endpoint
      */
     protected Response getWithAccepts(MultivaluedMap<String, String> queryParams, URL url, String accepts) {
-        return (invocation(url, queryParams, accepts).get());
+        Logger.debug(
+                true,
+                "GitLab",
+                "GitLab HTTP request started: method=GET, urlPath={}, queryParamCount={}, accept={}",
+                url == null ? null : url.getPath(),
+                queryParams == null ? 0 : queryParams.size(),
+                accepts);
+        Response response = invocation(url, queryParams, accepts).get();
+        Logger.debug(
+                false,
+                "GitLab",
+                "GitLab HTTP response received: method=GET, urlPath={}, status={}, rateLimitRemaining={}",
+                url == null ? null : url.getPath(),
+                response.getStatus(),
+                response.getHeaderString("RateLimit-Remaining"));
+        return response;
     }
 
     /**
@@ -469,7 +546,21 @@ public class GitLabApiClient implements AutoCloseable {
      * @return a ClientResponse instance with the data returned from the endpoint
      */
     protected Response head(MultivaluedMap<String, String> queryParams, URL url) {
-        return (invocation(url, queryParams).head());
+        Logger.debug(
+                true,
+                "GitLab",
+                "GitLab HTTP request started: method=HEAD, urlPath={}, queryParamCount={}",
+                url == null ? null : url.getPath(),
+                queryParams == null ? 0 : queryParams.size());
+        Response response = invocation(url, queryParams).head();
+        Logger.debug(
+                false,
+                "GitLab",
+                "GitLab HTTP response received: method=HEAD, urlPath={}, status={}, rateLimitRemaining={}",
+                url == null ? null : url.getPath(),
+                response.getStatus(),
+                response.getHeaderString("RateLimit-Remaining"));
+        return response;
     }
 
     /**
@@ -497,7 +588,21 @@ public class GitLabApiClient implements AutoCloseable {
     protected Response patch(MultivaluedMap<String, String> queryParams, URL url) {
         Entity<?> empty = Entity.text("");
         // use "X-HTTP-Method-Override" header on POST to override to unsupported PATCH
-        return (invocation(url, queryParams).header("X-HTTP-Method-Override", "PATCH").post(empty));
+        Logger.debug(
+                true,
+                "GitLab",
+                "GitLab HTTP request started: method=PATCH, urlPath={}, queryParamCount={}",
+                url == null ? null : url.getPath(),
+                queryParams == null ? 0 : queryParams.size());
+        Response response = invocation(url, queryParams).header("X-HTTP-Method-Override", "PATCH").post(empty);
+        Logger.debug(
+                false,
+                "GitLab",
+                "GitLab HTTP response received: method=PATCH, urlPath={}, status={}, rateLimitRemaining={}",
+                url == null ? null : url.getPath(),
+                response.getStatus(),
+                response.getHeaderString("RateLimit-Remaining"));
+        return response;
     }
 
     /**
@@ -537,14 +642,31 @@ public class GitLabApiClient implements AutoCloseable {
      * @return a ClientResponse instance with the data returned from the endpoint
      */
     protected Response post(Form formData, URL url) {
+        Logger.debug(
+                true,
+                "GitLab",
+                "GitLab HTTP request started: method=POST, urlPath={}, formParamCount={}, formType={}",
+                url == null ? null : url.getPath(),
+                formData == null ? 0 : formData.asMap().size(),
+                formData == null ? "null" : formData.getClass().getSimpleName());
+        Response response;
         if (formData instanceof GitLabApiForm) {
-            return (invocation(url, null)
-                    .post(Entity.entity(formData.asMap(), MediaType.APPLICATION_FORM_URLENCODED_TYPE)));
+            response = invocation(url, null)
+                    .post(Entity.entity(formData.asMap(), MediaType.APPLICATION_FORM_URLENCODED_TYPE));
         } else if (formData != null) {
-            return (invocation(url, null).post(Entity.entity(formData, MediaType.APPLICATION_FORM_URLENCODED_TYPE)));
+            response = invocation(url, null).post(Entity.entity(formData, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
         } else {
-            return (invocation(url, null).post(Entity.entity(new Form(), MediaType.APPLICATION_FORM_URLENCODED_TYPE)));
+            response = invocation(url, null)
+                    .post(Entity.entity(new Form(), MediaType.APPLICATION_FORM_URLENCODED_TYPE));
         }
+        Logger.debug(
+                false,
+                "GitLab",
+                "GitLab HTTP response received: method=POST, urlPath={}, status={}, rateLimitRemaining={}",
+                url == null ? null : url.getPath(),
+                response.getStatus(),
+                response.getHeaderString("RateLimit-Remaining"));
+        return response;
     }
 
     /**
@@ -556,8 +678,23 @@ public class GitLabApiClient implements AutoCloseable {
      * @return a ClientResponse instance with the data returned from the endpoint
      */
     protected Response post(MultivaluedMap<String, String> queryParams, URL url) {
-        return (invocation(url, queryParams)
-                .post(Entity.entity(new Form(), MediaType.APPLICATION_FORM_URLENCODED_TYPE)));
+        Logger.debug(
+                true,
+                "GitLab",
+                "GitLab HTTP request started: method=POST, urlPath={}, queryParamCount={}, payloadType={}",
+                url == null ? null : url.getPath(),
+                queryParams == null ? 0 : queryParams.size(),
+                "emptyForm");
+        Response response = invocation(url, queryParams)
+                .post(Entity.entity(new Form(), MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+        Logger.debug(
+                false,
+                "GitLab",
+                "GitLab HTTP response received: method=POST, urlPath={}, status={}, rateLimitRemaining={}",
+                url == null ? null : url.getPath(),
+                response.getStatus(),
+                response.getHeaderString("RateLimit-Remaining"));
+        return response;
     }
 
     /**
@@ -572,7 +709,22 @@ public class GitLabApiClient implements AutoCloseable {
     protected Response post(Object payload, Object... pathArgs) throws IOException {
         URL url = getApiUrl(pathArgs);
         Entity<?> entity = Entity.entity(payload, MediaType.APPLICATION_JSON);
-        return (invocation(url, null).post(entity));
+        Logger.debug(
+                true,
+                "GitLab",
+                "GitLab HTTP request started: method=POST, urlPath={}, payloadType={}, pathArgCount={}",
+                url == null ? null : url.getPath(),
+                payload == null ? "null" : payload.getClass().getSimpleName(),
+                pathArgs == null ? 0 : pathArgs.length);
+        Response response = invocation(url, null).post(entity);
+        Logger.debug(
+                false,
+                "GitLab",
+                "GitLab HTTP response received: method=POST, urlPath={}, status={}, rateLimitRemaining={}",
+                url == null ? null : url.getPath(),
+                response.getStatus(),
+                response.getHeaderString("RateLimit-Remaining"));
+        return response;
     }
 
     /**
@@ -587,7 +739,23 @@ public class GitLabApiClient implements AutoCloseable {
      */
     protected Response post(StreamingOutput stream, String mediaType, Object... pathArgs) throws IOException {
         URL url = getApiUrl(pathArgs);
-        return (invocation(url, null).post(Entity.entity(stream, mediaType)));
+        Logger.debug(
+                true,
+                "GitLab",
+                "GitLab HTTP request started: method=POST, urlPath={}, payloadType={}, mediaType={}, pathArgCount={}",
+                url == null ? null : url.getPath(),
+                stream == null ? "null" : stream.getClass().getSimpleName(),
+                mediaType,
+                pathArgs == null ? 0 : pathArgs.length);
+        Response response = invocation(url, null).post(Entity.entity(stream, mediaType));
+        Logger.debug(
+                false,
+                "GitLab",
+                "GitLab HTTP response received: method=POST, urlPath={}, status={}, rateLimitRemaining={}",
+                url == null ? null : url.getPath(),
+                response.getStatus(),
+                response.getHeaderString("RateLimit-Remaining"));
+        return response;
     }
 
     /**
@@ -638,6 +806,15 @@ public class GitLabApiClient implements AutoCloseable {
      */
     protected Response upload(String name, File fileToUpload, String mediaTypeString, Form formData, URL url)
             throws IOException {
+        Logger.info(
+                true,
+                "GitLab",
+                "GitLab file upload request started: method=POST, urlPath={}, fieldName={}, fileName={}, fileSize={}, formParamCount={}",
+                url == null ? null : url.getPath(),
+                name,
+                fileToUpload == null ? null : fileToUpload.getName(),
+                fileToUpload == null ? -1 : fileToUpload.length(),
+                formData == null ? 0 : formData.asMap().size());
         FileDataBodyPart filePart = new FileDataBodyPart(name, fileToUpload);
         return upload(filePart, formData, url);
     }
@@ -659,6 +836,15 @@ public class GitLabApiClient implements AutoCloseable {
             String mediaTypeString,
             Form formData,
             URL url) throws IOException {
+        Logger.info(
+                true,
+                "GitLab",
+                "GitLab stream upload request started: method=POST, urlPath={}, fieldName={}, fileName={}, mediaType={}, formParamCount={}",
+                url == null ? null : url.getPath(),
+                name,
+                filename,
+                mediaTypeString,
+                formData == null ? 0 : formData.asMap().size());
         StreamDataBodyPart streamDataBodyPart = new StreamDataBodyPart(name, inputStream, filename);
         return upload(streamDataBodyPart, formData, url);
     }
@@ -675,7 +861,16 @@ public class GitLabApiClient implements AutoCloseable {
 
             multiPart.bodyPart(bodyPart);
             final Entity<?> entity = Entity.entity(multiPart, Boundary.addBoundary(multiPart.getMediaType()));
-            return (invocation(url, null).post(entity));
+            Response response = invocation(url, null).post(entity);
+            Logger.info(
+                    false,
+                    "GitLab",
+                    "GitLab multipart upload response received: method=POST, urlPath={}, status={}, bodyPartType={}, rateLimitRemaining={}",
+                    url == null ? null : url.getPath(),
+                    response.getStatus(),
+                    bodyPart == null ? "null" : bodyPart.getClass().getSimpleName(),
+                    response.getHeaderString("RateLimit-Remaining"));
+            return response;
         }
     }
 
@@ -707,13 +902,29 @@ public class GitLabApiClient implements AutoCloseable {
     protected Response putUpload(String name, File fileToUpload, URL url) throws IOException {
 
         try (MultiPart multiPart = new FormDataMultiPart()) {
+            Logger.info(
+                    true,
+                    "GitLab",
+                    "GitLab file upload request started: method=PUT, urlPath={}, fieldName={}, fileName={}, fileSize={}",
+                    url == null ? null : url.getPath(),
+                    name,
+                    fileToUpload == null ? null : fileToUpload.getName(),
+                    fileToUpload == null ? -1 : fileToUpload.length());
             if (fileToUpload == null) {
                 multiPart.bodyPart(new FormDataBodyPart(name, "", MediaType.APPLICATION_OCTET_STREAM_TYPE));
             } else {
                 multiPart.bodyPart(new FileDataBodyPart(name, fileToUpload, MediaType.APPLICATION_OCTET_STREAM_TYPE));
             }
             final Entity<?> entity = Entity.entity(multiPart, Boundary.addBoundary(multiPart.getMediaType()));
-            return (invocation(url, null).put(entity));
+            Response response = invocation(url, null).put(entity);
+            Logger.info(
+                    false,
+                    "GitLab",
+                    "GitLab multipart upload response received: method=PUT, urlPath={}, status={}, rateLimitRemaining={}",
+                    url == null ? null : url.getPath(),
+                    response.getStatus(),
+                    response.getHeaderString("RateLimit-Remaining"));
+            return response;
         }
     }
 
@@ -740,12 +951,28 @@ public class GitLabApiClient implements AutoCloseable {
      * @return a ClientResponse instance with the data returned from the endpoint
      */
     protected Response put(MultivaluedMap<String, String> queryParams, URL url) {
+        Logger.debug(
+                true,
+                "GitLab",
+                "GitLab HTTP request started: method=PUT, urlPath={}, formParamCount={}",
+                url == null ? null : url.getPath(),
+                queryParams == null ? 0 : queryParams.size());
+        Response response;
         if (queryParams == null || queryParams.isEmpty()) {
             Entity<?> empty = Entity.text("");
-            return (invocation(url, null).put(empty));
+            response = invocation(url, null).put(empty);
         } else {
-            return (invocation(url, null).put(Entity.entity(queryParams, MediaType.APPLICATION_FORM_URLENCODED_TYPE)));
+            response = invocation(url, null)
+                    .put(Entity.entity(queryParams, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
         }
+        Logger.debug(
+                false,
+                "GitLab",
+                "GitLab HTTP response received: method=PUT, urlPath={}, status={}, rateLimitRemaining={}",
+                url == null ? null : url.getPath(),
+                response.getStatus(),
+                response.getHeaderString("RateLimit-Remaining"));
+        return response;
     }
 
     /**
@@ -771,11 +998,27 @@ public class GitLabApiClient implements AutoCloseable {
      * @return a ClientResponse instance with the data returned from the endpoint
      */
     protected Response put(Form formData, URL url) {
+        Logger.debug(
+                true,
+                "GitLab",
+                "GitLab HTTP request started: method=PUT, urlPath={}, formParamCount={}, formType={}",
+                url == null ? null : url.getPath(),
+                formData == null ? 0 : formData.asMap().size(),
+                formData == null ? "null" : formData.getClass().getSimpleName());
+        Response response;
         if (formData instanceof GitLabApiForm)
-            return (invocation(url, null)
-                    .put(Entity.entity(formData.asMap(), MediaType.APPLICATION_FORM_URLENCODED_TYPE)));
+            response = invocation(url, null)
+                    .put(Entity.entity(formData.asMap(), MediaType.APPLICATION_FORM_URLENCODED_TYPE));
         else
-            return (invocation(url, null).put(Entity.entity(formData, MediaType.APPLICATION_FORM_URLENCODED_TYPE)));
+            response = invocation(url, null).put(Entity.entity(formData, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+        Logger.debug(
+                false,
+                "GitLab",
+                "GitLab HTTP response received: method=PUT, urlPath={}, status={}, rateLimitRemaining={}",
+                url == null ? null : url.getPath(),
+                response.getStatus(),
+                response.getHeaderString("RateLimit-Remaining"));
+        return response;
     }
 
     /**
@@ -790,7 +1033,22 @@ public class GitLabApiClient implements AutoCloseable {
     protected Response put(Object payload, Object... pathArgs) throws IOException {
         URL url = getApiUrl(pathArgs);
         Entity<?> entity = Entity.entity(payload, MediaType.APPLICATION_JSON);
-        return (invocation(url, null).put(entity));
+        Logger.debug(
+                true,
+                "GitLab",
+                "GitLab HTTP request started: method=PUT, urlPath={}, payloadType={}, pathArgCount={}",
+                url == null ? null : url.getPath(),
+                payload == null ? "null" : payload.getClass().getSimpleName(),
+                pathArgs == null ? 0 : pathArgs.length);
+        Response response = invocation(url, null).put(entity);
+        Logger.debug(
+                false,
+                "GitLab",
+                "GitLab HTTP response received: method=PUT, urlPath={}, status={}, rateLimitRemaining={}",
+                url == null ? null : url.getPath(),
+                response.getStatus(),
+                response.getHeaderString("RateLimit-Remaining"));
+        return response;
     }
 
     /**
@@ -815,7 +1073,21 @@ public class GitLabApiClient implements AutoCloseable {
      * @return a Response instance with the data returned from the endpoint
      */
     protected Response delete(MultivaluedMap<String, String> queryParams, URL url) {
-        return (invocation(url, queryParams).delete());
+        Logger.debug(
+                true,
+                "GitLab",
+                "GitLab HTTP request started: method=DELETE, urlPath={}, queryParamCount={}",
+                url == null ? null : url.getPath(),
+                queryParams == null ? 0 : queryParams.size());
+        Response response = invocation(url, queryParams).delete();
+        Logger.debug(
+                false,
+                "GitLab",
+                "GitLab HTTP response received: method=DELETE, urlPath={}, status={}, rateLimitRemaining={}",
+                url == null ? null : url.getPath(),
+                response.getStatus(),
+                response.getHeaderString("RateLimit-Remaining"));
+        return response;
     }
 
     protected Invocation.Builder invocation(URL url, MultivaluedMap<String, String> queryParams) {
@@ -824,6 +1096,14 @@ public class GitLabApiClient implements AutoCloseable {
 
     protected Client createApiClient() {
 
+        Logger.info(
+                true,
+                "GitLab",
+                "GitLab Jersey client creation started: hostUrl={}, ignoreCertificateErrors={}, connectTimeoutMs={}, readTimeoutMs={}",
+                hostUrl,
+                ignoreCertificateErrors,
+                connectTimeout,
+                readTimeout);
         // Explicitly use an instance of the JerseyClientBuilder, this allows this
         // library to work when both Jersey and Resteasy are present
         ClientBuilder clientBuilder = new JerseyClientBuilder().withConfig(clientConfig);
@@ -836,15 +1116,37 @@ public class GitLabApiClient implements AutoCloseable {
         }
 
         apiClient = clientBuilder.build();
+        Logger.info(
+                false,
+                "GitLab",
+                "GitLab Jersey client creation completed: hostUrl={}, ignoreCertificateErrors={}, userAgentPresent={}",
+                hostUrl,
+                ignoreCertificateErrors,
+                userAgentHeader != null);
         return (apiClient);
     }
 
     protected Invocation.Builder invocation(URL url, MultivaluedMap<String, String> queryParams, String accept) {
 
         if (apiClient == null) {
+            Logger.debug(
+                    true,
+                    "GitLab",
+                    "GitLab Jersey client lazy initialization requested: urlPath={}, tokenType={}",
+                    url == null ? null : url.getPath(),
+                    tokenType);
             createApiClient();
         }
 
+        Logger.debug(
+                true,
+                "GitLab",
+                "GitLab invocation preparation started: urlPath={}, queryParamCount={}, accept={}, tokenType={}, sudoPresent={}",
+                url == null ? null : url.getPath(),
+                queryParams == null ? 0 : queryParams.size(),
+                accept,
+                tokenType,
+                sudoAsId != null && sudoAsId.intValue() > 0);
         WebTarget target = apiClient.target(url.toExternalForm()).property(ClientProperties.FOLLOW_REDIRECTS, true);
         if (queryParams != null) {
             for (Map.Entry<String, List<String>> param : queryParams.entrySet()) {
@@ -877,6 +1179,16 @@ public class GitLabApiClient implements AutoCloseable {
             builder.property(ClientProperties.READ_TIMEOUT, readTimeout);
         }
 
+        Logger.debug(
+                false,
+                "GitLab",
+                "GitLab invocation preparation completed: urlPath={}, queryParamCount={}, accept={}, sudoPresent={}, connectTimeoutMs={}, readTimeoutMs={}",
+                url == null ? null : url.getPath(),
+                queryParams == null ? 0 : queryParams.size(),
+                accept,
+                sudoAsId != null && sudoAsId.intValue() > 0,
+                connectTimeout,
+                readTimeout);
         return (builder);
     }
 
@@ -908,6 +1220,7 @@ public class GitLabApiClient implements AutoCloseable {
      */
     void setHostUrlToBaseUrl() {
         this.hostUrl = this.baseUrl;
+        Logger.info(false, "GitLab", "GitLab host URL switched to base URL: hostUrl={}", hostUrl);
     }
 
     /**
@@ -927,24 +1240,42 @@ public class GitLabApiClient implements AutoCloseable {
     public void setIgnoreCertificateErrors(boolean ignoreCertificateErrors) {
 
         if (this.ignoreCertificateErrors == ignoreCertificateErrors) {
+            Logger.debug(
+                    false,
+                    "GitLab",
+                    "GitLab ignore certificate setting unchanged: ignoreCertificateErrors={}",
+                    ignoreCertificateErrors);
             return;
         }
 
+        Logger.info(
+                true,
+                "GitLab",
+                "GitLab ignore certificate setting update started: requested={}",
+                ignoreCertificateErrors);
         if (!ignoreCertificateErrors) {
 
             this.ignoreCertificateErrors = false;
             openSslContext = null;
             openHostnameVerifier = null;
             apiClient = null;
+            Logger.info(false, "GitLab", "GitLab ignore certificate setting disabled: apiClientReset={}", true);
 
         } else {
 
             if (setupIgnoreCertificateErrors()) {
                 this.ignoreCertificateErrors = true;
                 apiClient = null;
+                Logger.info(false, "GitLab", "GitLab ignore certificate setting enabled: apiClientReset={}", true);
             } else {
                 this.ignoreCertificateErrors = false;
                 apiClient = null;
+                Logger.error(
+                        false,
+                        "GitLab",
+                        "GitLab ignore certificate setting failed: requested={}, apiClientReset={}",
+                        ignoreCertificateErrors,
+                        true);
                 throw new RuntimeException("Unable to ignore certificate errors.");
             }
         }
@@ -966,6 +1297,11 @@ public class GitLabApiClient implements AutoCloseable {
      */
     public void setUserAgentHeader(String userAgentHeader) {
         this.userAgentHeader = userAgentHeader;
+        Logger.info(
+                false,
+                "GitLab",
+                "GitLab user agent header configured: userAgentPresent={}",
+                userAgentHeader != null);
     }
 
     /**
@@ -975,6 +1311,7 @@ public class GitLabApiClient implements AutoCloseable {
      */
     private boolean setupIgnoreCertificateErrors() {
 
+        Logger.debug(true, "GitLab", "GitLab insecure TLS context setup started: hostUrl={}", hostUrl);
         // Create a TrustManager that trusts all certificates
         TrustManager[] trustAllCerts = new TrustManager[] { new X509ExtendedTrustManager() {
 
@@ -1019,9 +1356,16 @@ public class GitLabApiClient implements AutoCloseable {
         } catch (GeneralSecurityException ex) {
             openSslContext = null;
             openHostnameVerifier = null;
+            Logger.error(
+                    false,
+                    "GitLab",
+                    ex,
+                    "GitLab insecure TLS context setup failed: exception={}",
+                    ex.getClass().getSimpleName());
             return (false);
         }
 
+        Logger.debug(false, "GitLab", "GitLab insecure TLS context setup completed: hostUrl={}", hostUrl);
         return (true);
     }
 
@@ -1032,6 +1376,12 @@ public class GitLabApiClient implements AutoCloseable {
      */
     public void setAuthTokenSupplier(Supplier<String> authTokenSupplier) {
         this.authToken = authTokenSupplier;
+        Logger.info(
+                false,
+                "GitLab",
+                "GitLab auth token supplier configured: tokenType={}, supplierPresent={}",
+                tokenType,
+                authTokenSupplier != null);
     }
 
 }

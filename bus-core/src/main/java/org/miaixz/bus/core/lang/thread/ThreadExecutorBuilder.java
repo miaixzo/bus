@@ -31,6 +31,12 @@ import java.util.concurrent.*;
 public class ThreadExecutorBuilder {
 
     /**
+     * Constructs a new thread executor builder.
+     */
+    public ThreadExecutorBuilder() {
+    }
+
+    /**
      * Creates a thread pool with a fixed number of threads (corePoolSize == maximumPoolSize). Core threads will always
      * remain in the pool and will not be reclaimed. If a core thread terminates due to an exception, a new thread will
      * be created. This executor uses an unbounded {@link LinkedBlockingQueue}.

@@ -42,6 +42,7 @@ import org.miaixz.bus.image.metric.hl7.api.HL7Configuration;
 import org.miaixz.bus.image.metric.hl7.net.HL7Application;
 import org.miaixz.bus.image.metric.hl7.net.HL7ApplicationInfo;
 import org.miaixz.bus.image.metric.hl7.net.HL7DeviceExtension;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * @author Kimi Liu
@@ -74,6 +75,16 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
             registerHL7App(name);
             return true;
         } catch (AlreadyExistsException e) {
+            Logger.debug(
+                    false,
+                    "Image",
+                    "HL7 LDAP operation completed with expected exception: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "registerHL7Application",
+                    "LDAP",
+                    "already_exists",
+                    true,
+                    e.getClass().getSimpleName());
+
             return false;
         }
     }
@@ -85,8 +96,29 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
             config.createSubcontext(dn, LdapBuilder.attrs("hl7UniqueApplicationName", "hl7ApplicationName", name));
             return dn;
         } catch (NameAlreadyBoundException e) {
+            Logger.debug(
+                    false,
+                    "Image",
+                    "HL7 LDAP operation completed with expected exception: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "registerHL7App",
+                    "LDAP",
+                    "already_exists",
+                    true,
+                    e.getClass().getSimpleName());
+
             throw new AlreadyExistsException("HL7 Application '" + name + "' already exists");
         } catch (NamingException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "HL7 LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "registerHL7App",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         }
     }
@@ -97,7 +129,28 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
             try {
                 config.destroySubcontext(hl7appDN(name, appNamesRegistryDN));
             } catch (NameNotFoundException e) {
+                Logger.debug(
+                        false,
+                        "Image",
+                        "HL7 LDAP operation completed with expected exception: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                        "unregisterHL7Application",
+                        "LDAP",
+                        "not_found",
+                        true,
+                        e.getClass().getSimpleName());
+
             } catch (NamingException e) {
+                Logger.warn(
+                        false,
+                        "Image",
+                        e,
+                        "HL7 LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                        "unregisterHL7Application",
+                        "LDAP",
+                        "failed",
+                        false,
+                        e.getClass().getSimpleName());
+
                 throw new InternalException(e);
             }
     }
@@ -117,6 +170,17 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
                                 "cn",
                                 "Unique HL7 Application Names Registry"));
         } catch (NamingException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "HL7 LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "ensureAppNamesRegistryExists",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         }
         appNamesRegistryDN = dn;
@@ -134,6 +198,17 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
             if (!config.exists(dn))
                 return false;
         } catch (NamingException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "HL7 LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "appNamesRegistryExists",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         }
 
@@ -178,8 +253,29 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
                 results.add(hl7AppInfo);
             }
         } catch (NameNotFoundException e) {
+            Logger.debug(
+                    false,
+                    "Image",
+                    "HL7 LDAP operation completed with expected exception: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "listHL7AppInfos",
+                    "LDAP",
+                    "not_found",
+                    true,
+                    e.getClass().getSimpleName());
+
             return new HL7ApplicationInfo[0];
         } catch (NamingException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "HL7 LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "listHL7AppInfos",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         } finally {
             LdapBuilder.safeClose(ne);

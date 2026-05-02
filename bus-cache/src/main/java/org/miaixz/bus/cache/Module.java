@@ -114,12 +114,15 @@ public class Module {
         Assert.isTrue(null != config, "context param can not be null.");
         Module module = getInstance();
         if (module.initialized) {
-            Logger.warn("Cache module already initialized; ignoring new context and returning existing Complex.");
+            Logger.warn(
+                    false,
+                    "Cache",
+                    "Cache module already initialized; ignoring new context and returning existing Complex.");
             return module.complex;
         }
         module.initialize(config);
         module.initialized = true;
-        Logger.info("Cache factory initialized successfully");
+        Logger.info(false, "Cache", "Cache factory initialized successfully");
         return module.complex;
     }
 
@@ -140,15 +143,19 @@ public class Module {
         this.context = config;
         // Initialize cache map
         caches = Collections.unmodifiableMap(new HashMap<>(config.getCaches()));
-        Logger.debug("Initialized caches with size: {}", caches.size());
+        Logger.debug(false, "Cache", "Initialized caches with size: {}", caches.size());
 
         // Initialize Collector
         collector = config.getCollector();
-        Logger.debug("Initialized collector: {}", collector != null ? collector.getClass().getSimpleName() : "null");
+        Logger.debug(
+                false,
+                "Cache",
+                "Initialized collector: {}",
+                collector != null ? collector.getClass().getSimpleName() : "null");
 
         // Initialize Manage instance
         manage = new Manage(caches, collector);
-        Logger.debug("Initialized manage");
+        Logger.debug(false, "Cache", "Initialized manage");
 
         // Initialize Reader instances
         singleCacheReader = new SingleCacheReader();
@@ -159,7 +166,7 @@ public class Module {
         multiCacheReader.setManage(manage);
         multiCacheReader.setContext(context);
         multiCacheReader.setCollector(collector);
-        Logger.debug("Initialized singleCacheReader and multiCacheReader");
+        Logger.debug(false, "Cache", "Initialized singleCacheReader and multiCacheReader");
 
         // Create Complex instance
         complex = new Complex();
@@ -168,7 +175,7 @@ public class Module {
         complex.setManage(manage);
         complex.setSingleCacheReader(singleCacheReader);
         complex.setMultiCacheReader(multiCacheReader);
-        Logger.debug("Complex instance created and dependencies set");
+        Logger.debug(false, "Cache", "Complex instance created and dependencies set");
     }
 
     /**
@@ -180,11 +187,13 @@ public class Module {
      */
     public CacheX getCache(String name) {
         if (caches == null) {
-            Logger.error("CacheFactory not initialized");
+            Logger.error(false, "Cache", "CacheFactory not initialized");
             throw new IllegalStateException("CacheFactory not initialized");
         }
         CacheX cache = caches.get(name);
         Logger.debug(
+                false,
+                "Cache",
                 "Retrieved cache: {} for name: {}",
                 cache != null ? cache.getClass().getSimpleName() : "null",
                 name);
@@ -198,7 +207,11 @@ public class Module {
      *         configured.
      */
     public Optional<Collector> getCollector() {
-        Logger.debug("Retrieved collector: {}", collector != null ? collector.getClass().getSimpleName() : "null");
+        Logger.debug(
+                false,
+                "Cache",
+                "Retrieved collector: {}",
+                collector != null ? collector.getClass().getSimpleName() : "null");
         return Optional.ofNullable(collector);
     }
 
@@ -210,10 +223,10 @@ public class Module {
      */
     public AbstractReader getSingleCacheReader() {
         if (singleCacheReader == null) {
-            Logger.error("CacheFactory not initialized");
+            Logger.error(false, "Cache", "CacheFactory not initialized");
             throw new IllegalStateException("CacheFactory not initialized");
         }
-        Logger.debug("Retrieved singleCacheReader");
+        Logger.debug(false, "Cache", "Retrieved singleCacheReader");
         return singleCacheReader;
     }
 
@@ -225,10 +238,10 @@ public class Module {
      */
     public AbstractReader getMultiCacheReader() {
         if (multiCacheReader == null) {
-            Logger.error("CacheFactory not initialized");
+            Logger.error(false, "Cache", "CacheFactory not initialized");
             throw new IllegalStateException("CacheFactory not initialized");
         }
-        Logger.debug("Retrieved multiCacheReader");
+        Logger.debug(false, "Cache", "Retrieved multiCacheReader");
         return multiCacheReader;
     }
 

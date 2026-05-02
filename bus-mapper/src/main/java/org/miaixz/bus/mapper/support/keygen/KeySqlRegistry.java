@@ -113,6 +113,13 @@ public class KeySqlRegistry implements Registry {
                 try {
                     genId = genIdClass.getConstructor(new Class[] {}).newInstance();
                 } catch (Exception e) {
+                    Logger.warn(
+                            false,
+                            "Mapper",
+                            e,
+                            "Mapper operation failed: provider={}, exception={}",
+                            "KeySqlRegistry",
+                            e.getClass().getSimpleName());
                     throw new RuntimeException(e);
                 }
                 KeyGenerator keyGenerator = new GenIdKeyGenerator(genId, entity, id, ms.getConfiguration(),

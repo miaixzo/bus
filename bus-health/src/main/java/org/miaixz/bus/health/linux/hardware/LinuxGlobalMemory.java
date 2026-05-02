@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -42,11 +42,20 @@ import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
 @ThreadSafe
 public final class LinuxGlobalMemory extends AbstractGlobalMemory {
 
+    /**
+     * The PAGE_SIZE constant.
+     */
     private static final long PAGE_SIZE = LinuxOperatingSystem.getPageSize();
 
+    /**
+     * The availTotal value.
+     */
     private final Supplier<Pair<Long, Long>> availTotal = Memoizer
             .memoize(LinuxGlobalMemory::readMemInfo, Memoizer.defaultExpiration());
 
+    /**
+     * The vm value.
+     */
     private final Supplier<VirtualMemory> vm = Memoizer.memoize(this::createVirtualMemory);
 
     /**
@@ -110,26 +119,51 @@ public final class LinuxGlobalMemory extends AbstractGlobalMemory {
         return Pair.of(memFree + activeFile + inactiveFile + sReclaimable, memTotal);
     }
 
+    /**
+     * Returns the available.
+     *
+     * @return the get available result
+     */
     @Override
     public long getAvailable() {
         return availTotal.get().getLeft();
     }
 
+    /**
+     * Returns the total.
+     *
+     * @return the get total result
+     */
     @Override
     public long getTotal() {
         return availTotal.get().getRight();
     }
 
+    /**
+     * Returns the page size.
+     *
+     * @return the get page size result
+     */
     @Override
     public long getPageSize() {
         return PAGE_SIZE;
     }
 
+    /**
+     * Returns the virtual memory.
+     *
+     * @return the get virtual memory result
+     */
     @Override
     public VirtualMemory getVirtualMemory() {
         return vm.get();
     }
 
+    /**
+     * Creates the virtual memory.
+     *
+     * @return the create virtual memory result
+     */
     private VirtualMemory createVirtualMemory() {
         return new LinuxVirtualMemory(this);
     }

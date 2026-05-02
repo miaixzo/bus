@@ -27,6 +27,7 @@ import java.net.URLEncoder;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
 import org.miaixz.bus.gitlab.models.*;
+import org.miaixz.bus.logger.Logger;
 
 import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.core.Form;
@@ -266,6 +267,13 @@ public abstract class AbstractApi implements Constants {
             encoded = encoded.replace("_", "%5F");
             return (encoded);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab path segment encoding failed: inputLength={}, exception={}",
+                    s == null ? -1 : s.length(),
+                    e.getClass().getSimpleName());
             throw new GitLabApiException(e);
         }
     }
@@ -287,6 +295,15 @@ public abstract class AbstractApi implements Constants {
         try {
             return validate(getApiClient().get(queryParams, pathArgs), expectedStatus);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab API request failed: operation=get, expectedStatus={}, queryParamCount={}, pathArgCount={}, exception={}",
+                    expectedStatus == null ? null : expectedStatus.getStatusCode(),
+                    queryParams == null ? 0 : queryParams.size(),
+                    pathArgs == null ? 0 : pathArgs.length,
+                    e.getClass().getSimpleName());
             throw handle(e);
         }
     }
@@ -310,6 +327,16 @@ public abstract class AbstractApi implements Constants {
         try {
             return validate(getApiClient().getWithAccepts(queryParams, accepts, pathArgs), expectedStatus);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab API request failed: operation=getWithAccepts, expectedStatus={}, queryParamCount={}, pathArgCount={}, acceptPresent={}, exception={}",
+                    expectedStatus == null ? null : expectedStatus.getStatusCode(),
+                    queryParams == null ? 0 : queryParams.size(),
+                    pathArgs == null ? 0 : pathArgs.length,
+                    accepts != null && !accepts.isEmpty(),
+                    e.getClass().getSimpleName());
             throw handle(e);
         }
     }
@@ -329,6 +356,15 @@ public abstract class AbstractApi implements Constants {
         try {
             return validate(getApiClient().get(queryParams, url), expectedStatus);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab API request failed: operation=get, expectedStatus={}, queryParamCount={}, urlPath={}, exception={}",
+                    expectedStatus == null ? null : expectedStatus.getStatusCode(),
+                    queryParams == null ? 0 : queryParams.size(),
+                    url == null ? null : url.getPath(),
+                    e.getClass().getSimpleName());
             throw handle(e);
         }
     }
@@ -350,6 +386,15 @@ public abstract class AbstractApi implements Constants {
         try {
             return validate(getApiClient().head(queryParams, pathArgs), expectedStatus);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab API request failed: operation=head, expectedStatus={}, queryParamCount={}, pathArgCount={}, exception={}",
+                    expectedStatus == null ? null : expectedStatus.getStatusCode(),
+                    queryParams == null ? 0 : queryParams.size(),
+                    pathArgs == null ? 0 : pathArgs.length,
+                    e.getClass().getSimpleName());
             throw handle(e);
         }
     }
@@ -371,6 +416,15 @@ public abstract class AbstractApi implements Constants {
         try {
             return validate(getApiClient().patch(queryParams, pathArgs), expectedStatus);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab API request failed: operation=patch, expectedStatus={}, queryParamCount={}, pathArgCount={}, exception={}",
+                    expectedStatus == null ? null : expectedStatus.getStatusCode(),
+                    queryParams == null ? 0 : queryParams.size(),
+                    pathArgs == null ? 0 : pathArgs.length,
+                    e.getClass().getSimpleName());
             throw handle(e);
         }
     }
@@ -390,6 +444,15 @@ public abstract class AbstractApi implements Constants {
         try {
             return validate(getApiClient().patch(queryParams, url), expectedStatus);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab API request failed: operation=patch, expectedStatus={}, queryParamCount={}, urlPath={}, exception={}",
+                    expectedStatus == null ? null : expectedStatus.getStatusCode(),
+                    queryParams == null ? 0 : queryParams.size(),
+                    url == null ? null : url.getPath(),
+                    e.getClass().getSimpleName());
             throw handle(e);
         }
     }
@@ -409,6 +472,15 @@ public abstract class AbstractApi implements Constants {
         try {
             return validate(getApiClient().post(formData, pathArgs), expectedStatus);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab API request failed: operation=post, expectedStatus={}, formPresent={}, pathArgCount={}, exception={}",
+                    expectedStatus == null ? null : expectedStatus.getStatusCode(),
+                    formData != null,
+                    pathArgs == null ? 0 : pathArgs.length,
+                    e.getClass().getSimpleName());
             throw handle(e);
         }
     }
@@ -428,6 +500,15 @@ public abstract class AbstractApi implements Constants {
         try {
             return validate(getApiClient().post(payload, pathArgs), expectedStatus);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab API request failed: operation=post, expectedStatus={}, payloadType={}, pathArgCount={}, exception={}",
+                    expectedStatus == null ? null : expectedStatus.getStatusCode(),
+                    payload == null ? null : payload.getClass().getName(),
+                    pathArgs == null ? 0 : pathArgs.length,
+                    e.getClass().getSimpleName());
             throw handle(e);
         }
     }
@@ -451,6 +532,16 @@ public abstract class AbstractApi implements Constants {
         try {
             return validate(getApiClient().post(stream, mediaType, pathArgs), expectedStatus);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab API request failed: operation=post, expectedStatus={}, streamPresent={}, mediaType={}, pathArgCount={}, exception={}",
+                    expectedStatus == null ? null : expectedStatus.getStatusCode(),
+                    stream != null,
+                    mediaType,
+                    pathArgs == null ? 0 : pathArgs.length,
+                    e.getClass().getSimpleName());
             throw handle(e);
         }
     }
@@ -472,6 +563,15 @@ public abstract class AbstractApi implements Constants {
         try {
             return validate(getApiClient().post(queryParams, pathArgs), expectedStatus);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab API request failed: operation=post, expectedStatus={}, queryParamCount={}, pathArgCount={}, exception={}",
+                    expectedStatus == null ? null : expectedStatus.getStatusCode(),
+                    queryParams == null ? 0 : queryParams.size(),
+                    pathArgs == null ? 0 : pathArgs.length,
+                    e.getClass().getSimpleName());
             throw handle(e);
         }
     }
@@ -490,6 +590,15 @@ public abstract class AbstractApi implements Constants {
         try {
             return validate(getApiClient().post(formData, url), expectedStatus);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab API request failed: operation=post, expectedStatus={}, formPresent={}, urlPath={}, exception={}",
+                    expectedStatus == null ? null : expectedStatus.getStatusCode(),
+                    formData != null,
+                    url == null ? null : url.getPath(),
+                    e.getClass().getSimpleName());
             throw handle(e);
         }
     }
@@ -515,6 +624,17 @@ public abstract class AbstractApi implements Constants {
         try {
             return validate(getApiClient().upload(name, fileToUpload, mediaType, pathArgs), expectedStatus);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab API request failed: operation=upload, expectedStatus={}, formNamePresent={}, fileName={}, mediaType={}, pathArgCount={}, exception={}",
+                    expectedStatus == null ? null : expectedStatus.getStatusCode(),
+                    name != null && !name.isEmpty(),
+                    fileToUpload == null ? null : fileToUpload.getName(),
+                    mediaType,
+                    pathArgs == null ? 0 : pathArgs.length,
+                    e.getClass().getSimpleName());
             throw handle(e);
         }
     }
@@ -529,6 +649,18 @@ public abstract class AbstractApi implements Constants {
         try {
             return validate(getApiClient().upload(name, inputStream, filename, mediaType, pathArgs), expectedStatus);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab API request failed: operation=upload, expectedStatus={}, formNamePresent={}, inputStreamPresent={}, fileName={}, mediaType={}, pathArgCount={}, exception={}",
+                    expectedStatus == null ? null : expectedStatus.getStatusCode(),
+                    name != null && !name.isEmpty(),
+                    inputStream != null,
+                    filename,
+                    mediaType,
+                    pathArgs == null ? 0 : pathArgs.length,
+                    e.getClass().getSimpleName());
             throw handle(e);
         }
     }
@@ -550,6 +682,17 @@ public abstract class AbstractApi implements Constants {
         try {
             return validate(getApiClient().upload(name, fileToUpload, mediaType, url), expectedStatus);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab API request failed: operation=upload, expectedStatus={}, formNamePresent={}, fileName={}, mediaType={}, urlPath={}, exception={}",
+                    expectedStatus == null ? null : expectedStatus.getStatusCode(),
+                    name != null && !name.isEmpty(),
+                    fileToUpload == null ? null : fileToUpload.getName(),
+                    mediaType,
+                    url == null ? null : url.getPath(),
+                    e.getClass().getSimpleName());
             throw handle(e);
         }
     }
@@ -578,6 +721,18 @@ public abstract class AbstractApi implements Constants {
         try {
             return validate(getApiClient().upload(name, fileToUpload, mediaType, formData, url), expectedStatus);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab API request failed: operation=upload, expectedStatus={}, formNamePresent={}, fileName={}, mediaType={}, formPresent={}, urlPath={}, exception={}",
+                    expectedStatus == null ? null : expectedStatus.getStatusCode(),
+                    name != null && !name.isEmpty(),
+                    fileToUpload == null ? null : fileToUpload.getName(),
+                    mediaType,
+                    formData != null,
+                    url == null ? null : url.getPath(),
+                    e.getClass().getSimpleName());
             throw handle(e);
         }
     }
@@ -599,6 +754,15 @@ public abstract class AbstractApi implements Constants {
         try {
             return validate(getApiClient().put(queryParams, pathArgs), expectedStatus);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab API request failed: operation=put, expectedStatus={}, queryParamCount={}, pathArgCount={}, exception={}",
+                    expectedStatus == null ? null : expectedStatus.getStatusCode(),
+                    queryParams == null ? 0 : queryParams.size(),
+                    pathArgs == null ? 0 : pathArgs.length,
+                    e.getClass().getSimpleName());
             throw handle(e);
         }
     }
@@ -618,6 +782,15 @@ public abstract class AbstractApi implements Constants {
         try {
             return validate(getApiClient().put(queryParams, url), expectedStatus);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab API request failed: operation=put, expectedStatus={}, queryParamCount={}, urlPath={}, exception={}",
+                    expectedStatus == null ? null : expectedStatus.getStatusCode(),
+                    queryParams == null ? 0 : queryParams.size(),
+                    url == null ? null : url.getPath(),
+                    e.getClass().getSimpleName());
             throw handle(e);
         }
     }
@@ -637,6 +810,15 @@ public abstract class AbstractApi implements Constants {
         try {
             return validate(getApiClient().put(payload, pathArgs), expectedStatus);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab API request failed: operation=put, expectedStatus={}, payloadType={}, pathArgCount={}, exception={}",
+                    expectedStatus == null ? null : expectedStatus.getStatusCode(),
+                    payload == null ? null : payload.getClass().getName(),
+                    pathArgs == null ? 0 : pathArgs.length,
+                    e.getClass().getSimpleName());
             throw handle(e);
         }
     }
@@ -656,6 +838,15 @@ public abstract class AbstractApi implements Constants {
         try {
             return validate(getApiClient().put(formData, pathArgs), expectedStatus);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab API request failed: operation=putWithFormData, expectedStatus={}, formPresent={}, pathArgCount={}, exception={}",
+                    expectedStatus == null ? null : expectedStatus.getStatusCode(),
+                    formData != null,
+                    pathArgs == null ? 0 : pathArgs.length,
+                    e.getClass().getSimpleName());
             throw handle(e);
         }
     }
@@ -675,6 +866,15 @@ public abstract class AbstractApi implements Constants {
         try {
             return validate(getApiClient().put(new GitLabApiForm(form), pathArgs), expectedStatus);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab API request failed: operation=putWithFormData, expectedStatus={}, formPresent={}, pathArgCount={}, exception={}",
+                    expectedStatus == null ? null : expectedStatus.getStatusCode(),
+                    form != null,
+                    pathArgs == null ? 0 : pathArgs.length,
+                    e.getClass().getSimpleName());
             throw handle(e);
         }
     }
@@ -695,6 +895,16 @@ public abstract class AbstractApi implements Constants {
         try {
             return validate(getApiClient().putUpload(name, fileToUpload, pathArgs), expectedStatus);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab API request failed: operation=putUpload, expectedStatus={}, formNamePresent={}, fileName={}, pathArgCount={}, exception={}",
+                    expectedStatus == null ? null : expectedStatus.getStatusCode(),
+                    name != null && !name.isEmpty(),
+                    fileToUpload == null ? null : fileToUpload.getName(),
+                    pathArgs == null ? 0 : pathArgs.length,
+                    e.getClass().getSimpleName());
             throw handle(e);
         }
     }
@@ -715,6 +925,16 @@ public abstract class AbstractApi implements Constants {
         try {
             return validate(getApiClient().putUpload(name, fileToUpload, url), expectedStatus);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab API request failed: operation=putUpload, expectedStatus={}, formNamePresent={}, fileName={}, urlPath={}, exception={}",
+                    expectedStatus == null ? null : expectedStatus.getStatusCode(),
+                    name != null && !name.isEmpty(),
+                    fileToUpload == null ? null : fileToUpload.getName(),
+                    url == null ? null : url.getPath(),
+                    e.getClass().getSimpleName());
             throw handle(e);
         }
     }
@@ -736,6 +956,15 @@ public abstract class AbstractApi implements Constants {
         try {
             return validate(getApiClient().delete(queryParams, pathArgs), expectedStatus);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab API request failed: operation=delete, expectedStatus={}, queryParamCount={}, pathArgCount={}, exception={}",
+                    expectedStatus == null ? null : expectedStatus.getStatusCode(),
+                    queryParams == null ? 0 : queryParams.size(),
+                    pathArgs == null ? 0 : pathArgs.length,
+                    e.getClass().getSimpleName());
             throw handle(e);
         }
     }
@@ -755,6 +984,15 @@ public abstract class AbstractApi implements Constants {
         try {
             return validate(getApiClient().delete(queryParams, url), expectedStatus);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab API request failed: operation=delete, expectedStatus={}, queryParamCount={}, urlPath={}, exception={}",
+                    expectedStatus == null ? null : expectedStatus.getStatusCode(),
+                    queryParams == null ? 0 : queryParams.size(),
+                    url == null ? null : url.getPath(),
+                    e.getClass().getSimpleName());
             throw handle(e);
         }
     }
@@ -813,19 +1051,61 @@ public abstract class AbstractApi implements Constants {
 
         int responseCode = response.getStatus();
         int expectedResponseCode = expected.getStatusCode();
+        Logger.debug(
+                false,
+                "GitLab",
+                "GitLab API response validation started: status={}, expectedStatus={}, rateLimitRemaining={}, rateLimitReset={}, retryAfter={}",
+                responseCode,
+                expectedResponseCode,
+                response.getHeaderString("RateLimit-Remaining"),
+                response.getHeaderString("RateLimit-Reset"),
+                response.getHeaderString("Retry-After"));
+
+        if (responseCode == 429 || response.getHeaderString("Retry-After") != null) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    "GitLab API rate limit signal received: status={}, rateLimitRemaining={}, rateLimitReset={}, retryAfter={}",
+                    responseCode,
+                    response.getHeaderString("RateLimit-Remaining"),
+                    response.getHeaderString("RateLimit-Reset"),
+                    response.getHeaderString("Retry-After"));
+        }
 
         if (responseCode != expectedResponseCode) {
 
             // If the expected code is 200-204 and the response code is 200-204 it is OK. We do this because
             // GitLab is constantly changing the expected code in the 200 to 204 range
-            if (expectedResponseCode > 204 || responseCode > 204 || expectedResponseCode < 200 || responseCode < 200)
+            if (expectedResponseCode > 204 || responseCode > 204 || expectedResponseCode < 200 || responseCode < 200) {
+                Logger.warn(
+                        false,
+                        "GitLab",
+                        "GitLab API response status rejected: status={}, expectedStatus={}, rateLimitRemaining={}, retryAfter={}",
+                        responseCode,
+                        expectedResponseCode,
+                        response.getHeaderString("RateLimit-Remaining"),
+                        response.getHeaderString("Retry-After"));
                 throw new GitLabApiException(response);
+            }
         }
 
         if (!getApiClient().validateSecretToken(response)) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    "GitLab API response secret token rejected: status={}, expectedStatus={}",
+                    responseCode,
+                    expectedResponseCode);
             throw new GitLabApiException(new NotAuthorizedException("Invalid secret token in response."));
         }
 
+        Logger.debug(
+                false,
+                "GitLab",
+                "GitLab API response validation completed: status={}, expectedStatus={}, rateLimitRemaining={}",
+                responseCode,
+                expectedResponseCode,
+                response.getHeaderString("RateLimit-Remaining"));
         return (response);
     }
 
@@ -838,9 +1118,20 @@ public abstract class AbstractApi implements Constants {
     protected GitLabApiException handle(Exception thrown) {
 
         if (thrown instanceof GitLabApiException) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    "GitLab API exception propagated: exception={}",
+                    thrown.getClass().getSimpleName());
             return ((GitLabApiException) thrown);
         }
 
+        Logger.error(
+                false,
+                "GitLab",
+                thrown,
+                "GitLab API exception wrapped: exception={}",
+                thrown == null ? "null" : thrown.getClass().getSimpleName());
         return (new GitLabApiException(thrown));
     }
 

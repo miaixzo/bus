@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -29,10 +29,9 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Memoizer;
+import org.miaixz.bus.health.Platform;
 import org.miaixz.bus.health.builtin.software.OSProcess;
 import org.miaixz.bus.health.builtin.software.OperatingSystem;
-
-import com.sun.jna.Platform;
 
 /**
  * Common methods for OperatingSystem implementations
@@ -42,11 +41,23 @@ import com.sun.jna.Platform;
  */
 public abstract class AbstractOperatingSystem implements OperatingSystem {
 
+    /**
+     * The USE_WHO_COMMAND constant.
+     */
     protected static final boolean USE_WHO_COMMAND = Config.get(Config._UNIX_WHOCOMMAND, false);
 
+    /**
+     * The manufacturer value.
+     */
     private final Supplier<String> manufacturer = Memoizer.memoize(this::queryManufacturer);
+    /**
+     * The familyVersionInfo value.
+     */
     private final Supplier<Pair<String, OSVersionInfo>> familyVersionInfo = Memoizer
             .memoize(this::queryFamilyVersionInfo);
+    /**
+     * The bitness value.
+     */
     private final Supplier<Integer> bitness = Memoizer.memoize(this::queryPlatformBitness);
 
     /**
@@ -98,36 +109,78 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
         return descendantPids;
     }
 
+    /**
+     * Returns the children.
+     *
+     * @param parentPidMap the parent pid map
+     * @param parentPid    the parent pid
+     * @return the get children result
+     */
     private static Set<Integer> getChildren(Map<Integer, Integer> parentPidMap, int parentPid) {
         return parentPidMap.entrySet().stream()
                 .filter(e -> e.getValue().equals(parentPid) && !e.getKey().equals(parentPid)).map(Entry::getKey)
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * Returns the manufacturer.
+     *
+     * @return the get manufacturer result
+     */
     @Override
     public String getManufacturer() {
         return manufacturer.get();
     }
 
+    /**
+     * Queries the manufacturer.
+     *
+     * @return the query manufacturer result
+     */
     protected abstract String queryManufacturer();
 
+    /**
+     * Returns the family.
+     *
+     * @return the get family result
+     */
     @Override
     public String getFamily() {
         return familyVersionInfo.get().getLeft();
     }
 
+    /**
+     * Returns the version info.
+     *
+     * @return the get version info result
+     */
     @Override
     public OSVersionInfo getVersionInfo() {
         return familyVersionInfo.get().getRight();
     }
 
+    /**
+     * Queries the family version info.
+     *
+     * @return the query family version info result
+     */
     protected abstract Pair<String, OSVersionInfo> queryFamilyVersionInfo();
 
+    /**
+     * Returns the bitness.
+     *
+     * @return the get bitness result
+     */
     @Override
     public int getBitness() {
         return bitness.get();
     }
 
+    /**
+     * Queries the platform bitness.
+     *
+     * @return the query platform bitness result
+     */
     private int queryPlatformBitness() {
         if (Platform.is64Bit()) {
             return 64;
@@ -146,6 +199,14 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
      */
     protected abstract int queryBitness(int jvmBitness);
 
+    /**
+     * Returns the processes.
+     *
+     * @param filter the filter
+     * @param sort   the sort
+     * @param limit  the limit
+     * @return the get processes result
+     */
     @Override
     public List<OSProcess> getProcesses(Predicate<OSProcess> filter, Comparator<OSProcess> sort, int limit) {
         return queryAllProcesses().stream().filter(filter == null ? ProcessFiltering.ALL_PROCESSES : filter)
@@ -153,8 +214,22 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Queries the all processes.
+     *
+     * @return the query all processes result
+     */
     protected abstract List<OSProcess> queryAllProcesses();
 
+    /**
+     * Returns the child processes.
+     *
+     * @param parentPid the parent pid
+     * @param filter    the filter
+     * @param sort      the sort
+     * @param limit     the limit
+     * @return the get child processes result
+     */
     @Override
     public List<OSProcess> getChildProcesses(
             int parentPid,
@@ -174,8 +249,23 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Queries the child processes.
+     *
+     * @param parentPid the parent pid
+     * @return the query child processes result
+     */
     protected abstract List<OSProcess> queryChildProcesses(int parentPid);
 
+    /**
+     * Returns the descendant processes.
+     *
+     * @param parentPid the parent pid
+     * @param filter    the filter
+     * @param sort      the sort
+     * @param limit     the limit
+     * @return the get descendant processes result
+     */
     @Override
     public List<OSProcess> getDescendantProcesses(
             int parentPid,
@@ -196,8 +286,19 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Queries the descendant processes.
+     *
+     * @param parentPid the parent pid
+     * @return the query descendant processes result
+     */
     protected abstract List<OSProcess> queryDescendantProcesses(int parentPid);
 
+    /**
+     * Returns the to string result.
+     *
+     * @return the to string result
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

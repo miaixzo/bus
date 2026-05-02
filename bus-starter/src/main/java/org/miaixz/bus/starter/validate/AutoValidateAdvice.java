@@ -68,6 +68,8 @@ public class AutoValidateAdvice {
                         .getDeclaredMethod(method.getName(), method.getParameterTypes());
             } catch (NoSuchMethodException e) {
                 Logger.info(
+                        false,
+                        "Starter",
                         "Cannot find the specified method in the implementation class, skipping validation for method: {}",
                         method.getName());
                 return proceed(joinPoint, arguments); // Skip validation and proceed
@@ -111,6 +113,8 @@ public class AutoValidateAdvice {
         }
         // This block should ideally not be reached if the advice is correctly configured as @Around.
         Logger.warn(
+                false,
+                "Starter",
                 "AutoValidateAdvice used with a non-proceeding join point type: {}. The original method cannot be executed by this advice.",
                 joinPoint.getKind());
         return null;

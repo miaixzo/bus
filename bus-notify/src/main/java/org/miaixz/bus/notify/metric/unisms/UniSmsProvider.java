@@ -30,6 +30,7 @@ import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.AbstractProvider;
@@ -62,8 +63,20 @@ public class UniSmsProvider extends AbstractProvider<UniNotice, Context> {
     @Override
     public Message send(UniNotice entity) {
         if ("".equals(entity.getTemplate()) && "".equals(entity.getTemplateName())) {
+            Logger.warn(
+                    false,
+                    "Notify",
+                    "UniSMS send rejected: reason=missingTemplate, targetCount={}",
+                    entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length);
             throw new ValidateException("Template ID and template variable in the configuration file cannot be empty!");
         }
+        Logger.info(
+                true,
+                "Notify",
+                "UniSMS send started: template={}, templateNamePresent={}, targetCount={}",
+                entity == null ? null : entity.getTemplate(),
+                entity != null && entity.getTemplateName() != null,
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length);
 
         Map<String, Object> data = MapKit.newHashMap(4, true);
         // The recipient's mobile number.
@@ -77,7 +90,15 @@ public class UniSmsProvider extends AbstractProvider<UniNotice, Context> {
         map.put(entity.getTemplateName(), entity.getContent());
         // The template data for the SMS message.
         data.put("templateData", map);
-        return request(entity, "sms.message.send", data);
+        Message result = request(entity, "sms.message.send", data);
+        Logger.info(
+                false,
+                "Notify",
+                "UniSMS send completed: template={}, targetCount={}, errcode={}",
+                entity == null ? null : entity.getTemplate(),
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                result == null ? null : result.getErrcode());
+        return result;
     }
 
     /**
@@ -89,6 +110,13 @@ public class UniSmsProvider extends AbstractProvider<UniNotice, Context> {
      * @return A {@link Message} indicating the result of the API request.
      */
     public Message request(final UniNotice entity, final String action, final Map<String, Object> bodys) {
+        Logger.debug(
+                true,
+                "Notify",
+                "UniSMS request started: action={}, bodyKeyCount={}, simpleMode={}",
+                action,
+                bodys == null ? 0 : bodys.size(),
+                entity != null && entity.isSimple());
         Map<String, String> headers = new HashMap<>();
         headers.put(HTTP.USER_AGENT, "uni-java-sdk" + "/" + "0.0.4");
         headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
@@ -128,7 +156,15 @@ public class UniSmsProvider extends AbstractProvider<UniNotice, Context> {
         String errcode = succeed ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
         String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : JsonKit.getValue(response, "message");
 
-        return Message.builder().errcode(errcode).errmsg(errmsg).build();
+        Message result = Message.builder().errcode(errcode).errmsg(errmsg).build();
+        Logger.debug(
+                false,
+                "Notify",
+                "UniSMS request completed: action={}, errcode={}, responseBytes={}",
+                action,
+                result.getErrcode(),
+                response == null ? 0 : response.length());
+        return result;
     }
 
 }

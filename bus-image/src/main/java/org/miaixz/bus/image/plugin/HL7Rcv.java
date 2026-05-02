@@ -201,7 +201,7 @@ public class HL7Rcv {
      * @throws IOException if an I/O error occurs.
      */
     private void storeToFile(byte[] data, File f) throws IOException {
-        Logger.info("M-WRITE {}", f);
+        Logger.info(true, "Image", "M-WRITE {}", f);
         f.getParentFile().mkdirs();
         try (FileOutputStream out = new FileOutputStream(f)) {
             out.write(data);

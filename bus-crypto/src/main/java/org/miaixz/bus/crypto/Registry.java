@@ -26,6 +26,7 @@ import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.crypto.metric.*;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * A registry for cryptographic service providers, mapping algorithm names to their respective {@link Provider}
@@ -60,14 +61,34 @@ public final class Registry {
      * @throws InternalException if a component with the same name or class simple name is already registered.
      */
     public static void register(String name, Provider object) {
+        Logger.debug(
+                true,
+                "Crypto",
+                "Crypto provider registration started: name={}, provider={}",
+                name,
+                object == null ? null : object.getClass().getSimpleName());
         if (ALGORITHM_CACHE.containsKey(name)) {
+            Logger.warn(false, "Crypto", "Crypto provider registration rejected: name={}, reason=duplicateName", name);
             throw new InternalException("Repeat registration of components with the same name：" + name);
         }
         Class<?> clazz = object.getClass();
         if (ALGORITHM_CACHE.containsKey(clazz.getSimpleName())) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    "Crypto provider registration rejected: name={}, provider={}, reason=duplicateType",
+                    name,
+                    clazz.getSimpleName());
             throw new InternalException("Repeat registration of components with the same name：" + clazz);
         }
         ALGORITHM_CACHE.putIfAbsent(name, object);
+        Logger.debug(
+                false,
+                "Crypto",
+                "Crypto provider registered: name={}, provider={}, registeredCount={}",
+                name,
+                clazz.getSimpleName(),
+                ALGORITHM_CACHE.size());
     }
 
     /**
@@ -78,10 +99,18 @@ public final class Registry {
      * @throws IllegalArgumentException if no provider is found for the specified name.
      */
     public static Provider require(String name) {
+        Logger.debug(true, "Crypto", "Crypto provider lookup started: name={}", name);
         Provider object = ALGORITHM_CACHE.get(name);
         if (ObjectKit.isEmpty(object)) {
+            Logger.warn(false, "Crypto", "Crypto provider lookup failed: name={}", name);
             throw new IllegalArgumentException("None provider be found!, type:" + name);
         }
+        Logger.debug(
+                false,
+                "Crypto",
+                "Crypto provider resolved: name={}, provider={}",
+                name,
+                object.getClass().getSimpleName());
         return object;
     }
 

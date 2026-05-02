@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -21,15 +21,23 @@ package org.miaixz.bus.health.linux.driver;
 
 import java.io.File;
 import java.nio.charset.Charset;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Config;
+import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.builtin.software.OSSession;
@@ -49,12 +57,72 @@ import com.sun.jna.Pointer;
 @ThreadSafe
 public final class Who {
 
+    // oshi pts/0 2020-05-14 21:23 (192.168.1.23)
+    /**
+     * The WHO_FORMAT_LINUX constant.
+     */
+    private static final Pattern WHO_FORMAT_LINUX = Pattern
+            .compile("(\\S+)\\s+(\\S+)\\s+(\\d{4}-\\d{2}-\\d{2})\\s+(\\d{2}:\\d{2})\\s*(?:\\((.+)\\))?");
+    /**
+     * The WHO_DATE_FORMAT_LINUX constant.
+     */
+    private static final DateTimeFormatter WHO_DATE_FORMAT_LINUX = DateTimeFormatter
+            .ofPattern("yyyy-MM-dd HH:mm", Locale.ROOT);
+
+    /**
+     * The LIBC constant.
+     */
     private static final LinuxLibc LIBC = LinuxLibc.INSTANCE;
 
+    /**
+     * The useSystemd value.
+     */
     private static boolean useSystemd = Config.get(Config._LINUX_ALLOWSYSTEMD, true);
 
+    /**
+     * Creates a new Who instance.
+     */
     private Who() {
 
+    }
+
+    /**
+     * Query {@code who} to get logged in users, trying Linux date format first, then Unix format.
+     *
+     * @return A list of logged in user sessions
+     */
+    public static synchronized List<OSSession> queryWho() {
+        List<OSSession> whoList = new ArrayList<>();
+        for (String s : Executor.runNative("who")) {
+            if (!matchLinux(whoList, s)) {
+                org.miaixz.bus.health.unix.driver.Who.matchUnix(whoList, s);
+            }
+        }
+        return whoList;
+    }
+
+    /**
+     * Returns the match linux result.
+     *
+     * @param whoList the who list
+     * @param s       the s
+     * @return the match linux result
+     */
+    static boolean matchLinux(List<OSSession> whoList, String s) {
+        Matcher m = WHO_FORMAT_LINUX.matcher(s);
+        if (m.matches()) {
+            try {
+                whoList.add(
+                        new OSSession(m.group(1), m.group(2),
+                                LocalDateTime.parse(m.group(3) + " " + m.group(4), WHO_DATE_FORMAT_LINUX)
+                                        .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+                                m.group(5) == null ? Normal.UNKNOWN : m.group(5)));
+                return true;
+            } catch (DateTimeParseException | NullPointerException e) {
+                // Shouldn't happen if regex matches and OS is producing sensible dates.
+            }
+        }
+        return false;
     }
 
     /**
@@ -90,7 +158,7 @@ public final class Who {
                     long loginTime = ut.ut_tv.tv_sec * 1000L + ut.ut_tv.tv_usec / 1000L;
                     // Sanity check. If errors, default to who command line
                     if (!Builder.isSessionValid(user, device, loginTime)) {
-                        return org.miaixz.bus.health.unix.driver.Who.queryWho();
+                        return queryWho();
                     }
                     whoList.add(new OSSession(user, device, loginTime, host));
                 }
@@ -105,7 +173,7 @@ public final class Who {
             whoList = querySystemdFiles();
             if (whoList.isEmpty()) {
                 // Final fallback to who command
-                return org.miaixz.bus.health.unix.driver.Who.queryWho();
+                return queryWho();
             }
         }
         return whoList;

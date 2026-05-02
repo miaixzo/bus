@@ -43,6 +43,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.office.excel.sax.handler.RowHandler;
 import org.miaixz.bus.office.excel.ExcelSaxKit;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Excel2003 format event-user model reader, uniformly classified as SAX reader. Reference:
@@ -125,6 +126,14 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
         try (final POIFSFileSystem poifsFileSystem = new POIFSFileSystem(file, true)) {
             return read(poifsFileSystem, idOrRidOrSheetName);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel 2003 SAX file read failed: fileName={}, sheetSelectorPresent={}, exception={}",
+                    file == null ? null : file.getName(),
+                    idOrRidOrSheetName != null,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -143,6 +152,14 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
         try {
             return read(new POIFSFileSystem(excelStream), idOrRidOrSheetName);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel 2003 SAX stream read failed: streamPresent={}, sheetSelectorPresent={}, exception={}",
+                    excelStream != null,
+                    idOrRidOrSheetName != null,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -171,8 +188,23 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
         try {
             factory.processWorkbookEvents(request, fs);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel 2003 SAX workbook event processing failed: fileSystemPresent={}, sheetSelectorPresent={}, exception={}",
+                    fs != null,
+                    idOrRidOrSheetName != null,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         } catch (final TerminateException e) {
+            Logger.debug(
+                    false,
+                    "Office",
+                    "Excel 2003 SAX workbook event processing terminated: fileSystemPresent={}, sheetSelectorPresent={}, exception={}",
+                    fs != null,
+                    idOrRidOrSheetName != null,
+                    e.getClass().getSimpleName());
             // User throws this exception to force end reading.
         } finally {
             IoKit.closeQuietly(fs);

@@ -56,13 +56,13 @@ public class VortexProperties {
     /**
      * Rate limiting configuration, initialized by default.
      */
-    private Args.Limit limit = new Args.Limit();
+    private Args.Limit limit = Args.Limit.builder().build();
 
     /**
      * Performance optimization settings for request body processing and connection pooling.
      * <p>
      * These settings allow fine-tuning of memory usage and throughput trade-offs.
      */
-    private Performance performance = new Performance();
+    private Performance performance = Performance.builder().build();
 
 }

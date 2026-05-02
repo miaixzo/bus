@@ -21,7 +21,8 @@ package org.miaixz.bus.cortex.bridge;
 
 import org.miaixz.bus.cortex.Instance;
 import org.miaixz.bus.cortex.Assets;
-import org.miaixz.bus.cortex.registry.api.ApiDefinition;
+import org.miaixz.bus.cortex.registry.RegistryAssets;
+import org.miaixz.bus.cortex.registry.api.ApiAssets;
 
 /**
  * Converts cortex API definitions to gateway assets.
@@ -45,33 +46,12 @@ public final class ApiAssetsConverter {
      * @param instance runtime instance associated with the service
      * @return populated Assets ready for gateway registration
      */
-    public static Assets convert(ApiDefinition service, Instance instance) {
-        Assets asset = new Assets();
+    public static Assets convert(ApiAssets service, Instance instance) {
+        Assets asset = RegistryAssets.copy(service);
         asset.setId(instance.getFingerprint());
-        asset.setName(service.getName());
-        asset.setIcon(service.getIcon());
         asset.setHost(instance.getHost());
         asset.setPort(instance.getPort());
-        asset.setPath(service.getPath());
-        asset.setUrl(service.getUrl());
-        asset.setMethod(service.getMethod());
-        asset.setMode(service.getMode());
-        asset.setStream(service.getStream());
-        asset.setType(service.getType());
-        asset.setPolicy(service.getPolicy());
-        asset.setSign(service.getSign());
-        asset.setScope(service.getScope());
-        asset.setRetries(service.getRetries());
-        asset.setTimeout(service.getTimeout());
-        asset.setThrottle(service.getThrottle());
-        asset.setBalance(service.getBalance());
         asset.setWeight(instance.getWeight());
-        asset.setSort(service.getSort());
-        asset.setMock(service.getMock());
-        asset.setResult(service.getResult());
-        asset.setVersion(service.getVersion());
-        asset.setMetadata(service.getMetadata());
-        asset.setDescription(service.getDescription());
         return asset;
     }
 

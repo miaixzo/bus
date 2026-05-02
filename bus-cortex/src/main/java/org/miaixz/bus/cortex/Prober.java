@@ -35,4 +35,23 @@ public interface Prober {
      */
     Status check(Instance instance);
 
+    /**
+     * Returns whether this prober can handle the given instance.
+     *
+     * @param instance runtime instance
+     * @return {@code true} when the prober can evaluate the instance
+     */
+    default boolean supports(Instance instance) {
+        return instance != null;
+    }
+
+    /**
+     * Returns the logical capability name of the prober.
+     *
+     * @return prober name
+     */
+    default String name() {
+        return getClass().getSimpleName();
+    }
+
 }

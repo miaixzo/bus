@@ -48,7 +48,7 @@
 
 **国产数据库**: 神舟通用(Oscar)、瀚高数据库(CirroData)、虚谷数据库(Xugudb)
 
-**企业数据库**: DB2、Informix、AS400、Firebird、HerdDB
+**企业数据库**: DB2、Informix、AS400、Firebird、Herddb
 
 -----
 

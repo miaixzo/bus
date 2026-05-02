@@ -48,11 +48,11 @@ public class ReverseDNS {
             return inetAddress.getHostName();
 
         String hostAddress = inetAddress.getHostAddress();
-        Logger.debug("rDNS {} -> ...", hostAddress);
+        Logger.debug(false, "Image", "rDNS {} -> ...", hostAddress);
         long start = System.nanoTime();
         String hostName = inetAddress.getHostName();
         long end = System.nanoTime();
-        Logger.debug("rDNS {} -> {} in {} ms", hostAddress, hostName, (end - start) / 1000);
+        Logger.debug(false, "Image", "rDNS {} -> {} in {} ms", hostAddress, hostName, (end - start) / 1000);
         return hostName;
     }
 

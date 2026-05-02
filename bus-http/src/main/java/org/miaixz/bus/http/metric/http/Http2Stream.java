@@ -35,6 +35,7 @@ import org.miaixz.bus.core.io.timout.AsyncTimeout;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.http.Builder;
 import org.miaixz.bus.http.Headers;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * A logical bidirectional stream.
@@ -118,7 +119,7 @@ public class Http2Stream {
 
     /**
      * Returns the stream's ID.
-     * 
+     *
      * @return the stream's ID.
      */
     public int getId() {
@@ -133,7 +134,7 @@ public class Http2Stream {
      * </ul>
      * Note that the input stream may continue to yield data even after a stream reports itself as not open. This is
      * because input data is buffered.
-     * 
+     *
      * @return true if this stream is open.
      */
     public synchronized boolean isOpen() {
@@ -148,7 +149,7 @@ public class Http2Stream {
 
     /**
      * Returns true if this stream was created by this peer.
-     * 
+     *
      * @return true if this stream was created by this peer.
      */
     public boolean isLocallyInitiated() {
@@ -158,7 +159,7 @@ public class Http2Stream {
 
     /**
      * Returns the connection that this stream is on.
-     * 
+     *
      * @return the connection that this stream is on.
      */
     public Http2Connection getConnection() {
@@ -168,7 +169,7 @@ public class Http2Stream {
     /**
      * Removes and returns the stream's received response headers, blocking if necessary until headers have been
      * received. If the returned list contains multiple blocks of headers the blocks will be delimited by 'null'.
-     * 
+     *
      * @return the stream's received response headers.
      * @throws IOException if an I/O error occurs.
      */
@@ -189,7 +190,7 @@ public class Http2Stream {
 
     /**
      * Returns the trailers. It is only safe to call this once the source stream has been completely exhausted.
-     * 
+     *
      * @return the trailers.
      * @throws IOException if an I/O error occurs.
      */
@@ -205,7 +206,7 @@ public class Http2Stream {
 
     /**
      * Returns the reason why this stream was closed, or null if it closed normally or has not yet been closed.
-     * 
+     *
      * @return the reason why this stream was closed.
      */
     public synchronized Http2ErrorCode getErrorCode() {
@@ -252,7 +253,7 @@ public class Http2Stream {
 
     /**
      * Enqueues trailers to be sent after the last data frame of this stream.
-     * 
+     *
      * @param trailers the trailers to send.
      */
     public void enqueueTrailers(Headers trailers) {
@@ -267,7 +268,7 @@ public class Http2Stream {
 
     /**
      * Returns the timeout for reading from this stream.
-     * 
+     *
      * @return the timeout for reading from this stream.
      */
     public Timeout readTimeout() {
@@ -276,7 +277,7 @@ public class Http2Stream {
 
     /**
      * Returns the timeout for writing to this stream.
-     * 
+     *
      * @return the timeout for writing to this stream.
      */
     public Timeout writeTimeout() {
@@ -285,7 +286,7 @@ public class Http2Stream {
 
     /**
      * Returns a source that reads data from the peer.
-     * 
+     *
      * @return a source that reads data from the peer.
      */
     public Source getSource() {
@@ -310,7 +311,7 @@ public class Http2Stream {
 
     /**
      * Abnormally terminate this stream. This blocks until the {@code RST_STREAM} frame has been transmitted.
-     * 
+     *
      * @param rstStatusCode  the reason for closing the stream.
      * @param errorException the exception that caused the closure.
      * @throws IOException if an I/O error occurs.
@@ -324,7 +325,7 @@ public class Http2Stream {
 
     /**
      * Abnormally terminate this stream. This enqueues a {@code RST_STREAM} frame and returns immediately.
-     * 
+     *
      * @param errorCode the reason for closing the stream.
      */
     public void closeLater(Http2ErrorCode errorCode) {
@@ -336,7 +337,7 @@ public class Http2Stream {
 
     /**
      * Returns true if this stream was closed.
-     * 
+     *
      * @param errorCode      the error code to set.
      * @param errorException the exception to set.
      * @return true if the stream was closed.
@@ -360,7 +361,7 @@ public class Http2Stream {
 
     /**
      * Receives data from the network.
-     * 
+     *
      * @param in     the source of the data.
      * @param length the number of bytes to read.
      * @throws IOException if an I/O error occurs.
@@ -373,7 +374,7 @@ public class Http2Stream {
     /**
      * Accept headers from the network and store them until the client calls {@link #takeHeaders}, or
      * {@link FramingSource#read} them.
-     * 
+     *
      * @param headers    the headers to receive.
      * @param inFinished true if this is the last frame of the stream.
      */
@@ -400,7 +401,7 @@ public class Http2Stream {
 
     /**
      * Receives a {@code RST_STREAM} frame from the network.
-     * 
+     *
      * @param errorCode the error code.
      */
     synchronized void receiveRstStream(Http2ErrorCode errorCode) {
@@ -412,7 +413,7 @@ public class Http2Stream {
 
     /**
      * Cancels the stream if necessary.
-     * 
+     *
      * @throws IOException if an I/O error occurs.
      */
     void cancelStreamIfNecessary() throws IOException {
@@ -436,7 +437,7 @@ public class Http2Stream {
 
     /**
      * {@code delta} will be negative if a settings frame initial window is smaller than the last.
-     * 
+     *
      * @param delta the number of bytes to add to the write window.
      */
     void addBytesToWriteWindow(long delta) {
@@ -447,7 +448,7 @@ public class Http2Stream {
 
     /**
      * Checks if the output stream is closed.
-     * 
+     *
      * @throws IOException if the stream is closed, finished, or in an error state.
      */
     void checkOutNotClosed() throws IOException {
@@ -463,13 +464,20 @@ public class Http2Stream {
     /**
      * Like {@link #wait}, but throws an {@code InterruptedIOException} when interrupted instead of the more awkward
      * {@link InterruptedException}.
-     * 
+     *
      * @throws InterruptedIOException if the thread is interrupted.
      */
     void waitForIo() throws InterruptedIOException {
         try {
             wait();
         } catch (InterruptedException e) {
+            Logger.warn(
+                    false,
+                    "Http",
+                    "HTTP/2 stream wait interrupted: protocol=http2, streamId={}, connection={}, exception={}",
+                    id,
+                    connection.connectionName,
+                    e.getClass().getSimpleName());
             Thread.currentThread().interrupt(); // Retain interrupted status.
             throw new InterruptedIOException();
         }
@@ -587,7 +595,7 @@ public class Http2Stream {
         /**
          * Accept bytes on the connection's reader thread. This function avoids holding locks while it performs blocking
          * reads for the incoming bytes.
-         * 
+         *
          * @param in        The source of the data.
          * @param byteCount The number of bytes to read.
          * @throws IOException if an I/O error occurs.
@@ -701,7 +709,7 @@ public class Http2Stream {
         /**
          * Emit a single data frame to the connection. The frame's size be limited by this stream's write window. This
          * method will block until the write window is nonempty.
-         * 
+         *
          * @param outFinishedOnLastFrame true if the last frame should have the END_STREAM flag.
          * @throws IOException if an I/O error occurs.
          */
@@ -805,7 +813,7 @@ public class Http2Stream {
 
         /**
          * Throws a {@link SocketTimeoutException} if the timeout has been reached.
-         * 
+         *
          * @throws IOException if the timeout has been reached.
          */
         public void exitAndThrowIfTimedOut() throws IOException {

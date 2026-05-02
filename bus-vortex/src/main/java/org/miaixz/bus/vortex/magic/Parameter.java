@@ -60,10 +60,18 @@ public final class Parameter extends AbstractMap<String, Object> {
      */
     private final Map<String, Object> objectView;
 
+    /**
+     * Creates a parameter container that accepts general object values.
+     */
     public Parameter() {
         this(false);
     }
 
+    /**
+     * Creates a parameter container with optional string-only storage semantics.
+     *
+     * @param stringOnly whether only string values should be retained
+     */
     public Parameter(boolean stringOnly) {
         this.stringOnly = stringOnly;
         this.objectView = Collections.unmodifiableMap(this);
@@ -133,21 +141,42 @@ public final class Parameter extends AbstractMap<String, Object> {
         return this.stringView;
     }
 
+    /**
+     * Returns a stored value without additional sanitization.
+     *
+     * @param key parameter key
+     * @return stored value or {@code null}
+     */
     @Override
     public Object get(Object key) {
         return this.values.get(key);
     }
 
+    /**
+     * Checks whether the backing store contains the given key.
+     *
+     * @param key parameter key
+     * @return {@code true} when the key is present
+     */
     @Override
     public boolean containsKey(Object key) {
         return this.values.containsKey(key);
     }
 
+    /**
+     * Removes a stored value by key.
+     *
+     * @param key parameter key
+     * @return removed value or {@code null}
+     */
     @Override
     public Object remove(Object key) {
         return this.values.remove(key);
     }
 
+    /**
+     * Clears all stored values from the container.
+     */
     @Override
     public void clear() {
         this.values.clear();
@@ -176,6 +205,11 @@ public final class Parameter extends AbstractMap<String, Object> {
         });
     }
 
+    /**
+     * Returns a live entry-set view backed by the sanitized parameter store.
+     *
+     * @return mutable entry-set view
+     */
     @Override
     public Set<Entry<String, Object>> entrySet() {
         return new AbstractSet<>() {

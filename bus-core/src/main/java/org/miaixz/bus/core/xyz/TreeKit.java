@@ -41,6 +41,13 @@ import org.miaixz.bus.core.tree.parser.NodeParser;
 public class TreeKit {
 
     /**
+     * Constructs a new tree utility instance.
+     */
+    public TreeKit() {
+
+    }
+
+    /**
      * Builds a tree with a single root node.
      *
      * @param list The source data collection.

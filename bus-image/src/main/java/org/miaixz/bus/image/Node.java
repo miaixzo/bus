@@ -142,7 +142,7 @@ public class Node {
         try {
             return InetAddress.getByName(hostname).getHostAddress();
         } catch (UnknownHostException e) {
-            Logger.error("Cannot resolve hostname", e);
+            Logger.error(false, "Image", "Cannot resolve hostname", e);
         }
         return StringKit.hasText(hostname) ? hostname : "127.0.0.1";
     }

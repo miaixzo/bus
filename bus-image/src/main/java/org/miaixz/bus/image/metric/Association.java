@@ -225,7 +225,14 @@ public class Association {
         if (!isSCPFor(cuid)) {
             NoRolesException ex = new NoRolesException(cuid, TransferCapability.Role.SCP);
             if (ae.isRoleSelectionNegotiationLenient() && ac.getRoleSelectionFor(cuid) == null)
-                Logger.info("{}: {}", this, ex.getMessage());
+                Logger.warn(
+                        false,
+                        "Image",
+                        ex,
+                        "Role selection check failed: protocol=dimse, association={}, role={}, exception={}",
+                        name,
+                        "SCP",
+                        ex.getClass().getSimpleName());
             else
                 throw ex;
         }
@@ -242,7 +249,14 @@ public class Association {
         if (!isSCUFor(cuid)) {
             NoRolesException ex = new NoRolesException(cuid, TransferCapability.Role.SCU);
             if (ae.isRoleSelectionNegotiationLenient() && ac.getRoleSelectionFor(cuid) == null)
-                Logger.info("{}: {}", this, ex.getMessage());
+                Logger.warn(
+                        false,
+                        "Image",
+                        ex,
+                        "Role selection check failed: protocol=dimse, association={}, role={}, exception={}",
+                        name,
+                        "SCU",
+                        ex.getClass().getSimpleName());
             else
                 throw ex;
         }
@@ -317,7 +331,7 @@ public class Association {
     }
 
     public void doCloseSocket() {
-        Logger.info("{}: close {}", name, sock);
+        Logger.info(false, "Image", "{}: close {}", name, sock);
         IoKit.close(sock);
         enterState(State.Sta1);
     }
@@ -331,7 +345,7 @@ public class Association {
         int delay = conn.getSocketCloseDelay();
         if (delay > 0) {
             device.schedule(() -> closeSocket(), delay, TimeUnit.MILLISECONDS);
-            Logger.debug("{}: closing {} in {} ms", name, sock, delay);
+            Logger.debug(false, "Image", "{}: closing {} in {} ms", name, sock, delay);
         } else
             closeSocket();
     }
@@ -341,19 +355,26 @@ public class Association {
             return;
 
         ex = e;
-        Logger.info("{}: i/o exception: {} in State: {}", name, e, state);
+        Logger.warn(
+                false,
+                "Image",
+                e,
+                "Association I/O failed: protocol=dimse, association={}, state={}, exception={}",
+                name,
+                state,
+                e.getClass().getSimpleName());
         closeSocket();
     }
 
     public void write(AAbort aa) {
-        Logger.info("{} << {}", name, aa.toString());
+        Logger.info(false, "Image", "{} << {}", name, aa.toString());
         encoder.write(aa);
         ex = aa;
         closeSocketDelayed();
     }
 
     public void writeAReleaseRQ() throws IOException {
-        Logger.info("{} << A-RELEASE-RQ", name);
+        Logger.info(false, "Image", "{} << A-RELEASE-RQ", name);
         enterState(State.Sta7);
         stopTimeout();
         encoder.writeAReleaseRQ();
@@ -471,23 +492,23 @@ public class Association {
     public void write(AAssociateRQ rq) throws IOException {
         name = rq.getCallingAET() + delim() + rq.getCalledAET() + '(' + serialNo + ')';
         this.rq = rq;
-        Logger.info("{} << A-ASSOCIATE-RQ", name);
-        Logger.debug("{}", rq);
+        Logger.info(false, "Image", "{} << A-ASSOCIATE-RQ", name);
+        Logger.debug(false, "Image", "{}", rq);
         enterState(State.Sta5);
         encoder.write(rq);
         startAcceptTimeout();
     }
 
     private void write(AAssociateAC ac) throws IOException {
-        Logger.info("{} << A-ASSOCIATE-AC", name);
-        Logger.debug("{}", ac);
+        Logger.info(false, "Image", "{} << A-ASSOCIATE-AC", name);
+        Logger.debug(false, "Image", "{}", ac);
         enterState(State.Sta6);
         encoder.write(ac);
         startIdleTimeout();
     }
 
     private void write(AAssociateRJ rj) throws IOException {
-        Logger.info("{} << {}", name, rj.toString());
+        Logger.info(false, "Image", "{} << {}", name, rj.toString());
         encoder.write(rj);
         closeSocketDelayed();
     }
@@ -498,7 +519,12 @@ public class Association {
     }
 
     private synchronized void enterState(State newState) {
-        Logger.debug("{}: enter state: {}", name, newState);
+        Logger.debug(
+                false,
+                "Image",
+                "Association state changed: protocol=dimse, association={}, state={}",
+                name,
+                newState);
         this.state = newState;
         notifyAll();
     }
@@ -562,8 +588,8 @@ public class Association {
 
     public void onAAssociateRQ(AAssociateRQ rq) throws IOException {
         name = rq.getCalledAET() + delim() + rq.getCallingAET() + '(' + serialNo + ')';
-        Logger.info("{} >> A-ASSOCIATE-RQ", name);
-        Logger.debug("{}", rq);
+        Logger.info(false, "Image", "{} >> A-ASSOCIATE-RQ", name);
+        Logger.debug(false, "Image", "{}", rq);
         stopTimeout();
         state.onAAssociateRQ(this, rq);
     }
@@ -588,8 +614,8 @@ public class Association {
     }
 
     public void onAAssociateAC(AAssociateAC ac) throws IOException {
-        Logger.info("{} >> A-ASSOCIATE-AC", name);
-        Logger.debug("{}", ac);
+        Logger.info(false, "Image", "{} >> A-ASSOCIATE-AC", name);
+        Logger.debug(false, "Image", "{}", ac);
         stopTimeout();
         state.onAAssociateAC(this, ac);
     }
@@ -604,7 +630,7 @@ public class Association {
     }
 
     public void onAAssociateRJ(AAssociateRJ rj) throws IOException {
-        Logger.info("{} >> {}", name, rj.toString());
+        Logger.info(false, "Image", "{} >> {}", name, rj.toString());
         state.onAAssociateRJ(this, rj);
     }
 
@@ -614,20 +640,20 @@ public class Association {
     }
 
     public void onAReleaseRQ() throws IOException {
-        Logger.info("{} >> A-RELEASE-RQ", name);
+        Logger.info(false, "Image", "{} >> A-RELEASE-RQ", name);
         stopTimeout();
         state.onAReleaseRQ(this);
     }
 
     public void handleAReleaseRQ() {
         if (decoder.isPendingPDV()) {
-            Logger.info("{}: unexpected A-RELEASE-RQ after P-DATA-TF with pending PDV", this);
+            Logger.info(false, "Image", "{}: unexpected A-RELEASE-RQ after P-DATA-TF with pending PDV", this);
             abort();
             return;
         }
         enterState(State.Sta8);
         waitForPerformingOps();
-        Logger.info("{} << A-RELEASE-RP", name);
+        Logger.info(false, "Image", "{} << A-RELEASE-RP", name);
         encoder.writeAReleaseRP();
         closeSocketDelayed();
     }
@@ -645,7 +671,7 @@ public class Association {
     public void handleAReleaseRQCollision() {
         if (isRequestor()) {
             enterState(State.Sta9);
-            Logger.info("{} << A-RELEASE-RP", name);
+            Logger.info(false, "Image", "{} << A-RELEASE-RP", name);
             encoder.writeAReleaseRP();
             enterState(State.Sta11);
         } else {
@@ -654,7 +680,7 @@ public class Association {
     }
 
     public void onAReleaseRP() throws IOException {
-        Logger.info("{} >> A-RELEASE-RP", name);
+        Logger.info(false, "Image", "{} >> A-RELEASE-RP", name);
         stopTimeout();
         state.onAReleaseRP(this);
     }
@@ -665,20 +691,26 @@ public class Association {
 
     public void handleAReleaseRPCollision() {
         enterState(State.Sta12);
-        Logger.info("{} << A-RELEASE-RP", name);
+        Logger.info(false, "Image", "{} << A-RELEASE-RP", name);
         encoder.writeAReleaseRP();
         closeSocketDelayed();
     }
 
     public void onAAbort(AAbort aa) {
-        Logger.info("{} >> {}", name, aa.toString());
+        Logger.info(false, "Image", "{} >> {}", name, aa.toString());
         stopTimeout();
         ex = aa;
         closeSocket();
     }
 
     public void unexpectedPDU(String pdu) throws AAbort {
-        Logger.warn("{} >> unexpected {} in state: {}", name, pdu, state);
+        Logger.warn(
+                false,
+                "Image",
+                "Unexpected PDU received: protocol=dimse, association={}, pduType={}, state={}",
+                name,
+                pdu,
+                state);
         throw new AAbort(AAbort.UL_SERIVE_PROVIDER, AAbort.UNEXPECTED_PDU);
     }
 
@@ -721,8 +753,14 @@ public class Association {
         boolean pending = Status.isPending(status);
         DimseRSPHandler rspHandler = getDimseRSPHandler(msgId);
         if (rspHandler == null) {
-            Logger.info("{}: unexpected message ID in DIMSE RSP:", name);
-            Logger.info("\n{}", cmd);
+            Logger.warn(
+                    false,
+                    "Image",
+                    "Unexpected DIMSE response message id: protocol=dimse, association={}, messageId={}, status={}, commandAttributes={}",
+                    name,
+                    msgId,
+                    status,
+                    cmd == null ? 0 : cmd.size());
             throw new AAbort();
         }
         rspHandler.onDimseRSP(this, cmd, data);
@@ -783,7 +821,14 @@ public class Association {
             writeDimseRSP(pc, cmd, data);
             return true;
         } catch (IOException e) {
-            Logger.warn("{} << {} failed: {}", this, Dimse.valueOf(cmd.getInt(Tag.CommandField, 0)), e.getMessage());
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DIMSE response write failed: protocol=dimse, association={}, dimse={}, exception={}",
+                    this,
+                    Dimse.valueOf(cmd.getInt(Tag.CommandField, 0)),
+                    e.getClass().getSimpleName());
             return false;
         }
     }
@@ -837,7 +882,7 @@ public class Association {
                 if (rqpc != null)
                     initTSMap(rqpc.getAbstractSyntax()).put(pc.getTransferSyntax(), pc);
                 else
-                    Logger.info("{}: Ignore unexpected {} in A-ASSOCIATE-AC", name, pc);
+                    Logger.info(false, "Image", "{}: Ignore unexpected {} in A-ASSOCIATE-AC", name, pc);
             }
     }
 

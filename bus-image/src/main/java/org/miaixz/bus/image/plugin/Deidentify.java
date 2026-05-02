@@ -25,6 +25,7 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.io.ImageEncodingOptions;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
+import org.miaixz.bus.logger.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -80,10 +81,30 @@ public class Deidentify {
         }
         if (dest.isDirectory())
             dest = new File(dest, src.getName());
+        long start = System.currentTimeMillis();
         try {
+            Logger.debug(
+                    true,
+                    "Image",
+                    "DICOM deidentify started: fileName={}, outputName={}",
+                    src.getName(),
+                    dest.getName());
             transcode(src, dest);
+            Logger.info(
+                    false,
+                    "Image",
+                    "DICOM deidentify finished: fileName={}, outputName={}, elapsedMs={}",
+                    src.getName(),
+                    dest.getName(),
+                    System.currentTimeMillis() - start);
         } catch (Exception e) {
-            e.printStackTrace(System.out);
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM deidentify failed: fileName={}, exception={}",
+                    src.getName(),
+                    e.getClass().getSimpleName());
         }
     }
 

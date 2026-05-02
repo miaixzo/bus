@@ -186,19 +186,6 @@ public class HttpBuilder {
     }
 
     /**
-     * Sets the SSL socket factory used to secure HTTPS connections.
-     *
-     * @param sslSocketFactory The SSL socket factory.
-     * @return This builder instance for chaining.
-     * @deprecated Use {@link #sslSocketFactory(SSLSocketFactory, X509TrustManager)} instead.
-     */
-    @Deprecated
-    public HttpBuilder sslSocketFactory(SSLSocketFactory sslSocketFactory) {
-        builder.sslSocketFactory(sslSocketFactory);
-        return this;
-    }
-
-    /**
      * Sets the SSL socket factory and trust manager used to secure HTTPS connections.
      *
      * @param sslSocketFactory The SSL socket factory.

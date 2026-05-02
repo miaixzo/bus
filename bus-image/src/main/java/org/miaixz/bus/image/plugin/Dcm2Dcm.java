@@ -33,6 +33,7 @@ import org.miaixz.bus.image.nimble.codec.Compressor;
 import org.miaixz.bus.image.nimble.codec.Decompressor;
 import org.miaixz.bus.image.nimble.codec.Transcoder;
 import org.miaixz.bus.image.nimble.codec.TransferSyntaxType;
+import org.miaixz.bus.logger.Logger;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -218,13 +219,37 @@ public class Dcm2Dcm {
      * @param dest the destination file.
      */
     private void transcode(File src, File dest) {
+        long start = System.currentTimeMillis();
         try {
+            Logger.debug(
+                    true,
+                    "Image",
+                    "DICOM transcode started: fileName={}, outputName={}, legacy={}, targetTransferSyntax={}",
+                    src.getName(),
+                    dest.getName(),
+                    legacy,
+                    tsuid);
             if (legacy)
                 transcodeLegacy(src, dest);
             else
                 transcodeWithTranscoder(src, dest);
+            Logger.info(
+                    false,
+                    "Image",
+                    "DICOM transcode finished: fileName={}, outputName={}, legacy={}, targetTransferSyntax={}, elapsedMs={}",
+                    src.getName(),
+                    dest.getName(),
+                    legacy,
+                    tsuid,
+                    System.currentTimeMillis() - start);
         } catch (Exception e) {
-            e.printStackTrace(System.out);
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM transcode failed: fileName={}, exception={}",
+                    src.getName(),
+                    e.getClass().getSimpleName());
         }
     }
 

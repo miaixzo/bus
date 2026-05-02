@@ -24,6 +24,7 @@ import freemarker.template.Template;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.logger.Logger;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -203,6 +204,13 @@ public class Builder {
     private static Object createFile(TableEntity tableEntity, String templateName, String filePath) {
         FileWriter out = null;
         try {
+            Logger.debug(
+                    true,
+                    "Shade",
+                    "Template file generation started: entityName={}, template={}, filePath={}",
+                    tableEntity.getEntityName(),
+                    templateName,
+                    filePath);
             // Configure FreeMarker
             Configuration configuration = new Configuration(Configuration.VERSION_2_3_28);
             configuration.setClassForTemplateLoading(Builder.class, Symbol.C_SLASH + Normal.META_INF + "/shade/beans");
@@ -219,21 +227,48 @@ public class Builder {
             if (!file.exists()) {
                 file.createNewFile();
             } else {
+                Logger.debug(
+                        false,
+                        "Shade",
+                        "Template file generation skipped because file exists: entityName={}, template={}, filePath={}",
+                        tableEntity.getEntityName(),
+                        templateName,
+                        filePath);
                 return "The file already exists: " + filePath;
             }
 
             // Process the template and write the output file
             out = new FileWriter(file);
             template.process(tableEntity, out);
+            Logger.info(
+                    false,
+                    "Shade",
+                    "Template file generation finished: entityName={}, template={}, filePath={}",
+                    tableEntity.getEntityName(),
+                    templateName,
+                    filePath);
             return "Created a file: " + filePath;
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.warn(
+                    false,
+                    "Shade",
+                    e,
+                    "Template file generation failed: filePath={}, template={}, exception={}",
+                    filePath,
+                    templateName,
+                    e.getClass().getSimpleName());
         } finally {
             if (null != out) {
                 try {
                     out.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Logger.warn(
+                            false,
+                            "Shade",
+                            e,
+                            "Template writer close failed: filePath={}, exception={}",
+                            filePath,
+                            e.getClass().getSimpleName());
                 }
             }
         }

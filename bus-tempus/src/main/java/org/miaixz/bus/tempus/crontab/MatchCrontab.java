@@ -19,10 +19,11 @@
 */
 package org.miaixz.bus.tempus.crontab;
 
+import java.util.concurrent.locks.Lock;
+
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.tempus.Repertoire;
 import org.miaixz.bus.tempus.Scheduler;
-
-import java.util.concurrent.locks.Lock;
 
 /**
  * Task table based on matching<br>
@@ -78,13 +79,36 @@ public class MatchCrontab extends Repertoire {
      */
     private void executeTaskIfMatchInternal(final Scheduler scheduler, final long millis) {
         final int size = size();
+        int matchedCount = 0;
+        Logger.debug(
+                true,
+                "Tempus",
+                "Match task scan started: millis={}, taskCount={}, matchSecond={}",
+                millis,
+                size,
+                scheduler.config.isMatchSecond());
         for (int i = 0; i < size; i++) {
             if (this.table.getMiddle(i)
                     .match(scheduler.config.getTimeZone(), millis, scheduler.config.isMatchSecond())) {
+                matchedCount++;
+                Logger.debug(
+                        true,
+                        "Tempus",
+                        "Match task dispatch started: taskId={}, pattern={}, millis={}",
+                        this.table.getLeft(i),
+                        this.table.getMiddle(i),
+                        millis);
                 scheduler.manager.spawnExecutor(
                         new CronCrontab(this.table.getLeft(i), this.table.getMiddle(i), this.table.getRight(i)));
             }
         }
+        Logger.debug(
+                false,
+                "Tempus",
+                "Match task scan completed: millis={}, taskCount={}, matchedCount={}",
+                millis,
+                size,
+                matchedCount);
     }
 
 }

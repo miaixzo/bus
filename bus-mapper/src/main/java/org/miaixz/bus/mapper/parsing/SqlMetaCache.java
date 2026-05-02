@@ -41,7 +41,7 @@ public class SqlMetaCache {
     /**
      * The execution method context.
      */
-    private final ProviderContext providerContext;
+    private final ProviderContext context;
 
     /**
      * The entity class metadata.
@@ -65,25 +65,25 @@ public class SqlMetaCache {
     /**
      * Constructor to initialize the SQL cache (static SQL).
      *
-     * @param providerContext   The execution method context.
+     * @param context           The execution method context.
      * @param tableMeta         The entity class metadata.
      * @param sqlScriptSupplier The SQL script supplier.
      */
-    public SqlMetaCache(ProviderContext providerContext, TableMeta tableMeta, Supplier<String> sqlScriptSupplier) {
-        this(providerContext, tableMeta, sqlScriptSupplier, null);
+    public SqlMetaCache(ProviderContext context, TableMeta tableMeta, Supplier<String> sqlScriptSupplier) {
+        this(context, tableMeta, sqlScriptSupplier, null);
     }
 
     /**
      * Constructor to initialize the SQL cache (with optional dynamic SQL support).
      *
-     * @param providerContext          The execution method context.
+     * @param context                  The execution method context.
      * @param tableMeta                The entity class metadata.
      * @param sqlScriptSupplier        The SQL script supplier (used if dynamicSqlScriptFunction is null).
      * @param dynamicSqlScriptFunction The dynamic SQL function that accepts Dialect (optional).
      */
-    public SqlMetaCache(ProviderContext providerContext, TableMeta tableMeta, Supplier<String> sqlScriptSupplier,
+    public SqlMetaCache(ProviderContext context, TableMeta tableMeta, Supplier<String> sqlScriptSupplier,
             Function<Dialect, String> dynamicSqlScriptFunction) {
-        this.providerContext = providerContext;
+        this.context = context;
         this.tableMeta = tableMeta;
         this.sqlScriptSupplier = sqlScriptSupplier;
         this.dynamicSqlScriptFunction = dynamicSqlScriptFunction;
@@ -133,8 +133,8 @@ public class SqlMetaCache {
      *
      * @return The execution method context.
      */
-    public ProviderContext getProviderContext() {
-        return providerContext;
+    public ProviderContext getContext() {
+        return context;
     }
 
     /**

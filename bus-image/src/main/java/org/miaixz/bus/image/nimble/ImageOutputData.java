@@ -322,7 +322,7 @@ public class ImageOutputData {
                 throw new IllegalStateException("Cannot write this unknown image type");
             }
         } catch (Exception e) {
-            Logger.error("Writing raw pixel data", e);
+            Logger.error(false, "Image", "Writing raw pixel data", e);
         }
     }
 
@@ -353,7 +353,10 @@ public class ImageOutputData {
         } else if (ts == TransferSyntaxType.JPEG_LS) {
             compressType = Imgcodecs.DICOM_CP_JPLS;
             if (signed) {
-                Logger.warn("Force compression to JPEG-LS lossless as lossy is not adapted to signed data.");
+                Logger.warn(
+                        false,
+                        "Image",
+                        "Force compression to JPEG-LS lossless as lossy is not adapted to signed data.");
                 jpeglsNLE = 0;
                 // Extend to bit allocated to avoid exception as negative values are treated as large
                 // positive values
@@ -365,7 +368,10 @@ public class ImageOutputData {
                 bitCompressedForEncoder = bitCompressed = 8;
             } else if (bitCompressed <= 12) {
                 if (signed && param.getPrediction() > 1) {
-                    Logger.warn("Force JPEGLosslessNonHierarchical14 compression to 16-bit with signed data.");
+                    Logger.warn(
+                            false,
+                            "Image",
+                            "Force JPEGLosslessNonHierarchical14 compression to 16-bit with signed data.");
                     bitCompressed = 12;
                     bitCompressedForEncoder = 16;
                 } else {

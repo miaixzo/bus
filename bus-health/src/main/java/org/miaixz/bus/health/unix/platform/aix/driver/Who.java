@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -42,10 +42,19 @@ public final class Who {
 
     // sample format:
     // system boot 2020-06-16 09:12
+    /**
+     * The BOOT_FORMAT_AIX constant.
+     */
     private static final Pattern BOOT_FORMAT_AIX = Pattern.compile("\\D+(\\d{4}-\\d{2}-\\d{2})\\s+(\\d{2}:\\d{2}).*");
+    /**
+     * The BOOT_DATE_FORMAT_AIX constant.
+     */
     private static final DateTimeFormatter BOOT_DATE_FORMAT_AIX = DateTimeFormatter
             .ofPattern("yyyy-MM-dd HH:mm", Locale.ROOT);
 
+    /**
+     * Creates a new Who instance.
+     */
     private Who() {
     }
 

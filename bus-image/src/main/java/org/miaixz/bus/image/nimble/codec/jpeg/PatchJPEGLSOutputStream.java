@@ -65,7 +65,7 @@ public class PatchJPEGLSOutputStream extends ImageOutputStreamImpl {
                 if (param == null)
                     ios.write(jpegheader);
                 else {
-                    Logger.debug("Patch JPEG-LS with {}", param);
+                    Logger.debug(false, "Image", "Patch JPEG-LS with {}", param);
                     int offset = param.getOffset();
                     ios.write(jpegheader, 0, offset);
                     ios.write(param.getBytes());

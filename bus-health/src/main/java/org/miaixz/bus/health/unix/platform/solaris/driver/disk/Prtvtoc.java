@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -39,8 +39,18 @@ import org.miaixz.bus.health.builtin.hardware.HWPartition;
 @ThreadSafe
 public final class Prtvtoc {
 
+    /**
+     * The PRTVTOC_DEV_DSK constant.
+     */
     private static final String PRTVTOC_DEV_DSK = "prtvtoc /dev/dsk/";
 
+    /**
+     * Queries the partitions.
+     *
+     * @param mount the mount
+     * @param major the major
+     * @return the query partitions result
+     */
     public static List<HWPartition> queryPartitions(String mount, int major) {
         List<HWPartition> partList = new ArrayList<>();
         // This requires sudo permissions; will result in "permission denied"

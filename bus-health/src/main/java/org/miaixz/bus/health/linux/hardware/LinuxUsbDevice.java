@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -43,14 +43,46 @@ import com.sun.jna.platform.linux.Udev.UdevListEntry;
 @Immutable
 public class LinuxUsbDevice extends AbstractUsbDevice {
 
+    /**
+     * The SUBSYSTEM_USB constant.
+     */
     private static final String SUBSYSTEM_USB = "usb";
+    /**
+     * The DEVTYPE_USB_DEVICE constant.
+     */
     private static final String DEVTYPE_USB_DEVICE = "usb_device";
+    /**
+     * The ATTR_PRODUCT constant.
+     */
     private static final String ATTR_PRODUCT = "product";
+    /**
+     * The ATTR_MANUFACTURER constant.
+     */
     private static final String ATTR_MANUFACTURER = "manufacturer";
+    /**
+     * The ATTR_VENDOR_ID constant.
+     */
     private static final String ATTR_VENDOR_ID = "idVendor";
+    /**
+     * The ATTR_PRODUCT_ID constant.
+     */
     private static final String ATTR_PRODUCT_ID = "idProduct";
+    /**
+     * The ATTR_SERIAL constant.
+     */
     private static final String ATTR_SERIAL = "serial";
 
+    /**
+     * Creates a new LinuxUsbDevice instance.
+     *
+     * @param name             the name
+     * @param vendor           the vendor
+     * @param vendorId         the vendor id
+     * @param productId        the product id
+     * @param serialNumber     the serial number
+     * @param uniqueDeviceId   the unique device id
+     * @param connectedDevices the connected devices
+     */
     public LinuxUsbDevice(String name, String vendor, String vendorId, String productId, String serialNumber,
             String uniqueDeviceId, List<UsbDevice> connectedDevices) {
         super(name, vendor, vendorId, productId, serialNumber, uniqueDeviceId, connectedDevices);
@@ -77,18 +109,19 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
         // Top level is controllers; they won't be added to the list, but all
         // their connected devices will be
         for (UsbDevice device : devices) {
-            deviceList.add(
-                    new LinuxUsbDevice(device.getName(), device.getVendor(), device.getVendorId(),
-                            device.getProductId(), device.getSerialNumber(), device.getUniqueDeviceId(),
-                            Collections.emptyList()));
             addDevicesToList(deviceList, device.getConnectedDevices());
         }
         return deviceList;
     }
 
+    /**
+     * Returns the usb devices.
+     *
+     * @return the get usb devices result
+     */
     private static List<UsbDevice> getUsbDevices() {
         if (!LinuxOperatingSystem.HAS_UDEV) {
-            Logger.warn("USB Device information requires libudev, which is not present.");
+            Logger.warn(false, "Health", "USB Device information requires libudev, which is not present.");
             return Collections.emptyList();
         }
         // Build a list of devices with no parent; these will be the roots
@@ -104,6 +137,10 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
 
         // Enumerate all usb devices and build information maps
         Udev.UdevContext udev = Udev.INSTANCE.udev_new();
+        if (udev == null) {
+            Logger.warn(false, "Health", "Failed to create udev context.");
+            return Collections.emptyList();
+        }
         try {
             UdevEnumerate enumerate = udev.enumerateNew();
             try {
@@ -178,13 +215,6 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
                             hubMap));
         }
         return controllerDevices;
-    }
-
-    private static void addDevicesToList(List<UsbDevice> deviceList, List<UsbDevice> list) {
-        for (UsbDevice device : list) {
-            deviceList.add(device);
-            addDevicesToList(deviceList, device.getConnectedDevices());
-        }
     }
 
     /**

@@ -35,6 +35,7 @@ import org.miaixz.bus.gitlab.models.Project;
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * This class provides an entry point to all the GitLab API project import/export calls.
@@ -199,6 +200,15 @@ public class ImportExportApi extends AbstractApi {
             return (file);
 
         } catch (IOException ioe) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    ioe,
+                    "GitLab project export download failed: projectPresent={}, directoryPresent={}, fileNamePresent={}, exception={}",
+                    projectIdOrPath != null,
+                    directory != null,
+                    filename != null && !filename.isEmpty(),
+                    ioe.getClass().getSimpleName());
             throw new GitLabApiException(ioe);
         }
     }
@@ -262,6 +272,17 @@ public class ImportExportApi extends AbstractApi {
         try {
             url = getApiClient().getApiUrl("projects", "import");
         } catch (IOException ioe) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    ioe,
+                    "GitLab project import URL build failed: namespacePresent={}, exportFileNamePresent={}, pathPresent={}, overwrite={}, overrideParamsPresent={}, exception={}",
+                    namespaceIdOrPath != null,
+                    exportFile != null && exportFile.getName() != null,
+                    path != null && !path.isEmpty(),
+                    overwrite,
+                    overrideParams != null,
+                    ioe.getClass().getSimpleName());
             throw new GitLabApiException(ioe);
         }
 

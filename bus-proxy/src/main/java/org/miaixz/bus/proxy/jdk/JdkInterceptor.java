@@ -21,6 +21,7 @@ package org.miaixz.bus.proxy.jdk;
 
 import org.miaixz.bus.core.xyz.ModifierKit;
 import org.miaixz.bus.core.xyz.ReflectKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.proxy.Aspect;
 import org.miaixz.bus.proxy.invoker.Interceptor;
 
@@ -70,11 +71,26 @@ public class JdkInterceptor extends Interceptor implements InvocationHandler {
 
         // "Before" advice
         if (aspect.before(target, method, args)) {
+            Logger.debug(
+                    true,
+                    "Proxy",
+                    "JDK proxy invocation started: targetClass={}, method={}, argumentCount={}",
+                    target == null ? null : target.getClass().getName(),
+                    method.getName(),
+                    args == null ? 0 : args.length);
             ReflectKit.setAccessible(method);
 
             try {
                 result = method.invoke(ModifierKit.isStatic(method) ? null : target, args);
             } catch (final InvocationTargetException e) {
+                Logger.warn(
+                        false,
+                        "Proxy",
+                        e.getTargetException(),
+                        "JDK proxy invocation failed: targetClass={}, method={}, exception={}",
+                        target == null ? null : target.getClass().getName(),
+                        method.getName(),
+                        e.getTargetException() == null ? null : e.getTargetException().getClass().getSimpleName());
                 // "After-throwing" advice (only catches exceptions from the business logic)
                 if (aspect.afterException(target, method, args, e.getTargetException())) {
                     // Rethrow if the aspect allows it
@@ -84,6 +100,13 @@ public class JdkInterceptor extends Interceptor implements InvocationHandler {
 
             // "After" advice
             if (aspect.after(target, method, args, result)) {
+                Logger.debug(
+                        false,
+                        "Proxy",
+                        "JDK proxy invocation completed: targetClass={}, method={}, resultType={}",
+                        target == null ? null : target.getClass().getName(),
+                        method.getName(),
+                        result == null ? null : result.getClass().getName());
                 return result;
             }
         }

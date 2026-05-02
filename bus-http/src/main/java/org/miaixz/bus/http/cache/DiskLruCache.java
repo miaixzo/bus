@@ -108,6 +108,14 @@ public class DiskLruCache implements Closeable, Flushable {
                 try {
                     trimToSize();
                 } catch (IOException ignored) {
+                    Logger.warn(
+                            false,
+                            "Http",
+                            ignored,
+                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
+                            "DiskLruCache",
+                            true,
+                            ignored.getClass().getSimpleName());
                     mostRecentTrimFailed = true;
                 }
 
@@ -117,6 +125,14 @@ public class DiskLruCache implements Closeable, Flushable {
                         redundantOpCount = 0;
                     }
                 } catch (IOException e) {
+                    Logger.warn(
+                            false,
+                            "Http",
+                            e,
+                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
+                            "DiskLruCache",
+                            true,
+                            e.getClass().getSimpleName());
                     mostRecentRebuildFailed = true;
                     journalWriter = IoKit.buffer(IoKit.blackhole());
                 }
@@ -195,7 +211,10 @@ public class DiskLruCache implements Closeable, Flushable {
                 return;
             } catch (IOException journalIsCorrupt) {
                 Logger.warn(
-                        "DiskLruCache " + directory + " is corrupt: " + journalIsCorrupt.getMessage() + ", removing",
+                        false,
+                        "Http",
+                        "DiskLruCache journal corrupt: protocol=http, directory=" + directory + ", message="
+                                + journalIsCorrupt.getMessage() + ", removing",
                         journalIsCorrupt);
             }
 
@@ -233,6 +252,14 @@ public class DiskLruCache implements Closeable, Flushable {
                     readJournalLine(source.readUtf8LineStrict());
                     lineCount++;
                 } catch (EOFException endOfJournal) {
+                    Logger.warn(
+                            false,
+                            "Http",
+                            endOfJournal,
+                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
+                            "DiskLruCache",
+                            true,
+                            endOfJournal.getClass().getSimpleName());
                     break;
                 }
             }
@@ -790,6 +817,14 @@ public class DiskLruCache implements Closeable, Flushable {
                 try {
                     DiskLruCache.this.remove(removeSnapshot.key);
                 } catch (IOException ignored) {
+                    Logger.warn(
+                            false,
+                            "Http",
+                            ignored,
+                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
+                            "DiskLruCache",
+                            true,
+                            ignored.getClass().getSimpleName());
                     // Nothing useful to do here. The cache may be corrupt but we don't know for sure.
                 } finally {
                     removeSnapshot = null;
@@ -828,6 +863,14 @@ public class DiskLruCache implements Closeable, Flushable {
                 try {
                     return IoKit.sink(file);
                 } catch (FileNotFoundException e) {
+                    Logger.warn(
+                            false,
+                            "Http",
+                            e,
+                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
+                            "DiskLruCache",
+                            true,
+                            e.getClass().getSimpleName());
                     // Maybe the parent directory doesn't exist? Try creating it first.
                     file.getParentFile().mkdirs();
                     return IoKit.sink(file);
@@ -839,6 +882,14 @@ public class DiskLruCache implements Closeable, Flushable {
                 try {
                     return IoKit.appendingSink(file);
                 } catch (FileNotFoundException e) {
+                    Logger.warn(
+                            false,
+                            "Http",
+                            e,
+                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
+                            "DiskLruCache",
+                            true,
+                            e.getClass().getSimpleName());
                     // Maybe the parent directory doesn't exist? Try creating it first.
                     file.getParentFile().mkdirs();
                     return IoKit.appendingSink(file);
@@ -1052,6 +1103,14 @@ public class DiskLruCache implements Closeable, Flushable {
                     try {
                         diskFile.delete(entry.dirtyFiles[i]);
                     } catch (IOException e) {
+                        Logger.warn(
+                                false,
+                                "Http",
+                                e,
+                                "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
+                                "DiskLruCache",
+                                true,
+                                e.getClass().getSimpleName());
                         // This file is potentially leaked. Not much we can do about that.
                     }
                 }
@@ -1076,6 +1135,14 @@ public class DiskLruCache implements Closeable, Flushable {
                 try {
                     return diskFile.source(entry.cleanFiles[index]);
                 } catch (FileNotFoundException e) {
+                    Logger.warn(
+                            false,
+                            "Http",
+                            e,
+                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
+                            "DiskLruCache",
+                            true,
+                            e.getClass().getSimpleName());
                     return null;
                 }
             }
@@ -1105,6 +1172,14 @@ public class DiskLruCache implements Closeable, Flushable {
                 try {
                     sink = diskFile.sink(dirtyFile);
                 } catch (FileNotFoundException e) {
+                    Logger.warn(
+                            false,
+                            "Http",
+                            e,
+                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
+                            "DiskLruCache",
+                            true,
+                            e.getClass().getSimpleName());
                     return IoKit.blackhole();
                 }
                 return new FaultHideSink(sink) {
@@ -1172,6 +1247,14 @@ public class DiskLruCache implements Closeable, Flushable {
                     try {
                         completeEdit(this, false);
                     } catch (IOException ignored) {
+                        Logger.warn(
+                                false,
+                                "Http",
+                                ignored,
+                                "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
+                                "DiskLruCache",
+                                true,
+                                ignored.getClass().getSimpleName());
                     }
                 }
             }
@@ -1235,6 +1318,14 @@ public class DiskLruCache implements Closeable, Flushable {
                     lengths[i] = Long.parseLong(strings[i]);
                 }
             } catch (NumberFormatException e) {
+                Logger.warn(
+                        false,
+                        "Http",
+                        e,
+                        "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
+                        "DiskLruCache",
+                        true,
+                        e.getClass().getSimpleName());
                 throw invalidLengths(strings);
             }
         }
@@ -1273,6 +1364,14 @@ public class DiskLruCache implements Closeable, Flushable {
                 }
                 return new Snapshot(key, sequenceNumber, sources, lengths);
             } catch (FileNotFoundException e) {
+                Logger.warn(
+                        false,
+                        "Http",
+                        e,
+                        "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
+                        "DiskLruCache",
+                        true,
+                        e.getClass().getSimpleName());
                 // A file was deleted from under us. It's a race condition. Return null.
                 for (int i = 0; i < valueCount; i++) {
                     if (null != sources[i]) {
@@ -1285,6 +1384,14 @@ public class DiskLruCache implements Closeable, Flushable {
                 try {
                     removeEntry(this);
                 } catch (IOException ignored) {
+                    Logger.warn(
+                            false,
+                            "Http",
+                            ignored,
+                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
+                            "DiskLruCache",
+                            true,
+                            ignored.getClass().getSimpleName());
                 }
                 return null;
             }

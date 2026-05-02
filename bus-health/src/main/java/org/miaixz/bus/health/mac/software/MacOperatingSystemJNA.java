@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -38,13 +38,16 @@ import com.sun.jna.platform.mac.SystemB;
 /**
  * macOS, previously Mac OS X and later OS X) is a series of proprietary graphical operating systems developed and
  * marketed by Apple Inc. since 2001. It is the primary operating system for Apple's Mac computers.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 @ThreadSafe
 public class MacOperatingSystemJNA extends MacOperatingSystem {
 
+    /**
+     * The BOOTTIME constant.
+     */
     private static final long BOOTTIME;
 
     static {
@@ -64,29 +67,57 @@ public class MacOperatingSystemJNA extends MacOperatingSystem {
         }
     }
 
+    /**
+     * Creates a new MacOperatingSystemJNA instance.
+     */
     public MacOperatingSystemJNA() {
         super(SysctlKit.sysctl("kern.maxproc", 0x1000));
     }
 
+    /**
+     * Creates a new MacOperatingSystemJNA instance.
+     *
+     * @param maxproc the maxproc
+     */
     protected MacOperatingSystemJNA(int maxproc) {
         super(maxproc);
     }
 
+    /**
+     * Returns the system boot time.
+     *
+     * @return the get system boot time result
+     */
     @Override
     public long getSystemBootTime() {
         return BOOTTIME;
     }
 
+    /**
+     * Returns the file system.
+     *
+     * @return the get file system result
+     */
     @Override
     public FileSystem getFileSystem() {
         return new MacFileSystem();
     }
 
+    /**
+     * Returns the internet protocol stats.
+     *
+     * @return the get internet protocol stats result
+     */
     @Override
     public InternetProtocolStats getInternetProtocolStats() {
         return new MacInternetProtocolStats(isElevated());
     }
 
+    /**
+     * Queries the family version info.
+     *
+     * @return the query family version info result
+     */
     @Override
     public Pair<String, OSVersionInfo> queryFamilyVersionInfo() {
         String family = this.major > 10 || (this.major == 10 && this.minor >= 12) ? "macOS"
@@ -96,11 +127,21 @@ public class MacOperatingSystemJNA extends MacOperatingSystem {
         return new Pair<>(family, new OSVersionInfo(this.osXVersion, codeName, buildNumber));
     }
 
+    /**
+     * Returns the sessions.
+     *
+     * @return the get sessions result
+     */
     @Override
     public List<OSSession> getSessions() {
         return USE_WHO_COMMAND ? super.getSessions() : Who.queryUtxent();
     }
 
+    /**
+     * Queries the all processes.
+     *
+     * @return the query all processes result
+     */
     @Override
     public List<OSProcess> queryAllProcesses() {
         List<OSProcess> procs = new ArrayList<>();
@@ -119,22 +160,43 @@ public class MacOperatingSystemJNA extends MacOperatingSystem {
         return procs;
     }
 
+    /**
+     * Returns the process.
+     *
+     * @param pid the pid
+     * @return the get process result
+     */
     @Override
     public OSProcess getProcess(int pid) {
         OSProcess proc = new MacOSProcess(pid, this.major, this.minor, this);
         return proc.getState().equals(OSProcess.State.INVALID) ? null : proc;
     }
 
+    /**
+     * Returns the process id.
+     *
+     * @return the get process id result
+     */
     @Override
     public int getProcessId() {
         return SystemB.INSTANCE.getpid();
     }
 
+    /**
+     * Returns the process count.
+     *
+     * @return the get process count result
+     */
     @Override
     public int getProcessCount() {
         return SystemB.INSTANCE.proc_listpids(SystemB.PROC_ALL_PIDS, 0, null, 0) / SystemB.INT_SIZE;
     }
 
+    /**
+     * Returns the thread count.
+     *
+     * @return the get thread count result
+     */
     @Override
     public int getThreadCount() {
         // Get current pids, then slightly pad in case new process starts while
@@ -155,11 +217,22 @@ public class MacOperatingSystemJNA extends MacOperatingSystem {
         return numberOfThreads;
     }
 
+    /**
+     * Returns the network params.
+     *
+     * @return the get network params result
+     */
     @Override
     public NetworkParams getNetworkParams() {
         return new MacNetworkParams();
     }
 
+    /**
+     * Returns the desktop windows.
+     *
+     * @param visibleOnly the visible only
+     * @return the get desktop windows result
+     */
     @Override
     public List<OSDesktopWindow> getDesktopWindows(boolean visibleOnly) {
         return WindowInfo.queryDesktopWindows(visibleOnly);

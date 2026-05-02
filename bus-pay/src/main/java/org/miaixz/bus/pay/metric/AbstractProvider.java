@@ -37,6 +37,7 @@ import javax.net.ssl.SSLSocketFactory;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.lang.Normal;
@@ -50,6 +51,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.bodys.RequestBody;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.pay.Checker;
 import org.miaixz.bus.pay.Complex;
 import org.miaixz.bus.pay.Context;
@@ -112,14 +114,37 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
      */
     public AbstractProvider(K context, Complex complex, CacheX cache) {
         Assert.notNull(context, "[context] is null");
+        Logger.debug(
+                true,
+                "Pay",
+                "Payment provider initialization started: provider={}, complexType={}, sandbox={}",
+                getClass().getSimpleName(),
+                complex == null ? null : complex.getClass().getName(),
+                complex != null && complex.isSandbox());
         this.context = context;
         this.complex = complex;
         this.cache = ObjectKit.isEmpty(cache) ? PayCache.INSTANCE : cache;
         if (!Checker.isSupportedPay(this.context, complex)) {
+            Logger.warn(
+                    false,
+                    "Pay",
+                    "Payment provider initialization rejected: provider={}, reason={}",
+                    getClass().getSimpleName(),
+                    "unsupportedConfiguration");
             throw new PaymentException(ErrorCode._PARAMETER_INCOMPLETE);
         }
         // Verify the legitimacy of the configuration
         Checker.checkConfig(this.context, complex);
+        Logger.debug(
+                false,
+                "Pay",
+                "Payment provider initialized: provider={}, complexType={}, cacheType={}, certMode={}, appIdPresent={}, merchantPresent={}",
+                getClass().getSimpleName(),
+                complex == null ? null : complex.getClass().getName(),
+                this.cache == null ? null : this.cache.getClass().getName(),
+                this.context.isCertMode(),
+                StringKit.isNotEmpty(this.context.getAppId()),
+                StringKit.isNotEmpty(this.context.getMchId()));
     }
 
     /**
@@ -167,9 +192,31 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
      * @return The result of the request.
      */
     public static String post(String url, String data) {
+        Logger.info(
+                true,
+                "Pay",
+                "Payment HTTP request started: method=POST, url={}, dataBytes={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                data == null ? 0 : data.getBytes(Charset.UTF_8).length);
         try {
-            return Httpz.post().url(url).body(data).build().execute().body().string();
+            Response response = Httpz.post().url(url).body(data).build().execute();
+            String body = response.body().string();
+            Logger.info(
+                    false,
+                    "Pay",
+                    "Payment HTTP request completed: method=POST, url={}, status={}, responseBytes={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    response.code(),
+                    body == null ? 0 : body.getBytes(Charset.UTF_8).length);
+            return body;
         } catch (Exception e) {
+            Logger.error(
+                    false,
+                    "Pay",
+                    e,
+                    "Payment HTTP request failed: method=POST, url={}, exception={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -185,9 +232,25 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
     public static Message post(String url, String data, Map<String, String> headerMap) {
         try {
             Response response = postTo(url, headerMap, data);
-            return Message.builder().body(response.body().string()).status(response.code())
-                    .headers(response.headers().toMultimap()).build();
+            String body = response.body().string();
+            Logger.info(
+                    false,
+                    "Pay",
+                    "Payment HTTP response assembled: method=POST, url={}, status={}, headerCount={}, responseBytes={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    response.code(),
+                    response.headers() == null ? 0 : response.headers().size(),
+                    body == null ? 0 : body.getBytes(Charset.UTF_8).length);
+            return Message.builder().body(body).status(response.code()).headers(response.headers().toMultimap())
+                    .build();
         } catch (IOException e) {
+            Logger.error(
+                    false,
+                    "Pay",
+                    e,
+                    "Payment HTTP response read failed: method=POST, url={}, exception={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -203,9 +266,25 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
     public static Message get(String url, Map<String, String> formMap, Map<String, String> headerMap) {
         try {
             Response response = getTo(url, formMap, headerMap);
-            return Message.builder().body(response.body().string()).status(response.code())
-                    .headers(response.headers().toMultimap()).build();
+            String body = response.body().string();
+            Logger.info(
+                    false,
+                    "Pay",
+                    "Payment HTTP response assembled: method=GET, url={}, status={}, headerCount={}, responseBytes={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    response.code(),
+                    response.headers() == null ? 0 : response.headers().size(),
+                    body == null ? 0 : body.getBytes(Charset.UTF_8).length);
+            return Message.builder().body(body).status(response.code()).headers(response.headers().toMultimap())
+                    .build();
         } catch (IOException e) {
+            Logger.error(
+                    false,
+                    "Pay",
+                    e,
+                    "Payment HTTP response read failed: method=GET, url={}, exception={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -221,9 +300,25 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
     public static Message post(String url, Map<String, String> formMap, Map<String, String> headerMap) {
         try {
             Response response = postTo(url, headerMap, formMap);
-            return Message.builder().body(response.body().string()).status(response.code())
-                    .headers(response.headers().toMultimap()).build();
+            String body = response.body().string();
+            Logger.info(
+                    false,
+                    "Pay",
+                    "Payment HTTP response assembled: method=POST, url={}, status={}, headerCount={}, responseBytes={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    response.code(),
+                    response.headers() == null ? 0 : response.headers().size(),
+                    body == null ? 0 : body.getBytes(Charset.UTF_8).length);
+            return Message.builder().body(body).status(response.code()).headers(response.headers().toMultimap())
+                    .build();
         } catch (IOException e) {
+            Logger.error(
+                    false,
+                    "Pay",
+                    e,
+                    "Payment HTTP response read failed: method=POST, url={}, exception={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -239,10 +334,34 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
      */
     public static Message post(String url, Map<String, String> formMap, Map<String, String> headerMap, File file) {
         try {
+            Logger.info(
+                    true,
+                    "Pay",
+                    "Payment file request started: method=POST, url={}, paramCount={}, file={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    formMap == null ? 0 : formMap.size(),
+                    file == null ? null : file.getName());
             Response response = postTo(url, headerMap, formMap);
-            return Message.builder().body(response.body().string()).status(response.code())
-                    .headers(response.headers().toMultimap()).build();
+            String body = response.body().string();
+            Logger.info(
+                    false,
+                    "Pay",
+                    "Payment file request completed: method=POST, url={}, status={}, file={}, responseBytes={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    response.code(),
+                    file == null ? null : file.getName(),
+                    body == null ? 0 : body.getBytes(Charset.UTF_8).length);
+            return Message.builder().body(body).status(response.code()).headers(response.headers().toMultimap())
+                    .build();
         } catch (IOException e) {
+            Logger.error(
+                    false,
+                    "Pay",
+                    e,
+                    "Payment file request failed: method=POST, url={}, file={}, exception={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    file == null ? null : file.getName(),
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -258,6 +377,14 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
      * @return The result of the request.
      */
     public static String post(String url, String data, String certPath, String certPass, String protocol) {
+        Logger.info(
+                true,
+                "Pay",
+                "Payment SSL request started: method=POST, url={}, certSource={}, protocol={}, dataBytes={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                certPath == null ? "stream" : "path",
+                protocol,
+                data == null ? 0 : data.getBytes(Charset.UTF_8).length);
         try {
             if (StringKit.isEmpty(protocol)) {
                 protocol = Protocol.TLSv1.name;
@@ -267,8 +394,27 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
             final Request request = new Request.Builder().url(url)
                     .post(RequestBody.of(MediaType.APPLICATION_FORM_URLENCODED_TYPE, data)).build();
             NewCall call = httpd.newCall(request);
-            return call.execute().body().string();
+            Response response = call.execute();
+            String body = response.body().string();
+            Logger.info(
+                    false,
+                    "Pay",
+                    "Payment SSL request completed: method=POST, url={}, status={}, protocol={}, responseBytes={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    response.code(),
+                    protocol,
+                    body == null ? 0 : body.getBytes(Charset.UTF_8).length);
+            return body;
         } catch (Exception e) {
+            Logger.error(
+                    false,
+                    "Pay",
+                    e,
+                    "Payment SSL request failed: method=POST, url={}, certSource={}, protocol={}, exception={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    certPath == null ? "stream" : "path",
+                    protocol,
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -284,6 +430,14 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
      * @return The result of the request.
      */
     public static String post(String url, String data, InputStream certFile, String certPass, String protocol) {
+        Logger.info(
+                true,
+                "Pay",
+                "Payment SSL request started: method=POST, url={}, certSource={}, protocol={}, dataBytes={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                "stream",
+                protocol,
+                data == null ? 0 : data.getBytes(Charset.UTF_8).length);
         try {
             if (StringKit.isEmpty(Protocol.TLSv1.name)) {
                 protocol = Protocol.TLSv1.name;
@@ -293,8 +447,27 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
             final Request request = new Request.Builder().url(url)
                     .post(RequestBody.of(MediaType.APPLICATION_FORM_URLENCODED_TYPE, data)).build();
             NewCall call = httpd.newCall(request);
-            return call.execute().body().string();
+            Response response = call.execute();
+            String body = response.body().string();
+            Logger.info(
+                    false,
+                    "Pay",
+                    "Payment SSL request completed: method=POST, url={}, status={}, protocol={}, responseBytes={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    response.code(),
+                    protocol,
+                    body == null ? 0 : body.getBytes(Charset.UTF_8).length);
+            return body;
         } catch (Exception e) {
+            Logger.error(
+                    false,
+                    "Pay",
+                    e,
+                    "Payment SSL request failed: method=POST, url={}, certSource={}, protocol={}, exception={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    "stream",
+                    protocol,
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -310,9 +483,25 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
     public static Message put(String url, String data, Map<String, String> headerMap) {
         try {
             Response response = putTo(url, headerMap, data);
-            return Message.builder().body(response.body().string()).status(response.code())
-                    .headers(response.headers().toMultimap()).build();
+            String body = response.body().string();
+            Logger.info(
+                    false,
+                    "Pay",
+                    "Payment HTTP response assembled: method=PUT, url={}, status={}, headerCount={}, responseBytes={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    response.code(),
+                    response.headers() == null ? 0 : response.headers().size(),
+                    body == null ? 0 : body.getBytes(Charset.UTF_8).length);
+            return Message.builder().body(body).status(response.code()).headers(response.headers().toMultimap())
+                    .build();
         } catch (IOException e) {
+            Logger.error(
+                    false,
+                    "Pay",
+                    e,
+                    "Payment HTTP response read failed: method=PUT, url={}, exception={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -336,13 +525,39 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
             String filePath,
             String protocol) {
 
+        Logger.info(
+                true,
+                "Pay",
+                "Payment upload request started: method=POST, url={}, certSource={}, file={}, protocol={}, dataBytes={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                certPath == null ? "stream" : "path",
+                filePath == null ? null : Paths.get(filePath).getFileName(),
+                protocol,
+                data == null ? 0 : data.getBytes(Charset.UTF_8).length);
         SSLSocketFactory sslSocketFactory = getSslSocketFactory(certPath, null, certPass, protocol);
 
         try {
-            return Httpz.post().url(url).addFile(null, null, FileKit.newFile(filePath))
-                    .addHeader(HTTP.CONTENT_TYPE, "multipart/form-data;boundary=\"boundary\"").build().execute().body()
-                    .string();
+            Response response = Httpz.post().url(url).addFile(null, null, FileKit.newFile(filePath))
+                    .addHeader(HTTP.CONTENT_TYPE, "multipart/form-data;boundary=\"boundary\"").build().execute();
+            String body = response.body().string();
+            Logger.info(
+                    false,
+                    "Pay",
+                    "Payment upload request completed: method=POST, url={}, status={}, file={}, responseBytes={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    response.code(),
+                    filePath == null ? null : Paths.get(filePath).getFileName(),
+                    body == null ? 0 : body.getBytes(Charset.UTF_8).length);
+            return body;
         } catch (Exception e) {
+            Logger.error(
+                    false,
+                    "Pay",
+                    e,
+                    "Payment upload request failed: method=POST, url={}, file={}, exception={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    filePath == null ? null : Paths.get(filePath).getFileName(),
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -370,9 +585,30 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
      * @return The {@link Response} object.
      */
     private static Response getTo(String url, Map<String, String> formMap, Map<String, String> headerMap) {
+        Logger.info(
+                true,
+                "Pay",
+                "Payment HTTP request started: method=GET, url={}, paramCount={}, headerCount={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                formMap == null ? 0 : formMap.size(),
+                headerMap == null ? 0 : headerMap.size());
         try {
-            return Httpz.get().url(url).addHeader(headerMap).addParam(formMap).build().execute();
+            Response response = Httpz.get().url(url).addHeader(headerMap).addParam(formMap).build().execute();
+            Logger.info(
+                    false,
+                    "Pay",
+                    "Payment HTTP request completed: method=GET, url={}, status={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    response.code());
+            return response;
         } catch (Exception e) {
+            Logger.error(
+                    false,
+                    "Pay",
+                    e,
+                    "Payment HTTP request failed: method=GET, url={}, exception={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -386,9 +622,30 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
      * @return The {@link Response} object.
      */
     private static Response postTo(String url, Map<String, String> headerMap, String data) {
+        Logger.info(
+                true,
+                "Pay",
+                "Payment HTTP request started: method=POST, url={}, headerCount={}, dataBytes={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                headerMap == null ? 0 : headerMap.size(),
+                data == null ? 0 : data.getBytes(Charset.UTF_8).length);
         try {
-            return Httpz.post().url(url).addHeader(headerMap).body(data).build().execute();
+            Response response = Httpz.post().url(url).addHeader(headerMap).body(data).build().execute();
+            Logger.info(
+                    false,
+                    "Pay",
+                    "Payment HTTP request completed: method=POST, url={}, status={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    response.code());
+            return response;
         } catch (Exception e) {
+            Logger.error(
+                    false,
+                    "Pay",
+                    e,
+                    "Payment HTTP request failed: method=POST, url={}, exception={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -402,9 +659,30 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
      * @return The {@link Response} object.
      */
     private static Response postTo(String url, Map<String, String> headerMap, Map<String, String> formMap) {
+        Logger.info(
+                true,
+                "Pay",
+                "Payment HTTP request started: method=POST, url={}, paramCount={}, headerCount={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                formMap == null ? 0 : formMap.size(),
+                headerMap == null ? 0 : headerMap.size());
         try {
-            return Httpz.post().url(url).addHeader(headerMap).addParam(formMap).build().execute();
+            Response response = Httpz.post().url(url).addHeader(headerMap).addParam(formMap).build().execute();
+            Logger.info(
+                    false,
+                    "Pay",
+                    "Payment HTTP request completed: method=POST, url={}, status={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    response.code());
+            return response;
         } catch (Exception e) {
+            Logger.error(
+                    false,
+                    "Pay",
+                    e,
+                    "Payment HTTP request failed: method=POST, url={}, exception={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -418,9 +696,30 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
      * @return The {@link Response} object.
      */
     private static Response putTo(String url, Map<String, String> headerMap, String data) {
+        Logger.info(
+                true,
+                "Pay",
+                "Payment HTTP request started: method=PUT, url={}, headerCount={}, dataBytes={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                headerMap == null ? 0 : headerMap.size(),
+                data == null ? 0 : data.getBytes(Charset.UTF_8).length);
         try {
-            return Httpz.put().url(url).addHeader(headerMap).body(data).build().execute();
+            Response response = Httpz.put().url(url).addHeader(headerMap).body(data).build().execute();
+            Logger.info(
+                    false,
+                    "Pay",
+                    "Payment HTTP request completed: method=PUT, url={}, status={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    response.code());
+            return response;
         } catch (Exception e) {
+            Logger.error(
+                    false,
+                    "Pay",
+                    e,
+                    "Payment HTTP request failed: method=PUT, url={}, exception={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -484,6 +783,14 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                 errorMsg = authException.getErrmsg();
             }
         }
+        Logger.warn(
+                false,
+                "Pay",
+                e,
+                "Payment response error assembled: provider={}, errorCode={}, exception={}",
+                getClass().getSimpleName(),
+                errorCode,
+                e == null ? null : e.getClass().getSimpleName());
         return Message.builder().errcode(errorCode).errmsg(errorMsg).build();
     }
 
@@ -543,9 +850,25 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
     public Message put(String url, Map<String, Object> formMap, Map<String, String> headerMap) {
         try {
             Response response = putTo(url, headerMap, formMap);
-            return Message.builder().body(response.body().string()).status(response.code())
-                    .headers(response.headers().toMultimap()).build();
+            String body = response.body().string();
+            Logger.info(
+                    false,
+                    "Pay",
+                    "Payment HTTP response assembled: method=PUT, url={}, status={}, headerCount={}, responseBytes={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    response.code(),
+                    response.headers() == null ? 0 : response.headers().size(),
+                    body == null ? 0 : body.getBytes(Charset.UTF_8).length);
+            return Message.builder().body(body).status(response.code()).headers(response.headers().toMultimap())
+                    .build();
         } catch (IOException e) {
+            Logger.error(
+                    false,
+                    "Pay",
+                    e,
+                    "Payment HTTP response read failed: method=PUT, url={}, exception={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -559,9 +882,30 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
      * @return The {@link Response} object.
      */
     private Response putTo(String url, Map<String, String> headerMap, Map<String, Object> formMap) {
+        Logger.info(
+                true,
+                "Pay",
+                "Payment HTTP request started: method=PUT, url={}, paramCount={}, headerCount={}",
+                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                formMap == null ? 0 : formMap.size(),
+                headerMap == null ? 0 : headerMap.size());
         try {
-            return Httpz.put().url(url).addHeader(headerMap).addParam(formMap).build().execute();
+            Response response = Httpz.put().url(url).addHeader(headerMap).addParam(formMap).build().execute();
+            Logger.info(
+                    false,
+                    "Pay",
+                    "Payment HTTP request completed: method=PUT, url={}, status={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    response.code());
+            return response;
         } catch (Exception e) {
+            Logger.error(
+                    false,
+                    "Pay",
+                    e,
+                    "Payment HTTP request failed: method=PUT, url={}, exception={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }

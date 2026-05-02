@@ -54,7 +54,7 @@ public class PatchJPEGLSInputStream extends ImageInputStreamImpl implements Byte
 
         JPEGLSCodingParam param = patchJPEGLS.createJPEGLSCodingParam(firstBytesOf(iis));
         if (param != null) {
-            Logger.debug("Patch JPEG-LS with {}", param);
+            Logger.debug(false, "Image", "Patch JPEG-LS with {}", param);
             this.patchPos = streamPos + param.getOffset();
             this.patch = param.getBytes();
         }

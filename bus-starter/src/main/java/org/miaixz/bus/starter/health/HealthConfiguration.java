@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.starter.health;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.miaixz.bus.spring.GeniusBuilder;
 import jakarta.annotation.Resource;
 import org.miaixz.bus.health.Provider;
 import org.miaixz.bus.logger.Logger;
@@ -48,6 +50,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { HealthProperties.class })
+@ConditionalOnProperty(prefix = GeniusBuilder.HEALTH, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class HealthConfiguration {
 
     @Resource
@@ -65,7 +68,7 @@ public class HealthConfiguration {
         try {
             return new Provider();
         } catch (Exception e) {
-            Logger.error("Failed to initialize Provider: {}", e.getMessage(), e);
+            Logger.error(false, "Starter", "Health failed to initialize Provider: {}", e.getClass().getSimpleName(), e);
             throw new IllegalStateException("Failed to initialize Provider: " + e.getMessage(), e);
         }
     }
@@ -136,7 +139,12 @@ public class HealthConfiguration {
             registerMapping(handlerMapping, "/accept", controller, "accept");
             registerMapping(handlerMapping, "/refuse", controller, "refuse");
         } catch (NoSuchMethodException e) {
-            Logger.error("Failed to register HealthController mappings: {}", e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Starter",
+                    "Failed to register HealthController mappings: {}",
+                    e.getClass().getSimpleName(),
+                    e);
             throw new RuntimeException("Failed to register health mappings", e);
         }
         return controller;

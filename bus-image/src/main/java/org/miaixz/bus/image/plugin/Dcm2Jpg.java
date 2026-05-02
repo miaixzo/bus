@@ -25,6 +25,7 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 import org.miaixz.bus.image.nimble.ICCProfile;
 import org.miaixz.bus.image.nimble.reader.ImageioReadParam;
+import org.miaixz.bus.logger.Logger;
 
 import javax.imageio.*;
 import javax.imageio.stream.FileImageInputStream;
@@ -344,10 +345,34 @@ public class Dcm2Jpg {
         }
         if (dest.isDirectory())
             dest = new File(dest, suffix(src));
+        long start = System.currentTimeMillis();
         try {
+            Logger.debug(
+                    true,
+                    "Image",
+                    "DICOM image conversion started: fileName={}, outputName={}, frame={}, suffix={}",
+                    src.getName(),
+                    dest.getName(),
+                    frame,
+                    suffix);
             convert(src, dest);
+            Logger.info(
+                    false,
+                    "Image",
+                    "DICOM image conversion finished: fileName={}, outputName={}, frame={}, suffix={}, elapsedMs={}",
+                    src.getName(),
+                    dest.getName(),
+                    frame,
+                    suffix,
+                    System.currentTimeMillis() - start);
         } catch (Exception e) {
-            e.printStackTrace(System.out);
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM to image conversion failed: fileName={}, exception={}",
+                    src.getName(),
+                    e.getClass().getSimpleName());
         }
     }
 

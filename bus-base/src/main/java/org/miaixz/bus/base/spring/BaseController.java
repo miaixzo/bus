@@ -19,11 +19,15 @@
 */
 package org.miaixz.bus.base.spring;
 
+import java.util.List;
+
 import org.miaixz.bus.base.service.BaseService;
+import org.miaixz.bus.core.basic.entity.Result;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.spring.Controller;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.validate.magic.annotation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,10 +60,25 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
     @ResponseBody
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public Object add(T entity) {
+        Logger.info(
+                true,
+                "Base",
+                "CRUD add request received: entityType={}",
+                entity == null ? null : entity.getClass().getSimpleName());
         T t = (T) service.insertSelective(entity);
         if (ObjectKit.isNotEmpty(t)) {
+            Logger.info(
+                    false,
+                    "Base",
+                    "CRUD add completed: entityType={}, success=true",
+                    entity == null ? null : entity.getClass().getSimpleName());
             return write(t);
         }
+        Logger.warn(
+                false,
+                "Base",
+                "CRUD add failed: entityType={}",
+                entity == null ? null : entity.getClass().getSimpleName());
         return write(ErrorCode._100807);
     }
 
@@ -73,10 +92,26 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
     @ResponseBody
     @RequestMapping(value = "/remove", method = RequestMethod.POST)
     public Object remove(T entity) {
+        Logger.info(
+                true,
+                "Base",
+                "CRUD remove request received: entityType={}",
+                entity == null ? null : entity.getClass().getSimpleName());
         long total = service.remove(entity);
         if (total >= 0) {
+            Logger.info(
+                    false,
+                    "Base",
+                    "CRUD remove completed: entityType={}, affectedRows={}",
+                    entity == null ? null : entity.getClass().getSimpleName(),
+                    total);
             return write(MapKit.of("total", total));
         }
+        Logger.warn(
+                false,
+                "Base",
+                "CRUD remove failed: entityType={}",
+                entity == null ? null : entity.getClass().getSimpleName());
         return write(ErrorCode._100807);
     }
 
@@ -89,10 +124,26 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
     @ResponseBody
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public Object delete(T entity) {
+        Logger.info(
+                true,
+                "Base",
+                "CRUD delete request received: entityType={}",
+                entity == null ? null : entity.getClass().getSimpleName());
         long total = service.delete(entity);
         if (total >= 0) {
+            Logger.info(
+                    false,
+                    "Base",
+                    "CRUD delete completed: entityType={}, affectedRows={}",
+                    entity == null ? null : entity.getClass().getSimpleName(),
+                    total);
             return write(MapKit.of("total", total));
         }
+        Logger.warn(
+                false,
+                "Base",
+                "CRUD delete failed: entityType={}",
+                entity == null ? null : entity.getClass().getSimpleName());
         return write(ErrorCode._100807);
     }
 
@@ -105,10 +156,25 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
     @ResponseBody
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public Object update(T entity) {
+        Logger.info(
+                true,
+                "Base",
+                "CRUD update request received: entityType={}",
+                entity == null ? null : entity.getClass().getSimpleName());
         T t = (T) service.updateSelective(entity);
         if (ObjectKit.isNotEmpty(t)) {
+            Logger.info(
+                    false,
+                    "Base",
+                    "CRUD update completed: entityType={}, success=true",
+                    entity == null ? null : entity.getClass().getSimpleName());
             return write(t);
         }
+        Logger.warn(
+                false,
+                "Base",
+                "CRUD update failed: entityType={}",
+                entity == null ? null : entity.getClass().getSimpleName());
         return write(ErrorCode._100807);
     }
 
@@ -121,7 +187,20 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
     @ResponseBody
     @RequestMapping(value = "/get", method = RequestMethod.GET)
     public Object get(T entity) {
-        return write(service.selectOne(entity));
+        Logger.info(
+                true,
+                "Base",
+                "CRUD get request received: entityType={}",
+                entity == null ? null : entity.getClass().getSimpleName());
+        Object result = service.selectOne(entity);
+        Logger.info(
+                false,
+                "Base",
+                "CRUD get completed: entityType={}, found={}, resultType={}",
+                entity == null ? null : entity.getClass().getSimpleName(),
+                ObjectKit.isNotEmpty(result),
+                result == null ? null : result.getClass().getSimpleName());
+        return write(result);
     }
 
     /**
@@ -133,7 +212,19 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
     @ResponseBody
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public Object list(T entity) {
-        return write(service.selectList(entity));
+        Logger.info(
+                true,
+                "Base",
+                "CRUD list request received: entityType={}",
+                entity == null ? null : entity.getClass().getSimpleName());
+        List<T> list = service.selectList(entity);
+        Logger.info(
+                false,
+                "Base",
+                "CRUD list completed: entityType={}, rowCount={}",
+                entity == null ? null : entity.getClass().getSimpleName(),
+                list == null ? 0 : list.size());
+        return write(list);
     }
 
     /**
@@ -145,7 +236,20 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
     @ResponseBody
     @RequestMapping(value = "/page", method = RequestMethod.GET)
     public Object page(@Valid({ "pageSize", "pageNo" }) T entity) {
-        return write(service.page(entity));
+        Logger.info(
+                true,
+                "Base",
+                "CRUD page request received: entityType={}",
+                entity == null ? null : entity.getClass().getSimpleName());
+        Result<T> result = service.page(entity);
+        Logger.info(
+                false,
+                "Base",
+                "CRUD page completed: entityType={}, total={}, rowCount={}",
+                entity == null ? null : entity.getClass().getSimpleName(),
+                result == null ? 0 : result.getTotal(),
+                result == null || result.getRows() == null ? 0 : result.getRows().size());
+        return write(result);
     }
 
 }

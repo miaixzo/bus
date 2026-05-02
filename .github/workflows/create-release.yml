@@ -1,0 +1,184 @@
+name: Create Release
+
+on:
+  workflow_call:
+    inputs:
+      tag:
+        description: 'Git tag to release.'
+        required: true
+        type: string
+      version:
+        description: 'Release version.'
+        required: false
+        default: ''
+        type: string
+      prerelease:
+        description: 'Mark the GitHub Release as a pre-release.'
+        required: false
+        default: false
+        type: boolean
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Git tag to release.'
+        required: true
+        type: string
+      version:
+        description: 'Release version. Leave empty to derive from tag.'
+        required: false
+        default: ''
+        type: string
+      prerelease:
+        description: 'Mark the GitHub Release as a pre-release.'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve Release Metadata
+        id: release
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
+          INPUT_VERSION: ${{ inputs.version || '' }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "$INPUT_TAG" ]; then
+            echo "::error::Release tag is required"
+            exit 1
+          fi
+
+          VERSION="$INPUT_VERSION"
+          if [ -z "$VERSION" ]; then
+            VERSION="${INPUT_TAG#v}"
+          fi
+
+          echo "tag=$INPUT_TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve Release Notes
+        id: notes
+        env:
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          git fetch --force --tags
+
+          if git rev-parse -q --verify "refs/tags/${RELEASE_TAG}" >/dev/null; then
+            target_ref="$RELEASE_TAG"
+          else
+            target_ref="HEAD"
+          fi
+
+          previous_tag="$(
+            git tag --sort=-creatordate --merged "$target_ref" \
+              | grep -v "^${RELEASE_TAG}$" \
+              | head -n 1 || true
+          )"
+
+          if [ -n "$previous_tag" ]; then
+            commit_range="${previous_tag}..${target_ref}"
+            range_title="Changes since ${previous_tag} / 自 ${previous_tag} 以来的变更"
+          else
+            commit_range="$target_ref"
+            range_title="Initial release changes / 初始发布变更"
+          fi
+
+          body_path="$RUNNER_TEMP/release-notes-${RELEASE_VERSION}.md"
+          commits_path="$RUNNER_TEMP/release-commits-${RELEASE_VERSION}.txt"
+          git log --no-merges --pretty=format:'%s (%h)' "$commit_range" > "$commits_path"
+
+          export BODY_PATH="$body_path"
+          export COMMITS_PATH="$commits_path"
+          export RANGE_TITLE="$range_title"
+
+          ruby <<'RUBY'
+          section_titles = [
+            '🐣 New Features / 新特性',
+            '🐛 Bug Fixes / Bug 修复',
+            '🔄 Refactoring / 重构',
+            '📚 Documentation / 文档',
+            '🧰 Build and Release / 构建与发布'
+          ]
+
+          sections = section_titles.to_h { |title| [title, []] }
+          other = []
+
+          def classify(commit)
+            return '🐛 Bug Fixes / Bug 修复' if commit.match?(/:bug:|(^|\s)(fix(\(.+\))?:|bug|修复|修正|问题)/i)
+            return '🧰 Build and Release / 构建与发布' if commit.match?(/:boom:|(^|\s)(build(\(.+\))?:|ci(\(.+\))?:|\b(release|workflow|maven|version|tag)\b|构建|发布|工作流|版本)/i)
+            return '📚 Documentation / 文档' if commit.match?(/:memo:|(^|\s)(docs?(\(.+\))?:|docs|document|documentation|javadoc|文档|说明|注释)/i)
+            return '🔄 Refactoring / 重构' if commit.match?(/:recycle:|(^|\s)(refactor(\(.+\))?:|refactor|cleanup|standardize|simplify|remove|重构|清理|优化|精简|移除)/i)
+            return '🐣 New Features / 新特性' if commit.match?(/:sparkles:|(^|\s)(feat(\(.+\))?:|feature(\(.+\))?:|add(ed)?|enhance(d)?|support(s|ed)?|新增|新特性|添加|增强|支持)/i)
+
+            nil
+          end
+
+          File.readlines(ENV.fetch('COMMITS_PATH'), chomp: true).reject(&:empty?).each do |commit|
+            category = classify(commit)
+
+            if category
+              sections[category] << commit
+            else
+              other << commit
+            end
+          end
+
+          File.open(ENV.fetch('BODY_PATH'), 'w') do |file|
+            file.puts '---'
+            file.puts "🚀 Bus Framework #{ENV.fetch('RELEASE_VERSION')} Release Notes / 发布说明"
+            file.puts
+            file.puts '---'
+            file.puts
+            file.puts ENV.fetch('RANGE_TITLE')
+            file.puts
+            file.puts "- Version / 版本：#{ENV.fetch('RELEASE_VERSION')}"
+            file.puts "- Tag / 标签：#{ENV.fetch('RELEASE_TAG')}"
+            file.puts
+
+            sections.each do |title, commits|
+              next if commits.empty?
+
+              file.puts '---'
+              file.puts title
+              file.puts
+              commits.each { |commit| file.puts "- #{commit}" }
+              file.puts
+            end
+
+            unless other.empty?
+              file.puts '---'
+              file.puts '📝 Other Changes / 其他变更'
+              file.puts
+              other.each { |commit| file.puts "- #{commit}" }
+              file.puts
+            end
+          end
+          RUBY
+
+          echo "body_path=$body_path" >> "$GITHUB_OUTPUT"
+          echo "Release notes: $body_path"
+
+      - name: Create Release
+        uses: ./.github/actions/create-release
+        with:
+          tag: ${{ steps.release.outputs.tag }}
+          version: ${{ steps.release.outputs.version }}
+          prerelease: ${{ inputs.prerelease }}
+          body_path: ${{ steps.notes.outputs.body_path }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

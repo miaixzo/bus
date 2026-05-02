@@ -139,6 +139,8 @@ public enum QueryRetrieveLevel2 {
             if (!optional)
                 if (lenient)
                     Logger.info(
+                            false,
+                            "Image",
                             "Missing or wildcard " + DICT.keywordOf(uniqueKey) + Symbol.SPACE + Tag.toString(uniqueKey)
                                     + " in Query/Retrieve Identifier");
                 else

@@ -21,12 +21,14 @@ package org.miaixz.bus.mapper.provider;
 
 import org.miaixz.bus.core.Context;
 import org.miaixz.bus.core.Provider;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.parsing.FieldMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Naming provider class based on {@link EnumValue.Naming}.
@@ -54,7 +56,7 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * </p>
  *
  * <pre>{@code
- * 
+ *
  * // Get naming provider instance
  * NamingProvider provider = NamingProvider.type("camel_underline_lower_case");
  *
@@ -114,6 +116,13 @@ public class NamingProvider implements Provider {
             EnumValue.Naming naming = EnumValue.Naming.fromString(style);
             return new NamingProvider(naming);
         } catch (IllegalArgumentException e) {
+            Logger.warn(
+                    false,
+                    "Mapper",
+                    e,
+                    "Mapper operation failed: provider={}, exception={}",
+                    "NamingProvider",
+                    e.getClass().getSimpleName());
             throw new IllegalArgumentException("illegal style：" + style);
         }
     }
@@ -125,7 +134,7 @@ public class NamingProvider implements Provider {
      * @return the naming provider instance
      */
     public static NamingProvider forStyle(String styleName) {
-        EnumValue.Naming naming = EnumValue.Naming.fromString(styleName);
+        EnumValue.Naming naming = EnumValue.Naming.fromString(Assert.notBlank(styleName, "Style name cannot be blank"));
         return new NamingProvider(naming);
     }
 

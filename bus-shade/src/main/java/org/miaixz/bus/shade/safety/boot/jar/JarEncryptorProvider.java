@@ -29,6 +29,7 @@ import java.util.zip.Deflater;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
 import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.shade.safety.Builder;
 import org.miaixz.bus.shade.safety.Complex;
 import org.miaixz.bus.shade.safety.Injector;
@@ -141,9 +142,25 @@ public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry
      */
     @Override
     public void encrypt(Key key, File src, File dest) throws IOException {
+        Logger.info(
+                true,
+                "Shade",
+                "Jar encryption started: sourceFile={}, targetFile={}, algorithm={}, mode={}",
+                src == null ? null : src.getName(),
+                dest == null ? null : dest.getName(),
+                key == null ? null : key.getAlgorithm(),
+                mode);
         try (FileInputStream fis = new FileInputStream(src); FileOutputStream fos = new FileOutputStream(dest)) {
             encrypt(key, fis, fos);
         }
+        Logger.info(
+                false,
+                "Shade",
+                "Jar encryption finished: sourceFile={}, targetFile={}, algorithm={}, mode={}",
+                src == null ? null : src.getName(),
+                dest == null ? null : dest.getName(),
+                key == null ? null : key.getAlgorithm(),
+                mode);
     }
 
     /**
@@ -162,6 +179,13 @@ public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry
         JarArchiveOutputStream zos = null;
         Set<String> indexes = new LinkedHashSet<>();
         try {
+            Logger.debug(
+                    true,
+                    "Shade",
+                    "Jar encryption stream started: algorithm={}, level={}, mode={}",
+                    key == null ? null : key.getAlgorithm(),
+                    level,
+                    mode);
             zis = new JarArchiveInputStream(in);
             zos = new JarArchiveOutputStream(out);
             zos.setLevel(level);
@@ -241,6 +265,21 @@ public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry
             }
 
             zos.finish();
+            Logger.debug(
+                    false,
+                    "Shade",
+                    "Jar encryption stream finished: encryptedEntryCount={}, frameworkInjected={}",
+                    indexes.size(),
+                    mainClass != null);
+        } catch (IOException e) {
+            Logger.warn(
+                    false,
+                    "Shade",
+                    e,
+                    "Jar encryption stream failed: encryptedEntryCount={}, exception={}",
+                    indexes.size(),
+                    e.getClass().getSimpleName());
+            throw e;
         } finally {
             Builder.close(zis);
             Builder.close(zos);

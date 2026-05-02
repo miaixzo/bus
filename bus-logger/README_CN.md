@@ -190,9 +190,9 @@ public class DataProcessor {
 }
 ```
 
-### 3. 带标签的对齐日志
+### 3. 带上下文的日志
 
-Bus Logger 支持对齐日志以提高可读性：
+建议直接在日志内容中表达业务上下文：
 
 ```java
 import org.miaixz.bus.logger.Logger;
@@ -200,21 +200,19 @@ import org.miaixz.bus.logger.Logger;
 public class OrderService {
 
     public void processOrder(Order order) {
-        // 入口日志（默认宽度：15）
-        Logger.info(true, "订单", "处理订单：{}", order.getId());
+        Logger.info("订单处理开始：orderId={}", order.getId());
 
         try {
             validateOrder(order);
-            Logger.info(true, "验证", "订单验证通过");
+            Logger.info("订单验证通过：orderId={}", order.getId());
             paymentService.charge(order);
-            Logger.info(true, "支付", "支付完成");
+            Logger.info("订单支付完成：orderId={}", order.getId());
             shippingService.ship(order);
-            Logger.info(true, "发货", "订单发货成功");
+            Logger.info("订单发货完成：orderId={}", order.getId());
 
-            // 出口日志
-            Logger.info(false, "订单", "订单处理完成：{}", order.getId());
+            Logger.info("订单处理完成：orderId={}", order.getId());
         } catch (Exception e) {
-            Logger.error(false, "订单", "处理订单失败：{}", order.getId());
+            Logger.error("订单处理失败：orderId={}", order.getId(), e);
             throw e;
         }
     }
@@ -223,14 +221,14 @@ public class OrderService {
 
 **输出：**
 ```
-===>     订单: 处理订单：ORD-12345
-===>     验证: 订单验证通过
-===>     支付: 支付完成
-===>     发货: 订单发货成功
-<==     订单: 订单处理完成：ORD-12345
+订单处理开始：orderId=ORD-12345
+订单验证通过：orderId=ORD-12345
+订单支付完成：orderId=ORD-12345
+订单发货完成：orderId=ORD-12345
+订单处理完成：orderId=ORD-12345
 ```
 
-### 4. 自定义宽度对齐
+### 4. 请求上下文日志
 
 ```java
 import org.miaixz.bus.logger.Logger;
@@ -238,21 +236,20 @@ import org.miaixz.bus.logger.Logger;
 public class ApiService {
 
     public void handleRequest(Request request) {
-        // 自定义宽度（20 个字符）
-        Logger.debug(true, "过滤", 20, "应用安全过滤器");
-        Logger.debug(true, "认证", 20, "认证用户：{}", request.getUser());
-        Logger.debug(true, "处理", 20, "处理请求：{}", request.getId());
-        Logger.debug(false, "处理", 20, "请求处理成功");
+        Logger.debug("API 安全过滤器已应用：requestId={}", request.getId());
+        Logger.debug("API 用户认证通过：requestId={}, user={}", request.getId(), request.getUser());
+        Logger.debug("API 请求处理开始：requestId={}", request.getId());
+        Logger.debug("API 请求处理成功：requestId={}", request.getId());
     }
 }
 ```
 
 **输出：**
 ```
-===>              过滤: 应用安全过滤器
-===>               认证: 认证用户：john.doe
-===>               处理: 处理请求：REQ-001
-<==               处理: 请求处理成功
+API 安全过滤器已应用：requestId=REQ-001
+API 用户认证通过：requestId=REQ-001, user=john.doe
+API 请求处理开始：requestId=REQ-001
+API 请求处理成功：requestId=REQ-001
 ```
 
 ### 5. 异常日志记录

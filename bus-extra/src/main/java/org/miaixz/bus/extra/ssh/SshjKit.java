@@ -25,6 +25,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Utility class for SSHJ, a Java library for SSH. This class provides a simplified way to create and configure an
@@ -57,6 +58,15 @@ public class SshjKit {
             ssh.connect(connector.getHost(), connector.getPort());
             ssh.authPassword(connector.getUser(), connector.getPassword());
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "SSHJ client open failed: hostPresent={}, port={}, timeoutMs={}, exception={}",
+                    connector.getHost() != null,
+                    connector.getPort(),
+                    connector.getTimeout(),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
 

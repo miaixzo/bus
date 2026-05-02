@@ -53,7 +53,7 @@ import org.miaixz.bus.mapper.dialect.Dialect;
  * }
  *
  * // Or use lambda directly
- * String sql = SqlScript.caching(providerContext, (entity, script) -> {
+ * String sql = SqlScript.caching(context, (entity, script) -> {
  *     return script.where(() -> script.ifTest("status != null", "status = #{status}"));
  * });
  * }</pre>
@@ -65,8 +65,8 @@ import org.miaixz.bus.mapper.dialect.Dialect;
  * <pre>{@code
  *
  * // In Provider class for UPSERT operations
- * public static String insertUp(ProviderContext providerContext) {
- *     return SqlScript.cachingDynamic(providerContext, (entity, dialect) -> {
+ * public static String insertUp(ProviderContext context) {
+ *     return SqlScript.cachingDynamic(context, (entity, dialect) -> {
  *         return switch (dialect.getUpsertType()) {
  *             case INSERT_ON_DUPLICATE -> "...";
  *             case INSERT_ON_CONFLICT -> "...";

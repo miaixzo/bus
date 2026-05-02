@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -43,6 +43,9 @@ import com.sun.jna.platform.mac.IOKitUtil;
 @Immutable
 final class MacFirmware extends AbstractFirmware {
 
+    /**
+     * The manufNameDescVersRelease value.
+     */
     private final Supplier<Tuple> manufNameDescVersRelease = Memoizer.memoize(MacFirmware::queryEfi);
 
     /**

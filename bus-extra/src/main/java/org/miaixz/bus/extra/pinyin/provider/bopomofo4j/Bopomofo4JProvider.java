@@ -21,6 +21,7 @@ package org.miaixz.bus.extra.pinyin.provider.bopomofo4j;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.extra.pinyin.PinyinProvider;
+import org.miaixz.bus.logger.Logger;
 
 import com.rnkrsoft.bopomofo4j.Bopomofo4j;
 import com.rnkrsoft.bopomofo4j.ToneType;
@@ -35,7 +36,7 @@ import com.rnkrsoft.bopomofo4j.ToneType;
  *
  * <p>
  * To introduce (dependency):
- * 
+ *
  * <pre>
  * &lt;dependency&gt;
  *     &lt;groupId&gt;com.rnkrsoft.bopomofo4j&lt;/groupId&gt;
@@ -53,7 +54,9 @@ public class Bopomofo4JProvider implements PinyinProvider {
      * Constructs a new Bopomofo4JProvider instance. Initializes the Bopomofo4j library for local use.
      */
     public Bopomofo4JProvider() {
+        Logger.info(true, "Extra", "Bopomofo4J provider initialization started");
         Bopomofo4j.local();
+        Logger.info(false, "Extra", "Bopomofo4J provider initialized");
     }
 
     /**

@@ -41,7 +41,6 @@ import org.miaixz.bus.core.io.stream.BOMInputStream;
 import org.miaixz.bus.core.io.stream.LineCounter;
 import org.miaixz.bus.core.io.unit.DataSize;
 import org.miaixz.bus.core.lang.*;
-import org.miaixz.bus.core.lang.Console;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.text.CharsBacker;
 
@@ -2473,7 +2472,6 @@ public class FileKit extends PathResolve {
      */
     public static File getWebRoot() {
         final String classPath = ClassKit.getClassPath();
-        Console.log(classPath);
         if (StringKit.isNotBlank(classPath)) {
             return getParent(file(classPath), 2);
         }

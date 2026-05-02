@@ -51,6 +51,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Utility class for SAX-based Excel reading.
@@ -235,6 +236,14 @@ public class ExcelSaxKit {
         try {
             xmlReader = XMLHelper.newXMLReader();
         } catch (final SAXException | ParserConfigurationException e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel SAX XML reader creation failed: streamPresent={}, handlerPresent={}, exception={}",
+                    xmlDocStream != null,
+                    handler != null,
+                    e.getClass().getSimpleName());
             if (e.getMessage().contains("org.apache.xerces.parsers.SAXParser")) {
                 throw new DependencyException(e,
                         "You need to add 'xerces:xercesImpl' to your project and version >= 2.11.0");
@@ -246,10 +255,33 @@ public class ExcelSaxKit {
         try {
             xmlReader.parse(new InputSource(xmlDocStream));
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel SAX XML parse failed: streamPresent={}, handlerPresent={}, exception={}",
+                    xmlDocStream != null,
+                    handler != null,
+                    e.getClass().getSimpleName());
             throw new RevisedException(e);
         } catch (final SAXException e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel SAX XML handler failed: streamPresent={}, handlerPresent={}, exception={}",
+                    xmlDocStream != null,
+                    handler != null,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         } catch (final TerminateException e) {
+            Logger.debug(
+                    false,
+                    "Office",
+                    "Excel SAX XML parse terminated by handler: streamPresent={}, handlerPresent={}, exception={}",
+                    xmlDocStream != null,
+                    handler != null,
+                    e.getClass().getSimpleName());
             // This exception is thrown by the user to force termination of reading.
         }
     }

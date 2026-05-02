@@ -32,6 +32,12 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class TextSimilarity {
 
     /**
+     * Constructs a new text similarity utility instance.
+     */
+    public TextSimilarity() {
+    }
+
+    /**
      * Calculates the similarity between two strings using the Levenshtein distance algorithm. If both strings are
      * empty, the similarity is considered 1 (identical). The comparison method involves:
      * <ul>

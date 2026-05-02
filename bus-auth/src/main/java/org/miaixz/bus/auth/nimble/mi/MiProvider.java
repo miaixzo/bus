@@ -119,6 +119,15 @@ public class MiProvider extends AbstractProvider {
             return Authorization.builder().token(token).expireIn(expiresIn).scope(scope).token_type(tokenType)
                     .refresh(refresh).openId(openId).macAlgorithm(macAlgorithm).macKey(macKey).build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "access token",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
     }
@@ -173,7 +182,7 @@ public class MiProvider extends AbstractProvider {
             try {
                 Map<String, Object> userEmailPhone = JsonKit.toPojo(emailResponse, Map.class);
                 if (userEmailPhone == null) {
-                    Logger.warn("Failed to parse email/phone response: empty response");
+                    Logger.warn(false, "Auth", "Failed to parse email/phone response: empty response");
                     return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(authUser).build();
                 }
 
@@ -186,14 +195,25 @@ public class MiProvider extends AbstractProvider {
                     }
                 } else {
                     Logger.warn(
+                            false,
+                            "Auth",
                             "Xiaomi developer platform currently does not provide access to user phone and email information");
                 }
             } catch (Exception e) {
-                Logger.warn("Failed to parse email/phone response: " + e.getMessage());
+                Logger.warn(false, "Auth", "Failed to parse email/phone response: " + e.getMessage());
             }
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(authUser).build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "user info",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
     }

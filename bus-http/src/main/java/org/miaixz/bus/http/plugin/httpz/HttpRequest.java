@@ -21,6 +21,7 @@ package org.miaixz.bus.http.plugin.httpz;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +35,7 @@ import org.miaixz.bus.http.Httpd;
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.bodys.MultipartBody;
 import org.miaixz.bus.http.bodys.RequestBody;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * An abstract base class for representing an HTTP request. It encapsulates common request properties such as URL,
@@ -202,7 +204,39 @@ public abstract class HttpRequest {
      * @return The constructed {@link Request}.
      */
     public Request createRequest(Callback callback) {
-        return buildRequest(buildRequestBody());
+        RequestBody requestBody = buildRequestBody();
+        Map<String, Object> parameters = new LinkedHashMap<>();
+        parameters.put("params", params);
+        parameters.put("encodedParams", encodedParams);
+        parameters.put("bodyChars", body == null ? 0 : body.length());
+        parameters.put("fileCount", list == null ? 0 : list.size());
+        parameters.put("multipartPartCount", multipartBody == null ? 0 : multipartBody.size());
+        Logger.debug(
+                true,
+                "Http",
+                "Request header snapshot: protocol=httpz, id={}, url={}, headerCount={}",
+                id,
+                url,
+                headers == null ? 0 : headers.size());
+        Logger.debug(true, "Http", "Request headers: protocol=httpz, id={}, url={}, headers={}", id, url, headers);
+        Logger.debug(
+                true,
+                "Http",
+                "Request parameter snapshot: protocol=httpz, id={}, url={}, parameterCount={}, encodedParameterCount={}, bodyChars={}, fileCount={}",
+                id,
+                url,
+                params == null ? 0 : params.size(),
+                encodedParams == null ? 0 : encodedParams.size(),
+                body == null ? 0 : body.length(),
+                list == null ? 0 : list.size());
+        Logger.debug(
+                true,
+                "Http",
+                "Request parameters: protocol=httpz, id={}, url={}, parameters={}",
+                id,
+                url,
+                parameters);
+        return buildRequest(requestBody);
     }
 
     /**

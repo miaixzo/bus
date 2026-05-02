@@ -31,6 +31,7 @@ import org.miaixz.bus.extra.mq.Consumer;
 import org.miaixz.bus.extra.mq.Message;
 import org.miaixz.bus.extra.mq.MessageHandler;
 import org.miaixz.bus.extra.mq.RawMessage;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Kafka consumer implementation class. This class provides an adapter for consuming messages from Apache Kafka,
@@ -76,7 +77,13 @@ public class KafkaConsumer implements Consumer {
      * @return This {@code KafkaConsumer} instance, allowing for method chaining.
      */
     public KafkaConsumer setTopics(final String... topics) {
+        Logger.info(true, "Extra", "Kafka topic subscription started: topics={}", topics == null ? 0 : topics.length);
         this.consumer.subscribe(ListKit.of(topics));
+        Logger.info(
+                false,
+                "Extra",
+                "Kafka topic subscription registered: topics={}",
+                topics == null ? 0 : topics.length);
         return this;
     }
 
@@ -88,7 +95,13 @@ public class KafkaConsumer implements Consumer {
      * @return This {@code KafkaConsumer} instance, allowing for method chaining.
      */
     public KafkaConsumer setTopicPattern(final Pattern topicPattern) {
+        Logger.info(true, "Extra", "Kafka topic pattern subscription started: patternPresent={}", topicPattern != null);
         this.consumer.subscribe(topicPattern);
+        Logger.info(
+                false,
+                "Extra",
+                "Kafka topic pattern subscription registered: patternPresent={}",
+                topicPattern != null);
         return this;
     }
 
@@ -101,8 +114,30 @@ public class KafkaConsumer implements Consumer {
      */
     @Override
     public void subscribe(final MessageHandler messageHandler) {
-        for (final ConsumerRecord<String, byte[]> record : this.consumer.poll(Duration.ofMillis(3000))) {
-            messageHandler.handle(new RawMessage(record.topic(), record.value()));
+        final long startedAt = System.nanoTime();
+        Logger.debug(true, "Extra", "Kafka poll started: timeoutMs={}", 3000);
+        var records = this.consumer.poll(Duration.ofMillis(3000));
+        int batchSize = records.count();
+        try {
+            for (final ConsumerRecord<String, byte[]> record : records) {
+                messageHandler.handle(new RawMessage(record.topic(), record.value()));
+            }
+            Logger.debug(
+                    false,
+                    "Extra",
+                    "Kafka poll handled: batchSize={}, elapsedMs={}",
+                    batchSize,
+                    (System.nanoTime() - startedAt) / 1_000_000L);
+        } catch (RuntimeException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "Kafka poll handling failed: batchSize={}, exception={}, elapsedMs={}",
+                    batchSize,
+                    e.getClass().getSimpleName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
+            throw e;
         }
     }
 
@@ -115,7 +150,25 @@ public class KafkaConsumer implements Consumer {
      */
     @Override
     public void close() throws IOException {
-        IoKit.nullSafeClose(this.consumer);
+        final long startedAt = System.nanoTime();
+        Logger.debug(true, "Extra", "Kafka consumer close requested");
+        try {
+            IoKit.nullSafeClose(this.consumer);
+            Logger.debug(
+                    false,
+                    "Extra",
+                    "Kafka consumer closed: elapsedMs={}",
+                    (System.nanoTime() - startedAt) / 1_000_000L);
+        } catch (IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "Kafka consumer close failed: exception={}, elapsedMs={}",
+                    e.getClass().getSimpleName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
+            throw e;
+        }
     }
 
 }

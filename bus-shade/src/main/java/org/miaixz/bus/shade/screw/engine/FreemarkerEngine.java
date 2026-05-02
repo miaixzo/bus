@@ -28,6 +28,7 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.shade.screw.Builder;
 import org.miaixz.bus.shade.screw.metadata.DataSchema;
 
@@ -57,6 +58,12 @@ public class FreemarkerEngine extends AbstractEngine {
     {
         try {
             String path = getEngineConfig().getCustomTemplate();
+            Logger.debug(
+                    true,
+                    "Shade",
+                    "Freemarker configuration loading started: customTemplate={}, fileType={}",
+                    StringKit.isNotBlank(path) && FileKit.exists(path),
+                    getEngineConfig().getFileType());
             // If a custom template path is provided and the file exists
             if (StringKit.isNotBlank(path) && FileKit.exists(path)) {
                 // Get the parent directory of the custom template
@@ -74,7 +81,21 @@ public class FreemarkerEngine extends AbstractEngine {
             configuration.setDefaultEncoding(Charset.DEFAULT_UTF_8);
             // Set the locale for internationalization
             configuration.setLocale(new Locale(Builder.DEFAULT_LOCALE));
+            Logger.debug(
+                    false,
+                    "Shade",
+                    "Freemarker configuration loaded: customTemplate={}, fileType={}, locale={}",
+                    StringKit.isNotBlank(path) && FileKit.exists(path),
+                    getEngineConfig().getFileType(),
+                    Builder.DEFAULT_LOCALE);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Shade",
+                    e,
+                    "Freemarker configuration loading failed: fileType={}, exception={}",
+                    getEngineConfig().getFileType(),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -99,8 +120,18 @@ public class FreemarkerEngine extends AbstractEngine {
     public void produce(DataSchema info, String docName) throws InternalException {
         Assert.notNull(info, "DataModel can not be empty!");
         String path = getEngineConfig().getCustomTemplate();
+        long start = System.currentTimeMillis();
         try {
             Template template;
+            Logger.debug(
+                    true,
+                    "Shade",
+                    "Template rendering started: docName={}, database={}, tableCount={}, fileType={}, customTemplate={}",
+                    docName,
+                    info.getDatabase(),
+                    info.getTables().size(),
+                    getEngineConfig().getFileType(),
+                    StringKit.isNotBlank(path) && FileKit.exists(path));
             // If a custom template path is provided and the file exists
             if (StringKit.isNotBlank(path) && FileKit.exists(path)) {
                 // Get the template from the custom file
@@ -114,6 +145,13 @@ public class FreemarkerEngine extends AbstractEngine {
             }
             // Create the output file
             File file = getFile(docName);
+            Logger.debug(
+                    true,
+                    "Shade",
+                    "Template output write started: docName={}, template={}, filePath={}",
+                    docName,
+                    template.getName(),
+                    file.getAbsolutePath());
             // Write the processed template to the file
             try (Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), Charset.UTF_8))) {
                 // Process the template with the data model
@@ -121,7 +159,24 @@ public class FreemarkerEngine extends AbstractEngine {
                 // Open the output directory if configured to do so
                 openOutputDir();
             }
+            Logger.info(
+                    false,
+                    "Shade",
+                    "Template rendering finished: docName={}, template={}, filePath={}, elapsedMs={}",
+                    docName,
+                    template.getName(),
+                    file.getAbsolutePath(),
+                    System.currentTimeMillis() - start);
         } catch (IOException | TemplateException e) {
+            Logger.warn(
+                    false,
+                    "Shade",
+                    e,
+                    "Template rendering failed: docName={}, fileType={}, customTemplate={}, exception={}",
+                    docName,
+                    getEngineConfig().getFileType(),
+                    StringKit.isNotBlank(path) && FileKit.exists(path),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }

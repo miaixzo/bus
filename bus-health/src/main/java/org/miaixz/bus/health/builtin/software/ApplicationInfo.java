@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -28,7 +28,7 @@ import java.util.Objects;
  * Represents common information about an installed application across different operating systems. This class provides
  * standardized access to essential application details while allowing flexibility for OS-specific fields via an
  * additional information map.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -127,6 +127,12 @@ public class ApplicationInfo {
         return additionalInfo;
     }
 
+    /**
+     * Returns the equals result.
+     *
+     * @param o the o
+     * @return the equals result
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -140,11 +146,21 @@ public class ApplicationInfo {
                 && Objects.equals(vendor, that.vendor) && Objects.equals(additionalInfo, that.additionalInfo);
     }
 
+    /**
+     * Returns whether the h code value is present.
+     *
+     * @return the hash code result
+     */
     @Override
     public int hashCode() {
         return Objects.hash(name, version, vendor, timestamp, additionalInfo);
     }
 
+    /**
+     * Returns the to string result.
+     *
+     * @return the to string result
+     */
     @Override
     public String toString() {
         return "AppInfo{" + "name=" + name + ", version=" + version + ", vendor=" + vendor + ", timestamp=" + timestamp

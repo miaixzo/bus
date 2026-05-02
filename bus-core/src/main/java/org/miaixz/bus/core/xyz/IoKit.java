@@ -54,7 +54,6 @@ import org.miaixz.bus.core.io.stream.StreamWriter;
 import org.miaixz.bus.core.io.timout.AsyncTimeout;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.lang.*;
-import org.miaixz.bus.core.lang.Console;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
@@ -1794,12 +1793,9 @@ public class IoKit {
             protected void timedOut() {
                 try {
                     socket.close();
-                } catch (Exception e) {
-                    Console.log("Failed to close timed out socket " + socket, e);
+                } catch (Exception ignored) {
                 } catch (AssertionError e) {
-                    if (isAndroidGetsocknameError(e)) {
-                        Console.log("Failed to close timed out socket " + socket, e);
-                    } else {
+                    if (!isAndroidGetsocknameError(e)) {
                         throw e;
                     }
                 }

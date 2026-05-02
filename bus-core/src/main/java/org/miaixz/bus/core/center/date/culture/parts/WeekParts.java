@@ -35,6 +35,12 @@ import org.miaixz.bus.core.center.date.culture.Week;
 public abstract class WeekParts extends MonthParts {
 
     /**
+     * Constructs week-based date parts.
+     */
+    protected WeekParts() {
+    }
+
+    /**
      * The week index within the month (0-5).
      */
     protected int index;

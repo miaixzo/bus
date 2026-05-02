@@ -37,6 +37,12 @@ public class SimpleWatcher implements Watcher, Serializable {
     private static final long serialVersionUID = 2852236259796L;
 
     /**
+     * Constructs a new simple watcher.
+     */
+    public SimpleWatcher() {
+    }
+
+    /**
      * Called when a file or directory is created. This default implementation does nothing.
      *
      * @param event The {@link WatchEvent} that occurred.

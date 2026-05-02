@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -58,24 +58,68 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 @ThreadSafe
 public final class WindowsHWDiskStore extends AbstractHWDiskStore {
 
+    /**
+     * The PHYSICALDRIVE_PREFIX constant.
+     */
     private static final String PHYSICALDRIVE_PREFIX = "\\\\.\\PHYSICALDRIVE";
+    /**
+     * The DEVICE_ID constant.
+     */
     private static final Pattern DEVICE_ID = Pattern.compile(".*\\.DeviceID=\"(.*)\"");
 
     // A reasonable size for the buffer to accommodate the largest possible volume
     // GUID path is 50 characters.
+    /**
+     * The GUID_BUFSIZE constant.
+     */
     private static final int GUID_BUFSIZE = 100;
     // Windows allows up to 32 characters for NTFS volume labels; +1 for null terminator
+    /**
+     * The LABEL_BUFSIZE constant.
+     */
     private static final int LABEL_BUFSIZE = 33;
 
+    /**
+     * The reads value.
+     */
     private long reads = 0L;
+    /**
+     * The readBytes value.
+     */
     private long readBytes = 0L;
+    /**
+     * The writes value.
+     */
     private long writes = 0L;
+    /**
+     * The writeBytes value.
+     */
     private long writeBytes = 0L;
+    /**
+     * The currentQueueLength value.
+     */
     private long currentQueueLength = 0L;
+    /**
+     * The transferTime value.
+     */
     private long transferTime = 0L;
+    /**
+     * The timeStamp value.
+     */
     private long timeStamp = 0L;
-    private List<HWPartition> partitionList;
+    /**
+     * The partitionList value.
+     */
+    private List<HWPartition> partitionList = Collections.emptyList();
 
+    /**
+     * Creates a new WindowsHWDiskStore instance.
+     *
+     * @param name   the name
+     * @param model  the model
+     * @param serial the serial
+     * @param size   the size
+     */
     private WindowsHWDiskStore(String name, String model, String serial, long size) {
         super(name, model, serial, size);
     }
@@ -139,7 +183,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
             }
             return result;
         } catch (COMException e) {
-            Logger.warn("COM exception: {}", e.getMessage());
+            Logger.warn(false, "Health", "COM exception: {}", e.getClass().getSimpleName());
             return Collections.emptyList();
         } finally {
             if (comInit) {
@@ -188,6 +232,12 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
         return stats;
     }
 
+    /**
+     * Queries the partition maps.
+     *
+     * @param h the h
+     * @return the query partition maps result
+     */
     private static PartitionMaps queryPartitionMaps(WmiQueryHandler h) {
         // Create object to hold and return results
         PartitionMaps maps = new PartitionMaps();
@@ -253,7 +303,12 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
                         label = new String(labelChr).trim();
                     } else {
                         int error = Kernel32.INSTANCE.GetLastError();
-                        Logger.debug("Failed to get volume label for {}: error code {}", logicalDrive.getLeft(), error);
+                        Logger.debug(
+                                false,
+                                "Health",
+                                "Failed to get volume label for {}: error code {}",
+                                logicalDrive.getLeft(),
+                                error);
                     }
                     HWPartition pt = new HWPartition(
                             WmiKit.getString(hwPartitionQueryMap, DiskPartitionProperty.NAME, i),
@@ -283,52 +338,94 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
      * @return The first space-delimited value
      */
     private static String getIndexFromName(String s) {
-        if (s.isEmpty()) {
-            return s;
-        }
-        return s.split("\\s")[0];
+        return s.split("\\s", 2)[0];
     }
 
+    /**
+     * Returns the reads.
+     *
+     * @return the get reads result
+     */
     @Override
     public long getReads() {
         return reads;
     }
 
+    /**
+     * Returns the read bytes.
+     *
+     * @return the get read bytes result
+     */
     @Override
     public long getReadBytes() {
         return readBytes;
     }
 
+    /**
+     * Returns the writes.
+     *
+     * @return the get writes result
+     */
     @Override
     public long getWrites() {
         return writes;
     }
 
+    /**
+     * Returns the write bytes.
+     *
+     * @return the get write bytes result
+     */
     @Override
     public long getWriteBytes() {
         return writeBytes;
     }
 
+    /**
+     * Returns the current queue length.
+     *
+     * @return the get current queue length result
+     */
     @Override
     public long getCurrentQueueLength() {
         return currentQueueLength;
     }
 
+    /**
+     * Returns the transfer time.
+     *
+     * @return the get transfer time result
+     */
     @Override
     public long getTransferTime() {
         return transferTime;
     }
 
+    /**
+     * Returns the time stamp.
+     *
+     * @return the get time stamp result
+     */
     @Override
     public long getTimeStamp() {
         return timeStamp;
     }
 
+    /**
+     * Returns the partitions.
+     *
+     * @return the get partitions result
+     */
     @Override
     public List<HWPartition> getPartitions() {
         return this.partitionList;
     }
 
+    /**
+     * Updates the attributes.
+     *
+     * @return the update attributes result
+     */
     @Override
     public boolean updateAttributes() {
         String index;
@@ -349,7 +446,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
             // the code reaches this point, but just in case it does, here's the
             // correct response. If you get this log warning, the circumstances
             // would be of great interest to the project's maintainers.
-            Logger.warn("Couldn't match index for {}", getName());
+            Logger.warn(false, "Health", "Couldn't match index for {}", getName());
             return false;
         }
         DiskStats stats = queryReadWriteStats(index);
@@ -372,12 +469,33 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
      */
     private static final class DiskStats {
 
+        /**
+         * The readMap value.
+         */
         private final Map<String, Long> readMap = new HashMap<>();
+        /**
+         * The readByteMap value.
+         */
         private final Map<String, Long> readByteMap = new HashMap<>();
+        /**
+         * The writeMap value.
+         */
         private final Map<String, Long> writeMap = new HashMap<>();
+        /**
+         * The writeByteMap value.
+         */
         private final Map<String, Long> writeByteMap = new HashMap<>();
+        /**
+         * The queueLengthMap value.
+         */
         private final Map<String, Long> queueLengthMap = new HashMap<>();
+        /**
+         * The diskTimeMap value.
+         */
         private final Map<String, Long> diskTimeMap = new HashMap<>();
+        /**
+         * The timeStamp value.
+         */
         private long timeStamp;
     }
 
@@ -386,8 +504,17 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
      */
     private static final class PartitionMaps {
 
+        /**
+         * The driveToPartitionMap value.
+         */
         private final Map<String, List<String>> driveToPartitionMap = new HashMap<>();
+        /**
+         * The partitionToLogicalDriveMap value.
+         */
         private final Map<String, List<Pair<String, Long>>> partitionToLogicalDriveMap = new HashMap<>();
+        /**
+         * The partitionMap value.
+         */
         private final Map<String, List<HWPartition>> partitionMap = new HashMap<>();
     }
 

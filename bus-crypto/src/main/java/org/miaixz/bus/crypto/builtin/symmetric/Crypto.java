@@ -44,6 +44,7 @@ import org.miaixz.bus.crypto.Padding;
 import org.miaixz.bus.crypto.builtin.SaltMagic;
 import org.miaixz.bus.crypto.builtin.SaltParser;
 import org.miaixz.bus.crypto.cipher.JceCipher;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Symmetric encryption algorithm.
@@ -318,6 +319,15 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
         try {
             return cipher.update(paddingDataWithZero(data, cipher.getBlockSize()));
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Symmetric cipher update failed: algorithm={}, inputBytes={}, blockSize={}, exception={}",
+                    cipher.getAlgorithm(),
+                    data == null ? 0 : data.length,
+                    cipher.getBlockSize(),
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         } finally {
             lock.unlock();
@@ -335,6 +345,13 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
         try {
             return cipher.doFinal();
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Symmetric cipher finalization failed: algorithm={}, exception={}",
+                    cipher.getAlgorithm(),
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         } finally {
             lock.unlock();
@@ -422,8 +439,24 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
                 }
             }
         } catch (final InternalException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
+                    "Crypto",
+                    false,
+                    e.getClass().getSimpleName());
             throw e;
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Symmetric stream encryption failed: algorithm={}, closeInput={}, exception={}",
+                    getCipher().getAlgorithm(),
+                    isClose,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         } finally {
             lock.unlock();
@@ -452,6 +485,14 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
             blockSize = cipher.getBlockSize();
             decryptData = cipher.processFinal(SaltMagic.getData(bytes));
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Symmetric decryption failed: algorithm={}, inputBytes={}, exception={}",
+                    getCipher().getAlgorithm(),
+                    bytes == null ? 0 : bytes.length,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         } finally {
             lock.unlock();
@@ -485,10 +526,34 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
             }
             IoKit.copy(cipherInputStream, out);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Symmetric stream decryption I/O failed: algorithm={}, closeInput={}, exception={}",
+                    getCipher().getAlgorithm(),
+                    isClose,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         } catch (final InternalException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
+                    "Crypto",
+                    false,
+                    e.getClass().getSimpleName());
             throw e;
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Symmetric stream decryption failed: algorithm={}, closeInput={}, exception={}",
+                    getCipher().getAlgorithm(),
+                    isClose,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         } finally {
             lock.unlock();

@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -40,9 +40,17 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractSensors;
 @ThreadSafe
 final class OpenBsdSensors extends AbstractSensors {
 
+    /**
+     * The tempFanVolts value.
+     */
     private final Supplier<Triplet<Double, int[], Double>> tempFanVolts = Memoizer
             .memoize(OpenBsdSensors::querySensors, Memoizer.defaultExpiration());
 
+    /**
+     * Queries the sensors.
+     *
+     * @return the query sensors result
+     */
     private static Triplet<Double, int[], Double> querySensors() {
         double volts = 0d;
         List<Double> cpuTemps = new ArrayList<>();
@@ -74,6 +82,12 @@ final class OpenBsdSensors extends AbstractSensors {
         return Triplet.of(temp, fans, volts);
     }
 
+    /**
+     * Returns the list average result.
+     *
+     * @param doubles the doubles
+     * @return the list average result
+     */
     private static double listAverage(List<Double> doubles) {
         double sum = 0d;
         int count = 0;
@@ -86,16 +100,31 @@ final class OpenBsdSensors extends AbstractSensors {
         return count > 0 ? sum / count : 0d;
     }
 
+    /**
+     * Queries the cpu temperature.
+     *
+     * @return the query cpu temperature result
+     */
     @Override
     public double queryCpuTemperature() {
         return tempFanVolts.get().getLeft();
     }
 
+    /**
+     * Queries the fan speeds.
+     *
+     * @return the query fan speeds result
+     */
     @Override
     public int[] queryFanSpeeds() {
         return tempFanVolts.get().getMiddle();
     }
 
+    /**
+     * Queries the cpu voltage.
+     *
+     * @return the query cpu voltage result
+     */
     @Override
     public double queryCpuVoltage() {
         return tempFanVolts.get().getRight();

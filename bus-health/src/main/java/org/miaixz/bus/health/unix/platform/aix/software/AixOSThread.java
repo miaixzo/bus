@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -34,67 +34,150 @@ import org.miaixz.bus.health.unix.platform.aix.driver.PsInfo;
 @ThreadSafe
 public class AixOSThread extends AbstractOSThread {
 
+    /**
+     * The threadId value.
+     */
     private int threadId;
+    /**
+     * The state value.
+     */
     private OSProcess.State state = OSProcess.State.INVALID;
+    /**
+     * The startMemoryAddress value.
+     */
     private long startMemoryAddress;
+    /**
+     * The contextSwitches value.
+     */
     private long contextSwitches;
+    /**
+     * The kernelTime value.
+     */
     private long kernelTime;
+    /**
+     * The userTime value.
+     */
     private long userTime;
+    /**
+     * The startTime value.
+     */
     private long startTime;
+    /**
+     * The upTime value.
+     */
     private long upTime;
+    /**
+     * The priority value.
+     */
     private int priority;
 
+    /**
+     * Creates a new AixOSThread instance.
+     *
+     * @param pid the pid
+     * @param tid the tid
+     */
     public AixOSThread(int pid, int tid) {
         super(pid);
         this.threadId = tid;
         updateAttributes();
     }
 
+    /**
+     * Returns the thread id.
+     *
+     * @return the get thread id result
+     */
     @Override
     public int getThreadId() {
         return this.threadId;
     }
 
+    /**
+     * Returns the state.
+     *
+     * @return the get state result
+     */
     @Override
     public OSProcess.State getState() {
         return this.state;
     }
 
+    /**
+     * Returns the start memory address.
+     *
+     * @return the get start memory address result
+     */
     @Override
     public long getStartMemoryAddress() {
         return this.startMemoryAddress;
     }
 
+    /**
+     * Returns the context switches.
+     *
+     * @return the get context switches result
+     */
     @Override
     public long getContextSwitches() {
         return this.contextSwitches;
     }
 
+    /**
+     * Returns the kernel time.
+     *
+     * @return the get kernel time result
+     */
     @Override
     public long getKernelTime() {
         return this.kernelTime;
     }
 
+    /**
+     * Returns the user time.
+     *
+     * @return the get user time result
+     */
     @Override
     public long getUserTime() {
         return this.userTime;
     }
 
+    /**
+     * Returns the up time.
+     *
+     * @return the get up time result
+     */
     @Override
     public long getUpTime() {
         return this.upTime;
     }
 
+    /**
+     * Returns the start time.
+     *
+     * @return the get start time result
+     */
     @Override
     public long getStartTime() {
         return this.startTime;
     }
 
+    /**
+     * Returns the priority.
+     *
+     * @return the get priority result
+     */
     @Override
     public int getPriority() {
         return this.priority;
     }
 
+    /**
+     * Updates the attributes.
+     *
+     * @return the update attributes result
+     */
     @Override
     public boolean updateAttributes() {
         AixLibc.AixLwpsInfo lwpsinfo = PsInfo.queryLwpsInfo(getOwningProcessId(), getThreadId());

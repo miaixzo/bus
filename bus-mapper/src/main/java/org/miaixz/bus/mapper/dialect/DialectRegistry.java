@@ -30,8 +30,10 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.sql.DataSource;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Holder;
 import org.miaixz.bus.mapper.support.paging.Pageable;
 
@@ -153,9 +155,7 @@ public final class DialectRegistry {
      * @param dialect the dialect to register
      */
     public static synchronized void registerDialect(Dialect dialect) {
-        if (dialect == null) {
-            throw new IllegalArgumentException("Dialect cannot be null");
-        }
+        Assert.notNull(dialect, "Dialect cannot be null");
         // Add at the beginning for priority
         DIALECTS.add(0, dialect);
     }
@@ -187,6 +187,13 @@ public final class DialectRegistry {
             DATASOURCE_CACHE.put(dataSource, dialect);
             return dialect;
         } catch (SQLException e) {
+            Logger.warn(
+                    false,
+                    "Mapper",
+                    e,
+                    "Mapper operation failed: provider={}, exception={}",
+                    "DialectRegistry",
+                    e.getClass().getSimpleName());
             return UNKNOWN;
         }
     }
@@ -207,6 +214,13 @@ public final class DialectRegistry {
             String jdbcUrl = metaData.getURL();
             return getDialectByUrl(jdbcUrl);
         } catch (SQLException e) {
+            Logger.warn(
+                    false,
+                    "Mapper",
+                    e,
+                    "Mapper operation failed: provider={}, exception={}",
+                    "DialectRegistry",
+                    e.getClass().getSimpleName());
             return UNKNOWN;
         }
     }
@@ -304,6 +318,13 @@ public final class DialectRegistry {
                 return getDialect(dataSource);
             }
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Mapper",
+                    e,
+                    "Mapper operation failed: provider={}, exception={}",
+                    "DialectRegistry",
+                    e.getClass().getSimpleName());
             // Ignore: DynamicDataSource may not be available
         }
         return UNKNOWN;
@@ -330,6 +351,13 @@ public final class DialectRegistry {
                 }
             }
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Mapper",
+                    e,
+                    "Mapper operation failed: provider={}, exception={}",
+                    "DialectRegistry",
+                    e.getClass().getSimpleName());
             // DynamicDataSource not available
         }
         return null;

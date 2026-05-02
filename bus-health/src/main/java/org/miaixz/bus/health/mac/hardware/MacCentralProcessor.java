@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -41,13 +41,14 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractCentralProcessor;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.builtin.jna.Struct;
 import org.miaixz.bus.health.mac.SysctlKit;
+import org.miaixz.bus.health.mac.jna.SystemB;
 import org.miaixz.bus.logger.Logger;
 
 import com.sun.jna.Native;
+import com.sun.jna.Pointer;
 import com.sun.jna.platform.mac.IOKit.IOIterator;
 import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
-import com.sun.jna.platform.mac.SystemB;
 
 /**
  * <p>
@@ -61,22 +62,55 @@ import com.sun.jna.platform.mac.SystemB;
 @ThreadSafe
 final class MacCentralProcessor extends AbstractCentralProcessor {
 
+    /**
+     * The ARM_P_CORES constant.
+     */
     private static final Set<String> ARM_P_CORES = Stream
             .of("apple,firestorm arm,v8", "apple,avalanche arm,v8", "apple,everest arm,v8").collect(Collectors.toSet());
 
+    /**
+     * The ARM_CPUTYPE constant.
+     */
     private static final int ARM_CPUTYPE = 0x0100000C;
+    /**
+     * The M1_CPUFAMILY constant.
+     */
     private static final int M1_CPUFAMILY = 0x1b588bb3;
+    /**
+     * The M2_CPUFAMILY constant.
+     */
     private static final int M2_CPUFAMILY = 0xda33d83d;
+    /**
+     * The M3_CPUFAMILY constant.
+     */
     private static final int M3_CPUFAMILY = 0x8765edea;
+    /**
+     * The DEFAULT_FREQUENCY constant.
+     */
     private static final long DEFAULT_FREQUENCY = 2_400_000_000L;
+    /**
+     * The CPU_N constant.
+     */
     private static final Pattern CPU_N = Pattern.compile("^cpu(\\d+)");
 
+    /**
+     * The vendor value.
+     */
     private final Supplier<String> vendor = Memoizer.memoize(MacCentralProcessor::platformExpert);
+    /**
+     * The isArmCpu value.
+     */
     private final boolean isArmCpu = isArmCpu();
 
     // Equivalents of hw.cpufrequency on Apple Silicon, defaulting to Rosetta value
     // Will update during initialization
+    /**
+     * The performanceCoreFrequency value.
+     */
     private long performanceCoreFrequency = DEFAULT_FREQUENCY;
+    /**
+     * The efficiencyCoreFrequency value.
+     */
     private long efficiencyCoreFrequency = DEFAULT_FREQUENCY;
 
     /**
@@ -153,19 +187,22 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
             int family;
             if (isArmCpu) {
                 type = ARM_CPUTYPE;
-                int mSeries = Parsing.getFirstIntValue(cpuName);
-                switch (mSeries) {
-                    case 2:
-                        family = M2_CPUFAMILY;
-                        break;
+                family = SysctlKit.sysctl("hw.cpufamily", 0);
+                if (family == 0) {
+                    int mSeries = Parsing.getFirstIntValue(cpuName);
+                    switch (mSeries) {
+                        case 2:
+                            family = M2_CPUFAMILY;
+                            break;
 
-                    case 3:
-                        family = M3_CPUFAMILY;
-                        break;
+                        case 3:
+                            family = M3_CPUFAMILY;
+                            break;
 
-                    default:
-                        // Some M1 did not brand as such
-                        family = M1_CPUFAMILY;
+                        default:
+                            // Some M1 did not brand as such
+                            family = M1_CPUFAMILY;
+                    }
                 }
             } else {
                 type = SysctlKit.sysctl("hw.cputype", 0);
@@ -277,12 +314,21 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
      * @return A list of feature flag strings.
      */
     private List<String> getFeatureFlagsFromSysctl() {
-        List<String> x86Features = Arrays.asList("features", "extfeatures", "leaf7_features").stream().map(f -> {
+        List<String> x86Features = parseX86FeatureFlags();
+        return x86Features.isEmpty() ? Executor.runNative("sysctl -a hw.optional") : x86Features;
+    }
+
+    /**
+     * Parses x86 feature flag values from the machdep CPU sysctl keys.
+     *
+     * @return A list of populated x86 feature flag entries.
+     */
+    List<String> parseX86FeatureFlags() {
+        return Stream.of("features", "extfeatures", "leaf7_features").map(f -> {
             String key = "machdep.cpu." + f;
             String features = SysctlKit.sysctl(key, Normal.EMPTY, false);
             return StringKit.isBlank(features) ? null : (key + ": " + features);
         }).filter(Objects::nonNull).collect(Collectors.toList());
-        return x86Features.isEmpty() ? Executor.runNative("sysctl -a hw.optional") : x86Features;
     }
 
     /**
@@ -295,8 +341,9 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         try (Struct.CloseableHostCpuLoadInfo cpuLoadInfo = new Struct.CloseableHostCpuLoadInfo();
                 ByRef.CloseableIntByReference size = new ByRef.CloseableIntByReference(
                         cpuLoadInfo.size() / SystemB.INT_SIZE)) {
-            if (0 != SystemB.INSTANCE.host_statistics(machPort, SystemB.HOST_CPU_LOAD_INFO, cpuLoadInfo, size)) {
-                Logger.error("Failed to get System CPU ticks. Error code: {} ", Native.getLastError());
+            int ret = SystemB.INSTANCE.host_statistics(machPort, SystemB.HOST_CPU_LOAD_INFO, cpuLoadInfo, size);
+            if (0 != ret) {
+                Logger.error(false, "Health", "Failed to get System CPU ticks. Error code: {} ", ret);
                 return ticks;
             }
 
@@ -386,27 +433,39 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         try (ByRef.CloseableIntByReference procCount = new ByRef.CloseableIntByReference();
                 ByRef.CloseablePointerByReference procCpuLoadInfo = new ByRef.CloseablePointerByReference();
                 ByRef.CloseableIntByReference procInfoCount = new ByRef.CloseableIntByReference()) {
-            if (0 != SystemB.INSTANCE.host_processor_info(
+            int ret = SystemB.INSTANCE.host_processor_info(
                     machPort,
                     SystemB.PROCESSOR_CPU_LOAD_INFO,
                     procCount,
                     procCpuLoadInfo,
-                    procInfoCount)) {
-                Logger.error("Failed to update CPU Load. Error code: {}", Native.getLastError());
+                    procInfoCount);
+            if (0 != ret) {
+                Logger.error(false, "Health", "Failed to update CPU Load. Error code: {}", ret);
                 return ticks;
             }
 
-            int[] cpuTicks = procCpuLoadInfo.getValue().getIntArray(0, procInfoCount.getValue());
-            for (int cpu = 0; cpu < procCount.getValue(); cpu++) {
-                int offset = cpu * SystemB.CPU_STATE_MAX;
-                ticks[cpu][CentralProcessor.TickType.USER.getIndex()] = Formats
-                        .getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_USER]);
-                ticks[cpu][CentralProcessor.TickType.NICE.getIndex()] = Formats
-                        .getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_NICE]);
-                ticks[cpu][CentralProcessor.TickType.SYSTEM.getIndex()] = Formats
-                        .getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_SYSTEM]);
-                ticks[cpu][CentralProcessor.TickType.IDLE.getIndex()] = Formats
-                        .getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_IDLE]);
+            try {
+                int[] cpuTicks = procCpuLoadInfo.getValue().getIntArray(0, procInfoCount.getValue());
+                for (int cpu = 0; cpu < procCount.getValue(); cpu++) {
+                    int offset = cpu * SystemB.CPU_STATE_MAX;
+                    ticks[cpu][CentralProcessor.TickType.USER.getIndex()] = Formats
+                            .getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_USER]);
+                    ticks[cpu][CentralProcessor.TickType.NICE.getIndex()] = Formats
+                            .getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_NICE]);
+                    ticks[cpu][CentralProcessor.TickType.SYSTEM.getIndex()] = Formats
+                            .getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_SYSTEM]);
+                    ticks[cpu][CentralProcessor.TickType.IDLE.getIndex()] = Formats
+                            .getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_IDLE]);
+                }
+            } finally {
+                try {
+                    SystemB.INSTANCE.vm_deallocate(
+                            SystemB.INSTANCE.mach_task_self(),
+                            Pointer.nativeValue(procCpuLoadInfo.getValue()),
+                            (long) procInfoCount.getValue() * SystemB.INT_SIZE);
+                } catch (Exception e) {
+                    Logger.warn(false, "Health", "Failed to vm_deallocate processor info buffer", e);
+                }
             }
         }
         return ticks;

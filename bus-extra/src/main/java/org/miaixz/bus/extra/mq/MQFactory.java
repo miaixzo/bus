@@ -22,6 +22,7 @@ package org.miaixz.bus.extra.mq;
 import org.miaixz.bus.core.lang.exception.MQueueException;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.core.xyz.ReflectKit;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Factory class for creating and managing Message Queue (MQ) engine objects. This factory provides a mechanism to
@@ -57,19 +58,53 @@ public class MQFactory {
      * @throws MQueueException if no MQ implementation is found (either custom or via SPI).
      */
     private static MQProvider doCreateEngine(final MQConfig config) {
+        final long startedAt = System.nanoTime();
+        Logger.info(
+                true,
+                "Extra",
+                "MQ provider discovery started: configPresent={}, brokerPresent={}, customEnginePresent={}, propertyCount={}",
+                config != null,
+                config != null && config.getBrokerUrl() != null,
+                config != null && config.getCustomEngine() != null,
+                config == null || config.getProperties() == null ? 0 : config.getProperties().size());
         final Class<? extends MQProvider> customEngineClass = config.getCustomEngine();
         final MQProvider engine;
         if (null != customEngineClass) {
             // Custom template engine
+            Logger.debug(
+                    true,
+                    "Extra",
+                    "MQ custom provider creation started: provider={}",
+                    customEngineClass.getName());
             engine = ReflectKit.newInstance(customEngineClass);
         } else {
             // SPI engine lookup
+            Logger.debug(true, "Extra", "MQ SPI provider lookup started");
             engine = NormalSpiLoader.loadFirstAvailable(MQProvider.class);
         }
         if (null != engine) {
-            return engine.init(config);
+            Logger.info(
+                    false,
+                    "Extra",
+                    "MQ provider discovered: provider={}, elapsedMs={}",
+                    engine.getClass().getName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
+            final MQProvider provider = engine.init(config);
+            Logger.info(
+                    false,
+                    "Extra",
+                    "MQ provider initialized by factory: provider={}, elapsedMs={}",
+                    provider == null ? "null" : provider.getClass().getName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
+            return provider;
         }
 
+        Logger.error(
+                false,
+                "Extra",
+                "MQ provider discovery failed: customEnginePresent={}, elapsedMs={}",
+                customEngineClass != null,
+                (System.nanoTime() - startedAt) / 1_000_000L);
         throw new MQueueException("No MQ implement found! Please add one of MQ jar to your project !");
     }
 

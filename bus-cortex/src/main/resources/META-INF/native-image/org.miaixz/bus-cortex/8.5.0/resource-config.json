@@ -1,1 +1,9 @@
-{}
+{
+  "resources": {
+    "includes": [
+      {
+        "pattern": "META-INF/cortex/.*"
+      }
+    ]
+  }
+}

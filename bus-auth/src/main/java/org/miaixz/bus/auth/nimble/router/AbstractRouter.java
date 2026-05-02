@@ -94,7 +94,15 @@ public abstract class AbstractRouter implements OAuth2Router {
         }
 
         String authorizeUrl = builder.build();
-        Logger.debug("Built authorize URL: {}", authorizeUrl);
+        Logger.debug(
+                false,
+                "Auth",
+                "OAuth router authorize URL built: endpoint={}, scopePresent={}, statePresent={}, extraParamCount={}, urlBytes={}",
+                authUrl == null ? null : authUrl.replaceFirst("\\?.*$", ""),
+                StringKit.isNotEmpty(scope),
+                StringKit.isNotEmpty(state),
+                params == null ? 0 : params.size(),
+                authorizeUrl == null ? 0 : authorizeUrl.length());
         return authorizeUrl;
     }
 
@@ -125,18 +133,38 @@ public abstract class AbstractRouter implements OAuth2Router {
             }
 
             String url = builder.build();
-            Logger.debug("Token request URL: {}", url);
+            Logger.debug(
+                    true,
+                    "Auth",
+                    "OAuth router credential request started: endpoint={}, codePresent={}, extraParamCount={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    callback != null && StringKit.isNotEmpty(callback.getCode()),
+                    params == null ? 0 : params.size());
 
             // Send request
             String body = Httpx.get(url);
-            Logger.debug("Token response body: {}", body);
+            Logger.debug(false, "Auth", "Credential response received: chars={}", body == null ? 0 : body.length());
 
             Map<String, Object> data = JsonKit.toMap(body);
 
             // Build Authorization object
-            return buildAuthorization(data);
+            Authorization authorization = buildAuthorization(data);
+            Logger.debug(
+                    false,
+                    "Auth",
+                    "OAuth router credential parsed: tokenPresent={}, refreshPresent={}, expireIn={}",
+                    authorization != null && StringKit.isNotEmpty(authorization.getToken()),
+                    authorization != null && StringKit.isNotEmpty(authorization.getRefresh()),
+                    authorization == null ? null : authorization.getExpireIn());
+            return authorization;
         } catch (Exception e) {
-            Logger.error("Failed to get token", e);
+            Logger.error(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth router credential request failed: endpoint={}, exception={}",
+                    tokenUrl == null ? null : tokenUrl.replaceFirst("\\?.*$", ""),
+                    e.getClass().getSimpleName());
             throw new RuntimeException("Failed to get token: " + e.getMessage(), e);
         }
     }
@@ -153,18 +181,36 @@ public abstract class AbstractRouter implements OAuth2Router {
             addPlatformUserinfoParams(builder, authorization);
 
             String url = builder.build();
-            Logger.debug("Userinfo request URL: {}", url);
+            Logger.debug(
+                    true,
+                    "Auth",
+                    "OAuth router userinfo request started: endpoint={}, tokenPresent={}",
+                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    authorization != null && StringKit.isNotEmpty(authorization.getToken()));
 
             // Send request
             String body = Httpx.get(url, null, headers);
-            Logger.debug("Userinfo response body: {}", body);
+            Logger.debug(false, "Auth", "Userinfo response received: chars={}", body == null ? 0 : body.length());
 
             Map<String, Object> data = JsonKit.toMap(body);
 
             // Build Claims object
-            return buildClaims(data, body);
+            Claims claims = buildClaims(data, body);
+            Logger.debug(
+                    false,
+                    "Auth",
+                    "OAuth router userinfo parsed: uuidPresent={}, usernamePresent={}",
+                    claims != null && StringKit.isNotEmpty(claims.getUuid()),
+                    claims != null && StringKit.isNotEmpty(claims.getUsername()));
+            return claims;
         } catch (Exception e) {
-            Logger.error("Failed to get userinfo", e);
+            Logger.error(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth router userinfo request failed: endpoint={}, exception={}",
+                    userinfoUrl == null ? null : userinfoUrl.replaceFirst("\\?.*$", ""),
+                    e.getClass().getSimpleName());
             throw new RuntimeException("Failed to get userinfo: " + e.getMessage(), e);
         }
     }

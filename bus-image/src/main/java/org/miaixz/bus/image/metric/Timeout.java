@@ -43,19 +43,19 @@ public class Timeout implements Runnable {
     }
 
     public static Timeout start(Association as, String startMsg, String expiredMsg, String cancelMsg, int timeout) {
-        Logger.debug(startMsg, as, timeout);
+        Logger.debug(true, "Image", startMsg, as, timeout);
         return new Timeout(as, expiredMsg, cancelMsg, timeout);
     }
 
     public void stop() {
-        Logger.debug(cancelMsg, as);
+        Logger.debug(false, "Image", cancelMsg, as);
         future.cancel(false);
     }
 
     @Override
     public void run() {
         synchronized (as) {
-            Logger.info(expiredMsg, as);
+            Logger.info(false, "Image", expiredMsg, as);
             as.abort();
         }
     }

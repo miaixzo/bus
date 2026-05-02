@@ -63,6 +63,7 @@ public class BeanKit {
      * Constructs a new BeanKit. Utility class constructor for static access.
      */
     private BeanKit() {
+
     }
 
     /**
@@ -587,6 +588,11 @@ public class BeanKit {
 
         if (ClassKit.isBasicType(targetType) || String.class == targetType) {
             return Convert.toList(targetType, collection);
+        }
+
+        if (RecordKit.isRecord(targetType)) {
+            return collection.stream().map((source) -> RecordConverter.INSTANCE.convert(targetType, source))
+                    .collect(Collectors.toList());
         }
 
         return collection.stream().map((source) -> {

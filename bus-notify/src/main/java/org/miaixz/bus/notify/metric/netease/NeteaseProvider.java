@@ -75,6 +75,13 @@ public abstract class NeteaseProvider<T extends Notice, K extends Context> exten
             messageDigest.update(value.getBytes());
             return getFormattedText(messageDigest.digest());
         } catch (Exception e) {
+            Logger.error(
+                    false,
+                    "Notify",
+                    e,
+                    "NetEase checksum encoding failed: valuePresent={}, exception={}",
+                    value != null,
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -120,12 +127,27 @@ public abstract class NeteaseProvider<T extends Notice, K extends Context> exten
      */
     public Message post(String routerUrl, Map<String, String> map) {
         Map<String, String> header = getPostHeader();
-        Logger.debug("netease send：{}", map);
+        Logger.debug(
+                true,
+                "Notify",
+                "NetEase notify request started: url={}, parameterCount={}, headerCount={}",
+                routerUrl,
+                map == null ? 0 : map.size(),
+                header == null ? 0 : header.size());
         String response = Httpx.post(routerUrl, map, header);
-        Logger.debug("netease result：{}", response);
         String code = JsonKit.getValue(response, "Code");
-        return Message.builder().errcode(String.valueOf(HTTP.HTTP_OK).equals(code) ? ErrorCode._SUCCESS.getKey() : code)
+        Message result = Message.builder()
+                .errcode(String.valueOf(HTTP.HTTP_OK).equals(code) ? ErrorCode._SUCCESS.getKey() : code)
                 .errmsg(JsonKit.getValue(response, "desc")).build();
+        Logger.debug(
+                false,
+                "Notify",
+                "NetEase notify response received: url={}, code={}, errcode={}, responseBytes={}",
+                routerUrl,
+                code,
+                result.getErrcode(),
+                response == null ? 0 : response.length());
+        return result;
     }
 
     /**

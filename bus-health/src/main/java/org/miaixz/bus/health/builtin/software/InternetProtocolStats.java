@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -89,17 +89,61 @@ public interface InternetProtocolStats {
     @Immutable
     final class TcpStats {
 
+        /**
+         * The connectionsEstablished value.
+         */
         private final long connectionsEstablished;
+        /**
+         * The connectionsActive value.
+         */
         private final long connectionsActive;
+        /**
+         * The connectionsPassive value.
+         */
         private final long connectionsPassive;
+        /**
+         * The connectionFailures value.
+         */
         private final long connectionFailures;
+        /**
+         * The connectionsReset value.
+         */
         private final long connectionsReset;
+        /**
+         * The segmentsSent value.
+         */
         private final long segmentsSent;
+        /**
+         * The segmentsReceived value.
+         */
         private final long segmentsReceived;
+        /**
+         * The segmentsRetransmitted value.
+         */
         private final long segmentsRetransmitted;
+        /**
+         * The inErrors value.
+         */
         private final long inErrors;
+        /**
+         * The outResets value.
+         */
         private final long outResets;
 
+        /**
+         * Creates a new TcpStats instance.
+         *
+         * @param connectionsEstablished the connections established
+         * @param connectionsActive      the connections active
+         * @param connectionsPassive     the connections passive
+         * @param connectionFailures     the connection failures
+         * @param connectionsReset       the connections reset
+         * @param segmentsSent           the segments sent
+         * @param segmentsReceived       the segments received
+         * @param segmentsRetransmitted  the segments retransmitted
+         * @param inErrors               the in errors
+         * @param outResets              the out resets
+         */
         public TcpStats(long connectionsEstablished, long connectionsActive, long connectionsPassive,
                 long connectionFailures, long connectionsReset, long segmentsSent, long segmentsReceived,
                 long segmentsRetransmitted, long inErrors, long outResets) {
@@ -216,6 +260,11 @@ public interface InternetProtocolStats {
             return outResets;
         }
 
+        /**
+         * Returns the to string result.
+         *
+         * @return the to string result
+         */
         @Override
         public String toString() {
             return "TcpStats [connectionsEstablished=" + connectionsEstablished + ", connectionsActive="
@@ -232,11 +281,31 @@ public interface InternetProtocolStats {
     @Immutable
     final class UdpStats {
 
+        /**
+         * The datagramsSent value.
+         */
         private final long datagramsSent;
+        /**
+         * The datagramsReceived value.
+         */
         private final long datagramsReceived;
+        /**
+         * The datagramsNoPort value.
+         */
         private final long datagramsNoPort;
+        /**
+         * The datagramsReceivedErrors value.
+         */
         private final long datagramsReceivedErrors;
 
+        /**
+         * Creates a new UdpStats instance.
+         *
+         * @param datagramsSent           the datagrams sent
+         * @param datagramsReceived       the datagrams received
+         * @param datagramsNoPort         the datagrams no port
+         * @param datagramsReceivedErrors the datagrams received errors
+         */
         public UdpStats(long datagramsSent, long datagramsReceived, long datagramsNoPort,
                 long datagramsReceivedErrors) {
             this.datagramsSent = datagramsSent;
@@ -283,6 +352,11 @@ public interface InternetProtocolStats {
             return datagramsReceivedErrors;
         }
 
+        /**
+         * Returns the to string result.
+         *
+         * @return the to string result
+         */
         @Override
         public String toString() {
             return "UdpStats [datagramsSent=" + datagramsSent + ", datagramsReceived=" + datagramsReceived
@@ -297,16 +371,56 @@ public interface InternetProtocolStats {
     @Immutable
     final class IPConnection {
 
+        /**
+         * The type value.
+         */
         private final String type;
+        /**
+         * The localAddress value.
+         */
         private final byte[] localAddress;
+        /**
+         * The localPort value.
+         */
         private final int localPort;
+        /**
+         * The foreignAddress value.
+         */
         private final byte[] foreignAddress;
+        /**
+         * The foreignPort value.
+         */
         private final int foreignPort;
+        /**
+         * The state value.
+         */
         private final TcpState state;
+        /**
+         * The transmitQueue value.
+         */
         private final int transmitQueue;
+        /**
+         * The receiveQueue value.
+         */
         private final int receiveQueue;
+        /**
+         * The owningProcessId value.
+         */
         private final int owningProcessId;
 
+        /**
+         * Creates a new IPConnection instance.
+         *
+         * @param type            the type
+         * @param localAddress    the local address
+         * @param localPort       the local port
+         * @param foreignAddress  the foreign address
+         * @param foreignPort     the foreign port
+         * @param state           the state
+         * @param transmitQueue   the transmit queue
+         * @param receiveQueue    the receive queue
+         * @param owningProcessId the owning process id
+         */
         public IPConnection(String type, byte[] localAddress, int localPort, byte[] foreignAddress, int foreignPort,
                 TcpState state, int transmitQueue, int receiveQueue, int owningProcessId) {
             this.type = type;
@@ -409,6 +523,11 @@ public interface InternetProtocolStats {
             return owningProcessId;
         }
 
+        /**
+         * Returns the to string result.
+         *
+         * @return the to string result
+         */
         @Override
         public String toString() {
             String localIp = Symbol.STAR;

@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -42,9 +42,18 @@ import org.miaixz.bus.health.builtin.software.OSDesktopWindow;
 @ThreadSafe
 public final class Xwininfo {
 
+    /**
+     * The NET_CLIENT_LIST_STACKING constant.
+     */
     private static final String[] NET_CLIENT_LIST_STACKING = Pattern.SPACES_PATTERN
             .split("xprop -root _NET_CLIENT_LIST_STACKING");
+    /**
+     * The XWININFO_ROOT_TREE constant.
+     */
     private static final String[] XWININFO_ROOT_TREE = Pattern.SPACES_PATTERN.split("xwininfo -root -tree");
+    /**
+     * The XPROP_NET_WM_PID_ID constant.
+     */
     private static final String[] XPROP_NET_WM_PID_ID = Pattern.SPACES_PATTERN.split("xprop _NET_WM_PID -id");
 
     /**

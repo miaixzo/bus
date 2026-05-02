@@ -21,9 +21,9 @@ package org.miaixz.bus.core.basic.entity;
 
 import java.io.Serial;
 
+import lombok.AllArgsConstructor;
 import org.miaixz.bus.core.lang.annotation.Logical;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

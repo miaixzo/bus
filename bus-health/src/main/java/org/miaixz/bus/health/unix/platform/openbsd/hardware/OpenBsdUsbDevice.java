@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -37,6 +37,17 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractUsbDevice;
 @Immutable
 public class OpenBsdUsbDevice extends AbstractUsbDevice {
 
+    /**
+     * Creates a new OpenBsdUsbDevice instance.
+     *
+     * @param name             the name
+     * @param vendor           the vendor
+     * @param vendorId         the vendor id
+     * @param productId        the product id
+     * @param serialNumber     the serial number
+     * @param uniqueDeviceId   the unique device id
+     * @param connectedDevices the connected devices
+     */
     public OpenBsdUsbDevice(String name, String vendor, String vendorId, String productId, String serialNumber,
             String uniqueDeviceId, List<UsbDevice> connectedDevices) {
         super(name, vendor, vendorId, productId, serialNumber, uniqueDeviceId, connectedDevices);
@@ -61,15 +72,16 @@ public class OpenBsdUsbDevice extends AbstractUsbDevice {
         // Top level is controllers; they won't be added to the list, but all
         // their connected devices will be
         for (UsbDevice device : devices) {
-            deviceList.add(
-                    new OpenBsdUsbDevice(device.getName(), device.getVendor(), device.getVendorId(),
-                            device.getProductId(), device.getSerialNumber(), device.getUniqueDeviceId(),
-                            Collections.emptyList()));
             addDevicesToList(deviceList, device.getConnectedDevices());
         }
         return deviceList;
     }
 
+    /**
+     * Returns the usb devices.
+     *
+     * @return the get usb devices result
+     */
     private static List<UsbDevice> getUsbDevices() {
         // Maps to store information using node # as the key
         // Node is controller+addr (+port+addr etc.)
@@ -145,13 +157,6 @@ public class OpenBsdUsbDevice extends AbstractUsbDevice {
                             hubMap));
         }
         return controllerDevices;
-    }
-
-    private static void addDevicesToList(List<UsbDevice> deviceList, List<UsbDevice> list) {
-        for (UsbDevice device : list) {
-            deviceList.add(device);
-            addDevicesToList(deviceList, device.getConnectedDevices());
-        }
     }
 
     /**

@@ -82,69 +82,76 @@ public class StrategyFactory {
      * @param chain A list of all available {@link Strategy} beans, injected by the Spring container.
      */
     public StrategyFactory(List<Strategy> chain) {
-        Logger.info(true, "Chain", "Initializing StrategyFactory...");
-        // Sort all strategies by their @Order annotation to establish a definitive execution order.
+        Logger.info(true, "Vortex", "Strategy chain initialization started: discoveredStrategies={}", chain.size());
         chain.sort(AnnotationAwareOrderComparator.INSTANCE);
-        Logger.info(true, "Chain", "Found {} total strategies, sorting and caching chains...", chain.size());
+        Logger.debug(true, "Vortex", "Strategy beans sorted by order: strategies={}", getStrategyNames(chain));
 
-        // Pre-calculate and cache all strategy chains.
         this.chain = List.copyOf(chain);
         Logger.info(
-                true,
-                "Chain",
-                "Default Chain ({} strategies): {}",
+                false,
+                "Vortex",
+                "Strategy chain built: route=default, strategyCount={}, strategies={}",
                 this.chain.size(),
                 getStrategyNames(this.chain));
 
         this.grpcChain = chain.stream().filter(this::isApplicableToGrpc).collect(Collectors.toUnmodifiableList());
         Logger.info(
-                true,
-                "Chain",
-                "gRPC Chain     ({} strategies): {}",
+                false,
+                "Vortex",
+                "Strategy chain built: route=grpc, strategyCount={}, strategies={}",
                 this.grpcChain.size(),
                 getStrategyNames(this.grpcChain));
 
         this.cstChain = chain.stream().filter(this::isApplicableToCst).collect(Collectors.toUnmodifiableList());
         Logger.info(
-                true,
-                "Chain",
-                "CST Chain     ({} strategies): {}",
+                false,
+                "Vortex",
+                "Strategy chain built: route=cst, strategyCount={}, strategies={}",
                 this.cstChain.size(),
                 getStrategyNames(this.cstChain));
 
         this.mcpChain = chain.stream().filter(this::isApplicableToMcp).collect(Collectors.toUnmodifiableList());
         Logger.info(
-                true,
-                "Chain",
-                "MCP Chain     ({} strategies): {}",
+                false,
+                "Vortex",
+                "Strategy chain built: route=mcp, strategyCount={}, strategies={}",
                 this.mcpChain.size(),
                 getStrategyNames(this.mcpChain));
 
         this.mqChain = chain.stream().filter(this::isApplicableToMq).collect(Collectors.toUnmodifiableList());
         Logger.info(
-                true,
-                "Chain",
-                "MQ Chain      ({} strategies): {}",
+                false,
+                "Vortex",
+                "Strategy chain built: route=mq, strategyCount={}, strategies={}",
                 this.mqChain.size(),
                 getStrategyNames(this.mqChain));
 
         this.wsChain = chain.stream().filter(this::isApplicableToMq).collect(Collectors.toUnmodifiableList());
         Logger.info(
-                true,
-                "Chain",
-                "WS Chain      ({} strategies): {}",
+                false,
+                "Vortex",
+                "Strategy chain built: route=ws, strategyCount={}, strategies={}",
                 this.wsChain.size(),
                 getStrategyNames(this.wsChain));
 
         this.llmChain = chain.stream().filter(this::isApplicableToLlm).collect(Collectors.toUnmodifiableList());
         Logger.info(
-                true,
-                "Chain",
-                "LLM Chain     ({} strategies): {}",
+                false,
+                "Vortex",
+                "Strategy chain built: route=llm, strategyCount={}, strategies={}",
                 this.llmChain.size(),
                 getStrategyNames(this.llmChain));
 
-        Logger.info(true, "Chain", "StrategyFactory initialization complete.");
+        Logger.info(
+                false,
+                "Vortex",
+                "Strategy chain initialization completed: default={}, mcp={}, mq={}, grpc={}, ws={}, llm={}",
+                this.chain.size(),
+                this.mcpChain.size(),
+                this.mqChain.size(),
+                this.grpcChain.size(),
+                this.wsChain.size(),
+                this.llmChain.size());
     }
 
     /**
@@ -159,84 +166,76 @@ public class StrategyFactory {
     public List<Strategy> getStrategiesFor(ServerWebExchange exchange) {
         String path = exchange.getRequest().getPath().value();
 
-        // This method is called before creating Context and IP, therefore using [N/A]
-        final String ipTag = "[N/A]";
+        final String ipTag = "N/A";
 
         if (Logger.isDebugEnabled()) {
-            Logger.debug(true, "Chain", "{} Selecting strategy chain for path: {}", ipTag, path);
+            Logger.debug(true, "Vortex", "Strategy chain selection started: clientIp={}, path={}", ipTag, path);
         }
 
-        // 1. Url requests are identified by a unique path segment.
         if (Args.isCstRequest(path)) {
             Logger.debug(
-                    true,
-                    "Chain",
-                    "{} Path matched CST. Selected CST Chain ({} strategies).",
+                    false,
+                    "Vortex",
+                    "Path matched CST chain: clientIp={}, strategyCount={}",
                     ipTag,
                     this.cstChain.size());
             return this.cstChain;
         }
 
-        // 2. MCP requests are identified by a unique path prefix.
         if (Args.isMcpRequest(path)) {
             Logger.debug(
-                    true,
-                    "Chain",
-                    "{} Path matched MCP. Selected MCP Chain ({} strategies).",
+                    false,
+                    "Vortex",
+                    "Path matched MCP chain: clientIp={}, strategyCount={}",
                     ipTag,
                     this.mcpChain.size());
             return this.mcpChain;
         }
 
-        // 3. MQ requests.
         if (Args.isMqRequest(path)) {
             Logger.debug(
-                    true,
-                    "Chain",
-                    "{} Path matched MQ. Selected MQ Chain ({} strategies).",
+                    false,
+                    "Vortex",
+                    "Path matched MQ chain: clientIp={}, strategyCount={}",
                     ipTag,
                     this.mqChain.size());
             return this.mqChain;
         }
 
-        // 3. grcp requests.
         if (Args.isGrpcRequest(path)) {
             Logger.debug(
-                    true,
-                    "Chain",
-                    "{} Path matched gRPC. Selected gRPC Chain ({} strategies).",
+                    false,
+                    "Vortex",
+                    "Path matched gRPC chain: clientIp={}, strategyCount={}",
                     ipTag,
                     this.grpcChain.size());
             return this.grpcChain;
         }
 
-        // 4. grcp requests.
         if (Args.isWsRequest(path)) {
             Logger.debug(
-                    true,
-                    "Chain",
-                    "{} Path matched WS. Selected WS Chain ({} strategies).",
+                    false,
+                    "Vortex",
+                    "Path matched WebSocket chain: clientIp={}, strategyCount={}",
                     ipTag,
                     this.wsChain.size());
             return this.wsChain;
         }
 
-        // 5. LLM requests.
         if (Args.isLlmRequest(path)) {
             Logger.debug(
-                    true,
-                    "Chain",
-                    "{} Path matched LLM. Selected LLM Chain ({} strategies).",
+                    false,
+                    "Vortex",
+                    "Path matched LLM chain: clientIp={}, strategyCount={}",
                     ipTag,
                     this.llmChain.size());
             return this.llmChain;
         }
 
-        // 6. For all other requests (e.g., REST), apply the full, default strategy chain.
         Logger.debug(
-                true,
-                "Chain",
-                "{} Path matched no specific profile. Selected Default Chain ({} strategies).",
+                false,
+                "Vortex",
+                "Path matched default chain: clientIp={}, strategyCount={}",
                 ipTag,
                 this.chain.size());
         return this.chain;
@@ -253,7 +252,6 @@ public class StrategyFactory {
      *         otherwise.
      */
     public boolean isApplicableToMcp(Strategy strategy) {
-        // MCP requests are simple proxies; they don't need complex validation like authorization or licensing.
         return !(strategy instanceof QualifierStrategy || strategy instanceof LimiterStrategy);
     }
 
@@ -267,9 +265,6 @@ public class StrategyFactory {
      * @return {@code true} if the strategy should be part of the MQ chain, {@code false} otherwise.
      */
     public boolean isApplicableToMq(Strategy strategy) {
-        // Example: MQ requests might have their own authorization logic but share others.
-        // For now, we assume all strategies apply to MQ, but this can be customized.
-        // This logic is identical to default, but is kept separate for future customization.
         return true;
     }
 
@@ -282,8 +277,6 @@ public class StrategyFactory {
      * @return {@code true} if the strategy should be part of the CST chain, {@code false} otherwise.
      */
     public boolean isApplicableToGrpc(Strategy strategy) {
-        // For now, we assume all strategies apply to CST.
-        // This logic is identical to default, but is kept separate for future customization.
         return true;
     }
 
@@ -296,8 +289,6 @@ public class StrategyFactory {
      * @return {@code true} if the strategy should be part of the CST chain, {@code false} otherwise.
      */
     public boolean isApplicableToCst(Strategy strategy) {
-        // For now, we assume all strategies apply to CST.
-        // This logic is identical to default, but is kept separate for future customization.
         return true;
     }
 
@@ -312,7 +303,6 @@ public class StrategyFactory {
      *         otherwise.
      */
     public boolean isApplicableToLlm(Strategy strategy) {
-        // LLM requests skip QualifierStrategy (method/version validation) and LimiterStrategy
         return !(strategy instanceof QualifierStrategy || strategy instanceof LimiterStrategy);
     }
 

@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -42,12 +42,27 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 @ThreadSafe
 public final class Win32ProcessCached {
 
+    /**
+     * The INSTANCE constant.
+     */
     private static final Supplier<Win32ProcessCached> INSTANCE = Memoizer.memoize(Win32ProcessCached::createInstance);
 
     // Use a map to cache command line queries
+    /**
+     * The commandLineCache value.
+     */
     @GuardedBy("commandLineCacheLock")
     private final Map<Integer, Pair<Long, String>> commandLineCache = new HashMap<>();
+    /**
+     * The commandLineCacheLock value.
+     */
     private final ReentrantLock commandLineCacheLock = new ReentrantLock();
+
+    /**
+     * Creates a new Win32ProcessCached instance.
+     */
+    private Win32ProcessCached() {
+    }
 
     /**
      * Get the singleton instance of this class, instantiating the map which caches command lines.
@@ -58,6 +73,11 @@ public final class Win32ProcessCached {
         return INSTANCE.get();
     }
 
+    /**
+     * Creates the instance.
+     *
+     * @return the create instance result
+     */
     private static Win32ProcessCached createInstance() {
         return new Win32ProcessCached();
     }

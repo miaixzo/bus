@@ -38,6 +38,7 @@ import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.Internal;
 import org.miaixz.bus.http.metric.NewChain;
 import org.miaixz.bus.http.metric.http.HttpCodec;
+import org.miaixz.bus.logger.Logger;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -139,6 +140,13 @@ public class CacheInterceptor implements Interceptor {
         Response cacheCandidate = cache != null ? cache.get(chain.request()) : null;
 
         long now = System.currentTimeMillis();
+        Logger.debug(
+                true,
+                "Http",
+                "Cache strategy evaluation started: protocol=http, method={}, url={}, cacheCandidate={}",
+                chain.request().method(),
+                chain.request().url().redact(),
+                cacheCandidate != null);
 
         CacheStrategy strategy = new CacheStrategy.Factory(now, chain.request(), cacheCandidate).get();
         Request networkRequest = strategy.networkRequest;
@@ -154,6 +162,12 @@ public class CacheInterceptor implements Interceptor {
 
         // If we're forbidden from using the network and the cache is insufficient, fail.
         if (networkRequest == null && cacheResponse == null) {
+            Logger.debug(
+                    false,
+                    "Http",
+                    "Cache strategy rejected network and cache: protocol=http, method={}, url={}, status=504",
+                    chain.request().method(),
+                    chain.request().url().redact());
             return new Response.Builder().request(chain.request()).protocol(Protocol.HTTP_1_1).code(504)
                     .message("Unsatisfiable Request (only-if-cached)").body(Builder.EMPTY_RESPONSE)
                     .sentRequestAtMillis(-1L).receivedResponseAtMillis(System.currentTimeMillis()).build();
@@ -161,15 +175,35 @@ public class CacheInterceptor implements Interceptor {
 
         // If we don't need the network, we're done.
         if (networkRequest == null) {
+            Logger.debug(
+                    false,
+                    "Http",
+                    "Cache hit served without network: protocol=http, method={}, url={}, status={}",
+                    chain.request().method(),
+                    chain.request().url().redact(),
+                    cacheResponse.code());
             return cacheResponse.newBuilder().cacheResponse(stripBody(cacheResponse)).build();
         }
 
         Response networkResponse = null;
         try {
+            Logger.debug(
+                    true,
+                    "Http",
+                    "Cache strategy forwarding to network: protocol=http, method={}, url={}, conditionalCache={}",
+                    networkRequest.method(),
+                    networkRequest.url().redact(),
+                    cacheResponse != null);
             networkResponse = chain.proceed(networkRequest);
         } finally {
             // If we crashed on I/O or otherwise, don't leak the cache body.
             if (networkResponse == null && cacheCandidate != null) {
+                Logger.warn(
+                        false,
+                        "Http",
+                        "Network response missing; closing cache candidate: protocol=http, method={}, url={}",
+                        chain.request().method(),
+                        chain.request().url().redact());
                 IoKit.close(cacheCandidate.body());
             }
         }
@@ -187,6 +221,13 @@ public class CacheInterceptor implements Interceptor {
                 // Update the cache after combining headers but before stripping the content-encoding header.
                 cache.trackConditionalCacheHit();
                 cache.update(cacheResponse, response);
+                Logger.debug(
+                        false,
+                        "Http",
+                        "Conditional cache hit: protocol=http, method={}, url={}, status={}",
+                        networkRequest.method(),
+                        networkRequest.url().redact(),
+                        response.code());
                 return response;
             } else {
                 IoKit.close(cacheResponse.body());
@@ -200,6 +241,13 @@ public class CacheInterceptor implements Interceptor {
             if (Headers.hasBody(response) && CacheStrategy.isCacheable(response, networkRequest)) {
                 // Offer this request to the cache.
                 CacheRequest cacheRequest = cache.put(response);
+                Logger.debug(
+                        false,
+                        "Http",
+                        "Network response offered to cache: protocol=http, method={}, url={}, status={}",
+                        networkRequest.method(),
+                        networkRequest.url().redact(),
+                        response.code());
                 return cacheWritingResponse(cacheRequest, response);
             }
 
@@ -207,11 +255,25 @@ public class CacheInterceptor implements Interceptor {
                 try {
                     cache.remove(networkRequest);
                 } catch (IOException ignored) {
-                    // Unable to invalidates cache.
+                    Logger.warn(
+                            false,
+                            "Http",
+                            ignored,
+                            "Cache invalidation failed: protocol=http, method={}, url={}, exception={}",
+                            networkRequest.method(),
+                            networkRequest.url().redact(),
+                            ignored.getMessage());
                 }
             }
         }
 
+        Logger.debug(
+                false,
+                "Http",
+                "Cache strategy completed with network response: protocol=http, method={}, url={}, status={}",
+                networkRequest.method(),
+                networkRequest.url().redact(),
+                response.code());
         return response;
     }
 
@@ -258,6 +320,14 @@ public class CacheInterceptor implements Interceptor {
                 try {
                     bytesRead = source.read(sink, byteCount);
                 } catch (IOException e) {
+                    Logger.warn(
+                            false,
+                            "Http",
+                            e,
+                            "HTTP cache operation failed: provider={}, recoverable={}, exception={}",
+                            "CacheInterceptor",
+                            true,
+                            e.getClass().getSimpleName());
                     if (!cacheRequestClosed) {
                         cacheRequestClosed = true;
                         cacheRequest.abort(); // Failed to write a complete cache response.

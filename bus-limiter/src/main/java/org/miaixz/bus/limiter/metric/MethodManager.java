@@ -52,8 +52,15 @@ public class MethodManager {
      *             method.
      */
     public static void addMethod(String name, Pair<StrategyMode, Annotation> pair) {
-        Logger.info("Register method:[{}][{}]", pair.getLeft().name(), name);
         map.put(name, pair);
+        Logger.info(
+                false,
+                "Limiter",
+                "Limiter method registered: method={}, strategy={}, annotation={}, registeredMethods={}",
+                name,
+                pair.getLeft().name(),
+                pair.getRight().annotationType().getName(),
+                map.size());
     }
 
     /**

@@ -55,6 +55,12 @@ public class DataModelProcess extends AbstractProcess {
      */
     @Override
     public DataSchema process() {
+        Logger.info(
+                true,
+                "Shade",
+                "Database metadata model build started: fileType={}, templateType={}",
+                config.getEngineConfig().getFileType(),
+                config.getEngineConfig().getProduceType());
         // Get the appropriate database query implementation.
         DatabaseQuery query = new DatabaseQueryFactory(config.getDataSource()).newInstance();
         DataSchema model = new DataSchema();
@@ -68,23 +74,46 @@ public class DataModelProcess extends AbstractProcess {
         long start = System.currentTimeMillis();
         // Get database information.
         Database database = query.getDataBase();
-        Logger.debug("query the database time consuming:{}ms", (System.currentTimeMillis() - start));
+        Logger.debug(
+                false,
+                "Shade",
+                "Database metadata loaded: database={}, elapsedMs={}",
+                database.getDatabase(),
+                (System.currentTimeMillis() - start));
         model.setDatabase(database.getDatabase());
 
         start = System.currentTimeMillis();
         // Get all tables.
         List<? extends Table> tables = query.getTables();
-        Logger.debug("query the table time consuming:{}ms", (System.currentTimeMillis() - start));
+        Logger.debug(
+                false,
+                "Shade",
+                "Table metadata loaded: database={}, tableCount={}, elapsedMs={}",
+                database.getDatabase(),
+                tables.size(),
+                (System.currentTimeMillis() - start));
 
         start = System.currentTimeMillis();
         // Get all columns.
         List<? extends Column> columns = query.getTableColumns();
-        Logger.debug("query the column time consuming:{}ms", (System.currentTimeMillis() - start));
+        Logger.debug(
+                false,
+                "Shade",
+                "Column metadata loaded: database={}, columnCount={}, elapsedMs={}",
+                database.getDatabase(),
+                columns.size(),
+                (System.currentTimeMillis() - start));
 
         start = System.currentTimeMillis();
         // Get all primary keys.
         List<? extends PrimaryKey> primaryKeys = query.getPrimaryKeys();
-        Logger.debug("query the primary key time consuming:{}ms", (System.currentTimeMillis() - start));
+        Logger.debug(
+                false,
+                "Shade",
+                "Primary key metadata loaded: database={}, primaryKeyCount={}, elapsedMs={}",
+                database.getDatabase(),
+                primaryKeys.size(),
+                (System.currentTimeMillis() - start));
 
         start = System.currentTimeMillis();
         List<TableSchema> tableSchemas = new ArrayList<>();
@@ -122,7 +151,16 @@ public class DataModelProcess extends AbstractProcess {
         model.setTables(filterTables(tableSchemas));
         // Optimize data for presentation.
         optimizeData(model);
-        Logger.debug("encapsulation processing data time consuming:{}ms", (System.currentTimeMillis() - start));
+        Logger.info(
+                false,
+                "Shade",
+                "Database metadata model build finished: database={}, sourceTableCount={}, outputTableCount={}, columnCount={}, primaryKeyCount={}, elapsedMs={}",
+                database.getDatabase(),
+                tables.size(),
+                model.getTables().size(),
+                columns.size(),
+                primaryKeys.size(),
+                (System.currentTimeMillis() - start));
         return model;
     }
 

@@ -1,3 +1,282 @@
-name: Build
-description: 'Builds the project, optionally publishing it to a local deployment repository'
+name: Build Project
+description: 'Builds Bus modules in dependency order'
+
 inputs:
+  version:
+    description: 'Version to validate. Leave empty to read VERSION.'
+    required: false
+    default: ''
+  modules:
+    description: 'Whitespace-separated module list in build order.'
+    required: false
+    default: >-
+      bus-core
+      bus-opencv
+      bus-logger
+      bus-crypto
+      bus-gitlab
+      bus-http
+      bus-mapper
+      bus-office
+      bus-proxy
+      bus-setting
+      bus-shade
+      bus-socket
+      bus-tracer
+      bus-validate
+      bus-base
+      bus-extra
+      bus-health
+      bus-cache
+      bus-image
+      bus-sensitive
+      bus-tempus
+      bus-auth
+      bus-cortex
+      bus-limiter
+      bus-metrics
+      bus-notify
+      bus-pay
+      bus-storage
+      bus-vortex
+      bus-starter
+      bus-bom
+      bus-all
+      bus-parent
+  maven-args:
+    description: 'Additional Maven arguments.'
+    required: false
+    default: '-B -ntp -DskipTests -Djava.version=21 -Dmaven.compiler.release=21'
+  goals:
+    description: 'Maven goals to execute for every module.'
+    required: false
+    default: 'clean install'
+  gpg-skip:
+    description: 'Whether to skip GPG signing during build.'
+    required: false
+    default: 'true'
+
+outputs:
+  version:
+    description: 'Resolved project version.'
+    value: ${{ steps.metadata.outputs.version }}
+  is-prerelease:
+    description: 'Whether the resolved version is a pre-release.'
+    value: ${{ steps.metadata.outputs.is-prerelease }}
+  modules:
+    description: 'Normalized module list.'
+    value: ${{ steps.metadata.outputs.modules }}
+
+runs:
+  using: composite
+  steps:
+    - name: Print Logo
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        if [ -x ".github/scripts/logo.sh" ]; then
+          .github/scripts/logo.sh
+        fi
+
+    - name: Validate Modules and Versions
+      id: metadata
+      shell: bash
+      env:
+        INPUT_VERSION: ${{ inputs.version }}
+        INPUT_MODULES: ${{ inputs.modules }}
+      run: |
+        set -euo pipefail
+
+        MODULES="$(printf '%s\n' "$INPUT_MODULES" | xargs)"
+        if [ -z "$MODULES" ]; then
+          echo "::error::No modules configured"
+          exit 1
+        fi
+
+        if [ ! -f VERSION ]; then
+          echo "::error file=VERSION::VERSION file is required"
+          exit 1
+        fi
+
+        VERSION_FILE="$(tr -d '[:space:]' < VERSION)"
+        if [ -z "$VERSION_FILE" ]; then
+          echo "::error file=VERSION::VERSION file is empty"
+          exit 1
+        fi
+
+        VERSION="$INPUT_VERSION"
+        if [ -z "$VERSION" ]; then
+          VERSION="$VERSION_FILE"
+        fi
+
+        if [ -z "$VERSION" ]; then
+          echo "::error::Unable to resolve project version"
+          exit 1
+        fi
+
+        if [ "$VERSION_FILE" != "$VERSION" ]; then
+          echo "::error file=VERSION::VERSION '$VERSION_FILE' does not match requested version '$VERSION'"
+          exit 1
+        fi
+
+        if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z]+)*$ ]]; then
+          echo "::error::Invalid project version: $VERSION"
+          exit 1
+        fi
+
+        failed=0
+
+        for pom in bus-*/pom.xml; do
+          module="${pom%/pom.xml}"
+          case " $MODULES " in
+            *" $module "*) ;;
+            *)
+              echo "::error file=$pom::Module is not listed in build order"
+              failed=1
+              ;;
+          esac
+        done
+
+        export MODULES
+        if ! ruby <<'RUBY'
+          require 'rexml/document'
+
+          modules = ENV.fetch('MODULES').split
+          special_last = ['bus-parent']
+          module_index = modules.each_with_index.to_h
+          module_set = module_index.keys.to_h { |module_name| [module_name, true] }
+
+          failed = false
+
+          modules.each do |module_name|
+            next if special_last.include?(module_name)
+
+            pom = "#{module_name}/pom.xml"
+            document = REXML::Document.new(File.read(pom))
+            dependencies = []
+
+            REXML::XPath.each(document, '/project/dependencies/dependency/artifactId') do |element|
+              artifact_id = element.text
+              next unless module_set[artifact_id]
+              next if artifact_id == module_name
+
+              dependencies << artifact_id
+            end
+
+            dependencies.uniq.each do |dependency|
+              next if special_last.include?(dependency)
+
+              if module_index[dependency] > module_index[module_name]
+                warn "::error file=#{pom}::#{module_name} must be built after dependency #{dependency}"
+                failed = true
+              end
+            end
+          end
+
+          derived_order = []
+          remaining = modules - special_last
+          built = {}
+
+          until remaining.empty?
+            ready = remaining.select do |module_name|
+              pom = "#{module_name}/pom.xml"
+              document = REXML::Document.new(File.read(pom))
+              dependencies = []
+
+              REXML::XPath.each(document, '/project/dependencies/dependency/artifactId') do |element|
+                artifact_id = element.text
+                next unless module_set[artifact_id]
+                next if special_last.include?(artifact_id)
+
+                dependencies << artifact_id
+              end
+
+              dependencies.uniq.all? { |dependency| built[dependency] }
+            end.sort
+
+            if ready.empty?
+              warn '::error::Unable to derive dependency order; dependency cycle may exist'
+              failed = true
+              break
+            end
+
+            ready.each do |module_name|
+              derived_order << module_name
+              built[module_name] = true
+              remaining.delete(module_name)
+            end
+          end
+
+          derived_order.concat(special_last)
+
+          if modules != derived_order
+            warn "::error::Module order must follow dependencies and alphabetical order"
+            warn "Expected: #{derived_order.join(' ')}"
+            warn "Actual:   #{modules.join(' ')}"
+            failed = true
+          end
+
+          exit(failed ? 1 : 0)
+        RUBY
+        then
+          failed=1
+        fi
+
+        for module in $MODULES; do
+          pom="$module/pom.xml"
+
+          if [ ! -f "$pom" ]; then
+            echo "::error file=$pom::Missing module POM"
+            failed=1
+            continue
+          fi
+
+          project_version="$(awk -F'[<>]' '
+            /<parent>/ { in_parent = 1 }
+            /<\/parent>/ { in_parent = 0; next }
+            !in_parent && /<version>/ { print $3; exit }
+          ' "$pom")"
+
+          if [ "$project_version" != "$VERSION" ]; then
+            echo "::error file=$pom::POM version '$project_version' does not match $VERSION"
+            failed=1
+          fi
+
+          if grep -q "<bus.version>" "$pom" && ! grep -q "<bus.version>${VERSION}</bus.version>" "$pom"; then
+            echo "::error file=$pom::bus.version does not match $VERSION"
+            failed=1
+          fi
+        done
+
+        if [[ "$VERSION" == *-* ]]; then
+          IS_PRERELEASE=true
+        else
+          IS_PRERELEASE=false
+        fi
+
+        echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+        echo "is-prerelease=$IS_PRERELEASE" >> "$GITHUB_OUTPUT"
+        echo "modules=$MODULES" >> "$GITHUB_OUTPUT"
+
+        exit "$failed"
+
+    - name: Build Modules
+      shell: bash
+      env:
+        MODULES: ${{ steps.metadata.outputs.modules }}
+        MAVEN_ARGS: ${{ inputs.maven-args }}
+        GOALS: ${{ inputs.goals }}
+        GPG_SKIP: ${{ inputs.gpg-skip }}
+      run: |
+        set -euo pipefail
+
+        for module in $MODULES; do
+          echo "::group::Build $module"
+          if [ "$GPG_SKIP" = "true" ]; then
+            mvn $MAVEN_ARGS -Dgpg.skip=true -f "$module/pom.xml" $GOALS
+          else
+            mvn $MAVEN_ARGS -f "$module/pom.xml" $GOALS
+          fi
+          echo "::endgroup::"
+        done

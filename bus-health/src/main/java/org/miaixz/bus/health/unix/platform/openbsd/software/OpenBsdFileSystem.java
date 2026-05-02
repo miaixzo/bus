@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -47,15 +47,34 @@ import org.miaixz.bus.health.unix.platform.openbsd.OpenBsdSysctlKit;
 @ThreadSafe
 public class OpenBsdFileSystem extends AbstractFileSystem {
 
+    /**
+     * The FS_PATH_EXCLUDES constant.
+     */
     private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._UNIX_OPENBSD_FS_PATH_EXCLUDES);
+    /**
+     * The FS_PATH_INCLUDES constant.
+     */
     private static final List<PathMatcher> FS_PATH_INCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._UNIX_OPENBSD_FS_PATH_INCLUDES);
+    /**
+     * The FS_VOLUME_EXCLUDES constant.
+     */
     private static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._UNIX_OPENBSD_FS_VOLUME_EXCLUDES);
+    /**
+     * The FS_VOLUME_INCLUDES constant.
+     */
     private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._UNIX_OPENBSD_FS_VOLUME_INCLUDES);
 
+    /**
+     * Returns the file store matching.
+     *
+     * @param nameToMatch the name to match
+     * @param localOnly   the local only
+     * @return the get file store matching result
+     */
     static List<OSFileStore> getFileStoreMatching(String nameToMatch, boolean localOnly) {
         List<OSFileStore> fsList = new ArrayList<>();
 
@@ -153,25 +172,52 @@ public class OpenBsdFileSystem extends AbstractFileSystem {
     }
 
     // Called by OpenBsdOSFileStore
+    /**
+     * Returns the file store matching.
+     *
+     * @param nameToMatch the name to match
+     * @return the get file store matching result
+     */
     static List<OSFileStore> getFileStoreMatching(String nameToMatch) {
         return getFileStoreMatching(nameToMatch, false);
     }
 
+    /**
+     * Returns the file stores.
+     *
+     * @param localOnly the local only
+     * @return the get file stores result
+     */
     @Override
     public List<OSFileStore> getFileStores(boolean localOnly) {
         return getFileStoreMatching(null, localOnly);
     }
 
+    /**
+     * Returns the open file descriptors.
+     *
+     * @return the get open file descriptors result
+     */
     @Override
     public long getOpenFileDescriptors() {
         return OpenBsdSysctlKit.sysctl("kern.nfiles", 0);
     }
 
+    /**
+     * Returns the max file descriptors.
+     *
+     * @return the get max file descriptors result
+     */
     @Override
     public long getMaxFileDescriptors() {
         return OpenBsdSysctlKit.sysctl("kern.maxfiles", 0);
     }
 
+    /**
+     * Returns the max file descriptors per process.
+     *
+     * @return the get max file descriptors per process result
+     */
     @Override
     public long getMaxFileDescriptorsPerProcess() {
         return OpenBsdSysctlKit.sysctl("kern.maxfilesperproc", 0);

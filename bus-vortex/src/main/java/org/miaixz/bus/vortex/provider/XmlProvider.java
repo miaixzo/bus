@@ -63,14 +63,11 @@ public class XmlProvider implements Provider<Object, String> {
      */
     @Override
     public Mono<String> serialize(Object input) {
-        // 1. Wrap the synchronous, blocking (CPU-bound) logic in fromCallable.
         return Mono.fromCallable(() -> {
             Map<String, Object> map = JsonKit.toMap(input);
             String buffer = XmlKit.mapToXmlString(map, "response");
             return buffer.replaceFirst(" standalone=\"[^\"]*\"", Normal.EMPTY);
-        })
-                // 2. Offload the execution from the event loop to a safer thread pool.
-                .subscribeOn(Schedulers.boundedElastic());
+        }).subscribeOn(Schedulers.boundedElastic());
     }
 
 }

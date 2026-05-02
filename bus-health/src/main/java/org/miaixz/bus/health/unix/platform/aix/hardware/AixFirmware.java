@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -31,26 +31,57 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractFirmware;
 @Immutable
 final class AixFirmware extends AbstractFirmware {
 
+    /**
+     * The manufacturer value.
+     */
     private final String manufacturer;
+    /**
+     * The name value.
+     */
     private final String name;
+    /**
+     * The version value.
+     */
     private final String version;
 
+    /**
+     * Creates a new AixFirmware instance.
+     *
+     * @param manufacturer the manufacturer
+     * @param name         the name
+     * @param version      the version
+     */
     AixFirmware(String manufacturer, String name, String version) {
         this.manufacturer = manufacturer;
         this.name = name;
         this.version = version;
     }
 
+    /**
+     * Returns the manufacturer.
+     *
+     * @return the get manufacturer result
+     */
     @Override
     public String getManufacturer() {
         return manufacturer;
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return the get name result
+     */
     @Override
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns the version.
+     *
+     * @return the get version result
+     */
     @Override
     public String getVersion() {
         return version;

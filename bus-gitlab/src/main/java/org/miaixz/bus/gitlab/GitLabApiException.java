@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import org.miaixz.bus.logger.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -151,6 +152,13 @@ public class GitLabApiException extends Exception {
                 }
 
             } catch (Exception ignore) {
+                Logger.debug(
+                        false,
+                        "GitLab",
+                        "GitLab API error response parsing skipped: status={}, mediaType={}, exception={}",
+                        httpStatus,
+                        response.getMediaType(),
+                        ignore.getClass().getSimpleName());
             }
         }
     }

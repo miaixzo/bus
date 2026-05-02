@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -44,6 +44,9 @@ import com.sun.jna.platform.win32.WinNT.*;
 @ThreadSafe
 public final class LogicalProcessorInformation {
 
+    /**
+     * The IS_WIN10_OR_GREATER constant.
+     */
     private static final boolean IS_WIN10_OR_GREATER = VersionHelpers.IsWindows10OrGreater();
 
     /**
@@ -151,6 +154,15 @@ public final class LogicalProcessorInformation {
         return Triplet.of(logProcs, physProcs, AbstractCentralProcessor.orderedProcCaches(caches));
     }
 
+    /**
+     * Returns the phys procs.
+     *
+     * @param cores             the cores
+     * @param coreEfficiencyMap the core efficiency map
+     * @param corePkgMap        the core pkg map
+     * @param coreCpuidMap      the core cpuid map
+     * @return the get phys procs result
+     */
     private static List<CentralProcessor.PhysicalProcessor> getPhysProcs(
             List<GROUP_AFFINITY> cores,
             Map<GROUP_AFFINITY, Integer> coreEfficiencyMap,
@@ -166,6 +178,14 @@ public final class LogicalProcessorInformation {
         return physProcs;
     }
 
+    /**
+     * Returns the matching package.
+     *
+     * @param packages the packages
+     * @param g        the g
+     * @param lp       the lp
+     * @return the get matching package result
+     */
     private static int getMatchingPackage(List<GROUP_AFFINITY[]> packages, int g, int lp) {
         for (int i = 0; i < packages.size(); i++) {
             for (int j = 0; j < packages.get(i).length; j++) {
@@ -177,6 +197,14 @@ public final class LogicalProcessorInformation {
         return 0;
     }
 
+    /**
+     * Returns the matching core.
+     *
+     * @param cores the cores
+     * @param g     the g
+     * @param lp    the lp
+     * @return the get matching core result
+     */
     private static int getMatchingCore(List<GROUP_AFFINITY> cores, int g, int lp) {
         for (int j = 0; j < cores.size(); j++) {
             if ((cores.get(j).mask.longValue() & (1L << lp)) != 0 && cores.get(j).group == g) {

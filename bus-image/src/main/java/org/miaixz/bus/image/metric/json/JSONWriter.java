@@ -284,7 +284,11 @@ public class JSONWriter implements ImageInputHandler {
                             try {
                                 gen.write(Builder.parseDS(s));
                             } catch (NumberFormatException e) {
-                                Logger.info("illegal DS value: {} - encoded as string", s);
+                                Logger.info(
+                                        false,
+                                        "Image",
+                                        "illegal DS value: valueChars={} - encoded as string",
+                                        s == null ? 0 : s.length());
                                 gen.write(s);
                             }
                         } else {
@@ -319,7 +323,11 @@ public class JSONWriter implements ImageInputHandler {
                 return;
             }
         } catch (NumberFormatException e) {
-            Logger.info("illegal IS value: {} - encoded as string", s);
+            Logger.info(
+                    false,
+                    "Image",
+                    "illegal IS value: valueChars={} - encoded as string",
+                    s == null ? 0 : s.length());
         }
         gen.write(s);
     }
@@ -330,15 +338,15 @@ public class JSONWriter implements ImageInputHandler {
         for (int i = 0; i < vm; i++) {
             double d = vr.toDouble(val, bigEndian, i, 0);
             if (Double.isNaN(d)) {
-                Logger.info("encode {} NaN as null", vr);
+                Logger.info(false, "Image", "encode {} NaN as null", vr);
                 gen.writeNull();
             } else {
                 if (d == Double.POSITIVE_INFINITY) {
                     d = Double.MAX_VALUE;
-                    Logger.info("encode {} Infinity as {}", vr, d);
+                    Logger.info(false, "Image", "encode {} Infinity as {}", vr, d);
                 } else if (d == Double.NEGATIVE_INFINITY) {
                     d = -Double.MAX_VALUE;
-                    Logger.info("encode {} -Infinity as {}", vr, d);
+                    Logger.info(false, "Image", "encode {} -Infinity as {}", vr, d);
                 }
                 gen.write(d);
             }

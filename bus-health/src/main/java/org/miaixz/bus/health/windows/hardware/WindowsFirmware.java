@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -42,9 +42,17 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 @Immutable
 final class WindowsFirmware extends AbstractFirmware {
 
+    /**
+     * The manufNameDescVersRelease value.
+     */
     private final Supplier<Tuple> manufNameDescVersRelease = Memoizer
             .memoize(WindowsFirmware::queryManufNameDescVersRelease);
 
+    /**
+     * Queries the manuf name desc vers release.
+     *
+     * @return the query manuf name desc vers release result
+     */
     private static Tuple queryManufNameDescVersRelease() {
         String manufacturer = null;
         String name = null;
@@ -66,26 +74,51 @@ final class WindowsFirmware extends AbstractFirmware {
                 StringKit.isBlank(releaseDate) ? Normal.UNKNOWN : releaseDate);
     }
 
+    /**
+     * Returns the manufacturer.
+     *
+     * @return the get manufacturer result
+     */
     @Override
     public String getManufacturer() {
         return manufNameDescVersRelease.get().get(0);
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return the get name result
+     */
     @Override
     public String getName() {
         return manufNameDescVersRelease.get().get(1);
     }
 
+    /**
+     * Returns the description.
+     *
+     * @return the get description result
+     */
     @Override
     public String getDescription() {
         return manufNameDescVersRelease.get().get(2);
     }
 
+    /**
+     * Returns the version.
+     *
+     * @return the get version result
+     */
     @Override
     public String getVersion() {
         return manufNameDescVersRelease.get().get(3);
     }
 
+    /**
+     * Returns the release date.
+     *
+     * @return the get release date result
+     */
     @Override
     public String getReleaseDate() {
         return manufNameDescVersRelease.get().get(4);

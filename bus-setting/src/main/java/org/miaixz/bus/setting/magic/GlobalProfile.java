@@ -20,6 +20,7 @@
 package org.miaixz.bus.setting.magic;
 
 import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.setting.Setting;
 
 /**
@@ -45,7 +46,15 @@ public class GlobalProfile {
      * @return The singleton {@link Profile} instance for the given profile name.
      */
     public static Profile setProfile(final String profile) {
-        return Instances.get(Profile.class, profile);
+        Logger.info(true, "Setting", "Global profile switch requested: profile={}", profile);
+        final Profile globalProfile = Instances.get(Profile.class, profile);
+        Logger.info(
+                false,
+                "Setting",
+                "Global profile switch completed: profile={}, profilePresent={}",
+                profile,
+                globalProfile != null);
+        return globalProfile;
     }
 
     /**
@@ -56,7 +65,15 @@ public class GlobalProfile {
      * @return The {@link Setting} instance.
      */
     public static Setting getSetting(final String settingName) {
-        return Instances.get(Profile.class).getSetting(settingName);
+        Logger.debug(true, "Setting", "Global profile setting lookup started: settingName={}", settingName);
+        final Setting setting = Instances.get(Profile.class).getSetting(settingName);
+        Logger.debug(
+                false,
+                "Setting",
+                "Global profile setting lookup completed: settingName={}, settingPresent={}",
+                settingName,
+                setting != null);
+        return setting;
     }
 
 }

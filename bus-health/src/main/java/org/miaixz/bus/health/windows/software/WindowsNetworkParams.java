@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -46,8 +46,16 @@ import com.sun.jna.platform.win32.IPHlpAPI.IP_ADDR_STRING;
 @ThreadSafe
 final class WindowsNetworkParams extends AbstractNetworkParams {
 
+    /**
+     * The COMPUTER_NAME_DNS_DOMAIN_FULLY_QUALIFIED constant.
+     */
     private static final int COMPUTER_NAME_DNS_DOMAIN_FULLY_QUALIFIED = 3;
 
+    /**
+     * Parses the ipv4 route.
+     *
+     * @return the parse ipv4 route result
+     */
     private static String parseIpv4Route() {
         List<String> lines = Executor.runNative("route print -4 0.0.0.0");
         for (String line : lines) {
@@ -59,6 +67,11 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
         return Normal.EMPTY;
     }
 
+    /**
+     * Parses the ipv6 route.
+     *
+     * @return the parse ipv6 route result
+     */
     private static String parseIpv6Route() {
         List<String> lines = Executor.runNative("route print -6 ::/0");
         for (String line : lines) {
@@ -70,6 +83,11 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
         return Normal.EMPTY;
     }
 
+    /**
+     * Returns the host name.
+     *
+     * @return the get host name result
+     */
     @Override
     public String getHostName() {
         try {
@@ -79,41 +97,65 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
         }
     }
 
+    /**
+     * Returns the ipv4 default gateway.
+     *
+     * @return the get ipv4 default gateway result
+     */
     @Override
     public String getIpv4DefaultGateway() {
         return parseIpv4Route();
     }
 
+    /**
+     * Returns the ipv6 default gateway.
+     *
+     * @return the get ipv6 default gateway result
+     */
     @Override
     public String getIpv6DefaultGateway() {
         return parseIpv6Route();
     }
 
+    /**
+     * Returns the domain name.
+     *
+     * @return the get domain name result
+     */
     @Override
     public String getDomainName() {
         char[] buffer = new char[256];
         try (ByRef.CloseableIntByReference bufferSize = new ByRef.CloseableIntByReference(buffer.length)) {
             if (!Kernel32.INSTANCE.GetComputerNameEx(COMPUTER_NAME_DNS_DOMAIN_FULLY_QUALIFIED, buffer, bufferSize)) {
-                Logger.error("Failed to get dns domain name. Error code: {}", Kernel32.INSTANCE.GetLastError());
+                Logger.error(
+                        false,
+                        "Health",
+                        "Failed to get dns domain name. Error code: {}",
+                        Kernel32.INSTANCE.GetLastError());
                 return Normal.EMPTY;
             }
         }
         return Native.toString(buffer);
     }
 
+    /**
+     * Returns the dns servers.
+     *
+     * @return the get dns servers result
+     */
     @Override
     public String[] getDnsServers() {
         try (ByRef.CloseableIntByReference bufferSize = new ByRef.CloseableIntByReference()) {
             int ret = IPHlpAPI.INSTANCE.GetNetworkParams(null, bufferSize);
             if (ret != WinError.ERROR_BUFFER_OVERFLOW) {
-                Logger.error("Failed to get network parameters buffer size. Error code: {}", ret);
+                Logger.error(false, "Health", "Failed to get network parameters buffer size. Error code: {}", ret);
                 return new String[0];
             }
 
             try (Memory buffer = new Memory(bufferSize.getValue())) {
                 ret = IPHlpAPI.INSTANCE.GetNetworkParams(buffer, bufferSize);
                 if (ret != 0) {
-                    Logger.error("Failed to get network parameters. Error code: {}", ret);
+                    Logger.error(false, "Health", "Failed to get network parameters. Error code: {}", ret);
                     return new String[0];
                 }
                 FIXED_INFO fixedInfo = new FIXED_INFO(buffer);

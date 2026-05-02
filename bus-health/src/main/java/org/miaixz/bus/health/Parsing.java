@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -225,7 +225,7 @@ public final class Parsing {
                 return Integer.parseInt(ls);
             }
         } catch (NumberFormatException e) {
-            Logger.trace(DEFAULT_LOG_MSG, s, e);
+            Logger.trace(false, "Health", DEFAULT_LOG_MSG, s, e);
             return i;
         }
     }
@@ -246,7 +246,7 @@ public final class Parsing {
                 return Long.parseLong(ls);
             }
         } catch (NumberFormatException e) {
-            Logger.trace(DEFAULT_LOG_MSG, s, e);
+            Logger.trace(false, "Health", DEFAULT_LOG_MSG, s, e);
             return li;
         }
     }
@@ -262,7 +262,7 @@ public final class Parsing {
         try {
             return Double.parseDouble(parseLastString(s));
         } catch (NumberFormatException e) {
-            Logger.trace(DEFAULT_LOG_MSG, s, e);
+            Logger.trace(false, "Health", DEFAULT_LOG_MSG, s, e);
             return d;
         }
     }
@@ -424,7 +424,7 @@ public final class Parsing {
                 sb.append((char) charAsInt);
             }
         } catch (NumberFormatException e) {
-            Logger.trace(DEFAULT_LOG_MSG, hexString, e);
+            Logger.trace(false, "Health", DEFAULT_LOG_MSG, hexString, e);
             // Hex parsing failed, return original string
             return hexString;
         }
@@ -442,7 +442,7 @@ public final class Parsing {
         try {
             return Integer.parseInt(s);
         } catch (NullPointerException | NumberFormatException e) {
-            Logger.trace(DEFAULT_LOG_MSG, s, e);
+            Logger.trace(false, "Health", DEFAULT_LOG_MSG, s, e);
             return defaultInt;
         }
     }
@@ -458,7 +458,7 @@ public final class Parsing {
         try {
             return Long.parseLong(s);
         } catch (NumberFormatException e) {
-            Logger.trace(DEFAULT_LOG_MSG, s, e);
+            Logger.trace(false, "Health", DEFAULT_LOG_MSG, s, e);
             return defaultLong;
         }
     }
@@ -475,7 +475,7 @@ public final class Parsing {
         try {
             return new BigInteger(s).longValue();
         } catch (NumberFormatException e) {
-            Logger.trace(DEFAULT_LOG_MSG, s, e);
+            Logger.trace(false, "Health", DEFAULT_LOG_MSG, s, e);
             return defaultLong;
         }
     }
@@ -491,7 +491,7 @@ public final class Parsing {
         try {
             return Double.parseDouble(s);
         } catch (NumberFormatException e) {
-            Logger.trace(DEFAULT_LOG_MSG, s, e);
+            Logger.trace(false, "Health", DEFAULT_LOG_MSG, s, e);
             return defaultDouble;
         }
     }
@@ -711,7 +711,12 @@ public final class Parsing {
                 // Otherwise error
                 if (numberFound) {
                     if (!noLog(s)) {
-                        Logger.error("Illegal character parsing string '{}' to long array: {}", s, s.charAt(charIndex));
+                        Logger.error(
+                                false,
+                                "Health",
+                                "Illegal character parsing string '{}' to long array: {}",
+                                s,
+                                s.charAt(charIndex));
                     }
                     return new long[indices.length];
                 }
@@ -722,6 +727,8 @@ public final class Parsing {
         if (parsedIndex > 0) {
             if (!noLog(s)) {
                 Logger.error(
+                        false,
+                        "Health",
                         "Not enough fields in string '{}' parsing to long array: {}",
                         s,
                         indices.length - parsedIndex);
@@ -869,7 +876,7 @@ public final class Parsing {
         } catch (IndexOutOfBoundsException // If cimDate is not 22+ characters
                 | NumberFormatException // If timezone minutes are unparsable
                 | DateTimeParseException e) {
-            Logger.trace("Unable to parse {} to CIM DateTime.", cimDateTime);
+            Logger.trace(false, "Health", "Unable to parse {} to CIM DateTime.", cimDateTime);
             return Builder.UNIX_EPOCH;
         }
     }
@@ -952,7 +959,7 @@ public final class Parsing {
             }
         }
         long capacity = Parsing.parseLongOrDefault(mem[0], 0L);
-        if (mem.length == 2 && mem[1].length() > 1) {
+        if (mem.length == 2 && mem[1].length() > 0) {
             switch (mem[1].charAt(0)) {
                 case 'T':
                     capacity <<= 40;
@@ -1042,7 +1049,7 @@ public final class Parsing {
                         // Parse hex strings
                         bytes += Long.parseLong(mem[1], 16) - Long.parseLong(mem[0], 16) + 1;
                     } catch (NumberFormatException e) {
-                        Logger.trace(DEFAULT_LOG_MSG, r, e);
+                        Logger.trace(false, "Health", DEFAULT_LOG_MSG, r, e);
                     }
                 }
             }
@@ -1202,7 +1209,7 @@ public final class Parsing {
                     return new BigInteger(hexString, 16).intValue();
                 }
             } catch (NumberFormatException e) {
-                Logger.trace(DEFAULT_LOG_MSG, hexString, e);
+                Logger.trace(false, "Health", DEFAULT_LOG_MSG, hexString, e);
             }
         }
         // Hex parsing failed, return default integer
@@ -1225,7 +1232,7 @@ public final class Parsing {
                     return new BigInteger(hexString, 16).longValue();
                 }
             } catch (NumberFormatException e) {
-                Logger.trace(DEFAULT_LOG_MSG, hexString, e);
+                Logger.trace(false, "Health", DEFAULT_LOG_MSG, hexString, e);
             }
         }
         // Hex parsing failed, return default long integer
@@ -1415,6 +1422,24 @@ public final class Parsing {
     }
 
     /**
+     * Parses a list of strings into a map of string key-value pairs.
+     *
+     * @param lines     A list of strings, each containing a key-value pair separated by the separator.
+     * @param separator The character(s) separating key and value.
+     * @return A map of string key-value pairs with values trimmed.
+     */
+    public static Map<String, String> parseStringListToMap(List<String> lines, String separator) {
+        Map<String, String> map = new HashMap<>();
+        for (String line : lines) {
+            int idx = line.indexOf(separator);
+            if (idx >= 0) {
+                map.put(line.substring(0, idx), line.substring(idx + separator.length()).trim());
+            }
+        }
+        return map;
+    }
+
+    /**
      * Parses a date string from a given format and converts it to epoch time (milliseconds since epoch). This method is
      * useful for handling date formats across different operating systems, such as:
      * <ul>
@@ -1439,7 +1464,7 @@ public final class Parsing {
             LocalDateTime localDateTime = LocalDateTime.parse(dateString, formatter);
             return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
         } catch (DateTimeParseException e) {
-            Logger.trace("Unable to parse date string: " + dateString);
+            Logger.trace(false, "Health", "Unable to parse date string: " + dateString);
             return 0;
         }
     }

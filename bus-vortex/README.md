@@ -54,18 +54,20 @@
 ```java
 public class Assets {
 
-    private String id;           // Unique API ID
-    private String name;         // API name
-    private String host;         // Target hostname
-    private int port;            // Target port
-    private String url;          // Target URL
-    private String method;       // Request method name
-    private HttpMethod httpMethod; // HTTP method
-    private boolean principal;   // Requires token (0: no, 1: yes)
-    private boolean sign;        // Encrypt response (0: no, 1: yes)
-    private boolean firewall;    // Firewall (reserved)
-    private String version;      // API version (matches request parameter 'v')
-    private String description;  // API description
+    private String id;             // Unique route asset ID
+    private String namespace_id;   // Owning namespace
+    private Integer type;          // Optional asset type filter, uses Type.key()
+    private String app_id;         // Application identifier
+    private String method;         // Logical API method name
+    private Integer verb;          // HTTP verb code: 1=GET ... 9=CONNECT
+    private Integer policy;        // Access policy: 0 anonymous, 1-6 secured
+    private Integer sign;          // Signature verification flag
+    private String version;        // API version (matches request parameter 'v')
+    private String host;           // Target hostname
+    private Integer port;          // Target port
+    private String path;           // Downstream path prefix
+    private String url;            // Target URL / endpoint
+    private String description;    // API description
 }
 ```
 
@@ -75,29 +77,59 @@ public class Assets {
 |:---|:---|
 | method | API method name (e.g., xxx.xxx.xxx) |
 | v | API version number, used with method (e.g., 1.1, 1.2) |
+| namespace | Optional namespace route scope |
+| app_id | Optional application-specific route scope |
+| type | Optional registry type scope. Accepts numeric `Type.key()` and legacy type names |
 | format | Return format (supports json, xml) |
 | sign | If decrypt is enabled in config and request contains sign field, decrypt request |
+
+### Public Route Resolution
+
+- Runtime candidate chain:
+  - `namespace:type:app_id:method:version:verb`
+  - `namespace:type:method:version:verb`
+  - `namespace:app_id:method:version:verb`
+  - `namespace:method:version:verb`
+  - `type:app_id:method:version:verb`
+  - `type:method:version:verb`
+  - `app_id:method:version:verb`
+  - `method:version:verb`
+- `method`, `version`, and `verb` are required runtime dimensions
+- `namespace`, `type`, and `app_id` are optional route scopes; when absent the corresponding levels are skipped
+- `type` always uses numeric `Type.key()` inside route keys
+- `verb` always uses the numeric verb code rather than `GET` / `POST` text
+- `ApiAssets.routeKey` remains the lightweight public alias `method:version:verbCode`
+- Registration and lookup share the same candidate chain
+- Lookup stops at the first level that has candidates; if that level resolves to multiple assets, the gateway returns `null`
+
+`verbCode` mapping:
+
+- `1 -> GET`
+- `2 -> POST`
+- `3 -> HEAD`
+- `4 -> PUT`
+- `5 -> PATCH`
+- `6 -> DELETE`
+- `7 -> OPTIONS`
+- `8 -> TRACE`
+- `9 -> CONNECT`
+
+You can override the built-in route-key strategy by providing a Spring `Keying<Keying.RegistrySpec>` bean. The
+default implementation is `RegistryGenerator`, and both bus-cortex and bus-vortex now consume the same
+`Keying<Keying.RegistrySpec>` rules.
 
 ### Configuration File
 
 ```yaml
-extend:
+bus:
   vortex:
-    server:
-      port: 8765              # Gateway port
-      path: /router/rest      # Gateway path
-      encrypt:
-        enabled: true         # Enable encryption
-        key: xxxxxx           # Encryption key
-        type: AES             # Encryption algorithm
-        offset: xxxxxx        # Offset
-      decrypt:
-        enabled: true         # Enable decryption
-        key: xxxxxx           # Decryption key
-        type: AES             # Decryption algorithm
-        offset: xxxx          # Offset
-      limit:
-        enabled: true         # Enable rate limiting
+    port: 8765                # Gateway port
+    path: /router/rest        # Gateway path
+    condition: false          # Disable custom MVC condition bridge by default
+    limit:
+      enabled: true           # Enable rate limiting
+    performance:
+      sanitize-null-like-parameters: true
 ```
 
 ### Integration Steps
@@ -116,24 +148,32 @@ public class TunnelApplication {
 }
 ```
 
-#### 2. Implement a Spring Bean with `Registry` to Cache APIs
+#### 2. AssetsRegistry Is Auto-Configured
+
+```java
+// No custom registry bean is required for the default setup.
+// bus-starter/vortex creates AssetsRegistry automatically.
+```
+
+#### 3. Optionally Override the Route-Key Strategy
+
+```java
+@Bean
+public Keying<Keying.RegistrySpec> registryKeying() {
+    return RegistryGenerator.INSTANCE;
+}
+```
+
+#### 4. Implement an `AuthorizeProvider` Bean for Authentication
 
 ```java
 @Component
-public class DbAssetRegistriesImpl implements Registry {
-    // TODO: Implement registry logic
+public class AuthProviderImpl implements AuthorizeProvider {
+    // Override token/apiKey/license as needed
 }
 ```
 
-#### 3. Implement an `Authorize` Spring Bean for Authentication
-
-```java
-public class AuthProviderImpl implements Authorize {
-    // TODO: Implement authentication logic
-}
-```
-
-#### 4. Configure in `application.yml`
+#### 5. Configure in `application.yml`
 
 ### Extensibility
 
@@ -235,7 +275,7 @@ public class TController {
 ```xml
 <dependency>
     <groupId>org.miaixz</groupId>
-    <artifactId>bus-vortex</artifactId>
+    <artifactId>bus-starter</artifactId>
     <version>x.x.x</version>
 </dependency>
 ```
@@ -255,18 +295,17 @@ public class Application {
 ### Configure Application Properties
 
 ```yaml
-extend:
+bus:
   vortex:
-    server:
-      port: 8765
-      path: /router/rest
+    port: 8765
+    path: /router/rest
     performance:
       sanitize-null-like-parameters: true
 ```
 
 ### Null-like Parameter Sanitization
 
-When `extend.vortex.performance.sanitize-null-like-parameters=true`, the gateway removes Java `null`, `"null"`, and
+When `bus.vortex.performance.sanitize-null-like-parameters=true`, the gateway removes Java `null`, `"null"`, and
 `"undefined"` consistently at request ingestion, context enrichment, and outbound forwarding.
 
 `Context#getParameters()` preserves the familiar `Map` usage style, but the returned map is a controlled `Parameter`
@@ -297,13 +336,11 @@ context.putQueryParameter("lang", "en");
 
 | Property | Type | Default | Description |
 |:---|:---|:---|:---|
-| extend.vortex.server.port | int | 8765 | Gateway server port |
-| extend.vortex.server.path | String | /router/rest | Gateway routing path |
-| extend.vortex.encrypt.enabled | boolean | false | Enable encryption |
-| extend.vortex.encrypt.key | String | - | Encryption key |
-| extend.vortex.encrypt.type | String | AES | Encryption algorithm |
-| extend.vortex.decrypt.enabled | boolean | false | Enable decryption |
-| extend.vortex.limit.enabled | boolean | false | Enable rate limiting |
+| bus.vortex.port | int | 8765 | Gateway server port |
+| bus.vortex.path | String | /router/rest | Gateway routing path |
+| bus.vortex.condition | boolean | false | Enable custom Spring MVC condition bridge |
+| bus.vortex.limit.enabled | boolean | false | Enable rate limiting |
+| bus.vortex.performance.sanitize-null-like-parameters | boolean | true | Remove `null` / `"null"` / `"undefined"` parameters before routing |
 
 -----
 

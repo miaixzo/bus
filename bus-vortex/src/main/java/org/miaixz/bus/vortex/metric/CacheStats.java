@@ -62,9 +62,14 @@ import org.miaixz.bus.vortex.Monitor;
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class CacheStats {
+
+    /**
+     * Creates an empty cache statistics snapshot.
+     */
+    public CacheStats() {
+    }
 
     /**
      * Total number of cache hits.

@@ -21,6 +21,7 @@ package org.miaixz.bus.sensitive;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.sensitive.magic.annotation.Condition;
 import org.miaixz.bus.sensitive.magic.annotation.Entry;
 import org.miaixz.bus.sensitive.magic.annotation.Shield;
@@ -183,6 +184,13 @@ public class Filter {
                         strategy = ReflectKit.newInstance(sensitive.strategy());
                     }
                     context.setEntry(null);
+                    Logger.debug(
+                            false,
+                            "Sensitive",
+                            "Sensitive filter strategy matched: field={}, annotation=Shield, strategy={}, condition={}",
+                            field.getName(),
+                            strategy.getClass().getSimpleName(),
+                            condition.getClass().getSimpleName());
                     return strategy.build(originalFieldVal, context);
                 }
             }
@@ -194,6 +202,13 @@ public class Filter {
                     StrategyProvider strategy = Registry.require(annotations);
                     if (ObjectKit.isNotEmpty(strategy)) {
                         context.setEntry(null);
+                        Logger.debug(
+                                false,
+                                "Sensitive",
+                                "Sensitive filter strategy matched: field={}, annotationCount={}, strategy={}",
+                                field.getName(),
+                                annotations.length,
+                                strategy.getClass().getSimpleName());
                         return strategy.build(originalFieldVal, context);
                     }
                 }
@@ -201,6 +216,13 @@ public class Filter {
             context.setEntry(null);
             return originalFieldVal;
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Sensitive",
+                    e,
+                    "Sensitive filter processing failed: field={}, exception={}",
+                    field.getName(),
+                    e.getClass().getSimpleName());
             throw new InternalException("Desensitization failed: " + e.getMessage(), e);
         }
     }

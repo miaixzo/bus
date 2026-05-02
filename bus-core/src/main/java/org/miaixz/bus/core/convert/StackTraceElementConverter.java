@@ -37,6 +37,12 @@ public class StackTraceElementConverter extends AbstractConverter {
     private static final long serialVersionUID = 2852271899317L;
 
     /**
+     * Constructs a new stack trace element converter.
+     */
+    public StackTraceElementConverter() {
+    }
+
+    /**
      * Converts the given value to a StackTraceElement.
      * <p>
      * Only supports conversion from Map with the following keys: {@code className}, {@code methodName},

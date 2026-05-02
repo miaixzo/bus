@@ -30,6 +30,7 @@ import org.miaixz.bus.cache.magic.CacheExpire;
 import org.miaixz.bus.cache.Serializer;
 import org.miaixz.bus.cache.serialize.Hessian2Serializer;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.logger.Logger;
 
 import jakarta.annotation.PreDestroy;
 import redis.clients.jedis.Jedis;
@@ -182,9 +183,11 @@ public class RedisCache<K, V> implements CacheX<K, V>, AutoCloseable {
      */
     @Override
     public void clear() {
+        Logger.info(true, "Cache", "Redis cache clear started");
         try (Jedis client = jedisPool.getResource()) {
             client.flushDB();
         }
+        Logger.info(false, "Cache", "Redis cache clear completed");
     }
 
     /**
@@ -218,6 +221,7 @@ public class RedisCache<K, V> implements CacheX<K, V>, AutoCloseable {
     public Map<K, V> scan(K prefix) {
         Map<K, V> result = new LinkedHashMap<>();
         String pattern = prefix.toString() + Symbol.STAR;
+        Logger.debug(true, "Cache", "Redis cache scan started: prefixPresent={}", prefix != null);
         try (Jedis client = jedisPool.getResource()) {
             String cursor = Symbol.ZERO;
             ScanParams params = new ScanParams().match(pattern).count(200);
@@ -236,6 +240,12 @@ public class RedisCache<K, V> implements CacheX<K, V>, AutoCloseable {
                 }
             } while (!Symbol.ZERO.equals(cursor));
         }
+        Logger.debug(
+                false,
+                "Cache",
+                "Redis cache scan completed: prefixPresent={}, resultCount={}",
+                prefix != null,
+                result.size());
         return result;
     }
 
@@ -253,7 +263,15 @@ public class RedisCache<K, V> implements CacheX<K, V>, AutoCloseable {
     @Override
     public boolean renew(K key, long expire) {
         try (Jedis client = jedisPool.getResource()) {
-            return client.pexpire(key.toString(), expire) == 1L;
+            boolean renewed = client.pexpire(key.toString(), expire) == 1L;
+            Logger.debug(
+                    false,
+                    "Cache",
+                    "Redis cache ttl renewed: keyPresent={}, expireMs={}, renewed={}",
+                    key != null,
+                    expire,
+                    renewed);
+            return renewed;
         }
     }
 

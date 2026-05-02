@@ -24,6 +24,7 @@ import java.security.SecureRandom;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * BCrypt hashing algorithm implementation. Files encrypted by it can be transferred across all supported operating
@@ -461,6 +462,13 @@ public class BCrypt {
         try {
             try_pw = hashpw(plaintext, hashed);
         } catch (final Exception ignore) {
+            Logger.debug(
+                    false,
+                    "Crypto",
+                    "Crypto operation skipped: provider={}, recoverable={}, exception={}",
+                    "BCrypt",
+                    true,
+                    ignore.getClass().getSimpleName());
             // Return false directly if an error occurs during ciphertext generation
             return false;
         }

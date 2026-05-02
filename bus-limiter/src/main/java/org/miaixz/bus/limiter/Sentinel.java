@@ -57,22 +57,55 @@ public class Sentinel {
      * @throws InternalException if an unsupported {@link StrategyMode} is provided.
      */
     public static Object process(Object bean, Method method, Object[] args, String name, StrategyMode strategyMode) {
+        if (Holder.load().isLogger()) {
+            Logger.debug(
+                    true,
+                    "Limiter",
+                    "Limiter strategy execution started: strategy={}, method={}, targetClass={}, argCount={}",
+                    strategyMode.name(),
+                    name,
+                    bean.getClass().getName(),
+                    args == null ? 0 : args.length);
+        }
         // Process various strategies
         switch (strategyMode) {
             case FALLBACK:
                 // If allowed to enter, call directly
                 if (SphO.entry(name)) {
                     try {
-                        return MethodKit.invoke(bean, method, args);
+                        Object result = MethodKit.invoke(bean, method, args);
+                        if (Holder.load().isLogger()) {
+                            Logger.info(
+                                    false,
+                                    "Limiter",
+                                    "Fallback strategy allowed invocation: method={}, resultType={}",
+                                    name,
+                                    result == null ? "null" : result.getClass().getName());
+                        }
+                        return result;
                     } finally {
                         SphO.exit();
                     }
                 } else {
                     if (Holder.load().isLogger()) {
-                        Logger.info("Trigger fallback strategy for [{}], args: [{}]", name, JsonKit.toJsonString(args));
+                        Logger.info(
+                                false,
+                                "Limiter",
+                                "Fallback strategy triggered: method={}, argCount={}",
+                                name,
+                                args == null ? 0 : args.length);
                     }
                     // Call the fallback method
-                    return StrategyManager.get(strategyMode).process(bean, method, args);
+                    Object result = StrategyManager.get(strategyMode).process(bean, method, args);
+                    if (Holder.load().isLogger()) {
+                        Logger.info(
+                                false,
+                                "Limiter",
+                                "Fallback strategy completed: method={}, resultType={}",
+                                name,
+                                result == null ? "null" : result.getClass().getName());
+                    }
+                    return result;
                 }
             case HOT_METHOD:
                 // Parameter conversion
@@ -81,12 +114,35 @@ public class Sentinel {
                 try {
                     // Determine if flow control is needed
                     entry = SphU.entry(name, EntryType.IN, 1, convertParam);
-                    return MethodKit.invoke(bean, method, args);
+                    Object result = MethodKit.invoke(bean, method, args);
+                    if (Holder.load().isLogger()) {
+                        Logger.info(
+                                false,
+                                "Limiter",
+                                "Hotspot strategy allowed invocation: method={}, resultType={}",
+                                name,
+                                result == null ? "null" : result.getClass().getName());
+                    }
+                    return result;
                 } catch (BlockException e) {
                     if (Holder.load().isLogger()) {
-                        Logger.info(" Trigger hotspot strategy for [{}], args: [{}]", name, JsonKit.toJsonString(args));
+                        Logger.info(
+                                false,
+                                "Limiter",
+                                "Hotspot strategy triggered: method={}, argCount={}",
+                                name,
+                                args == null ? 0 : args.length);
                     }
-                    return StrategyManager.get(strategyMode).process(bean, method, args);
+                    Object result = StrategyManager.get(strategyMode).process(bean, method, args);
+                    if (Holder.load().isLogger()) {
+                        Logger.info(
+                                false,
+                                "Limiter",
+                                "Hotspot strategy completed: method={}, resultType={}",
+                                name,
+                                result == null ? "null" : result.getClass().getName());
+                    }
+                    return result;
                 } finally {
                     if (entry != null) {
                         entry.exit(1, convertParam);
@@ -94,9 +150,23 @@ public class Sentinel {
                 }
             case REQUEST_LIMIT:
                 if (Holder.load().isLogger()) {
-                    Logger.info("Trigger requestLimit strategy for [{}], args: [{}]", name, JsonKit.toJsonString(args));
+                    Logger.info(
+                            true,
+                            "Limiter",
+                            "Request limit strategy delegated: method={}, argCount={}",
+                            name,
+                            args == null ? 0 : args.length);
                 }
-                return StrategyManager.get(strategyMode).process(bean, method, args);
+                Object result = StrategyManager.get(strategyMode).process(bean, method, args);
+                if (Holder.load().isLogger()) {
+                    Logger.info(
+                            false,
+                            "Limiter",
+                            "Request limit strategy completed: method={}, resultType={}",
+                            name,
+                            result == null ? "null" : result.getClass().getName());
+                }
+                return result;
 
             default:
                 throw new InternalException("Strategy error!");

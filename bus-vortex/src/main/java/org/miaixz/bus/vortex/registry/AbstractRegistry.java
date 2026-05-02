@@ -22,8 +22,8 @@ package org.miaixz.bus.vortex.registry;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Monitor;
 import org.miaixz.bus.vortex.Registry;
@@ -78,7 +78,7 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
     /**
      * The function used to generate a unique key for each item stored in the registry.
      */
-    protected Function<T, String> keyGenerator;
+    protected FunctionX<T, String> keyGenerator;
 
     /**
      * Constructor: Initializes the cache manager.
@@ -91,9 +91,9 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
      * Sets the key generation strategy for this registry. This method must be called by subclasses in their constructor
      * to define how items are indexed.
      *
-     * @param keyGenerator A {@link Function} that takes an item of type {@code T} and returns its unique string key.
+     * @param keyGenerator A {@link FunctionX} that takes an item of type {@code T} and returns its unique string key.
      */
-    protected void setKeyGenerator(Function<T, String> keyGenerator) {
+    protected void setKeyGenerator(FunctionX<T, String> keyGenerator) {
         this.keyGenerator = keyGenerator;
     }
 
@@ -107,7 +107,7 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
      */
     public void setMonitor(Monitor monitor) {
         this.cacheManager.setPerformanceMonitor(monitor);
-        Logger.debug("Performance monitor set: {}", monitor.getClass().getSimpleName());
+        Logger.debug(false, "Vortex", "Performance monitor set: {}", monitor.getClass().getSimpleName());
     }
 
     /**
@@ -135,7 +135,6 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
      */
     @Override
     public void register(String key, T item) {
-        // Update both registry and cacheManager
         this.registry.put(key, item);
         this.cacheManager.put(key, item);
     }
@@ -150,7 +149,6 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
      */
     @Override
     public void destroy(String key) {
-        // Remove from both registry and cacheManager
         this.registry.remove(key);
         this.cacheManager.remove(key);
     }
@@ -194,7 +192,6 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
      */
     @Override
     public void update(String key, T item) {
-        // Update is re-registration
         register(key, item);
     }
 
@@ -209,10 +206,9 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
     @Override
     public Mono<Void> refresh() {
         return Mono.fromRunnable(() -> {
-            // Clear both registry and cacheManager
             this.registry.clear();
             this.cacheManager.clear();
-        }).then(init()); // Chain to the async init() method
+        }).then(init());
     }
 
     /**
@@ -232,21 +228,17 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
      */
     @Override
     public T get(String key) {
-        // 1. First query registry (L1 cache)
         T item = this.registry.get(key);
         if (item != null) {
             return item;
         }
 
-        // 2. Registry miss, query cacheManager (L2 cache)
         item = this.cacheManager.get(key);
         if (item != null) {
-            // L2 cache hit, promote to registry
             this.registry.put(key, item);
             return item;
         }
 
-        // 3. Complete miss
         return null;
     }
 
@@ -269,8 +261,6 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
      */
     @Override
     public void afterPropertiesSet() {
-        // Bridge the synchronous Spring lifecycle with our async refresh.
-        // This is acceptable on startup but should be avoided at runtime.
         refresh().block();
     }
 

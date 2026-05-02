@@ -23,6 +23,7 @@ import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.SegmentBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.BufferSource;
+import org.miaixz.bus.logger.Logger;
 
 import java.io.IOException;
 
@@ -214,6 +215,12 @@ public final class ServerSentEventReader {
         try {
             return Long.parseLong(retryString);
         } catch (NumberFormatException e) {
+            Logger.debug(
+                    false,
+                    "Http",
+                    "SSE retry field ignored: protocol=sse, valueChars={}, exception={}",
+                    retryString.length(),
+                    e.getClass().getSimpleName());
             return -1L;
         }
     }

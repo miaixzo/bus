@@ -52,6 +52,7 @@ import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.Keeper;
 import org.miaixz.bus.crypto.builtin.asymmetric.AbstractCrypto;
 import org.miaixz.bus.crypto.builtin.asymmetric.KeyType;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Implementation of the Chinese National Standard SM2 asymmetric algorithm, based on the Bouncy Castle library. The SM2
@@ -406,6 +407,14 @@ public class SM2 extends AbstractCrypto<SM2> {
             final byte[] result = engine.processBlock(data, 0, data.length);
             return this.removeCompressedFlag ? removeCompressedFlag(result) : result;
         } catch (final InvalidCipherTextException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
+                    "SM2",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         } finally {
             lock.unlock();
@@ -548,6 +557,14 @@ public class SM2 extends AbstractCrypto<SM2> {
             signer.update(data, 0, data.length);
             return signer.generateSignature();
         } catch (final org.bouncycastle.crypto.CryptoException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
+                    "SM2",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         } finally {
             lock.unlock();
@@ -843,6 +860,14 @@ public class SM2 extends AbstractCrypto<SM2> {
             engine.init(false, privateKeyParameters);
             return engine.processBlock(data, 0, data.length);
         } catch (final InvalidCipherTextException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
+                    "SM2",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         } finally {
             lock.unlock();

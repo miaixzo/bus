@@ -33,6 +33,7 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeUtility;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * An internal utility class for mail-related operations, such as parsing addresses and encoding text. This class is not
@@ -80,6 +81,14 @@ public class InternalMail {
             try {
                 return new InternetAddress(address);
             } catch (final AddressException e) {
+                Logger.warn(
+                        false,
+                        "Extra",
+                        e,
+                        "Mail address parse failed: addressChars={}, charsetPresent={}, exception={}",
+                        address == null ? 0 : address.length(),
+                        charset != null,
+                        e.getClass().getSimpleName());
                 throw new InternalException(e);
             }
         }
@@ -103,6 +112,14 @@ public class InternalMail {
         try {
             addresses = InternetAddress.parse(address);
         } catch (final AddressException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "Mail address list parse failed: addressChars={}, charsetPresent={}, exception={}",
+                    address.length(),
+                    charset != null,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         // Encode personal names
@@ -112,6 +129,13 @@ public class InternalMail {
                 try {
                     internetAddress.setPersonal(internetAddress.getPersonal(), charsetStr);
                 } catch (final UnsupportedEncodingException e) {
+                    Logger.warn(
+                            false,
+                            "Extra",
+                            e,
+                            "Mail address personal encoding failed: charsetPresent={}, exception={}",
+                            charsetStr != null,
+                            e.getClass().getSimpleName());
                     throw new InternalException(e);
                 }
             }
@@ -133,6 +157,13 @@ public class InternalMail {
             try {
                 return MimeUtility.encodeText(text, charset.name(), null);
             } catch (final UnsupportedEncodingException e) {
+                Logger.debug(
+                        false,
+                        "Extra",
+                        "Mail header text encoding fallback used: textChars={}, charsetPresent={}, exception={}",
+                        text.length(),
+                        charset != null,
+                        e.getClass().getSimpleName());
                 // Ignore and return the original string if encoding fails
             }
         }

@@ -27,6 +27,7 @@ import org.miaixz.bus.extra.mq.Consumer;
 import org.miaixz.bus.extra.mq.MQConfig;
 import org.miaixz.bus.extra.mq.MQProvider;
 import org.miaixz.bus.extra.mq.Producer;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Kafka message queue engine implementation class. This class provides an adapter for interacting with Apache Kafka,
@@ -85,6 +86,11 @@ public class KafkaProvider implements MQProvider {
      */
     @Override
     public KafkaProvider init(final MQConfig config) {
+        Logger.info(
+                true,
+                "Extra",
+                "Kafka provider initialization requested: brokerPresent={}",
+                config != null && config.getBrokerUrl() != null);
         return init(buidProperties(config));
     }
 
@@ -97,6 +103,11 @@ public class KafkaProvider implements MQProvider {
      */
     public KafkaProvider init(final Properties properties) {
         this.properties = properties;
+        Logger.info(
+                false,
+                "Extra",
+                "Kafka provider initialized: propertyCount={}",
+                properties == null ? 0 : properties.size());
         return this;
     }
 
@@ -109,7 +120,19 @@ public class KafkaProvider implements MQProvider {
      * @return This {@code KafkaProvider} instance, allowing for method chaining.
      */
     public KafkaProvider addProperty(final String key, final String value) {
+        Logger.debug(
+                true,
+                "Extra",
+                "Kafka provider property update started: key={}, propertyCountBefore={}",
+                key,
+                this.properties == null ? 0 : this.properties.size());
         this.properties.put(key, value);
+        Logger.debug(
+                false,
+                "Extra",
+                "Kafka provider property updated: key={}, propertyCountAfter={}",
+                key,
+                this.properties == null ? 0 : this.properties.size());
         return this;
     }
 
@@ -121,7 +144,20 @@ public class KafkaProvider implements MQProvider {
      */
     @Override
     public Producer getProducer() {
-        return new KafkaProducer(this.properties);
+        final long startedAt = System.nanoTime();
+        Logger.debug(
+                true,
+                "Extra",
+                "Kafka producer creation started: propertyCount={}",
+                this.properties == null ? 0 : this.properties.size());
+        Producer producer = new KafkaProducer(this.properties);
+        Logger.debug(
+                false,
+                "Extra",
+                "Kafka producer created: propertyCount={}, elapsedMs={}",
+                this.properties == null ? 0 : this.properties.size(),
+                (System.nanoTime() - startedAt) / 1_000_000L);
+        return producer;
     }
 
     /**
@@ -132,7 +168,20 @@ public class KafkaProvider implements MQProvider {
      */
     @Override
     public Consumer getConsumer() {
-        return new KafkaConsumer(this.properties);
+        final long startedAt = System.nanoTime();
+        Logger.debug(
+                true,
+                "Extra",
+                "Kafka consumer creation started: propertyCount={}",
+                this.properties == null ? 0 : this.properties.size());
+        Consumer consumer = new KafkaConsumer(this.properties);
+        Logger.debug(
+                false,
+                "Extra",
+                "Kafka consumer created: propertyCount={}, elapsedMs={}",
+                this.properties == null ? 0 : this.properties.size(),
+                (System.nanoTime() - startedAt) / 1_000_000L);
+        return consumer;
     }
 
     /**
@@ -143,11 +192,18 @@ public class KafkaProvider implements MQProvider {
      * @return The constructed Kafka configuration {@link Properties}.
      */
     private static Properties buidProperties(final MQConfig config) {
+        Logger.debug(
+                true,
+                "Extra",
+                "Kafka provider property build started: brokerPresent={}, extraPropertyCount={}",
+                config != null && config.getBrokerUrl() != null,
+                config == null || config.getProperties() == null ? 0 : config.getProperties().size());
         final Properties properties = new Properties();
         // Set Kafka server address using CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG
         properties.setProperty(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, config.getBrokerUrl());
         // Add other configuration properties from MQConfig
         properties.putAll(config.getProperties());
+        Logger.debug(false, "Extra", "Kafka provider property build completed: propertyCount={}", properties.size());
         return properties;
     }
 

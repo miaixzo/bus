@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -36,7 +36,10 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 @ThreadSafe
 public final class Win32Fan {
 
-    private static final String WIN32_FAN = "Win32_Fan";
+    /**
+     * The WMI class name.
+     */
+    public static final String WIN32_FAN = "Win32_Fan";
 
     /**
      * Queries the fan speed.

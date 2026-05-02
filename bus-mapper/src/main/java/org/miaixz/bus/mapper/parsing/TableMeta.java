@@ -46,6 +46,7 @@ import org.miaixz.bus.mapper.builder.GenericTypeResolver;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Represents the metadata of an entity table, recording the relationship between an entity and its corresponding table.
@@ -221,19 +222,18 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     /**
      * Determines if {@link ResultMap}s can be used.
      *
-     * @param providerContext The current method information.
-     * @param cacheKey        The cache key, unique for each method (defaults to msId).
+     * @param context  The current method information.
+     * @param cacheKey The cache key, unique for each method (defaults to msId).
      * @return {@code true} if {@link ResultMap}s can be used, {@code false} otherwise.
      */
-    protected boolean canUseResultMaps(ProviderContext providerContext, String cacheKey) {
+    protected boolean canUseResultMaps(ProviderContext context, String cacheKey) {
         if (resultMaps != null && !resultMaps.isEmpty()
-                && providerContext.getMapperMethod().isAnnotationPresent(SelectProvider.class)) {
+                && context.getMapperMethod().isAnnotationPresent(SelectProvider.class)) {
             Class<?> resultType = resultMaps.get(0).getType();
-            if (resultType == providerContext.getMapperMethod().getReturnType()) {
+            if (resultType == context.getMapperMethod().getReturnType()) {
                 return true;
             }
-            Class<?> returnType = GenericTypeResolver
-                    .getReturnType(providerContext.getMapperMethod(), providerContext.getMapperType());
+            Class<?> returnType = GenericTypeResolver.getReturnType(context.getMapperMethod(), context.getMapperType());
             return resultType == returnType;
         }
         return false;
@@ -266,16 +266,16 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     /**
      * Initializes runtime information. This method is executed once per method and must be idempotent.
      *
-     * @param configuration   The MyBatis configuration.
-     * @param providerContext The current method information.
-     * @param cacheKey        The cache key, unique for each method.
+     * @param configuration The MyBatis configuration.
+     * @param context       The current method information.
+     * @param cacheKey      The cache key, unique for each method.
      */
-    public void initRuntimeContext(Configuration configuration, ProviderContext providerContext, String cacheKey) {
+    public void initRuntimeContext(Configuration configuration, ProviderContext context, String cacheKey) {
         if (!initConfiguration.contains(configuration)) {
-            initResultMap(configuration, providerContext, cacheKey);
+            initResultMap(configuration, context, cacheKey);
             initConfiguration.add(configuration);
         }
-        if (canUseResultMaps(providerContext, cacheKey)) {
+        if (canUseResultMaps(context, cacheKey)) {
             synchronized (cacheKey) {
                 if (!hasBeenReplaced(configuration, cacheKey)) {
                     MetaObject metaObject = configuration.newMetaObject(configuration.getMappedStatement(cacheKey));
@@ -288,16 +288,16 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     /**
      * Initializes the {@link ResultMap}.
      *
-     * @param configuration   The MyBatis configuration.
-     * @param providerContext The current method information.
-     * @param cacheKey        The cache key.
+     * @param configuration The MyBatis configuration.
+     * @param context       The current method information.
+     * @param cacheKey      The cache key.
      */
-    protected void initResultMap(Configuration configuration, ProviderContext providerContext, String cacheKey) {
+    protected void initResultMap(Configuration configuration, ProviderContext context, String cacheKey) {
         if (StringKit.isNotEmpty(resultMap)) {
             synchronized (this) {
                 if (resultMaps == null) {
                     resultMaps = new ArrayList<>();
-                    String resultMapId = generateResultMapId(providerContext, resultMap);
+                    String resultMapId = generateResultMapId(context, resultMap);
                     if (configuration.hasResultMap(resultMapId)) {
                         resultMaps.add(configuration.getResultMap(resultMapId));
                     } else if (configuration.hasResultMap(resultMap)) {
@@ -312,7 +312,7 @@ public class TableMeta extends PropertyMeta<TableMeta> {
             synchronized (this) {
                 if (resultMaps == null) {
                     resultMaps = new ArrayList<>();
-                    ResultMap resultMap = genResultMap(configuration, providerContext, cacheKey);
+                    ResultMap resultMap = genResultMap(configuration, context, cacheKey);
                     resultMaps.add(resultMap);
                     configuration.addResultMap(resultMap);
                 }
@@ -323,26 +323,26 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     /**
      * Generates a {@link ResultMap} ID.
      *
-     * @param providerContext The provider context.
-     * @param resultMapId     The {@link ResultMap} ID.
+     * @param context     The provider context.
+     * @param resultMapId The {@link ResultMap} ID.
      * @return The complete {@link ResultMap} ID.
      */
-    protected String generateResultMapId(ProviderContext providerContext, String resultMapId) {
+    protected String generateResultMapId(ProviderContext context, String resultMapId) {
         if (resultMapId.indexOf(".") > 0) {
             return resultMapId;
         }
-        return providerContext.getMapperType().getName() + "." + resultMapId;
+        return context.getMapperType().getName() + "." + resultMapId;
     }
 
     /**
      * Generates a {@link ResultMap}.
      *
-     * @param configuration   The MyBatis configuration.
-     * @param providerContext The provider context.
-     * @param cacheKey        The cache key.
+     * @param configuration The MyBatis configuration.
+     * @param context       The provider context.
+     * @param cacheKey      The cache key.
      * @return A {@link ResultMap} instance.
      */
-    protected ResultMap genResultMap(Configuration configuration, ProviderContext providerContext, String cacheKey) {
+    protected ResultMap genResultMap(Configuration configuration, ProviderContext context, String cacheKey) {
         List<ResultMapping> resultMappings = new ArrayList<>();
         for (ColumnMeta columnMeta : selectColumns()) {
             String column = columnMeta.column();
@@ -359,6 +359,13 @@ public class TableMeta extends PropertyMeta<TableMeta> {
                 try {
                     builder.typeHandler(getTypeHandlerInstance(columnMeta.javaType(), columnMeta.typeHandler));
                 } catch (Exception e) {
+                    Logger.warn(
+                            false,
+                            "Mapper",
+                            e,
+                            "Mapper operation failed: provider={}, exception={}",
+                            "TableMeta",
+                            e.getClass().getSimpleName());
                     throw new RuntimeException(e);
                 }
             }
@@ -369,7 +376,7 @@ public class TableMeta extends PropertyMeta<TableMeta> {
             builder.flags(flags);
             resultMappings.add(builder.build());
         }
-        String resultMapId = generateResultMapId(providerContext, Args.RESULT_MAP_NAME);
+        String resultMapId = generateResultMapId(context, Args.RESULT_MAP_NAME);
         ResultMap.Builder builder = new ResultMap.Builder(configuration, resultMapId, entityClass(), resultMappings,
                 true);
         return builder.build();
@@ -388,7 +395,20 @@ public class TableMeta extends PropertyMeta<TableMeta> {
                 Constructor<?> c = typeHandlerClass.getConstructor(Class.class);
                 return (TypeHandler) c.newInstance(javaTypeClass);
             } catch (NoSuchMethodException ignored) {
+                Logger.debug(
+                        false,
+                        "Mapper",
+                        "Mapper operation skipped: provider={}, exception={}",
+                        "TableMeta",
+                        ignored.getClass().getSimpleName());
             } catch (Exception e) {
+                Logger.warn(
+                        false,
+                        "Mapper",
+                        e,
+                        "Mapper operation failed: provider={}, exception={}",
+                        "TableMeta",
+                        e.getClass().getSimpleName());
                 throw new TypeException("Failed invoking constructor for handler " + typeHandlerClass, e);
             }
         }
@@ -396,6 +416,13 @@ public class TableMeta extends PropertyMeta<TableMeta> {
             Constructor<?> c = typeHandlerClass.getConstructor();
             return (TypeHandler) c.newInstance();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Mapper",
+                    e,
+                    "Mapper operation failed: provider={}, exception={}",
+                    "TableMeta",
+                    e.getClass().getSimpleName());
             throw new TypeException("Unable to find a usable constructor for " + typeHandlerClass, e);
         }
     }

@@ -23,6 +23,7 @@ import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.bodys.ResponseBody;
 import org.miaixz.bus.http.plugin.sse.EventSource;
 import org.miaixz.bus.http.plugin.sse.EventSourceListener;
+import org.miaixz.bus.logger.Logger;
 
 import java.io.IOException;
 
@@ -77,6 +78,12 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
      * @param callFactory The factory used to create HTTP calls.
      */
     public void connect(NewCall.Factory callFactory) {
+        Logger.info(
+                true,
+                "Http",
+                "SSE connection starting: protocol=sse, method={}, url={}",
+                request.method(),
+                request.url().redact());
         call = callFactory.newCall(request);
         call.enqueue(this);
     }
@@ -89,6 +96,12 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
      */
     @Override
     public void onResponse(NewCall call, Response response) {
+        Logger.debug(
+                false,
+                "Http",
+                "SSE HTTP response received: protocol=sse, url={}, status={}",
+                request.url().redact(),
+                response.code());
         processResponse(response);
     }
 
@@ -101,17 +114,35 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
     public void processResponse(Response response) {
         try (Response ignored = response) {
             if (!response.isSuccessful()) {
+                Logger.warn(
+                        false,
+                        "Http",
+                        "SSE connection rejected: protocol=sse, url={}, status={}",
+                        request.url().redact(),
+                        response.code());
                 listener.onFailure(this, null, response);
                 return;
             }
 
             ResponseBody body = response.body();
             if (body == null) {
+                Logger.warn(
+                        false,
+                        "Http",
+                        "SSE response body missing: protocol=sse, url={}, status={}",
+                        request.url().redact(),
+                        response.code());
                 listener.onFailure(this, new IllegalStateException("Response body is null"), response);
                 return;
             }
 
             if (!isEventStream(body)) {
+                Logger.warn(
+                        false,
+                        "Http",
+                        "SSE invalid content type: protocol=sse, url={}, contentType={}",
+                        request.url().redact(),
+                        body.contentType());
                 listener.onFailure(
                         this,
                         new IllegalStateException("Invalid content-type: " + body.contentType()),
@@ -130,13 +161,27 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
             ServerSentEventReader reader = new ServerSentEventReader(body.source(), this);
             try {
                 listener.onOpen(this, modifiedResponse);
+                Logger.info(
+                        false,
+                        "Http",
+                        "SSE stream opened: protocol=sse, url={}, status={}",
+                        request.url().redact(),
+                        response.code());
                 while (reader.processNextEvent()) {
                     // Continue processing events.
                 }
             } catch (Exception e) {
+                Logger.error(
+                        false,
+                        "Http",
+                        e,
+                        "SSE stream failed while reading: protocol=sse, url={}, exception={}",
+                        request.url().redact(),
+                        e.getClass().getSimpleName());
                 listener.onFailure(this, e, modifiedResponse);
                 return;
             }
+            Logger.info(false, "Http", "SSE stream closed: protocol=sse, url={}", request.url().redact());
             listener.onClosed(this);
         }
     }
@@ -162,6 +207,13 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
      */
     @Override
     public void onFailure(NewCall call, IOException e) {
+        Logger.error(
+                false,
+                "Http",
+                e,
+                "SSE connection failed: protocol=sse, url={}, exception={}",
+                request.url().redact(),
+                e.getClass().getSimpleName());
         listener.onFailure(this, e, null);
     }
 
@@ -183,6 +235,7 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
     public void cancel() {
         if (call != null && !canceled) {
             canceled = true;
+            Logger.info(false, "Http", "SSE cancellation requested: protocol=sse, url={}", request.url().redact());
             call.cancel();
         }
     }
@@ -196,6 +249,14 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
      */
     @Override
     public void onEvent(String id, String type, String data) {
+        Logger.trace(
+                false,
+                "Http",
+                "SSE event received: protocol=sse, url={}, id={}, type={}, chars={}",
+                request.url().redact(),
+                id,
+                type,
+                data == null ? 0 : data.length());
         listener.onEvent(this, id, type, data);
     }
 

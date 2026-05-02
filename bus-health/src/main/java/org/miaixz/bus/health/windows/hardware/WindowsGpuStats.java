@@ -58,30 +58,69 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
  * <p>
  * PDH metrics require a valid LUID prefix (populated from DXGI). NVML requires an NVIDIA GPU with the NVML library
  * present. ADL requires an AMD GPU with the ADL library present. LHM requires LibreHardwareMonitor to be running.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 @ThreadSafe
 final class WindowsGpuStats implements GpuStats {
 
+    /**
+     * The MB_TO_BYTES constant.
+     */
     private static final long MB_TO_BYTES = 1_048_576L;
 
+    /**
+     * The luidPrefix value.
+     */
     private final String luidPrefix;
+    /**
+     * The lhmParent value.
+     */
     private final String lhmParent;
+    /**
+     * The pciBusNumber value.
+     */
     private final int pciBusNumber;
+    /**
+     * The pciBusId value.
+     */
     private final String pciBusId;
+    /**
+     * The cardName value.
+     */
     private final String cardName;
 
+    /**
+     * The closed value.
+     */
     private boolean closed;
 
     // Cached device lookups; null = not yet resolved, empty = unavailable
+    /**
+     * The cachedNvmlDevice value.
+     */
     private String cachedNvmlDevice;
     // Integer.MIN_VALUE = not yet resolved, -1 = unavailable
+    /**
+     * The cachedAdlIndex value.
+     */
     private int cachedAdlIndex = Integer.MIN_VALUE;
     // Previous tick snapshot for PDH-based utilization fallback; null = not yet sampled
+    /**
+     * The prevUtilTicks value.
+     */
     private GpuTicks prevUtilTicks;
 
+    /**
+     * Creates a new WindowsGpuStats instance.
+     *
+     * @param luidPrefix   the luid prefix
+     * @param lhmParent    the lhm parent
+     * @param pciBusNumber the pci bus number
+     * @param pciBusId     the pci bus id
+     * @param cardName     the card name
+     */
     WindowsGpuStats(String luidPrefix, String lhmParent, int pciBusNumber, String pciBusId, String cardName) {
         this.luidPrefix = luidPrefix;
         this.lhmParent = lhmParent;
@@ -90,16 +129,29 @@ final class WindowsGpuStats implements GpuStats {
         this.cardName = cardName;
     }
 
+    /**
+     * Closes this resource.
+     */
     @Override
     public synchronized void close() {
         closed = true;
     }
 
+    /**
+     * Returns whether the closed condition is true.
+     *
+     * @return the is closed result
+     */
     @Override
     public synchronized boolean isClosed() {
         return closed;
     }
 
+    /**
+     * Returns the gpu ticks.
+     *
+     * @return the get gpu ticks result
+     */
     @Override
     public synchronized GpuTicks getGpuTicks() {
         checkOpen();
@@ -142,6 +194,11 @@ final class WindowsGpuStats implements GpuStats {
         return new GpuTicks(totalActive, idle);
     }
 
+    /**
+     * Returns the gpu utilization.
+     *
+     * @return the get gpu utilization result
+     */
     @Override
     public synchronized double getGpuUtilization() {
         checkOpen();
@@ -154,7 +211,7 @@ final class WindowsGpuStats implements GpuStats {
                     }
                 }
             } catch (Exception e) {
-                Logger.debug("LHM GPU utilization query failed: {}", e.getMessage());
+                Logger.debug(false, "Health", "LHM GPU utilization query failed: {}", e.getClass().getSimpleName());
             }
         }
         // Fallback: derive utilization from PDH tick counters
@@ -170,6 +227,11 @@ final class WindowsGpuStats implements GpuStats {
         return -1d;
     }
 
+    /**
+     * Returns the vram used.
+     *
+     * @return the get vram used result
+     */
     @Override
     public synchronized long getVramUsed() {
         checkOpen();
@@ -187,12 +249,17 @@ final class WindowsGpuStats implements GpuStats {
                     }
                 }
             } catch (Exception e) {
-                Logger.debug("LHM GPU memory used query failed: {}", e.getMessage());
+                Logger.debug(false, "Health", "LHM GPU memory used query failed: {}", e.getClass().getSimpleName());
             }
         }
         return -1L;
     }
 
+    /**
+     * Returns the shared memory used.
+     *
+     * @return the get shared memory used result
+     */
     @Override
     public synchronized long getSharedMemoryUsed() {
         checkOpen();
@@ -202,6 +269,11 @@ final class WindowsGpuStats implements GpuStats {
         return queryAdapterMemory(GpuInformation.GpuAdapterMemoryProperty.SHARED_USAGE);
     }
 
+    /**
+     * Returns the temperature.
+     *
+     * @return the get temperature result
+     */
     @Override
     public synchronized double getTemperature() {
         checkOpen();
@@ -222,6 +294,11 @@ final class WindowsGpuStats implements GpuStats {
         return lhmFloatSensor("Temperature", "GPU Core");
     }
 
+    /**
+     * Returns the power draw.
+     *
+     * @return the get power draw result
+     */
     @Override
     public synchronized double getPowerDraw() {
         checkOpen();
@@ -246,6 +323,11 @@ final class WindowsGpuStats implements GpuStats {
         return lhmFloatSensor("Power", "GPU Power");
     }
 
+    /**
+     * Returns the core clock mhz.
+     *
+     * @return the get core clock mhz result
+     */
     @Override
     public synchronized long getCoreClockMhz() {
         checkOpen();
@@ -267,6 +349,11 @@ final class WindowsGpuStats implements GpuStats {
         return lhm >= 0 ? (long) lhm : -1L;
     }
 
+    /**
+     * Returns the memory clock mhz.
+     *
+     * @return the get memory clock mhz result
+     */
     @Override
     public synchronized long getMemoryClockMhz() {
         checkOpen();
@@ -288,6 +375,11 @@ final class WindowsGpuStats implements GpuStats {
         return lhm >= 0 ? (long) lhm : -1L;
     }
 
+    /**
+     * Returns the fan speed percent.
+     *
+     * @return the get fan speed percent result
+     */
     @Override
     public synchronized double getFanSpeedPercent() {
         checkOpen();
@@ -312,6 +404,9 @@ final class WindowsGpuStats implements GpuStats {
         return lhmFloatSensor("Control", "GPU Fan 1");
     }
 
+    /**
+     * Handles the check open operation.
+     */
     private void checkOpen() {
         if (closed) {
             throw new IllegalStateException(
@@ -319,6 +414,12 @@ final class WindowsGpuStats implements GpuStats {
         }
     }
 
+    /**
+     * Queries the adapter memory.
+     *
+     * @param property the property
+     * @return the query adapter memory result
+     */
     private long queryAdapterMemory(GpuInformation.GpuAdapterMemoryProperty property) {
         if (luidPrefix.isEmpty()) {
             return -1L;
@@ -339,6 +440,11 @@ final class WindowsGpuStats implements GpuStats {
         return -1L;
     }
 
+    /**
+     * Returns the find nvml device result.
+     *
+     * @return the find nvml device result
+     */
     private String findNvmlDevice() {
         if (cachedNvmlDevice != null) {
             return cachedNvmlDevice.isEmpty() ? null : cachedNvmlDevice;
@@ -358,6 +464,11 @@ final class WindowsGpuStats implements GpuStats {
         return id;
     }
 
+    /**
+     * Returns the find adl index result.
+     *
+     * @return the find adl index result
+     */
     private int findAdlIndex() {
         if (cachedAdlIndex != Integer.MIN_VALUE) {
             return cachedAdlIndex;
@@ -370,6 +481,13 @@ final class WindowsGpuStats implements GpuStats {
         return cachedAdlIndex;
     }
 
+    /**
+     * Returns the lhm float sensor result.
+     *
+     * @param sensorType the sensor type
+     * @param sensorName the sensor name
+     * @return the lhm float sensor result
+     */
     private double lhmFloatSensor(String sensorType, String sensorName) {
         if (lhmParent.isEmpty()) {
             return -1d;
@@ -382,7 +500,13 @@ final class WindowsGpuStats implements GpuStats {
                 }
             }
         } catch (Exception e) {
-            Logger.debug("LHM {} {} query failed: {}", sensorType, sensorName, e.getMessage());
+            Logger.debug(
+                    false,
+                    "Health",
+                    "LHM {} {} query failed: {}",
+                    sensorType,
+                    sensorName,
+                    e.getClass().getSimpleName());
         }
         return -1d;
     }

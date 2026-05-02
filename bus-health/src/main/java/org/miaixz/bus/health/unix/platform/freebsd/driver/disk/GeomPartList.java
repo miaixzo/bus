@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -39,7 +39,13 @@ import org.miaixz.bus.health.builtin.hardware.HWPartition;
 @ThreadSafe
 public final class GeomPartList {
 
+    /**
+     * The GEOM_PART_LIST constant.
+     */
     private static final String GEOM_PART_LIST = "geom part list";
+    /**
+     * The STAT_FILESIZE constant.
+     */
     private static final String STAT_FILESIZE = "stat -f %i /dev/";
 
     /**

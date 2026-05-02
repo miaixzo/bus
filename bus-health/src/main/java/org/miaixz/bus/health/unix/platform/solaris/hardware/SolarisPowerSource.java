@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -42,8 +42,14 @@ import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 public final class SolarisPowerSource extends AbstractPowerSource {
 
     // One-time lookup to see which kstat module to use
+    /**
+     * The KSTAT_BATT_MOD constant.
+     */
     private static final String[] KSTAT_BATT_MOD = { null, "battery", "acpi_drv" };
 
+    /**
+     * The KSTAT_BATT_IDX constant.
+     */
     private static final int KSTAT_BATT_IDX;
 
     static {
@@ -58,6 +64,31 @@ public final class SolarisPowerSource extends AbstractPowerSource {
         }
     }
 
+    /**
+     * Creates a new SolarisPowerSource instance.
+     *
+     * @param psName                     the ps name
+     * @param psDeviceName               the ps device name
+     * @param psRemainingCapacityPercent the ps remaining capacity percent
+     * @param psTimeRemainingEstimated   the ps time remaining estimated
+     * @param psTimeRemainingInstant     the ps time remaining instant
+     * @param psPowerUsageRate           the ps power usage rate
+     * @param psVoltage                  the ps voltage
+     * @param psAmperage                 the ps amperage
+     * @param psPowerOnLine              the ps power on line
+     * @param psCharging                 the ps charging
+     * @param psDischarging              the ps discharging
+     * @param psCapacityUnits            the ps capacity units
+     * @param psCurrentCapacity          the ps current capacity
+     * @param psMaxCapacity              the ps max capacity
+     * @param psDesignCapacity           the ps design capacity
+     * @param psCycleCount               the ps cycle count
+     * @param psChemistry                the ps chemistry
+     * @param psManufactureDate          the ps manufacture date
+     * @param psManufacturer             the ps manufacturer
+     * @param psSerialNumber             the ps serial number
+     * @param psTemperature              the ps temperature
+     */
     public SolarisPowerSource(String psName, String psDeviceName, double psRemainingCapacityPercent,
             double psTimeRemainingEstimated, double psTimeRemainingInstant, double psPowerUsageRate, double psVoltage,
             double psAmperage, boolean psPowerOnLine, boolean psCharging, boolean psDischarging,
@@ -71,6 +102,16 @@ public final class SolarisPowerSource extends AbstractPowerSource {
     }
 
     /**
+     * Queries the power sources.
+     *
+     * @return the query power sources result
+     */
+    @Override
+    protected List<PowerSource> queryPowerSources() {
+        return getPowerSources();
+    }
+
+    /**
      * Gets Battery Information
      *
      * @return A list of PowerSource objects representing batteries, etc.
@@ -79,6 +120,12 @@ public final class SolarisPowerSource extends AbstractPowerSource {
         return Arrays.asList(getPowerSource("BAT0"));
     }
 
+    /**
+     * Returns the power source.
+     *
+     * @param name the name
+     * @return the get power source result
+     */
     private static SolarisPowerSource getPowerSource(String name) {
         String psName = name;
         String psDeviceName = Normal.UNKNOWN;

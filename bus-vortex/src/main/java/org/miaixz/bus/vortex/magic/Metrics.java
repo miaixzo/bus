@@ -19,10 +19,8 @@
 */
 package org.miaixz.bus.vortex.magic;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.vortex.Monitor;
 import org.miaixz.bus.vortex.provider.MetricsProvider;
 
@@ -41,8 +39,9 @@ import org.miaixz.bus.vortex.provider.MetricsProvider;
  * @author Kimi Liu
  * @since Java 21+
  */
-@Data
-@Builder
+@Getter
+@Setter
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Metrics {

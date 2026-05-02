@@ -36,6 +36,12 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class ThreadFactoryBuilder implements Builder<ThreadFactory> {
 
+    /**
+     * Constructs a new thread factory builder.
+     */
+    public ThreadFactoryBuilder() {
+    }
+
     @Serial
     private static final long serialVersionUID = 2852280056509L;
 

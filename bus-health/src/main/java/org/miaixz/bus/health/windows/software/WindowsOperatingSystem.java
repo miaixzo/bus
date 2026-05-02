@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -60,8 +60,14 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil;
 @ThreadSafe
 public class WindowsOperatingSystem extends AbstractOperatingSystem {
 
+    /**
+     * The USE_PROCSTATE_SUSPENDED constant.
+     */
     private static final boolean USE_PROCSTATE_SUSPENDED = Config.get(Config._WINDOWS_PROCSTATE_SUSPENDED, false);
 
+    /**
+     * The IS_VISTA_OR_GREATER constant.
+     */
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
     /**
      * OSProcess code will need to know bitness of current process
@@ -72,8 +78,17 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
      */
     private static final Supplier<String> systemLog = Memoizer
             .memoize(WindowsOperatingSystem::querySystemLog, TimeUnit.HOURS.toNanos(1));
+    /**
+     * The BOOTTIME constant.
+     */
     private static final long BOOTTIME = querySystemBootTime();
+    /**
+     * The WOW constant.
+     */
     private static final boolean WOW = isCurrentWow();
+    /**
+     * The installedAppsSupplier value.
+     */
     private final Supplier<List<ApplicationInfo>> installedAppsSupplier = Memoizer
             .memoize(WindowsInstalledApps::queryInstalledApps, Memoizer.installedAppsExpiration());
 
@@ -84,19 +99,36 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     /*
      * Cache full process stats queries. Second query will only populate if first one returns null.
      */
+    /**
+     * The processMapFromRegistry value.
+     */
     private final Supplier<Map<Integer, ProcessPerformanceData.PerfCounterBlock>> processMapFromRegistry = Memoizer
             .memoize(WindowsOperatingSystem::queryProcessMapFromRegistry, Memoizer.defaultExpiration());
+    /**
+     * The processMapFromPerfCounters value.
+     */
     private final Supplier<Map<Integer, ProcessPerformanceData.PerfCounterBlock>> processMapFromPerfCounters = Memoizer
             .memoize(WindowsOperatingSystem::queryProcessMapFromPerfCounters, Memoizer.defaultExpiration());
     /*
      * Cache full thread stats queries. Second query will only populate if first one returns null. Only used if
      * USE_PROCSTATE_SUSPENDED is set true.
      */
+    /**
+     * The threadMapFromRegistry value.
+     */
     private final Supplier<Map<Integer, ThreadPerformanceData.PerfCounterBlock>> threadMapFromRegistry = Memoizer
             .memoize(WindowsOperatingSystem::queryThreadMapFromRegistry, Memoizer.defaultExpiration());
+    /**
+     * The threadMapFromPerfCounters value.
+     */
     private final Supplier<Map<Integer, ThreadPerformanceData.PerfCounterBlock>> threadMapFromPerfCounters = Memoizer
             .memoize(WindowsOperatingSystem::queryThreadMapFromPerfCounters, Memoizer.defaultExpiration());
 
+    /**
+     * Returns the parent pids from snapshot.
+     *
+     * @return the get parent pids from snapshot result
+     */
     private static Map<Integer, Integer> getParentPidsFromSnapshot() {
         Map<Integer, Integer> parentPidMap = new HashMap<>();
         // Get processes from ToolHelp API for parent PID
@@ -115,6 +147,11 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         return parentPidMap;
     }
 
+    /**
+     * Queries the process map from registry.
+     *
+     * @return the query process map from registry result
+     */
     private static Map<Integer, ProcessPerformanceData.PerfCounterBlock> queryProcessMapFromRegistry() {
         return ProcessPerformanceData.buildProcessMapFromRegistry(null);
     }
@@ -157,6 +194,11 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         return String.join(Symbol.COMMA, suites);
     }
 
+    /**
+     * Queries the process map from perf counters.
+     *
+     * @return the query process map from perf counters result
+     */
     private static Map<Integer, ProcessPerformanceData.PerfCounterBlock> queryProcessMapFromPerfCounters() {
         return ProcessPerformanceData.buildProcessMapFromPerfCounters(null);
     }
@@ -174,14 +216,14 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
                     WinNT.TOKEN_QUERY | WinNT.TOKEN_ADJUST_PRIVILEGES,
                     hToken);
             if (!success) {
-                Logger.error("OpenProcessToken failed. Error: {}", Native.getLastError());
+                Logger.error(false, "Health", "Open process credential failed. Error: {}", Native.getLastError());
                 return false;
             }
             try {
                 LUID luid = new LUID();
                 success = Advapi32.INSTANCE.LookupPrivilegeValue(null, WinNT.SE_DEBUG_NAME, luid);
                 if (!success) {
-                    Logger.error("LookupPrivilegeValue failed. Error: {}", Native.getLastError());
+                    Logger.error(false, "Health", "LookupPrivilegeValue failed. Error: {}", Native.getLastError());
                     return false;
                 }
                 WinNT.TOKEN_PRIVILEGES tkp = new WinNT.TOKEN_PRIVILEGES(1);
@@ -189,10 +231,10 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
                 success = Advapi32.INSTANCE.AdjustTokenPrivileges(hToken.getValue(), false, tkp, 0, null, null);
                 int err = Native.getLastError();
                 if (!success) {
-                    Logger.error("AdjustTokenPrivileges failed. Error: {}", err);
+                    Logger.error(false, "Health", "Adjust process privileges failed. Error: {}", err);
                     return false;
                 } else if (err == WinError.ERROR_NOT_ALL_ASSIGNED) {
-                    Logger.debug("Debug privileges not enabled.");
+                    Logger.debug(false, "Health", "Debug privileges not enabled.");
                     return false;
                 }
             } finally {
@@ -202,6 +244,11 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         return true;
     }
 
+    /**
+     * Queries the system log.
+     *
+     * @return the query system log result
+     */
     private static String querySystemLog() {
         String systemLog = Config.get(Config._WINDOWS_EVENTLOG, "System");
         if (systemLog.isEmpty()) {
@@ -212,6 +259,8 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         HANDLE h = Advapi32.INSTANCE.OpenEventLog(null, systemLog);
         if (h == null) {
             Logger.warn(
+                    false,
+                    "Health",
                     "Unable to open configured system Event log \"{}\". Calculating boot time from uptime.",
                     systemLog);
             return null;
@@ -219,14 +268,29 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         return systemLog;
     }
 
+    /**
+     * Queries the thread map from registry.
+     *
+     * @return the query thread map from registry result
+     */
     private static Map<Integer, ThreadPerformanceData.PerfCounterBlock> queryThreadMapFromRegistry() {
         return ThreadPerformanceData.buildThreadMapFromRegistry(null);
     }
 
+    /**
+     * Queries the thread map from perf counters.
+     *
+     * @return the query thread map from perf counters result
+     */
     private static Map<Integer, ThreadPerformanceData.PerfCounterBlock> queryThreadMapFromPerfCounters() {
         return ThreadPerformanceData.buildThreadMapFromPerfCounters(null);
     }
 
+    /**
+     * Queries the system uptime.
+     *
+     * @return the query system uptime result
+     */
     private static long querySystemUptime() {
         // Uptime is in seconds so divide milliseconds
         // GetTickCount64 requires Vista (6.0) or later
@@ -238,6 +302,11 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         }
     }
 
+    /**
+     * Queries the system boot time.
+     *
+     * @return the query system boot time result
+     */
     private static long querySystemBootTime() {
         String eventLog = systemLog.get();
         if (eventLog != null) {
@@ -268,7 +337,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
                     return event6005Time;
                 }
             } catch (Win32Exception e) {
-                Logger.warn("Can't open event log \"{}\".", eventLog);
+                Logger.warn(false, "Health", "Can't open event log \"{}\".", eventLog);
             }
         }
         // If we get this far, event log reading has failed, either from no log or no
@@ -276,6 +345,11 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         return System.currentTimeMillis() / 1000L - querySystemUptime();
     }
 
+    /**
+     * Returns the installed applications.
+     *
+     * @return the get installed applications result
+     */
     @Override
     public List<ApplicationInfo> getInstalledApplications() {
         return installedAppsSupplier.get();
@@ -290,6 +364,11 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         return X86;
     }
 
+    /**
+     * Returns whether the current x86 condition is true.
+     *
+     * @return the is current x86 result
+     */
     private static boolean isCurrentX86() {
         try (Struct.CloseableSystemInfo sysinfo = new Struct.CloseableSystemInfo()) {
             Kernel32.INSTANCE.GetNativeSystemInfo(sysinfo);
@@ -322,6 +401,11 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         }
     }
 
+    /**
+     * Returns whether the current wow condition is true.
+     *
+     * @return the is current wow result
+     */
     private static boolean isCurrentWow() {
         if (X86) {
             return true;
@@ -330,21 +414,41 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         return (h == null) ? false : isWow(h);
     }
 
+    /**
+     * Returns whether the elevated condition is true.
+     *
+     * @return the is elevated result
+     */
     @Override
     public boolean isElevated() {
         return Advapi32Util.isCurrentProcessElevated();
     }
 
+    /**
+     * Returns the file system.
+     *
+     * @return the get file system result
+     */
     @Override
     public FileSystem getFileSystem() {
         return new WindowsFileSystem();
     }
 
+    /**
+     * Returns the internet protocol stats.
+     *
+     * @return the get internet protocol stats result
+     */
     @Override
     public InternetProtocolStats getInternetProtocolStats() {
         return new WindowsInternetProtocolStats();
     }
 
+    /**
+     * Returns the sessions.
+     *
+     * @return the get sessions result
+     */
     @Override
     public List<OSSession> getSessions() {
         List<OSSession> whoList = HkeyUserData.queryUserSessions();
@@ -353,49 +457,96 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         return whoList;
     }
 
+    /**
+     * Returns the processes.
+     *
+     * @param pids the pids
+     * @return the get processes result
+     */
     @Override
     public List<OSProcess> getProcesses(Collection<Integer> pids) {
         return processMapToList(pids);
     }
 
+    /**
+     * Queries the all processes.
+     *
+     * @return the query all processes result
+     */
     @Override
     public List<OSProcess> queryAllProcesses() {
         return processMapToList(null);
     }
 
+    /**
+     * Queries the child processes.
+     *
+     * @param parentPid the parent pid
+     * @return the query child processes result
+     */
     @Override
     public List<OSProcess> queryChildProcesses(int parentPid) {
         Set<Integer> descendantPids = getChildrenOrDescendants(getParentPidsFromSnapshot(), parentPid, false);
         return processMapToList(descendantPids);
     }
 
+    /**
+     * Queries the descendant processes.
+     *
+     * @param parentPid the parent pid
+     * @return the query descendant processes result
+     */
     @Override
     public List<OSProcess> queryDescendantProcesses(int parentPid) {
         Set<Integer> descendantPids = getChildrenOrDescendants(getParentPidsFromSnapshot(), parentPid, true);
         return processMapToList(descendantPids);
     }
 
+    /**
+     * Returns the process id.
+     *
+     * @return the get process id result
+     */
     @Override
     public int getProcessId() {
         return Kernel32.INSTANCE.GetCurrentProcessId();
     }
 
+    /**
+     * Returns the process count.
+     *
+     * @return the get process count result
+     */
     @Override
     public int getProcessCount() {
         try (Struct.CloseablePerformanceInformation perfInfo = new Struct.CloseablePerformanceInformation()) {
             if (!Psapi.INSTANCE.GetPerformanceInfo(perfInfo, perfInfo.size())) {
-                Logger.error("Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
+                Logger.error(
+                        false,
+                        "Health",
+                        "Failed to get Performance Info. Error code: {}",
+                        Kernel32.INSTANCE.GetLastError());
                 return 0;
             }
             return perfInfo.ProcessCount.intValue();
         }
     }
 
+    /**
+     * Returns the thread id.
+     *
+     * @return the get thread id result
+     */
     @Override
     public int getThreadId() {
         return Kernel32.INSTANCE.GetCurrentThreadId();
     }
 
+    /**
+     * Returns the current thread.
+     *
+     * @return the get current thread result
+     */
     @Override
     public OSThread getCurrentThread() {
         OSProcess proc = getCurrentProcess();
@@ -404,38 +555,74 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
                 .orElse(new WindowsOSThread(proc.getProcessID(), tid, null, null));
     }
 
+    /**
+     * Returns the thread count.
+     *
+     * @return the get thread count result
+     */
     @Override
     public int getThreadCount() {
         try (Struct.CloseablePerformanceInformation perfInfo = new Struct.CloseablePerformanceInformation()) {
             if (!Psapi.INSTANCE.GetPerformanceInfo(perfInfo, perfInfo.size())) {
-                Logger.error("Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
+                Logger.error(
+                        false,
+                        "Health",
+                        "Failed to get Performance Info. Error code: {}",
+                        Kernel32.INSTANCE.GetLastError());
                 return 0;
             }
             return perfInfo.ThreadCount.intValue();
         }
     }
 
+    /**
+     * Returns the system uptime.
+     *
+     * @return the get system uptime result
+     */
     @Override
     public long getSystemUptime() {
         return querySystemUptime();
     }
 
+    /**
+     * Returns the system boot time.
+     *
+     * @return the get system boot time result
+     */
     @Override
     public long getSystemBootTime() {
         return BOOTTIME;
     }
 
+    /**
+     * Returns the network params.
+     *
+     * @return the get network params result
+     */
     @Override
     public NetworkParams getNetworkParams() {
         return new WindowsNetworkParams();
     }
 
+    /**
+     * Returns the process.
+     *
+     * @param pid the pid
+     * @return the get process result
+     */
     @Override
     public OSProcess getProcess(int pid) {
         List<OSProcess> procList = processMapToList(List.of(pid));
         return procList.isEmpty() ? null : procList.get(0);
     }
 
+    /**
+     * Returns the process map to list result.
+     *
+     * @param pids the pids
+     * @return the process map to list result
+     */
     private List<OSProcess> processMapToList(Collection<Integer> pids) {
         // Get data from the registry if possible
         Map<Integer, ProcessPerformanceData.PerfCounterBlock> processMap = processMapFromRegistry.get();
@@ -476,11 +663,21 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         return EnumWindows.queryDesktopWindows(visibleOnly);
     }
 
+    /**
+     * Queries the manufacturer.
+     *
+     * @return the query manufacturer result
+     */
     @Override
     public String queryManufacturer() {
         return "Microsoft";
     }
 
+    /**
+     * Queries the family version info.
+     *
+     * @return the query family version info result
+     */
     @Override
     public Pair<String, OperatingSystem.OSVersionInfo> queryFamilyVersionInfo() {
         String version = System.getProperty("os.name");
@@ -518,6 +715,12 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         return Pair.of("Windows", new OperatingSystem.OSVersionInfo(version, codeName, buildNumber));
     }
 
+    /**
+     * Queries the bitness.
+     *
+     * @param jvmBitness the jvm bitness
+     * @return the query bitness result
+     */
     @Override
     protected int queryBitness(int jvmBitness) {
         if (jvmBitness < 64 && System.getenv("ProgramFiles(x86)") != null && IS_VISTA_OR_GREATER) {
@@ -529,6 +732,11 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         return jvmBitness;
     }
 
+    /**
+     * Returns the services.
+     *
+     * @return the get services result
+     */
     @Override
     public List<OSService> getServices() {
         try (W32ServiceManager sm = new W32ServiceManager()) {
@@ -555,7 +763,12 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
             }
             return svcArray;
         } catch (com.sun.jna.platform.win32.Win32Exception ex) {
-            Logger.error("Win32Exception: {}", ex.getMessage());
+            Logger.error(
+                    false,
+                    "Health",
+                    ex,
+                    "Windows service query failed: exception={}",
+                    ex.getClass().getSimpleName());
             return Collections.emptyList();
         }
     }

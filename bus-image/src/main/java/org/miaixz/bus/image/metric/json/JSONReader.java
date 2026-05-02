@@ -162,7 +162,13 @@ public class JSONReader {
                         el.vr = VR.valueOf(valueString());
                     } catch (IllegalArgumentException e) {
                         el.vr = ElementDictionary.getStandardElementDictionary().vrOf(tag);
-                        Logger.info("Invalid vr: '{}' at {} - treat as '{}'", getString(), parser.getLocation(), el.vr);
+                        Logger.info(
+                                false,
+                                "Image",
+                                "Invalid vr: '{}' at {} - treat as '{}'",
+                                getString(),
+                                parser.getLocation(),
+                                el.vr);
                     }
                     break;
 
@@ -194,7 +200,7 @@ public class JSONReader {
             if (el.vr == null) {
                 el.vr = VR.UN;
             }
-            Logger.info("Missing property: vr at {} - treat as '{}'", parser.getLocation(), el.vr);
+            Logger.info(false, "Image", "Missing property: vr at {} - treat as '{}'", parser.getLocation(), el.vr);
         }
         if (el.isEmpty())
             attrs.setNull(tag, el.vr);
@@ -266,7 +272,7 @@ public class JSONReader {
         ArrayList<Object> list = new ArrayList<>();
         next();
         if (this.event == Event.VALUE_STRING) {
-            Logger.info("Missing value array at {} - treat as single value", parser.getLocation());
+            Logger.info(false, "Image", "Missing value array at {} - treat as single value", parser.getLocation());
             list.add(getString());
             return list;
         }
@@ -488,7 +494,7 @@ public class JSONReader {
     }
 
     public void skipUnknownProperty() {
-        Logger.warn("Skip unknown property: {}", text);
+        Logger.warn(false, "Image", "Skip unknown property: property={}", text);
         skipValue();
     }
 
@@ -541,15 +547,15 @@ public class JSONReader {
                 Number number = (Number) values.get(i);
                 double d;
                 if (number == null) {
-                    Logger.info("decode {} null as NaN", vr);
+                    Logger.info(false, "Image", "decode {} null as NaN", vr);
                     d = Double.NaN;
                 } else {
                     d = number.doubleValue();
                     if (d == -Double.MAX_VALUE) {
-                        Logger.info("decode {} {} as -Infinity", vr, d);
+                        Logger.info(false, "Image", "decode {} {} as -Infinity", vr, d);
                         d = Double.NEGATIVE_INFINITY;
                     } else if (d == Double.MAX_VALUE) {
-                        Logger.info("decode {} {} as Infinity", vr, d);
+                        Logger.info(false, "Image", "decode {} {} as Infinity", vr, d);
                         d = Double.POSITIVE_INFINITY;
                     }
                 }

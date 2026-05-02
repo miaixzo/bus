@@ -25,6 +25,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ResourceKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 import org.yaml.snakeyaml.DumperOptions;
 
 import java.io.InputStream;
@@ -60,6 +61,12 @@ public class Yaml {
      * @return The loaded content as an instance of the specified type.
      */
     public static <T> T load(final String path, final Class<T> type) {
+        Logger.info(
+                true,
+                "Setting",
+                "YAML path load started: path={}, targetType={}",
+                path,
+                type == null ? null : type.getName());
         return load(ResourceKit.getStream(path), type);
     }
 
@@ -73,6 +80,12 @@ public class Yaml {
      * @return The loaded content as an instance of the specified type.
      */
     public static <T> T load(final InputStream in, final Class<T> type) {
+        Logger.debug(
+                true,
+                "Setting",
+                "YAML stream load started: inputPresent={}, targetType={}",
+                in != null,
+                type == null ? null : type.getName());
         return load(IoKit.toBomReader(in), type);
     }
 
@@ -110,16 +123,45 @@ public class Yaml {
      */
     public static <T> T load(final Reader reader, Class<T> type, final boolean isCloseReader) {
         Assert.notNull(reader, "Reader must be not null!");
+        final long startedAt = System.nanoTime();
         if (null == type) {
             type = (Class<T>) Object.class;
         }
 
+        Logger.info(
+                true,
+                "Setting",
+                "YAML reader load started: targetType={}, closeReader={}",
+                type.getName(),
+                isCloseReader);
         final org.yaml.snakeyaml.Yaml yaml = new org.yaml.snakeyaml.Yaml();
         try {
-            return yaml.loadAs(reader, type);
+            final T result = yaml.loadAs(reader, type);
+            Logger.info(
+                    false,
+                    "Setting",
+                    "YAML reader load completed: targetType={}, resultType={}, closeReader={}, elapsedMs={}",
+                    type.getName(),
+                    result == null ? "null" : result.getClass().getName(),
+                    isCloseReader,
+                    (System.nanoTime() - startedAt) / 1_000_000L);
+            return result;
+        } catch (final RuntimeException e) {
+            Logger.warn(
+                    false,
+                    "Setting",
+                    e,
+                    "YAML reader load failed: targetType={}, closeReader={}, exception={}, elapsedMs={}",
+                    type.getName(),
+                    isCloseReader,
+                    e.getClass().getSimpleName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
+            throw e;
         } finally {
             if (isCloseReader) {
+                Logger.debug(true, "Setting", "YAML reader close requested: targetType={}", type.getName());
                 IoKit.closeQuietly(reader);
+                Logger.debug(false, "Setting", "YAML reader closed: targetType={}", type.getName());
             }
         }
     }
@@ -132,7 +174,19 @@ public class Yaml {
      * @return A flattened map with dot-separated keys.
      */
     public static <T> T parse(String content) {
-        return parse(null, new org.yaml.snakeyaml.Yaml().load(content));
+        Logger.debug(
+                true,
+                "Setting",
+                "YAML content parse started: contentLength={}",
+                content == null ? 0 : content.length());
+        final T result = parse(null, new org.yaml.snakeyaml.Yaml().load(content));
+        Logger.debug(
+                false,
+                "Setting",
+                "YAML content parse completed: contentLength={}, resultType={}",
+                content == null ? 0 : content.length(),
+                result == null ? "null" : result.getClass().getName());
+        return result;
     }
 
     /**
@@ -144,9 +198,22 @@ public class Yaml {
      * @return A flattened map.
      */
     public static <T> T parse(String prefix, Map<String, Object> map) {
+        Logger.debug(
+                true,
+                "Setting",
+                "YAML map flatten started: prefix={}, entryCount={}",
+                prefix,
+                map == null ? 0 : map.size());
         Map<String, Object> result = new HashMap<>();
-        if (map == null)
+        if (map == null) {
+            Logger.debug(
+                    false,
+                    "Setting",
+                    "YAML map flatten completed: prefix={}, entryCount={}",
+                    prefix,
+                    result.size());
             return (T) result;
+        }
 
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             String currentKey = prefix == null ? entry.getKey() : prefix + Symbol.DOT + entry.getKey();
@@ -157,6 +224,7 @@ public class Yaml {
                 result.put(currentKey, value);
             }
         }
+        Logger.debug(false, "Setting", "YAML map flatten completed: prefix={}, entryCount={}", prefix, result.size());
         return (T) result;
     }
 
@@ -187,8 +255,31 @@ public class Yaml {
         if (null == dumperOptions) {
             dumperOptions = new DumperOptions();
         }
+        Logger.info(
+                true,
+                "Setting",
+                "YAML dump started: objectType={}, writerPresent={}, flowStyle={}",
+                object == null ? "null" : object.getClass().getName(),
+                writer != null,
+                dumperOptions.getDefaultFlowStyle());
         final org.yaml.snakeyaml.Yaml yaml = new org.yaml.snakeyaml.Yaml(dumperOptions);
-        yaml.dump(object, writer);
+        try {
+            yaml.dump(object, writer);
+        } catch (final RuntimeException e) {
+            Logger.warn(
+                    false,
+                    "Setting",
+                    e,
+                    "YAML dump failed: objectType={}, exception={}",
+                    object == null ? "null" : object.getClass().getName(),
+                    e.getClass().getSimpleName());
+            throw e;
+        }
+        Logger.info(
+                false,
+                "Setting",
+                "YAML dump completed: objectType={}",
+                object == null ? "null" : object.getClass().getName());
     }
 
     /**
@@ -201,7 +292,19 @@ public class Yaml {
      * @return The string with placeholders replaced.
      */
     public static String replaceRefValue(java.util.Properties properties, String value) {
+        Logger.debug(
+                true,
+                "Setting",
+                "YAML reference replacement started: valueLength={}, propertyCount={}",
+                value == null ? 0 : value.length(),
+                properties == null ? 0 : properties.size());
         if (!value.contains(Symbol.DOLLAR + Symbol.BRACE_LEFT)) {
+            Logger.debug(
+                    false,
+                    "Setting",
+                    "YAML reference replacement skipped: valueLength={}, reason={}",
+                    value == null ? 0 : value.length(),
+                    "noPlaceholder");
             return value;
         }
 
@@ -248,7 +351,14 @@ public class Yaml {
             }
             finalValue.append(remainingPart);
         }
-        return finalValue.toString();
+        final String replaced = finalValue.toString();
+        Logger.debug(
+                false,
+                "Setting",
+                "YAML reference replacement completed: valueLength={}, resultLength={}",
+                value == null ? 0 : value.length(),
+                replaced.length());
+        return replaced;
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -24,13 +24,13 @@ import java.util.*;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
 import org.miaixz.bus.logger.Logger;
 
 import com.sun.jna.Memory;
 import com.sun.jna.platform.win32.*;
-import com.sun.jna.platform.win32.WinBase.FILETIME;
 import com.sun.jna.platform.win32.WinPerf.*;
 
 /**
@@ -47,9 +47,18 @@ public final class HkeyPerformanceDataKit {
      * on-demand.
      */
     private static final String HKEY_PERFORMANCE_TEXT = "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Perflib\\009";
+    /**
+     * The COUNTER constant.
+     */
     private static final String COUNTER = "Counter";
+    /**
+     * The COUNTER_INDEX_MAP constant.
+     */
     private static final Map<String, Integer> COUNTER_INDEX_MAP = mapCounterIndicesFromRegistry();
 
+    /**
+     * The maxPerfBufferSize value.
+     */
     private static int maxPerfBufferSize = 16384;
 
     /**
@@ -98,8 +107,7 @@ public final class HkeyPerformanceDataKit {
             // Store timestamp
             PERF_DATA_BLOCK perfData = new PERF_DATA_BLOCK(pPerfData.share(0));
             long perfTime100nSec = perfData.PerfTime100nSec.getValue(); // 1601
-            long now = FILETIME.filetimeToDate((int) (perfTime100nSec >> 32), (int) (perfTime100nSec & 0xffffffffL))
-                    .getTime(); // 1970
+            long now = Parsing.filetimeToUtcMs(perfTime100nSec, false); // 1970
 
             // Iterate object types.
             long perfObjectOffset = perfData.HeaderLength;
@@ -201,7 +209,7 @@ public final class HkeyPerformanceDataKit {
             String objectName,
             Class<T> counterEnum) {
         if (!COUNTER_INDEX_MAP.containsKey(objectName)) {
-            Logger.debug("Couldn't find counter index of {}.", objectName);
+            Logger.debug(false, "Health", "Couldn't find counter index of {}.", objectName);
             return null;
         }
         int counterIndex = COUNTER_INDEX_MAP.get(objectName);
@@ -213,7 +221,7 @@ public final class HkeyPerformanceDataKit {
             T key = enumConstants[i];
             String counterName = key.getCounter();
             if (!COUNTER_INDEX_MAP.containsKey(counterName)) {
-                Logger.debug("Couldn't find counter index of {}.", counterName);
+                Logger.debug(false, "Health", "Couldn't find counter index of {}.", counterName);
                 return null;
             }
             indexMap.put(key, COUNTER_INDEX_MAP.get(counterName));
@@ -240,7 +248,7 @@ public final class HkeyPerformanceDataKit {
             int ret = Advapi32.INSTANCE
                     .RegQueryValueEx(WinReg.HKEY_PERFORMANCE_DATA, objectIndexStr, 0, null, pPerfData, lpcbData);
             if (ret != WinError.ERROR_SUCCESS && ret != WinError.ERROR_MORE_DATA) {
-                Logger.error("Error reading performance data from registry for {}.", objectName);
+                Logger.error(false, "Health", "Error reading performance data from registry for {}.", objectName);
                 pPerfData.close();
                 return null;
             }
@@ -272,15 +280,17 @@ public final class HkeyPerformanceDataKit {
             String[] counterText = Advapi32Util
                     .registryGetStringArray(WinReg.HKEY_LOCAL_MACHINE, HKEY_PERFORMANCE_TEXT, COUNTER);
             for (int i = 1; i < counterText.length; i += 2) {
-                indexMap.putIfAbsent(counterText[i], Integer.parseInt(counterText[i - 1]));
+                int idx = Parsing.parseIntOrDefault(counterText[i - 1], 0);
+                if (idx > 0) {
+                    indexMap.putIfAbsent(counterText[i], idx);
+                }
             }
         } catch (Win32Exception we) {
             Logger.error(
+                    false,
+                    "Health",
                     "Unable to locate English counter names in registry Perflib 009. Counters may need to be rebuilt: ",
                     we);
-        } catch (NumberFormatException nfe) {
-            // Unexpected to ever get this, but handling it anyway
-            Logger.error("Unable to parse English counter names in registry Perflib 009.");
         }
         return Collections.unmodifiableMap(indexMap);
     }

@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -44,9 +44,23 @@ import com.sun.jna.platform.win32.Guid.GUID;
 @Immutable
 public class WindowsUsbDevice extends AbstractUsbDevice {
 
+    /**
+     * The GUID_DEVINTERFACE_USB_HOST_CONTROLLER constant.
+     */
     private static final GUID GUID_DEVINTERFACE_USB_HOST_CONTROLLER = new GUID(
             "{3ABF6F2D-71C4-462A-8A92-1E6861E6AF27}");
 
+    /**
+     * Creates a new WindowsUsbDevice instance.
+     *
+     * @param name             the name
+     * @param vendor           the vendor
+     * @param vendorId         the vendor id
+     * @param productId        the product id
+     * @param serialNumber     the serial number
+     * @param uniqueDeviceId   the unique device id
+     * @param connectedDevices the connected devices
+     */
     public WindowsUsbDevice(String name, String vendor, String vendorId, String productId, String serialNumber,
             String uniqueDeviceId, List<UsbDevice> connectedDevices) {
         super(name, vendor, vendorId, productId, serialNumber, uniqueDeviceId, connectedDevices);
@@ -77,16 +91,11 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
         return deviceList;
     }
 
-    private static void addDevicesToList(List<UsbDevice> deviceList, List<UsbDevice> list) {
-        for (UsbDevice device : list) {
-            deviceList.add(
-                    new WindowsUsbDevice(device.getName(), device.getVendor(), device.getVendorId(),
-                            device.getProductId(), device.getSerialNumber(), device.getUniqueDeviceId(),
-                            Collections.emptyList()));
-            addDevicesToList(deviceList, device.getConnectedDevices());
-        }
-    }
-
+    /**
+     * Queries the usb devices.
+     *
+     * @return the query usb devices result
+     */
     private static List<UsbDevice> queryUsbDevices() {
         Tuple controllerDevices = DeviceTree.queryDeviceTree(GUID_DEVINTERFACE_USB_HOST_CONTROLLER);
         Map<Integer, Integer> parentMap = controllerDevices.get(1);
@@ -113,6 +122,19 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
         return usbDevices;
     }
 
+    /**
+     * Queries the device and children.
+     *
+     * @param device       the device
+     * @param parentMap    the parent map
+     * @param nameMap      the name map
+     * @param deviceIdMap  the device id map
+     * @param mfgMap       the mfg map
+     * @param vid          the vid
+     * @param pid          the pid
+     * @param parentSerial the parent serial
+     * @return the query device and children result
+     */
     private static WindowsUsbDevice queryDeviceAndChildren(
             Integer device,
             Map<Integer, Integer> parentMap,

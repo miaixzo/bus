@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -46,8 +46,14 @@ import com.sun.jna.platform.unix.LibCAPI.ssize_t;
 @ThreadSafe
 public final class PsInfo {
 
+    /**
+     * The LIBC constant.
+     */
     private static final SolarisLibc LIBC = SolarisLibc.INSTANCE;
 
+    /**
+     * The PAGE_SIZE constant.
+     */
     private static final long PAGE_SIZE = Parsing.parseLongOrDefault(Executor.getFirstAnswer("pagesize"), 4096L);
 
     /**
@@ -117,13 +123,18 @@ public final class PsInfo {
                 if (dmodel * 4 == (envp - argv) / (argc + 1)) {
                     return new Tuple(argc, argv, envp, dmodel);
                 }
-                Logger.trace("Failed data model and offset increment sanity check: dm={} diff={}", dmodel, envp - argv);
+                Logger.trace(
+                        false,
+                        "Health",
+                        "Failed data model and offset increment sanity check: dm={} diff={}",
+                        dmodel,
+                        envp - argv);
                 return null;
             }
-            Logger.trace("Failed argc sanity check: argc={}", argc);
+            Logger.trace(false, "Health", "Failed argc sanity check: argc={}", argc);
             return null;
         }
-        Logger.trace("Failed to read psinfo file for pid: {} ", pid);
+        Logger.trace(false, "Health", "Failed to read psinfo file for pid: {} ", pid);
         return null;
     }
 
@@ -146,7 +157,7 @@ public final class PsInfo {
             String procas = "/proc/" + pid + "/as";
             int fd = LIBC.open(procas, 0);
             if (fd < 0) {
-                Logger.trace("No permission to read file: {} ", procas);
+                Logger.trace(false, "Health", "No permission to read file: {} ", procas);
                 return Pair.of(args, env);
             }
             try {
@@ -239,7 +250,11 @@ public final class PsInfo {
             ssize_t result = LIBC.pread(fd, buffer, bufSize, new NativeLong(newStart));
             // May return less than asked but should be at least a full page
             if (result.longValue() < PAGE_SIZE) {
-                Logger.debug("Failed to read page from address space: {} bytes read", result.longValue());
+                Logger.debug(
+                        false,
+                        "Health",
+                        "Failed to read page from address space: {} bytes read",
+                        result.longValue());
                 return 0;
             }
             return newStart;
@@ -247,6 +262,14 @@ public final class PsInfo {
         return bufStart;
     }
 
+    /**
+     * Returns the offset from buffer.
+     *
+     * @param buffer    the buffer
+     * @param offset    the offset
+     * @param increment the increment
+     * @return the get offset from buffer result
+     */
     private static long getOffsetFromBuffer(Memory buffer, long offset, long increment) {
         return increment == 8 ? buffer.getLong(offset) : buffer.getInt(offset);
     }

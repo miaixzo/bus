@@ -18,12 +18,11 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Prompt template registry for LLM prompt definition, storage and discovery.
+ * Prompt template registry for LLM prompt definition, storage, and discovery.
  * <p>
- * {@code PromptAssets} extends the base asset definition with prompt-specific fields: a lookup name, the raw template
- * text, a list of declared placeholder variable names, discovery tags and a human-readable description. Its no-arg
- * constructor pre-sets {@code species} to PROMPT. {@code PromptRegistry} provides full CRUD — save, remove, get and
- * list — and watch support for {@code PromptAssets} definitions backed by the generic {@code AbstractRegistry}.
+ * {@code PromptAssets} extends the base asset model with prompt template content, declared variables, and discovery
+ * tags, and defaults its type to PROMPT. {@code PromptRegistry} is a {@code StoreBackedRegistry}-based registry that
+ * coordinates optional durable persistence, cache projection, and watch notifications for prompt definitions.
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -30,9 +30,17 @@ import org.miaixz.bus.health.windows.driver.registry.InstalledAppsData;
  */
 public final class WindowsInstalledApps {
 
+    /**
+     * Creates a new WindowsInstalledApps instance.
+     */
     private WindowsInstalledApps() {
     }
 
+    /**
+     * Queries the installed apps.
+     *
+     * @return the query installed apps result
+     */
     public static List<ApplicationInfo> queryInstalledApps() {
         return InstalledAppsData.queryInstalledApps();
     }

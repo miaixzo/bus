@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -35,8 +35,14 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_id_t;
 @ThreadSafe
 public final class PerfstatCpu {
 
+    /**
+     * The PERF constant.
+     */
     private static final Perfstat PERF = Perfstat.INSTANCE;
 
+    /**
+     * Creates a new PerfstatCpu instance.
+     */
     private PerfstatCpu() {
     }
 

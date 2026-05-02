@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -34,6 +34,9 @@ import org.miaixz.bus.health.builtin.hardware.Display;
 @Immutable
 public abstract class AbstractDisplay implements Display {
 
+    /**
+     * The edid value.
+     */
     private final byte[] edid;
 
     /**
@@ -45,11 +48,21 @@ public abstract class AbstractDisplay implements Display {
         this.edid = Arrays.copyOf(edid, edid.length);
     }
 
+    /**
+     * Returns the edid.
+     *
+     * @return the get edid result
+     */
     @Override
     public byte[] getEdid() {
         return Arrays.copyOf(this.edid, this.edid.length);
     }
 
+    /**
+     * Returns the to string result.
+     *
+     * @return the to string result
+     */
     @Override
     public String toString() {
         return Builder.getEdid(this.edid);

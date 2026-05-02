@@ -38,6 +38,7 @@ import org.apache.ftpserver.usermanager.impl.WritePermission;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.NetKit;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * A simple encapsulation of an FTP server based on Apache FtpServer (http://apache.apache.org/ftpserver-project/). This
@@ -153,6 +154,13 @@ public class SimpleFtpServer {
         try {
             getUserManager().save(user);
         } catch (final org.apache.ftpserver.ftplet.FtpException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "FTP user save failed: userPresent={}, exception={}",
+                    user != null,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         return this;
@@ -187,6 +195,13 @@ public class SimpleFtpServer {
         try {
             getUserManager().delete(userName);
         } catch (final org.apache.ftpserver.ftplet.FtpException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "FTP user delete failed: userNamePresent={}, exception={}",
+                    userName != null,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         return this;
@@ -258,6 +273,13 @@ public class SimpleFtpServer {
         try {
             serverFactory.createServer().start();
         } catch (final org.apache.ftpserver.ftplet.FtpException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "FTP server start failed: listenerConfigured={}, exception={}",
+                    serverFactory.getListeners().containsKey("default"),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }

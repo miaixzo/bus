@@ -69,7 +69,7 @@ public class SocketOptionPlugin<T> extends AbstractPlugin<T> {
                 channel.setOption(entry.getKey(), entry.getValue());
             }
         } catch (IOException e) {
-            Logger.error("Failed to set socket option: ", e);
+            Logger.error(false, "Socket", "Failed to set socket option: ", e);
         }
     }
 

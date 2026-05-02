@@ -855,7 +855,7 @@ public class Connection implements Serializable {
                 try {
                     blacklistAddrs.add(InetAddress.getByName(hostname));
                 } catch (UnknownHostException e) {
-                    Logger.warn("Failed to lookup InetAddress of " + hostname, e);
+                    Logger.warn(false, "Image", "Failed to lookup InetAddress of " + hostname, e);
                 }
         }
         return blacklistAddrs;
@@ -902,14 +902,14 @@ public class Connection implements Serializable {
         if (protocol.isTCP()) {
             TCPProtocolHandler handler = tcpHandlers.get(protocol);
             if (handler == null) {
-                Logger.info("No TCP Protocol Handler for protocol {}", protocol);
+                Logger.info(false, "Image", "No TCP Protocol Handler for protocol {}", protocol);
                 return false;
             }
             listener = new TCPListener(this, handler);
         } else {
             UDPProtocolHandler handler = udpHandlers.get(protocol);
             if (handler == null) {
-                Logger.info("No UDP Protocol Handler for protocol {}", protocol);
+                Logger.info(false, "Image", "No UDP Protocol Handler for protocol {}", protocol);
                 return false;
             }
             listener = new UDPListener(this, handler);
@@ -934,7 +934,13 @@ public class Connection implements Serializable {
         try {
             tmp.close();
         } catch (Throwable e) {
-            Logger.error(e.getMessage());
+            Logger.error(
+                    false,
+                    "Image",
+                    e,
+                    "Connection unbind close failed: protocol={}, exception={}",
+                    protocol,
+                    e.getClass().getSimpleName());
             // 关闭服务器套接字时忽略错误.
         }
     }
@@ -947,7 +953,7 @@ public class Connection implements Serializable {
         SocketAddress bindPoint = getClientBindPoint();
         String remoteHostname = remoteConn.getHostname();
         int remotePort = remoteConn.getPort();
-        Logger.info("Initiate connection from {} to {}:{}", bindPoint, remoteHostname, remotePort);
+        Logger.info(true, "Image", "Initiate connection from {} to {}:{}", bindPoint, remoteHostname, remotePort);
         Socket s = new Socket();
         ConnectionMonitor monitor = device != null ? device.getConnectionMonitor() : null;
         try {
@@ -978,7 +984,7 @@ public class Connection implements Serializable {
                 s = createTLSSocket(s, remoteConn);
             if (monitor != null)
                 monitor.onConnectionEstablished(this, remoteConn, s);
-            Logger.info("Established connection {}", s);
+            Logger.info(true, "Image", "Established connection {}", s);
             return s;
         } catch (GeneralSecurityException e) {
             if (monitor != null)
@@ -1053,7 +1059,7 @@ public class Connection implements Serializable {
     }
 
     public void close(Socket s) {
-        Logger.info("Close connection {}", s);
+        Logger.info(true, "Image", "Close connection {}", s);
         IoKit.close(s);
     }
 

@@ -161,7 +161,7 @@ public class CStore {
                     if (e instanceof InterruptedException) {
                         Thread.currentThread().interrupt();
                     }
-                    Logger.error("storescu", e);
+                    Logger.error(false, "Image", "storescu", e);
                     Builder.forceGettingAttributes(storeSCU.getState(), storeSCU);
                     return Status.buildMessage(storeSCU.getState(), null, e);
                 } finally {
@@ -170,7 +170,7 @@ public class CStore {
                 }
             }
         } catch (Exception e) {
-            Logger.error("storescu", e);
+            Logger.error(false, "Image", "storescu", e);
             return Status.buildMessage(
                     new Status(Status.UnableToProcess,
                             "DICOM Store failed" + Symbol.COLON + Symbol.SPACE + e.getMessage(), null),
@@ -199,7 +199,7 @@ public class CStore {
                 p.load(url.openStream());
             }
         } catch (IOException e) {
-            Logger.error("Cannot read sop-class", e);
+            Logger.error(false, "Image", "Cannot read sop-class", e);
         }
         storescu.relSOPClasses.init(p);
     }

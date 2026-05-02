@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -45,24 +45,54 @@ import com.sun.jna.Memory;
 @ThreadSafe
 public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
 
+    /**
+     * The isElevated value.
+     */
     private final boolean isElevated;
+    /**
+     * The establishedv4v6 value.
+     */
     private final Supplier<Pair<Long, Long>> establishedv4v6 = Memoizer
             .memoize(NetStat::queryTcpnetstat, Memoizer.defaultExpiration());
+    /**
+     * The tcpstat value.
+     */
     private final Supplier<CLibrary.BsdTcpstat> tcpstat = Memoizer
             .memoize(MacInternetProtocolStats::queryTcpstat, Memoizer.defaultExpiration());
+    /**
+     * The udpstat value.
+     */
     private final Supplier<CLibrary.BsdUdpstat> udpstat = Memoizer
             .memoize(MacInternetProtocolStats::queryUdpstat, Memoizer.defaultExpiration());
     // With elevated permissions use tcpstat only
     // Backup estimate get ipstat and subtract off udp
+    /**
+     * The ipstat value.
+     */
     private final Supplier<CLibrary.BsdIpstat> ipstat = Memoizer
             .memoize(MacInternetProtocolStats::queryIpstat, Memoizer.defaultExpiration());
+    /**
+     * The ip6stat value.
+     */
     private final Supplier<CLibrary.BsdIp6stat> ip6stat = Memoizer
             .memoize(MacInternetProtocolStats::queryIp6stat, Memoizer.defaultExpiration());
 
+    /**
+     * Creates a new MacInternetProtocolStats instance.
+     *
+     * @param elevated the elevated
+     */
     public MacInternetProtocolStats(boolean elevated) {
         this.isElevated = elevated;
     }
 
+    /**
+     * Queries the ip connection.
+     *
+     * @param pid the pid
+     * @param fd  the fd
+     * @return the query ip connection result
+     */
     private static InternetProtocolStats.IPConnection queryIPConnection(int pid, int fd) {
         try (SystemB.SocketFdInfo si = new SystemB.SocketFdInfo()) {
             int ret = SystemB.INSTANCE.proc_pidfdinfo(pid, fd, SystemB.PROC_PIDFDSOCKETINFO, si, si.size());
@@ -112,6 +142,12 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
         return null;
     }
 
+    /**
+     * Returns the state lookup result.
+     *
+     * @param state the state
+     * @return the state lookup result
+     */
     private static InternetProtocolStats.TcpState stateLookup(int state) {
         switch (state) {
             case 0:
@@ -152,6 +188,11 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
         }
     }
 
+    /**
+     * Queries the tcpstat.
+     *
+     * @return the query tcpstat result
+     */
     private static CLibrary.BsdTcpstat queryTcpstat() {
         CLibrary.BsdTcpstat mt = new CLibrary.BsdTcpstat();
         try (Memory m = SysctlKit.sysctl("net.inet.tcp.stats")) {
@@ -172,6 +213,11 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
         return mt;
     }
 
+    /**
+     * Queries the ipstat.
+     *
+     * @return the query ipstat result
+     */
     private static CLibrary.BsdIpstat queryIpstat() {
         CLibrary.BsdIpstat mi = new CLibrary.BsdIpstat();
         try (Memory m = SysctlKit.sysctl("net.inet.ip.stats")) {
@@ -188,6 +234,11 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
         return mi;
     }
 
+    /**
+     * Queries the ip6stat.
+     *
+     * @return the query ip6stat result
+     */
     private static CLibrary.BsdIp6stat queryIp6stat() {
         CLibrary.BsdIp6stat mi6 = new CLibrary.BsdIp6stat();
         try (Memory m = SysctlKit.sysctl("net.inet6.ip6.stats")) {
@@ -199,6 +250,12 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
         return mi6;
     }
 
+    /**
+     * Queries the fd list.
+     *
+     * @param pid the pid
+     * @return the query fd list result
+     */
     private static List<Integer> queryFdList(int pid) {
         List<Integer> fdList = new ArrayList<>();
         int bufferSize = SystemB.INSTANCE.proc_pidinfo(pid, SystemB.PROC_PIDLISTFDS, 0, null, 0);
@@ -217,10 +274,15 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
         return fdList;
     }
 
+    /**
+     * Queries the udpstat.
+     *
+     * @return the query udpstat result
+     */
     public static CLibrary.BsdUdpstat queryUdpstat() {
         CLibrary.BsdUdpstat ut = new CLibrary.BsdUdpstat();
         try (Memory m = SysctlKit.sysctl("net.inet.udp.stats")) {
-            if (m != null && m.size() >= 1644) {
+            if (m != null && m.size() >= 84) {
                 ut.udps_ipackets = m.getInt(0);
                 ut.udps_hdrops = m.getInt(4);
                 ut.udps_badsum = m.getInt(8);
@@ -234,6 +296,11 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
         return ut;
     }
 
+    /**
+     * Returns the tc pv4 stats.
+     *
+     * @return the get tc pv4 stats result
+     */
     @Override
     public InternetProtocolStats.TcpStats getTCPv4Stats() {
         CLibrary.BsdTcpstat tcp = tcpstat.get();
@@ -268,15 +335,25 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
      * which are consistent across the structure.
      */
 
+    /**
+     * Returns the tc pv6 stats.
+     *
+     * @return the get tc pv6 stats result
+     */
     @Override
     public InternetProtocolStats.TcpStats getTCPv6Stats() {
         CLibrary.BsdIp6stat ip6 = ip6stat.get();
         CLibrary.BsdUdpstat udp = udpstat.get();
         return new InternetProtocolStats.TcpStats(establishedv4v6.get().getRight(), 0L, 0L, 0L, 0L,
-                ip6.ip6s_localout - Parsing.unsignedIntToLong(udp.udps_snd6_swcsum),
-                ip6.ip6s_total - Parsing.unsignedIntToLong(udp.udps_rcv6_swcsum), 0L, 0L, 0L);
+                Math.max(0L, ip6.ip6s_localout - Parsing.unsignedIntToLong(udp.udps_snd6_swcsum)),
+                Math.max(0L, ip6.ip6s_total - Parsing.unsignedIntToLong(udp.udps_rcv6_swcsum)), 0L, 0L, 0L);
     }
 
+    /**
+     * Returns the ud pv4 stats.
+     *
+     * @return the get ud pv4 stats result
+     */
     @Override
     public InternetProtocolStats.UdpStats getUDPv4Stats() {
         CLibrary.BsdUdpstat stat = udpstat.get();
@@ -285,6 +362,11 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
                 Parsing.unsignedIntToLong(stat.udps_hdrops + stat.udps_badsum + stat.udps_badlen));
     }
 
+    /**
+     * Returns the ud pv6 stats.
+     *
+     * @return the get ud pv6 stats result
+     */
     @Override
     public InternetProtocolStats.UdpStats getUDPv6Stats() {
         CLibrary.BsdUdpstat stat = udpstat.get();
@@ -292,6 +374,11 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
                 Parsing.unsignedIntToLong(stat.udps_rcv6_swcsum), 0L, 0L);
     }
 
+    /**
+     * Returns the connections.
+     *
+     * @return the get connections result
+     */
     @Override
     public List<InternetProtocolStats.IPConnection> getConnections() {
         List<InternetProtocolStats.IPConnection> conns = new ArrayList<>();

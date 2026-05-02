@@ -130,7 +130,15 @@ public class WebDavProvider extends AbstractProvider {
                         .data(content).build();
             }
         } catch (Exception e) {
-            Logger.error("Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage download failed; provider={}, bucket={}, object={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    fileName,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -180,10 +188,13 @@ public class WebDavProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
             Logger.error(
-                    "Failed to download file: {} from bucket: {} to local file: {}. Error: {}",
-                    fileName,
+                    false,
+                    "Storage",
+                    "Storage download-to-local failed; provider={}, bucket={}, object={}, targetProvided={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
                     bucket,
-                    file.getAbsolutePath(),
+                    fileName,
+                    file != null,
                     e.getMessage(),
                     e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
@@ -213,7 +224,10 @@ public class WebDavProvider extends AbstractProvider {
                     }).collect(Collectors.toList())).build();
         } catch (Exception e) {
             Logger.error(
-                    "Failed to list objects in bucket: {}. Error: {}",
+                    false,
+                    "Storage",
+                    "Storage list failed; provider={}, bucket={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
                     this.context.getBucket(),
                     e.getMessage(),
                     e);
@@ -267,11 +281,14 @@ public class WebDavProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
             Logger.error(
-                    "Failed to rename file from: {} to: {} in bucket: {} with path: {}, error: {}",
-                    oldName,
-                    newName,
+                    false,
+                    "Storage",
+                    "Storage rename failed; provider={}, bucket={}, path={}, sourceObject={}, targetObject={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
                     bucket,
                     path,
+                    oldName,
+                    newName,
                     e.getMessage(),
                     e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
@@ -370,10 +387,13 @@ public class WebDavProvider extends AbstractProvider {
                     .data(Blob.builder().name(fileName).path(objectKey).build()).build();
         } catch (Exception e) {
             Logger.error(
-                    "Failed to upload file: {} to bucket: {} with path: {}, error: {}",
-                    fileName,
+                    false,
+                    "Storage",
+                    "Storage upload failed; provider={}, bucket={}, path={}, object={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
                     bucket,
                     path,
+                    fileName,
                     e.getMessage(),
                     e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
@@ -421,10 +441,13 @@ public class WebDavProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
             Logger.error(
-                    "Failed to remove file: {} from bucket: {} with path: {}, error: {}",
-                    fileName,
+                    false,
+                    "Storage",
+                    "Storage remove failed; provider={}, bucket={}, path={}, object={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
                     bucket,
                     path,
+                    fileName,
                     e.getMessage(),
                     e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();

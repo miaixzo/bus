@@ -40,9 +40,12 @@ public class Factory {
      * @return The singleton {@link Provider} instance.
      */
     public static Provider getEngine() {
+        Logger.debug(true, "Proxy", "Default proxy engine selection started");
         final Provider engine = Instances.get(Provider.class.getName(), Factory::createEngine);
         Logger.debug(
-                "Use [{}] Engine As Default.",
+                false,
+                "Proxy",
+                "Default proxy engine selected: engine={}",
                 StringKit.removeSuffix(engine.getClass().getSimpleName(), "Engine"));
         return engine;
     }
@@ -53,7 +56,14 @@ public class Factory {
      * @return A new {@link Provider} instance.
      */
     public static Provider createEngine() {
-        return NormalSpiLoader.loadFirstAvailable(Provider.class);
+        Logger.debug(true, "Proxy", "Proxy engine SPI lookup started: providerType={}", Provider.class.getName());
+        Provider provider = NormalSpiLoader.loadFirstAvailable(Provider.class);
+        Logger.debug(
+                false,
+                "Proxy",
+                "Proxy engine SPI lookup completed: provider={}",
+                provider == null ? null : provider.getClass().getName());
+        return provider;
     }
 
 }

@@ -32,6 +32,7 @@ import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
 import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.Holder;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Abstract base class for digest algorithms. This class provides common functionality for computing message digests,
@@ -122,13 +123,13 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
     /**
      * Sets the position at which the salt is inserted into the data. This is only effective if a salt is present. The
      * salt position refers to the index within the data byte array where the salt is inserted. For example:
-     * 
+     *
      * <pre>
      * data: 0123456
      * </pre>
-     * 
+     *
      * If {@code saltPosition = 2}, the salt is inserted between '1' and '2', resulting in:
-     * 
+     *
      * <pre>
      * data: 01[salt]23456
      * </pre>
@@ -319,6 +320,14 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
                 result = digestWithSalt(data, bufferLength);
             }
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
+                    "Digester",
+                    false,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
 

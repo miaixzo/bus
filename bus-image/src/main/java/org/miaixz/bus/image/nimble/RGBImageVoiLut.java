@@ -133,9 +133,9 @@ public class RGBImageVoiLut {
         int[] descriptor = Builder.getIntArrayFromDicomElement(dicomLutObject, Tag.LUTDescriptor, null);
 
         if (descriptor == null) {
-            Logger.debug("Missing LUT Descriptor");
+            Logger.debug(false, "Image", "Missing LUT Descriptor");
         } else if (descriptor.length != 3) {
-            Logger.debug("Illegal number of LUT Descriptor values \"{}\"", descriptor.length);
+            Logger.debug(false, "Image", "Illegal number of LUT Descriptor values \"{}\"", descriptor.length);
         } else {
             // First value is the number of entries in the lookup table.
             // When this value is 0 the number of table entries is equal to 65536 <=> 0x10000.
@@ -154,7 +154,7 @@ public class RGBImageVoiLut {
             try {
                 bData = dicomLutObject.getBytes(Tag.LUTData);
             } catch (IOException e) {
-                Logger.error("Cannot get byte[] of {}", Tag.toString(Tag.LUTData), e);
+                Logger.error(false, "Image", "Cannot get byte array: tag={}", Tag.toString(Tag.LUTData), e);
             }
 
             if (bData == null || bData.length == 0) {
@@ -202,18 +202,22 @@ public class RGBImageVoiLut {
                     lookupTable = new LookupTableCV(sData, offset, true);
                 }
             } else {
-                Logger.debug("Illegal number of bits for each entry in the LUT Data");
+                Logger.debug(false, "Image", "Illegal number of bits for each entry in the LUT Data");
             }
 
             if (lookupTable != null) {
                 if (dataLength != numEntries) {
                     Logger.debug(
+                            false,
+                            "Image",
                             "LUT Data length \"{}\" mismatch number of entries \"{}\" in LUT Descriptor ",
                             dataLength,
                             numEntries);
                 }
                 if (dataLength > (1 << numBits)) {
                     Logger.debug(
+                            false,
+                            "Image",
                             "Illegal LUT Data length \"{}\" with respect to the number of bits in LUT descriptor \"{}\"",
                             dataLength,
                             numBits);
@@ -784,7 +788,7 @@ public class RGBImageVoiLut {
         try {
             bData = dicom.getBytes(tag);
         } catch (IOException e) {
-            Logger.error("Getting byte data from {}", Tag.toString(tag), e);
+            Logger.error(false, "Image", "Getting byte data from {}", Tag.toString(tag), e);
         }
         return Optional.ofNullable(bData);
     }

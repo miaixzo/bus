@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -43,18 +43,58 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_netinterface_t;
 @ThreadSafe
 public final class AixNetworkIF extends AbstractNetworkIF {
 
+    /**
+     * The netstats value.
+     */
     private final Supplier<perfstat_netinterface_t[]> netstats;
+    /**
+     * The bytesRecv value.
+     */
     private long bytesRecv;
+    /**
+     * The bytesSent value.
+     */
     private long bytesSent;
+    /**
+     * The packetsRecv value.
+     */
     private long packetsRecv;
+    /**
+     * The packetsSent value.
+     */
     private long packetsSent;
+    /**
+     * The inErrors value.
+     */
     private long inErrors;
+    /**
+     * The outErrors value.
+     */
     private long outErrors;
+    /**
+     * The inDrops value.
+     */
     private long inDrops;
+    /**
+     * The collisions value.
+     */
     private long collisions;
+    /**
+     * The speed value.
+     */
     private long speed;
+    /**
+     * The timeStamp value.
+     */
     private long timeStamp;
 
+    /**
+     * Creates a new AixNetworkIF instance.
+     *
+     * @param netint   the netint
+     * @param netstats the netstats
+     * @throws InstantiationException if the instantiation exception condition occurs
+     */
     public AixNetworkIF(NetworkInterface netint, Supplier<perfstat_netinterface_t[]> netstats)
             throws InstantiationException {
         super(netint);
@@ -76,62 +116,121 @@ public final class AixNetworkIF extends AbstractNetworkIF {
             try {
                 ifList.add(new AixNetworkIF(ni, netstats));
             } catch (InstantiationException e) {
-                Logger.debug("Network Interface Instantiation failed: {}", e.getMessage());
+                Logger.debug(
+                        false,
+                        "Health",
+                        "Network Interface Instantiation failed: {}",
+                        e.getClass().getSimpleName());
             }
         }
         return ifList;
     }
 
+    /**
+     * Returns the bytes recv.
+     *
+     * @return the get bytes recv result
+     */
     @Override
     public long getBytesRecv() {
         return this.bytesRecv;
     }
 
+    /**
+     * Returns the bytes sent.
+     *
+     * @return the get bytes sent result
+     */
     @Override
     public long getBytesSent() {
         return this.bytesSent;
     }
 
+    /**
+     * Returns the packets recv.
+     *
+     * @return the get packets recv result
+     */
     @Override
     public long getPacketsRecv() {
         return this.packetsRecv;
     }
 
+    /**
+     * Returns the packets sent.
+     *
+     * @return the get packets sent result
+     */
     @Override
     public long getPacketsSent() {
         return this.packetsSent;
     }
 
+    /**
+     * Returns the in errors.
+     *
+     * @return the get in errors result
+     */
     @Override
     public long getInErrors() {
         return this.inErrors;
     }
 
+    /**
+     * Returns the out errors.
+     *
+     * @return the get out errors result
+     */
     @Override
     public long getOutErrors() {
         return this.outErrors;
     }
 
+    /**
+     * Returns the in drops.
+     *
+     * @return the get in drops result
+     */
     @Override
     public long getInDrops() {
         return this.inDrops;
     }
 
+    /**
+     * Returns the collisions.
+     *
+     * @return the get collisions result
+     */
     @Override
     public long getCollisions() {
         return this.collisions;
     }
 
+    /**
+     * Returns the speed.
+     *
+     * @return the get speed result
+     */
     @Override
     public long getSpeed() {
         return this.speed;
     }
 
+    /**
+     * Returns the time stamp.
+     *
+     * @return the get time stamp result
+     */
     @Override
     public long getTimeStamp() {
         return this.timeStamp;
     }
 
+    /**
+     * Updates the attributes.
+     *
+     * @return the update attributes result
+     */
     @Override
     public boolean updateAttributes() {
         perfstat_netinterface_t[] stats = netstats.get();

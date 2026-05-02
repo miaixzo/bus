@@ -32,6 +32,7 @@ import org.miaixz.bus.image.nimble.codec.jpeg.JPEG;
 import org.miaixz.bus.image.nimble.codec.jpeg.JPEGParser;
 import org.miaixz.bus.image.nimble.codec.mp4.MP4Parser;
 import org.miaixz.bus.image.nimble.codec.mpeg.MPEG2Parser;
+import org.miaixz.bus.logger.Logger;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -401,13 +402,40 @@ public class Jpg2Dcm {
             Path destFilePath = resolveDestFilePath(srcFilePath);
             if (!Files.isDirectory(destFilePath))
                 Files.createDirectories(destFilePath);
+            Path outputPath = destFilePath.resolve(srcFilePath.getFileName() + ".dcm");
+            long start = System.currentTimeMillis();
             try {
-                convert(srcFilePath, destFilePath.resolve(srcFilePath.getFileName() + ".dcm"));
+                Logger.debug(
+                        true,
+                        "Image",
+                        "JPG to DICOM conversion started: fileName={}, outputName={}",
+                        srcFilePath.getFileName(),
+                        outputPath.getFileName());
+                convert(srcFilePath, outputPath);
+                Logger.info(
+                        false,
+                        "Image",
+                        "JPG to DICOM conversion finished: fileName={}, outputName={}, elapsedMs={}",
+                        srcFilePath.getFileName(),
+                        outputPath.getFileName(),
+                        System.currentTimeMillis() - start);
             } catch (SAXException | ParserConfigurationException e) {
-                e.printStackTrace(System.out);
+                Logger.warn(
+                        false,
+                        "Image",
+                        e,
+                        "JPG to DICOM conversion metadata failed: fileName={}, exception={}",
+                        srcFilePath.getFileName(),
+                        e.getClass().getSimpleName());
                 return FileVisitResult.TERMINATE;
             } catch (Exception e) {
-                e.printStackTrace(System.out);
+                Logger.warn(
+                        false,
+                        "Image",
+                        e,
+                        "JPG to DICOM conversion failed: fileName={}, exception={}",
+                        srcFilePath.getFileName(),
+                        e.getClass().getSimpleName());
             }
             return FileVisitResult.CONTINUE;
         }

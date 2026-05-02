@@ -32,6 +32,7 @@ import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.Cipher;
 import org.miaixz.bus.crypto.Keeper;
 import org.miaixz.bus.crypto.cipher.JceCipher;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Asymmetric cryptographic algorithm implementation.
@@ -299,6 +300,16 @@ public class Crypto extends AbstractCrypto<Crypto> {
 
             return doFinal(data, this.encryptBlockSize < 0 ? data.length : this.encryptBlockSize);
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Asymmetric encryption failed: algorithm={}, keyType={}, inputBytes={}, blockSize={}, exception={}",
+                    this.algorithm,
+                    keyType,
+                    data == null ? 0 : data.length,
+                    this.encryptBlockSize,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         } finally {
             lock.unlock();
@@ -329,6 +340,16 @@ public class Crypto extends AbstractCrypto<Crypto> {
 
             return doFinal(data, this.decryptBlockSize < 0 ? data.length : this.decryptBlockSize);
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Asymmetric decryption failed: algorithm={}, keyType={}, inputBytes={}, blockSize={}, exception={}",
+                    this.algorithm,
+                    keyType,
+                    data == null ? 0 : data.length,
+                    this.decryptBlockSize,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         } finally {
             lock.unlock();

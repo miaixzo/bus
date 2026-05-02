@@ -32,6 +32,7 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.magic.CacheExpire;
 import org.miaixz.bus.cache.Serializer;
 import org.miaixz.bus.cache.serialize.Hessian2Serializer;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * A Memcached-based implementation of {@link CacheX} using the XMemcached client.
@@ -99,6 +100,13 @@ public class MemcachedCache<K, V> implements CacheX<K, V>, AutoCloseable {
             byte[] bytes = client.get(key.toString());
             return bytes != null ? this.serializer.deserialize(bytes) : null;
         } catch (TimeoutException | InterruptedException | MemcachedException e) {
+            Logger.error(
+                    false,
+                    "Cache",
+                    e,
+                    "Memcached cache read failed: mode=single, keyPresent={}, exception={}",
+                    key != null,
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -122,6 +130,14 @@ public class MemcachedCache<K, V> implements CacheX<K, V>, AutoCloseable {
             int expiryInSeconds = (expire == CacheExpire.FOREVER) ? _30_DAYS : (int) (expire / 1000);
             this.client.set(key.toString(), expiryInSeconds, byteValue);
         } catch (TimeoutException | InterruptedException | MemcachedException e) {
+            Logger.error(
+                    false,
+                    "Cache",
+                    e,
+                    "Memcached cache write failed: mode=single, keyPresent={}, expireMs={}, exception={}",
+                    key != null,
+                    expire,
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -145,6 +161,13 @@ public class MemcachedCache<K, V> implements CacheX<K, V>, AutoCloseable {
             }
             return resultMap;
         } catch (TimeoutException | InterruptedException | MemcachedException e) {
+            Logger.error(
+                    false,
+                    "Cache",
+                    e,
+                    "Memcached cache read failed: mode=batch, keyCount={}, exception={}",
+                    keys.size(),
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -178,6 +201,13 @@ public class MemcachedCache<K, V> implements CacheX<K, V>, AutoCloseable {
                 this.client.delete(key.toString());
             }
         } catch (TimeoutException | InterruptedException | MemcachedException e) {
+            Logger.error(
+                    false,
+                    "Cache",
+                    e,
+                    "Memcached cache remove failed: keyCount={}, exception={}",
+                    keys.length,
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -195,6 +225,7 @@ public class MemcachedCache<K, V> implements CacheX<K, V>, AutoCloseable {
         try {
             this.client.flushAll();
         } catch (TimeoutException | InterruptedException | MemcachedException e) {
+            Logger.error(false, "Cache", e, "Memcached cache clear failed: exception={}", e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -213,6 +244,12 @@ public class MemcachedCache<K, V> implements CacheX<K, V>, AutoCloseable {
             try {
                 this.client.shutdown();
             } catch (IOException e) {
+                Logger.error(
+                        false,
+                        "Cache",
+                        e,
+                        "Memcached cache close failed: exception={}",
+                        e.getClass().getSimpleName());
                 throw new RuntimeException(e);
             }
         }

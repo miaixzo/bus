@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -45,10 +45,21 @@ import org.miaixz.bus.logger.Logger;
 @ThreadSafe
 public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
 
+    /**
+     * The PS_COMMAND_ARGS constant.
+     */
     static final String PS_COMMAND_ARGS = Arrays.stream(PsKeywords.values()).map(Enum::name)
             .map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(Symbol.COMMA));
+    /**
+     * The BOOTTIME constant.
+     */
     private static final long BOOTTIME = querySystemBootTime();
 
+    /**
+     * Queries the system boot time.
+     *
+     * @return the query system boot time result
+     */
     private static long querySystemBootTime() {
         // Boot time will be the first consecutive string of digits.
         return Parsing.parseLongOrDefault(
@@ -57,11 +68,21 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
                 System.currentTimeMillis() / 1000);
     }
 
+    /**
+     * Queries the manufacturer.
+     *
+     * @return the query manufacturer result
+     */
     @Override
     public String queryManufacturer() {
         return "Unix/BSD";
     }
 
+    /**
+     * Queries the family version info.
+     *
+     * @return the query family version info result
+     */
     @Override
     public Pair<String, OperatingSystem.OSVersionInfo> queryFamilyVersionInfo() {
         int[] mib = new int[2];
@@ -78,6 +99,12 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         return Pair.of(family, new OperatingSystem.OSVersionInfo(version, null, buildNumber));
     }
 
+    /**
+     * Queries the bitness.
+     *
+     * @param jvmBitness the jvm bitness
+     * @return the query bitness result
+     */
     @Override
     protected int queryBitness(int jvmBitness) {
         if (jvmBitness < 64 && Executor.getFirstAnswer("uname -m").indexOf("64") == -1) {
@@ -86,21 +113,42 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         return 64;
     }
 
+    /**
+     * Returns the file system.
+     *
+     * @return the get file system result
+     */
     @Override
     public FileSystem getFileSystem() {
         return new OpenBsdFileSystem();
     }
 
+    /**
+     * Returns the internet protocol stats.
+     *
+     * @return the get internet protocol stats result
+     */
     @Override
     public InternetProtocolStats getInternetProtocolStats() {
         return new OpenBsdInternetProtocolStats();
     }
 
+    /**
+     * Queries the all processes.
+     *
+     * @return the query all processes result
+     */
     @Override
     public List<OSProcess> queryAllProcesses() {
         return getProcessListFromPS(-1);
     }
 
+    /**
+     * Queries the child processes.
+     *
+     * @param parentPid the parent pid
+     * @return the query child processes result
+     */
     @Override
     public List<OSProcess> queryChildProcesses(int parentPid) {
         List<OSProcess> allProcs = queryAllProcesses();
@@ -108,6 +156,12 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
     }
 
+    /**
+     * Queries the descendant processes.
+     *
+     * @param parentPid the parent pid
+     * @return the query descendant processes result
+     */
     @Override
     public List<OSProcess> queryDescendantProcesses(int parentPid) {
         List<OSProcess> allProcs = queryAllProcesses();
@@ -115,6 +169,12 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
     }
 
+    /**
+     * Returns the process.
+     *
+     * @param pid the pid
+     * @return the get process result
+     */
     @Override
     public OSProcess getProcess(int pid) {
         List<OSProcess> procs = getProcessListFromPS(pid);
@@ -124,6 +184,12 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         return procs.get(0);
     }
 
+    /**
+     * Returns the process list from ps.
+     *
+     * @param pid the pid
+     * @return the get process list from ps result
+     */
     private List<OSProcess> getProcessListFromPS(int pid) {
         List<OSProcess> procs = new ArrayList<>();
         // https://man.openbsd.org/ps#KEYWORDS
@@ -152,11 +218,21 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         return procs;
     }
 
+    /**
+     * Returns the process id.
+     *
+     * @return the get process id result
+     */
     @Override
     public int getProcessId() {
         return OpenBsdLibc.INSTANCE.getpid();
     }
 
+    /**
+     * Returns the process count.
+     *
+     * @return the get process count result
+     */
     @Override
     public int getProcessCount() {
         List<String> procList = Executor.runNative("ps -axo pid");
@@ -167,11 +243,21 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         return 0;
     }
 
+    /**
+     * Returns the thread id.
+     *
+     * @return the get thread id result
+     */
     @Override
     public int getThreadId() {
         return OpenBsdLibc.INSTANCE.getthrid();
     }
 
+    /**
+     * Returns the current thread.
+     *
+     * @return the get current thread result
+     */
     @Override
     public OSThread getCurrentThread() {
         OSProcess proc = getCurrentProcess();
@@ -180,6 +266,11 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
                 .orElse(new OpenBsdOSThread(proc.getProcessID(), tid));
     }
 
+    /**
+     * Returns the thread count.
+     *
+     * @return the get thread count result
+     */
     @Override
     public int getThreadCount() {
         // -H "Also display information about kernel visible threads"
@@ -193,21 +284,41 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         return 0;
     }
 
+    /**
+     * Returns the system uptime.
+     *
+     * @return the get system uptime result
+     */
     @Override
     public long getSystemUptime() {
         return System.currentTimeMillis() / 1000 - BOOTTIME;
     }
 
+    /**
+     * Returns the system boot time.
+     *
+     * @return the get system boot time result
+     */
     @Override
     public long getSystemBootTime() {
         return BOOTTIME;
     }
 
+    /**
+     * Returns the network params.
+     *
+     * @return the get network params result
+     */
     @Override
     public NetworkParams getNetworkParams() {
         return new OpenBsdNetworkParams();
     }
 
+    /**
+     * Returns the services.
+     *
+     * @return the get services result
+     */
     @Override
     public List<OSService> getServices() {
         // Get running services
@@ -234,7 +345,7 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
                 }
             }
         } else {
-            Logger.error("Directory: /etc/rc.d does not exist");
+            Logger.error(false, "Health", "Directory: /etc/rc.d does not exist");
         }
         return services;
     }

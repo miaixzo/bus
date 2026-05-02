@@ -27,6 +27,7 @@ import org.miaixz.bus.image.galaxy.data.ElementDictionary;
 import org.miaixz.bus.image.galaxy.data.VR;
 import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
 import org.miaixz.bus.image.galaxy.io.SAXReader;
+import org.miaixz.bus.logger.Logger;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -307,13 +308,40 @@ public class Pdf2Dcm {
             Path destFilePath = resolveDestFilePath(srcFilePath);
             if (!Files.isDirectory(destFilePath))
                 Files.createDirectories(destFilePath);
+            Path outputPath = destFilePath.resolve(srcFilePath.getFileName() + ".dcm");
+            long start = System.currentTimeMillis();
             try {
-                convert(srcFilePath, destFilePath.resolve(srcFilePath.getFileName() + ".dcm"));
+                Logger.debug(
+                        true,
+                        "Image",
+                        "PDF to DICOM conversion started: fileName={}, outputName={}",
+                        srcFilePath.getFileName(),
+                        outputPath.getFileName());
+                convert(srcFilePath, outputPath);
+                Logger.info(
+                        false,
+                        "Image",
+                        "PDF to DICOM conversion finished: fileName={}, outputName={}, elapsedMs={}",
+                        srcFilePath.getFileName(),
+                        outputPath.getFileName(),
+                        System.currentTimeMillis() - start);
             } catch (SAXException | ParserConfigurationException e) {
-                e.printStackTrace(System.out);
+                Logger.warn(
+                        false,
+                        "Image",
+                        e,
+                        "PDF to DICOM conversion metadata failed: fileName={}, exception={}",
+                        srcFilePath.getFileName(),
+                        e.getClass().getSimpleName());
                 return FileVisitResult.TERMINATE;
             } catch (Exception e) {
-                e.printStackTrace(System.out);
+                Logger.warn(
+                        false,
+                        "Image",
+                        e,
+                        "PDF to DICOM conversion failed: fileName={}, exception={}",
+                        srcFilePath.getFileName(),
+                        e.getClass().getSimpleName());
             }
             return FileVisitResult.CONTINUE;
         }

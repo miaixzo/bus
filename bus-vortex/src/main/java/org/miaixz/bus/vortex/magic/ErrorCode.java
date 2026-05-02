@@ -34,6 +34,12 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 
     /**
+     * Creates a gateway error-code registry holder.
+     */
+    public ErrorCode() {
+    }
+
+    /**
      * Error code: 116000 - Service not responding.
      * <p>
      * Indicates a general failure when communicating with a downstream service, often due to timeouts or network issues

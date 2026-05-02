@@ -18,14 +18,12 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Instance lifecycle state model for tracking and recording health transitions of registered service instances.
+ * Instance lifecycle state models used to track health transitions and operational state changes of registered service
+ * instances.
  * <p>
- * {@code InstanceState} is an enum with four phases: UP (running and healthy), DOWN (unreachable or failing health
- * checks), UNKNOWN (status not yet determined, typically at startup before the first probe completes) and STARTING
- * (process launched but not yet ready to serve traffic). {@code InstanceStateHistory} is an immutable value object
- * recording a single state transition: the resulting {@code InstanceState}, the Unix-epoch-millisecond timestamp when
- * the transition was observed, a human-readable reason string explaining why the state changed, and the namespace of
- * the affected instance.
+ * {@code InstanceState} covers five phases: UP, DOWN, UNKNOWN, STARTING, and MAINTENANCE. {@code InstanceStateHistory}
+ * is a mutable history record populated by schedulers or persistence layers with the observed state, timestamp, reason,
+ * source, operator, duration, and instance identity fields that describe one transition.
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -42,6 +42,9 @@ import com.sun.jna.platform.mac.IOKitUtil;
 @Immutable
 final class MacBaseboard extends AbstractBaseboard {
 
+    /**
+     * The manufModelVersSerial value.
+     */
     private final Supplier<Tuple> manufModelVersSerial = Memoizer.memoize(MacBaseboard::queryPlatform);
 
     /**

@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -75,12 +75,12 @@ public final class NetStat {
         int[] mib = { CTL_NET, PF_ROUTE, 0, 0, NET_RT_IFLIST2, 0 };
         try (CloseableSizeTByReference len = new CloseableSizeTByReference()) {
             if (0 != SystemB.INSTANCE.sysctl(mib, 6, null, len, null, size_t.ZERO)) {
-                Logger.error("Didn't get buffer length for IFLIST2");
+                Logger.error(false, "Health", "Didn't get buffer length for IFLIST2");
                 return data;
             }
             try (Memory buf = new Memory(len.longValue())) {
                 if (0 != SystemB.INSTANCE.sysctl(mib, 6, buf, len, null, size_t.ZERO)) {
-                    Logger.error("Didn't get buffer for IFLIST2");
+                    Logger.error(false, "Health", "Didn't get buffer for IFLIST2");
                     return data;
                 }
                 final long now = System.currentTimeMillis();
@@ -126,16 +126,49 @@ public final class NetStat {
     @Immutable
     public static class IFdata {
 
+        /**
+         * The ifType value.
+         */
         private final int ifType;
+        /**
+         * The oPackets value.
+         */
         private final long oPackets;
+        /**
+         * The iPackets value.
+         */
         private final long iPackets;
+        /**
+         * The oBytes value.
+         */
         private final long oBytes;
+        /**
+         * The iBytes value.
+         */
         private final long iBytes;
+        /**
+         * The oErrors value.
+         */
         private final long oErrors;
+        /**
+         * The iErrors value.
+         */
         private final long iErrors;
+        /**
+         * The collisions value.
+         */
         private final long collisions;
+        /**
+         * The iDrops value.
+         */
         private final long iDrops;
+        /**
+         * The speed value.
+         */
         private final long speed;
+        /**
+         * The timeStamp value.
+         */
         private final long timeStamp;
 
         /**

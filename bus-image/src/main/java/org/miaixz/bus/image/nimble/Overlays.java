@@ -66,7 +66,9 @@ public class Overlays {
                 int ovlyBitPosition = attrs.getInt(Tag.OverlayBitPosition | gg0000, 0);
                 if (ovlyBitPosition < bitsStored)
                     Logger.info(
-                            "Ignore embedded overlay #{} from bit #{} < bits stored: {}",
+                            false,
+                            "Image",
+                            "Ignore embedded overlay #{} from bit #{} < bits stored: bitsStored={}",
                             (gg0000 >>> 17) + 1,
                             ovlyBitPosition,
                             bitsStored);
@@ -267,6 +269,8 @@ public class Overlays {
         int end = (ovlyOff + ovlyLen + 7) >>> 3;
         if (end > ovlyData.length) {
             Logger.warn(
+                    false,
+                    "Image",
                     "OverlayData to small ({} vs. {})! Skip this overlay:{}",
                     ovlyData.length,
                     end,

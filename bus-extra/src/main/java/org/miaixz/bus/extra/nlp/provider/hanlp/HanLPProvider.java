@@ -22,6 +22,7 @@ package org.miaixz.bus.extra.nlp.provider.hanlp;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;
+import org.miaixz.bus.logger.Logger;
 
 import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.seg.Segment;
@@ -56,7 +57,17 @@ public class HanLPProvider implements NLPProvider {
      * @param seg The custom {@link Segment} object to use for word segmentation.
      */
     public HanLPProvider(final Segment seg) {
+        Logger.info(
+                true,
+                "Extra",
+                "HanLP provider initialization started: segmenterType={}",
+                seg == null ? "null" : seg.getClass().getSimpleName());
         this.seg = seg;
+        Logger.info(
+                false,
+                "Extra",
+                "HanLP provider initialized: segmenterType={}",
+                this.seg == null ? "null" : this.seg.getClass().getSimpleName());
     }
 
     /**
@@ -68,7 +79,15 @@ public class HanLPProvider implements NLPProvider {
      */
     @Override
     public NLPResult parse(final CharSequence text) {
-        return new HanLPResult(this.seg.seg(StringKit.toStringOrEmpty(text)));
+        Logger.debug(true, "Extra", "HanLP parse started: textLength={}", text == null ? 0 : text.length());
+        final NLPResult result = new HanLPResult(this.seg.seg(StringKit.toStringOrEmpty(text)));
+        Logger.debug(
+                false,
+                "Extra",
+                "HanLP parse completed: textLength={}, resultPresent={}",
+                text == null ? 0 : text.length(),
+                result != null);
+        return result;
     }
 
 }

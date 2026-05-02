@@ -22,6 +22,7 @@ package org.miaixz.bus.mapper.builder;
 import java.lang.reflect.Method;
 import java.util.*;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.mapper.Order;
@@ -49,7 +50,7 @@ public interface ClassMetaResolver extends Order {
      * @return An {@link Optional} containing the entity class type.
      */
     static Optional<Class<?>> find(Class<?> mapperType, Method mapperMethod) {
-        Objects.requireNonNull(mapperType);
+        Assert.notNull(mapperType, "Mapper type cannot be null");
         MapperTypeMethod key = new MapperTypeMethod(mapperType, mapperMethod);
         Optional<Class<?>> optionalClass = ENTITY_CLASS_MAP.get(key);
         if (optionalClass == null) {

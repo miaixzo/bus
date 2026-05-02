@@ -36,18 +36,18 @@ public interface SqlScript {
     /**
      * Creates and caches an SQL script.
      *
-     * @param providerContext The execution method context.
-     * @param sqlScript       The XML SQL script implementation.
+     * @param context   The execution method context.
+     * @param sqlScript The XML SQL script implementation.
      * @return The cache key.
      */
-    static String caching(ProviderContext providerContext, SqlScript sqlScript) {
-        TableMeta entity = MapperFactory.of(providerContext.getMapperType(), providerContext.getMapperMethod());
+    static String caching(ProviderContext context, SqlScript sqlScript) {
+        TableMeta entity = MapperFactory.of(context.getMapperType(), context.getMapperMethod());
         return Caching.cache(
-                providerContext,
+                context,
                 entity,
                 () -> String.format(
                         "<script>\n%s\n</script>",
-                        SqlScriptWrapper.wrapSqlScript(providerContext, entity, sqlScript).getSql(entity)));
+                        SqlScriptWrapper.wrapSqlScript(context, entity, sqlScript).getSql(entity)));
     }
 
     /**
@@ -58,15 +58,15 @@ public interface SqlScript {
      * like {@code where()}, {@code ifTest()}, {@code foreach()} etc.
      * </p>
      *
-     * @param providerContext  The execution method context.
+     * @param context          The execution method context.
      * @param sqlScriptBuilder The SQL builder function that accepts entity and sqlScript helper.
      * @return The cache key.
      */
-    static String caching(ProviderContext providerContext, BiFunctionX<TableMeta, SqlScript, String> sqlScriptBuilder) {
-        TableMeta entity = MapperFactory.of(providerContext.getMapperType(), providerContext.getMapperMethod());
-        SqlScript wrapper = SqlScriptWrapper.wrapSqlScript(providerContext, entity, null);
+    static String caching(ProviderContext context, BiFunctionX<TableMeta, SqlScript, String> sqlScriptBuilder) {
+        TableMeta entity = MapperFactory.of(context.getMapperType(), context.getMapperMethod());
+        SqlScript wrapper = SqlScriptWrapper.wrapSqlScript(context, entity, null);
         return Caching.cache(
-                providerContext,
+                context,
                 entity,
                 () -> String.format("<script>\n%s\n</script>", sqlScriptBuilder.apply(entity, wrapper)));
     }
@@ -79,14 +79,14 @@ public interface SqlScript {
      * SQL is not generated at cache time, but rather at execution time when the dialect is known.
      * </p>
      *
-     * @param providerContext The execution method context.
-     * @param sqlScript       The builder SQL script implementation with dialect support.
+     * @param context   The execution method context.
+     * @param sqlScript The builder SQL script implementation with dialect support.
      * @return The cache key.
      */
-    static String cachingDynamic(ProviderContext providerContext, AidedSqlScript sqlScript) {
-        TableMeta entity = MapperFactory.of(providerContext.getMapperType(), providerContext.getMapperMethod());
+    static String cachingDynamic(ProviderContext context, AidedSqlScript sqlScript) {
+        TableMeta entity = MapperFactory.of(context.getMapperType(), context.getMapperMethod());
         return Caching.cacheDynamic(
-                providerContext,
+                context,
                 entity,
                 dialect -> String.format("<script>\n%s\n</script>", sqlScript.getSql(entity, dialect)));
     }

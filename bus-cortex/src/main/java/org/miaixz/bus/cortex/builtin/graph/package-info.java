@@ -18,14 +18,13 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Service dependency tracking and transitive downstream impact analysis.
+ * Service dependency modeling and downstream impact analysis.
  * <p>
- * {@code DependencyGraph} maintains a directed adjacency map between service identifiers, recording both
- * {@code depends-on} (upstream) and {@code depended-by} (downstream) edges. Callers add edges with
- * {@code addDependency(from, to)} and query direct neighbours with {@code getUpstream(id)} and
- * {@code getDownstream(id)}. {@code ImpactAnalysis} performs a BFS traversal over a {@code DependencyGraph} to compute
- * the full set of services transitively downstream of a given changed service, enabling change-impact assessment before
- * a deployment or configuration update is applied.
+ * {@code DependencyGraph} stores one directed edge as {@code dependent service -> upstream dependency} through
+ * {@code addEdge(from, to)}. Upstream lookups read the stored adjacency directly, while downstream lookups are derived
+ * on demand by reversing those edges during traversal. {@code ImpactAnalysis} performs breadth-first traversal over the
+ * computed downstream view to return the full transitive impact set and the shortest downstream paths from one changed
+ * source service.
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -37,28 +37,60 @@ import org.miaixz.bus.health.builtin.hardware.GpuTicks;
  * <p>
  * GPU ticks are not available on Linux and always return {@code (0L, 0L)}. Shared memory is not available and always
  * returns -1.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 @ThreadSafe
 final class LinuxGpuStats implements GpuStats {
 
+    /**
+     * The drmDevicePath value.
+     */
     private final String drmDevicePath;
+    /**
+     * The driverName value.
+     */
     private final String driverName;
+    /**
+     * The pciBusId value.
+     */
     private final String pciBusId;
+    /**
+     * The cardName value.
+     */
     private final String cardName;
 
     // Cached at construction; empty string if not found
+    /**
+     * The hwmonPath value.
+     */
     private final String hwmonPath;
     // Cached Intel gt0 path
+    /**
+     * The gt0Path value.
+     */
     private final String gt0Path;
 
     // Cached NVML device id; null means not yet resolved, empty string means unavailable
+    /**
+     * The nvmlDeviceId value.
+     */
     private String nvmlDeviceId;
 
+    /**
+     * The closed value.
+     */
     private boolean closed;
 
+    /**
+     * Creates a new LinuxGpuStats instance.
+     *
+     * @param drmDevicePath the drm device path
+     * @param driverName    the driver name
+     * @param pciBusId      the pci bus id
+     * @param cardName      the card name
+     */
     LinuxGpuStats(String drmDevicePath, String driverName, String pciBusId, String cardName) {
         this.drmDevicePath = drmDevicePath;
         this.driverName = driverName;
@@ -68,22 +100,40 @@ final class LinuxGpuStats implements GpuStats {
         this.gt0Path = drmDevicePath.isEmpty() ? "" : drmDevicePath + "/../gt/gt0";
     }
 
+    /**
+     * Closes this resource.
+     */
     @Override
     public synchronized void close() {
         closed = true;
     }
 
+    /**
+     * Returns whether the closed condition is true.
+     *
+     * @return the is closed result
+     */
     @Override
     public synchronized boolean isClosed() {
         return closed;
     }
 
+    /**
+     * Returns the gpu ticks.
+     *
+     * @return the get gpu ticks result
+     */
     @Override
     public synchronized GpuTicks getGpuTicks() {
         checkOpen();
         return new GpuTicks(0L, 0L);
     }
 
+    /**
+     * Returns the gpu utilization.
+     *
+     * @return the get gpu utilization result
+     */
     @Override
     public synchronized double getGpuUtilization() {
         checkOpen();
@@ -107,6 +157,11 @@ final class LinuxGpuStats implements GpuStats {
         return -1d;
     }
 
+    /**
+     * Returns the vram used.
+     *
+     * @return the get vram used result
+     */
     @Override
     public synchronized long getVramUsed() {
         checkOpen();
@@ -127,12 +182,22 @@ final class LinuxGpuStats implements GpuStats {
         return -1L;
     }
 
+    /**
+     * Returns the shared memory used.
+     *
+     * @return the get shared memory used result
+     */
     @Override
     public synchronized long getSharedMemoryUsed() {
         checkOpen();
         return -1L;
     }
 
+    /**
+     * Returns the temperature.
+     *
+     * @return the get temperature result
+     */
     @Override
     public synchronized double getTemperature() {
         checkOpen();
@@ -152,6 +217,11 @@ final class LinuxGpuStats implements GpuStats {
         return -1d;
     }
 
+    /**
+     * Returns the power draw.
+     *
+     * @return the get power draw result
+     */
     @Override
     public synchronized double getPowerDraw() {
         checkOpen();
@@ -171,6 +241,11 @@ final class LinuxGpuStats implements GpuStats {
         return -1d;
     }
 
+    /**
+     * Returns the core clock mhz.
+     *
+     * @return the get core clock mhz result
+     */
     @Override
     public synchronized long getCoreClockMhz() {
         checkOpen();
@@ -201,6 +276,11 @@ final class LinuxGpuStats implements GpuStats {
         return -1L;
     }
 
+    /**
+     * Returns the memory clock mhz.
+     *
+     * @return the get memory clock mhz result
+     */
     @Override
     public synchronized long getMemoryClockMhz() {
         checkOpen();
@@ -226,6 +306,11 @@ final class LinuxGpuStats implements GpuStats {
         return -1L;
     }
 
+    /**
+     * Returns the fan speed percent.
+     *
+     * @return the get fan speed percent result
+     */
     @Override
     public synchronized double getFanSpeedPercent() {
         checkOpen();
@@ -250,6 +335,9 @@ final class LinuxGpuStats implements GpuStats {
         return -1d;
     }
 
+    /**
+     * Handles the check open operation.
+     */
     private void checkOpen() {
         if (closed) {
             throw new IllegalStateException(
@@ -257,6 +345,11 @@ final class LinuxGpuStats implements GpuStats {
         }
     }
 
+    /**
+     * Returns the find nvml device result.
+     *
+     * @return the find nvml device result
+     */
     private String findNvmlDevice() {
         if (nvmlDeviceId != null) {
             return nvmlDeviceId.isEmpty() ? null : nvmlDeviceId;
@@ -276,6 +369,12 @@ final class LinuxGpuStats implements GpuStats {
         return id;
     }
 
+    /**
+     * Returns the resolve hwmon path result.
+     *
+     * @param drmDevicePath the drm device path
+     * @return the resolve hwmon path result
+     */
     private static String resolveHwmonPath(String drmDevicePath) {
         if (drmDevicePath.isEmpty()) {
             return "";
@@ -288,6 +387,12 @@ final class LinuxGpuStats implements GpuStats {
         return "";
     }
 
+    /**
+     * Parses the dpm active mhz.
+     *
+     * @param path the path
+     * @return the parse dpm active mhz result
+     */
     private static long parseDpmActiveMhz(String path) {
         for (String line : Builder.readFile(path, false)) {
             if (line.endsWith("*")) {

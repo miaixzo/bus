@@ -53,18 +53,20 @@
 
 ```java
 public class Assets {
-    private String id;           // 唯一 API ID
-    private String name;         // API 名称
-    private String host;         // 目标主机名
-    private int port;            // 目标端口
-    private String url;          // 目标 URL
-    private String method;       // 请求方法名称
-    private HttpMethod httpMethod; // HTTP 方法
-    private boolean principal;   // 需要令牌(0: 否, 1: 是)
-    private boolean sign;        // 加密响应(0: 否, 1: 是)
-    private boolean firewall;    // 防火墙(保留)
-    private String version;      // API 版本(匹配请求参数 'v')
-    private String description;  // API 描述
+    private String id;             // 唯一路由资产 ID
+    private String namespace_id;   // 所属 namespace
+    private Integer type;          // 可选类型过滤条件，使用 Type.key()
+    private String app_id;         // 应用标识
+    private String method;         // 逻辑 API 方法名
+    private Integer verb;          // HTTP 动词编码：1=GET ... 9=CONNECT
+    private Integer policy;        // 访问策略：0 匿名，1-6 鉴权
+    private Integer sign;          // 签名校验开关
+    private String version;        // API 版本（匹配请求参数 'v'）
+    private String host;           // 目标主机名
+    private Integer port;          // 目标端口
+    private String path;           // 下游路径前缀
+    private String url;            // 目标 URL / 端点
+    private String description;    // API 描述
 }
 ```
 
@@ -74,29 +76,59 @@ public class Assets {
 |:---|:---|
 | method | API 方法名称(例如 xxx.xxx.xxx)|
 | v | API 版本号,与 method 一起使用(例如 1.1, 1.2)|
+| namespace | 可选的 namespace 路由范围 |
+| app_id | 可选的应用级路由范围 |
+| type | 可选的注册表类型范围；支持数字 `Type.key()` 和历史枚举名 |
 | format | 返回格式(支持 json、xml)|
 | sign | 如果配置中启用 decrypt 且请求包含 sign 字段,则解密请求 |
+
+### 公开路由解析规则
+
+- 运行时候选链：
+  - `namespace:type:app_id:method:version:verb`
+  - `namespace:type:method:version:verb`
+  - `namespace:app_id:method:version:verb`
+  - `namespace:method:version:verb`
+  - `type:app_id:method:version:verb`
+  - `type:method:version:verb`
+  - `app_id:method:version:verb`
+  - `method:version:verb`
+- `method`、`version`、`verb` 是运行时必填维度
+- `namespace`、`type`、`app_id` 是可选路由范围；缺失时只跳过对应层级
+- `type` 在 route key 中统一使用数字 `Type.key()`
+- `verb` 在 route key 中统一使用数字 verb code，而不是 `GET` / `POST` 文本
+- `ApiAssets.routeKey` 继续保留为轻量公开别名 `method:version:verbCode`
+- 注册和查询共用同一条候选链
+- 查询命中首个“有候选结果”的层级后，如果该层有多个资产，则直接返回 `null`
+
+`verbCode` 映射：
+
+- `1 -> GET`
+- `2 -> POST`
+- `3 -> HEAD`
+- `4 -> PUT`
+- `5 -> PATCH`
+- `6 -> DELETE`
+- `7 -> OPTIONS`
+- `8 -> TRACE`
+- `9 -> CONNECT`
+
+如果需要修改默认路由键策略，可以提供自定义 Spring `Keying<Keying.RegistrySpec>` Bean。内置实现为
+`RegistryGenerator`，并且 bus-cortex 与 bus-vortex 现在共用同一套
+`Keying<Keying.RegistrySpec>` 规则。
 
 ### 配置文件
 
 ```yaml
-extend:
+bus:
   vortex:
-    server:
-      port: 8765              # 网关端口
-      path: /router/rest      # 网关路径
-      encrypt:
-        enabled: true         # 启用加密
-        key: xxxxxx           # 加密密钥
-        type: AES             # 加密算法
-        offset: xxxxxx        # 偏移量
-      decrypt:
-        enabled: true         # 启用解密
-        key: xxxxxx           # 解密密钥
-        type: AES             # 解密算法
-        offset: xxxx          # 偏移量
-      limit:
-        enabled: true         # 启用限流
+    port: 8765                # 网关端口
+    path: /router/rest        # 网关路径
+    condition: false          # 默认关闭自定义 MVC 条件桥接
+    limit:
+      enabled: true           # 启用限流
+    performance:
+      sanitize-null-like-parameters: true
 ```
 
 ### 集成步骤
@@ -114,24 +146,32 @@ public class TunnelApplication {
 }
 ```
 
-#### 2. 实现带有 Registry 的 Spring Bean 来缓存 API
+#### 2. AssetsRegistry 默认自动装配
+
+```java
+// 默认场景下无需自己实现 Registry Bean。
+// bus-starter/vortex 会自动创建 AssetsRegistry。
+```
+
+#### 3. 可选：覆盖路由键策略
+
+```java
+@Bean
+public Keying<Keying.RegistrySpec> registryKeying() {
+    return RegistryGenerator.INSTANCE;
+}
+```
+
+#### 4. 实现 AuthorizeProvider Bean 进行身份验证
 
 ```java
 @Component
-public class DbAssetRegistriesImpl implements Registry {
-    // TODO: 实现注册表逻辑
+public class AuthProviderImpl implements AuthorizeProvider {
+    // 按需覆写 token / apiKey / license
 }
 ```
 
-#### 3. 实现 Authorize Spring Bean 进行身份验证
-
-```java
-public class AuthProviderImpl implements Authorize {
-    // TODO: 实现身份验证逻辑
-}
-```
-
-#### 4. 在 application.yml 中配置
+#### 5. 在 application.yml 中配置
 
 ### 扩展性
 
@@ -232,7 +272,7 @@ public class TController {
 ```xml
 <dependency>
     <groupId>org.miaixz</groupId>
-    <artifactId>bus-vortex</artifactId>
+    <artifactId>bus-starter</artifactId>
     <version>x.x.x</version>
 </dependency>
 ```
@@ -252,18 +292,17 @@ public class Application {
 ### 配置应用属性
 
 ```yaml
-extend:
+bus:
   vortex:
-    server:
-      port: 8765
-      path: /router/rest
+    port: 8765
+    path: /router/rest
     performance:
       sanitize-null-like-parameters: true
 ```
 
 ### null-like 参数净化
 
-当 `extend.vortex.performance.sanitize-null-like-parameters=true` 时，网关会在请求入口、上下文追加、以及出站转发三个阶段统一移除
+当 `bus.vortex.performance.sanitize-null-like-parameters=true` 时，网关会在请求入口、上下文追加、以及出站转发三个阶段统一移除
 Java `null`、`"null"`、`"undefined"`。
 
 `Context#getParameters()` 保留了原有的 `Map` 使用习惯，但返回值底层是受控 `Parameter`，因此 `put` / `putAll` /
@@ -293,13 +332,11 @@ context.putQueryParameter("lang", "en");
 
 | 属性 | 类型 | 默认值 | 描述 |
 |:---|:---|:---|:---|
-| extend.vortex.server.port | int | 8765 | 网关服务器端口 |
-| extend.vortex.server.path | String | /router/rest | 网关路由路径 |
-| extend.vortex.encrypt.enabled | boolean | false | 启用加密 |
-| extend.vortex.encrypt.key | String | - | 加密密钥 |
-| extend.vortex.encrypt.type | String | AES | 加密算法 |
-| extend.vortex.decrypt.enabled | boolean | false | 启用解密 |
-| extend.vortex.limit.enabled | boolean | false | 启用限流 |
+| bus.vortex.port | int | 8765 | 网关服务器端口 |
+| bus.vortex.path | String | /router/rest | 网关路由路径 |
+| bus.vortex.condition | boolean | false | 是否启用自定义 Spring MVC 条件桥接 |
+| bus.vortex.limit.enabled | boolean | false | 启用限流 |
+| bus.vortex.performance.sanitize-null-like-parameters | boolean | true | 在路由前移除 `null` / `"null"` / `"undefined"` 参数 |
 
 -----
 

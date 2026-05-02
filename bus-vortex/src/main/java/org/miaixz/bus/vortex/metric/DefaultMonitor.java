@@ -46,7 +46,7 @@ import org.miaixz.bus.vortex.magic.Metrics;
  * <p>
  * <b>Usage:</b>
  * </p>
- * 
+ *
  * <pre>
  * // Use singleton instance (recommended for most cases)
  * Monitor monitor = DefaultMonitor.INSTANCE;
@@ -71,6 +71,12 @@ import org.miaixz.bus.vortex.magic.Metrics;
 public class DefaultMonitor implements Monitor {
 
     /**
+     * Creates an in-memory monitor.
+     */
+    public DefaultMonitor() {
+    }
+
+    /**
      * Singleton instance of DefaultMonitor.
      * <p>
      * This instance can be shared across the application for centralized monitoring. It is thread-safe and suitable for
@@ -79,7 +85,7 @@ public class DefaultMonitor implements Monitor {
      * <p>
      * Example usage:
      * </p>
-     * 
+     *
      * <pre>
      * Monitor monitor = DefaultMonitor.INSTANCE;
      * cacheManager.setPerformanceMonitor(monitor);
@@ -127,17 +133,34 @@ public class DefaultMonitor implements Monitor {
      */
     private final AtomicLong dbDurationNs = new AtomicLong(0);
 
+    /**
+     * Records a cache access and updates hit or miss counters.
+     *
+     * @param key           cache key
+     * @param hit           whether the lookup hit the cache
+     * @param durationNanos lookup duration in nanoseconds
+     */
     @Override
     public void access(String key, boolean hit, long durationNanos) {
         if (hit) {
             cacheHits.incrementAndGet();
         } else {
             cacheMisses.incrementAndGet();
-            // Log misses for debugging
-            Logger.debug("Cache miss: key={}, duration={}ns", key, durationNanos);
+            Logger.debug(
+                    false,
+                    "Vortex",
+                    "Cache miss: keyChars={}, durationNanos={}",
+                    key == null ? 0 : key.length(),
+                    durationNanos);
         }
     }
 
+    /**
+     * Records a gateway request outcome and its total duration.
+     *
+     * @param duration request duration
+     * @param success  whether the request completed successfully
+     */
     @Override
     public void request(Duration duration, boolean success) {
         requestCount.incrementAndGet();
@@ -150,14 +173,26 @@ public class DefaultMonitor implements Monitor {
         }
     }
 
+    /**
+     * Records a backend or database operation observed during request processing.
+     *
+     * @param type     operation category
+     * @param duration operation duration
+     * @param rowCount affected row count or item count
+     */
     @Override
     public void operation(String type, Duration duration, int rowCount) {
         dbOperationCount.incrementAndGet();
         dbDurationNs.addAndGet(duration.toNanos());
 
-        Logger.debug(true, "Operation", "type={}, duration={}ms, rows={}", type, duration.toMillis(), rowCount);
+        Logger.debug(true, "Vortex", "type={}, duration={}ms, rows={}", type, duration.toMillis(), rowCount);
     }
 
+    /**
+     * Builds a snapshot of the current in-memory monitoring counters.
+     *
+     * @return aggregated metrics snapshot
+     */
     @Override
     public Metrics getSummary() {
         long requests = requestCount.get();
@@ -167,20 +202,16 @@ public class DefaultMonitor implements Monitor {
         long hits = cacheHits.get();
         long misses = cacheMisses.get();
 
-        return Metrics.builder()
-                // System-level metrics (not populated by this monitor)
-                .cpu(0.0).memory(0L)
-                // Application-level metrics
-                .totalRequests(requests).successRequests(successCount.get()).failureRequests(failureCount.get())
-                .avgDurationMs(requests > 0 ? totalNs / 1_000_000.0 / requests : 0).p95DurationMs(0.0) // Not calculated
-                                                                                                       // in basic
-                                                                                                       // implementation
-                .p99DurationMs(0.0) // Not calculated in basic implementation
-                .cacheHits(hits).cacheMisses(misses)
+        return Metrics.builder().cpu(0.0).memory(0L).totalRequests(requests).successRequests(successCount.get())
+                .failureRequests(failureCount.get()).avgDurationMs(requests > 0 ? totalNs / 1_000_000.0 / requests : 0)
+                .p95DurationMs(0.0).p99DurationMs(0.0).cacheHits(hits).cacheMisses(misses)
                 .cacheHitRate((hits + misses) > 0 ? (double) hits / (hits + misses) : 0).totalDbOperations(dbOps)
                 .avgDbDurationMs(dbOps > 0 ? dbNs / 1_000_000.0 / dbOps : 0).build();
     }
 
+    /**
+     * Resets all counters maintained by this in-memory monitor.
+     */
     @Override
     public void reset() {
         requestCount.set(0);
@@ -192,7 +223,7 @@ public class DefaultMonitor implements Monitor {
         dbOperationCount.set(0);
         dbDurationNs.set(0);
 
-        Logger.info("Performance monitor statistics reset");
+        Logger.info(false, "Vortex", "Performance monitor statistics reset");
     }
 
 }

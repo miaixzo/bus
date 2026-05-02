@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.starter.zookeeper;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.miaixz.bus.spring.GeniusBuilder;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -39,6 +41,7 @@ import jakarta.annotation.Resource;
  * @since Java 21+
  */
 @EnableConfigurationProperties(ZookeeperProperties.class)
+@ConditionalOnProperty(prefix = GeniusBuilder.ZOOKEEPER, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class ZookeeperConfiguration {
 
     @Resource

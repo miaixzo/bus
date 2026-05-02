@@ -104,6 +104,17 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             this.baseDN = s.substring(end + 1);
             this.ctx = new ReconnectDirContext(map);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "LdapDicomConfiguration",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         }
     }
@@ -404,6 +415,16 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             ctx.getAttributes(dn);
             return true;
         } catch (NameNotFoundException e) {
+            Logger.debug(
+                    false,
+                    "Image",
+                    "DICOM LDAP operation completed with expected exception: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "exists",
+                    "LDAP",
+                    "not_found",
+                    true,
+                    e.getClass().getSimpleName());
+
             return false;
         }
     }
@@ -415,9 +436,20 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
 
         try {
             destroySubcontextWithChilds(configurationDN);
-            Logger.info("Purge DICOM Configuration at {}", configurationDN);
+            Logger.info(false, "Image", "Purge DICOM Configuration at {}", configurationDN);
             clearConfigurationDN();
         } catch (NamingException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "purgeConfiguration",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         }
         return true;
@@ -430,6 +462,16 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             registerAET(aet);
             return true;
         } catch (AlreadyExistsException e) {
+            Logger.debug(
+                    false,
+                    "Image",
+                    "DICOM LDAP operation completed with expected exception: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "registerAETitle",
+                    "LDAP",
+                    "already_exists",
+                    true,
+                    e.getClass().getSimpleName());
+
             return false;
         }
     }
@@ -441,6 +483,16 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             registerWebApp(webAppName);
             return true;
         } catch (AlreadyExistsException e) {
+            Logger.debug(
+                    false,
+                    "Image",
+                    "DICOM LDAP operation completed with expected exception: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "registerWebAppName",
+                    "LDAP",
+                    "already_exists",
+                    true,
+                    e.getClass().getSimpleName());
+
             return false;
         }
     }
@@ -451,8 +503,29 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             createSubcontext(dn, LdapBuilder.attrs("dicomUniqueAETitle", "dicomAETitle", aet));
             return dn;
         } catch (NameAlreadyBoundException e) {
+            Logger.debug(
+                    false,
+                    "Image",
+                    "DICOM LDAP operation completed with expected exception: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "registerAET",
+                    "LDAP",
+                    "already_exists",
+                    true,
+                    e.getClass().getSimpleName());
+
             throw new AlreadyExistsException("AE Title '" + aet + "' already exists");
         } catch (NamingException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "registerAET",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         }
     }
@@ -463,8 +536,29 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             createSubcontext(dn, LdapBuilder.attrs("dcmUniqueWebAppName", "dcmWebAppName", webAppName));
             return dn;
         } catch (NameAlreadyBoundException e) {
+            Logger.debug(
+                    false,
+                    "Image",
+                    "DICOM LDAP operation completed with expected exception: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "registerWebApp",
+                    "LDAP",
+                    "already_exists",
+                    true,
+                    e.getClass().getSimpleName());
+
             throw new AlreadyExistsException("Web Application '" + webAppName + "' already exists");
         } catch (NamingException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "registerWebApp",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         }
     }
@@ -475,7 +569,28 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             try {
                 ctx.destroySubcontext(aetDN(aet, aetsRegistryDN));
             } catch (NameNotFoundException e) {
+                Logger.debug(
+                        false,
+                        "Image",
+                        "DICOM LDAP operation completed with expected exception: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                        "unregisterAETitle",
+                        "LDAP",
+                        "not_found",
+                        true,
+                        e.getClass().getSimpleName());
+
             } catch (NamingException e) {
+                Logger.warn(
+                        false,
+                        "Image",
+                        e,
+                        "DICOM LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                        "unregisterAETitle",
+                        "LDAP",
+                        "failed",
+                        false,
+                        e.getClass().getSimpleName());
+
                 throw new InternalException(e);
             }
     }
@@ -486,7 +601,28 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             try {
                 ctx.destroySubcontext(webAppDN(webAppName, webAppsRegistryDN));
             } catch (NameNotFoundException e) {
+                Logger.debug(
+                        false,
+                        "Image",
+                        "DICOM LDAP operation completed with expected exception: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                        "unregisterWebAppName",
+                        "LDAP",
+                        "not_found",
+                        true,
+                        e.getClass().getSimpleName());
+
             } catch (NamingException e) {
+                Logger.warn(
+                        false,
+                        "Image",
+                        e,
+                        "DICOM LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                        "unregisterWebAppName",
+                        "LDAP",
+                        "failed",
+                        false,
+                        e.getClass().getSimpleName());
+
                 throw new InternalException(e);
             }
     }
@@ -515,6 +651,17 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
 
             childDN = ne.next().getNameInNamespace();
         } catch (NamingException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "findDevice",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         } finally {
             LdapBuilder.safeClose(ne);
@@ -533,6 +680,16 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
                 cache.put(connDN, conn = new Connection());
                 loadFrom(conn, attrs, false);
             } catch (NameNotFoundException e) {
+                Logger.debug(
+                        false,
+                        "Image",
+                        "DICOM LDAP operation completed with expected exception: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                        "findConnection",
+                        "LDAP",
+                        "not_found",
+                        true,
+                        e.getClass().getSimpleName());
+
                 throw new InternalException(e);
             }
         }
@@ -587,6 +744,17 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
                 results.add(deviceInfo);
             }
         } catch (NamingException | CertificateException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "listDeviceInfos",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         } finally {
             LdapBuilder.safeClose(ne);
@@ -666,6 +834,16 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
                 cache.put(keycloakClientDN, keycloakClient = new KeycloakClient(clientID));
                 loadFrom(keycloakClient, attrs);
             } catch (NameNotFoundException e) {
+                Logger.debug(
+                        false,
+                        "Image",
+                        "DICOM LDAP operation completed with expected exception: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                        "findKeycloakClient",
+                        "LDAP",
+                        "not_found",
+                        true,
+                        e.getClass().getSimpleName());
+
                 throw new InternalException(e);
             }
         }
@@ -707,6 +885,17 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
                 values.add(LdapBuilder.stringValue(attrs.get(attrID), null));
             }
         } catch (NamingException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "list",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         } finally {
             LdapBuilder.safeClose(ne);
@@ -743,17 +932,49 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             destroyDNs.clear();
             return diffs;
         } catch (NameAlreadyBoundException e) {
+            Logger.debug(
+                    false,
+                    "Image",
+                    "DICOM LDAP operation completed with expected exception: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "persist",
+                    "LDAP",
+                    "already_exists",
+                    true,
+                    e.getClass().getSimpleName());
+
             throw new AlreadyExistsException(deviceName);
         } catch (NamingException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "persist",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         } catch (CertificateException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "persist",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         } finally {
             if (rollback) {
                 try {
                     destroySubcontextWithChilds(deviceDN);
                 } catch (NamingException e) {
-                    Logger.warn("Rollback failed:", e);
+                    Logger.warn(false, "Image", "Rollback failed:", e);
                 }
             }
             unregister(destroyDNs);
@@ -772,7 +993,7 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             try {
                 destroySubcontext(dn);
             } catch (NamingException e) {
-                Logger.warn("Unregister {} failed:", dn, e);
+                Logger.warn(false, "Image", "Unregister {} failed:", dn, e);
             }
         }
     }
@@ -901,10 +1122,42 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             if (options == null || !options.contains(Option.PRESERVE_CERTIFICATE))
                 updateCertificates(prev, device);
         } catch (NameNotFoundException e) {
+            Logger.debug(
+                    false,
+                    "Image",
+                    "DICOM LDAP operation completed with expected exception: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "merge",
+                    "LDAP",
+                    "not_found",
+                    true,
+                    e.getClass().getSimpleName());
+
             throw new NotFoundException(e);
         } catch (NamingException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "merge",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         } catch (CertificateException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "merge",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         } finally {
             unregister(destroyDNs);
@@ -1015,8 +1268,29 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             destroySubcontextWithChilds(deviceDN);
             unregister(destroyDNs);
         } catch (NameNotFoundException e) {
+            Logger.debug(
+                    false,
+                    "Image",
+                    "DICOM LDAP operation completed with expected exception: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "removeDeviceWithDN",
+                    "LDAP",
+                    "not_found",
+                    true,
+                    e.getClass().getSimpleName());
+
             throw new NotFoundException(e);
         } catch (NamingException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "removeDeviceWithDN",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         }
     }
@@ -1075,8 +1349,19 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
                     webAppsRegistryDN,
                     LdapBuilder
                             .attrs("dcmUniqueWebAppNamesRegistryRoot", "cn", "Unique Web Application Names Registry"));
-            Logger.info("Create DICOM Configuration at {}", configurationDN);
+            Logger.info(true, "Image", "Create DICOM Configuration at {}", configurationDN);
         } catch (NamingException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "initConfiguration",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             clearConfigurationDN();
             throw new InternalException(e);
         }
@@ -1093,6 +1378,17 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             setConfigurationDN(ne.next().getName() + Symbol.COMMA + baseDN);
             return true;
         } catch (NamingException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "findConfiguration",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         } finally {
             LdapBuilder.safeClose(ne);
@@ -1450,10 +1746,42 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         try {
             storeCertificates(dn, certs);
         } catch (NameNotFoundException e) {
+            Logger.debug(
+                    false,
+                    "Image",
+                    "DICOM LDAP operation completed with expected exception: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "persistCertificates",
+                    "LDAP",
+                    "not_found",
+                    true,
+                    e.getClass().getSimpleName());
+
             throw new NotFoundException(e);
         } catch (NamingException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "persistCertificates",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         } catch (CertificateEncodingException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "persistCertificates",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         }
     }
@@ -1479,8 +1807,29 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
                     new BasicAttribute(userCertificate));
             ctx.modifyAttributes(dn, removeCert);
         } catch (NameNotFoundException e) {
+            Logger.debug(
+                    false,
+                    "Image",
+                    "DICOM LDAP operation completed with expected exception: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "removeCertificates",
+                    "LDAP",
+                    "not_found",
+                    true,
+                    e.getClass().getSimpleName());
+
             throw new NotFoundException(e);
         } catch (NamingException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "removeCertificates",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         }
     }
@@ -1490,10 +1839,42 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         try {
             return loadCertificates(dn);
         } catch (NameNotFoundException e) {
+            Logger.debug(
+                    false,
+                    "Image",
+                    "DICOM LDAP operation completed with expected exception: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "findCertificates",
+                    "LDAP",
+                    "not_found",
+                    true,
+                    e.getClass().getSimpleName());
+
             throw new NotFoundException(e);
         } catch (NamingException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "findCertificates",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         } catch (CertificateException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "findCertificates",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         }
     }
@@ -1520,8 +1901,29 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             Attributes attrs = getAttributes(deviceRef(deviceName), new String[] { "dicomVendorData" });
             return byteArrays(attrs.get("dicomVendorData"));
         } catch (NameNotFoundException e) {
+            Logger.debug(
+                    false,
+                    "Image",
+                    "DICOM LDAP operation completed with expected exception: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "loadDeviceVendorData",
+                    "LDAP",
+                    "not_found",
+                    true,
+                    e.getClass().getSimpleName());
+
             throw new NotFoundException("Device with specified name not found", e);
         } catch (NamingException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "loadDeviceVendorData",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         }
     }
@@ -1543,8 +1945,29 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             storeDiff(ldapObj, mods, "dicomVendorData", prev, vendorData);
             modifyAttributes(deviceRef, mods);
         } catch (NameNotFoundException e) {
+            Logger.debug(
+                    false,
+                    "Image",
+                    "DICOM LDAP operation completed with expected exception: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "updateDeviceVendorData",
+                    "LDAP",
+                    "not_found",
+                    true,
+                    e.getClass().getSimpleName());
+
             throw new NotFoundException("Device with specified name not found", e);
         } catch (NamingException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "updateDeviceVendorData",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         }
         return diffs;
@@ -1578,8 +2001,29 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             loadChilds(device, deviceDN);
             return device;
         } catch (NameNotFoundException e) {
+            Logger.debug(
+                    false,
+                    "Image",
+                    "DICOM LDAP operation completed with expected exception: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "loadDevice",
+                    "LDAP",
+                    "not_found",
+                    true,
+                    e.getClass().getSimpleName());
+
             throw new NotFoundException("Device with specified name not found", e);
         } catch (NamingException | CertificateException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "loadDevice",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         } finally {
 
@@ -2907,8 +3351,29 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
                 results.add(aetInfo);
             }
         } catch (NameNotFoundException e) {
+            Logger.debug(
+                    false,
+                    "Image",
+                    "DICOM LDAP operation completed with expected exception: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "listAETInfos",
+                    "LDAP",
+                    "not_found",
+                    true,
+                    e.getClass().getSimpleName());
+
             return new ApplicationEntityInfo[0];
         } catch (NamingException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "listAETInfos",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         } finally {
             LdapBuilder.safeClose(ne);
@@ -2940,8 +3405,29 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
                 results.add(webappInfo);
             }
         } catch (NameNotFoundException e) {
+            Logger.debug(
+                    false,
+                    "Image",
+                    "DICOM LDAP operation completed with expected exception: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "listWebApplicationInfos",
+                    "LDAP",
+                    "not_found",
+                    true,
+                    e.getClass().getSimpleName());
+
             return new WebApplication[0];
         } catch (NamingException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOM LDAP operation failed: operation={}, protocol={}, status={}, recoverable={}, exception={}",
+                    "listWebApplicationInfos",
+                    "LDAP",
+                    "failed",
+                    false,
+                    e.getClass().getSimpleName());
+
             throw new InternalException(e);
         } finally {
             LdapBuilder.safeClose(ne);

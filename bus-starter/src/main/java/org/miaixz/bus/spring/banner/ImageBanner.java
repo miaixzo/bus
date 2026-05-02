@@ -289,8 +289,11 @@ public class ImageBanner {
             banner = imageToBanner(resizedImage, invert, cie94);
         } catch (Exception ex) {
             Logger.warn(
-                    "WARNING ! Image banner not printable: " + this.image + " (" + ex.getClass() + ": '"
-                            + ex.getMessage() + "')");
+                    false,
+                    "Starter",
+                    "Image banner not printable: imagePresent={}, exception={}",
+                    this.image != null,
+                    ex.getClass().getSimpleName());
         } finally {
             if (null != headlessProperty) {
                 System.setProperty("java.awt.headless", headlessProperty);

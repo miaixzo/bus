@@ -30,6 +30,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.http.Httpx;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.metric.generic.GenericNotice;
 
@@ -60,12 +61,30 @@ public class AliyunEmailProvider extends AliyunProvider<AliyunNotice, Context> {
     @Override
     public Message send(AliyunNotice entity) throws InternalException {
         if (StringKit.isEmpty(entity.getContent())) {
+            Logger.warn(
+                    false,
+                    "Notify",
+                    "Aliyun email send rejected: reason=missingContent, targetPresent={}",
+                    entity.getReceive() != null);
             throw new InternalException("Email content cannot be empty");
         } else if (StringKit.isEmpty(entity.getReceive())) {
+            Logger.warn(false, "Notify", "Aliyun email send rejected: reason=missingRecipient");
             throw new InternalException("Email address cannot be empty");
         } else if (StringKit.isEmpty(entity.getSubject())) {
+            Logger.warn(
+                    false,
+                    "Notify",
+                    "Aliyun email send rejected: reason=missingSubject, targetCount={}",
+                    entity.getReceive().split(",").length);
             throw new InternalException("Email subject cannot be empty");
         }
+        Logger.info(
+                true,
+                "Notify",
+                "Aliyun email send started: targetCount={}, type={}, senderPresent={}",
+                entity.getReceive().split(",").length,
+                entity.getType(),
+                entity.getSender() != null);
 
         Map<String, String> bodys = new HashMap<>();
         // 1. System parameters
@@ -158,7 +177,15 @@ public class AliyunEmailProvider extends AliyunProvider<AliyunNotice, Context> {
         for (String val : bodys.keySet()) {
             map.put(specialUrlEncode(val), specialUrlEncode(bodys.get(val)));
         }
-        return checkResponse(Httpx.get(this.getUrl(entity), map));
+        Message result = checkResponse(Httpx.get(this.getUrl(entity), map));
+        Logger.info(
+                false,
+                "Notify",
+                "Aliyun email send completed: targetCount={}, type={}, errcode={}",
+                entity.getReceive().split(",").length,
+                entity.getType(),
+                result == null ? null : result.getErrcode());
+        return result;
     }
 
 }

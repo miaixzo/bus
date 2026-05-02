@@ -24,6 +24,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Enumeration;
 
+import org.miaixz.bus.logger.Logger;
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -128,6 +130,15 @@ public class GitlabRequest {
             return (buf.toString());
 
         } catch (IOException e) {
+            Logger.debug(
+                    false,
+                    "GitLab",
+                    "GitLab request dump failed: source={}, method={}, requestUri={}, includePostData={}, exception={}",
+                    fromMethod,
+                    request == null ? null : request.getMethod(),
+                    request == null ? null : request.getRequestURI(),
+                    includePostData,
+                    e.getClass().getSimpleName());
             return e.getMessage();
         }
     }

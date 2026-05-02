@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -52,26 +52,89 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 @ThreadSafe
 public class WindowsFileSystem extends AbstractFileSystem {
 
+    /**
+     * The MAX_WINDOWS_HANDLES constant.
+     */
     static final long MAX_WINDOWS_HANDLES;
+    /**
+     * The BUFSIZE constant.
+     */
     private static final int BUFSIZE = 255;
+    /**
+     * The SEM_FAILCRITICALERRORS constant.
+     */
     private static final int SEM_FAILCRITICALERRORS = 0x0001;
+    /**
+     * The FILE_CASE_SENSITIVE_SEARCH constant.
+     */
     private static final int FILE_CASE_SENSITIVE_SEARCH = 0x00000001;
+    /**
+     * The FILE_CASE_PRESERVED_NAMES constant.
+     */
     private static final int FILE_CASE_PRESERVED_NAMES = 0x00000002;
+    /**
+     * The FILE_FILE_COMPRESSION constant.
+     */
     private static final int FILE_FILE_COMPRESSION = 0x00000010;
+    /**
+     * The FILE_DAX_VOLUME constant.
+     */
     private static final int FILE_DAX_VOLUME = 0x20000000;
+    /**
+     * The FILE_NAMED_STREAMS constant.
+     */
     private static final int FILE_NAMED_STREAMS = 0x00040000;
+    /**
+     * The FILE_PERSISTENT_ACLS constant.
+     */
     private static final int FILE_PERSISTENT_ACLS = 0x00000008;
+    /**
+     * The FILE_READ_ONLY_VOLUME constant.
+     */
     private static final int FILE_READ_ONLY_VOLUME = 0x00080000;
+    /**
+     * The FILE_SEQUENTIAL_WRITE_ONCE constant.
+     */
     private static final int FILE_SEQUENTIAL_WRITE_ONCE = 0x00100000;
+    /**
+     * The FILE_SUPPORTS_ENCRYPTION constant.
+     */
     private static final int FILE_SUPPORTS_ENCRYPTION = 0x00020000;
+    /**
+     * The FILE_SUPPORTS_OBJECT_IDS constant.
+     */
     private static final int FILE_SUPPORTS_OBJECT_IDS = 0x00010000;
+    /**
+     * The FILE_SUPPORTS_REPARSE_POINTS constant.
+     */
     private static final int FILE_SUPPORTS_REPARSE_POINTS = 0x00000080;
+    /**
+     * The FILE_SUPPORTS_SPARSE_FILES constant.
+     */
     private static final int FILE_SUPPORTS_SPARSE_FILES = 0x00000040;
+    /**
+     * The FILE_SUPPORTS_TRANSACTIONS constant.
+     */
     private static final int FILE_SUPPORTS_TRANSACTIONS = 0x00200000;
+    /**
+     * The FILE_SUPPORTS_USN_JOURNAL constant.
+     */
     private static final int FILE_SUPPORTS_USN_JOURNAL = 0x02000000;
+    /**
+     * The FILE_UNICODE_ON_DISK constant.
+     */
     private static final int FILE_UNICODE_ON_DISK = 0x00000004;
+    /**
+     * The FILE_VOLUME_IS_COMPRESSED constant.
+     */
     private static final int FILE_VOLUME_IS_COMPRESSED = 0x00008000;
+    /**
+     * The FILE_VOLUME_QUOTAS constant.
+     */
     private static final int FILE_VOLUME_QUOTAS = 0x00000020;
+    /**
+     * The OPTIONS_MAP constant.
+     */
     private static final Map<Integer, String> OPTIONS_MAP = new HashMap<>();
 
     static {
@@ -255,6 +318,12 @@ public class WindowsFileSystem extends AbstractFileSystem {
         }
     }
 
+    /**
+     * Returns the file stores.
+     *
+     * @param localOnly the local only
+     * @return the get file stores result
+     */
     @Override
     public List<OSFileStore> getFileStores(boolean localOnly) {
         // Create list to hold results
@@ -291,24 +360,31 @@ public class WindowsFileSystem extends AbstractFileSystem {
         return result;
     }
 
+    /**
+     * Returns the open file descriptors.
+     *
+     * @return the get open file descriptors result
+     */
     @Override
     public long getOpenFileDescriptors() {
-        Map<HandleCountProperty, List<Long>> valueListMap = ProcessInformation.queryHandles().getRight();
-        List<Long> valueList = valueListMap.get(HandleCountProperty.HANDLECOUNT);
-        long descriptors = 0L;
-        if (valueList != null) {
-            for (Long value : valueList) {
-                descriptors += value;
-            }
-        }
-        return descriptors;
+        return ProcessInformation.queryHandles().getOrDefault(HandleCountProperty.HANDLECOUNT, 0L);
     }
 
+    /**
+     * Returns the max file descriptors.
+     *
+     * @return the get max file descriptors result
+     */
     @Override
     public long getMaxFileDescriptors() {
         return MAX_WINDOWS_HANDLES;
     }
 
+    /**
+     * Returns the max file descriptors per process.
+     *
+     * @return the get max file descriptors per process result
+     */
     @Override
     public long getMaxFileDescriptorsPerProcess() {
         return MAX_WINDOWS_HANDLES;

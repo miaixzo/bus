@@ -23,6 +23,7 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.extra.mq.MQConfig;
 import org.miaixz.bus.extra.mq.provider.jms.JmsProvider;
+import org.miaixz.bus.logger.Logger;
 
 import jakarta.jms.ConnectionFactory;
 
@@ -56,7 +57,18 @@ public class ActiveMQProvider extends JmsProvider {
      */
     @Override
     protected ConnectionFactory createConnectionFactory(final MQConfig config) {
-        return new ActiveMQConnectionFactory(config.getBrokerUrl());
+        Logger.info(
+                true,
+                "Extra",
+                "ActiveMQ connection factory creation started: brokerPresent={}",
+                config != null && config.getBrokerUrl() != null);
+        final ConnectionFactory factory = new ActiveMQConnectionFactory(config.getBrokerUrl());
+        Logger.info(
+                false,
+                "Extra",
+                "ActiveMQ connection factory created: factoryType={}",
+                factory.getClass().getSimpleName());
+        return factory;
     }
 
 }

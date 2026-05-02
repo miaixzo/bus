@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -35,6 +35,9 @@ public interface Kernel32 extends com.sun.jna.platform.win32.Kernel32 {
      */
     Kernel32 INSTANCE = Native.load("Kernel32", Kernel32.class);
 
+    /**
+     * The ProcessorFeature enum.
+     */
     enum ProcessorFeature {
 
         PF_FLOATING_POINT_PRECISION_ERRATA(0), PF_FLOATING_POINT_EMULATED(1), PF_COMPARE_EXCHANGE_DOUBLE(2),
@@ -55,8 +58,16 @@ public interface Kernel32 extends com.sun.jna.platform.win32.Kernel32 {
         PF_ARM_V82_DP_INSTRUCTIONS_AVAILABLE(43), PF_ARM_V83_JSCVT_INSTRUCTIONS_AVAILABLE(44),
         PF_ARM_V83_LRCPC_INSTRUCTIONS_AVAILABLE(45);
 
+        /**
+         * The value value.
+         */
         private final int value;
 
+        /**
+         * Creates a new ProcessorFeature instance.
+         *
+         * @param value the value
+         */
         ProcessorFeature(int value) {
             this.value = value;
         }

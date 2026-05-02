@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -42,6 +42,9 @@ import org.miaixz.bus.health.mac.SysctlKit;
 @Immutable
 final class MacGraphicsCard extends AbstractGraphicsCard {
 
+    /**
+     * The IS_APPLE_SILICON constant.
+     */
     private static final boolean IS_APPLE_SILICON = "aarch64".equals(System.getProperty("os.arch"));
 
     /**
@@ -57,6 +60,11 @@ final class MacGraphicsCard extends AbstractGraphicsCard {
         super(name, deviceId, vendor, versionInfo, vram);
     }
 
+    /**
+     * Creates the stats session.
+     *
+     * @return the create stats session result
+     */
     @Override
     public GpuStats createStatsSession() {
         return new MacGpuStats(IS_APPLE_SILICON, getName());
@@ -68,8 +76,18 @@ final class MacGraphicsCard extends AbstractGraphicsCard {
      * @return List of {@link MacGraphicsCard} objects.
      */
     public static List<GraphicsCard> getGraphicsCards() {
-        List<GraphicsCard> cardList = new ArrayList<>();
         List<String> sp = Executor.runNative("system_profiler SPDisplaysDataType");
+        return parseGraphicsCards(sp);
+    }
+
+    /**
+     * Parses graphics cards from system profiler display output.
+     *
+     * @param sp The system profiler output lines.
+     * @return List of {@link GraphicsCard} objects.
+     */
+    static List<GraphicsCard> parseGraphicsCards(List<String> sp) {
+        List<GraphicsCard> cardList = new ArrayList<>();
         String name = Normal.UNKNOWN;
         String deviceId = Normal.UNKNOWN;
         String vendor = Normal.UNKNOWN;
@@ -109,6 +127,13 @@ final class MacGraphicsCard extends AbstractGraphicsCard {
         return cardList;
     }
 
+    /**
+     * Returns the resolve vram result.
+     *
+     * @param parsedVram  the parsed vram
+     * @param chipsetName the chipset name
+     * @return the resolve vram result
+     */
     private static long resolveVram(long parsedVram, String chipsetName) {
         if (parsedVram > 0) {
             return parsedVram;

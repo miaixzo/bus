@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -32,8 +32,6 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.logger.Logger;
-
-import com.sun.jna.Platform;
 
 /**
  * A class for executing commands on the command line and returning the results.
@@ -105,33 +103,46 @@ public final class Executor {
             p = Runtime.getRuntime().exec(cmdToRunWithArgs, envp);
             return getProcessOutput(p, cmdToRunWithArgs);
         } catch (SecurityException | IOException e) {
-            Logger.trace("Couldn't run command {}: {}", Arrays.toString(cmdToRunWithArgs), e.getMessage());
+            Logger.trace(
+                    false,
+                    "Health",
+                    "Couldn't run command {}: {}",
+                    Arrays.toString(cmdToRunWithArgs),
+                    e.getClass().getSimpleName());
         } finally {
             // Ensure all resources are freed
             if (p != null) {
-                // Windows and Solaris don't close descriptors on destroy,
-                // so must be handled separately
-                if (Platform.isWindows() || Platform.isSolaris()) {
-                    try {
-                        p.getOutputStream().close();
-                    } catch (IOException e) {
-                        // Do nothing on failure
-                    }
-                    try {
-                        p.getInputStream().close();
-                    } catch (IOException e) {
-                        // Do nothing on failure
-                    }
-                    try {
-                        p.getErrorStream().close();
-                    } catch (IOException e) {
-                        // Do nothing on failure
-                    }
-                }
-                p.destroy();
+                destroyProcess(p);
             }
         }
         return Collections.emptyList();
+    }
+
+    /**
+     * Handles the destroy process operation.
+     *
+     * @param p the p
+     */
+    static void destroyProcess(Process p) {
+        // Windows and Solaris don't close descriptors on destroy, so must be handled separately.
+        if (Platform.isWindows() || Platform.isSolaris()) {
+            try {
+                p.getOutputStream().close();
+            } catch (IOException e) {
+                // Do nothing on failure
+            }
+            try {
+                p.getInputStream().close();
+            } catch (IOException e) {
+                // Do nothing on failure
+            }
+            try {
+                p.getErrorStream().close();
+            } catch (IOException e) {
+                // Do nothing on failure
+            }
+        }
+        p.destroy();
     }
 
     /**
@@ -151,9 +162,19 @@ public final class Executor {
             }
             p.waitFor();
         } catch (IOException e) {
-            Logger.trace("Problem reading output from {}: {}", Arrays.toString(cmd), e.getMessage());
+            Logger.trace(
+                    true,
+                    "Health",
+                    "Problem reading output from {}: {}",
+                    Arrays.toString(cmd),
+                    e.getClass().getSimpleName());
         } catch (InterruptedException ie) {
-            Logger.trace("Interrupted while reading output from {}: {}", Arrays.toString(cmd), ie.getMessage());
+            Logger.trace(
+                    true,
+                    "Health",
+                    "Interrupted while reading output from {}: {}",
+                    Arrays.toString(cmd),
+                    ie.getClass().getSimpleName());
             Thread.currentThread().interrupt();
         }
         return sa;
@@ -167,6 +188,52 @@ public final class Executor {
      */
     public static String getFirstAnswer(String cmd2launch) {
         return getAnswerAt(cmd2launch, 0);
+    }
+
+    /**
+     * Executes a command that may require elevated privileges.
+     *
+     * @param cmdToRun The command to run.
+     * @return A list of strings representing the command's result, or an empty list if the command fails.
+     */
+    public static List<String> runPrivilegedNative(String cmdToRun) {
+        String prefix = Privilege.getPrefix();
+        if (prefix.isEmpty() || IdGroup.isElevated()) {
+            Logger.debug(
+                    false,
+                    "Health",
+                    "Privileged command prefix skipped: prefixConfigured={}, elevated={}",
+                    !prefix.isEmpty(),
+                    IdGroup.isElevated());
+            return runNative(cmdToRun);
+        }
+        if (!Privilege.isCommandAllowed(cmdToRun, Privilege.getCommandAllowlist())) {
+            Logger.debug(
+                    false,
+                    "Health",
+                    "Privileged command not allowlisted, running without prefix: command={}",
+                    cmdToRun.split(Symbol.SPACE)[0]);
+            return runNative(cmdToRun);
+        }
+        String privilegedCmd = prefix + Symbol.SPACE + cmdToRun;
+        Logger.debug(
+                true,
+                "Health",
+                "Executing privileged command: command={}, prefixConfigured={}",
+                cmdToRun.split(Symbol.SPACE)[0],
+                !prefix.isEmpty());
+        return runNative(privilegedCmd);
+    }
+
+    /**
+     * Returns the first line of response from the specified privileged command.
+     *
+     * @param cmd2launch The command to launch.
+     * @return The response string, or an empty string if the command fails.
+     */
+    public static String getFirstPrivilegedAnswer(String cmd2launch) {
+        List<String> sa = runPrivilegedNative(cmd2launch);
+        return sa.isEmpty() ? Normal.EMPTY : sa.get(0);
     }
 
     /**

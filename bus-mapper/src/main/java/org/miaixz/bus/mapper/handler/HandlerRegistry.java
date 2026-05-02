@@ -23,6 +23,8 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.miaixz.bus.logger.Logger;
+
 /**
  * Indexed handler manager that optimizes handler lookup performance.
  *
@@ -122,6 +124,17 @@ public class HandlerRegistry {
 
         // Sort all handler lists by order value
         sortHandlers();
+        Logger.debug(
+                false,
+                "Mapper",
+                "Mapper handler registered: handler={}, order={}, queryHandlers={}, updateHandlers={}, prepareHandlers={}, boundSqlHandlers={}, totalHandlers={}",
+                handler.getClass().getName(),
+                handler.getOrder(),
+                handlerIndex.get(HandlerType.QUERY).size(),
+                handlerIndex.get(HandlerType.UPDATE).size(),
+                handlerIndex.get(HandlerType.PREPARE).size(),
+                handlerIndex.get(HandlerType.GET_BOUND_SQL).size(),
+                handlers.size());
     }
 
     /**
@@ -170,6 +183,7 @@ public class HandlerRegistry {
     public void clear() {
         handlers.clear();
         handlerIndex.values().forEach(List::clear);
+        Logger.debug(false, "Mapper", "Mapper handler registry cleared");
     }
 
     /**
@@ -265,6 +279,13 @@ public class HandlerRegistry {
                 }
             }
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Mapper",
+                    e,
+                    "Mapper operation failed: provider={}, exception={}",
+                    "HandlerRegistry",
+                    e.getClass().getSimpleName());
             // Conservative handling on exception: assume not overridden
             return false;
         }

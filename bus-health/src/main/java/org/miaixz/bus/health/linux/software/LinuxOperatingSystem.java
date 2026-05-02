@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -71,24 +71,51 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      */
     public static final boolean HAS_SYSCALL_GETTID;
     // Package private for access from LinuxOSProcess
+    /**
+     * The BOOTTIME constant.
+     */
     static final long BOOTTIME;
+    /**
+     * The OS_RELEASE_LOG constant.
+     */
     private static final String OS_RELEASE_LOG = "os-release: {}";
+    /**
+     * The LSB_RELEASE_A_LOG constant.
+     */
     private static final String LSB_RELEASE_A_LOG = "lsb_release -a: {}";
+    /**
+     * The LSB_RELEASE_LOG constant.
+     */
     private static final String LSB_RELEASE_LOG = "lsb-release: {}";
+    /**
+     * The RELEASE_DELIM constant.
+     */
     private static final String RELEASE_DELIM = " release ";
+    /**
+     * The DOUBLE_QUOTES constant.
+     */
     private static final String DOUBLE_QUOTES = "(?:^\")|(?:\"$)";
     /**
      * Jiffies per second, used for process time counters.
      */
     private static final long USER_HZ;
+    /**
+     * The PAGE_SIZE constant.
+     */
     private static final long PAGE_SIZE;
     /**
      * OS Name for manufacturer
      */
     private static final String OS_NAME = Executor.getFirstAnswer("uname -o");
     // PPID is 4th numeric value in proc pid stat; subtract 1 for 0-index
+    /**
+     * The PPID_INDEX constant.
+     */
     private static final int[] PPID_INDEX = { 3 };
 
+    /**
+     * The installedAppsSupplier value.
+     */
     private final Supplier<List<ApplicationInfo>> installedAppsSupplier = Memoizer
             .memoize(LinuxInstalledApps::queryInstalledApps, Memoizer.installedAppsExpiration());
 
@@ -102,17 +129,23 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                     Udev lib = Udev.INSTANCE;
                     hasUdev = true;
                 } catch (UnsatisfiedLinkError e) {
-                    Logger.warn("Did not find udev library in operating system. Some features may not work.");
+                    Logger.warn(
+                            false,
+                            "Health",
+                            "Did not find udev library in operating system. Some features may not work.");
                 }
             } else {
-                Logger.info("Loading of udev not allowed by configuration. Some features may not work.");
+                Logger.info(
+                        false,
+                        "Health",
+                        "Loading of udev not allowed by configuration. Some features may not work.");
             }
 
             try {
                 LinuxLibc.INSTANCE.gettid();
                 hasGettid = true;
             } catch (UnsatisfiedLinkError e) {
-                Logger.debug("Did not find gettid function in operating system. Using fallbacks.");
+                Logger.debug(false, "Health", "Did not find gettid function in operating system. Using fallbacks.");
             }
 
             hasSyscallGettid = hasGettid;
@@ -120,11 +153,17 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 try {
                     hasSyscallGettid = LinuxLibc.INSTANCE.syscall(LinuxLibc.SYS_GETTID).intValue() > 0;
                 } catch (UnsatisfiedLinkError e) {
-                    Logger.debug("Did not find working syscall gettid function in operating system. Using procfs");
+                    Logger.debug(
+                            false,
+                            "Health",
+                            "Did not find working syscall gettid function in operating system. Using procfs");
                 }
             }
         } catch (NoClassDefFoundError e) {
-            Logger.error("Did not JNA classes. Investigate incompatible version or missing native dll.");
+            Logger.error(
+                    false,
+                    "Health",
+                    "Did not JNA classes. Investigate incompatible version or missing native dll.");
         }
         HAS_UDEV = hasUdev;
         HAS_GETTID = hasGettid;
@@ -165,6 +204,12 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         super.getVersionInfo();
     }
 
+    /**
+     * Returns the parent pids from proc files.
+     *
+     * @param pidFiles the pid files
+     * @return the get parent pids from proc files result
+     */
     private static Map<Integer, Integer> getParentPidsFromProcFiles(File[] pidFiles) {
         Map<Integer, Integer> parentPidMap = new HashMap<>();
         for (File procFile : pidFiles) {
@@ -174,8 +219,23 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         return parentPidMap;
     }
 
+    /**
+     * Returns the parent pid from proc file.
+     *
+     * @param pid the pid
+     * @return the get parent pid from proc file result
+     */
     private static int getParentPidFromProcFile(int pid) {
-        String stat = Builder.getStringFromFile(String.format(Locale.ROOT, "/proc/%d/stat", pid));
+        return getParentPidFromStat(Builder.getStringFromFile(String.format(Locale.ROOT, ProcPath.PID_STAT, pid)));
+    }
+
+    /**
+     * Parse the parent PID from a {@code /proc/[pid]/stat} line.
+     *
+     * @param stat contents of {@code /proc/[pid]/stat}
+     * @return the parent PID, or 0 if unparseable
+     */
+    static int getParentPidFromStat(String stat) {
         // A race condition may leave us with an empty string
         if (stat.isEmpty()) {
             return 0;
@@ -186,6 +246,11 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         return (int) statArray[0];
     }
 
+    /**
+     * Queries the family version codename from release files.
+     *
+     * @return the query family version codename from release files result
+     */
     private static Triplet<String, String, String> queryFamilyVersionCodenameFromReleaseFiles() {
         Triplet<String, String, String> familyVersionCodename;
         // There are two competing options for family/version information.
@@ -257,14 +322,23 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      *         otherwise
      */
     private static Triplet<String, String, String> readOsRelease() {
+        return readOsRelease(Builder.readFile("/etc/os-release"));
+    }
+
+    /**
+     * Parse {@code /etc/os-release} content.
+     *
+     * @param osRelease lines from {@code /etc/os-release}
+     * @return a triplet with the parsed family, versionID and codeName if NAME= found, null otherwise
+     */
+    static Triplet<String, String, String> readOsRelease(List<String> osRelease) {
         String family = null;
         String versionId = Normal.UNKNOWN;
         String codeName = Normal.UNKNOWN;
-        List<String> osRelease = Builder.readFile("/etc/os-release");
         // Search for NAME=
         for (String line : osRelease) {
             if (line.startsWith("VERSION=")) {
-                Logger.debug(OS_RELEASE_LOG, line);
+                Logger.debug(false, "Health", OS_RELEASE_LOG, line);
                 // remove beginning and ending '"' characters, etc from
                 // VERSION="14.04.4 LTS, Trusty Tahr" (Ubuntu style)
                 // or VERSION="17 (Beefy Miracle)" (os-release doc style)
@@ -281,12 +355,12 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                     codeName = split[1].trim();
                 }
             } else if (line.startsWith("NAME=") && family == null) {
-                Logger.debug(OS_RELEASE_LOG, line);
+                Logger.debug(false, "Health", OS_RELEASE_LOG, line);
                 // remove beginning and ending '"' characters, etc from
                 // NAME="Ubuntu"
                 family = line.replace("NAME=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY).trim();
             } else if (line.startsWith("VERSION_ID=") && versionId.equals(Normal.UNKNOWN)) {
-                Logger.debug(OS_RELEASE_LOG, line);
+                Logger.debug(false, "Health", OS_RELEASE_LOG, line);
                 // remove beginning and ending '"' characters, etc from
                 // VERSION_ID="14.04"
                 versionId = line.replace("VERSION_ID=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY).trim();
@@ -302,15 +376,26 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      *         Distributor ID: or Description: found, null otherwise
      */
     private static Triplet<String, String, String> execLsbRelease() {
+        return execLsbRelease(Executor.runNative("lsb_release -a"));
+    }
+
+    /**
+     * Parse {@code lsb_release -a} output.
+     *
+     * @param lines output of {@code lsb_release -a}
+     * @return a triplet with the parsed family, versionID and codeName if Distributor ID: or Description: found, null
+     *         otherwise
+     */
+    static Triplet<String, String, String> execLsbRelease(List<String> lines) {
         String family = null;
         String versionId = Normal.UNKNOWN;
         String codeName = Normal.UNKNOWN;
         // If description is of the format Distrib release x.x (Codename)
         // that is primary, otherwise use Distributor ID: which returns the
         // distribution concatenated, e.g., RedHat instead of Red Hat
-        for (String line : Executor.runNative("lsb_release -a")) {
+        for (String line : lines) {
             if (line.startsWith("Description:")) {
-                Logger.debug(LSB_RELEASE_A_LOG, line);
+                Logger.debug(false, "Health", LSB_RELEASE_A_LOG, line);
                 line = line.replace("Description:", Normal.EMPTY).trim();
                 if (line.contains(RELEASE_DELIM)) {
                     Triplet<String, String, String> triplet = parseRelease(line, RELEASE_DELIM);
@@ -323,13 +408,13 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                     }
                 }
             } else if (line.startsWith("Distributor ID:") && family == null) {
-                Logger.debug(LSB_RELEASE_A_LOG, line);
+                Logger.debug(false, "Health", LSB_RELEASE_A_LOG, line);
                 family = line.replace("Distributor ID:", Normal.EMPTY).trim();
             } else if (line.startsWith("Release:") && versionId.equals(Normal.UNKNOWN)) {
-                Logger.debug(LSB_RELEASE_A_LOG, line);
+                Logger.debug(false, "Health", LSB_RELEASE_A_LOG, line);
                 versionId = line.replace("Release:", Normal.EMPTY).trim();
             } else if (line.startsWith("Codename:") && codeName.equals(Normal.UNKNOWN)) {
-                Logger.debug(LSB_RELEASE_A_LOG, line);
+                Logger.debug(false, "Health", LSB_RELEASE_A_LOG, line);
                 codeName = line.replace("Codename:", Normal.EMPTY).trim();
             }
         }
@@ -343,14 +428,24 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      *         DISTRIB_DESCRIPTION, null otherwise
      */
     private static Triplet<String, String, String> readLsbRelease() {
+        return readLsbRelease(Builder.readFile("/etc/lsb-release"));
+    }
+
+    /**
+     * Parse {@code /etc/lsb-release} content.
+     *
+     * @param lines lines from {@code /etc/lsb-release}
+     * @return a triplet with the parsed family, versionID and codeName if DISTRIB_ID or DISTRIB_DESCRIPTION found, null
+     *         otherwise
+     */
+    static Triplet<String, String, String> readLsbRelease(List<String> lines) {
         String family = null;
         String versionId = Normal.UNKNOWN;
         String codeName = Normal.UNKNOWN;
-        List<String> osRelease = Builder.readFile("/etc/lsb-release");
         // Search for NAME=
-        for (String line : osRelease) {
+        for (String line : lines) {
             if (line.startsWith("DISTRIB_DESCRIPTION=")) {
-                Logger.debug(LSB_RELEASE_LOG, line);
+                Logger.debug(false, "Health", LSB_RELEASE_LOG, line);
                 line = line.replace("DISTRIB_DESCRIPTION=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY)
                         .trim();
                 if (line.contains(RELEASE_DELIM)) {
@@ -364,14 +459,14 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                     }
                 }
             } else if (line.startsWith("DISTRIB_ID=") && family == null) {
-                Logger.debug(LSB_RELEASE_LOG, line);
+                Logger.debug(false, "Health", LSB_RELEASE_LOG, line);
                 family = line.replace("DISTRIB_ID=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY).trim();
             } else if (line.startsWith("DISTRIB_RELEASE=") && versionId.equals(Normal.UNKNOWN)) {
-                Logger.debug(LSB_RELEASE_LOG, line);
+                Logger.debug(false, "Health", LSB_RELEASE_LOG, line);
                 versionId = line.replace("DISTRIB_RELEASE=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY)
                         .trim();
             } else if (line.startsWith("DISTRIB_CODENAME=") && codeName.equals(Normal.UNKNOWN)) {
-                Logger.debug(LSB_RELEASE_LOG, line);
+                Logger.debug(false, "Health", LSB_RELEASE_LOG, line);
                 codeName = line.replace("DISTRIB_CODENAME=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY)
                         .trim();
             }
@@ -389,16 +484,29 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     private static Triplet<String, String, String> readDistribRelease(String filename) {
         if (new File(filename).exists()) {
             List<String> osRelease = Builder.readFile(filename);
-            // Search for Distrib release x.x (Codename)
             for (String line : osRelease) {
-                Logger.debug("{}: {}", filename, line);
-                if (line.contains(RELEASE_DELIM)) {
-                    // If this parses properly we're done
-                    return parseRelease(line, RELEASE_DELIM);
-                } else if (line.contains(" VERSION ")) {
-                    // If this parses properly we're done
-                    return parseRelease(line, " VERSION ");
-                }
+                Logger.debug(false, "Health", "{}: {}", filename, line);
+            }
+            return readDistribRelease(osRelease);
+        }
+        return null;
+    }
+
+    /**
+     * Parse distrib-release file content.
+     *
+     * @param lines lines from a distrib-release file
+     * @return a triplet with the parsed family, versionID and codeName if " release " or " VERSION " found, null
+     *         otherwise
+     */
+    static Triplet<String, String, String> readDistribRelease(List<String> lines) {
+        for (String line : lines) {
+            if (line.contains(RELEASE_DELIM)) {
+                // If this parses properly we're done
+                return parseRelease(line, RELEASE_DELIM);
+            } else if (line.contains(" VERSION ")) {
+                // If this parses properly we're done
+                return parseRelease(line, " VERSION ");
             }
         }
         return null;
@@ -411,7 +519,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      * @param splitLine A regex to split on, e.g. " release "
      * @return a triplet with the parsed family, versionID and codeName
      */
-    private static Triplet<String, String, String> parseRelease(String line, String splitLine) {
+    static Triplet<String, String, String> parseRelease(String line, String splitLine) {
         String[] split = line.split(splitLine);
         String family = split[0].trim();
         String versionId = Normal.UNKNOWN;
@@ -435,7 +543,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      * @param name Stripped version of filename after removing /etc and -release
      * @return Mixed case family
      */
-    private static String filenameToFamily(String name) {
+    static String filenameToFamily(String name) {
 
         if (name.isEmpty()) {
             return "Solaris";
@@ -494,11 +602,22 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         return "/etc/issue";
     }
 
+    /**
+     * Queries the manufacturer.
+     *
+     * @return the query manufacturer result
+     */
     @Override
     public String queryManufacturer() {
         return OS_NAME;
     }
 
+    /**
+     * Queries the bitness.
+     *
+     * @param jvmBitness the jvm bitness
+     * @return the query bitness result
+     */
     @Override
     protected int queryBitness(int jvmBitness) {
         if (jvmBitness < 64 && !Executor.getFirstAnswer("uname -m").contains("64")) {
@@ -507,21 +626,42 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         return 64;
     }
 
+    /**
+     * Returns the file system.
+     *
+     * @return the get file system result
+     */
     @Override
     public FileSystem getFileSystem() {
         return new LinuxFileSystem();
     }
 
+    /**
+     * Returns the internet protocol stats.
+     *
+     * @return the get internet protocol stats result
+     */
     @Override
     public InternetProtocolStats getInternetProtocolStats() {
         return new LinuxInternetProtocolStats();
     }
 
+    /**
+     * Returns the sessions.
+     *
+     * @return the get sessions result
+     */
     @Override
     public List<OSSession> getSessions() {
         return USE_WHO_COMMAND ? super.getSessions() : Who.queryUtxent();
     }
 
+    /**
+     * Returns the process.
+     *
+     * @param pid the pid
+     * @return the get process result
+     */
     @Override
     public OSProcess getProcess(int pid) {
         OSProcess proc = new LinuxOSProcess(pid, this);
@@ -531,11 +671,21 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         return null;
     }
 
+    /**
+     * Queries the all processes.
+     *
+     * @return the query all processes result
+     */
     @Override
     public List<OSProcess> queryAllProcesses() {
         return queryChildProcesses(-1);
     }
 
+    /**
+     * Queries the family version info.
+     *
+     * @return the query family version info result
+     */
     @Override
     public Pair<String, OperatingSystem.OSVersionInfo> queryFamilyVersionInfo() {
         Triplet<String, String, String> familyVersionCodename = queryFamilyVersionCodenameFromReleaseFiles();
@@ -555,12 +705,24 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         return Pair.of(familyVersionCodename.getLeft(), versionInfo);
     }
 
+    /**
+     * Queries the descendant processes.
+     *
+     * @param parentPid the parent pid
+     * @return the query descendant processes result
+     */
     @Override
     public List<OSProcess> queryDescendantProcesses(int parentPid) {
         File[] pidFiles = ProcessStat.getPidFiles();
         return queryProcessList(getChildrenOrDescendants(getParentPidsFromProcFiles(pidFiles), parentPid, true));
     }
 
+    /**
+     * Queries the child processes.
+     *
+     * @param parentPid the parent pid
+     * @return the query child processes result
+     */
     @Override
     public List<OSProcess> queryChildProcesses(int parentPid) {
         File[] pidFiles = ProcessStat.getPidFiles();
@@ -579,16 +741,32 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         return queryProcessList(descendantPids);
     }
 
+    /**
+     * Returns the process id.
+     *
+     * @return the get process id result
+     */
     @Override
     public int getProcessId() {
         return LinuxLibc.INSTANCE.getpid();
     }
 
+    /**
+     * Returns the process count.
+     *
+     * @return the get process count result
+     */
     @Override
     public int getProcessCount() {
         return ProcessStat.getPidFiles().length;
     }
 
+    /**
+     * Queries the process list.
+     *
+     * @param descendantPids the descendant pids
+     * @return the query process list result
+     */
     private List<OSProcess> queryProcessList(Set<Integer> descendantPids) {
         List<OSProcess> procs = new ArrayList<>();
         for (int pid : descendantPids) {
@@ -600,25 +778,44 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         return procs;
     }
 
+    /**
+     * Returns the current thread.
+     *
+     * @return the get current thread result
+     */
     @Override
     public OSThread getCurrentThread() {
         return new LinuxOSThread(getProcessId(), getThreadId());
     }
 
+    /**
+     * Returns the thread count.
+     *
+     * @return the get thread count result
+     */
     @Override
     public int getThreadCount() {
         try (Struct.CloseableSysinfo info = new Struct.CloseableSysinfo()) {
             if (0 != LibC.INSTANCE.sysinfo(info)) {
-                Logger.error("Failed to get process thread count. Error code: {}", Native.getLastError());
+                Logger.error(
+                        false,
+                        "Health",
+                        "Failed to get process thread count. Error code: {}",
+                        Native.getLastError());
                 return 0;
             }
-            return info.procs;
+            return Short.toUnsignedInt(info.procs);
         } catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
-            Logger.error("Failed to get procs from sysinfo. {}", e.getMessage());
+            Logger.error(false, "Health", "Failed to get procs from sysinfo. {}", e.getClass().getSimpleName());
         }
         return 0;
     }
 
+    /**
+     * Returns the thread id.
+     *
+     * @return the get thread id result
+     */
     @Override
     public int getThreadId() {
         if (HAS_SYSCALL_GETTID) {
@@ -634,21 +831,41 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         }
     }
 
+    /**
+     * Returns the system uptime.
+     *
+     * @return the get system uptime result
+     */
     @Override
     public long getSystemUptime() {
         return (long) UpTime.getSystemUptimeSeconds();
     }
 
+    /**
+     * Returns the system boot time.
+     *
+     * @return the get system boot time result
+     */
     @Override
     public long getSystemBootTime() {
         return BOOTTIME;
     }
 
+    /**
+     * Returns the network params.
+     *
+     * @return the get network params result
+     */
     @Override
     public NetworkParams getNetworkParams() {
         return new LinuxNetworkParams();
     }
 
+    /**
+     * Returns the services.
+     *
+     * @return the get services result
+     */
     @Override
     public List<OSService> getServices() {
         // Get running services
@@ -694,12 +911,17 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                     }
                 }
             } else {
-                Logger.error("Directory: /etc/init does not exist");
+                Logger.error(false, "Health", "Directory: /etc/init does not exist");
             }
         }
         return services;
     }
 
+    /**
+     * Returns the installed applications.
+     *
+     * @return the get installed applications result
+     */
     @Override
     public List<ApplicationInfo> getInstalledApplications() {
         return installedAppsSupplier.get();

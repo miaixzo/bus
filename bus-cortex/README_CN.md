@@ -11,7 +11,7 @@
 **Bus Cortex** 是 bus 框架的注册与配置中心模块。它提供统一的服务注册、配置管理、健康探测和基于命名空间的多租户隔离——所有数据通过单一 `CacheX` 存储抽象（Memory / Redis / JDBC）读写，无需额外基础设施。
 
 - **统一注册表**：API / MCP / Prompt / Version 四类注册表，统一 `Registry<T>` 接口
-- **服务+实例分离模型**：`ApiDefinition`（服务定义）+ `Instance`（运行时实例），参考 Nacos 设计
+- **服务+实例分离模型**：`ApiAssets`（服务定义）+ `Instance`（运行时实例），参考 Nacos 设计
 - **配置中心**：带版本号的发布、灰度路由、`@ConfigChange` 回调注解
 - **健康探测**：可插拔 `Prober`（HTTP / TCP / MCP Ping / 进程 PID），服务端主动探测
 - **命名空间隔离**：运行时动态解析命名空间（Token / Header / 上下文），`NamespaceGuard` 强制写隔离
@@ -29,7 +29,7 @@
 
 | 注册表 | 资产类型 | 说明 |
 |:---|:---|:---|
-| **ApiRegistry** | `ApiDefinition` + `Instance` | HTTP / gRPC / MCP / WebSocket / LLM API 服务 |
+| **ApiRegistry** | `ApiAssets` + `Instance` | HTTP / gRPC / MCP / WebSocket / LLM API 服务 |
 | **McpRegistry** | `McpAssets` | MCP 工具/服务器定义 |
 | **PromptRegistry** | `PromptAssets` | Prompt 模板管理 |
 | **VersionRegistry** | `VersionAssets` | 服务版本生命周期（ACTIVE / DEPRECATED / DISABLED） |
@@ -39,20 +39,37 @@
 Cortex.apiRegistry().register(service, instance);
 Cortex.mcpRegistry().register(mcpAssets);
 
-List<ApiDefinition> services = Cortex.query(
-    new Vector().setNamespace("production").setMethod("vortex.user.get"), ApiDefinition.class);
+List<ApiAssets> services = Cortex.query(
+    Vector.newBuilder().namespace_id("production").method("vortex.user.get").build(), ApiAssets.class);
 ```
 
 ### ⚡ 服务与实例分离
 
 ```
-ApiDefinition（服务定义，method+version 全局唯一）
-    └── Instance（运行时实例，host:port，每个服务最多 1 个活动实例）
+ApiAssets（服务定义，canonical identity = namespace + type + method + version[:verb]）
+    └── Instance（运行时实例，唯一性由 namespace + app_id + method + version + fingerprint 决定）
 ```
 
-**唯一性约束**：同一 `namespace + method + version` 下，任意时刻只允许 **1 个**活动 `Instance`。通过 `SETNX`（Redis）/ `UNIQUE` 约束（JDBC）/ `synchronized`（Memory）原子保证。
+**实例标识规则**：同一 API 定义下允许存在多个运行时实例。运行时唯一性按 `namespace + app_id + method + version + fingerprint` 约束。
 
 相同 fingerprint 重复注册视为**幂等刷新 TTL**，不视为冲突。
+
+**网关路由语义**：同步到 bus-vortex 时，`ApiAssets.routeKey` 继续保留为轻量公开别名
+`method:version:verbCode`，例如 `dp.license.get:1.0:1`。真正的运行时候选链由 `Keying` 单独生成，顺序为：
+
+1. `namespace:type:app_id:method:version:verb`
+2. `namespace:type:method:version:verb`
+3. `namespace:app_id:method:version:verb`
+4. `namespace:method:version:verb`
+5. `type:app_id:method:version:verb`
+6. `type:method:version:verb`
+7. `app_id:method:version:verb`
+8. `method:version:verb`
+
+其中 `method` / `version` / `verb` 为运行时必填维度；`namespace`、`type`、`app_id` 仅在有值时参与。
+
+`Keying` 现在是泛型键策略接口。注册表与运行时路由使用 `Keying<Keying.RegistrySpec>`，内置实现为
+`RegistryGenerator`；setting 领域使用 `Keying<Keying.SettingSpec>`，内置实现为 `SettingGenerator`。
 
 ### 🔧 配置中心
 
@@ -113,9 +130,9 @@ rule.setGrayContent("jdbc:mysql://canary/...");
 ```
 ApiRegistry.register()
     └── VortexBridge.onRegistered()
-        └── ApiAssetsConverter.convert(ApiDefinition, Instance) → Assets
+        └── ApiAssetsConverter.convert(ApiAssets, Instance) → Assets
             └── asyncQueue.offer(SyncEvent{REGISTER, asset})
-                └── SyncWorker POST → bus-vortex /_internal/registry/sync
+                └── SyncWorker POST → bus-vortex /registry/push
 ```
 
 - 有界队列（容量 10,000），bus-vortex 宕机时防止 OOM
@@ -185,18 +202,24 @@ public class Application {
 ```java
 import org.miaixz.bus.cortex.Cortex;
 import org.miaixz.bus.cortex.Vector;
-import org.miaixz.bus.cortex.registry.api.ApiDefinition;
+import org.miaixz.bus.cortex.registry.api.ApiAssets;
 import org.miaixz.bus.cortex.registry.api.Instance;
 
 // 注册服务 + 实例
-ApiDefinition service = new ApiDefinition();
-service.setNamespace("production");
+ApiAssets service = new ApiAssets();
+service.setNamespace_id("production");
+service.setApp_id("order-service");
 service.setMethod("vortex.user.get");
 service.setVersion("v1.0.0");
 service.setPath("/v2/api");
-service.setMode(1);  // 1=HTTP
+service.setProtocol(1);  // 1=HTTP
+service.setVerb(1);      // 1=GET
 
 Instance instance = new Instance();
+instance.setNamespace_id("production");
+instance.setApp_id("order-service");
+instance.setMethod("vortex.user.get");
+instance.setVersion("v1.0.0");
 instance.setHost("192.168.1.10");
 instance.setPort(8080);
 instance.setWeight(100);
@@ -204,9 +227,9 @@ instance.setWeight(100);
 Cortex.apiRegistry().register(service, instance);
 
 // 查询 API 定义
-List<ApiDefinition> results = Cortex.query(
-    new Vector().setNamespace("production").setMethod("vortex.user.get"),
-    ApiDefinition.class
+List<ApiAssets> results = Cortex.query(
+    Vector.newBuilder().namespace_id("production").method("vortex.user.get").build(),
+    ApiAssets.class
 );
 
 // 注销
@@ -255,7 +278,7 @@ public class OrderService {
 ```java
 // 订阅实例变化
 String watchId = Cortex.apiRegistry().watch(
-    new Vector().setNamespace("production").setMethod("vortex.user.get"),
+    Vector.newBuilder().namespace_id("production").method("vortex.user.get").build(),
     (added, removed, updated) -> {
         log.info("实例变更: 新增 {} 下线 {} 更新 {}",
             added.size(), removed.size(), updated.size());
@@ -271,14 +294,14 @@ Cortex.apiRegistry().unwatch(watchId);
 ```java
 // 注册 MCP 工具
 McpAssets mcp = new McpAssets();
-mcp.setNamespace("ai");
+mcp.setNamespace_id("ai");
 mcp.setToolName("code-search");
 mcp.setTransport("stdio");
 Cortex.mcpRegistry().register(mcp);
 
 // 注册 Prompt 模板
 PromptAssets prompt = new PromptAssets();
-prompt.setNamespace("ai");
+prompt.setNamespace_id("ai");
 prompt.setTemplate("请总结以下内容：{{content}}");
 Cortex.promptRegistry().register(prompt);
 ```
@@ -374,7 +397,7 @@ bus:
 org.miaixz.bus.cortex
 ├── [根包]         核心抽象（Cortex, Assets, Species, Vector, Registry, Config）
 ├── registry/      注册表实现
-│   ├── api/       ApiDefinition + Instance + ApiRegistry + 探测器
+│   ├── api/       ApiAssets + Instance + ApiRegistry + 探测器
 │   ├── mcp/       McpAssets + McpRegistry + ProcessManager
 │   ├── prompt/    PromptAssets + PromptRegistry
 │   ├── version/   VersionAssets + VersionRegistry + VersionStatus

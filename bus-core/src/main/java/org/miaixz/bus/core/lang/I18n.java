@@ -19,6 +19,11 @@
 */
 package org.miaixz.bus.core.lang;
 
+import java.text.MessageFormat;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
 /**
  * 
  * Enumeration for various internationalization (I18n) languages and locales. Each enum constant represents a specific
@@ -645,12 +650,57 @@ public enum I18n {
     }
 
     /**
+     * Returns the {@link Locale} represented by this enum.
+     *
+     * @return The matching locale.
+     */
+    public Locale toLocale() {
+        if (this == AUTO_DETECT) {
+            return Locale.getDefault();
+        }
+        return Locale.forLanguageTag(this.lang.replace('_', '-'));
+    }
+
+    /**
      * Returns the descriptive name for this locale.
      *
      * @return The descriptive name.
      */
     public String desc() {
         return this.desc;
+    }
+
+    /**
+     * Gets a formatted string for the current i18n from a resource bundle.
+     *
+     * @param bundleName The name of the resource bundle.
+     * @param key        The key for the desired string.
+     * @param args       The message arguments.
+     * @return The formatted string.
+     */
+    public String message(String bundleName, String key, Object... args) {
+        return message(this, bundleName, key, args);
+    }
+
+    /**
+     * Gets a formatted string for a specific i18n from a resource bundle.
+     *
+     * @param i18n       The i18n to use.
+     * @param bundleName The name of the resource bundle.
+     * @param key        The key for the desired string.
+     * @param args       The message arguments.
+     * @return The formatted string.
+     */
+    public static String message(I18n i18n, String bundleName, String key, Object... args) {
+        Locale locale = i18n == null ? Locale.getDefault() : i18n.toLocale();
+        try {
+            ResourceBundle bundle = ResourceBundle.getBundle(bundleName, locale);
+            return MessageFormat.format(bundle.getString(key), args);
+        } catch (MissingResourceException e) {
+            return MessageFormat.format(key, args);
+        } catch (Exception e) {
+            return MessageFormat.format(key, args);
+        }
     }
 
 }

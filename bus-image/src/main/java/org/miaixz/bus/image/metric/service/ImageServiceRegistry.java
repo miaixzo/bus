@@ -66,6 +66,8 @@ public class ImageServiceRegistry implements DimseRQHandler {
             lookupService(as, dimse, cmd).onDimseRQ(as, pc, dimse, cmd, data);
         } catch (ImageServiceException e) {
             Logger.info(
+                    false,
+                    "Image",
                     "{}: processing {} failed. Caused by:\t",
                     as,
                     dimse.toString(cmd, pc.getPCID(), pc.getTransferSyntax()),

@@ -114,54 +114,68 @@ public class VortexHandler {
     @NonNull
     public Mono<ServerResponse> handle(ServerRequest request) {
         return Mono.deferContextual(contextView -> {
-            // Get request method and path for logging
             String method = request.methodName();
             String path = request.path();
 
-            // 1. Retrieve and validate request context
             final Context context = contextView.get(Context.class);
             if (context == null) {
-                Logger.info(true, "Vortex", "[N/A] [{}] [{}] [CONTEXT_ERROR] - Request context is null", method, path);
+                Logger.info(
+                        true,
+                        "Vortex",
+                        "Request context is null: clientIp=N/A, method={}, path={}, event=CONTEXT_ERROR",
+                        method,
+                        path);
                 throw new ValidateException(ErrorCode._116000);
             }
             final String ip = context.getX_request_ip();
             ServerWebExchange exchange = request.exchange();
-            Logger.info(true, "Vortex", "[{}] [{}] [{}] [REQUEST_START] - Request started", ip, method, path);
+            Logger.info(
+                    true,
+                    "Vortex",
+                    "Request received: clientIp={}, method={}, path={}, event=REQUEST_START",
+                    ip,
+                    method,
+                    path);
+            Logger.debug(true, "Vortex", "Request header snapshot: clientIp={}, method={}, path={}", ip, method, path);
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request headers: clientIp={}, headers={}",
+                    ip,
+                    request.headers().asHttpHeaders().toSingleValueMap());
+            Logger.debug(true, "Vortex", "Request parameters: clientIp={}, parameters={}", ip, context.getParameters());
 
-            // 2. Validate Assets configuration
             Assets assets = context.getAssets();
             if (assets == null) {
                 Logger.info(
                         true,
                         "Vortex",
-                        "[{}] [{}] [{}] [ASSETS_ERROR] - Assets is null in request context",
+                        "Assets is null in request context: clientIp={}, method={}, path={}, event=ASSETS_ERROR",
                         ip,
                         method,
                         path);
                 throw new ValidateException(ErrorCode._100800);
             }
 
-            // 3. Map mode to router key using pre-built static map for O(1) lookup
-            String modeKey = Args.MODE_TO_ROUTER.get(assets.getMode());
+            String modeKey = Args.MODE_TO_ROUTER.get(assets.getProtocol());
             if (modeKey == null) {
                 Logger.info(
                         true,
                         "Vortex",
-                        "[{}] [{}] [{}] [INVALID_MODE] - Invalid mode: {}",
+                        "Invalid mode: clientIp={}, method={}, path={}, event=INVALID_MODE, {}",
                         ip,
                         method,
                         path,
-                        assets.getMode());
+                        assets.getProtocol());
                 throw new ValidateException(ErrorCode._116005);
             }
 
-            // 4. Retrieve the corresponding Router instance
             Router<ServerRequest, ?> router = routers.get(modeKey);
             if (router == null) {
                 Logger.info(
                         true,
                         "Vortex",
-                        "[{}] [{}] [{}] [ROUTER_NOT_FOUND] - No router found for mode key: {}",
+                        "No router found for mode key: clientIp={}, method={}, path={}, event=ROUTER_NOT_FOUND, {}",
                         ip,
                         method,
                         path,
@@ -172,37 +186,34 @@ public class VortexHandler {
             Logger.info(
                     true,
                     "Vortex",
-                    "[{}] [{}] [{}] [ROUTER_SELECT] - Using router: {}",
+                    "Using router: clientIp={}, method={}, path={}, event=ROUTER_SELECT, {}",
                     ip,
                     method,
                     path,
                     router.getClass().getSimpleName());
 
-            // 5. Execute pre-interceptors and delegate routing
             return executePreHandle(exchange, router).flatMap(preHandleResult -> {
                 if (!preHandleResult) {
                     Logger.info(
                             true,
                             "Vortex",
-                            "[{}] [{}] [{}] [PREHANDLE_ERROR] - Pre-handle validation failed",
+                            "Pre-handle validation failed: clientIp={}, method={}, path={}, event=PREHANDLE_ERROR",
                             ip,
                             method,
                             path);
                     throw new ValidateException(ErrorCode._100800);
                 }
 
-                // Check if mock mode is enabled (mock = 1)
                 if (Integer.valueOf(Consts.ONE).equals(assets.getMock())) {
                     Logger.info(
                             true,
                             "Vortex",
-                            "[{}] [{}] [{}] [MOCK_MODE] - Returning mock data for method: {}",
+                            "Returning mock data for method: clientIp={}, method={}, path={}, event=MOCK_MODE, {}",
                             ip,
                             method,
                             path,
                             assets.getMethod());
 
-                    // Return mock response with post-handlers execution
                     return handleMockResponse(context, assets).flatMap(
                             response -> executePostHandlers(exchange, router, response, null).map(obj -> response))
                             .doOnSuccess(serverResponse -> {
@@ -210,7 +221,7 @@ public class VortexHandler {
                                 Logger.info(
                                         false,
                                         "Vortex",
-                                        "[{}] [{}] [{}] [MOCK_SUCCESS] - Method: {}, Duration: {}ms",
+                                        "Method: clientIp={}, method={}, path={}, event=MOCK_SUCCESS, {}, Duration: {}ms",
                                         ip,
                                         method,
                                         path,
@@ -220,7 +231,7 @@ public class VortexHandler {
                                     Logger.info(
                                             false,
                                             "Vortex",
-                                            "[{}] [{}] [{}] [MOCK_COMPLETE] - Status: {}",
+                                            "Status: clientIp={}, method={}, path={}, event=MOCK_COMPLETE, {}",
                                             ip,
                                             method,
                                             path,
@@ -230,17 +241,15 @@ public class VortexHandler {
                                 Logger.error(
                                         false,
                                         "Vortex",
-                                        "[{}] [{}] [{}] [MOCK_ERROR] - Error: {}",
+                                        "Error: clientIp={}, method={}, path={}, event=MOCK_ERROR, {}",
                                         ip,
                                         method,
                                         path,
                                         error.getMessage());
-                                // Execute postHandle and afterCompletion even on mock error
                                 return executePostHandlers(exchange, router, null, error).then(Mono.error(error));
                             });
                 }
 
-                // Actual routing with timeout + retry mechanism + post-interceptors
                 return router.route(request)
                         .timeout(Duration.ofSeconds(assets.getTimeout() != null ? assets.getTimeout() : 60))
                         .retryWhen(buildRetrySpec(assets, ip, method, path)).cast(ServerResponse.class)
@@ -250,7 +259,7 @@ public class VortexHandler {
                             Logger.info(
                                     false,
                                     "Vortex",
-                                    "[{}] [{}] [{}] [REQUEST_SUCCESS] - Method: {}, Duration: {}ms",
+                                    "Method: clientIp={}, method={}, path={}, event=REQUEST_SUCCESS, {}, Duration: {}ms",
                                     ip,
                                     method,
                                     path,
@@ -260,7 +269,7 @@ public class VortexHandler {
                                 Logger.info(
                                         false,
                                         "Vortex",
-                                        "[{}] [{}] [{}] [REQUEST_COMPLETE] - Status: {}",
+                                        "Status: clientIp={}, method={}, path={}, event=REQUEST_COMPLETE, {}",
                                         ip,
                                         method,
                                         path,
@@ -270,13 +279,12 @@ public class VortexHandler {
                             Logger.info(
                                     false,
                                     "Vortex",
-                                    "[{}] [{}] [{}] [REQUEST_ERROR] - Error: {}",
+                                    "Error: clientIp={}, method={}, path={}, event=REQUEST_ERROR, {}",
                                     ip,
                                     method,
                                     path,
                                     error.getMessage());
 
-                            // Execute postHandle and afterCompletion for all handlers even on error
                             return executePostHandlers(exchange, router, null, error).then(Mono.error(error));
                         });
             });
@@ -317,16 +325,13 @@ public class VortexHandler {
             Router<ServerRequest, ?> router,
             Object response,
             Throwable error) {
-        // Cast to ServerResponse for handlers (if applicable)
         ServerResponse serverResponse = response instanceof ServerResponse ? (ServerResponse) response : null;
 
-        // postHandle chain (only if no error)
         Mono<Void> postHandle = error == null
                 ? Flux.fromIterable(handlers)
                         .concatMap(handler -> handler.postHandle(exchange, router, null, serverResponse)).then()
                 : Mono.empty();
 
-        // afterCompletion chain (always executed, with or without error)
         Mono<Void> afterCompletion = Flux.fromIterable(handlers)
                 .concatMap(handler -> handler.afterCompletion(exchange, router, null, serverResponse, error)).then();
 
@@ -355,48 +360,45 @@ public class VortexHandler {
         int maxRetries = assets.getRetries() != null && assets.getRetries() > 0 ? assets.getRetries() : 0;
 
         if (maxRetries == 0) {
-            // No retries configured
             return Retry.max(0);
         }
 
         return Retry.backoff(maxRetries, Duration.ofMillis(100)).maxBackoff(Duration.ofSeconds(5)).filter(throwable -> {
-            // Only retry on transient errors
             if (throwable instanceof java.util.concurrent.TimeoutException) {
-                return true; // Reactor timeout
+                return true;
             }
             if (throwable instanceof java.net.ConnectException) {
-                return true; // Connection refused
+                return true;
             }
             if (throwable instanceof java.net.SocketTimeoutException) {
-                return true; // Read timeout
+                return true;
             }
             if (throwable instanceof java.io.IOException) {
-                return true; // Network I/O errors
+                return true;
             }
             if (throwable instanceof WebClientResponseException) {
                 WebClientResponseException ex = (WebClientResponseException) throwable;
-                // Retry on 5xx server errors and 429 Too Many Requests
                 return ex.getStatusCode().is5xxServerError() || ex.getStatusCode().value() == 429;
             }
-            return false; // Don't retry on other errors (4xx client errors, etc.)
+            return false;
         }).doBeforeRetry(retrySignal -> {
             long attempt = retrySignal.totalRetries() + 1;
             Throwable failure = retrySignal.failure();
             Logger.warn(
                     true,
                     "Vortex",
-                    "[{}] [{}] [{}] [RETRY_ATTEMPT] - Retry attempt {}/{} after error: {}",
+                    "Retry attempt {}/{} after error: clientIp={}, method={}, path={}, event=RETRY_ATTEMPT, {}",
                     ip,
                     method,
                     path,
                     attempt,
                     maxRetries,
-                    failure.getMessage());
+                    failure.getClass().getSimpleName());
         }).onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> {
             Logger.error(
                     true,
                     "Vortex",
-                    "[{}] [{}] [{}] [RETRY_EXHAUSTED] - All {} retry attempts exhausted",
+                    "All {} retry attempts exhausted: clientIp={}, method={}, path={}, event=RETRY_EXHAUSTED",
                     ip,
                     method,
                     path,
@@ -413,7 +415,7 @@ public class VortexHandler {
      * specified in the context.
      * </p>
      *
-     * 
+     *
      * @param context The request context
      * @param assets  The asset configuration containing the mock data in result field
      * @return A Mono of ServerResponse containing the mock data
@@ -422,12 +424,11 @@ public class VortexHandler {
         return Mono.fromCallable(() -> {
             String mockData = assets.getResult();
 
-            // If no mock data is configured, return empty response
             if (mockData == null || mockData.isEmpty()) {
                 Logger.warn(
                         true,
                         "Vortex",
-                        "[{}] Mock mode enabled but no result data configured for method: {}",
+                        "Mock mode has no result data: clientIp={}, method={}",
                         context.getX_request_ip(),
                         assets.getMethod());
                 mockData = "{}";
@@ -436,16 +437,15 @@ public class VortexHandler {
             Logger.info(
                     true,
                     "Vortex",
-                    "[{}] Returning mock data: {}",
+                    "Mock data prepared: clientIp={}, chars={}",
                     context.getX_request_ip(),
-                    mockData.length() > 200 ? mockData.substring(0, 200) + "..." : mockData);
+                    mockData.length());
 
             return mockData;
         }).flatMap(mockData -> {
-            // Build response based on the requested format
             Formats format = context.getFormat();
             if (format == null) {
-                format = Formats.JSON; // Default to JSON
+                format = Formats.JSON;
             }
 
             return ServerResponse.ok().contentType(format.getMediaType()).bodyValue(mockData);
@@ -454,7 +454,7 @@ public class VortexHandler {
             Logger.info(
                     false,
                     "Vortex",
-                    "[{}] Mock response returned successfully - Duration: {}ms",
+                    "Mock response returned: clientIp={}, durationMs={}",
                     context.getX_request_ip(),
                     duration);
         });

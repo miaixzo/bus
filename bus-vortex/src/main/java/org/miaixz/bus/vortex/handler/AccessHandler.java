@@ -41,6 +41,12 @@ import reactor.core.publisher.Mono;
 public class AccessHandler extends AbstractHandler {
 
     /**
+     * Creates an access handler.
+     */
+    public AccessHandler() {
+    }
+
+    /**
      * Asynchronous pre-processing method, typically used for permission validation or initial setup.
      * <p>
      * This method logs basic request information (HTTP method and path) and then proceeds. Currently, it assumes
@@ -56,7 +62,6 @@ public class AccessHandler extends AbstractHandler {
     @Override
     public Mono<Boolean> preHandle(ServerWebExchange exchange, Object service, Object args) {
         return Mono.fromCallable(() -> {
-            // Get context and IP
             Context context = exchange.getAttribute(Context.$);
             String ip = (context != null) ? context.getX_request_ip() : "N/A";
 
@@ -66,13 +71,26 @@ public class AccessHandler extends AbstractHandler {
 
             Logger.info(
                     true,
-                    "Access",
-                    "[{}] [{}] [{}] [ACCESS_PREHANDLE] - Performing async preHandle validation for request",
+                    "Vortex",
+                    "Pre-handle validation started: clientIp={}, method={}, path={}, event=ACCESS_PREHANDLE",
                     ip,
                     method,
                     path);
+            Logger.debug(true, "Vortex", "Request header snapshot: clientIp={}, method={}, path={}", ip, method, path);
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request headers: clientIp={}, headers={}",
+                    ip,
+                    request.getHeaders().toSingleValueMap());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request parameters: clientIp={}, parameters={}",
+                    ip,
+                    request.getQueryParams().toSingleValueMap());
 
-            return true; // Assume validation passes
+            return true;
         });
     }
 
@@ -91,7 +109,6 @@ public class AccessHandler extends AbstractHandler {
     @Override
     public Mono<Void> postHandle(ServerWebExchange exchange, Object service, Object args, Object result) {
         return Mono.fromRunnable(() -> {
-            // Get context and IP
             Context context = exchange.getAttribute(Context.$);
             String ip = (context != null) ? context.getX_request_ip() : "N/A";
 
@@ -101,8 +118,8 @@ public class AccessHandler extends AbstractHandler {
 
             Logger.info(
                     false,
-                    "Access",
-                    "[{}] [{}] [{}] [ACCESS_POSTHANDLE] - Post-processing response for request",
+                    "Vortex",
+                    "Response post-processing completed: clientIp={}, method={}, path={}, event=ACCESS_POSTHANDLE",
                     ip,
                     method,
                     path);
@@ -132,7 +149,6 @@ public class AccessHandler extends AbstractHandler {
             Object result,
             Throwable exception) {
         return Mono.fromRunnable(() -> {
-            // Get context and IP
             Context context = exchange.getAttribute(Context.$);
             String ip = (context != null) ? context.getX_request_ip() : "N/A";
 
@@ -143,8 +159,8 @@ public class AccessHandler extends AbstractHandler {
 
             Logger.info(
                     false,
-                    "Access",
-                    "[{}] [{}] [{}] [ACCESS_COMPLETION] - Request completed, exception: {}",
+                    "Vortex",
+                    "Request completed: clientIp={}, method={}, path={}, event=ACCESS_COMPLETION, exception={}",
                     ip,
                     method,
                     path,

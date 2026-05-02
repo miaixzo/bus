@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -37,6 +37,11 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractSensors;
 @ThreadSafe
 final class SolarisSensors extends AbstractSensors {
 
+    /**
+     * Queries the cpu temperature.
+     *
+     * @return the query cpu temperature result
+     */
     @Override
     public double queryCpuTemperature() {
         double maxTemp = 0d;
@@ -56,6 +61,11 @@ final class SolarisSensors extends AbstractSensors {
         return maxTemp;
     }
 
+    /**
+     * Queries the fan speeds.
+     *
+     * @return the query fan speeds result
+     */
     @Override
     public int[] queryFanSpeeds() {
         List<Integer> speedList = new ArrayList<>();
@@ -72,6 +82,11 @@ final class SolarisSensors extends AbstractSensors {
         return fans;
     }
 
+    /**
+     * Queries the cpu voltage.
+     *
+     * @return the query cpu voltage result
+     */
     @Override
     public double queryCpuVoltage() {
         double voltage = 0d;

@@ -21,8 +21,8 @@ package org.miaixz.bus.starter.storage;
 
 import java.util.Map;
 
+import org.miaixz.bus.cache.Options;
 import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.starter.cache.CacheProperties;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.Registry;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -55,6 +55,6 @@ public class StorageProperties {
      * Nested configuration for caching options related to the storage service.
      */
     @NestedConfigurationProperty
-    private CacheProperties cache;
+    private Options cache;
 
 }

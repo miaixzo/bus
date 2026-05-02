@@ -41,7 +41,7 @@ public class TrimISO2020Coercion implements AttributesCoercion {
 
     @Override
     public void coerce(Attributes attrs, Attributes modified) throws Exception {
-        Logger.info("ISO 2022 Character Set trimmed by coercion {}", this);
+        Logger.info(false, "Image", "ISO 2022 Character Set trimmed by coercion {}", this);
         String[] codes = attrs.getStrings(Tag.SpecificCharacterSet);
         if (SpecificCharacterSet.trimISO2022(codes)) {
             Object originalValue = attrs.setString(Tag.SpecificCharacterSet, VR.CS, codes);

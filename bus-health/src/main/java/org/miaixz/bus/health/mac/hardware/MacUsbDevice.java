@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -47,9 +47,18 @@ import com.sun.jna.platform.mac.IOKitUtil;
 @Immutable
 public class MacUsbDevice extends AbstractUsbDevice {
 
+    /**
+     * The CF constant.
+     */
     private static final CoreFoundation CF = CoreFoundation.INSTANCE;
 
+    /**
+     * The IOUSB constant.
+     */
     private static final String IOUSB = "IOUSB";
+    /**
+     * The IOSERVICE constant.
+     */
     private static final String IOSERVICE = "IOService";
 
     /**
@@ -253,21 +262,6 @@ public class MacUsbDevice extends AbstractUsbDevice {
             childDevice = childIter.next();
         }
         childIter.release();
-    }
-
-    /**
-     * Adds a list of USB devices to another list, creating new {@code MacUsbDevice} instances.
-     *
-     * @param deviceList The list to add devices to.
-     * @param list       The list of devices to add.
-     */
-    private static void addDevicesToList(List<UsbDevice> deviceList, List<UsbDevice> list) {
-        for (UsbDevice device : list) {
-            deviceList.add(
-                    new MacUsbDevice(device.getName(), device.getVendor(), device.getVendorId(), device.getProductId(),
-                            device.getSerialNumber(), device.getUniqueDeviceId(), Collections.emptyList()));
-            addDevicesToList(deviceList, device.getConnectedDevices());
-        }
     }
 
     /**

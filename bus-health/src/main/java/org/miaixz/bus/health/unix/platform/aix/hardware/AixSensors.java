@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -34,18 +34,36 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractSensors;
 @ThreadSafe
 final class AixSensors extends AbstractSensors {
 
+    /**
+     * The lscfg value.
+     */
     private final Supplier<List<String>> lscfg;
 
+    /**
+     * Creates a new AixSensors instance.
+     *
+     * @param lscfg the lscfg
+     */
     AixSensors(Supplier<List<String>> lscfg) {
         this.lscfg = lscfg;
     }
 
+    /**
+     * Queries the cpu temperature.
+     *
+     * @return the query cpu temperature result
+     */
     @Override
     public double queryCpuTemperature() {
         // Not available in general without specialized software
         return 0d;
     }
 
+    /**
+     * Queries the fan speeds.
+     *
+     * @return the query fan speeds result
+     */
     @Override
     public int[] queryFanSpeeds() {
         // Speeds are not available in general without specialized software
@@ -59,6 +77,11 @@ final class AixSensors extends AbstractSensors {
         return new int[fans];
     }
 
+    /**
+     * Queries the cpu voltage.
+     *
+     * @return the query cpu voltage result
+     */
     @Override
     public double queryCpuVoltage() {
         // Not available in general without specialized software

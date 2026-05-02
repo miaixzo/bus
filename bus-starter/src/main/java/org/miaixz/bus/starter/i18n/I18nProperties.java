@@ -38,14 +38,18 @@ public class I18nProperties {
     /**
      * The default character encoding for the message bundles. If not specified, the system's default encoding will be
      * used. It is recommended to set this to UTF-8.
+     * <p>
+     * Kept for configuration compatibility. The current Spring adapter resolves messages through
+     * {@link org.miaixz.bus.core.lang.I18n}, which delegates to JDK {@code ResourceBundle}; this value is not applied
+     * by the starter-side message source.
      */
-    private String defaultEncoding;
+    private String defaultEncoding = "UTF-8";
 
     /**
      * An array of base names for the resource bundles. Each base name corresponds to a set of property files. For
      * example, a base name of "messages" would correspond to files like {@code messages.properties},
      * {@code messages_en_US.properties}, etc.
      */
-    private String[] baseNames;
+    private String[] baseNames = { "messages" };
 
 }

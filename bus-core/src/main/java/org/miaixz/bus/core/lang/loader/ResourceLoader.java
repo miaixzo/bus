@@ -34,6 +34,13 @@ import org.miaixz.bus.core.io.resource.Resource;
 public abstract class ResourceLoader implements Loader {
 
     /**
+     * Constructs a resource loader.
+     */
+    protected ResourceLoader() {
+
+    }
+
+    /**
      * Loads all resources at the specified path, non-recursively and without any specific filter. This is equivalent to
      * calling {@code load(path, false, Filters.ALWAYS)}.
      *
@@ -78,6 +85,13 @@ public abstract class ResourceLoader implements Loader {
      * Abstract base class for resource enumerators, providing common functionality for iterating over resources.
      */
     protected abstract static class ResourceEnumerator implements Enumeration<Resource> {
+
+        /**
+         * Constructs a resource enumerator.
+         */
+        protected ResourceEnumerator() {
+
+        }
 
         /**
          * The next resource in the enumeration, or {@code null} if not yet determined or no more elements.

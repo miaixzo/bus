@@ -35,6 +35,7 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Xiaohongshu Commercial Platform login provider.
@@ -111,6 +112,15 @@ public class RednoteMarketiProvider extends AbstractProvider {
                             .refresh((String) object.get("refresh_token")).scope((String) object.get("scope")).build())
                     .build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "access token",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
     }
@@ -158,6 +168,15 @@ public class RednoteMarketiProvider extends AbstractProvider {
                             .scope((String) object.get("scope")).expireIn((Integer) object.get("expires_in")).build())
                     .build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "access token",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
     }

@@ -36,6 +36,13 @@ import org.miaixz.bus.core.lang.thread.*;
 public class ThreadKit {
 
     /**
+     * Constructs a new thread utility instance.
+     */
+    public ThreadKit() {
+
+    }
+
+    /**
      * Gets a new cached thread pool.
      *
      * @return An {@link ExecutorService}.

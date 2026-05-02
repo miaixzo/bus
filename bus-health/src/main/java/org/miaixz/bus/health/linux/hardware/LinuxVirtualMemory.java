@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -41,11 +41,20 @@ import org.miaixz.bus.health.linux.ProcPath;
 @ThreadSafe
 final class LinuxVirtualMemory extends AbstractVirtualMemory {
 
+    /**
+     * The global value.
+     */
     private final LinuxGlobalMemory global;
 
+    /**
+     * The usedTotalCommitLim value.
+     */
     private final Supplier<Triplet<Long, Long, Long>> usedTotalCommitLim = Memoizer
             .memoize(LinuxVirtualMemory::queryMemInfo, Memoizer.defaultExpiration());
 
+    /**
+     * The inOut value.
+     */
     private final Supplier<Pair<Long, Long>> inOut = Memoizer
             .memoize(LinuxVirtualMemory::queryVmStat, Memoizer.defaultExpiration());
 
@@ -58,6 +67,11 @@ final class LinuxVirtualMemory extends AbstractVirtualMemory {
         this.global = linuxGlobalMemory;
     }
 
+    /**
+     * Queries the mem info.
+     *
+     * @return the query mem info result
+     */
     private static Triplet<Long, Long, Long> queryMemInfo() {
         long swapFree = 0L;
         long swapTotal = 0L;
@@ -89,6 +103,11 @@ final class LinuxVirtualMemory extends AbstractVirtualMemory {
         return Triplet.of(swapTotal - swapFree, swapTotal, commitLimit);
     }
 
+    /**
+     * Queries the vm stat.
+     *
+     * @return the query vm stat result
+     */
     private static Pair<Long, Long> queryVmStat() {
         long swapPagesIn = 0L;
         long swapPagesOut = 0L;
@@ -131,31 +150,61 @@ final class LinuxVirtualMemory extends AbstractVirtualMemory {
         return memory;
     }
 
+    /**
+     * Returns the swap used.
+     *
+     * @return the get swap used result
+     */
     @Override
     public long getSwapUsed() {
         return usedTotalCommitLim.get().getLeft();
     }
 
+    /**
+     * Returns the swap total.
+     *
+     * @return the get swap total result
+     */
     @Override
     public long getSwapTotal() {
         return usedTotalCommitLim.get().getMiddle();
     }
 
+    /**
+     * Returns the virtual max.
+     *
+     * @return the get virtual max result
+     */
     @Override
     public long getVirtualMax() {
         return usedTotalCommitLim.get().getRight();
     }
 
+    /**
+     * Returns the virtual in use.
+     *
+     * @return the get virtual in use result
+     */
     @Override
     public long getVirtualInUse() {
         return this.global.getTotal() - this.global.getAvailable() + getSwapUsed();
     }
 
+    /**
+     * Returns the swap pages in.
+     *
+     * @return the get swap pages in result
+     */
     @Override
     public long getSwapPagesIn() {
         return inOut.get().getLeft();
     }
 
+    /**
+     * Returns the swap pages out.
+     *
+     * @return the get swap pages out result
+     */
     @Override
     public long getSwapPagesOut() {
         return inOut.get().getRight();

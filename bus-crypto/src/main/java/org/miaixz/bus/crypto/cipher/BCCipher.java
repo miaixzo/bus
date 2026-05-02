@@ -28,6 +28,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Wrapper;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.crypto.Cipher;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * An implementation of encryption and decryption based on the BouncyCastle library. This class wraps:
@@ -247,6 +248,15 @@ public class BCCipher implements Cipher, Wrapper<Object> {
             try {
                 return this.bufferedBlockCipher.doFinal(out, outOff);
             } catch (final InvalidCipherTextException e) {
+                Logger.warn(
+                        false,
+                        "Crypto",
+                        e,
+                        "BouncyCastle cipher finalization failed: algorithm={}, cipherType={}, outputOffset={}, exception={}",
+                        getAlgorithm(),
+                        "bufferedBlockCipher",
+                        outOff,
+                        e.getClass().getSimpleName());
                 throw new CryptoException(e);
             }
         }
@@ -254,6 +264,15 @@ public class BCCipher implements Cipher, Wrapper<Object> {
             try {
                 return this.aeadBlockCipher.doFinal(out, outOff);
             } catch (final InvalidCipherTextException e) {
+                Logger.warn(
+                        false,
+                        "Crypto",
+                        e,
+                        "BouncyCastle cipher finalization failed: algorithm={}, cipherType={}, outputOffset={}, exception={}",
+                        getAlgorithm(),
+                        "aeadBlockCipher",
+                        outOff,
+                        e.getClass().getSimpleName());
                 throw new CryptoException(e);
             }
         }

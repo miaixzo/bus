@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -35,14 +35,31 @@ import org.miaixz.bus.health.builtin.hardware.*;
 @ThreadSafe
 public abstract class AbstractHardwareAbstractionLayer implements HardwareAbstractionLayer {
 
+    /**
+     * The computerSystem value.
+     */
     private final Supplier<ComputerSystem> computerSystem = Memoizer.memoize(this::createComputerSystem);
 
+    /**
+     * The processor value.
+     */
     private final Supplier<CentralProcessor> processor = Memoizer.memoize(this::createProcessor);
 
+    /**
+     * The memory value.
+     */
     private final Supplier<GlobalMemory> memory = Memoizer.memoize(this::createMemory);
 
+    /**
+     * The sensors value.
+     */
     private final Supplier<Sensors> sensors = Memoizer.memoize(this::createSensors);
 
+    /**
+     * Returns the computer system.
+     *
+     * @return the get computer system result
+     */
     @Override
     public ComputerSystem getComputerSystem() {
         return computerSystem.get();
@@ -55,6 +72,11 @@ public abstract class AbstractHardwareAbstractionLayer implements HardwareAbstra
      */
     protected abstract ComputerSystem createComputerSystem();
 
+    /**
+     * Returns the processor.
+     *
+     * @return the get processor result
+     */
     @Override
     public CentralProcessor getProcessor() {
         return processor.get();
@@ -67,6 +89,11 @@ public abstract class AbstractHardwareAbstractionLayer implements HardwareAbstra
      */
     protected abstract CentralProcessor createProcessor();
 
+    /**
+     * Returns the memory.
+     *
+     * @return the get memory result
+     */
     @Override
     public GlobalMemory getMemory() {
         return memory.get();
@@ -79,6 +106,11 @@ public abstract class AbstractHardwareAbstractionLayer implements HardwareAbstra
      */
     protected abstract GlobalMemory createMemory();
 
+    /**
+     * Returns the sensors.
+     *
+     * @return the get sensors result
+     */
     @Override
     public Sensors getSensors() {
         return sensors.get();
@@ -91,6 +123,11 @@ public abstract class AbstractHardwareAbstractionLayer implements HardwareAbstra
      */
     protected abstract Sensors createSensors();
 
+    /**
+     * Returns the network i fs.
+     *
+     * @return the get network i fs result
+     */
     @Override
     public List<NetworkIF> getNetworkIFs() {
         return getNetworkIFs(false);

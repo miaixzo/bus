@@ -36,6 +36,7 @@ import org.miaixz.bus.gitlab.models.RepositoryFileResponse;
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * This class provides an entry point to all the GitLab API repository files calls. See
@@ -343,11 +344,29 @@ public class RepositoryFileApi extends AbstractApi {
             return (file);
 
         } catch (IOException ioe) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    ioe,
+                    "GitLab repository file download failed: projectPresent={}, refPresent={}, filePathLength={}, directoryPresent={}, exception={}",
+                    projectIdOrPath != null,
+                    commitOrBranchName != null && !commitOrBranchName.isEmpty(),
+                    filepath == null ? -1 : filepath.length(),
+                    directory != null,
+                    ioe.getClass().getSimpleName());
             throw new GitLabApiException(ioe);
         } finally {
             try {
                 in.close();
             } catch (IOException ignore) {
+                Logger.debug(
+                        false,
+                        "GitLab",
+                        "GitLab repository file stream close failed: projectPresent={}, refPresent={}, filePathLength={}, exception={}",
+                        projectIdOrPath != null,
+                        commitOrBranchName != null && !commitOrBranchName.isEmpty(),
+                        filepath == null ? -1 : filepath.length(),
+                        ignore.getClass().getSimpleName());
             }
         }
     }

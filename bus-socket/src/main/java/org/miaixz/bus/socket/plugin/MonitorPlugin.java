@@ -170,6 +170,8 @@ public final class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnabl
         totalProcessMsgNum += curProcessMsgNum;
         totalConnect += connectCount;
         Logger.info(
+                false,
+                "Socket",
                 "\r\n-----" + seconds + " seconds ----\r\nInflow:\t\t"
                         + String.format("%.2f", curInFlow * 1.0 / (1024 * 1024)) + "(MB)" + "\r\nOutflow:\t"
                         + String.format("%.2f", curOutFlow * 1.0 / (1024 * 1024)) + "(MB)" + "\r\nProcess Fail:\t"
@@ -202,7 +204,7 @@ public final class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnabl
     public void afterRead(Session session, int readSize) {
         // If readSize is 0, it indicates a potential issue in the code
         if (readSize == 0) {
-            Logger.error("Read size is 0, potential issue detected.");
+            Logger.error(false, "Socket", "Read size is 0, potential issue detected.");
         }
         inFlow.add(readSize);
     }

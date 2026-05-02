@@ -23,8 +23,8 @@ import java.util.Map;
 
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
+import org.miaixz.bus.cache.Options;
 import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.starter.cache.CacheProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
@@ -53,9 +53,13 @@ public class AuthProperties {
     private Map<Registry, Context> type;
 
     /**
-     * Nested configuration for caching options.
+     * Nested cache backend options for the authorization module.
+     * <p>
+     * When present, these options initialize an auth-specific cache instance. When absent, auth falls back to the
+     * shared default cache configuration or the legacy in-memory singleton.
+     * </p>
      */
     @NestedConfigurationProperty
-    private CacheProperties cache;
+    private Options cache;
 
 }

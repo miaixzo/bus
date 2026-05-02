@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -38,6 +38,9 @@ import com.sun.jna.platform.unix.LibCAPI.size_t;
 @ThreadSafe
 public final class SysctlKit {
 
+    /**
+     * The SYSCTL_FAIL constant.
+     */
     private static final String SYSCTL_FAIL = "Failed sysctl call: {}, Error code: {}";
 
     /**
@@ -64,7 +67,7 @@ public final class SysctlKit {
         try (Memory p = new Memory(intSize); CloseableSizeTByReference size = new CloseableSizeTByReference(intSize)) {
             if (0 != SystemB.INSTANCE.sysctlbyname(name, p, size, null, size_t.ZERO)) {
                 if (logWarning) {
-                    Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
+                    Logger.warn(false, "Health", SYSCTL_FAIL, name, Native.getLastError());
                 }
                 return def;
             }
@@ -84,7 +87,7 @@ public final class SysctlKit {
         try (Memory p = new Memory(uint64Size);
                 CloseableSizeTByReference size = new CloseableSizeTByReference(uint64Size)) {
             if (0 != SystemB.INSTANCE.sysctlbyname(name, p, size, null, size_t.ZERO)) {
-                Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
+                Logger.warn(false, "Health", SYSCTL_FAIL, name, Native.getLastError());
                 return def;
             }
             return p.getLong(0);
@@ -115,7 +118,7 @@ public final class SysctlKit {
         try (CloseableSizeTByReference size = new CloseableSizeTByReference()) {
             if (0 != SystemB.INSTANCE.sysctlbyname(name, null, size, null, size_t.ZERO)) {
                 if (logWarning) {
-                    Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
+                    Logger.warn(false, "Health", SYSCTL_FAIL, name, Native.getLastError());
                 }
                 return def;
             }
@@ -123,7 +126,7 @@ public final class SysctlKit {
             try (Memory p = new Memory(size.longValue() + 1L)) {
                 if (0 != SystemB.INSTANCE.sysctlbyname(name, p, size, null, size_t.ZERO)) {
                     if (logWarning) {
-                        Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
+                        Logger.warn(false, "Health", SYSCTL_FAIL, name, Native.getLastError());
                     }
                     return def;
                 }
@@ -142,7 +145,7 @@ public final class SysctlKit {
     public static boolean sysctl(String name, Structure struct) {
         try (CloseableSizeTByReference size = new CloseableSizeTByReference(struct.size())) {
             if (0 != SystemB.INSTANCE.sysctlbyname(name, struct.getPointer(), size, null, size_t.ZERO)) {
-                Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
+                Logger.warn(false, "Health", SYSCTL_FAIL, name, Native.getLastError());
                 return false;
             }
         }
@@ -160,12 +163,12 @@ public final class SysctlKit {
     public static Memory sysctl(String name) {
         try (CloseableSizeTByReference size = new CloseableSizeTByReference()) {
             if (0 != SystemB.INSTANCE.sysctlbyname(name, null, size, null, size_t.ZERO)) {
-                Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
+                Logger.warn(false, "Health", SYSCTL_FAIL, name, Native.getLastError());
                 return null;
             }
             Memory m = new Memory(size.longValue());
             if (0 != SystemB.INSTANCE.sysctlbyname(name, m, size, null, size_t.ZERO)) {
-                Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
+                Logger.warn(false, "Health", SYSCTL_FAIL, name, Native.getLastError());
                 m.close();
                 return null;
             }

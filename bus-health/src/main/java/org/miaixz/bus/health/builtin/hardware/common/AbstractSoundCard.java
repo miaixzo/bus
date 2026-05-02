@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -31,8 +31,17 @@ import org.miaixz.bus.health.builtin.hardware.SoundCard;
 @Immutable
 public abstract class AbstractSoundCard implements SoundCard {
 
+    /**
+     * The kernelVersion value.
+     */
     private final String kernelVersion;
+    /**
+     * The name value.
+     */
     private final String name;
+    /**
+     * The codec value.
+     */
     private final String codec;
 
     /**
@@ -48,21 +57,41 @@ public abstract class AbstractSoundCard implements SoundCard {
         this.codec = codec;
     }
 
+    /**
+     * Returns the driver version.
+     *
+     * @return the get driver version result
+     */
     @Override
     public String getDriverVersion() {
         return this.kernelVersion;
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return the get name result
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Returns the codec.
+     *
+     * @return the get codec result
+     */
     @Override
     public String getCodec() {
         return this.codec;
     }
 
+    /**
+     * Returns the to string result.
+     *
+     * @return the to string result
+     */
     @Override
     public String toString() {
         String builder = "SoundCard@" + Integer.toHexString(hashCode()) + " [name=" + this.name + ", kernelVersion="

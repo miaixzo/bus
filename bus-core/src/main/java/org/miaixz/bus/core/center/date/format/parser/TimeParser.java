@@ -48,6 +48,12 @@ public class TimeParser implements PredicateDateParser, Serializable {
     private static final long serialVersionUID = 2852257133063L;
 
     /**
+     * Constructs a new time parser.
+     */
+    public TimeParser() {
+    }
+
+    /**
      * Singleton instance of {@code TimeParser}.
      */
     public static final TimeParser INSTANCE = new TimeParser();

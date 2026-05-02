@@ -26,6 +26,7 @@ import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.MethodKit;
 import org.miaixz.bus.core.xyz.ReflectKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 
 import java.lang.reflect.Method;
 
@@ -61,21 +62,37 @@ public class InvokeCrontab implements Crontab {
      *                                "com.example.MyClass#myMethod").
      */
     public InvokeCrontab(final String classNameWithMethodName) {
+        Logger.debug(true, "Tempus", "Invoke crontab binding started: target={}", classNameWithMethodName);
         int splitIndex = classNameWithMethodName.lastIndexOf(Symbol.C_HASH);
         if (splitIndex <= 0) {
             splitIndex = classNameWithMethodName.lastIndexOf('.');
         }
         if (splitIndex <= 0) {
+            Logger.warn(
+                    false,
+                    "Tempus",
+                    "Invoke crontab binding rejected: target={}, reason=invalidTarget",
+                    classNameWithMethodName);
             throw new InternalException("Invalid classNameWithMethodName [{}]!", classNameWithMethodName);
         }
 
         // Load the class
         final String className = classNameWithMethodName.substring(0, splitIndex);
         if (StringKit.isBlank(className)) {
+            Logger.warn(
+                    false,
+                    "Tempus",
+                    "Invoke crontab binding rejected: target={}, reason=blankClassName",
+                    classNameWithMethodName);
             throw new IllegalArgumentException("Class name is blank !");
         }
         final Class<?> clazz = ClassKit.loadClass(className);
         if (null == clazz) {
+            Logger.warn(
+                    false,
+                    "Tempus",
+                    "Invoke crontab binding rejected: className={}, reason=classNotFound",
+                    className);
             throw new IllegalArgumentException("Load class with name of [" + className + "] fail !");
         }
         this.object = ReflectKit.newInstanceIfPossible(clazz);
@@ -83,12 +100,30 @@ public class InvokeCrontab implements Crontab {
         // Find the method
         final String methodName = classNameWithMethodName.substring(splitIndex + 1);
         if (StringKit.isBlank(methodName)) {
+            Logger.warn(
+                    false,
+                    "Tempus",
+                    "Invoke crontab binding rejected: className={}, reason=blankMethodName",
+                    className);
             throw new IllegalArgumentException("Method name is blank !");
         }
         this.method = MethodKit.getPublicMethod(clazz, false, methodName);
         if (null == this.method) {
+            Logger.warn(
+                    false,
+                    "Tempus",
+                    "Invoke crontab binding rejected: className={}, methodName={}, reason=methodNotFound",
+                    className,
+                    methodName);
             throw new IllegalArgumentException("No method with name of [" + methodName + "] !");
         }
+        Logger.debug(
+                false,
+                "Tempus",
+                "Invoke crontab binding completed: className={}, methodName={}, objectType={}",
+                className,
+                methodName,
+                this.object == null ? null : this.object.getClass().getName());
     }
 
     /**
@@ -103,8 +138,28 @@ public class InvokeCrontab implements Crontab {
     @Override
     public void execute() {
         try {
+            Logger.debug(
+                    true,
+                    "Tempus",
+                    "Invoke crontab execution started: declaringClass={}, methodName={}",
+                    this.method.getDeclaringClass().getName(),
+                    this.method.getName());
             MethodKit.invoke(this.object, this.method);
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Invoke crontab execution completed: declaringClass={}, methodName={}",
+                    this.method.getDeclaringClass().getName(),
+                    this.method.getName());
         } catch (final InternalException e) {
+            Logger.error(
+                    false,
+                    "Tempus",
+                    e,
+                    "Invoke crontab execution failed: declaringClass={}, methodName={}, exception={}",
+                    this.method.getDeclaringClass().getName(),
+                    this.method.getName(),
+                    e.getClass().getSimpleName());
             throw new CrontabException(e.getCause());
         }
     }

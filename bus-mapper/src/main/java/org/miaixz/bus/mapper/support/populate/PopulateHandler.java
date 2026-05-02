@@ -208,13 +208,13 @@ public class PopulateHandler<T> extends ConditionHandler<T, PopulateConfig> {
         // Get current configuration
         PopulateConfig config = current();
         if (config == null) {
-            Logger.debug(true, getHandler(), "Populate config not found, skipping: {}", ms.getId());
+            Logger.debug(true, "Mapper", "Populate config not found, skipping: {}", ms.getId());
             return true;
         }
 
         // Skip if parameter is null
         if (parameter == null) {
-            Logger.debug(true, getHandler(), "Parameter is null, skipping: {}", ms.getId());
+            Logger.debug(true, "Mapper", "Parameter is null, skipping: {}", ms.getId());
             return true;
         }
 
@@ -226,10 +226,10 @@ public class PopulateHandler<T> extends ConditionHandler<T, PopulateConfig> {
 
         // Fill data based on command type
         if (commandType == SqlCommandType.INSERT) {
-            Logger.debug(false, getHandler(), "Filling INSERT data for: {}", ms.getId());
+            Logger.debug(false, "Mapper", "Filling INSERT data for: {}", ms.getId());
             builder.fillInsertData(parameter);
         } else if (commandType == SqlCommandType.UPDATE) {
-            Logger.debug(false, getHandler(), "Filling UPDATE data for: {}", ms.getId());
+            Logger.debug(false, "Mapper", "Filling UPDATE data for: {}", ms.getId());
             builder.fillUpdateData(parameter);
         }
 

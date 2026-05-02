@@ -461,7 +461,7 @@ public class FindSCU implements AutoCloseable {
                         try {
                             cancel(as);
                         } catch (IOException e) {
-                            Logger.error("Building response", e);
+                            Logger.error(false, "Image", "Building response", e);
                         }
                     }
                 } else {
@@ -522,7 +522,7 @@ public class FindSCU implements AutoCloseable {
             }
             out.flush();
         } catch (Exception e) {
-            Logger.error("Building response", e);
+            Logger.error(false, "Image", "Building response", e);
             IoKit.close(out);
             out = null;
         } finally {

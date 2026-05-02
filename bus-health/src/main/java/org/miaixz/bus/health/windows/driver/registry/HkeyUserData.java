@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -43,12 +43,32 @@ import com.sun.jna.platform.win32.WinReg.HKEY;
 @ThreadSafe
 public final class HkeyUserData {
 
+    /**
+     * The PATH_DELIMITER constant.
+     */
     private static final String PATH_DELIMITER = "\\";
+    /**
+     * The DEFAULT_DEVICE constant.
+     */
     private static final String DEFAULT_DEVICE = "Console";
+    /**
+     * The VOLATILE_ENV_SUBKEY constant.
+     */
     private static final String VOLATILE_ENV_SUBKEY = "Volatile Environment";
+    /**
+     * The CLIENTNAME constant.
+     */
     private static final String CLIENTNAME = "CLIENTNAME";
+    /**
+     * The SESSIONNAME constant.
+     */
     private static final String SESSIONNAME = "SESSIONNAME";
 
+    /**
+     * Queries the user sessions.
+     *
+     * @return the query user sessions result
+     */
     public static List<OSSession> queryUserSessions() {
         List<OSSession> sessions = new ArrayList<>();
         for (String sidKey : Advapi32Util.registryGetKeys(WinReg.HKEY_USERS)) {
@@ -87,7 +107,13 @@ public final class HkeyUserData {
                     }
                     sessions.add(new OSSession(name, device, loginTime, host));
                 } catch (Win32Exception ex) {
-                    Logger.warn("Error querying SID {} from registry: {}", sidKey, ex.getMessage());
+                    Logger.warn(
+                            false,
+                            "Health",
+                            ex,
+                            "Registry SID query failed: sidPresent={}, exception={}",
+                            sidKey != null,
+                            ex.getClass().getSimpleName());
                 }
             }
         }

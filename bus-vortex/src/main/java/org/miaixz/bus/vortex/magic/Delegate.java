@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.vortex.magic;
 
+import lombok.NoArgsConstructor;
 import org.miaixz.bus.core.basic.entity.Authorize;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -43,8 +43,8 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
+@NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 public class Delegate {
 
     /**

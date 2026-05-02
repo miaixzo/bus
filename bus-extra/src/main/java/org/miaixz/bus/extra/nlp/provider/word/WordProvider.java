@@ -25,6 +25,7 @@ import org.apdplat.word.segmentation.SegmentationFactory;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Word word segmentation engine implementation. This class serves as a concrete {@link NLPProvider} for the Word NLP
@@ -64,7 +65,17 @@ public class WordProvider implements NLPProvider {
      * @param segmentation The custom {@link Segmentation} object to use for word segmentation.
      */
     public WordProvider(final Segmentation segmentation) {
+        Logger.info(
+                true,
+                "Extra",
+                "Word provider initialization started: segmentationType={}",
+                segmentation == null ? "null" : segmentation.getClass().getSimpleName());
         this.segmentation = segmentation;
+        Logger.info(
+                false,
+                "Extra",
+                "Word provider initialized: segmentationType={}",
+                this.segmentation == null ? "null" : this.segmentation.getClass().getSimpleName());
     }
 
     /**
@@ -76,7 +87,15 @@ public class WordProvider implements NLPProvider {
      */
     @Override
     public NLPResult parse(final CharSequence text) {
-        return new WordResult(this.segmentation.seg(StringKit.toStringOrEmpty(text)));
+        Logger.debug(true, "Extra", "Word parse started: textLength={}", text == null ? 0 : text.length());
+        final NLPResult result = new WordResult(this.segmentation.seg(StringKit.toStringOrEmpty(text)));
+        Logger.debug(
+                false,
+                "Extra",
+                "Word parse completed: textLength={}, resultPresent={}",
+                text == null ? 0 : text.length(),
+                result != null);
+        return result;
     }
 
 }

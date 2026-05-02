@@ -26,6 +26,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.miaixz.bus.logger.Logger;
+
 /**
  * A Hashed Wheel Timer for scheduling tasks.
  *
@@ -298,7 +300,12 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
             try {
                 runnable.run();
             } catch (Throwable t) {
-                t.printStackTrace();
+                Logger.warn(
+                        false,
+                        "Socket",
+                        t,
+                        "Hashed wheel timer task failed: exception={}",
+                        t.getClass().getSimpleName());
             }
         }
 

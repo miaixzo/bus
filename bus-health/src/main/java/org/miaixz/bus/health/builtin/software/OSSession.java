@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -39,14 +39,37 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
 @Immutable
 public class OSSession {
 
+    /**
+     * The LOGIN_FORMAT constant.
+     */
     private static final DateTimeFormatter LOGIN_FORMAT = DateTimeFormatter
             .ofPattern(Fields.NORM_DATETIME_MINUTE, Locale.ROOT);
 
+    /**
+     * The userName value.
+     */
     private final String userName;
+    /**
+     * The terminalDevice value.
+     */
     private final String terminalDevice;
+    /**
+     * The loginTime value.
+     */
     private final long loginTime;
+    /**
+     * The host value.
+     */
     private final String host;
 
+    /**
+     * Creates a new OSSession instance.
+     *
+     * @param userName       the user name
+     * @param terminalDevice the terminal device
+     * @param loginTime      the login time
+     * @param host           the host
+     */
     public OSSession(String userName, String terminalDevice, long loginTime, String host) {
         this.userName = userName;
         this.terminalDevice = terminalDevice;
@@ -91,6 +114,11 @@ public class OSSession {
         return host;
     }
 
+    /**
+     * Returns the to string result.
+     *
+     * @return the to string result
+     */
     @Override
     public String toString() {
         String loginStr = loginTime == 0 ? "No login"

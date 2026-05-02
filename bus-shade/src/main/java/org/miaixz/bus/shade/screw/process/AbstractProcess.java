@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.shade.screw.Config;
 import org.miaixz.bus.shade.screw.engine.EngineFileType;
 import org.miaixz.bus.shade.screw.metadata.*;
@@ -90,13 +91,52 @@ public abstract class AbstractProcess implements Process {
             if (CollKit.isNotEmpty(produceConfig.getDesignatedTableName())
                     || CollKit.isNotEmpty(produceConfig.getDesignatedTablePrefix())
                     || CollKit.isNotEmpty(produceConfig.getDesignatedTableSuffix())) {
-                return handleDesignated(tables);
+                Logger.debug(
+                        true,
+                        "Shade",
+                        "Table filter started: mode=designated, sourceTableCount={}, nameRuleCount={}, prefixRuleCount={}, suffixRuleCount={}",
+                        tables.size(),
+                        null == produceConfig.getDesignatedTableName() ? 0
+                                : produceConfig.getDesignatedTableName().size(),
+                        null == produceConfig.getDesignatedTablePrefix() ? 0
+                                : produceConfig.getDesignatedTablePrefix().size(),
+                        null == produceConfig.getDesignatedTableSuffix() ? 0
+                                : produceConfig.getDesignatedTableSuffix().size());
+                List<TableSchema> tableSchemas = handleDesignated(tables);
+                Logger.debug(
+                        false,
+                        "Shade",
+                        "Table filter finished: mode=designated, sourceTableCount={}, outputTableCount={}",
+                        tables.size(),
+                        tableSchemas.size());
+                return tableSchemas;
             }
             // Otherwise, apply ignore rules.
             else {
-                return handleIgnore(tables);
+                Logger.debug(
+                        true,
+                        "Shade",
+                        "Table filter started: mode=ignore, sourceTableCount={}, nameRuleCount={}, prefixRuleCount={}, suffixRuleCount={}",
+                        tables.size(),
+                        null == produceConfig.getIgnoreTableName() ? 0 : produceConfig.getIgnoreTableName().size(),
+                        null == produceConfig.getIgnoreTablePrefix() ? 0 : produceConfig.getIgnoreTablePrefix().size(),
+                        null == produceConfig.getIgnoreTableSuffix() ? 0 : produceConfig.getIgnoreTableSuffix().size());
+                List<TableSchema> tableSchemas = handleIgnore(tables);
+                Logger.debug(
+                        false,
+                        "Shade",
+                        "Table filter finished: mode=ignore, sourceTableCount={}, outputTableCount={}",
+                        tables.size(),
+                        tableSchemas.size());
+                return tableSchemas;
             }
         }
+        Logger.debug(
+                false,
+                "Shade",
+                "Table filter skipped: sourceTableCount={}, outputTableCount={}",
+                tables.size(),
+                tables.size());
         return tables;
     }
 

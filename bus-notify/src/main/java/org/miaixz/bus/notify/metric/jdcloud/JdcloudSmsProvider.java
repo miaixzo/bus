@@ -27,6 +27,7 @@ import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.AbstractProvider;
@@ -57,6 +58,13 @@ public class JdcloudSmsProvider extends AbstractProvider<JdcloudNotice, Context>
      */
     @Override
     public Message send(JdcloudNotice entity) {
+        Logger.info(
+                true,
+                "Notify",
+                "JDCloud SMS send started: template={}, targetCount={}, signaturePresent={}",
+                entity == null ? null : entity.getTemplate(),
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity != null && entity.getSignature() != null);
         Map<String, String> bodys = new HashMap<>();
         /**
          * The region ID where the SMS service is located.
@@ -88,7 +96,17 @@ public class JdcloudSmsProvider extends AbstractProvider<JdcloudNotice, Context>
         String errcode = status == HTTP.HTTP_OK ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
         String errmsg = status == HTTP.HTTP_OK ? ErrorCode._SUCCESS.getValue() : ErrorCode._FAILURE.getValue();
 
-        return Message.builder().errcode(errcode).errmsg(errmsg).build();
+        Message result = Message.builder().errcode(errcode).errmsg(errmsg).build();
+        Logger.info(
+                false,
+                "Notify",
+                "JDCloud SMS send completed: template={}, targetCount={}, status={}, errcode={}, responseBytes={}",
+                entity == null ? null : entity.getTemplate(),
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                status,
+                result.getErrcode(),
+                response == null ? 0 : response.length());
+        return result;
     }
 
 }

@@ -53,43 +53,90 @@ import com.sun.jna.platform.mac.IOKitUtil;
  *
  * <p>
  * Clock speeds, fan speed, and shared memory are not available on any macOS path and always return -1.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 @ThreadSafe
 final class MacGpuStats implements GpuStats {
 
+    /**
+     * The CF constant.
+     */
     private static final CoreFoundation CF = CoreFoundation.INSTANCE;
 
+    /**
+     * The PERF_STATS_KEY constant.
+     */
     private static final String PERF_STATS_KEY = "PerformanceStatistics";
+    /**
+     * The GPU_CORE_UTIL_KEY constant.
+     */
     private static final String GPU_CORE_UTIL_KEY = "GPU Core Utilization";
+    /**
+     * The DEVICE_UTIL_KEY constant.
+     */
     private static final String DEVICE_UTIL_KEY = "Device Utilization %";
+    /**
+     * The VRAM_USED_KEY constant.
+     */
     private static final String VRAM_USED_KEY = "vramUsedBytes";
+    /**
+     * The VRAM_USED_KEY_AS constant.
+     */
     private static final String VRAM_USED_KEY_AS = "In use system memory";
+    /**
+     * The GPU_UTIL_DIVISOR constant.
+     */
     private static final double GPU_UTIL_DIVISOR = 0xFFFFFFFFL;
+    /**
+     * The TRADEMARK_PATTERN constant.
+     */
     private static final Pattern TRADEMARK_PATTERN = Pattern.compile("[®™]|\\([Rr]\\)|\\([Tt][Mm]\\)");
 
+    /**
+     * The isAppleSilicon value.
+     */
     private final boolean isAppleSilicon;
+    /**
+     * The cardName value.
+     */
     private final String cardName;
 
     // Non-null only on Apple Silicon
+    /**
+     * The ioReportClient value.
+     */
     private final IOReportClient ioReportClient;
 
+    /**
+     * The closed value.
+     */
     private boolean closed;
 
+    /**
+     * Creates a new MacGpuStats instance.
+     *
+     * @param isAppleSilicon the is apple silicon
+     * @param cardName       the card name
+     */
     MacGpuStats(boolean isAppleSilicon, String cardName) {
         this.isAppleSilicon = isAppleSilicon;
         this.cardName = cardName;
         this.ioReportClient = isAppleSilicon ? IOReportClient.create() : null;
         if (isAppleSilicon && ioReportClient == null) {
             Logger.warn(
+                    false,
+                    "Health",
                     "IOReport subscription failed for '{}'; GPU ticks and power will be unavailable."
                             + " Utilization will fall back to IOAccelerator PerformanceStatistics.",
                     cardName);
         }
     }
 
+    /**
+     * Closes this resource.
+     */
     @Override
     public synchronized void close() {
         closed = true;
@@ -98,11 +145,21 @@ final class MacGpuStats implements GpuStats {
         }
     }
 
+    /**
+     * Returns whether the closed condition is true.
+     *
+     * @return the is closed result
+     */
     @Override
     public synchronized boolean isClosed() {
         return closed;
     }
 
+    /**
+     * Returns the gpu ticks.
+     *
+     * @return the get gpu ticks result
+     */
     @Override
     public synchronized GpuTicks getGpuTicks() {
         checkOpen();
@@ -112,6 +169,11 @@ final class MacGpuStats implements GpuStats {
         return new GpuTicks(0L, 0L);
     }
 
+    /**
+     * Returns the gpu utilization.
+     *
+     * @return the get gpu utilization result
+     */
     @Override
     public synchronized double getGpuUtilization() {
         checkOpen();
@@ -144,6 +206,11 @@ final class MacGpuStats implements GpuStats {
         return -1d;
     }
 
+    /**
+     * Returns the vram used.
+     *
+     * @return the get vram used result
+     */
     @Override
     public synchronized long getVramUsed() {
         checkOpen();
@@ -172,12 +239,22 @@ final class MacGpuStats implements GpuStats {
         return -1L;
     }
 
+    /**
+     * Returns the shared memory used.
+     *
+     * @return the get shared memory used result
+     */
     @Override
     public synchronized long getSharedMemoryUsed() {
         checkOpen();
         return -1L;
     }
 
+    /**
+     * Returns the temperature.
+     *
+     * @return the get temperature result
+     */
     @Override
     public synchronized double getTemperature() {
         checkOpen();
@@ -214,6 +291,11 @@ final class MacGpuStats implements GpuStats {
         return -1d;
     }
 
+    /**
+     * Returns the power draw.
+     *
+     * @return the get power draw result
+     */
     @Override
     public synchronized double getPowerDraw() {
         checkOpen();
@@ -223,24 +305,42 @@ final class MacGpuStats implements GpuStats {
         return -1d;
     }
 
+    /**
+     * Returns the core clock mhz.
+     *
+     * @return the get core clock mhz result
+     */
     @Override
     public synchronized long getCoreClockMhz() {
         checkOpen();
         return -1L;
     }
 
+    /**
+     * Returns the memory clock mhz.
+     *
+     * @return the get memory clock mhz result
+     */
     @Override
     public synchronized long getMemoryClockMhz() {
         checkOpen();
         return -1L;
     }
 
+    /**
+     * Returns the fan speed percent.
+     *
+     * @return the get fan speed percent result
+     */
     @Override
     public synchronized double getFanSpeedPercent() {
         checkOpen();
         return -1d;
     }
 
+    /**
+     * Handles the check open operation.
+     */
     private void checkOpen() {
         if (closed) {
             throw new IllegalStateException(
@@ -248,6 +348,11 @@ final class MacGpuStats implements GpuStats {
         }
     }
 
+    /**
+     * Queries the perf stats.
+     *
+     * @return the query perf stats result
+     */
     private CFMutableDictionaryRef queryPerfStats() {
         IOIterator iter = IOKitUtil.getMatchingServices("IOAccelerator");
         if (iter == null) {
@@ -293,6 +398,12 @@ final class MacGpuStats implements GpuStats {
         return null;
     }
 
+    /**
+     * Returns the matches name result.
+     *
+     * @param model the model
+     * @return the matches name result
+     */
     private boolean matchesName(String model) {
         if (model == null || model.isEmpty()) {
             return false;

@@ -26,6 +26,7 @@ import org.miaixz.bus.core.lang.exception.DependencyException;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Registry for supported office-related components and services.
@@ -67,7 +68,9 @@ public class Registry {
     public static Registry getInstance() {
         synchronized (Registry.class) {
             if (ObjectKit.isEmpty(instance)) {
+                Logger.debug(true, "Office", "Office registry instance initialization started");
                 instance = new Registry();
+                Logger.debug(false, "Office", "Office registry instance initialized");
             }
         }
         return instance;
@@ -82,15 +85,35 @@ public class Registry {
      * @throws InternalException if a component with the same name or type is already registered.
      */
     public static void register(String name, Object object) {
+        Logger.debug(
+                true,
+                "Office",
+                "Office component registration started: name={}, type={}",
+                name,
+                object == null ? null : object.getClass().getName());
         if (COMPLEX_CACHE.containsKey(name)) {
+            Logger.warn(false, "Office", "Office component registration rejected: reason=duplicateName, name={}", name);
             throw new InternalException("Duplicate registration of component with the same name: " + name);
         }
         Class<?> clazz = object.getClass();
         if (COMPLEX_CACHE.containsKey(clazz.getSimpleName())) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    "Office component registration rejected: reason=duplicateType, name={}, type={}",
+                    name,
+                    clazz.getName());
             throw new InternalException("Duplicate registration of component with the same type: " + clazz);
         }
         COMPLEX_CACHE.putIfAbsent(name, object);
         COMPLEX_CACHE.putIfAbsent(clazz.getSimpleName(), object);
+        Logger.debug(
+                false,
+                "Office",
+                "Office component registration completed: name={}, type={}, cacheKeys={}",
+                name,
+                clazz.getName(),
+                COMPLEX_CACHE.size());
     }
 
     /**
@@ -100,11 +123,20 @@ public class Registry {
      * @throws DependencyException if POI dependencies are missing.
      */
     public static void check() {
+        Logger.debug(true, "Office", "Office dependency check started: dependency={}", "poi-ooxml");
         try {
             Class.forName("org.apache.poi.ss.usermodel.Workbook", false, ClassKit.getClassLoader());
         } catch (final ClassNotFoundException | NoClassDefFoundError | NoSuchMethodError e) {
+            Logger.error(
+                    false,
+                    "Office",
+                    e,
+                    "Office dependency check failed: dependency={}, exception={}",
+                    "poi-ooxml",
+                    e.getClass().getSimpleName());
             throw new DependencyException(e, Builder.NO_POI_ERROR_MSG);
         }
+        Logger.debug(false, "Office", "Office dependency check completed: dependency={}", "poi-ooxml");
     }
 
     /**
@@ -114,7 +146,14 @@ public class Registry {
      * @return {@code true} if the component is registered, {@code false} otherwise.
      */
     public boolean contains(String name) {
-        return COMPLEX_CACHE.containsKey(name);
+        final boolean registered = COMPLEX_CACHE.containsKey(name);
+        Logger.trace(
+                false,
+                "Office",
+                "Office component lookup completed: operation=contains, name={}, registered={}",
+                name,
+                registered);
+        return registered;
     }
 
     /**
@@ -124,7 +163,14 @@ public class Registry {
      * @return The component object, or {@code null} if not found.
      */
     public Object require(String name) {
-        return COMPLEX_CACHE.get(name);
+        final Object object = COMPLEX_CACHE.get(name);
+        Logger.trace(
+                false,
+                "Office",
+                "Office component lookup completed: operation=require, name={}, found={}",
+                name,
+                ObjectKit.isNotEmpty(object));
+        return object;
     }
 
     /**
@@ -135,10 +181,23 @@ public class Registry {
      * @return The component object, or {@code null} if not found.
      */
     public Object require(String name, Class<?> clazz) {
+        Logger.trace(
+                true,
+                "Office",
+                "Office component typed lookup started: name={}, type={}",
+                name,
+                clazz == null ? null : clazz.getName());
         Object object = this.require(name);
         if (ObjectKit.isEmpty(object)) {
             object = this.require(clazz.getSimpleName());
         }
+        Logger.trace(
+                false,
+                "Office",
+                "Office component typed lookup completed: name={}, type={}, found={}",
+                name,
+                clazz == null ? null : clazz.getName(),
+                ObjectKit.isNotEmpty(object));
         return object;
     }
 

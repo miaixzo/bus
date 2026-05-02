@@ -515,17 +515,6 @@ public class DateTime extends Date {
     }
 
     /**
-     * Gets the month of the year, 1-indexed (1 for January).
-     *
-     * @return The month (1-12).
-     * @deprecated Use {@link #monthBaseOne()} for clarity.
-     */
-    @Deprecated
-    public int monthStartFromOne() {
-        return month() + 1;
-    }
-
-    /**
      * Gets the month of the year as a {@link Month} enum.
      *
      * @return The month enum.

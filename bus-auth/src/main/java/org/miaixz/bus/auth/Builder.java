@@ -39,6 +39,7 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -144,8 +145,23 @@ public class Builder {
             mac.init(new SecretKeySpec(key, algorithm));
             return mac.doFinal(data);
         } catch (NoSuchAlgorithmException ex) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    ex,
+                    "OAuth signature failed: reason=unsupportedAlgorithm, algorithm={}, dataBytes={}",
+                    algorithm,
+                    data == null ? 0 : data.length);
             throw new AuthorizedException("Unsupported algorithm: " + algorithm, ex);
         } catch (InvalidKeyException ex) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    ex,
+                    "OAuth signature failed: reason=invalidKey, algorithm={}, keyBytes={}, dataBytes={}",
+                    algorithm,
+                    key == null ? 0 : key.length,
+                    data == null ? 0 : data.length);
             throw new AuthorizedException("Invalid key: " + ArrayKit.toString(key), ex);
         }
     }
@@ -188,7 +204,13 @@ public class Builder {
             messageDigest.update(str.getBytes(Charset.UTF_8));
             return messageDigest.digest();
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "SHA256 digest failed: inputPresent={}, exception={}",
+                    str != null,
+                    e.getClass().getSimpleName());
         }
         return null;
     }

@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -42,9 +42,15 @@ import org.miaixz.bus.health.Parsing;
 public final class Iostat {
 
     // Note uppercase E
+    /**
+     * The IOSTAT_ER_DETAIL constant.
+     */
     private static final String IOSTAT_ER_DETAIL = "iostat -Er";
 
     // Note lowercase e
+    /**
+     * The IOSTAT_ER constant.
+     */
     private static final String IOSTAT_ER = "iostat -er";
     // Sample output:
     // errors
@@ -53,6 +59,9 @@ public final class Iostat {
     // sd0,0,0,0
 
     // Note lowercase e
+    /**
+     * The IOSTAT_ERN constant.
+     */
     private static final String IOSTAT_ERN = "iostat -ern";
     // Sample output:
     // errors
@@ -60,6 +69,9 @@ public final class Iostat {
     // 0,0,0,0,c1d0
     // 0,0,0,0,c1t1d0
 
+    /**
+     * The DEVICE_HEADER constant.
+     */
     private static final String DEVICE_HEADER = "device";
 
     /**

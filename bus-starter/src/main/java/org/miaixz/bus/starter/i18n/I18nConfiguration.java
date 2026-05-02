@@ -20,19 +20,26 @@
 package org.miaixz.bus.starter.i18n;
 
 import jakarta.annotation.Resource;
-import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.spring.GeniusBuilder;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.support.ResourceBundleMessageSource;
 
 /**
- * Auto-configuration for internationalization (i18n). This class sets up the {@link ResourceBundleMessageSource} bean
- * based on the properties defined in {@link I18nProperties}.
+ * Auto-configuration for internationalization (i18n). This class sets up the {@link MessageSource} bean based on the
+ * properties defined in {@link I18nProperties}.
+ * <p>
+ * The registered {@link I18nMessage} is also the Spring {@link MessageSource}. This keeps framework-level lookups and
+ * direct application lookups on one resolver instead of maintaining separate helper and message-source implementations.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { I18nProperties.class })
+@ConditionalOnProperty(prefix = GeniusBuilder.I18N, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class I18nConfiguration {
 
     /**
@@ -42,17 +49,15 @@ public class I18nConfiguration {
     I18nProperties properties;
 
     /**
-     * Creates and configures the {@link ResourceBundleMessageSource} bean. This bean is responsible for resolving
-     * messages from resource bundles for internationalization purposes.
+     * Creates the unified i18n bean. It is exposed under Spring's conventional {@code messageSource} bean name while
+     * retaining the concrete {@link I18nMessage} type for direct injection.
      *
-     * @return The configured {@link ResourceBundleMessageSource} instance.
+     * @return the configured i18n message source
      */
-    @Bean
-    public ResourceBundleMessageSource messageSource() {
-        ResourceBundleMessageSource bundleMessageSource = new ResourceBundleMessageSource();
-        bundleMessageSource.setDefaultEncoding(StringKit.toString(this.properties.getDefaultEncoding()));
-        bundleMessageSource.setBasenames(this.properties.getBaseNames());
-        return bundleMessageSource;
+    @Bean(name = "messageSource")
+    @ConditionalOnMissingBean(name = "messageSource")
+    public I18nMessage messageSource() {
+        return new I18nMessage(this.properties);
     }
 
 }

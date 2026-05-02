@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -38,32 +38,72 @@ import org.miaixz.bus.health.linux.driver.proc.CpuInfo;
 @Immutable
 final class LinuxBaseboard extends AbstractBaseboard {
 
+    /**
+     * The manufacturerModelVersionSerial value.
+     */
     private final Supplier<Tuple> manufacturerModelVersionSerial = Memoizer.memoize(CpuInfo::queryBoardInfo);
+    /**
+     * The manufacturer value.
+     */
     private final Supplier<String> manufacturer = Memoizer.memoize(this::queryManufacturer);
+    /**
+     * The model value.
+     */
     private final Supplier<String> model = Memoizer.memoize(this::queryModel);
+    /**
+     * The version value.
+     */
     private final Supplier<String> version = Memoizer.memoize(this::queryVersion);
+    /**
+     * The serialNumber value.
+     */
     private final Supplier<String> serialNumber = Memoizer.memoize(this::querySerialNumber);
 
+    /**
+     * Returns the manufacturer.
+     *
+     * @return the get manufacturer result
+     */
     @Override
     public String getManufacturer() {
         return manufacturer.get();
     }
 
+    /**
+     * Returns the model.
+     *
+     * @return the get model result
+     */
     @Override
     public String getModel() {
         return model.get();
     }
 
+    /**
+     * Returns the version.
+     *
+     * @return the get version result
+     */
     @Override
     public String getVersion() {
         return version.get();
     }
 
+    /**
+     * Returns the serial number.
+     *
+     * @return the get serial number result
+     */
     @Override
     public String getSerialNumber() {
         return serialNumber.get();
     }
 
+    /**
+     * Queries the manufacturer.
+     *
+     * @return the query manufacturer result
+     */
     private String queryManufacturer() {
         String result = null;
         if ((result = Sysfs.queryBoardVendor()) == null
@@ -73,6 +113,11 @@ final class LinuxBaseboard extends AbstractBaseboard {
         return result;
     }
 
+    /**
+     * Queries the model.
+     *
+     * @return the query model result
+     */
     private String queryModel() {
         String result;
         if ((result = Sysfs.queryBoardModel()) == null
@@ -82,6 +127,11 @@ final class LinuxBaseboard extends AbstractBaseboard {
         return result;
     }
 
+    /**
+     * Queries the version.
+     *
+     * @return the query version result
+     */
     private String queryVersion() {
         String result;
         if ((result = Sysfs.queryBoardVersion()) == null
@@ -91,6 +141,11 @@ final class LinuxBaseboard extends AbstractBaseboard {
         return result;
     }
 
+    /**
+     * Queries the serial number.
+     *
+     * @return the query serial number result
+     */
     private String querySerialNumber() {
         String result;
         if ((result = Sysfs.queryBoardSerial()) == null

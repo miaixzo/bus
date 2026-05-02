@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -45,8 +45,14 @@ public interface Struct {
     /*
      * Linux
      */
+    /**
+     * The CloseableSysinfo class.
+     */
     class CloseableSysinfo extends Sysinfo implements AutoCloseable {
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
@@ -57,64 +63,112 @@ public interface Struct {
      * macOS
      */
 
+    /**
+     * The CloseableHostCpuLoadInfo class.
+     */
     class CloseableHostCpuLoadInfo extends HostCpuLoadInfo implements AutoCloseable {
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
         }
     }
 
+    /**
+     * The CloseableProcTaskInfo class.
+     */
     class CloseableProcTaskInfo extends ProcTaskInfo implements AutoCloseable {
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
         }
     }
 
+    /**
+     * The CloseableProcTaskAllInfo class.
+     */
     class CloseableProcTaskAllInfo extends ProcTaskAllInfo implements AutoCloseable {
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
         }
     }
 
+    /**
+     * The CloseableRUsageInfoV2 class.
+     */
     class CloseableRUsageInfoV2 extends RUsageInfoV2 implements AutoCloseable {
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
         }
     }
 
+    /**
+     * The CloseableTimeval class.
+     */
     class CloseableTimeval extends Timeval implements AutoCloseable {
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
         }
     }
 
+    /**
+     * The CloseableVMStatistics class.
+     */
     class CloseableVMStatistics extends VMStatistics implements AutoCloseable {
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
         }
     }
 
+    /**
+     * The CloseableVnodePathInfo class.
+     */
     class CloseableVnodePathInfo extends VnodePathInfo implements AutoCloseable {
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
         }
     }
 
+    /**
+     * The CloseableXswUsage class.
+     */
     class CloseableXswUsage extends XswUsage implements AutoCloseable {
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
@@ -125,72 +179,126 @@ public interface Struct {
      * Windows
      */
 
+    /**
+     * The CloseableMibIfRow class.
+     */
     class CloseableMibIfRow extends MIB_IFROW implements AutoCloseable {
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
         }
     }
 
+    /**
+     * The CloseableMibIfRow2 class.
+     */
     class CloseableMibIfRow2 extends MIB_IF_ROW2 implements AutoCloseable {
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
         }
     }
 
+    /**
+     * The CloseableMibTcpStats class.
+     */
     class CloseableMibTcpStats extends MIB_TCPSTATS implements AutoCloseable {
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
         }
     }
 
+    /**
+     * The CloseableMibUdpStats class.
+     */
     class CloseableMibUdpStats extends MIB_UDPSTATS implements AutoCloseable {
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
         }
     }
 
+    /**
+     * The CloseablePdhRawCounter class.
+     */
     class CloseablePdhRawCounter extends PDH_RAW_COUNTER implements AutoCloseable {
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
         }
     }
 
+    /**
+     * The CloseablePerformanceInformation class.
+     */
     class CloseablePerformanceInformation extends PERFORMANCE_INFORMATION implements AutoCloseable {
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
         }
     }
 
+    /**
+     * The CloseableSpDeviceInterfaceData class.
+     */
     class CloseableSpDeviceInterfaceData extends SP_DEVICE_INTERFACE_DATA implements AutoCloseable {
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
         }
     }
 
+    /**
+     * The CloseableSpDevinfoData class.
+     */
     class CloseableSpDevinfoData extends SP_DEVINFO_DATA implements AutoCloseable {
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
         }
     }
 
+    /**
+     * The CloseableSystemInfo class.
+     */
     class CloseableSystemInfo extends SYSTEM_INFO implements AutoCloseable {
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());

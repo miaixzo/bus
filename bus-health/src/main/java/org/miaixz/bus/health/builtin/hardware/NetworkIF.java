@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -299,8 +299,16 @@ public interface NetworkIF {
          */
         LOWER_LAYER_DOWN(7);
 
+        /**
+         * The value value.
+         */
         private final int value;
 
+        /**
+         * Creates a new IfOperStatus instance.
+         *
+         * @param value the value
+         */
         IfOperStatus(int value) {
             this.value = value;
         }

@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.starter.metrics;
 
+import org.miaixz.bus.spring.GeniusBuilder;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.miaixz.bus.metrics.Metrics;
 import org.miaixz.bus.metrics.Provider;
 import org.miaixz.bus.metrics.builtin.CacheMetricsAdapter;
@@ -29,6 +31,7 @@ import org.miaixz.bus.metrics.guard.CardinalityPolicy;
 import org.miaixz.bus.metrics.bridge.HealthMetrics;
 import org.miaixz.bus.metrics.metric.micrometer.MicrometerProvider;
 import org.miaixz.bus.metrics.metric.indigenous.NativeProvider;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -46,10 +49,12 @@ import org.springframework.context.annotation.Bean;
  * @since Java 21+
  */
 @EnableConfigurationProperties(MetricsProperties.class)
+@ConditionalOnProperty(prefix = GeniusBuilder.METRICS, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class MetricsConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "bus.metrics", name = "provider", havingValue = "native", matchIfMissing = true)
     public Provider metricsProvider(MetricsProperties props) {
         applyCardinalityGuard(props.getCardinality());
         Provider provider = new NativeProvider();
@@ -59,7 +64,8 @@ public class MetricsConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean(name = "metricsProvider")
+    @ConditionalOnBean(MeterRegistry.class)
+    @ConditionalOnMissingBean(Provider.class)
     @ConditionalOnClass(name = "io.micrometer.core.instrument.MeterRegistry")
     @ConditionalOnProperty(prefix = "bus.metrics", name = "provider", havingValue = "micrometer")
     public Provider micrometerProvider(MetricsProperties props, io.micrometer.core.instrument.MeterRegistry registry) {

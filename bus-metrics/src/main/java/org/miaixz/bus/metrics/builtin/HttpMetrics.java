@@ -22,6 +22,7 @@ package org.miaixz.bus.metrics.builtin;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.Metrics;
 import org.miaixz.bus.metrics.metric.Sample;
@@ -69,9 +70,18 @@ public class HttpMetrics implements Filter {
         req.setAttribute(ATTR_SAMPLE, sample);
         Throwable caught = null;
         try {
+            Logger.debug(true, "Metrics", "HTTP metrics collection started: method={}", req.getMethod());
             chain.doFilter(request, response);
         } catch (IOException | ServletException | RuntimeException e) {
             caught = e;
+            Logger.warn(
+                    false,
+                    "Metrics",
+                    e,
+                    "HTTP metrics collection observed exception: method={}, status={}, exception={}",
+                    req.getMethod(),
+                    res.getStatus(),
+                    e.getClass().getSimpleName());
             throw e;
         } finally {
             record(sample, req.getMethod(), req.getRequestURI(), res.getStatus(), caught);
@@ -112,6 +122,14 @@ public class HttpMetrics implements Filter {
                 uriNormalized,
                 Builder.TAG_STATUS,
                 String.valueOf(status)).increment();
+        Logger.debug(
+                false,
+                "Metrics",
+                "HTTP metrics collection finished: method={}, status={}, exception={}, durationNs={}",
+                method,
+                status,
+                exceptionName,
+                durationNs);
     }
 
 }

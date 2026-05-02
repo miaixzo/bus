@@ -40,6 +40,7 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * LINE login provider.
@@ -107,6 +108,15 @@ public class LineProvider extends AbstractProvider {
                                     .scope(scope).token_type(tokenType).build())
                     .build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "access token",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
     }
@@ -146,6 +156,15 @@ public class LineProvider extends AbstractProvider {
                                     .gender(Gender.UNKNOWN).token(authorization).source(complex.toString()).build())
                     .build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "user info",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
     }
@@ -175,6 +194,15 @@ public class LineProvider extends AbstractProvider {
             Errors status = (revoked != null && revoked) ? ErrorCode._SUCCESS : ErrorCode._FAILURE;
             return Message.builder().errcode(status.getKey()).errmsg(status.getValue()).build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "revoke",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse revoke response: " + e.getMessage());
         }
     }
@@ -217,6 +245,15 @@ public class LineProvider extends AbstractProvider {
                                     .scope(scope).token_type(tokenType).build())
                     .build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "refresh token",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse refresh token response: " + e.getMessage());
         }
     }

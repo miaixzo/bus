@@ -73,7 +73,7 @@ public class ImageAdapter {
                 writer.finish();
                 return true;
             } catch (Exception e) {
-                Logger.error("Writing DICOM file", e);
+                Logger.error(false, "Image", "Writing DICOM file", e);
                 FileKit.remove(file);
                 return false;
             }
@@ -84,7 +84,7 @@ public class ImageAdapter {
         try {
             imgData = geDicomOutputData(reader, syntax.requested, desc, editable);
         } catch (IOException e) {
-            Logger.error("Get DicomOutputData", e);
+            Logger.error(false, "Image", "Get DicomOutputData", e);
             return false;
         }
         checkSyntax(syntax, imgData);
@@ -97,7 +97,7 @@ public class ImageAdapter {
             dos.writeFileMetaInformation(dataSet.createFileMetaInformation(dstTsuid));
             writeImage(syntax, desc, imgData, dataSet, dstTsuid, dos);
         } catch (Exception e) {
-            Logger.error("Transcoding image data", e);
+            Logger.error(false, "Image", "Transcoding image data", e);
             FileKit.remove(file);
             return false;
         } finally {
@@ -137,7 +137,12 @@ public class ImageAdapter {
     public static void checkSyntax(AdaptTransferSyntax syntax, ImageOutputData imgData) {
         if (!syntax.requested.equals(imgData.getTsuid())) {
             syntax.suitable = imgData.getTsuid();
-            Logger.warn("Transcoding into {} is not possible, used instead {}", syntax.requested, syntax.suitable);
+            Logger.warn(
+                    false,
+                    "Image",
+                    "Transcoding into {} is not possible, used instead {}",
+                    syntax.requested,
+                    syntax.suitable);
         }
     }
 
@@ -166,7 +171,7 @@ public class ImageAdapter {
             try (ImageOutputStream dos = new ImageOutputStream(out, tsuid)) {
                 writeImage(syntax, desc, imgData, dataSet, tsuid, dos);
             } catch (Exception e) {
-                Logger.error("Transcoding image data", e);
+                Logger.error(false, "Image", "Transcoding image data", e);
             } finally {
                 reader.dispose();
             }

@@ -25,7 +25,7 @@ import lombok.Setter;
 
 /**
  * Host Information * @author Kimi Liu
- * 
+ *
  * @since Java 21+
  */
 @Getter

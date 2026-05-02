@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -42,13 +42,27 @@ import com.sun.jna.Memory;
 @ThreadSafe
 public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats {
 
+    /**
+     * The establishedv4v6 value.
+     */
     private final Supplier<Pair<Long, Long>> establishedv4v6 = Memoizer
             .memoize(NetStat::queryTcpnetstat, Memoizer.defaultExpiration());
+    /**
+     * The tcpstat value.
+     */
     private final Supplier<CLibrary.BsdTcpstat> tcpstat = Memoizer
             .memoize(FreeBsdInternetProtocolStats::queryTcpstat, Memoizer.defaultExpiration());
+    /**
+     * The udpstat value.
+     */
     private final Supplier<CLibrary.BsdUdpstat> udpstat = Memoizer
             .memoize(FreeBsdInternetProtocolStats::queryUdpstat, Memoizer.defaultExpiration());
 
+    /**
+     * Queries the tcpstat.
+     *
+     * @return the query tcpstat result
+     */
     private static CLibrary.BsdTcpstat queryTcpstat() {
         CLibrary.BsdTcpstat ft = new CLibrary.BsdTcpstat();
         try (Memory m = BsdSysctlKit.sysctl("net.inet.tcp.stats")) {
@@ -69,10 +83,15 @@ public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats 
         return ft;
     }
 
+    /**
+     * Queries the udpstat.
+     *
+     * @return the query udpstat result
+     */
     private static CLibrary.BsdUdpstat queryUdpstat() {
         CLibrary.BsdUdpstat ut = new CLibrary.BsdUdpstat();
         try (Memory m = BsdSysctlKit.sysctl("net.inet.udp.stats")) {
-            if (m != null && m.size() >= 1644) {
+            if (m != null && m.size() >= 84) {
                 ut.udps_ipackets = m.getInt(0);
                 ut.udps_hdrops = m.getInt(4);
                 ut.udps_badsum = m.getInt(8);
@@ -86,6 +105,11 @@ public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats 
         return ut;
     }
 
+    /**
+     * Returns the tc pv4 stats.
+     *
+     * @return the get tc pv4 stats result
+     */
     @Override
     public InternetProtocolStats.TcpStats getTCPv4Stats() {
         CLibrary.BsdTcpstat tcp = tcpstat.get();
@@ -98,6 +122,11 @@ public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats 
                 0L);
     }
 
+    /**
+     * Returns the ud pv4 stats.
+     *
+     * @return the get ud pv4 stats result
+     */
     @Override
     public InternetProtocolStats.UdpStats getUDPv4Stats() {
         CLibrary.BsdUdpstat stat = udpstat.get();
@@ -106,6 +135,11 @@ public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats 
                 Parsing.unsignedIntToLong(stat.udps_hdrops + stat.udps_badsum + stat.udps_badlen));
     }
 
+    /**
+     * Returns the ud pv6 stats.
+     *
+     * @return the get ud pv6 stats result
+     */
     @Override
     public InternetProtocolStats.UdpStats getUDPv6Stats() {
         CLibrary.BsdUdpstat stat = udpstat.get();

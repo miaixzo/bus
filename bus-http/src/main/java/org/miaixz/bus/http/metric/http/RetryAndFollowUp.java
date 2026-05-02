@@ -29,6 +29,7 @@ import org.miaixz.bus.http.bodys.RequestBody;
 import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.Internal;
 import org.miaixz.bus.http.metric.NewChain;
+import org.miaixz.bus.logger.Logger;
 
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLPeerUnverifiedException;
@@ -69,10 +70,22 @@ public class RetryAndFollowUp implements Interceptor {
 
         int followUpCount = 0;
         Response priorResponse = null;
+        Logger.debug(
+                true,
+                "Http",
+                "Retry interceptor starting: protocol=http, method={}, url={}",
+                request.method(),
+                request.url().redact());
         while (true) {
             transmitter.prepareToConnect(request);
 
             if (transmitter.isCanceled()) {
+                Logger.warn(
+                        false,
+                        "Http",
+                        "Retry interceptor canceled before network attempt: protocol=http, method={}, url={}",
+                        request.method(),
+                        request.url().redact());
                 throw new IOException("Canceled");
             }
 
@@ -84,14 +97,45 @@ public class RetryAndFollowUp implements Interceptor {
             } catch (RouteException e) {
                 // The attempt to connect via a route failed. The request will not have been sent.
                 if (!recover(e.getLastConnectException(), transmitter, false, request)) {
+                    Logger.error(
+                            false,
+                            "Http",
+                            e.getFirstConnectException(),
+                            "Route connection failed without recovery: protocol=http, method={}, url={}, exception={}",
+                            request.method(),
+                            request.url().redact(),
+                            e.getFirstConnectException().getMessage());
                     throw e.getFirstConnectException();
                 }
+                Logger.warn(
+                        false,
+                        "Http",
+                        "Route connection failed; retrying: protocol=http, method={}, url={}, exception={}",
+                        request.method(),
+                        request.url().redact(),
+                        e.getLastConnectException().getMessage());
                 continue;
             } catch (IOException e) {
                 // An attempt to communicate with a server failed. The request may have been sent.
                 boolean requestSendStarted = !(e instanceof IOException);
-                if (!recover(e, transmitter, requestSendStarted, request))
+                if (!recover(e, transmitter, requestSendStarted, request)) {
+                    Logger.error(
+                            false,
+                            "Http",
+                            e,
+                            "HTTP exchange failed without recovery: protocol=http, method={}, url={}, exception={}",
+                            request.method(),
+                            request.url().redact(),
+                            e.getClass().getSimpleName());
                     throw e;
+                }
+                Logger.warn(
+                        false,
+                        "Http",
+                        "HTTP exchange failed; retrying: protocol=http, method={}, url={}, exception={}",
+                        request.method(),
+                        request.url().redact(),
+                        e.getClass().getSimpleName());
                 continue;
             } finally {
                 // The network call threw an exception. Release any resources.
@@ -113,11 +157,27 @@ public class RetryAndFollowUp implements Interceptor {
                 if (exchange != null && exchange.isDuplex()) {
                     transmitter.timeoutEarlyExit();
                 }
+                Logger.debug(
+                        false,
+                        "Http",
+                        "Retry interceptor completed: protocol=http, method={}, url={}, status={}, followUps={}",
+                        request.method(),
+                        request.url().redact(),
+                        response.code(),
+                        followUpCount);
                 return response;
             }
 
             RequestBody followUpBody = followUp.body();
             if (followUpBody != null && followUpBody.isOneShot()) {
+                Logger.debug(
+                        false,
+                        "Http",
+                        "Retry interceptor stopped because follow-up body is one-shot: protocol=http, method={}, url={}, status={}, followUps={}",
+                        request.method(),
+                        request.url().redact(),
+                        response.code(),
+                        followUpCount);
                 return response;
             }
 
@@ -127,9 +187,24 @@ public class RetryAndFollowUp implements Interceptor {
             }
 
             if (++followUpCount > MAX_FOLLOW_UPS) {
+                Logger.error(
+                        false,
+                        "Http",
+                        "Too many follow-up requests: protocol=http, method={}, url={}, followUps={}",
+                        request.method(),
+                        request.url().redact(),
+                        followUpCount);
                 throw new ProtocolException("Too many follow-up requests: " + followUpCount);
             }
 
+            Logger.debug(
+                    true,
+                    "Http",
+                    "Following HTTP response: protocol=http, fromStatus={}, nextMethod={}, nextUrl={}, followUps={}",
+                    response.code(),
+                    followUp.method(),
+                    followUp.url().redact(),
+                    followUpCount);
             request = followUp;
             priorResponse = response;
         }

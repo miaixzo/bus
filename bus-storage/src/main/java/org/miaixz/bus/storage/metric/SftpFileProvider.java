@@ -143,7 +143,15 @@ public class SftpFileProvider extends AbstractProvider {
                         .data(content).build();
             }
         } catch (InternalException | IOException e) {
-            Logger.error("Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage download failed; provider={}, bucket={}, object={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    bucket,
+                    fileName,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -185,10 +193,13 @@ public class SftpFileProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (InternalException e) {
             Logger.error(
-                    "Failed to download file: {} from bucket: {} to local file: {}. Error: {}",
-                    fileName,
+                    false,
+                    "Storage",
+                    "Storage download-to-local failed; provider={}, bucket={}, object={}, targetProvided={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
                     bucket,
-                    file.getAbsolutePath(),
+                    fileName,
+                    file != null,
                     e.getMessage(),
                     e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
@@ -212,7 +223,15 @@ public class SftpFileProvider extends AbstractProvider {
                         return Blob.builder().name(fileName).extend(extend).build();
                     }).collect(Collectors.toList())).build();
         } catch (InternalException e) {
-            Logger.error("Failed to list files in path: {}. Error: {}", context.getPrefix(), e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage list failed; provider={}, bucket={}, prefix={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    this.context.getBucket(),
+                    context.getPrefix(),
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -264,11 +283,14 @@ public class SftpFileProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (InternalException e) {
             Logger.error(
-                    "Failed to rename file from {} to {} in bucket: {} path: {}. Error: {}",
-                    oldName,
-                    newName,
+                    false,
+                    "Storage",
+                    "Storage rename failed; provider={}, bucket={}, path={}, sourceObject={}, targetObject={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
                     bucket,
                     path,
+                    oldName,
+                    newName,
                     e.getMessage(),
                     e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
@@ -361,10 +383,13 @@ public class SftpFileProvider extends AbstractProvider {
                     .data(Blob.builder().name(fileName).path(objectKey).build()).build();
         } catch (InternalException e) {
             Logger.error(
-                    "Failed to upload file: {} to bucket: {} path: {}. Error: {}",
-                    fileName,
+                    false,
+                    "Storage",
+                    "Storage upload failed; provider={}, bucket={}, path={}, object={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
                     bucket,
                     path,
+                    fileName,
                     e.getMessage(),
                     e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
@@ -412,10 +437,13 @@ public class SftpFileProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (InternalException e) {
             Logger.error(
-                    "Failed to remove file: {} from bucket: {} path: {}. Error: {}",
-                    fileName,
+                    false,
+                    "Storage",
+                    "Storage remove failed; provider={}, bucket={}, path={}, object={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
                     bucket,
                     path,
+                    fileName,
                     e.getMessage(),
                     e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
@@ -478,7 +506,12 @@ public class SftpFileProvider extends AbstractProvider {
                 return Integer.parseInt(portStr);
             }
         } catch (NumberFormatException e) {
-            Logger.warn("Invalid port in endpoint: {}. Using default port 22.", endpoint);
+            Logger.warn(
+                    false,
+                    "Storage",
+                    "Storage endpoint port invalid; provider={}, defaultPort=22, endpointProvided={}, status=fallback",
+                    this.getClass().getSimpleName(),
+                    StringKit.isNotBlank(endpoint));
         }
         return 0; // Return 0 to indicate using the default port 22
     }
@@ -512,7 +545,14 @@ public class SftpFileProvider extends AbstractProvider {
             }
             return false;
         } catch (InternalException | IOException e) {
-            Logger.error("Failed to check existence of file: {}. Error: {}", path, e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Storage",
+                    "Storage existence check failed; provider={}, pathProvided={}, status=failure, error={}",
+                    this.getClass().getSimpleName(),
+                    StringKit.isNotBlank(path),
+                    e.getMessage(),
+                    e);
             return false;
         }
     }

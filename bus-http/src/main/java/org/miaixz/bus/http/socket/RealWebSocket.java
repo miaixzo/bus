@@ -44,6 +44,7 @@ import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.accord.Exchange;
 import org.miaixz.bus.http.metric.EventListener;
 import org.miaixz.bus.http.metric.Internal;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * An implementation of the WebSocket protocol (RFC 6455). This class manages the lifecycle of a WebSocket connection,
@@ -190,6 +191,14 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
                 while (writeOneFrame()) {
                 }
             } catch (IOException e) {
+                Logger.warn(
+                        false,
+                        "Http",
+                        e,
+                        "WebSocket operation failed: provider={}, recoverable={}, exception={}",
+                        "RealWebSocket",
+                        false,
+                        e.getClass().getSimpleName());
                 failWebSocket(e, null);
             }
         };
@@ -220,6 +229,11 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
      */
     @Override
     public void cancel() {
+        Logger.info(
+                false,
+                "Http",
+                "WebSocket cancellation requested: protocol=websocket, url={}",
+                originalRequest.url().redact());
         call.cancel();
     }
 
@@ -229,6 +243,12 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
      * @param client The HTTP client to use for the connection.
      */
     public void connect(Httpd client) {
+        Logger.info(
+                true,
+                "Http",
+                "WebSocket handshake starting: protocol=websocket, url={}, pingIntervalMs={}",
+                originalRequest.url().redact(),
+                pingIntervalMillis);
         client = client.newBuilder().eventListener(EventListener.NONE).protocols(ONLY_HTTP1).build();
         final Request request = originalRequest.newBuilder().header(HTTP.UPGRADE, "websocket")
                 .header(HTTP.CONNECTION, HTTP.UPGRADE).header(HTTP.SEC_WEBSOCKET_KEY, key)
@@ -252,6 +272,14 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
                 } catch (IOException e) {
                     if (exchange != null)
                         exchange.webSocketUpgradeFailed();
+                    Logger.error(
+                            false,
+                            "Http",
+                            e,
+                            "WebSocket upgrade failed: protocol=websocket, url={}, status={}, exception={}",
+                            request.url().redact(),
+                            response.code(),
+                            e.getClass().getSimpleName());
                     failWebSocket(e, response);
                     IoKit.close(response);
                     return;
@@ -262,8 +290,21 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
                     String name = "WebSocket " + request.url().redact();
                     initReaderAndWriter(name, streams);
                     listener.onOpen(RealWebSocket.this, response);
+                    Logger.info(
+                            false,
+                            "Http",
+                            "WebSocket opened: protocol=websocket, url={}, status={}",
+                            request.url().redact(),
+                            response.code());
                     loopReader();
                 } catch (Exception e) {
+                    Logger.error(
+                            false,
+                            "Http",
+                            e,
+                            "WebSocket reader failed: protocol=websocket, url={}, exception={}",
+                            request.url().redact(),
+                            e.getClass().getSimpleName());
                     failWebSocket(e, null);
                 }
             }
@@ -276,6 +317,13 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
              */
             @Override
             public void onFailure(NewCall call, IOException e) {
+                Logger.error(
+                        false,
+                        "Http",
+                        e,
+                        "WebSocket handshake call failed: protocol=websocket, url={}, exception={}",
+                        request.url().redact(),
+                        e.getClass().getSimpleName());
                 failWebSocket(e, null);
             }
         });
@@ -365,6 +413,14 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
             reader.processNextFrame();
             return receivedCloseCode == -1;
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Http",
+                    e,
+                    "WebSocket operation failed: provider={}, recoverable={}, exception={}",
+                    "RealWebSocket",
+                    false,
+                    e.getClass().getSimpleName());
             failWebSocket(e, null);
             return false;
         }
@@ -489,9 +545,22 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
 
         try {
             listener.onClosing(this, code, reason);
+            Logger.info(
+                    false,
+                    "Http",
+                    "WebSocket close received: protocol=websocket, url={}, code={}, reasonChars={}",
+                    originalRequest.url().redact(),
+                    code,
+                    reason == null ? 0 : reason.length());
 
             if (null != toClose) {
                 listener.onClosed(this, code, reason);
+                Logger.info(
+                        false,
+                        "Http",
+                        "WebSocket closed after peer close: protocol=websocket, url={}, code={}",
+                        originalRequest.url().redact(),
+                        code);
             }
         } finally {
             IoKit.close(toClose);
@@ -536,12 +605,27 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
             return false;
 
         if (queueSize + data.size() > MAX_QUEUE_SIZE) {
+            Logger.warn(
+                    false,
+                    "Http",
+                    "WebSocket outbound queue limit reached: protocol=websocket, url={}, queuedBytes={}, messageBytes={}",
+                    originalRequest.url().redact(),
+                    queueSize,
+                    data.size());
             close(WebSocketProtocol.CLOSE_CLIENT_GOING_AWAY, null);
             return false;
         }
 
         queueSize += data.size();
         messageAndCloseQueue.add(new Message(formatOpcode, data));
+        Logger.trace(
+                true,
+                "Http",
+                "WebSocket message queued: protocol=websocket, url={}, opcode={}, bytes={}, queueBytes={}",
+                originalRequest.url().redact(),
+                formatOpcode,
+                data.size(),
+                queueSize);
         runWriter();
         return true;
     }
@@ -599,6 +683,14 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         enqueuedClose = true;
 
         messageAndCloseQueue.add(new Close(code, reasonBytes, cancelAfterCloseMillis));
+        Logger.info(
+                true,
+                "Http",
+                "WebSocket close queued: protocol=websocket, url={}, code={}, reasonChars={}, cancelAfterMs={}",
+                originalRequest.url().redact(),
+                code,
+                reasonBytes == null ? 0 : reasonBytes.size(),
+                cancelAfterCloseMillis);
         runWriter();
         return true;
     }
@@ -718,6 +810,14 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         try {
             writer.writePing(ByteString.EMPTY);
         } catch (IOException e) {
+            Logger.warn(
+                    false,
+                    "Http",
+                    e,
+                    "WebSocket operation failed: provider={}, recoverable={}, exception={}",
+                    "RealWebSocket",
+                    false,
+                    e.getClass().getSimpleName());
             failWebSocket(e, null);
         }
     }
@@ -743,6 +843,14 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         }
 
         try {
+            Logger.error(
+                    false,
+                    "Http",
+                    e,
+                    "WebSocket failed: protocol=websocket, url={}, status={}, exception={}",
+                    originalRequest.url().redact(),
+                    response == null ? null : response.code(),
+                    e.getClass().getSimpleName());
             listener.onFailure(this, e, response);
         } finally {
             IoKit.close(streamsToClose);

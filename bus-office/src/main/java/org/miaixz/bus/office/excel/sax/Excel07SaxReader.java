@@ -36,6 +36,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.office.excel.sax.handler.RowHandler;
 import org.miaixz.bus.office.excel.ExcelSaxKit;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * SAX-based reader for Excel 2007+ files (XLSX). For details on Excel 2007+ format, see:
@@ -107,6 +108,14 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
         try (final OPCPackage open = OPCPackage.open(file, PackageAccess.READ)) {
             return read(open, idOrRidOrSheetName);
         } catch (final InvalidFormatException | IOException e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel 2007 SAX file read failed: fileName={}, sheetSelectorPresent={}, exception={}",
+                    file == null ? null : file.getName(),
+                    idOrRidOrSheetName != null,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -124,6 +133,14 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
         try (final OPCPackage opcPackage = OPCPackage.open(in)) {
             return read(opcPackage, idOrRidOrSheetName);
         } catch (final IOException | InvalidFormatException e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel 2007 SAX stream read failed: streamPresent={}, sheetSelectorPresent={}, exception={}",
+                    in != null,
+                    idOrRidOrSheetName != null,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -154,6 +171,14 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
         try {
             return read(new XSSFReader(opcPackage), idOrRidOrSheetName);
         } catch (final OpenXML4JException | IOException e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel 2007 SAX package read failed: packagePresent={}, sheetSelectorPresent={}, exception={}",
+                    opcPackage != null,
+                    idOrRidOrSheetName != null,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }

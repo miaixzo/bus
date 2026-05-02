@@ -188,6 +188,13 @@ public interface RepeatableAnnotationCollector {
         private static final None INSTANCE = new None();
 
         /**
+         * Constructs a no-op repeatable annotation collector.
+         */
+        None() {
+
+        }
+
+        /**
          * Returns a singleton list containing the original annotation, or an empty list if the annotation is
          * {@code null}.
          *
@@ -239,6 +246,12 @@ public interface RepeatableAnnotationCollector {
      * traversing and filtering annotations.
      */
     abstract class AbstractCollector implements RepeatableAnnotationCollector {
+
+        /**
+         * Constructs a repeatable annotation collector.
+         */
+        AbstractCollector() {
+        }
 
         /**
          * If an annotation is a container for repeatable annotations, this method attempts to retrieve the contained

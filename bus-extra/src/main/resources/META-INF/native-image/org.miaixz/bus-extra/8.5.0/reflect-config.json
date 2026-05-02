@@ -748,6 +748,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.extra.mq.RawMessage",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.extra.mq.provider.activemq.ActiveMQProvider",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,

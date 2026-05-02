@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -36,19 +36,37 @@ import org.miaixz.bus.core.lang.tuple.Pair;
 @ThreadSafe
 public final class LoadAverage {
 
+    /**
+     * The EXP_WEIGHT constant.
+     */
     private static final double[] EXP_WEIGHT = new double[] {
             // 1-, 5-, and 15-minute exponential smoothing weight
             Math.exp(-5d / 60d), Math.exp(-5d / 300d), Math.exp(-5d / 900d) };
     // Daemon thread for Load Average
+    /**
+     * The loadAvgThread value.
+     */
     private static Thread loadAvgThread = null;
+    /**
+     * The loadAverages value.
+     */
     private static double[] loadAverages = new double[] { -1d, -1d, -1d };
 
+    /**
+     * Queries the load average.
+     *
+     * @param nelem the nelem
+     * @return the query load average result
+     */
     public static double[] queryLoadAverage(int nelem) {
         synchronized (loadAverages) {
             return Arrays.copyOf(loadAverages, nelem);
         }
     }
 
+    /**
+     * Handles the stop daemon operation.
+     */
     public static synchronized void stopDaemon() {
         if (loadAvgThread != null) {
             loadAvgThread.interrupt();
@@ -56,12 +74,18 @@ public final class LoadAverage {
         }
     }
 
+    /**
+     * Handles the start daemon operation.
+     */
     public static synchronized void startDaemon() {
         if (loadAvgThread != null) {
             return;
         }
         loadAvgThread = new Thread("OSHI Load Average daemon") {
 
+            /**
+             * Handles the run operation.
+             */
             @Override
             public void run() {
                 // Initialize tick counters
@@ -128,6 +152,11 @@ public final class LoadAverage {
         loadAvgThread.start();
     }
 
+    /**
+     * Queries the non idle ticks.
+     *
+     * @return the query non idle ticks result
+     */
     private static Pair<Long, Long> queryNonIdleTicks() {
         Pair<List<String>, Map<ProcessInformation.IdleProcessorTimeProperty, List<Long>>> idleValues = ProcessInformation
                 .queryIdleProcessCounters();
@@ -135,9 +164,15 @@ public final class LoadAverage {
         Map<ProcessInformation.IdleProcessorTimeProperty, List<Long>> valueMap = idleValues.getRight();
         List<Long> proctimeTicks = valueMap.get(ProcessInformation.IdleProcessorTimeProperty.PERCENTPROCESSORTIME);
         List<Long> proctimeBase = valueMap.get(ProcessInformation.IdleProcessorTimeProperty.ELAPSEDTIME);
+        if (proctimeTicks == null || proctimeBase == null) {
+            return Pair.of(0L, 0L);
+        }
         long nonIdleTicks = 0L;
         long nonIdleBase = 0L;
         for (int i = 0; i < instances.size(); i++) {
+            if (i >= proctimeTicks.size() || i >= proctimeBase.size()) {
+                break;
+            }
             if ("_Total".equals(instances.get(i))) {
                 nonIdleTicks += proctimeTicks.get(i);
                 nonIdleBase += proctimeBase.get(i);

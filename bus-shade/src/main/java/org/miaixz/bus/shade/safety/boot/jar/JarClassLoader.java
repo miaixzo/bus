@@ -28,6 +28,7 @@ import java.net.URLClassLoader;
 import java.util.Enumeration;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.shade.safety.Builder;
 import org.miaixz.bus.shade.safety.algorithm.Key;
 import org.miaixz.bus.shade.safety.provider.DecryptorProvider;
@@ -85,6 +86,14 @@ public class JarClassLoader extends URLClassLoader {
         try {
             return new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile(), jarURLHandler);
         } catch (MalformedURLException e) {
+            Logger.warn(
+                    false,
+                    "Shade",
+                    e,
+                    "Jar resource URL wrap failed: resourceName={}, protocol={}, exception={}",
+                    name,
+                    url.getProtocol(),
+                    e.getClass().getSimpleName());
             return url;
         }
     }
@@ -120,16 +129,42 @@ public class JarClassLoader extends URLClassLoader {
         try {
             return super.findClass(name);
         } catch (ClassFormatError e) {
+            Logger.debug(
+                    true,
+                    "Shade",
+                    "Jar encrypted class fallback started: className={}, loader={}",
+                    name,
+                    getClass().getName());
             URL resource = findResource(name.replace(Symbol.C_DOT, Symbol.C_SLASH) + ".class");
             if (null == resource) {
+                Logger.warn(
+                        false,
+                        "Shade",
+                        "Jar encrypted class fallback failed: className={}, reason={}",
+                        name,
+                        "resourceMissing");
                 throw new ClassNotFoundException(name, e);
             }
             try (InputStream in = resource.openStream()) {
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 Builder.transfer(in, bos);
                 byte[] bytes = bos.toByteArray();
-                return defineClass(name, bytes, 0, bytes.length);
+                Class<?> definedClass = defineClass(name, bytes, 0, bytes.length);
+                Logger.debug(
+                        false,
+                        "Shade",
+                        "Jar encrypted class fallback finished: className={}, byteCount={}",
+                        name,
+                        bytes.length);
+                return definedClass;
             } catch (Throwable t) {
+                Logger.warn(
+                        false,
+                        "Shade",
+                        t,
+                        "Jar encrypted class fallback failed: className={}, exception={}",
+                        name,
+                        t.getClass().getSimpleName());
                 throw new ClassNotFoundException(name, t);
             }
         }
@@ -176,6 +211,13 @@ public class JarClassLoader extends URLClassLoader {
             try {
                 return new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile(), jarURLHandler);
             } catch (MalformedURLException e) {
+                Logger.warn(
+                        false,
+                        "Shade",
+                        e,
+                        "Jar resource enumeration URL wrap failed: protocol={}, exception={}",
+                        url.getProtocol(),
+                        e.getClass().getSimpleName());
                 return url;
             }
         }

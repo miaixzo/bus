@@ -180,7 +180,7 @@ public class Centre {
         try {
             args.configureTLS(conn, null);
         } catch (IOException e) {
-            Logger.error("Error configuring TLS", e);
+            Logger.error(false, "Image", "Error configuring TLS", e);
         }
 
         storeSCP.getApplicationEntity().setAcceptedCallingAETitles(args.getAcceptedCallingAETitles());
@@ -202,7 +202,12 @@ public class Centre {
             device.bindConnections();
         } catch (IOException | GeneralSecurityException e) {
             stop();
-            Logger.error("Failed to start DICOM service: {}", e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Image",
+                    "Failed to start DICOM service: exception={}",
+                    e.getClass().getSimpleName(),
+                    e);
         }
     }
 

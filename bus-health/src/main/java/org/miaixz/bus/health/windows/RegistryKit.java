@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -55,6 +55,9 @@ public final class RegistryKit {
      */
     private static final Advapi32 ADV = Advapi32.INSTANCE;
 
+    /**
+     * Creates a new RegistryKit instance.
+     */
     private RegistryKit() {
 
     }
@@ -75,7 +78,7 @@ public final class RegistryKit {
             Object val = Advapi32Util.registryGetValue(root, path, key);
             return registryValueToLong(val);
         } catch (Win32Exception e) {
-            Logger.trace("Unable to access " + path + ": " + e.getMessage());
+            Logger.trace(false, "Health", "Unable to access " + path + ": " + e.getClass().getSimpleName());
         }
         return 0L;
     }
@@ -113,7 +116,10 @@ public final class RegistryKit {
             Object value = Advapi32Util.registryGetValue(root, path, key);
             return Objects.isNull(value) ? null : value;
         } catch (Win32Exception e) {
-            Logger.trace("Unable to access " + path + " with flag " + accessFlag + ": " + e.getMessage());
+            Logger.trace(
+                    false,
+                    "Health",
+                    "Unable to access " + path + " with flag " + accessFlag + ": " + e.getClass().getSimpleName());
         } finally {
             if (hKey != null) {
                 int rc = ADV.RegCloseKey(hKey);
@@ -178,7 +184,7 @@ public final class RegistryKit {
             Object val = Advapi32Util.registryGetValue(root, path, key);
             return registryValueToString(val);
         } catch (Win32Exception e) {
-            Logger.trace("Unable to access " + path + ": " + e.getMessage());
+            Logger.trace(false, "Health", "Unable to access " + path + ": " + e.getClass().getSimpleName());
             return null;
         }
     }

@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -21,14 +21,17 @@ package org.miaixz.bus.health;
 
 import java.lang.management.*;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.function.Supplier;
 
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Keys;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.health.builtin.hardware.HardwareAbstractionLayer;
 import org.miaixz.bus.health.builtin.software.OperatingSystem;
 import org.miaixz.bus.health.linux.hardware.LinuxHardwareAbstractionLayer;
@@ -66,9 +69,9 @@ public class Platform {
     private static final String NOT_SUPPORTED = "Operating system not supported: ";
 
     /**
-     * The current operating system platform, represented by the OS enum, initialized via JNA's Platform.getOSType().
+     * The current operating system platform, detected from system properties without forcing JNA platform loading.
      */
-    private static final OS CURRENT_PLATFORM = OS.getValue(getOSType());
+    private static final OS CURRENT_PLATFORM = queryCurrentPlatform();
 
     /**
      * Caches the OperatingSystem instance using Memoizer to avoid repeated creation and improve performance.
@@ -94,6 +97,42 @@ public class Platform {
      */
     public static int getOSType() {
         return com.sun.jna.Platform.getOSType();
+    }
+
+    /**
+     * Queries the current platform from system properties.
+     *
+     * @return the current platform
+     */
+    private static OS queryCurrentPlatform() {
+        String osName = System.getProperty("os.name", Normal.EMPTY);
+        if (osName.startsWith("Linux")) {
+            String vmName = System.getProperty("java.vm.name", Normal.EMPTY).toLowerCase(Locale.ROOT);
+            return "dalvik".equals(vmName) ? OS.ANDROID : OS.LINUX;
+        } else if (osName.startsWith("AIX")) {
+            return OS.AIX;
+        } else if (osName.startsWith("Mac") || osName.startsWith("Darwin")) {
+            return OS.MACOS;
+        } else if (osName.startsWith("Windows CE")) {
+            return OS.WINDOWSCE;
+        } else if (osName.startsWith("Windows")) {
+            return OS.WINDOWS;
+        } else if (osName.startsWith("Solaris") || osName.startsWith("SunOS")) {
+            return OS.SOLARIS;
+        } else if (osName.startsWith("FreeBSD")) {
+            return OS.FREEBSD;
+        } else if (osName.startsWith("OpenBSD")) {
+            return OS.OPENBSD;
+        } else if (osName.equalsIgnoreCase("gnu")) {
+            return OS.GNU;
+        } else if (osName.equalsIgnoreCase("gnu/kfreebsd")) {
+            return OS.KFREEBSD;
+        } else if (osName.equalsIgnoreCase("netbsd")) {
+            return OS.NETBSD;
+        } else if (osName.equalsIgnoreCase("dragonflybsd")) {
+            return OS.DRAGONFLYBSD;
+        }
+        return OS.UNKNOWN;
     }
 
     /**
@@ -489,7 +528,9 @@ public class Platform {
      * @return The path prefix.
      */
     public static String getNativeLibraryResourcePrefix(int osType, String arch, String name) {
-        // Normalize architecture name
+        /*
+         * Normalize architecture name.
+         */
         arch = arch.toLowerCase().trim();
         arch = switch (arch) {
             case "powerpc" -> "ppc";
@@ -499,7 +540,9 @@ public class Platform {
             default -> arch;
         };
 
-        // Generate prefix based on OS type
+        /*
+         * Generate prefix based on OS type.
+         */
         switch (osType) {
             case com.sun.jna.Platform.ANDROID:
                 return "android-" + (arch.startsWith("arm") ? "arm" : arch);
@@ -547,32 +590,57 @@ public class Platform {
      * @throws UnsupportedOperationException if the platform is not supported.
      */
     private OperatingSystem createOperatingSystem() {
+        Logger.debug(
+                true,
+                "Health",
+                "Operating system collector creation started: platform={}",
+                CURRENT_PLATFORM.getName());
+        OperatingSystem operatingSystem;
         switch (CURRENT_PLATFORM) {
             case WINDOWS:
-                return new WindowsOperatingSystem();
+                operatingSystem = new WindowsOperatingSystem();
+                break;
 
             case LINUX:
             case ANDROID:
-                return new LinuxOperatingSystem();
+                operatingSystem = new LinuxOperatingSystem();
+                break;
 
             case MACOS:
-                return new MacOperatingSystemJNA();
+                operatingSystem = new MacOperatingSystemJNA();
+                break;
 
             case SOLARIS:
-                return new SolarisOperatingSystem();
+                operatingSystem = new SolarisOperatingSystem();
+                break;
 
             case FREEBSD:
-                return new FreeBsdOperatingSystem();
+                operatingSystem = new FreeBsdOperatingSystem();
+                break;
 
             case AIX:
-                return new AixOperatingSystem();
+                operatingSystem = new AixOperatingSystem();
+                break;
 
             case OPENBSD:
-                return new OpenBsdOperatingSystem();
+                operatingSystem = new OpenBsdOperatingSystem();
+                break;
 
             default:
+                Logger.warn(
+                        false,
+                        "Health",
+                        "Operating system collector unavailable: platform={}",
+                        CURRENT_PLATFORM.getName());
                 throw new UnsupportedOperationException(NOT_SUPPORTED + CURRENT_PLATFORM.getName());
         }
+        Logger.debug(
+                false,
+                "Health",
+                "Operating system collector created: platform={}, collector={}",
+                CURRENT_PLATFORM.getName(),
+                operatingSystem.getClass().getName());
+        return operatingSystem;
     }
 
     /**
@@ -582,32 +650,49 @@ public class Platform {
      * @throws UnsupportedOperationException if the platform is not supported.
      */
     private HardwareAbstractionLayer createHardware() {
+        Logger.debug(true, "Health", "Hardware collector creation started: platform={}", CURRENT_PLATFORM.getName());
+        HardwareAbstractionLayer hardwareLayer;
         switch (CURRENT_PLATFORM) {
             case WINDOWS:
-                return new WindowsHardwareAbstractionLayer();
+                hardwareLayer = new WindowsHardwareAbstractionLayer();
+                break;
 
             case LINUX:
             case ANDROID:
-                return new LinuxHardwareAbstractionLayer();
+                hardwareLayer = new LinuxHardwareAbstractionLayer();
+                break;
 
             case MACOS:
-                return new MacHardwareAbstractionLayer();
+                hardwareLayer = new MacHardwareAbstractionLayer();
+                break;
 
             case SOLARIS:
-                return new SolarisHardwareAbstractionLayer();
+                hardwareLayer = new SolarisHardwareAbstractionLayer();
+                break;
 
             case FREEBSD:
-                return new FreeBsdHardwareAbstractionLayer();
+                hardwareLayer = new FreeBsdHardwareAbstractionLayer();
+                break;
 
             case AIX:
-                return new AixHardwareAbstractionLayer();
+                hardwareLayer = new AixHardwareAbstractionLayer();
+                break;
 
             case OPENBSD:
-                return new OpenBsdHardwareAbstractionLayer();
+                hardwareLayer = new OpenBsdHardwareAbstractionLayer();
+                break;
 
             default:
+                Logger.warn(false, "Health", "Hardware collector unavailable: platform={}", CURRENT_PLATFORM.getName());
                 throw new UnsupportedOperationException(NOT_SUPPORTED + CURRENT_PLATFORM.getName());
         }
+        Logger.debug(
+                false,
+                "Health",
+                "Hardware collector created: platform={}, collector={}",
+                CURRENT_PLATFORM.getName(),
+                hardwareLayer.getClass().getName());
+        return hardwareLayer;
     }
 
     /**
@@ -634,60 +719,72 @@ public class Platform {
     public enum OS {
 
         /**
-         * macOS
+         * macOS.
          */
         MACOS("macOS"),
         /**
-         * A flavor of Linux
+         * A flavor of Linux.
          */
         LINUX("Linux"),
         /**
-         * Microsoft Windows
+         * Microsoft Windows.
          */
         WINDOWS("Windows"),
         /**
-         * Solaris (SunOS)
+         * Solaris (SunOS).
          */
         SOLARIS("Solaris"),
         /**
-         * FreeBSD
+         * FreeBSD.
          */
         FREEBSD("FreeBSD"),
         /**
-         * OpenBSD
+         * OpenBSD.
          */
         OPENBSD("OpenBSD"),
         /**
-         * Windows Embedded Compact
+         * Windows Embedded Compact.
          */
         WINDOWSCE("Windows CE"),
         /**
-         * IBM AIX
+         * IBM AIX.
          */
         AIX("AIX"),
         /**
-         * Android
+         * Android.
          */
         ANDROID("Android"),
         /**
-         * GNU operating system
+         * GNU operating system.
          */
         GNU("GNU"),
         /**
-         * Debian GNU/kFreeBSD
+         * Debian GNU/kFreeBSD.
          */
         KFREEBSD("kFreeBSD"),
         /**
-         * NetBSD
+         * NetBSD.
          */
         NETBSD("NetBSD"),
         /**
-         * An unspecified system
+         * DragonFly BSD.
+         */
+        DRAGONFLYBSD("DragonFly BSD"),
+        /**
+         * An unspecified system.
          */
         UNKNOWN("Unknown");
 
+        /**
+         * The display name.
+         */
         private final String name;
 
+        /**
+         * Creates a new OS instance.
+         *
+         * @param name the display name
+         */
         OS(String name) {
             this.name = name;
         }

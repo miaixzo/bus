@@ -49,6 +49,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Certificate related toolkit. This class provides utilities for handling and building X.509 certificates.
@@ -179,6 +180,14 @@ public class Certificate implements Serializable {
             return new JcaX509CertificateConverter().getCertificate(
                     certBuilder.build(new JcaContentSignerBuilder("SHA256WithRSAEncryption").build(privateKey)));
         } catch (CertIOException | OperatorCreationException | CertificateException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
+                    "Certificate",
+                    false,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }

@@ -11,7 +11,7 @@
 **Bus Cortex** is the registry and configuration center for the bus framework. It provides unified service registration, configuration management, health probing, and namespace-based multi-tenant isolation — all backed by a single `CacheX` storage abstraction (Memory / Redis / JDBC) with zero extra infrastructure.
 
 - **Unified Registry**: API / MCP / Prompt / Version — four registries behind one `Registry<T>` interface
-- **Service + Instance Model**: `ApiDefinition` (definition) + `Instance` (runtime), following Nacos-style separation
+- **Service + Instance Model**: `ApiAssets` (definition) + `Instance` (runtime), following Nacos-style separation
 - **Configuration Center**: Versioned publish, gray release routing, `@ConfigChange` callback annotations
 - **Health Probing**: Pluggable `Prober` (HTTP / TCP / MCP Ping / Process PID), server-side active probing
 - **Namespace Isolation**: Dynamic namespace resolution (Token / Header / context), `NamespaceGuard` enforced write isolation
@@ -29,7 +29,7 @@ Four registry types, one consistent API:
 
 | Registry | Asset Type | Description |
 |:---|:---|:---|
-| **ApiRegistry** | `ApiDefinition` + `Instance` | HTTP / gRPC / MCP / WebSocket / LLM API services |
+| **ApiRegistry** | `ApiAssets` + `Instance` | HTTP / gRPC / MCP / WebSocket / LLM API services |
 | **McpRegistry** | `McpAssets` | MCP tool/server definitions |
 | **PromptRegistry** | `PromptAssets` | Prompt template management |
 | **VersionRegistry** | `VersionAssets` | Service version lifecycle (ACTIVE / DEPRECATED / DISABLED) |
@@ -39,20 +39,40 @@ Four registry types, one consistent API:
 Cortex.apiRegistry().register(service, instance);
 Cortex.mcpRegistry().register(mcpAssets);
 
-List<ApiDefinition> services = Cortex.query(
-    new Vector().setNamespace("production").setMethod("vortex.user.get"), ApiDefinition.class);
+List<ApiAssets> services = Cortex.query(
+    Vector.newBuilder().namespace_id("production").method("vortex.user.get").build(), ApiAssets.class);
 ```
 
 ### ⚡ Service + Instance Separation
 
 ```
-ApiDefinition (definition, method+version globally unique)
-    └── Instance (runtime, host:port, at most 1 active per service)
+ApiAssets (definition, canonical identity = namespace + type + method + version[:verb])
+    └── Instance (runtime, unique by namespace + app_id + method + version + fingerprint)
 ```
 
-**Uniqueness Constraint**: Within the same `namespace + method + version`, only **one** active `Instance` is allowed at any time. Enforced atomically via `SETNX` (Redis) / `UNIQUE` constraint (JDBC) / `synchronized` (Memory).
+**Instance Identity**: Multiple runtime instances may coexist for the same API definition. Runtime uniqueness is scoped by `namespace + app_id + method + version + fingerprint`.
 
 Same-fingerprint re-registration is treated as an **idempotent TTL refresh**, not a conflict.
+
+**Gateway Route Semantics**: When synchronized to bus-vortex, `ApiAssets.routeKey` remains the lightweight public alias
+`method:version:verbCode`, for example `dp.license.get:1.0:1`. Runtime lookup candidates are generated separately by
+`Keying` in this order:
+
+1. `namespace:type:app_id:method:version:verb`
+2. `namespace:type:method:version:verb`
+3. `namespace:app_id:method:version:verb`
+4. `namespace:method:version:verb`
+5. `type:app_id:method:version:verb`
+6. `type:method:version:verb`
+7. `app_id:method:version:verb`
+8. `method:version:verb`
+
+`method` / `version` / `verb` are required runtime dimensions; `namespace`, `type`, and `app_id` participate only
+when present.
+
+`Keying` is now a generic key-strategy interface. Registry/runtime routing uses `Keying<Keying.RegistrySpec>` with
+the built-in `RegistryGenerator`, while the setting domain uses `Keying<Keying.SettingSpec>` with the built-in
+`SettingGenerator`.
 
 ### 🔧 Configuration Center
 
@@ -113,9 +133,9 @@ Automatic async sync to bus-vortex API gateway:
 ```
 ApiRegistry.register()
     └── VortexBridge.onRegistered()
-        └── ApiAssetsConverter.convert(ApiDefinition, Instance) → Assets
+        └── ApiAssetsConverter.convert(ApiAssets, Instance) → Assets
             └── asyncQueue.offer(SyncEvent{REGISTER, asset})
-                └── SyncWorker POST → bus-vortex /_internal/registry/sync
+                └── SyncWorker POST → bus-vortex /registry/push
 ```
 
 - Bounded queue (capacity 10,000) prevents OOM when bus-vortex is down
@@ -185,18 +205,24 @@ On startup: auto-registration, `@ConfigValue` field injection, and configuration
 ```java
 import org.miaixz.bus.cortex.Cortex;
 import org.miaixz.bus.cortex.Vector;
-import org.miaixz.bus.cortex.registry.api.ApiDefinition;
+import org.miaixz.bus.cortex.registry.api.ApiAssets;
 import org.miaixz.bus.cortex.registry.api.Instance;
 
 // Register a service with instance
-ApiDefinition service = new ApiDefinition();
-service.setNamespace("production");
+ApiAssets service = new ApiAssets();
+service.setNamespace_id("production");
+service.setApp_id("order-service");
 service.setMethod("vortex.user.get");
 service.setVersion("v1.0.0");
 service.setPath("/v2/api");
-service.setMode(1);  // HTTP
+service.setProtocol(1);  // HTTP
+service.setVerb(1);      // GET
 
 Instance instance = new Instance();
+instance.setNamespace_id("production");
+instance.setApp_id("order-service");
+instance.setMethod("vortex.user.get");
+instance.setVersion("v1.0.0");
 instance.setHost("192.168.1.10");
 instance.setPort(8080);
 instance.setWeight(100);
@@ -204,9 +230,9 @@ instance.setWeight(100);
 Cortex.apiRegistry().register(service, instance);
 
 // Query API definitions
-List<ApiDefinition> results = Cortex.query(
-    new Vector().setNamespace("production").setMethod("vortex.user.get"),
-    ApiDefinition.class
+List<ApiAssets> results = Cortex.query(
+    Vector.newBuilder().namespace_id("production").method("vortex.user.get").build(),
+    ApiAssets.class
 );
 
 // Deregister
@@ -255,7 +281,7 @@ public class OrderService {
 ```java
 // Watch for instance changes
 String watchId = Cortex.apiRegistry().watch(
-    new Vector().setNamespace("production").setMethod("vortex.user.get"),
+    Vector.newBuilder().namespace_id("production").method("vortex.user.get").build(),
     (added, removed, updated) -> {
         log.info("Instances changed: +{} -{} ~{}", added.size(), removed.size(), updated.size());
     }
@@ -270,14 +296,14 @@ Cortex.apiRegistry().unwatch(watchId);
 ```java
 // Register MCP tool
 McpAssets mcp = new McpAssets();
-mcp.setNamespace("ai");
+mcp.setNamespace_id("ai");
 mcp.setToolName("code-search");
 mcp.setTransport("stdio");
 Cortex.mcpRegistry().register(mcp);
 
 // Register prompt template
 PromptAssets prompt = new PromptAssets();
-prompt.setNamespace("ai");
+prompt.setNamespace_id("ai");
 prompt.setTemplate("Summarize the following: {{content}}");
 Cortex.promptRegistry().register(prompt);
 ```
@@ -373,7 +399,7 @@ bus:
 org.miaixz.bus.cortex
 ├── [root]         Core abstractions (Cortex, Assets, Species, Vector, Registry, Config)
 ├── registry/      Registry implementations
-│   ├── api/       ApiDefinition + Instance + ApiRegistry + probers
+│   ├── api/       ApiAssets + Instance + ApiRegistry + probers
 │   ├── mcp/       McpAssets + McpRegistry + ProcessManager
 │   ├── prompt/    PromptAssets + PromptRegistry
 │   ├── version/   VersionAssets + VersionRegistry + VersionStatus

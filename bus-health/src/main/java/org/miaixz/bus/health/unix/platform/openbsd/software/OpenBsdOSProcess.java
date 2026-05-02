@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -54,8 +54,14 @@ import com.sun.jna.platform.unix.Resource;
 @ThreadSafe
 public class OpenBsdOSProcess extends AbstractOSProcess {
 
+    /**
+     * The PS_THREAD_COLUMNS constant.
+     */
     static final String PS_THREAD_COLUMNS = Arrays.stream(PsThreadColumns.values()).map(Enum::name)
             .map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(Symbol.COMMA));
+    /**
+     * The ARGMAX constant.
+     */
     private static final int ARGMAX;
 
     static {
@@ -68,6 +74,8 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
                 ARGMAX = m.getInt(0);
             } else {
                 Logger.warn(
+                        false,
+                        "Health",
                         "Failed sysctl call for process arguments max size (kern.argmax). Error code: {}",
                         Native.getLastError());
                 ARGMAX = 0;
@@ -75,36 +83,124 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         }
     }
 
+    /**
+     * The arguments value.
+     */
     private final Supplier<List<String>> arguments = Memoizer.memoize(this::queryArguments);
+    /**
+     * The os value.
+     */
     private final OpenBsdOperatingSystem os;
+    /**
+     * The environmentVariables value.
+     */
     private final Supplier<Map<String, String>> environmentVariables = Memoizer
             .memoize(this::queryEnvironmentVariables);
+    /**
+     * The bitness value.
+     */
     private final int bitness;
+    /**
+     * The state value.
+     */
     private OSProcess.State state = OSProcess.State.INVALID;
 
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The path value.
+     */
     private String path = Normal.EMPTY;
+    /**
+     * The user value.
+     */
     private String user;
+    /**
+     * The userID value.
+     */
     private String userID;
+    /**
+     * The group value.
+     */
     private String group;
+    /**
+     * The groupID value.
+     */
     private String groupID;
+    /**
+     * The commandLineBackup value.
+     */
     private String commandLineBackup;
+    /**
+     * The commandLine value.
+     */
     private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
+    /**
+     * The parentProcessID value.
+     */
     private int parentProcessID;
+    /**
+     * The threadCount value.
+     */
     private int threadCount;
+    /**
+     * The priority value.
+     */
     private int priority;
+    /**
+     * The virtualSize value.
+     */
     private long virtualSize;
+    /**
+     * The residentSetSize value.
+     */
     private long residentSetSize;
+    /**
+     * The kernelTime value.
+     */
     private long kernelTime;
+    /**
+     * The userTime value.
+     */
     private long userTime;
+    /**
+     * The startTime value.
+     */
     private long startTime;
+    /**
+     * The upTime value.
+     */
     private long upTime;
+    /**
+     * The bytesRead value.
+     */
     private long bytesRead;
+    /**
+     * The bytesWritten value.
+     */
     private long bytesWritten;
+    /**
+     * The minorFaults value.
+     */
     private long minorFaults;
+    /**
+     * The majorFaults value.
+     */
     private long majorFaults;
+    /**
+     * The contextSwitches value.
+     */
     private long contextSwitches;
 
+    /**
+     * Creates a new OpenBsdOSProcess instance.
+     *
+     * @param pid   the pid
+     * @param psMap the ps map
+     * @param os    the os
+     */
     public OpenBsdOSProcess(int pid, Map<PsKeywords, String> psMap, OpenBsdOperatingSystem os) {
         super(pid);
         this.os = os;
@@ -155,6 +251,11 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         return this.commandLine.get();
     }
 
+    /**
+     * Queries the command line.
+     *
+     * @return the query command line result
+     */
     private String queryCommandLine() {
         String cl = String.join(Symbol.SPACE, getArguments());
         return cl.isEmpty() ? this.commandLineBackup : cl;
@@ -170,6 +271,11 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         return arguments.get();
     }
 
+    /**
+     * Queries the arguments.
+     *
+     * @return the query arguments result
+     */
     private List<String> queryArguments() {
         if (ARGMAX > 0) {
             // Get arguments via sysctl(3)
@@ -214,6 +320,11 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         return environmentVariables.get();
     }
 
+    /**
+     * Queries the environment variables.
+     *
+     * @return the query environment variables result
+     */
     private Map<String, String> queryEnvironmentVariables() {
         // Get environment variables via sysctl(3)
         int[] mib = new int[4];
@@ -562,6 +673,12 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         return this.contextSwitches;
     }
 
+    /**
+     * Updates the attributes.
+     *
+     * @param psMap the ps map
+     * @return the update attributes result
+     */
     private boolean updateAttributes(Map<PsKeywords, String> psMap) {
         long now = System.currentTimeMillis();
         switch (psMap.get(PsKeywords.STATE).charAt(0)) {
@@ -619,6 +736,9 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         return true;
     }
 
+    /**
+     * Updates the thread count.
+     */
     private void updateThreadCount() {
         List<String> threadList = Executor.runNative("ps -axHo tid -p " + getProcessID());
         if (!threadList.isEmpty()) {

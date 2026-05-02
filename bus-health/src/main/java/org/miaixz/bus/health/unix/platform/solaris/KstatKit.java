@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -56,12 +56,21 @@ import com.sun.jna.platform.unix.solaris.LibKstat.KstatNamed;
 @ThreadSafe
 public final class KstatKit {
 
+    /**
+     * The CHAIN constant.
+     */
     private static final Lock CHAIN = new ReentrantLock();
     // Only one thread may access the chain at any time, so we wrap this object in
     // the KstatChain class locked until the lock is released on auto-close.
+    /**
+     * The kstatCtl value.
+     */
     @GuardedBy("CHAIN")
     private static KstatCtl kstatCtl = null;
 
+    /**
+     * Creates a new KstatKit instance.
+     */
     private KstatKit() {
     }
 
@@ -94,7 +103,7 @@ public final class KstatKit {
         }
         Pointer p = LibKstat.INSTANCE.kstat_data_lookup(ksp, name);
         if (p == null) {
-            Logger.debug("Failed to lookup kstat value for key {}", name);
+            Logger.debug(false, "Health", "Failed to lookup kstat value for key {}", name);
             return Normal.EMPTY;
         }
         KstatNamed data = new KstatNamed(p);
@@ -118,7 +127,7 @@ public final class KstatKit {
                 return data.value.str.addr.getString(0);
 
             default:
-                Logger.error("Unimplemented kstat data type {}", data.data_type);
+                Logger.error(false, "Health", "Unimplemented kstat data type {}", data.data_type);
                 return Normal.EMPTY;
         }
     }
@@ -140,6 +149,8 @@ public final class KstatKit {
         if (p == null) {
             if (Logger.isDebugEnabled()) {
                 Logger.debug(
+                        false,
+                        "Health",
                         "Failed lo lookup kstat value on {}:{}:{} for key {}",
                         Native.toString(ksp.ks_module, Charset.US_ASCII),
                         ksp.ks_instance,
@@ -163,7 +174,7 @@ public final class KstatKit {
                 return data.value.ui64;
 
             default:
-                Logger.error("Unimplemented or non-numeric kstat data type {}", data.data_type);
+                Logger.error(false, "Health", "Unimplemented or non-numeric kstat data type {}", data.data_type);
                 return 0L;
         }
     }
@@ -203,12 +214,14 @@ public final class KstatKit {
         } catch (Kstat2StatusException e) {
             // Expected to end iteration
             Logger.debug(
+                    false,
+                    "Health",
                     "Failed to get stats on {}{}{} for names {}: {}",
                     beforeStr,
                     s,
                     afterStr,
                     Arrays.toString(names),
-                    e.getMessage());
+                    e.getClass().getSimpleName());
         } finally {
             KstatKit.CHAIN.unlock();
             matchers.free();
@@ -243,7 +256,13 @@ public final class KstatKit {
                 handle.close();
             }
         } catch (Kstat2StatusException e) {
-            Logger.debug("Failed to get stats on {} for names {}: {}", mapStr, Arrays.toString(names), e.getMessage());
+            Logger.debug(
+                    false,
+                    "Health",
+                    "Failed to get stats on {} for names {}: {}",
+                    mapStr,
+                    Arrays.toString(names),
+                    e.getClass().getSimpleName());
         } finally {
             KstatKit.CHAIN.unlock();
             matchers.free();
@@ -260,8 +279,16 @@ public final class KstatKit {
      */
     public static final class KstatChain implements AutoCloseable {
 
+        /**
+         * The localCtlRef value.
+         */
         private final KstatCtl localCtlRef;
 
+        /**
+         * Creates a new KstatChain instance.
+         *
+         * @param ctl the ctl
+         */
         private KstatChain(KstatCtl ctl) {
             this.localCtlRef = ctl;
             update();
@@ -284,6 +311,8 @@ public final class KstatKit {
                 if (LibKstat.EAGAIN != Native.getLastError() || 5 <= ++retry) {
                     if (Logger.isDebugEnabled()) {
                         Logger.debug(
+                                false,
+                                "Health",
                                 "Failed to read kstat {}:{}:{}",
                                 Native.toString(ksp.ks_module, Charset.US_ASCII),
                                 ksp.ks_instance,

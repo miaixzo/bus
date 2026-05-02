@@ -36,6 +36,7 @@ import org.miaixz.bus.http.metric.EventListener;
 import org.miaixz.bus.http.metric.Internal;
 import org.miaixz.bus.http.metric.http.HttpCodec;
 import org.miaixz.bus.http.socket.RealWebSocket;
+import org.miaixz.bus.logger.Logger;
 
 import java.io.IOException;
 import java.net.ProtocolException;
@@ -114,6 +115,14 @@ public final class Exchange {
             codec.writeRequestHeaders(request);
             eventListener.requestHeadersEnd(call, request);
         } catch (IOException e) {
+            Logger.error(
+                    false,
+                    "Http",
+                    e,
+                    "Exchange request headers write failed: protocol=http, method={}, url={}, exception={}",
+                    request.method(),
+                    request.url().redact(),
+                    e.getClass().getSimpleName());
             eventListener.requestFailed(call, e);
             trackFailure(e);
             throw e;
@@ -145,6 +154,14 @@ public final class Exchange {
         try {
             codec.flushRequest();
         } catch (IOException e) {
+            Logger.error(
+                    false,
+                    "Http",
+                    e,
+                    "Exchange request flush failed: protocol=http, method={}, url={}, exception={}",
+                    call.request().method(),
+                    call.request().url().redact(),
+                    e.getClass().getSimpleName());
             eventListener.requestFailed(call, e);
             trackFailure(e);
             throw e;
@@ -160,6 +177,14 @@ public final class Exchange {
         try {
             codec.finishRequest();
         } catch (IOException e) {
+            Logger.error(
+                    false,
+                    "Http",
+                    e,
+                    "Exchange request finish failed: protocol=http, method={}, url={}, exception={}",
+                    call.request().method(),
+                    call.request().url().redact(),
+                    e.getClass().getSimpleName());
             eventListener.requestFailed(call, e);
             trackFailure(e);
             throw e;
@@ -188,6 +213,15 @@ public final class Exchange {
             }
             return result;
         } catch (IOException e) {
+            Logger.error(
+                    false,
+                    "Http",
+                    e,
+                    "Exchange response headers read failed: protocol=http, method={}, url={}, expectContinue={}, exception={}",
+                    call.request().method(),
+                    call.request().url().redact(),
+                    expectContinue,
+                    e.getClass().getSimpleName());
             eventListener.responseFailed(call, e);
             trackFailure(e);
             throw e;
@@ -219,6 +253,15 @@ public final class Exchange {
             ResponseBodySource source = new ResponseBodySource(rawSource, contentLength);
             return new RealResponseBody(contentType, contentLength, IoKit.buffer(source));
         } catch (IOException e) {
+            Logger.error(
+                    false,
+                    "Http",
+                    e,
+                    "Exchange response body open failed: protocol=http, method={}, url={}, status={}, exception={}",
+                    call.request().method(),
+                    call.request().url().redact(),
+                    response.code(),
+                    e.getClass().getSimpleName());
             eventListener.responseFailed(call, e);
             trackFailure(e);
             throw e;
@@ -304,6 +347,17 @@ public final class Exchange {
      */
     IOException bodyComplete(long bytesRead, boolean responseDone, boolean requestDone, IOException e) {
         if (e != null) {
+            Logger.warn(
+                    false,
+                    "Http",
+                    e,
+                    "Exchange body failed: protocol=http, method={}, url={}, requestDone={}, responseDone={}, bytes={}, exception={}",
+                    call.request().method(),
+                    call.request().url().redact(),
+                    requestDone,
+                    responseDone,
+                    bytesRead,
+                    e.getClass().getSimpleName());
             trackFailure(e);
         }
         if (requestDone) {
@@ -360,6 +414,14 @@ public final class Exchange {
                 super.write(source, byteCount);
                 this.bytesReceived += byteCount;
             } catch (IOException e) {
+                Logger.warn(
+                        false,
+                        "Http",
+                        e,
+                        "HTTP exchange operation failed: provider={}, recoverable={}, exception={}",
+                        "Exchange",
+                        false,
+                        e.getClass().getSimpleName());
                 throw complete(e);
             }
         }
@@ -369,6 +431,14 @@ public final class Exchange {
             try {
                 super.flush();
             } catch (IOException e) {
+                Logger.warn(
+                        false,
+                        "Http",
+                        e,
+                        "HTTP exchange operation failed: provider={}, recoverable={}, exception={}",
+                        "Exchange",
+                        false,
+                        e.getClass().getSimpleName());
                 throw complete(e);
             }
         }
@@ -385,6 +455,14 @@ public final class Exchange {
                 super.close();
                 complete(null);
             } catch (IOException e) {
+                Logger.warn(
+                        false,
+                        "Http",
+                        e,
+                        "HTTP exchange operation failed: provider={}, recoverable={}, exception={}",
+                        "Exchange",
+                        false,
+                        e.getClass().getSimpleName());
                 throw complete(e);
             }
         }
@@ -440,6 +518,14 @@ public final class Exchange {
 
                 return read;
             } catch (IOException e) {
+                Logger.warn(
+                        false,
+                        "Http",
+                        e,
+                        "HTTP exchange operation failed: provider={}, recoverable={}, exception={}",
+                        "Exchange",
+                        false,
+                        e.getClass().getSimpleName());
                 throw complete(e);
             }
         }
@@ -453,6 +539,14 @@ public final class Exchange {
                 super.close();
                 complete(null);
             } catch (IOException e) {
+                Logger.warn(
+                        false,
+                        "Http",
+                        e,
+                        "HTTP exchange operation failed: provider={}, recoverable={}, exception={}",
+                        "Exchange",
+                        false,
+                        e.getClass().getSimpleName());
                 throw complete(e);
             }
         }

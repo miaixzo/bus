@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -39,6 +39,17 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractUsbDevice;
 @Immutable
 public class AixUsbDevice extends AbstractUsbDevice {
 
+    /**
+     * Creates a new AixUsbDevice instance.
+     *
+     * @param name             the name
+     * @param vendor           the vendor
+     * @param vendorId         the vendor id
+     * @param productId        the product id
+     * @param serialNumber     the serial number
+     * @param uniqueDeviceId   the unique device id
+     * @param connectedDevices the connected devices
+     */
     public AixUsbDevice(String name, String vendor, String vendorId, String productId, String serialNumber,
             String uniqueDeviceId, List<UsbDevice> connectedDevices) {
         super(name, vendor, vendorId, productId, serialNumber, uniqueDeviceId, connectedDevices);

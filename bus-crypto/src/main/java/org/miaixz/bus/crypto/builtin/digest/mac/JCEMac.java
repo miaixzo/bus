@@ -28,6 +28,7 @@ import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.Keeper;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * JCE (Java Cryptography Extension) MAC algorithm implementation engine. This class wraps a {@link javax.crypto.Mac}
@@ -93,6 +94,14 @@ public class JCEMac extends SimpleWrapper<javax.crypto.Mac> implements Mac {
                 mac.init(key);
             }
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
+                    "JCEMac",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
         return mac;

@@ -36,6 +36,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Douyin Mini Program login provider.
@@ -161,6 +162,15 @@ public class DouyinMiniProvider extends AbstractProvider {
             return Authorization.builder().token(token).openId(openId).expireIn(expiresIn).unionId(unionId)
                     .refresh(refresh).refreshExpireIn(refreshExpiresIn).scope(scope).build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "token",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse token response: " + e.getMessage());
         }
     }

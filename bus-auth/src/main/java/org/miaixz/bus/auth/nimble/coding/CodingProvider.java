@@ -36,6 +36,7 @@ import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
 
 import java.util.Map;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Coding login provider.
@@ -92,6 +93,15 @@ public class CodingProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(Authorization.builder().token(token).expireIn(expiresIn).refresh(refresh).build()).build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "access token",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
     }
@@ -140,6 +150,15 @@ public class CodingProvider extends AbstractProvider {
                                     .remark(slogan).token(authorization).source(complex.toString()).build())
                     .build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "user info",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
     }

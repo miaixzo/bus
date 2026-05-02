@@ -54,9 +54,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Thread.sleep(2000);
  * stopWatch.stop();
  *
- * // Print elapsed time
- * Console.log(stopWatch.prettyPrint());
- *
  * }</pre>
  *
  * @author Kimi Liu

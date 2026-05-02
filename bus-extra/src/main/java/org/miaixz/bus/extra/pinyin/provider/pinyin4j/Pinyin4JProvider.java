@@ -23,6 +23,7 @@ import org.apache.logging.log4j.util.InternalException;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.extra.pinyin.PinyinProvider;
+import org.miaixz.bus.logger.Logger;
 
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
@@ -41,7 +42,7 @@ import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombi
  *
  * <p>
  * To introduce (dependency):
- * 
+ *
  * <pre>
  * &lt;dependency&gt;
  *     &lt;groupId&gt;com.belerweb&lt;/groupId&gt;
@@ -87,7 +88,9 @@ public class Pinyin4JProvider implements PinyinProvider {
      */
     public Pinyin4JProvider() {
         // Check if the library is introduced when loading via SPI
+        Logger.info(true, "Extra", "Pinyin4J provider dependency check started");
         Assert.notNull(PinyinHelper.class);
+        Logger.info(false, "Extra", "Pinyin4J provider dependency check completed");
     }
 
     /**
@@ -107,6 +110,13 @@ public class Pinyin4JProvider implements PinyinProvider {
             final String[] results = PinyinHelper.toHanyuPinyinStringArray(c, tone ? WITH_TONE_MARK : WITHOUT_TONE);
             result = ArrayKit.isEmpty(results) ? String.valueOf(c) : results[0];
         } catch (final BadHanyuPinyinOutputFormatCombination e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "Pinyin4J char conversion fallback used: tone={}, exception={}",
+                    tone,
+                    e.getClass().getSimpleName());
             result = String.valueOf(c);
         }
         return result;
@@ -125,6 +135,13 @@ public class Pinyin4JProvider implements PinyinProvider {
      */
     @Override
     public String getPinyin(final String str, final String separator, final boolean tone) {
+        Logger.debug(
+                true,
+                "Extra",
+                "Pinyin4J string conversion started: textLength={}, separatorPresent={}, tone={}",
+                str == null ? 0 : str.length(),
+                separator != null,
+                tone);
         final StringBuilder result = new StringBuilder();
         boolean isFirst = true;
         final int strLen = str.length();
@@ -144,8 +161,24 @@ public class Pinyin4JProvider implements PinyinProvider {
                 }
             }
         } catch (final BadHanyuPinyinOutputFormatCombination e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "Pinyin4J string conversion failed: textLength={}, separatorPresent={}, tone={}, exception={}",
+                    str == null ? 0 : str.length(),
+                    separator != null,
+                    tone,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
+        Logger.debug(
+                false,
+                "Extra",
+                "Pinyin4J string conversion completed: textLength={}, resultLength={}, tone={}",
+                str == null ? 0 : str.length(),
+                result.length(),
+                tone);
         return result.toString();
     }
 

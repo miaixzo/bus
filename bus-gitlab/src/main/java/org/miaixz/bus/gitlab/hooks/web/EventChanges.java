@@ -29,6 +29,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import org.miaixz.bus.logger.Logger;
 
 public abstract class EventChanges {
 
@@ -141,6 +142,13 @@ public abstract class EventChanges {
                 // noinspection unchecked : It's duty from caller to be sure to do that
                 return container != null ? (ChangeContainer<T>) container : null;
             } catch (ClassCastException e) {
+                Logger.debug(
+                        false,
+                        "GitLab",
+                        "GitLab webhook change container cast failed: property={}, containerPresent={}, exception={}",
+                        property,
+                        otherProperties.get(property) != null,
+                        e.getClass().getSimpleName());
                 return null;
             }
         } else {

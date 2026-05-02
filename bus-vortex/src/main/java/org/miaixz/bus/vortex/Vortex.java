@@ -72,10 +72,10 @@ public class Vortex implements SmartLifecycle {
         if (running.compareAndSet(false, true)) {
             try {
                 disposableServer = httpServer.bindNow();
-                Logger.info("Vortex server started successfully on port: {}", disposableServer.port());
+                Logger.info(true, "Vortex", "Gateway listener started: port={}", disposableServer.port());
             } catch (Exception e) {
                 running.set(false);
-                Logger.error("Failed to start Vortex server", e);
+                Logger.error(false, "Vortex", "Gateway listener failed to start", e);
                 throw new RuntimeException("Failed to bind Vortex server", e);
             }
         }
@@ -89,22 +89,20 @@ public class Vortex implements SmartLifecycle {
     public void stop() {
         if (running.compareAndSet(true, false) && disposableServer != null) {
             try {
-                // Dispose the HTTP server first
                 disposableServer.disposeNow();
-                Logger.info("Vortex server stopped successfully on port: {}", disposableServer.port());
+                Logger.info(false, "Vortex", "Gateway listener stopped: port={}", disposableServer.port());
             } catch (Exception e) {
-                Logger.error("Error while stopping Vortex server", e);
+                Logger.error(false, "Vortex", "Gateway listener stop failed", e);
             }
 
-            // Close the ConnectionProvider to release all connections
             try {
                 ConnectionProvider connectionProvider = Holder.getConnectionProviderIfPresent();
                 if (connectionProvider != null) {
                     connectionProvider.dispose();
-                    Logger.info("ConnectionProvider closed successfully");
+                    Logger.info(false, "Vortex", "Runtime HTTP connection pool closed");
                 }
             } catch (Exception e) {
-                Logger.error("Error while closing ConnectionProvider", e);
+                Logger.error(false, "Vortex", "Runtime HTTP connection pool close failed", e);
             }
         }
     }

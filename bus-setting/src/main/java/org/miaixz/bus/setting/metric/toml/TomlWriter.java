@@ -34,6 +34,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * A writer for generating TOML (Tom's Obvious, Minimal Language) data from a Map.
@@ -166,7 +167,14 @@ public class TomlWriter {
      * @throws IOException if an I/O error occurs
      */
     public void close() throws IOException {
-        writer.close();
+        Logger.debug(true, "Setting", "TOML writer close requested: writerPresent={}", writer != null);
+        try {
+            writer.close();
+        } catch (final IOException e) {
+            Logger.warn(false, "Setting", e, "TOML writer close failed: exception={}", e.getClass().getSimpleName());
+            throw e;
+        }
+        Logger.debug(false, "Setting", "TOML writer closed");
     }
 
     /**
@@ -175,7 +183,14 @@ public class TomlWriter {
      * @throws IOException if an I/O error occurs
      */
     public void flush() throws IOException {
-        writer.flush();
+        Logger.debug(true, "Setting", "TOML writer flush requested: writerPresent={}", writer != null);
+        try {
+            writer.flush();
+        } catch (final IOException e) {
+            Logger.warn(false, "Setting", e, "TOML writer flush failed: exception={}", e.getClass().getSimpleName());
+            throw e;
+        }
+        Logger.debug(false, "Setting", "TOML writer flushed");
     }
 
     /**
@@ -185,7 +200,32 @@ public class TomlWriter {
      * @throws InternalException if an I/O error occurs during writing
      */
     public void write(final Map<String, Object> data) throws InternalException {
-        writeTableContent(data);
+        final long startedAt = System.nanoTime();
+        Logger.info(
+                true,
+                "Setting",
+                "TOML writer write started: keyCount={}, writerPresent={}",
+                data == null ? 0 : data.size(),
+                writer != null);
+        try {
+            writeTableContent(data);
+        } catch (final RuntimeException e) {
+            Logger.warn(
+                    false,
+                    "Setting",
+                    e,
+                    "TOML writer write failed: keyCount={}, exception={}, elapsedMs={}",
+                    data == null ? 0 : data.size(),
+                    e.getClass().getSimpleName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
+            throw e;
+        }
+        Logger.info(
+                false,
+                "Setting",
+                "TOML writer write completed: keyCount={}, elapsedMs={}",
+                data == null ? 0 : data.size(),
+                (System.nanoTime() - startedAt) / 1_000_000L);
     }
 
     private void writeTableName() throws InternalException {

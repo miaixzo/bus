@@ -26,6 +26,7 @@ import io.opentelemetry.api.metrics.DoubleHistogram;
 import io.opentelemetry.api.metrics.LongCounter;
 import io.opentelemetry.api.metrics.Meter;
 import io.opentelemetry.api.metrics.ObservableDoubleGauge;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.Provider;
 import org.miaixz.bus.metrics.guard.CardinalityGuard;
@@ -92,8 +93,20 @@ public class OpenTelemetryProvider implements Provider {
      * @param instrumentationScope instrumentation scope name used when building the OTel Meter
      */
     public OpenTelemetryProvider(OpenTelemetry openTelemetry, String instrumentationScope) {
+        Logger.info(
+                true,
+                "Metrics",
+                "OpenTelemetry metrics provider initialization started: openTelemetryClass={}, instrumentationScope={}",
+                null == openTelemetry ? null : openTelemetry.getClass().getName(),
+                instrumentationScope);
         this.openTelemetry = openTelemetry;
         this.otelMeter = openTelemetry.getMeter(instrumentationScope);
+        Logger.info(
+                false,
+                "Metrics",
+                "OpenTelemetry metrics provider initialization finished: openTelemetryClass={}, instrumentationScope={}",
+                null == openTelemetry ? null : openTelemetry.getClass().getName(),
+                instrumentationScope);
     }
 
     /**

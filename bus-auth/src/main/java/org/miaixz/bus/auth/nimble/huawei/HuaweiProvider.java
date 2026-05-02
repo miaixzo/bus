@@ -43,6 +43,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Huawei login provider.
@@ -140,6 +141,15 @@ public class HuaweiProvider extends AbstractProvider {
                                         .avatar(headPictureURL).token(authorization).source(context.toString()).build())
                         .build();
             } catch (Exception e) {
+                Logger.warn(
+                        false,
+                        "Auth",
+                        e,
+                        "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                        getClass().getSimpleName(),
+                        this.complex == null ? null : this.complex.getName(),
+                        "user info",
+                        e.getClass().getSimpleName());
                 throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
             }
         }
@@ -216,6 +226,15 @@ public class HuaweiProvider extends AbstractProvider {
 
             return Authorization.builder().token(token).expireIn(expiresIn).refresh(refresh).idToken(idToken).build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "access token",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
     }

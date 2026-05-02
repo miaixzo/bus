@@ -110,21 +110,48 @@ public class TimingWheel {
         final long expiration = timerCrontab.getDelayMs();
         // If the task is already expired, it cannot be added.
         if (expiration < currentTime + tickMs) {
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Timing wheel task rejected as expired: expirationMs={}, currentTimeMs={}, tickMs={}",
+                    expiration,
+                    currentTime,
+                    tickMs);
             return false;
         } else if (expiration < currentTime + interval) {
             // The task fits within the current wheel's time span.
             final long virtualId = expiration / tickMs;
             final int index = (int) (virtualId % wheelSize);
-            Logger.debug("tickMs: {} ------index: {} ------expiration: {}", tickMs, index, expiration);
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Timing wheel task bucketed: tickMs={}, index={}, expirationMs={}, intervalMs={}",
+                    tickMs,
+                    index,
+                    expiration,
+                    interval);
 
             final TimerTaskList timerTaskList = timerTaskLists[index];
             timerTaskList.addTask(timerCrontab);
             // If the expiration time of the list is updated, it needs to be re-inserted into the delay queue.
             if (timerTaskList.setExpiration(virtualId * tickMs)) {
+                Logger.debug(
+                        false,
+                        "Tempus",
+                        "Timing wheel bucket expiration updated: index={}, expirationMs={}",
+                        index,
+                        virtualId * tickMs);
                 consumer.accept(timerTaskList);
             }
         } else {
             // The task's delay is too long for this wheel; pass it to the overflow wheel.
+            Logger.debug(
+                    true,
+                    "Tempus",
+                    "Timing wheel task routed to overflow: expirationMs={}, currentTimeMs={}, intervalMs={}",
+                    expiration,
+                    currentTime,
+                    interval);
             final TimingWheel timeWheel = getOverflowWheel();
             timeWheel.addTask(timerCrontab);
         }
@@ -138,11 +165,18 @@ public class TimingWheel {
      */
     public void advanceClock(final long timestamp) {
         if (timestamp >= currentTime + tickMs) {
+            Logger.debug(
+                    true,
+                    "Tempus",
+                    "Timing wheel clock advance started: currentTimeMs={}, targetTimestampMs={}",
+                    currentTime,
+                    timestamp);
             currentTime = timestamp - (timestamp % tickMs);
             if (overflowWheel != null) {
                 // Propagate the time advance to the overflow wheel.
                 this.getOverflowWheel().advanceClock(timestamp);
             }
+            Logger.debug(false, "Tempus", "Timing wheel clock advance completed: currentTimeMs={}", currentTime);
         }
     }
 
@@ -156,6 +190,13 @@ public class TimingWheel {
             synchronized (this) {
                 if (overflowWheel == null) {
                     overflowWheel = new TimingWheel(interval, wheelSize, currentTime, consumer);
+                    Logger.debug(
+                            false,
+                            "Tempus",
+                            "Timing wheel overflow created: tickMs={}, wheelSize={}, currentTimeMs={}",
+                            interval,
+                            wheelSize,
+                            currentTime);
                 }
             }
         }

@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -34,14 +34,41 @@ import org.miaixz.bus.health.Formats;
 @Immutable
 public class HWPartition {
 
+    /**
+     * The identification value.
+     */
     private final String identification;
+    /**
+     * The name value.
+     */
     private final String name;
+    /**
+     * The type value.
+     */
     private final String type;
+    /**
+     * The uuid value.
+     */
     private final String uuid;
+    /**
+     * The label value.
+     */
     private final String label;
+    /**
+     * The size value.
+     */
     private final long size;
+    /**
+     * The major value.
+     */
     private final int major;
+    /**
+     * The minor value.
+     */
     private final int minor;
+    /**
+     * The mountPoint value.
+     */
     private final String mountPoint;
 
     /**
@@ -186,6 +213,11 @@ public class HWPartition {
         return this.mountPoint;
     }
 
+    /**
+     * Returns the to string result.
+     *
+     * @return the to string result
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

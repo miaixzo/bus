@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -40,8 +40,16 @@ import com.sun.jna.platform.unix.LibCAPI;
 @ThreadSafe
 final class FreeBsdNetworkParams extends AbstractNetworkParams {
 
+    /**
+     * The LIBC constant.
+     */
     private static final FreeBsdLibc LIBC = FreeBsdLibc.INSTANCE;
 
+    /**
+     * Returns the domain name.
+     *
+     * @return the get domain name result
+     */
     @Override
     public String getDomainName() {
         try (CLibrary.Addrinfo hint = new CLibrary.Addrinfo()) {
@@ -52,7 +60,7 @@ final class FreeBsdNetworkParams extends AbstractNetworkParams {
                 int res = LIBC.getaddrinfo(hostname, null, hint, ptr);
                 if (res > 0) {
                     if (Logger.isErrorEnabled()) {
-                        Logger.warn("Failed getaddrinfo(): {}", LIBC.gai_strerror(res));
+                        Logger.warn(false, "Health", "Failed getaddrinfo(): {}", LIBC.gai_strerror(res));
                     }
                     return Normal.EMPTY;
                 }
@@ -65,6 +73,11 @@ final class FreeBsdNetworkParams extends AbstractNetworkParams {
         }
     }
 
+    /**
+     * Returns the host name.
+     *
+     * @return the get host name result
+     */
     @Override
     public String getHostName() {
         byte[] hostnameBuffer = new byte[LibCAPI.HOST_NAME_MAX + 1];
@@ -74,11 +87,21 @@ final class FreeBsdNetworkParams extends AbstractNetworkParams {
         return Native.toString(hostnameBuffer);
     }
 
+    /**
+     * Returns the ipv4 default gateway.
+     *
+     * @return the get ipv4 default gateway result
+     */
     @Override
     public String getIpv4DefaultGateway() {
         return searchGateway(Executor.runNative("route -4 get default"));
     }
 
+    /**
+     * Returns the ipv6 default gateway.
+     *
+     * @return the get ipv6 default gateway result
+     */
     @Override
     public String getIpv6DefaultGateway() {
         return searchGateway(Executor.runNative("route -6 get default"));

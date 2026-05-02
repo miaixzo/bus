@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -40,10 +40,18 @@ import org.miaixz.bus.logger.Logger;
  */
 public final class MacInstalledApps {
 
+    /**
+     * Creates a new MacInstalledApps instance.
+     */
     private MacInstalledApps() {
 
     }
 
+    /**
+     * Queries the installed apps.
+     *
+     * @return the query installed apps result
+     */
     public static List<ApplicationInfo> queryInstalledApps() {
         List<String> output = Executor.runNative("system_profiler -xml SPApplicationsDataType");
 
@@ -114,26 +122,48 @@ public final class MacInstalledApps {
                                 new ApplicationInfo(dictValues.get("_name"), version, vendor, lastModifiedEpoch,
                                         additionalInfo));
                     } catch (Exception e) {
-                        Logger.trace("Unable to parse dict values: " + e.getMessage() + " - " + dictValues, e);
+                        Logger.trace(
+                                false,
+                                "Health",
+                                "Unable to parse dict values: " + e.getClass().getSimpleName() + " - " + dictValues,
+                                e);
                     }
                 }
 
                 return new ArrayList<>(appInfoSet);
             }
         } catch (Exception e) {
-            Logger.trace("Unable to read installed apps: " + e.getMessage(), e);
+            Logger.trace(false, "Health", "Unable to read installed apps: " + e.getClass().getSimpleName(), e);
         }
         return Collections.emptyList();
     }
 
+    /**
+     * Reads the first bytes.
+     *
+     * @param file the file
+     * @return the read first bytes result
+     * @throws IOException if the io exception condition occurs
+     */
     private static byte[] readFirstBytes(File file) throws IOException {
         byte[] buffer = new byte[8];
         try (FileInputStream fis = new FileInputStream(file)) {
-            fis.read(buffer);
+            int bytesRead = fis.read(buffer);
+            if (bytesRead < buffer.length) {
+                byte[] result = new byte[Math.max(0, bytesRead)];
+                System.arraycopy(buffer, 0, result, 0, result.length);
+                return result;
+            }
             return buffer;
         }
     }
 
+    /**
+     * Parses the items.
+     *
+     * @param xml the xml
+     * @return the parse items result
+     */
     private static List<Map<String, String>> parseItems(String xml) {
         if (xml == null) {
             return Collections.emptyList();
@@ -162,6 +192,12 @@ public final class MacInstalledApps {
         return out;
     }
 
+    /**
+     * Parses the dict.
+     *
+     * @param dictInner the dict inner
+     * @return the parse dict result
+     */
     private static Map<String, String> parseDict(String dictInner) {
         Map<String, String> map = new LinkedHashMap<>();
         int pos = 0;
@@ -206,6 +242,12 @@ public final class MacInstalledApps {
         return map;
     }
 
+    /**
+     * Parses the string array.
+     *
+     * @param arrayInner the array inner
+     * @return the parse string array result
+     */
     private static String parseStringArray(String arrayInner) {
         int lt = arrayInner.indexOf('<');
         if (lt >= 0) {
@@ -217,11 +259,28 @@ public final class MacInstalledApps {
         return null;
     }
 
+    /**
+     * Returns the starts with result.
+     *
+     * @param s   the s
+     * @param pos the pos
+     * @param tag the tag
+     * @return the starts with result
+     */
     private static boolean startsWith(String s, int pos, String tag) {
         int end = pos + tag.length();
         return end <= s.length() && s.regionMatches(false, pos, tag, 0, tag.length());
     }
 
+    /**
+     * Returns the extract simple inner result.
+     *
+     * @param s        the s
+     * @param openPos  the open pos
+     * @param openTag  the open tag
+     * @param closeTag the close tag
+     * @return the extract simple inner result
+     */
     private static String extractSimpleInner(String s, int openPos, String openTag, String closeTag) {
         int start = s.indexOf(openTag, openPos);
         if (start < 0) {
@@ -234,6 +293,15 @@ public final class MacInstalledApps {
         return s.substring(start + openTag.length(), end);
     }
 
+    /**
+     * Returns the extract balanced inner result.
+     *
+     * @param s        the s
+     * @param openPos  the open pos
+     * @param openTag  the open tag
+     * @param closeTag the close tag
+     * @return the extract balanced inner result
+     */
     private static String extractBalancedInner(String s, int openPos, String openTag, String closeTag) {
         int pos = openPos;
         if (!startsWith(s, pos, openTag)) {
@@ -261,6 +329,14 @@ public final class MacInstalledApps {
         return null;
     }
 
+    /**
+     * Returns the extract top level blocks result.
+     *
+     * @param containerInner the container inner
+     * @param openTag        the open tag
+     * @param closeTag       the close tag
+     * @return the extract top level blocks result
+     */
     private static List<String> extractTopLevelBlocks(String containerInner, String openTag, String closeTag) {
         List<String> blocks = new ArrayList<>();
         int pos = 0;
@@ -280,11 +356,25 @@ public final class MacInstalledApps {
         return blocks;
     }
 
+    /**
+     * Returns the unescape result.
+     *
+     * @param s the s
+     * @return the unescape result
+     */
     private static String unescape(String s) {
         return s.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">").replace("&quot;", "\"")
                 .replace("&apos;", "'");
     }
 
+    /**
+     * Reads the string value.
+     *
+     * @param xml     the xml
+     * @param keyName the key name
+     * @return the read string value result
+     * @throws Exception if the exception condition occurs
+     */
     private static String readStringValue(String xml, String keyName) throws Exception {
         int i = xml.indexOf("<key>" + keyName + "</key>");
         if (i > 0) {

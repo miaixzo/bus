@@ -240,20 +240,48 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
 
         // O(1) lookup: only get handlers that actually override query methods
         List<MapperHandler> queryHandlers = handlerRegistry.getHandlers(HandlerRegistry.HandlerType.QUERY);
+        Logger.debug(
+                true,
+                "Mapper",
+                "MyBatis query interception started: method={}, command={}, queryHandlers={}, rowOffset={}, rowLimit={}",
+                ms.getId(),
+                ms.getSqlCommandType(),
+                queryHandlers.size(),
+                rowBounds.getOffset(),
+                rowBounds.getLimit());
 
         for (MapperHandler handler : queryHandlers) {
             // Allow handler to block execution
             if (!handler.isQuery(executor, ms, parameter, rowBounds, resultHandler, boundSql)) {
+                Logger.warn(
+                        false,
+                        "Mapper",
+                        "MyBatis query blocked by handler: method={}, handler={}",
+                        ms.getId(),
+                        handler.getClass().getName());
                 return Collections.emptyList();
             }
             // Allow handler to execute custom query logic
             Object[] result = new Object[1];
             handler.query(result, executor, ms, parameter, rowBounds, resultHandler, boundSql);
             if (ArrayKit.isNotEmpty(result[0])) {
+                Logger.debug(
+                        false,
+                        "Mapper",
+                        "MyBatis query completed by handler: method={}, handler={}",
+                        ms.getId(),
+                        handler.getClass().getName());
                 return result[0];
             }
         }
-        return executor.query(ms, parameter, rowBounds, resultHandler, cacheKey, boundSql);
+        Object result = executor.query(ms, parameter, rowBounds, resultHandler, cacheKey, boundSql);
+        Logger.debug(
+                false,
+                "Mapper",
+                "MyBatis query completed: method={}, resultType={}",
+                ms.getId(),
+                result == null ? "null" : result.getClass().getName());
+        return result;
     }
 
     /**
@@ -275,14 +303,29 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
             BoundSql boundSql) throws Throwable {
         // O(1) lookup: only get handlers that actually override update methods
         List<MapperHandler> updateHandlers = handlerRegistry.getHandlers(HandlerRegistry.HandlerType.UPDATE);
+        Logger.debug(
+                true,
+                "Mapper",
+                "MyBatis update interception started: method={}, command={}, updateHandlers={}",
+                ms.getId(),
+                ms.getSqlCommandType(),
+                updateHandlers.size());
 
         for (MapperHandler handler : updateHandlers) {
             if (!handler.isUpdate(executor, ms, parameter)) {
+                Logger.warn(
+                        false,
+                        "Mapper",
+                        "MyBatis update blocked by handler: method={}, handler={}",
+                        ms.getId(),
+                        handler.getClass().getName());
                 return -1;
             }
             handler.update(executor, ms, parameter);
         }
-        return invocation.proceed();
+        Object result = invocation.proceed();
+        Logger.debug(false, "Mapper", "MyBatis update completed: method={}, affectedRows={}", ms.getId(), result);
+        return result;
     }
 
     /**
@@ -298,11 +341,25 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
      */
     private void logging(MappedStatement ms, BoundSql boundSql, long start) {
         long duration = DateKit.current() - start;
-        Logger.debug(true, "Method", "{} {}ms", ms.getId(), duration);
+        Logger.debug(
+                false,
+                "Mapper",
+                "MyBatis statement executed: method={}, command={}, elapsedMillis={}, parameterMappings={}, sqlChars={}",
+                ms.getId(),
+                ms.getSqlCommandType(),
+                duration,
+                boundSql.getParameterMappings().size(),
+                boundSql.getSql() == null ? 0 : boundSql.getSql().length());
 
-        if (Logger.isDebugEnabled()) {
-            String sql = format(ms.getConfiguration(), boundSql);
-            Logger.debug(true, "Script", "{}", sql);
+        if (Logger.isTraceEnabled()) {
+            Logger.trace(
+                    false,
+                    "Mapper",
+                    "MyBatis SQL prepared: method={}, sqlCommandType={}, parameterMappingCount={}, sqlChars={}",
+                    ms.getId(),
+                    ms.getSqlCommandType(),
+                    boundSql.getParameterMappings().size(),
+                    boundSql.getSql() == null ? 0 : boundSql.getSql().length());
         }
     }
 
@@ -402,6 +459,14 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
      */
     public void addHandler(MapperHandler handler) {
         handlerRegistry.addHandler(handler);
+        if (handler != null) {
+            Logger.debug(
+                    false,
+                    "Mapper",
+                    "MyBatis interceptor handler added: handler={}, totalHandlers={}",
+                    handler.getClass().getName(),
+                    handlerRegistry.size());
+        }
     }
 
     /**
@@ -426,6 +491,12 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
         if (handlers != null) {
             handlerRegistry.addHandlers(handlers);
         }
+        Logger.debug(
+                false,
+                "Mapper",
+                "MyBatis interceptor handlers replaced: requestedCount={}, activeHandlers={}",
+                handlers == null ? 0 : handlers.size(),
+                handlerRegistry.size());
     }
 
     /**
@@ -440,7 +511,18 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
     public void setProperties(Properties properties) {
         Context context = (Context) Context.newInstance(properties);
         Map<String, Properties> groups = context.group(Symbol.AT);
+        Logger.debug(
+                true,
+                "Mapper",
+                "MyBatis interceptor property registration started: handlerGroupCount={}",
+                groups.size());
         groups.forEach((key, value) -> addHandler(ReflectKit.newInstance(key)));
+        Logger.info(
+                false,
+                "Mapper",
+                "MyBatis interceptor property registration completed: handlerGroupCount={}, activeHandlers={}",
+                groups.size(),
+                handlerRegistry.size());
     }
 
 }

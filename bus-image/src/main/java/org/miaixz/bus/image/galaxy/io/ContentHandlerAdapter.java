@@ -39,7 +39,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * A SAX {@link org.xml.sax.ContentHandler} adapter that parses DICOM XML representations into an {@link Attributes}
  * object structure. This class handles the conversion of XML elements and attributes into DICOM tags, VRs, and values,
  * including nested sequences and bulk data.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -128,7 +128,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
 
     /**
      * Constructs a {@code ContentHandlerAdapter} with a given initial {@link Attributes} object.
-     * 
+     *
      * @param attrs The initial {@link Attributes} object to populate.
      */
     public ContentHandlerAdapter(Attributes attrs) {
@@ -137,7 +137,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
 
     /**
      * Constructs a {@code ContentHandlerAdapter} with a given initial {@link Attributes} object and leniency setting.
-     * 
+     *
      * @param attrs   The initial {@link Attributes} object to populate.
      * @param lenient {@code true} if parsing should be lenient, {@code false} otherwise.
      */
@@ -152,7 +152,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
     /**
      * Determines the endianness from the File Meta Information. If the Transfer Syntax UID is Explicit VR Big Endian,
      * then big-endian is assumed.
-     * 
+     *
      * @param fmi The File Meta Information attributes.
      * @return {@code true} if big-endian, {@code false} otherwise.
      */
@@ -162,7 +162,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
 
     /**
      * Generates a prefix string for logging or display based on the private creator and nesting level.
-     * 
+     *
      * @param privateCreator The private creator string.
      * @param level          The current nesting level.
      * @return A prefix string.
@@ -183,7 +183,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
 
     /**
      * Sets the {@link BulkData.Creator} to be used for creating {@link BulkData} objects.
-     * 
+     *
      * @param bulkDataCreator The {@link BulkData.Creator} instance.
      */
     public void setBulkDataCreator(BulkData.Creator bulkDataCreator) {
@@ -192,7 +192,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
 
     /**
      * Returns the parsed File Meta Information attributes.
-     * 
+     *
      * @return The {@link Attributes} object containing File Meta Information.
      */
     public Attributes getFileMetaInformation() {
@@ -201,7 +201,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
 
     /**
      * Returns the root dataset (the top-level {@link Attributes} object).
-     * 
+     *
      * @return The root {@link Attributes} object.
      */
     public Attributes getDataset() {
@@ -271,7 +271,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
 
     /**
      * Handles the start of a &lt;BulkData&gt; element, creating a {@link BulkData} object.
-     * 
+     *
      * @param uuid The UUID attribute from the XML.
      * @param uri  The URI attribute from the XML.
      */
@@ -301,7 +301,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
     /**
      * Handles the start of a &lt;DicomAttribute&gt; element, setting the current tag, private creator, and VR. If the
      * VR is SQ (Sequence), a new sequence is created.
-     * 
+     *
      * @param tag            The DICOM tag.
      * @param privateCreator The private creator string.
      * @param vr             The VR string.
@@ -316,7 +316,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
 
     /**
      * Handles the start of a &lt;DataFragment&gt; element, initializing data fragments if necessary.
-     * 
+     *
      * @param number The fragment number.
      */
     private void startDataFragment(int number) {
@@ -328,7 +328,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
 
     /**
      * Handles the start of an &lt;Item&gt; element, adding a new {@link Attributes} object to the current sequence.
-     * 
+     *
      * @param number The item number.
      */
     private void startItem(int number) {
@@ -342,7 +342,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
 
     /**
      * Prepares to read a multi-valued attribute by ensuring enough slots in the {@code values} list.
-     * 
+     *
      * @param number The value number.
      */
     private void startValue(int number) {
@@ -352,7 +352,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
 
     /**
      * Handles the start of a &lt;PersonName&gt; element, initializing a new {@link PersonName} object.
-     * 
+     *
      * @param number The value number for the Person Name.
      */
     private void startPersonName(int number) {
@@ -362,7 +362,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
 
     /**
      * Handles the start of a Person Name group element (Alphabetic, Ideographic, Phonetic).
-     * 
+     *
      * @param pnGroup The {@link PersonName.Group} being started.
      */
     private void startPNGroup(PersonName.Group pnGroup) {
@@ -464,7 +464,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
 
     /**
      * Handles the end of a &lt;DicomAttribute&gt; element, setting the value of the attribute.
-     * 
+     *
      * @throws SAXException if an error occurs during value conversion or if parsing is not lenient.
      */
     private void endDicomAttribute() throws SAXException {
@@ -497,7 +497,14 @@ public class ContentHandlerAdapter extends DefaultHandler {
                         vr,
                         Arrays.toString(value));
                 if (lenient) {
-                    Logger.info("{} - ignored", message);
+                    Logger.info(
+                            false,
+                            "Image",
+                            "Invalid attribute ignored: tagGroup={}, tagElement={}, vr={}, valueCount={}",
+                            Tag.groupNumber(tag),
+                            Tag.elementNumber(tag),
+                            vr,
+                            value == null ? 0 : value.length);
                 } else {
                     throw new SAXException(message, e);
                 }
@@ -508,7 +515,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
     /**
      * Returns the current {@link Attributes} object to which attributes should be added. This method handles the
      * creation of File Meta Information attributes if necessary.
-     * 
+     *
      * @return The current {@link Attributes} object.
      */
     private Attributes attrs() {
@@ -549,7 +556,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
 
     /**
      * Handles the end of a Person Name component element (e.g., FamilyName, GivenName).
-     * 
+     *
      * @param pnComp The {@link PersonName.Component} being ended.
      */
     private void endPNComponent(PersonName.Component pnComp) {
@@ -558,7 +565,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
 
     /**
      * Returns the string collected by the {@code StringBuilder}.
-     * 
+     *
      * @return The collected string.
      */
     private String getString() {
@@ -568,7 +575,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
     /**
      * Returns the byte array collected by the {@code ByteArrayOutputStream}, applying endianness correction if
      * necessary.
-     * 
+     *
      * @return The collected byte array.
      */
     private byte[] getBytes() {
@@ -578,7 +585,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
 
     /**
      * Returns the collected string values as an array and clears the internal list.
-     * 
+     *
      * @return An array of string values.
      */
     private String[] getStrings() {

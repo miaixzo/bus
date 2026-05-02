@@ -22,7 +22,6 @@ package org.miaixz.bus.gitlab;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.miaixz.bus.gitlab.models.Constants.TokenType;
 import org.miaixz.bus.gitlab.models.OauthTokenResponse;
@@ -34,6 +33,7 @@ import org.miaixz.bus.gitlab.support.SecretString;
 
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * This class is provides a simplified interface to a GitLab API server, and divides the API up into a separate API
@@ -41,7 +41,8 @@ import jakarta.ws.rs.core.Response;
  */
 public class GitLabApi implements AutoCloseable {
 
-    private static final Logger LOGGER = Logger.getLogger(GitLabApi.class.getName());
+    private static final java.util.logging.Logger LOGGER = java.util.logging.Logger
+            .getLogger(GitLabApi.class.getName());
 
     /**
      * GitLab4J default per page. GitLab will ignore anything over 100.
@@ -369,6 +370,13 @@ public class GitLabApi implements AutoCloseable {
         }
 
         // Create a GitLabApi instance set up to be used to do an OAUTH2 login.
+        Logger.info(
+                true,
+                "GitLab",
+                "OAuth login started: apiVersion={}, url={}, usernamePresent={}",
+                apiVersion,
+                url,
+                username != null);
         GitLabApi gitLabApi = new GitLabApi(apiVersion, url, (String) null);
         gitLabApi.apiClient.setHostUrlToBaseUrl();
 
@@ -385,16 +393,34 @@ public class GitLabApi implements AutoCloseable {
 
         try (Oauth2LoginStreamingOutput stream = new Oauth2LoginStreamingOutput(username, password)) {
 
-            Response response = new Oauth2Api(gitLabApi)
-                    .post(Response.Status.OK, stream, MediaType.APPLICATION_JSON, "oauth", "token");
-            OauthTokenResponse oauthToken = response.readEntity(OauthTokenResponse.class);
-            gitLabApi = new GitLabApi(apiVersion, url, TokenType.OAUTH2_ACCESS, oauthToken.getAccessToken(),
-                    secretToken, clientConfigProperties);
-            if (ignoreCertificateErrors) {
-                gitLabApi.setIgnoreCertificateErrors(true);
+            try {
+                Response response = new Oauth2Api(gitLabApi)
+                        .post(Response.Status.OK, stream, MediaType.APPLICATION_JSON, "oauth", "token");
+                OauthTokenResponse oauthToken = response.readEntity(OauthTokenResponse.class);
+                gitLabApi = new GitLabApi(apiVersion, url, TokenType.OAUTH2_ACCESS, oauthToken.getAccessToken(),
+                        secretToken, clientConfigProperties);
+                if (ignoreCertificateErrors) {
+                    gitLabApi.setIgnoreCertificateErrors(true);
+                }
+                Logger.info(
+                        false,
+                        "GitLab",
+                        "OAuth login completed: apiVersion={}, url={}, credentialType={}",
+                        apiVersion,
+                        url,
+                        TokenType.OAUTH2_ACCESS);
+                return (gitLabApi);
+            } catch (GitLabApiException | RuntimeException e) {
+                Logger.warn(
+                        false,
+                        "GitLab",
+                        e,
+                        "OAuth login failed: apiVersion={}, url={}, exception={}",
+                        apiVersion,
+                        url,
+                        e.getClass().getSimpleName());
+                throw e;
             }
-
-            return (gitLabApi);
         }
     }
 
@@ -521,7 +547,7 @@ public class GitLabApi implements AutoCloseable {
      *
      * @return the GitLab4J shared Logger instance
      */
-    public static final Logger getLogger() {
+    public static final java.util.logging.Logger getLogger() {
         return (LOGGER);
     }
 
@@ -567,7 +593,19 @@ public class GitLabApi implements AutoCloseable {
     @Override
     public void close() {
         if (apiClient != null) {
+            Logger.info(
+                    true,
+                    "GitLab",
+                    "GitLab API client close requested: apiVersion={}, serverUrl={}",
+                    apiVersion,
+                    gitLabServerUrl);
             apiClient.close();
+            Logger.info(
+                    false,
+                    "GitLab",
+                    "GitLab API client closed: apiVersion={}, serverUrl={}",
+                    apiVersion,
+                    gitLabServerUrl);
         }
     }
 
@@ -623,7 +661,7 @@ public class GitLabApi implements AutoCloseable {
      * @param level  the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
      * @return this GitLabApi instance
      */
-    public GitLabApi withRequestResponseLogging(Logger logger, Level level) {
+    public GitLabApi withRequestResponseLogging(java.util.logging.Logger logger, Level level) {
         enableRequestResponseLogging(logger, level);
         return (this);
     }
@@ -653,7 +691,7 @@ public class GitLabApi implements AutoCloseable {
      * @param logger the Logger instance to log to
      * @param level  the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
      */
-    public void enableRequestResponseLogging(Logger logger, Level level) {
+    public void enableRequestResponseLogging(java.util.logging.Logger logger, Level level) {
         enableRequestResponseLogging(logger, level, 0);
     }
 
@@ -680,7 +718,7 @@ public class GitLabApi implements AutoCloseable {
      *                      the entity logging will be truncated at maxEntitySize and "...more..." will be added at the
      *                      end of the log entry. If maxEntitySize is &lt;= 0, entity logging will be disabled
      */
-    public void enableRequestResponseLogging(Logger logger, Level level, int maxEntitySize) {
+    public void enableRequestResponseLogging(java.util.logging.Logger logger, Level level, int maxEntitySize) {
         enableRequestResponseLogging(logger, level, maxEntitySize, MaskingLoggingFilter.DEFAULT_MASKED_HEADER_NAMES);
     }
 
@@ -702,7 +740,10 @@ public class GitLabApi implements AutoCloseable {
      * @param level             the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
      * @param maskedHeaderNames a list of header names that should have the values masked
      */
-    public void enableRequestResponseLogging(Logger logger, Level level, List<String> maskedHeaderNames) {
+    public void enableRequestResponseLogging(
+            java.util.logging.Logger logger,
+            Level level,
+            List<String> maskedHeaderNames) {
         apiClient.enableRequestResponseLogging(logger, level, 0, maskedHeaderNames);
     }
 
@@ -733,7 +774,7 @@ public class GitLabApi implements AutoCloseable {
      * @param maskedHeaderNames a list of header names that should have the values masked
      */
     public void enableRequestResponseLogging(
-            Logger logger,
+            java.util.logging.Logger logger,
             Level level,
             int maxEntitySize,
             List<String> maskedHeaderNames) {

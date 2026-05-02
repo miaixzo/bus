@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -41,104 +41,190 @@ import com.sun.jna.ptr.PointerByReference;
  */
 public interface ByRef {
 
+    /**
+     * The CloseableIntByReference class.
+     */
     class CloseableIntByReference extends IntByReference implements AutoCloseable {
 
+        /**
+         * Creates a new CloseableIntByReference instance.
+         */
         public CloseableIntByReference() {
             super();
         }
 
+        /**
+         * Creates a new CloseableIntByReference instance.
+         *
+         * @param value the value
+         */
         public CloseableIntByReference(int value) {
             super(value);
         }
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
         }
     }
 
+    /**
+     * The CloseableLongByReference class.
+     */
     class CloseableLongByReference extends LongByReference implements AutoCloseable {
 
+        /**
+         * Creates a new CloseableLongByReference instance.
+         */
         public CloseableLongByReference() {
             super();
         }
 
+        /**
+         * Creates a new CloseableLongByReference instance.
+         *
+         * @param value the value
+         */
         public CloseableLongByReference(long value) {
             super(value);
         }
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
         }
     }
 
+    /**
+     * The CloseableNativeLongByReference class.
+     */
     class CloseableNativeLongByReference extends NativeLongByReference implements AutoCloseable {
 
+        /**
+         * Creates a new CloseableNativeLongByReference instance.
+         */
         public CloseableNativeLongByReference() {
             super();
         }
 
+        /**
+         * Creates a new CloseableNativeLongByReference instance.
+         *
+         * @param nativeLong the native long
+         */
         public CloseableNativeLongByReference(NativeLong nativeLong) {
             super(nativeLong);
         }
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
         }
     }
 
+    /**
+     * The CloseablePointerByReference class.
+     */
     class CloseablePointerByReference extends PointerByReference implements AutoCloseable {
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
         }
     }
 
+    /**
+     * The CloseableLONGLONGByReference class.
+     */
     class CloseableLONGLONGByReference extends LONGLONGByReference implements AutoCloseable {
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
         }
     }
 
+    /**
+     * The CloseableULONGptrByReference class.
+     */
     class CloseableULONGptrByReference extends ULONG_PTRByReference implements AutoCloseable {
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
         }
     }
 
+    /**
+     * The CloseableHANDLEByReference class.
+     */
     class CloseableHANDLEByReference extends HANDLEByReference implements AutoCloseable {
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
         }
     }
 
+    /**
+     * The CloseableSizeTByReference class.
+     */
     class CloseableSizeTByReference extends size_t.ByReference implements AutoCloseable {
 
+        /**
+         * Creates a new CloseableSizeTByReference instance.
+         */
         public CloseableSizeTByReference() {
             super();
         }
 
+        /**
+         * Creates a new CloseableSizeTByReference instance.
+         *
+         * @param value the value
+         */
         public CloseableSizeTByReference(long value) {
             super(value);
         }
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
         }
     }
 
+    /**
+     * The CloseablePROCESSENTRY32ByReference class.
+     */
     class CloseablePROCESSENTRY32ByReference extends PROCESSENTRY32.ByReference implements AutoCloseable {
 
+        /**
+         * Closes this resource.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());

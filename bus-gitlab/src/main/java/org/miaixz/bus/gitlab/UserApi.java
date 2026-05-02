@@ -34,6 +34,7 @@ import org.miaixz.bus.gitlab.support.EmailChecker;
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * This class provides an entry point to all the GitLab API users calls.
@@ -82,9 +83,12 @@ public class UserApi extends AbstractApi {
 
         String url = this.gitLabApi.getGitLabServerUrl();
         if (url.startsWith("https://gitlab.com")) {
-            GitLabApi.getLogger().warning(
-                    "Fetching all users from " + url
-                            + " may take many minutes to complete, use Pager<User> getUsers(int) instead.");
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    "GitLab bulk users fetch requested against public GitLab: serverUrl={}, defaultPerPage={}",
+                    url,
+                    getDefaultPerPage());
         }
 
         return (getUsers(getDefaultPerPage()).all());
@@ -1630,6 +1634,13 @@ public class UserApi extends AbstractApi {
                     getApiClient().getUrlWithBase("users", username, "exists"));
             return response.readEntity(Exists.class).getExists();
         } catch (IOException e) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    e,
+                    "GitLab user existence lookup URL build failed: usernamePresent={}, exception={}",
+                    username != null && !username.isEmpty(),
+                    e.getClass().getSimpleName());
             throw new GitLabApiException(e);
         }
     }

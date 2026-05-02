@@ -32,4 +32,10 @@ package org.miaixz.bus.core.center.set;
  */
 public class SetValidator {
 
+    /**
+     * Constructs a new set validator.
+     */
+    public SetValidator() {
+    }
+
 }

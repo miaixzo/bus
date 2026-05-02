@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -40,7 +40,13 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractSoundCard;
 @Immutable
 final class OpenBsdSoundCard extends AbstractSoundCard {
 
+    /**
+     * The AUDIO_AT constant.
+     */
     private static final Pattern AUDIO_AT = Pattern.compile("audio\\d+ at (.+)");
+    /**
+     * The PCI_AT constant.
+     */
     private static final Pattern PCI_AT = Pattern
             .compile("(.+) at pci\\d+ dev \\d+ function \\d+ \"(.*)\" (rev .+):.*");
 

@@ -168,9 +168,22 @@ public class Setting extends AbstractSetting implements Map<String, String> {
      * @param loader   The custom loader to use for parsing.
      */
     public Setting(final Resource resource, Loader loader) {
+        Logger.info(
+                true,
+                "Setting",
+                "Setting construction load started: resourceUrl={}, customLoaderPresent={}",
+                resource == null ? null : resource.getUrl(),
+                loader != null);
         this.resource = resource;
         this.loader = Objects.requireNonNullElseGet(loader, () -> new Loader(DEFAULT_CHARSET, false));
         this.groupedMap = this.loader.load(resource);
+        Logger.info(
+                false,
+                "Setting",
+                "Setting construction load completed: resourceUrl={}, groupCount={}, keyCount={}",
+                resource == null ? null : resource.getUrl(),
+                this.groupedMap.keySet().size(),
+                this.groupedMap.size());
     }
 
     /**
@@ -189,7 +202,19 @@ public class Setting extends AbstractSetting implements Map<String, String> {
      */
     public synchronized Setting load() {
         Assert.notNull(this.loader, "SettingLoader must be not null!");
+        Logger.info(
+                true,
+                "Setting",
+                "Setting reload started: resourceUrl={}",
+                this.resource == null ? null : this.resource.getUrl());
         this.groupedMap = loader.load(this.resource);
+        Logger.info(
+                false,
+                "Setting",
+                "Setting reload completed: resourceUrl={}, groupCount={}, keyCount={}",
+                this.resource == null ? null : this.resource.getUrl(),
+                this.groupedMap.keySet().size(),
+                this.groupedMap.size());
         return this;
     }
 
@@ -207,6 +232,12 @@ public class Setting extends AbstractSetting implements Map<String, String> {
      */
     public void autoLoad(final Consumer<Setting> callback) {
         Assert.notNull(this.resource, "Setting resource must be not null !");
+        Logger.info(
+                true,
+                "Setting",
+                "Setting auto-load setup started: resourceUrl={}, callbackPresent={}",
+                this.resource.getUrl(),
+                callback != null);
         IoKit.closeQuietly(this.watchMonitor); // Close any existing monitor
         this.watchMonitor = WatchKit.ofModify(resource.getUrl(), new DelayWatcher(new SimpleWatcher() {
 
@@ -215,22 +246,43 @@ public class Setting extends AbstractSetting implements Map<String, String> {
 
             @Override
             public void onModify(final WatchEvent<?> event, final WatchKey key) {
+                Logger.info(
+                        true,
+                        "Setting",
+                        "Setting auto-load event received: resourceUrl={}, eventKind={}",
+                        resource.getUrl(),
+                        event == null ? null : event.kind());
                 load();
                 if (callback != null) {
                     callback.accept(Setting.this);
                 }
+                Logger.info(
+                        false,
+                        "Setting",
+                        "Setting auto-load event handled: resourceUrl={}, callbackPresent={}, groupCount={}, keyCount={}",
+                        resource.getUrl(),
+                        callback != null,
+                        groupedMap.keySet().size(),
+                        groupedMap.size());
             }
         }, 600));
         this.watchMonitor.start();
-        Logger.debug("Auto-load enabled for [{}]", this.resource.getUrl());
+        Logger.info(
+                false,
+                "Setting",
+                "Setting auto-load enabled: resourceUrl={}, callbackPresent={}",
+                this.resource.getUrl(),
+                callback != null);
     }
 
     /**
      * Stops the automatic reloading of the configuration file.
      */
     public void stopAutoLoad() {
+        Logger.info(true, "Setting", "Setting auto-load stop requested: monitorPresent={}", this.watchMonitor != null);
         IoKit.closeQuietly(this.watchMonitor);
         this.watchMonitor = null;
+        Logger.info(false, "Setting", "Setting auto-load stopped");
     }
 
     /**
@@ -269,7 +321,7 @@ public class Setting extends AbstractSetting implements Map<String, String> {
          */
         final String result = this.groupedMap.get(group, key);
         if (result == null && logIfNull) {
-            Logger.debug("No data found for key [{}] in group [{}]", key, group);
+            Logger.debug(false, "Setting", "No setting value found: key={}, group={}", key, group);
         }
         return ObjectKit.defaultIfNull(result, defaultValue);
     }
@@ -365,7 +417,21 @@ public class Setting extends AbstractSetting implements Map<String, String> {
      */
     public void store(final File file) {
         Assert.notNull(this.loader, "SettingLoader must be not null!");
+        Logger.info(
+                true,
+                "Setting",
+                "Setting store requested: file={}, groupCount={}, keyCount={}",
+                file == null ? null : file.getAbsolutePath(),
+                this.groupedMap.keySet().size(),
+                this.groupedMap.size());
         this.loader.store(this.groupedMap, file);
+        Logger.info(
+                false,
+                "Setting",
+                "Setting store completed: file={}, groupCount={}, keyCount={}",
+                file == null ? null : file.getAbsolutePath(),
+                this.groupedMap.keySet().size(),
+                this.groupedMap.size());
     }
 
     /**
@@ -473,7 +539,16 @@ public class Setting extends AbstractSetting implements Map<String, String> {
      * @return The previous value associated with the key, or null.
      */
     public String putByGroup(final String key, final String group, final String value) {
-        return this.groupedMap.put(group, key, value);
+        Logger.debug(true, "Setting", "Setting put requested: key={}, group={}", key, group);
+        final String previous = this.groupedMap.put(group, key, value);
+        Logger.debug(
+                false,
+                "Setting",
+                "Setting put completed: key={}, group={}, replaced={}",
+                key,
+                group,
+                previous != null);
+        return previous;
     }
 
     /**
@@ -484,7 +559,16 @@ public class Setting extends AbstractSetting implements Map<String, String> {
      * @return The removed value, or null if not found.
      */
     public String remove(final String group, final Object key) {
-        return this.groupedMap.remove(group, Convert.toString(key));
+        Logger.debug(true, "Setting", "Setting remove requested: key={}, group={}", key, group);
+        final String removed = this.groupedMap.remove(group, Convert.toString(key));
+        Logger.debug(
+                false,
+                "Setting",
+                "Setting remove completed: key={}, group={}, removed={}",
+                key,
+                group,
+                removed != null);
+        return removed;
     }
 
     /**
@@ -495,7 +579,20 @@ public class Setting extends AbstractSetting implements Map<String, String> {
      * @return this {@code Setting} instance for chaining.
      */
     public Setting putAll(final String group, final Map<? extends String, ? extends String> m) {
+        Logger.debug(
+                true,
+                "Setting",
+                "Setting putAll requested: group={}, keyCount={}",
+                group,
+                m == null ? 0 : m.size());
         this.groupedMap.putAll(group, m);
+        Logger.debug(
+                false,
+                "Setting",
+                "Setting putAll completed: group={}, keyCount={}, totalKeyCount={}",
+                group,
+                m == null ? 0 : m.size(),
+                this.groupedMap.size());
         return this;
     }
 
@@ -506,9 +603,21 @@ public class Setting extends AbstractSetting implements Map<String, String> {
      * @return this {@code Setting} instance for chaining.
      */
     public Setting addSetting(final Setting setting) {
+        Logger.info(
+                true,
+                "Setting",
+                "Setting merge requested: sourceGroupCount={}, sourceKeyCount={}",
+                setting == null ? 0 : setting.getGroupedMap().keySet().size(),
+                setting == null ? 0 : setting.getGroupedMap().size());
         for (final Entry<String, LinkedHashMap<String, String>> e : setting.getGroupedMap().entrySet()) {
             this.putAll(e.getKey(), e.getValue());
         }
+        Logger.info(
+                false,
+                "Setting",
+                "Setting merge completed: groupCount={}, keyCount={}",
+                this.groupedMap.keySet().size(),
+                this.groupedMap.size());
         return this;
     }
 
@@ -519,7 +628,19 @@ public class Setting extends AbstractSetting implements Map<String, String> {
      * @return this {@code Setting} instance for chaining.
      */
     public Setting clear(final String group) {
+        Logger.debug(
+                true,
+                "Setting",
+                "Setting group clear requested: group={}, beforeKeyCount={}",
+                group,
+                this.groupedMap.keySet(group).size());
         this.groupedMap.clear(group);
+        Logger.debug(
+                false,
+                "Setting",
+                "Setting group clear completed: group={}, totalKeyCount={}",
+                group,
+                this.groupedMap.size());
         return this;
     }
 
@@ -569,7 +690,7 @@ public class Setting extends AbstractSetting implements Map<String, String> {
      * Sets multiple properties using an array of lambda method reference suppliers.
      * <p>
      * Example:
-     * 
+     *
      * <pre>
      * User user = new User("test", "Test User");
      * Setting.of().setFields(user::getUsername, user::getNickname);
@@ -618,7 +739,10 @@ public class Setting extends AbstractSetting implements Map<String, String> {
 
     @Override
     public String put(final String key, final String value) {
-        return this.groupedMap.put(DEFAULT_GROUP, key, value);
+        Logger.debug(true, "Setting", "Setting default put requested: key={}", key);
+        final String previous = this.groupedMap.put(DEFAULT_GROUP, key, value);
+        Logger.debug(false, "Setting", "Setting default put completed: key={}, replaced={}", key, previous != null);
+        return previous;
     }
 
     @Override
@@ -628,12 +752,29 @@ public class Setting extends AbstractSetting implements Map<String, String> {
 
     @Override
     public void putAll(final Map<? extends String, ? extends String> m) {
+        Logger.debug(true, "Setting", "Setting default putAll requested: keyCount={}", m == null ? 0 : m.size());
         this.groupedMap.putAll(DEFAULT_GROUP, m);
+        Logger.debug(
+                false,
+                "Setting",
+                "Setting default putAll completed: keyCount={}, totalKeyCount={}",
+                m == null ? 0 : m.size(),
+                this.groupedMap.size());
     }
 
     @Override
     public void clear() {
+        Logger.debug(
+                true,
+                "Setting",
+                "Setting default group clear requested: beforeKeyCount={}",
+                this.groupedMap.keySet(DEFAULT_GROUP).size());
         this.groupedMap.clear(DEFAULT_GROUP);
+        Logger.debug(
+                false,
+                "Setting",
+                "Setting default group clear completed: totalKeyCount={}",
+                this.groupedMap.size());
     }
 
     @Override

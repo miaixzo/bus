@@ -38,12 +38,12 @@ public class ConditionProvider {
     /**
      * Deletes records based on a Condition object.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The generated SQL cache key.
      */
-    public static String deleteByCondition(ProviderContext providerContext) {
+    public static String deleteByCondition(ProviderContext context) {
         return SqlScript.caching(
-                providerContext,
+                context,
                 (entity, util) -> util.ifTest("startSql != null and startSql != ''", () -> "${startSql}")
                         + "DELETE FROM " + entity.tableName() + util.parameterNotNull("Condition cannot be null")
                         // Whether to allow empty conditions; defaults to true, allowing deletion without a WHERE
@@ -57,11 +57,11 @@ public class ConditionProvider {
     /**
      * Updates entity information in batch based on a Condition object, updating all fields.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The generated SQL cache key.
      */
-    public static String updateByCondition(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext, new SqlScript() {
+    public static String updateByCondition(ProviderContext context) {
+        return SqlScript.caching(context, new SqlScript() {
 
             @Override
             public String getSql(TableMeta entity) {
@@ -84,11 +84,11 @@ public class ConditionProvider {
     /**
      * Updates entity information in batch based on a Condition object, using specified set values.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The generated SQL cache key.
      */
-    public static String updateByConditionSetValues(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext, new SqlScript() {
+    public static String updateByConditionSetValues(ProviderContext context) {
+        return SqlScript.caching(context, new SqlScript() {
 
             @Override
             public String getSql(TableMeta entity) {
@@ -108,11 +108,11 @@ public class ConditionProvider {
     /**
      * Updates non-null fields of an entity in batch based on a Condition object.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The generated SQL cache key.
      */
-    public static String updateByConditionSelective(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext, new SqlScript() {
+    public static String updateByConditionSelective(ProviderContext context) {
+        return SqlScript.caching(context, new SqlScript() {
 
             @Override
             public String getSql(TableMeta entity) {
@@ -138,11 +138,11 @@ public class ConditionProvider {
     /**
      * Selects records in batch based on a Condition object. The number of results is defined by the method.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The generated SQL cache key.
      */
-    public static String selectByCondition(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext, new SqlScript() {
+    public static String selectByCondition(ProviderContext context) {
+        return SqlScript.caching(context, new SqlScript() {
 
             @Override
             public String getSql(TableMeta entity) {
@@ -161,11 +161,11 @@ public class ConditionProvider {
     /**
      * Counts the total number of records based on a Condition object.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The generated SQL cache key.
      */
-    public static String countByCondition(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext, new SqlScript() {
+    public static String countByCondition(ProviderContext context) {
+        return SqlScript.caching(context, new SqlScript() {
 
             @Override
             public String getSql(TableMeta entity) {

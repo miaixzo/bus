@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -34,6 +34,9 @@ import org.miaixz.bus.health.windows.PerfCounterQuery;
 @ThreadSafe
 public final class SystemInformation {
 
+    /**
+     * Creates a new SystemInformation instance.
+     */
     private SystemInformation() {
     }
 
@@ -74,19 +77,41 @@ public final class SystemInformation {
 
         CONTEXTSWITCHESPERSEC(null, "Context Switches/sec");
 
+        /**
+         * The instance value.
+         */
         private final String instance;
+        /**
+         * The counter value.
+         */
         private final String counter;
 
+        /**
+         * Creates a new ContextSwitchProperty instance.
+         *
+         * @param instance the instance
+         * @param counter  the counter
+         */
         ContextSwitchProperty(String instance, String counter) {
             this.instance = instance;
             this.counter = counter;
         }
 
+        /**
+         * Returns the instance.
+         *
+         * @return the get instance result
+         */
         @Override
         public String getInstance() {
             return instance;
         }
 
+        /**
+         * Returns the counter.
+         *
+         * @return the get counter result
+         */
         @Override
         public String getCounter() {
             return counter;
@@ -100,19 +125,41 @@ public final class SystemInformation {
 
         PROCESSORQUEUELENGTH(null, "Processor Queue Length");
 
+        /**
+         * The instance value.
+         */
         private final String instance;
+        /**
+         * The counter value.
+         */
         private final String counter;
 
+        /**
+         * Creates a new ProcessorQueueLengthProperty instance.
+         *
+         * @param instance the instance
+         * @param counter  the counter
+         */
         ProcessorQueueLengthProperty(String instance, String counter) {
             this.instance = instance;
             this.counter = counter;
         }
 
+        /**
+         * Returns the instance.
+         *
+         * @return the get instance result
+         */
         @Override
         public String getInstance() {
             return instance;
         }
 
+        /**
+         * Returns the counter.
+         *
+         * @return the get counter result
+         */
         @Override
         public String getCounter() {
             return counter;

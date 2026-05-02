@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.starter.mongo;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.miaixz.bus.spring.GeniusBuilder;
 import jakarta.annotation.Resource;
 import org.springframework.boot.autoconfigure.mongo.MongoClientSettingsBuilderCustomizer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -40,6 +42,7 @@ import java.util.concurrent.TimeUnit;
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { MongoProperties.class })
+@ConditionalOnProperty(prefix = GeniusBuilder.MONGO, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class MongoConfiguration {
 
     /**

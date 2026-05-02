@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -33,11 +33,21 @@ import org.miaixz.bus.health.unix.driver.NetStat;
 @ThreadSafe
 public class OpenBsdInternetProtocolStats extends AbstractInternetProtocolStats {
 
+    /**
+     * Returns the tc pv4 stats.
+     *
+     * @return the get tc pv4 stats result
+     */
     @Override
     public InternetProtocolStats.TcpStats getTCPv4Stats() {
         return NetStat.queryTcpStats("netstat -s -p tcp");
     }
 
+    /**
+     * Returns the ud pv4 stats.
+     *
+     * @return the get ud pv4 stats result
+     */
     @Override
     public InternetProtocolStats.UdpStats getUDPv4Stats() {
         return NetStat.queryUdpStats("netstat -s -p udp");

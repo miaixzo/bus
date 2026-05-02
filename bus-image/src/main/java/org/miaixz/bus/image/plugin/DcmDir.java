@@ -419,6 +419,13 @@ public class DcmDir {
             fmi = din.readFileMetaInformation();
             dataset = din.readDatasetUntilPixelData();
         } catch (IOException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOMDIR reference skipped: operation=add, fileName={}, exception={}",
+                    f.getName(),
+                    e.getClass().getSimpleName());
             return 0;
         }
         char prompt = Symbol.C_DOT;
@@ -540,6 +547,13 @@ public class DcmDir {
             styuid = dataset.getString(Tag.StudyInstanceUID, null);
             seruid = dataset.getString(Tag.SeriesInstanceUID, null);
         } catch (IOException e) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    e,
+                    "DICOMDIR reference skipped: operation=remove, fileName={}, exception={}",
+                    f.getName(),
+                    e.getClass().getSimpleName());
             return 0;
         }
         Attributes instRec;
@@ -630,6 +644,13 @@ public class DcmDir {
         try {
             recFact.loadConfiguration(Paths.get(recordConfig).toString());
         } catch (Exception e) {
+            Logger.error(
+                    false,
+                    "Image",
+                    e,
+                    "DICOMDIR custom configuration load failed: configPresent={}, exception={}",
+                    recordConfig != null,
+                    e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
     }
@@ -688,8 +709,12 @@ public class DcmDir {
             String[] fields = parseFields(line);
             if (fields.length > tags.length) {
                 Logger.warn(
-                        "Number of values in line \"" + line
-                                + "\" does not match number of headers. Hence line is ignored.");
+                        false,
+                        "Image",
+                        "CSV line ignored: valueCount={}, headerCount={}, lineChars={}",
+                        fields.length,
+                        tags.length,
+                        line == null ? 0 : line.length());
                 return null;
             }
             for (int i = 0; i < fields.length; i++)

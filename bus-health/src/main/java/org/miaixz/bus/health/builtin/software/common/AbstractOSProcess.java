@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -36,29 +36,61 @@ import org.miaixz.bus.health.builtin.software.OSProcess;
 @ThreadSafe
 public abstract class AbstractOSProcess implements OSProcess {
 
+    /**
+     * The cumulativeCpuLoad value.
+     */
     private final Supplier<Double> cumulativeCpuLoad = Memoizer
             .memoize(this::queryCumulativeCpuLoad, Memoizer.defaultExpiration());
 
+    /**
+     * The processID value.
+     */
     private final int processID;
 
+    /**
+     * Creates a new AbstractOSProcess instance.
+     *
+     * @param pid the pid
+     */
     protected AbstractOSProcess(int pid) {
         this.processID = pid;
     }
 
+    /**
+     * Returns the process id.
+     *
+     * @return the get process id result
+     */
     @Override
     public int getProcessID() {
         return this.processID;
     }
 
+    /**
+     * Returns the process cpu load cumulative.
+     *
+     * @return the get process cpu load cumulative result
+     */
     @Override
     public double getProcessCpuLoadCumulative() {
         return cumulativeCpuLoad.get();
     }
 
+    /**
+     * Queries the cumulative cpu load.
+     *
+     * @return the query cumulative cpu load result
+     */
     private double queryCumulativeCpuLoad() {
         return getUpTime() > 0d ? (getKernelTime() + getUserTime()) / (double) getUpTime() : 0d;
     }
 
+    /**
+     * Returns the process cpu load between ticks.
+     *
+     * @param priorSnapshot the prior snapshot
+     * @return the get process cpu load between ticks result
+     */
     @Override
     public double getProcessCpuLoadBetweenTicks(OSProcess priorSnapshot) {
         if (priorSnapshot != null && this.processID == priorSnapshot.getProcessID()
@@ -69,6 +101,11 @@ public abstract class AbstractOSProcess implements OSProcess {
         return getProcessCpuLoadCumulative();
     }
 
+    /**
+     * Returns the to string result.
+     *
+     * @return the to string result
+     */
     @Override
     public String toString() {
         String builder = "OSProcess@" + Integer.toHexString(hashCode()) + "[processID=" + this.processID + ", name="

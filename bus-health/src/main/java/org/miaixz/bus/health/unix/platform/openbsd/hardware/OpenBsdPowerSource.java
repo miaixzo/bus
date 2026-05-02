@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -42,6 +42,31 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractPowerSource;
 @ThreadSafe
 public final class OpenBsdPowerSource extends AbstractPowerSource {
 
+    /**
+     * Creates a new OpenBsdPowerSource instance.
+     *
+     * @param psName                     the ps name
+     * @param psDeviceName               the ps device name
+     * @param psRemainingCapacityPercent the ps remaining capacity percent
+     * @param psTimeRemainingEstimated   the ps time remaining estimated
+     * @param psTimeRemainingInstant     the ps time remaining instant
+     * @param psPowerUsageRate           the ps power usage rate
+     * @param psVoltage                  the ps voltage
+     * @param psAmperage                 the ps amperage
+     * @param psPowerOnLine              the ps power on line
+     * @param psCharging                 the ps charging
+     * @param psDischarging              the ps discharging
+     * @param psCapacityUnits            the ps capacity units
+     * @param psCurrentCapacity          the ps current capacity
+     * @param psMaxCapacity              the ps max capacity
+     * @param psDesignCapacity           the ps design capacity
+     * @param psCycleCount               the ps cycle count
+     * @param psChemistry                the ps chemistry
+     * @param psManufactureDate          the ps manufacture date
+     * @param psManufacturer             the ps manufacturer
+     * @param psSerialNumber             the ps serial number
+     * @param psTemperature              the ps temperature
+     */
     public OpenBsdPowerSource(String psName, String psDeviceName, double psRemainingCapacityPercent,
             double psTimeRemainingEstimated, double psTimeRemainingInstant, double psPowerUsageRate, double psVoltage,
             double psAmperage, boolean psPowerOnLine, boolean psCharging, boolean psDischarging,
@@ -52,6 +77,16 @@ public final class OpenBsdPowerSource extends AbstractPowerSource {
                 psPowerUsageRate, psVoltage, psAmperage, psPowerOnLine, psCharging, psDischarging, psCapacityUnits,
                 psCurrentCapacity, psMaxCapacity, psDesignCapacity, psCycleCount, psChemistry, psManufactureDate,
                 psManufacturer, psSerialNumber, psTemperature);
+    }
+
+    /**
+     * Queries the power sources.
+     *
+     * @return the query power sources result
+     */
+    @Override
+    protected List<PowerSource> queryPowerSources() {
+        return getPowerSources();
     }
 
     /**
@@ -74,6 +109,12 @@ public final class OpenBsdPowerSource extends AbstractPowerSource {
         return psList;
     }
 
+    /**
+     * Returns the power source.
+     *
+     * @param name the name
+     * @return the get power source result
+     */
     private static OpenBsdPowerSource getPowerSource(String name) {
         String psName = name.startsWith("acpi") ? name.substring(4) : name;
         double psRemainingCapacityPercent = 1d;

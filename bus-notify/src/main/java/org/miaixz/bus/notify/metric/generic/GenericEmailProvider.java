@@ -69,6 +69,15 @@ public class GenericEmailProvider extends AbstractProvider<GenericNotice, Contex
      */
     @Override
     public Message send(GenericNotice entity) {
+        Logger.info(
+                true,
+                "Notify",
+                "Generic email send started: targetCount={}, ccCount={}, bccCount={}, attachmentCount={}, type={}",
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity == null || entity.getCcs() == null ? 0 : entity.getCcs().split(",").length,
+                entity == null || entity.getBccs() == null ? 0 : entity.getBccs().split(",").length,
+                entity == null || entity.getAttachments() == null ? 0 : entity.getAttachments().length,
+                entity == null ? null : entity.getType());
         try {
             Transport.send(build(entity));
         } catch (MessagingException e) {
@@ -76,11 +85,28 @@ public class GenericEmailProvider extends AbstractProvider<GenericNotice, Contex
             if (e instanceof SendFailedException) {
                 // When the address is invalid, display more detailed invalid address information
                 final Address[] invalidAddresses = ((SendFailedException) e).getInvalidAddresses();
-                message = StringKit.format("Invalid Addresses: {}", ArrayKit.toString(invalidAddresses));
+                message = StringKit
+                        .format("Invalid address count: {}", invalidAddresses == null ? 0 : invalidAddresses.length);
             }
-            Logger.error(message);
+            Logger.error(
+                    false,
+                    "Notify",
+                    e,
+                    "Generic email send failed: targetCount={}, attachmentCount={}, exception={}, reason={}",
+                    entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                    entity == null || entity.getAttachments() == null ? 0 : entity.getAttachments().length,
+                    e.getClass().getSimpleName(),
+                    message);
         }
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
+        Message result = Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                .build();
+        Logger.info(
+                false,
+                "Notify",
+                "Generic email send completed: targetCount={}, errcode={}",
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                result.getErrcode());
+        return result;
     }
 
     /**
@@ -203,7 +229,13 @@ public class GenericEmailProvider extends AbstractProvider<GenericNotice, Contex
                     bodyPart.setFileName(
                             MimeUtility.encodeText(dataSource.getName(), entity.getCharset().name(), null));
                 } catch (UnsupportedEncodingException e) {
-                    // Log or handle the exception appropriately
+                    Logger.warn(
+                            false,
+                            "Notify",
+                            e,
+                            "Generic email attachment filename encode failed: file={}, exception={}",
+                            dataSource.getName(),
+                            e.getClass().getSimpleName());
                 }
                 mainPart.addBodyPart(bodyPart);
             }

@@ -22,6 +22,7 @@ package org.miaixz.bus.extra.nlp.provider.jieba;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;
+import org.miaixz.bus.logger.Logger;
 
 import com.huaban.analysis.jieba.JiebaSegmenter;
 import com.huaban.analysis.jieba.JiebaSegmenter.SegMode;
@@ -61,8 +62,10 @@ public class JiebaProvider implements NLPProvider {
      *             {@link SegMode#INDEX}).
      */
     public JiebaProvider(final SegMode mode) {
+        Logger.info(true, "Extra", "Jieba provider initialization started: mode={}", mode);
         this.jiebaSegmenter = new JiebaSegmenter();
         this.mode = mode;
+        Logger.info(false, "Extra", "Jieba provider initialized: mode={}", this.mode);
     }
 
     /**
@@ -74,7 +77,21 @@ public class JiebaProvider implements NLPProvider {
      */
     @Override
     public NLPResult parse(final CharSequence text) {
-        return new JiebaResult(jiebaSegmenter.process(StringKit.toStringOrEmpty(text), mode));
+        Logger.debug(
+                true,
+                "Extra",
+                "Jieba parse started: textLength={}, mode={}",
+                text == null ? 0 : text.length(),
+                mode);
+        final NLPResult result = new JiebaResult(jiebaSegmenter.process(StringKit.toStringOrEmpty(text), mode));
+        Logger.debug(
+                false,
+                "Extra",
+                "Jieba parse completed: textLength={}, mode={}, resultPresent={}",
+                text == null ? 0 : text.length(),
+                mode,
+                result != null);
+        return result;
     }
 
 }

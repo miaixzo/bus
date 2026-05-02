@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -50,11 +50,23 @@ import com.sun.jna.Native;
 @ThreadSafe
 public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
 
+    /**
+     * The DMESG_CPU constant.
+     */
     private static final java.util.regex.Pattern DMESG_CPU = java.util.regex.Pattern
             .compile("cpu(\\d+): smt (\\d+), core (\\d+), package (\\d+)");
+    /**
+     * The vmStats value.
+     */
     private final Supplier<Pair<Long, Long>> vmStats = Memoizer
             .memoize(OpenBsdCentralProcessor::queryVmStats, Memoizer.defaultExpiration());
 
+    /**
+     * Returns the cpuid to family model stepping result.
+     *
+     * @param cpuid the cpuid
+     * @return the cpuid to family model stepping result
+     */
     private static Triplet<Integer, Integer, Integer> cpuidToFamilyModelStepping(int cpuid) {
         // family is bits 27:20 | 11:8
         int family = cpuid >> 16 & 0xff0 | cpuid >> 8 & 0xf;
@@ -65,6 +77,11 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
         return Triplet.of(family, model, stepping);
     }
 
+    /**
+     * Queries the vm stats.
+     *
+     * @return the query vm stats result
+     */
     private static Pair<Long, Long> queryVmStats() {
         long contextSwitches = 0L;
         long interrupts = 0L;
@@ -103,6 +120,11 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
         return ticks;
     }
 
+    /**
+     * Queries the processor id.
+     *
+     * @return the query processor id result
+     */
     @Override
     protected CentralProcessor.ProcessorIdentifier queryProcessorId() {
         String cpuVendor = OpenBsdSysctlKit.sysctl("machdep.cpuvendor", Normal.EMPTY);
@@ -131,6 +153,11 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
                 processorID, cpu64bit, cpuFreq);
     }
 
+    /**
+     * Queries the current freq.
+     *
+     * @return the query current freq result
+     */
     @Override
     protected long[] queryCurrentFreq() {
         long[] freq = new long[1];
@@ -161,6 +188,11 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
         return vmStats.get().getRight();
     }
 
+    /**
+     * Returns the init processor counts result.
+     *
+     * @return the init processor counts result
+     */
     @Override
     protected Tuple initProcessorCounts() {
         // Iterate dmesg, look for lines:
@@ -253,6 +285,12 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
         return new Tuple(logProcs, physProcs, orderedProcCaches(caches), new ArrayList<>(featureFlags));
     }
 
+    /**
+     * Parses the cache str.
+     *
+     * @param cacheStr the cache str
+     * @return the parse cache str result
+     */
     private CentralProcessor.ProcessorCache parseCacheStr(String cacheStr) {
         String[] split = Pattern.SPACES_PATTERN.split(cacheStr);
         if (split.length > 3) {

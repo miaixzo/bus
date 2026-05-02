@@ -81,14 +81,14 @@ module bus.vortex {
     exports org.miaixz.bus.vortex.provider;
     exports org.miaixz.bus.vortex.registry;
     exports org.miaixz.bus.vortex.strategy;
-    exports org.miaixz.bus.vortex.support;
-    exports org.miaixz.bus.vortex.support.grpc;
-    exports org.miaixz.bus.vortex.support.llm;
-    exports org.miaixz.bus.vortex.support.mcp;
-    exports org.miaixz.bus.vortex.support.mq;
-    exports org.miaixz.bus.vortex.support.rest;
-    exports org.miaixz.bus.vortex.support.ws;
-    exports org.miaixz.bus.vortex.support.mcp.client;
-    exports org.miaixz.bus.vortex.support.mcp.server;
+    exports org.miaixz.bus.vortex.routing;
+    exports org.miaixz.bus.vortex.routing.grpc;
+    exports org.miaixz.bus.vortex.routing.llm;
+    exports org.miaixz.bus.vortex.routing.mcp;
+    exports org.miaixz.bus.vortex.routing.mq;
+    exports org.miaixz.bus.vortex.routing.rest;
+    exports org.miaixz.bus.vortex.routing.ws;
+    exports org.miaixz.bus.vortex.routing.mcp.client;
+    exports org.miaixz.bus.vortex.routing.mcp.server;
 
 }

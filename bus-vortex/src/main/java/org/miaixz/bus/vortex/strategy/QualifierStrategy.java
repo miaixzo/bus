@@ -20,6 +20,7 @@
 package org.miaixz.bus.vortex.strategy;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,7 +34,8 @@ import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
-import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.cortex.Keying;
+import org.miaixz.bus.cortex.Type;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Channel;
@@ -45,8 +47,6 @@ import org.miaixz.bus.vortex.provider.AuthorizeProvider;
 import org.miaixz.bus.vortex.registry.AssetsRegistry;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
 
 import reactor.core.publisher.Mono;
@@ -98,14 +98,14 @@ public class QualifierStrategy extends AbstractStrategy {
      * <p>
      * This method orchestrates the following steps:
      * <ol>
-     * <li>Extracts key gateway parameters (e.g., format, channel, method, version) from the request and populates the
-     * {@link Context}.</li>
-     * <li>Retrieves the {@link Assets} configuration from the registry using the method and version.</li>
+     * <li>Extracts key gateway parameters (e.g., format, channel, namespace, method, version) from the request and
+     * populates the {@link Context}.</li>
+     * <li>Retrieves the {@link Assets} configuration from the registry using namespace, method, version, and verb.</li>
      * <li>Sets the resolved {@link Assets} in the context for downstream use.</li>
      * <li>Validates that the request's HTTP method matches the one defined in the assets.</li>
      * <li>If the API asset is protected, it invokes the authorization workflow.</li>
-     * <li>Removes internal gateway parameters (e.g., method, version, format, sign) before passing the request to the
-     * next strategy.</li>
+     * <li>Removes internal gateway parameters (e.g., namespace, method, version, format, sign) before passing the
+     * request to the next strategy.</li>
      * </ol>
      *
      * @param exchange The {@link ServerWebExchange} representing the current request and response.
@@ -120,79 +120,114 @@ public class QualifierStrategy extends AbstractStrategy {
             final Context context = contextView.get(Context.class);
             Map<String, Object> params = context.getParameters();
 
-            // Extract and set context parameters
             context.setFormat(
                     Formats.get(Optional.ofNullable(params.get(Args.FORMAT)).map(Object::toString).orElse(null)));
             context.setChannel(
                     Channel.get(
                             Optional.ofNullable(params.get(Args.X_REMOTE_CHANNEL)).map(Object::toString).orElse(null)));
 
-            // Retrieve API asset configuration
+            String namespace = Optional.ofNullable(params.get(Args.NAMESPACE)).map(Object::toString).orElse(null);
+            String appId = Optional.ofNullable(params.get(Args.APP_ID)).map(Object::toString)
+                    .orElseGet(() -> exchange.getRequest().getHeaders().getFirst(Args.X_APP_ID));
             String method = Optional.ofNullable(params.get(Args.METHOD)).map(Object::toString).orElse(null);
+            Type type = this.type(Optional.ofNullable(params.get(Args.TYPE)).map(Object::toString).orElse(null));
             String version = Optional.ofNullable(params.get(Args.VERSION)).map(Object::toString).orElse(null);
+            Integer verb = context.getHttpMethod() == null ? null : context.getHttpMethod().verb();
+            Keying.RegistrySpec requestRoute = Keying.RegistrySpec.route(namespace, type, appId, method, version, verb);
 
-            // 1. Asynchronously retrieve API asset configuration, offloading if blocking.
-            // (Assuming registry.get() is a fast in-memory lookup, but keeping
-            // .subscribeOn() for consistency if it *could* be I/O).
-            return Mono.fromCallable(() -> this.registry.get(method, version)).subscribeOn(Schedulers.boundedElastic()) // Offload
-                    // potential
-                    // I/O
+            return Mono.fromCallable(() -> this.registry.get(requestRoute)).subscribeOn(Schedulers.boundedElastic())
                     .switchIfEmpty(Mono.defer(() -> {
-                        // switchIfEmpty defers the error creation
                         Logger.warn(
                                 false,
-                                "Qualifier",
-                                "[{}] Assets not found for method: {}, version: {}",
+                                "Vortex",
+                                "Assets not found: strategy=qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}, verb={}",
                                 context.getX_request_ip(),
+                                namespace,
+                                type == null ? null : type.key(),
+                                appId,
                                 method,
-                                version);
+                                version,
+                                verb);
                         return Mono.error(new ValidateException(ErrorCode._100800));
                     })).flatMap(assets -> {
-                        // 2. Set assets in context
                         context.setAssets(assets);
+                        Keying.RegistrySpec resolvedRoute = Keying.RegistrySpec.route(assets);
+                        String matchedRoute = null;
+                        Integer matchedLevel = null;
+                        List<String> requestedRoutes = this.registry.keying().keys(requestRoute);
+                        List<String> resolvedRoutes = this.registry.keying().keys(resolvedRoute);
+                        for (int i = 0; i < requestedRoutes.size(); i++) {
+                            String requested = requestedRoutes.get(i);
+                            if (resolvedRoutes.contains(requested)) {
+                                matchedRoute = requested;
+                                matchedLevel = i + 1;
+                                break;
+                            }
+                        }
                         Logger.info(
                                 true,
-                                "Qualifier",
-                                "[{}] Assets resolved: method={}, version={}, policy={}, sign={}, mode={}, type={}, host={}, port={}, path={}, url={}",
+                                "Vortex",
+                                "Assets resolved: strategy=qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}, verb={}, matchedLevel={}, matchedRoute={}, policy={}, sign={}, mode={}, host={}, port={}, path={}, url={}",
                                 context.getX_request_ip(),
+                                assets.getNamespace_id(),
+                                assets.getType(),
+                                assets.getApp_id(),
                                 assets.getMethod(),
                                 assets.getVersion(),
+                                assets.getVerb(),
+                                matchedLevel,
+                                matchedRoute,
                                 assets.getPolicy(),
                                 assets.getSign(),
-                                assets.getMode(),
-                                assets.getType(),
+                                assets.getProtocol(),
                                 assets.getHost(),
                                 assets.getPort(),
                                 assets.getPath(),
                                 assets.getUrl());
 
-                        // 3. Chain HTTP method validation
                         Mono<Void> validationMono = this.method(exchange, context, assets);
 
-                        // 4. Chain authorization if the API is protected
                         Mono<Void> authMono = (Consts.ZERO != assets.getPolicy()) ? this.authorize(context)
                                 : Mono.empty();
 
-                        // 5. Execute validation then authorization sequentially
                         return validationMono.then(authMono);
-                    })
-                    // 6. After all validations, remove internal parameters
-                    .then(Mono.fromRunnable(() -> {
+                    }).then(Mono.fromRunnable(() -> {
+                        context.getParameters().remove(Args.NAMESPACE);
+                        context.getParameters().remove(Args.APP_ID);
                         context.getParameters().remove(Args.METHOD);
                         context.getParameters().remove(Args.FORMAT);
+                        context.getParameters().remove(Args.TYPE);
                         context.getParameters().remove(Args.VERSION);
                         context.getParameters().remove(Args.SIGN);
                         Logger.info(
                                 true,
-                                "Qualifier",
-                                "[{}] Method: {}, Version: {} validated successfully",
+                                "Vortex",
+                                "Qualifier validation completed: strategy=qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}",
                                 context.getX_request_ip(),
+                                namespace,
+                                type == null ? null : type.key(),
+                                appId,
                                 method,
                                 version);
-                    }))
-                    // 7. Proceed to the next strategy in the chain
-                    .then(chain.apply(exchange));
+                    })).then(chain.apply(exchange));
         });
+    }
+
+    /**
+     * Resolves one optional request type token from either the numeric type key or the historical enum name.
+     *
+     * @param token raw request token
+     * @return resolved registry type or {@code null}
+     */
+    protected Type type(String token) {
+        if (StringKit.isBlank(token)) {
+            return null;
+        }
+        Type resolved = Type.tryFrom(token).orElseThrow(() -> new ValidateException(ErrorCode._100800));
+        if (!resolved.isRegistry()) {
+            throw new ValidateException(ErrorCode._100800);
+        }
+        return resolved;
     }
 
     /**
@@ -204,21 +239,20 @@ public class QualifierStrategy extends AbstractStrategy {
      * @return A {@link Mono<Void>} that completes if valid, or signals an error if mismatched.
      */
     protected Mono<Void> method(ServerWebExchange exchange, Context context, Assets assets) {
-        // Wrap synchronous logic that can throw an exception
         return Mono.fromRunnable(() -> {
-            ServerHttpRequest request = exchange.getRequest();
-            final HttpMethod expectedMethod = this.valueOf(assets.getType());
+            final HTTP.Method actualMethod = context.getHttpMethod();
+            final HTTP.Method expectedMethod = this.methodOf(assets.getVerb());
 
-            if (!Objects.equals(request.getMethod(), expectedMethod)) {
+            if (!Objects.equals(actualMethod, expectedMethod)) {
                 Logger.warn(
                         false,
-                        "Qualifier",
-                        "[{}] HTTP method mismatch, expected: {}, actual: {}",
+                        "Vortex",
+                        "HTTP method mismatch: strategy=qualifier, clientIp={}, expected={}, actual={}",
                         context.getX_request_ip(),
                         expectedMethod,
-                        request.getMethod());
+                        actualMethod);
 
-                final Errors error = switch (expectedMethod.name()) {
+                final Errors error = switch (expectedMethod.value()) {
                     case HTTP.GET -> ErrorCode._100200;
                     case HTTP.POST -> ErrorCode._100201;
                     case HTTP.PUT -> ErrorCode._100202;
@@ -229,7 +263,6 @@ public class QualifierStrategy extends AbstractStrategy {
                     case HTTP.TRACE -> ErrorCode._100207;
                     default -> ErrorCode._100802;
                 };
-                // This exception will be caught by fromRunnable and emitted as Mono.error()
                 throw new ValidateException(error);
             }
         });
@@ -248,79 +281,71 @@ public class QualifierStrategy extends AbstractStrategy {
     protected Mono<Void> authorize(Context context) {
         final Integer policy = context.getAssets().getPolicy();
 
-        // Validate policy value (valid range: 0 to 6)
         if (policy == null || policy < Consts.ZERO || policy > Consts.SIX) {
             Logger.error(
                     false,
-                    "Qualifier",
-                    "[{}] Invalid policy value: {}. Must be between 0 and 6.",
+                    "Vortex",
+                    "Invalid policy value: strategy=qualifier, clientIp={}, policy={}, allowedRange=0..6",
                     context.getX_request_ip(),
                     policy);
             return Mono.error(new ValidateException(ErrorCode._116002));
         }
 
-        // Policy 0: Anonymous access - no authentication required
         if (Consts.ZERO.equals(policy)) {
-            Logger.info(true, "Qualifier", "[{}] Anonymous access granted.", context.getX_request_ip());
+            Logger.info(
+                    true,
+                    "Vortex",
+                    "Anonymous access granted: strategy=qualifier, clientIp={}",
+                    context.getX_request_ip());
             return Mono.empty();
         }
 
-        // Determine acceptable credential types based on policy
-        // Policy 1-3: Token (1: basic, 2: with permissions, 3: with permissions and license)
-        // Policy 4-6: API Key (4: basic, 5: with permissions, 6: with permissions and license)
         final boolean acceptToken = Consts.ONE.equals(policy) || Consts.TWO.equals(policy)
                 || Consts.THREE.equals(policy);
         final boolean acceptApiKey = Consts.FOUR.equals(policy) || Consts.FIVE.equals(policy)
                 || Consts.SIX.equals(policy);
 
-        // Try to find acceptable credentials based on policy requirements
         String credentialValue = null;
 
-        // 1. Policy 1-3: Must use Token
         if (acceptToken) {
             credentialValue = this.getToken(context);
             if (StringKit.isNotBlank(credentialValue)) {
                 context.setBearer(credentialValue);
                 Logger.info(
                         true,
-                        "Qualifier",
-                        "[{}] Using Token (required by policy={}).",
+                        "Vortex",
+                        "Bearer credential selected: strategy=qualifier, clientIp={}, policy={}",
                         context.getX_request_ip(),
                         policy);
             }
         }
 
-        // 2. Policy 4-6: Must use API Key
         if (acceptApiKey) {
             credentialValue = this.getApiKey(context);
             if (StringKit.isNotBlank(credentialValue)) {
                 Logger.info(
                         true,
-                        "Qualifier",
-                        "[{}] Using API Key (required by policy={}).",
+                        "Vortex",
+                        "API key credential selected: strategy=qualifier, clientIp={}, policy={}",
                         context.getX_request_ip(),
                         policy);
             }
         }
 
-        // 3. Validate that required credential type was provided
         if (credentialValue == null) {
             Logger.warn(
                     false,
-                    "Qualifier",
-                    "[{}] Required credential not provided for policy={}.",
+                    "Vortex",
+                    "Required credential missing: strategy=qualifier, clientIp={}, policy={}",
                     context.getX_request_ip(),
                     policy);
             return Mono.error(new ValidateException(ErrorCode._116002));
         }
 
-        // 4. Delegate the validation to the provider
-        // The type field is set to the policy value, provider uses it to determine validation method
         return this.provider.authorize(
                 Principal.builder().channel(context.getChannel().getType()).context(context).type(policy)
                         .value(credentialValue).build())
                 .flatMap(delegate -> {
-                    // 5. Process the final result from the provider
                     if (delegate.isOk()) {
                         Map<String, Object> authMap = new HashMap<>();
                         BeanKit.beanToMap(
@@ -330,10 +355,10 @@ public class QualifierStrategy extends AbstractStrategy {
                                         .setIgnoreProperties("id"));
                         Logger.info(
                                 true,
-                                "Qualifier",
-                                "[{}] Auth map after conversion: {}",
+                                "Vortex",
+                                "Credential attributes converted: strategy=qualifier, clientIp={}, attributeCount={}",
                                 context.getX_request_ip(),
-                                JsonKit.toJsonString(authMap));
+                                authMap.size());
                         Map<String, Object> nonNullAuthMap = authMap.entrySet().stream()
                                 .filter(entry -> entry.getKey() != null && entry.getValue() != null)
                                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -341,24 +366,23 @@ public class QualifierStrategy extends AbstractStrategy {
                         context.getParameters().putAll(nonNullAuthMap);
                         Logger.info(
                                 true,
-                                "Qualifier",
-                                "[{}] Authentication successful (policy={}).",
+                                "Vortex",
+                                "Authentication completed: strategy=qualifier, clientIp={}, policy={}",
                                 context.getX_request_ip(),
                                 policy);
                         return Mono.empty();
                     }
 
+                    var message = delegate.getMessage();
                     Logger.error(
                             false,
-                            "Qualifier",
-                            "[{}] Authentication failed (policy={}) - Error code: {}, message: {}",
+                            "Vortex",
+                            "Authentication failed: strategy=qualifier, clientIp={}, policy={}, errorCode={}, message={}",
                             context.getX_request_ip(),
                             policy,
-                            delegate.getMessage().errcode,
-                            delegate.getMessage().errmsg);
-                    // Signal failure
-                    return Mono
-                            .error(new ValidateException(delegate.getMessage().errcode, delegate.getMessage().errmsg));
+                            message.errcode,
+                            message.errmsg);
+                    return Mono.error(new ValidateException(message.errcode, message.errmsg));
                 });
     }
 

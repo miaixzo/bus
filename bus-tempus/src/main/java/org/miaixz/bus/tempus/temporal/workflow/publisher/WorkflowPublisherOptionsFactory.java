@@ -23,6 +23,7 @@ import java.time.Duration;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.tempus.temporal.workflow.WorkflowIdGenerator;
 import org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsFactory;
 import org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsSpec;
@@ -108,10 +109,27 @@ public class WorkflowPublisherOptionsFactory implements WorkflowOptionsFactory {
      */
     @Override
     public WorkflowOptions createWorkflowOptions(String taskQueue, String workflowType) {
-        return WorkflowOptions.newBuilder().setTaskQueue(taskQueue).setWorkflowId(generator.workflowId(workflowType))
+        Logger.debug(
+                true,
+                "Tempus",
+                "Workflow options creation started: workflowType={}, taskQueue={}",
+                workflowType,
+                taskQueue);
+        WorkflowOptions options = WorkflowOptions.newBuilder().setTaskQueue(taskQueue)
+                .setWorkflowId(generator.workflowId(workflowType))
                 .setWorkflowExecutionTimeout(Duration.ofDays(workflowExecutionTimeoutDays))
                 .setWorkflowRunTimeout(Duration.ofHours(workflowRunTimeoutHours))
                 .setWorkflowTaskTimeout(Duration.ofMinutes(workflowTaskTimeoutMinutes)).build();
+        Logger.debug(
+                false,
+                "Tempus",
+                "Workflow options creation completed: workflowType={}, taskQueue={}, executionTimeoutDays={}, runTimeoutHours={}, taskTimeoutMinutes={}",
+                workflowType,
+                taskQueue,
+                workflowExecutionTimeoutDays,
+                workflowRunTimeoutHours,
+                workflowTaskTimeoutMinutes);
+        return options;
     }
 
     /**
@@ -125,15 +143,34 @@ public class WorkflowPublisherOptionsFactory implements WorkflowOptionsFactory {
      */
     @Override
     public WorkflowOptions createWorkflowOptions(WorkflowOptionsSpec spec) {
+        Logger.debug(
+                true,
+                "Tempus",
+                "Workflow options spec creation started: workflowType={}, taskQueue={}, workflowIdPresent={}, stableKeyPresent={}",
+                spec.workflowType(),
+                spec.taskQueue(),
+                StringKit.hasText(spec.workflowId()),
+                StringKit.hasText(spec.stableKey()));
         String workflowId = spec.workflowId();
         if (!StringKit.hasText(workflowId)) {
             workflowId = generator.workflowId(spec.workflowType(), spec.stableKey());
         }
 
-        return WorkflowOptions.newBuilder().setTaskQueue(spec.taskQueue()).setWorkflowId(workflowId)
+        WorkflowOptions options = WorkflowOptions.newBuilder().setTaskQueue(spec.taskQueue()).setWorkflowId(workflowId)
                 .setWorkflowExecutionTimeout(Duration.ofDays(workflowExecutionTimeoutDays))
                 .setWorkflowRunTimeout(Duration.ofHours(workflowRunTimeoutHours))
                 .setWorkflowTaskTimeout(Duration.ofMinutes(workflowTaskTimeoutMinutes)).build();
+        Logger.debug(
+                false,
+                "Tempus",
+                "Workflow options spec creation completed: workflowType={}, taskQueue={}, workflowId={}, executionTimeoutDays={}, runTimeoutHours={}, taskTimeoutMinutes={}",
+                spec.workflowType(),
+                spec.taskQueue(),
+                workflowId,
+                workflowExecutionTimeoutDays,
+                workflowRunTimeoutHours,
+                workflowTaskTimeoutMinutes);
+        return options;
     }
 
 }

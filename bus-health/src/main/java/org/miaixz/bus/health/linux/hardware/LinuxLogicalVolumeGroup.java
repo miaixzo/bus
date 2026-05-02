@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -39,18 +39,42 @@ import com.sun.jna.platform.linux.Udev;
  */
 public class LinuxLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
 
+    /**
+     * The BLOCK constant.
+     */
     private static final String BLOCK = "block";
+    /**
+     * The DM_UUID constant.
+     */
     private static final String DM_UUID = "DM_UUID";
+    /**
+     * The DM_VG_NAME constant.
+     */
     private static final String DM_VG_NAME = "DM_VG_NAME";
+    /**
+     * The DM_LV_NAME constant.
+     */
     private static final String DM_LV_NAME = "DM_LV_NAME";
 
+    /**
+     * Creates a new LinuxLogicalVolumeGroup instance.
+     *
+     * @param name  the name
+     * @param lvMap the lv map
+     * @param pvSet the pv set
+     */
     LinuxLogicalVolumeGroup(String name, Map<String, Set<String>> lvMap, Set<String> pvSet) {
         super(name, lvMap, pvSet);
     }
 
+    /**
+     * Returns the logical volume groups.
+     *
+     * @return the get logical volume groups result
+     */
     static List<LogicalVolumeGroup> getLogicalVolumeGroups() {
         if (!LinuxOperatingSystem.HAS_UDEV) {
-            Logger.warn("Logical Volume Group information requires libudev, which is not present.");
+            Logger.warn(false, "Health", "Logical Volume Group information requires libudev, which is not present.");
             return Collections.emptyList();
         }
         Map<String, Map<String, Set<String>>> logicalVolumesMap = new HashMap<>();

@@ -281,7 +281,7 @@ public class NativeImageReader extends ImageReader implements Closeable {
         try {
             buildImage(iis);
         } catch (IOException e) {
-            Logger.error("Find image parameters", e);
+            Logger.error(false, "Image", "Find image parameters", e);
         }
     }
 

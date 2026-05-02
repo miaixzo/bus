@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -35,29 +35,61 @@ import org.miaixz.bus.health.builtin.software.OSThread;
 @ThreadSafe
 public abstract class AbstractOSThread implements OSThread {
 
+    /**
+     * The cumulativeCpuLoad value.
+     */
     private final Supplier<Double> cumulativeCpuLoad = Memoizer
             .memoize(this::queryCumulativeCpuLoad, Memoizer.defaultExpiration());
 
+    /**
+     * The owningProcessId value.
+     */
     private final int owningProcessId;
 
+    /**
+     * Creates a new AbstractOSThread instance.
+     *
+     * @param processId the process id
+     */
     protected AbstractOSThread(int processId) {
         this.owningProcessId = processId;
     }
 
+    /**
+     * Returns the owning process id.
+     *
+     * @return the get owning process id result
+     */
     @Override
     public int getOwningProcessId() {
         return this.owningProcessId;
     }
 
+    /**
+     * Returns the thread cpu load cumulative.
+     *
+     * @return the get thread cpu load cumulative result
+     */
     @Override
     public double getThreadCpuLoadCumulative() {
         return cumulativeCpuLoad.get();
     }
 
+    /**
+     * Queries the cumulative cpu load.
+     *
+     * @return the query cumulative cpu load result
+     */
     private double queryCumulativeCpuLoad() {
         return getUpTime() > 0d ? (getKernelTime() + getUserTime()) / (double) getUpTime() : 0d;
     }
 
+    /**
+     * Returns the thread cpu load between ticks.
+     *
+     * @param priorSnapshot the prior snapshot
+     * @return the get thread cpu load between ticks result
+     */
     @Override
     public double getThreadCpuLoadBetweenTicks(OSThread priorSnapshot) {
         if (priorSnapshot != null && owningProcessId == priorSnapshot.getOwningProcessId()
@@ -68,6 +100,11 @@ public abstract class AbstractOSThread implements OSThread {
         return getThreadCpuLoadCumulative();
     }
 
+    /**
+     * Returns the to string result.
+     *
+     * @return the to string result
+     */
     @Override
     public String toString() {
         return "OSThread [threadId=" + getThreadId() + ", owningProcessId=" + getOwningProcessId() + ", name="

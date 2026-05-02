@@ -42,6 +42,7 @@ import org.miaixz.bus.office.excel.sax.handler.RowHandler;
 import org.miaixz.bus.office.excel.writer.BigExcelWriter;
 import org.miaixz.bus.office.excel.writer.ExcelWriteConfig;
 import org.miaixz.bus.office.excel.writer.ExcelWriter;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Excel utility class. It is not recommended to operate on sheets directly using an index, as the display order of
@@ -198,6 +199,13 @@ public class ExcelKit {
         try {
             return new ExcelReader(bookFilePath, sheetIndex);
         } catch (final NoClassDefFoundError e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
@@ -213,6 +221,13 @@ public class ExcelKit {
         try {
             return new ExcelReader(bookFilePath, sheetName);
         } catch (final NoClassDefFoundError e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
@@ -228,6 +243,13 @@ public class ExcelKit {
         try {
             return new ExcelReader(bookFile, sheetIndex);
         } catch (final NoClassDefFoundError e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
@@ -243,6 +265,13 @@ public class ExcelKit {
         try {
             return new ExcelReader(bookFile, sheetName);
         } catch (final NoClassDefFoundError e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
@@ -269,6 +298,13 @@ public class ExcelKit {
         try {
             return new ExcelReader(bookStream, sheetIndex);
         } catch (final NoClassDefFoundError e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
@@ -284,6 +320,13 @@ public class ExcelKit {
         try {
             return new ExcelReader(bookStream, sheetName);
         } catch (final NoClassDefFoundError e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
@@ -299,6 +342,13 @@ public class ExcelKit {
         try {
             return new ExcelWriter();
         } catch (final NoClassDefFoundError e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
@@ -313,6 +363,13 @@ public class ExcelKit {
         try {
             return new ExcelWriter(isXlsx);
         } catch (final NoClassDefFoundError e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
@@ -327,6 +384,13 @@ public class ExcelKit {
         try {
             return new ExcelWriter(templateFilePath);
         } catch (final NoClassDefFoundError e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
@@ -341,6 +405,13 @@ public class ExcelKit {
         try {
             return new ExcelWriter((File) null, sheetName);
         } catch (final NoClassDefFoundError e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
@@ -355,6 +426,13 @@ public class ExcelKit {
         try {
             return new ExcelWriter(templateFile);
         } catch (final NoClassDefFoundError e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
@@ -370,6 +448,13 @@ public class ExcelKit {
         try {
             return new ExcelWriter(templateFilePath, sheetName);
         } catch (final NoClassDefFoundError e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
@@ -385,6 +470,13 @@ public class ExcelKit {
         try {
             return new ExcelWriter(templateFilePath, sheetName);
         } catch (final NoClassDefFoundError e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
@@ -399,6 +491,13 @@ public class ExcelKit {
         try {
             return new BigExcelWriter();
         } catch (final NoClassDefFoundError e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
@@ -413,6 +512,13 @@ public class ExcelKit {
         try {
             return new BigExcelWriter(rowAccessWindowSize);
         } catch (final NoClassDefFoundError e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
@@ -427,6 +533,13 @@ public class ExcelKit {
         try {
             return new BigExcelWriter(destFilePath);
         } catch (final NoClassDefFoundError e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
@@ -441,6 +554,13 @@ public class ExcelKit {
         try {
             return new BigExcelWriter(destFile);
         } catch (final NoClassDefFoundError e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
@@ -456,6 +576,13 @@ public class ExcelKit {
         try {
             return new BigExcelWriter(destFilePath, sheetName);
         } catch (final NoClassDefFoundError e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
@@ -471,6 +598,13 @@ public class ExcelKit {
         try {
             return new BigExcelWriter(destFile, sheetName);
         } catch (final NoClassDefFoundError e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
@@ -495,6 +629,13 @@ public class ExcelKit {
             return new BigExcelWriter(destFile, rowAccessWindowSize, compressTmpFiles, useSharedStringsTable,
                     sheetName);
         } catch (final NoClassDefFoundError e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
@@ -520,6 +661,13 @@ public class ExcelKit {
         try {
             return new BigExcelReader(bookFilePath, sheetIndex);
         } catch (final NoClassDefFoundError e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
@@ -535,6 +683,13 @@ public class ExcelKit {
         try {
             return new BigExcelReader(bookFilePath, sheetName);
         } catch (final NoClassDefFoundError e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
@@ -560,6 +715,13 @@ public class ExcelKit {
         try {
             return new BigExcelReader(bookFile, sheetIndex);
         } catch (final NoClassDefFoundError e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
@@ -575,6 +737,13 @@ public class ExcelKit {
         try {
             return new BigExcelReader(bookFile, sheetName);
         } catch (final NoClassDefFoundError e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
@@ -600,6 +769,13 @@ public class ExcelKit {
         try {
             return new BigExcelReader(bookStream, sheetIndex);
         } catch (final NoClassDefFoundError e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
@@ -615,6 +791,13 @@ public class ExcelKit {
         try {
             return new BigExcelReader(bookStream, sheetName);
         } catch (final NoClassDefFoundError e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
@@ -785,11 +968,25 @@ public class ExcelKit {
                         }
                     }
                 } catch (final InterruptedException e) {
+                    Logger.warn(
+                            false,
+                            "Office",
+                            e,
+                            "Excel operation failed: provider={}, exception={}",
+                            "ExcelKit",
+                            e.getClass().getSimpleName());
                     Thread.currentThread().interrupt();
                     throw new IllegalStateException("Interrupted while queueing row batch", e);
                 }
             });
         } catch (final Throwable e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             error.compareAndSet(null, e);
             throw e;
         } finally {
@@ -1047,6 +1244,13 @@ public class ExcelKit {
                 }
             }
         } catch (final Throwable e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             error.compareAndSet(null, e);
         }
     }
@@ -1067,6 +1271,13 @@ public class ExcelKit {
             try {
                 offered = queue.offer(poison, pollTimeoutMs, TimeUnit.MILLISECONDS);
             } catch (final InterruptedException e) {
+                Logger.warn(
+                        false,
+                        "Office",
+                        e,
+                        "Excel operation failed: provider={}, exception={}",
+                        "ExcelKit",
+                        e.getClass().getSimpleName());
                 Thread.currentThread().interrupt();
                 throw new IllegalStateException("Interrupted while finishing transfer pipeline", e);
             }
@@ -1083,6 +1294,13 @@ public class ExcelKit {
         try {
             writerThread.join();
         } catch (final InterruptedException e) {
+            Logger.warn(
+                    false,
+                    "Office",
+                    e,
+                    "Excel operation failed: provider={}, exception={}",
+                    "ExcelKit",
+                    e.getClass().getSimpleName());
             Thread.currentThread().interrupt();
             error.compareAndSet(null, e);
             throw new IllegalStateException("Interrupted while waiting writer thread", e);

@@ -28,6 +28,12 @@ package org.miaixz.bus.core.lang;
 public class Symbol {
 
     /**
+     * Constructs a new symbol constants holder.
+     */
+    public Symbol() {
+    }
+
+    /**
      * Character: '0'
      */
     public static final char C_ZERO = '0';

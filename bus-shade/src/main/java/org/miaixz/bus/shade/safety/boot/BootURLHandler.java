@@ -30,6 +30,7 @@ import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.shade.safety.Builder;
 import org.miaixz.bus.shade.safety.algorithm.Key;
 import org.miaixz.bus.shade.safety.provider.DecryptorProvider;
@@ -92,6 +93,7 @@ public class BootURLHandler extends Handler {
                 }
             }
         }
+        Logger.debug(false, "Shade", "Boot URL handler initialized: encryptedResourceCount={}", indexes.size());
     }
 
     /**
@@ -106,9 +108,16 @@ public class BootURLHandler extends Handler {
     @Override
     protected URLConnection openConnection(URL url) throws IOException {
         URLConnection urlConnection = super.openConnection(url);
-        return indexes.contains(url.toString()) && urlConnection instanceof JarURLConnection
-                ? new BootURLConnection((JarURLConnection) urlConnection, decryptorProvider, encryptorProvider, key)
-                : urlConnection;
+        if (indexes.contains(url.toString()) && urlConnection instanceof JarURLConnection) {
+            Logger.trace(
+                    true,
+                    "Shade",
+                    "Boot encrypted resource connection opened: protocol={}, resourceChars={}",
+                    url.getProtocol(),
+                    url.toString().length());
+            return new BootURLConnection((JarURLConnection) urlConnection, decryptorProvider, encryptorProvider, key);
+        }
+        return urlConnection;
     }
 
 }

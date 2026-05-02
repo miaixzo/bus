@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -53,31 +53,73 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 @Immutable
 public final class WindowsGraphicsCard extends AbstractGraphicsCard {
 
+    /**
+     * The IS_VISTA_OR_GREATER constant.
+     */
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
 
     // Conversion: LHM reports memory in MB; 1 MB = 1_048_576 bytes
+    /**
+     * The MB_TO_BYTES constant.
+     */
     private static final long MB_TO_BYTES = 1_048_576L;
 
+    /**
+     * The ADAPTER_STRING constant.
+     */
     public static final String ADAPTER_STRING = "HardwareInformation.AdapterString";
+    /**
+     * The DRIVER_DESC constant.
+     */
     public static final String DRIVER_DESC = "DriverDesc";
+    /**
+     * The DRIVER_VERSION constant.
+     */
     public static final String DRIVER_VERSION = "DriverVersion";
+    /**
+     * The VENDOR constant.
+     */
     public static final String VENDOR = "ProviderName";
+    /**
+     * The QW_MEMORY_SIZE constant.
+     */
     public static final String QW_MEMORY_SIZE = "HardwareInformation.qwMemorySize";
+    /**
+     * The MATCHING_DEVICE_ID constant.
+     */
     public static final String MATCHING_DEVICE_ID = "MatchingDeviceId";
+    /**
+     * The LOCATION_INFORMATION constant.
+     */
     public static final String LOCATION_INFORMATION = "LocationInformation";
+    /**
+     * The DISPLAY_DEVICES_REGISTRY_PATH constant.
+     */
     public static final String DISPLAY_DEVICES_REGISTRY_PATH = "SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}\\";
 
     // PDH instance prefix for this adapter's LUID, e.g. "luid_0x00000000_0x0001234_phys_0"
     // Used to filter GPU Engine and GPU Adapter Memory counter instances.
+    /**
+     * The luidPrefix value.
+     */
     private final String luidPrefix;
 
     // LHM hardware identifier for this GPU, e.g. "/gpu-nvidia/0". Empty if LHM is not available.
+    /**
+     * The lhmParent value.
+     */
     private final String lhmParent;
 
     // PCI bus number from DXGI, used to correlate with ADL. -1 if unknown.
+    /**
+     * The pciBusNumber value.
+     */
     private final int pciBusNumber;
 
     // PCI bus ID string for NVML correlation, e.g. "0000:01:00.0". Empty if unknown.
+    /**
+     * The pciBusId value.
+     */
     private final String pciBusId;
 
     /**
@@ -102,6 +144,11 @@ public final class WindowsGraphicsCard extends AbstractGraphicsCard {
         this.pciBusId = pciBusId;
     }
 
+    /**
+     * Creates the stats session.
+     *
+     * @return the create stats session result
+     */
     @Override
     public GpuStats createStatsSession() {
         return new WindowsGpuStats(luidPrefix, lhmParent, pciBusNumber, pciBusId, getName());
@@ -246,6 +293,13 @@ public final class WindowsGraphicsCard extends AbstractGraphicsCard {
     }
 
     // fall back if something went wrong
+    /**
+     * Returns the graphics cards from wmi.
+     *
+     * @param dxgiAdapters the dxgi adapters
+     * @param lhmParentMap the lhm parent map
+     * @return the get graphics cards from wmi result
+     */
     private static List<GraphicsCard> getGraphicsCardsFromWmi(
             List<DxgiAdapterInfo> dxgiAdapters,
             Map<String, String> lhmParentMap) {
@@ -355,7 +409,11 @@ public final class WindowsGraphicsCard extends AbstractGraphicsCard {
                 }
             }
         } catch (Exception e) {
-            Logger.debug("LHM GPU hardware query failed (LHM may not be running): {}", e.getMessage());
+            Logger.debug(
+                    false,
+                    "Health",
+                    "LHM GPU hardware query failed (LHM may not be running): {}",
+                    e.getClass().getSimpleName());
         }
         return map;
     }
@@ -493,6 +551,8 @@ public final class WindowsGraphicsCard extends AbstractGraphicsCard {
         // instances do not carry a name. Return empty; callers will get -1 for PDH metrics.
         // A future improvement could correlate via DXGI LUID enumeration.
         Logger.debug(
+                false,
+                "Health",
                 "Multiple GPU Adapter Memory instances found ({}); LUID matching not yet implemented for multi-GPU",
                 instances.size());
         return Normal.EMPTY;

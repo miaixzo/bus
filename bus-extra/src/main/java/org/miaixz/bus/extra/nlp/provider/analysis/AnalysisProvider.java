@@ -27,6 +27,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Abstract provider for Lucene-analysis based word segmentation engines. This class provides a base implementation for
@@ -49,7 +50,17 @@ public class AnalysisProvider implements NLPProvider {
      * @param analyzer The {@link Analyzer} to use for word segmentation.
      */
     public AnalysisProvider(final Analyzer analyzer) {
+        Logger.info(
+                true,
+                "Extra",
+                "Lucene analysis provider initialization started: analyzerType={}",
+                analyzer == null ? "null" : analyzer.getClass().getSimpleName());
         this.analyzer = analyzer;
+        Logger.info(
+                false,
+                "Extra",
+                "Lucene analysis provider initialized: analyzerType={}",
+                this.analyzer == null ? "null" : this.analyzer.getClass().getSimpleName());
     }
 
     /**
@@ -63,12 +74,32 @@ public class AnalysisProvider implements NLPProvider {
     @Override
     public NLPResult parse(final CharSequence text) {
         final TokenStream stream;
+        Logger.debug(
+                true,
+                "Extra",
+                "Lucene analysis parse started: textLength={}, analyzerType={}",
+                text == null ? 0 : text.length(),
+                analyzer == null ? "null" : analyzer.getClass().getSimpleName());
         try {
             stream = analyzer.tokenStream("text", StringKit.toStringOrEmpty(text));
             stream.reset();
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "Lucene analysis parse failed: textLength={}, analyzerType={}, exception={}",
+                    text == null ? 0 : text.length(),
+                    analyzer == null ? "null" : analyzer.getClass().getSimpleName(),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
+        Logger.debug(
+                false,
+                "Extra",
+                "Lucene analysis parse completed: textLength={}, streamPresent={}",
+                text == null ? 0 : text.length(),
+                stream != null);
         return new AnalysisResult(stream);
     }
 

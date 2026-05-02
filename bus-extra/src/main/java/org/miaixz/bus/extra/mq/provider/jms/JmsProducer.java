@@ -25,6 +25,7 @@ import org.miaixz.bus.core.lang.exception.MQueueException;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.extra.mq.Message;
 import org.miaixz.bus.extra.mq.Producer;
+import org.miaixz.bus.logger.Logger;
 
 import jakarta.jms.BytesMessage;
 import jakarta.jms.JMSException;
@@ -71,14 +72,38 @@ public class JmsProducer implements Producer {
     @Override
     public void send(final Message message) {
         final BytesMessage bytesMessage;
+        final long startedAt = System.nanoTime();
+        final byte[] content = message.content();
+        Logger.debug(
+                true,
+                "Extra",
+                "JMS send started: topic={}, messageBytes={}",
+                message.topic(),
+                content == null ? 0 : content.length);
         try {
             // Create a new BytesMessage from the JMS session
             bytesMessage = this.session.createBytesMessage();
             // Write the content of the bus.extra.mq.Message into the BytesMessage
-            bytesMessage.writeBytes(message.content());
+            bytesMessage.writeBytes(content);
             // Send the BytesMessage using the JMS MessageProducer
             this.producer.send(bytesMessage);
+            Logger.debug(
+                    false,
+                    "Extra",
+                    "JMS send completed: topic={}, messageBytes={}, elapsedMs={}",
+                    message.topic(),
+                    content == null ? 0 : content.length,
+                    (System.nanoTime() - startedAt) / 1_000_000L);
         } catch (final JMSException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "JMS send failed: topic={}, messageBytes={}, exception={}, elapsedMs={}",
+                    message.topic(),
+                    content == null ? 0 : content.length,
+                    e.getClass().getSimpleName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
             // Wrap any JMSException in an MQueueException for consistent error handling
             throw new MQueueException(e);
         }
@@ -91,8 +116,11 @@ public class JmsProducer implements Producer {
      */
     @Override
     public void close() throws IOException {
+        final long startedAt = System.nanoTime();
+        Logger.debug(true, "Extra", "JMS producer close requested");
         // Safely close the JMS producer, suppressing any exceptions
         IoKit.closeQuietly(this.producer);
+        Logger.debug(false, "Extra", "JMS producer closed: elapsedMs={}", (System.nanoTime() - startedAt) / 1_000_000L);
     }
 
 }

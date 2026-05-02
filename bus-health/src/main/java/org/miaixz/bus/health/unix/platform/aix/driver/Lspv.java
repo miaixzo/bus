@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -47,6 +47,9 @@ public final class Lspv {
      */
     private static final Map<String, List<HWPartition>> PARTITION_CACHE = new ConcurrentHashMap<>();
 
+    /**
+     * Creates a new Lspv instance.
+     */
     private Lspv() {
     }
 
@@ -66,6 +69,13 @@ public final class Lspv {
                                 .collect(Collectors.toList())));
     }
 
+    /**
+     * Returns the compute logical volumes result.
+     *
+     * @param device    the device
+     * @param majMinMap the maj min map
+     * @return the compute logical volumes result
+     */
     private static List<HWPartition> computeLogicalVolumes(
             String device,
             Map<String, Pair<Integer, Integer>> majMinMap) {

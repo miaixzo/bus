@@ -24,14 +24,13 @@ import java.util.Map;
 
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.core.basic.entity.Tracer;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.vortex.filter.PrimaryFilter;
 import org.miaixz.bus.vortex.handler.ErrorsHandler;
 import org.miaixz.bus.vortex.magic.Parameter;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.codec.multipart.Part;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 /**
  * Represents the request context, a stateful object that is created at the beginning of a request and enriched as it
@@ -45,8 +44,13 @@ import lombok.NoArgsConstructor;
  * @since Java 21+
  */
 @Getter
-@NoArgsConstructor
 public class Context extends Tracer {
+
+    /**
+     * Creates an empty request context.
+     */
+    public Context() {
+    }
 
     /**
      * The key used to store and retrieve this Context object from the attributes of a {@code ServerWebExchange}.
@@ -109,7 +113,7 @@ public class Context extends Tracer {
     /**
      * The HTTP method of the incoming request (e.g., GET, POST).
      */
-    private HttpMethod httpMethod;
+    private HTTP.Method httpMethod;
 
     /**
      * Returns a read-only live view of the business parameters.
@@ -166,31 +170,66 @@ public class Context extends Tracer {
         this.query.replaceAll(values);
     }
 
+    /**
+     * Replaces uploaded multipart parts for the current request.
+     *
+     * @param fileParts multipart parts keyed by field name
+     */
     public void setFileParts(Map<String, Part> fileParts) {
         this.fileParts = fileParts;
     }
 
+    /**
+     * Sets the preferred response format resolved for the request.
+     *
+     * @param format negotiated response format
+     */
     public void setFormat(Formats format) {
         this.format = format;
     }
 
+    /**
+     * Sets the access channel resolved from the request metadata.
+     *
+     * @param channel request channel
+     */
     public void setChannel(Channel channel) {
         this.channel = channel;
     }
 
+    /**
+     * Stores the bearer token or API key extracted from the request.
+     *
+     * @param bearer bearer credential value
+     */
     public void setBearer(String bearer) {
         this.bearer = bearer;
     }
 
+    /**
+     * Stores the matched route asset for downstream processing.
+     *
+     * @param assets resolved route asset
+     */
     public void setAssets(Assets assets) {
         this.assets = assets;
     }
 
+    /**
+     * Stores the request start timestamp in milliseconds.
+     *
+     * @param timestamp request start time
+     */
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
-    public void setHttpMethod(HttpMethod httpMethod) {
+    /**
+     * Stores the incoming HTTP method.
+     *
+     * @param httpMethod request HTTP method
+     */
+    public void setHttpMethod(HTTP.Method httpMethod) {
         this.httpMethod = httpMethod;
     }
 

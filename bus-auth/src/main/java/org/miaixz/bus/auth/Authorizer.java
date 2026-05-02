@@ -27,6 +27,7 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Authorization module builder, used to quickly construct authentication providers. It uses the builder pattern to
@@ -134,8 +135,21 @@ public class Authorizer {
      * @throws AuthorizedException if the source or context is not set, or if no matching {@link Complex} is found
      */
     public Provider build() {
+        Logger.debug(
+                true,
+                "Auth",
+                "OAuth provider build started: source={}, contextPresent={}, customComplexCount={}",
+                this.source,
+                this.context != null,
+                this.complex == null ? 0 : this.complex.length);
         // Validate if source and context are set
         if (StringKit.isEmpty(this.source) || null == this.context) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    "OAuth provider build rejected: source={}, reason={}",
+                    this.source,
+                    "missingSourceOrContext");
             throw new AuthorizedException(ErrorCode._110001.getKey());
         }
 
@@ -150,19 +164,41 @@ public class Authorizer {
         // Get the provider class
         Class<? extends AbstractProvider> targetClass = complex.getTargetClass();
         if (null == targetClass) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    "OAuth provider build rejected: source={}, reason={}",
+                    complex.getName(),
+                    "missingTargetClass");
             throw new AuthorizedException(ErrorCode._110001.getKey());
         }
 
         // Dynamically create the provider instance
         try {
+            Provider provider;
             if (this.cache == null) {
-                return targetClass.getDeclaredConstructor(Context.class).newInstance(this.context);
+                provider = targetClass.getDeclaredConstructor(Context.class).newInstance(this.context);
             } else {
-                return targetClass.getDeclaredConstructor(Context.class, CacheX.class)
+                provider = targetClass.getDeclaredConstructor(Context.class, CacheX.class)
                         .newInstance(this.context, this.cache);
             }
+            Logger.debug(
+                    false,
+                    "Auth",
+                    "OAuth provider build completed: source={}, provider={}, cachePresent={}",
+                    complex.getName(),
+                    targetClass.getName(),
+                    this.cache != null);
+            return provider;
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider creation failed: source={}, provider={}, exception={}",
+                    complex.getName(),
+                    targetClass.getName(),
+                    e.getClass().getSimpleName());
             throw new AuthorizedException(ErrorCode._110001.getKey());
         }
     }

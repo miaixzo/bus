@@ -23,6 +23,7 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.locks.Lock;
 
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.tempus.Repertoire;
 import org.miaixz.bus.tempus.Scheduler;
 import org.miaixz.bus.tempus.pattern.CronPattern;
@@ -72,9 +73,24 @@ public class TriggerCrontab extends Repertoire {
      */
     @Override
     public TriggerCrontab add(String id, CronPattern pattern, Crontab crontab) {
+        Logger.debug(
+                true,
+                "Tempus",
+                "Trigger task add started: taskId={}, pattern={}, queueSize={}",
+                id,
+                pattern,
+                this.triggerQueue.size());
         super.add(id, pattern, crontab);
         // Add the next trigger time and task to the queue
-        this.triggerQueue.offer(new TriggerTime(id, pattern.nextMatchFromNow()));
+        long nextTrigger = pattern.nextMatchFromNow();
+        this.triggerQueue.offer(new TriggerTime(id, nextTrigger));
+        Logger.debug(
+                false,
+                "Tempus",
+                "Trigger task added: taskId={}, nextTriggerMillis={}, queueSize={}",
+                id,
+                nextTrigger,
+                this.triggerQueue.size());
         return this;
     }
 
@@ -87,8 +103,23 @@ public class TriggerCrontab extends Repertoire {
     @Override
     public boolean remove(String id) {
         // Remove the task from the queue
-        this.triggerQueue.removeIf(task -> StringKit.equals(task.id(), id));
-        return super.remove(id);
+        Logger.debug(
+                true,
+                "Tempus",
+                "Trigger task remove started: taskId={}, queueSize={}",
+                id,
+                this.triggerQueue.size());
+        boolean queueRemoved = this.triggerQueue.removeIf(task -> StringKit.equals(task.id(), id));
+        boolean removed = super.remove(id);
+        Logger.debug(
+                false,
+                "Tempus",
+                "Trigger task remove completed: taskId={}, queueRemoved={}, removed={}, queueSize={}",
+                id,
+                queueRemoved,
+                removed,
+                this.triggerQueue.size());
+        return removed;
 
     }
 
@@ -102,10 +133,28 @@ public class TriggerCrontab extends Repertoire {
     @Override
     public boolean updatePattern(String id, CronPattern pattern) {
         // Remove the task from the queue
-        this.triggerQueue.removeIf(task -> StringKit.equals(task.id(), id));
+        Logger.debug(
+                true,
+                "Tempus",
+                "Trigger task pattern update started: taskId={}, pattern={}, queueSize={}",
+                id,
+                pattern,
+                this.triggerQueue.size());
+        boolean queueRemoved = this.triggerQueue.removeIf(task -> StringKit.equals(task.id(), id));
         // Add the next trigger time and task to the queue
-        this.triggerQueue.offer(new TriggerTime(id, pattern.nextMatchFromNow()));
-        return super.updatePattern(id, pattern);
+        long nextTrigger = pattern.nextMatchFromNow();
+        this.triggerQueue.offer(new TriggerTime(id, nextTrigger));
+        boolean updated = super.updatePattern(id, pattern);
+        Logger.debug(
+                false,
+                "Tempus",
+                "Trigger task pattern update completed: taskId={}, updated={}, queueRemoved={}, nextTriggerMillis={}, queueSize={}",
+                id,
+                updated,
+                queueRemoved,
+                nextTrigger,
+                this.triggerQueue.size());
+        return updated;
     }
 
     /**
@@ -138,6 +187,13 @@ public class TriggerCrontab extends Repertoire {
      * @param millis    Time in milliseconds.
      */
     private void executeTaskBeforeInternal(final Scheduler scheduler, final long millis) {
+        int dispatchedCount = 0;
+        Logger.debug(
+                true,
+                "Tempus",
+                "Trigger task scan started: millis={}, queueSize={}",
+                millis,
+                this.triggerQueue.size());
         while (true) {
             final TriggerTime triggerTime = this.triggerQueue.poll();
             if (null == triggerTime) {
@@ -154,7 +210,15 @@ public class TriggerCrontab extends Repertoire {
 
             // Execute the task
             final String id = triggerTime.id();
+            Logger.debug(
+                    true,
+                    "Tempus",
+                    "Trigger task dispatch started: taskId={}, triggerMillis={}, currentMillis={}",
+                    id,
+                    triggerTimestamp,
+                    millis);
             scheduler.manager.spawnExecutor(getCronTask(id));
+            dispatchedCount++;
 
             // Add the next trigger time and task to the queue
             long nextMillis = millis;
@@ -164,6 +228,13 @@ public class TriggerCrontab extends Repertoire {
             }
             this.triggerQueue.offer(new TriggerTime(id, getPattern(id).nextMatch(nextMillis)));
         }
+        Logger.debug(
+                false,
+                "Tempus",
+                "Trigger task scan completed: millis={}, dispatchedCount={}, queueSize={}",
+                millis,
+                dispatchedCount,
+                this.triggerQueue.size());
     }
 
     /**

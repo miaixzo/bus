@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.health.linux.hardware;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -44,6 +43,7 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractCentralProcessor;
 import org.miaixz.bus.health.linux.ProcPath;
 import org.miaixz.bus.health.linux.SysPath;
 import org.miaixz.bus.health.linux.driver.Lshw;
+import org.miaixz.bus.health.linux.driver.proc.Auxv;
 import org.miaixz.bus.health.linux.driver.proc.CpuInfo;
 import org.miaixz.bus.health.linux.driver.proc.CpuStat;
 import org.miaixz.bus.health.linux.jna.LinuxLibc;
@@ -65,6 +65,11 @@ import com.sun.jna.platform.linux.Udev.UdevListEntry;
 @ThreadSafe
 final class LinuxCentralProcessor extends AbstractCentralProcessor {
 
+    /**
+     * Reads the topology from udev.
+     *
+     * @return the read topology from udev result
+     */
     private static Tuple readTopologyFromUdev() {
         List<CentralProcessor.LogicalProcessor> logProcs = new ArrayList<>();
         Set<CentralProcessor.ProcessorCache> caches = new HashSet<>();
@@ -72,6 +77,9 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         Map<Integer, String> modAliasMap = new HashMap<>();
         // Enumerate CPU topology from sysfs via udev
         UdevContext udev = Udev.INSTANCE.udev_new();
+        if (udev == null) {
+            return readTopologyFromSysfs();
+        }
         try {
             UdevEnumerate enumerate = udev.enumerateNew();
             try {
@@ -100,6 +108,11 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         return new Tuple(logProcs, orderedProcCaches(caches), coreEfficiencyMap, modAliasMap);
     }
 
+    /**
+     * Reads the topology from sysfs.
+     *
+     * @return the read topology from sysfs result
+     */
     private static Tuple readTopologyFromSysfs() {
         List<CentralProcessor.LogicalProcessor> logProcs = new ArrayList<>();
         Set<CentralProcessor.ProcessorCache> caches = new HashSet<>();
@@ -121,11 +134,21 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
             }
         } catch (IOException e) {
             // No udev and no cpu info in sysfs? Bad.
-            Logger.warn("Unable to find CPU information in sysfs at path {}", SysPath.CPU);
+            Logger.warn(false, "Health", "Unable to find CPU information in sysfs at path {}", SysPath.CPU);
         }
         return new Tuple(logProcs, orderedProcCaches(caches), coreEfficiencyMap, modAliasMap);
     }
 
+    /**
+     * Returns the logical processor from syspath.
+     *
+     * @param syspath           the syspath
+     * @param caches            the caches
+     * @param modAlias          the mod alias
+     * @param coreEfficiencyMap the core efficiency map
+     * @param modAliasMap       the mod alias map
+     * @return the get logical processor from syspath result
+     */
     private static CentralProcessor.LogicalProcessor getLogicalProcessorFromSyspath(
             String syspath,
             Set<CentralProcessor.ProcessorCache> caches,
@@ -142,7 +165,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
             modAliasMap.put(pkgCoreKey, modAlias);
         }
         int nodeId = 0;
-        final String nodePrefix = syspath + "/node";
+        final String nodePrefix = Paths.get(syspath, "node").toString();
         try (Stream<Path> path = Files.list(Paths.get(syspath))) {
             Optional<Path> first = path.filter(p -> p.toString().startsWith(nodePrefix)).findFirst();
             if (first.isPresent()) {
@@ -151,8 +174,8 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         } catch (IOException e) {
             // ignore
         }
-        final String cachePath = syspath + "/cache";
-        final String indexPrefix = cachePath + "/index";
+        final String cachePath = Paths.get(syspath, "cache").toString();
+        final String indexPrefix = Paths.get(cachePath, "index").toString();
         try (Stream<Path> path = Files.list(Paths.get(cachePath))) {
             path.filter(p -> p.toString().startsWith(indexPrefix)).forEach(c -> {
                 int level = Builder.getIntFromFile(c + "/level"); // 1
@@ -168,6 +191,12 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         return new CentralProcessor.LogicalProcessor(processor, coreId, pkgId, nodeId);
     }
 
+    /**
+     * Parses the cache type.
+     *
+     * @param type the type
+     * @return the parse cache type result
+     */
     private static CentralProcessor.ProcessorCache.Type parseCacheType(String type) {
         try {
             return CentralProcessor.ProcessorCache.Type.valueOf(type.toUpperCase(Locale.ROOT));
@@ -176,6 +205,11 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         }
     }
 
+    /**
+     * Reads the topology from cpuinfo.
+     *
+     * @return the read topology from cpuinfo result
+     */
     private static Tuple readTopologyFromCpuinfo() {
         List<CentralProcessor.LogicalProcessor> logProcs = new ArrayList<>();
         Set<CentralProcessor.ProcessorCache> caches = mapCachesFromLscpu();
@@ -216,10 +250,23 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         return new Tuple(logProcs, orderedProcCaches(caches), coreEfficiencyMap, Collections.emptyMap());
     }
 
+    /**
+     * Returns the map numa nodes from lscpu result.
+     *
+     * @return the map numa nodes from lscpu result
+     */
     private static Map<Integer, Integer> mapNumaNodesFromLscpu() {
+        return mapNumaNodesFromLscpu(Executor.runNative("lscpu -p=cpu,node"));
+    }
+
+    /**
+     * Parse NUMA node mapping from lscpu output.
+     *
+     * @param lscpu output of {@code lscpu -p=cpu,node}
+     * @return a map of logical processor number to NUMA node
+     */
+    static Map<Integer, Integer> mapNumaNodesFromLscpu(List<String> lscpu) {
         Map<Integer, Integer> numaNodeMap = new HashMap<>();
-        // Get numa node info from lscpu
-        List<String> lscpu = Executor.runNative("lscpu -p=cpu,node");
         // Format:
         // # comment lines starting with #
         // # then comma-delimited cpu,node
@@ -238,15 +285,28 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         return numaNodeMap;
     }
 
+    /**
+     * Returns the map caches from lscpu result.
+     *
+     * @return the map caches from lscpu result
+     */
     private static Set<CentralProcessor.ProcessorCache> mapCachesFromLscpu() {
+        return mapCachesFromLscpu(Executor.runNative("lscpu -B -C --json"));
+    }
+
+    /**
+     * Parse processor cache information from lscpu JSON output.
+     *
+     * @param lscpu output of {@code lscpu -B -C --json}
+     * @return a set of processor caches
+     */
+    static Set<CentralProcessor.ProcessorCache> mapCachesFromLscpu(List<String> lscpu) {
         Set<CentralProcessor.ProcessorCache> caches = new HashSet<>();
         int level = 0;
         CentralProcessor.ProcessorCache.Type type = null;
         int associativity = 0;
         int lineSize = 0;
         long size = 0L;
-        // Get numa node info from lscpu
-        List<String> lscpu = Executor.runNative("lscpu -B -C --json");
         for (String line : lscpu) {
             String s = line.trim();
             if (s.startsWith("}")) {
@@ -309,7 +369,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
     private static String getProcessorID(String vendor, String stepping, String model, String family, String[] flags) {
         boolean procInfo = false;
         String marker = "Processor Information";
-        for (String checkLine : Executor.runNative("dmidecode -t 4")) {
+        for (String checkLine : Executor.runPrivilegedNative("dmidecode -t 4")) {
             if (!procInfo && checkLine.contains(marker)) {
                 marker = "ID:";
                 procInfo = true;
@@ -318,9 +378,26 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
             }
         }
         // If we've gotten this far, dmidecode failed. Try cpuid.
-        marker = "eax=";
-        for (String checkLine : Executor.runNative("cpuid -1r")) {
-            if (checkLine.contains(marker) && checkLine.trim().startsWith("0x00000001")) {
+        String cpuidResult = parseCpuidOutput(Executor.runNative("cpuid -1r"));
+        if (cpuidResult != null) {
+            return cpuidResult;
+        }
+        // If we've gotten this far, dmidecode failed. Encode arguments
+        if (vendor.startsWith("0x")) {
+            return createMIDR(vendor, stepping, model, family) + "00000000";
+        }
+        return createProcessorID(stepping, model, family, flags, Auxv.queryAuxv().getOrDefault(Auxv.AT_HWCAP, 0L));
+    }
+
+    /**
+     * Parses the output of {@code cpuid -1r} to extract the processor ID.
+     *
+     * @param cpuidLines the output lines from {@code cpuid -1r}
+     * @return the processor ID string, or {@code null} if not found
+     */
+    static String parseCpuidOutput(List<String> cpuidLines) {
+        for (String checkLine : cpuidLines) {
+            if (checkLine.contains("eax=") && checkLine.trim().startsWith("0x00000001")) {
                 String eax = Normal.EMPTY;
                 String edx = Normal.EMPTY;
                 for (String register : Pattern.SPACES_PATTERN.split(checkLine)) {
@@ -330,14 +407,12 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                         edx = Parsing.removeMatchingString(register, "edx=0x");
                     }
                 }
-                return edx + eax;
+                if (!eax.isEmpty() && !edx.isEmpty()) {
+                    return edx + eax;
+                }
             }
         }
-        // If we've gotten this far, dmidecode failed. Encode arguments
-        if (vendor.startsWith("0x")) {
-            return createMIDR(vendor, stepping, model, family) + "00000000";
-        }
-        return createProcessorID(stepping, model, family, flags);
+        return null;
     }
 
     /**
@@ -369,6 +444,11 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         return String.format(Locale.ROOT, "%08X", midrBytes);
     }
 
+    /**
+     * Queries the system cpu load ticks.
+     *
+     * @return the query system cpu load ticks result
+     */
     @Override
     public long[] querySystemCpuLoadTicks() {
         // convert the Linux Jiffies to Milliseconds.
@@ -384,6 +464,11 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         return ticks;
     }
 
+    /**
+     * Queries the processor id.
+     *
+     * @return the query processor id result
+     */
     @Override
     protected CentralProcessor.ProcessorIdentifier queryProcessorId() {
         String cpuVendor = Normal.EMPTY;
@@ -501,6 +586,11 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                 processorID, cpu64bit, cpuFreq);
     }
 
+    /**
+     * Returns the init processor counts result.
+     *
+     * @return the init processor counts result
+     */
     @Override
     protected Tuple initProcessorCounts() {
         // Attempt to read from sysfs
@@ -534,6 +624,12 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         return new Tuple(logProcs, physProcs, caches, featureFlags);
     }
 
+    /**
+     * Returns the system load average.
+     *
+     * @param nelem the nelem
+     * @return the get system load average result
+     */
     @Override
     public double[] getSystemLoadAverage(int nelem) {
         if (nelem < 1 || nelem > 3) {
@@ -541,14 +637,37 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         }
         double[] average = new double[nelem];
         int retval = LinuxLibc.INSTANCE.getloadavg(average, nelem);
+        if (retval < 0) {
+            return querySystemLoadAverageFromProc(nelem);
+        }
         if (retval < nelem) {
-            for (int i = Math.max(retval, 0); i < average.length; i++) {
+            for (int i = retval; i < average.length; i++) {
                 average[i] = -1d;
             }
         }
         return average;
     }
 
+    /**
+     * Queries the system load average from proc.
+     *
+     * @param nelem the nelem
+     * @return the query system load average from proc result
+     */
+    private static double[] querySystemLoadAverageFromProc(int nelem) {
+        double[] average = new double[nelem];
+        String[] parts = Pattern.SPACES_PATTERN.split(Builder.getStringFromFile(ProcPath.LOADAVG).trim());
+        for (int i = 0; i < nelem; i++) {
+            average[i] = i < parts.length ? Parsing.parseDoubleOrDefault(parts[i], -1d) : -1d;
+        }
+        return average;
+    }
+
+    /**
+     * Queries the processor cpu load ticks.
+     *
+     * @return the query processor cpu load ticks result
+     */
     @Override
     public long[][] queryProcessorCpuLoadTicks() {
         long[][] ticks = CpuStat.getProcessorCpuLoadTicks(getLogicalProcessorCount());
@@ -568,12 +687,29 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         return ticks;
     }
 
+    /**
+     * Queries the current freq.
+     *
+     * @return the query current freq result
+     */
     @Override
     public long[] queryCurrentFreq() {
         long[] freqs = new long[getLogicalProcessorCount()];
         // Attempt to fill array from cpu-freq source
         long max = 0L;
+        if (!LinuxOperatingSystem.HAS_UDEV) {
+            if (queryCurrentFreqFromSysfs(freqs)) {
+                return freqs;
+            }
+            return queryCurrentFreqFromCpuInfo(freqs);
+        }
         UdevContext udev = Udev.INSTANCE.udev_new();
+        if (udev == null) {
+            if (queryCurrentFreqFromSysfs(freqs)) {
+                return freqs;
+            }
+            return queryCurrentFreqFromCpuInfo(freqs);
+        }
         try {
             UdevEnumerate enumerate = udev.enumerateNew();
             try {
@@ -605,7 +741,53 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         } finally {
             udev.unref();
         }
-        // If unsuccessful, try from /proc/cpuinfo
+        return queryCurrentFreqFromCpuInfo(freqs);
+    }
+
+    /**
+     * Queries the current freq from sysfs.
+     *
+     * @param freqs the freqs
+     * @return the query current freq from sysfs result
+     */
+    private static boolean queryCurrentFreqFromSysfs(long[] freqs) {
+        long max = 0L;
+        try (Stream<Path> cpuFiles = Files.find(
+                Paths.get(SysPath.CPU),
+                1,
+                (path, basicFileAttributes) -> path.toFile().getName().matches("cpu\\d+"))) {
+            for (Path cpu : (Iterable<Path>) cpuFiles::iterator) {
+                String syspath = cpu.toString();
+                int cpuIdx = Parsing.getFirstIntValue(syspath);
+                if (cpuIdx >= 0 && cpuIdx < freqs.length) {
+                    freqs[cpuIdx] = Builder.getLongFromFile(syspath + "/cpufreq/scaling_cur_freq");
+                    if (freqs[cpuIdx] == 0) {
+                        freqs[cpuIdx] = Builder.getLongFromFile(syspath + "/cpufreq/cpuinfo_cur_freq");
+                    }
+                    if (max < freqs[cpuIdx]) {
+                        max = freqs[cpuIdx];
+                    }
+                }
+            }
+        } catch (IOException e) {
+            // ignore
+        }
+        if (max > 0L) {
+            for (int i = 0; i < freqs.length; i++) {
+                freqs[i] *= 1000L;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Queries the current freq from cpu info.
+     *
+     * @param freqs the freqs
+     * @return the query current freq from cpu info result
+     */
+    private static long[] queryCurrentFreqFromCpuInfo(long[] freqs) {
         Arrays.fill(freqs, -1);
         List<String> cpuInfo = Builder.readFile(ProcPath.CPUINFO);
         int proc = 0;
@@ -620,44 +802,39 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         return freqs;
     }
 
+    /**
+     * Queries the max freq.
+     *
+     * @return the query max freq result
+     */
     @Override
     public long queryMaxFreq() {
-        long policyMax = -1L;
+        long policyMax = LinuxOperatingSystem.HAS_UDEV ? -1L : queryMaxFreqFromSysfs();
         // Iterate the policy directories to find the system-wide policy max
-        UdevContext udev = Udev.INSTANCE.udev_new();
-        try {
-            UdevEnumerate enumerate = udev.enumerateNew();
-            try {
-                enumerate.addMatchSubsystem("cpu");
-                enumerate.scanDevices();
-                // Find the parent directory of cpuX paths
-                // We only need the first one of the iteration
-                UdevListEntry entry = enumerate.getListEntry();
-                if (entry != null) {
-                    String syspath = entry.getName(); // /sys/devices/system/cpu/cpu0
-                    String cpuFreqPath = syspath.substring(0, syspath.lastIndexOf(File.separatorChar)) + "/cpufreq";
-                    String policyPrefix = cpuFreqPath + "/policy";
-                    try (Stream<Path> path = Files.list(Paths.get(cpuFreqPath))) {
-                        Optional<Long> maxPolicy = path.filter(p -> p.toString().startsWith(policyPrefix)).map(p -> {
-                            long freq = Builder.getLongFromFile(p + "/scaling_max_freq");
-                            if (freq == 0) {
-                                freq = Builder.getLongFromFile(p + "/cpuinfo_max_freq");
-                            }
-                            return freq;
-                        }).max(Long::compare);
-                        if (maxPolicy.isPresent()) {
-                            // Value is in kHz
-                            policyMax = maxPolicy.get() * 1000L;
+        if (LinuxOperatingSystem.HAS_UDEV) {
+            UdevContext udev = Udev.INSTANCE.udev_new();
+            if (udev == null) {
+                policyMax = queryMaxFreqFromSysfs();
+            } else {
+                try {
+                    UdevEnumerate enumerate = udev.enumerateNew();
+                    try {
+                        enumerate.addMatchSubsystem("cpu");
+                        enumerate.scanDevices();
+                        // Find the parent directory of cpuX paths; only need the first one.
+                        UdevListEntry entry = enumerate.getListEntry();
+                        if (entry != null) {
+                            String syspath = entry.getName(); // /sys/devices/system/cpu/cpu0
+                            policyMax = queryMaxFreqFromCpuFreqPath(
+                                    syspath.substring(0, syspath.lastIndexOf('/')) + "/cpufreq");
                         }
-                    } catch (IOException e) {
-                        // ignore
+                    } finally {
+                        enumerate.unref();
                     }
+                } finally {
+                    udev.unref();
                 }
-            } finally {
-                enumerate.unref();
             }
-        } finally {
-            udev.unref();
         }
         // Check lshw as a backup
         long lshwMax = Lshw.queryCpuCapacity();
@@ -666,11 +843,55 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                 .orElse(-1L);
     }
 
+    /**
+     * Queries the max freq from sysfs.
+     *
+     * @return the query max freq from sysfs result
+     */
+    private static long queryMaxFreqFromSysfs() {
+        return queryMaxFreqFromCpuFreqPath(SysPath.CPU.substring(0, SysPath.CPU.length() - 1) + "/cpufreq");
+    }
+
+    /**
+     * Queries the max freq from cpu freq path.
+     *
+     * @param cpuFreqPath the cpu freq path
+     * @return the query max freq from cpu freq path result
+     */
+    private static long queryMaxFreqFromCpuFreqPath(String cpuFreqPath) {
+        String policyPrefix = Paths.get(cpuFreqPath, "policy").toString();
+        try (Stream<Path> path = Files.list(Paths.get(cpuFreqPath))) {
+            Optional<Long> maxPolicy = path.filter(p -> p.toString().startsWith(policyPrefix)).map(p -> {
+                long freq = Builder.getLongFromFile(p + "/scaling_max_freq");
+                if (freq == 0) {
+                    freq = Builder.getLongFromFile(p + "/cpuinfo_max_freq");
+                }
+                return freq;
+            }).max(Long::compare);
+            if (maxPolicy.isPresent()) {
+                return maxPolicy.get() * 1000L;
+            }
+        } catch (IOException e) {
+            // ignore
+        }
+        return -1L;
+    }
+
+    /**
+     * Queries the context switches.
+     *
+     * @return the query context switches result
+     */
     @Override
     public long queryContextSwitches() {
         return CpuStat.getContextSwitches();
     }
 
+    /**
+     * Queries the interrupts.
+     *
+     * @return the query interrupts result
+     */
     @Override
     public long queryInterrupts() {
         return CpuStat.getInterrupts();

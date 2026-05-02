@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -31,11 +31,31 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractBaseboard;
 @Immutable
 public final class UnixBaseboard extends AbstractBaseboard {
 
+    /**
+     * The manufacturer value.
+     */
     private final String manufacturer;
+    /**
+     * The model value.
+     */
     private final String model;
+    /**
+     * The serialNumber value.
+     */
     private final String serialNumber;
+    /**
+     * The version value.
+     */
     private final String version;
 
+    /**
+     * Creates a new UnixBaseboard instance.
+     *
+     * @param manufacturer the manufacturer
+     * @param model        the model
+     * @param serialNumber the serial number
+     * @param version      the version
+     */
     public UnixBaseboard(String manufacturer, String model, String serialNumber, String version) {
         this.manufacturer = manufacturer;
         this.model = model;
@@ -43,21 +63,41 @@ public final class UnixBaseboard extends AbstractBaseboard {
         this.version = version;
     }
 
+    /**
+     * Returns the manufacturer.
+     *
+     * @return the get manufacturer result
+     */
     @Override
     public String getManufacturer() {
         return this.manufacturer;
     }
 
+    /**
+     * Returns the model.
+     *
+     * @return the get model result
+     */
     @Override
     public String getModel() {
         return this.model;
     }
 
+    /**
+     * Returns the serial number.
+     *
+     * @return the get serial number result
+     */
     @Override
     public String getSerialNumber() {
         return this.serialNumber;
     }
 
+    /**
+     * Returns the version.
+     *
+     * @return the get version result
+     */
     @Override
     public String getVersion() {
         return this.version;

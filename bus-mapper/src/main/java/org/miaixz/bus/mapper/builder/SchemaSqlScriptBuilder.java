@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.ibatis.builder.annotation.ProviderContext;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Order;
 import org.miaixz.bus.mapper.annotation.SqlWrapper;
 import org.miaixz.bus.mapper.parsing.SqlScript;
@@ -90,6 +91,13 @@ public class SchemaSqlScriptBuilder implements SqlScriptWrapper {
             return instanceClass.getConstructor(Object.class, ElementType.class, Annotation[].class)
                     .newInstance(target, type, annotations);
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Mapper",
+                    e,
+                    "Mapper operation failed: provider={}, exception={}",
+                    "SchemaSqlScriptBuilder",
+                    e.getClass().getSimpleName());
             throw new RuntimeException("instance [ " + instanceClass + " ] error", e);
         }
     }

@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -46,11 +46,23 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil;
 @ThreadSafe
 public class WmiQueryHandler {
 
+    /**
+     * The EMPTY_CLASS_ARRAY constant.
+     */
     private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
+    /**
+     * The EMPTY_OBJECT_ARRAY constant.
+     */
     private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
+    /**
+     * The globalTimeout constant.
+     */
     private static final int globalTimeout = Config.get(Config._UTIL_WMI_TIMEOUT, -1);
     // Factory to create this or a subclass
+    /**
+     * The customClass value.
+     */
     private static Class<? extends WmiQueryHandler> customClass = null;
 
     static {
@@ -60,12 +72,24 @@ public class WmiQueryHandler {
     }
 
     // Cache failed wmi classes
+    /**
+     * The failedWmiClassNames value.
+     */
     private final Set<String> failedWmiClassNames = new HashSet<>();
     // Timeout for WMI queries
+    /**
+     * The wmiTimeout value.
+     */
     private int wmiTimeout = globalTimeout;
     // Preferred threading model
+    /**
+     * The comThreading value.
+     */
     private int comThreading = Ole32.COINIT_MULTITHREADED;
     // Track initialization of Security
+    /**
+     * The securityInitialized value.
+     */
     private volatile boolean securityInitialized = false;
 
     /**
@@ -81,10 +105,10 @@ public class WmiQueryHandler {
         try {
             return customClass.getConstructor(EMPTY_CLASS_ARRAY).newInstance(EMPTY_OBJECT_ARRAY);
         } catch (NoSuchMethodException | SecurityException e) {
-            Logger.error("Failed to find or access a no-arg constructor for {}", customClass);
+            Logger.error(false, "Health", "Failed to find or access a no-arg constructor for {}", customClass);
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
-            Logger.error("Failed to create a new instance of {}", customClass);
+            Logger.error(false, "Health", "Failed to create a new instance of {}", customClass);
         }
         return null;
     }
@@ -139,15 +163,15 @@ public class WmiQueryHandler {
                 final int hresult = e.getHresult() == null ? -1 : e.getHresult().intValue();
                 switch (hresult) {
                     case Wbemcli.WBEM_E_INVALID_NAMESPACE:
-                        Logger.warn("COM exception: Invalid Namespace {}", query.getNameSpace());
+                        Logger.warn(false, "Health", "COM exception: Invalid Namespace {}", query.getNameSpace());
                         break;
 
                     case Wbemcli.WBEM_E_INVALID_CLASS:
-                        Logger.warn("COM exception: Invalid Class {}", query.getWmiClassName());
+                        Logger.warn(false, "Health", "COM exception: Invalid Class {}", query.getWmiClassName());
                         break;
 
                     case Wbemcli.WBEM_E_INVALID_QUERY:
-                        Logger.warn("COM exception: Invalid Query: {}", WmiKit.queryToString(query));
+                        Logger.warn(false, "Health", "COM exception: Invalid Query: {}", WmiKit.queryToString(query));
                         break;
 
                     default:
@@ -157,7 +181,12 @@ public class WmiQueryHandler {
                 failedWmiClassNames.add(query.getWmiClassName());
             }
         } catch (TimeoutException e) {
-            Logger.warn("WMI query timed out after {} ms: {}", wmiTimeout, WmiKit.queryToString(query));
+            Logger.warn(
+                    false,
+                    "Health",
+                    "WMI query timed out after {} ms: {}",
+                    wmiTimeout,
+                    WmiKit.queryToString(query));
         } finally {
             if (comInit) {
                 unInitCOM();
@@ -167,17 +196,21 @@ public class WmiQueryHandler {
     }
 
     /**
-     * COM Exception handler. Logs a warning message.
+     * COM Exception handler. Logs at debug level for known-optional classes, otherwise warns.
      *
      * @param query a {@link com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery} object.
      * @param ex    a {@link com.sun.jna.platform.win32.COM.COMException} object.
      */
     protected void handleComException(WbemcliUtil.WmiQuery<?> query, COMException ex) {
-        Logger.warn(
-                "COM exception querying {}, which might not be on your system. Will not attempt to query it again. Error was {}: {}",
-                query.getWmiClassName(),
-                ex.getHresult() == null ? null : ex.getHresult().intValue(),
-                ex.getMessage());
+        String msg = "COM exception querying {}, which might not be on your system."
+                + " Will not attempt to query it again. Error was {}: {}";
+        Object[] args = { query.getWmiClassName(), ex.getHresult() == null ? null : ex.getHresult().intValue(),
+                ex.getMessage() };
+        if ("MSAcpi_ThermalZoneTemperature".equals(query.getWmiClassName())) {
+            Logger.debug(false, "Health", msg, args);
+        } else {
+            Logger.warn(false, "Health", msg, args);
+        }
     }
 
     /**

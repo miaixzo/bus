@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -51,10 +51,21 @@ import com.sun.jna.ptr.NativeLongByReference;
 @ThreadSafe
 public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
 
+    /**
+     * The PS_COMMAND_ARGS constant.
+     */
     static final String PS_COMMAND_ARGS = Arrays.stream(PsKeywords.values()).map(Enum::name)
             .map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(Symbol.COMMA));
+    /**
+     * The BOOTTIME constant.
+     */
     private static final long BOOTTIME = querySystemBootTime();
 
+    /**
+     * Queries the system boot time.
+     *
+     * @return the query system boot time result
+     */
     private static long querySystemBootTime() {
         FreeBsdLibc.Timeval tv = new FreeBsdLibc.Timeval();
         if (!BsdSysctlKit.sysctl("kern.boottime", tv) || tv.tv_sec == 0) {
@@ -70,11 +81,21 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
         return tv.tv_sec;
     }
 
+    /**
+     * Queries the manufacturer.
+     *
+     * @return the query manufacturer result
+     */
     @Override
     public String queryManufacturer() {
         return "Unix/BSD";
     }
 
+    /**
+     * Queries the family version info.
+     *
+     * @return the query family version info result
+     */
     @Override
     public Pair<String, OperatingSystem.OSVersionInfo> queryFamilyVersionInfo() {
         String family = BsdSysctlKit.sysctl("kern.ostype", "FreeBSD");
@@ -87,6 +108,12 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
         return Pair.of(family, new OperatingSystem.OSVersionInfo(version, null, buildNumber));
     }
 
+    /**
+     * Queries the bitness.
+     *
+     * @param jvmBitness the jvm bitness
+     * @return the query bitness result
+     */
     @Override
     protected int queryBitness(int jvmBitness) {
         if (jvmBitness < 64 && Executor.getFirstAnswer("uname -m").indexOf("64") == -1) {
@@ -95,26 +122,52 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
         return 64;
     }
 
+    /**
+     * Returns the file system.
+     *
+     * @return the get file system result
+     */
     @Override
     public FileSystem getFileSystem() {
         return new FreeBsdFileSystem();
     }
 
+    /**
+     * Returns the internet protocol stats.
+     *
+     * @return the get internet protocol stats result
+     */
     @Override
     public InternetProtocolStats getInternetProtocolStats() {
         return new FreeBsdInternetProtocolStats();
     }
 
+    /**
+     * Returns the sessions.
+     *
+     * @return the get sessions result
+     */
     @Override
     public List<OSSession> getSessions() {
         return USE_WHO_COMMAND ? super.getSessions() : Who.queryUtxent();
     }
 
+    /**
+     * Queries the all processes.
+     *
+     * @return the query all processes result
+     */
     @Override
     public List<OSProcess> queryAllProcesses() {
         return getProcessListFromPS(-1);
     }
 
+    /**
+     * Queries the child processes.
+     *
+     * @param parentPid the parent pid
+     * @return the query child processes result
+     */
     @Override
     public List<OSProcess> queryChildProcesses(int parentPid) {
         List<OSProcess> allProcs = queryAllProcesses();
@@ -122,6 +175,12 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
         return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
     }
 
+    /**
+     * Queries the descendant processes.
+     *
+     * @param parentPid the parent pid
+     * @return the query descendant processes result
+     */
     @Override
     public List<OSProcess> queryDescendantProcesses(int parentPid) {
         List<OSProcess> allProcs = queryAllProcesses();
@@ -129,6 +188,12 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
         return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
     }
 
+    /**
+     * Returns the process.
+     *
+     * @param pid the pid
+     * @return the get process result
+     */
     @Override
     public OSProcess getProcess(int pid) {
         List<OSProcess> procs = getProcessListFromPS(pid);
@@ -138,6 +203,12 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
         return procs.get(0);
     }
 
+    /**
+     * Returns the process list from ps.
+     *
+     * @param pid the pid
+     * @return the get process list from ps result
+     */
     private List<OSProcess> getProcessListFromPS(int pid) {
         String psCommand = "ps -awwxo " + PS_COMMAND_ARGS;
         if (pid >= 0) {
@@ -154,11 +225,21 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
                 .filter(OperatingSystem.ProcessFiltering.VALID_PROCESS).collect(Collectors.toList());
     }
 
+    /**
+     * Returns the process id.
+     *
+     * @return the get process id result
+     */
     @Override
     public int getProcessId() {
         return FreeBsdLibc.INSTANCE.getpid();
     }
 
+    /**
+     * Returns the process count.
+     *
+     * @return the get process count result
+     */
     @Override
     public int getProcessCount() {
         List<String> procList = Executor.runNative("ps -axo pid");
@@ -169,6 +250,11 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
         return 0;
     }
 
+    /**
+     * Returns the thread id.
+     *
+     * @return the get thread id result
+     */
     @Override
     public int getThreadId() {
         NativeLongByReference pTid = new NativeLongByReference();
@@ -178,6 +264,11 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
         return pTid.getValue().intValue();
     }
 
+    /**
+     * Returns the current thread.
+     *
+     * @return the get current thread result
+     */
     @Override
     public OSThread getCurrentThread() {
         OSProcess proc = getCurrentProcess();
@@ -186,6 +277,11 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
                 .orElse(new FreeBsdOSThread(proc.getProcessID(), tid));
     }
 
+    /**
+     * Returns the thread count.
+     *
+     * @return the get thread count result
+     */
     @Override
     public int getThreadCount() {
         int threads = 0;
@@ -195,16 +291,31 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
         return threads;
     }
 
+    /**
+     * Returns the system uptime.
+     *
+     * @return the get system uptime result
+     */
     @Override
     public long getSystemUptime() {
         return System.currentTimeMillis() / 1000 - BOOTTIME;
     }
 
+    /**
+     * Returns the system boot time.
+     *
+     * @return the get system boot time result
+     */
     @Override
     public long getSystemBootTime() {
         return BOOTTIME;
     }
 
+    /**
+     * Returns the services.
+     *
+     * @return the get services result
+     */
     @Override
     public List<OSService> getServices() {
         // Get running services
@@ -231,11 +342,16 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
                 }
             }
         } else {
-            Logger.error("Directory: /etc/init does not exist");
+            Logger.error(false, "Health", "Directory: /etc/init does not exist");
         }
         return services;
     }
 
+    /**
+     * Returns the network params.
+     *
+     * @return the get network params result
+     */
     @Override
     public NetworkParams getNetworkParams() {
         return new FreeBsdNetworkParams();
@@ -243,6 +359,9 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
 
     /*
      * Package-private for use by FreeBsdOSProcess
+     */
+    /**
+     * The PsKeywords enum.
      */
     enum PsKeywords {
         STATE, PID, PPID, USER, UID, GROUP, GID, NLWP, PRI, VSZ, RSS, ETIMES, SYSTIME, TIME, COMM, MAJFLT, MINFLT,

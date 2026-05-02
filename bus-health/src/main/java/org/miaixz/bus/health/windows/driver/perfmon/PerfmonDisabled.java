@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -38,9 +38,18 @@ import com.sun.jna.platform.win32.WinReg;
 @ThreadSafe
 public final class PerfmonDisabled {
 
-    public static final boolean PERF_OS_DISABLED = isDisabled(Config._WINDOWS_PERFOS_DIABLED, "PerfOS");
-    public static final boolean PERF_PROC_DISABLED = isDisabled(Config._WINDOWS_PERFPROC_DIABLED, "PerfProc");
-    public static final boolean PERF_DISK_DISABLED = isDisabled(Config._WINDOWS_PERFDISK_DIABLED, "PerfDisk");
+    /**
+     * The PERF_OS_DISABLED constant.
+     */
+    public static final boolean PERF_OS_DISABLED = isDisabled(Config._WINDOWS_PERFOS_DISABLED, "PerfOS");
+    /**
+     * The PERF_PROC_DISABLED constant.
+     */
+    public static final boolean PERF_PROC_DISABLED = isDisabled(Config._WINDOWS_PERFPROC_DISABLED, "PerfProc");
+    /**
+     * The PERF_DISK_DISABLED constant.
+     */
+    public static final boolean PERF_DISK_DISABLED = isDisabled(Config._WINDOWS_PERFDISK_DISABLED, "PerfDisk");
 
     /**
      * Everything in this class is static, never instantiate it
@@ -49,6 +58,13 @@ public final class PerfmonDisabled {
         throw new AssertionError();
     }
 
+    /**
+     * Returns whether the disabled condition is true.
+     *
+     * @param config  the config
+     * @param service the service
+     * @return the is disabled result
+     */
     private static boolean isDisabled(String config, String service) {
         String perfDisabled = Config.get(config);
         // If null or empty, check registry
@@ -61,6 +77,8 @@ public final class PerfmonDisabled {
                 if (disabled instanceof Integer) {
                     if ((Integer) disabled > 0) {
                         Logger.warn(
+                                false,
+                                "Health",
                                 "{} counters are disabled and won't return data: {}\\\\{}\\\\{} > 0.",
                                 service,
                                 "HKEY_LOCAL_MACHINE",
@@ -70,6 +88,8 @@ public final class PerfmonDisabled {
                     }
                 } else {
                     Logger.warn(
+                            false,
+                            "Health",
                             "Invalid registry value type detected for {} counters. Should be REG_DWORD. Ignoring: {}\\\\{}\\\\{}.",
                             service,
                             "HKEY_LOCAL_MACHINE",

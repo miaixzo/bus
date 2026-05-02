@@ -475,10 +475,12 @@ public class ImageAdapter {
                     return mLUTSeq;
                 } else if (prModLut == null) {
                     Logger.warn(
+                            false,
+                            "Image",
                             "Pixel values doesn't match to Modality LUT sequence table. So the Modality LUT is not applied.");
                 }
             } else {
-                Logger.warn("Cannot apply Modality LUT sequence and Pixel Padding");
+                Logger.warn(false, "Image", "Cannot apply Modality LUT sequence and Pixel Padding");
             }
         }
         boolean inverseLut = isPhotometricInterpretationInverse(pr);

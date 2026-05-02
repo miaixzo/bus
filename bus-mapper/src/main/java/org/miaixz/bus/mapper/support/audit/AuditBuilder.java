@@ -27,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.miaixz.bus.core.lang.annotation.Ignore;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Audit log builder.
@@ -183,6 +184,13 @@ public class AuditBuilder {
             return false;
 
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Mapper",
+                    e,
+                    "Mapper operation failed: provider={}, exception={}",
+                    "AuditBuilder",
+                    e.getClass().getSimpleName());
             // If check fails, default to not ignoring
             return false;
         }

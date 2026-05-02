@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -55,44 +55,143 @@ import com.sun.jna.platform.unix.Resource;
 @ThreadSafe
 public class FreeBsdOSProcess extends AbstractOSProcess {
 
+    /**
+     * The PS_THREAD_COLUMNS constant.
+     */
     static final String PS_THREAD_COLUMNS = Arrays.stream(PsThreadColumns.values()).map(Enum::name)
             .map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(Symbol.COMMA));
+    /**
+     * The ARGMAX constant.
+     */
     private static final int ARGMAX = BsdSysctlKit.sysctl("kern.argmax", 0);
+    /**
+     * The os value.
+     */
     private final FreeBsdOperatingSystem os;
+    /**
+     * The bitness value.
+     */
     private final Supplier<Integer> bitness = Memoizer.memoize(this::queryBitness);
+    /**
+     * The arguments value.
+     */
     private final Supplier<List<String>> arguments = Memoizer.memoize(this::queryArguments);
+    /**
+     * The environmentVariables value.
+     */
     private final Supplier<Map<String, String>> environmentVariables = Memoizer
             .memoize(this::queryEnvironmentVariables);
+    /**
+     * The path value.
+     */
     private String path = Normal.EMPTY;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The state value.
+     */
     private State state = State.INVALID;
+    /**
+     * The user value.
+     */
     private String user;
+    /**
+     * The userID value.
+     */
     private String userID;
+    /**
+     * The group value.
+     */
     private String group;
+    /**
+     * The groupID value.
+     */
     private String groupID;
+    /**
+     * The parentProcessID value.
+     */
     private int parentProcessID;
+    /**
+     * The threadCount value.
+     */
     private int threadCount;
+    /**
+     * The priority value.
+     */
     private int priority;
+    /**
+     * The virtualSize value.
+     */
     private long virtualSize;
+    /**
+     * The residentSetSize value.
+     */
     private long residentSetSize;
+    /**
+     * The kernelTime value.
+     */
     private long kernelTime;
+    /**
+     * The userTime value.
+     */
     private long userTime;
+    /**
+     * The startTime value.
+     */
     private long startTime;
+    /**
+     * The upTime value.
+     */
     private long upTime;
+    /**
+     * The bytesRead value.
+     */
     private long bytesRead;
+    /**
+     * The bytesWritten value.
+     */
     private long bytesWritten;
+    /**
+     * The minorFaults value.
+     */
     private long minorFaults;
+    /**
+     * The majorFaults value.
+     */
     private long majorFaults;
+    /**
+     * The contextSwitches value.
+     */
     private long contextSwitches;
+    /**
+     * The commandLineBackup value.
+     */
     private String commandLineBackup;
+    /**
+     * The commandLine value.
+     */
     private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
 
+    /**
+     * Creates a new FreeBsdOSProcess instance.
+     *
+     * @param pid   the pid
+     * @param psMap the ps map
+     * @param os    the os
+     */
     public FreeBsdOSProcess(int pid, Map<FreeBsdOperatingSystem.PsKeywords, String> psMap, FreeBsdOperatingSystem os) {
         super(pid);
         this.os = os;
         updateAttributes(psMap);
     }
 
+    /**
+     * Queries the arguments.
+     *
+     * @return the query arguments result
+     */
     private List<String> queryArguments() {
         if (ARGMAX > 0) {
             // Get arguments via sysctl(3)
@@ -110,6 +209,8 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
                             Parsing.parseByteArrayToStrings(m.getByteArray(0, size.getValue().intValue())));
                 } else {
                     Logger.warn(
+                            false,
+                            "Health",
                             "Failed sysctl call for process arguments (kern.proc.args), process {} may not exist. Error code: {}",
                             getProcessID(),
                             Native.getLastError());
@@ -149,6 +250,11 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         return this.commandLine.get();
     }
 
+    /**
+     * Queries the command line.
+     *
+     * @return the query command line result
+     */
     private String queryCommandLine() {
         String cl = String.join(Symbol.SPACE, getArguments());
         return cl.isEmpty() ? this.commandLineBackup : cl;
@@ -164,6 +270,11 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         return arguments.get();
     }
 
+    /**
+     * Queries the environment variables.
+     *
+     * @return the query environment variables result
+     */
     private Map<String, String> queryEnvironmentVariables() {
         if (ARGMAX > 0) {
             // Get environment variables via sysctl(3)
@@ -181,6 +292,8 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
                             Parsing.parseByteArrayToStringMap(m.getByteArray(0, size.getValue().intValue())));
                 } else {
                     Logger.warn(
+                            false,
+                            "Health",
                             "Failed sysctl call for process environment variables (kern.proc.env), process {} may not exist. Error code: {}",
                             getProcessID(),
                             Native.getLastError());
@@ -467,6 +580,11 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
                 .filter(OSThread.ThreadFiltering.VALID_THREAD).collect(Collectors.toList());
     }
 
+    /**
+     * Queries the bitness.
+     *
+     * @return the query bitness result
+     */
     private int queryBitness() {
         // Get process abi vector
         int[] mib = new int[4];
@@ -542,6 +660,12 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         return this.contextSwitches;
     }
 
+    /**
+     * Updates the attributes.
+     *
+     * @param psMap the ps map
+     * @return the update attributes result
+     */
     private boolean updateAttributes(Map<FreeBsdOperatingSystem.PsKeywords, String> psMap) {
         long now = System.currentTimeMillis();
         switch (psMap.get(FreeBsdOperatingSystem.PsKeywords.STATE).charAt(0)) {
@@ -602,6 +726,13 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         return true;
     }
 
+    /**
+     * Returns the process open file limit.
+     *
+     * @param processId the process id
+     * @param index     the index
+     * @return the get process open file limit result
+     */
     private long getProcessOpenFileLimit(long processId, int index) {
         final String limitsPath = String.format(Locale.ROOT, "/proc/%d/limits", processId);
         if (!Files.exists(Paths.get(limitsPath))) {
@@ -621,6 +752,9 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
 
     /*
      * Package-private for use by FreeBsdOSThread
+     */
+    /**
+     * The PsThreadColumns enum.
      */
     enum PsThreadColumns {
         TDNAME, LWP, STATE, ETIMES, SYSTIME, TIME, TDADDR, NIVCSW, NVCSW, MAJFLT, MINFLT, PRI

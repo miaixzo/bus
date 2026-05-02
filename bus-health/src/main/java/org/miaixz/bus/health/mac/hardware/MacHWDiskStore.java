@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -51,16 +51,46 @@ import com.sun.jna.platform.mac.CoreFoundation.*;
 @ThreadSafe
 public final class MacHWDiskStore extends AbstractHWDiskStore {
 
+    /**
+     * The CF constant.
+     */
     private static final CoreFoundation CF = CoreFoundation.INSTANCE;
+    /**
+     * The DA constant.
+     */
     private static final DiskArbitration DA = DiskArbitration.INSTANCE;
+    /**
+     * The currentQueueLength value.
+     */
     private final long currentQueueLength = 0L;
+    /**
+     * The reads value.
+     */
     private long reads = 0L;
+    /**
+     * The readBytes value.
+     */
     private long readBytes = 0L;
+    /**
+     * The writes value.
+     */
     private long writes = 0L;
+    /**
+     * The writeBytes value.
+     */
     private long writeBytes = 0L;
+    /**
+     * The transferTime value.
+     */
     private long transferTime = 0L;
+    /**
+     * The timeStamp value.
+     */
     private long timeStamp = 0L;
-    private List<HWPartition> partitionList;
+    /**
+     * The partitionList value.
+     */
+    private List<HWPartition> partitionList = Collections.emptyList();
 
     /**
      * Constructs a {@code MacHWDiskStore} object.
@@ -93,7 +123,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
         // Open a DiskArbitration session
         DASessionRef session = DA.DASessionCreate(CF.CFAllocatorGetDefault());
         if (session == null) {
-            Logger.error("Unable to open session to DiskArbitration framework.");
+            Logger.error(false, "Health", "Unable to open session to DiskArbitration framework.");
             return Collections.emptyList();
         }
 
@@ -278,7 +308,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
         // Open a session and create CFStrings
         DASessionRef session = DA.DASessionCreate(CF.CFAllocatorGetDefault());
         if (session == null) {
-            Logger.error("Unable to open session to DiskArbitration framework.");
+            Logger.error(false, "Health", "Unable to open session to DiskArbitration framework.");
             return false;
         }
         Map<CFKey, CFStringRef> cfKeyMap = mapCFKeys();
@@ -363,7 +393,11 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                         } else {
                             // This is normal for FileVault drives, Fusion
                             // drives, and other virtual bsd names
-                            Logger.debug("Unable to find block storage driver properties for {}", bsdName);
+                            Logger.debug(
+                                    false,
+                                    "Health",
+                                    "Unable to find block storage driver properties for {}",
+                                    bsdName);
                         }
                         // Now get partitions for this disk.
                         List<HWPartition> partitions = new ArrayList<>();
@@ -529,6 +563,9 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
          */
         MODEL("Model");
 
+        /**
+         * The key value.
+         */
         private final String key;
 
         /**

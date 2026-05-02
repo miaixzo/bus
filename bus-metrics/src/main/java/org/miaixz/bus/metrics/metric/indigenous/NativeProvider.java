@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.ToDoubleFunction;
 
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.Provider;
 import org.miaixz.bus.metrics.guard.CardinalityGuard;
@@ -97,11 +98,21 @@ public class NativeProvider implements Provider {
 
     /** Creates a new NativeProvider and starts the shared background tick scheduler. */
     public NativeProvider() {
+        Logger.info(
+                true,
+                "Metrics",
+                "Native metrics provider initialization started: tickIntervalSeconds={}",
+                Builder.TICK_INTERVAL_SECONDS);
         SCHEDULER.scheduleAtFixedRate(
                 this::tick,
                 Builder.TICK_INTERVAL_SECONDS,
                 Builder.TICK_INTERVAL_SECONDS,
                 TimeUnit.SECONDS);
+        Logger.info(
+                false,
+                "Metrics",
+                "Native metrics provider initialization finished: tickIntervalSeconds={}",
+                Builder.TICK_INTERVAL_SECONDS);
     }
 
     /** Advances EWMA tick counters and rotates rolling digest windows on schedule. */
@@ -127,7 +138,23 @@ public class NativeProvider implements Provider {
     @Override
     public Counter counter(String name, Tag... tags) {
         tags = CardinalityGuard.enforce(name, tags);
-        return counters.computeIfAbsent(key(name, tags), k -> new NativeCounter());
+        Tag[] finalTags = tags;
+        return counters.computeIfAbsent(key(name, tags), k -> {
+            Logger.debug(
+                    true,
+                    "Metrics",
+                    "Native counter registration started: metricName={}, tagCount={}",
+                    name,
+                    null == finalTags ? 0 : finalTags.length);
+            NativeCounter counter = new NativeCounter();
+            Logger.debug(
+                    false,
+                    "Metrics",
+                    "Native counter registration finished: metricName={}, tagCount={}",
+                    name,
+                    null == finalTags ? 0 : finalTags.length);
+            return counter;
+        });
     }
 
     /**
@@ -140,7 +167,23 @@ public class NativeProvider implements Provider {
     @Override
     public Meter meter(String name, Tag... tags) {
         tags = CardinalityGuard.enforce(name, tags);
-        return meters.computeIfAbsent(key(name, tags), k -> new NativeMeter());
+        Tag[] finalTags = tags;
+        return meters.computeIfAbsent(key(name, tags), k -> {
+            Logger.debug(
+                    true,
+                    "Metrics",
+                    "Native meter registration started: metricName={}, tagCount={}",
+                    name,
+                    null == finalTags ? 0 : finalTags.length);
+            NativeMeter meter = new NativeMeter();
+            Logger.debug(
+                    false,
+                    "Metrics",
+                    "Native meter registration finished: metricName={}, tagCount={}",
+                    name,
+                    null == finalTags ? 0 : finalTags.length);
+            return meter;
+        });
     }
 
     /**
@@ -153,7 +196,23 @@ public class NativeProvider implements Provider {
     @Override
     public RatePair ratePair(String name, Tag... tags) {
         tags = CardinalityGuard.enforce(name, tags);
-        return ratePairs.computeIfAbsent(key(name, tags), k -> new NativeRatePair());
+        Tag[] finalTags = tags;
+        return ratePairs.computeIfAbsent(key(name, tags), k -> {
+            Logger.debug(
+                    true,
+                    "Metrics",
+                    "Native rate pair registration started: metricName={}, tagCount={}",
+                    name,
+                    null == finalTags ? 0 : finalTags.length);
+            NativeRatePair ratePair = new NativeRatePair();
+            Logger.debug(
+                    false,
+                    "Metrics",
+                    "Native rate pair registration finished: metricName={}, tagCount={}",
+                    name,
+                    null == finalTags ? 0 : finalTags.length);
+            return ratePair;
+        });
     }
 
     /**
@@ -169,7 +228,25 @@ public class NativeProvider implements Provider {
     @Override
     public <T> Gauge gauge(String name, T stateObj, ToDoubleFunction<T> fn, Tag... tags) {
         tags = CardinalityGuard.enforce(name, tags);
-        return gauges.computeIfAbsent(key(name, tags), k -> new NativeGauge<>(stateObj, fn));
+        Tag[] finalTags = tags;
+        return gauges.computeIfAbsent(key(name, tags), k -> {
+            Logger.debug(
+                    true,
+                    "Metrics",
+                    "Native gauge registration started: metricName={}, tagCount={}, stateClass={}",
+                    name,
+                    null == finalTags ? 0 : finalTags.length,
+                    null == stateObj ? null : stateObj.getClass().getName());
+            NativeGauge<T> gauge = new NativeGauge<>(stateObj, fn);
+            Logger.debug(
+                    false,
+                    "Metrics",
+                    "Native gauge registration finished: metricName={}, tagCount={}, stateClass={}",
+                    name,
+                    null == finalTags ? 0 : finalTags.length,
+                    null == stateObj ? null : stateObj.getClass().getName());
+            return gauge;
+        });
     }
 
     /**
@@ -183,7 +260,22 @@ public class NativeProvider implements Provider {
     public Timer timer(String name, Tag... tags) {
         tags = CardinalityGuard.enforce(name, tags);
         Tag[] finalTags = tags;
-        return timers.computeIfAbsent(key(name, tags), k -> new NativeTimer(name, finalTags));
+        return timers.computeIfAbsent(key(name, tags), k -> {
+            Logger.debug(
+                    true,
+                    "Metrics",
+                    "Native timer registration started: metricName={}, tagCount={}",
+                    name,
+                    null == finalTags ? 0 : finalTags.length);
+            NativeTimer timer = new NativeTimer(name, finalTags);
+            Logger.debug(
+                    false,
+                    "Metrics",
+                    "Native timer registration finished: metricName={}, tagCount={}",
+                    name,
+                    null == finalTags ? 0 : finalTags.length);
+            return timer;
+        });
     }
 
     /**
@@ -197,7 +289,22 @@ public class NativeProvider implements Provider {
     public Histogram histogram(String name, Tag... tags) {
         tags = CardinalityGuard.enforce(name, tags);
         Tag[] finalTags = tags;
-        return histograms.computeIfAbsent(key(name, tags), k -> new NativeHistogram(name, finalTags));
+        return histograms.computeIfAbsent(key(name, tags), k -> {
+            Logger.debug(
+                    true,
+                    "Metrics",
+                    "Native histogram registration started: metricName={}, tagCount={}",
+                    name,
+                    null == finalTags ? 0 : finalTags.length);
+            NativeHistogram histogram = new NativeHistogram(name, finalTags);
+            Logger.debug(
+                    false,
+                    "Metrics",
+                    "Native histogram registration finished: metricName={}, tagCount={}",
+                    name,
+                    null == finalTags ? 0 : finalTags.length);
+            return histogram;
+        });
     }
 
     /**
@@ -212,7 +319,22 @@ public class NativeProvider implements Provider {
         tags = CardinalityGuard.enforce(name, tags);
         Tag[] finalTags = tags;
         NativeProvider self = this;
-        return llmTimers.computeIfAbsent(key(name, tags), k -> new NativeLlmTimer(name, finalTags, self));
+        return llmTimers.computeIfAbsent(key(name, tags), k -> {
+            Logger.debug(
+                    true,
+                    "Metrics",
+                    "Native LLM timer registration started: metricName={}, tagCount={}",
+                    name,
+                    null == finalTags ? 0 : finalTags.length);
+            NativeLlmTimer llmTimer = new NativeLlmTimer(name, finalTags, self);
+            Logger.debug(
+                    false,
+                    "Metrics",
+                    "Native LLM timer registration finished: metricName={}, tagCount={}",
+                    name,
+                    null == finalTags ? 0 : finalTags.length);
+            return llmTimer;
+        });
     }
 
     /**

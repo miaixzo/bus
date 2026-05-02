@@ -19,12 +19,7 @@
 */
 package org.miaixz.bus.cortex.builtin.graph;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
 /**
  * BFS-based downstream impact analysis over a dependency graph.
@@ -70,6 +65,32 @@ public class ImpactAnalysis {
             }
         }
         return impacted;
+    }
+
+    /**
+     * Returns the shortest downstream path from the source to every impacted service.
+     *
+     * @param serviceId source service
+     * @return impacted-path map
+     */
+    public Map<String, List<String>> paths(String serviceId) {
+        Map<String, List<String>> paths = new LinkedHashMap<>();
+        Queue<List<String>> queue = new ArrayDeque<>();
+        queue.add(List.of(serviceId));
+        while (!queue.isEmpty()) {
+            List<String> path = queue.poll();
+            String current = path.getLast();
+            for (String downstream : graph.getDownstream(current)) {
+                if (paths.containsKey(downstream)) {
+                    continue;
+                }
+                List<String> next = new ArrayList<>(path);
+                next.add(downstream);
+                paths.put(downstream, next);
+                queue.add(next);
+            }
+        }
+        return paths;
     }
 
 }

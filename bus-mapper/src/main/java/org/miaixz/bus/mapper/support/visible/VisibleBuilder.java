@@ -111,7 +111,7 @@ public class VisibleBuilder {
 
             // Check if table should be ignored
             if (config.isIgnore(tableInfo.tableName)) {
-                Logger.debug(false, "Visible", "Table {} ignored from visibility checking", tableInfo.tableName);
+                Logger.debug(false, "Mapper", "Table {} ignored from visibility checking", tableInfo.tableName);
                 return sql;
             }
 
@@ -126,7 +126,7 @@ public class VisibleBuilder {
             return addConditionToSql(sql, condition);
 
         } catch (Exception e) {
-            Logger.error(false, "Visible", "Failed to apply visibility condition: {}", e.getMessage(), e);
+            Logger.error(false, "Mapper", "Failed to apply visibility condition: {}", e.getMessage(), e);
             return sql;
         }
     }

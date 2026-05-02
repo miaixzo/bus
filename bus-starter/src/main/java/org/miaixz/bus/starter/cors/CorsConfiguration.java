@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.starter.cors;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.miaixz.bus.spring.GeniusBuilder;
 import jakarta.annotation.Resource;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -38,6 +40,7 @@ import java.util.Arrays;
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { CorsProperties.class })
+@ConditionalOnProperty(prefix = GeniusBuilder.CORS, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class CorsConfiguration {
 
     /**

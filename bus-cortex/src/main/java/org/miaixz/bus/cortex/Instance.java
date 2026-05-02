@@ -21,8 +21,10 @@ package org.miaixz.bus.cortex;
 
 import java.util.Map;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * Runtime API instance information.
@@ -32,12 +34,24 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@SuperBuilder
 public class Instance {
+
+    /**
+     * Creates an empty runtime instance descriptor.
+     */
+    public Instance() {
+
+    }
 
     /**
      * Namespace containing the runtime instance.
      */
-    private String namespace;
+    private String namespace_id;
+    /**
+     * Application identifier to which the runtime instance belongs.
+     */
+    private String app_id;
     /**
      * Service identifier to which the instance belongs.
      */
@@ -61,10 +75,12 @@ public class Instance {
     /**
      * Load-balancing weight assigned to the instance.
      */
+    @Builder.Default
     private Integer weight = 100;
     /**
      * Health flag where {@code 1} means healthy and {@code 0} means unhealthy.
      */
+    @Builder.Default
     private Integer healthy = 1;
     /**
      * Human-readable health state of the instance.
@@ -87,8 +103,46 @@ public class Instance {
      */
     private String healthPath;
     /**
+     * Lease duration in seconds used by active registries and self-registration heartbeats.
+     */
+    @Builder.Default
+    private Integer leaseSeconds = 30;
+    /**
+     * Timestamp of the most recent heartbeat observed for the instance.
+     */
+    private Long lastHeartbeatAt;
+    /**
+     * Timestamp of the most recent active health probe.
+     */
+    private Long lastProbeAt;
+    /**
+     * Timestamp of the most recent state transition.
+     */
+    private Long stateChangedAt;
+    /**
+     * Source that produced the current health state, for example heartbeat, http-probe or tcp-probe.
+     */
+    private String healthSource;
+    /**
+     * Detailed status payload from the most recent probe cycle.
+     */
+    private Status lastStatus;
+    /**
+     * Structured labels attached to the runtime instance.
+     */
+    private Map<String, String> labels;
+    /**
      * Additional instance metadata published for routing or discovery.
      */
     private Map<String, String> metadata;
+
+    /**
+     * Returns whether the instance is currently healthy.
+     *
+     * @return {@code true} when the instance is marked healthy
+     */
+    public boolean isHealthyNow() {
+        return healthy != null && healthy > 0;
+    }
 
 }

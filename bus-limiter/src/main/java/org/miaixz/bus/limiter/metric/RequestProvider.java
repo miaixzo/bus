@@ -30,10 +30,12 @@ import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.xyz.MethodKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.limiter.Builder;
+import org.miaixz.bus.limiter.Holder;
 import org.miaixz.bus.limiter.Provider;
 import org.miaixz.bus.limiter.Supplier;
 import org.miaixz.bus.limiter.magic.StrategyMode;
 import org.miaixz.bus.limiter.magic.annotation.Limiting;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Implements the {@link Provider} interface for handling the REQUEST_LIMIT strategy mode. This provider manages request
@@ -116,18 +118,58 @@ public class RequestProvider implements Provider {
         if (Objects.isNull(resourceManager)) {
             resourceManager = new ResourceManager();
             map.put(mark, resourceManager);
+            if (Holder.load().isLogger()) {
+                Logger.debug(true, "Limiter", "Request limiter resource manager created: managerCount={}", map.size());
+            }
         }
 
         // Get method configuration parameters
         String name = Builder.resolveMethodName(method);
         Limiting limiting = (Limiting) MethodManager.getAnnoInfo(name).getRight();
+        if (Holder.load().isLogger()) {
+            Logger.debug(
+                    true,
+                    "Limiter",
+                    "Request limiter evaluation started: method={}, count={}, durationSeconds={}, argCount={}",
+                    name,
+                    limiting.count(),
+                    limiting.duration(),
+                    args == null ? 0 : args.length);
+        }
         if (!resourceManager.entry(name, limiting)) {
             // Intercept the method if limiting is triggered
-            return supplier.intercept(bean, method, args);
+            if (Holder.load().isLogger()) {
+                Logger.warn(
+                        false,
+                        "Limiter",
+                        "Request limiter rejected invocation: method={}, count={}, durationSeconds={}, argCount={}",
+                        name,
+                        limiting.count(),
+                        limiting.duration(),
+                        args == null ? 0 : args.length);
+            }
+            Object result = supplier.intercept(bean, method, args);
+            if (Holder.load().isLogger()) {
+                Logger.info(
+                        false,
+                        "Limiter",
+                        "Request limiter interception completed: method={}, resultType={}",
+                        name,
+                        result == null ? "null" : result.getClass().getName());
+            }
+            return result;
         }
 
         // Allow execution
-        return MethodKit.invoke(bean, method, args);
+        Object result = MethodKit.invoke(bean, method, args);
+        if (Holder.load().isLogger()) {
+            Logger.debug(
+                    false,
+                    "Limiter",
+                    "Request limiter allowed invocation: method={}, remainingAllowed=true",
+                    name);
+        }
+        return result;
     }
 
     /**

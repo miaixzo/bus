@@ -58,19 +58,28 @@ import com.sun.jna.win32.StdCallLibrary;
  *
  * <p>
  * This class should be considered non-API as it may be removed if/when its code is incorporated into the JNA project.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public final class WindowsDxgi {
 
     // IID for IDXGIFactory {7B7166EC-21C7-44AE-B21A-C9AE321AE369}
+    /**
+     * The IID_IDXGI_FACTORY constant.
+     */
     private static final com.sun.jna.platform.win32.Guid.IID IID_IDXGI_FACTORY = new com.sun.jna.platform.win32.Guid.IID(
             "{7B7166EC-21C7-44AE-B21A-C9AE321AE369}");
 
     // DXGI_ERROR_NOT_FOUND: returned by EnumAdapters when index is out of range
+    /**
+     * The DXGI_ERROR_NOT_FOUND constant.
+     */
     private static final int DXGI_ERROR_NOT_FOUND = 0x887A0002;
 
+    /**
+     * Creates a new WindowsDxgi instance.
+     */
     private WindowsDxgi() {
     }
 
@@ -83,6 +92,9 @@ public final class WindowsDxgi {
      */
     private interface DxgiLib extends StdCallLibrary {
 
+        /**
+         * The INSTANCE value.
+         */
         DxgiLib INSTANCE = Native.load("dxgi", DxgiLib.class);
 
         /**
@@ -95,6 +107,9 @@ public final class WindowsDxgi {
         int CreateDXGIFactory(REFIID riid, PointerByReference ppFactory);
     }
 
+    /**
+     * The DXGI_AVAILABLE constant.
+     */
     private static final boolean DXGI_AVAILABLE;
     static {
         boolean available = false;
@@ -102,9 +117,9 @@ public final class WindowsDxgi {
             DxgiLib lib = DxgiLib.INSTANCE;
             available = true;
         } catch (UnsatisfiedLinkError e) {
-            Logger.debug("dxgi.dll not available: {}", e.getMessage());
+            Logger.debug(false, "Health", "dxgi.dll not available: {}", e.getClass().getSimpleName());
         } catch (NoClassDefFoundError e) {
-            Logger.debug("JNA DxgiLib class failed to load: {}", e.getMessage());
+            Logger.debug(false, "Health", "JNA DxgiLib class failed to load: {}", e.getClass().getSimpleName());
         }
         DXGI_AVAILABLE = available;
     }
@@ -134,16 +149,46 @@ public final class WindowsDxgi {
             "DedicatedSystemMemory", "SharedSystemMemory", "AdapterLuidLowPart", "AdapterLuidHighPart" })
     public static class DXGI_ADAPTER_DESC extends Structure {
 
+        /**
+         * The Description value.
+         */
         public char[] Description = new char[128];
+        /**
+         * The VendorId value.
+         */
         public int VendorId;
+        /**
+         * The DeviceId value.
+         */
         public int DeviceId;
+        /**
+         * The SubSysId value.
+         */
         public int SubSysId;
+        /**
+         * The Revision value.
+         */
         public int Revision;
         // SIZE_T is pointer-sized; use long (8 bytes on x64, 4 bytes on x86)
+        /**
+         * The DedicatedVideoMemory value.
+         */
         public com.sun.jna.platform.win32.BaseTSD.SIZE_T DedicatedVideoMemory;
+        /**
+         * The DedicatedSystemMemory value.
+         */
         public com.sun.jna.platform.win32.BaseTSD.SIZE_T DedicatedSystemMemory;
+        /**
+         * The SharedSystemMemory value.
+         */
         public com.sun.jna.platform.win32.BaseTSD.SIZE_T SharedSystemMemory;
+        /**
+         * The AdapterLuidLowPart value.
+         */
         public int AdapterLuidLowPart;
+        /**
+         * The AdapterLuidHighPart value.
+         */
         public int AdapterLuidHighPart;
     }
 
@@ -172,14 +217,30 @@ public final class WindowsDxgi {
      */
     private static final class DxgiAdapter extends COMInvoker {
 
+        /**
+         * Creates a new DxgiAdapter instance.
+         *
+         * @param p the p
+         */
         DxgiAdapter(Pointer p) {
             setPointer(p);
         }
 
+        /**
+         * Returns the get desc result.
+         *
+         * @param desc the desc
+         * @return the get desc result
+         */
         HRESULT GetDesc(DXGI_ADAPTER_DESC desc) {
             return (HRESULT) _invokeNativeObject(8, new Object[] { getPointer(), desc.getPointer() }, HRESULT.class);
         }
 
+        /**
+         * Returns the release result.
+         *
+         * @return the release result
+         */
         int Release() {
             return _invokeNativeInt(2, new Object[] { getPointer() });
         }
@@ -208,10 +269,22 @@ public final class WindowsDxgi {
      */
     private static final class DxgiFactory extends COMInvoker {
 
+        /**
+         * Creates a new DxgiFactory instance.
+         *
+         * @param p the p
+         */
         DxgiFactory(Pointer p) {
             setPointer(p);
         }
 
+        /**
+         * Returns the enum adapters result.
+         *
+         * @param index     the index
+         * @param ppAdapter the pp adapter
+         * @return the enum adapters result
+         */
         HRESULT EnumAdapters(int index, PointerByReference ppAdapter) {
             return (HRESULT) _invokeNativeObject(
                     7,
@@ -219,6 +292,11 @@ public final class WindowsDxgi {
                     HRESULT.class);
         }
 
+        /**
+         * Returns the release result.
+         *
+         * @return the release result
+         */
         int Release() {
             return _invokeNativeInt(2, new Object[] { getPointer() });
         }
@@ -247,7 +325,7 @@ public final class WindowsDxgi {
         int hr = DxgiLib.INSTANCE.CreateDXGIFactory(riid, ppFactory);
 
         if (COMUtils.FAILED(new HRESULT(hr))) {
-            Logger.debug("CreateDXGIFactory failed: 0x{}", Integer.toHexString(hr));
+            Logger.debug(false, "Health", "CreateDXGIFactory failed: 0x{}", Integer.toHexString(hr));
             return Collections.emptyList();
         }
 
@@ -264,6 +342,8 @@ public final class WindowsDxgi {
                 }
                 if (COMUtils.FAILED(enumHr)) {
                     Logger.debug(
+                            false,
+                            "Health",
                             "IDXGIFactory::EnumAdapters({}) failed: 0x{}",
                             i,
                             Integer.toHexString(enumHr.intValue()));
@@ -282,6 +362,8 @@ public final class WindowsDxgi {
                                 new DxgiAdapterInfo(name, desc.VendorId, desc.DeviceId, vram, desc.AdapterLuidLowPart,
                                         desc.AdapterLuidHighPart));
                         Logger.debug(
+                                false,
+                                "Health",
                                 "DXGI adapter {}: '{}' vendor=0x{} device=0x{} vram={} luid=0x{}_0x{}",
                                 i,
                                 name,
@@ -292,6 +374,8 @@ public final class WindowsDxgi {
                                 Integer.toHexString(desc.AdapterLuidLowPart));
                     } else {
                         Logger.debug(
+                                false,
+                                "Health",
                                 "IDXGIAdapter::GetDesc({}) failed: 0x{}",
                                 i,
                                 Integer.toHexString(descHr.intValue()));

@@ -42,7 +42,7 @@ public interface ListMapper<T> {
      *
      * @param list The list of entity objects to insert.
      * @param <S>  A subtype of the entity class.
-     * @return The number of successfully inserted records. A return value equal to {@code entityList.size()} indicates
+     * @return The number of successfully inserted records. A return value equal to {@code list.size()} indicates
      *         success; otherwise, it indicates failure.
      */
     @Lang(Caching.class)

@@ -20,8 +20,6 @@
 package org.miaixz.bus.core.lang.exception;
 
 import java.io.Serial;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.I18n;
@@ -191,14 +189,15 @@ public class UncheckedException extends RuntimeException {
     public String getLocalizedMessage() {
         if (errcode != null) {
             try {
-                Locale locale = Locale.forLanguageTag(I18n.AUTO_DETECT.lang());
-                ResourceBundle bundle = ResourceBundle.getBundle(Keys.BUNDLE_NAME, locale);
-                return bundle.getString(this.errcode);
+                String message = I18n.AUTO_DETECT.message(Keys.BUNDLE_NAME, this.errcode);
+                if (!this.errcode.equals(message)) {
+                    return message;
+                }
             } catch (Exception e) {
-                // Fallback to the error message registered in ERRORS_CACHE
-                Errors.Entry entry = Errors.require(this.errcode);
-                return entry != null ? entry.getValue() : this.getMessage();
             }
+            // Fallback to the error message registered in ERRORS_CACHE
+            Errors.Entry entry = Errors.require(this.errcode);
+            return entry != null ? entry.getValue() : this.getMessage();
 
         }
         return super.getLocalizedMessage();

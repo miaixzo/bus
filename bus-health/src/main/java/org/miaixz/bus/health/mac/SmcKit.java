@@ -126,6 +126,8 @@ public final class SmcKit {
                     return new IOConnect(connPtr.getValue());
                 } else if (Logger.isErrorEnabled()) {
                     Logger.error(
+                            false,
+                            "Health",
                             String.format(
                                     Locale.ROOT,
                                     "Unable to open connection to AppleSMC service. Error: 0x%08x",
@@ -135,7 +137,7 @@ public final class SmcKit {
                 smcService.release();
             }
         } else {
-            Logger.error("Unable to locate AppleSMC service");
+            Logger.error(false, "Health", "Unable to locate AppleSMC service");
         }
         return null;
     }

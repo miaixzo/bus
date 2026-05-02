@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -45,12 +45,26 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 @ThreadSafe
 final class WindowsSensors extends AbstractSensors {
 
+    /**
+     * The COM_EXCEPTION_MSG constant.
+     */
     private static final String COM_EXCEPTION_MSG = "COM exception: {}";
 
+    /**
+     * The REFLECT_EXCEPTION_MSG constant.
+     */
     private static final String REFLECT_EXCEPTION_MSG = "Reflect exception: {}";
 
+    /**
+     * The JLIBREHARDWAREMONITOR_PACKAGE constant.
+     */
     private static final String JLIBREHARDWAREMONITOR_PACKAGE = "io.github.pandalxb.jlibrehardwaremonitor";
 
+    /**
+     * Queries the cpu temperature.
+     *
+     * @return the query cpu temperature result
+     */
     @Override
     public double queryCpuTemperature() {
         // Attempt to fetch value from Open Hardware Monitor if it is running,
@@ -78,6 +92,11 @@ final class WindowsSensors extends AbstractSensors {
         return tempC;
     }
 
+    /**
+     * Returns the temp from ohm.
+     *
+     * @return the get temp from ohm result
+     */
     private static double getTempFromOHM() {
         WmiResult<OhmSensor.ValueProperty> ohmSensors = getOhmSensors(
                 "Hardware",
@@ -100,6 +119,11 @@ final class WindowsSensors extends AbstractSensors {
         return 0;
     }
 
+    /**
+     * Returns the temp from lhm.
+     *
+     * @return the get temp from lhm result
+     */
     private static double getTempFromLHM() {
         return getAverageValueFromLHM(
                 "CPU",
@@ -107,13 +131,18 @@ final class WindowsSensors extends AbstractSensors {
                 (name, value) -> !name.contains("Max") && !name.contains("Average") && value > 0);
     }
 
+    /**
+     * Returns the temp from wmi.
+     *
+     * @return the get temp from wmi result
+     */
     private static double getTempFromWMI() {
         double tempC = 0d;
         long tempK = 0L;
         WmiResult<MSAcpiThermalZoneTemperature.TemperatureProperty> result = MSAcpiThermalZoneTemperature
                 .queryCurrentTemperature();
         if (result.getResultCount() > 0) {
-            Logger.debug("Found Temperature data in WMI");
+            Logger.debug(false, "Health", "Found Temperature data in WMI");
             tempK = WmiKit
                     .getUint32asLong(result, MSAcpiThermalZoneTemperature.TemperatureProperty.CURRENTTEMPERATURE, 0);
         }
@@ -125,6 +154,11 @@ final class WindowsSensors extends AbstractSensors {
         return Math.max(tempC, +0.0);
     }
 
+    /**
+     * Queries the fan speeds.
+     *
+     * @return the query fan speeds result
+     */
     @Override
     public int[] queryFanSpeeds() {
         // Attempt to fetch value from Open Hardware Monitor if it is running
@@ -152,6 +186,11 @@ final class WindowsSensors extends AbstractSensors {
         return new int[0];
     }
 
+    /**
+     * Returns the fans from ohm.
+     *
+     * @return the get fans from ohm result
+     */
     private static int[] getFansFromOHM() {
         WmiResult<OhmSensor.ValueProperty> ohmSensors = getOhmSensors("Hardware", "CPU", "Fan", (h, ohmHardware) -> {
             String cpuIdentifier = WmiKit.getString(ohmHardware, OhmHardware.IdentifierProperty.IDENTIFIER, 0);
@@ -170,6 +209,11 @@ final class WindowsSensors extends AbstractSensors {
         return new int[0];
     }
 
+    /**
+     * Returns the fans from lhm.
+     *
+     * @return the get fans from lhm result
+     */
     private static int[] getFansFromLHM() {
         List<?> sensors = getLhmSensors("SuperIO", "Fan");
         if (sensors == null || sensors.isEmpty()) {
@@ -186,27 +230,32 @@ final class WindowsSensors extends AbstractSensors {
                     double value = (double) getValueMethod.invoke(sensor);
                     return value > 0;
                 } catch (Exception e) {
-                    Logger.warn(REFLECT_EXCEPTION_MSG, e.getMessage());
+                    Logger.warn(false, "Health", REFLECT_EXCEPTION_MSG, e.getClass().getSimpleName());
                     return false;
                 }
             }).mapToInt(sensor -> {
                 try {
                     return (int) (double) getValueMethod.invoke(sensor);
                 } catch (Exception e) {
-                    Logger.warn(REFLECT_EXCEPTION_MSG, e.getMessage());
+                    Logger.warn(false, "Health", REFLECT_EXCEPTION_MSG, e.getClass().getSimpleName());
                     return 0;
                 }
             }).toArray();
         } catch (Exception e) {
-            Logger.warn(REFLECT_EXCEPTION_MSG, e.getMessage());
+            Logger.warn(false, "Health", REFLECT_EXCEPTION_MSG, e.getClass().getSimpleName());
         }
         return new int[0];
     }
 
+    /**
+     * Returns the fans from wmi.
+     *
+     * @return the get fans from wmi result
+     */
     private static int[] getFansFromWMI() {
         WmiResult<Win32Fan.SpeedProperty> fan = Win32Fan.querySpeed();
         if (fan.getResultCount() > 1) {
-            Logger.debug("Found Fan data in WMI");
+            Logger.debug(false, "Health", "Found Fan data in WMI");
             int[] fanSpeeds = new int[fan.getResultCount()];
             for (int i = 0; i < fan.getResultCount(); i++) {
                 fanSpeeds[i] = (int) WmiKit.getUint64(fan, Win32Fan.SpeedProperty.DESIREDSPEED, i);
@@ -216,6 +265,11 @@ final class WindowsSensors extends AbstractSensors {
         return new int[0];
     }
 
+    /**
+     * Queries the cpu voltage.
+     *
+     * @return the query cpu voltage result
+     */
     @Override
     public double queryCpuVoltage() {
         // Attempt to fetch value from Open Hardware Monitor if it is running
@@ -239,6 +293,11 @@ final class WindowsSensors extends AbstractSensors {
         return volts;
     }
 
+    /**
+     * Returns the volts from ohm.
+     *
+     * @return the get volts from ohm result
+     */
     private static double getVoltsFromOHM() {
         WmiResult<OhmSensor.ValueProperty> ohmSensors = getOhmSensors(
                 "Sensor",
@@ -267,6 +326,11 @@ final class WindowsSensors extends AbstractSensors {
         return 0d;
     }
 
+    /**
+     * Returns the volts from lhm.
+     *
+     * @return the get volts from lhm result
+     */
     private static double getVoltsFromLHM() {
         return getAverageValueFromLHM(
                 "SuperIO",
@@ -274,10 +338,15 @@ final class WindowsSensors extends AbstractSensors {
                 (name, value) -> name.toLowerCase(Locale.ROOT).contains("vcore") && value > 0);
     }
 
+    /**
+     * Returns the volts from wmi.
+     *
+     * @return the get volts from wmi result
+     */
     private static double getVoltsFromWMI() {
         WmiResult<Win32Processor.VoltProperty> voltage = Win32Processor.queryVoltage();
         if (voltage.getResultCount() > 1) {
-            Logger.debug("Found Voltage data in WMI");
+            Logger.debug(false, "Health", "Found Voltage data in WMI");
             int decivolts = WmiKit.getUint16(voltage, Win32Processor.VoltProperty.CURRENTVOLTAGE, 0);
             // If the eighth bit is set, bits 0-6 contain the voltage
             // multiplied by 10. If the eighth bit is not set, then the bit
@@ -302,6 +371,15 @@ final class WindowsSensors extends AbstractSensors {
         return 0d;
     }
 
+    /**
+     * Returns the ohm sensors.
+     *
+     * @param typeToQuery         the type to query
+     * @param typeName            the type name
+     * @param sensorType          the sensor type
+     * @param querySensorFunction the query sensor function
+     * @return the get ohm sensors result
+     */
     private static WmiResult<OhmSensor.ValueProperty> getOhmSensors(
             String typeToQuery,
             String typeName,
@@ -315,11 +393,11 @@ final class WindowsSensors extends AbstractSensors {
             WmiResult<OhmHardware.IdentifierProperty> ohmHardware = OhmHardware
                     .queryHwIdentifier(h, typeToQuery, typeName);
             if (ohmHardware.getResultCount() > 0) {
-                Logger.debug("Found {} data in Open Hardware Monitor", sensorType);
+                Logger.debug(false, "Health", "Found {} data in Open Hardware Monitor", sensorType);
                 ohmSensors = querySensorFunction.apply(h, ohmHardware);
             }
         } catch (COMException e) {
-            Logger.warn(COM_EXCEPTION_MSG, e.getMessage());
+            Logger.warn(false, "Health", COM_EXCEPTION_MSG, e.getClass().getSimpleName());
         } finally {
             if (comInit) {
                 h.unInitCOM();
@@ -328,6 +406,14 @@ final class WindowsSensors extends AbstractSensors {
         return ohmSensors;
     }
 
+    /**
+     * Returns the average value from lhm.
+     *
+     * @param hardwareType        the hardware type
+     * @param sensorType          the sensor type
+     * @param sensorValidFunction the sensor valid function
+     * @return the get average value from lhm result
+     */
     private static double getAverageValueFromLHM(
             String hardwareType,
             String sensorType,
@@ -355,11 +441,18 @@ final class WindowsSensors extends AbstractSensors {
             }
             return validCount > 0 ? sum / validCount : 0;
         } catch (Exception e) {
-            Logger.warn(REFLECT_EXCEPTION_MSG, e.getMessage());
+            Logger.warn(false, "Health", REFLECT_EXCEPTION_MSG, e.getClass().getSimpleName());
         }
         return 0;
     }
 
+    /**
+     * Returns the lhm sensors.
+     *
+     * @param hardwareType the hardware type
+     * @param sensorType   the sensor type
+     * @return the get lhm sensors result
+     */
     private static List<?> getLhmSensors(String hardwareType, String sensorType) {
         try {
             Class<?> computerConfigClass = Class.forName(JLIBREHARDWAREMONITOR_PACKAGE + ".config.ComputerConfig");
@@ -382,9 +475,9 @@ final class WindowsSensors extends AbstractSensors {
             Method querySensorsMethod = libreHardwareManagerClass.getMethod("querySensors", String.class, String.class);
             return (List<?>) querySensorsMethod.invoke(instance, hardwareType, sensorType);
         } catch (ClassNotFoundException e) {
-            Logger.trace("jLibreHardwareMonitor not available: {}", e.getMessage());
+            Logger.trace(false, "Health", "jLibreHardwareMonitor not available: {}", e.getClass().getSimpleName());
         } catch (Exception e) {
-            Logger.warn(REFLECT_EXCEPTION_MSG, e.getMessage());
+            Logger.warn(false, "Health", REFLECT_EXCEPTION_MSG, e.getClass().getSimpleName());
         }
         return Collections.emptyList();
     }

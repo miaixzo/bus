@@ -53,6 +53,12 @@ public class TaskListenerManager implements Serializable {
     public TaskListenerManager addListener(final TaskListener listener) {
         synchronized (listeners) {
             this.listeners.add(listener);
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Task listener added: listenerType={}, listenerCount={}",
+                    listener == null ? null : listener.getClass().getName(),
+                    this.listeners.size());
         }
         return this;
     }
@@ -65,7 +71,14 @@ public class TaskListenerManager implements Serializable {
      */
     public TaskListenerManager removeListener(final TaskListener listener) {
         synchronized (listeners) {
-            this.listeners.remove(listener);
+            boolean removed = this.listeners.remove(listener);
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Task listener removed: listenerType={}, removed={}, listenerCount={}",
+                    listener == null ? null : listener.getClass().getName(),
+                    removed,
+                    this.listeners.size());
         }
         return this;
     }
@@ -77,11 +90,23 @@ public class TaskListenerManager implements Serializable {
      */
     public void notifyTaskStart(final Executor executor) {
         synchronized (listeners) {
+            Logger.debug(
+                    true,
+                    "Tempus",
+                    "Task listener start notification started: taskId={}, listenerCount={}",
+                    executor == null || executor.task() == null ? null : executor.task().getId(),
+                    listeners.size());
             for (final TaskListener listener : listeners) {
                 if (null != listener) {
                     listener.onStart(executor);
                 }
             }
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Task listener start notification completed: taskId={}, listenerCount={}",
+                    executor == null || executor.task() == null ? null : executor.task().getId(),
+                    listeners.size());
         }
     }
 
@@ -92,9 +117,21 @@ public class TaskListenerManager implements Serializable {
      */
     public void notifyTaskSucceeded(final Executor executor) {
         synchronized (listeners) {
+            Logger.debug(
+                    true,
+                    "Tempus",
+                    "Task listener success notification started: taskId={}, listenerCount={}",
+                    executor == null || executor.task() == null ? null : executor.task().getId(),
+                    listeners.size());
             for (final TaskListener listener : listeners) {
                 listener.onSucceeded(executor);
             }
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Task listener success notification completed: taskId={}, listenerCount={}",
+                    executor == null || executor.task() == null ? null : executor.task().getId(),
+                    listeners.size());
         }
     }
 
@@ -108,11 +145,29 @@ public class TaskListenerManager implements Serializable {
     public void notifyTaskFailed(final Executor executor, final Throwable exception) {
         synchronized (listeners) {
             if (!listeners.isEmpty()) {
+                Logger.debug(
+                        true,
+                        "Tempus",
+                        "Task listener failure notification started: taskId={}, listenerCount={}",
+                        executor == null || executor.task() == null ? null : executor.task().getId(),
+                        listeners.size());
                 for (final TaskListener listener : listeners) {
                     listener.onFailed(executor, exception);
                 }
+                Logger.debug(
+                        false,
+                        "Tempus",
+                        "Task listener failure notification completed: taskId={}, listenerCount={}",
+                        executor == null || executor.task() == null ? null : executor.task().getId(),
+                        listeners.size());
             } else {
-                Logger.error(exception, exception.getMessage());
+                Logger.error(
+                        false,
+                        "Tempus",
+                        exception,
+                        "Task failed without registered listener: taskId={}, exception={}",
+                        executor == null || executor.task() == null ? null : executor.task().getId(),
+                        exception == null ? null : exception.getClass().getSimpleName());
             }
         }
     }

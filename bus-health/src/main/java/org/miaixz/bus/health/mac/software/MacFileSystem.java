@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -62,42 +62,126 @@ import com.sun.jna.platform.mac.SystemB.Statfs;
 @ThreadSafe
 public class MacFileSystem extends AbstractFileSystem {
 
+    /**
+     * The FS_PATH_EXCLUDES constant.
+     */
     protected static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._MAC_FS_PATH_EXCLUDES);
+    /**
+     * The FS_PATH_INCLUDES constant.
+     */
     protected static final List<PathMatcher> FS_PATH_INCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._MAC_FS_PATH_INCLUDES);
+    /**
+     * The FS_VOLUME_EXCLUDES constant.
+     */
     protected static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._MAC_FS_VOLUME_EXCLUDES);
+    /**
+     * The FS_VOLUME_INCLUDES constant.
+     */
     protected static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._MAC_FS_VOLUME_INCLUDES);
 
-    // Regexp matcher for /dev/disk1 etc.
-    protected static final Pattern LOCAL_DISK = Pattern.compile("/dev/disk\\d");
+    // Regexp matcher for /dev/disk0s2 etc.
+    /**
+     * The LOCAL_DISK constant.
+     */
+    protected static final Pattern LOCAL_DISK = Pattern.compile("/dev/disk\\d+(s\\d+)?");
 
     // User specifiable flags.
+    /**
+     * The MNT_RDONLY constant.
+     */
     protected static final int MNT_RDONLY = 0x00000001;
+    /**
+     * The MNT_SYNCHRONOUS constant.
+     */
     protected static final int MNT_SYNCHRONOUS = 0x00000002;
+    /**
+     * The MNT_NOEXEC constant.
+     */
     protected static final int MNT_NOEXEC = 0x00000004;
+    /**
+     * The MNT_NOSUID constant.
+     */
     protected static final int MNT_NOSUID = 0x00000008;
+    /**
+     * The MNT_NODEV constant.
+     */
     protected static final int MNT_NODEV = 0x00000010;
+    /**
+     * The MNT_UNION constant.
+     */
     protected static final int MNT_UNION = 0x00000020;
+    /**
+     * The MNT_ASYNC constant.
+     */
     protected static final int MNT_ASYNC = 0x00000040;
+    /**
+     * The MNT_CPROTECT constant.
+     */
     protected static final int MNT_CPROTECT = 0x00000080;
+    /**
+     * The MNT_EXPORTED constant.
+     */
     protected static final int MNT_EXPORTED = 0x00000100;
+    /**
+     * The MNT_QUARANTINE constant.
+     */
     protected static final int MNT_QUARANTINE = 0x00000400;
+    /**
+     * The MNT_LOCAL constant.
+     */
     protected static final int MNT_LOCAL = 0x00001000;
+    /**
+     * The MNT_QUOTA constant.
+     */
     protected static final int MNT_QUOTA = 0x00002000;
+    /**
+     * The MNT_ROOTFS constant.
+     */
     protected static final int MNT_ROOTFS = 0x00004000;
+    /**
+     * The MNT_DOVOLFS constant.
+     */
     protected static final int MNT_DOVOLFS = 0x00008000;
+    /**
+     * The MNT_DONTBROWSE constant.
+     */
     protected static final int MNT_DONTBROWSE = 0x00100000;
+    /**
+     * The MNT_IGNORE_OWNERSHIP constant.
+     */
     protected static final int MNT_IGNORE_OWNERSHIP = 0x00200000;
+    /**
+     * The MNT_AUTOMOUNTED constant.
+     */
     protected static final int MNT_AUTOMOUNTED = 0x00400000;
+    /**
+     * The MNT_JOURNALED constant.
+     */
     protected static final int MNT_JOURNALED = 0x00800000;
+    /**
+     * The MNT_NOUSERXATTR constant.
+     */
     protected static final int MNT_NOUSERXATTR = 0x01000000;
+    /**
+     * The MNT_DEFWRITE constant.
+     */
     protected static final int MNT_DEFWRITE = 0x02000000;
+    /**
+     * The MNT_MULTILABEL constant.
+     */
     protected static final int MNT_MULTILABEL = 0x04000000;
+    /**
+     * The MNT_NOATIME constant.
+     */
     protected static final int MNT_NOATIME = 0x10000000;
 
+    /**
+     * The OPTIONS_MAP constant.
+     */
     protected static final Map<Integer, String> OPTIONS_MAP = new HashMap<>();
 
     static {
@@ -124,6 +208,13 @@ public class MacFileSystem extends AbstractFileSystem {
         OPTIONS_MAP.put(MNT_NOATIME, "noatime");
     }
 
+    /**
+     * Returns the file store matching.
+     *
+     * @param nameToMatch the name to match
+     * @param localOnly   the local only
+     * @return the get file store matching result
+     */
     static List<OSFileStore> getFileStoreMatching(String nameToMatch, boolean localOnly) {
         List<OSFileStore> fsList = new ArrayList<>();
 
@@ -136,7 +227,7 @@ public class MacFileSystem extends AbstractFileSystem {
             DASessionRef session = DiskArbitration.INSTANCE
                     .DASessionCreate(CoreFoundation.INSTANCE.CFAllocatorGetDefault());
             if (session == null) {
-                Logger.error("Unable to open session to DiskArbitration framework.");
+                Logger.error(false, "Health", "Unable to open session to DiskArbitration framework.");
             } else {
                 CFStringRef daVolumeNameKey = CFStringRef.createCFString("DAVolumeName");
 
@@ -252,22 +343,43 @@ public class MacFileSystem extends AbstractFileSystem {
         return fsList;
     }
 
+    /**
+     * Returns the file stores.
+     *
+     * @param localOnly the local only
+     * @return the get file stores result
+     */
     @Override
     public List<OSFileStore> getFileStores(boolean localOnly) {
         // List of file systems
         return getFileStoreMatching(null, localOnly);
     }
 
+    /**
+     * Returns the open file descriptors.
+     *
+     * @return the get open file descriptors result
+     */
     @Override
     public long getOpenFileDescriptors() {
         return SysctlKit.sysctl("kern.num_files", 0);
     }
 
+    /**
+     * Returns the max file descriptors.
+     *
+     * @return the get max file descriptors result
+     */
     @Override
     public long getMaxFileDescriptors() {
         return SysctlKit.sysctl("kern.maxfiles", 0);
     }
 
+    /**
+     * Returns the max file descriptors per process.
+     *
+     * @return the get max file descriptors per process result
+     */
     @Override
     public long getMaxFileDescriptorsPerProcess() {
         return SysctlKit.sysctl("kern.maxfilesperproc", 0);

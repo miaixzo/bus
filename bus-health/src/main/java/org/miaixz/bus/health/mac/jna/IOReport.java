@@ -33,12 +33,15 @@ import com.sun.jna.ptr.PointerByReference;
  *
  * <p>
  * These are non-public APIs. Mappings are provided for OSHI internal use only and should not be considered stable.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface IOReport extends Library {
 
+    /**
+     * The INSTANCE value.
+     */
     IOReport INSTANCE = Native.load("IOReport", IOReport.class);
 
     /**
@@ -46,10 +49,18 @@ public interface IOReport extends Library {
      */
     class IOReportSubscriptionRef extends CFTypeRef {
 
+        /**
+         * Creates a new IOReportSubscriptionRef instance.
+         */
         public IOReportSubscriptionRef() {
             super();
         }
 
+        /**
+         * Creates a new IOReportSubscriptionRef instance.
+         *
+         * @param p the p
+         */
         public IOReportSubscriptionRef(Pointer p) {
             super(p);
         }

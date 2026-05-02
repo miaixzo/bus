@@ -20,6 +20,7 @@
 package org.miaixz.bus.metrics.builtin;
 
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Metrics;
 
 /**
@@ -41,7 +42,18 @@ public class CacheMetrics {
      * @return wrapped cache with metrics
      */
     public static <K, V> CacheX<K, V> instrument(CacheX<K, V> cache, String cacheName) {
-        return new InstrumentedCache<>(cache, cacheName);
+        Logger.info(
+                true,
+                "Metrics",
+                "Cache metrics instrumentation started: cacheClass={}",
+                null == cache ? null : cache.getClass().getName());
+        CacheX<K, V> instrumented = new InstrumentedCache<>(cache, cacheName);
+        Logger.info(
+                false,
+                "Metrics",
+                "Cache metrics instrumentation finished: cacheClass={}",
+                null == cache ? null : cache.getClass().getName());
+        return instrumented;
     }
 
     private static class InstrumentedCache<K, V> implements CacheX<K, V> {

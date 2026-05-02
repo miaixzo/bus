@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -31,26 +31,57 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractFirmware;
 @Immutable
 final class SolarisFirmware extends AbstractFirmware {
 
+    /**
+     * The manufacturer value.
+     */
     private final String manufacturer;
+    /**
+     * The version value.
+     */
     private final String version;
+    /**
+     * The releaseDate value.
+     */
     private final String releaseDate;
 
+    /**
+     * Creates a new SolarisFirmware instance.
+     *
+     * @param manufacturer the manufacturer
+     * @param version      the version
+     * @param releaseDate  the release date
+     */
     SolarisFirmware(String manufacturer, String version, String releaseDate) {
         this.manufacturer = manufacturer;
         this.version = version;
         this.releaseDate = releaseDate;
     }
 
+    /**
+     * Returns the manufacturer.
+     *
+     * @return the get manufacturer result
+     */
     @Override
     public String getManufacturer() {
         return manufacturer;
     }
 
+    /**
+     * Returns the version.
+     *
+     * @return the get version result
+     */
     @Override
     public String getVersion() {
         return version;
     }
 
+    /**
+     * Returns the release date.
+     *
+     * @return the get release date result
+     */
     @Override
     public String getReleaseDate() {
         return releaseDate;

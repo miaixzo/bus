@@ -29,6 +29,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.miaixz.bus.core.center.map.TripletTable;
 import org.miaixz.bus.core.lang.exception.CrontabException;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.tempus.crontab.Crontab;
 import org.miaixz.bus.tempus.pattern.CronPattern;
 
@@ -216,9 +217,23 @@ public abstract class Repertoire implements Serializable {
         writeLock.lock();
         try {
             if (this.table.containLeft(id)) {
+                Logger.warn(
+                        false,
+                        "Tempus",
+                        "Task table add rejected: taskId={}, reason=duplicate, taskCount={}",
+                        id,
+                        this.table.size());
                 throw new CrontabException("Id [{}] has been existed!", id);
             }
             this.table.put(id, pattern, crontab);
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Task table entry added: taskId={}, pattern={}, taskType={}, taskCount={}",
+                    id,
+                    pattern,
+                    crontab == null ? null : crontab.getClass().getName(),
+                    this.table.size());
         } finally {
             writeLock.unlock();
         }
@@ -238,8 +253,20 @@ public abstract class Repertoire implements Serializable {
             final int index = this.table.indexOfLeft(id);
             if (index > -1) {
                 this.table.remove(index);
+                Logger.debug(
+                        false,
+                        "Tempus",
+                        "Task table entry removed: taskId={}, taskCount={}",
+                        id,
+                        this.table.size());
                 return true;
             }
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Task table remove skipped: taskId={}, found=false, taskCount={}",
+                    id,
+                    this.table.size());
         } finally {
             writeLock.unlock();
         }
@@ -260,8 +287,10 @@ public abstract class Repertoire implements Serializable {
             final int index = this.table.indexOfLeft(id);
             if (index > -1) {
                 this.table.setMiddle(index, pattern);
+                Logger.debug(false, "Tempus", "Task table pattern updated: taskId={}, pattern={}", id, pattern);
                 return true;
             }
+            Logger.debug(false, "Tempus", "Task table pattern update skipped: taskId={}, found=false", id);
         } finally {
             writeLock.unlock();
         }

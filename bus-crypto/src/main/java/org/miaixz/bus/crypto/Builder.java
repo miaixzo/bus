@@ -67,6 +67,7 @@ import org.miaixz.bus.crypto.builtin.digest.mac.Mac;
 import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 import org.miaixz.bus.crypto.center.*;
 import org.w3c.dom.Element;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Security-related utility class.
@@ -130,7 +131,7 @@ public class Builder {
      * AES encryption: aes().encrypt(data)
      * AES decryption: aes().decrypt(data)
      * </pre>
-     * 
+     *
      *
      * @return A new {@link AES} instance.
      */
@@ -147,7 +148,7 @@ public class Builder {
      * AES encryption: aes(key).encrypt(data)
      * AES decryption: aes(key).decrypt(data)
      * </pre>
-     * 
+     *
      *
      * @param key The AES key.
      * @return A new {@link AES} instance.
@@ -166,7 +167,7 @@ public class Builder {
      * DES encryption: des().encrypt(data)
      * DES decryption: des().decrypt(data)
      * </pre>
-     * 
+     *
      *
      * @return A new {@link DES} instance.
      */
@@ -183,7 +184,7 @@ public class Builder {
      * DES encryption: des(key).encrypt(data)
      * DES decryption: des(key).decrypt(data)
      * </pre>
-     * 
+     *
      *
      * @param key The DES key.
      * @return A new {@link DES} instance.
@@ -202,7 +203,7 @@ public class Builder {
      * DESede encryption: tdea().encrypt(data)
      * DESede decryption: tdea().decrypt(data)
      * </pre>
-     * 
+     *
      *
      * @return A new {@link TDEA} instance.
      */
@@ -220,7 +221,7 @@ public class Builder {
      * DESede encryption: tdea(key).encrypt(data)
      * DESede decryption: tdea(key).decrypt(data)
      * </pre>
-     * 
+     *
      *
      * @param key The TDEA key.
      * @return A new {@link TDEA} instance.
@@ -238,7 +239,7 @@ public class Builder {
      * MD5 digest: md5().digest(data)
      * MD5 digest to hexadecimal string: md5().digestHex(data)
      * </pre>
-     * 
+     *
      *
      * @return A new {@link MD5} instance.
      */
@@ -285,7 +286,7 @@ public class Builder {
      * SHA1 digest: sha1().digest(data)
      * SHA1 digest to hexadecimal string: sha1().digestHex(data)
      * </pre>
-     * 
+     *
      *
      * @return A new {@link Digester} instance for SHA1.
      */
@@ -332,7 +333,7 @@ public class Builder {
      * SHA256 digest: sha256().digest(data)
      * SHA256 digest to hexadecimal string: sha256().digestHex(data)
      * </pre>
-     * 
+     *
      *
      * @return A new {@link Digester} instance for SHA256.
      */
@@ -415,7 +416,7 @@ public class Builder {
      * HmacMD5 digest: hmacMd5(key).digest(data)
      * HmacMD5 digest to hexadecimal string: hmacMd5(key).digestHex(data)
      * </pre>
-     * 
+     *
      *
      * @param key The encryption key as a string. If {@code null}, a random key is generated.
      * @return A new {@link HMac} instance for HmacMD5.
@@ -433,7 +434,7 @@ public class Builder {
      * HmacMD5 digest: hmacMd5(key).digest(data)
      * HmacMD5 digest to hexadecimal string: hmacMd5(key).digestHex(data)
      * </pre>
-     * 
+     *
      *
      * @param key The encryption key as a byte array. If {@code null}, a random key is generated.
      * @return A new {@link HMac} instance for HmacMD5.
@@ -451,7 +452,7 @@ public class Builder {
      * HmacMD5 digest: hmacMd5().digest(data)
      * HmacMD5 digest to hexadecimal string: hmacMd5().digestHex(data)
      * </pre>
-     * 
+     *
      *
      * @return A new {@link HMac} instance for HmacMD5.
      */
@@ -468,7 +469,7 @@ public class Builder {
      * HmacSHA1 digest: hmacSha1(key).digest(data)
      * HmacSHA1 digest to hexadecimal string: hmacSha1(key).digestHex(data)
      * </pre>
-     * 
+     *
      *
      * @param key The encryption key as a string. If {@code null}, a random key is generated.
      * @return A new {@link HMac} instance for HmacSHA1.
@@ -486,7 +487,7 @@ public class Builder {
      * HmacSHA1 digest: hmacSha1(key).digest(data)
      * HmacSHA1 digest to hexadecimal string: hmacSha1(key).digestHex(data)
      * </pre>
-     * 
+     *
      *
      * @param key The encryption key as a byte array. If {@code null}, a random key is generated.
      * @return A new {@link HMac} instance for HmacSHA1.
@@ -504,7 +505,7 @@ public class Builder {
      * HmacSHA1 digest: hmacSha1().digest(data)
      * HmacSHA1 digest to hexadecimal string: hmacSha1().digestHex(data)
      * </pre>
-     * 
+     *
      *
      * @return A new {@link HMac} instance for HmacSHA1.
      */
@@ -521,7 +522,7 @@ public class Builder {
      * HmacSHA256 digest: hmacSha256(key).digest(data)
      * HmacSHA256 digest to hexadecimal string: hmacSha256(key).digestHex(data)
      * </pre>
-     * 
+     *
      *
      * @param key The encryption key as a string. If {@code null}, a random key is generated.
      * @return A new {@link HMac} instance for HmacSHA256.
@@ -539,7 +540,7 @@ public class Builder {
      * HmacSHA256 digest: hmacSha256(key).digest(data)
      * HmacSHA256 digest to hexadecimal string: hmacSha256(key).digestHex(data)
      * </pre>
-     * 
+     *
      *
      * @param key The encryption key as a byte array. If {@code null}, a random key is generated.
      * @return A new {@link HMac} instance for HmacSHA256.
@@ -557,7 +558,7 @@ public class Builder {
      * HmacSHA256 digest: hmacSha256().digest(data)
      * HmacSHA256 digest to hexadecimal string: hmacSha256().digestHex(data)
      * </pre>
-     * 
+     *
      *
      * @return A new {@link HMac} instance for HmacSHA256.
      */
@@ -609,7 +610,7 @@ public class Builder {
      * <pre>
      * addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
      * </pre>
-     * 
+     *
      *
      * @param provider The {@link java.security.Provider} to add.
      */
@@ -630,7 +631,7 @@ public class Builder {
      * <p>
      * Note: For some special strings, it might be difficult to distinguish between Hex and Base64. The system property
      * {@link #CRYPTO_DECODE_HEX} can be used to force disable Hex parsing.
-     * 
+     *
      *
      * @param key The key string to be decoded.
      * @return The decoded key as a byte array.
@@ -667,6 +668,14 @@ public class Builder {
         try {
             cipher = (null == provider) ? Cipher.getInstance(algorithm) : Cipher.getInstance(algorithm, provider);
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
+                    "Builder",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
 
@@ -693,6 +702,14 @@ public class Builder {
             messageDigest = (null == provider) ? MessageDigest.getInstance(algorithm)
                     : MessageDigest.getInstance(algorithm, provider);
         } catch (final NoSuchAlgorithmException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
+                    "Builder",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
 
@@ -710,6 +727,14 @@ public class Builder {
         try {
             return MessageDigest.getInstance(algorithm);
         } catch (final NoSuchAlgorithmException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
+                    "Builder",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
     }
@@ -730,6 +755,14 @@ public class Builder {
             mac = (null == provider) ? javax.crypto.Mac.getInstance(algorithm)
                     : javax.crypto.Mac.getInstance(algorithm, provider);
         } catch (final NoSuchAlgorithmException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
+                    "Builder",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
 
@@ -873,7 +906,7 @@ public class Builder {
      * SM3 digest: sm3().digest(data)
      * SM3 digest to hexadecimal string: sm3().digestHex(data)
      * </pre>
-     * 
+     *
      *
      * @return A new {@link SM3} instance.
      */
@@ -931,7 +964,7 @@ public class Builder {
      * SM4 encryption: sm4().encrypt(data)
      * SM4 decryption: sm4().decrypt(data)
      * </pre>
-     * 
+     *
      *
      * @return A new {@link SM4} instance.
      */
@@ -948,7 +981,7 @@ public class Builder {
      * SM4 encryption: sm4(key).encrypt(data)
      * SM4 decryption: sm4(key).decrypt(data)
      * </pre>
-     * 
+     *
      *
      * @param key The SM4 key.
      * @return A new {@link SM4} instance.
@@ -1007,6 +1040,14 @@ public class Builder {
         try {
             decode = StandardDSAEncoding.INSTANCE.decode(SM2_DOMAIN_PARAMS.getN(), rsDer);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
+                    "Builder",
+                    false,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
 
@@ -1034,6 +1075,14 @@ public class Builder {
         try {
             return StandardDSAEncoding.INSTANCE.encode(SM2_DOMAIN_PARAMS.getN(), r, s);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
+                    "Builder",
+                    false,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -1113,6 +1162,14 @@ public class Builder {
             signature = (null == provider) ? Signature.getInstance(algorithm)
                     : Signature.getInstance(algorithm, provider);
         } catch (final NoSuchAlgorithmException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
+                    "Builder",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
 
@@ -1725,6 +1782,14 @@ public class Builder {
         try {
             return pkInfo.parsePrivateKey().toASN1Primitive().getEncoded();
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
+                    "Builder",
+                    false,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -1741,6 +1806,14 @@ public class Builder {
         try {
             return spkInfo.parsePublicKey().getEncoded();
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
+                    "Builder",
+                    false,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -1819,6 +1892,14 @@ public class Builder {
                 return new DESKeySpec(key);
             }
         } catch (final InvalidKeyException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
+                    "Builder",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
 

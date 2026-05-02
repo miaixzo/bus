@@ -22,6 +22,7 @@ package org.miaixz.bus.setting.format;
 import java.util.Objects;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.setting.Format;
 import org.miaixz.bus.setting.metric.ini.IniComment;
 import org.miaixz.bus.setting.metric.ini.IniElement;
@@ -105,16 +106,40 @@ public class DefaultFormatter implements Format {
         } else if (propertyElementFormatter.check(line)) {
             IniProperty property = propertyElementFormatter.format(line, preEffectiveLineNumber);
             if (null == lastSection) {
+                Logger.warn(
+                        false,
+                        "Setting",
+                        "INI line parse failed: lineNumber={}, effectiveLineNumber={}, lineLength={}, reason={}",
+                        lineNumber,
+                        preEffectiveLineNumber,
+                        line.length(),
+                        "missingSection");
                 throw new InternalException("Cannot find section for property on line " + lineNumber + ": " + line);
             }
             property.setSection(lastSection);
             lastSection.add(property);
             element = property;
         } else {
+            Logger.warn(
+                    false,
+                    "Setting",
+                    "INI line parse failed: lineNumber={}, effectiveLineNumber={}, lineLength={}, reason={}",
+                    lineNumber,
+                    preEffectiveLineNumber,
+                    line.length(),
+                    "unknownElement");
             throw new InternalException("No matching element type found for line " + lineNumber + ": " + line);
         }
 
         effectiveLineNumber = preEffectiveLineNumber;
+        Logger.debug(
+                false,
+                "Setting",
+                "INI line parsed: lineNumber={}, effectiveLineNumber={}, elementType={}, lineLength={}",
+                lineNumber,
+                effectiveLineNumber,
+                element == null ? "null" : element.getClass().getSimpleName(),
+                line.length());
         return element;
     }
 

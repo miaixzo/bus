@@ -37,6 +37,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Douyin (TikTok) login provider.
@@ -121,6 +122,15 @@ public class DouyinProvider extends AbstractProvider {
                                     .source(complex.toString()).build())
                     .build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "user info",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
     }
@@ -194,6 +204,15 @@ public class DouyinProvider extends AbstractProvider {
             return Authorization.builder().token(token).openId(openId).expireIn(expiresIn).refresh(refresh)
                     .refreshExpireIn(refreshExpiresIn).scope(scope).build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "token",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse token response: " + e.getMessage());
         }
     }

@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.starter.elastic;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.miaixz.bus.spring.GeniusBuilder;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
@@ -49,6 +51,7 @@ import java.util.List;
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { ElasticProperties.class })
+@ConditionalOnProperty(prefix = GeniusBuilder.ELASTIC, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class ElasticConfiguration {
 
     @Resource
@@ -69,7 +72,9 @@ public class ElasticConfiguration {
     public RestClientBuilder restClientBuilder() {
         if (CollKit.isEmpty(this.properties.getHostList())) {
             Logger.error(
-                    "[ElasticConfiguration.restClientBuilder] Initialization of RestClient failed: Cluster host information is not configured.");
+                    false,
+                    "Starter",
+                    "Elasticsearch RestClient initialization failed because cluster host information is not configured.");
             throw new InternalException(
                     "Initialization of RestClient failed: Elasticsearch cluster host information is not configured.");
         }

@@ -25,6 +25,7 @@ import java.lang.management.MemoryMXBean;
 import java.lang.management.ThreadMXBean;
 import java.util.List;
 
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Metrics;
 
 /**
@@ -40,6 +41,7 @@ public class JvmMetrics {
      * times; subsequent calls are no-ops due to provider-level deduplication.
      */
     public static void register() {
+        Logger.info(true, "Metrics", "JVM metrics registration started");
         MemoryMXBean mem = ManagementFactory.getMemoryMXBean();
         Metrics.gauge("jvm.memory.used.heap", mem, m -> (double) m.getHeapMemoryUsage().getUsed());
         Metrics.gauge("jvm.memory.max.heap", mem, m -> (double) m.getHeapMemoryUsage().getMax());
@@ -57,6 +59,7 @@ public class JvmMetrics {
             Metrics.gauge("jvm.gc.collection.count", gc, b -> (double) b.getCollectionCount(), "gc", gcName);
             Metrics.gauge("jvm.gc.collection.time.ms", gc, b -> (double) b.getCollectionTime(), "gc", gcName);
         }
+        Logger.info(false, "Metrics", "JVM metrics registration finished: gcCollectorCount={}", gcBeans.size());
     }
 
 }

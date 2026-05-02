@@ -109,7 +109,11 @@ public class HealthService {
             // Validate TIDs; if none are valid, default to liveness and readiness.
             if (tidList.stream().noneMatch(TID.ALL_TID::contains)) {
                 tidList = Arrays.asList(TID.LIVENESS, TID.READINESS);
-                Logger.debug("Invalid tid '{}', defaulting to liveness,readiness", effectiveTid);
+                Logger.debug(
+                        false,
+                        "Starter",
+                        "Health invalid tid '{}', defaulting to liveness,readiness",
+                        effectiveTid);
             }
 
             // Gather monitoring information.
@@ -118,14 +122,25 @@ public class HealthService {
             try {
                 result.putAll(TID.ALL.equals(effectiveTid) ? provider.getAll() : provider.get(tidList));
             } catch (NumberFormatException e) {
-                Logger.warn("Invalid number format in provider data for tid '{}': {}", effectiveTid, e.getMessage());
+                Logger.warn(
+                        false,
+                        "Starter",
+                        "Health invalid number format in provider data for tid '{}': {}",
+                        effectiveTid,
+                        e.getClass().getSimpleName());
                 // On error, fall back to appending individually.
                 tidList.forEach(type -> append(type, result));
             }
 
             return result;
         } catch (Exception e) {
-            Logger.error("Failed to retrieve health information for tid '{}': {}", tid, e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Starter",
+                    "Failed to retrieve health information for tid '{}': {}",
+                    tid,
+                    e.getClass().getSimpleName(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey())
                     .errmsg("Failed to retrieve health information: " + e.getMessage()).build();
         }
@@ -204,7 +219,13 @@ public class HealthService {
                 try {
                     provider.append(type, map);
                 } catch (Exception e) {
-                    Logger.error("Failed to append health data for type {}: {}", type, e.getMessage(), e);
+                    Logger.error(
+                            false,
+                            "Starter",
+                            "Failed to append health data for type {}: {}",
+                            type,
+                            e.getClass().getSimpleName(),
+                            e);
                     map.put(type, "Error: " + e.getMessage());
                 }
                 break;

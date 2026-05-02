@@ -27,6 +27,7 @@ import java.util.zip.Deflater;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
 import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.shade.safety.Builder;
 import org.miaixz.bus.shade.safety.Complex;
 import org.miaixz.bus.shade.safety.algorithm.Key;
@@ -106,9 +107,23 @@ public class JarDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntry
      */
     @Override
     public void decrypt(Key key, File src, File dest) throws IOException {
+        Logger.info(
+                true,
+                "Shade",
+                "Jar decryption started: sourceFile={}, targetFile={}, algorithm={}",
+                src == null ? null : src.getName(),
+                dest == null ? null : dest.getName(),
+                key == null ? null : key.getAlgorithm());
         try (FileInputStream fis = new FileInputStream(src); FileOutputStream fos = new FileOutputStream(dest)) {
             decrypt(key, fis, fos);
         }
+        Logger.info(
+                false,
+                "Shade",
+                "Jar decryption finished: sourceFile={}, targetFile={}, algorithm={}",
+                src == null ? null : src.getName(),
+                dest == null ? null : dest.getName(),
+                key == null ? null : key.getAlgorithm());
     }
 
     /**
@@ -125,6 +140,12 @@ public class JarDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntry
         JarArchiveInputStream zis = null;
         JarArchiveOutputStream zos = null;
         try {
+            Logger.debug(
+                    true,
+                    "Shade",
+                    "Jar decryption stream started: algorithm={}, level={}",
+                    key == null ? null : key.getAlgorithm(),
+                    level);
             zis = new JarArchiveInputStream(in);
             zos = new JarArchiveOutputStream(out);
             zos.setLevel(level);
@@ -173,6 +194,15 @@ public class JarDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntry
             }
 
             zos.finish();
+            Logger.debug(
+                    false,
+                    "Shade",
+                    "Jar decryption stream finished: algorithm={}, level={}",
+                    key == null ? null : key.getAlgorithm(),
+                    level);
+        } catch (IOException e) {
+            Logger.warn(false, "Shade", e, "Jar decryption stream failed: exception={}", e.getClass().getSimpleName());
+            throw e;
         } finally {
             Builder.close(zis);
             Builder.close(zos);

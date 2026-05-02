@@ -22,10 +22,10 @@ package org.miaixz.bus.vortex.strategy;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
@@ -34,7 +34,6 @@ import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.FormFieldPart;
@@ -67,6 +66,12 @@ import reactor.core.publisher.Mono;
 public class RequestStrategy extends AbstractStrategy {
 
     /**
+     * Creates a request strategy.
+     */
+    public RequestStrategy() {
+    }
+
+    /**
      * Applies the request parsing and validation logic.
      * <p>
      * This is the main entry point for the strategy. It performs initial path validation and then dispatches the
@@ -79,30 +84,36 @@ public class RequestStrategy extends AbstractStrategy {
      */
     @Override
     public Mono<Void> apply(ServerWebExchange exchange, Chain chain) {
-        // deferContextual ensures this logic runs at subscription time,
-        // allowing access to the Reactor context.
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
             context.setX_request_ipv4(this.getClientIp(exchange.getRequest()));
 
-            // Extract original URL query parameters to context.query (unified for all request types)
             context.setQuery(exchange.getRequest().getQueryParams().toSingleValueMap());
 
-            // 1. Set default Content-Type if missing and record the request start time.
-            // This setup logic is synchronous but acceptable as it's part of
-            // building the reactive chain, not executing it.
             ServerWebExchange mutate = setContentType(exchange);
             ServerHttpRequest request = mutate.getRequest();
             Logger.debug(
                     true,
-                    "Request",
-                    "[{}] Request headers - Path: {}, Headers: {}",
+                    "Vortex",
+                    "Request headers captured: strategy=request, clientIp={}, path={}, headerCount={}, contentType={}",
                     context.getX_request_ip(),
                     request.getURI().getPath(),
-                    request.getHeaders());
+                    request.getHeaders().size(),
+                    request.getHeaders().getContentType());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request header snapshot: strategy=request, clientIp={}, path={}",
+                    context.getX_request_ip(),
+                    request.getURI().getPath());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request headers: strategy=request, clientIp={}, headers={}",
+                    context.getX_request_ip(),
+                    request.getHeaders().toSingleValueMap());
 
-            // 2. Dispatch to the appropriate handler based on method and Content-Type.
-            if (Objects.equals(request.getMethod(), HttpMethod.GET)) {
+            if (context.getHttpMethod() == HTTP.Method.GET) {
                 return handleGetRequest(mutate, chain, context);
             } else {
                 MediaType contentType = mutate.getRequest().getHeaders().getContentType();
@@ -113,15 +124,12 @@ public class RequestStrategy extends AbstractStrategy {
                 } else if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(contentType)) {
                     long contentLength = request.getHeaders().getContentLength();
                     if (contentLength > Holder.getMaxMultipartRequestSize()) {
-                        // Throwing here is acceptable as it's a pre-condition check
-                        // before any async body processing.
                         throw new ValidateException(ErrorCode._100530);
                     }
                     return handleMultipartRequest(mutate, chain, context);
                 } else if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(contentType)) {
                     return handleFormRequest(mutate, chain, context);
                 } else {
-                    // Default to form processing for other unknown Content-Types.
                     return handleFormRequest(mutate, chain, context);
                 }
             }
@@ -137,30 +145,35 @@ public class RequestStrategy extends AbstractStrategy {
      * @return A {@code Mono<Void>} that signals the completion of processing.
      */
     private Mono<Void> handleGetRequest(ServerWebExchange exchange, Chain chain, Context context) {
-        // Wrap synchronous context mutation and logging in fromRunnable
-        // to defer execution until subscription.
         return Mono.fromRunnable(() -> {
-            // For GET requests, also copy query parameters to parameters map
             context.getParameters().putAll(context.getQuery());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "GET request parameter snapshot: strategy=request, clientIp={}, path={}",
+                    context.getX_request_ip(),
+                    exchange.getRequest().getURI().getPath());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request parameters: strategy=request, clientIp={}, parameters={}",
+                    context.getX_request_ip(),
+                    context.getParameters());
             Logger.info(
                     true,
-                    "Request",
-                    "[{}] GET request processed - Path: {}, Params: {}",
+                    "Vortex",
+                    "GET request parameters processed: strategy=request, clientIp={}, path={}, parameterCount={}",
                     context.getX_request_ip(),
                     exchange.getRequest().getURI().getPath(),
-                    JsonKit.toJsonString(context.getParameters()));
-        })
-                // Use .then() to execute the next chain link after the runnable completes.
-                .then(chain.apply(exchange))
-                // Use doFinally for robust logging on any termination signal (complete, error, cancel).
-                .doFinally(
-                        signalType -> Logger.info(
-                                false,
-                                "Request",
-                                "[{}] Request processed - Path: {}, ExecutionTime: {}ms",
-                                context.getX_request_ip(),
-                                exchange.getRequest().getURI().getPath(),
-                                (System.currentTimeMillis() - context.getTimestamp())));
+                    context.getParameters().size());
+        }).then(chain.apply(exchange)).doFinally(
+                signalType -> Logger.info(
+                        false,
+                        "Vortex",
+                        "Request processing completed: strategy=request, clientIp={}, path={}, executionTimeMs={}",
+                        context.getX_request_ip(),
+                        exchange.getRequest().getURI().getPath(),
+                        (System.currentTimeMillis() - context.getTimestamp())));
     }
 
     /**
@@ -177,21 +190,18 @@ public class RequestStrategy extends AbstractStrategy {
      * @return A {@code Mono<Void>} that signals the completion of processing.
      */
     private Mono<Void> handleJsonRequest(ServerWebExchange exchange, Chain chain, Context context) {
-        // Check Content-Length header for streaming decision
         long contentLength = exchange.getRequest().getHeaders().getContentLength();
         boolean shouldStream = contentLength > Holder.getStreamingRequestThreshold();
 
         if (shouldStream) {
             Logger.info(
                     true,
-                    "Request",
-                    "[{}] Large JSON request detected ({} bytes). Using optimized streaming processing.",
+                    "Vortex",
+                    "Large JSON request detected: strategy=request, clientIp={}, bytes={}, mode=streaming",
                     context.getX_request_ip(),
                     contentLength);
         }
 
-        // collectList() asynchronously buffers the body.
-        // Note: Timeout and retry are handled at VortexHandler level, not here.
         return exchange.getRequest().getBody().collectList()
                 .flatMap(dataBuffers -> processJsonData(exchange, chain, context, dataBuffers));
     }
@@ -216,29 +226,35 @@ public class RequestStrategy extends AbstractStrategy {
             Context context,
             List<DataBuffer> dataBuffers) {
 
-        // Use fromCallable to wrap all synchronous, potentially-throwing logic.
-        // Any exception (from readBodyToBytes or JsonKit.toMap) will be
-        // captured and emitted as Mono.error(), triggering the retry logic.
         return Mono.fromCallable(() -> {
-            // 1. Synchronous byte copy (can throw ValidateException)
             byte[] bytes = readBodyToBytes(dataBuffers);
 
-            // Log large JSON processing
             if (bytes.length > Holder.getStreamingRequestThreshold()) {
                 Logger.info(
                         true,
-                        "Request",
-                        "[{}] Large JSON body cached in memory: {} bytes",
+                        "Vortex",
+                        "Large JSON content cached in memory: strategy=request, clientIp={}, bytes={}",
                         context.getX_request_ip(),
                         bytes.length);
             }
 
-            // 2. Synchronous JSON parsing (can throw parsing exception)
             String jsonBody = new String(bytes, Charset.UTF_8);
             Map<String, Object> jsonMap = JsonKit.toMap(jsonBody);
             context.getParameters().putAll(jsonMap);
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "JSON request parameter snapshot: strategy=request, clientIp={}, path={}, bytes={}",
+                    context.getX_request_ip(),
+                    exchange.getRequest().getURI().getPath(),
+                    bytes.length);
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request parameters: strategy=request, clientIp={}, parameters={}",
+                    context.getX_request_ip(),
+                    context.getParameters());
 
-            // 3. Create the decorator to cache the body
             ServerHttpRequest newRequest = new ServerHttpRequestDecorator(exchange.getRequest()) {
 
                 /**
@@ -257,34 +273,30 @@ public class RequestStrategy extends AbstractStrategy {
 
             Logger.info(
                     true,
-                    "Request",
-                    "[{}] JSON request processed - Path: {}, Params: {}",
+                    "Vortex",
+                    "JSON request processed: strategy=request, clientIp={}, path={}, parameterCount={}",
                     context.getX_request_ip(),
                     exchange.getRequest().getURI().getPath(),
-                    JsonKit.toJsonString(context.getParameters()));
+                    context.getParameters().size());
 
-            // 4. Return the new exchange for the next chain link
             return exchange.mutate().request(newRequest).build();
-        })
-                // flatMap to the next chain link using the new exchange
-                .flatMap(chain::apply)
-                .doFinally(
-                        signalType -> Logger.info(
-                                false,
-                                "Request",
-                                "[{}] Request processed - Path: {}, ExecutionTime: {}ms",
-                                context.getX_request_ip(),
-                                exchange.getRequest().getURI().getPath(),
-                                (System.currentTimeMillis() - context.getTimestamp())))
-                // Add explicit error logging for failures within this stage
+        }).flatMap(chain::apply).doFinally(
+                signalType -> Logger.info(
+                        false,
+                        "Vortex",
+                        "Request processing completed: strategy=request, clientIp={}, path={}, executionTimeMs={}",
+                        context.getX_request_ip(),
+                        exchange.getRequest().getURI().getPath(),
+                        (System.currentTimeMillis() - context.getTimestamp())))
                 .onErrorResume(e -> {
                     Logger.error(
                             false,
-                            "Request",
-                            "[{}] Failed to process JSON: {}",
+                            "Vortex",
+                            e,
+                            "JSON request processing failed: strategy=request, clientIp={}, exception={}",
                             context.getX_request_ip(),
-                            e.getMessage());
-                    return Mono.error(e); // Re-throw the original exception
+                            e.getClass().getSimpleName());
+                    return Mono.error(e);
                 });
     }
 
@@ -322,9 +334,8 @@ public class RequestStrategy extends AbstractStrategy {
             Context context,
             List<DataBuffer> dataBuffers) {
 
-        // 1. Wrap the synchronous byte reading and request decoration in fromCallable.
         return Mono.fromCallable(() -> {
-            byte[] bytes = readBodyToBytes(dataBuffers); // Can throw ValidateException
+            byte[] bytes = readBodyToBytes(dataBuffers);
 
             /**
              * Decorator that caches the request body for multiple reads.
@@ -347,43 +358,45 @@ public class RequestStrategy extends AbstractStrategy {
                     return Flux.just(exchange.getResponse().bufferFactory().wrap(bytes));
                 }
             };
-            // Return the new exchange, which now has the cached body
             return exchange.mutate().request(newRequest).build();
-        })
-                // 2. flatMap to the *asynchronous* getFormData() call.
-                // This call will consume the cached body from our newExchange.
-                .flatMap(
-                        newExchange -> newExchange.getFormData()
-                                // 3. Once form data is parsed, flatMap again to:
-                                // a) update the context (sync)
-                                // b) call the next link in the chain (async)
-                                .flatMap(params -> {
-                                    context.getParameters().putAll(params.toSingleValueMap());
-                                    Logger.info(
-                                            true,
-                                            "Request",
-                                            "[{}] Form request processed - Path: {}, Params: {}",
-                                            getClientIp(newExchange.getRequest()),
-                                            newExchange.getRequest().getURI().getPath(),
-                                            JsonKit.toJsonString(context.getParameters()));
-                                    // Apply the chain using the newExchange
-                                    return chain.apply(newExchange);
-                                }))
-                .doFinally(
-                        signalType -> Logger.info(
-                                false,
-                                "Request",
-                                "[{}] Request processed - Path: {}, ExecutionTime: {}ms",
-                                context.getX_request_ip(),
-                                exchange.getRequest().getURI().getPath(),
-                                (System.currentTimeMillis() - context.getTimestamp())))
+        }).flatMap(newExchange -> newExchange.getFormData().flatMap(params -> {
+            context.getParameters().putAll(params.toSingleValueMap());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Form request parameter snapshot: strategy=request, clientIp={}, path={}",
+                    getClientIp(newExchange.getRequest()),
+                    newExchange.getRequest().getURI().getPath());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request parameters: strategy=request, clientIp={}, parameters={}",
+                    context.getX_request_ip(),
+                    context.getParameters());
+            Logger.info(
+                    true,
+                    "Vortex",
+                    "Form request processed: strategy=request, clientIp={}, path={}, parameterCount={}",
+                    getClientIp(newExchange.getRequest()),
+                    newExchange.getRequest().getURI().getPath(),
+                    context.getParameters().size());
+            return chain.apply(newExchange);
+        })).doFinally(
+                signalType -> Logger.info(
+                        false,
+                        "Vortex",
+                        "Request processing completed: strategy=request, clientIp={}, path={}, executionTimeMs={}",
+                        context.getX_request_ip(),
+                        exchange.getRequest().getURI().getPath(),
+                        (System.currentTimeMillis() - context.getTimestamp())))
                 .onErrorResume(e -> {
                     Logger.error(
                             false,
-                            "Request",
-                            "[{}] Failed to process form: {}",
+                            "Vortex",
+                            e,
+                            "Form request processing failed: strategy=request, clientIp={}, exception={}",
                             context.getX_request_ip(),
-                            e.getMessage());
+                            e.getClass().getSimpleName());
                     return Mono.error(e);
                 });
     }
@@ -411,14 +424,12 @@ public class RequestStrategy extends AbstractStrategy {
         if (contentLength > 0) {
             Logger.info(
                     true,
-                    "Request",
-                    "[{}] Multipart request ({} bytes) - using streaming processing for file uploads",
+                    "Vortex",
+                    "Multipart request detected: strategy=request, clientIp={}, bytes={}, mode=streaming",
                     context.getX_request_ip(),
                     contentLength);
         }
 
-        // getMultipartData() is already fully asynchronous and reactive.
-        // It uses streaming processing for file parts, avoiding loading entire files into memory.
         return exchange.getMultipartData().flatMap(params -> processMultipartData(exchange, chain, context, params));
     }
 
@@ -440,8 +451,6 @@ public class RequestStrategy extends AbstractStrategy {
             Context context,
             MultiValueMap<String, Part> params) {
 
-        // The logic here is synchronous (map iteration and population).
-        // Wrap it in fromRunnable to defer execution and catch potential errors.
         return Mono.fromRunnable(() -> {
             Map<String, String> formMap = new LinkedHashMap<>();
             Map<String, Part> fileMap = new LinkedHashMap<>();
@@ -456,32 +465,48 @@ public class RequestStrategy extends AbstractStrategy {
 
             context.getParameters().putAll(formMap);
             context.setFileParts(fileMap);
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Multipart request parameter snapshot: strategy=request, clientIp={}, path={}",
+                    context.getX_request_ip(),
+                    exchange.getRequest().getURI().getPath());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request parameters: strategy=request, clientIp={}, parameters={}",
+                    context.getX_request_ip(),
+                    context.getParameters());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request file fields: strategy=request, clientIp={}, fileFields={}",
+                    context.getX_request_ip(),
+                    fileMap.keySet());
 
             Logger.info(
                     true,
-                    "Request",
-                    "[{}] Multipart request processed - Path: {}, Params: {}",
+                    "Vortex",
+                    "Multipart request processed: strategy=request, clientIp={}, path={}, parameterCount={}",
                     context.getX_request_ip(),
                     exchange.getRequest().getURI().getPath(),
-                    JsonKit.toJsonString(context.getParameters()));
-        })
-                // After the sync work, apply the rest of the chain.
-                .then(chain.apply(exchange))
-                .doFinally(
-                        signalType -> Logger.info(
-                                false,
-                                "Request",
-                                "[{}] Request processed - Path: {}, ExecutionTime: {}ms",
-                                context.getX_request_ip(),
-                                exchange.getRequest().getURI().getPath(),
-                                (System.currentTimeMillis() - context.getTimestamp())))
+                    context.getParameters().size());
+        }).then(chain.apply(exchange)).doFinally(
+                signalType -> Logger.info(
+                        false,
+                        "Vortex",
+                        "Request processing completed: strategy=request, clientIp={}, path={}, executionTimeMs={}",
+                        context.getX_request_ip(),
+                        exchange.getRequest().getURI().getPath(),
+                        (System.currentTimeMillis() - context.getTimestamp())))
                 .onErrorResume(e -> {
                     Logger.error(
                             false,
-                            "Request",
-                            "[{}] Failed to process multipart: {}",
+                            "Vortex",
+                            e,
+                            "Multipart request processing failed: strategy=request, clientIp={}, exception={}",
                             context.getX_request_ip(),
-                            e.getMessage());
+                            e.getClass().getSimpleName());
                     return Mono.error(e);
                 });
     }
@@ -508,27 +533,21 @@ public class RequestStrategy extends AbstractStrategy {
      * @throws ValidateException if the total size of the data buffers exceeds {@link Holder#getMaxRequestSize()}.
      */
     private byte[] readBodyToBytes(List<DataBuffer> dataBuffers) {
-        // Calculate total size first to validate before allocating memory
         int totalSize = dataBuffers.stream().mapToInt(DataBuffer::readableByteCount).sum();
 
         if (totalSize > Holder.getMaxRequestSize()) {
-            // DataBuffer will be automatically released by Spring WebFlux framework
             throw new ValidateException(ErrorCode._100530);
         }
 
-        // Single allocation - more efficient than growing arrays
         byte[] bytes = new byte[totalSize];
         int pos = 0;
 
-        // Copy data from each buffer
         for (DataBuffer buffer : dataBuffers) {
             int length = buffer.readableByteCount();
             buffer.read(bytes, pos, length);
             pos += length;
         }
 
-        // DataBuffer lifecycle is managed by Spring WebFlux framework
-        // No manual release needed - framework will handle cleanup automatically
         return bytes;
     }
 

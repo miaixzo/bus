@@ -244,7 +244,7 @@ public class Builder {
             try {
                 executorService.shutdown();
             } catch (Exception e) {
-                Logger.error("ExecutorService shutdown failed", e);
+                Logger.error(false, "Image", "ExecutorService shutdown failed", e);
             }
         }
     }
@@ -469,7 +469,7 @@ public class Builder {
                             str = new DecimalFormat(pattern, DecimalFormatSymbols.getInstance())
                                     .format(Double.parseDouble(str));
                         } catch (NumberFormatException e) {
-                            Logger.warn("Cannot apply pattern to decimal value", e);
+                            Logger.warn(false, "Image", "Cannot apply pattern to decimal value", e);
                         }
                     }
                 } else if (format.charAt(index + fmLength) == 'l') {
@@ -484,7 +484,7 @@ public class Builder {
                                 str = str.substring(0, limit) + "...";
                             }
                         } catch (NumberFormatException e) {
-                            Logger.warn("Cannot apply pattern to decimal value", e);
+                            Logger.warn(false, "Image", "Cannot apply pattern to decimal value", e);
                         }
                     }
                 }
@@ -769,7 +769,12 @@ public class Builder {
         try {
             return dicom.getFloat(privateCreatorID, tag, defaultValue == null ? 0.0F : defaultValue);
         } catch (NumberFormatException e) {
-            Logger.error("Cannot parse Float of {}: {} ", Tag.toString(tag), e.getMessage());
+            Logger.error(
+                    false,
+                    "Image",
+                    "Cannot parse Float of {}: exception={} ",
+                    Tag.toString(tag),
+                    e.getClass().getSimpleName());
         }
         return defaultValue;
     }
@@ -806,7 +811,12 @@ public class Builder {
         try {
             return dicom.getInt(privateCreatorID, tag, defaultValue == null ? 0 : defaultValue);
         } catch (NumberFormatException e) {
-            Logger.error("Cannot parse Integer of {}: {} ", Tag.toString(tag), e.getMessage());
+            Logger.error(
+                    false,
+                    "Image",
+                    "Cannot parse Integer of {}: exception={} ",
+                    Tag.toString(tag),
+                    e.getClass().getSimpleName());
         }
         return defaultValue;
     }
@@ -843,7 +853,12 @@ public class Builder {
         try {
             return dicom.getDouble(privateCreatorID, tag, defaultValue == null ? 0.0 : defaultValue);
         } catch (NumberFormatException e) {
-            Logger.error("Cannot parse Double of {}: {} ", Tag.toString(tag), e.getMessage());
+            Logger.error(
+                    false,
+                    "Image",
+                    "Cannot parse Double of {}: exception={} ",
+                    Tag.toString(tag),
+                    e.getClass().getSimpleName());
         }
         return defaultValue;
     }
@@ -883,7 +898,12 @@ public class Builder {
                 return val;
             }
         } catch (NumberFormatException e) {
-            Logger.error("Cannot parse int[] of {}: {} ", Tag.toString(tag), e.getMessage());
+            Logger.error(
+                    false,
+                    "Image",
+                    "Cannot parse int array: tag={}, exception={}",
+                    Tag.toString(tag),
+                    e.getClass().getSimpleName());
         }
         return defaultValue;
     }
@@ -923,7 +943,12 @@ public class Builder {
                 return val;
             }
         } catch (NumberFormatException e) {
-            Logger.error("Cannot parse float[] of {}: {} ", Tag.toString(tag), e.getMessage());
+            Logger.error(
+                    false,
+                    "Image",
+                    "Cannot parse float array: tag={}, exception={}",
+                    Tag.toString(tag),
+                    e.getClass().getSimpleName());
         }
         return defaultValue;
     }
@@ -963,7 +988,12 @@ public class Builder {
                 return val;
             }
         } catch (NumberFormatException e) {
-            Logger.error("Cannot parse double[] of {}: {} ", Tag.toString(tag), e.getMessage());
+            Logger.error(
+                    false,
+                    "Image",
+                    "Cannot parse double array: tag={}, exception={}",
+                    Tag.toString(tag),
+                    e.getClass().getSimpleName());
         }
         return defaultValue;
     }
@@ -1065,7 +1095,13 @@ public class Builder {
             try {
                 return Format.parseDA(date);
             } catch (Exception e) {
-                Logger.error("Failed to parse DICOM date: {}", date, e);
+                Logger.error(
+                        false,
+                        "Image",
+                        e,
+                        "DICOM date parse failed: valueChars={}, exception={}",
+                        date.length(),
+                        e.getClass().getSimpleName());
             }
         }
         return null;
@@ -1082,7 +1118,13 @@ public class Builder {
             try {
                 return Format.parseTM(time);
             } catch (Exception e1) {
-                Logger.error("Failed to parse DICOM time: {}", time, e1);
+                Logger.error(
+                        false,
+                        "Image",
+                        e1,
+                        "DICOM time parse failed: valueChars={}, exception={}",
+                        time.length(),
+                        e1.getClass().getSimpleName());
             }
         }
         return null;
@@ -1129,7 +1171,7 @@ public class Builder {
                         dcm.getInt(Tag.ShutterRightVerticalEdge, 0),
                         dcm.getInt(Tag.ShutterLowerHorizontalEdge, 0));
                 if (rect.isEmpty()) {
-                    Logger.error("Shutter rectangle has an empty area!");
+                    Logger.error(false, "Image", "Shutter rectangle has an empty area!");
                 } else {
                     shape = new Area(rect);
                 }
@@ -1145,7 +1187,7 @@ public class Builder {
                             centerOfCircularShutter[1] + radius,
                             centerOfCircularShutter[0] + radius);
                     if (ellipse.isEmpty()) {
-                        Logger.error("Shutter ellipse has an empty area!");
+                        Logger.error(false, "Image", "Shutter ellipse has an empty area!");
                     } else {
                         if (shape == null) {
                             shape = new Area(ellipse);
@@ -1169,7 +1211,7 @@ public class Builder {
                             shape.intersect(new Area(polygon));
                         }
                     } else {
-                        Logger.error("Shutter polygon is invalid or has an empty area!");
+                        Logger.error(false, "Image", "Shutter polygon is invalid or has an empty area!");
                     }
                 }
             }

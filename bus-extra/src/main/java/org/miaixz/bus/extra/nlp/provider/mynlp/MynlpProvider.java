@@ -22,6 +22,7 @@ package org.miaixz.bus.extra.nlp.provider.mynlp;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;
+import org.miaixz.bus.logger.Logger;
 
 import com.mayabot.nlp.Mynlp;
 import com.mayabot.nlp.segment.Lexer;
@@ -50,7 +51,9 @@ public class MynlpProvider implements NLPProvider {
         // CORE tokenizer builder
         // Enable part-of-speech tagging
         // Enable person name recognition
+        Logger.info(true, "Extra", "Mynlp provider initialization started: mode={}", "bigramLexer");
         this.lexer = Mynlp.instance().bigramLexer();
+        Logger.info(false, "Extra", "Mynlp provider initialized: lexerPresent={}", this.lexer != null);
     }
 
     /**
@@ -59,7 +62,9 @@ public class MynlpProvider implements NLPProvider {
      * @param lexer The custom {@link Lexer} object to use for word segmentation.
      */
     public MynlpProvider(final Lexer lexer) {
+        Logger.info(true, "Extra", "Mynlp provider initialization started: customLexerPresent={}", lexer != null);
         this.lexer = lexer;
+        Logger.info(false, "Extra", "Mynlp provider initialized: customLexerPresent={}", lexer != null);
     }
 
     /**
@@ -71,8 +76,16 @@ public class MynlpProvider implements NLPProvider {
      */
     @Override
     public NLPResult parse(final CharSequence text) {
+        Logger.debug(true, "Extra", "Mynlp parse started: textLength={}", text == null ? 0 : text.length());
         final Sentence sentence = this.lexer.scan(StringKit.toStringOrEmpty(text));
-        return new MynlpResult(sentence);
+        final NLPResult result = new MynlpResult(sentence);
+        Logger.debug(
+                false,
+                "Extra",
+                "Mynlp parse completed: textLength={}, sentencePresent={}",
+                text == null ? 0 : text.length(),
+                sentence != null);
+        return result;
     }
 
 }

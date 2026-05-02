@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -43,8 +43,16 @@ import org.miaixz.bus.health.unix.platform.freebsd.BsdSysctlKit;
 @Immutable
 final class FreeBsdComputerSystem extends AbstractComputerSystem {
 
+    /**
+     * The manufModelSerialUuidVers value.
+     */
     private final Supplier<Tuple> manufModelSerialUuidVers = Memoizer.memoize(FreeBsdComputerSystem::readDmiDecode);
 
+    /**
+     * Reads the dmi decode.
+     *
+     * @return the read dmi decode result
+     */
     private static Tuple readDmiDecode() {
         String manufacturer = null;
         String model = null;
@@ -106,6 +114,11 @@ final class FreeBsdComputerSystem extends AbstractComputerSystem {
                 StringKit.isBlank(uuid) ? Normal.UNKNOWN : uuid, StringKit.isBlank(version) ? Normal.UNKNOWN : version);
     }
 
+    /**
+     * Queries the system serial number.
+     *
+     * @return the query system serial number result
+     */
     private static String querySystemSerialNumber() {
         String marker = "system.hardware.serial =";
         for (String checkLine : Executor.runNative("lshal")) {
@@ -116,31 +129,61 @@ final class FreeBsdComputerSystem extends AbstractComputerSystem {
         return Normal.UNKNOWN;
     }
 
+    /**
+     * Returns the manufacturer.
+     *
+     * @return the get manufacturer result
+     */
     @Override
     public String getManufacturer() {
         return manufModelSerialUuidVers.get().get(0);
     }
 
+    /**
+     * Returns the model.
+     *
+     * @return the get model result
+     */
     @Override
     public String getModel() {
         return manufModelSerialUuidVers.get().get(1);
     }
 
+    /**
+     * Returns the serial number.
+     *
+     * @return the get serial number result
+     */
     @Override
     public String getSerialNumber() {
         return manufModelSerialUuidVers.get().get(2);
     }
 
+    /**
+     * Returns the hardware uuid.
+     *
+     * @return the get hardware uuid result
+     */
     @Override
     public String getHardwareUUID() {
         return manufModelSerialUuidVers.get().get(3);
     }
 
+    /**
+     * Creates the firmware.
+     *
+     * @return the create firmware result
+     */
     @Override
     public Firmware createFirmware() {
         return new FreeBsdFirmware();
     }
 
+    /**
+     * Creates the baseboard.
+     *
+     * @return the create baseboard result
+     */
     @Override
     public Baseboard createBaseboard() {
         return new UnixBaseboard(manufModelSerialUuidVers.get().get(0), manufModelSerialUuidVers.get().get(1),

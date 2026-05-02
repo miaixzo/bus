@@ -33,6 +33,7 @@ import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.Cipher;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Provides a wrapper for {@link javax.crypto.Cipher} methods, simplifying its usage. This class allows for consistent
@@ -111,6 +112,16 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
         try {
             init(mode.getValue(), (JceParameters) parameters);
         } catch (final InvalidAlgorithmParameterException | InvalidKeyException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "JCE cipher initialization failed: algorithm={}, mode={}, keyPresent={}, paramsPresent={}, exception={}",
+                    getAlgorithm(),
+                    mode,
+                    ((JceParameters) parameters).key != null,
+                    ((JceParameters) parameters).parameterSpec != null,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
     }
@@ -146,6 +157,14 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
         try {
             return this.raw.update(in, inOff, len, out);
         } catch (final ShortBufferException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
+                    "JceCipher",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
     }
@@ -204,6 +223,14 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
         try {
             return this.raw.update(in, inOff, len, out, outOff);
         } catch (final ShortBufferException e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
+                    "JceCipher",
+                    false,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
     }
@@ -221,6 +248,14 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
         try {
             return this.raw.doFinal(out, outOff);
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "JCE cipher finalization failed: algorithm={}, outputOffset={}, exception={}",
+                    getAlgorithm(),
+                    outOff,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
     }
@@ -239,6 +274,15 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
         try {
             return this.raw.doFinal(data, inOffset, inputLen);
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Crypto",
+                    e,
+                    "JCE cipher final block failed: algorithm={}, inputBytes={}, inputOffset={}, exception={}",
+                    getAlgorithm(),
+                    inputLen,
+                    inOffset,
+                    e.getClass().getSimpleName());
             throw new CryptoException(e);
         }
     }

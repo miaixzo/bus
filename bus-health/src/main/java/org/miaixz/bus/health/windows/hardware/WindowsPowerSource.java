@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.health.windows.hardware;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -48,22 +49,83 @@ import com.sun.jna.win32.W32APITypeMapper;
 @ThreadSafe
 public final class WindowsPowerSource extends AbstractPowerSource {
 
+    /**
+     * The GUID_DEVCLASS_BATTERY constant.
+     */
     private static final Guid.GUID GUID_DEVCLASS_BATTERY = Guid.GUID
             .fromString("{72631E54-78A4-11D0-BCF7-00AA00B7B32A}");
+    /**
+     * The CHAR_WIDTH constant.
+     */
     private static final int CHAR_WIDTH = W32APITypeMapper.DEFAULT == W32APITypeMapper.UNICODE ? 2 : 1;
+    /**
+     * The X64 constant.
+     */
     private static final boolean X64 = Platform.is64Bit();
 
+    /**
+     * The BATTERY_SYSTEM_BATTERY constant.
+     */
     private static final int BATTERY_SYSTEM_BATTERY = 0x80000000;
+    /**
+     * The BATTERY_IS_SHORT_TERM constant.
+     */
     private static final int BATTERY_IS_SHORT_TERM = 0x20000000;
+    /**
+     * The BATTERY_POWER_ON_LINE constant.
+     */
     private static final int BATTERY_POWER_ON_LINE = 0x00000001;
+    /**
+     * The BATTERY_DISCHARGING constant.
+     */
     private static final int BATTERY_DISCHARGING = 0x00000002;
+    /**
+     * The BATTERY_CHARGING constant.
+     */
     private static final int BATTERY_CHARGING = 0x00000004;
+    /**
+     * The BATTERY_CAPACITY_RELATIVE constant.
+     */
     private static final int BATTERY_CAPACITY_RELATIVE = 0x40000000;
 
+    /**
+     * The IOCTL_BATTERY_QUERY_TAG constant.
+     */
     private static final int IOCTL_BATTERY_QUERY_TAG = 0x294040;
+    /**
+     * The IOCTL_BATTERY_QUERY_STATUS constant.
+     */
     private static final int IOCTL_BATTERY_QUERY_STATUS = 0x29404c;
+    /**
+     * The IOCTL_BATTERY_QUERY_INFORMATION constant.
+     */
     private static final int IOCTL_BATTERY_QUERY_INFORMATION = 0x294044;
 
+    /**
+     * Creates a new WindowsPowerSource instance.
+     *
+     * @param psName                     the ps name
+     * @param psDeviceName               the ps device name
+     * @param psRemainingCapacityPercent the ps remaining capacity percent
+     * @param psTimeRemainingEstimated   the ps time remaining estimated
+     * @param psTimeRemainingInstant     the ps time remaining instant
+     * @param psPowerUsageRate           the ps power usage rate
+     * @param psVoltage                  the ps voltage
+     * @param psAmperage                 the ps amperage
+     * @param psPowerOnLine              the ps power on line
+     * @param psCharging                 the ps charging
+     * @param psDischarging              the ps discharging
+     * @param psCapacityUnits            the ps capacity units
+     * @param psCurrentCapacity          the ps current capacity
+     * @param psMaxCapacity              the ps max capacity
+     * @param psDesignCapacity           the ps design capacity
+     * @param psCycleCount               the ps cycle count
+     * @param psChemistry                the ps chemistry
+     * @param psManufactureDate          the ps manufacture date
+     * @param psManufacturer             the ps manufacturer
+     * @param psSerialNumber             the ps serial number
+     * @param psTemperature              the ps temperature
+     */
     public WindowsPowerSource(String psName, String psDeviceName, double psRemainingCapacityPercent,
             double psTimeRemainingEstimated, double psTimeRemainingInstant, double psPowerUsageRate, double psVoltage,
             double psAmperage, boolean psPowerOnLine, boolean psCharging, boolean psDischarging,
@@ -77,6 +139,16 @@ public final class WindowsPowerSource extends AbstractPowerSource {
     }
 
     /**
+     * Queries the power sources.
+     *
+     * @return the query power sources result
+     */
+    @Override
+    protected List<PowerSource> queryPowerSources() {
+        return getPowerSources();
+    }
+
+    /**
      * Gets Battery Information.
      *
      * @return A list of PowerSource objects representing batteries, etc.
@@ -85,6 +157,12 @@ public final class WindowsPowerSource extends AbstractPowerSource {
         return Arrays.asList(getPowerSource("System Battery"));
     }
 
+    /**
+     * Returns the power source.
+     *
+     * @param name the name
+     * @return the get power source result
+     */
     private static WindowsPowerSource getPowerSource(String name) {
         String psName = name;
         String psDeviceName = Normal.UNKNOWN;
@@ -108,34 +186,9 @@ public final class WindowsPowerSource extends AbstractPowerSource {
         String psSerialNumber = Normal.UNKNOWN;
         double psTemperature = 0d;
 
-        // windows PowerSource information comes from two sources: the PowrProf's
-        // CallNTPowerInformation function which returns information for a single
-        // object, and DeviceIoControl with each battery's (if more than one) handle
-        // (which, in theory, return an array of objects but in most cases should return
-        // one).
+        // CallNtPowerInformation(SystemBatteryState) no longer returns accurate data
+        // on newer Windows 11 builds, so source battery information from DeviceIoControl.
         //
-        // We start by fetching the PowrProf information, which will be replicated
-        // across all IOCTL entries if there are more than one.
-
-        try (PowrProf.SystemBatteryState batteryState = new PowrProf.SystemBatteryState()) {
-            if (0 == PowrProf.INSTANCE.CallNtPowerInformation(
-                    PowrProf.POWER_INFORMATION_LEVEL.SystemBatteryState,
-                    null,
-                    0,
-                    batteryState.getPointer(),
-                    batteryState.size()) && batteryState.batteryPresent > 0) {
-                if (batteryState.acOnLine == 0 && batteryState.charging == 0 && batteryState.discharging > 0) {
-                    psTimeRemainingEstimated = batteryState.estimatedTime;
-                } else if (batteryState.charging > 0) {
-                    psTimeRemainingEstimated = -2d;
-                }
-                psMaxCapacity = batteryState.maxCapacity;
-                psCurrentCapacity = batteryState.remainingCapacity;
-                psRemainingCapacityPercent = Math.min(1d, (double) psCurrentCapacity / psMaxCapacity);
-                psPowerUsageRate = batteryState.rate;
-            }
-        }
-
         // Enumerate batteries and ask each one for information
         // Ported from:
         // https://docs.microsoft.com/en-us/windows/win32/power/enumerating-battery-devices
@@ -217,6 +270,7 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                                                             null)) {
                                                         // Only non-UPS system batteries count
                                                         bi.read();
+                                                        int maxCapacitySafe = 1;
                                                         if (0 != (bi.Capabilities & BATTERY_SYSTEM_BATTERY)
                                                                 && 0 == (bi.Capabilities & BATTERY_IS_SHORT_TERM)) {
                                                             // Capabilities flags non-mWh units
@@ -228,6 +282,8 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                                                             psDesignCapacity = bi.DesignedCapacity;
                                                             psMaxCapacity = bi.FullChargedCapacity;
                                                             psCycleCount = bi.CycleCount;
+                                                            maxCapacitySafe = psMaxCapacity > 0 ? psMaxCapacity
+                                                                    : psDesignCapacity > 0 ? psDesignCapacity : 1;
 
                                                             // Query the battery status.
                                                             bws.BatteryTag = bqi.BatteryTag;
@@ -250,6 +306,7 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                                                                 }
                                                                 if (0 != (bs.PowerState & BATTERY_CHARGING)) {
                                                                     psCharging = true;
+                                                                    psTimeRemainingEstimated = -2d;
                                                                 }
                                                                 psCurrentCapacity = bs.Capacity;
                                                                 psVoltage = bs.Voltage > 0 ? bs.Voltage / 1000d
@@ -258,6 +315,9 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                                                                 if (psVoltage > 0) {
                                                                     psAmperage = psPowerUsageRate / psVoltage;
                                                                 }
+                                                                psRemainingCapacityPercent = Math.min(
+                                                                        1d,
+                                                                        (double) psCurrentCapacity / maxCapacitySafe);
                                                             }
                                                         }
 
@@ -292,9 +352,14 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                                                                 null)) {
                                                             bmd.read();
                                                             // If failed, returns -1 for each field
-                                                            if (bmd.Year > 1900 && bmd.Month > 0 && bmd.Day > 0) {
-                                                                psManufactureDate = LocalDate
-                                                                        .of(bmd.Year, bmd.Month, bmd.Day);
+                                                            if (bmd.Year > 1900 && bmd.Month >= 1 && bmd.Month <= 12
+                                                                    && bmd.Day >= 1 && bmd.Day <= 31) {
+                                                                try {
+                                                                    psManufactureDate = LocalDate
+                                                                            .of(bmd.Year, bmd.Month, bmd.Day);
+                                                                } catch (DateTimeException ignored) {
+                                                                    // malformed firmware date; leave it unknown
+                                                                }
                                                             }
                                                         }
 
@@ -336,13 +401,21 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                                                                 psTimeRemainingInstant = tr.getValue();
                                                             }
                                                         }
-                                                        // Fallback
-                                                        if (psTimeRemainingInstant < 0 && psPowerUsageRate != 0) {
-                                                            psTimeRemainingInstant = (psMaxCapacity - psCurrentCapacity)
-                                                                    * 3600d / psPowerUsageRate;
-                                                            if (psTimeRemainingInstant < 0) {
-                                                                psTimeRemainingInstant *= -1;
-                                                            }
+                                                        // Fallback if BatteryEstimatedTime query failed
+                                                        if (psTimeRemainingInstant <= 0 && psPowerUsageRate != 0) {
+                                                            psTimeRemainingInstant = psDischarging
+                                                                    ? Math.max(
+                                                                            0d,
+                                                                            psCurrentCapacity * 3600d
+                                                                                    / Math.abs(psPowerUsageRate))
+                                                                    : Math.max(
+                                                                            0d,
+                                                                            (maxCapacitySafe - psCurrentCapacity)
+                                                                                    * 3600d
+                                                                                    / Math.abs(psPowerUsageRate));
+                                                        }
+                                                        if (psDischarging && psTimeRemainingInstant > 0) {
+                                                            psTimeRemainingEstimated = psTimeRemainingInstant;
                                                         }
                                                         // Exit loop
                                                         batteryFound = true;
@@ -369,37 +442,34 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                 psChemistry, psManufactureDate, psManufacturer, psSerialNumber, psTemperature);
     }
 
+    /**
+     * Returns the battery query string result.
+     *
+     * @param hBattery  the h battery
+     * @param tag       the tag
+     * @param infoLevel the info level
+     * @return the battery query string result
+     */
     private static String batteryQueryString(WinNT.HANDLE hBattery, int tag, int infoLevel) {
         try (PowrProf.BATTERY_QUERY_INFORMATION bqi = new PowrProf.BATTERY_QUERY_INFORMATION();
-                ByRef.CloseableIntByReference dwOut = new ByRef.CloseableIntByReference()) {
+                ByRef.CloseableIntByReference dwOut = new ByRef.CloseableIntByReference();
+                Memory nameBuf = new Memory(1024)) {
             bqi.BatteryTag = tag;
             bqi.InformationLevel = infoLevel;
             bqi.write();
-            boolean ret;
-            long bufSize = 256;
-            Memory nameBuf = new Memory(bufSize);
-            do {
-                ret = Kernel32.INSTANCE.DeviceIoControl(
-                        hBattery,
-                        IOCTL_BATTERY_QUERY_INFORMATION,
-                        bqi.getPointer(),
-                        bqi.size(),
-                        nameBuf,
-                        (int) nameBuf.size(),
-                        dwOut,
-                        null);
-                if (!ret) {
-                    bufSize += 256;
-                    nameBuf.close();
-                    if (bufSize > 4096) {
-                        return Normal.EMPTY;
-                    }
-                    nameBuf = new Memory(bufSize);
-                }
-            } while (!ret);
+            if (!Kernel32.INSTANCE.DeviceIoControl(
+                    hBattery,
+                    IOCTL_BATTERY_QUERY_INFORMATION,
+                    bqi.getPointer(),
+                    bqi.size(),
+                    nameBuf,
+                    (int) nameBuf.size(),
+                    dwOut,
+                    null)) {
+                return Normal.UNKNOWN;
+            }
             String name = CHAR_WIDTH > 1 ? nameBuf.getWideString(0) : nameBuf.getString(0);
-            nameBuf.close();
-            return name;
+            return name.isEmpty() ? Normal.UNKNOWN : name;
         }
     }
 

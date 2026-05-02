@@ -32,19 +32,51 @@ import lombok.Setter;
 @Setter
 public class InstanceStateHistory {
 
-    /** State captured at this point in time. */
+    /**
+     * Creates an empty instance-state history record.
+     */
+    public InstanceStateHistory() {
+    }
+
+    /**
+     * State captured at this point in time.
+     */
     private InstanceState state;
-    /** Unix epoch milliseconds when the state was recorded. */
+    /**
+     * Unix epoch milliseconds when the state was recorded.
+     */
     private long timestamp;
-    /** Human-readable reason for the state transition. */
+    /**
+     * Human-readable reason for the state transition.
+     */
     private String reason;
-    /** Namespace of the affected instance. */
-    private String namespace;
-    /** Service method of the affected instance. */
+    /**
+     * Source that produced the state transition.
+     */
+    private String source;
+    /**
+     * Operator or subsystem that triggered the state transition.
+     */
+    private String operator;
+    /**
+     * Duration in milliseconds spent in the previous state when available.
+     */
+    private Long durationMs;
+    /**
+     * Namespace of the affected instance.
+     */
+    private String namespace_id;
+    /**
+     * Service method of the affected instance.
+     */
     private String method;
-    /** Service version of the affected instance. */
+    /**
+     * Service version of the affected instance.
+     */
     private String version;
-    /** Stable fingerprint of the affected instance. */
+    /**
+     * Stable fingerprint of the affected instance.
+     */
     private String fingerprint;
 
 }

@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -19,9 +19,11 @@
 */
 package org.miaixz.bus.health.linux.driver;
 
+import java.util.List;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.health.Executor;
-import org.miaixz.bus.health.IdGroup;
 import org.miaixz.bus.health.Parsing;
 
 /**
@@ -33,35 +35,56 @@ import org.miaixz.bus.health.Parsing;
 @ThreadSafe
 public final class Lshw {
 
+    /**
+     * The MODEL constant.
+     */
     private static final String MODEL;
+    /**
+     * The SERIAL constant.
+     */
     private static final String SERIAL;
+    /**
+     * The UUID constant.
+     */
     private static final String UUID;
 
     static {
+        Triplet<String, String, String> info = parseSystemInfo(Executor.runPrivilegedNative("lshw -C system"));
+        MODEL = info.getLeft();
+        SERIAL = info.getMiddle();
+        UUID = info.getRight();
+    }
+
+    /**
+     * Parse model, serial number, and UUID from lshw system output.
+     *
+     * @param lines output of {@code lshw -C system}
+     * @return triplet of (model, serial, uuid), with null for missing values
+     */
+    static Triplet<String, String, String> parseSystemInfo(List<String> lines) {
         String model = null;
         String serial = null;
         String uuid = null;
 
-        if (IdGroup.isElevated()) {
-            String modelMarker = "product:";
-            String serialMarker = "serial:";
-            String uuidMarker = "uuid:";
+        String modelMarker = "product:";
+        String serialMarker = "serial:";
+        String uuidMarker = "uuid:";
 
-            for (String checkLine : Executor.runNative("lshw -C system")) {
-                if (checkLine.contains(modelMarker)) {
-                    model = checkLine.split(modelMarker)[1].trim();
-                } else if (checkLine.contains(serialMarker)) {
-                    serial = checkLine.split(serialMarker)[1].trim();
-                } else if (checkLine.contains(uuidMarker)) {
-                    uuid = checkLine.split(uuidMarker)[1].trim();
-                }
+        for (String checkLine : lines) {
+            if (checkLine.contains(modelMarker)) {
+                model = checkLine.split(modelMarker)[1].trim();
+            } else if (checkLine.contains(serialMarker)) {
+                serial = checkLine.split(serialMarker)[1].trim();
+            } else if (checkLine.contains(uuidMarker)) {
+                uuid = checkLine.split(uuidMarker)[1].trim();
             }
         }
-        MODEL = model;
-        SERIAL = serial;
-        UUID = uuid;
+        return Triplet.of(model, serial, uuid);
     }
 
+    /**
+     * Creates a new Lshw instance.
+     */
     private Lshw() {
     }
 
@@ -98,8 +121,18 @@ public final class Lshw {
      * @return The CPU capacity (max frequency) if available, -1 otherwise
      */
     public static long queryCpuCapacity() {
+        return queryCpuCapacity(Executor.runPrivilegedNative("lshw -class processor"));
+    }
+
+    /**
+     * Parse the CPU capacity (max frequency) from lshw processor output.
+     *
+     * @param lines output of {@code lshw -class processor}
+     * @return The CPU capacity (max frequency) if available, -1 otherwise
+     */
+    static long queryCpuCapacity(List<String> lines) {
         String capacityMarker = "capacity:";
-        for (String checkLine : Executor.runNative("lshw -class processor")) {
+        for (String checkLine : lines) {
             if (checkLine.contains(capacityMarker)) {
                 return Parsing.parseHertz(checkLine.split(capacityMarker)[1].trim());
             }

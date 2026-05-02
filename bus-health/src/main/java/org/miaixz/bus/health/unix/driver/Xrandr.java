@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -54,7 +54,16 @@ public final class Xrandr {
      */
     public static List<byte[]> getEdidArrays() {
         // Special handling for X commands, don't use LC_ALL
-        List<String> xrandr = Executor.runNative(XRANDR_VERBOSE, null);
+        return getEdidArrays(Executor.runNative(XRANDR_VERBOSE, null));
+    }
+
+    /**
+     * Parse EDID arrays from xrandr verbose output.
+     *
+     * @param xrandr output of {@code xrandr --verbose}
+     * @return a list of EDID byte arrays
+     */
+    static List<byte[]> getEdidArrays(List<String> xrandr) {
         // xrandr reports edid in multiple lines. After seeing a line containing
         // EDID, read subsequent lines of hex until 256 characters are reached
         if (xrandr.isEmpty()) {

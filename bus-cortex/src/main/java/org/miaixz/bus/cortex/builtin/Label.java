@@ -33,6 +33,12 @@ import lombok.Setter;
 public class Label {
 
     /**
+     * Creates an empty label.
+     */
+    public Label() {
+    }
+
+    /**
      * Label key name.
      */
     private String key;

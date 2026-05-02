@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -44,10 +44,21 @@ import com.sun.jna.platform.win32.WinError;
 @ThreadSafe
 public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats {
 
+    /**
+     * The IPHLP constant.
+     */
     private static final IPHlpAPI IPHLP = IPHlpAPI.INSTANCE;
 
+    /**
+     * The IS_VISTA_OR_GREATER constant.
+     */
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
 
+    /**
+     * Queries the tc pv4 connections.
+     *
+     * @return the query tc pv4 connections result
+     */
     private static List<InternetProtocolStats.IPConnection> queryTCPv4Connections() {
         List<InternetProtocolStats.IPConnection> conns = new ArrayList<>();
         // Get size needed
@@ -91,6 +102,11 @@ public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats 
         return conns;
     }
 
+    /**
+     * Queries the tc pv6 connections.
+     *
+     * @return the query tc pv6 connections result
+     */
     private static List<InternetProtocolStats.IPConnection> queryTCPv6Connections() {
         List<InternetProtocolStats.IPConnection> conns = new ArrayList<>();
         // Get size needed
@@ -133,6 +149,11 @@ public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats 
         return conns;
     }
 
+    /**
+     * Queries the ud pv4 connections.
+     *
+     * @return the query ud pv4 connections result
+     */
     private static List<InternetProtocolStats.IPConnection> queryUDPv4Connections() {
         List<InternetProtocolStats.IPConnection> conns = new ArrayList<>();
         // Get size needed
@@ -174,6 +195,11 @@ public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats 
         return conns;
     }
 
+    /**
+     * Queries the ud pv6 connections.
+     *
+     * @return the query ud pv6 connections result
+     */
     private static List<InternetProtocolStats.IPConnection> queryUDPv6Connections() {
         List<InternetProtocolStats.IPConnection> conns = new ArrayList<>();
         // Get size needed
@@ -214,6 +240,12 @@ public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats 
         return conns;
     }
 
+    /**
+     * Returns the state lookup result.
+     *
+     * @param state the state
+     * @return the state lookup result
+     */
     private static InternetProtocolStats.TcpState stateLookup(int state) {
         switch (state) {
             case 1:
@@ -255,6 +287,11 @@ public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats 
         }
     }
 
+    /**
+     * Returns the tc pv4 stats.
+     *
+     * @return the get tc pv4 stats result
+     */
     @Override
     public InternetProtocolStats.TcpStats getTCPv4Stats() {
         try (Struct.CloseableMibTcpStats stats = new Struct.CloseableMibTcpStats()) {
@@ -265,6 +302,11 @@ public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats 
         }
     }
 
+    /**
+     * Returns the tc pv6 stats.
+     *
+     * @return the get tc pv6 stats result
+     */
     @Override
     public InternetProtocolStats.TcpStats getTCPv6Stats() {
         try (Struct.CloseableMibTcpStats stats = new Struct.CloseableMibTcpStats()) {
@@ -275,6 +317,11 @@ public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats 
         }
     }
 
+    /**
+     * Returns the ud pv4 stats.
+     *
+     * @return the get ud pv4 stats result
+     */
     @Override
     public InternetProtocolStats.UdpStats getUDPv4Stats() {
         try (Struct.CloseableMibUdpStats stats = new Struct.CloseableMibUdpStats()) {
@@ -284,6 +331,11 @@ public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats 
         }
     }
 
+    /**
+     * Returns the connections.
+     *
+     * @return the get connections result
+     */
     @Override
     public List<InternetProtocolStats.IPConnection> getConnections() {
         if (IS_VISTA_OR_GREATER) {
@@ -297,6 +349,11 @@ public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats 
         return Collections.emptyList();
     }
 
+    /**
+     * Returns the ud pv6 stats.
+     *
+     * @return the get ud pv6 stats result
+     */
     @Override
     public InternetProtocolStats.UdpStats getUDPv6Stats() {
         try (Struct.CloseableMibUdpStats stats = new Struct.CloseableMibUdpStats()) {

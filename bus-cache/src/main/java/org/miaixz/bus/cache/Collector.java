@@ -209,14 +209,6 @@ public interface Collector {
         }
 
         /**
-         * @deprecated Use {@link #merge(Snapshot, Snapshot)} instead.
-         */
-        @Deprecated
-        public static Snapshot mergeShootingDO(Snapshot s1, Snapshot s2) {
-            return merge(s1, s2);
-        }
-
-        /**
          * Gets the number of cache hits.
          *
          * @return The hit count.

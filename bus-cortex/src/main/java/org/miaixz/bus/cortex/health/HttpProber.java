@@ -22,7 +22,9 @@ package org.miaixz.bus.cortex.health;
 import org.miaixz.bus.cortex.Prober;
 import org.miaixz.bus.cortex.Status;
 import org.miaixz.bus.cortex.Instance;
-import org.miaixz.bus.http.Httpx;
+import org.miaixz.bus.cortex.Builder;
+import org.miaixz.bus.cortex.Callout;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * HTTP-based prober.
@@ -31,6 +33,38 @@ import org.miaixz.bus.http.Httpx;
  * @since Java 21+
  */
 public class HttpProber implements Prober {
+
+    /**
+     * Request timeout in milliseconds.
+     */
+    private final long timeoutMs;
+
+    /**
+     * Creates an HTTP prober with the default timeout.
+     */
+    public HttpProber() {
+        this(Builder.DEFAULT_HEALTH_TIMEOUT_MS);
+    }
+
+    /**
+     * Creates an HTTP prober with an explicit timeout.
+     *
+     * @param timeoutMs timeout in milliseconds
+     */
+    public HttpProber(long timeoutMs) {
+        this.timeoutMs = Math.max(1L, timeoutMs);
+    }
+
+    /**
+     * Returns whether this prober can probe the supplied instance through HTTP.
+     *
+     * @param instance candidate instance
+     * @return {@code true} when HTTP probing is supported
+     */
+    @Override
+    public boolean supports(Instance instance) {
+        return instance != null && instance.getHost() != null && !"tcp".equalsIgnoreCase(instance.getScheme());
+    }
 
     /**
      * Performs an HTTP GET request to the instance's health endpoint.
@@ -46,16 +80,52 @@ public class HttpProber implements Prober {
         String path = instance.getHealthPath() != null ? instance.getHealthPath() : "/health";
         String url = scheme + "://" + host + ":" + port + path;
         long start = System.currentTimeMillis();
-        try {
-            String response = Httpx.get(url);
-            long latency = System.currentTimeMillis() - start;
-            if (response != null) {
-                return Status.ok(latency);
-            }
-            return Status.fail("Empty response from " + url);
-        } catch (Exception e) {
-            return Status.fail("HTTP check failed: " + e.getMessage());
+        Logger.debug(
+                true,
+                "Cortex",
+                "HTTP health probe started: host={}, port={}, path={}, timeoutMs={}",
+                host,
+                port,
+                path,
+                timeoutMs);
+        Callout.Response response = Callout.get(url, timeoutMs);
+        long latency = System.currentTimeMillis() - start;
+        if (response.errorMessage() != null) {
+            Logger.warn(
+                    false,
+                    "Cortex",
+                    "HTTP health probe failed: host={}, port={}, path={}, latencyMs={}, error={}",
+                    host,
+                    port,
+                    path,
+                    latency,
+                    response.errorMessage());
+            return Status.fail("HTTP check failed: " + response.errorMessage(), name()).detail("url", url);
         }
+        if (response.isSuccessful()) {
+            Logger.debug(
+                    false,
+                    "Cortex",
+                    "HTTP health probe passed: host={}, port={}, path={}, status={}, latencyMs={}",
+                    host,
+                    port,
+                    path,
+                    response.statusCode(),
+                    latency);
+            return Status.ok(latency, name()).detail("url", url)
+                    .detail("statusCode", Integer.toString(response.statusCode()));
+        }
+        Logger.warn(
+                false,
+                "Cortex",
+                "HTTP health probe returned unhealthy status: host={}, port={}, path={}, status={}, latencyMs={}",
+                host,
+                port,
+                path,
+                response.statusCode(),
+                latency);
+        return Status.fail("HTTP status " + response.statusCode() + " from " + url, name()).detail("url", url)
+                .detail("statusCode", Integer.toString(response.statusCode()));
     }
 
 }

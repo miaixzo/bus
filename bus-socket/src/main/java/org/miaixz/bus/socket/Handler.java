@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.socket;
 
+import org.miaixz.bus.logger.Logger;
+
 /**
  * Handles the processing of decoded messages.
  * <p>
@@ -53,7 +55,14 @@ public interface Handler<T> {
      */
     default void stateEvent(Session session, Status status, Throwable throwable) {
         if (status == Status.DECODE_EXCEPTION || status == Status.PROCESS_EXCEPTION) {
-            throwable.printStackTrace();
+            Logger.warn(
+                    false,
+                    "Socket",
+                    throwable,
+                    "Socket handler state event failed: status={}, session={}, exception={}",
+                    status,
+                    session,
+                    throwable == null ? null : throwable.getClass().getSimpleName());
         }
     }
 

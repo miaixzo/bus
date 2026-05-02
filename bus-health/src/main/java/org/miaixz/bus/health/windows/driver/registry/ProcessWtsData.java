@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -48,6 +48,9 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 @ThreadSafe
 public final class ProcessWtsData {
 
+    /**
+     * The IS_WINDOWS7_OR_GREATER constant.
+     */
     private static final boolean IS_WINDOWS7_OR_GREATER = VersionHelpers.IsWindows7OrGreater();
 
     /**
@@ -66,6 +69,12 @@ public final class ProcessWtsData {
         return queryProcessWtsMapFromPerfMon(pids);
     }
 
+    /**
+     * Queries the process wts map from wts.
+     *
+     * @param pids the pids
+     * @return the query process wts map from wts result
+     */
     private static Map<Integer, WtsInfo> queryProcessWtsMapFromWTS(Collection<Integer> pids) {
         Map<Integer, WtsInfo> wtsMap = new HashMap<>();
         try (ByRef.CloseableIntByReference pCount = new ByRef.CloseableIntByReference(0);
@@ -78,7 +87,11 @@ public final class ProcessWtsData {
                     Wtsapi32.WTS_ANY_SESSION,
                     ppProcessInfo,
                     pCount)) {
-                Logger.error("Failed to enumerate Processes. Error code: {}", Kernel32.INSTANCE.GetLastError());
+                Logger.error(
+                        false,
+                        "Health",
+                        "Failed to enumerate Processes. Error code: {}",
+                        Kernel32.INSTANCE.GetLastError());
                 return wtsMap;
             }
             // extract the pointed-to pointer and create array
@@ -97,12 +110,22 @@ public final class ProcessWtsData {
             // Clean up memory
             if (!Wtsapi32.INSTANCE
                     .WTSFreeMemoryEx(Wtsapi32.WTS_PROCESS_INFO_LEVEL_1, pProcessInfo, pCount.getValue())) {
-                Logger.warn("Failed to Free Memory for Processes. Error code: {}", Kernel32.INSTANCE.GetLastError());
+                Logger.warn(
+                        false,
+                        "Health",
+                        "Failed to Free Memory for Processes. Error code: {}",
+                        Kernel32.INSTANCE.GetLastError());
             }
         }
         return wtsMap;
     }
 
+    /**
+     * Queries the process wts map from perf mon.
+     *
+     * @param pids the pids
+     * @return the query process wts map from perf mon result
+     */
     private static Map<Integer, WtsInfo> queryProcessWtsMapFromPerfMon(Collection<Integer> pids) {
         Map<Integer, WtsInfo> wtsMap = new HashMap<>();
         WmiResult<ProcessXPProperty> processWmiResult = Win32Process.queryProcesses(pids);
@@ -128,14 +151,46 @@ public final class ProcessWtsData {
     @Immutable
     public static class WtsInfo {
 
+        /**
+         * The name value.
+         */
         private final String name;
+        /**
+         * The path value.
+         */
         private final String path;
+        /**
+         * The threadCount value.
+         */
         private final int threadCount;
+        /**
+         * The virtualSize value.
+         */
         private final long virtualSize;
+        /**
+         * The kernelTime value.
+         */
         private final long kernelTime;
+        /**
+         * The userTime value.
+         */
         private final long userTime;
+        /**
+         * The openFiles value.
+         */
         private final long openFiles;
 
+        /**
+         * Creates a new WtsInfo instance.
+         *
+         * @param name        the name
+         * @param path        the path
+         * @param threadCount the thread count
+         * @param virtualSize the virtual size
+         * @param kernelTime  the kernel time
+         * @param userTime    the user time
+         * @param openFiles   the open files
+         */
         public WtsInfo(String name, String path, int threadCount, long virtualSize, long kernelTime, long userTime,
                 long openFiles) {
             this.name = name;

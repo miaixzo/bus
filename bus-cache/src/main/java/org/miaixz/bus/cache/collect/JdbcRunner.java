@@ -24,7 +24,7 @@ import java.io.PrintWriter;
 import java.lang.reflect.Proxy;
 import java.sql.*;
 import java.util.*;
-import java.util.logging.Logger;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * A minimal plain-JDBC runner replacing Spring's {@code JdbcTemplate} / {@code JdbcOperations}.
@@ -103,6 +103,15 @@ class JdbcRunner {
                     });
             return new JdbcRunner(new SingleConnectionSource(noClose));
         } catch (Exception e) {
+            Logger.error(
+                    false,
+                    "Cache",
+                    e,
+                    "JDBC cache connection open failed: driver={}, urlPresent={}, usernamePresent={}, exception={}",
+                    driverClassName,
+                    url != null,
+                    username != null,
+                    e.getClass().getSimpleName());
             throw new RuntimeException("Failed to open JDBC connection: " + url, e);
         }
     }
@@ -116,6 +125,13 @@ class JdbcRunner {
         try (Connection conn = dataSource.getConnection(); Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
         } catch (SQLException e) {
+            Logger.error(
+                    false,
+                    "Cache",
+                    e,
+                    "JDBC cache statement execute failed: operation=execute, sqlPresent={}, exception={}",
+                    sql != null,
+                    e.getClass().getSimpleName());
             throw new RuntimeException("Failed to execute SQL: " + sql, e);
         }
     }
@@ -134,6 +150,14 @@ class JdbcRunner {
             }
             return ps.executeUpdate();
         } catch (SQLException e) {
+            Logger.error(
+                    false,
+                    "Cache",
+                    e,
+                    "JDBC cache statement execute failed: operation=update, sqlPresent={}, paramCount={}, exception={}",
+                    sql != null,
+                    params == null ? 0 : params.length,
+                    e.getClass().getSimpleName());
             throw new RuntimeException("Failed to execute update: " + sql, e);
         }
     }
@@ -169,6 +193,14 @@ class JdbcRunner {
                 return rows;
             }
         } catch (SQLException e) {
+            Logger.error(
+                    false,
+                    "Cache",
+                    e,
+                    "JDBC cache statement execute failed: operation=query, sqlPresent={}, paramCount={}, exception={}",
+                    sql != null,
+                    params == null ? 0 : params.length,
+                    e.getClass().getSimpleName());
             throw new RuntimeException("Failed to execute query: " + sql, e);
         }
     }
@@ -262,7 +294,7 @@ class JdbcRunner {
          * @return never returns normally
          */
         @Override
-        public Logger getParentLogger() {
+        public java.util.logging.Logger getParentLogger() {
             throw new UnsupportedOperationException();
         }
 

@@ -26,8 +26,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.miaixz.bus.core.xyz.MethodKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.limiter.Holder;
 import org.miaixz.bus.limiter.Provider;
 import org.miaixz.bus.limiter.magic.StrategyMode;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Implements the {@link Provider} interface for handling the FALLBACK strategy mode. This provider is responsible for
@@ -69,6 +71,16 @@ public class FallbackProvider implements Provider {
     public Object process(Object bean, Method method, Object[] args) {
         // Synthesize the fallback method name
         String fallbackMethodName = StringKit.format("{}Fallback", method.getName());
+        if (Holder.load().isLogger()) {
+            Logger.debug(
+                    true,
+                    "Limiter",
+                    "Fallback method resolution started: method={}, fallbackMethod={}, targetClass={}, argCount={}",
+                    method.getName(),
+                    fallbackMethodName,
+                    bean.getClass().getName(),
+                    args == null ? 0 : args.length);
+        }
 
         Method fallbackMethod;
         // Cache operation
@@ -80,13 +92,31 @@ public class FallbackProvider implements Provider {
         }
 
         if (ObjectKit.isNull(fallbackMethod)) {
+            if (Holder.load().isLogger()) {
+                Logger.warn(
+                        false,
+                        "Limiter",
+                        "Fallback method missing: fallbackMethod={}, targetClass={}",
+                        fallbackMethodName,
+                        bean.getClass().getName());
+            }
             throw new RuntimeException(StringKit.format(
                     "Can't find fallback method [{}] in bean [{}]",
                     fallbackMethodName,
                     bean.getClass().getName()));
         }
 
-        return MethodKit.invoke(bean, fallbackMethod, args);
+        Object result = MethodKit.invoke(bean, fallbackMethod, args);
+        if (Holder.load().isLogger()) {
+            Logger.info(
+                    false,
+                    "Limiter",
+                    "Fallback method completed: method={}, fallbackMethod={}, resultType={}",
+                    method.getName(),
+                    fallbackMethodName,
+                    result == null ? "null" : result.getClass().getName());
+        }
+        return result;
     }
 
 }

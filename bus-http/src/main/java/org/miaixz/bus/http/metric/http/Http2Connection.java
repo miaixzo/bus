@@ -180,7 +180,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Returns the number of {@link Http2Stream#isOpen() open streams} on this connection.
-     * 
+     *
      * @return the number of open streams.
      */
     public synchronized int openStreamCount() {
@@ -189,7 +189,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Gets the stream with the specified ID.
-     * 
+     *
      * @param id The stream ID.
      * @return The stream, or null if it does not exist.
      */
@@ -199,7 +199,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Removes the stream with the specified ID.
-     * 
+     *
      * @param streamId The stream ID.
      * @return The removed stream, or null if it did not exist.
      */
@@ -211,7 +211,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Returns the maximum number of concurrent streams that the remote peer is willing to accept.
-     * 
+     *
      * @return the maximum number of concurrent streams.
      */
     public synchronized int maxConcurrentStreams() {
@@ -220,7 +220,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Updates the connection flow control window by the number of bytes read.
-     * 
+     *
      * @param read the number of bytes read.
      */
     synchronized void updateConnectionFlowControl(long read) {
@@ -303,7 +303,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Writes headers for the given stream.
-     * 
+     *
      * @param streamId    The stream ID.
      * @param outFinished Whether this is the last frame to be sent on this stream.
      * @param alternating The list of header name-value pairs.
@@ -343,6 +343,14 @@ public class Http2Connection implements Closeable {
                         Http2Connection.this.wait();
                     }
                 } catch (InterruptedException e) {
+                    Logger.warn(
+                            false,
+                            "Http",
+                            e,
+                            "HTTP/2 operation failed: provider={}, recoverable={}, exception={}",
+                            "Http2Connection",
+                            false,
+                            e.getClass().getSimpleName());
                     Thread.currentThread().interrupt();
                     throw new InterruptedIOException();
                 }
@@ -375,18 +383,34 @@ public class Http2Connection implements Closeable {
                     try {
                         writeSynReset(streamId, errorCode);
                     } catch (IOException e) {
+                        Logger.warn(
+                                false,
+                                "Http",
+                                e,
+                                "HTTP/2 operation failed: provider={}, recoverable={}, exception={}",
+                                "Http2Connection",
+                                false,
+                                e.getClass().getSimpleName());
                         failConnection(e);
                     }
                 }
             });
         } catch (RejectedExecutionException ignored) {
+            Logger.warn(
+                    false,
+                    "Http",
+                    ignored,
+                    "HTTP/2 operation failed: provider={}, recoverable={}, exception={}",
+                    "Http2Connection",
+                    false,
+                    ignored.getClass().getSimpleName());
             // This connection has been closed.
         }
     }
 
     /**
      * Writes a {@code RST_STREAM} frame to the peer.
-     * 
+     *
      * @param streamId   The stream ID.
      * @param statusCode The status code.
      * @throws IOException if an I/O error occurs.
@@ -413,18 +437,34 @@ public class Http2Connection implements Closeable {
                     try {
                         writer.windowUpdate(streamId, unacknowledgedBytesRead);
                     } catch (IOException e) {
+                        Logger.warn(
+                                false,
+                                "Http",
+                                e,
+                                "HTTP/2 operation failed: provider={}, recoverable={}, exception={}",
+                                "Http2Connection",
+                                false,
+                                e.getClass().getSimpleName());
                         failConnection(e);
                     }
                 }
             });
         } catch (RejectedExecutionException ignored) {
+            Logger.warn(
+                    false,
+                    "Http",
+                    ignored,
+                    "HTTP/2 operation failed: provider={}, recoverable={}, exception={}",
+                    "Http2Connection",
+                    false,
+                    ignored.getClass().getSimpleName());
             // This connection has been closed.
         }
     }
 
     /**
      * Writes a {@code PING} frame to the peer.
-     * 
+     *
      * @param reply    Whether this is a reply to a ping from the peer.
      * @param payload1 The first payload integer.
      * @param payload2 The second payload integer.
@@ -433,13 +473,21 @@ public class Http2Connection implements Closeable {
         try {
             writer.ping(reply, payload1, payload2);
         } catch (IOException e) {
+            Logger.warn(
+                    false,
+                    "Http",
+                    e,
+                    "HTTP/2 operation failed: provider={}, recoverable={}, exception={}",
+                    "Http2Connection",
+                    false,
+                    e.getClass().getSimpleName());
             failConnection(e);
         }
     }
 
     /**
      * For testing: sends a ping and waits for a pong.
-     * 
+     *
      * @throws InterruptedException if the thread is interrupted.
      */
     void writePingAndAwaitPong() throws InterruptedException {
@@ -459,7 +507,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * For testing: awaits a pong.
-     * 
+     *
      * @throws InterruptedException if the thread is interrupted.
      */
     synchronized void awaitPong() throws InterruptedException {
@@ -470,7 +518,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Flushes all buffered data on the underlying writer.
-     * 
+     *
      * @throws IOException if an I/O error occurs.
      */
     public void flush() throws IOException {
@@ -481,7 +529,7 @@ public class Http2Connection implements Closeable {
      * Degrades this connection such that new streams can neither be created locally, nor accepted from the remote peer.
      * Existing streams are not impacted. This is intended to permit an endpoint to gracefully stop accepting new
      * requests without harming previously established streams.
-     * 
+     *
      * @param statusCode The error code to send in the GOAWAY frame.
      * @throws IOException if an I/O error occurs.
      */
@@ -510,7 +558,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Closes this connection with the specified error codes.
-     * 
+     *
      * @param connectionCode The error code for the connection.
      * @param streamCode     The error code for the streams.
      * @param cause          The cause of the closure.
@@ -520,6 +568,14 @@ public class Http2Connection implements Closeable {
         try {
             shutdown(connectionCode);
         } catch (IOException ignored) {
+            Logger.debug(
+                    false,
+                    "Http",
+                    "HTTP/2 shutdown ignored during close: protocol=http2, connection={}, connectionCode={}, streamCode={}, exception={}",
+                    connectionName,
+                    connectionCode,
+                    streamCode,
+                    ignored.getClass().getSimpleName());
         }
 
         Http2Stream[] streamsToClose = null;
@@ -535,6 +591,14 @@ public class Http2Connection implements Closeable {
                 try {
                     stream.close(streamCode, cause);
                 } catch (IOException ignored) {
+                    Logger.debug(
+                            false,
+                            "Http",
+                            "HTTP/2 stream close ignored during connection close: protocol=http2, connection={}, streamId={}, streamCode={}, exception={}",
+                            connectionName,
+                            stream.getId(),
+                            streamCode,
+                            ignored.getClass().getSimpleName());
                 }
             }
         }
@@ -543,12 +607,24 @@ public class Http2Connection implements Closeable {
         try {
             writer.close();
         } catch (IOException ignored) {
+            Logger.debug(
+                    false,
+                    "Http",
+                    "HTTP/2 writer close ignored: protocol=http2, connection={}, exception={}",
+                    connectionName,
+                    ignored.getClass().getSimpleName());
         }
 
         // Close the socket to break out the reader thread, which will clean up after itself.
         try {
             socket.close();
         } catch (IOException ignored) {
+            Logger.debug(
+                    false,
+                    "Http",
+                    "HTTP/2 socket close ignored: protocol=http2, connection={}, exception={}",
+                    connectionName,
+                    ignored.getClass().getSimpleName());
         }
 
         // Release the threads.
@@ -558,7 +634,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Fails the connection with a protocol error.
-     * 
+     *
      * @param e The exception that caused the failure.
      */
     private void failConnection(IOException e) {
@@ -568,7 +644,7 @@ public class Http2Connection implements Closeable {
     /**
      * Sends any initial frames and starts reading frames from the remote peer. This should be called after
      * {@link Builder#build} for all new connections.
-     * 
+     *
      * @throws IOException if an I/O error occurs.
      */
     public void start() throws IOException {
@@ -577,7 +653,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Starts the connection.
-     * 
+     *
      * @param sendConnectionPreface true to send connection preface frames. This should always be true except for in
      *                              tests that don't check for a connection preface.
      * @throws IOException if an I/O error occurs.
@@ -596,7 +672,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Merges {@code settings} into this peer's settings and sends them to the remote peer.
-     * 
+     *
      * @param settings The settings to apply.
      * @throws IOException if an I/O error occurs.
      */
@@ -615,7 +691,7 @@ public class Http2Connection implements Closeable {
     /**
      * Returns true if this connection is healthy. A connection is unhealthy if it has been shut down or if a degraded
      * pong is overdue.
-     * 
+     *
      * @param nowNs The current time in nanoseconds.
      * @return true if the connection is healthy.
      */
@@ -659,13 +735,19 @@ public class Http2Connection implements Closeable {
                 }
             });
         } catch (RejectedExecutionException ignored) {
+            Logger.debug(
+                    false,
+                    "Http",
+                    "HTTP/2 degraded ping rejected after failure: protocol=http2, connection={}, exception={}",
+                    connectionName,
+                    ignored.getClass().getSimpleName());
             // This connection has been closed.
         }
     }
 
     /**
      * Even, positive numbered streams are pushed streams in HTTP/2.
-     * 
+     *
      * @param streamId The stream ID.
      * @return true if the stream is a pushed stream.
      */
@@ -704,10 +786,24 @@ public class Http2Connection implements Closeable {
                             }
                         }
                     } catch (IOException ignored) {
+                        Logger.debug(
+                                false,
+                                "Http",
+                                "HTTP/2 push request reset failed: protocol=http2, connection={}, streamId={}, exception={}",
+                                connectionName,
+                                streamId,
+                                ignored.getClass().getSimpleName());
                     }
                 }
             });
         } catch (RejectedExecutionException ignored) {
+            Logger.debug(
+                    false,
+                    "Http",
+                    "HTTP/2 push request rejected: protocol=http2, connection={}, streamId={}, exception={}",
+                    connectionName,
+                    streamId,
+                    ignored.getClass().getSimpleName());
             // This connection has been closed.
         }
     }
@@ -738,10 +834,26 @@ public class Http2Connection implements Closeable {
                             }
                         }
                     } catch (IOException ignored) {
+                        Logger.warn(
+                                false,
+                                "Http",
+                                ignored,
+                                "HTTP/2 operation failed: provider={}, recoverable={}, exception={}",
+                                "Http2Connection",
+                                false,
+                                ignored.getClass().getSimpleName());
                     }
                 }
             });
         } catch (RejectedExecutionException ignored) {
+            Logger.warn(
+                    false,
+                    "Http",
+                    ignored,
+                    "HTTP/2 operation failed: provider={}, recoverable={}, exception={}",
+                    "Http2Connection",
+                    false,
+                    ignored.getClass().getSimpleName());
             // This connection has been closed.
         }
     }
@@ -780,6 +892,14 @@ public class Http2Connection implements Closeable {
                         }
                     }
                 } catch (IOException ignored) {
+                    Logger.debug(
+                            false,
+                            "Http",
+                            "HTTP/2 push data callback failed: protocol=http2, connection={}, streamId={}, byteCount={}, exception={}",
+                            connectionName,
+                            streamId,
+                            byteCount,
+                            ignored.getClass().getSimpleName());
                 }
             }
         });
@@ -809,7 +929,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Executes a runnable on the push executor if the connection is not shut down.
-     * 
+     *
      * @param namedRunnable The runnable to execute.
      */
     private synchronized void pushExecutorExecute(NamedRunnable namedRunnable) {
@@ -895,7 +1015,7 @@ public class Http2Connection implements Closeable {
          * Handle a new stream from this connection's peer. Implementations should respond by either
          * {@linkplain Http2Stream#writeHeaders replying to the stream} or {@linkplain Http2Stream#close closing it}.
          * This response does not need to be synchronous.
-         * 
+         *
          * @param stream The new stream.
          * @throws IOException if an I/O error occurs.
          */
@@ -906,7 +1026,7 @@ public class Http2Connection implements Closeable {
          * action to handle the updated settings. It is the implementation's responsibility to handle concurrent calls
          * to this method. A remote peer that sends multiple settings frames will trigger multiple calls to this method,
          * and those calls are not necessarily serialized.
-         * 
+         *
          * @param connection The connection with the updated settings.
          */
         public void onSettings(Http2Connection connection) {
@@ -991,6 +1111,14 @@ public class Http2Connection implements Closeable {
                 connectionErrorCode = Http2ErrorCode.NO_ERROR;
                 streamErrorCode = Http2ErrorCode.CANCEL;
             } catch (IOException e) {
+                Logger.warn(
+                        false,
+                        "Http",
+                        e,
+                        "HTTP/2 operation failed: provider={}, recoverable={}, exception={}",
+                        "Http2Connection",
+                        false,
+                        e.getClass().getSimpleName());
                 errorException = e;
                 connectionErrorCode = Http2ErrorCode.PROTOCOL_ERROR;
                 streamErrorCode = Http2ErrorCode.PROTOCOL_ERROR;
@@ -1075,10 +1203,22 @@ public class Http2Connection implements Closeable {
                             try {
                                 listener.onStream(newStream);
                             } catch (IOException e) {
-                                Logger.info("Http2Connection.Listener failure for " + connectionName, e);
+                                Logger.info(
+                                        false,
+                                        "Http",
+                                        "Http2Connection.Listener failure for : protocol=http2" + connectionName,
+                                        e);
                                 try {
                                     newStream.close(Http2ErrorCode.PROTOCOL_ERROR, e);
                                 } catch (IOException ignored) {
+                                    Logger.warn(
+                                            false,
+                                            "Http",
+                                            ignored,
+                                            "HTTP/2 operation failed: provider={}, recoverable={}, exception={}",
+                                            "Http2Connection",
+                                            false,
+                                            ignored.getClass().getSimpleName());
                                 }
                             }
                         }
@@ -1129,6 +1269,12 @@ public class Http2Connection implements Closeable {
                     }
                 });
             } catch (RejectedExecutionException ignored) {
+                Logger.debug(
+                        false,
+                        "Http",
+                        "HTTP/2 settings ACK rejected: protocol=http2, connection={}, exception={}",
+                        connectionName,
+                        ignored.getClass().getSimpleName());
                 // This connection has been closed.
             }
         }
@@ -1152,6 +1298,14 @@ public class Http2Connection implements Closeable {
                 try {
                     writer.applyAndAckSettings(peerSettings);
                 } catch (IOException e) {
+                    Logger.warn(
+                            false,
+                            "Http",
+                            e,
+                            "HTTP/2 operation failed: provider={}, recoverable={}, exception={}",
+                            "Http2Connection",
+                            false,
+                            e.getClass().getSimpleName());
                     failConnection(e);
                 }
             }
@@ -1207,6 +1361,14 @@ public class Http2Connection implements Closeable {
                     // Send a reply to a client ping if this is a server and vice versa.
                     writerExecutor.execute(new PingRunnable(true, payload1, payload2));
                 } catch (RejectedExecutionException ignored) {
+                    Logger.debug(
+                            false,
+                            "Http",
+                            "HTTP/2 ping reply rejected: protocol=http2, connection={}, payload1={}, payload2={}, exception={}",
+                            connectionName,
+                            payload1,
+                            payload2,
+                            ignored.getClass().getSimpleName());
                     // This connection has been closed.
                 }
             }

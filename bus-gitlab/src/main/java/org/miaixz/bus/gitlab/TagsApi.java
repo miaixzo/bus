@@ -34,6 +34,7 @@ import org.miaixz.bus.gitlab.models.Tag;
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * This class provides an entry point to all the GitLab Tags and Protected Tags API calls.
@@ -353,6 +354,16 @@ public class TagsApi extends AbstractApi {
             try {
                 releaseNotes = readFileContents(releaseNotesFile);
             } catch (IOException ioe) {
+                Logger.warn(
+                        false,
+                        "GitLab",
+                        ioe,
+                        "GitLab tag release notes read failed: projectPresent={}, tagNamePresent={}, refPresent={}, fileNamePresent={}, exception={}",
+                        projectIdOrPath != null,
+                        tagName != null && !tagName.isEmpty(),
+                        ref != null && !ref.isEmpty(),
+                        releaseNotesFile.getName() != null,
+                        ioe.getClass().getSimpleName());
                 throw (new GitLabApiException(ioe));
             }
         } else {

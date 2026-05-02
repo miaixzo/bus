@@ -22,6 +22,7 @@ package org.miaixz.bus.cache.serialize;
 import java.io.*;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * A serializer that uses standard Java serialization.
@@ -50,6 +51,13 @@ public class JdkSerializer extends AbstractSerializer {
         try (ObjectOutputStream out = new ObjectOutputStream(outputStream)) {
             out.writeObject(object);
         } catch (IOException e) {
+            Logger.error(
+                    false,
+                    "Cache",
+                    e,
+                    "JDK cache serialize stream failed: objectType={}, exception={}",
+                    object == null ? null : object.getClass().getName(),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -68,6 +76,12 @@ public class JdkSerializer extends AbstractSerializer {
         try (ObjectInputStream in = new ObjectInputStream(inputStream)) {
             return in.readObject();
         } catch (ClassCastException | IOException | ClassNotFoundException e) {
+            Logger.error(
+                    false,
+                    "Cache",
+                    e,
+                    "JDK cache deserialize stream failed: exception={}",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }

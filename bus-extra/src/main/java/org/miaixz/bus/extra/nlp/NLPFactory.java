@@ -44,9 +44,12 @@ public class NLPFactory {
      * @return A singleton instance of {@link NLPProvider}.
      */
     public static NLPProvider getEngine() {
+        Logger.debug(true, "Extra", "Default segmentation engine lookup started");
         final NLPProvider engine = Instances.get(NLPProvider.class.getName(), NLPFactory::createEngine);
         Logger.debug(
-                "Use [{}] Tokenizer Engine As Default.",
+                false,
+                "Extra",
+                "Default segmentation engine selected: engine={}",
                 StringKit.removeSuffix(engine.getClass().getSimpleName(), "Engine"));
         return engine;
     }
@@ -72,15 +75,36 @@ public class NLPFactory {
      * @throws InternalException if no engine with the corresponding name is found via SPI.
      */
     public static NLPProvider createEngine(String engineName) throws InternalException {
+        Logger.debug(true, "Extra", "Named segmentation engine lookup started: requestedEngine={}", engineName);
         if (!StringKit.endWithIgnoreCase(engineName, "Engine")) {
             engineName = engineName + "Engine";
         }
         final ServiceLoader<NLPProvider> list = NormalSpiLoader.loadList(NLPProvider.class);
+        Logger.debug(
+                true,
+                "Extra",
+                "Named segmentation engine candidates loaded: normalizedEngine={}, candidateCount={}",
+                engineName,
+                list.getServiceNames().size());
         for (final String serviceName : list.getServiceNames()) {
             if (StringKit.endWithIgnoreCase(serviceName, engineName)) {
-                return list.getService(serviceName);
+                final NLPProvider provider = list.getService(serviceName);
+                Logger.debug(
+                        false,
+                        "Extra",
+                        "Named segmentation engine selected: normalizedEngine={}, serviceName={}, provider={}",
+                        engineName,
+                        serviceName,
+                        provider == null ? "null" : provider.getClass().getSimpleName());
+                return provider;
             }
         }
+        Logger.warn(
+                false,
+                "Extra",
+                "Named segmentation engine lookup failed: normalizedEngine={}, candidateCount={}",
+                engineName,
+                list.getServiceNames().size());
         throw new InternalException("No such provider named: " + engineName);
     }
 
@@ -93,11 +117,18 @@ public class NLPFactory {
      * @throws InternalException if no tokenizer implementation is found on the classpath.
      */
     private static NLPProvider doCreateEngine() {
+        Logger.debug(true, "Extra", "SPI segmentation engine lookup started");
         final NLPProvider engine = NormalSpiLoader.loadFirstAvailable(NLPProvider.class);
         if (null != engine) {
+            Logger.debug(
+                    false,
+                    "Extra",
+                    "SPI segmentation engine selected: provider={}",
+                    engine.getClass().getSimpleName());
             return engine;
         }
 
+        Logger.warn(false, "Extra", "SPI segmentation engine lookup failed: providerPresent={}", false);
         throw new InternalException("No tokenizer found !Please add some tokenizer jar to your project !");
     }
 

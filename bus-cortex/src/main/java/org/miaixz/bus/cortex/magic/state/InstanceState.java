@@ -27,13 +27,25 @@ package org.miaixz.bus.cortex.magic.state;
  */
 public enum InstanceState {
 
-    /** Service instance is running and healthy. */
+    /**
+     * Service instance is running and healthy.
+     */
     UP,
-    /** Service instance is unreachable or unhealthy. */
+    /**
+     * Service instance is unreachable or unhealthy.
+     */
     DOWN,
-    /** Status status has not yet been determined. */
+    /**
+     * Status status has not yet been determined.
+     */
     UNKNOWN,
-    /** Service instance is in the process of starting. */
-    STARTING
+    /**
+     * Service instance is in the process of starting.
+     */
+    STARTING,
+    /**
+     * Service instance is intentionally taken out of rotation for maintenance.
+     */
+    MAINTENANCE
 
 }

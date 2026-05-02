@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -43,8 +43,17 @@ import org.miaixz.bus.logger.Logger;
 @Immutable
 final class LinuxSoundCard extends AbstractSoundCard {
 
+    /**
+     * The CARD_FOLDER constant.
+     */
     private static final String CARD_FOLDER = "card";
+    /**
+     * The CARDS_FILE constant.
+     */
     private static final String CARDS_FILE = "cards";
+    /**
+     * The ID_FILE constant.
+     */
     private static final String ID_FILE = "id";
 
     /**
@@ -75,7 +84,7 @@ final class LinuxSoundCard extends AbstractSoundCard {
                 }
             }
         } else {
-            Logger.warn("No Audio Cards Found");
+            Logger.warn(false, "Health", "No Audio Cards Found");
         }
         return cardFolders;
     }

@@ -26,6 +26,7 @@ import org.miaixz.bus.socket.Message;
 import org.miaixz.bus.socket.Session;
 import org.miaixz.bus.socket.buffer.BufferPagePool;
 import org.miaixz.bus.socket.metric.channel.AsynchronousChannelProvider;
+import org.miaixz.bus.logger.Logger;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -135,9 +136,17 @@ public class AioClient {
             A attachment,
             CompletionHandler<Session, ? super A> handler) throws IOException {
         AsynchronousSocketChannel socketChannel = AsynchronousSocketChannel.open(asynchronousChannelGroup);
+        Logger.info(true, "Socket", "AIO client connect started: remote={}:{}", context.getHost(), context.getPort());
         if (connectTimeout > 0) {
             CONNECT_TIMEOUT_EXECUTOR.schedule(() -> {
                 if (session == null) {
+                    Logger.warn(
+                            false,
+                            "Socket",
+                            "AIO client connect timeout: remote={}:{}, timeoutMs={}",
+                            context.getHost(),
+                            context.getPort(),
+                            connectTimeout);
                     IoKit.close(socketChannel);
                     shutdownNow();
                 }
@@ -180,6 +189,13 @@ public class AioClient {
                             // On successful connection, create a Session object
                             session = new TcpSession(connectedChannel, context, writeBufferPool.allocateBufferPage(),
                                     () -> readBufferPool.allocateBufferPage().allocate(context.getReadBufferSize()));
+                            Logger.info(
+                                    false,
+                                    "Socket",
+                                    "AIO client connected: remote={}:{}, session={}",
+                                    context.getHost(),
+                                    context.getPort(),
+                                    session);
                             handler.completed(session, attachment);
                         } catch (Exception e) {
                             failed(e, socketChannel);
@@ -194,8 +210,23 @@ public class AioClient {
                         try {
                             handler.failed(exc, attachment);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            Logger.warn(
+                                    false,
+                                    "Socket",
+                                    e,
+                                    "AIO client failure callback failed: remote={}:{}, exception={}",
+                                    context.getHost(),
+                                    context.getPort(),
+                                    e.getClass().getSimpleName());
                         } finally {
+                            Logger.warn(
+                                    false,
+                                    "Socket",
+                                    exc,
+                                    "AIO client connect failed: remote={}:{}, exception={}",
+                                    context.getHost(),
+                                    context.getPort(),
+                                    exc == null ? null : exc.getClass().getSimpleName());
                             if (socketChannel != null) {
                                 IoKit.close(socketChannel);
                             }

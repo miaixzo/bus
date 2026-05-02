@@ -37,6 +37,7 @@ import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 import java.util.Map;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Facebook login provider.
@@ -94,6 +95,15 @@ public class FacebookProvider extends AbstractProvider {
                     .data(Authorization.builder().token(token).expireIn(expiresIn).token_type(tokenType).build())
                     .build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "access token",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
     }
@@ -131,6 +141,15 @@ public class FacebookProvider extends AbstractProvider {
                             .gender(Gender.of(gender)).token(authorization).source(complex.toString()).build())
                     .build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "user info",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
     }

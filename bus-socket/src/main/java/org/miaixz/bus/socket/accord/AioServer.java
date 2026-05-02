@@ -27,6 +27,7 @@ import org.miaixz.bus.socket.Status;
 import org.miaixz.bus.socket.buffer.BufferPagePool;
 import org.miaixz.bus.socket.buffer.VirtualBuffer;
 import org.miaixz.bus.socket.metric.channel.AsynchronousChannelProvider;
+import org.miaixz.bus.logger.Logger;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -127,6 +128,13 @@ public class AioServer {
      */
     public void start(AsynchronousChannelGroup asynchronousChannelGroup) throws IOException {
         try {
+            Logger.info(
+                    true,
+                    "Socket",
+                    "AIO server start requested: host={}, port={}, backlog={}",
+                    context.getHost(),
+                    context.getPort(),
+                    context.getBacklog());
             if (writeBufferPool == null) {
                 this.writeBufferPool = BufferPagePool.DEFAULT_BUFFER_PAGE_POOL;
             }
@@ -150,7 +158,16 @@ public class AioServer {
             }
 
             startAcceptThread();
+            Logger.info(false, "Socket", "AIO server started: host={}, port={}", context.getHost(), context.getPort());
         } catch (IOException e) {
+            Logger.warn(
+                    false,
+                    "Socket",
+                    e,
+                    "AIO server start failed: host={}, port={}, exception={}",
+                    context.getHost(),
+                    context.getPort(),
+                    e.getClass().getSimpleName());
             shutdown();
             throw e;
         }
@@ -185,7 +202,14 @@ public class AioServer {
              */
             @Override
             public void failed(Throwable exc, Void attachment) {
-                exc.printStackTrace();
+                Logger.warn(
+                        false,
+                        "Socket",
+                        exc,
+                        "AIO server accept failed: host={}, port={}, exception={}",
+                        context.getHost(),
+                        context.getPort(),
+                        exc == null ? null : exc.getClass().getSimpleName());
             }
         });
     }
@@ -208,11 +232,24 @@ public class AioServer {
                 acceptChannel.setOption(StandardSocketOptions.TCP_NODELAY, true);
                 session = new TcpSession(acceptChannel, this.context, writeBufferPool.allocateBufferPage(),
                         readBufferSupplier);
+                Logger.info(false, "Socket", "AIO server accepted connection: session={}", session);
             } else {
                 context.getProcessor().stateEvent(null, Status.REJECT_ACCEPT, null);
+                Logger.warn(
+                        false,
+                        "Socket",
+                        "AIO server rejected connection: host={}, port={}",
+                        context.getHost(),
+                        context.getPort());
                 IoKit.close(channel);
             }
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Socket",
+                    e,
+                    "AIO server session creation failed: exception={}",
+                    e.getClass().getSimpleName());
             if (session == null) {
                 IoKit.close(channel);
             } else {
@@ -226,18 +263,37 @@ public class AioServer {
      * Stops the server.
      */
     public void shutdown() {
+        Logger.info(
+                true,
+                "Socket",
+                "AIO server shutdown requested: host={}, port={}",
+                context.getHost(),
+                context.getPort());
         try {
             if (serverSocketChannel != null) {
                 serverSocketChannel.close();
                 serverSocketChannel = null;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.warn(
+                    false,
+                    "Socket",
+                    e,
+                    "AIO server channel close failed: host={}, port={}, exception={}",
+                    context.getHost(),
+                    context.getPort(),
+                    e.getClass().getSimpleName());
         }
 
         if (asynchronousChannelGroup != null) {
             asynchronousChannelGroup.shutdown();
         }
+        Logger.info(
+                false,
+                "Socket",
+                "AIO server shutdown completed: host={}, port={}",
+                context.getHost(),
+                context.getPort());
     }
 
     /**

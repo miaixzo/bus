@@ -96,6 +96,8 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
         this.application = springApplication;
         this.startupReporter = new StartupReporter();
         Logger.debug(
+                false,
+                "Starter",
                 "Initialized SpringApplicationRunListener for application: {}",
                 springApplication.getMainApplicationClass());
     }
@@ -114,7 +116,7 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
         jvmStartingStage.setName(GeniusBuilder.JVM_STARTING_STAGE);
         jvmStartingStage.setStartTime(ManagementFactory.getRuntimeMXBean().getStartTime());
         jvmStartingStage.setEndTime(System.currentTimeMillis());
-        Logger.debug("JVM starting stage completed in {} ms", jvmStartingStage.getCost());
+        Logger.debug(false, "Starter", "Spring JVM starting stage completed in {} ms", jvmStartingStage.getCost());
     }
 
     /**
@@ -151,7 +153,10 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
                     new org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup(
                             startupReporter.bufferSize));
         } catch (ClassNotFoundException e) {
-            Logger.debug("BufferingApplicationStartup not available, skipping startup metrics");
+            Logger.debug(
+                    false,
+                    "Starter",
+                    "Spring bufferingApplicationStartup not available, skipping startup metrics");
         }
     }
 
@@ -179,7 +184,9 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
         }
 
         Logger.debug(
-                "Application context preparation stage completed in {} ms",
+                false,
+                "Starter",
+                "Spring application context preparation stage completed in {} ms",
                 applicationContextPrepareStage.getCost());
     }
 
@@ -208,7 +215,11 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
         springSmartLifecycle.setApplicationContext(context);
         context.getBeanFactory().registerSingleton("STARTUP_SMART_LIFECYCLE", springSmartLifecycle);
 
-        Logger.debug("Application context loading stage completed in {} ms", applicationContextLoadStage.getCost());
+        Logger.debug(
+                false,
+                "Starter",
+                "Spring application context loading stage completed in {} ms",
+                applicationContextLoadStage.getCost());
     }
 
     /**
@@ -247,7 +258,7 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
         startupReporter.applicationBootFinish();
 
         // Log the application started message
-        Logger.info(getStartedMessage(context, timeTaken));
+        Logger.info(false, "Starter", "Spring " + getStartedMessage(context, timeTaken));
     }
 
     /**
@@ -257,7 +268,11 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
      */
     @Override
     public void onApplicationEvent(ApplicationStartedEvent event) {
-        Logger.debug("Received ApplicationStartedEvent for application: {}", application.getMainApplicationClass());
+        Logger.debug(
+                false,
+                "Starter",
+                "Spring received ApplicationStartedEvent for application: {}",
+                application.getMainApplicationClass());
     }
 
     /**

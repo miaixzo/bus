@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -35,14 +35,29 @@ import com.sun.jna.ptr.PointerByReference;
  */
 public interface Cups extends Library {
 
+    /**
+     * The INSTANCE value.
+     */
     Cups INSTANCE = Native.load("cups", Cups.class);
 
     // Printer state constants from cups/cups.h
+    /**
+     * The IPP_PRINTER_IDLE value.
+     */
     int IPP_PRINTER_IDLE = 3;
+    /**
+     * The IPP_PRINTER_PROCESSING value.
+     */
     int IPP_PRINTER_PROCESSING = 4;
+    /**
+     * The IPP_PRINTER_STOPPED value.
+     */
     int IPP_PRINTER_STOPPED = 5;
 
     // Printer type bit flags from cups/cups.h
+    /**
+     * The CUPS_PRINTER_REMOTE value.
+     */
     int CUPS_PRINTER_REMOTE = 0x0002;
 
     /**
@@ -51,16 +66,39 @@ public interface Cups extends Library {
     @FieldOrder({ "name", "instance", "is_default", "num_options", "options" })
     class CupsDest extends Structure {
 
+        /**
+         * The name value.
+         */
         public String name;
+        /**
+         * The instance value.
+         */
         public String instance;
+        /**
+         * The is_default value.
+         */
         public int is_default;
+        /**
+         * The num_options value.
+         */
         public int num_options;
+        /**
+         * The options value.
+         */
         public Pointer options; // cups_option_t*
 
+        /**
+         * Creates a new CupsDest instance.
+         */
         public CupsDest() {
             super();
         }
 
+        /**
+         * Creates a new CupsDest instance.
+         *
+         * @param p the p
+         */
         public CupsDest(Pointer p) {
             super(p);
             read();

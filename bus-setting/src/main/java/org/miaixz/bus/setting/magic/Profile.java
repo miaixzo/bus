@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.setting.Setting;
 
 /**
@@ -99,7 +100,25 @@ public class Profile implements Serializable {
      */
     public Setting getSetting(final String name) {
         final String nameForProfile = fixNameForProfile(name);
-        return settingMap.computeIfAbsent(nameForProfile, (key) -> new Setting(key, this.charset, this.useVar));
+        Logger.debug(
+                true,
+                "Setting",
+                "Profile setting lookup started: profile={}, settingName={}, resolvedName={}, cached={}",
+                this.profile,
+                name,
+                nameForProfile,
+                settingMap.containsKey(nameForProfile));
+        final Setting setting = settingMap
+                .computeIfAbsent(nameForProfile, (key) -> new Setting(key, this.charset, this.useVar));
+        Logger.debug(
+                false,
+                "Setting",
+                "Profile setting lookup completed: profile={}, resolvedName={}, cachedCount={}, settingPresent={}",
+                this.profile,
+                nameForProfile,
+                settingMap.size(),
+                setting != null);
+        return setting;
     }
 
     /**
@@ -109,7 +128,14 @@ public class Profile implements Serializable {
      * @return This {@code Profile} instance for chaining.
      */
     public Profile setProfile(final String profile) {
+        Logger.info(
+                true,
+                "Setting",
+                "Profile name update requested: oldProfile={}, newProfile={}",
+                this.profile,
+                profile);
         this.profile = profile;
+        Logger.info(false, "Setting", "Profile name updated: profile={}", this.profile);
         return this;
     }
 
@@ -120,7 +146,15 @@ public class Profile implements Serializable {
      * @return This {@code Profile} instance for chaining.
      */
     public Profile setCharset(final Charset charset) {
+        Logger.info(
+                true,
+                "Setting",
+                "Profile charset update requested: profile={}, oldCharset={}, newCharset={}",
+                this.profile,
+                this.charset,
+                charset);
         this.charset = charset;
+        Logger.info(false, "Setting", "Profile charset updated: profile={}, charset={}", this.profile, this.charset);
         return this;
     }
 
@@ -131,7 +165,20 @@ public class Profile implements Serializable {
      * @return This {@code Profile} instance for chaining.
      */
     public Profile setUseVar(final boolean useVar) {
+        Logger.info(
+                true,
+                "Setting",
+                "Profile variable substitution update requested: profile={}, oldUseVar={}, newUseVar={}",
+                this.profile,
+                this.useVar,
+                useVar);
         this.useVar = useVar;
+        Logger.info(
+                false,
+                "Setting",
+                "Profile variable substitution updated: profile={}, useVar={}",
+                this.profile,
+                this.useVar);
         return this;
     }
 
@@ -141,7 +188,19 @@ public class Profile implements Serializable {
      * @return This {@code Profile} instance for chaining.
      */
     public Profile clear() {
+        Logger.info(
+                true,
+                "Setting",
+                "Profile setting cache clear requested: profile={}, cachedCount={}",
+                this.profile,
+                this.settingMap.size());
         this.settingMap.clear();
+        Logger.info(
+                false,
+                "Setting",
+                "Profile setting cache cleared: profile={}, cachedCount={}",
+                this.profile,
+                this.settingMap.size());
         return this;
     }
 

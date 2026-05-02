@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.vortex.magic;
 
+import lombok.NoArgsConstructor;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 

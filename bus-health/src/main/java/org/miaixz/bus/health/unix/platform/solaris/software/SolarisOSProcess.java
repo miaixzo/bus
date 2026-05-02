@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -57,40 +57,133 @@ import com.sun.jna.platform.unix.Resource;
 @ThreadSafe
 public class SolarisOSProcess extends AbstractOSProcess {
 
+    /**
+     * The os value.
+     */
     private final SolarisOperatingSystem os;
 
+    /**
+     * The bitness value.
+     */
     private final Supplier<Integer> bitness = Memoizer.memoize(this::queryBitness);
+    /**
+     * The psinfo value.
+     */
     private final Supplier<SolarisLibc.SolarisPsInfo> psinfo = Memoizer
             .memoize(this::queryPsInfo, Memoizer.defaultExpiration());
+    /**
+     * The cmdEnv value.
+     */
     private final Supplier<Pair<List<String>, Map<String, String>>> cmdEnv = Memoizer
             .memoize(this::queryCommandlineEnvironment);
+    /**
+     * The prusage value.
+     */
     private final Supplier<SolarisLibc.SolarisPrUsage> prusage = Memoizer
             .memoize(this::queryPrUsage, Memoizer.defaultExpiration());
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The path value.
+     */
     private String path = Normal.EMPTY;
+    /**
+     * The commandLineBackup value.
+     */
     private String commandLineBackup;
+    /**
+     * The commandLine value.
+     */
     private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
+    /**
+     * The user value.
+     */
     private String user;
+    /**
+     * The userID value.
+     */
     private String userID;
+    /**
+     * The group value.
+     */
     private String group;
+    /**
+     * The groupID value.
+     */
     private String groupID;
+    /**
+     * The state value.
+     */
     private OSProcess.State state = OSProcess.State.INVALID;
+    /**
+     * The parentProcessID value.
+     */
     private int parentProcessID;
+    /**
+     * The threadCount value.
+     */
     private int threadCount;
+    /**
+     * The priority value.
+     */
     private int priority;
+    /**
+     * The virtualSize value.
+     */
     private long virtualSize;
+    /**
+     * The residentSetSize value.
+     */
     private long residentSetSize;
+    /**
+     * The residentSetSizePrivate value.
+     */
     private long residentSetSizePrivate;
+    /**
+     * The kernelTime value.
+     */
     private long kernelTime;
+    /**
+     * The userTime value.
+     */
     private long userTime;
+    /**
+     * The startTime value.
+     */
     private long startTime;
+    /**
+     * The upTime value.
+     */
     private long upTime;
+    /**
+     * The bytesRead value.
+     */
     private long bytesRead;
+    /**
+     * The bytesWritten value.
+     */
     private long bytesWritten;
+    /**
+     * The minorFaults value.
+     */
     private long minorFaults;
+    /**
+     * The majorFaults value.
+     */
     private long majorFaults;
+    /**
+     * The contextSwitches value.
+     */
     private long contextSwitches = 0; // default
 
+    /**
+     * Creates a new SolarisOSProcess instance.
+     *
+     * @param pid the pid
+     * @param os  the os
+     */
     public SolarisOSProcess(int pid, SolarisOperatingSystem os) {
         super(pid);
         this.os = os;
@@ -134,10 +227,20 @@ public class SolarisOSProcess extends AbstractOSProcess {
         return state;
     }
 
+    /**
+     * Queries the ps info.
+     *
+     * @return the query ps info result
+     */
     private SolarisLibc.SolarisPsInfo queryPsInfo() {
         return PsInfo.queryPsInfo(this.getProcessID());
     }
 
+    /**
+     * Queries the pr usage.
+     *
+     * @return the query pr usage result
+     */
     private SolarisLibc.SolarisPrUsage queryPrUsage() {
         return PsInfo.queryPrUsage(this.getProcessID());
     }
@@ -172,6 +275,11 @@ public class SolarisOSProcess extends AbstractOSProcess {
         return this.commandLine.get();
     }
 
+    /**
+     * Queries the command line.
+     *
+     * @return the query command line result
+     */
     private String queryCommandLine() {
         String cl = String.join(Symbol.SPACE, getArguments());
         return cl.isEmpty() ? this.commandLineBackup : cl;
@@ -197,6 +305,11 @@ public class SolarisOSProcess extends AbstractOSProcess {
         return cmdEnv.get().getRight();
     }
 
+    /**
+     * Queries the commandline environment.
+     *
+     * @return the query commandline environment result
+     */
     private Pair<List<String>, Map<String, String>> queryCommandlineEnvironment() {
         return PsInfo.queryArgsEnv(getProcessID(), psinfo.get());
     }
@@ -255,7 +368,12 @@ public class SolarisOSProcess extends AbstractOSProcess {
                 return cwd;
             }
         } catch (IOException e) {
-            Logger.trace("Couldn't find cwd for pid {}: {}", getProcessID(), e.getMessage());
+            Logger.trace(
+                    false,
+                    "Health",
+                    "Couldn't find cwd for pid {}: {}",
+                    getProcessID(),
+                    e.getClass().getSimpleName());
         }
         return Normal.EMPTY;
     }
@@ -310,6 +428,11 @@ public class SolarisOSProcess extends AbstractOSProcess {
         return this.residentSetSize;
     }
 
+    /**
+     * Returns the private resident memory.
+     *
+     * @return the get private resident memory result
+     */
     @Override
     public long getPrivateResidentMemory() {
         return this.residentSetSizePrivate;
@@ -461,6 +584,11 @@ public class SolarisOSProcess extends AbstractOSProcess {
         return this.bitness.get();
     }
 
+    /**
+     * Queries the bitness.
+     *
+     * @return the query bitness result
+     */
     private int queryBitness() {
         List<String> pflags = Executor.runNative("pflags " + getProcessID());
         for (String line : pflags) {
@@ -590,6 +718,13 @@ public class SolarisOSProcess extends AbstractOSProcess {
         return true;
     }
 
+    /**
+     * Returns the process open file limit.
+     *
+     * @param processId the process id
+     * @param index     the index
+     * @return the get process open file limit result
+     */
     private long getProcessOpenFileLimit(final long processId, final int index) {
         final List<String> output = Executor.runNative("plimit " + processId);
         if (output.isEmpty()) {

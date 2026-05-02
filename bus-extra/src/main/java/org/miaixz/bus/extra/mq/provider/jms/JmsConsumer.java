@@ -27,6 +27,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.extra.mq.Consumer;
 import org.miaixz.bus.extra.mq.Message;
 import org.miaixz.bus.extra.mq.MessageHandler;
+import org.miaixz.bus.logger.Logger;
 
 import jakarta.jms.BytesMessage;
 import jakarta.jms.JMSException;
@@ -92,9 +93,48 @@ public class JmsConsumer implements Consumer {
      */
     @Override
     public void subscribe(final MessageHandler messageHandler) {
+        final long startedAt = System.nanoTime();
+        Logger.info(true, "Extra", "JMS subscription started: group={}", consumerGroup);
         try {
-            this.consumer.setMessageListener(message -> messageHandler.handle(new JmsMessage(consumerGroup, message)));
+            this.consumer.setMessageListener(message -> {
+                final long handleStartedAt = System.nanoTime();
+                try {
+                    messageHandler.handle(new JmsMessage(consumerGroup, message));
+                    Logger.debug(
+                            false,
+                            "Extra",
+                            "JMS message handled: group={}, batchSize={}, elapsedMs={}",
+                            consumerGroup,
+                            1,
+                            (System.nanoTime() - handleStartedAt) / 1_000_000L);
+                } catch (RuntimeException e) {
+                    Logger.warn(
+                            false,
+                            "Extra",
+                            e,
+                            "JMS message handling failed: group={}, batchSize={}, exception={}, elapsedMs={}",
+                            consumerGroup,
+                            1,
+                            e.getClass().getSimpleName(),
+                            (System.nanoTime() - handleStartedAt) / 1_000_000L);
+                    throw e;
+                }
+            });
+            Logger.info(
+                    false,
+                    "Extra",
+                    "JMS subscription registered: group={}, elapsedMs={}",
+                    consumerGroup,
+                    (System.nanoTime() - startedAt) / 1_000_000L);
         } catch (final JMSException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "JMS subscription failed: group={}, exception={}, elapsedMs={}",
+                    consumerGroup,
+                    e.getClass().getSimpleName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
             throw new MQueueException(e);
         }
     }
@@ -106,7 +146,15 @@ public class JmsConsumer implements Consumer {
      */
     @Override
     public void close() throws IOException {
+        final long startedAt = System.nanoTime();
+        Logger.debug(true, "Extra", "JMS consumer close requested: group={}", consumerGroup);
         IoKit.closeQuietly(this.consumer);
+        Logger.debug(
+                false,
+                "Extra",
+                "JMS consumer closed: group={}, elapsedMs={}",
+                consumerGroup,
+                (System.nanoTime() - startedAt) / 1_000_000L);
     }
 
     /**
@@ -141,6 +189,14 @@ public class JmsConsumer implements Consumer {
                     throw new IllegalArgumentException("Unsupported message type: " + jmsMessage.getClass().getName());
                 }
             } catch (final JMSException e) {
+                Logger.warn(
+                        false,
+                        "Extra",
+                        e,
+                        "JMS message content read failed: topic={}, messageType={}, exception={}",
+                        topic,
+                        jmsMessage == null ? null : jmsMessage.getClass().getSimpleName(),
+                        e.getClass().getSimpleName());
                 throw new MQueueException(e);
             }
         }

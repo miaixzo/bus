@@ -20,6 +20,7 @@
 package org.miaixz.bus.office.builtin;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.office.Context;
 
 /**
@@ -32,7 +33,18 @@ public class OnlineMadeInOffice extends AbstractOffice {
 
     @Override
     public void execute(Context context) throws InternalException {
+        Logger.debug(
+                true,
+                "Office",
+                "Online office execution started: contextType={}",
+                context == null ? null : context.getClass().getName());
         // No specific implementation for online office execution in this abstract class.
+        Logger.debug(
+                false,
+                "Office",
+                "Online office execution completed: contextType={}, result={}",
+                context == null ? null : context.getClass().getName(),
+                "noSpecificImplementation");
     }
 
 }

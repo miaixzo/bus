@@ -20,6 +20,7 @@
 package org.miaixz.bus.tempus.timings;
 
 import org.miaixz.bus.core.xyz.ThreadKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.tempus.crontab.TimerCrontab;
 
 import java.util.concurrent.DelayQueue;
@@ -84,6 +85,7 @@ public class SystemTimer {
      * @return this {@link SystemTimer} instance.
      */
     public SystemTimer start() {
+        Logger.info(true, "Tempus", "System timer startup started: delayQueueTimeoutMs={}", delayQueueTimeout);
         bossThreadPool = ThreadKit.newSingleExecutor();
         isRunning = true;
         bossThreadPool.submit(() -> {
@@ -93,6 +95,7 @@ public class SystemTimer {
                 }
             }
         });
+        Logger.info(false, "Tempus", "System timer startup completed: running={}", isRunning);
         return this;
     }
 
@@ -100,10 +103,12 @@ public class SystemTimer {
      * Forcibly stops the timer. This will stop the background thread and shut down the executor service.
      */
     public void stop() {
+        Logger.info(true, "Tempus", "System timer stop started: running={}", isRunning);
         this.isRunning = false;
         if (this.bossThreadPool != null) {
             this.bossThreadPool.shutdown();
         }
+        Logger.info(false, "Tempus", "System timer stop completed: running={}", isRunning);
     }
 
     /**
@@ -114,8 +119,25 @@ public class SystemTimer {
     public void addTask(final TimerCrontab timerCrontab) {
         // If the task cannot be added to the timing wheel (e.g., its delay is in the past),
         // execute it immediately in a separate thread.
+        Logger.debug(
+                true,
+                "Tempus",
+                "System timer task add started: delayMs={}, descPresent={}",
+                timerCrontab == null ? null : timerCrontab.getDelayMs(),
+                timerCrontab != null && timerCrontab.desc != null);
         if (!timeWheel.addTask(timerCrontab)) {
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "System timer task expired; dispatching immediately: descPresent={}",
+                    timerCrontab != null && timerCrontab.desc != null);
             ThreadKit.execAsync(timerCrontab.getTask());
+        } else {
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "System timer task added: descPresent={}",
+                    timerCrontab != null && timerCrontab.desc != null);
         }
     }
 
@@ -132,13 +154,24 @@ public class SystemTimer {
         try {
             final TimerTaskList timerTaskList = poll();
             if (null != timerTaskList) {
+                Logger.debug(
+                        true,
+                        "Tempus",
+                        "System timer bucket flush started: expireMs={}",
+                        timerTaskList.getExpire());
                 // Advance the timing wheel's clock to the expiration time of the retrieved list.
                 timeWheel.advanceClock(timerTaskList.getExpire());
                 // Execute all tasks in the expired list (this may include cascading to lower-level wheels).
                 timerTaskList.flush(this::addTask);
+                Logger.debug(
+                        false,
+                        "Tempus",
+                        "System timer bucket flush completed: expireMs={}",
+                        timerTaskList.getExpire());
             }
         } catch (final InterruptedException ignore) {
             // If interrupted, stop the timer.
+            Logger.warn(false, "Tempus", "System timer advance interrupted: running={}", isRunning);
             return false;
         }
         return true;

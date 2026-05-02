@@ -190,9 +190,9 @@ public class DataProcessor {
 }
 ```
 
-### 3. Aligned Logging with Tags
+### 3. Contextual Logging
 
-Bus Logger supports aligned logging for better readability:
+Use the log message itself to carry the business context:
 
 ```java
 import org.miaixz.bus.logger.Logger;
@@ -200,21 +200,19 @@ import org.miaixz.bus.logger.Logger;
 public class OrderService {
 
     public void processOrder(Order order) {
-        // Entry log with alignment (default width: 15)
-        Logger.info(true, "Order", "Processing order: {}", order.getId());
+        Logger.info("Order processing started: orderId={}", order.getId());
 
         try {
             validateOrder(order);
-            Logger.info(true, "Validate", "Order validation passed");
+            Logger.info("Order validation passed: orderId={}", order.getId());
             paymentService.charge(order);
-            Logger.info(true, "Payment", "Payment completed");
+            Logger.info("Order payment completed: orderId={}", order.getId());
             shippingService.ship(order);
-            Logger.info(true, "Shipping", "Order shipped successfully");
+            Logger.info("Order shipping completed: orderId={}", order.getId());
 
-            // Exit log
-            Logger.info(false, "Order", "Order processing completed: {}", order.getId());
+            Logger.info("Order processing completed: orderId={}", order.getId());
         } catch (Exception e) {
-            Logger.error(false, "Order", "Failed to process order: {}", order.getId());
+            Logger.error("Order processing failed: orderId={}", order.getId(), e);
             throw e;
         }
     }
@@ -223,14 +221,14 @@ public class OrderService {
 
 **Output:**
 ```
-===>     Order: Processing order: ORD-12345
-===>   Validate: Order validation passed
-===>   Payment: Payment completed
-===>   Shipping: Order shipped successfully
-<==     Order: Order processing completed: ORD-12345
+Order processing started: orderId=ORD-12345
+Order validation passed: orderId=ORD-12345
+Order payment completed: orderId=ORD-12345
+Order shipping completed: orderId=ORD-12345
+Order processing completed: orderId=ORD-12345
 ```
 
-### 4. Custom Width Alignment
+### 4. Request Context Logging
 
 ```java
 import org.miaixz.bus.logger.Logger;
@@ -238,21 +236,20 @@ import org.miaixz.bus.logger.Logger;
 public class ApiService {
 
     public void handleRequest(Request request) {
-        // Custom width (20 characters)
-        Logger.debug(true, "Filter", 20, "Applying security filter");
-        Logger.debug(true, "Auth", 20, "Authenticating user: {}", request.getUser());
-        Logger.debug(true, "Process", 20, "Processing request: {}", request.getId());
-        Logger.debug(false, "Process", 20, "Request processed successfully");
+        Logger.debug("API security filter applied: requestId={}", request.getId());
+        Logger.debug("API user authenticated: requestId={}, user={}", request.getId(), request.getUser());
+        Logger.debug("API request processing started: requestId={}", request.getId());
+        Logger.debug("API request processed successfully: requestId={}", request.getId());
     }
 }
 ```
 
 **Output:**
 ```
-===>            Filter: Applying security filter
-===>              Auth: Authenticating user: john.doe
-===>           Process: Processing request: REQ-001
-<==           Process: Request processed successfully
+API security filter applied: requestId=REQ-001
+API user authenticated: requestId=REQ-001, user=john.doe
+API request processing started: requestId=REQ-001
+API request processed successfully: requestId=REQ-001
 ```
 
 ### 5. Exception Logging

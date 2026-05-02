@@ -33,6 +33,13 @@ import org.miaixz.bus.core.lang.Symbol;
 public class RFC3986 {
 
     /**
+     * Constructs a new RFC 3986 codec definition holder.
+     */
+    public RFC3986() {
+
+    }
+
+    /**
      * The set of generic URI component delimiters. {@code gen-delims = ":" / "/" / "?" / "#" / "[" / "]" / "@"}
      */
     public static final PercentCodec GEN_DELIMS = PercentCodec.Builder.of(":/?#[]@").build();

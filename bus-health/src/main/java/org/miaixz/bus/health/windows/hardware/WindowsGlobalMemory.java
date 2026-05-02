@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -48,11 +48,20 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 @ThreadSafe
 final class WindowsGlobalMemory extends AbstractGlobalMemory {
 
+    /**
+     * The IS_WINDOWS10_OR_GREATER constant.
+     */
     private static final boolean IS_WINDOWS10_OR_GREATER = VersionHelpers.IsWindows10OrGreater();
 
+    /**
+     * The availTotalSize value.
+     */
     private final Supplier<Triplet<Long, Long, Long>> availTotalSize = Memoizer
             .memoize(WindowsGlobalMemory::readPerfInfo, Memoizer.defaultExpiration());
 
+    /**
+     * The vm value.
+     */
     private final Supplier<VirtualMemory> vm = Memoizer.memoize(this::createVirtualMemory);
 
     /**
@@ -253,10 +262,19 @@ final class WindowsGlobalMemory extends AbstractGlobalMemory {
         }
     }
 
+    /**
+     * Reads the perf info.
+     *
+     * @return the read perf info result
+     */
     private static Triplet<Long, Long, Long> readPerfInfo() {
         try (Struct.CloseablePerformanceInformation performanceInfo = new Struct.CloseablePerformanceInformation()) {
             if (!Psapi.INSTANCE.GetPerformanceInfo(performanceInfo, performanceInfo.size())) {
-                Logger.error("Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
+                Logger.error(
+                        false,
+                        "Health",
+                        "Failed to get Performance Info. Error code: {}",
+                        Kernel32.INSTANCE.GetLastError());
                 return Triplet.of(0L, 0L, 4098L);
             }
             long pageSize = performanceInfo.PageSize.longValue();
@@ -266,35 +284,65 @@ final class WindowsGlobalMemory extends AbstractGlobalMemory {
         }
     }
 
+    /**
+     * Returns the available.
+     *
+     * @return the get available result
+     */
     @Override
     public long getAvailable() {
         return availTotalSize.get().getLeft();
     }
 
+    /**
+     * Returns the total.
+     *
+     * @return the get total result
+     */
     @Override
     public long getTotal() {
         return availTotalSize.get().getMiddle();
     }
 
+    /**
+     * Returns the page size.
+     *
+     * @return the get page size result
+     */
     @Override
     public long getPageSize() {
         return availTotalSize.get().getRight();
     }
 
+    /**
+     * Returns the virtual memory.
+     *
+     * @return the get virtual memory result
+     */
     @Override
     public VirtualMemory getVirtualMemory() {
         return vm.get();
     }
 
+    /**
+     * Creates the virtual memory.
+     *
+     * @return the create virtual memory result
+     */
     private VirtualMemory createVirtualMemory() {
         return new WindowsVirtualMemory(this);
     }
 
+    /**
+     * Returns the physical memory.
+     *
+     * @return the get physical memory result
+     */
     @Override
     public List<PhysicalMemory> getPhysicalMemory() {
         List<PhysicalMemory> physicalMemoryList = new ArrayList<>();
         if (IS_WINDOWS10_OR_GREATER) {
-            WmiResult<Win32PhysicalMemory.PhysicalMemoryProperty> bankMap = Win32PhysicalMemory.queryphysicalMemory();
+            WmiResult<Win32PhysicalMemory.PhysicalMemoryProperty> bankMap = Win32PhysicalMemory.queryPhysicalMemory();
             for (int index = 0; index < bankMap.getResultCount(); index++) {
                 String bankLabel = WmiKit
                         .getString(bankMap, Win32PhysicalMemory.PhysicalMemoryProperty.BANKLABEL, index);
@@ -315,7 +363,7 @@ final class WindowsGlobalMemory extends AbstractGlobalMemory {
             }
         } else {
             WmiResult<Win32PhysicalMemory.PhysicalMemoryPropertyWin8> bankMap = Win32PhysicalMemory
-                    .queryphysicalMemoryWin8();
+                    .queryPhysicalMemoryWin8();
             for (int index = 0; index < bankMap.getResultCount(); index++) {
                 String bankLabel = WmiKit
                         .getString(bankMap, Win32PhysicalMemory.PhysicalMemoryPropertyWin8.BANKLABEL, index);

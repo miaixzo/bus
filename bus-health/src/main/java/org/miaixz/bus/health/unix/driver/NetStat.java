@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -41,6 +41,9 @@ import org.miaixz.bus.health.builtin.software.InternetProtocolStats;
 @ThreadSafe
 public final class NetStat {
 
+    /**
+     * Creates a new NetStat instance.
+     */
     private NetStat() {
     }
 
@@ -51,10 +54,20 @@ public final class NetStat {
      *         is the number of established IPv6 connections.
      */
     public static Pair<Long, Long> queryTcpnetstat() {
+        return queryTcpnetstat(Executor.runNative("netstat -n -p tcp"));
+    }
+
+    /**
+     * Parse netstat output to count established TCP connections.
+     *
+     * @param lines output of {@code netstat -n -p tcp}
+     * @return A {@link Pair} where the left element is the number of established IPv4 connections and the right element
+     *         is the number of established IPv6 connections.
+     */
+    static Pair<Long, Long> queryTcpnetstat(List<String> lines) {
         long tcp4 = 0L;
         long tcp6 = 0L;
-        List<String> activeConns = Executor.runNative("netstat -n -p tcp");
-        for (String s : activeConns) {
+        for (String s : lines) {
             if (s.endsWith("ESTABLISHED")) {
                 if (s.startsWith("tcp4")) {
                     tcp4++;
@@ -72,9 +85,18 @@ public final class NetStat {
      * @return A list of {@link InternetProtocolStats.IPConnection} objects representing TCP and UDP connections.
      */
     public static List<InternetProtocolStats.IPConnection> queryNetstat() {
+        return queryNetstat(Executor.runNative("netstat -n"));
+    }
+
+    /**
+     * Parse netstat output for TCP and UDP connections.
+     *
+     * @param lines output of {@code netstat -n}
+     * @return A list of {@link InternetProtocolStats.IPConnection} objects representing TCP and UDP connections.
+     */
+    static List<InternetProtocolStats.IPConnection> queryNetstat(List<String> lines) {
         List<InternetProtocolStats.IPConnection> connections = new ArrayList<>();
-        List<String> activeConns = Executor.runNative("netstat -n");
-        for (String s : activeConns) {
+        for (String s : lines) {
             String[] split;
             if (s.startsWith("tcp") || s.startsWith("udp")) {
                 split = Pattern.SPACES_PATTERN.split(s);
@@ -144,6 +166,16 @@ public final class NetStat {
      * @return The TCP statistics.
      */
     public static InternetProtocolStats.TcpStats queryTcpStats(String netstatStr) {
+        return queryTcpStats(Executor.runNative(netstatStr));
+    }
+
+    /**
+     * Parse TCP statistics from netstat output.
+     *
+     * @param netstat output lines from {@code netstat -s}
+     * @return The TCP statistics.
+     */
+    static InternetProtocolStats.TcpStats queryTcpStats(List<String> netstat) {
         long connectionsEstablished = 0;
         long connectionsActive = 0;
         long connectionsPassive = 0;
@@ -154,7 +186,6 @@ public final class NetStat {
         long segmentsRetransmitted = 0;
         long inErrors = 0;
         long outResets = 0;
-        List<String> netstat = Executor.runNative(netstatStr);
         for (String s : netstat) {
             String[] split = s.trim().split(Symbol.SPACE, 2);
             if (split.length == 2) {
@@ -236,11 +267,20 @@ public final class NetStat {
      * @return The UDP statistics.
      */
     public static InternetProtocolStats.UdpStats queryUdpStats(String netstatStr) {
+        return queryUdpStats(Executor.runNative(netstatStr));
+    }
+
+    /**
+     * Parse UDP statistics from netstat output.
+     *
+     * @param netstat output lines from {@code netstat -s}
+     * @return The UDP statistics.
+     */
+    static InternetProtocolStats.UdpStats queryUdpStats(List<String> netstat) {
         long datagramsSent = 0;
         long datagramsReceived = 0;
         long datagramsNoPort = 0;
         long datagramsReceivedErrors = 0;
-        List<String> netstat = Executor.runNative(netstatStr);
         for (String s : netstat) {
             String[] split = s.trim().split(Symbol.SPACE, 2);
             if (split.length == 2) {
@@ -268,7 +308,7 @@ public final class NetStat {
                     case "with incomplete header":
                     case "with bad data length field":
                     case "with bad checksum":
-                    case "woth no checksum":
+                    case "with no checksum":
                         datagramsReceivedErrors += Parsing.parseLongOrDefault(split[0], 0L);
                         break;
 

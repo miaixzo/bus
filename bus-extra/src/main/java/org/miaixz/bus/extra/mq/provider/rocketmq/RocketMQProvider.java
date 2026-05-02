@@ -29,6 +29,7 @@ import org.miaixz.bus.extra.mq.MQConfig;
 import org.miaixz.bus.core.lang.exception.MQueueException;
 import org.miaixz.bus.extra.mq.Producer;
 import org.miaixz.bus.extra.mq.MQProvider;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * RocketMQ message queue engine implementation class. This class serves as a concrete {@link MQProvider} for Apache
@@ -99,7 +100,21 @@ public class RocketMQProvider implements MQProvider {
      */
     @Override
     public RocketMQProvider init(final MQConfig config) {
+        Logger.info(
+                true,
+                "Extra",
+                "RocketMQ provider initialization started: brokerPresent={}, producerGroup={}, consumerGroup={}",
+                config != null && config.getBrokerUrl() != null,
+                producerGroup,
+                consumerGroup);
         this.config = config;
+        Logger.info(
+                false,
+                "Extra",
+                "RocketMQ provider initialized: brokerPresent={}, producerGroup={}, consumerGroup={}",
+                config != null && config.getBrokerUrl() != null,
+                producerGroup,
+                consumerGroup);
         return this;
     }
 
@@ -112,13 +127,34 @@ public class RocketMQProvider implements MQProvider {
      */
     @Override
     public Producer getProducer() {
+        final long startedAt = System.nanoTime();
+        Logger.debug(
+                true,
+                "Extra",
+                "RocketMQ producer creation started: producerGroup={}, brokerPresent={}",
+                producerGroup,
+                config != null && config.getBrokerUrl() != null);
         final DefaultMQProducer defaultMQProducer = new DefaultMQProducer(producerGroup);
         defaultMQProducer.setNamesrvAddr(config.getBrokerUrl());
         try {
             defaultMQProducer.start();
         } catch (final MQClientException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "RocketMQ producer creation failed: producerGroup={}, exception={}, elapsedMs={}",
+                    producerGroup,
+                    e.getClass().getSimpleName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
             throw new MQueueException(e);
         }
+        Logger.debug(
+                false,
+                "Extra",
+                "RocketMQ producer created: producerGroup={}, elapsedMs={}",
+                producerGroup,
+                (System.nanoTime() - startedAt) / 1_000_000L);
         return new RocketMQProducer(defaultMQProducer);
     }
 
@@ -130,9 +166,23 @@ public class RocketMQProvider implements MQProvider {
      */
     @Override
     public Consumer getConsumer() {
+        final long startedAt = System.nanoTime();
+        Logger.debug(
+                true,
+                "Extra",
+                "RocketMQ consumer creation started: consumerGroup={}, brokerPresent={}",
+                consumerGroup,
+                config != null && config.getBrokerUrl() != null);
         final DefaultMQPushConsumer defaultMQPushConsumer = new DefaultMQPushConsumer(consumerGroup);
         defaultMQPushConsumer.setNamesrvAddr(config.getBrokerUrl());
-        return new RocketMQConsumer(defaultMQPushConsumer);
+        Consumer consumer = new RocketMQConsumer(defaultMQPushConsumer);
+        Logger.debug(
+                false,
+                "Extra",
+                "RocketMQ consumer created: consumerGroup={}, elapsedMs={}",
+                consumerGroup,
+                (System.nanoTime() - startedAt) / 1_000_000L);
+        return consumer;
     }
 
 }

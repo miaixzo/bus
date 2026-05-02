@@ -59,11 +59,17 @@ public interface Registry<T extends Assets> {
      * Deregisters a single runtime instance by fingerprint.
      *
      * @param namespace   namespace containing the instance
+     * @param app_id      application identifier
      * @param method      service method name
      * @param version     service version
      * @param fingerprint unique runtime instance fingerprint
      */
-    default void deregisterInstance(String namespace, String method, String version, String fingerprint) {
+    default void deregisterInstance(
+            String namespace,
+            String app_id,
+            String method,
+            String version,
+            String fingerprint) {
         throw new UnsupportedOperationException("Runtime deregistration not supported");
     }
 
@@ -76,15 +82,63 @@ public interface Registry<T extends Assets> {
     List<T> query(Vector vector);
 
     /**
+     * Refreshes matching entries from durable state when supported.
+     *
+     * @param vector vector condition
+     * @return refreshed entries
+     */
+    default List<T> refresh(Vector vector) {
+        return query(vector);
+    }
+
+    /**
+     * Rebuilds cached projections in the requested scope when supported.
+     *
+     * @param vector vector condition
+     * @return rebuilt entries
+     */
+    default List<T> rebuild(Vector vector) {
+        return refresh(vector);
+    }
+
+    /**
      * Queries runtime instances for the given service identity.
      *
      * @param namespace namespace containing the service
+     * @param app_id    application identifier
      * @param method    service method name
      * @param version   service version
      * @return matching runtime instances
      */
-    default List<Instance> queryInstances(String namespace, String method, String version) {
+    default List<Instance> queryInstances(String namespace, String app_id, String method, String version) {
         return List.of();
+    }
+
+    /**
+     * Returns whether the registry supports runtime-instance management.
+     *
+     * @return {@code true} when runtime instances are supported
+     */
+    default boolean supportsInstances() {
+        return false;
+    }
+
+    /**
+     * Returns whether the registry supports watch subscriptions.
+     *
+     * @return {@code true} when watch subscriptions are supported
+     */
+    default boolean supportsWatch() {
+        return true;
+    }
+
+    /**
+     * Returns whether the registry supports durable refresh or rebuild semantics.
+     *
+     * @return {@code true} when refresh semantics are supported
+     */
+    default boolean supportsRefresh() {
+        return false;
     }
 
     /**
@@ -94,13 +148,13 @@ public interface Registry<T extends Assets> {
      * @param listener listener to notify
      * @return watch identifier
      */
-    String watch(Vector vector, Listener<T> listener);
+    String watch(Vector vector, Listener<Watch<T>> listener);
 
     /**
      * Cancels a prior watch.
      *
-     * @param watchId watch identifier
+     * @param watch_id watch identifier
      */
-    void unwatch(String watchId);
+    void unwatch(String watch_id);
 
 }

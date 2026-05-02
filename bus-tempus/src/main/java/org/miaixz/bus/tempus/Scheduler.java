@@ -211,7 +211,13 @@ public class Scheduler implements Serializable {
      */
     public Scheduler schedule(final Setting cronSetting) {
         if (MapKit.isNotEmpty(cronSetting)) {
+            Logger.info(
+                    true,
+                    "Tempus",
+                    "Scheduler setting load started: groupCount={}",
+                    cronSetting.getGroupedMap().size());
             String group;
+            int loadedCount = 0;
             for (final Entry<String, LinkedHashMap<String, String>> groupedEntry : cronSetting.getGroupedMap()
                     .entrySet()) {
                 group = groupedEntry.getKey();
@@ -221,15 +227,42 @@ public class Scheduler implements Serializable {
                         jobClass = group + Symbol.C_DOT + jobClass;
                     }
                     final String pattern = entry.getValue();
-                    Logger.debug("Load job: {} {}", pattern, jobClass);
+                    Logger.debug(
+                            true,
+                            "Tempus",
+                            "Scheduler setting job load started: pattern={}, jobClass={}",
+                            pattern,
+                            jobClass);
                     try {
                         // Use a custom ID to avoid duplicates when reloading from the config file.
                         schedule("id_" + jobClass, pattern, new InvokeCrontab(jobClass));
+                        loadedCount++;
+                        Logger.debug(
+                                false,
+                                "Tempus",
+                                "Scheduler setting job loaded: pattern={}, jobClass={}, taskId={}",
+                                pattern,
+                                jobClass,
+                                "id_" + jobClass);
                     } catch (final Exception e) {
+                        Logger.error(
+                                false,
+                                "Tempus",
+                                e,
+                                "Scheduler setting job load failed: pattern={}, jobClass={}, exception={}",
+                                pattern,
+                                jobClass,
+                                e.getClass().getSimpleName());
                         throw new CrontabException("Schedule [{}] [{}] error!", pattern, jobClass);
                     }
                 }
             }
+            Logger.info(
+                    false,
+                    "Tempus",
+                    "Scheduler setting load completed: loadedCount={}, taskCount={}",
+                    loadedCount,
+                    this.repertoire.size());
         }
         return this;
     }
@@ -243,7 +276,15 @@ public class Scheduler implements Serializable {
      */
     public String schedule(final String pattern, final Crontab crontab) {
         final String id = ID.objectId();
+        Logger.debug(true, "Tempus", "Scheduler generated task scheduling started: taskId={}, pattern={}", id, pattern);
         schedule(id, pattern, crontab);
+        Logger.debug(
+                false,
+                "Tempus",
+                "Scheduler generated task scheduled: taskId={}, pattern={}, taskCount={}",
+                id,
+                pattern,
+                this.repertoire.size());
         return id;
     }
 
@@ -283,7 +324,21 @@ public class Scheduler implements Serializable {
      * @throws CrontabException if a task with the same ID already exists.
      */
     public Scheduler schedule(final String id, final CronPattern pattern, final Crontab crontab) {
+        Logger.info(
+                true,
+                "Tempus",
+                "Scheduler task scheduling started: taskId={}, pattern={}, taskType={}",
+                id,
+                pattern,
+                crontab == null ? null : crontab.getClass().getName());
         repertoire.add(id, pattern, crontab);
+        Logger.info(
+                false,
+                "Tempus",
+                "Scheduler task scheduled: taskId={}, pattern={}, taskCount={}",
+                id,
+                pattern,
+                this.repertoire.size());
         return this;
     }
 
@@ -305,7 +360,16 @@ public class Scheduler implements Serializable {
      * @return {@code true} if the task was found and removed, {@code false} otherwise.
      */
     public boolean descheduleWithStatus(final String id) {
-        return this.repertoire.remove(id);
+        Logger.info(true, "Tempus", "Scheduler task deschedule started: taskId={}", id);
+        boolean removed = this.repertoire.remove(id);
+        Logger.info(
+                false,
+                "Tempus",
+                "Scheduler task deschedule completed: taskId={}, removed={}, taskCount={}",
+                id,
+                removed,
+                this.repertoire.size());
+        return removed;
     }
 
     /**
@@ -316,7 +380,15 @@ public class Scheduler implements Serializable {
      * @return this {@link Scheduler} instance.
      */
     public Scheduler updatePattern(final String id, final CronPattern pattern) {
-        this.repertoire.updatePattern(id, pattern);
+        Logger.info(true, "Tempus", "Scheduler task pattern update started: taskId={}, pattern={}", id, pattern);
+        boolean updated = this.repertoire.updatePattern(id, pattern);
+        Logger.info(
+                false,
+                "Tempus",
+                "Scheduler task pattern update completed: taskId={}, pattern={}, updated={}",
+                id,
+                pattern,
+                updated);
         return this;
     }
 
@@ -374,7 +446,20 @@ public class Scheduler implements Serializable {
      * @return this {@link Scheduler} instance.
      */
     public Scheduler clear() {
+        int before = this.repertoire == null ? 0 : this.repertoire.size();
+        Logger.info(
+                true,
+                "Tempus",
+                "Scheduler task table reset started: beforeCount={}, triggerQueue={}",
+                before,
+                this.config.isUseTriggerQueue());
         this.repertoire = CrontabFactory.of(this.config);
+        Logger.info(
+                false,
+                "Tempus",
+                "Scheduler task table reset completed: beforeCount={}, afterCount={}",
+                before,
+                this.repertoire.size());
         return this;
     }
 
@@ -410,6 +495,14 @@ public class Scheduler implements Serializable {
         lock.lock();
         try {
             checkStarted();
+            Logger.info(
+                    true,
+                    "Tempus",
+                    "Scheduler startup started: daemon={}, matchSecond={}, triggerQueue={}, taskCount={}",
+                    daemon,
+                    this.config.isMatchSecond(),
+                    this.config.isUseTriggerQueue(),
+                    this.repertoire.size());
 
             if (null == this.threadExecutor) {
                 // Use an unbounded thread pool to ensure every task can run promptly,
@@ -425,6 +518,13 @@ public class Scheduler implements Serializable {
             timer.setDaemon(daemon);
             timer.start();
             this.started = true;
+            Logger.info(
+                    false,
+                    "Tempus",
+                    "Scheduler startup completed: daemon={}, taskCount={}, timerThread={}",
+                    daemon,
+                    this.repertoire.size(),
+                    timer.getName());
         } finally {
             lock.unlock();
         }
@@ -453,8 +553,15 @@ public class Scheduler implements Serializable {
         lock.lock();
         try {
             if (!started) {
+                Logger.warn(false, "Tempus", "Scheduler stop rejected: started=false, clearTasks={}", clearTasks);
                 throw new IllegalStateException("Scheduler not started !");
             }
+            Logger.info(
+                    true,
+                    "Tempus",
+                    "Scheduler stop started: clearTasks={}, taskCount={}",
+                    clearTasks,
+                    this.repertoire.size());
 
             // Stop CronTimer
             this.timer.stopTimer();
@@ -471,6 +578,13 @@ public class Scheduler implements Serializable {
 
             // Update started flag
             started = false;
+            Logger.info(
+                    false,
+                    "Tempus",
+                    "Scheduler stop completed: clearTasks={}, started={}, taskCount={}",
+                    clearTasks,
+                    started,
+                    this.repertoire.size());
         } finally {
             lock.unlock();
         }
@@ -483,7 +597,14 @@ public class Scheduler implements Serializable {
      * @param millis Millisecond timestamp.
      */
     public void execute(final long millis) {
+        Logger.debug(
+                true,
+                "Tempus",
+                "Scheduler immediate execution started: millis={}, taskCount={}",
+                millis,
+                this.repertoire.size());
         this.repertoire.execute(this, millis);
+        Logger.debug(false, "Tempus", "Scheduler immediate execution completed: millis={}", millis);
     }
 
     /**
@@ -493,6 +614,7 @@ public class Scheduler implements Serializable {
      */
     private void checkStarted() throws CrontabException {
         if (this.started) {
+            Logger.warn(false, "Tempus", "Scheduler state check failed: started=true");
             throw new CrontabException("Scheduler already started!");
         }
     }

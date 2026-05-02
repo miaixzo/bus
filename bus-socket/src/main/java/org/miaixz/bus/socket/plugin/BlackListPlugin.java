@@ -46,7 +46,7 @@ public final class BlackListPlugin<T> extends AbstractPlugin<T> {
         try {
             inetSocketAddress = (InetSocketAddress) channel.getRemoteAddress();
         } catch (IOException e) {
-            Logger.error("Failed to get remote address for channel.", e);
+            Logger.error(false, "Socket", "Failed to get remote address for channel.", e);
         }
         if (inetSocketAddress == null) {
             return channel;
@@ -54,6 +54,8 @@ public final class BlackListPlugin<T> extends AbstractPlugin<T> {
         for (BlackListRule rule : ipBlackList) {
             if (!rule.access(inetSocketAddress)) {
                 Logger.warn(
+                        false,
+                        "Socket",
                         "Connection from blacklisted IP: " + inetSocketAddress.getAddress().getHostAddress()
                                 + " rejected.");
                 return null;

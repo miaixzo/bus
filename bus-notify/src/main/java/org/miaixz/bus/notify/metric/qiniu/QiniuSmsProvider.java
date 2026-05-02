@@ -26,6 +26,7 @@ import java.util.Map;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.AbstractProvider;
@@ -58,6 +59,12 @@ public class QiniuSmsProvider extends AbstractProvider<QiniuNotice, Context> {
      */
     @Override
     public Message send(QiniuNotice entity) {
+        Logger.info(
+                true,
+                "Notify",
+                "Qiniu SMS send started: template={}, targetCount={}",
+                entity == null ? null : entity.getTemplate(),
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length);
         Map<String, String> bodys = new HashMap<>();
         bodys.put("template_id", entity.getTemplate());
         bodys.put("parameters", entity.getParams());
@@ -69,7 +76,17 @@ public class QiniuSmsProvider extends AbstractProvider<QiniuNotice, Context> {
         String errmsg = (status != null && status == 200) ? ErrorCode._SUCCESS.getValue()
                 : ErrorCode._FAILURE.getValue();
 
-        return Message.builder().errcode(errcode).errmsg(errmsg).build();
+        Message result = Message.builder().errcode(errcode).errmsg(errmsg).build();
+        Logger.info(
+                false,
+                "Notify",
+                "Qiniu SMS send completed: template={}, targetCount={}, status={}, errcode={}, responseBytes={}",
+                entity == null ? null : entity.getTemplate(),
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                status,
+                result.getErrcode(),
+                response == null ? 0 : response.length());
+        return result;
     }
 
 }

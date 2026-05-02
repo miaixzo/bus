@@ -83,6 +83,8 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
     @Override
     public void configure(List<org.springframework.http.converter.HttpMessageConverter<?>> converters) {
         Logger.debug(
+                false,
+                "Starter",
                 "Configuring GsonHttpMessageConverter with autoType: {}",
                 autoTypeMatcher == null ? null : autoTypeMatcher.description());
 
@@ -105,9 +107,11 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
                     return isFieldIgnored(field);
                 } catch (NoSuchFieldException | SecurityException e) {
                     Logger.warn(
-                            "Could not access field '{}' for annotation check. Defaulting to include.",
+                            false,
+                            "Starter",
+                            "Gson could not access field '{}' for annotation check. Defaulting to include.",
                             f.getName(),
-                            e.getMessage());
+                            e.getClass().getSimpleName());
                     // If we can't inspect the field, don't skip it (default to including it).
                     return false;
                 }
@@ -122,7 +126,11 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
 
         if (autoTypeMatcher != null) {
             gsonBuilder.registerTypeAdapterFactory(new AutoTypeAdapterFactory(autoTypeMatcher));
-            Logger.debug("Gson autoType enabled for package patterns: {}", autoTypeMatcher.description());
+            Logger.debug(
+                    false,
+                    "Starter",
+                    "Gson autoType enabled for package patterns: {}",
+                    autoTypeMatcher.description());
         }
 
         Gson gson = gsonBuilder.create();
@@ -132,7 +140,11 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
         // Fastjson2/Jackson to avoid duplicate inherited-field binding issues in Gson.
         converter.setSupportedMediaTypes(List.of(new MediaType("application", "json+gson")));
         converters.add(order(), converter);
-        Logger.debug("Gson converter configured with media types: {}", converter.getSupportedMediaTypes());
+        Logger.debug(
+                false,
+                "Starter",
+                "Gson converter configured with media types: {}",
+                converter.getSupportedMediaTypes());
     }
 
     /**

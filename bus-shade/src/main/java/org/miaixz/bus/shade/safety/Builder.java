@@ -34,6 +34,7 @@ import javax.crypto.SecretKey;
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.shade.safety.algorithm.Key;
 import org.miaixz.bus.shade.safety.algorithm.SecureRandom;
 import org.miaixz.bus.shade.safety.algorithm.SymmetricSecureKey;
@@ -244,6 +245,14 @@ public abstract class Builder {
         try {
             closeable.close();
         } catch (IOException e) {
+            Logger.warn(
+                    false,
+                    "Shade",
+                    e,
+                    "Resource close failed: resourceType={}, quietly={}, exception={}",
+                    closeable.getClass().getName(),
+                    quietly,
+                    e.getClass().getSimpleName());
             if (!quietly)
                 throw e;
         }
@@ -409,6 +418,15 @@ public abstract class Builder {
      * @throws NoSuchAlgorithmException If the specified algorithm is not available.
      */
     public static Key key(String algorithm, int keysize, int ivsize, String password) throws NoSuchAlgorithmException {
+        boolean credentialPresent = password != null;
+        Logger.debug(
+                true,
+                "Shade",
+                "Safety key generation started: algorithm={}, keySize={}, ivSize={}, credentialPresent={}",
+                algorithm,
+                keysize,
+                ivsize,
+                credentialPresent);
         MessageDigest sha512 = MessageDigest.getInstance("SHA-512");
         byte[] seed = sha512.digest(password.getBytes());
         KeyGenerator generator = KeyGenerator.getInstance(algorithm.split("[/]")[0]);
@@ -417,6 +435,13 @@ public abstract class Builder {
         SecretKey key = generator.generateKey();
         generator.init(ivsize, random);
         SecretKey iv = generator.generateKey();
+        Logger.debug(
+                false,
+                "Shade",
+                "Safety key generation finished: algorithm={}, keySize={}, ivSize={}",
+                algorithm,
+                keysize,
+                ivsize);
         return new SymmetricSecureKey(algorithm, keysize, ivsize, password, key.getEncoded(), iv.getEncoded());
     }
 

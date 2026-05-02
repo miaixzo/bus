@@ -18,14 +18,12 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Versioned artifact registry for tracking the release lifecycle of registered services.
+ * Version-domain models used by Cortex to describe released artifacts and logical version lines.
  * <p>
- * {@code VersionAssets} extends the base asset definition with release-specific fields: a semantic version string (e.g.
- * "1.2.3"), a human-readable changelog, artifact coordinates or a download URL, and a {@code VersionStatus} indicating
- * the current lifecycle phase. {@code VersionStatus} is a three-state enum: ACTIVE (the release is current and in
- * active use), DEPRECATED (still supported but clients should migrate to a newer version) and RETIRED (removed from
- * service and must not be used). {@code VersionRegistry} provides full CRUD and watch support for {@code VersionAssets}
- * definitions backed by the generic {@code AbstractRegistry}.
+ * {@code VersionAssets} carries semantic version identifiers, artifact metadata, compatibility ranges, release
+ * timestamps, and lifecycle state. {@code VersionStatus} classifies the lifecycle of one version record. The current
+ * {@code VersionRegistry} reuses store-backed registry infrastructure internally, but the domain remains top-level so
+ * it can evolve into release-publishing workflows.
  *
  * @author Kimi Liu
  * @since Java 21+

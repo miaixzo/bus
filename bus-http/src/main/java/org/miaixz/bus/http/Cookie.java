@@ -21,6 +21,7 @@ package org.miaixz.bus.http;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.logger.Logger;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -209,17 +210,37 @@ public final class Cookie {
         int cookiePairEnd = org.miaixz.bus.http.Builder.delimiterOffset(setCookie, pos, limit, Symbol.C_SEMICOLON);
 
         int pairEqualsSign = org.miaixz.bus.http.Builder.delimiterOffset(setCookie, pos, cookiePairEnd, Symbol.C_EQUAL);
-        if (pairEqualsSign == cookiePairEnd)
+        if (pairEqualsSign == cookiePairEnd) {
+            Logger.debug(
+                    false,
+                    "Http",
+                    "Cookie ignored without name/value separator: protocol=http, url={}, cookieChars={}",
+                    url.redact(),
+                    setCookie.length());
             return null;
+        }
 
         String cookieName = org.miaixz.bus.http.Builder.trimSubstring(setCookie, pos, pairEqualsSign);
         if (cookieName.isEmpty() || org.miaixz.bus.http.Builder.indexOfControlOrNonAscii(cookieName) != -1) {
+            Logger.debug(
+                    false,
+                    "Http",
+                    "Cookie ignored with invalid name: protocol=http, url={}, nameChars={}",
+                    url.redact(),
+                    cookieName.length());
             return null;
         }
 
         String cookieValue = org.miaixz.bus.http.Builder.trimSubstring(setCookie, pairEqualsSign + 1, cookiePairEnd);
-        if (org.miaixz.bus.http.Builder.indexOfControlOrNonAscii(cookieValue) != -1)
+        if (org.miaixz.bus.http.Builder.indexOfControlOrNonAscii(cookieValue) != -1) {
+            Logger.debug(
+                    false,
+                    "Http",
+                    "Cookie ignored with invalid value: protocol=http, url={}, nameChars={}",
+                    url.redact(),
+                    cookieName.length());
             return null;
+        }
 
         long expiresAt = org.miaixz.bus.http.Builder.MAX_DATE;
         long deltaSeconds = -1L;
@@ -247,6 +268,13 @@ public final class Cookie {
                     expiresAt = parseExpires(attributeValue, 0, attributeValue.length());
                     persistent = true;
                 } catch (IllegalArgumentException e) {
+                    Logger.debug(
+                            false,
+                            "Http",
+                            "Cookie attribute ignored: protocol=http, url={}, attribute=expires, valueChars={}, exception={}",
+                            url.redact(),
+                            attributeValue.length(),
+                            e.getClass().getSimpleName());
                     // Ignore this attribute, it is not a valid date.
                 }
             } else if (attributeName.equalsIgnoreCase("max-age")) {
@@ -254,6 +282,13 @@ public final class Cookie {
                     deltaSeconds = parseMaxAge(attributeValue);
                     persistent = true;
                 } catch (NumberFormatException e) {
+                    Logger.debug(
+                            false,
+                            "Http",
+                            "Cookie attribute ignored: protocol=http, url={}, attribute=max-age, valueChars={}, exception={}",
+                            url.redact(),
+                            attributeValue.length(),
+                            e.getClass().getSimpleName());
                     // Ignore this attribute, it is not a valid max-age.
                 }
             } else if (attributeName.equalsIgnoreCase("domain")) {
@@ -261,6 +296,13 @@ public final class Cookie {
                     domain = parseDomain(attributeValue);
                     hostOnly = false;
                 } catch (IllegalArgumentException e) {
+                    Logger.debug(
+                            false,
+                            "Http",
+                            "Cookie attribute ignored: protocol=http, url={}, attribute=domain, valueChars={}, exception={}",
+                            url.redact(),
+                            attributeValue.length(),
+                            e.getClass().getSimpleName());
                     // Ignore this attribute, it is not a valid domain.
                 }
             } else if (attributeName.equalsIgnoreCase("path")) {

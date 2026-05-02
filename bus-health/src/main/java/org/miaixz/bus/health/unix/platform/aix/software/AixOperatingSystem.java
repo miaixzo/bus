@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -56,13 +56,30 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_process_t;
 @ThreadSafe
 public class AixOperatingSystem extends AbstractOperatingSystem {
 
+    /**
+     * The BOOTTIME constant.
+     */
     private static final long BOOTTIME = querySystemBootTimeMillis() / 1000L;
+    /**
+     * The config value.
+     */
     private final Supplier<perfstat_partition_config_t> config = Memoizer.memoize(PerfstatConfig::queryConfig);
+    /**
+     * The procCpu value.
+     */
     private final Supplier<perfstat_process_t[]> procCpu = Memoizer
             .memoize(PerfstatProcess::queryProcesses, Memoizer.defaultExpiration());
+    /**
+     * The installedAppsSupplier value.
+     */
     private final Supplier<List<ApplicationInfo>> installedAppsSupplier = Memoizer
             .memoize(AixInstalledApps::queryInstalledApps, Memoizer.installedAppsExpiration());
 
+    /**
+     * Queries the system boot time millis.
+     *
+     * @return the query system boot time millis result
+     */
     private static long querySystemBootTimeMillis() {
         long bootTime = Who.queryBootTime();
         if (bootTime >= 1000L) {
@@ -71,11 +88,22 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
         return System.currentTimeMillis() - Uptime.queryUpTime();
     }
 
+    /**
+     * Queries the manufacturer.
+     *
+     * @return the query manufacturer result
+     */
     @Override
     public String queryManufacturer() {
         return "IBM";
     }
 
+    /**
+     * Queries the bitness.
+     *
+     * @param jvmBitness the jvm bitness
+     * @return the query bitness result
+     */
     @Override
     protected int queryBitness(int jvmBitness) {
         if (jvmBitness == 64) {
@@ -85,21 +113,42 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
         return (config.get().conf & 0x0080_0000) > 0 ? 64 : 32;
     }
 
+    /**
+     * Returns the file system.
+     *
+     * @return the get file system result
+     */
     @Override
     public FileSystem getFileSystem() {
         return new AixFileSystem();
     }
 
+    /**
+     * Returns the internet protocol stats.
+     *
+     * @return the get internet protocol stats result
+     */
     @Override
     public InternetProtocolStats getInternetProtocolStats() {
         return new AixInternetProtocolStats();
     }
 
+    /**
+     * Queries the all processes.
+     *
+     * @return the query all processes result
+     */
     @Override
     public List<OSProcess> queryAllProcesses() {
         return getProcessListFromProcfs(-1);
     }
 
+    /**
+     * Queries the child processes.
+     *
+     * @param parentPid the parent pid
+     * @return the query child processes result
+     */
     @Override
     public List<OSProcess> queryChildProcesses(int parentPid) {
         List<OSProcess> allProcs = queryAllProcesses();
@@ -107,6 +156,12 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
         return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
     }
 
+    /**
+     * Queries the descendant processes.
+     *
+     * @param parentPid the parent pid
+     * @return the query descendant processes result
+     */
     @Override
     public List<OSProcess> queryDescendantProcesses(int parentPid) {
         List<OSProcess> allProcs = queryAllProcesses();
@@ -114,6 +169,12 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
         return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
     }
 
+    /**
+     * Returns the process.
+     *
+     * @param pid the pid
+     * @return the get process result
+     */
     @Override
     public OSProcess getProcess(int pid) {
         List<OSProcess> procs = getProcessListFromProcfs(pid);
@@ -123,6 +184,12 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
         return procs.get(0);
     }
 
+    /**
+     * Returns the process list from procfs.
+     *
+     * @param pid the pid
+     * @return the get process list from procfs result
+     */
     private List<OSProcess> getProcessListFromProcfs(int pid) {
         List<OSProcess> procs = new ArrayList<>();
         // Fetch user/system times from perfstat
@@ -151,21 +218,41 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
         return procs;
     }
 
+    /**
+     * Returns the process id.
+     *
+     * @return the get process id result
+     */
     @Override
     public int getProcessId() {
         return AixLibc.INSTANCE.getpid();
     }
 
+    /**
+     * Returns the process count.
+     *
+     * @return the get process count result
+     */
     @Override
     public int getProcessCount() {
         return procCpu.get().length;
     }
 
+    /**
+     * Returns the thread id.
+     *
+     * @return the get thread id result
+     */
     @Override
     public int getThreadId() {
         return AixLibc.INSTANCE.thread_self();
     }
 
+    /**
+     * Returns the current thread.
+     *
+     * @return the get current thread result
+     */
     @Override
     public OSThread getCurrentThread() {
         OSProcess proc = getCurrentProcess();
@@ -174,6 +261,11 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
                 .orElse(new AixOSThread(proc.getProcessID(), tid));
     }
 
+    /**
+     * Returns the thread count.
+     *
+     * @return the get thread count result
+     */
     @Override
     public int getThreadCount() {
         long tc = 0L;
@@ -183,16 +275,31 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
         return (int) tc;
     }
 
+    /**
+     * Returns the system uptime.
+     *
+     * @return the get system uptime result
+     */
     @Override
     public long getSystemUptime() {
         return System.currentTimeMillis() / 1000L - BOOTTIME;
     }
 
+    /**
+     * Returns the system boot time.
+     *
+     * @return the get system boot time result
+     */
     @Override
     public long getSystemBootTime() {
         return BOOTTIME;
     }
 
+    /**
+     * Queries the family version info.
+     *
+     * @return the query family version info result
+     */
     @Override
     public Pair<String, OperatingSystem.OSVersionInfo> queryFamilyVersionInfo() {
         perfstat_partition_config_t cfg = config.get();
@@ -216,11 +323,21 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
         return Pair.of(systemName, new OperatingSystem.OSVersionInfo(versionNumber, archName, releaseNumber));
     }
 
+    /**
+     * Returns the network params.
+     *
+     * @return the get network params result
+     */
     @Override
     public NetworkParams getNetworkParams() {
         return new AixNetworkParams();
     }
 
+    /**
+     * Returns the services.
+     *
+     * @return the get services result
+     */
     @Override
     public List<OSService> getServices() {
         List<OSService> services = new ArrayList<>();
@@ -277,6 +394,11 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
         return services;
     }
 
+    /**
+     * Returns the installed applications.
+     *
+     * @return the get installed applications result
+     */
     @Override
     public List<ApplicationInfo> getInstalledApplications() {
         return installedAppsSupplier.get();

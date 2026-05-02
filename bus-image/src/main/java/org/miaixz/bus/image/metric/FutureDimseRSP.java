@@ -63,13 +63,13 @@ public class FutureDimseRSP extends DimseRSPHandler implements DimseRSP {
         notifyAll();
         if (!finished && --remainingCapacity == 0) {
             try {
-                Logger.debug("Wait for consuming DIMSE RSP");
+                Logger.debug(false, "Image", "Wait for consuming DIMSE RSP");
                 while (ex != null && remainingCapacity == 0) {
                     wait();
                 }
-                Logger.debug("Stop waiting for consuming DIMSE RSP");
+                Logger.debug(false, "Image", "Stop waiting for consuming DIMSE RSP");
             } catch (InterruptedException e) {
-                Logger.warn("Failed to wait for consuming DIMSE RSP", e);
+                Logger.warn(false, "Image", "Failed to wait for consuming DIMSE RSP", e);
             }
         }
     }
@@ -118,11 +118,11 @@ public class FutureDimseRSP extends DimseRSPHandler implements DimseRSP {
                 return false;
 
             if (entry.next == null && ex == null) {
-                Logger.debug("Wait for next DIMSE RSP");
+                Logger.debug(false, "Image", "Wait for next DIMSE RSP");
                 while (entry.next == null && ex == null) {
                     wait();
                 }
-                Logger.debug("Stop waiting for next DIMSE RSP");
+                Logger.debug(false, "Image", "Stop waiting for next DIMSE RSP");
             }
 
             if (ex != null)

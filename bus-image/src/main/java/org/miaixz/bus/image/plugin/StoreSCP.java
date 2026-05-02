@@ -125,9 +125,12 @@ public class StoreSCP {
                 if (!valid) {
                     rsp.setInt(Tag.Status, VR.US, Status.NotAuthorized);
                     Logger.error(
-                            "Refused: not authorized (124H). Source node: {}. SopUID: {}",
+                            false,
+                            "Image",
+                            "Store request refused: status={}, sourceNode={}, sopInstanceUidPresent={}",
+                            "NotAuthorized",
                             sourceNode,
-                            rq.getString(Tag.AffectedSOPInstanceUID));
+                            rq.getString(Tag.AffectedSOPInstanceUID) != null);
                     return;
                 }
             }
@@ -222,7 +225,7 @@ public class StoreSCP {
      * @throws IOException if the rename operation fails.
      */
     private static void renameTo(Association as, File from, File dest) throws IOException {
-        Logger.info("{}: M-RENAME {} to {}", as, from, dest);
+        Logger.info(false, "Image", "{}: M-RENAME {} to {}", as, from, dest);
         Builder.prepareToWriteFile(dest);
         if (!from.renameTo(dest)) {
             throw new IOException("Failed to rename " + from + " to " + dest);
@@ -270,7 +273,7 @@ public class StoreSCP {
      * @throws IOException if an I/O error occurs.
      */
     private void storeTo(Association as, Attributes fmi, PDVInputStream data, File file) throws IOException {
-        Logger.debug("{}: M-WRITE {}", as, file);
+        Logger.debug(true, "Image", "{}: M-WRITE {}", as, file);
         file.getParentFile().mkdirs();
         try (ImageOutputStream out = new ImageOutputStream(file)) {
             out.writeFileMetaInformation(fmi);
@@ -347,7 +350,7 @@ public class StoreSCP {
                 p.load(url.openStream());
             }
         } catch (IOException e) {
-            Logger.error("Cannot read sop-classes.properties", e);
+            Logger.error(false, "Image", "Cannot read sop-classes.properties", e);
         }
 
         for (String cuid : p.stringPropertyNames()) {

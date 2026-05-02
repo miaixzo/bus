@@ -310,7 +310,7 @@ public class PresetWindowLevel {
                 }
             }
         } catch (Exception e) {
-            Logger.error("Cannot read presets file! ", e);
+            Logger.error(false, "Image", "Cannot read presets file! ", e);
         } finally {
             IoKit.close(xmler);
             IoKit.close(stream);
@@ -326,7 +326,7 @@ public class PresetWindowLevel {
                     return Integer.valueOf(val);
                 }
             } catch (NumberFormatException e) {
-                Logger.error("Cannot parse integer {} of {}", val, attribute);
+                Logger.error(false, "Image", "Cannot parse integer {} of {}", val, attribute);
             }
         }
         return defaultValue;
@@ -355,7 +355,7 @@ public class PresetWindowLevel {
                     List<PresetWindowLevel> presetList = presets.computeIfAbsent(modality, k -> new ArrayList<>());
                     presetList.add(preset);
                 } catch (Exception e) {
-                    Logger.error("Preset {} cannot be read from xml file", name, e);
+                    Logger.error(false, "Image", "Preset {} cannot be read from xml file", name, e);
                 }
             }
         }

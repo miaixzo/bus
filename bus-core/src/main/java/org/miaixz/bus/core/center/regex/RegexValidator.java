@@ -31,6 +31,13 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class RegexValidator {
 
     /**
+     * Constructs a new regular expression validator.
+     */
+    public RegexValidator() {
+
+    }
+
+    /**
      * Checks if the given content matches the regular expression.
      *
      * @param regex   The regular expression string.

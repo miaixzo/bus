@@ -75,7 +75,14 @@ public enum HL7ProtocolHandler implements TCPProtocolHandler {
                         if (monitor != null)
                             monitor.onMessageProcessed(conn, s, msg, rsp, null);
                     } catch (HL7Exception e) {
-                        Logger.info("{}: failed to process {}:\n", s, msg, e);
+                        Logger.warn(
+                                false,
+                                "Image",
+                                e,
+                                "HL7 message processing failed: protocol=hl7, socketPresent={}, messageBytes={}, exception={}",
+                                s != null,
+                                msg == null ? 0 : msg.data().length,
+                                e.getClass().getSimpleName());
                         rsp = new UnparsedHL7Message(HL7Message.makeACK(msg.msh(), e).getBytes(null));
                         if (monitor != null)
                             monitor.onMessageProcessed(conn, s, msg, rsp, e);
@@ -84,9 +91,22 @@ public enum HL7ProtocolHandler implements TCPProtocolHandler {
                 }
             } catch (IOException e) {
                 if (e instanceof SocketException && messageCount == 0)
-                    Logger.info("Exception on accepted connection {}: {}", s, e.toString());
+                    Logger.warn(
+                            false,
+                            "Image",
+                            e,
+                            "Accepted connection closed before message: protocol=hl7, socketPresent={}, exception={}",
+                            s != null,
+                            e.getClass().getSimpleName());
                 else
-                    Logger.warn("Exception on accepted connection {}:", s, e);
+                    Logger.warn(
+                            false,
+                            "Image",
+                            e,
+                            "Accepted connection failed: protocol=hl7, socketPresent={}, messageCount={}, exception={}",
+                            s != null,
+                            messageCount,
+                            e.getClass().getSimpleName());
             } finally {
                 conn.close(s);
             }

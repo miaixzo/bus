@@ -30,6 +30,7 @@ import org.miaixz.bus.limiter.Builder;
 import org.miaixz.bus.limiter.Holder;
 import org.miaixz.bus.limiter.Provider;
 import org.miaixz.bus.limiter.magic.StrategyMode;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Implements the {@link Provider} interface for handling the HOT_METHOD strategy mode. This provider is responsible for
@@ -56,6 +57,14 @@ public class MethodProvider implements Provider {
     public MethodProvider() {
         cache = CacheKit.newTimedCache(1000L * Holder.load().getSeconds());
         cache.schedulePrune(1000);
+        if (Holder.load().isLogger()) {
+            Logger.debug(
+                    false,
+                    "Limiter",
+                    "Hot method cache initialized: ttlSeconds={}, pruneIntervalMillis={}",
+                    Holder.load().getSeconds(),
+                    1000);
+        }
     }
 
     /**
@@ -80,19 +89,43 @@ public class MethodProvider implements Provider {
      */
     @Override
     public Object process(Object bean, Method method, Object[] args) {
+        String methodName = Builder.resolveMethodName(method);
+        if (Holder.load().isLogger()) {
+            Logger.debug(
+                    true,
+                    "Limiter",
+                    "Hot method evaluation started: method={}, argCount={}",
+                    methodName,
+                    args == null ? 0 : args.length);
+        }
         // Generate a unique key for the hot method based on its name and arguments
-        String hotKey = StringKit.format(
-                "{}-{}",
-                Builder.resolveMethodName(method),
-                org.miaixz.bus.crypto.Builder.md5Hex(JsonKit.toJsonString(args)));
+        String hotKey = StringKit
+                .format("{}-{}", methodName, org.miaixz.bus.crypto.Builder.md5Hex(JsonKit.toJsonString(args)));
 
         // Cache operation
         if (cache.containsKey(hotKey)) {
-            return cache.get(hotKey, false);
+            Object result = cache.get(hotKey, false);
+            if (Holder.load().isLogger()) {
+                Logger.debug(
+                        false,
+                        "Limiter",
+                        "Hot method cache hit: method={}, resultType={}",
+                        methodName,
+                        result == null ? "null" : result.getClass().getName());
+            }
+            return result;
         } else {
             // Execute the method and cache the result
             Object result = MethodKit.invoke(bean, method, args);
             cache.put(hotKey, result);
+            if (Holder.load().isLogger()) {
+                Logger.debug(
+                        false,
+                        "Limiter",
+                        "Hot method cache populated: method={}, resultType={}",
+                        methodName,
+                        result == null ? "null" : result.getClass().getName());
+            }
             return result;
         }
     }

@@ -24,6 +24,7 @@ import org.ansj.splitWord.analysis.ToAnalysis;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Ansj word segmentation engine implementation. This class serves as a concrete {@link NLPProvider} for the Ansj NLP
@@ -53,7 +54,17 @@ public class AnsjProvider implements NLPProvider {
      * @param analysis The custom Ansj {@link Analysis} object to use for word segmentation.
      */
     public AnsjProvider(final Analysis analysis) {
+        Logger.info(
+                true,
+                "Extra",
+                "Ansj provider initialization started: analysisType={}",
+                analysis == null ? "null" : analysis.getClass().getSimpleName());
         this.analysis = analysis;
+        Logger.info(
+                false,
+                "Extra",
+                "Ansj provider initialized: analysisType={}",
+                this.analysis == null ? "null" : this.analysis.getClass().getSimpleName());
     }
 
     /**
@@ -65,7 +76,15 @@ public class AnsjProvider implements NLPProvider {
      */
     @Override
     public NLPResult parse(final CharSequence text) {
-        return new AnsjResult(analysis.parseStr(StringKit.toStringOrEmpty(text)));
+        Logger.debug(true, "Extra", "Ansj parse started: textLength={}", text == null ? 0 : text.length());
+        final NLPResult result = new AnsjResult(analysis.parseStr(StringKit.toStringOrEmpty(text)));
+        Logger.debug(
+                false,
+                "Extra",
+                "Ansj parse completed: textLength={}, resultPresent={}",
+                text == null ? 0 : text.length(),
+                result != null);
+        return result;
     }
 
 }

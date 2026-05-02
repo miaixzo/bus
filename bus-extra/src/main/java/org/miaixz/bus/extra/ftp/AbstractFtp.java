@@ -29,6 +29,7 @@ import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Abstract base class for FTP operations. This class provides common utility methods and a basic structure for FTP
@@ -115,6 +116,13 @@ public abstract class AbstractFtp implements Ftp {
         try {
             names = ls(dir);
         } catch (final InternalException ignore) {
+            Logger.debug(
+                    false,
+                    "Extra",
+                    "FTP path existence probe failed: pathPresent={}, parentPresent={}, exception={}",
+                    path != null,
+                    dir != null,
+                    ignore.getClass().getSimpleName());
             // If listing fails, assume the path does not exist or is inaccessible.
             return false;
         }
@@ -146,6 +154,12 @@ public abstract class AbstractFtp implements Ftp {
                         exist = false;
                     }
                 } catch (final InternalException e) {
+                    Logger.debug(
+                            false,
+                            "Extra",
+                            "FTP directory probe failed: segmentPresent={}, exception={}",
+                            s != null,
+                            e.getClass().getSimpleName());
                     // If changing directory throws an exception, it likely doesn't exist.
                     exist = false;
                 }
@@ -195,6 +209,14 @@ public abstract class AbstractFtp implements Ftp {
         } catch (final Throwable e) {
             // If any exception occurs, delete the temporary file to clean up
             FileKit.remove(outFile);
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "FTP download failed: remotePathPresent={}, outputName={}, exception={}",
+                    path != null,
+                    outFile == null ? null : outFile.getName(),
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }

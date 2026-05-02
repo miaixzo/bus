@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -24,7 +24,7 @@ import java.util.List;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.*;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer;
-import org.miaixz.bus.health.unix.hardware.UnixPrinter;
+import org.miaixz.bus.health.unix.hardware.CupsPrinter;
 
 /**
  * <p>
@@ -134,8 +134,13 @@ public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstracti
         return MacGraphicsCard.getGraphicsCards();
     }
 
+    /**
+     * Returns the printers.
+     *
+     * @return the get printers result
+     */
     @Override
     public List<Printer> getPrinters() {
-        return UnixPrinter.getPrinters();
+        return CupsPrinter.getPrinters();
     }
 }

@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -32,14 +32,46 @@ import org.miaixz.bus.health.Formats;
 @Immutable
 public class PhysicalMemory {
 
+    /**
+     * The bankLabel value.
+     */
     private final String bankLabel;
+    /**
+     * The capacity value.
+     */
     private final long capacity;
+    /**
+     * The clockSpeed value.
+     */
     private final long clockSpeed;
+    /**
+     * The manufacturer value.
+     */
     private final String manufacturer;
+    /**
+     * The memoryType value.
+     */
     private final String memoryType;
+    /**
+     * The partNumber value.
+     */
     private final String partNumber;
+    /**
+     * The serialNumber value.
+     */
     private final String serialNumber;
 
+    /**
+     * Creates a new PhysicalMemory instance.
+     *
+     * @param bankLabel    the bank label
+     * @param capacity     the capacity
+     * @param clockSpeed   the clock speed
+     * @param manufacturer the manufacturer
+     * @param memoryType   the memory type
+     * @param partNumber   the part number
+     * @param serialNumber the serial number
+     */
     public PhysicalMemory(String bankLabel, long capacity, long clockSpeed, String manufacturer, String memoryType,
             String partNumber, String serialNumber) {
         this.bankLabel = bankLabel;
@@ -116,6 +148,11 @@ public class PhysicalMemory {
         return serialNumber;
     }
 
+    /**
+     * Returns the to string result.
+     *
+     * @return the to string result
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

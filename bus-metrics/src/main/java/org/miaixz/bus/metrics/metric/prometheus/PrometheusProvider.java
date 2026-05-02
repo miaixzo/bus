@@ -24,6 +24,7 @@ import io.prometheus.metrics.core.metrics.Gauge;
 import io.prometheus.metrics.core.metrics.Histogram;
 import io.prometheus.metrics.core.metrics.Summary;
 import io.prometheus.metrics.model.registry.PrometheusRegistry;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.Provider;
 import org.miaixz.bus.metrics.guard.CardinalityGuard;
@@ -66,7 +67,17 @@ public class PrometheusProvider implements Provider {
      * @param registry the Prometheus registry to register metrics into
      */
     public PrometheusProvider(PrometheusRegistry registry) {
+        Logger.info(
+                true,
+                "Metrics",
+                "Prometheus metrics provider initialization started: registryClass={}",
+                null == registry ? null : registry.getClass().getName());
         this.registry = registry;
+        Logger.info(
+                false,
+                "Metrics",
+                "Prometheus metrics provider initialization finished: registryClass={}",
+                null == registry ? null : registry.getClass().getName());
     }
 
     /**

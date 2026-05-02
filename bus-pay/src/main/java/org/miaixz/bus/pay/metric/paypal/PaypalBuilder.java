@@ -47,11 +47,23 @@ public class PaypalBuilder {
             try {
                 v = retryCallable.call();
             } catch (Exception e) {
-                Logger.warn("retry on " + (i + 1) + " times v = " + (v == null ? null : v.getJson()), e);
+                Logger.warn(
+                        false,
+                        "Pay",
+                        e,
+                        "PayPal retry failed: attempt={}, callbackType={}, exception={}",
+                        i + 1,
+                        v == null ? null : v.getClass().getName(),
+                        e.getClass().getSimpleName());
             }
             if (null != v && v.matching())
                 break;
-            Logger.error("retry on " + (i + 1) + " times but not matching v = " + (v == null ? null : v.getJson()));
+            Logger.error(
+                    false,
+                    "Pay",
+                    "PayPal retry result not matched: attempt={}, callbackType={}",
+                    i + 1,
+                    v == null ? null : v.getClass().getName());
         }
         return v;
     }
@@ -71,12 +83,24 @@ public class PaypalBuilder {
             try {
                 v = retryCallable.call();
             } catch (Exception e) {
-                Logger.warn("retry on " + (i + 1) + " times v = " + (v == null ? null : v.getJson()), e);
+                Logger.warn(
+                        false,
+                        "Pay",
+                        e,
+                        "PayPal retry failed: attempt={}, callbackType={}, exception={}",
+                        i + 1,
+                        v == null ? null : v.getClass().getName(),
+                        e.getClass().getSimpleName());
             }
             if (null != v && v.matching()) {
                 break;
             }
-            Logger.error("retry on " + (i + 1) + " times but not matching v = " + (v == null ? null : v.getJson()));
+            Logger.error(
+                    false,
+                    "Pay",
+                    "PayPal retry result not matched: attempt={}, callbackType={}",
+                    i + 1,
+                    v == null ? null : v.getClass().getName());
             if (sleepMillis > 0) {
                 ThreadKit.sleep(sleepMillis);
             }

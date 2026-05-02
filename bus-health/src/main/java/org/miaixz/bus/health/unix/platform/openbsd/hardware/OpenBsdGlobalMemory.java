@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -41,15 +41,32 @@ import com.sun.jna.Memory;
 @ThreadSafe
 final class OpenBsdGlobalMemory extends AbstractGlobalMemory {
 
+    /**
+     * The available value.
+     */
     private final Supplier<Long> available = Memoizer
             .memoize(OpenBsdGlobalMemory::queryAvailable, Memoizer.defaultExpiration());
 
+    /**
+     * The total value.
+     */
     private final Supplier<Long> total = Memoizer.memoize(OpenBsdGlobalMemory::queryPhysMem);
 
+    /**
+     * The pageSize value.
+     */
     private final Supplier<Long> pageSize = Memoizer.memoize(OpenBsdGlobalMemory::queryPageSize);
 
+    /**
+     * The vm value.
+     */
     private final Supplier<VirtualMemory> vm = Memoizer.memoize(this::createVirtualMemory);
 
+    /**
+     * Queries the available.
+     *
+     * @return the query available result
+     */
     private static long queryAvailable() {
         long free = 0L;
         long inactive = 0L;
@@ -70,34 +87,69 @@ final class OpenBsdGlobalMemory extends AbstractGlobalMemory {
         }
     }
 
+    /**
+     * Queries the phys mem.
+     *
+     * @return the query phys mem result
+     */
     private static long queryPhysMem() {
         return OpenBsdSysctlKit.sysctl("hw.physmem", 0L);
     }
 
+    /**
+     * Queries the page size.
+     *
+     * @return the query page size result
+     */
     private static long queryPageSize() {
         return OpenBsdSysctlKit.sysctl("hw.pagesize", 4096L);
     }
 
+    /**
+     * Returns the available.
+     *
+     * @return the get available result
+     */
     @Override
     public long getAvailable() {
         return available.get() * getPageSize();
     }
 
+    /**
+     * Returns the total.
+     *
+     * @return the get total result
+     */
     @Override
     public long getTotal() {
         return total.get();
     }
 
+    /**
+     * Returns the page size.
+     *
+     * @return the get page size result
+     */
     @Override
     public long getPageSize() {
         return pageSize.get();
     }
 
+    /**
+     * Returns the virtual memory.
+     *
+     * @return the get virtual memory result
+     */
     @Override
     public VirtualMemory getVirtualMemory() {
         return vm.get();
     }
 
+    /**
+     * Creates the virtual memory.
+     *
+     * @return the create virtual memory result
+     */
     private VirtualMemory createVirtualMemory() {
         return new OpenBsdVirtualMemory(this);
     }

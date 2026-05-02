@@ -34,6 +34,7 @@ import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.annotation.NonNull;
 import org.miaixz.bus.core.lang.annotation.Nullable;
+import org.miaixz.bus.core.net.Specifics;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.core.xyz.MapKit;
@@ -43,7 +44,6 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.http.MutableRequestWrapper;
 import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
-import org.miaixz.bus.vortex.Args;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -144,9 +144,9 @@ public class ContextBuilder extends WebUtils {
             if (request != null) {
                 requestId = ID.objectId();
                 REQUEST_ID.set(requestId);
-                Logger.debug(true, "Context", "Request ID: {}", requestId);
+                Logger.debug(true, "Starter", "Request ID: {}", requestId);
             } else {
-                Logger.debug(true, "Context", "No request available to generate request ID");
+                Logger.debug(true, "Starter", "No request available to generate request ID");
             }
         }
         return requestId;
@@ -182,7 +182,7 @@ public class ContextBuilder extends WebUtils {
                     } catch (Throwable t) {
                         Logger.warn(
                                 true,
-                                "Context",
+                                "Starter",
                                 "Header cache failed to initialize CaffeineCache, falling back to MemoryCache");
                         cache = new MemoryCache<>(DEFAULT_CACHE_SIZE, DEFAULT_CACHE_EXPIRE);
                     }
@@ -210,7 +210,7 @@ public class ContextBuilder extends WebUtils {
                     } catch (Throwable t) {
                         Logger.warn(
                                 true,
-                                "Context",
+                                "Starter",
                                 "Parameter cache failed to initialize CaffeineCache, falling back to MemoryCache");
                         cache = new MemoryCache<>(DEFAULT_CACHE_SIZE, DEFAULT_CACHE_EXPIRE);
                     }
@@ -238,8 +238,8 @@ public class ContextBuilder extends WebUtils {
                     } catch (Throwable t) {
                         Logger.warn(
                                 true,
-                                "Context",
-                                "Body cache failed to initialize CaffeineCache, falling back to MemoryCache");
+                                "Starter",
+                                "Content cache failed to initialize CaffeineCache, falling back to MemoryCache");
                         cache = new MemoryCache<>(DEFAULT_CACHE_SIZE, DEFAULT_CACHE_EXPIRE);
                     }
                     BODY_CACHE = cache;
@@ -406,17 +406,17 @@ public class ContextBuilder extends WebUtils {
     public static String getValueFromJsonBody(String key) {
         HttpServletRequest request = getRequest();
         if (request == null) {
-            Logger.debug(true, "Context", "No request available for JSON body lookup, key: {}", key);
+            Logger.debug(true, "Starter", "No request available for JSON content lookup, key: {}", key);
             return null;
         }
         String contentType = request.getContentType();
         if (contentType == null || !contentType.startsWith(MediaType.APPLICATION_JSON)) {
-            Logger.debug(true, "Context", "Request is not JSON, key: {}, contentType: {}", key, contentType);
+            Logger.debug(true, "Starter", "Request is not JSON, key: {}, contentType: {}", key, contentType);
             return null;
         }
         String requestId = getRequestId();
         if (requestId == null) {
-            Logger.debug(true, "Context", "No request ID available for JSON body lookup, key: {}", key);
+            Logger.debug(true, "Starter", "No request ID available for JSON content lookup, key: {}", key);
             return null;
         }
         String cachedBody = getBodyCache().read(requestId);
@@ -433,11 +433,11 @@ public class ContextBuilder extends WebUtils {
                 requestBody = new String(request.getInputStream().readAllBytes(), Charset.UTF_8);
             }
         } catch (IOException e) {
-            Logger.error(true, "Context", "Failed to read JSON body, key: {}", key, e);
+            Logger.error(true, "Starter", "Failed to read JSON content, key: {}", key, e);
             return null;
         }
         if (StringKit.isEmpty(requestBody) || !JsonKit.isJson(requestBody)) {
-            Logger.debug(true, "Context", "Empty or invalid JSON body, key: {}", key);
+            Logger.debug(true, "Starter", "Empty or invalid JSON content, key: {}", key);
             return null;
         }
         getBodyCache().write(requestId, requestBody, DEFAULT_CACHE_EXPIRE);
@@ -462,7 +462,14 @@ public class ContextBuilder extends WebUtils {
                 return StringKit.toString(jsonMap.get(key));
             }
         } catch (Exception e) {
-            Logger.error(true, "Context", "Failed to extract JSON value, key: {}, json: {}", key, json, e);
+            Logger.error(
+                    false,
+                    "Starter",
+                    e,
+                    "Failed to extract JSON value, key={}, jsonChars={}, exception={}",
+                    key,
+                    json == null ? 0 : json.length(),
+                    e.getClass().getSimpleName());
         }
         return null;
     }
@@ -522,12 +529,12 @@ public class ContextBuilder extends WebUtils {
         }
         HttpServletRequest request = getRequest();
         if (request == null) {
-            Logger.debug(true, "Context", "No request available for cookie lookup, key: {}", key);
+            Logger.debug(true, "Starter", "No request available for cookie lookup, key: {}", key);
             return null;
         }
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
-            Logger.debug(true, "Context", "No cookies found for key: {}", key);
+            Logger.debug(true, "Starter", "No cookies found for key: {}", key);
             return null;
         }
         for (Cookie cookie : cookies) {
@@ -551,7 +558,7 @@ public class ContextBuilder extends WebUtils {
         }
         HttpServletRequest request = getRequest();
         if (request == null) {
-            Logger.debug(true, "Context", "No request available for path variable lookup, key: {}", key);
+            Logger.debug(true, "Starter", "No request available for path variable lookup, key: {}", key);
             return null;
         }
         Map<String, String> pathVariables = (Map<String, String>) request
@@ -572,11 +579,11 @@ public class ContextBuilder extends WebUtils {
         }
         HttpServletRequest request = getRequest();
         if (request == null) {
-            Logger.debug(true, "Context", "No request available for multipart lookup, key: {}", key);
+            Logger.debug(true, "Starter", "No request available for multipart lookup, key: {}", key);
             return null;
         }
         if (!isMultipartContent(request)) {
-            Logger.debug(true, "Context", "Request is not multipart, key: {}", key);
+            Logger.debug(true, "Starter", "Request is not multipart, key: {}", key);
             return null;
         }
         try {
@@ -586,7 +593,7 @@ public class ContextBuilder extends WebUtils {
                 }
             }
         } catch (Exception e) {
-            Logger.error(true, "Context", "Failed to get multipart parameter, key: {}", key, e);
+            Logger.error(true, "Starter", "Failed to get multipart parameter, key: {}", key, e);
             return null;
         }
         return null;
@@ -644,7 +651,14 @@ public class ContextBuilder extends WebUtils {
         try {
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
-            Logger.warn(true, "Context", "Failed to parse int value, key: {}, value: {}", key, value, e);
+            Logger.warn(
+                    false,
+                    "Starter",
+                    e,
+                    "Failed to parse int value, key={}, valueChars={}, exception={}",
+                    key,
+                    value == null ? 0 : value.length(),
+                    e.getClass().getSimpleName());
             return defaultValue;
         }
     }
@@ -664,7 +678,14 @@ public class ContextBuilder extends WebUtils {
         try {
             return Long.parseLong(value);
         } catch (NumberFormatException e) {
-            Logger.warn(true, "Context", "Failed to parse long value, key: {}, value: {}", key, value, e);
+            Logger.warn(
+                    false,
+                    "Starter",
+                    e,
+                    "Failed to parse long value, key={}, valueChars={}, exception={}",
+                    key,
+                    value == null ? 0 : value.length(),
+                    e.getClass().getSimpleName());
             return defaultValue;
         }
     }
@@ -696,7 +717,14 @@ public class ContextBuilder extends WebUtils {
         try {
             return Double.parseDouble(value);
         } catch (NumberFormatException e) {
-            Logger.warn(true, "Context", "Failed to parse double value, key: {}, value: {}", key, value, e);
+            Logger.warn(
+                    false,
+                    "Starter",
+                    e,
+                    "Failed to parse double value, key={}, valueChars={}, exception={}",
+                    key,
+                    value == null ? 0 : value.length(),
+                    e.getClass().getSimpleName());
             return defaultValue;
         }
     }
@@ -732,13 +760,14 @@ public class ContextBuilder extends WebUtils {
             }
         } catch (Exception e) {
             Logger.warn(
-                    true,
-                    "Context",
-                    "Failed to convert value to {}, key: {}, value: {}",
+                    false,
+                    "Starter",
+                    e,
+                    "Failed to convert value to {}, key={}, valueChars={}, exception={}",
                     clazz.getSimpleName(),
                     key,
-                    value,
-                    e);
+                    value == null ? 0 : value.length(),
+                    e.getClass().getSimpleName());
             return null;
         }
     }
@@ -761,13 +790,14 @@ public class ContextBuilder extends WebUtils {
             return JsonKit.toPojo(value, clazz);
         } catch (Exception e) {
             Logger.warn(
-                    true,
-                    "Context",
-                    "Failed to convert JSON value to {}, key: {}, value: {}",
+                    false,
+                    "Starter",
+                    e,
+                    "Failed to convert JSON value to {}, key={}, valueChars={}, exception={}",
                     clazz.getSimpleName(),
                     key,
-                    value,
-                    e);
+                    value == null ? 0 : value.length(),
+                    e.getClass().getSimpleName());
             return null;
         }
     }
@@ -789,7 +819,7 @@ public class ContextBuilder extends WebUtils {
             // 1. First, retrieve from ThreadLocal (request-level, highest priority)
             Authorize authorize = AUTHORIZATION_CONTEXT.get();
             if (authorize != null) {
-                Logger.info(true, "Context", "Authorize (from ThreadLocal): {}", authorize);
+                Logger.info(true, "Starter", "Authorize (from ThreadLocal): {}", authorize);
                 return authorize;
             }
 
@@ -797,7 +827,7 @@ public class ContextBuilder extends WebUtils {
             if (provider != null) {
                 authorize = provider.getAuthorize();
                 if (authorize != null) {
-                    Logger.info(true, "Context", "Authorize (from provider): {}", authorize);
+                    Logger.info(true, "Starter", "Authorize (from provider): {}", authorize);
                     return authorize;
                 }
             }
@@ -808,12 +838,12 @@ public class ContextBuilder extends WebUtils {
                 userId = getValue("x_user_id", EnumValue.Params.CONTEXT);
             }
             if (StringKit.isEmpty(userId)) {
-                Logger.info(true, "Context", "No user ID found in headers or context");
+                Logger.info(true, "Starter", "No user ID found in headers or context");
                 return null;
             }
             return JsonKit.toPojo(UrlDecoder.decode(userId, Charset.UTF_8), Authorize.class);
         } catch (Exception e) {
-            Logger.info(true, "Context", "Failed to get authorize");
+            Logger.info(true, "Starter", "Failed to get authorize");
             return null;
         }
     }
@@ -857,24 +887,24 @@ public class ContextBuilder extends WebUtils {
         try {
             Authorize authorize = getAuthorize();
             if (authorize != null && StringKit.isNotEmpty(authorize.getX_tenant_id())) {
-                Logger.info(true, "Context", "Tenant ID: {}", authorize.getX_tenant_id());
+                Logger.info(true, "Starter", "Tenant ID: {}", authorize.getX_tenant_id());
                 return authorize.getX_tenant_id();
             }
             String tenantId = getValue("x_tenant_id", EnumValue.Params.HEADER);
             if (StringKit.isNotEmpty(tenantId)) {
-                Logger.info(true, "Context", "Tenant ID: {}", tenantId);
+                Logger.info(true, "Starter", "Tenant ID: {}", tenantId);
                 return tenantId;
             }
             tenantId = getValue("tenant_id", EnumValue.Params.PARAMETER);
             if (StringKit.isNotEmpty(tenantId)) {
-                Logger.info(true, "Context", "Tenant ID: {}", tenantId);
+                Logger.info(true, "Starter", "Tenant ID: {}", tenantId);
                 return tenantId;
             }
             tenantId = getValue("tenant_id", EnumValue.Params.JSON_BODY);
-            Logger.info(true, "Context", "Tenant ID: {}", tenantId);
+            Logger.info(true, "Starter", "Tenant ID: {}", tenantId);
             return tenantId;
         } catch (Exception e) {
-            Logger.info(true, "Context", "Failed to get tenant ID");
+            Logger.info(true, "Starter", "Failed to get tenant ID");
             return null;
         }
     }
@@ -902,9 +932,9 @@ public class ContextBuilder extends WebUtils {
             getBodyCache().remove(requestId);
             REQUEST_ID.remove();
             AUTHORIZATION_CONTEXT.remove();
-            Logger.debug(false, "Context", "Cleared: {}", requestId);
+            Logger.debug(false, "Starter", "Cleared: {}", requestId);
         } else {
-            Logger.debug(false, "Context", "No request ID to clear");
+            Logger.debug(false, "Starter", "No request ID to clear");
         }
     }
 
@@ -931,7 +961,7 @@ public class ContextBuilder extends WebUtils {
      */
     public static String getToken() {
         // 1. Check token in headers first, including Authorization and backward-compatible token headers.
-        String token = MapKit.getFirstNonNull(getHeaders(), Args.TOKEN_KEYS);
+        String token = MapKit.getFirstNonNull(getHeaders(), Specifics.TOKEN_KEYS);
         if (StringKit.isNotBlank(token)) {
             token = token.trim();
             if (token.regionMatches(true, 0, HTTP.BEARER, 0, HTTP.BEARER.length())) {
@@ -941,7 +971,7 @@ public class ContextBuilder extends WebUtils {
         }
 
         // 2. If not found in headers, search in request parameters as a fallback.
-        return MapKit.getFirstNonNull(getParameters(), Args.TOKEN_KEYS);
+        return MapKit.getFirstNonNull(getParameters(), Specifics.TOKEN_KEYS);
     }
 
     /**
@@ -951,13 +981,13 @@ public class ContextBuilder extends WebUtils {
      */
     public static String getApiKey() {
         // 1. Check API key in headers first.
-        String apiKey = MapKit.getFirstNonNull(getHeaders(), Args.API_KEY_KEYS);
+        String apiKey = MapKit.getFirstNonNull(getHeaders(), Specifics.API_KEY_KEYS);
         if (StringKit.isNotBlank(apiKey)) {
             return apiKey.trim();
         }
 
         // 2. If not found in headers, search in request parameters as a fallback.
-        apiKey = MapKit.getFirstNonNull(getParameters(), Args.API_KEY_KEYS);
+        apiKey = MapKit.getFirstNonNull(getParameters(), Specifics.API_KEY_KEYS);
         return StringKit.isNotBlank(apiKey) ? apiKey.trim() : null;
     }
 
@@ -971,7 +1001,7 @@ public class ContextBuilder extends WebUtils {
             getHeaderCache().remove(requestId);
             getParameterCache().remove(requestId);
             getBodyCache().remove(requestId);
-            Logger.debug(false, "Context", "Cleared: {}", requestId);
+            Logger.debug(false, "Starter", "Cleared: {}", requestId);
         }
     }
 
@@ -982,7 +1012,7 @@ public class ContextBuilder extends WebUtils {
         HEADER_CACHE = null;
         PARAMETER_CACHE = null;
         BODY_CACHE = null;
-        Logger.debug(true, "Context", "All cache instances reset");
+        Logger.debug(true, "Starter", "All cache instances reset");
     }
 
 }

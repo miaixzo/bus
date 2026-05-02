@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -37,17 +37,36 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractVirtualMemory;
 @ThreadSafe
 final class OpenBsdVirtualMemory extends AbstractVirtualMemory {
 
+    /**
+     * The global value.
+     */
     private final OpenBsdGlobalMemory global;
 
+    /**
+     * The usedTotalPgin value.
+     */
     private final Supplier<Triplet<Integer, Integer, Integer>> usedTotalPgin = Memoizer
             .memoize(OpenBsdVirtualMemory::queryVmstat, Memoizer.defaultExpiration());
+    /**
+     * The pgout value.
+     */
     private final Supplier<Integer> pgout = Memoizer
             .memoize(OpenBsdVirtualMemory::queryUvm, Memoizer.defaultExpiration());
 
+    /**
+     * Creates a new OpenBsdVirtualMemory instance.
+     *
+     * @param freeBsdGlobalMemory the free bsd global memory
+     */
     OpenBsdVirtualMemory(OpenBsdGlobalMemory freeBsdGlobalMemory) {
         this.global = freeBsdGlobalMemory;
     }
 
+    /**
+     * Queries the vmstat.
+     *
+     * @return the query vmstat result
+     */
     private static Triplet<Integer, Integer, Integer> queryVmstat() {
         int used = 0;
         int total = 0;
@@ -64,6 +83,11 @@ final class OpenBsdVirtualMemory extends AbstractVirtualMemory {
         return Triplet.of(used, total, swapIn);
     }
 
+    /**
+     * Queries the uvm.
+     *
+     * @return the query uvm result
+     */
     private static int queryUvm() {
         for (String line : Executor.runNative("systat -ab uvm")) {
             if (line.contains("pdpageouts")) {
@@ -73,31 +97,61 @@ final class OpenBsdVirtualMemory extends AbstractVirtualMemory {
         return 0;
     }
 
+    /**
+     * Returns the swap used.
+     *
+     * @return the get swap used result
+     */
     @Override
     public long getSwapUsed() {
         return usedTotalPgin.get().getLeft() * global.getPageSize();
     }
 
+    /**
+     * Returns the swap total.
+     *
+     * @return the get swap total result
+     */
     @Override
     public long getSwapTotal() {
         return usedTotalPgin.get().getMiddle() * global.getPageSize();
     }
 
+    /**
+     * Returns the virtual max.
+     *
+     * @return the get virtual max result
+     */
     @Override
     public long getVirtualMax() {
         return this.global.getTotal() + getSwapTotal();
     }
 
+    /**
+     * Returns the virtual in use.
+     *
+     * @return the get virtual in use result
+     */
     @Override
     public long getVirtualInUse() {
         return this.global.getTotal() - this.global.getAvailable() + getSwapUsed();
     }
 
+    /**
+     * Returns the swap pages in.
+     *
+     * @return the get swap pages in result
+     */
     @Override
     public long getSwapPagesIn() {
         return usedTotalPgin.get().getRight() * global.getPageSize();
     }
 
+    /**
+     * Returns the swap pages out.
+     *
+     * @return the get swap pages out result
+     */
     @Override
     public long getSwapPagesOut() {
         return pgout.get() * global.getPageSize();

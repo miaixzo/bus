@@ -311,11 +311,11 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
             seek(Long.MAX_VALUE);
             long ret = this.getStreamPosition();
             seek(wasPos);
-            Logger.debug("wasPos {} end {}", wasPos, ret);
+            Logger.debug(false, "Image", "wasPos {} end {}", wasPos, ret);
             return ret;
         } catch (IOException e) {
-            Logger.warn("Caught error determining length:{}", e);
-            Logger.debug("Stack trace", e);
+            Logger.warn(false, "Image", "Caught error determining length:{}", e);
+            Logger.debug(false, "Image", "Stack trace", e);
             return -1;
         }
     }

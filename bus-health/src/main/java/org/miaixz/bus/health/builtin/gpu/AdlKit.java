@@ -22,6 +22,7 @@ package org.miaixz.bus.health.builtin.gpu;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.jna.Adl;
@@ -46,7 +47,7 @@ import com.sun.jna.ptr.PointerByReference;
  *
  * <p>
  * Adapter bus-number-to-index mappings are enumerated once on first successful init and cached thereafter.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -57,13 +58,25 @@ public final class AdlKit {
     // Library loading (holder pattern — loads the .dll once)
     // -------------------------------------------------------------------------
 
+    /**
+     * The Holder class.
+     */
     private static final class Holder {
 
+        /**
+         * The LIB constant.
+         */
         static final Adl.AdlLibrary LIB;
+        /**
+         * The LIBRARY_LOADED constant.
+         */
         static final boolean LIBRARY_LOADED;
         // Strong reference prevents GC of the callback while ADL holds a native function pointer to it.
         // Uses raw Pointer (not Memory) because ADL frees the native allocation directly via C free().
         // Memory's destructor would double-free the same address.
+        /**
+         * The MALLOC_CB constant.
+         */
         static final Adl.AdlMallocCallback MALLOC_CB;
 
         static {
@@ -84,9 +97,9 @@ public final class AdlKit {
                     return addr == 0L ? Pointer.NULL : new Pointer(addr);
                 };
                 loaded = true;
-                Logger.debug("ADL library loaded");
+                Logger.debug(false, "Health", "ADL library loaded");
             } catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
-                Logger.debug("ADL library not available: {}", e.getMessage());
+                Logger.debug(false, "Health", "ADL library not available: {}", e.getClass().getSimpleName());
             }
             LIB = lib;
             LIBRARY_LOADED = loaded;
@@ -94,13 +107,23 @@ public final class AdlKit {
         }
     }
 
+    /**
+     * Creates a new AdlKit instance.
+     */
     private AdlKit() {
 
     }
 
     // Lazy adapter enumeration state — written once, read-only thereafter
+    /**
+     * The adaptersEnumerated value.
+     */
     private static volatile boolean adaptersEnumerated = false;
-    private static volatile Map<Integer, Integer> busToIndex = Collections.emptyMap();
+    /**
+     * The BUS_TO_INDEX constant.
+     */
+    private static final AtomicReference<Map<Integer, Integer>> BUS_TO_INDEX = new AtomicReference<>(
+            Collections.emptyMap());
 
     // -------------------------------------------------------------------------
     // Init/uninit helpers (COM pattern)
@@ -123,7 +146,7 @@ public final class AdlKit {
         if (ret == Adl.ADL_OK) {
             return ctxRef.getValue();
         }
-        Logger.debug("ADL2_Main_Control_Create failed with code {}", ret);
+        Logger.debug(false, "Health", "ADL2_Main_Control_Create failed with code {}", ret);
         return null;
     }
 
@@ -149,14 +172,20 @@ public final class AdlKit {
         }
         Map<Integer, Integer> result = enumerateAdapters(context);
         if (result != null) {
-            busToIndex = result;
+            BUS_TO_INDEX.set(result);
             adaptersEnumerated = true;
-            Logger.debug("ADL enumerated {} adapter(s)", busToIndex.size());
+            Logger.debug(false, "Health", "ADL enumerated {} adapter(s)", BUS_TO_INDEX.get().size());
         } else {
-            Logger.debug("ADL adapter enumeration failed; will retry on next call");
+            Logger.debug(false, "Health", "ADL adapter enumeration failed; will retry on next call");
         }
     }
 
+    /**
+     * Returns the enumerate adapters result.
+     *
+     * @param ctx the ctx
+     * @return the enumerate adapters result
+     */
     private static Map<Integer, Integer> enumerateAdapters(Pointer ctx) {
         IntByReference numRef = new IntByReference();
         if (Holder.LIB.ADL2_Adapter_NumberOfAdapters_Get(ctx, numRef) != Adl.ADL_OK) {
@@ -182,6 +211,13 @@ public final class AdlKit {
         return Collections.unmodifiableMap(map);
     }
 
+    /**
+     * Returns the supports overdrive n result.
+     *
+     * @param context      the context
+     * @param adapterIndex the adapter index
+     * @return the supports overdrive n result
+     */
     private static boolean supportsOverdriveN(Pointer context, int adapterIndex) {
         IntByReference supported = new IntByReference();
         IntByReference enabled = new IntByReference();
@@ -222,7 +258,7 @@ public final class AdlKit {
         }
         try {
             ensureAdaptersEnumerated(ctx);
-            return busToIndex.getOrDefault(pciBusNumber, -1);
+            return BUS_TO_INDEX.get().getOrDefault(pciBusNumber, -1);
         } finally {
             adlUninit(ctx);
         }

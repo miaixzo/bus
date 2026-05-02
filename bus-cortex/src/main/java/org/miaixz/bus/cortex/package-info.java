@@ -18,31 +18,24 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus-cortex — a lightweight, CacheX-backed unified registry and dynamic configuration center for API gateways, MCP
- * tool servers and LLM prompt templates. It provides a single set of domain objects, contracts and constants shared by
- * every sub-package.
+ * bus-cortex provides shared models, contracts, and support services for store-backed registries, dynamic setting
+ * delivery, health probing, watch dispatch, identity normalization, and bridge synchronization.
  * <p>
- * The domain model centers on three complementary objects. {@code Nature} is the minimal common base carrying
- * {@code id}, {@code namespace} and {@code species}. {@code Assets} extends it with gateway-facing routing fields:
- * name, host/port/path, HTTP method, auth policy, timeout, throttle limit, load-balance strategy, key/value labels and
- * generic metadata. {@code Instance} is the runtime snapshot of a single live node, holding host, port, weight, healthy
- * flag, SHA-256 fingerprint, OS process ID and scheme; the health scheduler rewrites it on every probe cycle.
- * {@code Vector} carries query and filter criteria — namespace, method, semantic version, label selectors, instance
- * state and pagination limit/offset — passed directly to registry lookup calls. {@code Species} classifies entries as
- * API, MCP, PROMPT, CONFIG or VERSION, and {@code Status} wraps the result of any health probe: a boolean healthy flag,
- * measured latency and a diagnostic message.
+ * Core runtime models include {@code Nature}, {@code Assets}, {@code Instance}, {@code Vector}, and {@code Status}.
+ * {@code Type} classifies both registry content (API, MCP, PROMPT, VERSION) and setting resources (namespace, app,
+ * profile, item, revision, binding) while keeping registry and setting categories distinguishable. Registry and curator
+ * implementations can coordinate optional durable stores with CacheX projections, while {@code Watch} and
+ * {@code RegistryChange} carry ordered change notifications across watchers and bridge listeners.
  * <p>
- * Four contracts define the integration surface. {@link org.miaixz.bus.cortex.Registry} is the generic CRUD and watch
- * interface implemented by every concrete registry; all callers depend only on this type.
- * {@link org.miaixz.bus.cortex.Prober} is the single-method health-check interface whose implementations live in
- * {@code cortex.health}. {@link org.miaixz.bus.cortex.Listener} is the typed callback invoked by {@code WatchManager}
- * when registry entries are added, removed or updated. {@link org.miaixz.bus.cortex.Config} is the configuration-center
- * read/write contract implemented by {@code DefaultConfig}.
+ * Shared namespace/application defaults live in {@code magic.identity}, and shared subscription dispatch lives in
+ * {@code magic.watch}. Registry-specific type and route identity remain under {@code registry}; setting resources
+ * consume the common magic layer without treating registry as their infrastructure owner.
  * <p>
- * {@code Builder} holds all shared CacheX key prefixes ({@code reg:}, {@code cfg:}, {@code sec:}, {@code seq:},
- * {@code audit:}) and every HTTP endpoint path constant used by the Cortex server controllers. {@code Cortex} is the
- * static bootstrap facade; call {@code Cortex.start(cacheX)} to initialise the runtime and obtain the service locator
- * used across the application.
+ * The primary integration contracts are {@link org.miaixz.bus.cortex.Registry}, {@link org.miaixz.bus.cortex.Curator},
+ * {@link org.miaixz.bus.cortex.Prober}, {@link org.miaixz.bus.cortex.Change}, and
+ * {@link org.miaixz.bus.cortex.Listener}. {@code Builder} holds a small set of shared runtime defaults and key
+ * prefixes, {@code Callout} centralizes lightweight outbound HTTP calls, and {@code Cortex} is the static facade that
+ * integration code can bind to assembled registries and curator services.
  *
  * @author Kimi Liu
  * @since Java 21+

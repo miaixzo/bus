@@ -29,6 +29,7 @@ import org.miaixz.bus.gitlab.models.ImpersonationToken.Scope;
 import org.miaixz.bus.gitlab.support.ISO8601;
 
 import jakarta.ws.rs.core.*;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * This class implements the client side API for the GitLab groups calls.
@@ -66,9 +67,12 @@ public class GroupApi extends AbstractApi {
 
         String url = this.gitLabApi.getGitLabServerUrl();
         if (url.startsWith("https://gitlab.com")) {
-            GitLabApi.getLogger().warning(
-                    "Fetching all groups from " + url
-                            + " may take many minutes to complete, use Pager<Group> getGroups(int) instead.");
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    "GitLab bulk groups fetch requested against public GitLab: serverUrl={}, defaultPerPage={}",
+                    url,
+                    getDefaultPerPage());
         }
 
         return (getGroups(getDefaultPerPage()).all());

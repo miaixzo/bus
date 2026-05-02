@@ -32,6 +32,7 @@ import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Builder;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Alipay configuration and utility class.
@@ -79,7 +80,14 @@ public class AliPayBuilder {
         try {
             mySign = buildRequestMySign(params, key, signType);
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            Logger.warn(
+                    false,
+                    "Pay",
+                    e,
+                    "Alipay request signing failed: signType={}, paramCount={}, exception={}",
+                    signType,
+                    params == null ? 0 : params.size(),
+                    e.getClass().getSimpleName());
             return null;
         }
         tempMap.put("sign", mySign);
@@ -166,7 +174,14 @@ public class AliPayBuilder {
             signature.update(content.getBytes(charset != null ? charset : CHARSET_UTF8));
             return signature.verify(Base64.decode(sign));
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.warn(
+                    false,
+                    "Pay",
+                    e,
+                    "Alipay certificate verification failed: signType={}, paramCount={}, exception={}",
+                    signType,
+                    params == null ? 0 : params.size(),
+                    e.getClass().getSimpleName());
             return false;
         }
     }

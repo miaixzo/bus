@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.starter.sensitive;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.miaixz.bus.spring.GeniusBuilder;
 import jakarta.annotation.Resource;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
@@ -33,6 +35,7 @@ import org.springframework.context.annotation.Import;
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { SensitiveProperties.class })
+@ConditionalOnProperty(prefix = GeniusBuilder.SENSITIVE, name = "enabled", havingValue = "true", matchIfMissing = true)
 @Import({ RequestBodyAdvice.class, ResponseBodyAdvice.class })
 public class SensitiveConfiguration {
 

@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -38,11 +38,28 @@ import org.miaixz.bus.health.unix.platform.aix.driver.Lscfg;
 @Immutable
 final class AixBaseboard extends AbstractBaseboard {
 
+    /**
+     * The IBM constant.
+     */
     private static final String IBM = "IBM";
+    /**
+     * The model value.
+     */
     private final String model;
+    /**
+     * The serialNumber value.
+     */
     private final String serialNumber;
+    /**
+     * The version value.
+     */
     private final String version;
 
+    /**
+     * Creates a new AixBaseboard instance.
+     *
+     * @param lscfg the lscfg
+     */
     AixBaseboard(Supplier<List<String>> lscfg) {
         Triplet<String, String, String> msv = Lscfg.queryBackplaneModelSerialVersion(lscfg.get());
         this.model = StringKit.isBlank(msv.getLeft()) ? Normal.UNKNOWN : msv.getLeft();
@@ -50,21 +67,41 @@ final class AixBaseboard extends AbstractBaseboard {
         this.version = StringKit.isBlank(msv.getRight()) ? Normal.UNKNOWN : msv.getRight();
     }
 
+    /**
+     * Returns the manufacturer.
+     *
+     * @return the get manufacturer result
+     */
     @Override
     public String getManufacturer() {
         return IBM;
     }
 
+    /**
+     * Returns the model.
+     *
+     * @return the get model result
+     */
     @Override
     public String getModel() {
         return this.model;
     }
 
+    /**
+     * Returns the serial number.
+     *
+     * @return the get serial number result
+     */
     @Override
     public String getSerialNumber() {
         return this.serialNumber;
     }
 
+    /**
+     * Returns the version.
+     *
+     * @return the get version result
+     */
     @Override
     public String getVersion() {
         return this.version;

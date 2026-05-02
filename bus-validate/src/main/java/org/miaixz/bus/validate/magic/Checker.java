@@ -81,7 +81,7 @@ public class Checker {
         if (ObjectKit.isEmpty(object)) {
             Logger.debug(
                     true,
-                    "Checker",
+                    "Validate",
                     "The verified object is null, skip validation of internal fields: {}",
                     verified);
             return collector;
@@ -112,7 +112,7 @@ public class Checker {
             }
 
             if (verified.getList().isEmpty()) {
-                Logger.warn(true, "Checker", "Please check the annotation on property: {}", field.getName());
+                Logger.warn(true, "Validate", "Please check the annotation on property: {}", field.getName());
                 // Create a Verified object with a default Criterion.
                 verified = new Verified(value, new Annotation[0], verified.getContext(), field.getName());
                 verified.getList().add(without(field));

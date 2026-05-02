@@ -19,7 +19,10 @@
 */
 package org.miaixz.bus.starter.notify;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.miaixz.bus.spring.GeniusBuilder;
 import jakarta.annotation.Resource;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
@@ -51,6 +54,7 @@ import org.springframework.context.annotation.Bean;
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { NotifyProperties.class })
+@ConditionalOnProperty(prefix = GeniusBuilder.NOTIFY, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class NotifyConfiguration {
 
     /**
@@ -69,6 +73,7 @@ public class NotifyConfiguration {
      * @return A configured instance of the notification service provider factory.
      */
     @Bean
+    @ConditionalOnMissingBean(NotifyService.class)
     public NotifyService notifyProviderFactory() {
         return new NotifyService(this.properties);
     }

@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -46,23 +46,41 @@ import com.sun.jna.platform.unix.LibCAPI;
 @ThreadSafe
 final class MacNetworkParams extends AbstractNetworkParams {
 
+    /**
+     * The SYS constant.
+     */
     private static final SystemB SYS = SystemB.INSTANCE;
 
+    /**
+     * The IPV6_ROUTE_HEADER constant.
+     */
     private static final String IPV6_ROUTE_HEADER = "Internet6:";
 
+    /**
+     * The DEFAULT_GATEWAY constant.
+     */
     private static final String DEFAULT_GATEWAY = "default";
 
+    /**
+     * Returns the domain name.
+     *
+     * @return the get domain name result
+     */
     @Override
     public String getDomainName() {
         String hostname;
         try {
             hostname = InetAddress.getLocalHost().getHostName();
             if (hostname == null || hostname.isEmpty()) {
-                Logger.debug("Could not determine hostname");
+                Logger.debug(false, "Health", "Could not determine hostname");
                 return Normal.EMPTY;
             }
         } catch (UnknownHostException e) {
-            Logger.debug("Unknown host exception when getting address of local host: {}", e.getMessage());
+            Logger.debug(
+                    false,
+                    "Health",
+                    "Unknown host exception when getting address of local host: {}",
+                    e.getClass().getSimpleName());
             return Normal.EMPTY;
         }
         try (CLibrary.Addrinfo hint = new CLibrary.Addrinfo();
@@ -71,7 +89,7 @@ final class MacNetworkParams extends AbstractNetworkParams {
             int res = SYS.getaddrinfo(hostname, null, hint, ptr);
             if (res != 0) {
                 if (Logger.isDebugEnabled()) {
-                    Logger.debug("Failed getaddrinfo(): {}", SYS.gai_strerror(res));
+                    Logger.debug(false, "Health", "Failed getaddrinfo(): {}", SYS.gai_strerror(res));
                 }
                 return Normal.EMPTY;
             }
@@ -83,6 +101,11 @@ final class MacNetworkParams extends AbstractNetworkParams {
         }
     }
 
+    /**
+     * Returns the host name.
+     *
+     * @return the get host name result
+     */
     @Override
     public String getHostName() {
         byte[] hostnameBuffer = new byte[LibCAPI.HOST_NAME_MAX + 1];
@@ -92,11 +115,21 @@ final class MacNetworkParams extends AbstractNetworkParams {
         return Native.toString(hostnameBuffer);
     }
 
+    /**
+     * Returns the ipv4 default gateway.
+     *
+     * @return the get ipv4 default gateway result
+     */
     @Override
     public String getIpv4DefaultGateway() {
         return searchGateway(Executor.runNative("route -n get default"));
     }
 
+    /**
+     * Returns the ipv6 default gateway.
+     *
+     * @return the get ipv6 default gateway result
+     */
     @Override
     public String getIpv6DefaultGateway() {
         List<String> lines = Executor.runNative("netstat -nr");

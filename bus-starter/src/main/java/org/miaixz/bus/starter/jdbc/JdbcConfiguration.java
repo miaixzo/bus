@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.starter.jdbc;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.miaixz.bus.spring.GeniusBuilder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +65,7 @@ import jakarta.annotation.Resource;
  */
 @ConditionalOnClass(value = { HikariDataSource.class })
 @EnableConfigurationProperties(value = { JdbcProperties.class })
+@ConditionalOnProperty(prefix = GeniusBuilder.DATASOURCE, name = "enabled", havingValue = "true", matchIfMissing = true)
 @AutoConfigureBefore(value = { DataSourceAutoConfiguration.class })
 @Import(AspectjJdbcProxy.class)
 public class JdbcConfiguration {
@@ -103,7 +106,7 @@ public class JdbcConfiguration {
         DataSourceHolder.setKey(this.properties.getName());
 
         if (ObjectKit.isNotEmpty(this.properties.getMulti())) {
-            Logger.info("Enable support for multiple data sources");
+            Logger.info(false, "Starter", "DataSource enable support for multiple data sources");
             List<JdbcProperties> list = this.properties.getMulti();
             for (JdbcProperties prop : list) {
                 Map<String, Object> config = beanToMap(prop);
@@ -176,7 +179,7 @@ public class JdbcConfiguration {
             for (String key : beanMap.keySet()) {
                 Object value = beanMap.get(key);
                 if (StringKit.isNotEmpty(this.properties.getPrivateKey())) {
-                    Logger.info("The database connection is securely enabled");
+                    Logger.info(true, "Starter", "DataSource the database connection is securely enabled");
                     if ("url".equals(key) || "username".equals(key) || "password".equals(key)) {
                         value = Builder.decrypt(
                                 Algorithm.AES.getValue(),

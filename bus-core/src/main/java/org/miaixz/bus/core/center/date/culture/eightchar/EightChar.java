@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.core.center.date.culture.Tradition;
-import org.miaixz.bus.core.center.date.culture.Duty;
 import org.miaixz.bus.core.center.date.culture.sixty.*;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
@@ -171,17 +170,6 @@ public class EightChar extends Tradition {
         return SixtyCycle.fromName(
                 HeavenStem.fromIndex((getYear().getHeavenStem().getIndex() + 1) * 2 + offset - 1).getName()
                         + EarthBranch.fromIndex(offset + 1).getName());
-    }
-
-    /**
-     * Gets the 12 Duty Gods (Jian Chu).
-     *
-     * @return The Duty.
-     * @see SixtyCycleDay#getDuty()
-     */
-    @Deprecated
-    public Duty getDuty() {
-        return Duty.fromIndex(getDay().getEarthBranch().getIndex() - getYear().getEarthBranch().getIndex());
     }
 
     /**

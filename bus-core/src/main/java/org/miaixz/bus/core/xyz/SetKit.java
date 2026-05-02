@@ -32,6 +32,13 @@ import org.miaixz.bus.core.center.set.SetFromMap;
 public class SetKit {
 
     /**
+     * Constructs a new set utility instance.
+     */
+    public SetKit() {
+
+    }
+
+    /**
      * Creates a new {@link HashSet} or {@link LinkedHashSet}. If the provided initial array is empty, a default initial
      * capacity is used.
      *

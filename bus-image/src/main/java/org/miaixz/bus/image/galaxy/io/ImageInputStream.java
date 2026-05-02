@@ -557,7 +557,9 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
                         vr = ElementDictionary.getStandardElementDictionary().vrOf(tag);
                         if (!stopPredicate.test(this))
                             Logger.warn(
-                                    "Unrecognized VR code: {}H for {} - treat as {}",
+                                    false,
+                                    "Image",
+                                    "Unrecognized VR code: vrCode={}H for {} - treat as {}",
                                     Tag.shortToHexString(encodedVR),
                                     Tag.toString(tag),
                                     vr);
@@ -651,7 +653,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
             mark(12);
             readHeader();
             if (Tag.groupNumber(tag) != 2) {
-                Logger.warn(MISSING_FMI_LENGTH);
+                Logger.warn(false, "Image", MISSING_FMI_LENGTH);
                 reset();
                 break;
             }
@@ -666,7 +668,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
 
         String tsuid = attrs.getString(Tag.TransferSyntaxUID, null);
         if (tsuid == null) {
-            Logger.warn(MISSING_TRANSFER_SYNTAX);
+            Logger.warn(false, "Image", MISSING_TRANSFER_SYNTAX);
             tsuid = UID.ExplicitVRLittleEndian.uid;
         }
         switchTransferSyntax(tsuid);
@@ -888,7 +890,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      */
     private void skipAttribute(String message, String methodName) throws IOException {
         String tagAsString = Tag.toString(this.tag);
-        Logger.warn(message, tagAsString, length, tagPos, methodName);
+        Logger.warn(false, "Image", message, tagAsString, length, tagPos, methodName);
         skipFully(length);
     }
 
@@ -923,7 +925,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
         else if (!undefLen && pos != endPos) {
             if (!recoverSequenceExceedsEncodedLength || (pos - endPos) > TREAT_SQ_AS_UN_MAX_EXCEED_LENGTH)
                 throw new InternalException(String.format(SEQUENCE_EXCEED_ENCODED_LENGTH, Tag.toString(sqtag), len));
-            Logger.info(TREAT_SQ_AS_UN, Tag.toString(sqtag), len);
+            Logger.info(false, "Image", TREAT_SQ_AS_UN, Tag.toString(sqtag), len);
             reset();
             tag = sqtag;
             vr = VR.UN;
@@ -1013,7 +1015,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
             }
             return value;
         } catch (IOException e) {
-            Logger.warn("IOException during read of {} #{} @ {}", Tag.toString(tag), length, tagPos, e);
+            Logger.warn(false, "Image", "IOException during read of {} #{} @ {}", Tag.toString(tag), length, tagPos, e);
             throw e;
         }
     }
@@ -1025,7 +1027,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
         if (tsuid.equals(UID.DeflatedExplicitVRLittleEndian.uid) || tsuid.equals(UID.JPIPReferencedDeflate.uid)
                 || tsuid.equals(UID.JPIPHTJ2KReferencedDeflate.uid)) {
             if (hasZLIBHeader()) {
-                Logger.warn(DEFLATED_WITH_ZLIB_HEADER);
+                Logger.warn(false, "Image", DEFLATED_WITH_ZLIB_HEADER);
                 super.in = new InflaterInputStream(super.in);
             } else {
                 super.in = new InflaterInputStream(super.in, inflater = new Inflater(true));

@@ -19,6 +19,12 @@
 */
 package org.miaixz.bus.core.net;
 
+import java.util.Locale;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
  * HTTP protocol related constants including HTTP methods, status codes, header fields, and HTTP/2 settings parameters.
  * <p>
@@ -706,6 +712,177 @@ public class HTTP {
      */
     public static boolean redirectsToGet(String method) {
         return !PROPFIND.equals(method);
+    }
+
+    /**
+     * Resolves the standard HTTP method token from a registry verb code.
+     *
+     * @param verb registry verb code
+     * @return HTTP method token
+     */
+    public static String methodOf(int verb) {
+        return Method.of(verb).value();
+    }
+
+    /**
+     * Resolves the registry verb code from one HTTP method token.
+     *
+     * @param method HTTP method token
+     * @return registry verb code
+     */
+    public static int verbOf(String method) {
+        return Method.of(method).verb();
+    }
+
+    /**
+     * Returns whether one registry verb code matches the supplied HTTP method token.
+     *
+     * @param verb   registry verb code
+     * @param method HTTP method token
+     * @return {@code true} when both values resolve to the same method
+     */
+    public static boolean matches(Integer verb, String method) {
+        return verb != null && Method.of(verb).matches(method);
+    }
+
+    /**
+     * Canonical HTTP methods shared by Bus modules.
+     * <p>
+     * Each method carries the integer {@code verb} code used by registry assets together with the standard method
+     * token. This enum is the canonical model for translating between persisted route configuration and runtime HTTP
+     * handling without coupling core modules to any specific web framework.
+     * </p>
+     */
+    public enum Method {
+
+        /**
+         * GET request.
+         */
+        GET(1, HTTP.GET),
+        /**
+         * POST request.
+         */
+        POST(2, HTTP.POST),
+        /**
+         * HEAD request.
+         */
+        HEAD(3, HTTP.HEAD),
+        /**
+         * PUT request.
+         */
+        PUT(4, HTTP.PUT),
+        /**
+         * PATCH request.
+         */
+        PATCH(5, HTTP.PATCH),
+        /**
+         * DELETE request.
+         */
+        DELETE(6, HTTP.DELETE),
+        /**
+         * OPTIONS request.
+         */
+        OPTIONS(7, HTTP.OPTIONS),
+        /**
+         * TRACE request.
+         */
+        TRACE(8, HTTP.TRACE),
+        /**
+         * CONNECT request.
+         */
+        CONNECT(9, HTTP.CONNECT);
+
+        /**
+         * Lookup table keyed by registry verb code.
+         */
+        private static final Map<Integer, Method> BY_VERB = Stream.of(values())
+                .collect(Collectors.toUnmodifiableMap(Method::verb, Function.identity()));
+        /**
+         * Lookup table keyed by upper-cased method token.
+         */
+        private static final Map<String, Method> BY_VALUE = Stream.of(values())
+                .collect(Collectors.toUnmodifiableMap(Method::value, Function.identity()));
+
+        /**
+         * Registry verb code used by stored assets.
+         */
+        private final int verb;
+        /**
+         * HTTP method token.
+         */
+        private final String value;
+
+        /**
+         * Creates one canonical HTTP method mapping.
+         *
+         * @param verb  registry verb code
+         * @param value HTTP method token
+         */
+        Method(int verb, String value) {
+            this.verb = verb;
+            this.value = value;
+        }
+
+        /**
+         * Returns the registry verb code.
+         *
+         * @return verb code
+         */
+        public int verb() {
+            return this.verb;
+        }
+
+        /**
+         * Returns the standard HTTP method token.
+         *
+         * @return method token
+         */
+        public String value() {
+            return this.value;
+        }
+
+        /**
+         * Resolves one method from the persisted registry verb code.
+         *
+         * @param verb registry verb code
+         * @return canonical method
+         * @throws IllegalArgumentException when the verb is unsupported
+         */
+        public static Method of(int verb) {
+            Method method = BY_VERB.get(verb);
+            if (method == null) {
+                throw new IllegalArgumentException("Unsupported HTTP verb: " + verb);
+            }
+            return method;
+        }
+
+        /**
+         * Resolves one method from a raw HTTP method token.
+         *
+         * @param method raw method token
+         * @return canonical method
+         * @throws IllegalArgumentException when the token is blank or unsupported
+         */
+        public static Method of(String method) {
+            if (method == null || method.isBlank()) {
+                throw new IllegalArgumentException("HTTP method cannot be blank");
+            }
+            Method resolved = BY_VALUE.get(method.trim().toUpperCase(Locale.ROOT));
+            if (resolved == null) {
+                throw new IllegalArgumentException("Unsupported HTTP method: " + method);
+            }
+            return resolved;
+        }
+
+        /**
+         * Returns whether the supplied token resolves to this canonical method.
+         *
+         * @param method raw method token
+         * @return {@code true} when the token resolves to this method
+         */
+        public boolean matches(String method) {
+            return method != null && this == BY_VALUE.get(method.trim().toUpperCase(Locale.ROOT));
+        }
     }
 
 }

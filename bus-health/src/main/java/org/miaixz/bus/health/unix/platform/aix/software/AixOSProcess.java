@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -62,38 +62,127 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_process_t;
 @ThreadSafe
 public class AixOSProcess extends AbstractOSProcess {
 
+    /**
+     * The affinityMask value.
+     */
     private final Supplier<Long> affinityMask = Memoizer
             .memoize(PerfstatCpu::queryCpuAffinityMask, Memoizer.defaultExpiration());
+    /**
+     * The os value.
+     */
     private final AixOperatingSystem os;
+    /**
+     * The bitness value.
+     */
     private final Supplier<Integer> bitness = Memoizer.memoize(this::queryBitness);
+    /**
+     * The psinfo value.
+     */
     private final Supplier<AixLibc.AixPsInfo> psinfo = Memoizer
             .memoize(this::queryPsInfo, Memoizer.defaultExpiration());
+    /**
+     * The cmdEnv value.
+     */
     private final Supplier<Pair<List<String>, Map<String, String>>> cmdEnv = Memoizer
             .memoize(this::queryCommandlineEnvironment);
     // Memoized copy from OperatingSystem
+    /**
+     * The procCpu value.
+     */
     private final Supplier<perfstat_process_t[]> procCpu;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The commandLineBackup value.
+     */
     private String commandLineBackup;
+    /**
+     * The commandLine value.
+     */
     private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
+    /**
+     * The user value.
+     */
     private String user;
+    /**
+     * The userID value.
+     */
     private String userID;
+    /**
+     * The group value.
+     */
     private String group;
+    /**
+     * The groupID value.
+     */
     private String groupID;
+    /**
+     * The parentProcessID value.
+     */
     private int parentProcessID;
+    /**
+     * The threadCount value.
+     */
     private int threadCount;
+    /**
+     * The priority value.
+     */
     private int priority;
+    /**
+     * The virtualSize value.
+     */
     private long virtualSize;
+    /**
+     * The residentSetSize value.
+     */
     private long residentSetSize;
+    /**
+     * The privateResidentMemory value.
+     */
     private long privateResidentMemory;
+    /**
+     * The kernelTime value.
+     */
     private long kernelTime;
+    /**
+     * The userTime value.
+     */
     private long userTime;
+    /**
+     * The startTime value.
+     */
     private long startTime;
+    /**
+     * The upTime value.
+     */
     private long upTime;
+    /**
+     * The bytesRead value.
+     */
     private long bytesRead;
+    /**
+     * The bytesWritten value.
+     */
     private long bytesWritten;
+    /**
+     * The path value.
+     */
     private String path = Normal.EMPTY;
+    /**
+     * The state value.
+     */
     private OSProcess.State state = INVALID;
 
+    /**
+     * Creates a new AixOSProcess instance.
+     *
+     * @param pid     the pid
+     * @param cpuMem  the cpu mem
+     * @param procCpu the proc cpu
+     * @param os      the os
+     */
     public AixOSProcess(int pid, Tuple cpuMem, Supplier<perfstat_process_t[]> procCpu, AixOperatingSystem os) {
         super(pid);
         this.procCpu = procCpu;
@@ -143,64 +232,129 @@ public class AixOSProcess extends AbstractOSProcess {
         return state;
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return the get name result
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Returns the path.
+     *
+     * @return the get path result
+     */
     @Override
     public String getPath() {
         return this.path;
     }
 
+    /**
+     * Returns the command line.
+     *
+     * @return the get command line result
+     */
     @Override
     public String getCommandLine() {
         return this.commandLine.get();
     }
 
+    /**
+     * Queries the command line.
+     *
+     * @return the query command line result
+     */
     private String queryCommandLine() {
         String cl = String.join(Symbol.SPACE, getArguments());
         return cl.isEmpty() ? this.commandLineBackup : cl;
     }
 
+    /**
+     * Returns the arguments.
+     *
+     * @return the get arguments result
+     */
     @Override
     public List<String> getArguments() {
         return cmdEnv.get().getLeft();
     }
 
+    /**
+     * Returns the environment variables.
+     *
+     * @return the get environment variables result
+     */
     @Override
     public Map<String, String> getEnvironmentVariables() {
         return cmdEnv.get().getRight();
     }
 
+    /**
+     * Queries the commandline environment.
+     *
+     * @return the query commandline environment result
+     */
     private Pair<List<String>, Map<String, String>> queryCommandlineEnvironment() {
         return PsInfo.queryArgsEnv(getProcessID(), psinfo.get());
     }
 
+    /**
+     * Queries the ps info.
+     *
+     * @return the query ps info result
+     */
     private AixLibc.AixPsInfo queryPsInfo() {
         return PsInfo.queryPsInfo(this.getProcessID());
     }
 
+    /**
+     * Returns the user.
+     *
+     * @return the get user result
+     */
     @Override
     public String getUser() {
         return this.user;
     }
 
+    /**
+     * Returns the user id.
+     *
+     * @return the get user id result
+     */
     @Override
     public String getUserID() {
         return this.userID;
     }
 
+    /**
+     * Returns the group.
+     *
+     * @return the get group result
+     */
     @Override
     public String getGroup() {
         return this.group;
     }
 
+    /**
+     * Returns the group id.
+     *
+     * @return the get group id result
+     */
     @Override
     public String getGroupID() {
         return this.groupID;
     }
 
+    /**
+     * Returns the current working directory.
+     *
+     * @return the get current working directory result
+     */
     @Override
     public String getCurrentWorkingDirectory() {
         try {
@@ -210,71 +364,141 @@ public class AixOSProcess extends AbstractOSProcess {
                 return cwd;
             }
         } catch (IOException e) {
-            Logger.trace("Couldn't find cwd for pid {}: {}", getProcessID(), e.getMessage());
+            Logger.trace(
+                    false,
+                    "Health",
+                    "Couldn't find cwd for pid {}: {}",
+                    getProcessID(),
+                    e.getClass().getSimpleName());
         }
         return Normal.EMPTY;
     }
 
+    /**
+     * Returns the parent process id.
+     *
+     * @return the get parent process id result
+     */
     @Override
     public int getParentProcessID() {
         return this.parentProcessID;
     }
 
+    /**
+     * Returns the thread count.
+     *
+     * @return the get thread count result
+     */
     @Override
     public int getThreadCount() {
         return this.threadCount;
     }
 
+    /**
+     * Returns the priority.
+     *
+     * @return the get priority result
+     */
     @Override
     public int getPriority() {
         return this.priority;
     }
 
+    /**
+     * Returns the virtual size.
+     *
+     * @return the get virtual size result
+     */
     @Override
     public long getVirtualSize() {
         return this.virtualSize;
     }
 
+    /**
+     * Returns the resident memory.
+     *
+     * @return the get resident memory result
+     */
     @Override
     public long getResidentMemory() {
         return this.residentSetSize;
     }
 
+    /**
+     * Returns the private resident memory.
+     *
+     * @return the get private resident memory result
+     */
     @Override
     public long getPrivateResidentMemory() {
         return this.privateResidentMemory;
     }
 
+    /**
+     * Returns the kernel time.
+     *
+     * @return the get kernel time result
+     */
     @Override
     public long getKernelTime() {
         return this.kernelTime;
     }
 
+    /**
+     * Returns the user time.
+     *
+     * @return the get user time result
+     */
     @Override
     public long getUserTime() {
         return this.userTime;
     }
 
+    /**
+     * Returns the up time.
+     *
+     * @return the get up time result
+     */
     @Override
     public long getUpTime() {
         return this.upTime;
     }
 
+    /**
+     * Returns the start time.
+     *
+     * @return the get start time result
+     */
     @Override
     public long getStartTime() {
         return this.startTime;
     }
 
+    /**
+     * Returns the bytes read.
+     *
+     * @return the get bytes read result
+     */
     @Override
     public long getBytesRead() {
         return this.bytesRead;
     }
 
+    /**
+     * Returns the bytes written.
+     *
+     * @return the get bytes written result
+     */
     @Override
     public long getBytesWritten() {
         return this.bytesWritten;
     }
 
+    /**
+     * Returns the open files.
+     *
+     * @return the get open files result
+     */
     @Override
     public long getOpenFiles() {
         try (Stream<Path> fd = Files.list(Paths.get("/proc/" + getProcessID() + "/fd"))) {
@@ -284,6 +508,11 @@ public class AixOSProcess extends AbstractOSProcess {
         }
     }
 
+    /**
+     * Returns the soft open file limit.
+     *
+     * @return the get soft open file limit result
+     */
     @Override
     public long getSoftOpenFileLimit() {
         if (getProcessID() == this.os.getProcessId()) {
@@ -295,6 +524,11 @@ public class AixOSProcess extends AbstractOSProcess {
         }
     }
 
+    /**
+     * Returns the hard open file limit.
+     *
+     * @return the get hard open file limit result
+     */
     @Override
     public long getHardOpenFileLimit() {
         if (getProcessID() == this.os.getProcessId()) {
@@ -306,11 +540,21 @@ public class AixOSProcess extends AbstractOSProcess {
         }
     }
 
+    /**
+     * Returns the bitness.
+     *
+     * @return the get bitness result
+     */
     @Override
     public int getBitness() {
         return this.bitness.get();
     }
 
+    /**
+     * Queries the bitness.
+     *
+     * @return the query bitness result
+     */
     private int queryBitness() {
         List<String> pflags = Executor.runNative("pflags " + getProcessID());
         for (String line : pflags) {
@@ -325,11 +569,21 @@ public class AixOSProcess extends AbstractOSProcess {
         return 0;
     }
 
+    /**
+     * Returns the state.
+     *
+     * @return the get state result
+     */
     @Override
     public OSProcess.State getState() {
         return this.state;
     }
 
+    /**
+     * Returns the affinity mask.
+     *
+     * @return the get affinity mask result
+     */
     @Override
     public long getAffinityMask() {
         long mask = 0L;
@@ -352,6 +606,11 @@ public class AixOSProcess extends AbstractOSProcess {
         return mask;
     }
 
+    /**
+     * Returns the thread details.
+     *
+     * @return the get thread details result
+     */
     @Override
     public List<OSThread> getThreadDetails() {
         // Get process files in proc
@@ -366,6 +625,11 @@ public class AixOSProcess extends AbstractOSProcess {
                 .filter(OSThread.ThreadFiltering.VALID_THREAD).collect(Collectors.toList());
     }
 
+    /**
+     * Updates the attributes.
+     *
+     * @return the update attributes result
+     */
     @Override
     public boolean updateAttributes() {
         perfstat_process_t[] perfstat = procCpu.get();
@@ -384,6 +648,12 @@ public class AixOSProcess extends AbstractOSProcess {
         return false;
     }
 
+    /**
+     * Updates the attributes.
+     *
+     * @param cpuMem the cpu mem
+     * @return the update attributes result
+     */
     private boolean updateAttributes(Tuple cpuMem) {
         AixLibc.AixPsInfo info = psinfo.get();
         if (info == null) {

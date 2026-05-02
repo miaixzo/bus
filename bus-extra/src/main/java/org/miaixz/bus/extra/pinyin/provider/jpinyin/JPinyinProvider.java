@@ -23,6 +23,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.extra.pinyin.PinyinProvider;
+import org.miaixz.bus.logger.Logger;
 
 import com.github.stuxuhai.jpinyin.PinyinException;
 import com.github.stuxuhai.jpinyin.PinyinFormat;
@@ -32,7 +33,7 @@ import com.github.stuxuhai.jpinyin.PinyinHelper;
  * Encapsulates the Jpinyin engine.
  * <p>
  * To introduce (dependency):
- * 
+ *
  * <pre>
  * &lt;dependency&gt;
  *     &lt;groupId&gt;com.github.stuxuhai&lt;/groupId&gt;
@@ -52,7 +53,9 @@ public class JPinyinProvider implements PinyinProvider {
      */
     public JPinyinProvider() {
         // Check if the library is introduced when loading via SPI
+        Logger.info(true, "Extra", "JPinyin provider dependency check started");
         Assert.notNull(PinyinHelper.class);
+        Logger.info(false, "Extra", "JPinyin provider dependency check completed");
     }
 
     /**
@@ -85,12 +88,36 @@ public class JPinyinProvider implements PinyinProvider {
      */
     @Override
     public String getPinyin(final String str, final String separator, final boolean tone) {
+        Logger.debug(
+                true,
+                "Extra",
+                "JPinyin string conversion started: textLength={}, separatorPresent={}, tone={}",
+                str == null ? 0 : str.length(),
+                separator != null,
+                tone);
         try {
-            return PinyinHelper.convertToPinyinString(
+            final String result = PinyinHelper.convertToPinyinString(
                     str,
                     separator,
                     tone ? PinyinFormat.WITH_TONE_MARK : PinyinFormat.WITHOUT_TONE);
+            Logger.debug(
+                    false,
+                    "Extra",
+                    "JPinyin string conversion completed: textLength={}, resultLength={}, tone={}",
+                    str == null ? 0 : str.length(),
+                    result == null ? 0 : result.length(),
+                    tone);
+            return result;
         } catch (final PinyinException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "JPinyin string conversion failed: textLength={}, separatorPresent={}, tone={}, exception={}",
+                    str == null ? 0 : str.length(),
+                    separator != null,
+                    tone,
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }

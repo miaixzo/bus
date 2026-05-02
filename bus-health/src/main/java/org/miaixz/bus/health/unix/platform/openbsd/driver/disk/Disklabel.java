@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -38,6 +38,9 @@ import org.miaixz.bus.health.builtin.hardware.HWPartition;
 @ThreadSafe
 public final class Disklabel {
 
+    /**
+     * Creates a new Disklabel instance.
+     */
     private Disklabel() {
     }
 
@@ -130,6 +133,12 @@ public final class Disklabel {
         return new Tuple(label, duid, totalSectors * bytesPerSector, partitions);
     }
 
+    /**
+     * Returns the disk params no root.
+     *
+     * @param diskName the disk name
+     * @return the get disk params no root result
+     */
     private static Tuple getDiskParamsNoRoot(String diskName) {
         List<HWPartition> partitions = new ArrayList<>();
         for (String line : Executor.runNative("df")) {
@@ -148,6 +157,13 @@ public final class Disklabel {
         return new Tuple(Normal.UNKNOWN, Normal.UNKNOWN, 0L, partitions);
     }
 
+    /**
+     * Returns the major minor.
+     *
+     * @param diskName the disk name
+     * @param name     the name
+     * @return the get major minor result
+     */
     private static Pair<Integer, Integer> getMajorMinor(String diskName, String name) {
         int major = 0;
         int minor = 0;

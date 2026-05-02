@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -35,16 +35,31 @@ import org.miaixz.bus.health.Parsing;
 @ThreadSafe
 public final class Uptime {
 
+    /**
+     * The MINUTE_MS constant.
+     */
     private static final long MINUTE_MS = 60L * 1000L;
+    /**
+     * The HOUR_MS constant.
+     */
     private static final long HOUR_MS = 60L * MINUTE_MS;
+    /**
+     * The DAY_MS constant.
+     */
     private static final long DAY_MS = 24L * HOUR_MS;
 
     // sample format:
     // 18:36pm up 10 days 8:11, 2 users, load average: 3.14, 2.74, 2.41
 
+    /**
+     * The UPTIME_FORMAT_AIX constant.
+     */
     private static final Pattern UPTIME_FORMAT_AIX = Pattern
             .compile(".*\\sup\\s+((\\d+)\\s+days?,?\\s+)?\\b((\\d+):)?(\\d+)(\\s+min(utes?)?)?,\\s+\\d+\\s+user.+"); // NOSONAR:squid:S5843
 
+    /**
+     * Creates a new Uptime instance.
+     */
     private Uptime() {
     }
 

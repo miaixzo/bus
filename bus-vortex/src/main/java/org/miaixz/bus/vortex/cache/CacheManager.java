@@ -72,12 +72,18 @@ public class CacheManager<K, V> {
      * Level-2 cache configuration.
      */
     private final long cacheSize;
+    /**
+     * Level-2 cache expiration in milliseconds.
+     */
     private final long cacheExpireMs;
 
     /**
      * Access statistics.
      */
     private final AtomicLong hitCount = new AtomicLong(0);
+    /**
+     * Cache miss statistics.
+     */
     private final AtomicLong missCount = new AtomicLong(0);
 
     /**
@@ -96,7 +102,9 @@ public class CacheManager<K, V> {
         this.cachex = new GuavaCache<>(cacheSize, cacheExpireMs);
 
         Logger.debug(
-                "CacheManager initialized: L1=ConcurrentHashMap, L2=GuavaCache(size={}, expireMs={})",
+                false,
+                "Vortex",
+                "Cache initialized: L1=ConcurrentHashMap, L2=GuavaCache(size={}, expireMs={})",
                 cacheSize,
                 cacheExpireMs);
     }
@@ -115,7 +123,9 @@ public class CacheManager<K, V> {
         this.cachex = new CaffeineCache(cacheSize, cacheExpireMs);
 
         Logger.debug(
-                "CacheManager initialized: L1=ConcurrentHashMap, L2=CaffeineCache(size={}, expireMs={})",
+                false,
+                "Vortex",
+                "Cache initialized: L1=ConcurrentHashMap, L2=CaffeineCache(size={}, expireMs={})",
                 cacheSize,
                 cacheExpireMs);
     }
@@ -127,7 +137,7 @@ public class CacheManager<K, V> {
      */
     public void setPerformanceMonitor(Monitor monitor) {
         this.monitor = monitor;
-        Logger.debug("CacheManager performance monitor configured: {}", monitor.getClass().getSimpleName());
+        Logger.debug(false, "Vortex", "Cache performance monitor configured");
     }
 
     /**
@@ -140,7 +150,6 @@ public class CacheManager<K, V> {
         long startTime = System.nanoTime();
 
         try {
-            // Step 1: check the level-1 cache first.
             V value = this.cache.get(key);
 
             if (value != null) {
@@ -153,7 +162,6 @@ public class CacheManager<K, V> {
                 return value;
             }
 
-            // Step 2: check the level-2 cache and backfill level-1 on hit.
             value = this.cachex.read(key);
 
             if (value != null) {
@@ -167,7 +175,6 @@ public class CacheManager<K, V> {
                 return value;
             }
 
-            // Step 3: both cache levels missed.
             missCount.incrementAndGet();
 
             if (monitor != null) {
@@ -177,7 +184,13 @@ public class CacheManager<K, V> {
             return null;
 
         } catch (Exception e) {
-            Logger.error("Cache read failed: key={}, error={}", key, e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Vortex",
+                    e,
+                    "Cache read failed: keyChars={}, exception={}",
+                    key == null ? 0 : String.valueOf(key).length(),
+                    e.getClass().getSimpleName());
             return null;
         }
     }
@@ -193,7 +206,13 @@ public class CacheManager<K, V> {
             this.cache.put(key, value);
             this.cachex.write(key, value, cacheExpireMs);
         } catch (Exception e) {
-            Logger.error("Cache write failed: key={}, error={}", key, e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Vortex",
+                    e,
+                    "Cache write failed: keyChars={}, exception={}",
+                    key == null ? 0 : String.valueOf(key).length(),
+                    e.getClass().getSimpleName());
             throw e;
         }
     }
@@ -208,7 +227,13 @@ public class CacheManager<K, V> {
             this.cache.remove(key);
             this.cachex.remove(key);
         } catch (Exception e) {
-            Logger.error("Cache removal failed: key={}, error={}", key, e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Vortex",
+                    e,
+                    "Cache removal failed: keyChars={}, exception={}",
+                    key == null ? 0 : String.valueOf(key).length(),
+                    e.getClass().getSimpleName());
         }
     }
 

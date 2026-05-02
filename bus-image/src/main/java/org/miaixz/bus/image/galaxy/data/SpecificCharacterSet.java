@@ -269,7 +269,9 @@ public class SpecificCharacterSet {
                         continue;
                 }
                 Logger.info(
-                        "Invalid Specific Character Set: [{}] - treat as [{}]",
+                        false,
+                        "Image",
+                        "Invalid Specific Character Set: source={}, fallback={}",
                         Builder.concat(codes, '\\'),
                         Builder.maskNull(codes[0], ""));
                 return new String[] { codes[0] };
@@ -277,7 +279,9 @@ public class SpecificCharacterSet {
         }
         if (codes != results) {
             Logger.info(
-                    "Invalid Specific Character Set: [{}] - treat as [{}]",
+                    false,
+                    "Image",
+                    "Invalid Specific Character Set: source={}, fallback={}",
                     Builder.concat(codes, '\\'),
                     Builder.concat(results, '\\'));
         }
@@ -299,7 +303,9 @@ public class SpecificCharacterSet {
                 clone[0] = codes[i];
                 clone[i] = codes[0];
                 Logger.info(
-                        "Invalid Specific Character Set: [{}] - treat as [{}]",
+                        false,
+                        "Image",
+                        "Invalid Specific Character Set: source={}, fallback={}",
                         Builder.concat(codes, '\\'),
                         Builder.concat(clone, '\\'));
                 return clone;
@@ -309,7 +315,9 @@ public class SpecificCharacterSet {
         withASCII[0] = "";
         System.arraycopy(codes, 0, withASCII, 1, codes.length);
         Logger.info(
-                "Invalid Specific Character Set: [{}] - treat as [{}]",
+                false,
+                "Image",
+                "Invalid Specific Character Set: source={}, fallback={}",
                 Builder.concat(codes, '\\'),
                 Builder.concat(withASCII, '\\'));
         return withASCII;

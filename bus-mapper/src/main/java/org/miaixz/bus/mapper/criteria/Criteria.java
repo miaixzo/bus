@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.ibatis.type.TypeHandler;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.mapper.binding.function.Fn;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
@@ -110,9 +111,7 @@ public class Criteria<T> {
      * @param condition The condition expression.
      */
     public void addCriterion(String condition) {
-        if (condition == null) {
-            throw new RuntimeException("Value for condition cannot be null");
-        }
+        Assert.notNull(condition, "Value for condition cannot be null");
         criteria.add(new Criterion(condition));
     }
 
@@ -123,9 +122,7 @@ public class Criteria<T> {
      * @param value     The value for the condition.
      */
     public void addCriterion(String condition, Object value) {
-        if (value == null) {
-            throw new RuntimeException("Value for " + condition + " cannot be null");
-        }
+        Assert.notNull(value, "Value for {} cannot be null", condition);
         criteria.add(new Criterion(condition, value));
     }
 
@@ -137,9 +134,7 @@ public class Criteria<T> {
      * @param column    The column metadata.
      */
     public void addCriterion(String condition, Object value, ColumnMeta column) {
-        if (value == null) {
-            throw new RuntimeException("Value for " + condition + " cannot be null");
-        }
+        Assert.notNull(value, "Value for {} cannot be null", condition);
         criteria.add(new Criterion(condition, value, column));
     }
 
@@ -151,9 +146,7 @@ public class Criteria<T> {
      * @param value2    The ending value.
      */
     public void addCriterion(String condition, Object value1, Object value2) {
-        if (value1 == null || value2 == null) {
-            throw new RuntimeException("Between values for " + condition + " cannot be null");
-        }
+        Assert.isTrue(value1 != null && value2 != null, "Between values for {} cannot be null", condition);
         criteria.add(new Criterion(condition, value1, value2));
     }
 
@@ -166,9 +159,7 @@ public class Criteria<T> {
      * @param column    The column metadata.
      */
     public void addCriterion(String condition, Object value1, Object value2, ColumnMeta column) {
-        if (value1 == null || value2 == null) {
-            throw new RuntimeException("Between values for " + condition + " cannot be null");
-        }
+        Assert.isTrue(value1 != null && value2 != null, "Between values for {} cannot be null", condition);
         criteria.add(new Criterion(condition, value1, value2, column));
     }
 

@@ -195,25 +195,84 @@ public interface OpenBsdLibc extends CLibrary {
             "kvaslots_avail", "highflips", "highflops", "dmaflips" })
     class Bcachestats extends Structure {
 
+        /**
+         * The numbufs value.
+         */
         public long numbufs; // number of buffers allocated
+        /**
+         * The numbufpages value.
+         */
         public long numbufpages; // number of pages in buffer cache
+        /**
+         * The numdirtypages value.
+         */
         public long numdirtypages; // number of dirty free pages
+        /**
+         * The numcleanpages value.
+         */
         public long numcleanpages; // number of clean free pages
+        /**
+         * The pendingwrites value.
+         */
         public long pendingwrites; // number of pending writes
+        /**
+         * The pendingreads value.
+         */
         public long pendingreads; // number of pending reads
+        /**
+         * The numwrites value.
+         */
         public long numwrites; // total writes started
+        /**
+         * The numreads value.
+         */
         public long numreads; // total reads started
+        /**
+         * The cachehits value.
+         */
         public long cachehits; // total reads found in cache
+        /**
+         * The busymapped value.
+         */
         public long busymapped; // number of busy and mapped buffers
+        /**
+         * The dmapages value.
+         */
         public long dmapages; // dma reachable pages in buffer cache
+        /**
+         * The highpages value.
+         */
         public long highpages; // pages above dma region
+        /**
+         * The delwribufs value.
+         */
         public long delwribufs; // delayed write buffers
+        /**
+         * The kvaslots value.
+         */
         public long kvaslots; // kva slots total
+        /**
+         * The kvaslots_avail value.
+         */
         public long kvaslots_avail; // available kva slots
+        /**
+         * The highflips value.
+         */
         public long highflips; // total flips to above DMA
+        /**
+         * The highflops value.
+         */
         public long highflops; // total failed flips to above DMA
+        /**
+         * The dmaflips value.
+         */
         public long dmaflips; // total flips from high to DMA
 
+        /**
+         * Creates a new Bcachestats instance.
+         *
+         * @param p the p
+         */
         public Bcachestats(Pointer p) {
             super(p);
             read();

@@ -88,7 +88,9 @@ public class CortexExporter {
     public void start() {
         scheduler.scheduleAtFixedRate(this::push, intervalSeconds, intervalSeconds, TimeUnit.SECONDS);
         Logger.info(
-                "[bus-metrics] CortexExporter started, interval={}s, ns={}, svc={}",
+                true,
+                "Metrics",
+                "CortexExporter started, interval={}s, ns={}, svc={}",
                 intervalSeconds,
                 namespace,
                 serviceId);
@@ -96,7 +98,9 @@ public class CortexExporter {
 
     /** Stops the background push scheduler. */
     public void stop() {
+        Logger.info(true, "Metrics", "Cortex metrics exporter stop started: intervalSeconds={}", intervalSeconds);
         scheduler.shutdown();
+        Logger.info(false, "Metrics", "Cortex metrics exporter stop finished: intervalSeconds={}", intervalSeconds);
     }
 
     /**
@@ -105,19 +109,39 @@ public class CortexExporter {
      */
     public void push() {
         try {
+            Logger.debug(true, "Metrics", "Cortex metrics export started: intervalSeconds={}", intervalSeconds);
             Provider provider = Metrics.getProvider();
             if (!(provider instanceof NativeProvider)) {
+                Logger.debug(
+                        false,
+                        "Metrics",
+                        "Cortex metrics export skipped: providerClass={}, reason=native-required",
+                        provider.getClass().getName());
                 return;
             }
+            int timerCount = 0;
             for (Timer timer : provider.timers()) {
                 TimerSnapshot snap = timer.snapshot();
                 String key = Builder.CORTEX_KEY_PREFIX + namespace + ":" + serviceId + ":" + snap.name();
                 // Serialize as compact JSON-like string (no external lib)
                 String value = serializeSnapshot(snap);
                 store.write(key, value, intervalSeconds * Builder.CORTEX_TTL_MULTIPLIER * 1000L);
+                timerCount++;
             }
+            Logger.debug(
+                    false,
+                    "Metrics",
+                    "Cortex metrics export finished: timerCount={}, ttlMillis={}",
+                    timerCount,
+                    intervalSeconds * Builder.CORTEX_TTL_MULTIPLIER * 1000L);
         } catch (Exception e) {
-            Logger.warn("[bus-metrics] CortexExporter push failed: {}", e.getMessage());
+            Logger.warn(
+                    false,
+                    "Metrics",
+                    e,
+                    "Cortex metrics export failed: intervalSeconds={}, exception={}",
+                    intervalSeconds,
+                    e.getClass().getSimpleName());
         }
     }
 

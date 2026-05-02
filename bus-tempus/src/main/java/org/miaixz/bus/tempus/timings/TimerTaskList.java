@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.tempus.timings;
 
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.tempus.crontab.TimerCrontab;
 
 import java.util.concurrent.Delayed;
@@ -90,6 +91,12 @@ public class TimerTaskList implements Delayed {
                 timerCrontab.prev = tail;
                 tail.next = timerCrontab;
                 root.prev = timerCrontab;
+                Logger.debug(
+                        false,
+                        "Tempus",
+                        "Timer task list entry added: expireMs={}, descPresent={}",
+                        expire.get(),
+                        timerCrontab.desc != null);
             }
         }
     }
@@ -107,6 +114,12 @@ public class TimerTaskList implements Delayed {
                 timerCrontab.timerTaskList = null;
                 timerCrontab.next = null;
                 timerCrontab.prev = null;
+                Logger.debug(
+                        false,
+                        "Tempus",
+                        "Timer task list entry removed: expireMs={}, descPresent={}",
+                        expire.get(),
+                        timerCrontab.desc != null);
             }
         }
     }
@@ -119,12 +132,16 @@ public class TimerTaskList implements Delayed {
      */
     public synchronized void flush(final Consumer<TimerCrontab> flush) {
         TimerCrontab timerCrontab = root.next;
+        int flushedCount = 0;
+        Logger.debug(true, "Tempus", "Timer task list flush started: expireMs={}", expire.get());
         while (!timerCrontab.equals(root)) {
             this.removeTask(timerCrontab);
             flush.accept(timerCrontab);
+            flushedCount++;
             timerCrontab = root.next;
         }
         expire.set(-1L);
+        Logger.debug(false, "Tempus", "Timer task list flush completed: flushedCount={}", flushedCount);
     }
 
     /**

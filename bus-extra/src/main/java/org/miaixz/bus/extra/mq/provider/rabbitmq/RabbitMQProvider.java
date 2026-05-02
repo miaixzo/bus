@@ -29,6 +29,7 @@ import org.miaixz.bus.extra.mq.MQConfig;
 import org.miaixz.bus.core.lang.exception.MQueueException;
 import org.miaixz.bus.extra.mq.Producer;
 import org.miaixz.bus.extra.mq.MQProvider;
+import org.miaixz.bus.logger.Logger;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -102,9 +103,23 @@ public class RabbitMQProvider implements MQProvider, Closeable {
      *                         {@link TimeoutException}).
      */
     public RabbitMQProvider init(final ConnectionFactory factory) {
+        final long startedAt = System.nanoTime();
+        Logger.info(true, "Extra", "RabbitMQ provider initialization started: factoryPresent={}", factory != null);
         try {
             this.connection = factory.newConnection();
+            Logger.info(
+                    false,
+                    "Extra",
+                    "RabbitMQ provider initialized: elapsedMs={}",
+                    (System.nanoTime() - startedAt) / 1_000_000L);
         } catch (final IOException | TimeoutException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "RabbitMQ provider initialization failed: exception={}, elapsedMs={}",
+                    e.getClass().getSimpleName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
             throw new MQueueException(e);
         }
         return this;
@@ -118,7 +133,15 @@ public class RabbitMQProvider implements MQProvider, Closeable {
      */
     @Override
     public Producer getProducer() {
-        return new RabbitMQProducer(createChannel());
+        final long startedAt = System.nanoTime();
+        Logger.debug(true, "Extra", "RabbitMQ producer creation started");
+        Producer producer = new RabbitMQProducer(createChannel());
+        Logger.debug(
+                false,
+                "Extra",
+                "RabbitMQ producer created: elapsedMs={}",
+                (System.nanoTime() - startedAt) / 1_000_000L);
+        return producer;
     }
 
     /**
@@ -129,7 +152,15 @@ public class RabbitMQProvider implements MQProvider, Closeable {
      */
     @Override
     public Consumer getConsumer() {
-        return new RabbitMQConsumer(createChannel());
+        final long startedAt = System.nanoTime();
+        Logger.debug(true, "Extra", "RabbitMQ consumer creation started");
+        Consumer consumer = new RabbitMQConsumer(createChannel());
+        Logger.debug(
+                false,
+                "Extra",
+                "RabbitMQ consumer created: elapsedMs={}",
+                (System.nanoTime() - startedAt) / 1_000_000L);
+        return consumer;
     }
 
     /**
@@ -140,7 +171,25 @@ public class RabbitMQProvider implements MQProvider, Closeable {
      */
     @Override
     public void close() throws IOException {
-        IoKit.nullSafeClose(this.connection);
+        final long startedAt = System.nanoTime();
+        Logger.info(true, "Extra", "RabbitMQ provider close requested");
+        try {
+            IoKit.nullSafeClose(this.connection);
+            Logger.info(
+                    false,
+                    "Extra",
+                    "RabbitMQ provider closed: elapsedMs={}",
+                    (System.nanoTime() - startedAt) / 1_000_000L);
+        } catch (IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "RabbitMQ provider close failed: exception={}, elapsedMs={}",
+                    e.getClass().getSimpleName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
+            throw e;
+        }
     }
 
     /**
@@ -154,6 +203,12 @@ public class RabbitMQProvider implements MQProvider, Closeable {
         try {
             return this.connection.createChannel();
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "RabbitMQ channel creation failed: exception={}",
+                    e.getClass().getSimpleName());
             throw new MQueueException(e);
         }
     }
@@ -169,8 +224,24 @@ public class RabbitMQProvider implements MQProvider, Closeable {
     private static ConnectionFactory createFactory(final MQConfig config) {
         final ConnectionFactory factory = new ConnectionFactory();
         try {
+            Logger.info(
+                    true,
+                    "Extra",
+                    "RabbitMQ connection factory configuration started: brokerPresent={}",
+                    config != null && config.getBrokerUrl() != null);
             factory.setUri(config.getBrokerUrl());
+            Logger.info(
+                    false,
+                    "Extra",
+                    "RabbitMQ connection factory configured: brokerPresent={}",
+                    config != null && config.getBrokerUrl() != null);
         } catch (final Exception e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "RabbitMQ connection factory configuration failed: exception={}",
+                    e.getClass().getSimpleName());
             throw new MQueueException(e);
         }
         return factory;

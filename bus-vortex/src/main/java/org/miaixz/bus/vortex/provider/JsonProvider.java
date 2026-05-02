@@ -38,6 +38,12 @@ import reactor.core.scheduler.Schedulers;
 public class JsonProvider implements Provider<Object, String> {
 
     /**
+     * Creates a JSON provider.
+     */
+    public JsonProvider() {
+    }
+
+    /**
      * Asynchronously serializes the given Java object into its JSON string representation.
      * <p>
      * This implementation delegates the synchronous, CPU-bound serialization to {@link JsonKit#toJsonString(Object)}
@@ -49,10 +55,7 @@ public class JsonProvider implements Provider<Object, String> {
      */
     @Override
     public Mono<String> serialize(Object input) {
-        // 1. Wrap the synchronous, blocking (CPU-bound) call in fromCallable.
-        return Mono.fromCallable(() -> JsonKit.toJsonString(input))
-                // 2. Offload the execution from the event loop to a safer thread pool.
-                .subscribeOn(Schedulers.boundedElastic());
+        return Mono.fromCallable(() -> JsonKit.toJsonString(input)).subscribeOn(Schedulers.boundedElastic());
     }
 
 }

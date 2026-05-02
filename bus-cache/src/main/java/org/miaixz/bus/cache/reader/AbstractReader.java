@@ -91,7 +91,11 @@ public abstract class AbstractReader {
         try {
             return throwableSupplier.get();
         } finally {
-            Logger.debug("method invoke total cost [{}] ms", (System.currentTimeMillis() - start));
+            Logger.debug(
+                    false,
+                    "Cache",
+                    "Method invocation completed: durationMs={}",
+                    (System.currentTimeMillis() - start));
         }
     }
 

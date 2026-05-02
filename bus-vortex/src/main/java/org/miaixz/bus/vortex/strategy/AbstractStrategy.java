@@ -26,18 +26,17 @@ import java.util.Optional;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.Specifics;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.PORT;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Strategy;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
@@ -54,6 +53,12 @@ import org.springframework.web.server.ServerWebExchange;
  * @since Java 21+
  */
 public abstract class AbstractStrategy implements Strategy {
+
+    /**
+     * Creates an abstract strategy.
+     */
+    protected AbstractStrategy() {
+    }
 
     /**
      * Safely retrieves the original authority (host + port) of the request, even in a reverse-proxy environment.
@@ -77,45 +82,39 @@ public abstract class AbstractStrategy implements Strategy {
         HttpHeaders headers = request.getHeaders();
         String protocol = getProtocol(request);
 
-        // Priority 1: Try to parse 'Forwarded' (RFC 7239)
         String forwardedHeader = headers.getFirst("Forwarded");
         if (StringKit.hasText(forwardedHeader)) {
             Optional<String> authority = Arrays.stream(forwardedHeader.split(Symbol.SEMICOLON)).map(String::trim)
                     .filter(part -> part.toLowerCase().startsWith("host="))
                     .map(part -> part.substring(5).trim().replace("\"", Normal.EMPTY)).findFirst();
             if (authority.isPresent()) {
-                Logger.debug(true, "Strategy", "{} found in 'Forwarded' header", authority.get());
+                Logger.debug(true, "Vortex", "{} found in 'Forwarded' header", authority.get());
                 return authority.map(host -> appendPortIfMissing(host, protocol));
             }
         }
 
-        // Priority 2: Try to parse 'X-Forwarded-Host'
         String forwardedHostHeader = headers.getFirst("X-Forwarded-Host");
         if (StringKit.hasText(forwardedHostHeader)) {
-            // In multi-level proxies, this header may contain multiple domain names; the first one is the original
-            // domain.
             String authority = forwardedHostHeader.split(Symbol.COMMA)[0].trim();
-            Logger.debug(true, "Strategy", "{} found in 'X-Forwarded-Host' header", authority);
+            Logger.debug(true, "Vortex", "{} found in 'X-Forwarded-Host' header", authority);
             return Optional.of(appendPortIfMissing(authority, protocol));
         }
 
-        // Priority 3: Try to parse 'Host'
         String hostHeader = headers.getFirst(HTTP.HOST);
         if (StringKit.hasText(hostHeader)) {
-            Logger.debug(true, "Strategy", "{} found in 'Host' header", hostHeader);
+            Logger.debug(true, "Vortex", "{} found in 'Host' header", hostHeader);
             return Optional.of(appendPortIfMissing(hostHeader, protocol));
         }
 
-        // Priority 4: Use getURI().getHost() as a last fallback
         String uriHost = request.getURI().getHost();
         if (StringKit.hasText(uriHost)) {
-            Logger.debug(true, "Strategy", "{} found via request.getURI().getHost() as fallback", uriHost);
+            Logger.debug(true, "Vortex", "{} found via request.getURI().getHost() as fallback", uriHost);
             return Optional.of(appendPortIfMissing(uriHost, protocol));
         }
 
         Logger.debug(
                 true,
-                "Strategy",
+                "Vortex",
                 "Could not determine a valid authority from any source for request: {}",
                 request.getPath());
         return Optional.empty();
@@ -139,56 +138,49 @@ public abstract class AbstractStrategy implements Strategy {
     protected String getClientIp(ServerHttpRequest request) {
         HttpHeaders headers = request.getHeaders();
 
-        // Priority 1: X-Forwarded-For
         String ip = headers.getFirst("X-Forwarded-For");
         if (StringKit.hasText(ip) && !Normal.UNKNOWN.equalsIgnoreCase(ip)) {
             String source = "X-Forwarded-For";
-            // 'X-Forwarded-For' might be a comma-separated list (e.g., "client, proxy1, proxy2")
             if (ip.contains(Symbol.COMMA)) {
                 String[] ips = ip.split(Symbol.COMMA);
                 for (String ipSegment : ips) {
                     String trimmedIp = ipSegment.trim();
                     if (StringKit.hasText(trimmedIp) && !Normal.UNKNOWN.equalsIgnoreCase(trimmedIp)) {
-                        Logger.debug(true, "Strategy", "Client IP: '{}' found in {} (list)", trimmedIp, source);
+                        Logger.debug(true, "Vortex", "Client IP: '{}' found in {} (list)", trimmedIp, source);
                         return trimmedIp;
                     }
                 }
             }
-            // If not a list or list parsing fails, return the trimmed original
-            Logger.debug(true, "Strategy", "Client IP: '{}' found in {}", ip.trim(), source);
+            Logger.debug(true, "Vortex", "Client IP: '{}' found in {}", ip.trim(), source);
             return ip.trim();
         }
 
-        // Priority 2: X-Real-IP
         ip = headers.getFirst("X-Real-IP");
         if (StringKit.hasText(ip) && !Normal.UNKNOWN.equalsIgnoreCase(ip)) {
-            Logger.debug(true, "Strategy", "Client IP: '{}' found in X-Real-IP", ip.trim());
+            Logger.debug(true, "Vortex", "Client IP: '{}' found in X-Real-IP", ip.trim());
             return ip.trim();
         }
 
-        // Priority 3: Other common proxy headers
         ip = headers.getFirst("Proxy-Client-IP");
         if (StringKit.hasText(ip) && !Normal.UNKNOWN.equalsIgnoreCase(ip)) {
-            Logger.debug(true, "Strategy", "Client IP: '{}' found in Proxy-Client-IP", ip.trim());
+            Logger.debug(true, "Vortex", "Client IP: '{}' found in Proxy-Client-IP", ip.trim());
             return ip.trim();
         }
 
         ip = headers.getFirst("WL-Proxy-Client-IP");
         if (StringKit.hasText(ip) && !Normal.UNKNOWN.equalsIgnoreCase(ip)) {
-            Logger.debug(true, "Strategy", "Client IP: '{}' found in WL-Proxy-Client-IP", ip.trim());
+            Logger.debug(true, "Vortex", "Client IP: '{}' found in WL-Proxy-Client-IP", ip.trim());
             return ip.trim();
         }
 
-        // Priority 4: Fallback to getRemoteAddress
         InetSocketAddress remoteAddress = request.getRemoteAddress();
         if (remoteAddress != null) {
             String hostString = remoteAddress.getHostString();
-            Logger.debug(true, "Strategy", "Client IP: '{}' found via fallback getRemoteAddress()", hostString);
-            // .getHostString() is preferred over .getHostName() to avoid DNS lookup
+            Logger.debug(true, "Vortex", "Client IP: '{}' found via fallback getRemoteAddress()", hostString);
             return hostString;
         }
 
-        Logger.warn(true, "Strategy", "Client IP could not be determined. Falling back to 'unknown'.");
+        Logger.warn(false, "Vortex", "Client IP could not be determined. Falling back to 'unknown'.");
         return Normal.UNKNOWN;
     }
 
@@ -204,7 +196,6 @@ public abstract class AbstractStrategy implements Strategy {
     protected String getProtocol(ServerHttpRequest request) {
         HttpHeaders headers = request.getHeaders();
 
-        // Priority 1: Try to parse from 'Forwarded' header (RFC 7239)
         String forwardedHeader = headers.getFirst("Forwarded");
         if (StringKit.hasText(forwardedHeader)) {
             Optional<String> proto = Arrays.stream(forwardedHeader.split(Symbol.SEMICOLON)).map(String::trim)
@@ -212,44 +203,43 @@ public abstract class AbstractStrategy implements Strategy {
                     .map(part -> part.substring(6).trim().replace("\"", Normal.EMPTY)).findFirst();
             if (proto.isPresent()) {
                 String protocol = proto.get();
-                Logger.debug(true, "Strategy", "Protocol: '{}' found in 'Forwarded' header", protocol);
+                Logger.debug(true, "Vortex", "Protocol: '{}' found in 'Forwarded' header", protocol);
                 return protocol;
             }
         }
 
-        // Priority 2: Try to parse from 'X-Forwarded-Proto' header
         String forwardedProtoHeader = headers.getFirst("X-Forwarded-Proto");
         if (StringKit.hasText(forwardedProtoHeader)) {
             String protocol = forwardedProtoHeader.split(Symbol.COMMA)[0].trim();
-            Logger.debug(true, "Strategy", "Protocol: '{}' found in 'X-Forwarded-Proto' header", protocol);
+            Logger.debug(true, "Vortex", "Protocol: '{}' found in 'X-Forwarded-Proto' header", protocol);
             return protocol;
         }
 
-        // Priority 3: Use URI scheme as a last fallback
         String protocol = request.getURI().getScheme();
-        Logger.debug(true, "Strategy", "Protocol: '{}' found via fallback getURI().getScheme()", protocol);
+        Logger.debug(true, "Vortex", "Protocol: '{}' found via fallback getURI().getScheme()", protocol);
         return protocol;
     }
 
     /**
-     * Converts an integer representation of an HTTP method to the corresponding {@link HttpMethod} enum.
+     * Converts an integer registry verb code to the canonical {@link HTTP.Method}.
      *
      * @param type The integer representation of the request method (e.g., 1 for GET, 2 for POST).
-     * @return The matching {@link HttpMethod} enum.
+     * @return The matching canonical HTTP method.
      * @throws ValidateException if the type is not a valid or supported HTTP method.
      */
-    protected HttpMethod valueOf(int type) {
-        return switch (type) {
-            case 1 -> HttpMethod.GET;
-            case 2 -> HttpMethod.POST;
-            case 3 -> HttpMethod.HEAD;
-            case 4 -> HttpMethod.PUT;
-            case 5 -> HttpMethod.PATCH;
-            case 6 -> HttpMethod.DELETE;
-            case 7 -> HttpMethod.OPTIONS;
-            case 8 -> HttpMethod.TRACE;
-            default -> throw new ValidateException(ErrorCode._100802);
-        };
+    protected HTTP.Method methodOf(int type) {
+        try {
+            return HTTP.Method.of(type);
+        } catch (IllegalArgumentException e) {
+            Logger.warn(
+                    false,
+                    "Vortex",
+                    e,
+                    "HTTP method mapping failed: methodCode={}, exception={}",
+                    type,
+                    e.getClass().getSimpleName());
+            throw new ValidateException(ErrorCode._100802);
+        }
     }
 
     /**
@@ -264,13 +254,18 @@ public abstract class AbstractStrategy implements Strategy {
         MediaType mediaType = request.getHeaders().getContentType();
         if (null == mediaType) {
             mediaType = MediaType.APPLICATION_FORM_URLENCODED;
-            Logger.debug(true, "Strategy", "Content-Type is missing. Defaulting to: {}", mediaType);
+            Logger.debug(true, "Vortex", "Content-Type is missing. Defaulting to: {}", mediaType);
 
             HttpHeaders headers = new HttpHeaders();
             headers.putAll(exchange.getRequest().getHeaders());
             headers.setContentType(mediaType);
             ServerHttpRequest requestDecorator = new ServerHttpRequestDecorator(request) {
 
+                /**
+                 * Returns the request headers augmented with the resolved default content type.
+                 *
+                 * @return mutated request headers
+                 */
                 @Override
                 public HttpHeaders getHeaders() {
                     return headers;
@@ -290,7 +285,7 @@ public abstract class AbstractStrategy implements Strategy {
      */
     private String appendPortIfMissing(String authority, String protocol) {
         if (authority.contains(Symbol.COLON)) {
-            return authority; // Port already exists
+            return authority;
         }
         if (Protocol.HTTPS.name.equalsIgnoreCase(protocol)) {
             return authority + Symbol.COLON + PORT._443.getPort();
@@ -321,8 +316,7 @@ public abstract class AbstractStrategy implements Strategy {
      * @return The extracted token string, or {@code null} if no token is found in any of the checked locations.
      */
     protected String getToken(Context context) {
-        // 1. Check token in headers first, including Authorization and backward-compatible token headers.
-        String token = MapKit.getFirstNonNull(context.getHeaders(), Args.TOKEN_KEYS);
+        String token = MapKit.getFirstNonNull(context.getHeaders(), Specifics.TOKEN_KEYS);
         if (StringKit.isNotBlank(token)) {
             token = token.trim();
             if (token.regionMatches(true, 0, HTTP.BEARER, 0, HTTP.BEARER.length())) {
@@ -331,8 +325,7 @@ public abstract class AbstractStrategy implements Strategy {
             return token;
         }
 
-        // 2. If not found in headers, search in request parameters as a fallback.
-        return Optional.ofNullable(MapKit.getFirstNonNull(context.getParameters(), Args.TOKEN_KEYS))
+        return Optional.ofNullable(MapKit.getFirstNonNull(context.getParameters(), Specifics.TOKEN_KEYS))
                 .map(Object::toString).orElse(null);
     }
 
@@ -343,14 +336,12 @@ public abstract class AbstractStrategy implements Strategy {
      * @return The found API key, or {@code null} if not present.
      */
     protected String getApiKey(Context context) {
-        // 1. Check API key in headers first.
-        String apiKey = MapKit.getFirstNonNull(context.getHeaders(), Args.API_KEY_KEYS);
+        String apiKey = MapKit.getFirstNonNull(context.getHeaders(), Specifics.API_KEY_KEYS);
         if (StringKit.isNotBlank(apiKey)) {
             return apiKey.trim();
         }
 
-        // 2. If not found in headers, search in request parameters as a fallback.
-        return Optional.ofNullable(MapKit.getFirstNonNull(context.getParameters(), Args.API_KEY_KEYS))
+        return Optional.ofNullable(MapKit.getFirstNonNull(context.getParameters(), Specifics.API_KEY_KEYS))
                 .map(Object::toString).map(String::trim).orElse(null);
     }
 

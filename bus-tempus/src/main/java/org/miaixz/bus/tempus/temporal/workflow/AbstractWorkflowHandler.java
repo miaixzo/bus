@@ -63,9 +63,20 @@ public abstract class AbstractWorkflowHandler<A, R> {
      */
     protected AbstractWorkflowHandler(Class<A> activityClass, ActivityOptionsFactory activityOptionsFactory,
             RetryOptionsFactory retryOptionsFactory) {
+        Logger.info(
+                true,
+                "Tempus",
+                "Workflow handler initialization started: activityClass={}",
+                activityClass == null ? null : activityClass.getName());
         this.activity = Workflow.newActivityStub(
                 activityClass,
                 createActivityOptions(getActivityName(activityClass), activityOptionsFactory, retryOptionsFactory));
+        Logger.info(
+                false,
+                "Tempus",
+                "Workflow handler initialization completed: activityClass={}, activityName={}",
+                activityClass == null ? null : activityClass.getName(),
+                getActivityName(activityClass));
     }
 
     /**
@@ -77,7 +88,9 @@ public abstract class AbstractWorkflowHandler<A, R> {
     public String execute(R request) {
         try {
             Logger.info(
-                    "Starting workflow. requestType: {}, maxDurationHours: {}",
+                    true,
+                    "Tempus",
+                    "Workflow execution started: requestType={}, maxDurationHours={}",
                     request == null ? null : request.getClass().getName(),
                     getMaxDurationHours(request));
 
@@ -87,22 +100,32 @@ public abstract class AbstractWorkflowHandler<A, R> {
                         .newActivityStub(getActivityClass(), createDynamicActivityOptions(maxDurationHours));
                 String result = invokeActivity(dynamicActivity, request);
                 Logger.info(
-                        "Workflow completed. requestType: {}, dynamicTimeoutHours: {}",
+                        false,
+                        "Tempus",
+                        "Workflow execution completed: requestType={}, dynamicTimeoutHours={}, resultLength={}",
                         request == null ? null : request.getClass().getName(),
-                        maxDurationHours);
+                        maxDurationHours,
+                        result == null ? 0 : result.length());
                 return result;
             }
 
             String result = invokeActivity(activity, request);
-            Logger.info("Workflow completed. requestType: {}", request == null ? null : request.getClass().getName());
+            Logger.info(
+                    false,
+                    "Tempus",
+                    "Workflow execution completed: requestType={}, resultLength={}",
+                    request == null ? null : request.getClass().getName(),
+                    result == null ? 0 : result.length());
             return result;
 
         } catch (Exception e) {
             Logger.error(
-                    "Workflow failed. requestType: {}, error: {}",
+                    false,
+                    "Tempus",
+                    e,
+                    "Workflow execution failed: requestType={}, exception={}",
                     request == null ? null : request.getClass().getName(),
-                    e.getMessage(),
-                    e);
+                    e.getClass().getSimpleName());
             throw e;
         }
     }
@@ -136,10 +159,17 @@ public abstract class AbstractWorkflowHandler<A, R> {
      * @return the default activity options
      */
     protected ActivityOptions createDefaultActivityOptions() {
-        return ActivityOptions.newBuilder().setStartToCloseTimeout(Duration.ofHours(12))
+        Logger.debug(
+                true,
+                "Tempus",
+                "Workflow default activity options creation started: heartbeatTimeoutSeconds={}",
+                getHeartbeatTimeoutSeconds());
+        ActivityOptions options = ActivityOptions.newBuilder().setStartToCloseTimeout(Duration.ofHours(12))
                 .setScheduleToStartTimeout(Duration.ofMinutes(5))
                 .setHeartbeatTimeout(Duration.ofSeconds(getHeartbeatTimeoutSeconds()))
                 .setRetryOptions(createDefaultRetryOptions()).build();
+        Logger.debug(false, "Tempus", "Workflow default activity options creation completed");
+        return options;
     }
 
     /**
@@ -149,10 +179,23 @@ public abstract class AbstractWorkflowHandler<A, R> {
      * @return the dynamic activity options
      */
     protected ActivityOptions createDynamicActivityOptions(int maxDurationHours) {
-        return ActivityOptions.newBuilder().setStartToCloseTimeout(Duration.ofHours(maxDurationHours))
+        Logger.debug(
+                true,
+                "Tempus",
+                "Workflow dynamic activity options creation started: maxDurationHours={}, heartbeatTimeoutSeconds={}",
+                maxDurationHours,
+                getHeartbeatTimeoutSeconds());
+        ActivityOptions options = ActivityOptions.newBuilder()
+                .setStartToCloseTimeout(Duration.ofHours(maxDurationHours))
                 .setScheduleToStartTimeout(Duration.ofMinutes(5))
                 .setHeartbeatTimeout(Duration.ofSeconds(getHeartbeatTimeoutSeconds()))
                 .setRetryOptions(createDefaultRetryOptions()).build();
+        Logger.debug(
+                false,
+                "Tempus",
+                "Workflow dynamic activity options creation completed: maxDurationHours={}",
+                maxDurationHours);
+        return options;
     }
 
     /**
@@ -161,8 +204,17 @@ public abstract class AbstractWorkflowHandler<A, R> {
      * @return the default retry options
      */
     protected RetryOptions createDefaultRetryOptions() {
-        return RetryOptions.newBuilder().setInitialInterval(Duration.ofSeconds(1))
+        Logger.debug(true, "Tempus", "Workflow default retry options creation started");
+        RetryOptions options = RetryOptions.newBuilder().setInitialInterval(Duration.ofSeconds(1))
                 .setMaximumInterval(Duration.ofSeconds(60)).setBackoffCoefficient(2.0).setMaximumAttempts(3).build();
+        Logger.debug(
+                false,
+                "Tempus",
+                "Workflow default retry options creation completed: initialIntervalSeconds={}, maximumIntervalSeconds={}, maxAttempts={}",
+                1,
+                60,
+                3);
+        return options;
     }
 
     /**
@@ -178,24 +230,62 @@ public abstract class AbstractWorkflowHandler<A, R> {
             ActivityOptionsFactory activityOptionsFactory,
             RetryOptionsFactory retryOptionsFactory) {
         if (activityOptionsFactory != null) {
+            Logger.debug(
+                    true,
+                    "Tempus",
+                    "Workflow activity options factory invocation started: activityName={}",
+                    activityName);
             ActivityOptions options = activityOptionsFactory.createActivityOptions(activityName);
             if (options != null) {
+                Logger.debug(
+                        false,
+                        "Tempus",
+                        "Workflow activity options factory invocation completed: activityName={}, provided=true",
+                        activityName);
                 return options;
             }
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Workflow activity options factory invocation completed: activityName={}, provided=false",
+                    activityName);
         }
 
         RetryOptions retryOptions = null;
         if (retryOptionsFactory != null) {
+            Logger.debug(
+                    true,
+                    "Tempus",
+                    "Workflow retry options factory invocation started: activityName={}",
+                    activityName);
             retryOptions = retryOptionsFactory.createRetryOptions(activityName);
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Workflow retry options factory invocation completed: activityName={}, provided={}",
+                    activityName,
+                    retryOptions != null);
         }
 
         if (retryOptions != null) {
-            return ActivityOptions.newBuilder().setStartToCloseTimeout(Duration.ofHours(12))
+            ActivityOptions options = ActivityOptions.newBuilder().setStartToCloseTimeout(Duration.ofHours(12))
                     .setScheduleToStartTimeout(Duration.ofMinutes(5))
                     .setHeartbeatTimeout(Duration.ofSeconds(getHeartbeatTimeoutSeconds())).setRetryOptions(retryOptions)
                     .build();
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Workflow activity options created with custom retry: activityName={}, heartbeatTimeoutSeconds={}",
+                    activityName,
+                    getHeartbeatTimeoutSeconds());
+            return options;
         }
 
+        Logger.debug(
+                false,
+                "Tempus",
+                "Workflow activity options falling back to defaults: activityName={}",
+                activityName);
         return createDefaultActivityOptions();
     }
 

@@ -159,17 +159,19 @@ public interface AuditProvider extends MapperProvider<AuditConfig> {
         if (record.isSuccess()) {
             Logger.debug(
                     false,
-                    "Audit",
-                    "SQL: {} | Elapsed: {}ms | Rows: {}",
+                    "Mapper",
+                    "SQL audit completed: sqlId={}, sqlType={}, elapsedMillis={}, rows={}",
                     record.getSqlId(),
+                    record.getSqlType(),
                     record.getElapsedTime(),
                     record.getAffectedRows() > 0 ? record.getAffectedRows() : record.getResultCount());
         } else {
             Logger.error(
                     false,
-                    "Audit",
-                    "SQL Failed: {} | Elapsed: {}ms | Error: {}",
+                    "Mapper",
+                    "SQL audit failed: sqlId={}, sqlType={}, elapsedMillis={}, error={}",
                     record.getSqlId(),
+                    record.getSqlType(),
                     record.getElapsedTime(),
                     record.getException() != null ? record.getException().getMessage() : "Unknown");
         }
@@ -207,14 +209,21 @@ public interface AuditProvider extends MapperProvider<AuditConfig> {
     default void logSlowSql(AuditRecord record) {
         Logger.warn(
                 false,
-                "Audit",
-                "Slow SQL: {} | Elapsed: {}ms | SQL: {}",
+                "Mapper",
+                "Slow SQL detected: sqlId={}, sqlType={}, elapsedMillis={}, sqlChars={}, parameterPresent={}",
                 record.getSqlId(),
+                record.getSqlType(),
                 record.getElapsedTime(),
-                record.getSql().replaceAll("\\s+", " ").trim());
+                record.getSql() == null ? 0 : record.getSql().length(),
+                record.getParameter() != null);
 
         if (record.getParameter() != null) {
-            Logger.warn(false, "Audit", "Parameters: {}", record.getParameter());
+            Logger.warn(
+                    false,
+                    "Mapper",
+                    "Slow SQL parameter summary: sqlId={}, parameterType={}",
+                    record.getSqlId(),
+                    record.getParameter().getClass().getName());
         }
     }
 
@@ -251,18 +260,32 @@ public interface AuditProvider extends MapperProvider<AuditConfig> {
     default void logFailure(AuditRecord record) {
         Logger.error(
                 false,
-                "Audit",
-                "SQL Failed: {} | Elapsed: {}ms | SQL: {}",
+                "Mapper",
+                "SQL execution failed: sqlId={}, sqlType={}, elapsedMillis={}, sqlChars={}, parameterPresent={}",
                 record.getSqlId(),
+                record.getSqlType(),
                 record.getElapsedTime(),
-                record.getSql().replaceAll("\\s+", " ").trim());
+                record.getSql() == null ? 0 : record.getSql().length(),
+                record.getParameter() != null);
 
         if (record.getParameter() != null) {
-            Logger.error(false, "Audit", "Parameters: {}", record.getParameter());
+            Logger.error(
+                    false,
+                    "Mapper",
+                    "Failed SQL parameter summary: sqlId={}, parameterType={}",
+                    record.getSqlId(),
+                    record.getParameter().getClass().getName());
         }
 
         if (record.getException() != null) {
-            Logger.error(false, "Audit", "Exception: {}", record.getException().getMessage(), record.getException());
+            Logger.error(
+                    false,
+                    "Mapper",
+                    "SQL exception captured: sqlId={}, exception={}, message={}",
+                    record.getSqlId(),
+                    record.getException().getClass().getName(),
+                    record.getException().getMessage(),
+                    record.getException());
         }
     }
 

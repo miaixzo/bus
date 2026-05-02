@@ -38,6 +38,7 @@ import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * This class provides an entry point to all the GitLab API job calls.
@@ -472,6 +473,16 @@ public class JobApi extends AbstractApi implements Constants {
             return (file);
 
         } catch (IOException ioe) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    ioe,
+                    "GitLab job artifact download failed: operation=downloadArtifactsFile, projectPresent={}, refPresent={}, jobNamePresent={}, directoryPresent={}, exception={}",
+                    projectIdOrPath != null,
+                    ref != null && !ref.isEmpty(),
+                    jobName != null && !jobName.isEmpty(),
+                    directory != null,
+                    ioe.getClass().getSimpleName());
             throw new GitLabApiException(ioe);
         }
     }
@@ -546,6 +557,15 @@ public class JobApi extends AbstractApi implements Constants {
             return (file);
 
         } catch (IOException ioe) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    ioe,
+                    "GitLab job artifact download failed: operation=downloadArtifactsFile, projectPresent={}, jobId={}, directoryPresent={}, exception={}",
+                    projectIdOrPath != null,
+                    jobId,
+                    directory != null,
+                    ioe.getClass().getSimpleName());
             throw new GitLabApiException(ioe);
         }
     }
@@ -616,6 +636,16 @@ public class JobApi extends AbstractApi implements Constants {
             return (file);
 
         } catch (IOException ioe) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    ioe,
+                    "GitLab job artifact download failed: operation=downloadArtifactsFile, projectPresent={}, jobId={}, artifactNamePresent={}, directoryPresent={}, exception={}",
+                    projectIdOrPath != null,
+                    jobId,
+                    artifactsFile != null && artifactsFile.getFilename() != null,
+                    directory != null,
+                    ioe.getClass().getSimpleName());
             throw new GitLabApiException(ioe);
         }
     }
@@ -690,6 +720,16 @@ public class JobApi extends AbstractApi implements Constants {
             return (file);
 
         } catch (IOException ioe) {
+            Logger.warn(
+                    false,
+                    "GitLab",
+                    ioe,
+                    "GitLab job artifact download failed: operation=downloadSingleArtifactsFile, projectPresent={}, jobId={}, artifactPathLength={}, directoryPresent={}, exception={}",
+                    projectIdOrPath != null,
+                    jobId,
+                    artifactPath == null ? -1 : artifactPath.length(),
+                    directory != null,
+                    ioe.getClass().getSimpleName());
             throw new GitLabApiException(ioe);
         }
     }

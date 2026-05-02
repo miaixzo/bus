@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -29,10 +29,9 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.health.Config;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation;
 import org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation.ProcessPerformanceProperty;
-
-import com.sun.jna.platform.win32.WinBase;
 
 /**
  * Utility to read process data from HKEY_PERFORMANCE_DATA information with backup from Performance Counters or WMI
@@ -43,7 +42,13 @@ import com.sun.jna.platform.win32.WinBase;
 @ThreadSafe
 public final class ProcessPerformanceData {
 
-    private static final String PROCESS = "Process";
+    /**
+     * The PROCESS constant.
+     */
+    public static final String PROCESS = "Process";
+    /**
+     * The PERFDATA constant.
+     */
     private static final boolean PERFDATA = Config.get(Config._WINDOWS_HKEYPERFDATA, true);
 
     /**
@@ -77,7 +82,7 @@ public final class ProcessPerformanceData {
                 // if creation time value is less than current millis, it's in 1970 epoch,
                 // otherwise it's 1601 epoch and we must convert
                 if (ctime > now) {
-                    ctime = WinBase.FILETIME.filetimeToDate((int) (ctime >> 32), (int) (ctime & 0xffffffffL)).getTime();
+                    ctime = Parsing.filetimeToUtcMs(ctime, false);
                 }
                 long upTime = now - ctime;
                 if (upTime < 1L) {
@@ -92,7 +97,9 @@ public final class ProcessPerformanceData {
                                 (Long) processInstanceMap.get(ProcessPerformanceProperty.WORKINGSET), ctime, upTime,
                                 (Long) processInstanceMap.get(ProcessPerformanceProperty.IOREADBYTESPERSEC),
                                 (Long) processInstanceMap.get(ProcessPerformanceProperty.IOWRITEBYTESPERSEC),
-                                (Integer) processInstanceMap.get(ProcessPerformanceProperty.PAGEFAULTSPERSEC)));
+                                Integer.toUnsignedLong(
+                                        (Integer) processInstanceMap
+                                                .get(ProcessPerformanceProperty.PAGEFAULTSPERSEC))));
             }
         }
         return processMap;
@@ -123,6 +130,9 @@ public final class ProcessPerformanceData {
         Map<Integer, PerfCounterBlock> processMap = new HashMap<>();
         Pair<List<String>, Map<ProcessPerformanceProperty, List<Long>>> instanceValues = ProcessInformation
                 .queryProcessCounters();
+        if (instanceValues == null) {
+            return null;
+        }
         long now = System.currentTimeMillis(); // 1970 epoch
         List<String> instances = instanceValues.getLeft();
         Map<ProcessPerformanceProperty, List<Long>> valueMap = instanceValues.getRight();
@@ -144,7 +154,7 @@ public final class ProcessPerformanceData {
                 // if creation time value is less than current millis, it's in 1970 epoch,
                 // otherwise it's 1601 epoch and we must convert
                 if (ctime > now) {
-                    ctime = WinBase.FILETIME.filetimeToDate((int) (ctime >> 32), (int) (ctime & 0xffffffffL)).getTime();
+                    ctime = Parsing.filetimeToUtcMs(ctime, false);
                 }
                 long upTime = now - ctime;
                 if (upTime < 1L) {
@@ -155,7 +165,7 @@ public final class ProcessPerformanceData {
                         new PerfCounterBlock(instances.get(inst), ppidList.get(inst).intValue(),
                                 priorityList.get(inst).intValue(), privateWorkingSetList.get(inst),
                                 workingSetList.get(inst), ctime, upTime, ioReadList.get(inst), ioWriteList.get(inst),
-                                pageFaultsList.get(inst).intValue()));
+                                pageFaultsList.get(inst).longValue()));
             }
         }
         return processMap;
@@ -167,19 +177,63 @@ public final class ProcessPerformanceData {
     @Immutable
     public static class PerfCounterBlock {
 
+        /**
+         * The name value.
+         */
         private final String name;
+        /**
+         * The parentProcessID value.
+         */
         private final int parentProcessID;
+        /**
+         * The priority value.
+         */
         private final int priority;
+        /**
+         * The privateWorkingSetSize value.
+         */
         private final long privateWorkingSetSize;
+        /**
+         * The workingSetSize value.
+         */
         private final long workingSetSize;
+        /**
+         * The startTime value.
+         */
         private final long startTime;
+        /**
+         * The upTime value.
+         */
         private final long upTime;
+        /**
+         * The bytesRead value.
+         */
         private final long bytesRead;
+        /**
+         * The bytesWritten value.
+         */
         private final long bytesWritten;
-        private final int pageFaults;
+        /**
+         * The pageFaults value.
+         */
+        private final long pageFaults;
 
+        /**
+         * Creates a new PerfCounterBlock instance.
+         *
+         * @param name                  the name
+         * @param parentProcessID       the parent process id
+         * @param priority              the priority
+         * @param privateWorkingSetSize the private working set size
+         * @param workingSetSize        the working set size
+         * @param startTime             the start time
+         * @param upTime                the up time
+         * @param bytesRead             the bytes read
+         * @param bytesWritten          the bytes written
+         * @param pageFaults            the page faults
+         */
         public PerfCounterBlock(String name, int parentProcessID, int priority, long privateWorkingSetSize,
-                long workingSetSize, long startTime, long upTime, long bytesRead, long bytesWritten, int pageFaults) {
+                long workingSetSize, long startTime, long upTime, long bytesRead, long bytesWritten, long pageFaults) {
             this.name = name;
             this.parentProcessID = parentProcessID;
             this.priority = priority;

@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -50,17 +50,39 @@ import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 @ThreadSafe
 public class SolarisFileSystem extends AbstractFileSystem {
 
+    /**
+     * The FILE_DESC constant.
+     */
     private static final Supplier<Pair<Long, Long>> FILE_DESC = Memoizer
             .memoize(SolarisFileSystem::queryFileDescriptors, Memoizer.defaultExpiration());
+    /**
+     * The FS_PATH_EXCLUDES constant.
+     */
     private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._UNIX_SOLARIS_FS_PATH_EXCLUDES);
+    /**
+     * The FS_PATH_INCLUDES constant.
+     */
     private static final List<PathMatcher> FS_PATH_INCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._UNIX_SOLARIS_FS_PATH_INCLUDES);
+    /**
+     * The FS_VOLUME_EXCLUDES constant.
+     */
     private static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._UNIX_SOLARIS_FS_VOLUME_EXCLUDES);
+    /**
+     * The FS_VOLUME_INCLUDES constant.
+     */
     private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._UNIX_SOLARIS_FS_VOLUME_INCLUDES);
 
+    /**
+     * Returns the file store matching.
+     *
+     * @param nameToMatch the name to match
+     * @param localOnly   the local only
+     * @return the get file store matching result
+     */
     static List<OSFileStore> getFileStoreMatching(String nameToMatch, boolean localOnly) {
         List<OSFileStore> fsList = new ArrayList<>();
 
@@ -155,6 +177,11 @@ public class SolarisFileSystem extends AbstractFileSystem {
         return fsList;
     }
 
+    /**
+     * Queries the file descriptors.
+     *
+     * @return the query file descriptors result
+     */
     private static Pair<Long, Long> queryFileDescriptors() {
         Object[] results = KstatKit.queryKstat2("kstat:/kmem_cache/kmem_default/file_cache", "buf_inuse", "buf_max");
         long inuse = results[0] == null ? 0L : (long) results[0];
@@ -162,11 +189,22 @@ public class SolarisFileSystem extends AbstractFileSystem {
         return Pair.of(inuse, max);
     }
 
+    /**
+     * Returns the file stores.
+     *
+     * @param localOnly the local only
+     * @return the get file stores result
+     */
     @Override
     public List<OSFileStore> getFileStores(boolean localOnly) {
         return getFileStoreMatching(null, localOnly);
     }
 
+    /**
+     * Returns the open file descriptors.
+     *
+     * @return the get open file descriptors result
+     */
     @Override
     public long getOpenFileDescriptors() {
         if (SolarisOperatingSystem.HAS_KSTAT2) {
@@ -183,6 +221,11 @@ public class SolarisFileSystem extends AbstractFileSystem {
         return 0L;
     }
 
+    /**
+     * Returns the max file descriptors.
+     *
+     * @return the get max file descriptors result
+     */
     @Override
     public long getMaxFileDescriptors() {
         if (SolarisOperatingSystem.HAS_KSTAT2) {
@@ -199,6 +242,11 @@ public class SolarisFileSystem extends AbstractFileSystem {
         return 0L;
     }
 
+    /**
+     * Returns the max file descriptors per process.
+     *
+     * @return the get max file descriptors per process result
+     */
     @Override
     public long getMaxFileDescriptorsPerProcess() {
         final List<String> lines = Builder.readFile("/etc/system");

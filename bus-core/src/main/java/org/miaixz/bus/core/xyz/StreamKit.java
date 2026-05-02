@@ -48,6 +48,13 @@ import org.miaixz.bus.core.tree.HierarchyIterator;
 public class StreamKit {
 
     /**
+     * Constructs a new stream utility instance.
+     */
+    public StreamKit() {
+
+    }
+
+    /**
      * Creates a {@link Stream} from an array.
      *
      * @param array The array.

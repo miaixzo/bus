@@ -25,6 +25,9 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.accord.ConnectInterceptor;
 import org.miaixz.bus.http.accord.Transmitter;
 import org.miaixz.bus.http.cache.CacheInterceptor;
+import org.miaixz.bus.http.bodys.FormBody;
+import org.miaixz.bus.http.bodys.MultipartBody;
+import org.miaixz.bus.http.bodys.RequestBody;
 import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.NamedRunnable;
 import org.miaixz.bus.http.metric.NewChain;
@@ -37,7 +40,9 @@ import org.miaixz.bus.logger.Logger;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -128,11 +133,36 @@ public final class RealCall implements NewCall {
                 throw new IllegalStateException("Already Executed");
             executed = true;
         }
+        Logger.debug(
+                true,
+                "Http",
+                "Synchronous call starting: protocol=http, method={}, url={}, webSocket={}",
+                originalRequest.method(),
+                redactedUrl(),
+                forWebSocket);
         transmitter.timeoutEnter();
         transmitter.callStart();
         try {
             client.dispatcher().executed(this);
-            return getResponseWithInterceptorChain();
+            Response response = getResponseWithInterceptorChain();
+            Logger.debug(
+                    false,
+                    "Http",
+                    "Synchronous call completed: protocol=http, method={}, url={}, status={}",
+                    originalRequest.method(),
+                    redactedUrl(),
+                    response.code());
+            return response;
+        } catch (IOException e) {
+            Logger.error(
+                    false,
+                    "Http",
+                    e,
+                    "Synchronous call failed: protocol=http, method={}, url={}, exception={}",
+                    originalRequest.method(),
+                    redactedUrl(),
+                    e.getClass().getSimpleName());
+            throw e;
         } finally {
             client.dispatcher().finished(this);
         }
@@ -151,6 +181,13 @@ public final class RealCall implements NewCall {
                 throw new IllegalStateException("Already Executed");
             executed = true;
         }
+        Logger.debug(
+                true,
+                "Http",
+                "Async call enqueued: protocol=http, method={}, url={}, webSocket={}",
+                originalRequest.method(),
+                redactedUrl(),
+                forWebSocket);
         transmitter.callStart();
         client.dispatcher().enqueue(new AsyncCall(responseCallback));
     }
@@ -160,6 +197,12 @@ public final class RealCall implements NewCall {
      */
     @Override
     public void cancel() {
+        Logger.debug(
+                false,
+                "Http",
+                "Call cancellation requested: protocol=http, method={}, url={}",
+                originalRequest.method(),
+                redactedUrl());
         transmitter.cancel();
     }
 
@@ -251,15 +294,96 @@ public final class RealCall implements NewCall {
                 client.connectTimeoutMillis(), client.readTimeoutMillis(), client.writeTimeoutMillis());
 
         boolean calledNoMoreExchanges = false;
+        RequestBody body = originalRequest.body();
+        long bodyLength = -1L;
+        if (body != null) {
+            try {
+                bodyLength = body.contentLength();
+            } catch (IOException ignored) {
+                bodyLength = -1L;
+            }
+        }
+        Map<String, Object> parameters = new LinkedHashMap<>();
+        Map<String, Object> query = new LinkedHashMap<>();
+        for (String name : originalRequest.url().queryParameterNames()) {
+            query.put(name, originalRequest.url().queryParameterValues(name));
+        }
+        parameters.put("query", query);
+        if (body instanceof FormBody formBody) {
+            Map<String, Object> form = new LinkedHashMap<>();
+            for (int i = 0; i < formBody.size(); i++) {
+                form.put(formBody.name(i), formBody.value(i));
+            }
+            parameters.put("form", form);
+        } else if (body instanceof MultipartBody multipartBody) {
+            parameters.put("multipartPartCount", multipartBody.size());
+            parameters.put("multipartType", multipartBody.type());
+        } else if (body != null) {
+            parameters.put("bodyType", body.getClass().getName());
+            parameters.put("bodyLength", bodyLength);
+            parameters.put("contentType", body.contentType());
+        }
+        Logger.debug(
+                true,
+                "Http",
+                "Request header snapshot: protocol=http, method={}, url={}, headerCount={}",
+                originalRequest.method(),
+                redactedUrl(),
+                originalRequest.headers().size());
+        Logger.debug(
+                true,
+                "Http",
+                "Request headers: protocol=http, method={}, url={}, headers={}",
+                originalRequest.method(),
+                redactedUrl(),
+                originalRequest.headers().toMultimap());
+        Logger.debug(
+                true,
+                "Http",
+                "Request parameter snapshot: protocol=http, method={}, url={}, queryCount={}, bodyType={}, bodyLength={}",
+                originalRequest.method(),
+                redactedUrl(),
+                originalRequest.url().querySize(),
+                body == null ? null : body.getClass().getName(),
+                bodyLength);
+        Logger.debug(
+                true,
+                "Http",
+                "Request parameters: protocol=http, method={}, url={}, parameters={}",
+                originalRequest.method(),
+                redactedUrl(),
+                parameters);
+        Logger.debug(
+                true,
+                "Http",
+                "Interceptor chain starting: protocol=http, method={}, url={}, interceptorCount={}",
+                originalRequest.method(),
+                redactedUrl(),
+                interceptors.size());
         try {
             Response response = chain.proceed(originalRequest);
             if (transmitter.isCanceled()) {
                 IoKit.close(response);
                 throw new IOException("Canceled");
             }
+            Logger.debug(
+                    false,
+                    "Http",
+                    "Interceptor chain completed: protocol=http, method={}, url={}, status={}",
+                    originalRequest.method(),
+                    redactedUrl(),
+                    response.code());
             return response;
         } catch (IOException e) {
             calledNoMoreExchanges = true;
+            Logger.error(
+                    false,
+                    "Http",
+                    e,
+                    "Interceptor chain failed: protocol=http, method={}, url={}, exception={}",
+                    originalRequest.method(),
+                    redactedUrl(),
+                    e.getClass().getSimpleName());
             throw transmitter.noMoreExchanges(e);
         } finally {
             if (!calledNoMoreExchanges) {
@@ -346,12 +470,25 @@ public final class RealCall implements NewCall {
             assert (!Thread.holdsLock(client.dispatcher()));
             boolean success = false;
             try {
+                Logger.debug(
+                        true,
+                        "Http",
+                        "Async call dispatching to executor: protocol=http, method={}, url={}",
+                        originalRequest.method(),
+                        redactedUrl());
                 executorService.execute(this);
                 success = true;
             } catch (RejectedExecutionException e) {
                 InterruptedIOException ioException = new InterruptedIOException("executor rejected");
                 ioException.initCause(e);
                 transmitter.noMoreExchanges(ioException);
+                Logger.error(
+                        false,
+                        "Http",
+                        ioException,
+                        "Async call rejected by executor: protocol=http, method={}, url={}",
+                        originalRequest.method(),
+                        redactedUrl());
                 responseCallback.onFailure(RealCall.this, ioException);
             } finally {
                 if (!success) {
@@ -368,18 +505,47 @@ public final class RealCall implements NewCall {
             boolean signalledCallback = false;
             transmitter.timeoutEnter();
             try {
+                Logger.debug(
+                        true,
+                        "Http",
+                        "Async call execution started: protocol=http, method={}, url={}",
+                        originalRequest.method(),
+                        redactedUrl());
                 Response response = getResponseWithInterceptorChain();
                 signalledCallback = true;
+                Logger.debug(
+                        false,
+                        "Http",
+                        "Async call response ready: protocol=http, method={}, url={}, status={}",
+                        originalRequest.method(),
+                        redactedUrl(),
+                        response.code());
                 responseCallback.onResponse(RealCall.this, response);
             } catch (IOException e) {
                 if (signalledCallback) {
                     // Do not signal the callback twice.
-                    Logger.info("Callback failure for " + toLoggableString(), e);
+                    Logger.error(false, "Http", e, "Callback failure: protocol=http, call={}", toLoggableString());
                 } else {
+                    Logger.error(
+                            false,
+                            "Http",
+                            e,
+                            "Async call failed before callback: protocol=http, method={}, url={}, exception={}",
+                            originalRequest.method(),
+                            redactedUrl(),
+                            e.getClass().getSimpleName());
                     responseCallback.onFailure(RealCall.this, e);
                 }
             } catch (Throwable t) {
                 cancel(); // Cancel the call on any unexpected error.
+                Logger.error(
+                        false,
+                        "Http",
+                        t,
+                        "Async call canceled due to unexpected error: method={}, url={}, exception={}",
+                        originalRequest.method(),
+                        redactedUrl(),
+                        t.getClass().getSimpleName());
                 if (!signalledCallback) {
                     IOException canceledException = new IOException("canceled due to " + t);
                     canceledException.addSuppressed(t);

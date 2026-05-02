@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
 
 /**
@@ -55,11 +56,25 @@ public class NeteaseSmsProvider extends NeteaseProvider<NeteaseNotice, Context> 
      */
     @Override
     public Message send(NeteaseNotice entity) {
+        Logger.info(
+                true,
+                "Notify",
+                "NetEase SMS send started: template={}, targetCount={}",
+                entity == null ? null : entity.getTemplate(),
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length);
         Map<String, String> bodys = new HashMap<>();
         bodys.put("templateid", entity.getTemplate());
         bodys.put("mobiles", JsonKit.toJsonString(new String[] { entity.getReceive() }));
         bodys.put("params", JsonKit.toJsonString(entity.getParams()));
-        return post(this.getUrl(entity), bodys);
+        Message result = post(this.getUrl(entity), bodys);
+        Logger.info(
+                false,
+                "Notify",
+                "NetEase SMS send completed: template={}, targetCount={}, errcode={}",
+                entity == null ? null : entity.getTemplate(),
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                result == null ? null : result.getErrcode());
+        return result;
     }
 
 }

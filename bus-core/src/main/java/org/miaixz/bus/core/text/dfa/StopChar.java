@@ -33,6 +33,12 @@ import org.miaixz.bus.core.xyz.SetKit;
 public class StopChar {
 
     /**
+     * Constructs a new stop-character definition holder.
+     */
+    public StopChar() {
+    }
+
+    /**
      * A set of characters that are considered stop words or characters that do not require processing. This includes
      * various punctuation marks, symbols, and whitespace characters.
      */

@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -44,9 +44,17 @@ public abstract class AbstractFileSystem implements FileSystem {
     protected static final List<String> NETWORK_FS_TYPES = Arrays
             .asList(Config.get(Config._NETWORK_FILESYSTEM_TYPES, Normal.EMPTY).split(Symbol.COMMA));
 
+    /**
+     * The PSEUDO_FS_TYPES constant.
+     */
     protected static final List<String> PSEUDO_FS_TYPES = Arrays
             .asList(Config.get(Config._PSEUDO_FILESYSTEM_TYPES, Normal.EMPTY).split(Symbol.COMMA));
 
+    /**
+     * Returns the file stores.
+     *
+     * @return the get file stores result
+     */
     @Override
     public List<OSFileStore> getFileStores() {
         return getFileStores(false);

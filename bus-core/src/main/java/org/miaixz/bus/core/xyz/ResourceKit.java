@@ -45,6 +45,13 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class ResourceKit {
 
     /**
+     * Constructs a new resource utility instance.
+     */
+    public ResourceKit() {
+
+    }
+
+    /**
      * Reads a classpath resource as a string using UTF-8 encoding.
      *
      * @param resource The path to the resource, relative to the classpath root.

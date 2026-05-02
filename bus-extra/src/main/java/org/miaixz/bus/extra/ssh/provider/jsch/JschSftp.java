@@ -42,6 +42,7 @@ import org.miaixz.bus.extra.ssh.JschKit;
 import com.jcraft.jsch.*;
 import com.jcraft.jsch.ChannelSftp.LsEntry;
 import com.jcraft.jsch.ChannelSftp.LsEntrySelector;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * SFTP (Secure File Transfer Protocol) client implementation based on JSch. SFTP provides a secure, encrypted method
@@ -170,6 +171,13 @@ public class JschSftp extends AbstractFtp {
                 try {
                     session.connect((int) this.ftpConfig.getConnector().getTimeout());
                 } catch (final JSchException e) {
+                    Logger.warn(
+                            false,
+                            "Extra",
+                            e,
+                            "SSH operation failed: provider={}, exception={}",
+                            "JschSftp",
+                            e.getClass().getSimpleName());
                     throw new InternalException(e);
                 }
             }
@@ -177,6 +185,13 @@ public class JschSftp extends AbstractFtp {
             try {
                 this.channel = (ChannelSftp) this.session.openChannel(ChannelType.SFTP.getValue());
             } catch (final JSchException e) {
+                Logger.warn(
+                        false,
+                        "Extra",
+                        e,
+                        "SSH operation failed: provider={}, exception={}",
+                        "JschSftp",
+                        e.getClass().getSimpleName());
                 throw new InternalException(e);
             }
         }
@@ -187,6 +202,13 @@ public class JschSftp extends AbstractFtp {
             }
             channel.setFilenameEncoding(this.ftpConfig.getCharset().toString());
         } catch (final JSchException | SftpException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "SSH operation failed: provider={}, exception={}",
+                    "JschSftp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -209,6 +231,13 @@ public class JschSftp extends AbstractFtp {
         try {
             this.cd(Symbol.SLASH);
         } catch (final InternalException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "SSH operation failed: provider={}, exception={}",
+                    "JschSftp",
+                    e.getClass().getSimpleName());
             close();
             init();
         }
@@ -242,6 +271,13 @@ public class JschSftp extends AbstractFtp {
         try {
             return getClient().pwd();
         } catch (final SftpException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "SSH operation failed: provider={}, exception={}",
+                    "JschSftp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -256,6 +292,13 @@ public class JschSftp extends AbstractFtp {
         try {
             return getClient().getHome();
         } catch (final SftpException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "SSH operation failed: provider={}, exception={}",
+                    "JschSftp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -346,6 +389,13 @@ public class JschSftp extends AbstractFtp {
                 return LsEntrySelector.CONTINUE;
             });
         } catch (final SftpException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "SSH operation failed: provider={}, exception={}",
+                    "JschSftp",
+                    e.getClass().getSimpleName());
             if (!StringKit.startWithIgnoreCase(e.getMessage(), "No such file")) {
                 throw new InternalException(e);
             }
@@ -369,6 +419,13 @@ public class JschSftp extends AbstractFtp {
         try {
             getClient().rename(oldPath, newPath);
         } catch (final SftpException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "SSH operation failed: provider={}, exception={}",
+                    "JschSftp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         return true;
@@ -393,6 +450,13 @@ public class JschSftp extends AbstractFtp {
             getClient().mkdir(dir);
             return true;
         } catch (final SftpException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "SSH operation failed: provider={}, exception={}",
+                    "JschSftp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -413,6 +477,13 @@ public class JschSftp extends AbstractFtp {
         try {
             sftpATTRS = getClient().stat(dir);
         } catch (final SftpException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "SSH operation failed: provider={}, exception={}",
+                    "JschSftp",
+                    e.getClass().getSimpleName());
             final String msg = e.getMessage();
             if (StringKit.containsAnyIgnoreCase(msg, "No such file", "does not exist")) {
                 return false;
@@ -441,6 +512,13 @@ public class JschSftp extends AbstractFtp {
             getClient().cd(directory.replace('\\', '/'));
             return true;
         } catch (final SftpException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "SSH operation failed: provider={}, exception={}",
+                    "JschSftp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -460,6 +538,13 @@ public class JschSftp extends AbstractFtp {
         try {
             getClient().rm(filePath);
         } catch (final SftpException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "SSH operation failed: provider={}, exception={}",
+                    "JschSftp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         return true;
@@ -488,6 +573,13 @@ public class JschSftp extends AbstractFtp {
         try {
             list = channel.ls(channel.pwd());
         } catch (final SftpException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "SSH operation failed: provider={}, exception={}",
+                    "JschSftp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
 
@@ -511,6 +603,13 @@ public class JschSftp extends AbstractFtp {
             channel.rmdir(dirPath);
             return true;
         } catch (final SftpException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "SSH operation failed: provider={}, exception={}",
+                    "JschSftp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }
@@ -619,6 +718,13 @@ public class JschSftp extends AbstractFtp {
         try {
             getClient().put(srcFilePath, destPath, monitor, mode.ordinal());
         } catch (final SftpException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "SSH operation failed: provider={}, exception={}",
+                    "JschSftp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         return this;
@@ -645,6 +751,13 @@ public class JschSftp extends AbstractFtp {
         try {
             getClient().put(srcStream, destPath, monitor, mode.ordinal());
         } catch (final SftpException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "SSH operation failed: provider={}, exception={}",
+                    "JschSftp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         return this;
@@ -717,6 +830,13 @@ public class JschSftp extends AbstractFtp {
         try {
             getClient().get(src, dest);
         } catch (final SftpException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "SSH operation failed: provider={}, exception={}",
+                    "JschSftp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         return this;
@@ -734,6 +854,13 @@ public class JschSftp extends AbstractFtp {
         try {
             getClient().get(src, out);
         } catch (final SftpException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "SSH operation failed: provider={}, exception={}",
+                    "JschSftp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
         return this;
@@ -754,6 +881,13 @@ public class JschSftp extends AbstractFtp {
         try {
             return getClient().get(path);
         } catch (final SftpException e) {
+            Logger.warn(
+                    false,
+                    "Extra",
+                    e,
+                    "SSH operation failed: provider={}, exception={}",
+                    "JschSftp",
+                    e.getClass().getSimpleName());
             throw new InternalException(e);
         }
     }

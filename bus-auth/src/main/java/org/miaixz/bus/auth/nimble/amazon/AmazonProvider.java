@@ -41,6 +41,7 @@ import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Amazon login provider.
@@ -174,6 +175,15 @@ public class AmazonProvider extends AbstractProvider {
             return Authorization.builder().token(token).token_type(tokenType).expireIn(expiresIn).refresh(refresh)
                     .build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "token",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse token response: " + e.getMessage());
         }
     }
@@ -229,6 +239,15 @@ public class AmazonProvider extends AbstractProvider {
                                     .token(authorization).build())
                     .build();
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "user info",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
     }
@@ -252,6 +271,15 @@ public class AmazonProvider extends AbstractProvider {
                 throw new AuthorizedException(ErrorCode._100113.getKey());
             }
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "token info",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse token info response: " + e.getMessage());
         }
     }

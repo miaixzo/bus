@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.tempus.crontab;
 
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.tempus.Configure;
 import org.miaixz.bus.tempus.Repertoire;
 
@@ -37,7 +38,19 @@ public class CrontabFactory {
      * @return The task table.
      */
     public static Repertoire of(Configure config) {
-        return config.isUseTriggerQueue() ? new TriggerCrontab() : new MatchCrontab();
+        Logger.debug(
+                true,
+                "Tempus",
+                "Task table factory selection started: triggerQueue={}",
+                config.isUseTriggerQueue());
+        Repertoire repertoire = config.isUseTriggerQueue() ? new TriggerCrontab() : new MatchCrontab();
+        Logger.debug(
+                false,
+                "Tempus",
+                "Task table factory selection completed: triggerQueue={}, type={}",
+                config.isUseTriggerQueue(),
+                repertoire.getClass().getSimpleName());
+        return repertoire;
     }
 
 }

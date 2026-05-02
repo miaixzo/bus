@@ -31,12 +31,12 @@ import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.cache.AuthCache;
 import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
-import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Claims;
+import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -44,6 +44,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 
 import lombok.Data;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Apple login provider.
@@ -69,11 +70,11 @@ public class AppleProvider extends AbstractProvider {
     /**
      * Constructs an {@code AppleProvider} with the specified context and cache.
      *
-     * @param context   the authentication context
-     * @param authCache the cache implementation
+     * @param context the authentication context
+     * @param cache   the cache implementation
      */
-    public AppleProvider(Context context, AuthCache authCache) {
-        super(context, Registry.APPLE, authCache);
+    public AppleProvider(Context context, CacheX cache) {
+        super(context, Registry.APPLE, cache);
     }
 
     /**
@@ -147,6 +148,15 @@ public class AppleProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(builder.build()).build();
 
         } catch (Exception e) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    e,
+                    "OAuth provider response parsing failed: provider={}, source={}, operation={}, exception={}",
+                    getClass().getSimpleName(),
+                    this.complex == null ? null : this.complex.getName(),
+                    "access token",
+                    e.getClass().getSimpleName());
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
     }

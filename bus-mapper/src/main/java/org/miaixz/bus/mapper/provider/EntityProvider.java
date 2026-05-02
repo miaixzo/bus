@@ -55,93 +55,93 @@ public class EntityProvider extends BasicProvider {
     /**
      * Saves an entity by inserting all its fields.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String insert(ProviderContext providerContext) {
-        return cacheSql(providerContext, BasicProvider::buildInsertAll);
+    public static String insert(ProviderContext context) {
+        return cacheSql(context, BasicProvider::buildInsertAll);
     }
 
     /**
      * Upserts an entity (insert if not exists, update if exists).
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String insertUp(ProviderContext providerContext) {
-        return cacheSqlDynamic(providerContext, BasicProvider::buildInsertUp);
+    public static String insertUp(ProviderContext context) {
+        return cacheSqlDynamic(context, BasicProvider::buildInsertUp);
     }
 
     /**
      * Saves only the non-null fields of an entity.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String insertSelective(ProviderContext providerContext) {
-        return cacheSql(providerContext, BasicProvider::buildInsertSelective);
+    public static String insertSelective(ProviderContext context) {
+        return cacheSql(context, BasicProvider::buildInsertSelective);
     }
 
     /**
      * Upserts an entity with only non-null fields.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String insertUpSelective(ProviderContext providerContext) {
-        return cacheSqlDynamic(providerContext, BasicProvider::buildInsertUpSelective);
+    public static String insertUpSelective(ProviderContext context) {
+        return cacheSqlDynamic(context, BasicProvider::buildInsertUpSelective);
     }
 
     /**
      * Updates all fields of an entity by its primary key.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String updateByPrimaryKey(ProviderContext providerContext) {
-        return cacheSql(providerContext, BasicProvider::buildUpdateAll);
+    public static String updateByPrimaryKey(ProviderContext context) {
+        return cacheSql(context, BasicProvider::buildUpdateAll);
     }
 
     /**
      * Updates non-null fields of an entity by its primary key.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String updateByPrimaryKeySelective(ProviderContext providerContext) {
-        return cacheSql(providerContext, BasicProvider::buildUpdateSelective);
+    public static String updateByPrimaryKeySelective(ProviderContext context) {
+        return cacheSql(context, BasicProvider::buildUpdateSelective);
     }
 
     /**
      * Selects an entity by its primary key.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String selectByPrimaryKey(ProviderContext providerContext) {
-        return cacheSql(providerContext, BasicProvider::buildSelectByPrimaryKey);
+    public static String selectByPrimaryKey(ProviderContext context) {
+        return cacheSql(context, BasicProvider::buildSelectByPrimaryKey);
     }
 
     /**
      * Selects all entities.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String selectAll(ProviderContext providerContext) {
-        return cacheSql(providerContext, BasicProvider::buildSelectAll);
+    public static String selectAll(ProviderContext context) {
+        return cacheSql(context, BasicProvider::buildSelectAll);
     }
 
     /**
      * Selects a single entity or a batch of entities based on entity field conditions. The number of results is defined
      * by the method.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String select(ProviderContext providerContext) {
+    public static String select(ProviderContext context) {
         return cacheSql(
-                providerContext,
+                context,
                 entity -> "SELECT " + entity.baseColumnAsPropertyList() + " FROM " + entity.tableName()
                         + buildWhereSelective(entity, null));
     }
@@ -149,12 +149,12 @@ public class EntityProvider extends BasicProvider {
     /**
      * Selects a single entity based on entity field conditions.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String selectOne(ProviderContext providerContext) {
+    public static String selectOne(ProviderContext context) {
         return cacheSql(
-                providerContext,
+                context,
                 entity -> "SELECT " + entity.baseColumnAsPropertyList() + " FROM " + entity.tableName()
                         + buildWhereSelective(entity, null) + " LIMIT 1");
     }
@@ -162,64 +162,62 @@ public class EntityProvider extends BasicProvider {
     /**
      * Deletes a record by its primary key.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String deleteByPrimaryKey(ProviderContext providerContext) {
-        return cacheSql(providerContext, BasicProvider::buildDeleteByPrimaryKey);
+    public static String deleteByPrimaryKey(ProviderContext context) {
+        return cacheSql(context, BasicProvider::buildDeleteByPrimaryKey);
     }
 
     /**
      * Deletes records in batch based on entity field conditions.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String delete(ProviderContext providerContext) {
-        return cacheSql(
-                providerContext,
-                entity -> "DELETE FROM " + entity.tableName() + buildWhereSelective(entity, null));
+    public static String delete(ProviderContext context) {
+        return cacheSql(context, entity -> "DELETE FROM " + entity.tableName() + buildWhereSelective(entity, null));
     }
 
     /**
      * Counts the total number of records based on entity field conditions.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String selectCount(ProviderContext providerContext) {
-        return cacheSql(providerContext, BasicProvider::buildCount);
+    public static String selectCount(ProviderContext context) {
+        return cacheSql(context, BasicProvider::buildCount);
     }
 
     /**
      * Counts records by entity field conditions.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String countByCondition(ProviderContext providerContext) {
-        return cacheSql(providerContext, entity -> buildCountSelective(entity, null));
+    public static String countByCondition(ProviderContext context) {
+        return cacheSql(context, entity -> buildCountSelective(entity, null));
     }
 
     /**
      * Checks if a record exists by its primary key.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String existsWithPrimaryKey(ProviderContext providerContext) {
-        return cacheSql(providerContext, BasicProvider::buildExistsByPrimaryKey);
+    public static String existsWithPrimaryKey(ProviderContext context) {
+        return cacheSql(context, BasicProvider::buildExistsByPrimaryKey);
     }
 
     /**
      * Marks a method as unavailable and throws an exception.
      *
-     * @param providerContext The provider context, containing method and interface information.
+     * @param context The provider context, containing method and interface information.
      * @return The cache key.
      * @throws UnsupportedOperationException if the method is not available.
      */
-    public static String unsupported(ProviderContext providerContext) {
-        throw new UnsupportedOperationException(providerContext.getMapperMethod().getName() + " method not available");
+    public static String unsupported(ProviderContext context) {
+        throw new UnsupportedOperationException(context.getMapperMethod().getName() + " method not available");
     }
 
 }

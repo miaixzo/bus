@@ -73,18 +73,36 @@ public abstract class AbstractActivityHandler<R, C>
         String taskId = getTaskId(request);
         CallbackNotifier<R> notifier = getCallbackNotifier();
         NotificationMode notificationMode = notifier == null ? NotificationMode.DISABLED : getNotificationMode();
-        Logger.info("Activity execution started. taskId: {}", taskId);
+        Logger.info(
+                true,
+                "Tempus",
+                "Activity execution started: taskId={}, requestType={}, notificationMode={}, notifierPresent={}",
+                taskId,
+                request.getClass().getName(),
+                notificationMode,
+                notifier != null);
         try {
             heartbeat("processing", taskId);
 
             C context = create(request);
             ActivityExecutor<R, C> executor = resolve(request);
             Assert.state(executor != null, "No executor found for request: %s", request);
-            Logger.debug("Executor resolved. taskId: {}, executor: {}", taskId, executor.getClass().getSimpleName());
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Activity executor resolved: taskId={}, executor={}, contextType={}",
+                    taskId,
+                    executor.getClass().getName(),
+                    context == null ? null : context.getClass().getName());
 
             Object result = heartbeatDuring(() -> executor.execute(request, context), "processing", taskId);
             heartbeat("completed", taskId);
-            Logger.info("Activity execution phase completed. taskId: {}", taskId);
+            Logger.info(
+                    false,
+                    "Tempus",
+                    "Activity execution phase completed: taskId={}, resultType={}",
+                    taskId,
+                    result == null ? null : result.getClass().getName());
 
             if (notifier != null && notificationMode == NotificationMode.INLINE_BEFORE_COMPLETE) {
                 notifySuccessBeforeComplete(notifier, request, result, taskId);
@@ -93,16 +111,31 @@ public abstract class AbstractActivityHandler<R, C>
             }
             return buildSuccessResponse(taskId, result);
         } catch (Exception e) {
-            Logger.error("Task failed, taskId: {}, error: {}", taskId, e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Tempus",
+                    e,
+                    "Activity execution failed: taskId={}, exception={}",
+                    taskId,
+                    e.getClass().getSimpleName());
             if (notifier != null && notificationMode == NotificationMode.INLINE_BEFORE_COMPLETE) {
                 try {
+                    Logger.debug(
+                            true,
+                            "Tempus",
+                            "Inline failure notifier started: taskId={}, requestType={}",
+                            taskId,
+                            request.getClass().getName());
                     notifier.failure(request, e.getMessage());
+                    Logger.debug(false, "Tempus", "Inline failure notifier completed: taskId={}", taskId);
                 } catch (Exception notifierError) {
                     Logger.error(
-                            "Inline failure notifier failed. taskId: {}, error: {}",
+                            false,
+                            "Tempus",
+                            notifierError,
+                            "Inline failure notifier failed: taskId={}, exception={}",
                             taskId,
-                            notifierError.getMessage(),
-                            notifierError);
+                            notifierError.getClass().getSimpleName());
                 }
             } else if (notifier != null && notificationMode == NotificationMode.AFTER_COMPLETE) {
                 return completeThenNotifyFailure(request, e, notifier, taskId);
@@ -120,9 +153,14 @@ public abstract class AbstractActivityHandler<R, C>
      * @param taskId   the logical task identifier
      */
     protected void notifySuccessBeforeComplete(CallbackNotifier<R> notifier, R request, Object result, String taskId) {
-        Logger.debug("Inline notifier started. taskId: {}", taskId);
+        Logger.debug(
+                true,
+                "Tempus",
+                "Inline success notifier started: taskId={}, resultType={}",
+                taskId,
+                result == null ? null : result.getClass().getName());
         heartbeatDuring(() -> notifier.success(request, result), "notifying", taskId);
-        Logger.debug("Inline notifier completed. taskId: {}", taskId);
+        Logger.debug(false, "Tempus", "Inline success notifier completed: taskId={}", taskId);
     }
 
     /**
@@ -140,22 +178,37 @@ public abstract class AbstractActivityHandler<R, C>
         context.doNotCompleteOnReturn();
         ManualActivityCompletionClient completionClient = context.useLocalManualCompletion();
         try {
+            Logger.debug(
+                    true,
+                    "Tempus",
+                    "Manual activity success completion started: taskId={}, responseLength={}",
+                    taskId,
+                    response == null ? 0 : response.length());
             completionClient.complete(response);
+            Logger.debug(false, "Tempus", "Manual activity success completion completed: taskId={}", taskId);
         } catch (ActivityCompletionException ex) {
             Logger.error(
-                    "Manual completion for success failed. taskId: {}, activityId: {}, error: {}",
+                    false,
+                    "Tempus",
+                    ex,
+                    "Manual activity success completion failed: taskId={}, activityId={}, exception={}",
                     taskId,
                     ex.getActivityId().orElse(null),
-                    ex.getMessage(),
-                    ex);
+                    ex.getClass().getSimpleName());
             throw ex;
         }
         try {
-            Logger.debug("Post-complete notifier started. taskId: {}", taskId);
+            Logger.debug(true, "Tempus", "Post-complete success notifier started: taskId={}", taskId);
             notifier.success(request, result);
-            Logger.debug("All post-complete processing completed. taskId: {}", taskId);
+            Logger.debug(false, "Tempus", "Post-complete success notifier completed: taskId={}", taskId);
         } catch (Exception ex) {
-            Logger.error("Post-complete success notifier failed. taskId: {}, error: {}", taskId, ex.getMessage(), ex);
+            Logger.error(
+                    false,
+                    "Tempus",
+                    ex,
+                    "Post-complete success notifier failed: taskId={}, exception={}",
+                    taskId,
+                    ex.getClass().getSimpleName());
         }
         return response;
     }
@@ -179,22 +232,37 @@ public abstract class AbstractActivityHandler<R, C>
         context.doNotCompleteOnReturn();
         ManualActivityCompletionClient completionClient = context.useLocalManualCompletion();
         try {
+            Logger.debug(
+                    true,
+                    "Tempus",
+                    "Manual activity failure completion started: taskId={}, exception={}",
+                    taskId,
+                    error.getClass().getSimpleName());
             completionClient.fail(completionError);
+            Logger.debug(false, "Tempus", "Manual activity failure completion completed: taskId={}", taskId);
         } catch (ActivityCompletionException ex) {
             Logger.error(
-                    "Manual completion for failure failed. taskId: {}, activityId: {}, error: {}",
+                    false,
+                    "Tempus",
+                    ex,
+                    "Manual activity failure completion failed: taskId={}, activityId={}, exception={}",
                     taskId,
                     ex.getActivityId().orElse(null),
-                    ex.getMessage(),
-                    ex);
+                    ex.getClass().getSimpleName());
             throw completionError;
         }
         try {
-            Logger.debug("Post-complete failure notifier started. taskId: {}", taskId);
+            Logger.debug(true, "Tempus", "Post-complete failure notifier started: taskId={}", taskId);
             notifier.failure(request, error.getMessage());
-            Logger.debug("Post-complete failure notifier completed. taskId: {}", taskId);
+            Logger.debug(false, "Tempus", "Post-complete failure notifier completed: taskId={}", taskId);
         } catch (Exception ex) {
-            Logger.error("Post-complete failure notifier failed. taskId: {}, error: {}", taskId, ex.getMessage(), ex);
+            Logger.error(
+                    false,
+                    "Tempus",
+                    ex,
+                    "Post-complete failure notifier failed: taskId={}, exception={}",
+                    taskId,
+                    ex.getClass().getSimpleName());
         }
         return null;
     }
@@ -265,9 +333,24 @@ public abstract class AbstractActivityHandler<R, C>
                     heartbeatFailure
                             .compareAndSet(null, new RuntimeException("Heartbeat failed: " + e.getMessage(), e));
                 }
-                Logger.warn("Heartbeat failed: {}", e.getMessage());
+                Logger.warn(
+                        false,
+                        "Tempus",
+                        e,
+                        "Activity heartbeat failed: taskId={}, status={}, exception={}",
+                        taskId,
+                        status,
+                        e.getClass().getSimpleName());
             }
         }, initialDelay, interval, TimeUnit.SECONDS);
+        Logger.debug(
+                true,
+                "Tempus",
+                "Activity heartbeat monitor started: taskId={}, status={}, initialDelaySeconds={}, intervalSeconds={}",
+                taskId,
+                status,
+                initialDelay,
+                interval);
         try {
             T result = action.call();
             RuntimeException failure = heartbeatFailure.get();
@@ -281,6 +364,7 @@ public abstract class AbstractActivityHandler<R, C>
             throw new RuntimeException(ex);
         } finally {
             future.cancel(false);
+            Logger.debug(false, "Tempus", "Activity heartbeat monitor stopped: taskId={}, status={}", taskId, status);
         }
     }
 
@@ -300,7 +384,14 @@ public abstract class AbstractActivityHandler<R, C>
             if (isTerminalHeartbeatFailure(e)) {
                 throw ExceptionKit.wrapRuntime(e, "Heartbeat failed: %s", e.getMessage());
             }
-            Logger.warn("Heartbeat failed: {}", e.getMessage());
+            Logger.warn(
+                    false,
+                    "Tempus",
+                    e,
+                    "Activity heartbeat failed: taskId={}, status={}, exception={}",
+                    taskId,
+                    status,
+                    e.getClass().getSimpleName());
         }
     }
 
@@ -312,9 +403,22 @@ public abstract class AbstractActivityHandler<R, C>
      * @return the serialized success response
      */
     protected String buildSuccessResponse(String taskId, Object result) {
+        Logger.debug(
+                true,
+                "Tempus",
+                "Activity success response build started: taskId={}, resultType={}",
+                taskId,
+                result == null ? null : result.getClass().getName());
         Map<String, Object> payload = MapKit.<String, Object>builder().put("success", true).put("taskId", taskId)
                 .put("result", parseSerializedResult(serialize(result))).build();
-        return JsonKit.toJsonString(payload);
+        String response = JsonKit.toJsonString(payload);
+        Logger.debug(
+                false,
+                "Tempus",
+                "Activity success response build completed: taskId={}, responseLength={}",
+                taskId,
+                response == null ? 0 : response.length());
+        return response;
     }
 
     /**
@@ -395,8 +499,21 @@ public abstract class AbstractActivityHandler<R, C>
             return null;
         }
         try {
-            return JsonKit.toPojo(serialized, Object.class);
+            Object parsed = JsonKit.toPojo(serialized, Object.class);
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Activity serialized result parsed: serializedLength={}, parsedType={}",
+                    serialized.length(),
+                    parsed == null ? null : parsed.getClass().getName());
+            return parsed;
         } catch (Exception e) {
+            Logger.debug(
+                    false,
+                    "Tempus",
+                    "Activity serialized result kept as text: serializedLength={}, exception={}",
+                    serialized.length(),
+                    e.getClass().getSimpleName());
             return serialized;
         }
     }

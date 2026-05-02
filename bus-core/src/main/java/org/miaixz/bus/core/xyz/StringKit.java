@@ -37,6 +37,13 @@ import org.miaixz.bus.core.text.TextSimilarity;
 public class StringKit extends CharsBacker {
 
     /**
+     * Constructs a new string utility instance.
+     */
+    public StringKit() {
+
+    }
+
+    /**
      * Trims whitespace from the beginning and end of all strings in the given array.
      *
      * @param args The array of strings.

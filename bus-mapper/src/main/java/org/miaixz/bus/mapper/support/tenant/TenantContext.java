@@ -21,6 +21,8 @@ package org.miaixz.bus.mapper.support.tenant;
 
 import java.util.function.Supplier;
 
+import org.miaixz.bus.core.lang.Assert;
+
 /**
  * Tenant context holder.
  *
@@ -86,10 +88,7 @@ public class TenantContext {
      * @throws IllegalArgumentException if the tenant ID is null or empty
      */
     public static void setTenantId(String tenantId) {
-        if (tenantId == null || tenantId.trim().isEmpty()) {
-            throw new IllegalArgumentException("Tenant ID cannot be null or empty");
-        }
-        TENANT_ID.set(tenantId.trim());
+        TENANT_ID.set(Assert.notBlank(tenantId, "Tenant ID cannot be null or empty").trim());
     }
 
     /**

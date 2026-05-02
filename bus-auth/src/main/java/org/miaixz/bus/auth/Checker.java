@@ -25,6 +25,7 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Validator for authorization configuration classes.
@@ -74,12 +75,32 @@ public class Checker {
     public static void check(Context context, Complex complex) {
         String redirectUri = context.getRedirectUri();
         if (context.isIgnoreRedirectUri()) {
+            Logger.debug(
+                    false,
+                    "Auth",
+                    "OAuth redirect validation skipped: source={}, reason={}",
+                    complex == null ? null : complex.getName(),
+                    "ignoreRedirectUri");
             return;
         }
         if (StringKit.isEmpty(redirectUri)) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    "OAuth redirect validation rejected: source={}, redirectPresent={}, reason={}",
+                    complex == null ? null : complex.getName(),
+                    false,
+                    "missingRedirectUri");
             throw new AuthorizedException(ErrorCode._110005.getKey(), complex);
         }
         if (!Protocol.isHttp(redirectUri) && !Protocol.isHttps(redirectUri)) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    "OAuth redirect validation rejected: source={}, redirectPresent={}, reason={}",
+                    complex == null ? null : complex.getName(),
+                    true,
+                    "unsupportedRedirectProtocol");
             throw new AuthorizedException(ErrorCode._110005.getKey(), complex);
         }
     }
@@ -96,6 +117,12 @@ public class Checker {
     public static void check(Complex complex, Callback callback) {
         // Twitter platform does not support callback code and state
         if (complex == Registry.TWITTER) {
+            Logger.debug(
+                    false,
+                    "Auth",
+                    "OAuth callback code validation skipped: source={}, reason={}",
+                    complex.getName(),
+                    "unsupportedByProvider");
             return;
         }
         String code = callback.getCode();
@@ -103,6 +130,13 @@ public class Checker {
             code = callback.getAuthorization_code();
         }
         if (StringKit.isEmpty(code)) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    "OAuth callback code validation rejected: source={}, codePresent={}, statePresent={}",
+                    complex == null ? null : complex.getName(),
+                    false,
+                    callback != null && StringKit.isNotEmpty(callback.getState()));
             throw new AuthorizedException(ErrorCode._110007.getKey(), complex);
         }
     }
@@ -120,9 +154,22 @@ public class Checker {
     public static void check(String state, Complex complex, CacheX cache) {
         // Twitter platform does not support callback code and state
         if (complex == Registry.TWITTER) {
+            Logger.debug(
+                    false,
+                    "Auth",
+                    "OAuth state validation skipped: source={}, reason={}",
+                    complex.getName(),
+                    "unsupportedByProvider");
             return;
         }
         if (StringKit.isEmpty(state) || !cache.containsKey(state)) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    "OAuth state validation rejected: source={}, statePresent={}, cachePresent={}",
+                    complex == null ? null : complex.getName(),
+                    StringKit.isNotEmpty(state),
+                    cache != null);
             throw new AuthorizedException(ErrorCode._110008.getKey(), complex);
         }
     }

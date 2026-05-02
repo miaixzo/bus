@@ -216,9 +216,20 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
      * @param content The string content to parse.
      */
     public static void parse(Map<String, Object> result, String content) {
+        final long startedAt = System.nanoTime();
+        int lineCount = 0;
+        int ignoredLineCount = 0;
+        Logger.debug(
+                true,
+                "Setting",
+                "Properties content parse started: contentLength={}, targetPresent={}",
+                content == null ? 0 : content.length(),
+                result != null);
         String[] lines = content.split("\n");
         for (String line : lines) {
+            lineCount++;
             if (StringKit.isBlank(line) || line.startsWith(Symbol.HASH) || !line.contains(Symbol.EQUAL)) {
+                ignoredLineCount++;
                 continue;
             }
             String key = line.substring(0, line.indexOf(Symbol.EQUAL)).trim();
@@ -227,6 +238,14 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
                 result.put(key, value);
             }
         }
+        Logger.debug(
+                false,
+                "Setting",
+                "Properties content parse completed: lineCount={}, ignoredLineCount={}, keyCount={}, elapsedMs={}",
+                lineCount,
+                ignoredLineCount,
+                result == null ? 0 : result.size(),
+                (System.nanoTime() - startedAt) / 1_000_000L);
     }
 
     /**
@@ -236,13 +255,36 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
      * @return The first found {@code Props} instance, or null if none are found.
      */
     public static Props getFirstFound(final String... names) {
+        Logger.info(
+                true,
+                "Setting",
+                "Properties first-found lookup started: candidateCount={}",
+                names == null ? 0 : names.length);
         for (final String name : names) {
             try {
-                return get(name);
+                final Props props = get(name);
+                Logger.info(
+                        false,
+                        "Setting",
+                        "Properties first-found lookup completed: resource={}, keyCount={}",
+                        name,
+                        props == null ? 0 : props.size());
+                return props;
             } catch (final InternalException e) {
                 // Ignore and try the next name.
+                Logger.debug(
+                        false,
+                        "Setting",
+                        "Properties first-found candidate ignored: resource={}, exception={}",
+                        name,
+                        e.getClass().getSimpleName());
             }
         }
+        Logger.warn(
+                false,
+                "Setting",
+                "Properties first-found lookup failed: candidateCount={}",
+                names == null ? 0 : names.length);
         return null;
     }
 
@@ -271,15 +313,53 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
      */
     public void load(final Resource resource) {
         Assert.notNull(resource, "Properties resource must be not null!");
+        final long startedAt = System.nanoTime();
+        Logger.info(
+                true,
+                "Setting",
+                "Properties resource load started: resourceUrl={}, charset={}",
+                resource.getUrl(),
+                this.charset);
         this.resource = resource;
-        ResourceKit.loadTo(this, resource, this.charset);
+        try {
+            ResourceKit.loadTo(this, resource, this.charset);
+        } catch (final RuntimeException e) {
+            Logger.warn(
+                    false,
+                    "Setting",
+                    e,
+                    "Properties resource load failed: resourceUrl={}, charset={}, exception={}, elapsedMs={}",
+                    resource.getUrl(),
+                    this.charset,
+                    e.getClass().getSimpleName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
+            throw e;
+        }
+        Logger.info(
+                false,
+                "Setting",
+                "Properties resource load completed: resourceUrl={}, keyCount={}, elapsedMs={}",
+                resource.getUrl(),
+                this.size(),
+                (System.nanoTime() - startedAt) / 1_000_000L);
     }
 
     /**
      * Reloads the properties from the original resource.
      */
     public void load() {
+        Logger.info(
+                true,
+                "Setting",
+                "Properties reload requested: resourceUrl={}",
+                this.resource == null ? null : this.resource.getUrl());
         this.load(this.resource);
+        Logger.info(
+                false,
+                "Setting",
+                "Properties reload completed: resourceUrl={}, keyCount={}",
+                this.resource == null ? null : this.resource.getUrl(),
+                this.size());
     }
 
     /**
@@ -290,6 +370,7 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
     public void autoLoad(final boolean autoReload) {
         if (autoReload) {
             Assert.notNull(this.resource, "Properties resource must be not null for auto-reloading!");
+            Logger.info(true, "Setting", "Properties auto-load setup started: resourceUrl={}", this.resource.getUrl());
             IoKit.closeQuietly(this.watchMonitor); // Close any existing monitor.
             this.watchMonitor = WatchKit.ofModify(this.resource.getUrl(), new SimpleWatcher() {
 
@@ -304,13 +385,32 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
                      * @param event the watch event that occurred
                      * @param key   the watch key representing the directory being watched
                      */
+                    Logger.info(
+                            true,
+                            "Setting",
+                            "Properties auto-load event received: resourceUrl={}, eventKind={}",
+                            resource.getUrl(),
+                            event == null ? null : event.kind());
                     load();
+                    Logger.info(
+                            false,
+                            "Setting",
+                            "Properties auto-load event handled: resourceUrl={}, keyCount={}",
+                            resource.getUrl(),
+                            size());
                 }
             });
             this.watchMonitor.start();
+            Logger.info(false, "Setting", "Properties auto-load enabled: resourceUrl={}", this.resource.getUrl());
         } else {
+            Logger.info(
+                    true,
+                    "Setting",
+                    "Properties auto-load stop requested: monitorPresent={}",
+                    this.watchMonitor != null);
             IoKit.closeQuietly(this.watchMonitor);
             this.watchMonitor = null;
+            Logger.info(false, "Setting", "Properties auto-load stopped");
         }
     }
 
@@ -341,13 +441,26 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
      * @return The string value, or null if no key is found.
      */
     public String getAndRemoveString(final String... keys) {
+        Logger.debug(
+                true,
+                "Setting",
+                "Properties get-and-remove requested: candidateCount={}",
+                keys == null ? 0 : keys.length);
         Object value = null;
+        String matchedKey = null;
         for (final String key : keys) {
             value = remove(key);
             if (null != value) {
+                matchedKey = key;
                 break;
             }
         }
+        Logger.debug(
+                false,
+                "Setting",
+                "Properties get-and-remove completed: matchedKey={}, removed={}",
+                matchedKey,
+                value != null);
         return (String) value;
     }
 
@@ -356,15 +469,15 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
      * {@code Props} object.
      * <p>
      * Example:
-     * 
+     *
      * <pre>
      * a.b = 1
      * a.c = 2
      * b.a = 3
      * </pre>
-     * 
+     *
      * Calling {@code getSubProps("a")} would return a {@code Props} object containing:
-     * 
+     *
      * <pre>
      * b = 1
      * c = 2
@@ -374,6 +487,12 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
      * @return A new {@code Props} object containing the subset of properties.
      */
     public Props getSubProps(final String prefix) {
+        Logger.debug(
+                true,
+                "Setting",
+                "Properties sub view requested: prefix={}, sourceKeyCount={}",
+                prefix,
+                this.size());
         final Props subProps = new Props();
         final String finalPrefix = StringKit.addSuffixIfNot(prefix, Symbol.DOT);
         final int prefixLength = finalPrefix.length();
@@ -385,6 +504,7 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
             }
         });
 
+        Logger.debug(false, "Setting", "Properties sub view created: prefix={}, keyCount={}", prefix, subProps.size());
         return subProps;
     }
 
@@ -394,8 +514,10 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
      * @return A new {@code Props} instance.
      */
     public Props toProperties() {
+        Logger.debug(true, "Setting", "Properties copy requested: keyCount={}", this.size());
         final Props properties = new Props();
         properties.putAll(this);
+        Logger.debug(false, "Setting", "Properties copy completed: keyCount={}", properties.size());
         return properties;
     }
 
@@ -444,6 +566,15 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
      */
     public <T> T toBean(final T bean, String prefix) {
         prefix = StringKit.toStringOrEmpty(StringKit.addSuffixIfNot(prefix, Symbol.DOT));
+        Logger.debug(
+                true,
+                "Setting",
+                "Properties bean binding started: beanType={}, prefix={}, sourceKeyCount={}",
+                bean == null ? "null" : bean.getClass().getName(),
+                prefix,
+                this.size());
+        int boundCount = 0;
+        int ignoredCount = 0;
 
         for (final java.util.Map.Entry<Object, Object> entry : this.entrySet()) {
             String key = (String) entry.getKey();
@@ -452,12 +583,27 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
             }
             try {
                 BeanKit.setProperty(bean, StringKit.subSuf(key, prefix.length()), entry.getValue());
+                boundCount++;
             } catch (final Exception e) {
                 // Ignore fields that fail to set (they might be for other configurations)
-                Logger.debug("Ignore property: [{}], because of: {}", key, e.getMessage());
+                ignoredCount++;
+                Logger.debug(
+                        false,
+                        "Setting",
+                        "Property ignored during bean binding: key={}, exception={}",
+                        key,
+                        e.getClass().getSimpleName());
             }
         }
 
+        Logger.debug(
+                false,
+                "Setting",
+                "Properties bean binding completed: beanType={}, prefix={}, boundCount={}, ignoredCount={}",
+                bean == null ? "null" : bean.getClass().getName(),
+                prefix,
+                boundCount,
+                ignoredCount);
         return bean;
     }
 
@@ -469,7 +615,9 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
      * @param value The property value.
      */
     public void set(final String key, final Object value) {
+        Logger.debug(true, "Setting", "Properties set requested: key={}, valuePresent={}", key, value != null);
         super.setProperty(key, value.toString());
+        Logger.debug(false, "Setting", "Properties set completed: key={}, keyCount={}", key, this.size());
     }
 
     /**
@@ -477,7 +625,7 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
      * properties from a bean's getters.
      * <p>
      * Example:
-     * 
+     *
      * <pre>
      * User user = new User("test", "Test User");
      * Props.of().setFields(user::getUsername, user::getNickname);
@@ -498,11 +646,29 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
      * @throws InternalException if an I/O error occurs.
      */
     public void store(final String absolutePath) throws InternalException {
+        final long startedAt = System.nanoTime();
+        Logger.info(true, "Setting", "Properties store started: file={}, keyCount={}", absolutePath, this.size());
         try (Writer writer = FileKit.getWriter(absolutePath, charset, false)) {
             super.store(writer, null);
         } catch (final IOException e) {
+            Logger.warn(
+                    false,
+                    "Setting",
+                    e,
+                    "Properties store failed: file={}, keyCount={}, exception={}, elapsedMs={}",
+                    absolutePath,
+                    this.size(),
+                    e.getClass().getSimpleName(),
+                    (System.nanoTime() - startedAt) / 1_000_000L);
             throw new InternalException(e, "Store properties to [{}] error!", absolutePath);
         }
+        Logger.info(
+                false,
+                "Setting",
+                "Properties store completed: file={}, keyCount={}, elapsedMs={}",
+                absolutePath,
+                this.size(),
+                (System.nanoTime() - startedAt) / 1_000_000L);
     }
 
     /**

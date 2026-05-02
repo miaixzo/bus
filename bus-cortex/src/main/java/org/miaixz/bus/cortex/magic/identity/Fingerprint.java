@@ -24,6 +24,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import org.miaixz.bus.core.codec.binary.Hex;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Fingerprint utility for generating stable instance identifiers.
@@ -55,6 +56,14 @@ public final class Fingerprint {
             byte[] digest = md.digest(input.getBytes(StandardCharsets.UTF_8));
             return Hex.encodeString(digest).substring(0, 32);
         } catch (NoSuchAlgorithmException e) {
+            Logger.warn(
+                    false,
+                    "Cortex",
+                    e,
+                    "Cortex operation failed: provider={}, recoverable={}, exception={}",
+                    "Fingerprint",
+                    false,
+                    e.getClass().getSimpleName());
             throw new RuntimeException("SHA-256 not available", e);
         }
     }

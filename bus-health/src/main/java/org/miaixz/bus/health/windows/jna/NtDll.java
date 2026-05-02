@@ -1,5 +1,5 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                           ~
  ~ Copyright (c) 2015-2026 miaixz.org OSHI and other contributors.           ~
  ~                                                                           ~
@@ -36,8 +36,14 @@ import com.sun.jna.win32.W32APIOptions;
  */
 public interface NtDll extends com.sun.jna.platform.win32.NtDll {
 
+    /**
+     * The INSTANCE value.
+     */
     NtDll INSTANCE = Native.load("NtDll", NtDll.class, W32APIOptions.DEFAULT_OPTIONS);
 
+    /**
+     * The PROCESS_BASIC_INFORMATION value.
+     */
     int PROCESS_BASIC_INFORMATION = 0;
 
     /**
@@ -63,8 +69,17 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
     @FieldOrder({ "Reserved1", "PebBaseAddress", "Reserved2" })
     class PROCESS_BASIC_INFORMATION extends Structure {
 
+        /**
+         * The Reserved1 value.
+         */
         public Pointer Reserved1;
+        /**
+         * The PebBaseAddress value.
+         */
         public Pointer PebBaseAddress;
+        /**
+         * The Reserved2 value.
+         */
         public Pointer[] Reserved2 = new Pointer[4];
     }
 
@@ -78,8 +93,17 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
     @FieldOrder({ "pad", "pad2", "ProcessParameters" })
     class PEB extends Structure {
 
+        /**
+         * The pad value.
+         */
         public byte[] pad = new byte[4];
+        /**
+         * The pad2 value.
+         */
         public Pointer[] pad2 = new Pointer[3];
+        /**
+         * The ProcessParameters value.
+         */
         public Pointer ProcessParameters; // RTL_USER_PROCESS_PARAMETERS
     }
 
@@ -99,42 +123,153 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
             "DefaultThreadpoolCpuSetMaskCount" })
     class RTL_USER_PROCESS_PARAMETERS extends Structure {
 
+        /**
+         * The MaximumLength value.
+         */
         public int MaximumLength;
+        /**
+         * The Length value.
+         */
         public int Length;
+        /**
+         * The Flags value.
+         */
         public int Flags;
+        /**
+         * The DebugFlags value.
+         */
         public int DebugFlags;
+        /**
+         * The ConsoleHandle value.
+         */
         public HANDLE ConsoleHandle;
+        /**
+         * The ConsoleFlags value.
+         */
         public int ConsoleFlags;
+        /**
+         * The StandardInput value.
+         */
         public HANDLE StandardInput;
+        /**
+         * The StandardOutput value.
+         */
         public HANDLE StandardOutput;
+        /**
+         * The StandardError value.
+         */
         public HANDLE StandardError;
+        /**
+         * The CurrentDirectory value.
+         */
         public CURDIR CurrentDirectory;
+        /**
+         * The DllPath value.
+         */
         public UNICODE_STRING DllPath;
+        /**
+         * The ImagePathName value.
+         */
         public UNICODE_STRING ImagePathName;
+        /**
+         * The CommandLine value.
+         */
         public UNICODE_STRING CommandLine;
+        /**
+         * The Environment value.
+         */
         public Pointer Environment;
+        /**
+         * The StartingX value.
+         */
         public int StartingX;
+        /**
+         * The StartingY value.
+         */
         public int StartingY;
+        /**
+         * The CountX value.
+         */
         public int CountX;
+        /**
+         * The CountY value.
+         */
         public int CountY;
+        /**
+         * The CountCharsX value.
+         */
         public int CountCharsX;
+        /**
+         * The CountCharsY value.
+         */
         public int CountCharsY;
+        /**
+         * The FillAttribute value.
+         */
         public int FillAttribute;
+        /**
+         * The WindowFlags value.
+         */
         public int WindowFlags;
+        /**
+         * The ShowWindowFlags value.
+         */
         public int ShowWindowFlags;
+        /**
+         * The WindowTitle value.
+         */
         public UNICODE_STRING WindowTitle;
+        /**
+         * The DesktopInfo value.
+         */
         public UNICODE_STRING DesktopInfo;
+        /**
+         * The ShellInfo value.
+         */
         public UNICODE_STRING ShellInfo;
+        /**
+         * The RuntimeData value.
+         */
         public UNICODE_STRING RuntimeData;
+        /**
+         * The CurrentDirectories value.
+         */
         public RTL_DRIVE_LETTER_CURDIR[] CurrentDirectories = new RTL_DRIVE_LETTER_CURDIR[32];
+        /**
+         * The EnvironmentSize value.
+         */
         public ULONG_PTR EnvironmentSize;
+        /**
+         * The EnvironmentVersion value.
+         */
         public ULONG_PTR EnvironmentVersion;
+        /**
+         * The PackageDependencyData value.
+         */
         public Pointer PackageDependencyData;
+        /**
+         * The ProcessGroupId value.
+         */
         public int ProcessGroupId;
+        /**
+         * The LoaderThreads value.
+         */
         public int LoaderThreads;
+        /**
+         * The RedirectionDllName value.
+         */
         public UNICODE_STRING RedirectionDllName;
+        /**
+         * The HeapPartitionName value.
+         */
         public UNICODE_STRING HeapPartitionName;
+        /**
+         * The DefaultThreadpoolCpuSetMasks value.
+         */
         public ULONG_PTR DefaultThreadpoolCpuSetMasks;
+        /**
+         * The DefaultThreadpoolCpuSetMaskCount value.
+         */
         public int DefaultThreadpoolCpuSetMaskCount;
     }
 
@@ -148,8 +283,17 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
     @FieldOrder({ "Length", "MaximumLength", "Buffer" })
     class UNICODE_STRING extends Structure {
 
+        /**
+         * The Length value.
+         */
         public short Length;
+        /**
+         * The MaximumLength value.
+         */
         public short MaximumLength;
+        /**
+         * The Buffer value.
+         */
         public Pointer Buffer;
     }
 
@@ -163,8 +307,17 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
     @FieldOrder({ "Length", "MaximumLength", "Buffer" })
     class STRING extends Structure {
 
+        /**
+         * The Length value.
+         */
         public short Length;
+        /**
+         * The MaximumLength value.
+         */
         public short MaximumLength;
+        /**
+         * The Buffer value.
+         */
         public Pointer Buffer;
     }
 
@@ -177,7 +330,13 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
     @FieldOrder({ "DosPath", "Handle" })
     class CURDIR extends Structure {
 
+        /**
+         * The DosPath value.
+         */
         public UNICODE_STRING DosPath;
+        /**
+         * The Handle value.
+         */
         public Pointer Handle;
     }
 
@@ -190,9 +349,21 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
     @FieldOrder({ "Flags", "Length", "TimeStamp", "DosPath" })
     class RTL_DRIVE_LETTER_CURDIR extends Structure {
 
+        /**
+         * The Flags value.
+         */
         public short Flags;
+        /**
+         * The Length value.
+         */
         public short Length;
+        /**
+         * The TimeStamp value.
+         */
         public int TimeStamp;
+        /**
+         * The DosPath value.
+         */
         public STRING DosPath;
     }
 

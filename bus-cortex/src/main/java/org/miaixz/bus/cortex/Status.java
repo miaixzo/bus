@@ -19,8 +19,13 @@
 */
 package org.miaixz.bus.cortex;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * Result of a health check probe.
@@ -30,6 +35,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@SuperBuilder
 public class Status {
 
     /**
@@ -44,6 +50,23 @@ public class Status {
      * Human-readable status or error description.
      */
     private String message;
+    /**
+     * Logical probe source or component name.
+     */
+    private String source;
+    /**
+     * Probe timestamp in epoch milliseconds.
+     */
+    private long timestamp;
+    /**
+     * Logical lifecycle state derived from the probe result.
+     */
+    private String state;
+    /**
+     * Optional structured probe details.
+     */
+    @Builder.Default
+    private Map<String, String> details = new LinkedHashMap<>();
 
     /**
      * Creates a new Status.
@@ -59,10 +82,24 @@ public class Status {
      * @return healthy result
      */
     public static Status ok(long latencyMs) {
+        return ok(latencyMs, "probe");
+    }
+
+    /**
+     * Creates a successful health result.
+     *
+     * @param latencyMs probe latency in milliseconds
+     * @param source    probe source
+     * @return healthy result
+     */
+    public static Status ok(long latencyMs, String source) {
         Status r = new Status();
         r.healthy = true;
         r.latencyMs = latencyMs;
         r.message = "OK";
+        r.source = source;
+        r.state = "UP";
+        r.timestamp = System.currentTimeMillis();
         return r;
     }
 
@@ -73,11 +110,42 @@ public class Status {
      * @return unhealthy result
      */
     public static Status fail(String message) {
+        return fail(message, "probe");
+    }
+
+    /**
+     * Creates a failed health result.
+     *
+     * @param message failure description
+     * @param source  probe source
+     * @return unhealthy result
+     */
+    public static Status fail(String message, String source) {
         Status r = new Status();
         r.healthy = false;
         r.latencyMs = 0L;
         r.message = message;
+        r.source = source;
+        r.state = "DOWN";
+        r.timestamp = System.currentTimeMillis();
         return r;
+    }
+
+    /**
+     * Adds one structured detail item to the status payload.
+     *
+     * @param key   detail key
+     * @param value detail value
+     * @return current status
+     */
+    public Status detail(String key, String value) {
+        if (key != null && value != null) {
+            if (details == null) {
+                details = new LinkedHashMap<>();
+            }
+            details.put(key, value);
+        }
+        return this;
     }
 
 }

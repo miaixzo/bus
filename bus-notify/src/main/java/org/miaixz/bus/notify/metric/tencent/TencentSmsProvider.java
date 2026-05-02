@@ -25,6 +25,7 @@ import java.util.Map;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.AbstractProvider;
@@ -55,6 +56,13 @@ public class TencentSmsProvider extends AbstractProvider<TencentNotice, Context>
      */
     @Override
     public Message send(TencentNotice entity) {
+        Logger.info(
+                true,
+                "Notify",
+                "Tencent SMS send started: template={}, targetCount={}, smsAppPresent={}",
+                entity == null ? null : entity.getTemplate(),
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity != null && entity.getSmsAppId() != null);
         Map<String, String> bodys = new HashMap<>();
         bodys.put("SmsSdkAppid", entity.getSmsAppId());
         bodys.put("Sign", entity.getSignature());
@@ -69,7 +77,17 @@ public class TencentSmsProvider extends AbstractProvider<TencentNotice, Context>
         String errmsg = (status != null && status == 200) ? ErrorCode._SUCCESS.getValue()
                 : ErrorCode._FAILURE.getValue();
 
-        return Message.builder().errcode(errcode).errmsg(errmsg).build();
+        Message result = Message.builder().errcode(errcode).errmsg(errmsg).build();
+        Logger.info(
+                false,
+                "Notify",
+                "Tencent SMS send completed: template={}, targetCount={}, status={}, errcode={}, responseBytes={}",
+                entity == null ? null : entity.getTemplate(),
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                status,
+                result.getErrcode(),
+                response == null ? 0 : response.length());
+        return result;
     }
 
 }
