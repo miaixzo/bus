@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.starter.limiter;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.miaixz.bus.spring.GeniusBuilder;
 import jakarta.annotation.Resource;
 import org.miaixz.bus.core.xyz.ReflectKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -40,6 +42,7 @@ import org.springframework.context.annotation.Bean;
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { LimiterProperties.class })
+@ConditionalOnProperty(prefix = GeniusBuilder.LIMITER, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class LimiterConfiguration {
 
     @Resource

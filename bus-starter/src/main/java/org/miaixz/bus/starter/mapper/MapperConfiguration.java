@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.starter.mapper;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.miaixz.bus.spring.GeniusBuilder;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -129,6 +131,7 @@ import jakarta.annotation.Resource;
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { MapperProperties.class })
+@ConditionalOnProperty(prefix = GeniusBuilder.MAPPER, name = "enabled", havingValue = "true", matchIfMissing = true)
 @ConditionalOnClass({ SqlSessionFactory.class, SqlSessionFactoryBean.class })
 @AutoConfigureBefore(name = "org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration")
 public class MapperConfiguration implements InitializingBean {

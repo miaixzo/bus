@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.starter.wrapper;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.miaixz.bus.spring.GeniusBuilder;
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -85,6 +87,7 @@ import jakarta.annotation.Resource;
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { WrapperProperties.class })
+@ConditionalOnProperty(prefix = GeniusBuilder.WRAPPER, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class WrapperConfiguration implements WebMvcRegistrations {
 
     /**

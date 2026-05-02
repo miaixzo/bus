@@ -22,6 +22,7 @@ package org.miaixz.bus.health.linux.hardware;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -67,6 +68,141 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
      * The pciBusId value.
      */
     private final String pciBusId;
+
+    /**
+     * Parsed graphics card attributes used to construct graphics card instances.
+     */
+    static final class Attrs {
+
+        /**
+         * The name value.
+         */
+        private final String name;
+        /**
+         * The deviceId value.
+         */
+        private final String deviceId;
+        /**
+         * The vendor value.
+         */
+        private final String vendor;
+        /**
+         * The versionInfo value.
+         */
+        private final String versionInfo;
+        /**
+         * The vram value.
+         */
+        private final long vram;
+        /**
+         * The drmDevicePath value.
+         */
+        private final String drmDevicePath;
+        /**
+         * The driverName value.
+         */
+        private final String driverName;
+        /**
+         * The pciBusId value.
+         */
+        private final String pciBusId;
+
+        /**
+         * Creates a new Attrs instance.
+         *
+         * @param name          the name
+         * @param deviceId      the device id
+         * @param vendor        the vendor
+         * @param versionInfo   the version info
+         * @param vram          the vram
+         * @param drmDevicePath the drm device path
+         * @param driverName    the driver name
+         * @param pciBusId      the pci bus id
+         */
+        Attrs(String name, String deviceId, String vendor, String versionInfo, long vram, String drmDevicePath,
+                String driverName, String pciBusId) {
+            this.name = name;
+            this.deviceId = deviceId;
+            this.vendor = vendor;
+            this.versionInfo = versionInfo;
+            this.vram = vram;
+            this.drmDevicePath = drmDevicePath;
+            this.driverName = driverName;
+            this.pciBusId = pciBusId;
+        }
+
+        /**
+         * Returns the name.
+         *
+         * @return the name
+         */
+        String getName() {
+            return name;
+        }
+
+        /**
+         * Returns the device id.
+         *
+         * @return the device id
+         */
+        String getDeviceId() {
+            return deviceId;
+        }
+
+        /**
+         * Returns the vendor.
+         *
+         * @return the vendor
+         */
+        String getVendor() {
+            return vendor;
+        }
+
+        /**
+         * Returns the version info.
+         *
+         * @return the version info
+         */
+        String getVersionInfo() {
+            return versionInfo;
+        }
+
+        /**
+         * Returns the vram.
+         *
+         * @return the vram
+         */
+        long getVram() {
+            return vram;
+        }
+
+        /**
+         * Returns the drm device path.
+         *
+         * @return the drm device path
+         */
+        String getDrmDevicePath() {
+            return drmDevicePath;
+        }
+
+        /**
+         * Returns the driver name.
+         *
+         * @return the driver name
+         */
+        String getDriverName() {
+            return driverName;
+        }
+
+        /**
+         * Returns the pci bus id.
+         *
+         * @return the pci bus id
+         */
+        String getPciBusId() {
+            return pciBusId;
+        }
+    }
 
     /**
      * Constructor for LinuxGraphicsCard
@@ -118,9 +254,30 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
      * @return the get graphics cards from lspci result
      */
     private static List<GraphicsCard> getGraphicsCardsFromLspci() {
+        return getGraphicsCardsFromLspci(
+                Executor.runNative("lspci -vnnm"),
+                attrs -> new LinuxGraphicsCard(attrs.getName(), attrs.getDeviceId(), attrs.getVendor(),
+                        attrs.getVersionInfo(), attrs.getVram(), attrs.getDrmDevicePath(), attrs.getDriverName(),
+                        attrs.getPciBusId()),
+                slot -> queryLspciMemorySize(Executor.runNative("lspci -v -s " + slot)),
+                LinuxGraphicsCard::findDrmInfo);
+    }
+
+    /**
+     * Parse graphics card information from lspci machine-readable output.
+     *
+     * @param lspci      output of {@code lspci -vnnm}
+     * @param factory    function that creates a concrete {@link GraphicsCard} from parsed attributes
+     * @param vramLookup function to look up VRAM for a PCI slot address
+     * @param drmLookup  function to look up DRM info for a PCI slot address
+     * @return list of graphics cards
+     */
+    static List<GraphicsCard> getGraphicsCardsFromLspci(
+            List<String> lspci,
+            Function<Attrs, GraphicsCard> factory,
+            Function<String, Long> vramLookup,
+            Function<String, Triplet<String, String, String>> drmLookup) {
         List<GraphicsCard> cardList = new ArrayList<>();
-        // Machine readable version
-        List<String> lspci = Executor.runNative("lspci -vnnm");
         String name = Normal.UNKNOWN;
         String deviceId = Normal.UNKNOWN;
         String vendor = Normal.UNKNOWN;
@@ -145,12 +302,14 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
             if (found) {
                 if (split.length < 2) {
                     // Save previous card
-                    Triplet<String, String, String> drmInfo = findDrmInfo(lookupDevice);
+                    Triplet<String, String, String> drmInfo = drmLookup.apply(lookupDevice);
                     cardList.add(
-                            new LinuxGraphicsCard(name, deviceId, vendor,
-                                    versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList),
-                                    lookupDevice != null ? queryLspciMemorySize(lookupDevice) : 0L, drmInfo.getLeft(),
-                                    drmInfo.getMiddle(), drmInfo.getRight()));
+                            factory.apply(
+                                    new Attrs(name, deviceId, vendor,
+                                            versionInfoList.isEmpty() ? Normal.UNKNOWN
+                                                    : String.join(", ", versionInfoList),
+                                            lookupDevice != null ? vramLookup.apply(lookupDevice) : 0L,
+                                            drmInfo.getLeft(), drmInfo.getMiddle(), drmInfo.getRight())));
                     versionInfoList.clear();
                     found = false;
                 } else {
@@ -163,7 +322,7 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
                     } else if (prefix.equals("Vendor")) {
                         Pair<String, String> pair = Parsing.parseLspciMachineReadable(split[1].trim());
                         if (pair != null) {
-                            vendor = pair.getLeft() + " (0x" + pair.getLeft() + ")";
+                            vendor = pair.getLeft() + " (0x" + pair.getRight() + ")";
                         } else {
                             vendor = split[1].trim();
                         }
@@ -175,12 +334,13 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
         }
         // If we haven't yet written the last card do so now
         if (found) {
-            Triplet<String, String, String> drmInfo = findDrmInfo(lookupDevice);
+            Triplet<String, String, String> drmInfo = drmLookup.apply(lookupDevice);
             cardList.add(
-                    new LinuxGraphicsCard(name, deviceId, vendor,
-                            versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList),
-                            lookupDevice != null ? queryLspciMemorySize(lookupDevice) : 0L, drmInfo.getLeft(),
-                            drmInfo.getMiddle(), drmInfo.getRight()));
+                    factory.apply(
+                            new Attrs(name, deviceId, vendor,
+                                    versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList),
+                                    lookupDevice != null ? vramLookup.apply(lookupDevice) : 0L, drmInfo.getLeft(),
+                                    drmInfo.getMiddle(), drmInfo.getRight())));
         }
         return cardList;
     }
@@ -192,10 +352,17 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
      * @return the query lspci memory size result
      */
     private static long queryLspciMemorySize(String lookupDevice) {
+        return queryLspciMemorySize(Executor.runNative("lspci -v -s " + lookupDevice));
+    }
+
+    /**
+     * Parse prefetchable memory size from lspci verbose output.
+     *
+     * @param lspciMem output of {@code lspci -v -s <device>}
+     * @return total prefetchable memory size in bytes
+     */
+    static long queryLspciMemorySize(List<String> lspciMem) {
         long vram = 0L;
-        // Lookup memory
-        // Human readable version, includes memory
-        List<String> lspciMem = Executor.runNative("lspci -v -s " + lookupDevice);
         for (String mem : lspciMem) {
             if (mem.contains(" prefetchable")) {
                 vram += Parsing.parseLspciMemorySize(mem);

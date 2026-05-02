@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.health.linux.driver;
 
+import java.util.List;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -39,8 +41,18 @@ public final class Lshal {
      */
     public static String querySerialNumber() {
         // if lshal command available (HAL deprecated in newer linuxes)
+        return querySerialNumber(Executor.runNative("lshal"));
+    }
+
+    /**
+     * Parse the serial number from lshal output.
+     *
+     * @param lines output of {@code lshal}
+     * @return The serial number if available, null otherwise
+     */
+    static String querySerialNumber(List<String> lines) {
         String marker = "system.hardware.serial =";
-        for (String checkLine : Executor.runNative("lshal")) {
+        for (String checkLine : lines) {
             if (checkLine.contains(marker)) {
                 return Parsing.getSingleQuoteStringValue(checkLine);
             }
@@ -55,8 +67,18 @@ public final class Lshal {
      */
     public static String queryUUID() {
         // if lshal command available (HAL deprecated in newer linuxes)
+        return queryUUID(Executor.runNative("lshal"));
+    }
+
+    /**
+     * Parse the UUID from lshal output.
+     *
+     * @param lines output of {@code lshal}
+     * @return The UUID if available, null otherwise
+     */
+    static String queryUUID(List<String> lines) {
         String marker = "system.hardware.uuid =";
-        for (String checkLine : Executor.runNative("lshal")) {
+        for (String checkLine : lines) {
             if (checkLine.contains(marker)) {
                 return Parsing.getSingleQuoteStringValue(checkLine);
             }

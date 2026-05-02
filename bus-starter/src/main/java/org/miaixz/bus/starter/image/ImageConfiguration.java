@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.starter.image;
 
+import org.miaixz.bus.spring.GeniusBuilder;
 import jakarta.annotation.Resource;
 import org.miaixz.bus.core.xyz.ResourceKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -44,6 +45,7 @@ import org.springframework.context.annotation.Bean;
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { ImageProperties.class })
+@ConditionalOnProperty(prefix = GeniusBuilder.IMAGE, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class ImageConfiguration {
 
     /**

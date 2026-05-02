@@ -19,16 +19,20 @@
 */
 package org.miaixz.bus.starter.storage;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.miaixz.bus.spring.GeniusBuilder;
 import jakarta.annotation.Resource;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.Factory;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.storage.cache.StorageCache;
+import org.miaixz.bus.starter.cache.CacheFactoryProvider;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 
 /**
  * Auto-configuration class for storage services.
@@ -62,6 +66,8 @@ import org.springframework.context.annotation.Bean;
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { StorageProperties.class })
+@ConditionalOnProperty(prefix = GeniusBuilder.STORAGE, name = "enabled", havingValue = "true", matchIfMissing = true)
+@Import(CacheFactoryProvider.class)
 public class StorageConfiguration {
 
     /**

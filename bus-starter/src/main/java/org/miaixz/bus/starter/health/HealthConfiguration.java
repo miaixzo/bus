@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.starter.health;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.miaixz.bus.spring.GeniusBuilder;
 import jakarta.annotation.Resource;
 import org.miaixz.bus.health.Provider;
 import org.miaixz.bus.logger.Logger;
@@ -48,6 +50,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { HealthProperties.class })
+@ConditionalOnProperty(prefix = GeniusBuilder.HEALTH, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class HealthConfiguration {
 
     @Resource

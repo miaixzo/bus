@@ -46,7 +46,16 @@ public final class CpuInfo {
      * @return The manufacturer if known, null otherwise
      */
     public static String queryCpuManufacturer() {
-        List<String> cpuInfo = Builder.readFile(ProcPath.CPUINFO);
+        return queryCpuManufacturer(Builder.readFile(ProcPath.CPUINFO));
+    }
+
+    /**
+     * Parse the CPU manufacturer from {@code /proc/cpuinfo} lines.
+     *
+     * @param cpuInfo lines from {@code /proc/cpuinfo}
+     * @return The manufacturer if known, null otherwise
+     */
+    static String queryCpuManufacturer(List<String> cpuInfo) {
         for (String line : cpuInfo) {
             if (line.startsWith("CPU implementer")) {
                 int part = Parsing.parseLastInt(line, 0);
@@ -98,12 +107,21 @@ public final class CpuInfo {
      * @return A tuple of strings for manufacturer, model, version, and serial number. Each one may be null if unknown.
      */
     public static Tuple queryBoardInfo() {
+        return queryBoardInfo(Builder.readFile(ProcPath.CPUINFO));
+    }
+
+    /**
+     * Parse board info from {@code /proc/cpuinfo} lines.
+     *
+     * @param cpuInfo lines from {@code /proc/cpuinfo}
+     * @return A tuple of strings for manufacturer, model, version, and serial number.
+     */
+    static Tuple queryBoardInfo(List<String> cpuInfo) {
         String pcManufacturer = null;
         String pcModel = null;
         String pcVersion = null;
         String pcSerialNumber = null;
 
-        List<String> cpuInfo = Builder.readFile(ProcPath.CPUINFO);
         for (String line : cpuInfo) {
             String[] splitLine = Pattern.SPACES_COLON_SPACE_PATTERN.split(line);
             if (splitLine.length < 2) {
@@ -169,7 +187,17 @@ public final class CpuInfo {
      * @return the query feature flags result
      */
     public static List<String> queryFeatureFlags() {
-        return Builder.readFile(ProcPath.CPUINFO).stream().filter(f -> {
+        return queryFeatureFlags(Builder.readFile(ProcPath.CPUINFO));
+    }
+
+    /**
+     * Parse feature flag lines from {@code /proc/cpuinfo}.
+     *
+     * @param cpuInfo lines from {@code /proc/cpuinfo}
+     * @return deduplicated lines starting with "flags" or "features"
+     */
+    static List<String> queryFeatureFlags(List<String> cpuInfo) {
+        return cpuInfo.stream().filter(f -> {
             String s = f.toLowerCase(Locale.ROOT);
             return s.startsWith("flags") || s.startsWith("features");
         }).distinct().collect(Collectors.toList());

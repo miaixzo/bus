@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.starter.dubbo;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.miaixz.bus.spring.GeniusBuilder;
 import jakarta.annotation.Resource;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
@@ -33,6 +35,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { DubboProperties.class })
+@ConditionalOnProperty(prefix = GeniusBuilder.DUBBO, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class DubboConfiguration {
 
     /**

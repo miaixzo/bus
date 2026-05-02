@@ -19,17 +19,22 @@
 */
 package org.miaixz.bus.starter.pay;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.miaixz.bus.spring.GeniusBuilder;
 import jakarta.annotation.Resource;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.Factory;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pay.Complex;
 import org.miaixz.bus.pay.cache.PayCache;
+import org.miaixz.bus.starter.cache.CacheFactoryProvider;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 
 /**
  * Auto-configuration for the integrated payment service. This class sets up the necessary beans for the payment
@@ -39,6 +44,8 @@ import org.springframework.context.annotation.Bean;
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { PayProperties.class })
+@ConditionalOnProperty(prefix = GeniusBuilder.PAY, name = "enabled", havingValue = "true", matchIfMissing = true)
+@Import(CacheFactoryProvider.class)
 public class PayConfiguration {
 
     /**
@@ -55,6 +62,7 @@ public class PayConfiguration {
      * @return A new instance of {@link PayService}.
      */
     @Bean
+    @ConditionalOnBean(Complex.class)
     @ConditionalOnMissingBean(PayService.class)
     public PayService payProviderFactory(Complex complex, @Qualifier("payCache") CacheX<String, Object> cache) {
         return new PayService(this.properties, complex, cache);
@@ -78,6 +86,7 @@ public class PayConfiguration {
      *
      */
     @Bean("payCache")
+    @ConditionalOnBean(Complex.class)
     @ConditionalOnMissingBean(name = "payCache")
     public CacheX<String, Object> payCache(
             Factory factory,

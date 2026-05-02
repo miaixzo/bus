@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.starter.validate;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.context.annotation.Import;
 
 /**
@@ -31,6 +33,7 @@ import org.springframework.context.annotation.Import;
  * @author Kimi Liu
  * @since Java 21+
  */
+@ConditionalOnProperty(prefix = GeniusBuilder.VALIDATE, name = "enabled", havingValue = "true", matchIfMissing = true)
 @Import(AspectjValidateProxy.class)
 public class ValidateConfiguration {
 

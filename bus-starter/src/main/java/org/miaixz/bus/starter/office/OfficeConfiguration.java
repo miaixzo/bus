@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.starter.office;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.miaixz.bus.spring.GeniusBuilder;
 import jakarta.annotation.Resource;
 import org.miaixz.bus.office.builtin.LocalOfficeProvider;
 import org.miaixz.bus.office.builtin.OnlineOfficeProvider;
@@ -36,6 +38,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  */
 @ConditionalOnClass({ LocalOfficeProvider.class, OnlineOfficeProvider.class })
 @EnableConfigurationProperties(value = { OfficeProperties.class })
+@ConditionalOnProperty(prefix = GeniusBuilder.OFFICE, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class OfficeConfiguration {
 
     /**

@@ -24,7 +24,7 @@ import java.util.List;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.*;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer;
-import org.miaixz.bus.health.unix.hardware.UnixPrinter;
+import org.miaixz.bus.health.unix.hardware.CupsPrinter;
 
 /**
  * <p>
@@ -141,6 +141,6 @@ public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstracti
      */
     @Override
     public List<Printer> getPrinters() {
-        return UnixPrinter.getPrinters();
+        return CupsPrinter.getPrinters();
     }
 }

@@ -20,7 +20,6 @@
 package org.miaixz.bus.starter.annotation;
 
 import org.miaixz.bus.starter.metrics.MetricsConfiguration;
-import org.miaixz.bus.starter.metrics.MetricsEndpoint;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -35,7 +34,7 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Import({ MetricsConfiguration.class, MetricsEndpoint.class })
+@Import({ MetricsConfiguration.class })
 public @interface EnableMetrics {
 
 }

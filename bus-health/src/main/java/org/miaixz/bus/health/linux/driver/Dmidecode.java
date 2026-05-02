@@ -19,6 +19,9 @@
 */
 package org.miaixz.bus.health.linux.driver;
 
+import java.util.List;
+import java.util.Locale;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -77,8 +80,18 @@ public final class Dmidecode {
      * @return The serial number if available, null otherwise
      */
     public static String querySerialNumber() {
+        return querySerialNumber(Executor.runPrivilegedNative("dmidecode -t system"));
+    }
+
+    /**
+     * Parse the serial number from dmidecode output.
+     *
+     * @param lines output of {@code dmidecode -t system}
+     * @return The serial number if available, null otherwise
+     */
+    static String querySerialNumber(List<String> lines) {
         String marker = "Serial Number:";
-        for (String checkLine : Executor.runPrivilegedNative("dmidecode -t system")) {
+        for (String checkLine : lines) {
             if (checkLine.contains(marker)) {
                 return checkLine.split(marker)[1].trim();
             }
@@ -92,8 +105,18 @@ public final class Dmidecode {
      * @return The UUID if available, null otherwise
      */
     public static String queryUUID() {
+        return queryUUID(Executor.runPrivilegedNative("dmidecode -t system"));
+    }
+
+    /**
+     * Parse the UUID from dmidecode output.
+     *
+     * @param lines output of {@code dmidecode -t system}
+     * @return The UUID if available, null otherwise
+     */
+    static String queryUUID(List<String> lines) {
         String marker = "UUID:";
-        for (String checkLine : Executor.runPrivilegedNative("dmidecode -t system")) {
+        for (String checkLine : lines) {
             if (checkLine.contains(marker)) {
                 return checkLine.split(marker)[1].trim();
             }
@@ -107,21 +130,32 @@ public final class Dmidecode {
      * @return The a pair containing the name and revision if available, null values in the pair otherwise
      */
     public static Pair<String, String> queryBiosNameRev() {
+        return queryBiosNameRev(Executor.runPrivilegedNative("dmidecode -t bios"));
+    }
+
+    /**
+     * Parse the BIOS name and revision from dmidecode output.
+     *
+     * @param lines output of {@code dmidecode -t bios}
+     * @return The a pair containing the name and revision if available, null values in the pair otherwise
+     */
+    static Pair<String, String> queryBiosNameRev(List<String> lines) {
         String biosName = null;
         String revision = null;
 
         final String biosMarker = "SMBIOS";
-        final String revMarker = "Bios Revision:";
+        final String revMarker = "bios revision:";
 
-        for (final String checkLine : Executor.runPrivilegedNative("dmidecode -t bios")) {
+        for (final String checkLine : lines) {
             if (checkLine.contains(biosMarker)) {
                 String[] biosArr = Pattern.SPACES_PATTERN.split(checkLine);
                 if (biosArr.length >= 2) {
                     biosName = biosArr[0] + Symbol.SPACE + biosArr[1];
                 }
             }
-            if (checkLine.contains(revMarker)) {
-                revision = checkLine.split(revMarker)[1].trim();
+            int revIdx = checkLine.toLowerCase(Locale.ROOT).indexOf(revMarker);
+            if (revIdx >= 0) {
+                revision = checkLine.substring(revIdx + revMarker.length()).trim();
                 // SMBIOS should be first line so if we're here we are done iterating
                 break;
             }

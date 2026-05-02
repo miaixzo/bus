@@ -108,7 +108,7 @@ public final class Who {
      * @param s       the s
      * @return the match linux result
      */
-    private static boolean matchLinux(List<OSSession> whoList, String s) {
+    static boolean matchLinux(List<OSSession> whoList, String s) {
         Matcher m = WHO_FORMAT_LINUX.matcher(s);
         if (m.matches()) {
             try {

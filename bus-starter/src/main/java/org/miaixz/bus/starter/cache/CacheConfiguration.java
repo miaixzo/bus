@@ -29,6 +29,7 @@ import org.miaixz.bus.cache.collect.*;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.metrics.builtin.CacheMetricsAdapter;
+import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.starter.jdbc.JdbcProperties;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -36,6 +37,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 
 import jakarta.annotation.Resource;
@@ -63,6 +65,8 @@ import org.miaixz.bus.logger.Logger;
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { CacheProperties.class })
+@ConditionalOnProperty(prefix = GeniusBuilder.CACHE, name = "enabled", havingValue = "true", matchIfMissing = true)
+@Import(CacheFactoryProvider.class)
 public class CacheConfiguration {
 
     /**
@@ -72,17 +76,6 @@ public class CacheConfiguration {
     CacheProperties properties;
 
     /**
-     * Exposes the shared cache factory used by both cache and Cortex auto-configuration.
-     *
-     * @return cache factory
-     */
-    @Bean
-    @ConditionalOnMissingBean(Factory.class)
-    public Factory cacheFactory() {
-        return new Factory();
-    }
-
-    /**
      * Creates the default cache backend from {@code bus.cache.*}.
      *
      * @param factory shared cache factory
@@ -90,7 +83,7 @@ public class CacheConfiguration {
      */
     @Bean("defaultCache")
     @Primary
-    @ConditionalOnProperty(prefix = "bus.cache", name = "type")
+    @ConditionalOnProperty(prefix = GeniusBuilder.CACHE, name = "type")
     @ConditionalOnMissingBean(name = "defaultCache")
     public CacheX<String, Object> defaultCache(Factory factory) {
         return factory.initialize(this.properties);

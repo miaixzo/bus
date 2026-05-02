@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.starter.socket;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.miaixz.bus.spring.GeniusBuilder;
 import jakarta.annotation.Resource;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -34,6 +36,7 @@ import org.springframework.context.annotation.Bean;
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { SocketProperties.class })
+@ConditionalOnProperty(prefix = GeniusBuilder.SOCKET, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class SocketConfiguration {
 
     /**

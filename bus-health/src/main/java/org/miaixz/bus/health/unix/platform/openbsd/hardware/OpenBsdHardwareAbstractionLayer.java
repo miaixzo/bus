@@ -26,7 +26,7 @@ import org.miaixz.bus.health.builtin.hardware.*;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer;
 import org.miaixz.bus.health.unix.hardware.BsdNetworkIF;
 import org.miaixz.bus.health.unix.hardware.UnixDisplay;
-import org.miaixz.bus.health.unix.hardware.UnixPrinter;
+import org.miaixz.bus.health.unix.hardware.CupsPrinter;
 
 /**
  * OpenBsdHardwareAbstractionLayer class.
@@ -156,7 +156,7 @@ public final class OpenBsdHardwareAbstractionLayer extends AbstractHardwareAbstr
      */
     @Override
     public List<Printer> getPrinters() {
-        return UnixPrinter.getPrinters();
+        return CupsPrinter.getPrinters();
     }
 
 }

@@ -1,0 +1,155 @@
+name: Maven Central
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish. Leave empty to read VERSION.'
+        required: false
+        default: ''
+        type: string
+  push:
+    tags:
+      - '*.*.*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build Release Modules
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.release.outputs.version }}
+      is-prerelease: ${{ steps.release.outputs.is-prerelease }}
+      modules: ${{ steps.build.outputs.modules }}
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve Release Version
+        id: release
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+          INPUT_VERSION: ${{ inputs.version || '' }}
+        run: |
+          set -euo pipefail
+
+          if [ "$EVENT_NAME" = "push" ] && [ "$REF_TYPE" = "tag" ]; then
+            VERSION="${REF_NAME#v}"
+          else
+            VERSION="$INPUT_VERSION"
+          fi
+
+          if [ ! -f VERSION ]; then
+            echo "::error file=VERSION::VERSION file is required"
+            exit 1
+          fi
+
+          VERSION_FILE="$(tr -d '[:space:]' < VERSION)"
+          if [ -z "$VERSION_FILE" ]; then
+            echo "::error file=VERSION::VERSION file is empty"
+            exit 1
+          fi
+
+          if [ -z "$VERSION" ]; then
+            VERSION="$VERSION_FILE"
+          fi
+
+          if [ "$VERSION_FILE" != "$VERSION" ]; then
+            echo "::error file=VERSION::VERSION '$VERSION_FILE' does not match release version '$VERSION'"
+            exit 1
+          fi
+
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z]+)*$ ]]; then
+            echo "::error::Invalid release version: $VERSION"
+            exit 1
+          fi
+
+          if [[ "$VERSION" == *SNAPSHOT* ]]; then
+            echo "::error::SNAPSHOT versions cannot be published: $VERSION"
+            exit 1
+          fi
+
+          if [[ "$VERSION" == *-* ]]; then
+            IS_PRERELEASE=true
+          else
+            IS_PRERELEASE=false
+          fi
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "is-prerelease=$IS_PRERELEASE" >> "$GITHUB_OUTPUT"
+
+          echo "Version: $VERSION"
+          echo "Pre-release: $IS_PRERELEASE"
+
+      - name: Set Up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Build Project
+        id: build
+        uses: ./.github/actions/build-project
+        with:
+          version: ${{ steps.release.outputs.version }}
+
+  publish:
+    name: Publish to Maven Central
+    needs: build
+    if: ${{ github.repository == '818000/bus' }}
+    runs-on: ubuntu-latest
+    environment:
+      name: release
+      url: https://central.sonatype.com/publishing/deployments
+    env:
+      MAVEN_CENTRAL_TOKEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_TOKEN_USERNAME }}
+      MAVEN_CENTRAL_TOKEN_PASSWORD: ${{ secrets.MAVEN_CENTRAL_TOKEN_PASSWORD }}
+      MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v4
+
+      - name: Set Up Java and Maven Central Credentials
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          server-id: central
+          server-username: MAVEN_CENTRAL_TOKEN_USERNAME
+          server-password: MAVEN_CENTRAL_TOKEN_PASSWORD
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Publish Project
+        uses: ./.github/actions/maven-central
+        with:
+          modules: ${{ needs.build.outputs.modules }}
+        env:
+          MAVEN_CENTRAL_TOKEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_TOKEN_USERNAME }}
+          MAVEN_CENTRAL_TOKEN_PASSWORD: ${{ secrets.MAVEN_CENTRAL_TOKEN_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+
+  github-release:
+    name: Create GitHub Release
+    needs: [build, publish]
+    if: ${{ github.ref_type == 'tag' && needs.publish.result == 'success' }}
+    permissions:
+      contents: write
+    uses: ./.github/workflows/create-release.yml
+    with:
+      tag: ${{ github.ref_name }}
+      version: ${{ needs.build.outputs.version }}
+      prerelease: ${{ needs.build.outputs.is-prerelease == 'true' }}
+    secrets: inherit

@@ -19,36 +19,52 @@
 */
 package org.miaixz.bus.starter.i18n;
 
+import java.text.MessageFormat;
+import java.util.Locale;
+
+import org.miaixz.bus.core.lang.I18n;
+import org.miaixz.bus.core.lang.Symbol;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.stereotype.Component;
+import org.springframework.context.support.AbstractMessageSource;
 
 /**
- * A helper component for retrieving internationalized (i18n) messages from property files. This class simplifies access
- * to the Spring {@link MessageSource} by using the current locale from {@link LocaleContextHolder}.
+ * Spring {@link MessageSource} backed by the core {@link I18n} resolver, with convenience accessors for application
+ * code.
+ * <p>
+ * This class deliberately combines the Spring integration point and the application helper API into one bean. Spring
+ * MVC, validation, and regular application code therefore resolve messages through the same path:
+ * {@code MessageSource -> I18nMessage -> org.miaixz.bus.core.lang.I18n}.
+ * </p>
+ * <p>
+ * The core module remains Spring-free; this starter-side adapter is the only place that bridges Spring's
+ * {@link MessageSource} contract to the core {@link I18n} enum and its {@code ResourceBundle} lookup.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-@Component
-public class I18nMessage {
-
-    private final MessageSource messageSource;
+public class I18nMessage extends AbstractMessageSource {
 
     /**
-     * Constructs a new {@code I18nMessage} with the given {@link MessageSource}.
-     *
-     * @param messageSource The Spring message source to be used for resolving messages.
+     * Starter-side configuration used when this instance owns message resolution.
      */
-    public I18nMessage(MessageSource messageSource) {
-        this.messageSource = messageSource;
+    private final I18nProperties properties;
+
+    /**
+     * Creates an i18n message source backed by core {@link I18n}.
+     *
+     * @param properties i18n configuration properties
+     */
+    public I18nMessage(I18nProperties properties) {
+        this.properties = properties;
     }
 
     /**
      * Retrieves a message for the given code, using the current locale.
      *
-     * @param code The message code, corresponding to a key in the message properties file.
-     * @return The resolved message as a {@code String}.
+     * @param code the message code
+     * @return the resolved message
      */
     public String getMessage(String code) {
         return getMessage(code, null);
@@ -57,25 +73,82 @@ public class I18nMessage {
     /**
      * Retrieves a message for the given code and arguments, using the current locale.
      *
-     * @param code The message code, corresponding to a key in the message properties file.
-     * @param args An array of arguments to be filled into the message template.
-     * @return The resolved and formatted message as a {@code String}.
+     * @param code the message code
+     * @param args the message arguments
+     * @return the resolved message
      */
     public String getMessage(String code, Object[] args) {
-        return getMessage(code, args, null);
+        return getMessage(code, args, (String) null);
     }
 
     /**
      * Retrieves a message for the given code and arguments, with a default message, using the current locale.
      *
-     * @param code           The message code, corresponding to a key in the message properties file.
-     * @param args           An array of arguments to be filled into the message template.
-     * @param defaultMessage The default message to return if the specified code is not found.
-     * @return The resolved and formatted message, or the default message if the code is not found.
+     * @param code           the message code
+     * @param args           the message arguments
+     * @param defaultMessage the default message
+     * @return the resolved message
      */
     public String getMessage(String code, Object[] args, String defaultMessage) {
-        // Use a convenient method that does not rely on the request.
-        return messageSource.getMessage(code, args, defaultMessage, LocaleContextHolder.getLocale());
+        return getMessage(code, args, defaultMessage, LocaleContextHolder.getLocale());
+    }
+
+    @Override
+    protected MessageFormat resolveCode(String code, Locale locale) {
+        String message = resolveMessage(code, locale);
+        return message == null ? null : new MessageFormat(message, locale == null ? Locale.getDefault() : locale);
+    }
+
+    /**
+     * Resolves a raw message pattern. Spring's {@link AbstractMessageSource} performs argument formatting after this
+     * method returns a {@link MessageFormat}.
+     */
+    private String resolveMessage(String code, Locale locale) {
+        if (code == null) {
+            return null;
+        }
+        I18n i18n = toI18n(locale);
+        for (String baseName : baseNames()) {
+            if (baseName == null || baseName.isBlank()) {
+                continue;
+            }
+            String candidate = I18n.message(i18n, baseName, code);
+            if (!code.equals(candidate)) {
+                return candidate;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Falls back to the conventional {@code messages} bundle so {@code messages*.properties} works without extra
+     * configuration.
+     */
+    private String[] baseNames() {
+        String[] baseNames = this.properties.getBaseNames();
+        return baseNames == null || baseNames.length == 0 ? new String[] { "messages" } : baseNames;
+    }
+
+    /**
+     * Converts Spring/JDK {@link Locale} values to the closest core {@link I18n} enum entry.
+     */
+    private I18n toI18n(Locale locale) {
+        if (locale == null) {
+            return I18n.AUTO_DETECT;
+        }
+        String localeName = locale.toString();
+        String languageTag = locale.toLanguageTag().replace(Symbol.C_MINUS, Symbol.C_UNDERLINE);
+        for (I18n i18n : I18n.values()) {
+            if (i18n.lang().equalsIgnoreCase(localeName) || i18n.lang().equalsIgnoreCase(languageTag)) {
+                return i18n;
+            }
+        }
+        for (I18n i18n : I18n.values()) {
+            if (i18n.lang().equalsIgnoreCase(locale.getLanguage())) {
+                return i18n;
+            }
+        }
+        return I18n.AUTO_DETECT;
     }
 
 }

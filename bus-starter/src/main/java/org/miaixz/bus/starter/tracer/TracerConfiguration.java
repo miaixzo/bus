@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.starter.tracer;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.miaixz.bus.spring.GeniusBuilder;
 import jakarta.annotation.Resource;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
@@ -32,6 +34,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { TracerProperties.class })
+@ConditionalOnProperty(prefix = GeniusBuilder.TRACER, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class TracerConfiguration {
 
     /**

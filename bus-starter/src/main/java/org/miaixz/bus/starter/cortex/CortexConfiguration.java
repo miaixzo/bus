@@ -68,6 +68,7 @@ import org.miaixz.bus.cortex.registry.prompt.PromptRegistryStore;
 import org.miaixz.bus.cortex.version.VersionRegistry;
 import org.miaixz.bus.cortex.version.VersionStore;
 import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.cache.CacheFactoryProvider;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -77,6 +78,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 
 import jakarta.annotation.Resource;
@@ -94,7 +96,8 @@ import jakarta.annotation.Resource;
  * @since Java 21+
  */
 @EnableConfigurationProperties(CortexProperties.class)
-@ConditionalOnProperty(prefix = "bus.cortex", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = GeniusBuilder.CORTEX, name = "enabled", havingValue = "true", matchIfMissing = true)
+@Import(CacheFactoryProvider.class)
 public class CortexConfiguration {
 
     /**
@@ -108,17 +111,6 @@ public class CortexConfiguration {
      */
     public CortexConfiguration() {
 
-    }
-
-    /**
-     * Exposes the shared cache factory when the host application does not provide one.
-     *
-     * @return cache factory
-     */
-    @Bean
-    @ConditionalOnMissingBean(Factory.class)
-    public Factory factory() {
-        return new Factory();
     }
 
     /**

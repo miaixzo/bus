@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.starter.vortex;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.miaixz.bus.spring.GeniusBuilder;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +49,7 @@ import org.miaixz.bus.vortex.routing.ws.WsExecutor;
 import org.miaixz.bus.vortex.strategy.*;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -97,6 +100,7 @@ import reactor.netty.http.server.HttpServer;
  * @see org.miaixz.bus.vortex.Strategy
  */
 @EnableConfigurationProperties(value = { VortexProperties.class })
+@ConditionalOnProperty(prefix = GeniusBuilder.VORTEX, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class VortexConfiguration {
 
     /**
@@ -369,6 +373,7 @@ public class VortexConfiguration {
      * @return A new instance of QualifierStrategy.
      */
     @Bean
+    @ConditionalOnBean(AuthorizeProvider.class)
     public QualifierStrategy qualiferStrategy(AuthorizeProvider authorizeProvider, AssetsRegistry assetsRegistry) {
         return new QualifierStrategy(authorizeProvider, assetsRegistry);
     }
@@ -376,12 +381,12 @@ public class VortexConfiguration {
     /**
      * Provides the LimitStrategy bean. This strategy applies rate limiting to requests.
      *
-     * @param limiterRegistry The LimiterRegistry for managing rate limiter configurations.
+     * @param limiterRegistryProvider The LimiterRegistry provider for managing rate limiter configurations.
      * @return A new instance of LimitStrategy.
      */
     @Bean
-    public LimiterStrategy limitStrategy(LimiterRegistry limiterRegistry) {
-        return new LimiterStrategy(limiterRegistry);
+    public LimiterStrategy limitStrategy(ObjectProvider<LimiterRegistry> limiterRegistryProvider) {
+        return new LimiterStrategy(limiterRegistryProvider.getIfAvailable(LimiterRegistry::new));
     }
 
     /**

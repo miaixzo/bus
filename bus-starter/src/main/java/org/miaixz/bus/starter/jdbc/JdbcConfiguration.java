@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.starter.jdbc;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.miaixz.bus.spring.GeniusBuilder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +65,7 @@ import jakarta.annotation.Resource;
  */
 @ConditionalOnClass(value = { HikariDataSource.class })
 @EnableConfigurationProperties(value = { JdbcProperties.class })
+@ConditionalOnProperty(prefix = GeniusBuilder.DATASOURCE, name = "enabled", havingValue = "true", matchIfMissing = true)
 @AutoConfigureBefore(value = { DataSourceAutoConfiguration.class })
 @Import(AspectjJdbcProxy.class)
 public class JdbcConfiguration {

@@ -1,20 +1,49 @@
-name: Sync to Maven Central
-description: 'Syncs a release to Maven Central and waits for it to be available for use'
+name: Maven Central
+description: 'Publishes Bus modules to Maven Central'
+
 inputs:
-  jfrog-cli-config-token:
-    description: 'Config token for the JFrog CLI'
+  modules:
+    description: 'Whitespace-separated module list in deployment order.'
     required: true
-  ossrh-s01-staging-profile:
-    description: 'Staging profile to use when syncing to Central'
-    required: true
-  ossrh-s01-token-password:
-    description: 'Password for authentication with s01.oss.sonatype.org'
-    required: true
-  ossrh-s01-token-username:
-    description: 'Username for authentication with s01.oss.sonatype.org'
-    required: true
-  spring-boot-version:
-    description: 'Version of Spring Boot that is being synced to Central'
-    required: true
+  maven-args:
+    description: 'Additional Maven arguments.'
+    required: false
+    default: '-B -ntp -DskipTests -Djava.version=21 -Dmaven.compiler.release=21'
+  goals:
+    description: 'Maven goals to execute for every module.'
+    required: false
+    default: 'clean deploy'
+
 runs:
   using: composite
+  steps:
+    - name: Verify Maven Central Credentials
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        : "${MAVEN_CENTRAL_TOKEN_USERNAME:?Missing MAVEN_CENTRAL_TOKEN_USERNAME secret}"
+        : "${MAVEN_CENTRAL_TOKEN_PASSWORD:?Missing MAVEN_CENTRAL_TOKEN_PASSWORD secret}"
+        : "${MAVEN_GPG_PASSPHRASE:?Missing MAVEN_GPG_PASSPHRASE secret}"
+
+        if ! command -v gpg >/dev/null 2>&1; then
+          echo "::error::gpg command is not available"
+          exit 1
+        fi
+
+        gpg --batch --list-secret-keys --keyid-format LONG
+
+    - name: Deploy Modules
+      shell: bash
+      env:
+        MODULES: ${{ inputs.modules }}
+        MAVEN_ARGS: ${{ inputs.maven-args }}
+        GOALS: ${{ inputs.goals }}
+      run: |
+        set -euo pipefail
+
+        for module in $MODULES; do
+          echo "::group::Deploy $module"
+          mvn $MAVEN_ARGS -f "$module/pom.xml" $GOALS
+          echo "::endgroup::"
+        done

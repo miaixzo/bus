@@ -256,9 +256,17 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
      * @return the map numa nodes from lscpu result
      */
     private static Map<Integer, Integer> mapNumaNodesFromLscpu() {
+        return mapNumaNodesFromLscpu(Executor.runNative("lscpu -p=cpu,node"));
+    }
+
+    /**
+     * Parse NUMA node mapping from lscpu output.
+     *
+     * @param lscpu output of {@code lscpu -p=cpu,node}
+     * @return a map of logical processor number to NUMA node
+     */
+    static Map<Integer, Integer> mapNumaNodesFromLscpu(List<String> lscpu) {
         Map<Integer, Integer> numaNodeMap = new HashMap<>();
-        // Get numa node info from lscpu
-        List<String> lscpu = Executor.runNative("lscpu -p=cpu,node");
         // Format:
         // # comment lines starting with #
         // # then comma-delimited cpu,node
@@ -283,14 +291,22 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
      * @return the map caches from lscpu result
      */
     private static Set<CentralProcessor.ProcessorCache> mapCachesFromLscpu() {
+        return mapCachesFromLscpu(Executor.runNative("lscpu -B -C --json"));
+    }
+
+    /**
+     * Parse processor cache information from lscpu JSON output.
+     *
+     * @param lscpu output of {@code lscpu -B -C --json}
+     * @return a set of processor caches
+     */
+    static Set<CentralProcessor.ProcessorCache> mapCachesFromLscpu(List<String> lscpu) {
         Set<CentralProcessor.ProcessorCache> caches = new HashSet<>();
         int level = 0;
         CentralProcessor.ProcessorCache.Type type = null;
         int associativity = 0;
         int lineSize = 0;
         long size = 0L;
-        // Get numa node info from lscpu
-        List<String> lscpu = Executor.runNative("lscpu -B -C --json");
         for (String line : lscpu) {
             String s = line.trim();
             if (s.startsWith("}")) {
@@ -362,9 +378,26 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
             }
         }
         // If we've gotten this far, dmidecode failed. Try cpuid.
-        marker = "eax=";
-        for (String checkLine : Executor.runNative("cpuid -1r")) {
-            if (checkLine.contains(marker) && checkLine.trim().startsWith("0x00000001")) {
+        String cpuidResult = parseCpuidOutput(Executor.runNative("cpuid -1r"));
+        if (cpuidResult != null) {
+            return cpuidResult;
+        }
+        // If we've gotten this far, dmidecode failed. Encode arguments
+        if (vendor.startsWith("0x")) {
+            return createMIDR(vendor, stepping, model, family) + "00000000";
+        }
+        return createProcessorID(stepping, model, family, flags, Auxv.queryAuxv().getOrDefault(Auxv.AT_HWCAP, 0L));
+    }
+
+    /**
+     * Parses the output of {@code cpuid -1r} to extract the processor ID.
+     *
+     * @param cpuidLines the output lines from {@code cpuid -1r}
+     * @return the processor ID string, or {@code null} if not found
+     */
+    static String parseCpuidOutput(List<String> cpuidLines) {
+        for (String checkLine : cpuidLines) {
+            if (checkLine.contains("eax=") && checkLine.trim().startsWith("0x00000001")) {
                 String eax = Normal.EMPTY;
                 String edx = Normal.EMPTY;
                 for (String register : Pattern.SPACES_PATTERN.split(checkLine)) {
@@ -374,14 +407,12 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                         edx = Parsing.removeMatchingString(register, "edx=0x");
                     }
                 }
-                return edx + eax;
+                if (!eax.isEmpty() && !edx.isEmpty()) {
+                    return edx + eax;
+                }
             }
         }
-        // If we've gotten this far, dmidecode failed. Encode arguments
-        if (vendor.startsWith("0x")) {
-            return createMIDR(vendor, stepping, model, family) + "00000000";
-        }
-        return createProcessorID(stepping, model, family, flags, Auxv.queryAuxv().getOrDefault(Auxv.AT_HWCAP, 0L));
+        return null;
     }
 
     /**

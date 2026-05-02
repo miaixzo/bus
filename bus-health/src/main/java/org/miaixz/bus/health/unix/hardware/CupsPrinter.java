@@ -19,13 +19,18 @@
 */
 package org.miaixz.bus.health.unix.hardware;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.function.Function;
 
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.Printer;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractPrinter;
+import org.miaixz.bus.health.unix.driver.Lpstat;
 import org.miaixz.bus.health.unix.jna.Cups;
 import org.miaixz.bus.logger.Logger;
 
@@ -39,14 +44,7 @@ import com.sun.jna.ptr.PointerByReference;
  * @since Java 21+
  */
 @Immutable
-public final class UnixPrinter extends AbstractPrinter {
-
-    // Local URI schemes for directly-attached or local printers
-    /**
-     * The LOCAL_URI_PREFIXES constant.
-     */
-    private static final String[] LOCAL_URI_PREFIXES = { "usb:", "parallel:", "serial:", "file:", "direct:", "hp:",
-            "lpd://127.", "lpd://localhost", "socket://127.", "socket://localhost" };
+public final class CupsPrinter extends AbstractPrinter {
 
     /**
      * The HAS_CUPS constant.
@@ -65,7 +63,7 @@ public final class UnixPrinter extends AbstractPrinter {
     }
 
     /**
-     * Creates a new UnixPrinter instance.
+     * Creates a new CupsPrinter instance.
      *
      * @param name         the name
      * @param driverName   the driver name
@@ -76,7 +74,7 @@ public final class UnixPrinter extends AbstractPrinter {
      * @param isLocal      the is local
      * @param portName     the port name
      */
-    UnixPrinter(String name, String driverName, String description, PrinterStatus status, String statusReason,
+    private CupsPrinter(String name, String driverName, String description, PrinterStatus status, String statusReason,
             boolean isDefault, boolean isLocal, String portName) {
         super(name, driverName, description, status, statusReason, isDefault, isLocal, portName);
     }
@@ -90,7 +88,7 @@ public final class UnixPrinter extends AbstractPrinter {
         if (HAS_CUPS) {
             return getPrintersFromLibCups();
         }
-        return getPrintersFromLpstat();
+        return getPrintersFromLpstat(CupsPrinter::new);
     }
 
     /**
@@ -135,7 +133,7 @@ public final class UnixPrinter extends AbstractPrinter {
                     boolean isLocal = (printerType & Cups.CUPS_PRINTER_REMOTE) == 0;
 
                     printers.add(
-                            new UnixPrinter(name, printerMakeModel, printerInfo, status, statusReason, isDefault,
+                            new CupsPrinter(name, printerMakeModel, printerInfo, status, statusReason, isDefault,
                                     isLocal, deviceUri));
                 }
             } finally {
@@ -191,34 +189,73 @@ public final class UnixPrinter extends AbstractPrinter {
     }
 
     /**
-     * Returns the printers from lpstat.
+     * Gets printers by parsing lpstat command output.
      *
-     * @return the get printers from lpstat result
+     * @param factory function to create concrete printer instances
+     * @return list of printers
      */
-    private static List<Printer> getPrintersFromLpstat() {
+    protected static List<Printer> getPrintersFromLpstat(PrinterFactory factory) {
+        return getPrintersFromLpstat(Executor.runNative(new String[] { "lpstat", "-p" }), factory);
+    }
+
+    /**
+     * Parse lpstat output to build a list of printers.
+     *
+     * @param lpstatLines output of {@code lpstat -p}
+     * @param factory     function to create concrete printer instances
+     * @return list of printers
+     */
+    static List<Printer> getPrintersFromLpstat(List<String> lpstatLines, PrinterFactory factory) {
+        return getPrintersFromLpstat(
+                lpstatLines,
+                Lpstat.queryDefaultPrinter(),
+                Lpstat.queryPortMap(),
+                Lpstat.queryDescriptionMap(),
+                Lpstat::queryDriver,
+                factory);
+    }
+
+    /**
+     * Parse lpstat output to build a list of printers with pre-fetched data.
+     *
+     * @param lpstatLines    output of {@code lpstat -p}
+     * @param defaultPrinter the default printer name
+     * @param portMap        map of printer name to device URI
+     * @param descriptionMap map of printer name to description
+     * @param driverLookup   function to look up driver name for a printer
+     * @param factory        function to create concrete printer instances
+     * @return list of printers
+     */
+    static List<Printer> getPrintersFromLpstat(
+            List<String> lpstatLines,
+            String defaultPrinter,
+            Map<String, String> portMap,
+            Map<String, String> descriptionMap,
+            Function<String, String> driverLookup,
+            PrinterFactory factory) {
         List<Printer> printers = new ArrayList<>();
-        String defaultPrinter = getDefaultPrinter();
-
-        // Pre-fetch printer info with aggregated commands to reduce subprocess spawning
-        Map<String, String> portMap = parsePortMap();
-        Map<String, String> descriptionMap = parseDescriptionMap();
-
-        for (String line : Executor.runNative(new String[] { "lpstat", "-p" })) {
+        for (String line : lpstatLines) {
             if (line.startsWith("printer ")) {
                 String[] parts = line.split("\\s+");
                 if (parts.length >= 3) {
                     String name = parts[1];
-                    PrinterStatus status = parseStatusFromLpstat(line);
+                    PrinterStatus status = Lpstat.parseStatus(line);
                     boolean isDefault = name.equals(defaultPrinter);
-
                     String portName = portMap.getOrDefault(name, "");
-                    boolean isLocal = isLocalUri(portName);
-                    String driverName = getDriverForPrinter(name);
+                    boolean isLocal = Lpstat.isLocalUri(portName);
+                    String driverName = driverLookup.apply(name);
                     String description = descriptionMap.getOrDefault(name, "");
-                    String statusReason = getStatusReasonFromLpstat(line);
+                    String statusReason = Lpstat.parseStatusReason(line);
 
                     printers.add(
-                            new UnixPrinter(name, driverName, description, status, statusReason, isDefault, isLocal,
+                            factory.create(
+                                    name,
+                                    driverName,
+                                    description,
+                                    status,
+                                    statusReason,
+                                    isDefault,
+                                    isLocal,
                                     portName));
                 }
             }
@@ -227,140 +264,33 @@ public final class UnixPrinter extends AbstractPrinter {
     }
 
     /**
-     * Parses the port map.
-     *
-     * @return the parse port map result
+     * Factory interface for creating concrete printer instances.
      */
-    private static Map<String, String> parsePortMap() {
-        Map<String, String> map = new HashMap<>();
-        // lpstat -v output: "device for PrinterName: uri"
-        for (String line : Executor.runNative(new String[] { "lpstat", "-v" })) {
-            if (line.contains("device for")) {
-                int forIdx = line.indexOf("device for ") + 11;
-                int colonIdx = line.indexOf(':', forIdx);
-                if (colonIdx > forIdx) {
-                    String name = line.substring(forIdx, colonIdx).trim();
-                    String uri = line.substring(colonIdx + 1).trim();
-                    map.put(name, uri);
-                }
-            }
-        }
-        return map;
-    }
+    @FunctionalInterface
+    protected interface PrinterFactory {
 
-    /**
-     * Parses the description map.
-     *
-     * @return the parse description map result
-     */
-    private static Map<String, String> parseDescriptionMap() {
-        Map<String, String> map = new HashMap<>();
-        String currentPrinter = null;
-        // lpstat -l -p output: "printer PrinterName ..." followed by "\tDescription: ..."
-        for (String line : Executor.runNative(new String[] { "lpstat", "-l", "-p" })) {
-            if (line.startsWith("printer ")) {
-                String[] parts = line.split("\\s+");
-                if (parts.length >= 2) {
-                    currentPrinter = parts[1];
-                }
-            } else if (currentPrinter != null && line.trim().startsWith("Description:")) {
-                String desc = line.substring(line.indexOf(':') + 1).trim();
-                map.put(currentPrinter, desc);
-            }
-        }
-        return map;
-    }
-
-    // Retrieves driver via lpoptions which requires a per-printer subprocess call.
-    // On systems with many printers, this may add latency.
-    /**
-     * Returns the driver for printer.
-     *
-     * @param printerName the printer name
-     * @return the get driver for printer result
-     */
-    private static String getDriverForPrinter(String printerName) {
-        // lpoptions -p requires per-printer call as there's no global option
-        for (String line : Executor.runNative(new String[] { "lpoptions", "-p", printerName })) {
-            int idx = line.indexOf("printer-make-and-model='");
-            if (idx >= 0) {
-                int start = idx + 24;
-                int end = line.indexOf('\'', start);
-                if (end > start) {
-                    return line.substring(start, end);
-                }
-            }
-        }
-        return "";
-    }
-
-    /**
-     * Returns the default printer.
-     *
-     * @return the get default printer result
-     */
-    private static String getDefaultPrinter() {
-        for (String line : Executor.runNative(new String[] { "lpstat", "-d" })) {
-            if (line.contains("default destination:")) {
-                String[] parts = line.split(":", 2);
-                if (parts.length >= 2) {
-                    return parts[1].trim();
-                }
-            }
-        }
-        return "";
-    }
-
-    /**
-     * Parses the status from lpstat.
-     *
-     * @param line the line
-     * @return the parse status from lpstat result
-     */
-    private static PrinterStatus parseStatusFromLpstat(String line) {
-        String lower = line.toLowerCase(Locale.ROOT);
-        if (lower.contains("disabled") || lower.contains("not accepting")) {
-            return PrinterStatus.OFFLINE;
-        } else if (lower.contains("printing")) {
-            return PrinterStatus.PRINTING;
-        } else if (lower.contains("idle")) {
-            return PrinterStatus.IDLE;
-        } else if (lower.contains("error") || lower.contains("fault")) {
-            return PrinterStatus.ERROR;
-        }
-        return PrinterStatus.UNKNOWN;
-    }
-
-    /**
-     * Returns the status reason from lpstat.
-     *
-     * @param line the line
-     * @return the get status reason from lpstat result
-     */
-    private static String getStatusReasonFromLpstat(String line) {
-        int dashIdx = line.indexOf(" - ");
-        if (dashIdx > 0) {
-            return line.substring(dashIdx + 3).trim();
-        }
-        return "";
-    }
-
-    /**
-     * Returns whether the local uri condition is true.
-     *
-     * @param uri the uri
-     * @return the is local uri result
-     */
-    private static boolean isLocalUri(String uri) {
-        if (uri.startsWith("/dev")) {
-            return true;
-        }
-        for (String prefix : LOCAL_URI_PREFIXES) {
-            if (uri.startsWith(prefix)) {
-                return true;
-            }
-        }
-        return false;
+        /**
+         * Create a printer instance.
+         *
+         * @param name         printer name
+         * @param driverName   driver name
+         * @param description  description
+         * @param status       status
+         * @param statusReason status reason
+         * @param isDefault    whether this is the default printer
+         * @param isLocal      whether this is a local printer
+         * @param portName     port or URI
+         * @return a new printer instance
+         */
+        Printer create(
+                String name,
+                String driverName,
+                String description,
+                PrinterStatus status,
+                String statusReason,
+                boolean isDefault,
+                boolean isLocal,
+                String portName);
     }
 
 }

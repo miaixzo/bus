@@ -226,7 +226,16 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      * @return the get parent pid from proc file result
      */
     private static int getParentPidFromProcFile(int pid) {
-        String stat = Builder.getStringFromFile(String.format(Locale.ROOT, "/proc/%d/stat", pid));
+        return getParentPidFromStat(Builder.getStringFromFile(String.format(Locale.ROOT, ProcPath.PID_STAT, pid)));
+    }
+
+    /**
+     * Parse the parent PID from a {@code /proc/[pid]/stat} line.
+     *
+     * @param stat contents of {@code /proc/[pid]/stat}
+     * @return the parent PID, or 0 if unparseable
+     */
+    static int getParentPidFromStat(String stat) {
         // A race condition may leave us with an empty string
         if (stat.isEmpty()) {
             return 0;
@@ -313,10 +322,19 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      *         otherwise
      */
     private static Triplet<String, String, String> readOsRelease() {
+        return readOsRelease(Builder.readFile("/etc/os-release"));
+    }
+
+    /**
+     * Parse {@code /etc/os-release} content.
+     *
+     * @param osRelease lines from {@code /etc/os-release}
+     * @return a triplet with the parsed family, versionID and codeName if NAME= found, null otherwise
+     */
+    static Triplet<String, String, String> readOsRelease(List<String> osRelease) {
         String family = null;
         String versionId = Normal.UNKNOWN;
         String codeName = Normal.UNKNOWN;
-        List<String> osRelease = Builder.readFile("/etc/os-release");
         // Search for NAME=
         for (String line : osRelease) {
             if (line.startsWith("VERSION=")) {
@@ -358,13 +376,24 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      *         Distributor ID: or Description: found, null otherwise
      */
     private static Triplet<String, String, String> execLsbRelease() {
+        return execLsbRelease(Executor.runNative("lsb_release -a"));
+    }
+
+    /**
+     * Parse {@code lsb_release -a} output.
+     *
+     * @param lines output of {@code lsb_release -a}
+     * @return a triplet with the parsed family, versionID and codeName if Distributor ID: or Description: found, null
+     *         otherwise
+     */
+    static Triplet<String, String, String> execLsbRelease(List<String> lines) {
         String family = null;
         String versionId = Normal.UNKNOWN;
         String codeName = Normal.UNKNOWN;
         // If description is of the format Distrib release x.x (Codename)
         // that is primary, otherwise use Distributor ID: which returns the
         // distribution concatenated, e.g., RedHat instead of Red Hat
-        for (String line : Executor.runNative("lsb_release -a")) {
+        for (String line : lines) {
             if (line.startsWith("Description:")) {
                 Logger.debug(false, "Health", LSB_RELEASE_A_LOG, line);
                 line = line.replace("Description:", Normal.EMPTY).trim();
@@ -399,12 +428,22 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      *         DISTRIB_DESCRIPTION, null otherwise
      */
     private static Triplet<String, String, String> readLsbRelease() {
+        return readLsbRelease(Builder.readFile("/etc/lsb-release"));
+    }
+
+    /**
+     * Parse {@code /etc/lsb-release} content.
+     *
+     * @param lines lines from {@code /etc/lsb-release}
+     * @return a triplet with the parsed family, versionID and codeName if DISTRIB_ID or DISTRIB_DESCRIPTION found, null
+     *         otherwise
+     */
+    static Triplet<String, String, String> readLsbRelease(List<String> lines) {
         String family = null;
         String versionId = Normal.UNKNOWN;
         String codeName = Normal.UNKNOWN;
-        List<String> osRelease = Builder.readFile("/etc/lsb-release");
         // Search for NAME=
-        for (String line : osRelease) {
+        for (String line : lines) {
             if (line.startsWith("DISTRIB_DESCRIPTION=")) {
                 Logger.debug(false, "Health", LSB_RELEASE_LOG, line);
                 line = line.replace("DISTRIB_DESCRIPTION=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY)
@@ -445,16 +484,29 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     private static Triplet<String, String, String> readDistribRelease(String filename) {
         if (new File(filename).exists()) {
             List<String> osRelease = Builder.readFile(filename);
-            // Search for Distrib release x.x (Codename)
             for (String line : osRelease) {
                 Logger.debug(false, "Health", "{}: {}", filename, line);
-                if (line.contains(RELEASE_DELIM)) {
-                    // If this parses properly we're done
-                    return parseRelease(line, RELEASE_DELIM);
-                } else if (line.contains(" VERSION ")) {
-                    // If this parses properly we're done
-                    return parseRelease(line, " VERSION ");
-                }
+            }
+            return readDistribRelease(osRelease);
+        }
+        return null;
+    }
+
+    /**
+     * Parse distrib-release file content.
+     *
+     * @param lines lines from a distrib-release file
+     * @return a triplet with the parsed family, versionID and codeName if " release " or " VERSION " found, null
+     *         otherwise
+     */
+    static Triplet<String, String, String> readDistribRelease(List<String> lines) {
+        for (String line : lines) {
+            if (line.contains(RELEASE_DELIM)) {
+                // If this parses properly we're done
+                return parseRelease(line, RELEASE_DELIM);
+            } else if (line.contains(" VERSION ")) {
+                // If this parses properly we're done
+                return parseRelease(line, " VERSION ");
             }
         }
         return null;
@@ -467,7 +519,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      * @param splitLine A regex to split on, e.g. " release "
      * @return a triplet with the parsed family, versionID and codeName
      */
-    private static Triplet<String, String, String> parseRelease(String line, String splitLine) {
+    static Triplet<String, String, String> parseRelease(String line, String splitLine) {
         String[] split = line.split(splitLine);
         String family = split[0].trim();
         String versionId = Normal.UNKNOWN;
@@ -491,7 +543,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      * @param name Stripped version of filename after removing /etc and -release
      * @return Mixed case family
      */
-    private static String filenameToFamily(String name) {
+    static String filenameToFamily(String name) {
 
         if (name.isEmpty()) {
             return "Solaris";

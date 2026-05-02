@@ -34,6 +34,7 @@ import org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherManage
 import org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherOptionsFactory;
 import org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberBinding;
 import org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberManager;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -54,6 +55,7 @@ import jakarta.annotation.Resource;
  * @since Java 21+
  */
 @EnableConfigurationProperties(TempusProperties.class)
+@ConditionalOnProperty(prefix = GeniusBuilder.TEMPUS, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class TempusConfiguration {
 
     /**
@@ -72,6 +74,7 @@ public class TempusConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnBean(WorkflowServiceStubsProvider.class)
     public WorkflowClientProvider workflowClientProvider(WorkflowServiceStubsProvider provider) {
         return new CachingWorkflowClientProvider(provider);
     }
@@ -115,6 +118,7 @@ public class TempusConfiguration {
      * @return a workflow publisher manager
      */
     @Bean
+    @ConditionalOnBean({ WorkflowClientProvider.class, WorkflowOptionsFactory.class, WorkflowPublisherBinding.class })
     @ConditionalOnMissingBean
     public Publisher publisherManager(
             WorkflowClientProvider provider,
@@ -138,6 +142,7 @@ public class TempusConfiguration {
      */
     @Bean(destroyMethod = "shutdown")
     @ConditionalOnMissingBean
+    @ConditionalOnBean({ WorkflowSubscriberBinding.class, WorkflowServiceStubsProvider.class })
     @ConditionalOnProperty(prefix = GeniusBuilder.TEMPUS, name = "enabled", havingValue = "true")
     public Subscriber subscriberManager(WorkflowSubscriberBinding binding, WorkflowServiceStubsProvider provider) {
         WorkflowSubscriberManager manager = new WorkflowSubscriberManager(binding, provider);

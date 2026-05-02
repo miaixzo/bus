@@ -25,7 +25,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.*;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer;
 import org.miaixz.bus.health.unix.hardware.UnixDisplay;
-import org.miaixz.bus.health.unix.hardware.UnixPrinter;
+import org.miaixz.bus.health.unix.hardware.CupsPrinter;
 
 /**
  * LinuxHardwareAbstractionLayer class.
@@ -165,6 +165,6 @@ public final class LinuxHardwareAbstractionLayer extends AbstractHardwareAbstrac
      */
     @Override
     public List<Printer> getPrinters() {
-        return UnixPrinter.getPrinters();
+        return CupsPrinter.getPrinters();
     }
 }
