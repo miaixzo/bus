@@ -11,17 +11,18 @@ inputs:
     required: false
     default: >-
       bus-core
-      bus-logger
-      bus-setting
-      bus-proxy
       bus-opencv
+      bus-logger
       bus-crypto
       bus-gitlab
       bus-http
       bus-mapper
       bus-office
+      bus-proxy
+      bus-setting
       bus-shade
       bus-socket
+      bus-tracer
       bus-validate
       bus-base
       bus-extra
@@ -30,7 +31,6 @@ inputs:
       bus-image
       bus-sensitive
       bus-tempus
-      bus-tracer
       bus-auth
       bus-cortex
       bus-limiter
@@ -156,7 +156,7 @@ runs:
             document = REXML::Document.new(File.read(pom))
             dependencies = []
 
-            REXML::XPath.each(document, '//dependencies/dependency/artifactId') do |element|
+            REXML::XPath.each(document, '/project/dependencies/dependency/artifactId') do |element|
               artifact_id = element.text
               next unless module_set[artifact_id]
               next if artifact_id == module_name
@@ -184,7 +184,7 @@ runs:
               document = REXML::Document.new(File.read(pom))
               dependencies = []
 
-              REXML::XPath.each(document, '//dependencies/dependency/artifactId') do |element|
+              REXML::XPath.each(document, '/project/dependencies/dependency/artifactId') do |element|
                 artifact_id = element.text
                 next unless module_set[artifact_id]
                 next if special_last.include?(artifact_id)

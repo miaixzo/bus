@@ -19,12 +19,12 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-tracer</artifactId>
-    <version>8.6.3</version>
+    <version>8.6.5</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -77,11 +77,16 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.6.3</bus.version>
+        <bus.version>8.6.5</bus.version>
         <lombok.version>1.18.44</lombok.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.miaixz</groupId>
+            <artifactId>bus-logger</artifactId>
+            <version>${bus.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -177,8 +182,8 @@
                                 <include>**/*.yml</include>
                                 <include>**/*.yaml</include>
                             </includes>
-                            <trimTrailingWhitespace />
-                            <endWithNewline />
+                            <trimTrailingWhitespace/>
+                            <endWithNewline/>
                             <indent>
                                 <spaces>true</spaces>
                                 <spacesPerTab>2</spacesPerTab>
@@ -188,8 +193,8 @@
                             <includes>
                                 <include>**/*.xml</include>
                             </includes>
-                            <trimTrailingWhitespace />
-                            <endWithNewline />
+                            <trimTrailingWhitespace/>
+                            <endWithNewline/>
                             <indent>
                                 <spaces>true</spaces>
                                 <spacesPerTab>4</spacesPerTab>
@@ -203,7 +208,7 @@
                         <eclipse>
                             <file>../.github/scripts/format.xml</file>
                         </eclipse>
-                        <removeUnusedImports />
+                        <removeUnusedImports/>
                     </java>
                     <pom>
                         <sortPom>
