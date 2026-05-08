@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.vortex.handler;
 
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.cortex.Assets;
 
 import java.time.Duration;
@@ -61,9 +62,8 @@ public class VortexHandler {
      * Thread-safe map of routing strategies, keyed by protocol name, holding the corresponding {@link Router}
      * implementations.
      * <p>
-     * Enables dynamic selection of routing strategies based on interaction mode, currently supporting HTTP, MQ, and MCP
-     * (including both remote Streamable HTTP and local STDIO transports). A thread-safe collection is used to support
-     * concurrent access.
+     * Enables dynamic selection of routing strategies based on interaction mode. MCP is routed as Streamable HTTP only.
+     * A thread-safe collection is used to support concurrent access.
      * <p>
      * Uses wildcard generics {@code Router<ServerRequest, ?>} to support different return types (ServerResponse,
      * String) across different protocol implementations.
@@ -157,12 +157,12 @@ public class VortexHandler {
                 throw new ValidateException(ErrorCode._100800);
             }
 
-            String modeKey = Args.MODE_TO_ROUTER.get(assets.getProtocol());
-            if (modeKey == null) {
+            String routerKey = Args.PROTOCOL_TO_ROUTER.get(assets.getProtocol());
+            if (routerKey == null) {
                 Logger.info(
                         true,
                         "Vortex",
-                        "Invalid mode: clientIp={}, method={}, path={}, event=INVALID_MODE, {}",
+                        "Invalid protocol: clientIp={}, method={}, path={}, event=INVALID_PROTOCOL, {}",
                         ip,
                         method,
                         path,
@@ -170,17 +170,17 @@ public class VortexHandler {
                 throw new ValidateException(ErrorCode._116005);
             }
 
-            Router<ServerRequest, ?> router = routers.get(modeKey);
+            Router<ServerRequest, ?> router = routers.get(routerKey);
             if (router == null) {
                 Logger.info(
                         true,
                         "Vortex",
-                        "No router found for mode key: clientIp={}, method={}, path={}, event=ROUTER_NOT_FOUND, {}",
+                        "No router found for protocol key: clientIp={}, method={}, path={}, event=ROUTER_NOT_FOUND, {}",
                         ip,
                         method,
                         path,
-                        modeKey);
-                throw new ValidateException(ErrorCode._100800, "No router for mode: " + modeKey);
+                        routerKey);
+                throw new ValidateException(ErrorCode._100800, "No router for protocol: " + routerKey);
             }
 
             Logger.info(
@@ -250,8 +250,7 @@ public class VortexHandler {
                             });
                 }
 
-                return router.route(request)
-                        .timeout(Duration.ofSeconds(assets.getTimeout() != null ? assets.getTimeout() : 60))
+                return router.route(request).timeout(Duration.ofSeconds(routeTimeoutSeconds(assets, request)))
                         .retryWhen(buildRetrySpec(assets, ip, method, path)).cast(ServerResponse.class)
                         .flatMap(response -> executePostHandlers(exchange, router, response, null).map(obj -> response))
                         .doOnSuccess(serverResponse -> {
@@ -335,7 +334,8 @@ public class VortexHandler {
         Mono<Void> afterCompletion = Flux.fromIterable(handlers)
                 .concatMap(handler -> handler.afterCompletion(exchange, router, null, serverResponse, error)).then();
 
-        return postHandle.then(afterCompletion).thenReturn(response);
+        return postHandle.then(afterCompletion)
+                .then(Mono.defer(() -> response == null ? Mono.empty() : Mono.just(response)));
     }
 
     /**
@@ -408,13 +408,32 @@ public class VortexHandler {
     }
 
     /**
+     * Resolves the downstream routing timeout in seconds for one request.
+     * <p>
+     * Standard routes use {@link Assets#getTimeout()} when configured and fall back to 60 seconds. MCP GET requests are
+     * commonly used for SSE or other long-lived stream reads, so their cHRRonfigured timeout is expanded to keep the
+     * stream open longer while still retaining an upper bound.
+     *
+     * @param assets  route asset containing timeout and protocol configuration
+     * @param request current server request
+     * @return timeout in seconds
+     */
+    private long routeTimeoutSeconds(Assets assets, ServerRequest request) {
+        long timeout = assets.getTimeout() != null && assets.getTimeout() > 0 ? assets.getTimeout() : 60;
+        if (assets.getProtocol() != null && assets.getProtocol() == Args.PROTOCOL_MCP
+                && HTTP.GET.equalsIgnoreCase(request.methodName())) {
+            return timeout * 10;
+        }
+        return timeout;
+    }
+
+    /**
      * Handles mock mode responses by returning the mock data from Assets.result field.
      * <p>
      * This method is invoked when policy=-1 (mock mode). It bypasses the actual downstream service call and returns the
      * pre-configured mock data directly. The mock data is formatted according to the requested format (JSON/XML/BINARY)
      * specified in the context.
      * </p>
-     *
      *
      * @param context The request context
      * @param assets  The asset configuration containing the mock data in result field

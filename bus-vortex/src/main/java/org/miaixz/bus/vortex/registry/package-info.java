@@ -25,8 +25,9 @@
  * request processing.
  * </p>
  * <ul>
- * <li>{@link org.miaixz.bus.vortex.registry.AssetsRegistry}: Manages all route asset metadata
- * ({@link org.miaixz.bus.cortex.Assets}).</li>
+ * <li>{@link org.miaixz.bus.vortex.registry.AssetsRegistry}: Manages route asset metadata
+ * ({@link org.miaixz.bus.cortex.Assets}), including route-key fallback lookup and path-prefix matching for
+ * prefix-routed assets.</li>
  * <li>{@link org.miaixz.bus.vortex.registry.LimiterRegistry}: Manages all rate limiter
  * ({@link org.miaixz.bus.vortex.magic.Limiter}) instances.</li>
  * <li>{@link org.miaixz.bus.vortex.registry.ServerRegistry}: Manages server connection information and health

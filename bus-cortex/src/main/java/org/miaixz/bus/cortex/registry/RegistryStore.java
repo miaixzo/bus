@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.cortex.registry;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -122,6 +123,17 @@ public interface RegistryStore<T extends Assets> {
      */
     default T findByMethodVersion(Type type, String namespace, String app_id, String method, String version) {
         return null;
+    }
+
+    /**
+     * Finds entries by complete registry route keys.
+     *
+     * @param type   asset type
+     * @param routes route keys
+     * @return existing entries keyed by route
+     */
+    default Map<RegistryRouteKey, T> findByRoutes(Type type, Collection<RegistryRouteKey> routes) {
+        return Map.of();
     }
 
     /**

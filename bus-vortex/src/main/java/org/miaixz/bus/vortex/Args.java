@@ -22,13 +22,15 @@ package org.miaixz.bus.vortex;
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.Specifics;
-import org.miaixz.bus.vortex.strategy.QualifierStrategy;
 import org.miaixz.bus.vortex.strategy.RequestStrategy;
-import org.miaixz.bus.vortex.strategy.VettingStrategy;
+import org.miaixz.bus.vortex.strategy.qualifier.McpQualifierStrategy;
+import org.miaixz.bus.vortex.strategy.qualifier.RestQualifierStrategy;
+import org.miaixz.bus.vortex.strategy.vetting.McpVettingStrategy;
+import org.miaixz.bus.vortex.strategy.vetting.RestVettingStrategy;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -42,8 +44,10 @@ import lombok.Setter;
  * binding from application properties (e.g., YAML or .properties files) using {@code @ConfigurationProperties}.
  *
  * @author Kimi Liu
- * @see QualifierStrategy
- * @see VettingStrategy
+ * @see RestQualifierStrategy
+ * @see McpQualifierStrategy
+ * @see RestVettingStrategy
+ * @see McpVettingStrategy
  * @see RequestStrategy
  * @since Java 21+
  */
@@ -53,22 +57,23 @@ public class Args extends Specifics {
      * Creates an empty gateway argument contract holder.
      */
     public Args() {
+
     }
 
     /**
      * The parameter name for selecting the logical namespace used to resolve registry assets.
      */
-    public static final String NAMESPACE = "namespace";
+    public static final String NAMESPACE = "x_namespace_id";
 
     /**
      * The parameter name for selecting the application-specific route scope.
      */
-    public static final String APP_ID = "app_id";
+    public static final String APP_ID = "x_app_id";
 
     /**
      * The parameter name for selecting the numeric or legacy textual registry type scope.
      */
-    public static final String TYPE = "type";
+    public static final String TYPE = "x_type";
 
     /**
      * The HTTP header name for identifying the client channel (e.g., "web", "app", "mobile").
@@ -76,9 +81,34 @@ public class Args extends Specifics {
     public static final String X_REMOTE_CHANNEL = "x_remote_channel";
 
     /**
-     * Optional header fallback for application-specific route scope.
+     * Signature timestamp header name.
      */
-    public static final String X_APP_ID = "x_app_id";
+    public static final String X_TIMESTAMP = "X-Timestamp";
+
+    /**
+     * Signature nonce header name.
+     */
+    public static final String X_NONCE = "X-Nonce";
+
+    /**
+     * Signature value header name.
+     */
+    public static final String X_SIGN = "X-Sign";
+
+    /**
+     * MCP protocol-version header name.
+     */
+    public static final String MCP_PROTOCOL_VERSION = "MCP-Protocol-Version";
+
+    /**
+     * MCP session-id header name.
+     */
+    public static final String MCP_SESSION_ID = "Mcp-Session-Id";
+
+    /**
+     * MCP last-event-id header name.
+     */
+    public static final String LAST_EVENT_ID = "Last-Event-ID";
 
     /**
      * The base URI path for standard RESTful API requests.
@@ -91,7 +121,7 @@ public class Args extends Specifics {
     public static final String MQ_PATH_PREFIX = "/router/mq";
 
     /**
-     * The base URI path for requests to the MCP (Miaixz Communication Protocol) hub.
+     * The base URI path for requests to the MCP.
      */
     public static final String MCP_PATH_PREFIX = "/router/mcp";
 
@@ -116,61 +146,56 @@ public class Args extends Specifics {
     public static final String CST_PATH_PREFIX = "/router/cst";
 
     /**
-     * The base URI path for CAS (Central Authentication Service) requests.
-     */
-    public static final String CAS_PATH_PREFIX = "/router/cas";
-
-    /**
      * A constant for a default API version, e.g., "1.0".
      */
     public static final String DEFAULT_VERSION = "1.0";
 
     /**
-     * Route mode for HTTP assets.
+     * Route protocol for HTTP assets.
      */
-    public static final int MODE_HTTP = 1;
+    public static final int PROTOCOL_HTTP = 1;
 
     /**
-     * Route mode for MQ assets.
+     * Route protocol for MQ assets.
      */
-    public static final int MODE_MQ = 2;
+    public static final int PROTOCOL_MQ = 2;
 
     /**
-     * Route mode for MCP assets.
+     * Route protocol for MCP assets.
      */
-    public static final int MODE_MCP = 3;
+    public static final int PROTOCOL_MCP = 3;
 
     /**
-     * Route mode for gRPC assets.
+     * Route protocol for gRPC assets.
      */
-    public static final int MODE_GRPC = 4;
+    public static final int PROTOCOL_GRPC = 4;
 
     /**
-     * Route mode for WebSocket assets.
+     * Route protocol for WebSocket assets.
      */
-    public static final int MODE_WS = 5;
+    public static final int PROTOCOL_WS = 5;
 
     /**
-     * Route mode for LLM assets.
+     * Route protocol for LLM assets.
      */
-    public static final int MODE_LLM = 6;
+    public static final int PROTOCOL_LLM = 6;
 
     /**
-     * Pre-built mapping table for mode to router key. Using static map for O(1) lookup instead of switch expression
+     * Pre-built mapping table for protocol to router key. Using static map for O(1) lookup instead of switch expression
      * evaluation on every request.
      */
-    public static final Map<Integer, String> MODE_TO_ROUTER = Map.of(
-            MODE_HTTP,
+    public static final Map<Integer, String> PROTOCOL_TO_ROUTER = Map.of(
+            PROTOCOL_HTTP,
             Protocol.HTTP.getName(),
-            MODE_MQ,
+            PROTOCOL_MQ,
             Protocol.MQ.getName(),
-            MODE_MCP,
+            PROTOCOL_MCP,
             Protocol.MCP.getName(),
-            MODE_GRPC,
+            PROTOCOL_GRPC,
             Protocol.GRPC.getName(),
-            MODE_WS,
+            PROTOCOL_WS,
             Protocol.WS.getName(),
-            MODE_LLM,
+            PROTOCOL_LLM,
             "llm");
 
     /**
@@ -180,17 +205,17 @@ public class Args extends Specifics {
      * @return {@code true} if the path starts with the REST prefix, {@code false} otherwise.
      */
     public static boolean isRestRequest(String path) {
-        return path.startsWith(REST_PATH_PREFIX);
+        return isPathPrefix(path, REST_PATH_PREFIX);
     }
 
     /**
-     * Checks if the given path is an MCP (Miaixz Communication Protocol) proxy request path.
+     * Checks if the given path is a Model Context Protocol (MCP) proxy request path.
      *
      * @param path The URL path string to check.
      * @return {@code true} if the path starts with the MCP prefix, {@code false} otherwise.
      */
     public static boolean isMcpRequest(String path) {
-        return path.startsWith(MCP_PATH_PREFIX);
+        return isPathPrefix(path, MCP_PATH_PREFIX);
     }
 
     /**
@@ -200,7 +225,7 @@ public class Args extends Specifics {
      * @return {@code true} if the path starts with the MQ prefix, {@code false} otherwise.
      */
     public static boolean isMqRequest(String path) {
-        return path.startsWith(MQ_PATH_PREFIX);
+        return isPathPrefix(path, MQ_PATH_PREFIX);
     }
 
     /**
@@ -210,7 +235,7 @@ public class Args extends Specifics {
      * @return {@code true} if the path starts with the WebSocket prefix, {@code false} otherwise.
      */
     public static boolean isWsRequest(String path) {
-        return path.startsWith(WS_PATH_PREFIX);
+        return isPathPrefix(path, WS_PATH_PREFIX);
     }
 
     /**
@@ -220,17 +245,7 @@ public class Args extends Specifics {
      * @return {@code true} if the path starts with the CST prefix, {@code false} otherwise.
      */
     public static boolean isCstRequest(String path) {
-        return path.startsWith(CST_PATH_PREFIX);
-    }
-
-    /**
-     * Checks if the given path is a CAS (Central Authentication Service) request path.
-     *
-     * @param path The URL path string to check.
-     * @return {@code true} if the path starts with the CAS prefix, {@code false} otherwise.
-     */
-    public static boolean isCasRequest(String path) {
-        return path.startsWith(CAS_PATH_PREFIX);
+        return isPathPrefix(path, CST_PATH_PREFIX);
     }
 
     /**
@@ -240,7 +255,7 @@ public class Args extends Specifics {
      * @return {@code true} if the path starts with the gRPC prefix, {@code false} otherwise.
      */
     public static boolean isGrpcRequest(String path) {
-        return path.startsWith(GRPC_PATH_PREFIX);
+        return isPathPrefix(path, GRPC_PATH_PREFIX);
     }
 
     /**
@@ -250,19 +265,43 @@ public class Args extends Specifics {
      * @return {@code true} if the path starts with the LLM prefix, {@code false} otherwise.
      */
     public static boolean isLlmRequest(String path) {
-        return path.startsWith(LLM_PATH_PREFIX);
+        return isPathPrefix(path, LLM_PATH_PREFIX);
     }
 
     /**
-     * Checks if the given path matches any of the known gateway prefixes (REST, MCP, MQ, WS, CAS, CST, gRPC, or LLM).
-     * This method combines the individual check methods for convenience.
+     * Checks if the given path matches any of the known gateway prefixes (REST, MCP, MQ, WS, CST, gRPC, or LLM). This
+     * method combines the individual check methods for convenience.
      *
      * @param path The URL path string to check.
      * @return {@code true} if the path matches any known gateway prefix, {@code false} otherwise.
      */
     public static boolean isKnownRequest(String path) {
-        return isRestRequest(path) || isMcpRequest(path) || isMqRequest(path) || isWsRequest(path) || isCasRequest(path)
-                || isCstRequest(path) || isGrpcRequest(path) || isLlmRequest(path);
+        return isRestRequest(path) || isMcpRequest(path) || isMqRequest(path) || isWsRequest(path) || isCstRequest(path)
+                || isGrpcRequest(path) || isLlmRequest(path);
+    }
+
+    /**
+     * Checks whether a request parameter is a gateway control parameter that must not be forwarded downstream.
+     * <p>
+     * Matching is case-insensitive because clients may send these gateway fields with different key casing.
+     *
+     * @param name request parameter name
+     * @return {@code true} when the parameter should be removed before forwarding
+     */
+    public static boolean isForwardingControlParameter(String name) {
+        return name != null && (METHOD.equalsIgnoreCase(name) || VERSION.equalsIgnoreCase(name)
+                || SIGN.equalsIgnoreCase(name) || FORMAT.equalsIgnoreCase(name));
+    }
+
+    /**
+     * Checks whether the path equals one public route prefix or starts with that prefix on a path-segment boundary.
+     *
+     * @param path   request path
+     * @param prefix public route prefix
+     * @return {@code true} when the request belongs to the prefix
+     */
+    private static boolean isPathPrefix(String path, String prefix) {
+        return path != null && (path.equals(prefix) || path.startsWith(prefix + Symbol.SLASH));
     }
 
     /**
@@ -272,9 +311,15 @@ public class Args extends Specifics {
     @Getter
     @Setter
     @SuperBuilder
-    @NoArgsConstructor
     @AllArgsConstructor
     public static class Limit {
+
+        /**
+         * Creates an empty rate-limit configuration.
+         */
+        public Limit() {
+
+        }
 
         /**
          * Whether rate limiting is globally enabled.

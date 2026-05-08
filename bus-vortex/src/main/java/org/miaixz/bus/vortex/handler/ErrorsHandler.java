@@ -34,6 +34,7 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.reactive.function.client.WebClientException;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebExceptionHandler;
 
@@ -143,7 +144,18 @@ public class ErrorsHandler implements WebExceptionHandler {
      */
     private Message buildErrorMessage(Throwable ex, String method, String path) {
 
-        if (ex instanceof UncheckedException) {
+        if (ex instanceof ResponseStatusException rse) {
+            Logger.error(
+                    false,
+                    "Vortex",
+                    "HTTP status error returned: clientIp=N/A, method={}, path={}, event=ERROR_STATUS, status={}, message={}",
+                    method,
+                    path,
+                    rse.getStatusCode().value(),
+                    rse.getReason());
+            return Message.builder().errcode(String.valueOf(rse.getStatusCode().value())).errmsg(rse.getReason())
+                    .build();
+        } else if (ex instanceof UncheckedException) {
             UncheckedException ue = (UncheckedException) ex;
             String errcode = ue.getErrcode();
             String errmsg = ue.getErrmsg();

@@ -21,8 +21,7 @@ package org.miaixz.bus.vortex.handler;
 
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
+import org.miaixz.bus.core.Order;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -31,13 +30,14 @@ import reactor.core.publisher.Mono;
  * Handles asynchronous pre-processing logic for API requests.
  * <p>
  * This handler is typically used to perform initial checks or setup before the main request processing. It is ordered
- * with {@code Ordered.HIGHEST_PRECEDENCE}, ensuring it runs early in the handler chain.
+ * with {@code @org.springframework.core.annotation.Order(Order.MIN_VALUE)}, ensuring it runs early in the handler
+ * chain.
  * </p>
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-@Order(Ordered.HIGHEST_PRECEDENCE)
+@org.springframework.core.annotation.Order(Order.MIN_VALUE)
 public class AccessHandler extends AbstractHandler {
 
     /**

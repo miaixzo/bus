@@ -287,6 +287,15 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
     }
 
     /**
+     * Returns the durable store backing this registry.
+     *
+     * @return durable store or {@code null}
+     */
+    public RegistryStore<T> store() {
+        return store;
+    }
+
+    /**
      * Persists and caches the entry, then emits a registry change event.
      *
      * @param entry entry to create or update

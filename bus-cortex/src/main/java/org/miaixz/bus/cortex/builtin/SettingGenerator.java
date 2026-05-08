@@ -78,7 +78,7 @@ public class SettingGenerator implements Keying<SettingSpec> {
             case SettingSpec.OVERLAY -> Builder.SETTING_PREFIX + "overlay:" + buildScope(spec);
             case SettingSpec.EXPORT -> buildScope(spec);
             case SettingSpec.ENTRY -> Builder.SETTING_PREFIX + "entry:" + buildScope(spec);
-            case SettingSpec.REVISION -> prefix(spec) + spec.revisionToken();
+            case SettingSpec.REVISION -> prefix(spec) + spec.revisionPart();
             case SettingSpec.SEQUENCE -> Builder.SEQUENCE_PREFIX + SETTING_REVISION_SEQUENCE_SEGMENT + itemId(spec);
             default -> null;
         };
@@ -96,7 +96,7 @@ public class SettingGenerator implements Keying<SettingSpec> {
             return null;
         }
         return switch (spec.mode()) {
-            case SettingSpec.ENTRY -> spec.groupToken() == null && spec.dataIdToken() == null
+            case SettingSpec.ENTRY -> spec.groupPart() == null && spec.dataIdPart() == null
                     ? Builder.SETTING_PREFIX + "entry:" + CortexIdentity.namespace(spec.namespace()) + ":"
                     : Builder.SETTING_PREFIX + "entry:" + itemId(spec);
             case SettingSpec.REVISION -> Builder.SETTING_PREFIX + "revision:" + buildScope(spec) + ":";
@@ -111,8 +111,8 @@ public class SettingGenerator implements Keying<SettingSpec> {
      * @return item identifier
      */
     private String itemId(SettingSpec spec) {
-        return CortexIdentity.namespace(spec.namespace()) + ":" + StringKit.emptyIfNull(spec.groupToken()) + ":"
-                + StringKit.emptyIfNull(spec.dataIdToken());
+        return CortexIdentity.namespace(spec.namespace()) + ":" + StringKit.emptyIfNull(spec.groupPart()) + ":"
+                + StringKit.emptyIfNull(spec.dataIdPart());
     }
 
     /**
@@ -123,7 +123,7 @@ public class SettingGenerator implements Keying<SettingSpec> {
      */
     private String buildScope(SettingSpec spec) {
         String itemId = itemId(spec);
-        String profile = spec.profileToken();
+        String profile = spec.profilePart();
         return profile == null ? itemId : itemId + ":" + profile;
     }
 

@@ -107,13 +107,6 @@ public class CortexConfiguration {
     CortexProperties properties;
 
     /**
-     * Creates the Spring Boot auto-configuration container for Bus Cortex.
-     */
-    public CortexConfiguration() {
-
-    }
-
-    /**
      * Creates the default Cortex cache through the shared cache factory.
      * <p>
      * Cortex first resolves {@code bus.cortex.cache.*}. When no Cortex-specific backend settings are present, it falls
@@ -258,7 +251,7 @@ public class CortexConfiguration {
      * @return logging watch listener
      */
     @Bean
-    @ConditionalOnProperty(prefix = "bus.cortex.watch", name = "logging-enabled", havingValue = "true")
+    @ConditionalOnProperty(prefix = "bus.cortex.watch", name = "enabled", havingValue = "true")
     public LoggingWatchListener loggingWatchListener(WatchManager watchManager) {
         LoggingWatchListener listener = new LoggingWatchListener();
         watchManager.addGlobalListener(listener);
@@ -378,18 +371,24 @@ public class CortexConfiguration {
     /**
      * Creates the registry admin service for control-plane queries and updates.
      *
-     * @param runtime     grouped Cortex runtime bundle
-     * @param cortexGuard optional Cortex guard provider
+     * @param runtime        grouped Cortex runtime bundle
+     * @param cortexGuard    optional Cortex guard provider
+     * @param keyingProvider registry keying provider
+     * @param batchExecutors external batch executors
+     * @param batchResolvers external batch resolvers
      * @return registry admin service
      */
     @Bean
     public RegistryControlService registryAdminService(
             Cortex.Runtime runtime,
             ObjectProvider<CortexGuard> cortexGuard,
-            @Qualifier("registryKeying") ObjectProvider<Keying<Keying.RegistrySpec>> keyingProvider) {
+            @Qualifier("registryKeying") ObjectProvider<Keying<Keying.RegistrySpec>> keyingProvider,
+            ObjectProvider<RegistryBatchExecutor> batchExecutors,
+            ObjectProvider<RegistryBatchResolver> batchResolvers) {
         return new RegistryControlService((ApiRegistry) runtime.api(), (McpRegistry) runtime.mcp(),
                 (PromptRegistry) runtime.prompt(), cortexGuard.getIfAvailable(),
-                keyingProvider.getIfAvailable(() -> RegistryGenerator.INSTANCE));
+                keyingProvider.getIfAvailable(() -> RegistryGenerator.INSTANCE),
+                batchExecutors.orderedStream().toList(), batchResolvers.orderedStream().toList());
     }
 
     /**

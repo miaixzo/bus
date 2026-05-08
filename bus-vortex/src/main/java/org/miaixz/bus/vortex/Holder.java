@@ -20,6 +20,7 @@
 package org.miaixz.bus.vortex;
 
 import java.time.Duration;
+import java.util.List;
 
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.instance.Instances;
@@ -302,6 +303,16 @@ public final class Holder {
      */
     public static int getTimestampToleranceMinutes() {
         return get().getTimestampToleranceMinutes();
+    }
+
+    /**
+     * Gets the trusted origin list for MCP Streamable HTTP ingress requests.
+     *
+     * @return configured trusted origins, or an empty list for same-host only validation
+     */
+    public static List<String> getMcpTrustedOrigins() {
+        List<String> trustedOrigins = get().getMcpTrustedOrigins();
+        return trustedOrigins == null ? List.of() : trustedOrigins;
     }
 
 }

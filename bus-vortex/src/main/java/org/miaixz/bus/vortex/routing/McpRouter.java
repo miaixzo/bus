@@ -19,11 +19,6 @@
 */
 package org.miaixz.bus.vortex.routing;
 
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Router;
@@ -34,23 +29,13 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 /**
- * MCP protocol request router, acting as a pure request coordinator. It delegates all MCP asset lifecycle management to
- * the McpLifecycleExecutor and is only responsible for handling real-time listTools and callTool requests.
- * <ul>
- * <li>Buffering mode (stream = 1 or null): Buffers the complete tool result before returning</li>
- * <li>Streaming mode (stream = 2): Streams the tool result in chunks</li>
- * </ul>
- * Generic type parameters: {@code Router<ServerRequest, ServerResponse>}
+ * MCP protocol request router, acting as a pure request coordinator for standard Streamable HTTP requests. Generic type
+ * parameters: {@code Router<ServerRequest, ServerResponse>}
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class McpRouter implements Router<ServerRequest, ServerResponse> {
-
-    /**
-     * The separator used to prefix tool names with their service ID for uniqueness.
-     */
-    private static final String TOOL_NAME_SEPARATOR = "::";
 
     /**
      * The executor responsible for managing the lifecycle of all MCP clients. This dependency will be injected by the
@@ -68,8 +53,7 @@ public class McpRouter implements Router<ServerRequest, ServerResponse> {
     }
 
     /**
-     * Routes an incoming request by determining the desired action (listTools or callTool) and delegating to the
-     * appropriate handler.
+     * Routes an incoming request by delegating the full Streamable HTTP protocol handling to {@link McpExecutor}.
      *
      * @param input The ServerRequest object (strongly typed)
      * @return A {@link Mono<ServerResponse>} with the result of the operation
@@ -77,93 +61,22 @@ public class McpRouter implements Router<ServerRequest, ServerResponse> {
     @Override
     public Mono<ServerResponse> route(ServerRequest input) {
         ServerRequest request = input;
-        String action = request.queryParam("action").orElse("listTools");
         Context context = request.exchange().getAttribute(Context.$);
         String ip = context == null || context.getX_request_ip() == null ? "N/A" : context.getX_request_ip();
+        Logger.debug(true, "Vortex", "MCP request header snapshot: clientIp={}, path={}", ip, request.path());
         Logger.debug(
                 true,
                 "Vortex",
-                "Request header snapshot: clientIp={}, path={}, action={}",
-                ip,
-                request.path(),
-                action);
-        Logger.debug(
-                true,
-                "Vortex",
-                "Request headers: clientIp={}, headers={}",
+                "MCP request headers: clientIp={}, headers={}",
                 ip,
                 request.headers().asHttpHeaders().toSingleValueMap());
         Logger.debug(
                 true,
                 "Vortex",
-                "Request parameters: clientIp={}, parameters={}",
+                "MCP request parameters: clientIp={}, parameters={}",
                 ip,
                 request.queryParams().toSingleValueMap());
-        if ("listTools".equalsIgnoreCase(action)) {
-            return listTools();
-        } else if ("callTool".equalsIgnoreCase(action)) {
-            return callTool(request);
-        } else {
-            return ServerResponse.badRequest().bodyValue("Unknown action: " + action);
-        }
-    }
-
-    /**
-     * Handles a request to list all available tools from all active MCP services. It aggregates tools from all clients
-     * managed by the McpLifecycleExecutor.
-     *
-     * @return A {@link Mono<ServerResponse>} containing a list of all available tools
-     */
-    private Mono<ServerResponse> listTools() {
-        return this.executor.getTools().flatMap(tools -> ServerResponse.ok().bodyValue(tools));
-    }
-
-    /**
-     * Handles a request to call a specific tool. It parses the tool name to identify the target service and delegates
-     * the call to the {@link McpExecutor}.
-     *
-     * @param request The incoming {@link ServerRequest} containing the tool name and arguments.
-     * @return A {@link Mono<ServerResponse>} with the result from the tool execution.
-     */
-    private Mono<ServerResponse> callTool(ServerRequest request) {
-        return Mono.deferContextual(contextView -> {
-            final Context context = contextView.get(Context.class);
-            final Assets assets = context.getAssets();
-
-            String prefixedToolName = request.queryParam("toolName").orElse(null);
-            if (StringKit.isEmpty(prefixedToolName)) {
-                return ServerResponse.badRequest().bodyValue("Missing required parameter: toolName");
-            }
-
-            String[] parts = prefixedToolName.split(TOOL_NAME_SEPARATOR, 2);
-            if (parts.length != 2) {
-                return ServerResponse.badRequest()
-                        .bodyValue("Invalid toolName format. Expected 'serviceName::toolName'.");
-            }
-
-            String serviceName = parts[0];
-            String actualToolName = parts[1];
-
-            Map<String, Object> arguments = request.queryParams().toSingleValueMap().entrySet().stream()
-                    .filter(entry -> !entry.getKey().equals("action") && !entry.getKey().equals("toolName"))
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-            Logger.debug(
-                    true,
-                    "Vortex",
-                    "Request parameter snapshot: clientIp={}, path={}, service={}, tool={}",
-                    context.getX_request_ip(),
-                    request.path(),
-                    serviceName,
-                    actualToolName);
-            Logger.debug(
-                    true,
-                    "Vortex",
-                    "Request parameters: clientIp={}, parameters={}",
-                    context.getX_request_ip(),
-                    arguments);
-            return this.executor.callToolAndFormat(serviceName, actualToolName, arguments, assets.getStream());
-        });
+        return this.executor.execute(context, request);
     }
 
 }

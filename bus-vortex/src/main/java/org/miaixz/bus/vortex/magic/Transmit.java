@@ -36,9 +36,15 @@ import org.miaixz.bus.core.lang.EnumValue;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
 @AllArgsConstructor
 public class Transmit {
+
+    /**
+     * Creates an empty service transmission snapshot.
+     */
+    public Transmit() {
+
+    }
 
     /**
      * The unique name or ID of the service, derived from {@link org.miaixz.bus.cortex.Assets#getName()}.

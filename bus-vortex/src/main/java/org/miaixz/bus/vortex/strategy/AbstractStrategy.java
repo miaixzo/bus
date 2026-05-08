@@ -21,7 +21,10 @@ package org.miaixz.bus.vortex.strategy;
 
 import java.net.InetSocketAddress;
 import java.util.Arrays;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.TreeMap;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -58,6 +61,92 @@ public abstract class AbstractStrategy implements Strategy {
      * Creates an abstract strategy.
      */
     protected AbstractStrategy() {
+
+    }
+
+    /**
+     * Resolves one request parameter from the context without mutating the request parameter maps.
+     * <p>
+     * Parameter names are matched case-insensitively for gateway control fields, while the original request parameter
+     * names and values remain untouched for downstream forwarding and signature generation.
+     *
+     * @param context current request context
+     * @param key     canonical gateway parameter name
+     * @return resolved value, or {@code null}
+     */
+    protected String value(Context context, String key) {
+        return value(context, context == null ? null : context.getParameters(), key);
+    }
+
+    /**
+     * Resolves one request parameter from a primary map and then the parsed query map without mutating either map.
+     *
+     * @param context current request context
+     * @param values  primary parameter map
+     * @param key     canonical gateway parameter name
+     * @return resolved value, or {@code null}
+     */
+    protected String value(Context context, Map<?, ?> values, String key) {
+        String value = value(values, key);
+        if (value != null) {
+            return value;
+        }
+        return context == null ? null : value(context.getQuery(), key);
+    }
+
+    /**
+     * Resolves one value from a map by exact key first, then by case-insensitive key match.
+     *
+     * @param values source map
+     * @param key    canonical key
+     * @return resolved value, or {@code null}
+     */
+    protected String value(Map<?, ?> values, String key) {
+        if (values == null || values.isEmpty() || StringKit.isBlank(key)) {
+            return null;
+        }
+        if (values.containsKey(key)) {
+            Object exact = values.get(key);
+            return exact == null ? null : exact.toString();
+        }
+        boolean matched = false;
+        String matchedValue = null;
+        for (Map.Entry<?, ?> entry : values.entrySet()) {
+            Object name = entry.getKey();
+            if (name != null && key.equalsIgnoreCase(name.toString())) {
+                Object value = entry.getValue();
+                String stringValue = value == null ? null : value.toString();
+                if (matched && !Objects.equals(matchedValue, stringValue)) {
+                    throw new ValidateException(ErrorCode._100101);
+                }
+                matched = true;
+                matchedValue = stringValue;
+            }
+        }
+        return matchedValue;
+    }
+
+    /**
+     * Copies parameters while excluding one gateway field by case-insensitive key match.
+     * <p>
+     * Original parameter names are preserved in the copy so signature generation continues to use the inbound key
+     * spelling.
+     *
+     * @param values source parameter map
+     * @param key    canonical key to exclude
+     * @return sorted copy preserving original keys except the excluded key variants
+     */
+    protected Map<String, Object> copyWithoutIgnoreCase(Map<String, Object> values, String key) {
+        Map<String, Object> copy = new TreeMap<>();
+        if (values == null || values.isEmpty()) {
+            return copy;
+        }
+        values.forEach((name, value) -> {
+            if (name != null && !key.equalsIgnoreCase(name)) {
+                copy.put(name, value);
+            }
+        });
+        return copy;
     }
 
     /**

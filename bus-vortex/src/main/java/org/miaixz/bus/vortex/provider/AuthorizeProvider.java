@@ -28,7 +28,6 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.magic.Delegate;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.magic.Principal;
-import org.miaixz.bus.vortex.strategy.QualifierStrategy;
 import reactor.core.publisher.Mono;
 
 /**
@@ -36,7 +35,7 @@ import reactor.core.publisher.Mono;
  * <p>
  * This interface defines the contract for validating credentials. Implementations of this interface should contain the
  * actual business logic for checking tokens or API keys against a database, an authentication server, or any other
- * identity provider. An instance of this provider is injected into the {@link QualifierStrategy}.
+ * identity provider. An instance of this provider is injected into protocol-specific qualifier strategies.
  *
  * @author Kimi Liu
  * @since Java 21+

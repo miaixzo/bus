@@ -27,6 +27,7 @@ import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Holder;
 import org.miaixz.bus.vortex.routing.Coordinator;
@@ -87,6 +88,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * {@code vortex.performance.maxConnections} property.
      */
     public RestExecutor() {
+
     }
 
     /**
@@ -121,8 +123,6 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
     @NonNull
     @Override
     public Mono<ServerResponse> execute(Context context, ServerRequest request) {
-        Assets assets = context.getAssets();
-
         final String method = request.methodName();
         final String path = request.path();
         final String ip = context.getX_request_ip();
@@ -140,6 +140,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
         WebClient webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(getHttpClient()))
                 .exchangeStrategies(CACHED_EXCHANGE_STRATEGIES).baseUrl(baseUrl).build();
 
+        Assets assets = context.getAssets();
         String targetUri = buildTargetUri(assets, context);
         Logger.info(
                 true,
@@ -419,7 +420,11 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
         MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
 
         if (!query.isEmpty()) {
-            query.forEach(multiValueMap::add);
+            query.forEach((key, value) -> {
+                if (!Args.isForwardingControlParameter(key)) {
+                    multiValueMap.add(key, value);
+                }
+            });
         }
 
         if (context.getHttpMethod() == HTTP.Method.GET) {

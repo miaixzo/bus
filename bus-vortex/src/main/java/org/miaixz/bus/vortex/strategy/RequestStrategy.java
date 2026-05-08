@@ -31,8 +31,7 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Holder;
 import org.miaixz.bus.vortex.magic.ErrorCode;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
+import org.miaixz.bus.core.Order;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
@@ -47,36 +46,26 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
- * The foundational strategy responsible for request parsing, body caching, and context initialization.
+ * Basic request strategy for routes without protocol-specific request parsing.
  * <p>
- * As the first strategy in the chain (with the highest precedence), its primary roles are:
- * <ul>
- * <li>Performing initial security checks, such as path validation, and path traversal detection.</li>
- * <li>Dispatching the request to a specific handler based on its HTTP method and {@code Content-Type}.</li>
- * <li><b>Smart request body handling:</b></li>
- * <li>For small requests (&lt; 10 MB): Caches the request body in memory for fast processing and re-reading</li>
- * <li>For large multipart requests: Uses streaming processing to avoid high memory pressure</li>
- * <li>This ensures optimal performance while preventing OOM errors under high load</li>
- * </ul>
+ * This class initializes request metadata and provides protected parsing helpers for protocol request strategies.
+ * Protocol-specific classes decide whether to parse and cache the body or pass the request through untouched.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-@Order(Ordered.HIGHEST_PRECEDENCE + 1)
+@org.springframework.core.annotation.Order(Order.FIRST)
 public class RequestStrategy extends AbstractStrategy {
 
     /**
      * Creates a request strategy.
      */
     public RequestStrategy() {
+
     }
 
     /**
-     * Applies the request parsing and validation logic.
-     * <p>
-     * This is the main entry point for the strategy. It performs initial path validation and then dispatches the
-     * request to the appropriate handler (e.g., {@code handleGetRequest}, {@code handleJsonRequest}) based on the HTTP
-     * method and {@code Content-Type}.
+     * Initializes common request metadata and continues without parsing the body.
      *
      * @param exchange The current server exchange.
      * @param chain    The next strategy in the chain.
@@ -86,54 +75,75 @@ public class RequestStrategy extends AbstractStrategy {
     public Mono<Void> apply(ServerWebExchange exchange, Chain chain) {
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
-            context.setX_request_ipv4(this.getClientIp(exchange.getRequest()));
-
-            context.setQuery(exchange.getRequest().getQueryParams().toSingleValueMap());
-
-            ServerWebExchange mutate = setContentType(exchange);
-            ServerHttpRequest request = mutate.getRequest();
-            Logger.debug(
-                    true,
-                    "Vortex",
-                    "Request headers captured: strategy=request, clientIp={}, path={}, headerCount={}, contentType={}",
-                    context.getX_request_ip(),
-                    request.getURI().getPath(),
-                    request.getHeaders().size(),
-                    request.getHeaders().getContentType());
-            Logger.debug(
-                    true,
-                    "Vortex",
-                    "Request header snapshot: strategy=request, clientIp={}, path={}",
-                    context.getX_request_ip(),
-                    request.getURI().getPath());
-            Logger.debug(
-                    true,
-                    "Vortex",
-                    "Request headers: strategy=request, clientIp={}, headers={}",
-                    context.getX_request_ip(),
-                    request.getHeaders().toSingleValueMap());
-
-            if (context.getHttpMethod() == HTTP.Method.GET) {
-                return handleGetRequest(mutate, chain, context);
-            } else {
-                MediaType contentType = mutate.getRequest().getHeaders().getContentType();
-                if (contentType == null) {
-                    return handleFormRequest(mutate, chain, context);
-                } else if (MediaType.APPLICATION_JSON.isCompatibleWith(contentType)) {
-                    return handleJsonRequest(mutate, chain, context);
-                } else if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(contentType)) {
-                    long contentLength = request.getHeaders().getContentLength();
-                    if (contentLength > Holder.getMaxMultipartRequestSize()) {
-                        throw new ValidateException(ErrorCode._100530);
-                    }
-                    return handleMultipartRequest(mutate, chain, context);
-                } else if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(contentType)) {
-                    return handleFormRequest(mutate, chain, context);
-                } else {
-                    return handleFormRequest(mutate, chain, context);
-                }
-            }
+            return chain.apply(prepare(exchange, context, false));
         });
+    }
+
+    /**
+     * Initializes context request metadata and optionally supplies a default content type.
+     *
+     * @param exchange           current exchange
+     * @param context            request context
+     * @param defaultContentType whether missing content type should be defaulted for body parsing
+     * @return prepared exchange
+     */
+    protected ServerWebExchange prepare(ServerWebExchange exchange, Context context, boolean defaultContentType) {
+        context.setX_request_ipv4(this.getClientIp(exchange.getRequest()));
+        context.setQuery(exchange.getRequest().getQueryParams().toSingleValueMap());
+
+        ServerWebExchange mutate = defaultContentType ? setContentType(exchange) : exchange;
+        ServerHttpRequest request = mutate.getRequest();
+        Logger.debug(
+                true,
+                "Vortex",
+                "Request headers captured: strategy=request, clientIp={}, path={}, headerCount={}, contentType={}",
+                context.getX_request_ip(),
+                request.getURI().getPath(),
+                request.getHeaders().size(),
+                request.getHeaders().getContentType());
+        Logger.debug(
+                true,
+                "Vortex",
+                "Request header snapshot: strategy=request, clientIp={}, path={}",
+                context.getX_request_ip(),
+                request.getURI().getPath());
+        Logger.debug(
+                true,
+                "Vortex",
+                "Request headers: strategy=request, clientIp={}, headers={}",
+                context.getX_request_ip(),
+                request.getHeaders().toSingleValueMap());
+        return mutate;
+    }
+
+    /**
+     * Parses a REST-like request into {@link Context#getParameters()}.
+     *
+     * @param exchange current exchange
+     * @param chain    remaining chain
+     * @param context  request context
+     * @return parsing completion signal
+     */
+    protected Mono<Void> parse(ServerWebExchange exchange, Chain chain, Context context) {
+        ServerHttpRequest request = exchange.getRequest();
+        if (context.getHttpMethod() == HTTP.Method.GET) {
+            return handleGetRequest(exchange, chain, context);
+        }
+        MediaType contentType = request.getHeaders().getContentType();
+        if (contentType == null) {
+            return handleFormRequest(exchange, chain, context);
+        } else if (MediaType.APPLICATION_JSON.isCompatibleWith(contentType)) {
+            return handleJsonRequest(exchange, chain, context);
+        } else if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(contentType)) {
+            long contentLength = request.getHeaders().getContentLength();
+            if (contentLength > Holder.getMaxMultipartRequestSize()) {
+                throw new ValidateException(ErrorCode._100530);
+            }
+            return handleMultipartRequest(exchange, chain, context);
+        } else if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(contentType)) {
+            return handleFormRequest(exchange, chain, context);
+        }
+        return handleFormRequest(exchange, chain, context);
     }
 
     /**

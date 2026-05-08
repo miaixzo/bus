@@ -111,8 +111,8 @@ public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
     /**
      * Error code: 116008 - MCP tool execution failed.
      * <p>
-     * Indicates that the Vortex gateway failed to execute an MCP (Miaixz Communication Protocol) tool. This could be
-     * due to tool unavailability, invalid parameters, or execution errors.
+     * Indicates that the Vortex gateway failed to proxy or execute a Model Context Protocol (MCP) request. This could
+     * be due to downstream target unavailability, invalid parameters, or execution errors.
      * </p>
      */
     public static final Errors _116008 = ErrorRegistry.builder().key("116008").value("MCP tool execution failed")

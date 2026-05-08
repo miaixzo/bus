@@ -99,10 +99,16 @@ public class Context extends Tracer {
     private String bearer;
 
     /**
-     * The resolved API asset that matches the incoming request's method and version. This object contains all
-     * configuration for the requested API endpoint.
+     * The resolved route asset that matches the incoming request dimensions. This object contains the runtime
+     * configuration for the selected route.
      */
     private Assets assets;
+
+    /**
+     * The remaining request path produced by route resolution. Prefix-routed protocols can use this value for
+     * downstream path rewriting without repeating route matching in executors.
+     */
+    private String remainingPath;
 
     /**
      * The timestamp in milliseconds when the request processing started. This is used for calculating total execution
@@ -213,6 +219,15 @@ public class Context extends Tracer {
      */
     public void setAssets(Assets assets) {
         this.assets = assets;
+    }
+
+    /**
+     * Stores the remaining request path produced by route resolution.
+     *
+     * @param remainingPath remaining path, or an empty string for an exact route match
+     */
+    public void setRemainingPath(String remainingPath) {
+        this.remainingPath = remainingPath;
     }
 
     /**

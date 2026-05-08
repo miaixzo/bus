@@ -17,23 +17,39 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
+package org.miaixz.bus.cortex.registry;
+
+import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.cortex.Type;
+
 /**
- * Provides concrete implementations of the {@link org.miaixz.bus.vortex.routing.mcp.client.McpClient} interface, each
- * tailored for a specific underlying communication protocol.
- * <p>
- * This package encapsulates the protocol-specific details of interacting with different types of MCP services.
- * <ul>
- * <li>{@link org.miaixz.bus.vortex.routing.mcp.client.StdioClient}: Communicates with a local process via standard
- * I/O.</li>
- * <li>{@link org.miaixz.bus.vortex.routing.mcp.client.HttpClient}: Interacts with a standard RESTful HTTP
- * endpoint.</li>
- * <li>{@link org.miaixz.bus.vortex.routing.mcp.client.SseClient}: Connects to a remote service that exposes an SSE
- * stream.</li>
- * <li>{@link org.miaixz.bus.vortex.routing.mcp.client.OpenApiClient}: Dynamically discovers tools from an OpenAPI
- * specification.</li>
- * </ul>
+ * Route identity used by registry batch lookup strategies.
  *
+ * @param namespace_id namespace identifier
+ * @param app_id       application identifier
+ * @param type         registry type key
+ * @param method       route method
+ * @param version      route version
+ * @param verb         HTTP verb code
  * @author Kimi Liu
  * @since Java 21+
  */
-package org.miaixz.bus.vortex.routing.mcp.client;
+public record RegistryRouteKey(String namespace_id, String app_id, Integer type, String method, String version,
+        Integer verb) {
+
+    /**
+     * Creates a route key from one registry asset.
+     *
+     * @param asset source asset
+     * @return route key or {@code null}
+     */
+    public static RegistryRouteKey of(Assets asset) {
+        if (asset == null || asset.getMethod() == null || asset.getVersion() == null) {
+            return null;
+        }
+        Type type = RegistryIdentity.type(asset);
+        return new RegistryRouteKey(RegistryIdentity.namespace(asset.getNamespace_id()), asset.getApp_id(), type.key(),
+                asset.getMethod(), asset.getVersion(), asset.getVerb());
+    }
+
+}

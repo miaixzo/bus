@@ -19,12 +19,25 @@
 */
 package org.miaixz.bus.vortex.strategy;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Strategy;
+import org.miaixz.bus.vortex.strategy.qualifier.CstQualifierStrategy;
+import org.miaixz.bus.vortex.strategy.qualifier.McpQualifierStrategy;
+import org.miaixz.bus.vortex.strategy.qualifier.RestQualifierStrategy;
+import org.miaixz.bus.vortex.strategy.request.CstRequestStrategy;
+import org.miaixz.bus.vortex.strategy.request.McpRequestStrategy;
+import org.miaixz.bus.vortex.strategy.request.RestRequestStrategy;
+import org.miaixz.bus.vortex.strategy.vetting.CstVettingStrategy;
+import org.miaixz.bus.vortex.strategy.vetting.McpVettingStrategy;
+import org.miaixz.bus.vortex.strategy.vetting.RestVettingStrategy;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.web.server.ServerWebExchange;
 
@@ -42,39 +55,24 @@ import org.springframework.web.server.ServerWebExchange;
 public class StrategyFactory {
 
     /**
-     * The default, complete list of all strategies, sorted by order. (e.g., for REST)
+     * Route key used for the fallback REST-like chain.
      */
-    private final List<Strategy> chain;
+    private static final String DEFAULT_ROUTE = "fallback";
 
     /**
-     * A specialized chain for MQ (message queue) requests.
+     * Route specifications in selection order.
      */
-    private final List<Strategy> grpcChain;
+    private final List<ChainSpec> chainSpecs;
 
     /**
-     * A specialized, minimal chain for CST (Url-based) requests.
+     * The default ordered chain used when no specialized route matches.
      */
-    private final List<Strategy> cstChain;
+    private final List<Strategy> defaultChain;
 
     /**
-     * A specialized, minimal chain for MCP (proxy) requests.
+     * Pre-built ordered strategy chains keyed by route name.
      */
-    private final List<Strategy> mcpChain;
-
-    /**
-     * A specialized chain for MQ (message queue) requests.
-     */
-    private final List<Strategy> mqChain;
-
-    /**
-     * A specialized chain for WS (websocket) requests.
-     */
-    private final List<Strategy> wsChain;
-
-    /**
-     * A specialized, minimal chain for LLM (Large Language Model) requests.
-     */
-    private final List<Strategy> llmChain;
+    private final Map<String, List<Strategy>> chains;
 
     /**
      * Constructs a new {@code StrategyFactory} and pre-calculates the strategy chains.
@@ -86,72 +84,45 @@ public class StrategyFactory {
         chain.sort(AnnotationAwareOrderComparator.INSTANCE);
         Logger.debug(true, "Vortex", "Strategy beans sorted by order: strategies={}", getStrategyNames(chain));
 
-        this.chain = List.copyOf(chain);
-        Logger.info(
-                false,
-                "Vortex",
-                "Strategy chain built: route=default, strategyCount={}, strategies={}",
-                this.chain.size(),
-                getStrategyNames(this.chain));
+        this.chainSpecs = List.of(
+                new ChainSpec(Args.REST_PATH_PREFIX, Args::isRestRequest, this::isRestStrategy),
+                new ChainSpec(Args.CST_PATH_PREFIX, Args::isCstRequest, this::isCstStrategy),
+                new ChainSpec(Args.MCP_PATH_PREFIX, Args::isMcpRequest, this::isMcpStrategy),
+                new ChainSpec(Args.MQ_PATH_PREFIX, Args::isMqRequest, this::isMqStrategy),
+                new ChainSpec(Args.GRPC_PATH_PREFIX, Args::isGrpcRequest, this::isGrpcStrategy),
+                new ChainSpec(Args.WS_PATH_PREFIX, Args::isWsRequest, this::isWsStrategy),
+                new ChainSpec(Args.LLM_PATH_PREFIX, Args::isLlmRequest, this::isLlmStrategy));
 
-        this.grpcChain = chain.stream().filter(this::isApplicableToGrpc).collect(Collectors.toUnmodifiableList());
+        this.defaultChain = buildChain(chain, this::isRestStrategy);
         Logger.info(
                 false,
                 "Vortex",
-                "Strategy chain built: route=grpc, strategyCount={}, strategies={}",
-                this.grpcChain.size(),
-                getStrategyNames(this.grpcChain));
+                "Strategy chain built: route={}, strategyCount={}, strategies={}",
+                DEFAULT_ROUTE,
+                this.defaultChain.size(),
+                getStrategyNames(this.defaultChain));
 
-        this.cstChain = chain.stream().filter(this::isApplicableToCst).collect(Collectors.toUnmodifiableList());
-        Logger.info(
-                false,
-                "Vortex",
-                "Strategy chain built: route=cst, strategyCount={}, strategies={}",
-                this.cstChain.size(),
-                getStrategyNames(this.cstChain));
+        Map<String, List<Strategy>> builtChains = new LinkedHashMap<>();
+        for (ChainSpec spec : this.chainSpecs) {
+            List<Strategy> routeChain = buildChain(chain, spec.strategyFilter());
+            builtChains.put(spec.route(), routeChain);
+            Logger.info(
+                    false,
+                    "Vortex",
+                    "Strategy chain built: route={}, strategyCount={}, strategies={}",
+                    spec.route(),
+                    routeChain.size(),
+                    getStrategyNames(routeChain));
+        }
+        this.chains = Map.copyOf(builtChains);
 
-        this.mcpChain = chain.stream().filter(this::isApplicableToMcp).collect(Collectors.toUnmodifiableList());
-        Logger.info(
-                false,
-                "Vortex",
-                "Strategy chain built: route=mcp, strategyCount={}, strategies={}",
-                this.mcpChain.size(),
-                getStrategyNames(this.mcpChain));
-
-        this.mqChain = chain.stream().filter(this::isApplicableToMq).collect(Collectors.toUnmodifiableList());
-        Logger.info(
-                false,
-                "Vortex",
-                "Strategy chain built: route=mq, strategyCount={}, strategies={}",
-                this.mqChain.size(),
-                getStrategyNames(this.mqChain));
-
-        this.wsChain = chain.stream().filter(this::isApplicableToMq).collect(Collectors.toUnmodifiableList());
-        Logger.info(
-                false,
-                "Vortex",
-                "Strategy chain built: route=ws, strategyCount={}, strategies={}",
-                this.wsChain.size(),
-                getStrategyNames(this.wsChain));
-
-        this.llmChain = chain.stream().filter(this::isApplicableToLlm).collect(Collectors.toUnmodifiableList());
-        Logger.info(
-                false,
-                "Vortex",
-                "Strategy chain built: route=llm, strategyCount={}, strategies={}",
-                this.llmChain.size(),
-                getStrategyNames(this.llmChain));
-
-        Logger.info(
-                false,
-                "Vortex",
-                "Strategy chain initialization completed: default={}, mcp={}, mq={}, grpc={}, ws={}, llm={}",
-                this.chain.size(),
-                this.mcpChain.size(),
-                this.mqChain.size(),
-                this.grpcChain.size(),
-                this.wsChain.size(),
-                this.llmChain.size());
+        StringBuilder routeSummary = new StringBuilder(DEFAULT_ROUTE).append(Symbol.EQUAL)
+                .append(this.defaultChain.size());
+        for (ChainSpec spec : this.chainSpecs) {
+            routeSummary.append(Symbol.COMMA).append(Symbol.SPACE).append(spec.route()).append(Symbol.EQUAL)
+                    .append(this.chains.get(spec.route()).size());
+        }
+        Logger.info(false, "Vortex", "Strategy chain initialization completed: routes={}", routeSummary);
     }
 
     /**
@@ -172,73 +143,52 @@ public class StrategyFactory {
             Logger.debug(true, "Vortex", "Strategy chain selection started: clientIp={}, path={}", ipTag, path);
         }
 
-        if (Args.isCstRequest(path)) {
-            Logger.debug(
-                    false,
-                    "Vortex",
-                    "Path matched CST chain: clientIp={}, strategyCount={}",
-                    ipTag,
-                    this.cstChain.size());
-            return this.cstChain;
-        }
-
-        if (Args.isMcpRequest(path)) {
-            Logger.debug(
-                    false,
-                    "Vortex",
-                    "Path matched MCP chain: clientIp={}, strategyCount={}",
-                    ipTag,
-                    this.mcpChain.size());
-            return this.mcpChain;
-        }
-
-        if (Args.isMqRequest(path)) {
-            Logger.debug(
-                    false,
-                    "Vortex",
-                    "Path matched MQ chain: clientIp={}, strategyCount={}",
-                    ipTag,
-                    this.mqChain.size());
-            return this.mqChain;
-        }
-
-        if (Args.isGrpcRequest(path)) {
-            Logger.debug(
-                    false,
-                    "Vortex",
-                    "Path matched gRPC chain: clientIp={}, strategyCount={}",
-                    ipTag,
-                    this.grpcChain.size());
-            return this.grpcChain;
-        }
-
-        if (Args.isWsRequest(path)) {
-            Logger.debug(
-                    false,
-                    "Vortex",
-                    "Path matched WebSocket chain: clientIp={}, strategyCount={}",
-                    ipTag,
-                    this.wsChain.size());
-            return this.wsChain;
-        }
-
-        if (Args.isLlmRequest(path)) {
-            Logger.debug(
-                    false,
-                    "Vortex",
-                    "Path matched LLM chain: clientIp={}, strategyCount={}",
-                    ipTag,
-                    this.llmChain.size());
-            return this.llmChain;
+        for (ChainSpec spec : this.chainSpecs) {
+            if (spec.pathMatcher().test(path)) {
+                List<Strategy> routeChain = this.chains.get(spec.route());
+                Logger.debug(
+                        false,
+                        "Vortex",
+                        "Path matched strategy chain: clientIp={}, route={}, strategyCount={}",
+                        ipTag,
+                        spec.route(),
+                        routeChain.size());
+                return routeChain;
+            }
         }
 
         Logger.debug(
                 false,
                 "Vortex",
-                "Path matched default chain: clientIp={}, strategyCount={}",
+                "Path matched strategy chain: clientIp={}, route={}, strategyCount={}",
                 ipTag,
-                this.chain.size());
-        return this.chain;
+                DEFAULT_ROUTE,
+                this.defaultChain.size());
+        return this.defaultChain;
+    }
+
+    /**
+     * Determines if a strategy is applicable to REST/API requests.
+     *
+     * @param strategy The strategy to check.
+     * @return {@code true} when the strategy belongs to the REST/default chain.
+     */
+    public boolean isRestStrategy(Strategy strategy) {
+        return strategy.getClass() == RestRequestStrategy.class || strategy instanceof RestQualifierStrategy
+                || strategy instanceof RestVettingStrategy || strategy instanceof LimiterStrategy
+                || strategy instanceof ResponseStrategy;
+    }
+
+    /**
+     * Determines if a strategy is applicable to CST URL-based requests.
+     *
+     * @param strategy The strategy to check.
+     * @return {@code true} when the strategy belongs to the CST chain.
+     */
+    public boolean isCstStrategy(Strategy strategy) {
+        return strategy.getClass() == CstRequestStrategy.class || strategy instanceof CstQualifierStrategy
+                || strategy instanceof CstVettingStrategy || strategy instanceof LimiterStrategy
+                || strategy instanceof ResponseStrategy;
     }
 
     /**
@@ -251,45 +201,45 @@ public class StrategyFactory {
      * @return {@code false} if the strategy is one of the business-logic strategies to be skipped for MCP, {@code true}
      *         otherwise.
      */
-    public boolean isApplicableToMcp(Strategy strategy) {
-        return !(strategy instanceof QualifierStrategy || strategy instanceof LimiterStrategy);
+    public boolean isMcpStrategy(Strategy strategy) {
+        return strategy.getClass() == McpRequestStrategy.class || strategy instanceof McpQualifierStrategy
+                || strategy instanceof McpVettingStrategy || strategy instanceof ResponseStrategy;
     }
 
     /**
-     * Determines if a strategy is applicable to MQ-based requests.
-     * <p>
-     * This method provides a hook to define a custom strategy chain for requests that will be routed to a message
-     * queue. This allows for different processing logic, such as a different authorization mechanism.
+     * Determines if a strategy is applicable to MQ requests.
      *
      * @param strategy The strategy to check.
-     * @return {@code true} if the strategy should be part of the MQ chain, {@code false} otherwise.
+     * @return {@code true} when the strategy belongs to the MQ chain.
      */
-    public boolean isApplicableToMq(Strategy strategy) {
-        return true;
+    public boolean isMqStrategy(Strategy strategy) {
+        return strategy.getClass() == RequestStrategy.class || strategy.getClass() == QualifierStrategy.class
+                || strategy.getClass() == VettingStrategy.class || strategy instanceof LimiterStrategy
+                || strategy instanceof ResponseStrategy;
     }
 
     /**
-     * Determines if a strategy is applicable to CST (Url-based) requests.
-     * <p>
-     * This method provides a hook to define a custom strategy chain for simple URL-based requests.
+     * Determines if a strategy is applicable to gRPC requests.
      *
      * @param strategy The strategy to check.
-     * @return {@code true} if the strategy should be part of the CST chain, {@code false} otherwise.
+     * @return {@code true} when the strategy belongs to the gRPC chain.
      */
-    public boolean isApplicableToGrpc(Strategy strategy) {
-        return true;
+    public boolean isGrpcStrategy(Strategy strategy) {
+        return strategy.getClass() == RequestStrategy.class || strategy.getClass() == QualifierStrategy.class
+                || strategy.getClass() == VettingStrategy.class || strategy instanceof LimiterStrategy
+                || strategy instanceof ResponseStrategy;
     }
 
     /**
-     * Determines if a strategy is applicable to CST (Url-based) requests.
-     * <p>
-     * This method provides a hook to define a custom strategy chain for simple URL-based requests.
+     * Determines if a strategy is applicable to WebSocket requests.
      *
      * @param strategy The strategy to check.
-     * @return {@code true} if the strategy should be part of the CST chain, {@code false} otherwise.
+     * @return {@code true} when the strategy belongs to the WebSocket chain.
      */
-    public boolean isApplicableToCst(Strategy strategy) {
-        return true;
+    public boolean isWsStrategy(Strategy strategy) {
+        return strategy.getClass() == RequestStrategy.class || strategy.getClass() == QualifierStrategy.class
+                || strategy.getClass() == VettingStrategy.class || strategy instanceof LimiterStrategy
+                || strategy instanceof ResponseStrategy;
     }
 
     /**
@@ -302,8 +252,19 @@ public class StrategyFactory {
      * @return {@code false} if the strategy is one of the business-logic strategies to be skipped for LLM, {@code true}
      *         otherwise.
      */
-    public boolean isApplicableToLlm(Strategy strategy) {
-        return !(strategy instanceof QualifierStrategy || strategy instanceof LimiterStrategy);
+    public boolean isLlmStrategy(Strategy strategy) {
+        return strategy.getClass() == RequestStrategy.class || strategy instanceof ResponseStrategy;
+    }
+
+    /**
+     * Builds one immutable ordered chain from the sorted strategy list.
+     *
+     * @param strategies sorted strategy list
+     * @param filter     route-specific strategy filter
+     * @return immutable route chain
+     */
+    private List<Strategy> buildChain(List<Strategy> strategies, Predicate<Strategy> filter) {
+        return strategies.stream().filter(filter).collect(Collectors.toUnmodifiableList());
     }
 
     /**
@@ -316,7 +277,19 @@ public class StrategyFactory {
         if (strategies == null || strategies.isEmpty()) {
             return "[]";
         }
-        return strategies.stream().map(s -> s.getClass().getSimpleName()).collect(Collectors.joining(", "));
+        return strategies.stream().map(s -> s.getClass().getSimpleName())
+                .collect(Collectors.joining(Symbol.COMMA + Symbol.SPACE));
+    }
+
+    /**
+     * Defines how one route selects requests and filters strategies.
+     *
+     * @param route          route key used in logs and the chain map
+     * @param pathMatcher    request path matcher
+     * @param strategyFilter strategy filter for the route chain
+     */
+    private record ChainSpec(String route, Predicate<String> pathMatcher, Predicate<Strategy> strategyFilter) {
+
     }
 
 }
