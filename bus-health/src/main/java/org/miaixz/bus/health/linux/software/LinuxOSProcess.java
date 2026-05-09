@@ -185,6 +185,14 @@ public class LinuxOSProcess extends AbstractOSProcess {
      * The contextSwitches value.
      */
     private long contextSwitches;
+    /**
+     * The voluntaryContextSwitches value.
+     */
+    private long voluntaryContextSwitches;
+    /**
+     * The involuntaryContextSwitches value.
+     */
+    private long involuntaryContextSwitches;
 
     /**
      * Creates a new LinuxOSProcess instance.
@@ -559,6 +567,26 @@ public class LinuxOSProcess extends AbstractOSProcess {
     /**
      * Description inherited from parent class or interface.
      *
+     * @return the number of voluntary context switches
+     */
+    @Override
+    public long getVoluntaryContextSwitches() {
+        return this.voluntaryContextSwitches;
+    }
+
+    /**
+     * Description inherited from parent class or interface.
+     *
+     * @return the number of involuntary context switches
+     */
+    @Override
+    public long getInvoluntaryContextSwitches() {
+        return this.involuntaryContextSwitches;
+    }
+
+    /**
+     * Description inherited from parent class or interface.
+     *
      * @return the number of open file descriptors
      */
     @Override
@@ -751,7 +779,17 @@ public class LinuxOSProcess extends AbstractOSProcess {
         this.majorFaults = statArray[ProcPidStat.MAJOR_FAULTS.ordinal()];
         long nonVoluntaryContextSwitches = Parsing.parseLongOrDefault(status.get("nonvoluntary_ctxt_switches"), 0L);
         long voluntaryContextSwitches = Parsing.parseLongOrDefault(status.get("voluntary_ctxt_switches"), 0L);
+        this.voluntaryContextSwitches = voluntaryContextSwitches;
+        this.involuntaryContextSwitches = nonVoluntaryContextSwitches;
         this.contextSwitches = voluntaryContextSwitches + nonVoluntaryContextSwitches;
+        if (getProcessID() == this.os.getProcessId()) {
+            LinuxLibc.Rusage rusage = new LinuxLibc.Rusage();
+            if (0 == LinuxLibc.INSTANCE.getrusage(LinuxLibc.RUSAGE_SELF, rusage)) {
+                this.voluntaryContextSwitches = rusage.ru_nvcsw.longValue();
+                this.involuntaryContextSwitches = rusage.ru_nivcsw.longValue();
+                this.contextSwitches = this.voluntaryContextSwitches + this.involuntaryContextSwitches;
+            }
+        }
 
         this.upTime = now - startTime;
 

@@ -34,6 +34,7 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.Struct;
 import org.miaixz.bus.health.builtin.software.OSThread;
 import org.miaixz.bus.health.builtin.software.common.AbstractOSProcess;
+import org.miaixz.bus.health.mac.jna.SystemB;
 import org.miaixz.bus.health.mac.SysctlKit;
 import org.miaixz.bus.health.mac.driver.ThreadInfo;
 import org.miaixz.bus.logger.Logger;
@@ -43,7 +44,6 @@ import com.sun.jna.Native;
 import com.sun.jna.platform.mac.IOKit.IOIterator;
 import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
-import com.sun.jna.platform.mac.SystemB;
 import com.sun.jna.platform.mac.SystemB.Group;
 import com.sun.jna.platform.mac.SystemB.Passwd;
 import com.sun.jna.platform.unix.LibCAPI.size_t;
@@ -255,6 +255,14 @@ public class MacOSProcess extends AbstractOSProcess {
      * The contextSwitches value.
      */
     private long contextSwitches;
+    /**
+     * The voluntaryContextSwitches value.
+     */
+    private long voluntaryContextSwitches;
+    /**
+     * The involuntaryContextSwitches value.
+     */
+    private long involuntaryContextSwitches;
 
     /**
      * Creates a new MacOSProcess instance.
@@ -701,6 +709,26 @@ public class MacOSProcess extends AbstractOSProcess {
     /**
      * Description inherited from parent class or interface.
      *
+     * @return the number of voluntary context switches
+     */
+    @Override
+    public long getVoluntaryContextSwitches() {
+        return this.voluntaryContextSwitches;
+    }
+
+    /**
+     * Description inherited from parent class or interface.
+     *
+     * @return the number of involuntary context switches
+     */
+    @Override
+    public long getInvoluntaryContextSwitches() {
+        return this.involuntaryContextSwitches;
+    }
+
+    /**
+     * Description inherited from parent class or interface.
+     *
      * @return {@code true} if the process attributes were successfully updated, {@code false} otherwise
      */
     @Override
@@ -779,7 +807,20 @@ public class MacOSProcess extends AbstractOSProcess {
             this.majorFaults = taskAllInfo.ptinfo.pti_pageins;
             // testing using getrusage confirms pti_faults includes both major and minor
             this.minorFaults = taskAllInfo.ptinfo.pti_faults - taskAllInfo.ptinfo.pti_pageins; // NOSONAR squid:S2184
-            this.contextSwitches = taskAllInfo.ptinfo.pti_csw;
+            if (getProcessID() == this.os.getProcessId()) {
+                SystemB.Rusage rusage = new SystemB.Rusage();
+                if (0 == SystemB.INSTANCE.getrusage(SystemB.RUSAGE_SELF, rusage)) {
+                    this.voluntaryContextSwitches = rusage.ru_nvcsw.longValue();
+                    this.involuntaryContextSwitches = rusage.ru_nivcsw.longValue();
+                    this.contextSwitches = this.voluntaryContextSwitches + this.involuntaryContextSwitches;
+                } else {
+                    this.contextSwitches = taskAllInfo.ptinfo.pti_csw;
+                    this.voluntaryContextSwitches = 0L;
+                    this.involuntaryContextSwitches = 0L;
+                }
+            } else {
+                this.contextSwitches = taskAllInfo.ptinfo.pti_csw;
+            }
         }
         if (this.majorVersion > 10 || (this.majorVersion == 10 && this.minorVersion >= 9)) {
             try (Struct.CloseableRUsageInfoV2 rUsageInfoV2 = new Struct.CloseableRUsageInfoV2()) {

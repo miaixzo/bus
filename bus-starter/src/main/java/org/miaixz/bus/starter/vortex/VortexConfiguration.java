@@ -34,7 +34,6 @@ import org.miaixz.bus.vortex.filter.PrimaryFilter;
 import org.miaixz.bus.vortex.handler.ErrorsHandler;
 import org.miaixz.bus.vortex.handler.VortexHandler;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
-import org.miaixz.bus.vortex.provider.ProcessProvider;
 import org.miaixz.bus.vortex.registry.AssetsRegistry;
 import org.miaixz.bus.vortex.registry.LimiterRegistry;
 import org.miaixz.bus.vortex.routing.*;
@@ -42,11 +41,19 @@ import org.miaixz.bus.vortex.routing.grpc.GrpcExecutor;
 import org.miaixz.bus.vortex.routing.llm.LlmExecutor;
 import org.miaixz.bus.vortex.routing.llm.LlmFactory;
 import org.miaixz.bus.vortex.routing.mcp.McpExecutor;
-import org.miaixz.bus.vortex.routing.mcp.server.ManageProvider;
 import org.miaixz.bus.vortex.routing.mq.MqExecutor;
 import org.miaixz.bus.vortex.routing.rest.RestExecutor;
 import org.miaixz.bus.vortex.routing.ws.WsExecutor;
 import org.miaixz.bus.vortex.strategy.*;
+import org.miaixz.bus.vortex.strategy.qualifier.CstQualifierStrategy;
+import org.miaixz.bus.vortex.strategy.qualifier.McpQualifierStrategy;
+import org.miaixz.bus.vortex.strategy.qualifier.RestQualifierStrategy;
+import org.miaixz.bus.vortex.strategy.request.CstRequestStrategy;
+import org.miaixz.bus.vortex.strategy.request.McpRequestStrategy;
+import org.miaixz.bus.vortex.strategy.request.RestRequestStrategy;
+import org.miaixz.bus.vortex.strategy.vetting.CstVettingStrategy;
+import org.miaixz.bus.vortex.strategy.vetting.McpVettingStrategy;
+import org.miaixz.bus.vortex.strategy.vetting.RestVettingStrategy;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -86,11 +93,12 @@ import reactor.netty.http.server.HttpServer;
  * <p>
  * <b>Supported Protocols:</b>
  * <ul>
- * <li>HTTP/REST (mode 1): Standard RESTful API proxying</li>
- * <li>gRPC (mode 2): gRPC-Web and gRPC-HTTP proxying</li>
- * <li>WebSocket (mode 3): WebSocket connection management</li>
- * <li>MCP (mode 4-6): Model Context Protocol (STDIO, SSE, HTTP)</li>
- * <li>MQ (mode 7): Message Queue integration</li>
+ * <li>HTTP/REST (protocol 1): Standard REST API proxying</li>
+ * <li>MQ (protocol 2): Message Queue integration</li>
+ * <li>MCP (protocol 3): Model Context Protocol Streamable HTTP proxying</li>
+ * <li>gRPC (protocol 4): gRPC-Web and gRPC-HTTP proxying</li>
+ * <li>WebSocket (protocol 5): WebSocket connection management</li>
+ * <li>LLM (protocol 6): Large language model proxying</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -249,15 +257,13 @@ public class VortexConfiguration {
     }
 
     /**
-     * Provides the McpExecutor bean. This executor manages the lifecycle and operations of MCP clients.
+     * Provides the McpExecutor bean. This executor proxies standard MCP Streamable HTTP requests.
      *
-     * @param assetsRegistry  The AssetsRegistry instance used to access asset configurations.
-     * @param processProvider The process provider used to manage MCP processes.
      * @return A new instance of McpExecutor.
      */
     @Bean
-    public McpExecutor mcpExecutor(AssetsRegistry assetsRegistry, ProcessProvider processProvider) {
-        return new McpExecutor(assetsRegistry, processProvider);
+    public McpExecutor mcpExecutor() {
+        return new McpExecutor();
     }
 
     /**
@@ -318,17 +324,6 @@ public class VortexConfiguration {
     }
 
     /**
-     * Provides the ProcessProvider bean. This provider is responsible for starting and managing external processes,
-     * particularly for MCP (Model Context Protocol) clients.
-     *
-     * @return A new instance of ManageProvider.
-     */
-    @Bean
-    public ProcessProvider processProvider() {
-        return new ManageProvider();
-    }
-
-    /**
      * Provides the AssetsRegistry bean with the effective route-key strategy.
      *
      * @param keyingProvider optional route-key strategy bean
@@ -342,8 +337,8 @@ public class VortexConfiguration {
     }
 
     /**
-     * Provides the RequestStrategy bean. This strategy is responsible for initial request parsing and context
-     * initialization.
+     * Provides the basic request strategy bean. This strategy initializes request metadata without protocol-specific
+     * body parsing.
      *
      * @return A new instance of RequestStrategy.
      */
@@ -353,10 +348,41 @@ public class VortexConfiguration {
     }
 
     /**
-     * Provides the VettingStrategy bean. This strategy performs access authorization based on tokens, API keys, and
-     * asset configurations.
+     * Provides the REST request strategy bean. This strategy parses REST/API request parameters.
      *
-     * 
+     * @return A new instance of RestRequestStrategy.
+     */
+    @Bean
+    public RestRequestStrategy restRequestStrategy() {
+        return new RestRequestStrategy();
+    }
+
+    /**
+     * Provides the CST request strategy bean. This strategy uses REST-like parameter parsing with CST-specific chain
+     * typing.
+     *
+     * @return A new instance of CstRequestStrategy.
+     */
+    @Bean
+    public CstRequestStrategy cstRequestStrategy() {
+        return new CstRequestStrategy();
+    }
+
+    /**
+     * Provides the MCP request strategy bean. This strategy passes MCP requests through without body parsing.
+     *
+     * @return A new instance of McpRequestStrategy.
+     */
+    @Bean
+    public McpRequestStrategy mcpRequestStrategy() {
+        return new McpRequestStrategy();
+    }
+
+    /**
+     * Provides the basic vetting strategy bean. This strategy supplies common undefined-value validation,
+     * authorization-attribute merge, and request metadata enrichment for routes that do not yet have protocol-specific
+     * vetting.
+     *
      * @return A new instance of VettingStrategy.
      */
     @Bean
@@ -365,8 +391,41 @@ public class VortexConfiguration {
     }
 
     /**
-     * Provides the QualifierStrategy bean. This strategy performs request qualification and routing based on asset
-     * configurations.
+     * Provides the REST vetting strategy bean. This strategy validates REST/API parameters, timestamps, and signatures
+     * after route assets have been resolved.
+     *
+     * @return A new instance of RestVettingStrategy.
+     */
+    @Bean
+    public RestVettingStrategy restVettingStrategy() {
+        return new RestVettingStrategy();
+    }
+
+    /**
+     * Provides the CST vetting strategy bean. This strategy supplies CST-specific strategy typing while using common
+     * vetting behavior.
+     *
+     * @return A new instance of CstVettingStrategy.
+     */
+    @Bean
+    public CstVettingStrategy cstVettingStrategy() {
+        return new CstVettingStrategy();
+    }
+
+    /**
+     * Provides the MCP vetting strategy bean. This strategy validates MCP Streamable HTTP rules and optional route
+     * signatures using the asset already stored in the request context.
+     *
+     * @return A new instance of McpVettingStrategy.
+     */
+    @Bean
+    public McpVettingStrategy mcpVettingStrategy() {
+        return new McpVettingStrategy();
+    }
+
+    /**
+     * Provides the basic qualifier strategy bean. This strategy resolves route assets and applies authorization for
+     * routes that do not yet have protocol-specific qualification.
      *
      * @param authorizeProvider The AuthorizeProvider for handling authorization logic.
      * @param assetsRegistry    The AssetsRegistry for accessing API asset information.
@@ -374,8 +433,55 @@ public class VortexConfiguration {
      */
     @Bean
     @ConditionalOnBean(AuthorizeProvider.class)
-    public QualifierStrategy qualiferStrategy(AuthorizeProvider authorizeProvider, AssetsRegistry assetsRegistry) {
+    public QualifierStrategy qualifierStrategy(AuthorizeProvider authorizeProvider, AssetsRegistry assetsRegistry) {
         return new QualifierStrategy(authorizeProvider, assetsRegistry);
+    }
+
+    /**
+     * Provides the REST qualifier strategy bean. This strategy resolves REST/API route assets and applies authorization
+     * before REST vetting.
+     *
+     * @param authorizeProvider The AuthorizeProvider for handling authorization logic.
+     * @param assetsRegistry    The AssetsRegistry for accessing API asset information.
+     * @return A new instance of RestQualifierStrategy.
+     */
+    @Bean
+    @ConditionalOnBean(AuthorizeProvider.class)
+    public RestQualifierStrategy restQualifierStrategy(
+            AuthorizeProvider authorizeProvider,
+            AssetsRegistry assetsRegistry) {
+        return new RestQualifierStrategy(authorizeProvider, assetsRegistry);
+    }
+
+    /**
+     * Provides the CST qualifier strategy bean. This strategy resolves URL-based CST route assets.
+     *
+     * @param authorizeProvider The AuthorizeProvider for handling authorization logic.
+     * @param assetsRegistry    The AssetsRegistry for accessing API asset information.
+     * @return A new instance of CstQualifierStrategy.
+     */
+    @Bean
+    @ConditionalOnBean(AuthorizeProvider.class)
+    public CstQualifierStrategy cstQualifierStrategy(
+            AuthorizeProvider authorizeProvider,
+            AssetsRegistry assetsRegistry) {
+        return new CstQualifierStrategy(authorizeProvider, assetsRegistry);
+    }
+
+    /**
+     * Provides the MCP qualifier strategy bean. This strategy resolves MCP ingress route assets and applies
+     * authorization before MCP vetting.
+     *
+     * @param authorizeProvider The AuthorizeProvider for handling authorization logic.
+     * @param assetsRegistry    The AssetsRegistry for accessing API asset information.
+     * @return A new instance of McpQualifierStrategy.
+     */
+    @Bean
+    @ConditionalOnBean(AuthorizeProvider.class)
+    public McpQualifierStrategy mcpQualifierStrategy(
+            AuthorizeProvider authorizeProvider,
+            AssetsRegistry assetsRegistry) {
+        return new McpQualifierStrategy(authorizeProvider, assetsRegistry);
     }
 
     /**

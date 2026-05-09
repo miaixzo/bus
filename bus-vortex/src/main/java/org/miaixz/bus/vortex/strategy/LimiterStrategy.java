@@ -30,8 +30,7 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.magic.Limiter;
 import org.miaixz.bus.vortex.registry.LimiterRegistry;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
+import org.miaixz.bus.core.Order;
 import org.springframework.web.server.ServerWebExchange;
 
 import reactor.core.publisher.Flux;
@@ -53,7 +52,7 @@ import reactor.core.scheduler.Schedulers;
  * @see LimiterRegistry
  * @since Java 21+
  */
-@Order(Ordered.HIGHEST_PRECEDENCE + 4)
+@org.springframework.core.annotation.Order(Order.FOURTH)
 public class LimiterStrategy extends AbstractStrategy {
 
     /**

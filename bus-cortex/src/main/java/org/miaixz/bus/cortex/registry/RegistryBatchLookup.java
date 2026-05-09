@@ -17,32 +17,44 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.routing.mcp.client;
+package org.miaixz.bus.cortex.registry;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.miaixz.bus.cortex.Assets;
 
 /**
- * An {@link McpClient} implementation for services that provide responses over a generic, streamable HTTP connection.
- * <p>
- * This client extends {@link HttpClient} and is intended for services that stream data using mechanisms like chunked
- * transfer encoding, but do not follow the formal Server-Sent Events (SSE) protocol. The base implementation assumes a
- * simple request-response pattern.
- * <p>
- * <strong>Note:</strong> To handle actual streaming responses, the {@link #callTool} method would need to be overridden
- * to process a {@code Flux<String>} or a similar reactive stream from the {@code WebClient} response.
+ * Existing-asset lookup result keyed by registry route identity.
  *
+ * @param existingByRoute           existing assets keyed by route
+ * @param missingRoutes             routes known to be missing
+ * @param authoritativeByRoute      whether route lookup is authoritative for missing routes
+ * @param skipMethodVersionFallback whether method/version fallback should be skipped
+ * @param warnings                  lookup warnings
  * @author Kimi Liu
  * @since Java 21+
  */
-public class StreamableHttpClient extends HttpClient {
+public record RegistryBatchLookup(Map<RegistryRouteKey, Assets> existingByRoute, Set<RegistryRouteKey> missingRoutes,
+        boolean authoritativeByRoute, boolean skipMethodVersionFallback, List<String> warnings) {
 
     /**
-     * Constructs a new {@code StreamableHttpClient}.
-     *
-     * @param assets The {@link Assets} configuration for this client, containing the base URL of the remote service.
+     * Normalizes null collections to immutable empty collections.
      */
-    public StreamableHttpClient(Assets assets) {
-        super(assets);
+    public RegistryBatchLookup {
+        existingByRoute = existingByRoute == null ? Map.of() : Map.copyOf(existingByRoute);
+        missingRoutes = missingRoutes == null ? Set.of() : Set.copyOf(missingRoutes);
+        warnings = warnings == null ? List.of() : List.copyOf(warnings);
+    }
+
+    /**
+     * Returns an empty lookup result.
+     *
+     * @return empty result
+     */
+    public static RegistryBatchLookup empty() {
+        return new RegistryBatchLookup(Map.of(), Set.of(), false, false, List.of());
     }
 
 }

@@ -119,6 +119,11 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     private final Supplier<List<ApplicationInfo>> installedAppsSupplier = Memoizer
             .memoize(LinuxInstalledApps::queryInstalledApps, Memoizer.installedAppsExpiration());
 
+    /**
+     * The cgroupInfoSupplier value.
+     */
+    private final Supplier<CgroupInfo> cgroupInfoSupplier = Memoizer.memoize(LinuxCgroupInfo::new);
+
     static {
         boolean hasUdev = false;
         boolean hasGettid = false;
@@ -925,6 +930,16 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     @Override
     public List<ApplicationInfo> getInstalledApplications() {
         return installedAppsSupplier.get();
+    }
+
+    /**
+     * Description inherited from parent class or interface.
+     *
+     * @return the Linux cgroup information
+     */
+    @Override
+    public CgroupInfo getCgroupInfo() {
+        return cgroupInfoSupplier.get();
     }
 
 }

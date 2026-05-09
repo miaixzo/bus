@@ -379,7 +379,7 @@ public interface OperatingSystem {
      * <p>
      * The {@link Who#queryWho()} method produces similar output parsing the output of the Posix-standard {@code who}
      * command, and may internally employ reentrant code on some platforms. Users may opt to use this command-line
-     * variant by default using the {@code oshi.os.unix.whoCommand} configuration property.
+     * variant by default using the {@code bus.health.unix.whocommand} configuration property.
      *
      * @return A list of {@link OSSession} objects representing logged-in users
      */
@@ -417,6 +417,19 @@ public interface OperatingSystem {
      */
     default List<ApplicationInfo> getInstalledApplications() {
         return Collections.emptyList();
+    }
+
+    /**
+     * Retrieves cgroup information for the current process.
+     * <p>
+     * Linux returns cgroup resource limits and usage metrics when available. Other platforms return a default instance
+     * where {@link CgroupInfo#isContainerized()} returns {@code false}.
+     *
+     * @return A {@link CgroupInfo} object representing cgroup information.
+     */
+    default CgroupInfo getCgroupInfo() {
+        return new CgroupInfo() {
+        };
     }
 
     /**

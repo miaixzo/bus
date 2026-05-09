@@ -48,6 +48,10 @@ public abstract class AbstractHWDiskStore implements HWDiskStore {
      * The size value.
      */
     private final long size;
+    /**
+     * The diskType value.
+     */
+    private final String diskType;
 
     /**
      * Creates a new AbstractHWDiskStore instance.
@@ -58,10 +62,24 @@ public abstract class AbstractHWDiskStore implements HWDiskStore {
      * @param size   the size
      */
     protected AbstractHWDiskStore(String name, String model, String serial, long size) {
+        this(name, model, serial, size, "Unknown");
+    }
+
+    /**
+     * Creates a new AbstractHWDiskStore instance.
+     *
+     * @param name     the name
+     * @param model    the model
+     * @param serial   the serial
+     * @param size     the size
+     * @param diskType the disk type
+     */
+    protected AbstractHWDiskStore(String name, String model, String serial, long size, String diskType) {
         this.name = name;
         this.model = model;
         this.serial = serial;
         this.size = size;
+        this.diskType = diskType;
     }
 
     /**
@@ -105,6 +123,16 @@ public abstract class AbstractHWDiskStore implements HWDiskStore {
     }
 
     /**
+     * Returns the disk type.
+     *
+     * @return the get disk type result
+     */
+    @Override
+    public String getDiskType() {
+        return this.diskType;
+    }
+
+    /**
      * Returns the to string result.
      *
      * @return the to string result
@@ -112,8 +140,8 @@ public abstract class AbstractHWDiskStore implements HWDiskStore {
     @Override
     public String toString() {
         boolean readwrite = getReads() > 0 || getWrites() > 0;
-        String sb = getName() + ": " + "(model: " + getModel() + " - S/N: " + getSerial() + ") " + "size: "
-                + (getSize() > 0 ? Formats.formatBytesDecimal(getSize()) : "?") + ", " + "reads: "
+        String sb = getName() + ": " + "(model: " + getModel() + " - S/N: " + getSerial() + " - type: " + getDiskType()
+                + ") " + "size: " + (getSize() > 0 ? Formats.formatBytesDecimal(getSize()) : "?") + ", " + "reads: "
                 + (readwrite ? getReads() : "?") + " (" + (readwrite ? Formats.formatBytes(getReadBytes()) : "?")
                 + "), " + "writes: " + (readwrite ? getWrites() : "?") + " ("
                 + (readwrite ? Formats.formatBytes(getWriteBytes()) : "?") + "), " + "xfer: "

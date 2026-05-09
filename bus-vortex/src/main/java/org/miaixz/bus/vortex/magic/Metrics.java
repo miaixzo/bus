@@ -42,9 +42,15 @@ import org.miaixz.bus.vortex.provider.MetricsProvider;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
 @AllArgsConstructor
 public class Metrics {
+
+    /**
+     * Creates an empty metrics snapshot.
+     */
+    public Metrics() {
+
+    }
 
     /**
      * The CPU usage of the process, represented as a percentage (e.g., 15.5 for 15.5%).

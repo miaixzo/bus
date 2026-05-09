@@ -22,15 +22,14 @@ package org.miaixz.bus.vortex;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.miaixz.bus.vortex.strategy.QualifierStrategy;
 
 import java.util.Arrays;
 
 /**
  * Enumerates the possible source channels of a request, allowing for channel-specific logic and authorization.
  * <p>
- * This enum is used by the {@link QualifierStrategy} to identify the client type (e.g., Web, App) and can be used to
- * apply different validation rules or business logic based on the request's origin.
+ * This enum is used by qualifier strategies to identify the client type (e.g., Web, App) and can be used to apply
+ * different validation rules or business logic based on the request's origin.
  *
  * @author Kimi Liu
  * @since Java 21+

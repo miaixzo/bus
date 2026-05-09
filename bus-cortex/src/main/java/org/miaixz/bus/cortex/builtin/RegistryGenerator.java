@@ -76,12 +76,12 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
         return switch (spec.mode()) {
             case RegistrySpec.ENTRY -> {
                 String prefix = prefix(spec);
-                String id = spec.idToken();
+                String id = spec.idPart();
                 yield prefix == null || id == null ? null : prefix + id;
             }
             case RegistrySpec.INSTANCE -> {
                 String prefix = prefix(spec);
-                String fingerprint = spec.fingerprintToken();
+                String fingerprint = spec.fingerprintPart();
                 yield prefix == null || fingerprint == null ? null : prefix + fingerprint;
             }
             case RegistrySpec.ROUTE -> {
@@ -110,12 +110,12 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
             return List.of();
         }
         LinkedHashSet<String> keys = new LinkedHashSet<>();
-        String namespace = spec.namespaceToken();
-        String type = spec.typeKeyToken();
-        String appId = spec.appIdToken();
-        String method = spec.methodToken();
-        String version = spec.versionToken();
-        Integer verb = spec.verbToken();
+        String namespace = spec.namespacePart();
+        String type = spec.typeKeyPart();
+        String appId = spec.appIdPart();
+        String method = spec.methodPart();
+        String version = spec.versionPart();
+        Integer verb = spec.verbPart();
         this.appendKey(keys, namespace, type, appId, method, version, verb, true, true, true);
         this.appendKey(keys, namespace, type, appId, method, version, verb, true, true, false);
         this.appendKey(keys, namespace, type, appId, method, version, verb, true, false, true);
@@ -141,7 +141,7 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
         return switch (spec.mode()) {
             case RegistrySpec.ENTRY -> {
                 String namespace = RegistryIdentity.namespace(spec.namespace());
-                Type type = spec.typeToken();
+                Type type = spec.typePart();
                 yield type == null ? null
                         : Builder.REG_PREFIX + namespace + Symbol.COLON + type.segment() + Symbol.COLON;
             }
@@ -149,13 +149,13 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
                 StringBuilder builder = new StringBuilder();
                 builder.append(Builder.REG_PREFIX).append(RegistryIdentity.namespace(spec.namespace()))
                         .append(Symbol.COLON).append("instance").append(Symbol.COLON);
-                String appId = spec.appIdToken();
+                String appId = spec.appIdPart();
                 if (appId != null) {
                     builder.append(appId).append(Symbol.COLON);
-                    String method = spec.methodToken();
+                    String method = spec.methodPart();
                     if (method != null) {
                         builder.append(method).append(Symbol.COLON);
-                        String version = spec.versionToken();
+                        String version = spec.versionPart();
                         if (version != null) {
                             builder.append(version).append(Symbol.COLON);
                         }
@@ -171,11 +171,11 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
      * Appends one route-key candidate for a specific inclusion level.
      *
      * @param keys             route-key accumulator
-     * @param namespace        normalized namespace token
-     * @param type             normalized numeric type token
-     * @param appId            normalized application identifier token
-     * @param method           route method token
-     * @param version          route version token
+     * @param namespace        normalized namespace part
+     * @param type             normalized numeric type part
+     * @param appId            normalized application identifier part
+     * @param method           route method part
+     * @param version          route version part
      * @param verb             numeric verb code
      * @param includeNamespace whether the namespace segment should be emitted
      * @param includeType      whether the type segment should be emitted

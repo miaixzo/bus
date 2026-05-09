@@ -27,8 +27,7 @@ import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Formats;
 import org.miaixz.bus.vortex.Provider;
 import org.reactivestreams.Publisher;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
+import org.miaixz.bus.core.Order;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.web.server.ServerWebExchange;
@@ -43,13 +42,14 @@ import reactor.core.publisher.Mono;
  * @author Kimi Liu
  * @since Java 21+
  */
-@Order(Ordered.HIGHEST_PRECEDENCE + 5)
+@org.springframework.core.annotation.Order(Order.FIFTH)
 public class ResponseStrategy extends AbstractStrategy {
 
     /**
      * Creates a response strategy.
      */
     public ResponseStrategy() {
+
     }
 
     /**

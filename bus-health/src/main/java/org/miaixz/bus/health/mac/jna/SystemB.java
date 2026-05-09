@@ -23,6 +23,7 @@ import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.unix.jna.CLibrary;
 
 import com.sun.jna.Native;
+import com.sun.jna.NativeLong;
 import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 import com.sun.jna.Union;
@@ -50,6 +51,97 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
      * @return the vm deallocate result
      */
     int vm_deallocate(int targetTask, long address, long size);
+
+    /**
+     * Returns resource usage for the specified target.
+     *
+     * @param who    the usage target, such as {@link #RUSAGE_SELF}
+     * @param rusage the resource usage structure to populate
+     * @return 0 on success; -1 on failure
+     */
+    int getrusage(int who, Rusage rusage);
+
+    /**
+     * JNA wrapper for the rusage structure.
+     */
+    @FieldOrder({ "ru_utime_sec", "ru_utime_usec", "ru_stime_sec", "ru_stime_usec", "ru_maxrss", "ru_ixrss", "ru_idrss",
+            "ru_isrss", "ru_minflt", "ru_majflt", "ru_nswap", "ru_inblock", "ru_oublock", "ru_msgsnd", "ru_msgrcv",
+            "ru_nsignals", "ru_nvcsw", "ru_nivcsw" })
+    class Rusage extends Structure {
+
+        /**
+         * User time seconds.
+         */
+        public NativeLong ru_utime_sec;
+        /**
+         * User time microseconds.
+         */
+        public int ru_utime_usec;
+        /**
+         * System time seconds.
+         */
+        public NativeLong ru_stime_sec;
+        /**
+         * System time microseconds.
+         */
+        public int ru_stime_usec;
+        /**
+         * Maximum resident set size.
+         */
+        public NativeLong ru_maxrss;
+        /**
+         * Shared memory size.
+         */
+        public NativeLong ru_ixrss;
+        /**
+         * Unshared data size.
+         */
+        public NativeLong ru_idrss;
+        /**
+         * Unshared stack size.
+         */
+        public NativeLong ru_isrss;
+        /**
+         * Minor page faults.
+         */
+        public NativeLong ru_minflt;
+        /**
+         * Major page faults.
+         */
+        public NativeLong ru_majflt;
+        /**
+         * Swap count.
+         */
+        public NativeLong ru_nswap;
+        /**
+         * Block input operations.
+         */
+        public NativeLong ru_inblock;
+        /**
+         * Block output operations.
+         */
+        public NativeLong ru_oublock;
+        /**
+         * Sent messages.
+         */
+        public NativeLong ru_msgsnd;
+        /**
+         * Received messages.
+         */
+        public NativeLong ru_msgrcv;
+        /**
+         * Received signals.
+         */
+        public NativeLong ru_nsignals;
+        /**
+         * Voluntary context switches.
+         */
+        public NativeLong ru_nvcsw;
+        /**
+         * Involuntary context switches.
+         */
+        public NativeLong ru_nivcsw;
+    }
 
     /**
      * Returns the statfs64 result.

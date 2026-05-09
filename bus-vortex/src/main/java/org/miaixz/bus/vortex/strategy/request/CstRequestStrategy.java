@@ -17,23 +17,27 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.routing.mcp.client;
+package org.miaixz.bus.vortex.strategy.request;
 
-import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.core.Order;
 
 /**
- * MCP Client implementation for the SSE (Server-Sent Events) protocol. It extends HttpClient and uses WebClient for
- * communication.
+ * CST URL-based request parsing strategy.
+ * <p>
+ * CST currently uses the same request-parameter parsing behavior as REST while keeping a dedicated strategy type for
+ * explicit CST chain composition.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
-public class SseClient extends HttpClient {
+@org.springframework.core.annotation.Order(Order.FIRST)
+public class CstRequestStrategy extends RestRequestStrategy {
 
     /**
-     * Constructs a new SseClient.
-     * 
-     * @param assets The Assets configuration for this client.
+     * Creates a CST request strategy.
      */
-    public SseClient(Assets assets) {
-        super(assets);
+    public CstRequestStrategy() {
+        super();
     }
 
 }

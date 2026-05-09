@@ -18,19 +18,17 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides the core executors and concrete implementations for supporting the Miaixz Communication Protocol (MCP).
+ * Provides the MCP Streamable HTTP reverse-proxy executor.
  * <p>
- * This package is the root for all MCP-related functionality. It contains:
- * <ul>
- * <li>{@link org.miaixz.bus.vortex.routing.mcp.McpExecutor}: The central executor that manages the lifecycle of all MCP
- * clients.</li>
- * <li>The {@code client} subpackage: Contains different {@link org.miaixz.bus.vortex.routing.mcp.client.McpClient}
- * implementations for various transport protocols (e.g., stdio, http).</li>
- * <li>The {@code process} subpackage: Contains the default implementation for managing local MCP service
- * processes.</li>
- * </ul>
+ * The package contains only the runtime executor for standard {@code /router/mcp/**} requests. It does not create MCP
+ * servers, start stdio processes, aggregate tools, or maintain MCP clients. Every request is resolved through
+ * registered assets and then proxied to one registered Streamable HTTP target endpoint.
  * <p>
- * The corresponding {@link org.miaixz.bus.vortex.routing.McpRouter} delegates routing logic to this executor.
+ * The corresponding {@link org.miaixz.bus.vortex.routing.McpRouter} delegates to
+ * {@link org.miaixz.bus.vortex.routing.mcp.McpExecutor#execute(org.miaixz.bus.vortex.Context, org.springframework.web.reactive.function.server.ServerRequest)}.
+ * Without an explicit {@code format} query parameter, responses follow standard MCP semantics and are returned as JSON,
+ * Server-Sent Events, or empty 202/204 responses. When {@code format} is present, the strategy chain applies the
+ * gateway's normal response formatting after proxy execution.
  *
  * @author Kimi Liu
  * @since Java 21+

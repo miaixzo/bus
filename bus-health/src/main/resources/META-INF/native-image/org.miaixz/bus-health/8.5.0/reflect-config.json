@@ -1155,6 +1155,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.health.builtin.software.CgroupInfo",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.health.builtin.software.NetworkParams",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -1849,6 +1860,17 @@
   },
   {
     "name": "org.miaixz.bus.health.linux.software.LinuxInstalledApps",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.health.linux.software.LinuxCgroupInfo",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2718,17 +2740,6 @@
   },
   {
     "name": "org.miaixz.bus.health.unix.hardware.UnixDisplay",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
-    "name": "org.miaixz.bus.health.unix.hardware.UnixPrinter",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,

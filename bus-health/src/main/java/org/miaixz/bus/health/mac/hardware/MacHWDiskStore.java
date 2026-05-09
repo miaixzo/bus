@@ -99,13 +99,14 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
      * @param model         The model of the disk.
      * @param serial        The serial number of the disk.
      * @param size          The size of the disk in bytes.
+     * @param diskType      The disk type.
      * @param session       The DiskArbitration session reference.
      * @param mountPointMap A map of partition BSD names to their mount points.
      * @param cfKeyMap      A map of {@link CFKey} enum values to their corresponding {@link CFStringRef}.
      */
-    private MacHWDiskStore(String name, String model, String serial, long size, DASessionRef session,
+    private MacHWDiskStore(String name, String model, String serial, long size, String diskType, DASessionRef session,
             Map<String, String> mountPointMap, Map<CFKey, CFStringRef> cfKeyMap) {
-        super(name, model, serial, size);
+        super(name, model, serial, size, diskType);
         updateDiskStats(session, mountPointMap, cfKeyMap);
     }
 
@@ -210,8 +211,8 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                 if (size <= 0) {
                     continue;
                 }
-                HWDiskStore diskStore = new MacHWDiskStore(bsdName, model.trim(), serial.trim(), size, session,
-                        mountPointMap, cfKeyMap);
+                HWDiskStore diskStore = new MacHWDiskStore(bsdName, model.trim(), serial.trim(), size,
+                        detectDiskType(bsdName), session, mountPointMap, cfKeyMap);
                 diskList.add(diskStore);
             }
         }
@@ -234,6 +235,91 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
             keyMap.put(cfKey, CFStringRef.createCFString(cfKey.getKey()));
         }
         return keyMap;
+    }
+
+    /**
+     * Detects the disk type from IOKit metadata.
+     *
+     * @param bsdName the BSD disk name
+     * @return the detected disk type
+     */
+    private static String detectDiskType(String bsdName) {
+        CFMutableDictionaryRef matchingDict = IOKitUtil.getBSDNameMatchingDict(bsdName);
+        if (matchingDict == null) {
+            return "Unknown";
+        }
+        IOIterator iter = IOKitUtil.getMatchingServices(matchingDict);
+        if (iter == null) {
+            return "Unknown";
+        }
+        try {
+            IORegistryEntry media = iter.next();
+            if (media != null) {
+                try {
+                    Boolean removable = media.getBooleanProperty("Removable");
+                    if (removable != null && removable) {
+                        return "Removable";
+                    }
+                    IORegistryEntry driver = media.getParentEntry("IOService");
+                    if (driver != null) {
+                        try {
+                            IORegistryEntry device = driver.getParentEntry("IOService");
+                            if (device != null) {
+                                try {
+                                    String type = readMediumType(device);
+                                    if (type != null) {
+                                        if (type.contains("Solid State") || type.contains("SSD")) {
+                                            return "SSD";
+                                        } else if (type.contains("Rotational")) {
+                                            return "HDD";
+                                        }
+                                    }
+                                } finally {
+                                    device.release();
+                                }
+                            }
+                        } finally {
+                            driver.release();
+                        }
+                    }
+                } finally {
+                    media.release();
+                }
+            }
+        } finally {
+            iter.release();
+        }
+        return "Unknown";
+    }
+
+    /**
+     * Reads the IOKit medium type from an IOBlockStorageDevice entry.
+     *
+     * @param device the IOKit device entry
+     * @return the medium type string, or {@code null}
+     */
+    private static String readMediumType(IORegistryEntry device) {
+        CFMutableDictionaryRef props = device.createCFProperties();
+        if (props == null) {
+            return null;
+        }
+        CFStringRef deviceCharacteristics = CFStringRef.createCFString("Device Characteristics");
+        CFStringRef mediumTypeKey = CFStringRef.createCFString("Medium Type");
+        try {
+            Pointer charDict = props.getValue(deviceCharacteristics);
+            if (charDict != null) {
+                CFDictionaryRef characteristics = new CFDictionaryRef(charDict);
+                Pointer mediumType = characteristics.getValue(mediumTypeKey);
+                if (mediumType != null) {
+                    return CFKit.cfPointerToString(mediumType);
+                }
+            }
+            return null;
+        } finally {
+            mediumTypeKey.release();
+            deviceCharacteristics.release();
+            props.release();
+        }
     }
 
     /**

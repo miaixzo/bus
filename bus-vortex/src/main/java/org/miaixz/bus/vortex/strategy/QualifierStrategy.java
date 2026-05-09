@@ -20,10 +20,9 @@
 package org.miaixz.bus.vortex.strategy;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.basic.normal.Consts;
@@ -45,48 +44,46 @@ import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.magic.Principal;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
 import org.miaixz.bus.vortex.registry.AssetsRegistry;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
+import org.miaixz.bus.core.Order;
 import org.springframework.web.server.ServerWebExchange;
 
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 /**
- * A strategy that qualifies incoming requests by validating API metadata and orchestrating authorization.
+ * Basic qualifier strategy for routes without protocol-specific qualification rules.
  * <p>
- * This class acts as a crucial gatekeeper in the request pipeline. It performs initial validation and then delegates
- * credential-specific checks. Its primary responsibilities are:
- * <ul>
- * <li>Looking up the API asset configuration based on request parameters.</li>
- * <li>Validating the HTTP method against the asset's definition.</li>
- * <li>Establishing the credential discovery order (e.g., Bearer Token first, then API Key).</li>
- * <li>Encapsulating the found credential into a {@link Principal} object.</li>
- * <li>Delegating the core validation logic to a pluggable {@link AuthorizeProvider}.</li>
- * </ul>
- * It does not contain any specific validation logic itself, making it a stable part of the framework's core.
+ * This strategy owns the common asset-route, HTTP-method, and authorization rules used by CST/MQ/gRPC/WebSocket style
+ * routes. Protocol-specific strategies can extend it and override {@link #apply(ServerWebExchange, Chain)} when they
+ * need custom asset matching.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-@Order(Ordered.HIGHEST_PRECEDENCE + 3)
+@org.springframework.core.annotation.Order(Order.SECOND)
 public class QualifierStrategy extends AbstractStrategy {
 
     /**
-     * The provider responsible for validating credentials and fetching permissions.
+     * Exchange attribute key used to defer REST authorization attributes until signature verification completes.
      */
-    private final AuthorizeProvider provider;
+    public static final String AUTHORIZATION_ATTRIBUTES = QualifierStrategy.class.getName()
+            + ".AUTHORIZATION_ATTRIBUTES";
 
     /**
-     * The registry containing configuration for all available API assets.
+     * Provider used to validate route credentials and load authorization attributes.
      */
-    private final AssetsRegistry registry;
+    protected final AuthorizeProvider provider;
 
     /**
-     * Constructs a new {@code QualiferStrategy} with the specified provider and registry.
+     * Registry used by qualifier strategies to resolve route assets.
+     */
+    protected final AssetsRegistry registry;
+
+    /**
+     * Creates a qualifier support instance.
      *
-     * @param provider The {@link AuthorizeProvider} used for credential validation.
-     * @param registry The {@link AssetsRegistry} used to retrieve API asset configurations.
+     * @param provider credential validation provider
+     * @param registry asset registry
      */
     public QualifierStrategy(AuthorizeProvider provider, AssetsRegistry registry) {
         this.provider = provider;
@@ -94,80 +91,46 @@ public class QualifierStrategy extends AbstractStrategy {
     }
 
     /**
-     * Executes the full qualification and authorization workflow for the incoming request.
-     * <p>
-     * This method orchestrates the following steps:
-     * <ol>
-     * <li>Extracts key gateway parameters (e.g., format, channel, namespace, method, version) from the request and
-     * populates the {@link Context}.</li>
-     * <li>Retrieves the {@link Assets} configuration from the registry using namespace, method, version, and verb.</li>
-     * <li>Sets the resolved {@link Assets} in the context for downstream use.</li>
-     * <li>Validates that the request's HTTP method matches the one defined in the assets.</li>
-     * <li>If the API asset is protected, it invokes the authorization workflow.</li>
-     * <li>Removes internal gateway parameters (e.g., namespace, method, version, format, sign) before passing the
-     * request to the next strategy.</li>
-     * </ol>
+     * Resolves a generic route asset, validates its HTTP verb, and performs policy authorization.
      *
-     * @param exchange The {@link ServerWebExchange} representing the current request and response.
-     * @param chain    The {@link Chain} to invoke the next strategy in the chain.
-     * @return A {@link Mono<Void>} signaling the completion of this strategy's processing.
-     * @throws ValidateException If the API asset is not found ({@link ErrorCode#_100800}), or if the request's HTTP
-     *                           method does not match the one configured for the asset.
+     * @param exchange current exchange
+     * @param chain    remaining strategy chain
+     * @return qualification completion signal
      */
     @Override
     public Mono<Void> apply(ServerWebExchange exchange, Chain chain) {
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
-            Map<String, Object> params = context.getParameters();
 
-            context.setFormat(
-                    Formats.get(Optional.ofNullable(params.get(Args.FORMAT)).map(Object::toString).orElse(null)));
-            context.setChannel(
-                    Channel.get(
-                            Optional.ofNullable(params.get(Args.X_REMOTE_CHANNEL)).map(Object::toString).orElse(null)));
-
-            String namespace = Optional.ofNullable(params.get(Args.NAMESPACE)).map(Object::toString).orElse(null);
-            String appId = Optional.ofNullable(params.get(Args.APP_ID)).map(Object::toString)
-                    .orElseGet(() -> exchange.getRequest().getHeaders().getFirst(Args.X_APP_ID));
-            String method = Optional.ofNullable(params.get(Args.METHOD)).map(Object::toString).orElse(null);
-            Type type = this.type(Optional.ofNullable(params.get(Args.TYPE)).map(Object::toString).orElse(null));
-            String version = Optional.ofNullable(params.get(Args.VERSION)).map(Object::toString).orElse(null);
-            Integer verb = context.getHttpMethod() == null ? null : context.getHttpMethod().verb();
-            Keying.RegistrySpec requestRoute = Keying.RegistrySpec.route(namespace, type, appId, method, version, verb);
+            Keying.RegistrySpec requestRoute = route(exchange, context);
+            String namespace = requestRoute.namespacePart();
+            String type = requestRoute.typeKeyPart();
+            String appId = requestRoute.appIdPart();
+            String method = requestRoute.methodPart();
+            String version = requestRoute.versionPart();
+            Integer verb = requestRoute.verbPart();
 
             return Mono.fromCallable(() -> this.registry.get(requestRoute)).subscribeOn(Schedulers.boundedElastic())
                     .switchIfEmpty(Mono.defer(() -> {
                         Logger.warn(
                                 false,
                                 "Vortex",
-                                "Assets not found: strategy=qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}, verb={}",
+                                "Asset not found: strategy=qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}, verb={}",
                                 context.getX_request_ip(),
                                 namespace,
-                                type == null ? null : type.key(),
+                                type,
                                 appId,
                                 method,
                                 version,
                                 verb);
                         return Mono.error(new ValidateException(ErrorCode._100800));
-                    })).flatMap(assets -> {
+                    })).flatMap(match -> {
+                        Assets assets = match.assets();
                         context.setAssets(assets);
-                        Keying.RegistrySpec resolvedRoute = Keying.RegistrySpec.route(assets);
-                        String matchedRoute = null;
-                        Integer matchedLevel = null;
-                        List<String> requestedRoutes = this.registry.keying().keys(requestRoute);
-                        List<String> resolvedRoutes = this.registry.keying().keys(resolvedRoute);
-                        for (int i = 0; i < requestedRoutes.size(); i++) {
-                            String requested = requestedRoutes.get(i);
-                            if (resolvedRoutes.contains(requested)) {
-                                matchedRoute = requested;
-                                matchedLevel = i + 1;
-                                break;
-                            }
-                        }
                         Logger.info(
                                 true,
                                 "Vortex",
-                                "Assets resolved: strategy=qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}, verb={}, matchedLevel={}, matchedRoute={}, policy={}, sign={}, mode={}, host={}, port={}, path={}, url={}",
+                                "Asset resolved: strategy=qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}, verb={}, policy={}, sign={}, mode={}, host={}, port={}, path={}, url={}",
                                 context.getX_request_ip(),
                                 assets.getNamespace_id(),
                                 assets.getType(),
@@ -175,8 +138,6 @@ public class QualifierStrategy extends AbstractStrategy {
                                 assets.getMethod(),
                                 assets.getVersion(),
                                 assets.getVerb(),
-                                matchedLevel,
-                                matchedRoute,
                                 assets.getPolicy(),
                                 assets.getSign(),
                                 assets.getProtocol(),
@@ -184,33 +145,66 @@ public class QualifierStrategy extends AbstractStrategy {
                                 assets.getPort(),
                                 assets.getPath(),
                                 assets.getUrl());
-
-                        Mono<Void> validationMono = this.method(exchange, context, assets);
-
-                        Mono<Void> authMono = (Consts.ZERO != assets.getPolicy()) ? this.authorize(context)
+                        Mono<Void> validationMono = this.method(context, assets);
+                        Mono<Void> authMono = !Consts.ZERO.equals(assets.getPolicy()) ? this.authorize(
+                                context,
+                                attributes -> exchange.getAttributes().put(AUTHORIZATION_ATTRIBUTES, attributes))
                                 : Mono.empty();
-
                         return validationMono.then(authMono);
-                    }).then(Mono.fromRunnable(() -> {
-                        context.getParameters().remove(Args.NAMESPACE);
-                        context.getParameters().remove(Args.APP_ID);
-                        context.getParameters().remove(Args.METHOD);
-                        context.getParameters().remove(Args.FORMAT);
-                        context.getParameters().remove(Args.TYPE);
-                        context.getParameters().remove(Args.VERSION);
-                        context.getParameters().remove(Args.SIGN);
-                        Logger.info(
-                                true,
-                                "Vortex",
-                                "Qualifier validation completed: strategy=qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}",
-                                context.getX_request_ip(),
-                                namespace,
-                                type == null ? null : type.key(),
-                                appId,
-                                method,
-                                version);
-                    })).then(chain.apply(exchange));
+                    })
+                    .then(
+                            Mono.fromRunnable(
+                                    () -> Logger.info(
+                                            true,
+                                            "Vortex",
+                                            "Qualifier completed: strategy=qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}",
+                                            context.getX_request_ip(),
+                                            namespace,
+                                            type,
+                                            appId,
+                                            method,
+                                            version)))
+                    .then(chain.apply(exchange));
         });
+    }
+
+    /**
+     * Builds the runtime route specification from gateway parameters and query/header fallbacks.
+     * <p>
+     * REST and MCP share the same registry dimensions, so both concrete qualifiers use this method before asset lookup.
+     *
+     * @param exchange current web exchange
+     * @param context  current request context
+     * @return runtime route specification
+     */
+    protected Keying.RegistrySpec route(ServerWebExchange exchange, Context context) {
+        context.setFormat(Formats.get(this.value(context, Args.FORMAT)));
+        context.setChannel(Channel.get(this.value(context, Args.X_REMOTE_CHANNEL)));
+
+        String namespace = this.value(context, Args.NAMESPACE);
+        String appId = this.value(context, Args.APP_ID);
+        if (StringKit.isBlank(appId)) {
+            appId = exchange.getRequest().getHeaders().getFirst(Args.APP_ID);
+        }
+        Type type = this.type(this.value(context, Args.TYPE));
+        String method = this.value(context, Args.METHOD);
+        if (StringKit.isBlank(method)) {
+            method = exchange.getRequest().getURI().getPath();
+        }
+        String version = this.version(exchange, context);
+        Integer verb = context.getHttpMethod() == null ? null : context.getHttpMethod().verb();
+        return Keying.RegistrySpec.route(namespace, type, appId, method, version, verb);
+    }
+
+    /**
+     * Resolves the route version for asset lookup.
+     *
+     * @param exchange current web exchange
+     * @param context  current request context
+     * @return resolved route version, or {@code null}
+     */
+    protected String version(ServerWebExchange exchange, Context context) {
+        return this.value(context, Args.VERSION);
     }
 
     /**
@@ -231,14 +225,13 @@ public class QualifierStrategy extends AbstractStrategy {
     }
 
     /**
-     * Validates whether the request's HTTP method matches the expected method defined in the API asset configuration.
+     * Validates whether the request's HTTP method matches the route asset definition.
      *
-     * @param exchange The {@link ServerWebExchange} containing the current request.
-     * @param context  The request context (for logging).
-     * @param assets   The {@link Assets} configuration for the requested API.
-     * @return A {@link Mono<Void>} that completes if valid, or signals an error if mismatched.
+     * @param context request context used for logging
+     * @param assets  resolved route asset
+     * @return completion signal
      */
-    protected Mono<Void> method(ServerWebExchange exchange, Context context, Assets assets) {
+    protected Mono<Void> method(Context context, Assets assets) {
         return Mono.fromRunnable(() -> {
             final HTTP.Method actualMethod = context.getHttpMethod();
             final HTTP.Method expectedMethod = this.methodOf(assets.getVerb());
@@ -269,16 +262,30 @@ public class QualifierStrategy extends AbstractStrategy {
     }
 
     /**
-     * Orchestrates the authorization process by finding credentials and delegating validation to the
-     * {@link AuthorizeProvider}.
+     * Performs policy-based authorization for the resolved asset.
      * <p>
-     * This method enforces the access control policy defined in the {@link Assets} configuration. The policy determines
-     * which credential types are accepted and the validation level required.
+     * Policy values decide whether bearer tokens or API keys are accepted. Successful authorization attributes are
+     * copied into the request parameters for downstream executors.
      *
-     * @param context The request context.
-     * @return A {@link Mono<Void>} that completes on success, or signals an error on failure.
+     * @param context current request context
+     * @return completion signal
      */
     protected Mono<Void> authorize(Context context) {
+        return authorize(context, context.getParameters()::putAll);
+    }
+
+    /**
+     * Performs policy-based authorization and sends authorization attributes to the supplied consumer.
+     * <p>
+     * REST uses a deferred consumer so generated authorization attributes are not included in request signature
+     * verification. MCP can write them immediately because its signature canonical string is built from headers, path,
+     * query, and raw body rather than gateway parameters.
+     *
+     * @param context            current request context
+     * @param attributesConsumer authorization attribute sink
+     * @return completion signal
+     */
+    protected Mono<Void> authorize(Context context, Consumer<Map<String, Object>> attributesConsumer) {
         final Integer policy = context.getAssets().getPolicy();
 
         if (policy == null || policy < Consts.ZERO || policy > Consts.SIX) {
@@ -363,7 +370,9 @@ public class QualifierStrategy extends AbstractStrategy {
                                 .filter(entry -> entry.getKey() != null && entry.getValue() != null)
                                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-                        context.getParameters().putAll(nonNullAuthMap);
+                        if (attributesConsumer != null) {
+                            attributesConsumer.accept(nonNullAuthMap);
+                        }
                         Logger.info(
                                 true,
                                 "Vortex",

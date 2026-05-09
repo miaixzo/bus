@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.vortex.magic;
 
+import java.util.List;
+
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -61,9 +63,15 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
 @AllArgsConstructor
 public class Performance {
+
+    /**
+     * Creates a performance configuration with default values.
+     */
+    public Performance() {
+
+    }
 
     /**
      * The threshold in bytes for enabling streaming request body processing.
@@ -166,5 +174,12 @@ public class Performance {
      */
     @Builder.Default
     private boolean sanitizeNullLikeParameters = true;
+
+    /**
+     * Trusted origins accepted by the MCP Streamable HTTP ingress. When empty, MCP requests only trust same-host
+     * origins.
+     */
+    @Builder.Default
+    private List<String> mcpTrustedOrigins = List.of();
 
 }

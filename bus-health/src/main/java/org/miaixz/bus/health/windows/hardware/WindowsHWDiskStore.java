@@ -125,6 +125,19 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
+     * Creates a new WindowsHWDiskStore instance.
+     *
+     * @param name     the name
+     * @param model    the model
+     * @param serial   the serial
+     * @param size     the size
+     * @param diskType the disk type
+     */
+    private WindowsHWDiskStore(String name, String model, String serial, long size, String diskType) {
+        super(name, model, serial, size, diskType);
+    }
+
+    /**
      * Gets the disks on this machine
      *
      * @return a list of {@link HWDiskStore} objects representing the disks
@@ -149,7 +162,8 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
                                 WmiKit.getString(vals, DiskDriveProperty.MANUFACTURER, i)).trim(),
                         // Most vendors store serial # as a hex string; convert
                         Parsing.hexStringToString(WmiKit.getString(vals, DiskDriveProperty.SERIALNUMBER, i)),
-                        WmiKit.getUint64(vals, DiskDriveProperty.SIZE, i));
+                        WmiKit.getUint64(vals, DiskDriveProperty.SIZE, i),
+                        parseWindowsMediaType(WmiKit.getString(vals, DiskDriveProperty.MEDIATYPE, i)));
 
                 String index = Integer.toString(WmiKit.getUint32(vals, DiskDriveProperty.INDEX, i));
                 ds.reads = stats.readMap.getOrDefault(index, 0L);
@@ -339,6 +353,25 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
      */
     private static String getIndexFromName(String s) {
         return s.split("\\s", 2)[0];
+    }
+
+    /**
+     * Parses the Windows WMI media type into a disk type.
+     *
+     * @param mediaType the WMI media type
+     * @return the disk type
+     */
+    private static String parseWindowsMediaType(String mediaType) {
+        if (mediaType == null || mediaType.isEmpty()) {
+            return "Unknown";
+        }
+        String lower = mediaType.toLowerCase(Locale.ROOT);
+        if (lower.contains("removable")) {
+            return "Removable";
+        } else if (lower.contains("fixed") || lower.contains("external")) {
+            return "HDD";
+        }
+        return "Unknown";
     }
 
     /**

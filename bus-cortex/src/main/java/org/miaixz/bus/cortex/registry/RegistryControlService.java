@@ -20,6 +20,7 @@
 package org.miaixz.bus.cortex.registry;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +74,18 @@ public class RegistryControlService {
      * Route-key strategy used for alias registration and dependency resolution.
      */
     private final Keying<Keying.RegistrySpec> keying;
+    /**
+     * Externally supplied batch executors ordered before the default executor.
+     */
+    private final List<RegistryBatchExecutor> batchExecutors;
+    /**
+     * Externally supplied batch resolvers used by the default batch executor.
+     */
+    private final List<RegistryBatchResolver> batchResolvers;
+    /**
+     * Default batch executor preserving historical behavior.
+     */
+    private final RegistryBatchExecutor defaultBatchExecutor;
 
     /**
      * Creates a RegistryControlService.
@@ -109,11 +122,65 @@ public class RegistryControlService {
      */
     public RegistryControlService(ApiRegistry apiRegistry, McpRegistry mcpRegistry, PromptRegistry promptRegistry,
             CortexGuard cortexGuard, Keying<Keying.RegistrySpec> keying) {
+        this(apiRegistry, mcpRegistry, promptRegistry, cortexGuard, keying, List.of());
+    }
+
+    /**
+     * Creates a RegistryControlService with optional shared guard, route-key strategy and batch executors.
+     *
+     * @param apiRegistry    API registry
+     * @param mcpRegistry    MCP registry
+     * @param promptRegistry prompt registry
+     * @param cortexGuard    optional shared guard
+     * @param keying         route-key strategy
+     * @param batchExecutors external batch executors
+     */
+    public RegistryControlService(ApiRegistry apiRegistry, McpRegistry mcpRegistry, PromptRegistry promptRegistry,
+            CortexGuard cortexGuard, Keying<Keying.RegistrySpec> keying, List<RegistryBatchExecutor> batchExecutors) {
+        this(apiRegistry, mcpRegistry, promptRegistry, cortexGuard, keying, batchExecutors, List.of());
+    }
+
+    /**
+     * Creates a RegistryControlService with optional shared guard, route-key strategy, batch executors and batch
+     * resolvers.
+     *
+     * @param apiRegistry    API registry
+     * @param mcpRegistry    MCP registry
+     * @param promptRegistry prompt registry
+     * @param cortexGuard    optional shared guard
+     * @param keying         route-key strategy
+     * @param batchExecutors external batch executors
+     * @param batchResolvers external batch resolvers
+     */
+    public RegistryControlService(ApiRegistry apiRegistry, McpRegistry mcpRegistry, PromptRegistry promptRegistry,
+            CortexGuard cortexGuard, Keying<Keying.RegistrySpec> keying, List<RegistryBatchExecutor> batchExecutors,
+            List<RegistryBatchResolver> batchResolvers) {
         this.apiRegistry = apiRegistry;
         this.mcpRegistry = mcpRegistry;
         this.promptRegistry = promptRegistry;
         this.cortexGuard = cortexGuard;
         this.keying = keying == null ? RegistryGenerator.INSTANCE : keying;
+        List<RegistryBatchExecutor> executors = new ArrayList<>();
+        if (batchExecutors != null) {
+            for (RegistryBatchExecutor executor : batchExecutors) {
+                if (executor != null) {
+                    executors.add(executor);
+                }
+            }
+        }
+        executors.sort(Comparator.comparingInt(RegistryBatchExecutor::order));
+        this.batchExecutors = List.copyOf(executors);
+        List<RegistryBatchResolver> resolvers = new ArrayList<>();
+        if (batchResolvers != null) {
+            for (RegistryBatchResolver resolver : batchResolvers) {
+                if (resolver != null) {
+                    resolvers.add(resolver);
+                }
+            }
+        }
+        resolvers.sort(Comparator.comparingInt(RegistryBatchResolver::order));
+        this.batchResolvers = List.copyOf(resolvers);
+        this.defaultBatchExecutor = new DefaultRegistryBatchExecutor(this.batchResolvers);
     }
 
     /**
@@ -276,54 +343,9 @@ public class RegistryControlService {
                 operation.getOperationType(),
                 operation.getNamespace_id(),
                 operation.getEntries().size());
-        for (Assets source : operation.getEntries()) {
-            if (source == null) {
-                result.recordFailure(
-                        BatchResult.Failure
-                                .of(null, operation.getNamespace_id(), null, null, null, "Null batch entry"));
-                if (!operation.isContinueOnError()) {
-                    break;
-                }
-                continue;
-            }
-            Assets entry = RegistryAssets.copy(source);
-            if (operation.getNamespace_id() != null
-                    && (entry.getNamespace_id() == null || entry.getNamespace_id().isBlank())) {
-                entry.setNamespace_id(operation.getNamespace_id());
-            }
-            if (operation.getType() != null) {
-                entry.setType(operation.getType().key());
-            }
-            try {
-                enforceRegistry(
-                        operation.getOperationType() == null ? "batch"
-                                : operation.getOperationType().name().toLowerCase(),
-                        RegistryIdentity.type(entry),
-                        entry);
-                applyBatchEntry(operation, entry, result);
-            } catch (Exception e) {
-                Logger.warn(
-                        false,
-                        "Cortex",
-                        e,
-                        "Registry batch entry failed: operation={}, type={}, namespace={}, id={}, error={}",
-                        operation.getOperationType(),
-                        RegistryIdentity.type(entry),
-                        entry.getNamespace_id(),
-                        entry.getId(),
-                        e.getMessage());
-                result.recordFailure(
-                        BatchResult.Failure.of(
-                                RegistryIdentity.type(entry),
-                                entry.getNamespace_id(),
-                                entry.getId(),
-                                entry.getMethod(),
-                                entry.getVersion(),
-                                e.getMessage()));
-                if (!operation.isContinueOnError()) {
-                    break;
-                }
-            }
+        result = executeBatch(operation, new ControlRegistryBatchOperations());
+        if (result == null) {
+            result = new BatchResult();
         }
         result.setElapsedMs(System.currentTimeMillis() - start);
         Logger.info(
@@ -336,6 +358,35 @@ public class RegistryControlService {
                 result.getFailCount(),
                 result.getElapsedMs());
         return result;
+    }
+
+    private BatchResult executeBatch(BatchOperation operation, RegistryBatchOperations operations) {
+        for (RegistryBatchExecutor executor : batchExecutors) {
+            boolean supported;
+            try {
+                supported = executor.supports(operation, operations);
+            } catch (Exception e) {
+                Logger.warn(
+                        false,
+                        "Cortex",
+                        e,
+                        "Registry batch executor skipped: executor={}, operation={}, error={}",
+                        executor.getClass().getName(),
+                        operation.getOperationType(),
+                        e.getMessage());
+                continue;
+            }
+            if (!supported) {
+                continue;
+            }
+            Logger.debug(
+                    true,
+                    "Cortex",
+                    "Registry batch executor selected: executor={}",
+                    executor.getClass().getName());
+            return executor.execute(operation, operations);
+        }
+        return defaultBatchExecutor.execute(operation, operations);
     }
 
     /**
@@ -563,6 +614,25 @@ public class RegistryControlService {
         }
         List<? extends Assets> entries = registry.refresh(criteria);
         return entries.isEmpty() ? null : entries.getFirst();
+    }
+
+    /**
+     * Prepares one batch entry with operation-level defaults.
+     *
+     * @param operation batch operation
+     * @param source    source entry
+     * @return prepared entry
+     */
+    private Assets prepareBatchEntry(BatchOperation operation, Assets source) {
+        Assets entry = RegistryAssets.copy(source);
+        if (operation.getNamespace_id() != null
+                && (entry.getNamespace_id() == null || entry.getNamespace_id().isBlank())) {
+            entry.setNamespace_id(operation.getNamespace_id());
+        }
+        if (operation.getType() != null) {
+            entry.setType(operation.getType().key());
+        }
+        return RegistryIdentity.normalize(RegistryAssets.normalize(entry), RegistryIdentity.type(entry));
     }
 
     /**
@@ -1051,6 +1121,69 @@ public class RegistryControlService {
                     ignore.getClass().getSimpleName());
             return null;
         }
+    }
+
+    /**
+     * Control-service backed operations exposed to registry batch executors.
+     */
+    private class ControlRegistryBatchOperations implements RegistryBatchOperations {
+
+        @Override
+        public Keying<Keying.RegistrySpec> keying() {
+            return keying;
+        }
+
+        @Override
+        public List<Type> supportedTypes() {
+            return RegistryControlService.this.supportedTypes();
+        }
+
+        @Override
+        public Assets prepareEntry(BatchOperation operation, Assets source) {
+            return prepareBatchEntry(operation, source);
+        }
+
+        @Override
+        public RegistryRouteKey routeKey(Assets entry) {
+            return RegistryRouteKey.of(entry);
+        }
+
+        @Override
+        public Assets normalize(Assets asset) {
+            return RegistryControlService.this.normalize(asset);
+        }
+
+        @Override
+        public void enforce(String action, Type type, Assets asset) {
+            enforceRegistry(action, type, asset);
+        }
+
+        @Override
+        public Assets resolveExisting(Assets entry) {
+            return RegistryControlService.this.resolveExisting(entry);
+        }
+
+        @Override
+        public Assets upsert(Assets entry) {
+            return RegistryControlService.this.upsert(entry);
+        }
+
+        @Override
+        public void delete(Type type, String namespace, String id) {
+            RegistryControlService.this.delete(type, namespace, id);
+        }
+
+        @Override
+        public StoreBackedRegistry<? extends Assets> registry(Type type) {
+            return RegistryControlService.this.registry(type);
+        }
+
+        @Override
+        public RegistryStore<? extends Assets> store(Type type) {
+            StoreBackedRegistry<? extends Assets> registry = RegistryControlService.this.registry(type);
+            return registry == null ? null : registry.store();
+        }
+
     }
 
     /**

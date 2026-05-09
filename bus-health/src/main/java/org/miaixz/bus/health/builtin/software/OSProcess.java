@@ -406,17 +406,38 @@ public interface OSProcess {
     }
 
     /**
-     * A snapshot of the context switches the process has done. Since the context switches could be voluntary and
-     * non-voluntary, this gives the sum of both.
+     * A snapshot of the context switches the process has done, equal to the sum of
+     * {@link #getVoluntaryContextSwitches()} and {@link #getInvoluntaryContextSwitches()} on platforms that provide the
+     * split.
      * <p>
-     * Not available on Windows. An approximation may be made by summing associated values from
-     * {@link OSThread#getContextSwitches()}.
+     * On Windows, this may return a total from available counters while the split remains unavailable. On macOS for
+     * non-current processes, this may return the combined total from the kernel while the split remains unavailable.
      * <p>
      * Not available on AIX.
      *
      * @return sum of both voluntary and involuntary context switches if available, 0 otherwise.
      */
     default long getContextSwitches() {
+        return getVoluntaryContextSwitches() + getInvoluntaryContextSwitches();
+    }
+
+    /**
+     * The number of voluntary context switches the process has made. A voluntary context switch occurs when a process
+     * gives up the CPU before its time slice expires.
+     *
+     * @return voluntary context switches if available, 0 otherwise.
+     */
+    default long getVoluntaryContextSwitches() {
+        return 0L;
+    }
+
+    /**
+     * The number of involuntary context switches the process has made. An involuntary context switch occurs when the
+     * scheduler preempts the process.
+     *
+     * @return involuntary context switches if available, 0 otherwise.
+     */
+    default long getInvoluntaryContextSwitches() {
         return 0L;
     }
 

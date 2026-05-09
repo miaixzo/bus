@@ -170,6 +170,14 @@ public final class ProcPath {
      * The VMSTAT constant.
      */
     public static final String VMSTAT = PROC + "/vmstat";
+    /**
+     * The SELF_CGROUP constant.
+     */
+    public static final String SELF_CGROUP = PROC + "/self/cgroup";
+    /**
+     * The FILESYSTEMS constant.
+     */
+    public static final String FILESYSTEMS = PROC + "/filesystems";
 
     /**
      * Queries the proc config.

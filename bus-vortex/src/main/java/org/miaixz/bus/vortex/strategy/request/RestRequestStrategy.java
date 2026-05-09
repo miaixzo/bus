@@ -17,17 +17,48 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
+package org.miaixz.bus.vortex.strategy.request;
+
+import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.strategy.RequestStrategy;
+import org.miaixz.bus.core.Order;
+import org.springframework.web.server.ServerWebExchange;
+
+import reactor.core.publisher.Mono;
+
 /**
- * Provides concrete implementations of the {@link org.miaixz.bus.vortex.provider.ProcessProvider} interface.
+ * Parses REST/API requests into the downstream-visible request parameter map.
  * <p>
- * This package contains strategies for managing the lifecycle of external processes.
- * </p>
- * <ul>
- * <li>{@link org.miaixz.bus.vortex.routing.mcp.server.ManageProvider}: Manages local processes and exposes process
- * metrics for MCP runtimes.</li>
- * </ul>
+ * REST requests keep the existing GET, JSON, form, and multipart parsing behavior. The cached request body is restored
+ * for downstream executors after parsing.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-package org.miaixz.bus.vortex.routing.mcp.server;
+@org.springframework.core.annotation.Order(Order.FIRST)
+public class RestRequestStrategy extends RequestStrategy {
+
+    /**
+     * Creates a REST request strategy.
+     */
+    public RestRequestStrategy() {
+        super();
+    }
+
+    /**
+     * Initializes request metadata and parses REST-like request parameters.
+     *
+     * @param exchange current exchange
+     * @param chain    remaining strategy chain
+     * @return parsing completion signal
+     */
+    @Override
+    public Mono<Void> apply(ServerWebExchange exchange, Chain chain) {
+        return Mono.deferContextual(contextView -> {
+            final Context context = contextView.get(Context.class);
+            ServerWebExchange mutate = prepare(exchange, context, true);
+            return parse(mutate, chain, context);
+        });
+    }
+
+}

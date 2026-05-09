@@ -19,6 +19,11 @@
 */
 package org.miaixz.bus.health;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Locale;
 import java.util.Properties;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -29,9 +34,9 @@ import org.miaixz.bus.setting.metric.props.Props;
 /**
  * Global configuration utility class. Default values can be found in {@code META-INF/health/bus.health.properties}.
  * <p>
- * Java system properties set using {@link System#setProperty(String, String)} will override values in the
- * {@code bus.health.properties} file, but can subsequently be changed via {@link #set(String, Object)} or
- * {@link #remove(String)}.
+ * Configuration is resolved in the following precedence order: programmatic values set with
+ * {@link #set(String, Object)}, Java system properties, {@code BUS_HEALTH_*} environment variables, an external
+ * properties file, and then the classpath defaults.
  * <p>
  * This class is not thread-safe in a multi-threaded environment if methods that manipulate configuration are used.
  * These methods are intended to be used by a single thread at startup, before any other OSHI classes are instantiated.
@@ -46,6 +51,16 @@ public final class Config {
      * Global configuration file path, specifying health-related properties.
      */
     public static final String _HEALTH_PROPERTIES = "bus.health.properties";
+
+    /**
+     * System property for an external health configuration file.
+     */
+    public static final String _HEALTH_PROPERTIES_FILE = "bus.health.properties.file";
+
+    /**
+     * Environment variable for an external health configuration file.
+     */
+    public static final String _HEALTH_PROPERTIES_FILE_ENV = "BUS_HEALTH_PROPERTIES_FILE";
 
     /**
      * System architecture configuration file path.
@@ -145,7 +160,12 @@ public final class Config {
     /**
      * Linux configuration: priority of CPU temperature sensor types.
      */
-    public static final String _LINUX_THERMAL_ZONE_TYPE_PRIORITY = "bus.health.linux.sensors.cpuTemperature.types";
+    public static final String _LINUX_THERMAL_ZONE_TYPE_PRIORITY = "bus.health.linux.sensors.cputemperature.types";
+
+    /**
+     * Linux configuration: priority of hardware monitor sensor names.
+     */
+    public static final String _LINUX_HWMON_NAME_PRIORITY = "bus.health.linux.sensors.hwmon.names";
 
     /**
      * Linux configuration: optional command prefix for privileged command execution.
@@ -185,7 +205,7 @@ public final class Config {
     /**
      * Unix configuration: path to the 'who' command.
      */
-    public static final String _UNIX_WHOCOMMAND = "bus.health.unix.whoCommand";
+    public static final String _UNIX_WHOCOMMAND = "bus.health.unix.whocommand";
 
     /**
      * OpenBSD configuration: filesystem path exclusion list.
@@ -230,7 +250,7 @@ public final class Config {
     /**
      * Solaris configuration: whether to allow kstat2.
      */
-    public static final String _UNIX_SOLARIS_ALLOWKSTAT2 = "bus.health.unix.solaris.allowKstat2";
+    public static final String _UNIX_SOLARIS_ALLOWKSTAT2 = "bus.health.unix.solaris.allowkstat2";
 
     /**
      * Solaris configuration: filesystem path exclusion list.
@@ -343,6 +363,7 @@ public final class Config {
             try {
                 Logger.debug(true, "Health", "Health configuration loading started: resource={}", _HEALTH_PROPERTIES);
                 CONFIG = readProperties(_HEALTH_PROPERTIES);
+                loadExternalConfig(CONFIG);
                 Logger.info(
                         false,
                         "Health",
@@ -360,6 +381,54 @@ public final class Config {
             }
         }
         return CONFIG;
+    }
+
+    /**
+     * Loads external, environment, and system property overrides into the configuration.
+     *
+     * @param config The configuration properties to update.
+     */
+    static void loadExternalConfig(Properties config) {
+        String externalFile = System.getProperty(_HEALTH_PROPERTIES_FILE);
+        if (externalFile == null || externalFile.isEmpty()) {
+            externalFile = System.getenv(_HEALTH_PROPERTIES_FILE_ENV);
+        }
+        if (externalFile != null && !externalFile.isEmpty()) {
+            try (InputStream is = new FileInputStream(externalFile)) {
+                config.load(is);
+            } catch (FileNotFoundException e) {
+                Logger.debug(false, "Health", "External health configuration file not found: path={}", externalFile);
+            } catch (IOException e) {
+                Logger.debug(
+                        false,
+                        "Health",
+                        "External health configuration load failed: path={}, exception={}",
+                        externalFile,
+                        e.getClass().getSimpleName(),
+                        e);
+            }
+        }
+        System.getenv().forEach((key, value) -> {
+            if (key.startsWith("BUS_HEALTH_") && !_HEALTH_PROPERTIES_FILE_ENV.equals(key)) {
+                config.setProperty(envKeyToProperty(key), value);
+            }
+        });
+        System.getProperties().forEach((key, value) -> {
+            String propertyKey = key.toString();
+            if (propertyKey.startsWith("bus.health.") && !_HEALTH_PROPERTIES_FILE.equals(propertyKey)) {
+                config.setProperty(propertyKey, value.toString());
+            }
+        });
+    }
+
+    /**
+     * Converts an environment variable name to a configuration property key.
+     *
+     * @param envKey The environment variable name.
+     * @return The corresponding configuration property key.
+     */
+    static String envKeyToProperty(String envKey) {
+        return envKey.toLowerCase(Locale.ROOT).replace('_', '.');
     }
 
     /**

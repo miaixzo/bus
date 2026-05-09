@@ -44,6 +44,11 @@ public interface CLibrary extends LibCAPI, Library {
     int AI_CANONNAME = 2;
 
     /**
+     * Resource usage constant for the calling process.
+     */
+    int RUSAGE_SELF = 0;
+
+    /**
      * Size of the ut_line field in a utmpx structure.
      */
     int UT_LINESIZE = 32;

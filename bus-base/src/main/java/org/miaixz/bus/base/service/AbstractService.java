@@ -891,7 +891,7 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
                 "Service conditional select-first request received: serviceType={}, conditionProvided={}",
                 this.getClass().getSimpleName(),
                 condition != null);
-        List<T> list = mapper.selectByCondition(condition);
+        List<T> list = PageContext.of(1, 1, false).doSelect(() -> mapper.selectByCondition(condition));
         Object result = (list == null || list.isEmpty()) ? null : list.get(0);
         Logger.debug(
                 false,

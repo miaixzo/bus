@@ -107,174 +107,9 @@ public class Normal {
     public static final BigInteger TWOS_COMPLEMENT_REF = BigInteger.ONE.shiftLeft(64);
 
     /**
-     * The number 32768, representing 2^15.
+     * The number -10.
      */
-    public static final int _32768 = 1 << 15;
-
-    /**
-     * The number 16384, representing 2^14.
-     */
-    public static final int _16384 = 1 << 14;
-
-    /**
-     * The number 8192, representing 2^13.
-     */
-    public static final int _8192 = 1 << 13;
-
-    /**
-     * The number 4096, representing 2^12.
-     */
-    public static final int _4096 = 1 << 12;
-
-    /**
-     * The number 2048, representing 2^11.
-     */
-    public static final int _2048 = 1 << 11;
-
-    /**
-     * The number 512, representing 2^9.
-     */
-    public static final int _512 = 1 << 9;
-
-    /**
-     * The number 256, representing 2^8.
-     */
-    public static final int _256 = 1 << 8;
-
-    /**
-     * The number 128, representing 2^7.
-     */
-    public static final int _128 = 1 << 7;
-
-    /**
-     * The number 64, representing 2^6.
-     */
-    public static final int _64 = 1 << 6;
-
-    /**
-     * The number 32, representing 2^5.
-     */
-    public static final int _32 = 1 << 5;
-
-    /**
-     * The number 24.
-     */
-    public static final int _24 = 24;
-
-    /**
-     * The number 20.
-     */
-    public static final int _20 = 20;
-
-    /**
-     * The number 18.
-     */
-    public static final int _18 = 18;
-
-    /**
-     * The number 16.
-     */
-    public static final int _16 = 16;
-
-    /**
-     * The number 12.
-     */
-    public static final int _12 = 12;
-
-    /**
-     * The number 10.
-     */
-    public static final int _10 = 10;
-
-    /**
-     * The number 9.
-     */
-    public static final int _9 = 9;
-
-    /**
-     * The number 8.
-     */
-    public static final int _8 = 8;
-
-    /**
-     * The number 7.
-     */
-    public static final int _7 = 7;
-
-    /**
-     * The number 6.
-     */
-    public static final int _6 = 6;
-
-    /**
-     * The number 5.
-     */
-    public static final int _5 = 5;
-
-    /**
-     * The number 4.
-     */
-    public static final int _4 = 4;
-
-    /**
-     * The number 3.
-     */
-    public static final int _3 = 3;
-
-    /**
-     * The number 2.
-     */
-    public static final int _2 = 2;
-
-    /**
-     * The number 1.
-     */
-    public static final int _1 = 1;
-
-    /**
-     * The number 0.
-     */
-    public static final int _0 = 0;
-
-    /**
-     * The number -1.
-     */
-    public static final int __1 = -1;
-
-    /**
-     * The number -2.
-     */
-    public static final int __2 = -2;
-
-    /**
-     * The number -3.
-     */
-    public static final int __3 = -3;
-
-    /**
-     * The number -4.
-     */
-    public static final int __4 = -4;
-
-    /**
-     * The number -5.
-     */
-    public static final int __5 = -5;
-
-    /**
-     * The number -6.
-     */
-    public static final int __6 = -6;
-
-    /**
-     * The number -7.
-     */
-    public static final int __7 = -7;
-
-    /**
-     * The number -8.
-     */
-    public static final int __8 = -8;
+    public static final int __10 = -10;
 
     /**
      * The number -9.
@@ -282,9 +117,629 @@ public class Normal {
     public static final int __9 = -9;
 
     /**
-     * The number -10.
+     * The number -8.
      */
-    public static final int __10 = -10;
+    public static final int __8 = -8;
+
+    /**
+     * The number -7.
+     */
+    public static final int __7 = -7;
+
+    /**
+     * The number -6.
+     */
+    public static final int __6 = -6;
+
+    /**
+     * The number -5.
+     */
+    public static final int __5 = -5;
+
+    /**
+     * The number -4.
+     */
+    public static final int __4 = -4;
+
+    /**
+     * The number -3.
+     */
+    public static final int __3 = -3;
+
+    /**
+     * The number -2.
+     */
+    public static final int __2 = -2;
+
+    /**
+     * The number -1.
+     */
+    public static final int __1 = -1;
+
+    /**
+     * The number 0.
+     */
+    public static final int _0 = 0;
+
+    /**
+     * The number 1.
+     */
+    public static final int _1 = 1;
+
+    /**
+     * The number 2.
+     */
+    public static final int _2 = 2;
+
+    /**
+     * The number 3.
+     */
+    public static final int _3 = 3;
+
+    /**
+     * The number 4.
+     */
+    public static final int _4 = 4;
+
+    /**
+     * The number 5.
+     */
+    public static final int _5 = 5;
+
+    /**
+     * The number 6.
+     */
+    public static final int _6 = 6;
+
+    /**
+     * The number 7.
+     */
+    public static final int _7 = 7;
+
+    /**
+     * The number 8.
+     */
+    public static final int _8 = 8;
+
+    /**
+     * The number 9.
+     */
+    public static final int _9 = 9;
+
+    /**
+     * The number 10.
+     */
+    public static final int _10 = 10;
+
+    /**
+     * The number 11.
+     */
+    public static final int _11 = 11;
+
+    /**
+     * The number 12.
+     */
+    public static final int _12 = 12;
+
+    /**
+     * The number 13.
+     */
+    public static final int _13 = 13;
+
+    /**
+     * The number 14.
+     */
+    public static final int _14 = 14;
+
+    /**
+     * The number 15.
+     */
+    public static final int _15 = 15;
+
+    /**
+     * The number 16.
+     */
+    public static final int _16 = 16;
+
+    /**
+     * The number 17.
+     */
+    public static final int _17 = 17;
+
+    /**
+     * The number 18.
+     */
+    public static final int _18 = 18;
+
+    /**
+     * The number 19.
+     */
+    public static final int _19 = 19;
+
+    /**
+     * The number 20.
+     */
+    public static final int _20 = 20;
+
+    /**
+     * The number 21.
+     */
+    public static final int _21 = 21;
+
+    /**
+     * The number 22.
+     */
+    public static final int _22 = 22;
+
+    /**
+     * The number 23.
+     */
+    public static final int _23 = 23;
+
+    /**
+     * The number 24.
+     */
+    public static final int _24 = 24;
+
+    /**
+     * The number 25.
+     */
+    public static final int _25 = 25;
+
+    /**
+     * The number 26.
+     */
+    public static final int _26 = 26;
+
+    /**
+     * The number 27.
+     */
+    public static final int _27 = 27;
+
+    /**
+     * The number 28.
+     */
+    public static final int _28 = 28;
+
+    /**
+     * The number 29.
+     */
+    public static final int _29 = 29;
+
+    /**
+     * The number 30.
+     */
+    public static final int _30 = 30;
+
+    /**
+     * The number 31.
+     */
+    public static final int _31 = 31;
+
+    /**
+     * The number 32.
+     */
+    public static final int _32 = 32;
+
+    /**
+     * The number 33.
+     */
+    public static final int _33 = 33;
+
+    /**
+     * The number 34.
+     */
+    public static final int _34 = 34;
+
+    /**
+     * The number 35.
+     */
+    public static final int _35 = 35;
+
+    /**
+     * The number 36.
+     */
+    public static final int _36 = 36;
+
+    /**
+     * The number 37.
+     */
+    public static final int _37 = 37;
+
+    /**
+     * The number 38.
+     */
+    public static final int _38 = 38;
+
+    /**
+     * The number 39.
+     */
+    public static final int _39 = 39;
+
+    /**
+     * The number 40.
+     */
+    public static final int _40 = 40;
+
+    /**
+     * The number 41.
+     */
+    public static final int _41 = 41;
+
+    /**
+     * The number 42.
+     */
+    public static final int _42 = 42;
+
+    /**
+     * The number 43.
+     */
+    public static final int _43 = 43;
+
+    /**
+     * The number 44.
+     */
+    public static final int _44 = 44;
+
+    /**
+     * The number 45.
+     */
+    public static final int _45 = 45;
+
+    /**
+     * The number 46.
+     */
+    public static final int _46 = 46;
+
+    /**
+     * The number 47.
+     */
+    public static final int _47 = 47;
+
+    /**
+     * The number 48.
+     */
+    public static final int _48 = 48;
+
+    /**
+     * The number 49.
+     */
+    public static final int _49 = 49;
+
+    /**
+     * The number 50.
+     */
+    public static final int _50 = 50;
+
+    /**
+     * The number 51.
+     */
+    public static final int _51 = 51;
+
+    /**
+     * The number 52.
+     */
+    public static final int _52 = 52;
+
+    /**
+     * The number 53.
+     */
+    public static final int _53 = 53;
+
+    /**
+     * The number 54.
+     */
+    public static final int _54 = 54;
+
+    /**
+     * The number 55.
+     */
+    public static final int _55 = 55;
+
+    /**
+     * The number 56.
+     */
+    public static final int _56 = 56;
+
+    /**
+     * The number 57.
+     */
+    public static final int _57 = 57;
+
+    /**
+     * The number 58.
+     */
+    public static final int _58 = 58;
+
+    /**
+     * The number 59.
+     */
+    public static final int _59 = 59;
+
+    /**
+     * The number 60.
+     */
+    public static final int _60 = 60;
+
+    /**
+     * The number 61.
+     */
+    public static final int _61 = 61;
+
+    /**
+     * The number 62.
+     */
+    public static final int _62 = 62;
+
+    /**
+     * The number 63.
+     */
+    public static final int _63 = 63;
+
+    /**
+     * The number 64.
+     */
+    public static final int _64 = 64;
+
+    /**
+     * The number 65.
+     */
+    public static final int _65 = 65;
+
+    /**
+     * The number 66.
+     */
+    public static final int _66 = 66;
+
+    /**
+     * The number 67.
+     */
+    public static final int _67 = 67;
+
+    /**
+     * The number 68.
+     */
+    public static final int _68 = 68;
+
+    /**
+     * The number 69.
+     */
+    public static final int _69 = 69;
+
+    /**
+     * The number 70.
+     */
+    public static final int _70 = 70;
+
+    /**
+     * The number 71.
+     */
+    public static final int _71 = 71;
+
+    /**
+     * The number 72.
+     */
+    public static final int _72 = 72;
+
+    /**
+     * The number 73.
+     */
+    public static final int _73 = 73;
+
+    /**
+     * The number 74.
+     */
+    public static final int _74 = 74;
+
+    /**
+     * The number 75.
+     */
+    public static final int _75 = 75;
+
+    /**
+     * The number 76.
+     */
+    public static final int _76 = 76;
+
+    /**
+     * The number 77.
+     */
+    public static final int _77 = 77;
+
+    /**
+     * The number 78.
+     */
+    public static final int _78 = 78;
+
+    /**
+     * The number 79.
+     */
+    public static final int _79 = 79;
+
+    /**
+     * The number 80.
+     */
+    public static final int _80 = 80;
+
+    /**
+     * The number 81.
+     */
+    public static final int _81 = 81;
+
+    /**
+     * The number 82.
+     */
+    public static final int _82 = 82;
+
+    /**
+     * The number 83.
+     */
+    public static final int _83 = 83;
+
+    /**
+     * The number 84.
+     */
+    public static final int _84 = 84;
+
+    /**
+     * The number 85.
+     */
+    public static final int _85 = 85;
+
+    /**
+     * The number 86.
+     */
+    public static final int _86 = 86;
+
+    /**
+     * The number 87.
+     */
+    public static final int _87 = 87;
+
+    /**
+     * The number 88.
+     */
+    public static final int _88 = 88;
+
+    /**
+     * The number 89.
+     */
+    public static final int _89 = 89;
+
+    /**
+     * The number 90.
+     */
+    public static final int _90 = 90;
+
+    /**
+     * The number 91.
+     */
+    public static final int _91 = 91;
+
+    /**
+     * The number 92.
+     */
+    public static final int _92 = 92;
+
+    /**
+     * The number 93.
+     */
+    public static final int _93 = 93;
+
+    /**
+     * The number 94.
+     */
+    public static final int _94 = 94;
+
+    /**
+     * The number 95.
+     */
+    public static final int _95 = 95;
+
+    /**
+     * The number 96.
+     */
+    public static final int _96 = 96;
+
+    /**
+     * The number 97.
+     */
+    public static final int _97 = 97;
+
+    /**
+     * The number 98.
+     */
+    public static final int _98 = 98;
+
+    /**
+     * The number 99.
+     */
+    public static final int _99 = 99;
+
+    /**
+     * The number 100.
+     */
+    public static final int _100 = 100;
+
+    /**
+     * The number 128.
+     */
+    public static final int _128 = 128;
+
+    /**
+     * The number 200.
+     */
+    public static final int _200 = 200;
+
+    /**
+     * The number 256.
+     */
+    public static final int _256 = 256;
+
+    /**
+     * The number 300.
+     */
+    public static final int _300 = 300;
+
+    /**
+     * The number 400.
+     */
+    public static final int _400 = 400;
+
+    /**
+     * The number 500.
+     */
+    public static final int _500 = 500;
+
+    /**
+     * The number 512.
+     */
+    public static final int _512 = 512;
+
+    /**
+     * The number 600.
+     */
+    public static final int _600 = 600;
+
+    /**
+     * The number 700.
+     */
+    public static final int _700 = 700;
+
+    /**
+     * The number 800.
+     */
+    public static final int _800 = 800;
+
+    /**
+     * The number 900.
+     */
+    public static final int _900 = 900;
+
+    /**
+     * The number 2048.
+     */
+    public static final int _2048 = 2048;
+
+    /**
+     * The number 4096.
+     */
+    public static final int _4096 = 4096;
+
+    /**
+     * The number 8192.
+     */
+    public static final int _8192 = 8192;
+
+    /**
+     * The number 16384.
+     */
+    public static final int _16384 = 16384;
+
+    /**
+     * The number 32768.
+     */
+    public static final int _32768 = 32768;
 
     /**
      * The number 65535.
@@ -744,7 +1199,7 @@ public class Normal {
 
     /**
      * Byte measurement units.
-     * 
+     *
      * <pre>
      *     byte        1B     1
      *     kilobyte    1KB    1,024

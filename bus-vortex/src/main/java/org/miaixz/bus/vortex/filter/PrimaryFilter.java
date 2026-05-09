@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.vortex.filter;
 
+import org.miaixz.bus.core.Order;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
@@ -29,8 +30,6 @@ import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Strategy;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.strategy.StrategyFactory;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
@@ -43,15 +42,15 @@ import java.util.stream.Collectors;
 /**
  * The primary {@link WebFilter} that acts as the main entry point and orchestrator for the Vortex gateway.
  * <p>
- * Annotated with {@code @Order(Ordered.HIGHEST_PRECEDENCE)}, this filter intercepts all incoming requests before any
- * other Spring WebFilter. Its sole responsibility is to set up the request context and dispatch the request to a
- * dynamic, inner chain of responsibility composed of {@link Strategy} objects. It does not contain any business logic
- * itself.
+ * Annotated with {@code @org.springframework.core.annotation.Order(Order.MIN_VALUE)}, this filter intercepts all
+ * incoming requests before any other Spring WebFilter. Its sole responsibility is to set up the request context and
+ * dispatch the request to a dynamic, inner chain of responsibility composed of {@link Strategy} objects. It does not
+ * contain any business logic itself.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-@Order(Ordered.HIGHEST_PRECEDENCE)
+@org.springframework.core.annotation.Order(Order.MIN_VALUE)
 public class PrimaryFilter extends AbstractFilter {
 
     /**

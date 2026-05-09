@@ -70,6 +70,10 @@ public final class SysPath {
      * The THERMAL constant.
      */
     public static final String THERMAL = SYS + "class/thermal/";
+    /**
+     * The CGROUP constant.
+     */
+    public static final String CGROUP = SYS + "fs/cgroup/";
 
     /**
      * Queries the sys config.

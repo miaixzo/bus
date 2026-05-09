@@ -18,11 +18,10 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides core domain models, data transfer objects (DTOs), and special marker classes for the Vortex gateway.
+ * Provides small domain models and data transfer objects shared by the Vortex gateway.
  * <p>
- * The term "magic" refers to the fact that these classes often represent abstract concepts or data structures that seem
- * to "magically" appear and flow through the system. This package contains the essential data-carrying objects that are
- * passed between strategies, providers, and handlers.
+ * The classes in this package carry authentication principals, authorization results, limiter definitions, runtime
+ * metrics, and process status snapshots between strategies, providers, registries, and handlers.
  *
  * @author Kimi Liu
  * @since Java 21+

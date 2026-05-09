@@ -188,11 +188,11 @@ public interface Keying<S> {
         }
 
         /**
-         * Returns the optional namespace token without introducing route-side defaults.
+         * Returns the optional namespace part without introducing route-side defaults.
          *
-         * @return namespace token or {@code null}
+         * @return namespace part or {@code null}
          */
-        public String namespaceToken() {
+        public String namespacePart() {
             return namespace == null || namespace.isBlank() ? null : namespace.trim();
         }
 
@@ -201,71 +201,71 @@ public interface Keying<S> {
          *
          * @return registry type or {@code null}
          */
-        public Type typeToken() {
+        public Type typePart() {
             return type == null ? null : Type.requireRegistry(type);
         }
 
         /**
-         * Returns the optional stable numeric type token.
+         * Returns the optional stable numeric type part.
          *
-         * @return numeric type token or {@code null}
+         * @return numeric type part or {@code null}
          */
-        public String typeKeyToken() {
-            Type registryType = typeToken();
+        public String typeKeyPart() {
+            Type registryType = typePart();
             return registryType == null ? null : Integer.toString(registryType.key());
         }
 
         /**
-         * Returns the optional application identifier token.
+         * Returns the optional application identifier part.
          *
-         * @return application identifier token or {@code null}
+         * @return application identifier part or {@code null}
          */
-        public String appIdToken() {
+        public String appIdPart() {
             return RegistryIdentity.applicationId(appId);
         }
 
         /**
-         * Returns the logical entry identifier token.
+         * Returns the logical entry identifier part.
          *
-         * @return entry identifier token or {@code null}
+         * @return entry identifier part or {@code null}
          */
-        public String idToken() {
+        public String idPart() {
             return id == null || id.isBlank() ? null : id.trim();
         }
 
         /**
-         * Returns the route method token.
+         * Returns the route method part.
          *
-         * @return route method token or {@code null}
+         * @return route method part or {@code null}
          */
-        public String methodToken() {
+        public String methodPart() {
             return method == null || method.isBlank() ? null : method.trim();
         }
 
         /**
-         * Returns the route version token.
+         * Returns the route version part.
          *
-         * @return route version token or {@code null}
+         * @return route version part or {@code null}
          */
-        public String versionToken() {
+        public String versionPart() {
             return version == null || version.isBlank() ? null : version.trim();
         }
 
         /**
-         * Returns the numeric verb token.
+         * Returns the numeric verb part.
          *
-         * @return numeric verb token or {@code null}
+         * @return numeric verb part or {@code null}
          */
-        public Integer verbToken() {
+        public Integer verbPart() {
             return verb;
         }
 
         /**
-         * Returns the runtime instance fingerprint token.
+         * Returns the runtime instance fingerprint part.
          *
-         * @return fingerprint token or {@code null}
+         * @return fingerprint part or {@code null}
          */
-        public String fingerprintToken() {
+        public String fingerprintPart() {
             return fingerprint == null || fingerprint.isBlank() ? null : fingerprint.trim();
         }
 
@@ -275,7 +275,7 @@ public interface Keying<S> {
          * @return {@code true} when method, version, and verb are all present
          */
         public boolean routable() {
-            return methodToken() != null && versionToken() != null && verbToken() != null;
+            return methodPart() != null && versionPart() != null && verbPart() != null;
         }
     }
 
@@ -438,42 +438,42 @@ public interface Keying<S> {
         }
 
         /**
-         * Returns the optional group token.
+         * Returns the optional group part.
          *
-         * @return group token or {@code null}
+         * @return group part or {@code null}
          */
-        public String groupToken() {
+        public String groupPart() {
             return group == null || group.isBlank() ? null : group.trim();
         }
 
         /**
-         * Returns the optional data identifier token.
+         * Returns the optional data identifier part.
          *
-         * @return data identifier token or {@code null}
+         * @return data identifier part or {@code null}
          */
-        public String dataIdToken() {
+        public String dataIdPart() {
             return dataId == null || dataId.isBlank() ? null : dataId.trim();
         }
 
         /**
-         * Returns the optional normalized profile token.
+         * Returns the optional normalized profile part.
          * <p>
          * Profiles are normalized to lower case so runtime watch, overlay, entry, and revision keys share the same
          * canonical profile segment.
          * </p>
          *
-         * @return profile token or {@code null}
+         * @return profile part or {@code null}
          */
-        public String profileToken() {
+        public String profilePart() {
             return profile == null || profile.isBlank() ? null : profile.trim().toLowerCase();
         }
 
         /**
-         * Returns the optional revision token.
+         * Returns the optional revision part.
          *
-         * @return revision token or {@code null}
+         * @return revision part or {@code null}
          */
-        public String revisionToken() {
+        public String revisionPart() {
             return revision == null || revision.isBlank() ? null : revision.trim();
         }
     }

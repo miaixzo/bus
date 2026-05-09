@@ -21,15 +21,14 @@
  * Provides concrete implementations of the {@link org.miaixz.bus.vortex.Router} and
  * {@link org.miaixz.bus.vortex.Executor} interfaces for different downstream protocols.
  * <p>
- * This package contains the specific logic for routing and executing requests to various backend systems based on the
- * protocol determined by the API's configuration. Each implementation encapsulates the details of communicating with a
- * specific protocol.
+ * This package contains the routing layer for requests whose asset has already been resolved by the strategy chain.
+ * Each router delegates protocol-specific execution to its executor while keeping protocol selection centralized.
  * <ul>
  * <li>{@link org.miaixz.bus.vortex.routing.RestRouter}: Routes requests to standard HTTP/HTTPS endpoints.</li>
  * <li>{@link org.miaixz.bus.vortex.routing.rest.RestExecutor}: Executes requests to standard HTTP/HTTPS endpoints.</li>
- * <li>{@link org.miaixz.bus.vortex.routing.McpRouter}: Routes requests to MCP services.</li>
- * <li>{@link org.miaixz.bus.vortex.routing.mcp.McpExecutor}: Manages and executes requests to services implementing the
- * Miaixz Communication Protocol.</li>
+ * <li>{@link org.miaixz.bus.vortex.routing.McpRouter}: Routes standard {@code /router/mcp/**} requests.</li>
+ * <li>{@link org.miaixz.bus.vortex.routing.mcp.McpExecutor}: Proxies registered MCP Streamable HTTP targets without
+ * creating MCP servers or clients.</li>
  * <li>{@link org.miaixz.bus.vortex.routing.MqRouter}: Routes requests to message queues.</li>
  * <li>{@link org.miaixz.bus.vortex.routing.mq.MqExecutor}: Executes requests as messages to a message queue.</li>
  * <li>{@link org.miaixz.bus.vortex.routing.WsRouter}: Routes requests to WebSocket connections.</li>

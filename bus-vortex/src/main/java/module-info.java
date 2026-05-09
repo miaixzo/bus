@@ -88,7 +88,8 @@ module bus.vortex {
     exports org.miaixz.bus.vortex.routing.mq;
     exports org.miaixz.bus.vortex.routing.rest;
     exports org.miaixz.bus.vortex.routing.ws;
-    exports org.miaixz.bus.vortex.routing.mcp.client;
-    exports org.miaixz.bus.vortex.routing.mcp.server;
+    exports org.miaixz.bus.vortex.strategy.qualifier;
+    exports org.miaixz.bus.vortex.strategy.request;
+    exports org.miaixz.bus.vortex.strategy.vetting;
 
 }
