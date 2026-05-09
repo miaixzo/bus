@@ -193,6 +193,14 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
      * The contextSwitches value.
      */
     private long contextSwitches;
+    /**
+     * The voluntaryContextSwitches value.
+     */
+    private long voluntaryContextSwitches;
+    /**
+     * The involuntaryContextSwitches value.
+     */
+    private long involuntaryContextSwitches;
 
     /**
      * Creates a new OpenBsdOSProcess instance.
@@ -674,6 +682,26 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
+     * Description inherited from parent class or interface.
+     *
+     * @return the number of voluntary context switches
+     */
+    @Override
+    public long getVoluntaryContextSwitches() {
+        return this.voluntaryContextSwitches;
+    }
+
+    /**
+     * Description inherited from parent class or interface.
+     *
+     * @return the number of involuntary context switches
+     */
+    @Override
+    public long getInvoluntaryContextSwitches() {
+        return this.involuntaryContextSwitches;
+    }
+
+    /**
      * Updates the attributes.
      *
      * @param psMap the ps map
@@ -731,6 +759,8 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         this.majorFaults = Parsing.parseLongOrDefault(psMap.get(PsKeywords.MAJFLT), 0L);
         long nonVoluntaryContextSwitches = Parsing.parseLongOrDefault(psMap.get(PsKeywords.NIVCSW), 0L);
         long voluntaryContextSwitches = Parsing.parseLongOrDefault(psMap.get(PsKeywords.NVCSW), 0L);
+        this.voluntaryContextSwitches = voluntaryContextSwitches;
+        this.involuntaryContextSwitches = nonVoluntaryContextSwitches;
         this.contextSwitches = voluntaryContextSwitches + nonVoluntaryContextSwitches;
         this.commandLineBackup = psMap.get(PsKeywords.ARGS);
         return true;

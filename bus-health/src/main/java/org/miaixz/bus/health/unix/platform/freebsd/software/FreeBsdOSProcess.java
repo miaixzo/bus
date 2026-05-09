@@ -166,6 +166,14 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
      */
     private long contextSwitches;
     /**
+     * The voluntaryContextSwitches value.
+     */
+    private long voluntaryContextSwitches;
+    /**
+     * The involuntaryContextSwitches value.
+     */
+    private long involuntaryContextSwitches;
+    /**
      * The commandLineBackup value.
      */
     private String commandLineBackup;
@@ -661,6 +669,26 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
+     * Description inherited from parent class or interface.
+     *
+     * @return the number of voluntary context switches
+     */
+    @Override
+    public long getVoluntaryContextSwitches() {
+        return this.voluntaryContextSwitches;
+    }
+
+    /**
+     * Description inherited from parent class or interface.
+     *
+     * @return the number of involuntary context switches
+     */
+    @Override
+    public long getInvoluntaryContextSwitches() {
+        return this.involuntaryContextSwitches;
+    }
+
+    /**
      * Updates the attributes.
      *
      * @param psMap the ps map
@@ -715,12 +743,14 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
                 - this.kernelTime;
         this.path = psMap.get(FreeBsdOperatingSystem.PsKeywords.COMM);
         this.name = this.path.substring(this.path.lastIndexOf('/') + 1);
-        this.minorFaults = Parsing.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.MAJFLT), 0L);
-        this.majorFaults = Parsing.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.MINFLT), 0L);
-        long nonVoluntaryContextSwitches = Parsing
-                .parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.NVCSW), 0L);
+        this.minorFaults = Parsing.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.MINFLT), 0L);
+        this.majorFaults = Parsing.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.MAJFLT), 0L);
         long voluntaryContextSwitches = Parsing
+                .parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.NVCSW), 0L);
+        long nonVoluntaryContextSwitches = Parsing
                 .parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.NIVCSW), 0L);
+        this.voluntaryContextSwitches = voluntaryContextSwitches;
+        this.involuntaryContextSwitches = nonVoluntaryContextSwitches;
         this.contextSwitches = voluntaryContextSwitches + nonVoluntaryContextSwitches;
         this.commandLineBackup = psMap.get(FreeBsdOperatingSystem.PsKeywords.ARGS);
         return true;

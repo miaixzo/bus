@@ -198,6 +198,19 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
+     * Creates a new LinuxHWDiskStore instance.
+     *
+     * @param name     the name
+     * @param model    the model
+     * @param serial   the serial
+     * @param size     the size
+     * @param diskType the disk type
+     */
+    private LinuxHWDiskStore(String name, String model, String serial, long size, String diskType) {
+        super(name, model, serial, size, diskType);
+    }
+
+    /**
      * Returns the disks.
      *
      * @param storeToUpdate the store to update
@@ -242,7 +255,7 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
                                         devModel = LOGICAL_VOLUME_GROUP;
                                         devSerial = device.getPropertyValue(DM_UUID);
                                         store = new LinuxHWDiskStore(devnode, devModel,
-                                                devSerial == null ? Normal.UNKNOWN : devSerial, devSize);
+                                                devSerial == null ? Normal.UNKNOWN : devSerial, devSize, "Virtual");
                                         String vgName = device.getPropertyValue(DM_VG_NAME);
                                         String lvName = device.getPropertyValue(DM_LV_NAME);
                                         if (vgName != null && lvName != null && devSerial != null
@@ -269,7 +282,8 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
                                     } else {
                                         store = new LinuxHWDiskStore(devnode,
                                                 devModel == null ? Normal.UNKNOWN : devModel,
-                                                devSerial == null ? Normal.UNKNOWN : devSerial, devSize);
+                                                devSerial == null ? Normal.UNKNOWN : devSerial, devSize,
+                                                detectDiskType(device));
                                     }
                                     if (storeToUpdate == null) {
                                         // If getting all stores, add to the list with stats
@@ -401,6 +415,26 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
      */
     public static List<HWDiskStore> getDisks() {
         return getDisks(null);
+    }
+
+    /**
+     * Detects the disk type using Linux sysfs attributes exposed by udev.
+     *
+     * @param device the udev device
+     * @return the detected disk type
+     */
+    private static String detectDiskType(UdevDevice device) {
+        String removable = device.getSysattrValue("removable");
+        if ("1".equals(removable)) {
+            return "Removable";
+        }
+        String rotational = device.getSysattrValue("queue/rotational");
+        if ("0".equals(rotational)) {
+            return "SSD";
+        } else if ("1".equals(rotational)) {
+            return "HDD";
+        }
+        return "Unknown";
     }
 
     /**

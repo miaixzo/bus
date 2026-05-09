@@ -177,6 +177,14 @@ public class SolarisOSProcess extends AbstractOSProcess {
      * The contextSwitches value.
      */
     private long contextSwitches = 0; // default
+    /**
+     * The voluntaryContextSwitches value.
+     */
+    private long voluntaryContextSwitches = 0; // default
+    /**
+     * The involuntaryContextSwitches value.
+     */
+    private long involuntaryContextSwitches = 0; // default
 
     /**
      * Creates a new SolarisOSProcess instance.
@@ -531,6 +539,26 @@ public class SolarisOSProcess extends AbstractOSProcess {
     /**
      * Description inherited from parent class or interface.
      *
+     * @return the number of voluntary context switches
+     */
+    @Override
+    public long getVoluntaryContextSwitches() {
+        return this.voluntaryContextSwitches;
+    }
+
+    /**
+     * Description inherited from parent class or interface.
+     *
+     * @return the number of involuntary context switches
+     */
+    @Override
+    public long getInvoluntaryContextSwitches() {
+        return this.involuntaryContextSwitches;
+    }
+
+    /**
+     * Description inherited from parent class or interface.
+     *
      * @return the number of open file descriptors
      */
     @Override
@@ -713,6 +741,8 @@ public class SolarisOSProcess extends AbstractOSProcess {
             this.bytesRead = usage.pr_ioch.longValue();
             this.majorFaults = usage.pr_majf.longValue();
             this.minorFaults = usage.pr_minf.longValue();
+            this.voluntaryContextSwitches = usage.pr_vctx.longValue();
+            this.involuntaryContextSwitches = usage.pr_ictx.longValue();
             this.contextSwitches = usage.pr_ictx.longValue() + usage.pr_vctx.longValue();
         }
         return true;

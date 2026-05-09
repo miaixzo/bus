@@ -57,23 +57,23 @@ final class LinuxSensors extends AbstractSensors {
      * <li>via-cputemp: VIA CPU temperature</li>
      * </ul>
      */
-    public static final String OSHI_HWMON_NAME_PRIORITY = "oshi.os.linux.sensors.hwmon.names";
+    public static final String HWMON_NAME_PRIORITY_CONFIG = Config._LINUX_HWMON_NAME_PRIORITY;
     /**
-     * The OSHI_THERMAL_ZONE_TYPE_PRIORITY constant.
+     * The THERMAL_ZONE_TYPE_PRIORITY_CONFIG constant.
      */
-    public static final String OSHI_THERMAL_ZONE_TYPE_PRIORITY = "oshi.os.linux.sensors.cpuTemperature.types";
+    public static final String THERMAL_ZONE_TYPE_PRIORITY_CONFIG = Config._LINUX_THERMAL_ZONE_TYPE_PRIORITY;
 
     /**
      * The HWMON_NAME_PRIORITY constant.
      */
-    private static final List<String> HWMON_NAME_PRIORITY = Stream
-            .of(Config.get(OSHI_HWMON_NAME_PRIORITY, "coretemp,k10temp,zenpower,k8temp,via-cputemp,acpitz").split(","))
+    private static final List<String> HWMON_NAME_PRIORITY = Stream.of(
+            Config.get(HWMON_NAME_PRIORITY_CONFIG, "coretemp,k10temp,zenpower,k8temp,via-cputemp,acpitz").split(","))
             .filter((s) -> !s.isEmpty()).collect(Collectors.toList());
     /**
      * The THERMAL_ZONE_TYPE_PRIORITY constant.
      */
     private static final List<String> THERMAL_ZONE_TYPE_PRIORITY = Stream
-            .of(Config.get(OSHI_THERMAL_ZONE_TYPE_PRIORITY, "cpu-thermal,x86_pkg_temp").split(","))
+            .of(Config.get(THERMAL_ZONE_TYPE_PRIORITY_CONFIG, "cpu-thermal,x86_pkg_temp").split(","))
             .filter((s) -> !s.isEmpty()).collect(Collectors.toList());
 
     /**

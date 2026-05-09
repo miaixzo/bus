@@ -131,6 +131,20 @@ public final class ProcessorInformation {
     }
 
     /**
+     * Returns processor performance counters from the WMI formatted table.
+     *
+     * @return Processor performance percentage counters for each processor.
+     */
+    public static Pair<List<String>, Map<ProcessorPerformanceProperty, List<Long>>> queryProcessorPerformanceCounters() {
+        if (PerfmonDisabled.PERF_OS_DISABLED) {
+            return Pair.of(Collections.emptyList(), Collections.emptyMap());
+        }
+        return PerfCounterWildcardQuery.queryInstancesAndValuesFromWMI(
+                ProcessorPerformanceProperty.class,
+                PerfmonConsts.WIN32_PERF_FORMATTED_DATA_COUNTERS_PROCESSOR_INFORMATION_WHERE_NOT_NAME_LIKE_TOTAL);
+    }
+
+    /**
      * System interrupts counters
      */
     public enum InterruptsProperty implements PerfCounterQuery.PdhCounterProperty {
@@ -199,6 +213,41 @@ public final class ProcessorInformation {
          * @param counter the counter
          */
         ProcessorFrequencyProperty(String counter) {
+            this.counter = counter;
+        }
+
+        /**
+         * Returns the counter.
+         *
+         * @return the get counter result
+         */
+        @Override
+        public String getCounter() {
+            return counter;
+        }
+    }
+
+    /**
+     * Processor performance counters from the WMI formatted data table.
+     */
+    public enum ProcessorPerformanceProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
+
+        // First element defines WMI instance name field and PDH instance filter
+        NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
+        // Remaining elements define counters
+        PERCENTPROCESSORPERFORMANCE("% Processor Performance");
+
+        /**
+         * The counter value.
+         */
+        private final String counter;
+
+        /**
+         * Creates a new ProcessorPerformanceProperty instance.
+         *
+         * @param counter the counter
+         */
+        ProcessorPerformanceProperty(String counter) {
             this.counter = counter;
         }
 

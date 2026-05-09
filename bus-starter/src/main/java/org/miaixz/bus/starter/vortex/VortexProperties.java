@@ -72,4 +72,48 @@ public class VortexProperties {
      */
     private Performance performance = Performance.builder().build();
 
+    /**
+     * Asset registry runtime configuration.
+     */
+    private Assets assets = new Assets();
+
+    /**
+     * Asset registry refresh settings.
+     */
+    @Getter
+    @Setter
+    public static class Assets {
+
+        /**
+         * Whether periodic asset registry refresh is enabled.
+         */
+        private boolean refreshEnabled = true;
+
+        /**
+         * Incremental refresh interval in seconds.
+         */
+        private int incrementalRefreshIntervalSeconds = 60;
+
+        /**
+         * Full calibration refresh interval in seconds.
+         */
+        private int fullCalibrationIntervalSeconds = 600;
+
+        /**
+         * Modified-time overlap window in milliseconds for incremental refresh queries.
+         */
+        private long modifiedOverlapMs = 3000L;
+
+        /**
+         * Whether to run full calibration after startup.
+         */
+        private boolean fullCalibrationOnStartup = true;
+
+        /**
+         * Startup delay before asset registry refresh begins, in seconds.
+         */
+        private int refreshStartupDelaySeconds = 10;
+
+    }
+
 }
