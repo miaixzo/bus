@@ -42,7 +42,7 @@ import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.strategy.VettingStrategy;
 import org.miaixz.bus.core.Order;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.core.io.buffer.PooledDataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -151,17 +151,45 @@ public class McpVettingStrategy extends VettingStrategy {
             return Mono.fromRunnable(() -> verifyMcpSignature(exchange.getRequest(), context, assets, new byte[0]))
                     .thenReturn(exchange);
         }
-        return DataBufferUtils.join(exchange.getRequest().getBody()).map(buffer -> {
-            try {
-                byte[] bytes = new byte[buffer.readableByteCount()];
-                buffer.read(bytes);
-                return bytes;
-            } finally {
-                DataBufferUtils.release(buffer);
-            }
-        }).defaultIfEmpty(new byte[0]).flatMap(
+        return exchange.getRequest().getBody().collectList().map(this::readAndRelease).flatMap(
                 body -> Mono.fromRunnable(() -> verifyMcpSignature(exchange.getRequest(), context, assets, body))
                         .thenReturn(cacheBody(exchange, body)));
+    }
+
+    /**
+     * Reads all request body buffers into one byte array and releases pooled buffers directly.
+     *
+     * @param buffers request body buffers
+     * @return request body bytes
+     */
+    private byte[] readAndRelease(List<DataBuffer> buffers) {
+        if (buffers == null || buffers.isEmpty()) {
+            return new byte[0];
+        }
+        int size = buffers.stream().mapToInt(DataBuffer::readableByteCount).sum();
+        byte[] bytes = new byte[size];
+        int offset = 0;
+        try {
+            for (DataBuffer buffer : buffers) {
+                int readable = buffer.readableByteCount();
+                buffer.read(bytes, offset, readable);
+                offset += readable;
+            }
+            return bytes;
+        } finally {
+            buffers.forEach(this::releaseIfPooled);
+        }
+    }
+
+    /**
+     * Releases a pooled buffer directly.
+     *
+     * @param dataBuffer data buffer to release when it is pooled
+     */
+    private void releaseIfPooled(DataBuffer dataBuffer) {
+        if (dataBuffer instanceof PooledDataBuffer pooledDataBuffer && pooledDataBuffer.isAllocated()) {
+            pooledDataBuffer.release();
+        }
     }
 
     /**

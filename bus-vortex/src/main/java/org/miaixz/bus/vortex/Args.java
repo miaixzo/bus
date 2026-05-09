@@ -19,21 +19,17 @@
 */
 package org.miaixz.bus.vortex;
 
-import java.util.Map;
-
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.Specifics;
 import org.miaixz.bus.vortex.strategy.RequestStrategy;
 import org.miaixz.bus.vortex.strategy.qualifier.McpQualifierStrategy;
 import org.miaixz.bus.vortex.strategy.qualifier.RestQualifierStrategy;
 import org.miaixz.bus.vortex.strategy.vetting.McpVettingStrategy;
 import org.miaixz.bus.vortex.strategy.vetting.RestVettingStrategy;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * A central repository for constants defining the gateway's public API contract and for binding configuration
@@ -179,24 +175,6 @@ public class Args extends Specifics {
      * Route protocol for LLM assets.
      */
     public static final int PROTOCOL_LLM = 6;
-
-    /**
-     * Pre-built mapping table for protocol to router key. Using static map for O(1) lookup instead of switch expression
-     * evaluation on every request.
-     */
-    public static final Map<Integer, String> PROTOCOL_TO_ROUTER = Map.of(
-            PROTOCOL_HTTP,
-            Protocol.HTTP.getName(),
-            PROTOCOL_MQ,
-            Protocol.MQ.getName(),
-            PROTOCOL_MCP,
-            Protocol.MCP.getName(),
-            PROTOCOL_GRPC,
-            Protocol.GRPC.getName(),
-            PROTOCOL_WS,
-            Protocol.WS.getName(),
-            PROTOCOL_LLM,
-            "llm");
 
     /**
      * Checks if the given path is a RESTful API proxy request path.

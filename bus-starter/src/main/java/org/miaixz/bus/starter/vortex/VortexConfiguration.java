@@ -127,15 +127,41 @@ public class VortexConfiguration {
      * Configures the core Vortex request processing component. This method sets up the WebFlux handler, integrates
      * filters and exception handlers, and configures the Reactor Netty HTTP server.
      *
-     * @param filters  A list of all available {@link Filter} beans, injected by Spring.
-     * @param handlers A list of all available {@link Handler} beans, injected by Spring.
-     * @param routers  A map of all available {@link Router} beans, injected by Spring.
+     * @param filters    A list of all available {@link Filter} beans, injected by Spring.
+     * @param handlers   A list of all available {@link Handler} beans, injected by Spring.
+     * @param httpRouter The HTTP router bean.
+     * @param mqRouter   The MQ router bean.
+     * @param mcpRouter  The MCP router bean.
+     * @param grpcRouter The gRPC router bean.
+     * @param wsRouter   The WebSocket router bean.
+     * @param llmRouter  The LLM router bean.
      * @return A {@link Vortex} core component instance, including the HTTP server.
      */
     @Bean(initMethod = "start", destroyMethod = "stop")
-    public Vortex vortex(List<Filter> filters, List<Handler> handlers, Map<String, Router<ServerRequest, ?>> routers) {
+    public Vortex vortex(
+            List<Filter> filters,
+            List<Handler> handlers,
+            @Qualifier("http") Router<ServerRequest, ?> httpRouter,
+            @Qualifier("mq") Router<ServerRequest, ?> mqRouter,
+            @Qualifier("mcp") Router<ServerRequest, ?> mcpRouter,
+            @Qualifier("grpc") Router<ServerRequest, ?> grpcRouter,
+            @Qualifier("ws") Router<ServerRequest, ?> wsRouter,
+            @Qualifier("llm") Router<ServerRequest, ?> llmRouter) {
         Holder.of(properties.getPerformance());
 
+        Map<Integer, Router<ServerRequest, ?>> routers = Map.of(
+                Args.PROTOCOL_HTTP,
+                httpRouter,
+                Args.PROTOCOL_MQ,
+                mqRouter,
+                Args.PROTOCOL_MCP,
+                mcpRouter,
+                Args.PROTOCOL_GRPC,
+                grpcRouter,
+                Args.PROTOCOL_WS,
+                wsRouter,
+                Args.PROTOCOL_LLM,
+                llmRouter);
         VortexHandler vortexHandler = new VortexHandler(handlers, routers);
 
         RouterFunction<ServerResponse> routerFunction = RouterFunctions.route(

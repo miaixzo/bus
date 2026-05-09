@@ -59,17 +59,17 @@ import reactor.util.retry.Retry;
 public class VortexHandler {
 
     /**
-     * Thread-safe map of routing strategies, keyed by protocol name, holding the corresponding {@link Router}
+     * Thread-safe map of routing strategies, keyed by runtime protocol code, holding the corresponding {@link Router}
      * implementations.
      * <p>
-     * Enables dynamic selection of routing strategies based on interaction mode. MCP is routed as Streamable HTTP only.
-     * A thread-safe collection is used to support concurrent access.
+     * Enables dynamic selection of routing strategies based on the protocol code stored in route assets. MCP is routed
+     * as Streamable HTTP only. A thread-safe collection is used to support concurrent access.
      * <p>
      * Uses wildcard generics {@code Router<ServerRequest, ?>} to support different return types (ServerResponse,
      * String) across different protocol implementations.
      * </p>
      */
-    private final Map<String, Router<ServerRequest, ?>> routers;
+    private final Map<Integer, Router<ServerRequest, ?>> routers;
 
     /**
      * Ordered list of interceptors, sorted in ascending order by {@link Handler#getOrder()}, used to execute processing
@@ -85,11 +85,11 @@ public class VortexHandler {
      * Constructs a {@link VortexHandler} instance, initializing the routing strategy map and interceptor list.
      *
      * @param handlers list of interceptor instances, may be empty
-     * @param routers  map of routing strategies, keyed by protocol name, with values being the corresponding
+     * @param routers  map of routing strategies, keyed by runtime protocol code, with values being the corresponding
      *                 {@link Router} implementations with wildcard return types
      * @throws NullPointerException if routers is null
      */
-    public VortexHandler(List<Handler> handlers, Map<String, Router<ServerRequest, ?>> routers) {
+    public VortexHandler(List<Handler> handlers, Map<Integer, Router<ServerRequest, ?>> routers) {
         this.routers = Objects.requireNonNull(routers, "Routers map cannot be null");
         this.handlers = handlers.isEmpty() ? List.of(new AccessHandler())
                 : handlers.stream().sorted(Comparator.comparingInt(Handler::getOrder)).collect(Collectors.toList());
@@ -157,8 +157,8 @@ public class VortexHandler {
                 throw new ValidateException(ErrorCode._100800);
             }
 
-            String routerKey = Args.PROTOCOL_TO_ROUTER.get(assets.getProtocol());
-            if (routerKey == null) {
+            Integer protocol = assets.getProtocol();
+            if (protocol == null) {
                 Logger.info(
                         true,
                         "Vortex",
@@ -166,21 +166,22 @@ public class VortexHandler {
                         ip,
                         method,
                         path,
-                        assets.getProtocol());
+                        protocol);
                 throw new ValidateException(ErrorCode._116005);
             }
 
-            Router<ServerRequest, ?> router = routers.get(routerKey);
+            Router<ServerRequest, ?> router = routers.get(protocol);
             if (router == null) {
                 Logger.info(
                         true,
                         "Vortex",
-                        "No router found for protocol key: clientIp={}, method={}, path={}, event=ROUTER_NOT_FOUND, {}",
+                        "No router found for protocol: clientIp={}, method={}, path={}, event=ROUTER_NOT_FOUND, protocol={}, registeredProtocols={}",
                         ip,
                         method,
                         path,
-                        routerKey);
-                throw new ValidateException(ErrorCode._100800, "No router for protocol: " + routerKey);
+                        protocol,
+                        routers.keySet());
+                throw new ValidateException(ErrorCode._100800, "No router for protocol: " + protocol);
             }
 
             Logger.info(

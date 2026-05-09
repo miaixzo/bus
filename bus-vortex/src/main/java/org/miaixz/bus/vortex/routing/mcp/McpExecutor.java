@@ -20,6 +20,7 @@
 package org.miaixz.bus.vortex.routing.mcp;
 
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -40,6 +41,7 @@ import org.miaixz.bus.vortex.Holder;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.routing.Coordinator;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.PooledDataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -124,7 +126,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                     "MCP route asset is not registered");
         }
 
-        URI targetUri = buildTargetUri(target, context.getRemainingPath(), request);
+        URI targetUri = buildTargetUri(target, context, context.getRemainingPath(), request);
         if (targetUri == null) {
             return buildErrorResponse(HttpStatus.BAD_GATEWAY, ErrorCode._100800.getKey(), "MCP target URL is invalid");
         }
@@ -136,7 +138,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 method,
                 path,
                 target.getMethod(),
-                target.getUrl());
+                targetUri);
 
         WebClient webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(getHttpClient()))
                 .exchangeStrategies(CACHED_EXCHANGE_STRATEGIES).build();
@@ -239,7 +241,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                     path);
         }
 
-        return isStreaming ? executeStreaming(bodySpec, ip, method, path)
+        return isStreaming ? executeStreaming(bodySpec, context, ip, method, path)
                 : executeBuffering(bodySpec, ip, method, path);
     }
 
@@ -298,30 +300,49 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
     /**
      * Builds the target URI for the downstream MCP request.
      * <p>
-     * MCP route URLs are required to be bare base URLs without an existing query string. The remaining request path
-     * resolved by {@link org.miaixz.bus.vortex.registry.AssetsRegistry} is appended to that base URL, then the incoming
-     * query is forwarded after gateway control parameters are removed.
+     * MCP route URLs are required to be bare base URLs without an existing query string. Relative route URLs are
+     * resolved against the configured asset host, port, and path before appending the remaining request path. The
+     * incoming query is then forwarded after gateway control parameters are removed.
      *
      * @param assets        The configured MCP route asset.
+     * @param context       The request context.
      * @param remainingPath remaining request path produced by route resolution
      * @param request       The ServerRequest object.
      * @return The constructed target URI, including query parameters, or {@code null} when invalid.
      */
-    private URI buildTargetUri(Assets assets, String remainingPath, ServerRequest request) {
+    private URI buildTargetUri(Assets assets, Context context, String remainingPath, ServerRequest request) {
         if (assets == null || StringKit.isBlank(assets.getUrl()) || remainingPath == null) {
             return null;
         }
         try {
-            URI baseUri = URI.create(assets.getUrl());
-            if (baseUri.getRawQuery() != null) {
+            URI routeUri = URI.create(assets.getUrl());
+            if (routeUri.getRawQuery() != null) {
                 return null;
             }
-            String targetUrl = joinPath(assets.getUrl(), remainingPath);
+            String routeBaseUrl = routeUri.isAbsolute() ? assets.getUrl() : buildRelativeRouteBaseUrl(assets, context);
+            if (StringKit.isBlank(routeBaseUrl)) {
+                return null;
+            }
+            String targetUrl = joinPath(routeBaseUrl, remainingPath);
             String rawQuery = buildForwardQuery(request);
             return URI.create(StringKit.isBlank(rawQuery) ? targetUrl : targetUrl + "?" + rawQuery);
         } catch (IllegalArgumentException ex) {
             return null;
         }
+    }
+
+    /**
+     * Resolves a relative MCP route URL against the target service base URL.
+     *
+     * @param assets  The configured MCP route asset.
+     * @param context The request context.
+     * @return The route base URL, or {@code null} when host configuration is missing.
+     */
+    private String buildRelativeRouteBaseUrl(Assets assets, Context context) {
+        if (context == null || StringKit.isBlank(assets.getHost())) {
+            return null;
+        }
+        return joinPath(buildBaseUrl(context), assets.getUrl());
     }
 
     /**
@@ -383,47 +404,59 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
      */
     private Mono<ServerResponse> executeStreaming(
             WebClient.RequestBodySpec bodySpec,
+            Context context,
             String ip,
             String method,
             String path) {
-        return bodySpec.exchangeToMono(clientResponse -> {
-            ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(clientResponse.statusCode());
-            Logger.debug(
-                    false,
-                    "Vortex",
-                    "Downstream response headers: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_HEADERS, {}",
-                    ip,
-                    method,
-                    path,
-                    clientResponse.headers().asHttpHeaders());
+        return bodySpec.retrieve().onStatus(status -> true, clientResponse -> Mono.empty())
+                .toEntityFlux(DataBuffer.class).flatMap(responseEntity -> {
+                    ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
+                    Logger.debug(
+                            false,
+                            "Vortex",
+                            "Downstream response headers: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_HEADERS, {}",
+                            ip,
+                            method,
+                            path,
+                            responseEntity.getHeaders());
 
-            responseBuilder.headers(headers -> {
-                headers.addAll(clientResponse.headers().asHttpHeaders());
-                headers.remove(HttpHeaders.HOST);
-                headers.remove(HttpHeaders.TRANSFER_ENCODING);
-                headers.remove(HttpHeaders.CONTENT_LENGTH);
-            });
+                    responseBuilder.headers(headers -> {
+                        headers.addAll(responseEntity.getHeaders());
+                        headers.remove(HttpHeaders.HOST);
+                        headers.remove(HttpHeaders.TRANSFER_ENCODING);
+                        headers.remove(HttpHeaders.CONTENT_LENGTH);
+                    });
 
-            Flux<DataBuffer> bodyFlux = clientResponse.bodyToFlux(DataBuffer.class).doOnNext(dataBuffer -> {
-                Logger.debug(
-                        false,
-                        "Vortex",
-                        "Received data chunk, size: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_STREAM_CHUNK, {} bytes",
-                        ip,
-                        method,
-                        path,
-                        dataBuffer.readableByteCount());
-            });
+                    Flux<DataBuffer> bodyFlux = responseEntity.getBody() == null ? Flux.empty()
+                            : responseEntity.getBody();
+                    bodyFlux = bodyFlux.doOnNext(dataBuffer -> {
+                        Logger.debug(
+                                false,
+                                "Vortex",
+                                "Received data chunk, size: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_STREAM_CHUNK, {} bytes",
+                                ip,
+                                method,
+                                path,
+                                dataBuffer.readableByteCount());
+                    });
+                    bodyFlux = rewriteSseEndpointIfNeeded(
+                            bodyFlux,
+                            context,
+                            responseEntity.getHeaders(),
+                            ip,
+                            method,
+                            path);
 
-            return responseBuilder.body(bodyFlux, DataBuffer.class);
-        }).doOnSubscribe(
-                subscription -> Logger.info(
-                        true,
-                        "Vortex",
-                        "Request subscribed (Streaming).: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_SUBSCRIBE",
-                        ip,
-                        method,
-                        path))
+                    return responseBuilder.body(bodyFlux, DataBuffer.class);
+                })
+                .doOnSubscribe(
+                        subscription -> Logger.info(
+                                true,
+                                "Vortex",
+                                "Request subscribed (Streaming).: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_SUBSCRIBE",
+                                ip,
+                                method,
+                                path))
                 .doOnSuccess(
                         serverResponse -> Logger.info(
                                 false,
@@ -451,6 +484,141 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                                 ip,
                                 method,
                                 path));
+    }
+
+    /**
+     * Rewrites legacy MCP SSE endpoint events so clients continue posting messages through the gateway route.
+     * <p>
+     * Downstream MCP servers commonly emit {@code data: /mcp/messages/...}; when the public entrypoint is
+     * {@code /router/mcp/sse/...}, a standard SSE MCP client resolves that relative endpoint against the gateway
+     * origin. This method rewrites only SSE data chunks that contain the downstream messages prefix.
+     *
+     * @param bodyFlux response body from downstream
+     * @param context  current request context
+     * @param headers  downstream response headers
+     * @param ip       client IP for logging
+     * @param method   HTTP method for logging
+     * @param path     inbound request path for logging
+     * @return response body with gateway endpoint data when applicable
+     */
+    private Flux<DataBuffer> rewriteSseEndpointIfNeeded(
+            Flux<DataBuffer> bodyFlux,
+            Context context,
+            HttpHeaders headers,
+            String ip,
+            String method,
+            String path) {
+        if (context == null || context.getAssets() == null || context.getHttpMethod() != HTTP.Method.GET
+                || headers.getContentType() == null
+                || !MediaType.TEXT_EVENT_STREAM.isCompatibleWith(headers.getContentType())) {
+            return bodyFlux;
+        }
+        String downstreamPrefix = downstreamMessagesPrefix(context.getAssets());
+        String gatewayPrefix = gatewayMessagesPrefix(context.getAssets());
+        if (StringKit.isBlank(downstreamPrefix) || StringKit.isBlank(gatewayPrefix)
+                || downstreamPrefix.equals(gatewayPrefix)) {
+            return bodyFlux;
+        }
+        return bodyFlux
+                .map(dataBuffer -> rewriteEndpointChunk(dataBuffer, downstreamPrefix, gatewayPrefix, ip, method, path));
+    }
+
+    /**
+     * Rewrites one SSE data chunk when it contains a legacy MCP messages endpoint.
+     *
+     * @param dataBuffer       downstream response chunk
+     * @param downstreamPrefix endpoint prefix emitted by downstream
+     * @param gatewayPrefix    endpoint prefix exposed by the gateway
+     * @param ip               client IP for logging
+     * @param method           HTTP method for logging
+     * @param path             inbound request path for logging
+     * @return original or rewritten data buffer
+     */
+    private DataBuffer rewriteEndpointChunk(
+            DataBuffer dataBuffer,
+            String downstreamPrefix,
+            String gatewayPrefix,
+            String ip,
+            String method,
+            String path) {
+        String text = dataBuffer.toString(StandardCharsets.UTF_8);
+        String rewritten = text.replace("data: " + downstreamPrefix, "data: " + gatewayPrefix)
+                .replace("data:" + downstreamPrefix, "data:" + gatewayPrefix);
+        if (text.equals(rewritten)) {
+            return dataBuffer;
+        }
+        Logger.debug(
+                false,
+                "Vortex",
+                "Rewrote MCP SSE endpoint: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_REWRITE_ENDPOINT, from={}, to={}",
+                ip,
+                method,
+                path,
+                downstreamPrefix,
+                gatewayPrefix);
+        var bufferFactory = dataBuffer.factory();
+        releaseIfPooled(dataBuffer);
+        return bufferFactory.wrap(rewritten.getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * Releases a pooled buffer directly.
+     *
+     * @param dataBuffer data buffer to release when it is pooled
+     */
+    private void releaseIfPooled(DataBuffer dataBuffer) {
+        if (dataBuffer instanceof PooledDataBuffer pooledDataBuffer && pooledDataBuffer.isAllocated()) {
+            pooledDataBuffer.release();
+        }
+    }
+
+    /**
+     * Builds the downstream messages endpoint prefix that may be emitted in legacy MCP SSE endpoint events.
+     *
+     * @param assets current MCP route asset
+     * @return downstream messages prefix, such as {@code /mcp/messages}
+     */
+    private String downstreamMessagesPrefix(Assets assets) {
+        String servicePath = trimSlashes(assets.getPath());
+        return StringKit.isBlank(servicePath) ? "/messages" : "/" + servicePath + "/messages";
+    }
+
+    /**
+     * Derives the gateway messages endpoint prefix from the current SSE route prefix.
+     *
+     * @param assets current MCP route asset
+     * @return gateway messages prefix, such as {@code /router/mcp/messages}
+     */
+    private String gatewayMessagesPrefix(Assets assets) {
+        String routePrefix = assets.getMethod();
+        if (StringKit.isBlank(routePrefix)) {
+            return null;
+        }
+        if (routePrefix.endsWith("/sse")) {
+            return routePrefix.substring(0, routePrefix.length() - "/sse".length()) + "/messages";
+        }
+        return routePrefix;
+    }
+
+    /**
+     * Removes leading and trailing slashes from a path fragment.
+     *
+     * @param value path fragment
+     * @return normalized path fragment
+     */
+    private String trimSlashes(String value) {
+        if (StringKit.isBlank(value)) {
+            return Normal.EMPTY;
+        }
+        int start = 0;
+        int end = value.length();
+        while (start < end && value.charAt(start) == '/') {
+            start++;
+        }
+        while (end > start && value.charAt(end - 1) == '/') {
+            end--;
+        }
+        return value.substring(start, end);
     }
 
     /**
