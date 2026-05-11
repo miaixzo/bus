@@ -30,6 +30,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.SignatureException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.url.UrlEncoder;
@@ -239,7 +240,7 @@ public class RestVettingStrategy extends VettingStrategy {
                                 + UrlEncoder.encodeAll(entry.getValue(), Charset.UTF_8))
                 .collect(Collectors.joining());
 
-        String stringToSign = httpMethod + "\n" + sortedAndEncodedParams;
+        String stringToSign = httpMethod + Symbol.LF + sortedAndEncodedParams;
 
         HMac hmac = Builder.hmac(Algorithm.HMACSHA256, key.getBytes(Charset.UTF_8));
         byte[] signBytes = hmac.digest(stringToSign.getBytes(Charset.UTF_8));

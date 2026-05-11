@@ -27,10 +27,12 @@ import java.util.stream.Collectors;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.SignatureException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.center.HMac;
@@ -207,10 +209,10 @@ public class McpVettingStrategy extends VettingStrategy {
         if (StringKit.isBlank(timestamp) || StringKit.isBlank(nonce) || StringKit.isBlank(signature)) {
             throw new SignatureException(ErrorCode._100109);
         }
-        String canonical = request.getMethod().name() + "\n" + request.getURI().getRawPath() + "\n"
-                + canonicalQuery(request) + "\n" + timestamp + "\n" + nonce + "\n"
-                + StringKit.toStringOrEmpty(request.getHeaders().getFirst(Args.MCP_PROTOCOL_VERSION)) + "\n"
-                + StringKit.toStringOrEmpty(request.getHeaders().getFirst(Args.MCP_SESSION_ID)) + "\n"
+        String canonical = request.getMethod().name() + Symbol.LF + request.getURI().getRawPath() + Symbol.LF
+                + canonicalQuery(request) + Symbol.LF + timestamp + Symbol.LF + nonce + Symbol.LF
+                + StringKit.toStringOrEmpty(request.getHeaders().getFirst(Args.MCP_PROTOCOL_VERSION)) + Symbol.LF
+                + StringKit.toStringOrEmpty(request.getHeaders().getFirst(Args.MCP_SESSION_ID)) + Symbol.LF
                 + Builder.sha256().digestHex(body == null ? new byte[0] : body);
         String secret = StringKit.isNotBlank(context.getBearer()) ? context.getBearer() : getToken(context);
         if (StringKit.isNotBlank(secret)) {
@@ -236,8 +238,8 @@ public class McpVettingStrategy extends VettingStrategy {
         TreeMap<String, List<String>> sorted = new TreeMap<>();
         request.getQueryParams().forEach((key, values) -> sorted.put(key, values.stream().sorted().toList()));
         return sorted.entrySet().stream()
-                .flatMap(entry -> entry.getValue().stream().map(value -> entry.getKey() + "=" + value))
-                .collect(Collectors.joining("&"));
+                .flatMap(entry -> entry.getValue().stream().map(value -> entry.getKey() + Symbol.EQUAL + value))
+                .collect(Collectors.joining(Symbol.AND));
     }
 
     /**
@@ -316,7 +318,7 @@ public class McpVettingStrategy extends VettingStrategy {
             return;
         }
         try {
-            URI originUri = URI.create(origin);
+            URI originUri = UrlKit.toURI(origin);
             if (StringKit.isBlank(originUri.getScheme()) || originUri.getHost() == null) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Malformed MCP Origin");
             }
@@ -326,7 +328,7 @@ public class McpVettingStrategy extends VettingStrategy {
             if (!trusted) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Untrusted MCP Origin");
             }
-        } catch (IllegalArgumentException ex) {
+        } catch (RuntimeException ex) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Malformed MCP Origin");
         }
     }
@@ -359,12 +361,12 @@ public class McpVettingStrategy extends VettingStrategy {
         }
         String trusted = candidate.trim();
         try {
-            URI trustedUri = URI.create(trusted);
+            URI trustedUri = UrlKit.toURI(trusted);
             if (StringKit.isBlank(trustedUri.getScheme()) || trustedUri.getHost() == null) {
                 return false;
             }
             return sameOrigin(trustedUri.getScheme(), trustedUri.getHost(), originUri);
-        } catch (IllegalArgumentException ex) {
+        } catch (RuntimeException ex) {
             return false;
         }
     }

@@ -544,15 +544,15 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
             return null;
         }
         String normalized = method.trim();
-        while (normalized.length() > Args.MCP_PATH_PREFIX.length() + 1 && normalized.endsWith("/")) {
+        while (normalized.length() > Args.MCP_PATH_PREFIX.length() + 1 && normalized.endsWith(Symbol.SLASH)) {
             normalized = normalized.substring(0, normalized.length() - 1);
         }
-        if (!normalized.startsWith(Args.MCP_PATH_PREFIX + "/")) {
+        if (!normalized.startsWith(Args.MCP_PATH_PREFIX + Symbol.SLASH)) {
             return null;
         }
-        String servicePath = normalized.substring((Args.MCP_PATH_PREFIX + "/").length());
-        if (StringKit.isBlank(servicePath) || servicePath.contains("*") || servicePath.contains("..")
-                || servicePath.contains("//")) {
+        String servicePath = normalized.substring((Args.MCP_PATH_PREFIX + Symbol.SLASH).length());
+        if (StringKit.isBlank(servicePath) || servicePath.contains(Symbol.STAR)
+                || servicePath.contains(Symbol.DOUBLE_DOT) || servicePath.contains(Symbol.FORWARDSLASH)) {
             return null;
         }
         return normalized;

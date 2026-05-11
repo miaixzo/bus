@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
@@ -315,7 +316,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
             return null;
         }
         try {
-            URI routeUri = URI.create(assets.getUrl());
+            URI routeUri = UrlKit.toURI(assets.getUrl());
             if (routeUri.getRawQuery() != null) {
                 return null;
             }
@@ -323,10 +324,11 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
             if (StringKit.isBlank(routeBaseUrl)) {
                 return null;
             }
-            String targetUrl = joinPath(routeBaseUrl, remainingPath);
+            String rawRemainingPath = rawRemainingPath(request.uri().getRawPath(), assets.getMethod(), remainingPath);
+            String targetUrl = joinPath(routeBaseUrl, rawRemainingPath);
             String rawQuery = buildForwardQuery(request);
-            return URI.create(StringKit.isBlank(rawQuery) ? targetUrl : targetUrl + "?" + rawQuery);
-        } catch (IllegalArgumentException ex) {
+            return UrlKit.toURI(StringKit.isBlank(rawQuery) ? targetUrl : targetUrl + Symbol.QUESTION_MARK + rawQuery);
+        } catch (RuntimeException ex) {
             return null;
         }
     }
@@ -364,7 +366,46 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                                 value -> UrlKit.toQuery(
                                         Map.of(entry.getKey(), StringKit.toStringOrEmpty(value)),
                                         Charset.UTF_8)))
-                .collect(Collectors.joining("&"));
+                .collect(Collectors.joining(Symbol.AND));
+    }
+
+    /**
+     * Calculates the raw remaining path from the inbound request path and matched gateway route prefix.
+     *
+     * @param rawPath         incoming raw request path
+     * @param routePrefix     matched gateway route prefix
+     * @param decodedFallback decoded remaining path from route matching
+     * @return raw remaining path suitable for downstream proxying
+     */
+    private String rawRemainingPath(String rawPath, String routePrefix, String decodedFallback) {
+        if (StringKit.isNotBlank(rawPath) && StringKit.isNotBlank(routePrefix)) {
+            if (rawPath.equals(routePrefix)) {
+                return Normal.EMPTY;
+            }
+            if (rawPath.startsWith(routePrefix + Symbol.SLASH)) {
+                return rawPath.substring(routePrefix.length());
+            }
+        }
+        return encodeDecodedPath(decodedFallback);
+    }
+
+    /**
+     * Encodes a decoded path fallback using UrlKit when raw path extraction is unavailable.
+     *
+     * @param decodedPath decoded path
+     * @return raw encoded path
+     */
+    private String encodeDecodedPath(String decodedPath) {
+        if (StringKit.isBlank(decodedPath)) {
+            return Normal.EMPTY;
+        }
+        String path = decodedPath.startsWith(Symbol.SLASH) ? decodedPath : Symbol.SLASH + decodedPath;
+        String marker = "http" + Symbol.COLON + Symbol.FORWARDSLASH + "vortex.local";
+        try {
+            return UrlKit.toURI(UrlKit.normalize(marker + path, true)).getRawPath();
+        } catch (RuntimeException ex) {
+            return decodedPath;
+        }
     }
 
     /**
@@ -378,13 +419,13 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
         if (StringKit.isBlank(remainingPath)) {
             return baseUrl;
         }
-        boolean baseEnds = baseUrl.endsWith("/");
-        boolean remainingPathStarts = remainingPath.startsWith("/");
+        boolean baseEnds = baseUrl.endsWith(Symbol.SLASH);
+        boolean remainingPathStarts = remainingPath.startsWith(Symbol.SLASH);
         if (baseEnds && remainingPathStarts) {
             return baseUrl + remainingPath.substring(1);
         }
         if (!baseEnds && !remainingPathStarts) {
-            return baseUrl + "/" + remainingPath;
+            return baseUrl + Symbol.SLASH + remainingPath;
         }
         return baseUrl + remainingPath;
     }
@@ -580,7 +621,9 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
      */
     private String downstreamMessagesPrefix(Assets assets) {
         String servicePath = trimSlashes(assets.getPath());
-        return StringKit.isBlank(servicePath) ? "/messages" : "/" + servicePath + "/messages";
+        return StringKit.isBlank(servicePath)
+                ? Symbol.SLASH + "messages"
+                : Symbol.SLASH + servicePath + Symbol.SLASH + "messages";
     }
 
     /**
@@ -594,8 +637,9 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
         if (StringKit.isBlank(routePrefix)) {
             return null;
         }
-        if (routePrefix.endsWith("/sse")) {
-            return routePrefix.substring(0, routePrefix.length() - "/sse".length()) + "/messages";
+        String sseSuffix = Symbol.SLASH + "sse";
+        if (routePrefix.endsWith(sseSuffix)) {
+            return routePrefix.substring(0, routePrefix.length() - sseSuffix.length()) + Symbol.SLASH + "messages";
         }
         return routePrefix;
     }
@@ -612,10 +656,10 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
         }
         int start = 0;
         int end = value.length();
-        while (start < end && value.charAt(start) == '/') {
+        while (start < end && value.charAt(start) == Symbol.C_SLASH) {
             start++;
         }
-        while (end > start && value.charAt(end - 1) == '/') {
+        while (end > start && value.charAt(end - 1) == Symbol.C_SLASH) {
             end--;
         }
         return value.substring(start, end);
@@ -639,63 +683,63 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
             String method,
             String path) {
         return bodySpec.retrieve().toEntity(DataBuffer.class).flatMap(responseEntity -> {
-            Logger.info(
-                    false,
-                    "Vortex",
-                    "Received buffered status: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_BUFFERED, {}",
-                    ip,
-                    method,
-                    path,
-                    responseEntity.getStatusCode());
-            Logger.info(
-                    false,
-                    "Vortex",
-                    "Downstream response headers: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_HEADERS, {}",
-                    ip,
-                    method,
-                    path,
-                    responseEntity.getHeaders());
+                    Logger.info(
+                            false,
+                            "Vortex",
+                            "Received buffered status: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_BUFFERED, {}",
+                            ip,
+                            method,
+                            path,
+                            responseEntity.getStatusCode());
+                    Logger.info(
+                            false,
+                            "Vortex",
+                            "Downstream response headers: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_HEADERS, {}",
+                            ip,
+                            method,
+                            path,
+                            responseEntity.getHeaders());
 
-            DataBuffer body = responseEntity.getBody();
-            if (body != null && body.readableByteCount() > 0) {
-                Logger.info(
-                        false,
-                        "Vortex",
-                        "Received buffered content: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_CONTENT_BUFFERED, bytes={}",
-                        ip,
-                        method,
-                        path,
-                        body.readableByteCount());
-            } else {
-                Logger.warn(
-                        false,
-                        "Vortex",
-                        "Received buffered content is empty: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_CONTENT_BUFFERED",
-                        ip,
-                        method,
-                        path);
-            }
+                    DataBuffer body = responseEntity.getBody();
+                    if (body != null && body.readableByteCount() > 0) {
+                        Logger.info(
+                                false,
+                                "Vortex",
+                                "Received buffered content: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_CONTENT_BUFFERED, bytes={}",
+                                ip,
+                                method,
+                                path,
+                                body.readableByteCount());
+                    } else {
+                        Logger.warn(
+                                false,
+                                "Vortex",
+                                "Received buffered content is empty: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_CONTENT_BUFFERED",
+                                ip,
+                                method,
+                                path);
+                    }
 
-            ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
-            responseBuilder.headers(headers -> {
-                headers.addAll(responseEntity.getHeaders());
-                headers.remove(HttpHeaders.HOST);
-                headers.remove(HttpHeaders.TRANSFER_ENCODING);
-                headers.remove(HttpHeaders.CONTENT_LENGTH);
-            });
+                    ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
+                    responseBuilder.headers(headers -> {
+                        headers.addAll(responseEntity.getHeaders());
+                        headers.remove(HttpHeaders.HOST);
+                        headers.remove(HttpHeaders.TRANSFER_ENCODING);
+                        headers.remove(HttpHeaders.CONTENT_LENGTH);
+                    });
 
-            if (body != null && body.readableByteCount() > 0) {
-                return responseBuilder.body(Mono.just(body), DataBuffer.class);
-            }
-            return responseBuilder.build();
-        }).doOnSubscribe(
-                subscription -> Logger.info(
-                        true,
-                        "Vortex",
-                        "Request subscribed (Buffering).: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_SUBSCRIBE",
-                        ip,
-                        method,
-                        path))
+                    if (body != null && body.readableByteCount() > 0) {
+                        return responseBuilder.body(Mono.just(body), DataBuffer.class);
+                    }
+                    return responseBuilder.build();
+                }).doOnSubscribe(
+                        subscription -> Logger.info(
+                                true,
+                                "Vortex",
+                                "Request subscribed (Buffering).: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_SUBSCRIBE",
+                                ip,
+                                method,
+                                path))
                 .doOnSuccess(
                         serverResponse -> Logger.info(
                                 false,

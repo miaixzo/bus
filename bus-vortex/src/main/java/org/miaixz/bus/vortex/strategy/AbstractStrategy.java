@@ -173,9 +173,11 @@ public abstract class AbstractStrategy implements Strategy {
 
         String forwardedHeader = headers.getFirst("Forwarded");
         if (StringKit.hasText(forwardedHeader)) {
+            String hostPrefix = "host" + Symbol.EQUAL;
             Optional<String> authority = Arrays.stream(forwardedHeader.split(Symbol.SEMICOLON)).map(String::trim)
-                    .filter(part -> part.toLowerCase().startsWith("host="))
-                    .map(part -> part.substring(5).trim().replace("\"", Normal.EMPTY)).findFirst();
+                    .filter(part -> part.toLowerCase().startsWith(hostPrefix))
+                    .map(part -> part.substring(hostPrefix.length()).trim().replace(Symbol.DOUBLE_QUOTES, Normal.EMPTY))
+                    .findFirst();
             if (authority.isPresent()) {
                 Logger.debug(true, "Vortex", "{} found in 'Forwarded' header", authority.get());
                 return authority.map(host -> appendPortIfMissing(host, protocol));
@@ -287,9 +289,11 @@ public abstract class AbstractStrategy implements Strategy {
 
         String forwardedHeader = headers.getFirst("Forwarded");
         if (StringKit.hasText(forwardedHeader)) {
+            String protoPrefix = "proto" + Symbol.EQUAL;
             Optional<String> proto = Arrays.stream(forwardedHeader.split(Symbol.SEMICOLON)).map(String::trim)
-                    .filter(part -> part.toLowerCase().startsWith("proto="))
-                    .map(part -> part.substring(6).trim().replace("\"", Normal.EMPTY)).findFirst();
+                    .filter(part -> part.toLowerCase().startsWith(protoPrefix))
+                    .map(part -> part.substring(protoPrefix.length()).trim().replace(Symbol.DOUBLE_QUOTES, Normal.EMPTY))
+                    .findFirst();
             if (proto.isPresent()) {
                 String protocol = proto.get();
                 Logger.debug(true, "Vortex", "Protocol: '{}' found in 'Forwarded' header", protocol);

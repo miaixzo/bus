@@ -109,37 +109,37 @@ public class Args extends Specifics {
     /**
      * The base URI path for standard RESTful API requests.
      */
-    public static final String REST_PATH_PREFIX = "/router/rest";
+    public static final String REST_PATH_PREFIX = Symbol.SLASH + "router" + Symbol.SLASH + "rest";
 
     /**
      * The base URI path for requests to be forwarded to a Message Queue.
      */
-    public static final String MQ_PATH_PREFIX = "/router/mq";
+    public static final String MQ_PATH_PREFIX = Symbol.SLASH + "router" + Symbol.SLASH + "mq";
 
     /**
      * The base URI path for requests to the MCP.
      */
-    public static final String MCP_PATH_PREFIX = "/router/mcp";
+    public static final String MCP_PATH_PREFIX = Symbol.SLASH + "router" + Symbol.SLASH + "mcp";
 
     /**
      * The base URI path for standard gRPC requests.
      */
-    public static final String GRPC_PATH_PREFIX = "/router/grpc";
+    public static final String GRPC_PATH_PREFIX = Symbol.SLASH + "router" + Symbol.SLASH + "grpc";
 
     /**
      * The base URI path for WebSocket connections.
      */
-    public static final String WS_PATH_PREFIX = "/router/ws";
+    public static final String WS_PATH_PREFIX = Symbol.SLASH + "router" + Symbol.SLASH + "ws";
 
     /**
      * The base URI path for Large Language Model (LLM) proxy requests.
      */
-    public static final String LLM_PATH_PREFIX = "/router/llm";
+    public static final String LLM_PATH_PREFIX = Symbol.SLASH + "router" + Symbol.SLASH + "llm";
 
     /**
      * The base URI path for custom (CST) requests.
      */
-    public static final String CST_PATH_PREFIX = "/router/cst";
+    public static final String CST_PATH_PREFIX = Symbol.SLASH + "router" + Symbol.SLASH + "cst";
 
     /**
      * A constant for a default API version, e.g., "1.0".

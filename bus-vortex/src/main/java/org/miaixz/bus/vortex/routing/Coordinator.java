@@ -20,6 +20,7 @@
 package org.miaixz.bus.vortex.routing;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Executor;
@@ -109,7 +110,7 @@ public abstract class Coordinator<I, O> implements Executor<I, O> {
             }
             baseUrlBuilder.append(assets.getPath());
         }
-        return baseUrlBuilder.toString();
+        return UrlKit.normalize(baseUrlBuilder.toString(), false);
     }
 
     /**
