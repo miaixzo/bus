@@ -19,13 +19,12 @@
 */
 package org.miaixz.bus.starter.vortex;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.magic.Performance;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Configuration properties for the Vortex routing gateway.

@@ -292,7 +292,9 @@ public abstract class AbstractStrategy implements Strategy {
             String protoPrefix = "proto" + Symbol.EQUAL;
             Optional<String> proto = Arrays.stream(forwardedHeader.split(Symbol.SEMICOLON)).map(String::trim)
                     .filter(part -> part.toLowerCase().startsWith(protoPrefix))
-                    .map(part -> part.substring(protoPrefix.length()).trim().replace(Symbol.DOUBLE_QUOTES, Normal.EMPTY))
+                    .map(
+                            part -> part.substring(protoPrefix.length()).trim()
+                                    .replace(Symbol.DOUBLE_QUOTES, Normal.EMPTY))
                     .findFirst();
             if (proto.isPresent()) {
                 String protocol = proto.get();

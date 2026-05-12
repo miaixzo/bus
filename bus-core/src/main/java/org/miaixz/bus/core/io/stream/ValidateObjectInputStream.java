@@ -120,7 +120,7 @@ public class ValidateObjectInputStream extends ObjectInputStream {
             }
         }
 
-        if(CollKit.isEmpty(this.whiteClassSet) || this.whiteClassSet.contains(className)){
+        if (CollKit.isEmpty(this.whiteClassSet) || this.whiteClassSet.contains(className)) {
             return;
         }
 

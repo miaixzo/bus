@@ -19,16 +19,13 @@
 */
 package org.miaixz.bus.starter.vortex;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.miaixz.bus.spring.GeniusBuilder;
-import java.util.List;
-import java.util.Map;
-
-import org.miaixz.bus.cortex.Keying;
-import org.miaixz.bus.cortex.builtin.RegistryGenerator;
+import jakarta.annotation.Resource;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.PORT;
+import org.miaixz.bus.cortex.Keying;
+import org.miaixz.bus.cortex.builtin.RegistryGenerator;
+import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.vortex.*;
 import org.miaixz.bus.vortex.filter.PrimaryFilter;
 import org.miaixz.bus.vortex.handler.ErrorsHandler;
@@ -58,6 +55,7 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.codec.ServerCodecConfigurer;
@@ -67,9 +65,10 @@ import org.springframework.web.reactive.function.server.*;
 import org.springframework.web.server.WebHandler;
 import org.springframework.web.server.adapter.ForwardedHeaderTransformer;
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
-
-import jakarta.annotation.Resource;
 import reactor.netty.http.server.HttpServer;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Auto-configuration for the Vortex gateway.
@@ -85,10 +84,9 @@ import reactor.netty.http.server.HttpServer;
  * <li><b>Core Component</b>: The main Vortex bean that integrates WebFlux, filters, and the HTTP server</li>
  * </ul>
  * <p>
- * <b>Architecture:</b> The gateway follows a clean separation of concerns where {@link org.miaixz.bus.vortex.Router}
- * implementations coordinate request handling, while {@link org.miaixz.bus.vortex.Executor} implementations perform
- * protocol-specific execution. This design enables easy extension with new protocols and consistent request processing
- * across all protocols.
+ * <b>Architecture:</b> The gateway follows a clean separation of concerns where {@link Router} implementations
+ * coordinate request handling, while {@link Executor} implementations perform protocol-specific execution. This design
+ * enables easy extension with new protocols and consistent request processing across all protocols.
  * </p>
  * <p>
  * <b>Supported Protocols:</b>
@@ -103,9 +101,9 @@ import reactor.netty.http.server.HttpServer;
  *
  * @author Kimi Liu
  * @since Java 21+
- * @see org.miaixz.bus.vortex.Router
- * @see org.miaixz.bus.vortex.Executor
- * @see org.miaixz.bus.vortex.Strategy
+ * @see Router
+ * @see Executor
+ * @see Strategy
  */
 @EnableConfigurationProperties(value = { VortexProperties.class })
 @ConditionalOnProperty(prefix = GeniusBuilder.VORTEX, name = "enabled", havingValue = "true", matchIfMissing = true)

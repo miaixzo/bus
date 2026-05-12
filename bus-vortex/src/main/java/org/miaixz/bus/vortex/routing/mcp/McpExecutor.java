@@ -122,9 +122,8 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 target.getMethod(),
                 targetUri);
 
-        WebClient.RequestBodySpec bodySpec = Egress.request(
-                HttpMethod.valueOf(context.getHttpMethod().value()),
-                targetUri);
+        WebClient.RequestBodySpec bodySpec = Egress
+                .request(HttpMethod.valueOf(context.getHttpMethod().value()), targetUri);
         Logger.info(
                 true,
                 "Vortex",
@@ -581,8 +580,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
      */
     private String downstreamMessagesPrefix(Assets assets) {
         String servicePath = trimSlashes(assets.getPath());
-        return StringKit.isBlank(servicePath)
-                ? Symbol.SLASH + "messages"
+        return StringKit.isBlank(servicePath) ? Symbol.SLASH + "messages"
                 : Symbol.SLASH + servicePath + Symbol.SLASH + "messages";
     }
 
@@ -643,63 +641,63 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
             String method,
             String path) {
         return bodySpec.retrieve().toEntity(DataBuffer.class).flatMap(responseEntity -> {
-                    Logger.info(
-                            false,
-                            "Vortex",
-                            "Received buffered status: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_BUFFERED, {}",
-                            ip,
-                            method,
-                            path,
-                            responseEntity.getStatusCode());
-                    Logger.info(
-                            false,
-                            "Vortex",
-                            "Downstream response headers: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_HEADERS, {}",
-                            ip,
-                            method,
-                            path,
-                            responseEntity.getHeaders());
+            Logger.info(
+                    false,
+                    "Vortex",
+                    "Received buffered status: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_BUFFERED, {}",
+                    ip,
+                    method,
+                    path,
+                    responseEntity.getStatusCode());
+            Logger.info(
+                    false,
+                    "Vortex",
+                    "Downstream response headers: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_HEADERS, {}",
+                    ip,
+                    method,
+                    path,
+                    responseEntity.getHeaders());
 
-                    DataBuffer body = responseEntity.getBody();
-                    if (body != null && body.readableByteCount() > 0) {
-                        Logger.info(
-                                false,
-                                "Vortex",
-                                "Received buffered content: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_CONTENT_BUFFERED, bytes={}",
-                                ip,
-                                method,
-                                path,
-                                body.readableByteCount());
-                    } else {
-                        Logger.warn(
-                                false,
-                                "Vortex",
-                                "Received buffered content is empty: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_CONTENT_BUFFERED",
-                                ip,
-                                method,
-                                path);
-                    }
+            DataBuffer body = responseEntity.getBody();
+            if (body != null && body.readableByteCount() > 0) {
+                Logger.info(
+                        false,
+                        "Vortex",
+                        "Received buffered content: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_CONTENT_BUFFERED, bytes={}",
+                        ip,
+                        method,
+                        path,
+                        body.readableByteCount());
+            } else {
+                Logger.warn(
+                        false,
+                        "Vortex",
+                        "Received buffered content is empty: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_CONTENT_BUFFERED",
+                        ip,
+                        method,
+                        path);
+            }
 
-                    ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
-                    responseBuilder.headers(headers -> {
-                        headers.addAll(responseEntity.getHeaders());
-                        headers.remove(HttpHeaders.HOST);
-                        headers.remove(HttpHeaders.TRANSFER_ENCODING);
-                        headers.remove(HttpHeaders.CONTENT_LENGTH);
-                    });
+            ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
+            responseBuilder.headers(headers -> {
+                headers.addAll(responseEntity.getHeaders());
+                headers.remove(HttpHeaders.HOST);
+                headers.remove(HttpHeaders.TRANSFER_ENCODING);
+                headers.remove(HttpHeaders.CONTENT_LENGTH);
+            });
 
-                    if (body != null && body.readableByteCount() > 0) {
-                        return responseBuilder.body(Mono.just(body), DataBuffer.class);
-                    }
-                    return responseBuilder.build();
-                }).doOnSubscribe(
-                        subscription -> Logger.info(
-                                true,
-                                "Vortex",
-                                "Request subscribed (Buffering).: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_SUBSCRIBE",
-                                ip,
-                                method,
-                                path))
+            if (body != null && body.readableByteCount() > 0) {
+                return responseBuilder.body(Mono.just(body), DataBuffer.class);
+            }
+            return responseBuilder.build();
+        }).doOnSubscribe(
+                subscription -> Logger.info(
+                        true,
+                        "Vortex",
+                        "Request subscribed (Buffering).: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_SUBSCRIBE",
+                        ip,
+                        method,
+                        path))
                 .doOnSuccess(
                         serverResponse -> Logger.info(
                                 false,

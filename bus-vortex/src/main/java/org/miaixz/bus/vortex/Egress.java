@@ -76,7 +76,8 @@ public final class Egress {
      * Returns the shared outbound {@link WebClient}.
      * <p>
      * This method is exposed for framework-level integration points that need direct WebClient access. Changes applied
-     * to the shared client construction, such as global filters or codecs, affect all REST and MCP outbound proxy flows.
+     * to the shared client construction, such as global filters or codecs, affect all REST and MCP outbound proxy
+     * flows.
      *
      * @return The shared WebClient.
      */
@@ -87,7 +88,8 @@ public final class Egress {
     /**
      * Checks whether outbound HTTP resources have already been initialized.
      * <p>
-     * This is primarily useful for diagnostics and lifecycle checks because resource creation is lazy and request-driven.
+     * This is primarily useful for diagnostics and lifecycle checks because resource creation is lazy and
+     * request-driven.
      *
      * @return {@code true} if resources are initialized.
      */
@@ -116,25 +118,20 @@ public final class Egress {
     private static Resources create() {
         HttpClient httpClient = HttpClient.create(Holder.connectionProvider());
         ExchangeStrategies strategies = ExchangeStrategies.builder()
-                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(MAX_IN_MEMORY_SIZE))
-                .build();
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(MAX_IN_MEMORY_SIZE)).build();
         WebClient webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(httpClient))
                 .exchangeStrategies(strategies).build();
 
-        Logger.info(
-                true,
-                "Vortex",
-                "Outbound HTTP client initialized: implementation={}",
-                "reactor-netty");
+        Logger.info(true, "Vortex", "Outbound HTTP client initialized: implementation={}", "reactor-netty");
         return new Resources(httpClient, webClient);
     }
 
     /**
      * Lazy holder for outbound HTTP resources.
      * <p>
-     * The holder uses double-checked locking so the connection provider is not touched during class loading. This avoids
-     * creating HTTP resources before {@link Holder#of(org.miaixz.bus.vortex.magic.Performance)} has applied the runtime
-     * performance configuration.
+     * The holder uses double-checked locking so the connection provider is not touched during class loading. This
+     * avoids creating HTTP resources before {@link Holder#of(org.miaixz.bus.vortex.magic.Performance)} has applied the
+     * runtime performance configuration.
      */
     private static final class ResourcesHolder {
 
@@ -183,8 +180,8 @@ public final class Egress {
     /**
      * Container for the low-level Reactor Netty client and the higher-level Spring WebClient facade.
      * <p>
-     * Keeping both references together documents that they have the same lifecycle: both are created once, shared by all
-     * REST/MCP outbound proxy requests, and backed by the connection provider owned by {@link Holder}.
+     * Keeping both references together documents that they have the same lifecycle: both are created once, shared by
+     * all REST/MCP outbound proxy requests, and backed by the connection provider owned by {@link Holder}.
      *
      * @param httpClient The shared Reactor Netty HTTP client.
      * @param webClient  The shared Spring WebClient built on top of {@code httpClient}.

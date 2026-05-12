@@ -108,15 +108,16 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
         Assets assets = context.getAssets();
         String upstreamUrl = buildUpstreamUrl(assets);
 
-        String responseJson = JsonKit.toJsonString(Map.of(
-                "status",
-                "websocket_ready",
-                "message",
-                "WebSocket endpoint configured",
-                "upstream",
-                upstreamUrl,
-                "note",
-                "Use WebSocket client to connect to this endpoint"));
+        String responseJson = JsonKit.toJsonString(
+                Map.of(
+                        "status",
+                        "websocket_ready",
+                        "message",
+                        "WebSocket endpoint configured",
+                        "upstream",
+                        upstreamUrl,
+                        "note",
+                        "Use WebSocket client to connect to this endpoint"));
 
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(responseJson);
     }

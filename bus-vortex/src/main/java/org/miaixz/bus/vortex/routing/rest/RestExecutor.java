@@ -113,9 +113,8 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 path,
                 targetUri);
 
-        WebClient.RequestBodySpec bodySpec = Egress.request(
-                HttpMethod.valueOf(context.getHttpMethod().value()),
-                targetUri);
+        WebClient.RequestBodySpec bodySpec = Egress
+                .request(HttpMethod.valueOf(context.getHttpMethod().value()), targetUri);
         Logger.info(
                 true,
                 "Vortex",
@@ -381,7 +380,8 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
         String routeUrl = stripQueryAndFragment(assets.getUrl());
         String routeBaseUrl = routeUri.isAbsolute() ? routeUrl : joinPath(baseUrl, routeUrl);
         String rawQuery = buildForwardQuery(context, routeUri.getRawQuery());
-        return UrlKit.toURI(StringKit.isBlank(rawQuery) ? routeBaseUrl : routeBaseUrl + Symbol.QUESTION_MARK + rawQuery);
+        return UrlKit
+                .toURI(StringKit.isBlank(rawQuery) ? routeBaseUrl : routeBaseUrl + Symbol.QUESTION_MARK + rawQuery);
     }
 
     /**

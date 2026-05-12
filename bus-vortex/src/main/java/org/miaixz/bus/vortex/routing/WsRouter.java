@@ -130,10 +130,11 @@ public class WsRouter implements Router<ServerRequest, ServerResponse> {
                         method,
                         path);
 
-                return ServerResponse.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON)
-                        .bodyValue(JsonKit.toJsonString(Map.of(
-                                "error",
-                                "WebSocket upgrade required. Please use WebSocket client to connect to this endpoint.")));
+                return ServerResponse.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).bodyValue(
+                        JsonKit.toJsonString(
+                                Map.of(
+                                        "error",
+                                        "WebSocket upgrade required. Please use WebSocket client to connect to this endpoint.")));
             }
 
             Logger.info(
