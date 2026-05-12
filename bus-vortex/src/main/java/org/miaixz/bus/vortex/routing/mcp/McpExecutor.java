@@ -38,7 +38,7 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
-import org.miaixz.bus.vortex.Holder;
+import org.miaixz.bus.vortex.Egress;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.routing.Coordinator;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -47,16 +47,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.netty.http.client.HttpClient;
 
 /**
  * The core executor for proxying MCP Streamable HTTP requests to registered downstream MCP services.
@@ -69,22 +66,6 @@ import reactor.netty.http.client.HttpClient;
  * @since Java 21+
  */
 public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
-
-    /**
-     * A cached, pre-configured {@link ExchangeStrategies} instance for the {@link WebClient}.
-     * <p>
-     * This is initialized statically to avoid redundant object creation. It sets a generous memory limit for codecs to
-     * prevent errors when handling moderately large response bodies.
-     */
-    private static final ExchangeStrategies CACHED_EXCHANGE_STRATEGIES = ExchangeStrategies.builder()
-            .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(Math.toIntExact(Normal.MEBI_128))).build();
-
-    /**
-     * A cached {@link HttpClient} instance that uses the shared connection pool.
-     * <p>
-     * This is initialized once and reused for all requests to avoid redundant HttpClient creation.
-     */
-    private static volatile HttpClient CACHED_HTTP_CLIENT;
 
     /**
      * Creates an MCP Streamable HTTP reverse proxy executor.
@@ -141,10 +122,9 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 target.getMethod(),
                 targetUri);
 
-        WebClient webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(getHttpClient()))
-                .exchangeStrategies(CACHED_EXCHANGE_STRATEGIES).build();
-        WebClient.RequestBodySpec bodySpec = webClient.method(HttpMethod.valueOf(context.getHttpMethod().value()))
-                .uri(targetUri);
+        WebClient.RequestBodySpec bodySpec = Egress.request(
+                HttpMethod.valueOf(context.getHttpMethod().value()),
+                targetUri);
         Logger.info(
                 true,
                 "Vortex",
@@ -244,26 +224,6 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
 
         return isStreaming ? executeStreaming(bodySpec, context, ip, method, path)
                 : executeBuffering(bodySpec, ip, method, path);
-    }
-
-    /**
-     * Gets the shared Reactor Netty HTTP client, initializing it lazily if needed.
-     * <p>
-     * Request-specific {@link WebClient} instances reuse this low-level client so the connection pool remains shared
-     * while per-request URI and headers stay isolated.
-     *
-     * @return The cached HttpClient instance
-     */
-    private HttpClient getHttpClient() {
-        if (CACHED_HTTP_CLIENT == null) {
-            synchronized (McpExecutor.class) {
-                if (CACHED_HTTP_CLIENT == null) {
-                    CACHED_HTTP_CLIENT = HttpClient.create(Holder.connectionProvider());
-                    Logger.info(true, "Vortex", "Shared HTTP client initialized: protocol=http");
-                }
-            }
-        }
-        return CACHED_HTTP_CLIENT;
     }
 
     /**

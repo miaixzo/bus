@@ -36,18 +36,16 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
-import org.miaixz.bus.vortex.Holder;
+import org.miaixz.bus.vortex.Egress;
 import org.miaixz.bus.vortex.routing.Coordinator;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -55,7 +53,6 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
-import reactor.netty.http.client.HttpClient;
 
 /**
  * The core executor for executing RESTful HTTP requests to downstream services.
@@ -72,48 +69,10 @@ import reactor.netty.http.client.HttpClient;
 public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
 
     /**
-     * A cached, pre-configured {@link ExchangeStrategies} instance for the {@link WebClient}.
-     * <p>
-     * This is initialized statically to avoid redundant object creation. It sets a generous memory limit for codecs to
-     * prevent errors when handling moderately large response bodies.
-     */
-    private static final ExchangeStrategies CACHED_EXCHANGE_STRATEGIES = ExchangeStrategies.builder()
-            .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(Math.toIntExact(Normal.MEBI_128))).build();
-
-    /**
-     * A cached {@link HttpClient} instance that uses the shared connection pool.
-     * <p>
-     * This is initialized once and reused for all requests to avoid redundant HttpClient creation.
-     */
-    private static volatile HttpClient CACHED_HTTP_CLIENT;
-
-    /**
      * Default constructor.
-     * <p>
-     * The HTTP connection pool is obtained from {@link Holder#connectionProvider()} which is configured globally via
-     * {@code vortex.performance.maxConnections} property.
      */
     public RestExecutor() {
 
-    }
-
-    /**
-     * Gets the cached HTTP client, initializing it lazily if needed.
-     * <p>
-     * Uses double-checked locking for thread-safe lazy initialization.
-     *
-     * @return The cached HttpClient instance
-     */
-    private HttpClient getHttpClient() {
-        if (CACHED_HTTP_CLIENT == null) {
-            synchronized (RestExecutor.class) {
-                if (CACHED_HTTP_CLIENT == null) {
-                    CACHED_HTTP_CLIENT = HttpClient.create(Holder.connectionProvider());
-                    Logger.info(true, "Vortex", "Shared HTTP client initialized: protocol=http");
-                }
-            }
-        }
-        return CACHED_HTTP_CLIENT;
     }
 
     /**
@@ -143,9 +102,6 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 path,
                 baseUrl);
 
-        WebClient webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(getHttpClient()))
-                .exchangeStrategies(CACHED_EXCHANGE_STRATEGIES).build();
-
         Assets assets = context.getAssets();
         URI targetUri = buildTargetUri(assets, context, baseUrl);
         Logger.info(
@@ -157,8 +113,9 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 path,
                 targetUri);
 
-        WebClient.RequestBodySpec bodySpec = webClient.method(HttpMethod.valueOf(context.getHttpMethod().value()))
-                .uri(targetUri);
+        WebClient.RequestBodySpec bodySpec = Egress.request(
+                HttpMethod.valueOf(context.getHttpMethod().value()),
+                targetUri);
         Logger.info(
                 true,
                 "Vortex",
