@@ -33,12 +33,13 @@ import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * DICOM属性集合类，用于存储和操作DICOM数据元素。
+ * DICOM attribute set used to store and manipulate DICOM data elements.
  * <p>
- * 该类提供了对DICOM属性的增删改查操作，支持标准DICOM属性和私有属性的处理。 它可以处理各种类型的DICOM数据元素，包括字符串、数值、日期、序列等。
+ * This class provides operations for DICOM attributes, including standard and private attributes. It handles string,
+ * numeric, date, sequence, and related DICOM data element values.
  * </p>
  * <p>
- * 该类实现了序列化接口，可以被序列化和反序列化。
+ * This class implements serialization and can be serialized and deserialized.
  * </p>
  *
  * @author Kimi Liu
@@ -50,155 +51,155 @@ public class Attributes implements Serializable {
     private static final long serialVersionUID = 2852260209995L;
 
     /**
-     * 强制转换模式常量
+     * Coercion mode constant
      */
     public static final String COERCE = "COERCE";
 
     /**
-     * 校正模式常量
+     * Correction mode constant
      */
     public static final String CORRECT = "CORRECT";
 
     /**
-     * 初始容量
+     * Initial capacity
      */
     private static final int INIT_CAPACITY = 16;
 
     /**
-     * 方法的限制值
+     * Method limit value
      */
     private static final int TO_STRING_LIMIT = 50;
 
     /**
-     * 方法的宽度限制
+     * Method width value
      */
     private static final int TO_STRING_WIDTH = 78;
 
     /**
-     * 父级属性集合
+     * Parent attribute set
      */
     private transient Attributes parent;
 
     /**
-     * 父级序列私有创建者
+     * Parent sequence private creator
      */
     private transient String parentSequencePrivateCreator;
 
     /**
-     * 父级序列标签
+     * Parent sequence tag
      */
     private transient int parentSequenceTag;
 
     /**
-     * 标签数组
+     * Tag array
      */
     private transient int[] tags;
 
     /**
-     * 值表示法数组
+     * VR array
      */
     private transient VR[] vrs;
 
     /**
-     * 值数组
+     * Value array
      */
     private transient Object[] values;
 
     /**
-     * 大小
+     * Size.
      */
     private transient int size;
 
     /**
-     * 特定字符集
+     * Specific character set.
      */
     private transient SpecificCharacterSet cs;
 
     /**
-     * 时区
+     * Time zone.
      */
     private transient TimeZone tz;
 
     /**
-     * 长度
+     * Length.
      */
     private transient int length = -1;
 
     /**
-     * 组长度数组
+     * Group length array
      */
     private transient int[] groupLengths;
 
     /**
-     * 组长度索引0
+     * Group length index zero
      */
     private transient int groupLengthIndex0;
 
     /**
-     * 是否大端序
+     * Whether big endian
      */
     private volatile boolean bigEndian;
 
     /**
-     * 项目位置
+     * Item position
      */
     private long itemPosition = -1;
 
     /**
-     * 是否包含特定字符集
+     * Whether a specific character set is present
      */
     private boolean containsSpecificCharacterSet;
 
     /**
-     * 是否包含UTC时区偏移
+     * Whether UTC time zone offset is present
      */
     private boolean containsTimezoneOffsetFromUTC;
 
     /**
-     * 属性映射
+     * Property map
      */
     private Map<String, Object> properties;
 
     /**
-     * 默认时区
+     * Default time zone
      */
     private TimeZone defaultTimeZone;
 
     /**
-     * 是否只读
+     * Read-only flag.
      */
     private volatile boolean readOnly;
 
     /**
-     * 默认构造方法
+     * Default constructor
      */
     public Attributes() {
         this(false, INIT_CAPACITY);
     }
 
     /**
-     * 构造方法
+     * Constructor
      *
-     * @param bigEndian 是否大端序
+     * @param bigEndian Whether big endian
      */
     public Attributes(boolean bigEndian) {
         this(bigEndian, INIT_CAPACITY);
     }
 
     /**
-     * 构造方法
+     * Constructor
      *
-     * @param initialCapacity 初始容量
+     * @param initialCapacity Initial capacity
      */
     public Attributes(int initialCapacity) {
         this(false, initialCapacity);
     }
 
     /**
-     * 构造方法
+     * Constructor
      *
-     * @param bigEndian       是否大端序
-     * @param initialCapacity 初始容量
+     * @param bigEndian       Whether big endian
+     * @param initialCapacity Initial capacity
      */
     public Attributes(boolean bigEndian, int initialCapacity) {
         this.bigEndian = bigEndian;
@@ -206,19 +207,19 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 构造方法
+     * Constructor
      *
-     * @param other 其他属性集合
+     * @param other other attribute set
      */
     public Attributes(Attributes other) {
         this(other, other.bigEndian);
     }
 
     /**
-     * 构造方法
+     * Constructor
      *
-     * @param other     其他属性集合
-     * @param bigEndian 是否大端序
+     * @param other     other attribute set
+     * @param bigEndian Whether big endian
      */
     public Attributes(Attributes other, boolean bigEndian) {
         this(bigEndian, other.size);
@@ -228,35 +229,35 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 构造方法
+     * Constructor
      *
-     * @param other     其他属性集合
-     * @param selection 选择标签
+     * @param other     other attribute set
+     * @param selection selected tags
      */
     public Attributes(Attributes other, int... selection) {
         this(other, other.bigEndian, selection);
     }
 
     /**
-     * 构造方法
+     * Constructor
      *
-     * @param other     其他属性集合
-     * @param bigEndian 是否大端序
-     * @param selection 选择标签
+     * @param other     other attribute set
+     * @param bigEndian Whether big endian
+     * @param selection selected tags
      */
     public Attributes(Attributes other, boolean bigEndian, int... selection) {
         this(bigEndian, selection.length);
         if (other.properties != null)
-            properties = new HashMap<String, Object>(other.properties);
+            properties = new HashMap<>(other.properties);
         addSelected(other, selection);
     }
 
     /**
-     * 构造方法
+     * Constructor
      *
-     * @param other     其他属性集合
-     * @param bigEndian 是否大端序
-     * @param selection 选择属性集合
+     * @param other     other attribute set
+     * @param bigEndian Whether big endian
+     * @param selection selected attributes
      */
     public Attributes(Attributes other, boolean bigEndian, Attributes selection) {
         this(bigEndian, selection.size());
@@ -266,7 +267,7 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 清空属性集合
+     * Clears the attribute set
      */
     public void clear() {
         size = 0;
@@ -276,9 +277,9 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 初始化方法
+     * Initialization method
      *
-     * @param initialCapacity 初始容量
+     * @param initialCapacity Initial capacity
      */
     private void init(int initialCapacity) {
         this.tags = new int[initialCapacity];
@@ -287,16 +288,16 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 是否只读
+     * Tests whether this attribute set is read-only.
      *
-     * @return 是否只读
+     * @return {@code true} if this attribute set is read-only
      */
     public boolean isReadOnly() {
         return readOnly;
     }
 
     /**
-     * 设置为只读
+     * Marks as read-only
      */
     public void setReadOnly() {
         this.readOnly = true;
@@ -310,7 +311,7 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 确保可修改
+     * Ensures the instance is modifiable
      */
     private void ensureModifiable() {
         if (readOnly) {
@@ -319,18 +320,18 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取属性映射
+     * Gets the property map.
      *
-     * @return 属性映射
+     * @return Property map
      */
     public Map<String, Object> getProperties() {
         return properties;
     }
 
     /**
-     * 设置属性映射
+     * Sets the property map.
      *
-     * @param properties 属性映射
+     * @param properties Property map
      */
     public void setProperties(Map<String, Object> properties) {
         ensureModifiable();
@@ -338,11 +339,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取属性值
+     * Gets the property value
      *
-     * @param key    键
-     * @param defVal 默认值
-     * @return 属性值
+     * @param key    key
+     * @param defVal default value
+     * @return result
      */
     public Object getProperty(String key, Object defVal) {
         if (properties == null)
@@ -352,11 +353,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 设置属性值
+     * Sets the property value
      *
-     * @param key   键
-     * @param value 值
-     * @return 之前的值
+     * @param key   key
+     * @param value value
+     * @return previous value
      */
     public Object setProperty(String key, Object value) {
         ensureModifiable();
@@ -366,10 +367,10 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 清除属性
+     * Clears the property
      *
-     * @param key 键
-     * @return 之前的值
+     * @param key key
+     * @return previous value
      */
     public Object clearProperty(String key) {
         ensureModifiable();
@@ -377,84 +378,84 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 是否根属性集合
+     * Whether this is the root attribute set
      *
-     * @return 是否根属性集合
+     * @return Whether this is the root attribute set
      */
     public final boolean isRoot() {
         return parent == null;
     }
 
     /**
-     * 获取根属性集合
+     * Gets the root attribute set
      *
-     * @return 根属性集合
+     * @return result
      */
     public final Attributes getRoot() {
         return isRoot() ? this : parent.getRoot();
     }
 
     /**
-     * 获取层级
+     * Gets the level
      *
-     * @return 层级
+     * @return level
      */
     public final int getLevel() {
         return isRoot() ? 0 : 1 + parent.getLevel();
     }
 
     /**
-     * 是否大端序
+     * Whether big endian
      *
-     * @return 是否大端序
+     * @return Whether big endian
      */
     public final boolean bigEndian() {
         return bigEndian;
     }
 
     /**
-     * 获取父级属性集合
+     * Gets the parent attribute set.
      *
-     * @return 父级属性集合
+     * @return Parent attribute set
      */
     public final Attributes getParent() {
         return parent;
     }
 
     /**
-     * 获取父级序列私有创建者
+     * Gets the parent sequence private creator.
      *
-     * @return 父级序列私有创建者
+     * @return Parent sequence private creator
      */
     public String getParentSequencePrivateCreator() {
         return parentSequencePrivateCreator;
     }
 
     /**
-     * 获取父级序列标签
+     * Gets the parent sequence tag.
      *
-     * @return 父级序列标签
+     * @return Parent sequence tag
      */
     public int getParentSequenceTag() {
         return parentSequenceTag;
     }
 
     /**
-     * 获取长度
+     * Gets the length
      *
-     * @return 长度
+     * @return length
      */
     public final int getLength() {
         return length;
     }
 
     /**
-     * 设置父级
+     * Sets the parent
      *
-     * @param parent                       父级属性集合
-     * @param parentSequencePrivateCreator 父级序列私有创建者
-     * @param parentSequenceTag            父级序列标签
-     * @return 当前属性集合
+     * @param parent                       Parent attribute set
+     * @param parentSequencePrivateCreator Parent sequence private creator
+     * @param parentSequenceTag            Parent sequence tag
+     * @return current attribute set
      */
     Attributes setParent(Attributes parent, String parentSequencePrivateCreator, int parentSequenceTag) {
         if (parent != null) {
@@ -474,7 +475,7 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 切换字节序
+     * Toggles endian order
      */
     private void toggleEndian() {
         for (int i = 0; i < size; i++) {
@@ -491,55 +492,55 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取项目位置
+     * Gets the item position.
      *
-     * @return 项目位置
+     * @return Item position
      */
     public final long getItemPosition() {
         return itemPosition;
     }
 
     /**
-     * 设置项目位置
+     * Sets the item position.
      *
-     * @param itemPosition 项目位置
+     * @param itemPosition Item position
      */
     public final void setItemPosition(long itemPosition) {
         this.itemPosition = itemPosition;
     }
 
     /**
-     * 是否为空
+     * Whether empty
      *
-     * @return 是否为空
+     * @return Whether empty
      */
     public final boolean isEmpty() {
         return size == 0;
     }
 
     /**
-     * 获取大小
+     * Gets the number of attributes.
      *
-     * @return 大小
+     * @return size
      */
     public final int size() {
         return size;
     }
 
     /**
-     * 获取项目指针
+     * Gets the item pointers.
      *
-     * @return 项目指针数组
+     * @return item pointer array
      */
     public ItemPointer[] itemPointers() {
         return itemPointers(0);
     }
 
     /**
-     * 获取项目指针
+     * Gets the item pointers.
      *
-     * @param n 偏移量
-     * @return 项目指针数组
+     * @param n offset
+     * @return item pointer array
      */
     private ItemPointer[] itemPointers(int n) {
         if (parent == null)
@@ -551,9 +552,9 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取项目索引
+     * Gets the item index.
      *
-     * @return 项目索引
+     * @return item index
      */
     public int itemIndex() {
         if (parent == null)
@@ -565,25 +566,25 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取标签数组
+     * Gets a copy of the tag array.
      *
-     * @return 标签数组
+     * @return Tag array
      */
     public int[] tags() {
         return Arrays.copyOf(tags, size);
     }
 
     /**
-     * 调整大小
+     * Resizes
      */
     public void trimToSize() {
         trimToSize(false);
     }
 
     /**
-     * 调整大小
+     * Resizes
      *
-     * @param recursive 是否递归
+     * @param recursive whether recursive
      */
     public void trimToSize(boolean recursive) {
         ensureModifiable();
@@ -603,9 +604,9 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 内部化字符串值
+     * Interns string values
      *
-     * @param decode 是否解码
+     * @param decode whether to decode
      */
     public void internalizeStringValues(boolean decode) {
         ensureModifiable();
@@ -633,7 +634,7 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 使用特定字符集解码字符串值
+     * Decodes string values with the specific character set
      */
     private void decodeStringValuesUsingSpecificCharacterSet() {
         Object value;
@@ -651,9 +652,9 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 确保容量
+     * Ensures capacity
      *
-     * @param minCapacity 最小容量
+     * @param minCapacity parameter
      */
     private void ensureCapacity(int minCapacity) {
         int oldCapacity = tags.length;
@@ -666,44 +667,44 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取嵌套数据集
+     * Gets the nested dataset
      *
-     * @param sequenceTag 序列标签
-     * @return 嵌套数据集
+     * @param sequenceTag sequencetag
+     * @return result
      */
     public Attributes getNestedDataset(int sequenceTag) {
         return getNestedDataset(null, sequenceTag, 0);
     }
 
     /**
-     * 获取嵌套数据集
+     * Gets the nested dataset
      *
-     * @param sequenceTag 序列标签
-     * @param itemIndex   项目索引
-     * @return 嵌套数据集
+     * @param sequenceTag sequencetag
+     * @param itemIndex   item index
+     * @return result
      */
     public Attributes getNestedDataset(int sequenceTag, int itemIndex) {
         return getNestedDataset(null, sequenceTag, itemIndex);
     }
 
     /**
-     * 获取嵌套数据集
+     * Gets the nested dataset
      *
-     * @param privateCreator 私有创建者
-     * @param sequenceTag    序列标签
-     * @return 嵌套数据集
+     * @param privateCreator private creator
+     * @param sequenceTag    sequencetag
+     * @return result
      */
     public Attributes getNestedDataset(String privateCreator, int sequenceTag) {
         return getNestedDataset(privateCreator, sequenceTag, 0);
     }
 
     /**
-     * 获取嵌套数据集
+     * Gets the nested dataset
      *
-     * @param privateCreator 私有创建者
-     * @param sequenceTag    序列标签
-     * @param itemIndex      项目索引
-     * @return 嵌套数据集
+     * @param privateCreator private creator
+     * @param sequenceTag    sequencetag
+     * @param itemIndex      item index
+     * @return result
      */
     public Attributes getNestedDataset(String privateCreator, int sequenceTag, int itemIndex) {
         Object value = getSequence(privateCreator, sequenceTag);
@@ -716,20 +717,20 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取嵌套数据集
+     * Gets the nested dataset
      *
-     * @param itemPointers 项目指针
-     * @return 嵌套数据集
+     * @param itemPointers item pointer
+     * @return result
      */
     public Attributes getNestedDataset(ItemPointer... itemPointers) {
         return getNestedDataset(Arrays.asList(itemPointers));
     }
 
     /**
-     * 获取嵌套数据集
+     * Gets the nested dataset
      *
-     * @param itemPointers 项目指针列表
-     * @return 嵌套数据集
+     * @param itemPointers item pointer list
+     * @return result
      */
     public Attributes getNestedDataset(List<ItemPointer> itemPointers) {
         Attributes item = this;
@@ -746,11 +747,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取功能组
+     * Gets the functional group
      *
-     * @param sequenceTag 序列标签
-     * @param frameIndex  帧索引
-     * @return 功能组
+     * @param sequenceTag sequencetag
+     * @param frameIndex  parameter
+     * @return result
      */
     public Attributes getFunctionGroup(int sequenceTag, int frameIndex) {
         Attributes sfgs = getNestedDataset(Tag.SharedFunctionalGroupsSequence);
@@ -766,31 +767,31 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取插入索引
+     * Gets the insertion index
      *
-     * @param tag 标签
-     * @return 插入索引
+     * @param tag tag
+     * @return result
      */
     private int indexForInsertOf(int tag) {
         return size == 0 ? -1 : tags[size - 1] < tag ? -(size + 1) : indexOf(tag);
     }
 
     /**
-     * 获取索引
+     * Gets the index
      *
-     * @param tag 标签
-     * @return 索引
+     * @param tag tag
+     * @return result
      */
     private int indexOf(int tag) {
         return Arrays.binarySearch(tags, 0, size, tag);
     }
 
     /**
-     * 获取索引
+     * Gets the index
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @return 索引
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @return result
      */
     private int indexOf(String privateCreator, int tag) {
         if (privateCreator != null) {
@@ -803,11 +804,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 解析为实际的私有标签，给定一个带有占位符的私有标签（如 0011,xx13）
+     * Resolves an actual private tag from a private tag with a placeholder, such as 0011,xx13.
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @return 实际标签
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @return result
      */
     public int tagOf(String privateCreator, int tag) {
         if (privateCreator != null) {
@@ -820,12 +821,12 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取创建者标签
+     * Gets the creator tag
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param reserve        是否保留
-     * @return 创建者标签
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param reserve        whether to reserve
+     * @return creator tag
      */
     private int creatorTagOf(String privateCreator, int tag, boolean reserve) {
         if (!Tag.isPrivateGroup(tag))
@@ -854,10 +855,10 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 解码字符串值
+     * Decodes string values
      *
-     * @param index 索引
-     * @return 解码后的值
+     * @param index parameter
+     * @return result
      */
     private Object decodeStringValue(int index) {
         Object value = loadBulkData(vrs[index], values[index]);
@@ -865,11 +866,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 解码字符串值
+     * Decodes string values
      *
-     * @param index 索引
-     * @param value 值
-     * @return 解码后的值
+     * @param index parameter
+     * @param value value
+     * @return result
      */
     private Object decodeStringValue(int index, Object value) {
         if (value instanceof byte[]) {
@@ -882,21 +883,21 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 加载并存储批量数据
+     * Loads and stores bulk data
      *
-     * @param index 索引
-     * @return 加载后的值
+     * @param index parameter
+     * @return result
      */
     private Object loadAndStoreBulkData(int index) {
         return values[index] = loadBulkData(vrs[index], values[index]);
     }
 
     /**
-     * 加载批量数据
+     * Loads bulk data
      *
-     * @param vr    值表示法
-     * @param value 值
-     * @return 加载后的值
+     * @param vr    VR
+     * @param value value
+     * @return result
      */
     private Object loadBulkData(VR vr, Object value) {
         try {
@@ -908,20 +909,20 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取特定字符集
+     * Gets the effective specific character set for the VR.
      *
-     * @param vr 值表示法
-     * @return 特定字符集
+     * @param vr VR
+     * @return result
      */
     public SpecificCharacterSet getSpecificCharacterSet(VR vr) {
         return vr.useSpecificCharacterSet() ? getSpecificCharacterSet() : SpecificCharacterSet.ASCII;
     }
 
     /**
-     * 解码DS值
+     * Decodes DS values
      *
-     * @param index 索引
-     * @return 解码后的值
+     * @param index parameter
+     * @return result
      */
     private double[] decodeDSValue(int index) {
         Object value = index < 0 ? Value.NULL : values[index];
@@ -931,7 +932,7 @@ public class Attributes implements Serializable {
             return (double[]) value;
         double[] ds;
         if (value instanceof byte[])
-            value = vrs[index].toStrings((byte[]) value, bigEndian, SpecificCharacterSet.ASCII);
+            value = vrs[index].toStrings(value, bigEndian, SpecificCharacterSet.ASCII);
         if (value instanceof String) {
             String s = (String) value;
             if (s.isEmpty()) {
@@ -952,10 +953,10 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 解码IS值
+     * Decodes IS values
      *
-     * @param index 索引
-     * @return 解码后的值
+     * @param index parameter
+     * @return result
      */
     private long[] decodeISValue(int index) {
         Object value = index < 0 ? Value.NULL : values[index];
@@ -965,7 +966,7 @@ public class Attributes implements Serializable {
             return (long[]) value;
         long[] ls;
         if (value instanceof byte[])
-            value = vrs[index].toStrings((byte[]) value, bigEndian, SpecificCharacterSet.ASCII);
+            value = vrs[index].toStrings(value, bigEndian, SpecificCharacterSet.ASCII);
         if (value instanceof String) {
             String s = (String) value;
             if (s.isEmpty()) {
@@ -986,11 +987,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 更新值表示法
+     * Updates the VR
      *
-     * @param index 索引
-     * @param vr    值表示法
-     * @return 之前的值表示法
+     * @param index parameter
+     * @param vr    VR
+     * @return result
      */
     private VR updateVR(int index, VR vr) {
         VR prev = vrs[index];
@@ -1004,52 +1005,52 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 是否为空值
+     * Whether the value is empty
      *
-     * @param value 值
-     * @return 是否为空值
+     * @param value value
+     * @return Whether the value is empty
      */
     private static boolean isEmpty(Object value) {
         return (value instanceof Value) && ((Value) value).isEmpty();
     }
 
     /**
-     * 是否包含指定标签
+     * Whether the specified tag is present
      *
-     * @param tag 标签
-     * @return 是否包含
+     * @param tag tag
+     * @return whether present
      */
     public boolean contains(int tag) {
         return indexOf(tag) >= 0;
     }
 
     /**
-     * 是否包含指定标签
+     * Whether the specified tag is present
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @return 是否包含
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @return whether present
      */
     public boolean contains(String privateCreator, int tag) {
         return indexOf(privateCreator, tag) >= 0;
     }
 
     /**
-     * 是否包含指定标签的值
+     * Whether the specified tag has a value
      *
-     * @param tag 标签
-     * @return 是否包含
+     * @param tag tag
+     * @return whether present
      */
     public boolean containsValue(int tag) {
         return containsValue(null, tag);
     }
 
     /**
-     * 是否包含指定标签的值
+     * Whether the specified tag has a value
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @return 是否包含
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @return whether present
      */
     public boolean containsValue(String privateCreator, int tag) {
         int index = indexOf(privateCreator, tag);
@@ -1057,11 +1058,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 测试是否包含给定范围内的至少一个标签
+     * Tests whether at least one tag is present in the given range
      *
-     * @param firstTag 第一个标签（包含）
-     * @param lastTag  最后一个标签（包含）
-     * @return 是否包含给定范围内的至少一个标签
+     * @param firstTag parameter
+     * @param lastTag  parameter
+     * @return result
      */
     public boolean containsTagInRange(int firstTag, int lastTag) {
         final int indexFirstTag = indexForInsertOf(firstTag);
@@ -1073,20 +1074,20 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取指定标签的私有创建者
+     * Gets the private creator for the specified tag
      *
-     * @param tag 标签
-     * @return 私有创建者
+     * @param tag tag
+     * @return private creator
      */
     public String privateCreatorOf(int tag) {
         return Tag.isPrivateTag(tag) ? privateCreatorAt(indexOf(Tag.creatorTagOf(tag))) : null;
     }
 
     /**
-     * 获取指定索引的私有创建者
+     * Gets the private creator at the specified index
      *
-     * @param index 索引
-     * @return 私有创建者
+     * @param index parameter
+     * @return private creator
      */
     private String privateCreatorAt(int index) {
         Object value;
@@ -1095,44 +1096,44 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取值
+     * Gets the value
      *
-     * @param tag 标签
-     * @return 值
+     * @param tag tag
+     * @return value
      */
     public Object getValue(int tag) {
         return getValue(null, tag, null);
     }
 
     /**
-     * 获取值
+     * Gets the value
      *
-     * @param tag 标签
-     * @param vr  值表示法持有者
-     * @return 值
+     * @param tag tag
+     * @param vr  VR holder
+     * @return value
      */
     public Object getValue(int tag, VR.Holder vr) {
         return getValue(null, tag, vr);
     }
 
     /**
-     * 获取值
+     * Gets the value
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @return 值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @return value
      */
     public Object getValue(String privateCreator, int tag) {
         return getValue(privateCreator, tag, null);
     }
 
     /**
-     * 获取值
+     * Gets the value
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法持有者
-     * @return 值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR holder
+     * @return value
      */
     public Object getValue(String privateCreator, int tag, VR.Holder vr) {
         int index = indexOf(privateCreator, tag);
@@ -1144,21 +1145,21 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取值表示法
+     * Gets the VR
      *
-     * @param tag 标签
-     * @return 值表示法
+     * @param tag tag
+     * @return VR
      */
     public VR getVR(int tag) {
         return getVR(null, tag);
     }
 
     /**
-     * 获取值表示法
+     * Gets the VR
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @return 值表示法
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @return VR
      */
     public VR getVR(String privateCreator, int tag) {
         int index = indexOf(privateCreator, tag);
@@ -1168,21 +1169,21 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取序列
+     * Gets the sequence
      *
-     * @param tag 标签
-     * @return 序列
+     * @param tag tag
+     * @return sequence
      */
     public Sequence getSequence(int tag) {
         return getSequence(null, tag);
     }
 
     /**
-     * 获取序列
+     * Gets the sequence
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @return 序列
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @return sequence
      */
     public Sequence getSequence(String privateCreator, int tag) {
         int sqtag = tag;
@@ -1215,23 +1216,23 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取字节数组
+     * Gets the byte array
      *
-     * @param tag 标签
-     * @return 字节数组
-     * @throws IOException IO异常
+     * @param tag tag
+     * @return byte array
+     * @throws IOException IOerror
      */
     public byte[] getBytes(int tag) throws IOException {
         return getBytes(null, tag);
     }
 
     /**
-     * 获取字节数组
+     * Gets the byte array
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @return 字节数组
-     * @throws IOException IO异常
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @return byte array
+     * @throws IOException IOerror
      */
     public byte[] getBytes(String privateCreator, int tag) throws IOException {
         int index = indexOf(privateCreator, tag);
@@ -1250,21 +1251,21 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 安全获取字节数组
+     * Safely gets the byte array.
      *
-     * @param tag 标签
-     * @return 字节数组
+     * @param tag tag
+     * @return byte array
      */
     public byte[] getSafeBytes(int tag) {
         return getSafeBytes(null, tag);
     }
 
     /**
-     * 安全获取字节数组
+     * Safely gets the byte array.
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @return 字节数组
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @return byte array
      */
     public byte[] getSafeBytes(String privateCreator, int tag) {
         try {
@@ -1282,144 +1283,144 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取字符串
+     * Gets the string
      *
-     * @param tag 标签
-     * @return 字符串
+     * @param tag tag
+     * @return result
      */
     public String getString(int tag) {
         return getString(null, tag, null, 0, null);
     }
 
     /**
-     * 获取字符串
+     * Gets the string
      *
-     * @param tag    标签
-     * @param defVal 默认值
-     * @return 字符串
+     * @param tag    tag
+     * @param defVal default value
+     * @return result
      */
     public String getString(int tag, String defVal) {
         return getString(null, tag, null, 0, defVal);
     }
 
     /**
-     * 获取字符串
+     * Gets the string
      *
-     * @param tag        标签
-     * @param valueIndex 值索引
-     * @return 字符串
+     * @param tag        tag
+     * @param valueIndex value index
+     * @return result
      */
     public String getString(int tag, int valueIndex) {
         return getString(null, tag, null, valueIndex, null);
     }
 
     /**
-     * 获取字符串
+     * Gets the string
      *
-     * @param tag        标签
-     * @param valueIndex 值索引
-     * @param defVal     默认值
-     * @return 字符串
+     * @param tag        tag
+     * @param valueIndex value index
+     * @param defVal     default value
+     * @return result
      */
     public String getString(int tag, int valueIndex, String defVal) {
         return getString(null, tag, null, valueIndex, defVal);
     }
 
     /**
-     * 获取字符串
+     * Gets the string
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @return 字符串
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @return result
      */
     public String getString(String privateCreator, int tag) {
         return getString(privateCreator, tag, null, 0, null);
     }
 
     /**
-     * 获取字符串
+     * Gets the string
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param defVal         默认值
-     * @return 字符串
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param defVal         default value
+     * @return result
      */
     public String getString(String privateCreator, int tag, String defVal) {
         return getString(privateCreator, tag, null, 0, defVal);
     }
 
     /**
-     * 获取字符串
+     * Gets the string
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @return 字符串
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @return result
      */
     public String getString(String privateCreator, int tag, VR vr) {
         return getString(privateCreator, tag, vr, 0, null);
     }
 
     /**
-     * 获取字符串
+     * Gets the string
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param defVal         默认值
-     * @return 字符串
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param defVal         default value
+     * @return result
      */
     public String getString(String privateCreator, int tag, VR vr, String defVal) {
         return getString(privateCreator, tag, vr, 0, defVal);
     }
 
     /**
-     * 获取字符串
+     * Gets the string
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param valueIndex     值索引
-     * @return 字符串
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param valueIndex     value index
+     * @return result
      */
     public String getString(String privateCreator, int tag, int valueIndex) {
         return getString(privateCreator, tag, null, valueIndex, null);
     }
 
     /**
-     * 获取字符串
+     * Gets the string
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param valueIndex     值索引
-     * @param defVal         默认值
-     * @return 字符串
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param valueIndex     value index
+     * @param defVal         default value
+     * @return result
      */
     public String getString(String privateCreator, int tag, int valueIndex, String defVal) {
         return getString(privateCreator, tag, null, valueIndex, defVal);
     }
 
     /**
-     * 获取字符串
+     * Gets the string
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param valueIndex     值索引
-     * @return 字符串
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param valueIndex     value index
+     * @return result
      */
     public String getString(String privateCreator, int tag, VR vr, int valueIndex) {
         return getString(privateCreator, tag, vr, valueIndex, null);
     }
 
     /**
-     * 获取字符串
+     * Gets the string
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param valueIndex     值索引
-     * @param defVal         默认值
-     * @return 字符串
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param valueIndex     value index
+     * @param defVal         default value
+     * @return result
      */
     public String getString(String privateCreator, int tag, VR vr, int valueIndex, String defVal) {
         int index = indexOf(privateCreator, tag);
@@ -1444,33 +1445,33 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取字符串数组
+     * Gets the string array
      *
-     * @param tag 标签
-     * @return 字符串数组
+     * @param tag tag
+     * @return string array
      */
     public String[] getStrings(int tag) {
         return getStrings(null, tag, null);
     }
 
     /**
-     * 获取字符串数组
+     * Gets the string array
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @return 字符串数组
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @return string array
      */
     public String[] getStrings(String privateCreator, int tag) {
         return getStrings(privateCreator, tag, null);
     }
 
     /**
-     * 获取字符串数组
+     * Gets the string array
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @return 字符串数组
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @return string array
      */
     public String[] getStrings(String privateCreator, int tag, VR vr) {
         int index = indexOf(privateCreator, tag);
@@ -1495,85 +1496,85 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 转换为字符串数组
+     * Converts to a string array
      *
-     * @param val 值
-     * @return 字符串数组
+     * @param val value
+     * @return string array
      */
     private static String[] toStrings(Object val) {
         return (val instanceof String) ? new String[] { (String) val } : (String[]) val;
     }
 
     /**
-     * 获取整数值
+     * Gets the integer value
      *
-     * @param tag    标签
-     * @param defVal 默认值
-     * @return 整数值
+     * @param tag    tag
+     * @param defVal default value
+     * @return result
      */
     public int getInt(int tag, int defVal) {
         return getInt(null, tag, null, 0, defVal);
     }
 
     /**
-     * 获取整数值
+     * Gets the integer value
      *
-     * @param tag        标签
-     * @param valueIndex 值索引
-     * @param defVal     默认值
-     * @return 整数值
+     * @param tag        tag
+     * @param valueIndex value index
+     * @param defVal     default value
+     * @return result
      */
     public int getInt(int tag, int valueIndex, int defVal) {
         return getInt(null, tag, null, valueIndex, defVal);
     }
 
     /**
-     * 获取整数值
+     * Gets the integer value
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param defVal         默认值
-     * @return 整数值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param defVal         default value
+     * @return result
      */
     public int getInt(String privateCreator, int tag, int defVal) {
         return getInt(privateCreator, tag, null, 0, defVal);
     }
 
     /**
-     * 获取整数值
+     * Gets the integer value
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param defVal         默认值
-     * @return 整数值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param defVal         default value
+     * @return result
      */
     public int getInt(String privateCreator, int tag, VR vr, int defVal) {
         return getInt(privateCreator, tag, vr, 0, defVal);
     }
 
     /**
-     * 获取整数值
+     * Gets the integer value
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param valueIndex     值索引
-     * @param defVal         默认值
-     * @return 整数值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param valueIndex     value index
+     * @param defVal         default value
+     * @return result
      */
     public int getInt(String privateCreator, int tag, int valueIndex, int defVal) {
         return getInt(privateCreator, tag, null, valueIndex, defVal);
     }
 
     /**
-     * 获取整数值
+     * Gets the integer value
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param valueIndex     值索引
-     * @param defVal         默认值
-     * @return 整数值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param valueIndex     value index
+     * @param defVal         default value
+     * @return result
      */
     public int getInt(String privateCreator, int tag, VR vr, int valueIndex, int defVal) {
         int index = indexOf(privateCreator, tag);
@@ -1598,33 +1599,33 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取整型数组
+     * Gets the integer array
      *
-     * @param tag 标签
-     * @return 整型数组
+     * @param tag tag
+     * @return integer array
      */
     public int[] getInts(int tag) {
         return getInts(null, tag, null);
     }
 
     /**
-     * 获取整型数组
+     * Gets the integer array
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @return 整型数组
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @return integer array
      */
     public int[] getInts(String privateCreator, int tag) {
         return getInts(privateCreator, tag, null);
     }
 
     /**
-     * 获取整型数组
+     * Gets the integer array
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @return 整型数组
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @return integer array
      */
     public int[] getInts(String privateCreator, int tag, VR vr) {
         int index = indexOf(privateCreator, tag);
@@ -1649,75 +1650,75 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取长整型值
+     * Gets the long value
      *
-     * @param tag    标签
-     * @param defVal 默认值
-     * @return 长整型值
+     * @param tag    tag
+     * @param defVal default value
+     * @return result
      */
     public long getLong(int tag, long defVal) {
         return getLong(null, tag, null, 0, defVal);
     }
 
     /**
-     * 获取长整型值
+     * Gets the long value
      *
-     * @param tag        标签
-     * @param valueIndex 值索引
-     * @param defVal     默认值
-     * @return 长整型值
+     * @param tag        tag
+     * @param valueIndex value index
+     * @param defVal     default value
+     * @return result
      */
     public long getLong(int tag, int valueIndex, long defVal) {
         return getLong(null, tag, null, valueIndex, defVal);
     }
 
     /**
-     * 获取长整型值
+     * Gets the long value
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param defVal         默认值
-     * @return 长整型值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param defVal         default value
+     * @return result
      */
     public long getLong(String privateCreator, int tag, long defVal) {
         return getLong(privateCreator, tag, null, 0, defVal);
     }
 
     /**
-     * 获取长整型值
+     * Gets the long value
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param defVal         默认值
-     * @return 长整型值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param defVal         default value
+     * @return result
      */
     public long getLong(String privateCreator, int tag, VR vr, long defVal) {
         return getLong(privateCreator, tag, vr, 0, defVal);
     }
 
     /**
-     * 获取长整型值
+     * Gets the long value
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param valueIndex     值索引
-     * @param defVal         默认值
-     * @return 长整型值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param valueIndex     value index
+     * @param defVal         default value
+     * @return result
      */
     public long getLong(String privateCreator, int tag, int valueIndex, long defVal) {
         return getLong(privateCreator, tag, null, valueIndex, defVal);
     }
 
     /**
-     * 获取长整型值
+     * Gets the long value
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param valueIndex     值索引
-     * @param defVal         默认值
-     * @return 长整型值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param valueIndex     value index
+     * @param defVal         default value
+     * @return result
      */
     public long getLong(String privateCreator, int tag, VR vr, int valueIndex, long defVal) {
         int index = indexOf(privateCreator, tag);
@@ -1742,33 +1743,33 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取长整型数组
+     * Gets the long array
      *
-     * @param tag 标签
-     * @return 长整型数组
+     * @param tag tag
+     * @return result
      */
     public long[] getLongs(int tag) {
         return getLongs(null, tag, null);
     }
 
     /**
-     * 获取长整型数组
+     * Gets the long array
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @return 长整型数组
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @return result
      */
     public long[] getLongs(String privateCreator, int tag) {
         return getLongs(privateCreator, tag, null);
     }
 
     /**
-     * 获取长整型数组
+     * Gets the long array
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @return 长整型数组
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @return result
      */
     public long[] getLongs(String privateCreator, int tag, VR vr) {
         int index = indexOf(privateCreator, tag);
@@ -1793,75 +1794,75 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取浮点数值
+     * Gets the float value
      *
-     * @param tag    标签
-     * @param defVal 默认值
-     * @return 浮点数值
+     * @param tag    tag
+     * @param defVal default value
+     * @return result
      */
     public float getFloat(int tag, float defVal) {
         return getFloat(null, tag, null, 0, defVal);
     }
 
     /**
-     * 获取浮点数值
+     * Gets the float value
      *
-     * @param tag        标签
-     * @param valueIndex 值索引
-     * @param defVal     默认值
-     * @return 浮点数值
+     * @param tag        tag
+     * @param valueIndex value index
+     * @param defVal     default value
+     * @return result
      */
     public float getFloat(int tag, int valueIndex, float defVal) {
         return getFloat(null, tag, null, valueIndex, defVal);
     }
 
     /**
-     * 获取浮点数值
+     * Gets the float value
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param defVal         默认值
-     * @return 浮点数值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param defVal         default value
+     * @return result
      */
     public float getFloat(String privateCreator, int tag, float defVal) {
         return getFloat(privateCreator, tag, null, 0, defVal);
     }
 
     /**
-     * 获取浮点数值
+     * Gets the float value
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param defVal         默认值
-     * @return 浮点数值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param defVal         default value
+     * @return result
      */
     public float getFloat(String privateCreator, int tag, VR vr, float defVal) {
         return getFloat(privateCreator, tag, vr, 0, defVal);
     }
 
     /**
-     * 获取浮点数值
+     * Gets the float value
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param valueIndex     值索引
-     * @param defVal         默认值
-     * @return 浮点数值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param valueIndex     value index
+     * @param defVal         default value
+     * @return result
      */
     public float getFloat(String privateCreator, int tag, int valueIndex, float defVal) {
         return getFloat(privateCreator, tag, null, valueIndex, defVal);
     }
 
     /**
-     * 获取浮点数值
+     * Gets the float value
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param valueIndex     值索引
-     * @param defVal         默认值
-     * @return 浮点数值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param valueIndex     value index
+     * @param defVal         default value
+     * @return result
      */
     public float getFloat(String privateCreator, int tag, VR vr, int valueIndex, float defVal) {
         int index = indexOf(privateCreator, tag);
@@ -1886,33 +1887,33 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取浮点型数组
+     * Gets the float array
      *
-     * @param tag 标签
-     * @return 浮点型数组
+     * @param tag tag
+     * @return float array
      */
     public float[] getFloats(int tag) {
         return getFloats(null, tag, null);
     }
 
     /**
-     * 获取浮点型数组
+     * Gets the float array
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @return 浮点型数组
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @return float array
      */
     public float[] getFloats(String privateCreator, int tag) {
         return getFloats(privateCreator, tag, null);
     }
 
     /**
-     * 获取浮点型数组
+     * Gets the float array
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @return 浮点型数组
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @return float array
      */
     public float[] getFloats(String privateCreator, int tag, VR vr) {
         int index = indexOf(privateCreator, tag);
@@ -1937,75 +1938,75 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取双精度值
+     * Gets the double value
      *
-     * @param tag    标签
-     * @param defVal 默认值
-     * @return 双精度值
+     * @param tag    tag
+     * @param defVal default value
+     * @return result
      */
     public double getDouble(int tag, double defVal) {
         return getDouble(null, tag, null, 0, defVal);
     }
 
     /**
-     * 获取双精度值
+     * Gets the double value
      *
-     * @param tag        标签
-     * @param valueIndex 值索引
-     * @param defVal     默认值
-     * @return 双精度值
+     * @param tag        tag
+     * @param valueIndex value index
+     * @param defVal     default value
+     * @return result
      */
     public double getDouble(int tag, int valueIndex, double defVal) {
         return getDouble(null, tag, null, valueIndex, defVal);
     }
 
     /**
-     * 获取双精度值
+     * Gets the double value
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param defVal         默认值
-     * @return 双精度值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param defVal         default value
+     * @return result
      */
     public double getDouble(String privateCreator, int tag, double defVal) {
         return getDouble(privateCreator, tag, null, 0, defVal);
     }
 
     /**
-     * 获取双精度值
+     * Gets the double value
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param defVal         默认值
-     * @return 双精度值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param defVal         default value
+     * @return result
      */
     public double getDouble(String privateCreator, int tag, VR vr, double defVal) {
         return getDouble(privateCreator, tag, vr, 0, defVal);
     }
 
     /**
-     * 获取双精度值
+     * Gets the double value
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param valueIndex     值索引
-     * @param defVal         默认值
-     * @return 双精度值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param valueIndex     value index
+     * @param defVal         default value
+     * @return result
      */
     public double getDouble(String privateCreator, int tag, int valueIndex, double defVal) {
         return getDouble(privateCreator, tag, null, valueIndex, defVal);
     }
 
     /**
-     * 获取双精度值
+     * Gets the double value
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param valueIndex     值索引
-     * @param defVal         默认值
-     * @return 双精度值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param valueIndex     value index
+     * @param defVal         default value
+     * @return result
      */
     public double getDouble(String privateCreator, int tag, VR vr, int valueIndex, double defVal) {
         int index = indexOf(privateCreator, tag);
@@ -2030,33 +2031,33 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取双精度型数组
+     * Gets the double array
      *
-     * @param tag 标签
-     * @return 双精度型数组
+     * @param tag tag
+     * @return result
      */
     public double[] getDoubles(int tag) {
         return getDoubles(null, tag, null);
     }
 
     /**
-     * 获取双精度型数组
+     * Gets the double array
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @return 双精度型数组
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @return result
      */
     public double[] getDoubles(String privateCreator, int tag) {
         return getDoubles(privateCreator, tag, null);
     }
 
     /**
-     * 获取双精度型数组
+     * Gets the double array
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @return 双精度型数组
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @return result
      */
     public double[] getDoubles(String privateCreator, int tag, VR vr) {
         int index = indexOf(privateCreator, tag);
@@ -2081,36 +2082,40 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取最准确的时间类型 对于给定标签，返回最准确的时间类型。 对于以下情况，将返回 {@link ZonedDateTime} 实例：
+     * Gets the most precise temporal type. For the given tag, returns the most precise temporal type. A
+     * {@link ZonedDateTime} instance is returned in the following cases:
      * <ul>
-     * <li>具有 {@link VR#DT} 的标签，其值中定义了时区偏移。</li>
-     * <li>具有 {@link VR#DT} 的标签，其值中没有定义时区偏移，但在此或任何父级属性中定义了 {@link Tag#TimezoneOffsetFromUTC}， 或为此或任何父级设置了默认时区（参见
-     * {@link #setDefaultTimeZone(TimeZone)}）。</li>
+     * <li>A tag with {@link VR#DT} whose value defines a time zone offset.</li>
+     * <li>A tag with {@link VR#DT} whose value does not define a time zone offset, while
+     * {@link Tag#TimezoneOffsetFromUTC} is defined here or in a parent attribute, or a default time zone is configured
+     * here or in a parent attribute (see {@link #setDefaultTimeZone(TimeZone)}).</li>
      * </ul>
-     * 如果没有时区信息可用，则对于 {@link VR#DT} 标签返回 {@link LocalDateTime} 实例。 对于 {@link VR#DA} 或 {@link VR#TM} 标签，将返回
-     * {@link LocalDate} 或 {@link LocalTime} 实例。 如果给定标签本身的值未设置（或为空），则返回 <code>null</code>（或此方法其他变体的提供的
-     * <code>defVal</code>）。
+     * If no time zone information is available, a {@link LocalDateTime} instance is returned for {@link VR#DT} tags.
+     * For {@link VR#DA} or {@link VR#TM} tags, a {@link LocalDate} or {@link LocalTime} instance is returned. If the
+     * tag value is not set or empty, this method returns <code>null</code> or the supplied default value
+     * <code>defVal</code>.
      *
-     * @param tag 标签号
-     * @return {@link ZonedDateTime}、{@link LocalDateTime}、{@link LocalDate} 或 {@link LocalTime} 的实例，或 null
+     * @param tag tag number
+     * @return temporal value or {@code null}
      */
     public Temporal getTemporal(int tag) {
         return getTemporal(null, tag, null, 0, null, new DatePrecision());
     }
 
     /**
-     * 获取时间类型
+     * Gets the temporal value
      * <p>
-     * 参见 {@link #getTemporal(int)}。
+     * See {@link #getTemporal(int)}.
      * </p>
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签号
-     * @param vr             值表示法
-     * @param valueIndex     值索引
-     * @param defVal         默认值，如果标签值未设置或为空
-     * @param precision      用作返回值：包含有关包含的日期/时间精度以及标签值本身是否包含时区信息（仅适用于 {@link VR#DT} 标签）的信息。
-     * @return {@link ZonedDateTime}、{@link LocalDateTime}、{@link LocalDate} 或 {@link LocalTime} 的实例，或 defVal
+     * @param privateCreator private creator
+     * @param tag            tag number
+     * @param vr             VR
+     * @param valueIndex     value index
+     * @param defVal         default value
+     * @param precision      used as an output value containing date/time precision and whether the tag value itself
+     *                       contains time zone information, only for {@link VR#DT} tags.
+     * @return result
      */
     public Temporal getTemporal(
             String privateCreator,
@@ -2155,288 +2160,288 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param tag 标签
-     * @return 日期
+     * @param tag tag
+     * @return date
      */
     public Date getDate(int tag) {
         return getDate(null, tag, null, 0, null, new DatePrecision());
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param tag       标签
-     * @param precision 精度
-     * @return 日期
+     * @param tag       tag
+     * @param precision precision
+     * @return date
      */
     public Date getDate(int tag, DatePrecision precision) {
         return getDate(null, tag, null, 0, null, precision);
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param tag    标签
-     * @param defVal 默认值
-     * @return 日期
+     * @param tag    tag
+     * @param defVal default value
+     * @return date
      */
     public Date getDate(int tag, Date defVal) {
         return getDate(null, tag, null, 0, defVal, new DatePrecision());
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param tag       标签
-     * @param defVal    默认值
-     * @param precision 精度
-     * @return 日期
+     * @param tag       tag
+     * @param defVal    default value
+     * @param precision precision
+     * @return date
      */
     public Date getDate(int tag, Date defVal, DatePrecision precision) {
         return getDate(null, tag, null, 0, defVal, precision);
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param tag        标签
-     * @param valueIndex 值索引
-     * @return 日期
+     * @param tag        tag
+     * @param valueIndex value index
+     * @return date
      */
     public Date getDate(int tag, int valueIndex) {
         return getDate(null, tag, null, valueIndex, null, new DatePrecision());
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param tag        标签
-     * @param valueIndex 值索引
-     * @param precision  精度
-     * @return 日期
+     * @param tag        tag
+     * @param valueIndex value index
+     * @param precision  precision
+     * @return date
      */
     public Date getDate(int tag, int valueIndex, DatePrecision precision) {
         return getDate(null, tag, null, valueIndex, null, precision);
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param tag        标签
-     * @param valueIndex 值索引
-     * @param defVal     默认值
-     * @return 日期
+     * @param tag        tag
+     * @param valueIndex value index
+     * @param defVal     default value
+     * @return date
      */
     public Date getDate(int tag, int valueIndex, Date defVal) {
         return getDate(null, tag, null, valueIndex, defVal, new DatePrecision());
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param tag        标签
-     * @param valueIndex 值索引
-     * @param defVal     默认值
-     * @param precision  精度
-     * @return 日期
+     * @param tag        tag
+     * @param valueIndex value index
+     * @param defVal     default value
+     * @param precision  precision
+     * @return date
      */
     public Date getDate(int tag, int valueIndex, Date defVal, DatePrecision precision) {
         return getDate(null, tag, null, valueIndex, defVal, precision);
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @return 日期
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @return date
      */
     public Date getDate(String privateCreator, int tag) {
         return getDate(privateCreator, tag, null, 0, null, new DatePrecision());
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param precision      精度
-     * @return 日期
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param precision      precision
+     * @return date
      */
     public Date getDate(String privateCreator, int tag, DatePrecision precision) {
         return getDate(privateCreator, tag, null, 0, null, precision);
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param defVal         默认值
-     * @param precision      精度
-     * @return 日期
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param defVal         default value
+     * @param precision      precision
+     * @return date
      */
     public Date getDate(String privateCreator, int tag, Date defVal, DatePrecision precision) {
         return getDate(privateCreator, tag, null, 0, defVal, precision);
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @return 日期
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @return date
      */
     public Date getDate(String privateCreator, int tag, VR vr) {
         return getDate(privateCreator, tag, vr, 0, null, new DatePrecision());
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param precision      精度
-     * @return 日期
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param precision      precision
+     * @return date
      */
     public Date getDate(String privateCreator, int tag, VR vr, DatePrecision precision) {
         return getDate(privateCreator, tag, vr, 0, null, precision);
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param defVal         默认值
-     * @return 日期
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param defVal         default value
+     * @return date
      */
     public Date getDate(String privateCreator, int tag, VR vr, Date defVal) {
         return getDate(privateCreator, tag, vr, 0, defVal, new DatePrecision());
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param defVal         默认值
-     * @param precision      精度
-     * @return 日期
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param defVal         default value
+     * @param precision      precision
+     * @return date
      */
     public Date getDate(String privateCreator, int tag, VR vr, Date defVal, DatePrecision precision) {
         return getDate(privateCreator, tag, vr, 0, defVal, precision);
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param valueIndex     值索引
-     * @return 日期
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param valueIndex     value index
+     * @return date
      */
     public Date getDate(String privateCreator, int tag, int valueIndex) {
         return getDate(privateCreator, tag, null, valueIndex, null, new DatePrecision());
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param valueIndex     值索引
-     * @param precision      精度
-     * @return 日期
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param valueIndex     value index
+     * @param precision      precision
+     * @return date
      */
     public Date getDate(String privateCreator, int tag, int valueIndex, DatePrecision precision) {
         return getDate(privateCreator, tag, null, valueIndex, null, precision);
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param valueIndex     值索引
-     * @param defVal         默认值
-     * @return 日期
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param valueIndex     value index
+     * @param defVal         default value
+     * @return date
      */
     public Date getDate(String privateCreator, int tag, int valueIndex, Date defVal) {
         return getDate(privateCreator, tag, null, valueIndex, defVal, new DatePrecision());
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param valueIndex     值索引
-     * @param defVal         默认值
-     * @param precision      精度
-     * @return 日期
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param valueIndex     value index
+     * @param defVal         default value
+     * @param precision      precision
+     * @return date
      */
     public Date getDate(String privateCreator, int tag, int valueIndex, Date defVal, DatePrecision precision) {
         return getDate(privateCreator, tag, null, valueIndex, defVal, precision);
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param valueIndex     值索引
-     * @return 日期
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param valueIndex     value index
+     * @return date
      */
     public Date getDate(String privateCreator, int tag, VR vr, int valueIndex) {
         return getDate(privateCreator, tag, vr, valueIndex, null, new DatePrecision());
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param valueIndex     值索引
-     * @param precision      精度
-     * @return 日期
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param valueIndex     value index
+     * @param precision      precision
+     * @return date
      */
     public Date getDate(String privateCreator, int tag, VR vr, int valueIndex, DatePrecision precision) {
         return getDate(privateCreator, tag, vr, valueIndex, null, precision);
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param valueIndex     值索引
-     * @param defVal         默认值
-     * @return 日期
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param valueIndex     value index
+     * @param defVal         default value
+     * @return date
      */
     public Date getDate(String privateCreator, int tag, VR vr, int valueIndex, Date defVal) {
         return getDate(privateCreator, tag, vr, valueIndex, defVal, new DatePrecision());
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param valueIndex     值索引
-     * @param defVal         默认值
-     * @param precision      精度
-     * @return 日期
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param valueIndex     value index
+     * @param defVal         default value
+     * @param precision      precision
+     * @return date
      */
     public Date getDate(String privateCreator, int tag, VR vr, int valueIndex, Date defVal, DatePrecision precision) {
         int index = indexOf(privateCreator, tag);
@@ -2462,92 +2467,92 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param tag 标签
-     * @return 日期
+     * @param tag tag
+     * @return date
      */
     public Date getDate(long tag) {
         return getDate(null, tag, null, new DatePrecision());
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param tag       标签
-     * @param precision 精度
-     * @return 日期
+     * @param tag       tag
+     * @param precision precision
+     * @return date
      */
     public Date getDate(long tag, DatePrecision precision) {
         return getDate(null, tag, null, precision);
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param tag    标签
-     * @param defVal 默认值
-     * @return 日期
+     * @param tag    tag
+     * @param defVal default value
+     * @return date
      */
     public Date getDate(long tag, Date defVal) {
         return getDate(null, tag, defVal, new DatePrecision());
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param tag       标签
-     * @param defVal    默认值
-     * @param precision 精度
-     * @return 日期
+     * @param tag       tag
+     * @param defVal    default value
+     * @param precision precision
+     * @return date
      */
     public Date getDate(long tag, Date defVal, DatePrecision precision) {
         return getDate(null, tag, defVal, precision);
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @return 日期
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @return date
      */
     public Date getDate(String privateCreator, long tag) {
         return getDate(privateCreator, tag, null, new DatePrecision());
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param precision      精度
-     * @return 日期
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param precision      precision
+     * @return date
      */
     public Date getDate(String privateCreator, long tag, DatePrecision precision) {
         return getDate(privateCreator, tag, null, precision);
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param defVal         默认值
-     * @return 日期
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param defVal         default value
+     * @return date
      */
     public Date getDate(String privateCreator, long tag, Date defVal) {
         return getDate(privateCreator, tag, defVal, new DatePrecision());
     }
 
     /**
-     * 获取日期
+     * Gets the date
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param defVal         默认值
-     * @param precision      精度
-     * @return 日期
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param defVal         default value
+     * @param precision      precision
+     * @return date
      */
     public Date getDate(String privateCreator, long tag, Date defVal, DatePrecision precision) {
         int daTag = (int) (tag >>> 32);
@@ -2567,23 +2572,23 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取时间类型
+     * Gets the temporal value
      *
-     * @param tag 标签
-     * @return 时间类型
+     * @param tag tag
+     * @return temporal value
      */
     public Temporal getTemporal(long tag) {
         return getTemporal(null, tag, null, new DatePrecision());
     }
 
     /**
-     * 获取时间类型
+     * Gets the temporal value
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param defVal         默认值
-     * @param precision      精度
-     * @return 时间类型
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param defVal         default value
+     * @param precision      precision
+     * @return temporal value
      */
     public Temporal getTemporal(String privateCreator, long tag, Temporal defVal, DatePrecision precision) {
         int daTag = (int) (tag >>> 32);
@@ -2607,69 +2612,69 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取日期数组
+     * Gets the date array
      *
-     * @param tag 标签
-     * @return 日期数组
+     * @param tag tag
+     * @return date array
      */
     public Date[] getDates(int tag) {
         return getDates(null, tag, null, new DatePrecision());
     }
 
     /**
-     * 获取日期数组
+     * Gets the date array
      *
-     * @param tag        标签
-     * @param precisions 精度数组
-     * @return 日期数组
+     * @param tag        tag
+     * @param precisions precision array
+     * @return date array
      */
     public Date[] getDates(int tag, DatePrecision precisions) {
         return getDates(null, tag, null, precisions);
     }
 
     /**
-     * 获取日期数组
+     * Gets the date array
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @return 日期数组
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @return date array
      */
     public Date[] getDates(String privateCreator, int tag) {
         return getDates(privateCreator, tag, null, new DatePrecision());
     }
 
     /**
-     * 获取日期数组
+     * Gets the date array
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param precision      精度
-     * @return 日期数组
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param precision      precision
+     * @return date array
      */
     public Date[] getDates(String privateCreator, int tag, DatePrecision precision) {
         return getDates(privateCreator, tag, null, precision);
     }
 
     /**
-     * 获取日期数组
+     * Gets the date array
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @return 日期数组
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @return date array
      */
     public Date[] getDates(String privateCreator, int tag, VR vr) {
         return getDates(privateCreator, tag, vr, new DatePrecision());
     }
 
     /**
-     * 获取日期数组
+     * Gets the date array
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param precisions     精度数组
-     * @return 日期数组
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param precisions     precision array
+     * @return date array
      */
     public Date[] getDates(String privateCreator, int tag, VR vr, DatePrecision precisions) {
         int index = indexOf(privateCreator, tag);
@@ -2695,44 +2700,44 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取日期数组
+     * Gets the date array
      *
-     * @param tag 标签
-     * @return 日期数组
+     * @param tag tag
+     * @return date array
      */
     public Date[] getDates(long tag) {
         return getDates(null, tag, new DatePrecision());
     }
 
     /**
-     * 获取日期数组
+     * Gets the date array
      *
-     * @param tag        标签
-     * @param precisions 精度数组
-     * @return 日期数组
+     * @param tag        tag
+     * @param precisions precision array
+     * @return date array
      */
     public Date[] getDates(long tag, DatePrecision precisions) {
         return getDates(null, tag, precisions);
     }
 
     /**
-     * 获取日期数组
+     * Gets the date array
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @return 日期数组
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @return date array
      */
     public Date[] getDates(String privateCreator, long tag) {
         return getDates(privateCreator, tag, new DatePrecision());
     }
 
     /**
-     * 获取日期数组
+     * Gets the date array
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param precision      精度
-     * @return 日期数组
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param precision      precision
+     * @return date array
      */
     public Date[] getDates(String privateCreator, long tag, DatePrecision precision) {
         int daTag = (int) (tag >>> 32);
@@ -2761,69 +2766,69 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取日期范围
+     * Gets the date range
      *
-     * @param tag 标签
-     * @return 日期范围
+     * @param tag tag
+     * @return date range
      */
     public DateRange getDateRange(int tag) {
         return getDateRange(null, tag, null, null);
     }
 
     /**
-     * 获取日期范围
+     * Gets the date range
      *
-     * @param tag    标签
-     * @param defVal 默认值
-     * @return 日期范围
+     * @param tag    tag
+     * @param defVal default value
+     * @return date range
      */
     public DateRange getDateRange(int tag, DateRange defVal) {
         return getDateRange(null, tag, null, defVal);
     }
 
     /**
-     * 获取日期范围
+     * Gets the date range
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @return 日期范围
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @return date range
      */
     public DateRange getDateRange(String privateCreator, int tag) {
         return getDateRange(privateCreator, tag, null, null);
     }
 
     /**
-     * 获取日期范围
+     * Gets the date range
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param defVal         默认值
-     * @return 日期范围
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param defVal         default value
+     * @return date range
      */
     public DateRange getDateRange(String privateCreator, int tag, DateRange defVal) {
         return getDateRange(privateCreator, tag, null, defVal);
     }
 
     /**
-     * 获取日期范围
+     * Gets the date range
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @return 日期范围
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @return date range
      */
     public DateRange getDateRange(String privateCreator, int tag, VR vr) {
         return getDateRange(privateCreator, tag, vr, null);
     }
 
     /**
-     * 获取日期范围
+     * Gets the date range
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param defVal         默认值
-     * @return 日期范围
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param defVal         default value
+     * @return date range
      */
     public DateRange getDateRange(String privateCreator, int tag, VR vr, DateRange defVal) {
         int index = indexOf(privateCreator, tag);
@@ -2849,11 +2854,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 转换为日期范围
+     * Converts to a date range
      *
-     * @param s  字符串
-     * @param vr 值表示法
-     * @return 日期范围
+     * @param s  parameter
+     * @param vr VR
+     * @return date range
      */
     private DateRange toDateRange(String s, VR vr) {
         String[] range = splitRange(s);
@@ -2865,10 +2870,10 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 分割范围
+     * Splits the range
      *
-     * @param s 字符串
-     * @return 范围数组
+     * @param s parameter
+     * @return range array
      */
     private static String[] splitRange(String s) {
         String[] range = new String[2];
@@ -2885,44 +2890,44 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取日期范围
+     * Gets the date range
      *
-     * @param tag 标签
-     * @return 日期范围
+     * @param tag tag
+     * @return date range
      */
     public DateRange getDateRange(long tag) {
         return getDateRange(null, tag, null);
     }
 
     /**
-     * 获取日期范围
+     * Gets the date range
      *
-     * @param tag    标签
-     * @param defVal 默认值
-     * @return 日期范围
+     * @param tag    tag
+     * @param defVal default value
+     * @return date range
      */
     public DateRange getDateRange(long tag, DateRange defVal) {
         return getDateRange(null, tag, defVal);
     }
 
     /**
-     * 获取日期范围
+     * Gets the date range
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @return 日期范围
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @return date range
      */
     public DateRange getDateRange(String privateCreator, long tag) {
         return getDateRange(privateCreator, tag, null);
     }
 
     /**
-     * 获取日期范围
+     * Gets the date range
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param defVal         默认值
-     * @return 日期范围
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param defVal         default value
+     * @return date range
      */
     public DateRange getDateRange(String privateCreator, long tag, DateRange defVal) {
         int daTag = (int) (tag >>> 32);
@@ -2942,11 +2947,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 转换为日期范围
+     * Converts to a date range
      *
-     * @param da 日期字符串
-     * @param tm 时间字符串
-     * @return 日期范围
+     * @param da date string
+     * @param tm time string
+     * @return date range
      */
     private DateRange toDateRange(String da, String tm) {
         String[] darange = splitRange(da);
@@ -2972,9 +2977,10 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 设置特定字符集 (0008,0005) 为指定代码并相应地重新编码包含的 LO、LT、PN、SH、ST、UT 属性。
+     * Sets Specific Character Set (0008,0005) to the specified codes and re-encodes contained LO, LT, PN, SH, ST, and
+     * UT attributes accordingly.
      *
-     * @param codes 特定字符集 (0008,0005) 的新值
+     * @param codes new values of Specific Character Set (0008,0005)
      */
     public void setSpecificCharacterSet(String... codes) {
         ensureModifiable();
@@ -2983,9 +2989,9 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取特定字符集
+     * Gets the effective specific character set.
      *
-     * @return 特定字符集
+     * @return specific character set
      */
     public SpecificCharacterSet getSpecificCharacterSet() {
         if (cs != null)
@@ -3000,18 +3006,18 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 是否包含UTC时区偏移
+     * Whether UTC time zone offset is present
      *
-     * @return 是否包含UTC时区偏移
+     * @return Whether UTC time zone offset is present
      */
     public boolean containsTimezoneOffsetFromUTC() {
         return containsTimezoneOffsetFromUTC;
     }
 
     /**
-     * 设置默认时区
+     * Sets the default time zone.
      *
-     * @param tz 时区
+     * @param tz time zone
      */
     public void setDefaultTimeZone(TimeZone tz) {
         ensureModifiable();
@@ -3019,9 +3025,9 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取默认区域ID
+     * Gets the default zone ID
      *
-     * @return 默认区域ID
+     * @return default zone ID
      */
     public ZoneId getDefaultZoneId() {
         if (defaultTimeZone != null)
@@ -3032,9 +3038,9 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取默认时区
+     * Gets the default time zone.
      *
-     * @return 默认时区
+     * @return Default time zone
      */
     public TimeZone getDefaultTimeZone() {
         if (defaultTimeZone != null)
@@ -3045,9 +3051,9 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取时区
+     * Gets the time zone
      *
-     * @return 时区
+     * @return time zone
      */
     public TimeZone getTimeZone() {
         if (tz != null)
@@ -3075,9 +3081,9 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取区域ID
+     * Gets the zone ID
      *
-     * @return 区域ID
+     * @return zone ID
      */
     public ZoneId getZoneId() {
         if (tz != null)
@@ -3109,9 +3115,9 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 设置UTC时区偏移 (0008,0201) 为指定值并相应地调整包含的 DA、DT 和 TM 属性
+     * Sets UTC offset (0008,0201) to the specified value and adjusts contained DA, DT, and TM attributes accordingly.
      *
-     * @param utcOffset UTC偏移量，格式为 (+|-)HHMM
+     * @param utcOffset UTC offset in (+|-)HHMM format
      */
     public void setTimezoneOffsetFromUTC(String utcOffset) {
         ensureModifiable();
@@ -3122,9 +3128,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 设置默认时区为指定值并相应地调整包含的 DA、DT 和 TM 属性。 如果时区不使用夏令时，属性时区偏移 (0008,0201) 也将相应设置。 如果时区使用夏令时，将删除先前存在的属性时区偏移 (0008,0201)。
+     * Sets the default time zone to the specified value and adjusts contained DA, DT, and TM attributes accordingly. If
+     * the time zone does not use daylight saving time, Timezone Offset From UTC (0008,0201) is set accordingly. If it
+     * uses daylight saving time, any previous Timezone Offset From UTC (0008,0201) attribute is removed.
      *
-     * @param tz 时区
+     * @param tz time zone
      * @see #setDefaultTimeZone(TimeZone)
      * @see #setTimezoneOffsetFromUTC(String)
      */
@@ -3141,10 +3149,10 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 更新时区
+     * Updates the time zone
      *
-     * @param from 源时区
-     * @param to   目标时区
+     * @param from source time zone
+     * @param to   target time zone
      */
     private void updateTimezone(TimeZone from, TimeZone to) {
         if (from.hasSameRules(to))
@@ -3164,11 +3172,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 更新时区
+     * Updates the time zone
      *
-     * @param from    源时区
-     * @param to      目标时区
-     * @param tmIndex 时间索引
+     * @param from    source time zone
+     * @param to      target time zone
+     * @param tmIndex time index
      */
     private void updateTimezone(TimeZone from, TimeZone to, int tmIndex) {
         Object tm = decodeStringValue(tmIndex);
@@ -3268,22 +3276,22 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 是否为范围
+     * Whether the value is a range
      *
-     * @param s 字符串
-     * @return 是否为范围
+     * @param s parameter
+     * @return Whether the value is a range
      */
     private static boolean isRange(String s) {
         return s.indexOf('-') >= 0;
     }
 
     /**
-     * 更新DT时区
+     * Updates the DT time zone
      *
-     * @param from 源时区
-     * @param to   目标时区
-     * @param dt   DT字符串
-     * @return 更新后的DT字符串
+     * @param from source time zone
+     * @param to   target time zone
+     * @param dt   date time values
+     * @return result
      */
     private String updateTimeZoneDT(TimeZone from, TimeZone to, String dt) {
         int dtlen = dt.length();
@@ -3302,12 +3310,12 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 更新TM时区
+     * Updates the TM time zone
      *
-     * @param from 源时区
-     * @param to   目标时区
-     * @param tm   TM字符串
-     * @return 更新后的TM字符串
+     * @param from source time zone
+     * @param to   target time zone
+     * @param tm   parameter
+     * @return result
      */
     private String updateTimeZoneTM(TimeZone from, TimeZone to, String tm) {
         try {
@@ -3320,31 +3328,31 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取私有创建者
+     * Gets the private creator
      *
-     * @param tag 标签
-     * @return 私有创建者
+     * @param tag tag
+     * @return private creator
      */
     public String getPrivateCreator(int tag) {
         return Tag.isPrivateTag(tag) ? getString(Tag.creatorTagOf(tag), null) : null;
     }
 
     /**
-     * 移除属性
+     * Removes the attribute
      *
-     * @param tag 标签
-     * @return 移除的值
+     * @param tag tag
+     * @return result
      */
     public Object remove(int tag) {
         return remove(null, tag);
     }
 
     /**
-     * 移除属性
+     * Removes the attribute
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @return 移除的值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @return result
      */
     public Object remove(String privateCreator, int tag) {
         ensureModifiable();
@@ -3375,23 +3383,23 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 设置空值
+     * Sets a null value
      *
-     * @param tag 标签
-     * @param vr  值表示法
-     * @return 之前的值
+     * @param tag tag
+     * @param vr  VR
+     * @return previous value
      */
     public Object setNull(int tag, VR vr) {
         return setNull(null, tag, vr);
     }
 
     /**
-     * 设置空值
+     * Sets a null value
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @return 之前的值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @return previous value
      */
     public Object setNull(String privateCreator, int tag, VR vr) {
         ensureModifiable();
@@ -3399,25 +3407,25 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 设置字节数组
+     * Sets the byte array
      *
-     * @param tag 标签
-     * @param vr  值表示法
-     * @param b   字节数组
-     * @return 之前的值
+     * @param tag tag
+     * @param vr  VR
+     * @param b   byte array
+     * @return previous value
      */
     public Object setBytes(int tag, VR vr, byte[] b) {
         return setBytes(null, tag, vr, b);
     }
 
     /**
-     * 设置字节数组
+     * Sets the byte array
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param b              字节数组
-     * @return 之前的值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param b              byte array
+     * @return previous value
      */
     public Object setBytes(String privateCreator, int tag, VR vr, byte[] b) {
         ensureModifiable();
@@ -3425,25 +3433,25 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 设置字符串
+     * Sets the string
      *
-     * @param tag 标签
-     * @param vr  值表示法
-     * @param s   字符串
-     * @return 之前的值
+     * @param tag tag
+     * @param vr  VR
+     * @param s   parameter
+     * @return previous value
      */
     public Object setString(int tag, VR vr, String s) {
         return setString(null, tag, vr, s);
     }
 
     /**
-     * 设置字符串
+     * Sets the string
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param s              字符串
-     * @return 之前的值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param s              parameter
+     * @return previous value
      */
     public Object setString(String privateCreator, int tag, VR vr, String s) {
         ensureModifiable();
@@ -3451,25 +3459,25 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 设置字符串数组
+     * Sets the string array
      *
-     * @param tag 标签
-     * @param vr  值表示法
-     * @param ss  字符串数组
-     * @return 之前的值
+     * @param tag tag
+     * @param vr  VR
+     * @param ss  string array
+     * @return previous value
      */
     public Object setString(int tag, VR vr, String... ss) {
         return setString(null, tag, vr, ss);
     }
 
     /**
-     * 设置字符串数组
+     * Sets the string array
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param ss             字符串数组
-     * @return 之前的值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param ss             string array
+     * @return previous value
      */
     public Object setString(String privateCreator, int tag, VR vr, String... ss) {
         ensureModifiable();
@@ -3477,25 +3485,25 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 设置整型值
+     * Sets the integer values
      *
-     * @param tag 标签
-     * @param vr  值表示法
-     * @param is  整型值数组
-     * @return 之前的值
+     * @param tag tag
+     * @param vr  VR
+     * @param is  integer values
+     * @return previous value
      */
     public Object setInt(int tag, VR vr, int... is) {
         return setInt(null, tag, vr, is);
     }
 
     /**
-     * 设置整型值
+     * Sets the integer values
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param is             整型值数组
-     * @return 之前的值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param is             integer values
+     * @return previous value
      */
     public Object setInt(String privateCreator, int tag, VR vr, int... is) {
         ensureModifiable();
@@ -3503,25 +3511,25 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 设置长整型值
+     * Sets the long values
      *
-     * @param tag 标签
-     * @param vr  值表示法
-     * @param ls  长整型值数组
-     * @return 之前的值
+     * @param tag tag
+     * @param vr  VR
+     * @param ls  parameter
+     * @return previous value
      */
     public Object setLong(int tag, VR vr, long... ls) {
         return setLong(null, tag, vr, ls);
     }
 
     /**
-     * 设置长整型值
+     * Sets the long values
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param ls             长整型值数组
-     * @return 之前的值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param ls             parameter
+     * @return previous value
      */
     public Object setLong(String privateCreator, int tag, VR vr, long... ls) {
         ensureModifiable();
@@ -3529,25 +3537,25 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 设置浮点型值
+     * Sets the float values
      *
-     * @param tag 标签
-     * @param vr  值表示法
-     * @param fs  浮点型值数组
-     * @return 之前的值
+     * @param tag tag
+     * @param vr  VR
+     * @param fs  parameter
+     * @return previous value
      */
     public Object setFloat(int tag, VR vr, float... fs) {
         return setFloat(null, tag, vr, fs);
     }
 
     /**
-     * 设置浮点型值
+     * Sets the float values
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param fs             浮点型值数组
-     * @return 之前的值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param fs             parameter
+     * @return previous value
      */
     public Object setFloat(String privateCreator, int tag, VR vr, float... fs) {
         ensureModifiable();
@@ -3555,25 +3563,25 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 设置双精度值
+     * Sets the double values
      *
-     * @param tag 标签
-     * @param vr  值表示法
-     * @param ds  双精度值数组
-     * @return 之前的值
+     * @param tag tag
+     * @param vr  VR
+     * @param ds  date values
+     * @return previous value
      */
     public Object setDouble(int tag, VR vr, double... ds) {
         return setDouble(null, tag, vr, ds);
     }
 
     /**
-     * 设置双精度值
+     * Sets the double values
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param ds             双精度值数组
-     * @return 之前的值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param ds             date values
+     * @return previous value
      */
     public Object setDouble(String privateCreator, int tag, VR vr, double... ds) {
         ensureModifiable();
@@ -3581,108 +3589,108 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 设置日期
+     * Sets the date
      *
-     * @param tag 标签
-     * @param vr  值表示法
-     * @param ds  日期数组
-     * @return 之前的值
+     * @param tag tag
+     * @param vr  VR
+     * @param ds  date array
+     * @return previous value
      */
     public Object setDate(int tag, VR vr, Date... ds) {
         return setDate(null, tag, vr, ds);
     }
 
     /**
-     * 设置日期
+     * Sets the date
      *
-     * @param tag       标签
-     * @param vr        值表示法
-     * @param precision 精度
-     * @param ds        日期数组
-     * @return 之前的值
+     * @param tag       tag
+     * @param vr        VR
+     * @param precision precision
+     * @param ds        date array
+     * @return previous value
      */
     public Object setDate(int tag, VR vr, DatePrecision precision, Date... ds) {
         return setDate(null, tag, vr, precision, ds);
     }
 
     /**
-     * 设置日期
+     * Sets the date
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param ds             日期数组
-     * @return 之前的值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param ds             date array
+     * @return previous value
      */
     public Object setDate(String privateCreator, int tag, VR vr, Date... ds) {
         return setDate(privateCreator, tag, vr, new DatePrecision(), ds);
     }
 
     /**
-     * 设置日期
+     * Sets the date
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param precision      精度
-     * @param ds             日期数组
-     * @return 之前的值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param precision      precision
+     * @param ds             date array
+     * @return previous value
      */
     public Object setDate(String privateCreator, int tag, VR vr, DatePrecision precision, Date... ds) {
         return setDate(privateCreator, tag, vr, vr == VR.DT, precision, ds);
     }
 
     /**
-     * 设置日期
+     * Sets the date
      *
-     * @param tag                 标签
-     * @param vr                  值表示法
-     * @param applyTimezoneOffset 是否应用时区偏移
-     * @param ds                  日期数组
-     * @return 之前的值
+     * @param tag                 tag
+     * @param vr                  VR
+     * @param applyTimezoneOffset whether to apply time zone offset
+     * @param ds                  date array
+     * @return previous value
      */
     public Object setDate(int tag, VR vr, boolean applyTimezoneOffset, Date... ds) {
         return setDate(null, tag, vr, applyTimezoneOffset, ds);
     }
 
     /**
-     * 设置日期
+     * Sets the date
      *
-     * @param tag                 标签
-     * @param vr                  值表示法
-     * @param applyTimezoneOffset 是否应用时区偏移
-     * @param precision           精度
-     * @param ds                  日期数组
-     * @return 之前的值
+     * @param tag                 tag
+     * @param vr                  VR
+     * @param applyTimezoneOffset whether to apply time zone offset
+     * @param precision           precision
+     * @param ds                  date array
+     * @return previous value
      */
     public Object setDate(int tag, VR vr, boolean applyTimezoneOffset, DatePrecision precision, Date... ds) {
         return setDate(null, tag, vr, applyTimezoneOffset, precision, ds);
     }
 
     /**
-     * 设置日期
+     * Sets the date
      *
-     * @param privateCreator      私有创建者
-     * @param tag                 标签
-     * @param vr                  值表示法
-     * @param applyTimezoneOffset 是否应用时区偏移
-     * @param ds                  日期数组
-     * @return 之前的值
+     * @param privateCreator      private creator
+     * @param tag                 tag
+     * @param vr                  VR
+     * @param applyTimezoneOffset whether to apply time zone offset
+     * @param ds                  date array
+     * @return previous value
      */
     public Object setDate(String privateCreator, int tag, VR vr, boolean applyTimezoneOffset, Date... ds) {
         return setDate(privateCreator, tag, vr, applyTimezoneOffset, new DatePrecision(), ds);
     }
 
     /**
-     * 设置日期
+     * Sets the date
      *
-     * @param privateCreator      私有创建者
-     * @param tag                 标签
-     * @param vr                  值表示法
-     * @param applyTimezoneOffset 是否应用时区偏移
-     * @param precision           精度
-     * @param ds                  日期数组
-     * @return 之前的值
+     * @param privateCreator      private creator
+     * @param tag                 tag
+     * @param vr                  VR
+     * @param applyTimezoneOffset whether to apply time zone offset
+     * @param precision           precision
+     * @param ds                  date array
+     * @return previous value
      */
     public Object setDate(
             String privateCreator,
@@ -3696,44 +3704,44 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 设置日期
+     * Sets the date
      *
-     * @param tag 标签
-     * @param dt  日期数组
+     * @param tag tag
+     * @param dt  date array
      */
     public void setDate(long tag, Date... dt) {
         setDate(null, tag, dt);
     }
 
     /**
-     * 设置日期
+     * Sets the date
      *
-     * @param tag       标签
-     * @param precision 精度
-     * @param dt        日期数组
+     * @param tag       tag
+     * @param precision precision
+     * @param dt        date array
      */
     public void setDate(long tag, DatePrecision precision, Date... dt) {
         setDate(null, tag, precision, dt);
     }
 
     /**
-     * 设置日期
+     * Sets the date
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param dt             日期数组
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param dt             date array
      */
     public void setDate(String privateCreator, long tag, Date... dt) {
         setDate(privateCreator, tag, new DatePrecision(), dt);
     }
 
     /**
-     * 设置日期
+     * Sets the date
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param precision      精度
-     * @param dt             日期数组
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param precision      precision
+     * @param dt             date array
      */
     public void setDate(String privateCreator, long tag, DatePrecision precision, Date... dt) {
         int daTag = (int) (tag >>> 32);
@@ -3743,52 +3751,52 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 设置日期范围
+     * Sets the date range
      *
-     * @param tag   标签
-     * @param vr    值表示法
-     * @param range 日期范围
-     * @return 之前的值
+     * @param tag   tag
+     * @param vr    VR
+     * @param range date range
+     * @return previous value
      */
     public Object setDateRange(int tag, VR vr, DateRange range) {
         return setDateRange(null, tag, vr, range);
     }
 
     /**
-     * 设置日期范围
+     * Sets the date range
      *
-     * @param tag       标签
-     * @param vr        值表示法
-     * @param precision 精度
-     * @param range     日期范围
-     * @return 之前的值
+     * @param tag       tag
+     * @param vr        VR
+     * @param precision precision
+     * @param range     date range
+     * @return previous value
      */
     public Object setDateRange(int tag, VR vr, DatePrecision precision, DateRange range) {
         return setDateRange(null, tag, vr, precision, range);
     }
 
     /**
-     * 设置日期范围
+     * Sets the date range
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param range          日期范围
-     * @return 之前的值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param range          date range
+     * @return previous value
      */
     public Object setDateRange(String privateCreator, int tag, VR vr, DateRange range) {
         return setDateRange(privateCreator, tag, vr, new DatePrecision(), range);
     }
 
     /**
-     * 设置日期范围
+     * Sets the date range
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param precision      精度
-     * @param range          日期范围
-     * @return 之前的值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param precision      precision
+     * @param range          date range
+     * @return previous value
      */
     public Object setDateRange(String privateCreator, int tag, VR vr, DatePrecision precision, DateRange range) {
         ensureModifiable();
@@ -3796,13 +3804,13 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 转换为字符串
+     * Converts to a string
      *
-     * @param range     日期范围
-     * @param vr        值表示法
-     * @param tz        时区
-     * @param precision 精度
-     * @return 字符串
+     * @param range     date range
+     * @param vr        VR
+     * @param tz        time zone
+     * @param precision precision
+     * @return result
      */
     private static String toString(DateRange range, VR vr, TimeZone tz, DatePrecision precision) {
         String start = range.getStartDate() != null
@@ -3814,32 +3822,32 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 转换为日期范围字符串
+     * Converts to a date range string.
      *
-     * @param start 开始字符串
-     * @param end   结束字符串
-     * @return 日期范围字符串
+     * @param start start string
+     * @param end   end string
+     * @return result
      */
     private static String toDateRangeString(String start, String end) {
         return start.equals(end) ? start : (start + '-' + end);
     }
 
     /**
-     * 设置日期范围
+     * Sets the date range
      *
-     * @param tag 标签
-     * @param dr  日期范围
+     * @param tag tag
+     * @param dr  date range
      */
     public void setDateRange(long tag, DateRange dr) {
         setDateRange(null, tag, dr);
     }
 
     /**
-     * 设置日期范围
+     * Sets the date range
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param range          日期范围
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param range          date range
      */
     public void setDateRange(String privateCreator, long tag, DateRange range) {
         int daTag = (int) (tag >>> 32);
@@ -3849,25 +3857,25 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 设置值
+     * Sets the value
      *
-     * @param tag   标签
-     * @param vr    值表示法
-     * @param value 值
-     * @return 之前的值
+     * @param tag   tag
+     * @param vr    VR
+     * @param value value
+     * @return previous value
      */
     public Object setValue(int tag, VR vr, Object value) {
         return setValue(null, tag, vr, value);
     }
 
     /**
-     * 设置值
+     * Sets the value
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param value          值
-     * @return 之前的值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param value          value
+     * @return previous value
      */
     public Object setValue(String privateCreator, int tag, VR vr, Object value) {
         ensureModifiable();
@@ -3875,23 +3883,23 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 创建新序列
+     * Creates a new sequence
      *
-     * @param tag             标签
-     * @param initialCapacity 初始容量
-     * @return 序列
+     * @param tag             tag
+     * @param initialCapacity Initial capacity
+     * @return sequence
      */
     public Sequence newSequence(int tag, int initialCapacity) {
         return newSequence(null, tag, initialCapacity);
     }
 
     /**
-     * 创建新序列
+     * Creates a new sequence
      *
-     * @param privateCreator  私有创建者
-     * @param tag             标签
-     * @param initialCapacity 初始容量
-     * @return 序列
+     * @param privateCreator  private creator
+     * @param tag             tag
+     * @param initialCapacity Initial capacity
+     * @return sequence
      */
     public Sequence newSequence(String privateCreator, int tag, int initialCapacity) {
         ensureModifiable();
@@ -3901,23 +3909,23 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 确保序列存在
+     * Ensures the sequence exists
      *
-     * @param tag             标签
-     * @param initialCapacity 初始容量
-     * @return 序列
+     * @param tag             tag
+     * @param initialCapacity Initial capacity
+     * @return sequence
      */
     public Sequence ensureSequence(int tag, int initialCapacity) {
         return ensureSequence(null, tag, initialCapacity);
     }
 
     /**
-     * 确保序列存在
+     * Ensures the sequence exists
      *
-     * @param privateCreator  私有创建者
-     * @param tag             标签
-     * @param initialCapacity 初始容量
-     * @return 序列
+     * @param privateCreator  private creator
+     * @param tag             tag
+     * @param initialCapacity Initial capacity
+     * @return sequence
      */
     public Sequence ensureSequence(String privateCreator, int tag, int initialCapacity) {
         ensureModifiable();
@@ -3941,25 +3949,25 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 创建新片段
+     * Creates new fragments
      *
-     * @param tag             标签
-     * @param vr              值表示法
-     * @param initialCapacity 初始容量
-     * @return 片段
+     * @param tag             tag
+     * @param vr              VR
+     * @param initialCapacity Initial capacity
+     * @return fragments
      */
     public Fragments newFragments(int tag, VR vr, int initialCapacity) {
         return newFragments(null, tag, vr, initialCapacity);
     }
 
     /**
-     * 创建新片段
+     * Creates new fragments
      *
-     * @param privateCreator  私有创建者
-     * @param tag             标签
-     * @param vr              值表示法
-     * @param initialCapacity 初始容量
-     * @return 片段
+     * @param privateCreator  private creator
+     * @param tag             tag
+     * @param vr              VR
+     * @param initialCapacity Initial capacity
+     * @return fragments
      */
     public Fragments newFragments(String privateCreator, int tag, VR vr, int initialCapacity) {
         ensureModifiable();
@@ -3969,13 +3977,13 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 设置属性
+     * Sets the attribute
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param value          值
-     * @return 之前的值
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param value          value
+     * @return previous value
      */
     private Object set(String privateCreator, int tag, VR vr, Object value) {
         if (vr == null)
@@ -3998,12 +4006,12 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 设置属性
+     * Sets the attribute
      *
-     * @param tag   标签
-     * @param vr    值表示法
-     * @param value 值
-     * @return 之前的值
+     * @param tag   tag
+     * @param vr    VR
+     * @param value value
+     * @return previous value
      */
     private Object set(int tag, VR vr, Object value) {
         int index = indexForInsertOf(tag);
@@ -4018,12 +4026,12 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 插入属性
+     * Inserts the attribute
      *
-     * @param index 索引
-     * @param tag   标签
-     * @param vr    值表示法
-     * @param value 值
+     * @param index parameter
+     * @param tag   tag
+     * @param vr    VR
+     * @param value value
      */
     private void insert(int index, int tag, VR vr, Object value) {
         ensureCapacity(size + 1);
@@ -4040,10 +4048,10 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 添加所有属性
+     * Adds all attributes
      *
-     * @param other 其他属性集合
-     * @return 是否添加了属性
+     * @param other other attribute set
+     * @return result
      */
     public boolean addAll(Attributes other) {
         ensureModifiable();
@@ -4051,11 +4059,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 添加所有属性
+     * Adds all attributes
      *
-     * @param other                           其他属性集合
-     * @param mergeOriginalAttributesSequence 是否合并原始属性序列
-     * @return 是否添加了属性
+     * @param other                           other attribute set
+     * @param mergeOriginalAttributesSequence whether to mergeOriginal Attributes Sequence
+     * @return result
      */
     public boolean addAll(Attributes other, boolean mergeOriginalAttributesSequence) {
         ensureModifiable();
@@ -4063,11 +4071,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 添加选中的属性
+     * Adds selected attributes
      *
-     * @param other     其他属性集合
-     * @param selection 选择属性集合
-     * @return 是否添加了属性
+     * @param other     other attribute set
+     * @param selection selected attributes
+     * @return result
      */
     public boolean addSelected(Attributes other, Attributes selection) {
         ensureModifiable();
@@ -4075,11 +4083,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 添加选中的属性
+     * Adds selected attributes
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @return 是否添加了属性
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @return result
      */
     public boolean addSelected(Attributes other, String privateCreator, int tag) {
         ensureModifiable();
@@ -4112,11 +4120,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 是否包含非ASCII字符串值
+     * Tests whether the value contains non-ASCII string data.
      *
-     * @param val 值
-     * @param vr  值表示法
-     * @return 是否包含非ASCII字符串值
+     * @param val value
+     * @param vr  VR
+     * @return {@code true} if non-ASCII string data is present
      */
     private static boolean containsNonASCIIStringValues(Object val, VR vr) {
         if (val instanceof Sequence) {
@@ -4132,24 +4140,26 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 从另一个属性对象添加选定的属性到此。指定的标签值数组必须在进行此调用之前排序（如通过 {@link java.util.Arrays#sort(int[])} 方法）。
+     * Adds selected attributes from another attribute object. The specified tag array must be sorted before this call,
+     * for example by {@link java.util.Arrays#sort(int[])}.
      *
-     * @param other     其他属性对象
-     * @param selection 排序的标签值
-     * @return 如果添加或覆盖了一个或多个属性，则为 true
+     * @param other     other attribute object
+     * @param selection sorted tag values
+     * @return {@code true} if one or more attributes were added or overwritten
      */
     public boolean addSelected(Attributes other, int... selection) {
         return addSelected(other, selection, 0, selection.length);
     }
 
     /**
-     * 从另一个属性对象添加选定的属性到此。指定的标签值数组必须在进行此调用之前排序（如通过 {@link java.util.Arrays#sort(int[], int, int)} 方法）。
+     * Adds selected attributes from another attribute object. The specified tag array must be sorted before this call,
+     * for example by {@link java.util.Arrays#sort(int[], int, int)}.
      *
-     * @param other     其他属性对象
-     * @param selection 排序的标签值
-     * @param fromIndex 第一个标签的索引（包含）
-     * @param toIndex   最后一个标签的索引（不包含）
-     * @return 如果添加或覆盖了一个或多个属性，则为 true
+     * @param other     other attribute object
+     * @param selection sorted tag values
+     * @param fromIndex index of the first tag, inclusive
+     * @param toIndex   index of the last tag, exclusive
+     * @return {@code true} if one or more attributes were added or overwritten
      */
     public boolean addSelected(Attributes other, int[] selection, int fromIndex, int toIndex) {
         ensureModifiable();
@@ -4157,24 +4167,26 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 从另一个属性对象添加未选定的属性到此。指定的标签值数组必须在进行此调用之前排序（如通过 {@link java.util.Arrays#sort(int[])} 方法）。
+     * Adds non-selected attributes from another attribute object. The specified tag array must be sorted before this
+     * call, for example by {@link java.util.Arrays#sort(int[])}.
      *
-     * @param other     其他属性对象
-     * @param selection 排序的标签值
-     * @return 如果添加或覆盖了一个或多个属性，则为 true
+     * @param other     other attribute object
+     * @param selection sorted tag values
+     * @return {@code true} if one or more attributes were added or overwritten
      */
     public boolean addNotSelected(Attributes other, int... selection) {
         return addNotSelected(other, selection, 0, selection.length);
     }
 
     /**
-     * 从另一个属性对象添加未选定的属性到此。指定的标签值数组必须在进行此调用之前排序（如通过 {@link java.util.Arrays#sort(int[])} 方法）。
+     * Adds non-selected attributes from another attribute object. The specified tag array must be sorted before this
+     * call, for example by {@link java.util.Arrays#sort(int[])}.
      *
-     * @param other     其他属性对象
-     * @param selection 排序的标签值
-     * @param fromIndex 第一个标签的索引（包含）
-     * @param toIndex   最后一个标签的索引（不包含）
-     * @return 如果添加或覆盖了一个或多个属性，则为 true
+     * @param other     other attribute object
+     * @param selection sorted tag values
+     * @param fromIndex index of the first tag, inclusive
+     * @param toIndex   index of the last tag, exclusive
+     * @return {@code true} if one or more attributes were added or overwritten
      */
     public boolean addNotSelected(Attributes other, int[] selection, int fromIndex, int toIndex) {
         ensureModifiable();
@@ -4182,9 +4194,9 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 用选择中的属性补充空的属性
+     * Supplements empty attributes from the selection.
      *
-     * @param selection 选择属性集合
+     * @param selection selected attributes
      */
     public void supplementEmpty(Attributes selection) {
         ensureModifiable();
@@ -4208,19 +4220,19 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 添加属性
+     * Adds attributes
      *
-     * @param other                           其他属性集合
-     * @param include                         包含的标签
-     * @param exclude                         排除的标签
-     * @param fromIndex                       起始索引
-     * @param toIndex                         结束索引
-     * @param selection                       选择属性集合
-     * @param updatePolicy                    更新策略
-     * @param mergeOriginalAttributesSequence 是否合并原始属性序列
-     * @param simulate                        是否模拟
-     * @param modified                        修改的属性集合
-     * @return 是否添加了属性
+     * @param other                           other attribute set
+     * @param include                         included tags
+     * @param exclude                         excluded tags
+     * @param fromIndex                       start index
+     * @param toIndex                         end index
+     * @param selection                       selected attributes
+     * @param updatePolicy                    update policy
+     * @param mergeOriginalAttributesSequence whether to mergeOriginal Attributes Sequence
+     * @param simulate                        whether simulation is enabled
+     * @param modified                        modified attribute set
+     * @return result
      */
     private boolean add(
             Attributes other,
@@ -4365,14 +4377,14 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 是否包含非ASCII字符串值
+     * Tests whether this attribute range contains non-ASCII string values.
      *
-     * @param include   包含的标签
-     * @param exclude   排除的标签
-     * @param fromIndex 起始索引
-     * @param toIndex   结束索引
-     * @param selection 选择属性集合
-     * @return 是否包含非ASCII字符串值
+     * @param include   included tags
+     * @param exclude   excluded tags
+     * @param fromIndex start index
+     * @param toIndex   end index
+     * @param selection selected attributes
+     * @return {@code true} if a non-ASCII string value is present
      */
     private boolean containsNonASCIIStringValues(
             int[] include,
@@ -4402,16 +4414,16 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 是否更新特定字符集
+     * Tests whether the specific character set must be updated.
      *
-     * @param other        其他属性集合
-     * @param include      包含的标签
-     * @param exclude      排除的标签
-     * @param fromIndex    起始索引
-     * @param toIndex      结束索引
-     * @param selection    选择属性集合
-     * @param updatePolicy 更新策略
-     * @return 是否更新特定字符集
+     * @param other        other attributes
+     * @param include      included tags
+     * @param exclude      excluded tags
+     * @param fromIndex    start index
+     * @param toIndex      end index
+     * @param selection    selected attributes
+     * @param updatePolicy update policy
+     * @return {@code true} if the specific character set must be updated
      */
     private boolean isUpdateSpecificCharacterSet(
             Attributes other,
@@ -4442,10 +4454,10 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 合并原始属性序列
+     * Merges the original attributes sequence.
      *
-     * @param src  源序列
-     * @param dest 目标序列
+     * @param src  source sequence
+     * @param dest destination sequence
      */
     private void mergeOriginalAttributesSequence(Sequence src, Sequence dest) {
         Map<String, Attributes> sort = new TreeMap<>();
@@ -4483,12 +4495,12 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 更新属性
+     * Updates attributes
      *
-     * @param updatePolicy 更新策略
-     * @param newAttrs     新属性集合
-     * @param modified     修改的属性集合
-     * @return 是否更新了属性
+     * @param updatePolicy update policy
+     * @param newAttrs     new attribute set
+     * @param modified     modified attribute set
+     * @return result
      */
     public boolean update(UpdatePolicy updatePolicy, Attributes newAttrs, Attributes modified) {
         ensureModifiable();
@@ -4496,13 +4508,13 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 更新属性
+     * Updates attributes
      *
-     * @param updatePolicy                    更新策略
-     * @param mergeOriginalAttributesSequence 是否合并原始属性序列
-     * @param newAttrs                        新属性集合
-     * @param modified                        修改的属性集合
-     * @return 是否更新了属性
+     * @param updatePolicy                    update policy
+     * @param mergeOriginalAttributesSequence whether to mergeOriginal Attributes Sequence
+     * @param newAttrs                        new attribute set
+     * @param modified                        modified attribute set
+     * @return result
      */
     public boolean update(
             UpdatePolicy updatePolicy,
@@ -4514,25 +4526,27 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 测试更新
+     * Tests update
      *
-     * @param updatePolicy 更新策略
-     * @param newAttrs     新属性集合
-     * @param modified     修改的属性集合
-     * @return 是否会更新属性
+     * @param updatePolicy update policy
+     * @param newAttrs     new attribute set
+     * @param modified     modified attribute set
+     * @return result
      */
     public boolean testUpdate(UpdatePolicy updatePolicy, Attributes newAttrs, Attributes modified) {
         return add(newAttrs, null, null, 0, 0, null, updatePolicy, false, true, modified);
     }
 
     /**
-     * 从另一个属性对象添加选定的属性到此。可选地，被覆盖的现有非空属性的原始值保存在另一个属性对象中。指定的标签值数组必须在进行此调用之前排序（如通过 {@link java.util.Arrays#sort(int[])}
-     * 方法）。
+     * Adds selected attributes from another attribute object. Optionally saves original values of overwritten existing
+     * non-empty attributes in another attribute object. The specified tag array must be sorted before this call, for
+     * example by {@link java.util.Arrays#sort(int[])} method).
      *
-     * @param newAttrs  其他属性对象
-     * @param modified  属性对象，用于收集被覆盖的非空属性及其原始值，或为 null
-     * @param selection 排序的标签值
-     * @return 如果添加或覆盖了一个或多个属性，则为 true
+     * @param newAttrs  other attribute object
+     * @param modified  attribute object used to collectoverwritten non-empty attributes and their original values, or
+     *                  null
+     * @param selection sorted tag values
+     * @return {@code true} if one or more attributes were added or overwritten
      */
     public boolean updateSelected(
             UpdatePolicy updatePolicy,
@@ -4544,12 +4558,13 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 测试 {@link #updateSelected} 是否会修改属性，而不实际修改此属性
+     * Tests whether {@link #updateSelected} would modify attributes without modifying this instance.
      *
-     * @param newAttrs  其他属性对象
-     * @param modified  属性对象，用于收集被覆盖的非空属性及其原始值，或为 null
-     * @param selection 排序的标签值
-     * @return 如果会添加或覆盖一个或多个属性，则为 true
+     * @param newAttrs  other attribute object
+     * @param modified  attribute object used to collectoverwritten non-empty attributes and their original values, or
+     *                  null
+     * @param selection sorted tag values
+     * @return {@code true} if one or more attributes would be added or overwritten
      */
     public boolean testUpdateSelected(
             UpdatePolicy updatePolicy,
@@ -4560,13 +4575,15 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 从另一个属性对象添加未选定的属性到此。可选地，被覆盖的现有非空属性的原始值保存在另一个属性对象中。指定的标签值数组必须在进行此调用之前排序（如通过 {@link java.util.Arrays#sort(int[])}
-     * 方法）。
+     * Adds non-selected attributes from another attribute object. Optionally saves original values of overwritten
+     * existing non-empty attributes in another attribute object. The specified tag array must be sorted before this
+     * call, for example by {@link java.util.Arrays#sort(int[])} method).
      *
-     * @param newAttrs  其他属性对象
-     * @param modified  属性对象，用于收集被覆盖的非空属性及其原始值，或为 null
-     * @param selection 排序的标签值
-     * @return 如果添加或覆盖了一个或多个属性，则为 true
+     * @param newAttrs  other attribute object
+     * @param modified  attribute object used to collectoverwritten non-empty attributes and their original values, or
+     *                  null
+     * @param selection sorted tag values
+     * @return {@code true} if one or more attributes were added or overwritten
      */
     public boolean updateNotSelected(
             UpdatePolicy updatePolicy,
@@ -4578,12 +4595,13 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 测试 {@link #updateNotSelected} 是否会修改属性，而不实际修改此属性
+     * Tests whether {@link #updateNotSelected} would modify attributes without modifying this instance.
      *
-     * @param newAttrs  其他属性对象
-     * @param modified  属性对象，用于收集被覆盖的非空属性及其原始值，或为 null
-     * @param selection 排序的标签值
-     * @return 如果会添加或覆盖一个或多个属性，则为 true
+     * @param newAttrs  other attribute object
+     * @param modified  attribute object used to collectoverwritten non-empty attributes and their original values, or
+     *                  null
+     * @param selection sorted tag values
+     * @return {@code true} if one or more attributes would be added or overwritten
      */
     public boolean testUpdateNotSelected(
             UpdatePolicy updatePolicy,
@@ -4594,14 +4612,14 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 将项目附加到已存在或新添加的 (0400,0561) 原始属性序列。
+     * Appends an item to an existing or newly added (0400,0561) Original Attributes Sequence.
      *
-     * @param sourceOfPreviousValues 之前值的来源
-     * @param modificationDateTime   修改日期时间
-     * @param reasonForModification  修改原因
-     * @param modifyingSystem        修改系统
-     * @param originalAttributes     原始属性
-     * @return 相同的属性实例
+     * @param sourceOfPreviousValues source of previous values
+     * @param modificationDateTime   modification date time
+     * @param reasonForModification  modification reason
+     * @param modifyingSystem        modifying system
+     * @param originalAttributes     original attributes
+     * @return the same attribute instance
      */
     public Attributes addOriginalAttributes(
             String sourceOfPreviousValues,
@@ -4623,22 +4641,22 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 切换字节序
+     * Toggles endian order
      *
-     * @param vr           值表示法
-     * @param value        值
-     * @param toggleEndian 是否切换字节序
-     * @return 切换后的值
+     * @param vr           VR
+     * @param value        value
+     * @param toggleEndian parameter
+     * @return result
      */
     private static Object toggleEndian(VR vr, Object value, boolean toggleEndian) {
         return (toggleEndian && value instanceof byte[]) ? vr.toggleEndian((byte[]) value, true) : value;
     }
 
     /**
-     * 比较对象是否相等
+     * Compares objects for equality
      *
-     * @param o 对象
-     * @return 是否相等
+     * @param o object
+     * @return result
      */
     @Override
     public boolean equals(Object o) {
@@ -4689,35 +4707,35 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 比较值是否相等
+     * Compares values for equality
      *
-     * @param other 其他属性集合
-     * @param tag   标签
-     * @return 是否相等
+     * @param other other attribute set
+     * @param tag   tag
+     * @return result
      */
     public boolean equalValues(Attributes other, int tag) {
         return equalValues(other, null, tag);
     }
 
     /**
-     * 比较值是否相等
+     * Compares values for equality
      *
-     * @param other          其他属性集合
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @return 是否相等
+     * @param other          other attribute set
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @return result
      */
     public boolean equalValues(Attributes other, String privateCreator, int tag) {
         return equalValues(other, indexOf(privateCreator, tag), other.indexOf(privateCreator, tag));
     }
 
     /**
-     * 比较值是否相等
+     * Compares values for equality
      *
-     * @param other      其他属性集合
-     * @param index      索引
-     * @param otherIndex 其他索引
-     * @return 是否相等
+     * @param other      other attribute set
+     * @param index      parameter
+     * @param otherIndex parameter
+     * @return result
      */
     private boolean equalValues(Attributes other, int index, int otherIndex) {
         if (index < 0 && otherIndex < 0)
@@ -4754,11 +4772,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 比较PN值是否相等
+     * Compares PN values for equality
      *
-     * @param v1 值1
-     * @param v2 值2
-     * @return 是否相等
+     * @param v1 value1
+     * @param v2 value2
+     * @return result
      */
     private boolean equalPNValues(Object v1, Object v2) {
         return v1 == Value.NULL ? !containsPNValue(v2)
@@ -4766,21 +4784,21 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 是否包含PN值
+     * Whether PN value is present
      *
-     * @param v 值
-     * @return 是否包含PN值
+     * @param v value
+     * @return Whether PN value is present
      */
     private static boolean containsPNValue(Object v) {
         return v != Value.NULL && !new PersonName((String) v, true).isEmpty();
     }
 
     /**
-     * 比较PN值是否相等
+     * Compares PN values for equality
      *
-     * @param v1 值1
-     * @param v2 值2
-     * @return 是否相等
+     * @param v1 value1
+     * @param v2 value2
+     * @return result
      */
     private static boolean equalPNValues(String[] v1, String[] v2) {
         if (v1.length != v2.length)
@@ -4792,20 +4810,20 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 比较PN值是否相等
+     * Compares PN values for equality
      *
-     * @param v1 值1
-     * @param v2 值2
-     * @return 是否相等
+     * @param v1 value1
+     * @param v2 value2
+     * @return result
      */
     private static boolean equalPNValues(String v1, String v2) {
         return new PersonName(v1, true).equals(new PersonName(v2, true));
     }
 
     /**
-     * 计算哈希码
+     * Computes the hash code
      *
-     * @return 哈希码
+     * @return hash code
      */
     @Override
     public int hashCode() {
@@ -4819,12 +4837,12 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 设置序列
+     * Sets the sequence
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param src            源序列
-     * @param selection      选择属性集合
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param src            source sequence
+     * @param selection      selected attributes
      */
     private void set(String privateCreator, int tag, Sequence src, Attributes selection) {
         Sequence dst = newSequence(privateCreator, tag, src.size());
@@ -4835,11 +4853,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 设置片段
+     * Sets fragments
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param src            源片段
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param src            source fragments
      */
     private void set(String privateCreator, int tag, Fragments src) {
         boolean toogleEndian = src.bigEndian() != bigEndian;
@@ -4850,9 +4868,9 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 转换为字符串
+     * Converts to a string
      *
-     * @return 字符串
+     * @return result
      */
     @Override
     public String toString() {
@@ -4860,33 +4878,33 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 转换为字符串
+     * Converts to a string
      *
-     * @param limit    限制
-     * @param maxWidth 最大宽度
-     * @return 字符串
+     * @param limit    limit
+     * @param maxWidth maximum width
+     * @return result
      */
     public String toString(int limit, int maxWidth) {
         return toStringBuilder(limit, maxWidth, new StringBuilder(1024)).toString();
     }
 
     /**
-     * 转换为字符串构建器
+     * Converts to a string builder
      *
-     * @param sb 字符串构建器
-     * @return 字符串构建器
+     * @param sb string builder
+     * @return string builder
      */
     public StringBuilder toStringBuilder(StringBuilder sb) {
         return toStringBuilder(TO_STRING_LIMIT, TO_STRING_WIDTH, sb);
     }
 
     /**
-     * 转换为字符串构建器
+     * Converts to a string builder
      *
-     * @param limit    限制
-     * @param maxWidth 最大宽度
-     * @param sb       字符串构建器
-     * @return 字符串构建器
+     * @param limit    limit
+     * @param maxWidth maximum width
+     * @param sb       string builder
+     * @return string builder
      */
     public StringBuilder toStringBuilder(int limit, int maxWidth, StringBuilder sb) {
         if (appendAttributes(limit, maxWidth, sb, "") > limit)
@@ -4895,13 +4913,13 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 附加属性
+     * Appends attributes
      *
-     * @param limit    限制
-     * @param maxWidth 最大宽度
-     * @param sb       字符串构建器
-     * @param prefix   前缀
-     * @return 行数
+     * @param limit    limit
+     * @param maxWidth maximum width
+     * @param sb       string builder
+     * @param prefix   prefix
+     * @return line count
      */
     private int appendAttributes(int limit, int maxWidth, StringBuilder sb, String prefix) {
         if (size == 0)
@@ -4915,15 +4933,15 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 附加属性
+     * Appends attributes
      *
-     * @param limit    限制
-     * @param maxWidth 最大宽度
-     * @param sb       字符串构建器
-     * @param prefix   前缀
-     * @param start    起始索引
-     * @param end      结束索引
-     * @return 行数
+     * @param limit    limit
+     * @param maxWidth maximum width
+     * @param sb       string builder
+     * @param prefix   prefix
+     * @param start    start index
+     * @param end      end index
+     * @return line count
      */
     private int appendAttributes(int limit, int maxWidth, StringBuilder sb, String prefix, int start, int end) {
         int lines = 0;
@@ -4952,14 +4970,14 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 附加项目
+     * Appends an item
      *
-     * @param sq       序列
-     * @param limit    限制
-     * @param maxWidth 最大宽度
-     * @param sb       字符串构建器
-     * @param prefix   前缀
-     * @return 行数
+     * @param sq       sequence
+     * @param limit    limit
+     * @param maxWidth maximum width
+     * @param sb       string builder
+     * @param prefix   prefix
+     * @return line count
      */
     private int appendItems(Sequence sq, int limit, int maxWidth, StringBuilder sb, String prefix) {
         int lines = 0;
@@ -4974,16 +4992,16 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 附加属性
+     * Appends attributes
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param value          值
-     * @param maxLength      最大长度
-     * @param sb             字符串构建器
-     * @param prefix         前缀
-     * @return 字符串构建器
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param value          value
+     * @param maxLength      maximum length
+     * @param sb             string builder
+     * @param prefix         prefix
+     * @return string builder
      */
     private StringBuilder appendAttribute(
             String privateCreator,
@@ -5004,11 +5022,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 计算长度
+     * Calculates length
      *
-     * @param encOpts    编码选项
-     * @param explicitVR 是否显式VR
-     * @return 长度
+     * @param encOpts    encoding options
+     * @param explicitVR explicit VR flag
+     * @return length
      */
     public int calcLength(ImageEncodingOptions encOpts, boolean explicitVR) {
         if (isEmpty())
@@ -5019,13 +5037,13 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 计算长度
+     * Calculates length
      *
-     * @param encOpts      编码选项
-     * @param explicitVR   是否显式VR
-     * @param cs           特定字符集
-     * @param groupLengths 组长度数组
-     * @return 长度
+     * @param encOpts      encoding options
+     * @param explicitVR   explicit VR flag
+     * @param cs           specific character set
+     * @param groupLengths Group length array
+     * @return length
      */
     private int calcLength(
             ImageEncodingOptions encOpts,
@@ -5063,9 +5081,9 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 计算组数
+     * Calculates group count
      *
-     * @return 组数
+     * @return result
      */
     private int countGroups() {
         int groupLengthTag = -1;
@@ -5083,10 +5101,10 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 写入输出流
+     * Writes to the output stream
      *
-     * @param out 输出流
-     * @throws IOException IO异常
+     * @param out output stream
+     * @throws IOException IOerror
      */
     public void writeTo(ImageOutputStream out) throws IOException {
         if (isEmpty())
@@ -5104,10 +5122,10 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 写入像素数据后的输出流
+     * Writes to an output stream after pixel data
      *
-     * @param out 输出流
-     * @throws IOException IO异常
+     * @param out output stream
+     * @throws IOException IOerror
      */
     public void writePostPixelDataTo(ImageOutputStream out) throws IOException {
         if (isEmpty() || tags[0] >= 0 && tags[size - 1] <= Tag.PixelData)
@@ -5124,10 +5142,10 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 写入项目到输出流
+     * Writes an item to the output stream
      *
-     * @param out 输出流
-     * @throws IOException IO异常
+     * @param out output stream
+     * @throws IOException IOerror
      */
     public void writeItemTo(ImageOutputStream out) throws IOException {
         ImageEncodingOptions encOpts = out.getEncodingOptions();
@@ -5139,11 +5157,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取编码项目长度
+     * Gets the encoded item length
      *
-     * @param encOpts    编码选项
-     * @param explicitVR 是否显式VR
-     * @return 编码项目长度
+     * @param encOpts    encoding options
+     * @param explicitVR explicit VR flag
+     * @return result
      */
     private int getEncodedItemLength(ImageEncodingOptions encOpts, boolean explicitVR) {
         if (isEmpty())
@@ -5156,14 +5174,14 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 写入输出流
+     * Writes to the output stream
      *
-     * @param out              输出流
-     * @param cs               特定字符集
-     * @param start            起始索引
-     * @param end              结束索引
-     * @param groupLengthIndex 组长度索引
-     * @throws IOException IO异常
+     * @param out              output stream
+     * @param cs               specific character set
+     * @param start            start index
+     * @param end              end index
+     * @param groupLengthIndex group length index
+     * @throws IOException IOerror
      */
     private void writeTo(ImageOutputStream out, SpecificCharacterSet cs, int start, int end, int groupLengthIndex)
             throws IOException {
@@ -5183,12 +5201,13 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 为此实例中的每个属性调用 {@link Visitor#visit}。如果 <code>visitor.visit()</code> 返回 <code>false</code>，操作将被中止。
+     * Invokes {@link Visitor#visit} for each attribute in this instance. If <code>visitor.visit()</code> returns
+     * <code>false</code>, the operation is aborted.
      *
-     * @param visitor             访问者
-     * @param visitNestedDatasets 控制是否也为嵌套数据集中的属性调用 <code>visitor.visit()</code>
-     * @return 如果操作未被中止，则为 <code>true</code>
-     * @throws Exception 异常
+     * @param visitor             visitor
+     * @param visitNestedDatasets controls whether <code>visitor.visit()</code> is also invoked for nested datasets
+     * @return <code>true</code> if the operation was not aborted
+     * @throws Exception error
      */
     public boolean accept(Visitor visitor, boolean visitNestedDatasets) throws Exception {
         if (isEmpty())
@@ -5203,14 +5222,14 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 接受访问
+     * Accepts a visitor
      *
-     * @param visitor             访问者
-     * @param visitNestedDatasets 是否访问嵌套数据集
-     * @param start               起始索引
-     * @param end                 结束索引
-     * @return 如果操作未被中止，则为 <code>true</code>
-     * @throws Exception 异常
+     * @param visitor             visitor
+     * @param visitNestedDatasets whether nested datasets are visited
+     * @param start               start index
+     * @param end                 end index
+     * @return <code>true</code> if the operation was not aborted
+     * @throws Exception error
      */
     private boolean accept(Visitor visitor, boolean visitNestedDatasets, int start, int end) throws Exception {
         for (int i = start; i < end; i++) {
@@ -5237,11 +5256,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 写入组到输出流
+     * Writes a group to the output stream
      *
-     * @param out            输出流
-     * @param groupLengthTag 组长度标签
-     * @throws IOException IO异常
+     * @param out            output stream
+     * @param groupLengthTag group length tag
+     * @throws IOException IOerror
      */
     public void writeGroupTo(ImageOutputStream out, int groupLengthTag) throws IOException {
         if (isEmpty())
@@ -5254,10 +5273,10 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 检查是否在组中
+     * Checks whether the index is in the group
      *
-     * @param i              索引
-     * @param groupLengthTag 组长度标签
+     * @param i              index
+     * @param groupLengthTag group length tag
      */
     private void checkInGroup(int i, int groupLengthTag) {
         int tag = tags[i];
@@ -5267,22 +5286,24 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 为此 <i>数据集</i> 创建具有给定 <i>传输语法 UID (0002,0010)</i> 的 DICOM 文件元信息，包括可选的 <i>实现版本名称 (0002,0013)</i>。
+     * Creates DICOM file meta information for this <i>dataset</i> with the given <i>Transfer Syntax UID
+     * (0002,0010)</i>, including the optional <i>Implementation Version Name (0002,0013)</i>.
      *
-     * @param tsuid <i>传输语法 UID (0002,0010)</i>
-     * @return 创建的 DICOM 文件元信息
+     * @param tsuid <i>Transfer Syntax UID (0002,0010)</i>
+     * @return created DICOM file meta information
      */
     public Attributes createFileMetaInformation(String tsuid) {
         return createFileMetaInformation(tsuid, true);
     }
 
     /**
-     * 为此 <i>数据集</i> 创建具有给定 <i>传输语法 UID (0002,0010)</i> 的 DICOM 文件元信息。
+     * Creates DICOM file meta information for this <i>dataset</i> with the given <i>Transfer Syntax UID
+     * (0002,0010)</i>.
      *
-     * @param tsuid                            <i>传输语法 UID (0002,0010)</i>
-     * @param includeImplementationVersionName <code>true</code> 如果要包含可选的 <i>实现版本名称 (0002,0013)</i>；<code>false</code>
-     *                                         如果要省略它。
-     * @return 创建的 DICOM 文件元信息
+     * @param tsuid                            <i>Transfer Syntax UID (0002,0010)</i>
+     * @param includeImplementationVersionName <code>true</code> to include the optional <i>Implementation Version Name
+     *                                         (0002,0013)</i>; <code>false</code> to omit it.
+     * @return created DICOM file meta information
      */
     public Attributes createFileMetaInformation(String tsuid, boolean includeImplementationVersionName) {
         return createFileMetaInformation(
@@ -5293,28 +5314,28 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 创建具有给定 <i>媒体存储 SOP 实例 UID (0002,0013)</i>、<i>媒体存储 SOP 类 UID (0002,0012)</i> 和 <i>传输语法 UID (0002,0010)</i> 的 DICOM
-     * 文件元信息，包括可选的 <i>实现版本名称 (0002,0013)</i>。
+     * Creates DICOM file meta information with the given <i>Media Storage SOP Instance UID (0002,0013)</i>, <i>Media
+     * Storage SOP Class UID (0002,0012)</i>, and <i>Transfer Syntax UID (0002,0010)</i>, including the optional
+     * <i>Implementation Version Name (0002,0013)</i>.
      *
-     * @param iuid  <i>媒体存储 SOP 实例 UID (0002,0013)</i>
-     * @param cuid  <i>媒体存储 SOP 类 UID (0002,0012)</i>
-     * @param tsuid <i>传输语法 UID (0002,0010)</i>
-     * @return 创建的 DICOM 文件元信息
+     * @param iuid  <i>Media Storage SOP Instance UID (0002,0013)</i>
+     * @param cuid  <i>Media Storage SOP Class UID (0002,0012)</i>
+     * @param tsuid <i>Transfer Syntax UID (0002,0010)</i>
+     * @return created DICOM file meta information
      */
     public static Attributes createFileMetaInformation(String iuid, String cuid, String tsuid) {
         return createFileMetaInformation(iuid, cuid, tsuid, true);
     }
 
     /**
-     * 创建具有给定 <i>媒体存储 SOP 实例 UID (0002,0013)</i>、<i>媒体存储 SOP 类 UID (0002,0012)</i> 和 <i>传输语法 UID (0002,0010)</i> 的 DICOM
-     * 文件元信息。
+     * Creates DICOM file meta information.
      *
-     * @param iuid                             <i>媒体存储 SOP 实例 UID (0002,0013)</i>
-     * @param cuid                             <i>媒体存储 SOP 类 UID (0002,0012)</i>
-     * @param tsuid                            <i>传输语法 UID (0002,0010)</i>
-     * @param includeImplementationVersionName <code>true</code> 如果要包含可选的 <i>实现版本名称 (0002,0013)</i>；<code>false</code>
-     *                                         如果要省略它。
-     * @return 创建的 DICOM 文件元信息
+     * @param iuid                             <i>Media Storage SOP Instance UID (0002,0013)</i>
+     * @param cuid                             <i>Media Storage SOP Class UID (0002,0012)</i>
+     * @param tsuid                            <i>Transfer Syntax UID (0002,0010)</i>
+     * @param includeImplementationVersionName <code>true</code> to include the optional <i>Implementation Version Name
+     *                                         (0002,0013)</i>; <code>false</code> to omit it.
+     * @return created DICOM file meta information
      */
     public static Attributes createFileMetaInformation(
             String iuid,
@@ -5339,12 +5360,12 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 匹配属性
+     * Matches attributes
      *
-     * @param keys         键属性集合
-     * @param ignorePNCase 是否忽略PN大小写
-     * @param matchNoValue 是否匹配无值
-     * @return 是否匹配
+     * @param keys         key attribute set
+     * @param ignorePNCase whether to ignore PN case
+     * @param matchNoValue whether to match no value
+     * @return whether matched
      */
     public boolean matches(Attributes keys, boolean ignorePNCase, boolean matchNoValue) {
         int[] keyTags = keys.tags;
@@ -5395,15 +5416,15 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 匹配属性
+     * Matches attributes
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param vr             值表示法
-     * @param ignorePNCase   是否忽略PN大小写
-     * @param matchNoValue   是否匹配无值
-     * @param keyVals        键值数组
-     * @return 是否匹配
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param vr             VR
+     * @param ignorePNCase   whether to ignore PN case
+     * @param matchNoValue   whether to match no value
+     * @param keyVals        keyValue array
+     * @return whether matched
      */
     private boolean matches(
             String privateCreator,
@@ -5465,14 +5486,14 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 匹配属性
+     * Matches attributes
      *
-     * @param privateCreator 私有创建者
-     * @param tag            标签
-     * @param ignorePNCase   是否忽略PN大小写
-     * @param matchNoValue   是否匹配无值
-     * @param keySeq         键序列
-     * @return 是否匹配
+     * @param privateCreator private creator
+     * @param tag            tag
+     * @param ignorePNCase   whether to ignore PN case
+     * @param matchNoValue   whether to match no value
+     * @param keySeq         key sequence
+     * @return whether matched
      */
     private boolean matches(
             String privateCreator,
@@ -5504,10 +5525,10 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 写入对象
+     * Writes the object
      *
-     * @param out 输出流
-     * @throws IOException IO异常
+     * @param out output stream
+     * @throws IOException IOerror
      */
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
@@ -5519,11 +5540,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 读取对象
+     * Reads the object
      *
-     * @param in 输入流
-     * @throws IOException            IO异常
-     * @throws ClassNotFoundException 类未找到异常
+     * @param in parameter
+     * @throws IOException            IOerror
+     * @throws ClassNotFoundException error
      */
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
@@ -5534,10 +5555,10 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 验证
+     * Validates
      *
      * @param iod IOD
-     * @return 验证结果
+     * @return validation result
      */
     public ValidationResult validate(IOD iod) {
         ValidationResult result = new ValidationResult();
@@ -5549,21 +5570,21 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 验证
+     * Validates
      *
-     * @param el     数据元素
-     * @param result 验证结果
+     * @param el     data element
+     * @param result validation result
      */
     public void validate(IOD.DataElement el, ValidationResult result) {
         validate(el, result, null);
     }
 
     /**
-     * 验证
+     * Validates
      *
-     * @param el                  数据元素
-     * @param result              验证结果
-     * @param processedConditions 处理的条件
+     * @param el                  data element
+     * @param result              validation result
+     * @param processedConditions processed conditions
      */
     private void validate(IOD.DataElement el, ValidationResult result, Map<String, Boolean> processedConditions) {
         IOD.Condition condition = el.getCondition();
@@ -5696,11 +5717,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 检查缺失的项目
+     * Checks missing items
      *
-     * @param matchingItems 匹配的项目
-     * @param itemIODs      项目IOD
-     * @return 缺失的项目
+     * @param matchingItems matching items
+     * @param itemIODs      item IODs
+     * @return missing items
      */
     private IOD[] checkforMissingItems(int[] matchingItems, IOD[] itemIODs) {
         IOD[] missingItems = new IOD[matchingItems.length];
@@ -5714,11 +5735,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 验证代码
+     * Validates the code
      *
-     * @param item      项目
-     * @param validVals 有效值
-     * @return 验证结果
+     * @param item      item
+     * @param validVals valid values
+     * @return validation result
      */
     private ValidationResult validateCode(Attributes item, Code[] validVals) {
         ValidationResult result = null;
@@ -5731,12 +5752,12 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 验证值是否有效
+     * Validates whether the value is valid
      *
-     * @param val         值
-     * @param valueNumber 值编号
-     * @param validVals   有效值
-     * @return 是否有效
+     * @param val         value
+     * @param valueNumber value number
+     * @param validVals   valid values
+     * @return whether valid
      */
     private boolean isValidValue(String[] val, int valueNumber, String[] validVals) {
         if (valueNumber != 0)
@@ -5748,11 +5769,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 是否是其中之一
+     * Whether the value is one of the allowed values
      *
-     * @param val 值
-     * @param ss  字符串数组
-     * @return 是否是其中之一
+     * @param val value
+     * @param ss  string array
+     * @return Whether the value is one of the allowed values
      */
     private <T> boolean isOneOf(Object val, T[] ss) {
         if (ss == null)
@@ -5764,12 +5785,12 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 验证值是否有效
+     * Validates whether the value is valid
      *
-     * @param val         值
-     * @param valueNumber 值编号
-     * @param validVals   有效值
-     * @return 是否有效
+     * @param val         value
+     * @param valueNumber value number
+     * @param validVals   valid values
+     * @return whether valid
      */
     private boolean isValidValue(int[] val, int valueNumber, int[] validVals) {
         if (valueNumber != 0)
@@ -5781,11 +5802,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 是否是其中之一
+     * Whether the value is one of the allowed values
      *
-     * @param val 值
-     * @param is  整型数组
-     * @return 是否是其中之一
+     * @param val value
+     * @param is  integer array
+     * @return Whether the value is one of the allowed values
      */
     private boolean isOneOf(int val, int[] is) {
         if (is == null)
@@ -5797,11 +5818,12 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 添加此数据集中在指定其他数据集中被替换的属性到结果数据集中。如果没有传递结果数据集，将实例化一个新的结果集。
+     * Adds attributes from this dataset that are replaced in the specified other dataset to the result dataset. If no
+     * result dataset is supplied, a new one is instantiated.
      *
-     * @param other  数据集
-     * @param result 数据集或 {@code null}
-     * @return 结果数据集
+     * @param other  other attributes
+     * @param result dataset or {@code null}
+     * @return result dataset
      */
     public Attributes getModified(Attributes other, Attributes result) {
         if (result == null)
@@ -5854,10 +5876,10 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 返回此数据集中在指定其他数据集中被删除或替换的属性。
+     * Returns attributes from this dataset that are deleted or replaced in the specified other dataset.
      *
-     * @param other 数据集
-     * @return 此数据集中在指定其他数据集中被删除或替换的属性
+     * @param other other attributes
+     * @return result
      */
     public Attributes getRemovedOrModified(Attributes other) {
         Attributes modified = new Attributes(size);
@@ -5912,25 +5934,25 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 比较差异
+     * Compares the selected attributes and stores differences.
      *
-     * @param other     其他属性集合
-     * @param selection 选择标签
-     * @param diff      差异属性集合
-     * @return 差异数量
+     * @param other     other attribute set
+     * @param selection selected tags
+     * @param diff      target attributes for differences
+     * @return number of differences
      */
     public int diff(Attributes other, int[] selection, Attributes diff) {
         return diff(other, selection, diff, false);
     }
 
     /**
-     * 比较差异
+     * Compares the selected attributes and stores differences.
      *
-     * @param other        其他属性集合
-     * @param selection    选择标签
-     * @param diff         差异属性集合
-     * @param onlyModified 是否仅修改
-     * @return 差异数量
+     * @param other        other attribute set
+     * @param selection    selected tags
+     * @param diff         target attributes for differences
+     * @param onlyModified whether only modified attributes are compared
+     * @return number of differences
      */
     public int diff(Attributes other, int[] selection, Attributes diff, boolean onlyModified) {
         int count = 0;
@@ -5955,9 +5977,9 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 统一字符集
+     * Unifies character sets
      *
-     * @param attrsList 属性集合列表
+     * @param attrsList attribute set list
      */
     public static void unifyCharacterSets(Attributes... attrsList) {
         if (attrsList.length == 0)
@@ -5988,9 +6010,9 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 移除所有批量数据
+     * Removes all bulk data
      *
-     * @return 移除的数量
+     * @return result
      */
     public int removeAllBulkData() {
         ensureModifiable();
@@ -6016,10 +6038,10 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 是否为批量数据
+     * Whether this is bulk data
      *
-     * @param value 值
-     * @return 是否为批量数据
+     * @param value value
+     * @return Whether this is bulk data
      */
     private static boolean isBulkData(Object value) {
         return value instanceof BulkData || (value instanceof Fragments && ((Fragments) value).size() > 1
@@ -6027,11 +6049,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 获取创建者索引
+     * Gets the creator index
      *
-     * @param privateCreator 私有创建者
-     * @param groupNumber    组号
-     * @return 创建者索引
+     * @param privateCreator private creator
+     * @param groupNumber    group number
+     * @return creator index
      */
     private int creatorIndexOf(String privateCreator, int groupNumber) {
         if ((groupNumber & 1) == 0)
@@ -6055,11 +6077,11 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 移除私有属性
+     * Removes private attributes
      *
-     * @param privateCreator 私有创建者
-     * @param groupNumber    组号
-     * @return 移除的数量
+     * @param privateCreator private creator
+     * @param groupNumber    group number
+     * @return result
      */
     public int removePrivateAttributes(String privateCreator, int groupNumber) {
         ensureModifiable();
@@ -6098,9 +6120,9 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 移除所有私有属性
+     * Removes all private attributes
      *
-     * @return 移除的数量
+     * @return result
      */
     public int removePrivateAttributes() {
         ensureModifiable();
@@ -6130,9 +6152,9 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 移除选中的属性
+     * Removes selected attributes
      *
-     * @param selection 选择标签
+     * @param selection selected tags
      */
     public void removeSelected(int... selection) {
         ensureModifiable();
@@ -6151,10 +6173,10 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 替换选中的属性
+     * Replaces selected attributes
      *
-     * @param others    其他属性集合
-     * @param selection 选择标签
+     * @param others    other attribute set
+     * @param selection selected tags
      */
     public void replaceSelected(Attributes others, int... selection) {
         ensureModifiable();
@@ -6166,9 +6188,9 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 替换选中的UID属性
+     * Replaces selected UID attributes
      *
-     * @param selection 选择标签
+     * @param selection selected tags
      */
     public void replaceUIDSelected(int... selection) {
         ensureModifiable();
@@ -6180,10 +6202,10 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 替换UID
+     * Replaces UID
      *
-     * @param val 值
-     * @return 替换后的值
+     * @param val value
+     * @return result
      */
     private Object replaceUIDs(Object val) {
         if (val instanceof String) {
@@ -6199,9 +6221,9 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 移除曲线数据
+     * Removes curve data
      *
-     * @return 移除的数量
+     * @return result
      */
     public int removeCurveData() {
         ensureModifiable();
@@ -6209,9 +6231,9 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 移除覆盖数据
+     * Removes overlay data
      *
-     * @return 移除的数量
+     * @return result
      */
     public int removeOverlayData() {
         ensureModifiable();
@@ -6219,10 +6241,10 @@ public class Attributes implements Serializable {
     }
 
     /**
-     * 移除重复组
+     * Removes repeating groups
      *
-     * @param ggxxxxxx 组号
-     * @return 移除的数量
+     * @param ggxxxxxx group number
+     * @return result
      */
     private int removeRepeatingGroup(int ggxxxxxx) {
         int size1 = size;

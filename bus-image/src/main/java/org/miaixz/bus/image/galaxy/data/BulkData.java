@@ -221,6 +221,16 @@ public class BulkData implements Value, Serializable {
     }
 
     /**
+     * Returns the URI without offset and length query parameters.
+     *
+     * @return The URI string without offset and length query parameters.
+     * @throws IllegalStateException if the URI is {@code null}.
+     */
+    public String uriWithoutOffsetAndLength() {
+        return uriWithoutQuery();
+    }
+
+    /**
      * Opens an {@link InputStream} to the bulk data. Handles both file and URL URIs.
      * 
      * @return An {@link InputStream} for reading the bulk data.

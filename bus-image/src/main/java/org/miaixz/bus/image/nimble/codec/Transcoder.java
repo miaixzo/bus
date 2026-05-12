@@ -28,7 +28,6 @@ import java.util.Objects;
 import javax.imageio.*;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StreamKit;
@@ -99,6 +98,7 @@ public class Transcoder implements Closeable {
     private BufferedImage bi2;
     private String pixelDataBulkDataURI;
     private byte[] buffer;
+    private long encapsulatedPixelDataValueTotalLength;
     private final ImageInputHandler imageInputHandler = new ImageInputHandler() {
 
         @Override
@@ -144,6 +144,7 @@ public class Transcoder implements Closeable {
                     dos.write(0);
                 }
             }
+            encapsulatedPixelDataValueTotalLength += dis.unsignedLength();
         }
 
         @Override
@@ -371,6 +372,10 @@ public class Transcoder implements Closeable {
      */
     public Attributes getFileMetaInformation() {
         return fileMetaInformation;
+    }
+
+    public long getEncapsulatedPixelDataValueTotalLength() {
+        return encapsulatedPixelDataValueTotalLength;
     }
 
     private void initDecompressor() {
@@ -954,8 +959,7 @@ public class Transcoder implements Closeable {
                     end - start,
                     maxDiff);
         if (maxDiff > maxPixelValueError)
-            throw new InternalException(
-                    "Decompressed pixel data differs up to " + maxDiff + " from original pixel data");
+            throw new IOException("Decompressed pixel data differs up to " + maxDiff + " from original pixel data");
 
         cache.seek(prevStreamPosition);
         cache.setBitOffset(prevBitOffset);

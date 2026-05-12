@@ -40,11 +40,11 @@ public class Issuer implements Serializable {
     private String universalEntityID;
     private String universalEntityIDType;
 
-    public Issuer(String localNamespaceEntityID, String universalEntityID, String universalEntityIDType) {
-        this.localNamespaceEntityID = localNamespaceEntityID;
-        this.universalEntityID = universalEntityID;
-        this.universalEntityIDType = universalEntityIDType;
-        validate();
+    /**
+     * Constructor for persistence frameworks.
+     */
+    protected Issuer() {
+
     }
 
     public Issuer(String s) {
@@ -58,6 +58,13 @@ public class Issuer implements Serializable {
         this.localNamespaceEntityID = unescapeHL7Separators(ss[0]);
         this.universalEntityID = ss.length > 1 ? unescapeHL7Separators(ss[1]) : null;
         this.universalEntityIDType = ss.length > 2 ? unescapeHL7Separators(ss[2]) : null;
+        validate();
+    }
+
+    public Issuer(String localNamespaceEntityID, String universalEntityID, String universalEntityIDType) {
+        this.localNamespaceEntityID = localNamespaceEntityID;
+        this.universalEntityID = universalEntityID;
+        this.universalEntityIDType = universalEntityIDType;
         validate();
     }
 

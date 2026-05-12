@@ -19,7 +19,8 @@
 */
 package org.miaixz.bus.image.nimble.codec;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
+import java.io.IOException;
+
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.nimble.codec.mp4.MP4FileType;
 
@@ -37,9 +38,9 @@ public interface XPEGParser {
 
     Attributes getAttributes(Attributes attrs);
 
-    String getTransferSyntaxUID(boolean fragmented) throws InternalException;
+    String getTransferSyntaxUID(boolean fragmented) throws IOException;
 
-    default String getTransferSyntaxUID() throws InternalException {
+    default String getTransferSyntaxUID() throws IOException {
         return getTransferSyntaxUID(false);
     }
 

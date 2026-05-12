@@ -35,7 +35,8 @@ import org.miaixz.bus.image.metric.hl7.HL7Segment;
 import org.miaixz.bus.image.metric.hl7.MLLPConnection;
 
 /**
- * HL7应用程序类，用于处理HL7消息通信。 该类提供了HL7消息的发送、接收和处理功能，包括连接管理、消息验证、字符集设置等。 它实现了Serializable接口，支持序列化操作。
+ * HL7 application used for message communication, connection management, message validation, and character set
+ * handling.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -46,105 +47,105 @@ public class HL7Application implements Serializable {
     private static final long serialVersionUID = 2852267135868L;
 
     /**
-     * 已接受的发送应用程序集合
+     * Accepted sending applications.
      */
     private final LinkedHashSet<String> acceptedSendingApplications = new LinkedHashSet<>();
 
     /**
-     * 其他应用程序名称集合
+     * Alternate application names.
      */
     private final LinkedHashSet<String> otherApplicationNames = new LinkedHashSet<>();
 
     /**
-     * 已接受的消息类型集合
+     * Accepted message types.
      */
     private final LinkedHashSet<String> acceptedMessageTypes = new LinkedHashSet<>();
 
     /**
-     * 网络连接列表
+     * Network connections.
      */
     private final List<Connection> conns = new ArrayList<>(1);
 
     /**
-     * HL7应用程序扩展映射
+     * HL7 application extensions.
      */
     private final Map<Class<? extends HL7ApplicationExtension>, HL7ApplicationExtension> extensions = new HashMap<>();
 
     /**
-     * 关联的设备
+     * Owning device.
      */
     private Device device;
 
     /**
-     * 应用程序名称
+     * Application name.
      */
     private String name;
 
     /**
-     * HL7默认字符集
+     * Default HL7 character set.
      */
     private String hl7DefaultCharacterSet = "ASCII";
 
     /**
-     * HL7发送字符集
+     * Outbound HL7 character set.
      */
     private String hl7SendingCharacterSet = "ASCII";
 
     /**
-     * 是否已安装标志
+     * Installation flag.
      */
     private Boolean installed;
 
     /**
-     * 应用程序描述
+     * Application description.
      */
     private String description;
 
     /**
-     * 可选MSH字段数组
+     * Optional MSH fields.
      */
     private int[] optionalMSHFields = {};
 
     /**
-     * 应用程序集群数组
+     * Application clusters.
      */
     private String[] applicationClusters = {};
 
     /**
-     * HL7消息监听器
+     * HL7 message listener.
      */
     private transient HL7MessageListener hl7MessageListener;
 
     /**
-     * 构造一个空的HL7应用程序
+     * Creates an empty HL7 application.
      */
     public HL7Application() {
 
     }
 
     /**
-     * 使用指定的名称构造HL7应用程序
+     * Creates an HL7 application with the specified name.
      *
-     * @param name 应用程序名称
+     * @param name application name
      */
     public HL7Application(String name) {
         setApplicationName(name);
     }
 
     /**
-     * 获取此HL7应用程序关联的设备
+     * Returns the owning device.
      *
-     * @return 关联的设备
+     * @return owning device
      */
     public final Device getDevice() {
         return device;
     }
 
     /**
-     * 设置此HL7应用程序关联的设备
+     * Sets the owning device.
      *
-     * @param device 要关联的设备
-     * @throws IllegalStateException 如果应用程序已被其他设备拥有或连接不属于指定设备
+     * @param device owning device
+     * @throws IllegalStateException if the application is already owned or a connection belongs to another device
      */
     void setDevice(Device device) {
         if (device != null) {
@@ -158,19 +159,19 @@ public class HL7Application implements Serializable {
     }
 
     /**
-     * 获取应用程序名称
+     * Returns the application name.
      *
-     * @return 应用程序名称
+     * @return application name
      */
     public String getApplicationName() {
         return name;
     }
 
     /**
-     * 设置应用程序名称
+     * Sets the application name.
      *
-     * @param name 应用程序名称
-     * @throws IllegalArgumentException 如果名称为空
+     * @param name application name
+     * @throws IllegalArgumentException if the name is empty
      */
     public void setApplicationName(String name) {
         if (name.isEmpty())
@@ -184,54 +185,54 @@ public class HL7Application implements Serializable {
     }
 
     /**
-     * 获取HL7默认字符集
+     * Returns the default HL7 character set.
      *
-     * @return HL7默认字符集
+     * @return default HL7 character set
      */
     public final String getHL7DefaultCharacterSet() {
         return hl7DefaultCharacterSet;
     }
 
     /**
-     * 设置HL7默认字符集
+     * Sets the default HL7 character set.
      *
-     * @param hl7DefaultCharacterSet HL7默认字符集
+     * @param hl7DefaultCharacterSet default HL7 character set
      */
     public final void setHL7DefaultCharacterSet(String hl7DefaultCharacterSet) {
         this.hl7DefaultCharacterSet = hl7DefaultCharacterSet;
     }
 
     /**
-     * 获取HL7发送字符集
+     * Returns the outbound HL7 character set.
      *
-     * @return HL7发送字符集
+     * @return outbound HL7 character set
      */
     public String getHL7SendingCharacterSet() {
         return hl7SendingCharacterSet;
     }
 
     /**
-     * 设置HL7发送字符集
+     * Sets the outbound HL7 character set.
      *
-     * @param hl7SendingCharacterSet HL7发送字符集
+     * @param hl7SendingCharacterSet outbound HL7 character set
      */
     public void setHL7SendingCharacterSet(String hl7SendingCharacterSet) {
         this.hl7SendingCharacterSet = hl7SendingCharacterSet;
     }
 
     /**
-     * 获取已接受的发送应用程序数组
+     * Returns accepted sending applications.
      *
-     * @return 已接受的发送应用程序数组
+     * @return accepted sending applications
      */
     public String[] getAcceptedSendingApplications() {
         return acceptedSendingApplications.toArray(new String[acceptedSendingApplications.size()]);
     }
 
     /**
-     * 设置已接受的发送应用程序
+     * Sets accepted sending applications.
      *
-     * @param names 发送应用程序名称数组
+     * @param names sending application names
      */
     public void setAcceptedSendingApplications(String... names) {
         acceptedSendingApplications.clear();
@@ -239,18 +240,18 @@ public class HL7Application implements Serializable {
     }
 
     /**
-     * 获取其他应用程序名称数组
+     * Returns alternate application names.
      *
-     * @return 其他应用程序名称数组
+     * @return alternate application names
      */
     public String[] getOtherApplicationNames() {
         return otherApplicationNames.toArray(new String[otherApplicationNames.size()]);
     }
 
     /**
-     * 设置其他应用程序名称
+     * Sets alternate application names.
      *
-     * @param names 其他应用程序名称数组
+     * @param names alternate application names
      */
     public void setOtherApplicationNames(String... names) {
         otherApplicationNames.clear();
@@ -258,28 +259,28 @@ public class HL7Application implements Serializable {
     }
 
     /**
-     * 检查指定的名称是否在其他应用程序名称列表中
+     * Checks whether the specified name is configured as an alternate application name.
      *
-     * @param name 要检查的名称
-     * @return 如果存在则返回true，否则返回false
+     * @param name name to check
+     * @return {@code true} if the name is configured
      */
     public boolean isOtherApplicationName(String name) {
         return otherApplicationNames.contains(name);
     }
 
     /**
-     * 获取已接受的消息类型数组
+     * Returns accepted message types.
      *
-     * @return 已接受的消息类型数组
+     * @return accepted message types
      */
     public String[] getAcceptedMessageTypes() {
         return acceptedMessageTypes.toArray(new String[acceptedMessageTypes.size()]);
     }
 
     /**
-     * 设置已接受的消息类型
+     * Sets accepted message types.
      *
-     * @param types 消息类型数组
+     * @param types message types
      */
     public void setAcceptedMessageTypes(String... types) {
         acceptedMessageTypes.clear();
@@ -287,82 +288,82 @@ public class HL7Application implements Serializable {
     }
 
     /**
-     * 获取应用程序描述
+     * Returns the application description.
      *
-     * @return 应用程序描述
+     * @return application description
      */
     public String getDescription() {
         return description;
     }
 
     /**
-     * 设置应用程序描述
+     * Sets the application description.
      *
-     * @param description 应用程序描述
+     * @param description application description
      */
     public void setDescription(String description) {
         this.description = description;
     }
 
     /**
-     * 获取可选MSH字段数组
+     * Returns optional MSH fields.
      *
-     * @return 可选MSH字段数组
+     * @return optional MSH fields
      */
     public int[] getOptionalMSHFields() {
         return optionalMSHFields;
     }
 
     /**
-     * 设置可选MSH字段
+     * Sets optional MSH fields.
      *
-     * @param optionalMSHFields 可选MSH字段数组
+     * @param optionalMSHFields optional MSH fields
      */
     public void setOptionalMSHFields(int... optionalMSHFields) {
         this.optionalMSHFields = optionalMSHFields;
     }
 
     /**
-     * 获取应用程序集群数组
+     * Returns application clusters.
      *
-     * @return 应用程序集群数组
+     * @return application clusters
      */
     public String[] getApplicationClusters() {
         return applicationClusters;
     }
 
     /**
-     * 设置应用程序集群
+     * Sets application clusters.
      *
-     * @param applicationClusters 应用程序集群数组
+     * @param applicationClusters application clusters
      */
     public void setApplicationClusters(String[] applicationClusters) {
         this.applicationClusters = applicationClusters;
     }
 
     /**
-     * 检查应用程序是否已安装
+     * Checks whether the application is installed.
      *
-     * @return 如果应用程序已安装则返回true，否则返回false
+     * @return {@code true} if the application is installed
      */
     public boolean isInstalled() {
         return device != null && device.isInstalled() && (installed == null || installed.booleanValue());
     }
 
     /**
-     * 获取安装状态
+     * Returns the configured installation state.
      *
-     * @return 安装状态（true表示已安装，false表示未安装，null表示继承设备状态）
+     * @return installation state, or {@code null} to inherit the device state
      */
     public final Boolean getInstalled() {
         return installed;
     }
 
     /**
-     * 设置安装状态
+     * Sets the installation state.
      *
-     * @param installed 安装状态
-     * @throws IllegalStateException 如果设置为已安装但所属设备未安装
+     * @param installed installation state
+     * @throws IllegalStateException if the application is installed while the owning device is not installed
      */
     public void setInstalled(Boolean installed) {
         if (installed != null && installed.booleanValue() && device != null && !device.isInstalled())
@@ -371,9 +372,9 @@ public class HL7Application implements Serializable {
     }
 
     /**
-     * 获取HL7消息监听器
+     * Returns the HL7 message listener.
      *
-     * @return HL7消息监听器
+     * @return HL7 message listener
      */
     public HL7MessageListener getHL7MessageListener() {
         HL7MessageListener listener = hl7MessageListener;
@@ -384,20 +385,20 @@ public class HL7Application implements Serializable {
     }
 
     /**
-     * 设置HL7消息监听器
+     * Sets the HL7 message listener.
      *
-     * @param listener HL7消息监听器
+     * @param listener HL7 message listener
      */
     public final void setHL7MessageListener(HL7MessageListener listener) {
         this.hl7MessageListener = listener;
     }
 
     /**
-     * 添加网络连接到此HL7应用程序
+     * Adds a network connection to this HL7 application.
      *
-     * @param conn 要添加的网络连接
-     * @throws IllegalArgumentException 如果连接协议不是HL7
-     * @throws IllegalStateException    如果连接不属于指定设备
+     * @param conn network connection to add
+     * @throws IllegalArgumentException if the connection protocol is not HL7
+     * @throws IllegalStateException    if the connection belongs to another device
      */
     public void addConnection(Connection conn) {
         if (!conn.getProtocol().isHL7())
@@ -408,32 +409,32 @@ public class HL7Application implements Serializable {
     }
 
     /**
-     * 从此HL7应用程序移除网络连接
+     * Removes a network connection from this HL7 application.
      *
-     * @param conn 要移除的网络连接
-     * @return 如果连接被移除则返回true，否则返回false
+     * @param conn network connection to remove
+     * @return {@code true} if the connection was removed
      */
     public boolean removeConnection(Connection conn) {
         return conns.remove(conn);
     }
 
     /**
-     * 获取此HL7应用程序的所有网络连接
+     * Returns all network connections for this HL7 application.
      *
-     * @return 网络连接列表
+     * @return network connections
      */
     public List<Connection> getConnections() {
         return conns;
     }
 
     /**
-     * 处理接收到的HL7消息
+     * Handles a received HL7 message.
      *
-     * @param conn 网络连接
-     * @param s    套接字
-     * @param msg  未解析的HL7消息
-     * @return 处理后的未解析HL7消息
-     * @throws HL7Exception 如果消息处理失败
+     * @param conn network connection
+     * @param s    socket
+     * @param msg  unparsed HL7 message
+     * @return processed unparsed HL7 message
+     * @throws HL7Exception if message handling fails
      */
     UnparsedHL7Message onMessage(Connection conn, Socket s, UnparsedHL7Message msg) throws HL7Exception {
         HL7Segment msh = msg.msh();
@@ -446,10 +447,10 @@ public class HL7Application implements Serializable {
     }
 
     /**
-     * 验证MSH段
+     * Validates the MSH segment.
      *
-     * @param msh MSH段
-     * @throws HL7Exception 如果验证失败
+     * @param msh MSH segment
+     * @throws HL7Exception if validation fails
      */
     private void validateMSH(HL7Segment msh) throws HL7Exception {
         String[] errorLocations = { ERRSegment.SENDING_APPLICATION, // MSH-3
@@ -497,10 +498,10 @@ public class HL7Application implements Serializable {
     }
 
     /**
-     * 检查消息代码是否不被支持
+     * Checks whether a message code is unsupported.
      *
-     * @param messageType 消息类型
-     * @return 如果消息代码不被支持则返回true，否则返回false
+     * @param messageType message type
+     * @return {@code true} if the message code is unsupported
      */
     private boolean unsupportedMessageCode(String messageType) {
         for (String acceptedMessageType : acceptedMessageTypes) {
@@ -511,26 +512,26 @@ public class HL7Application implements Serializable {
     }
 
     /**
-     * 连接到远程连接
+     * Connects to a remote connection.
      *
-     * @param remote 远程连接
-     * @return MLLP连接
-     * @throws IOException              如果发生I/O错误
-     * @throws InternalException        如果发生内部错误
-     * @throws GeneralSecurityException 如果发生安全错误
+     * @param remote remote connection
+     * @return MLLP connection
+     * @throws IOException              if an I/O error occurs
+     * @throws InternalException        if no compatible connection is available
+     * @throws GeneralSecurityException if a security error occurs
      */
     public MLLPConnection connect(Connection remote) throws IOException, InternalException, GeneralSecurityException {
         return connect(findCompatibleConnection(remote), remote);
     }
 
     /**
-     * 连接到远程HL7应用程序
+     * Connects to a remote HL7 application.
      *
-     * @param remote 远程HL7应用程序
-     * @return MLLP连接
-     * @throws IOException              如果发生I/O错误
-     * @throws InternalException        如果发生内部错误
-     * @throws GeneralSecurityException 如果发生安全错误
+     * @param remote remote HL7 application
+     * @return MLLP connection
+     * @throws IOException              if an I/O error occurs
+     * @throws InternalException        if no compatible connection is available
+     * @throws GeneralSecurityException if a security error occurs
      */
     public MLLPConnection connect(HL7Application remote)
             throws IOException, InternalException, GeneralSecurityException {
@@ -539,14 +540,14 @@ public class HL7Application implements Serializable {
     }
 
     /**
-     * 使用本地和远程连接建立连接
+     * Opens an MLLP connection using local and remote connections.
      *
-     * @param local  本地连接
-     * @param remote 远程连接
-     * @return MLLP连接
-     * @throws IOException              如果发生I/O错误
-     * @throws InternalException        如果发生内部错误
-     * @throws GeneralSecurityException 如果发生安全错误
+     * @param local  local connection
+     * @param remote remote connection
+     * @return MLLP connection
+     * @throws IOException              if an I/O error occurs
+     * @throws InternalException        if no compatible connection is available
+     * @throws GeneralSecurityException if a security error occurs
      */
     public MLLPConnection connect(Connection local, Connection remote)
             throws IOException, InternalException, GeneralSecurityException {
@@ -558,40 +559,40 @@ public class HL7Application implements Serializable {
     }
 
     /**
-     * 打开到远程连接的HL7连接
+     * Opens an HL7 connection to a remote connection.
      *
-     * @param remote 远程连接
-     * @return HL7连接
-     * @throws IOException              如果发生I/O错误
-     * @throws InternalException        如果发生内部错误
-     * @throws GeneralSecurityException 如果发生安全错误
+     * @param remote remote connection
+     * @return HL7 connection
+     * @throws IOException              if an I/O error occurs
+     * @throws InternalException        if no compatible connection is available
+     * @throws GeneralSecurityException if a security error occurs
      */
     public HL7Connection open(Connection remote) throws IOException, InternalException, GeneralSecurityException {
         return new HL7Connection(this, connect(remote));
     }
 
     /**
-     * 打开到远程HL7应用程序的HL7连接
+     * Opens an HL7 connection to a remote HL7 application.
      *
-     * @param remote 远程HL7应用程序
-     * @return HL7连接
-     * @throws IOException              如果发生I/O错误
-     * @throws InternalException        如果发生内部错误
-     * @throws GeneralSecurityException 如果发生安全错误
+     * @param remote remote HL7 application
+     * @return HL7 connection
+     * @throws IOException              if an I/O error occurs
+     * @throws InternalException        if no compatible connection is available
+     * @throws GeneralSecurityException if a security error occurs
      */
     public HL7Connection open(HL7Application remote) throws IOException, InternalException, GeneralSecurityException {
         return new HL7Connection(this, connect(remote));
     }
 
     /**
-     * 使用本地和远程连接打开HL7连接
+     * Opens an HL7 connection using local and remote connections.
      *
-     * @param local  本地连接
-     * @param remote 远程连接
-     * @return HL7连接
-     * @throws IOException              如果发生I/O错误
-     * @throws InternalException        如果发生内部错误
-     * @throws GeneralSecurityException 如果发生安全错误
+     * @param local  local connection
+     * @param remote remote connection
+     * @return HL7 connection
+     * @throws IOException              if an I/O error occurs
+     * @throws InternalException        if no compatible connection is available
+     * @throws GeneralSecurityException if a security error occurs
      */
     public HL7Connection open(Connection local, Connection remote)
             throws IOException, InternalException, GeneralSecurityException {
@@ -599,11 +600,11 @@ public class HL7Application implements Serializable {
     }
 
     /**
-     * 查找与远程HL7应用程序兼容的连接
+     * Finds compatible local and remote connections for the remote HL7 application.
      *
-     * @param remote 远程HL7应用程序
-     * @return 兼容的连接对（本地连接和远程连接）
-     * @throws InternalException 如果没有可用的兼容连接
+     * @param remote remote HL7 application
+     * @return compatible local and remote connections
+     * @throws InternalException if no compatible connection is available
      */
     public Compatible findCompatibleConnection(HL7Application remote) throws InternalException {
         for (Connection remoteConn : remote.conns)
@@ -616,11 +617,11 @@ public class HL7Application implements Serializable {
     }
 
     /**
-     * 查找与指定远程连接兼容的本地连接
+     * Finds a local connection compatible with the specified remote connection.
      *
-     * @param remoteConn 远程连接
-     * @return 兼容的本地连接
-     * @throws InternalException 如果没有可用的兼容连接
+     * @param remoteConn remote connection
+     * @return compatible local connection
+     * @throws InternalException if no compatible connection is available
      */
     public Connection findCompatibleConnection(Connection remoteConn) throws InternalException {
         for (Connection conn : conns)
@@ -630,9 +631,9 @@ public class HL7Application implements Serializable {
     }
 
     /**
-     * 检查应用程序是否已安装
+     * Checks that the application is installed.
      *
-     * @throws IllegalStateException 如果应用程序未安装
+     * @throws IllegalStateException if the application is not installed
      */
     private void checkInstalled() {
         if (!isInstalled())
@@ -640,9 +641,9 @@ public class HL7Application implements Serializable {
     }
 
     /**
-     * 检查应用程序是否已关联到设备
+     * Checks that the application is attached to a device.
      *
-     * @throws IllegalStateException 如果应用程序未关联到设备
+     * @throws IllegalStateException if the application is not attached to a device
      */
     private void checkDevice() {
         if (device == null)
@@ -650,9 +651,9 @@ public class HL7Application implements Serializable {
     }
 
     /**
-     * 从源HL7应用程序重新配置此应用程序
+     * Reconfigures this application from the source HL7 application.
      *
-     * @param src 源HL7应用程序
+     * @param src source HL7 application
      */
     void reconfigure(HL7Application src) {
         setHL7ApplicationAttributes(src);
@@ -661,9 +662,9 @@ public class HL7Application implements Serializable {
     }
 
     /**
-     * 从源HL7应用程序重新配置HL7应用程序扩展
+     * Reconfigures HL7 application extensions from the source application.
      *
-     * @param from 源HL7应用程序
+     * @param from source HL7 application
      */
     private void reconfigureHL7ApplicationExtensions(HL7Application from) {
         extensions.keySet().removeIf(aClass -> !from.extensions.containsKey(aClass));
@@ -681,9 +682,9 @@ public class HL7Application implements Serializable {
     }
 
     /**
-     * 从源HL7应用程序设置HL7应用程序属性
+     * Copies HL7 application attributes from the source application.
      *
-     * @param src 源HL7应用程序
+     * @param src source HL7 application
      */
     protected void setHL7ApplicationAttributes(HL7Application src) {
         description = src.description;
@@ -701,10 +702,10 @@ public class HL7Application implements Serializable {
     }
 
     /**
-     * 添加HL7应用程序扩展
+     * Adds an HL7 application extension.
      *
-     * @param ext 要添加的HL7应用程序扩展
-     * @throws IllegalStateException 如果已存在相同类型的扩展
+     * @param ext HL7 application extension to add
+     * @throws IllegalStateException if an extension of the same type already exists
      */
     public void addHL7ApplicationExtension(HL7ApplicationExtension ext) {
         Class<? extends HL7ApplicationExtension> clazz = ext.getClass();
@@ -715,10 +716,10 @@ public class HL7Application implements Serializable {
     }
 
     /**
-     * 移除HL7应用程序扩展
+     * Removes an HL7 application extension.
      *
-     * @param ext 要移除的HL7应用程序扩展
-     * @return 如果扩展被移除则返回true，否则返回false
+     * @param ext HL7 application extension to remove
+     * @return {@code true} if the extension was removed
      */
     public boolean removeHL7ApplicationExtension(HL7ApplicationExtension ext) {
         if (extensions.remove(ext.getClass()) == null)
@@ -728,32 +729,32 @@ public class HL7Application implements Serializable {
     }
 
     /**
-     * 列出所有HL7应用程序扩展
+     * Lists all HL7 application extensions.
      *
-     * @return HL7应用程序扩展集合
+     * @return HL7 application extensions
      */
     public Collection<HL7ApplicationExtension> listHL7ApplicationExtensions() {
         return extensions.values();
     }
 
     /**
-     * 获取指定类型的HL7应用程序扩展
+     * Returns the HL7 application extension for the specified type.
      *
-     * @param <T>   扩展类型
-     * @param clazz 扩展类
-     * @return 匹配的HL7应用程序扩展，如果没有则返回null
+     * @param <T>   extension type
+     * @param clazz extension class
+     * @return matching HL7 application extension, or {@code null}
      */
     public <T extends HL7ApplicationExtension> T getHL7ApplicationExtension(Class<T> clazz) {
         return (T) extensions.get(clazz);
     }
 
     /**
-     * 获取指定类型的HL7应用程序扩展，如果不存在则抛出异常
+     * Returns the HL7 application extension for the specified type.
      *
-     * @param <T>   扩展类型
-     * @param clazz 扩展类
-     * @return 匹配的HL7应用程序扩展
-     * @throws IllegalStateException 如果不存在指定类型的扩展
+     * @param <T>   extension type
+     * @param clazz extension class
+     * @return matching HL7 application extension
+     * @throws IllegalStateException if no extension of the specified type exists
      */
     public <T extends HL7ApplicationExtension> T getHL7AppExtensionNotNull(Class<T> clazz) {
         T hl7AppExt = getHL7ApplicationExtension(clazz);

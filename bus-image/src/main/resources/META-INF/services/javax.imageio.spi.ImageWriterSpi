@@ -19,3 +19,4 @@
 org.miaixz.bus.image.nimble.opencv.NativeJLSImageWriterSpi
 org.miaixz.bus.image.nimble.opencv.NativeJPEGImageWriterSpi
 org.miaixz.bus.image.nimble.opencv.NativeJ2kImageWriterSpi
+org.miaixz.bus.image.nimble.opencv.NativeJXLImageWriterSpi

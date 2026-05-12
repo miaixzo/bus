@@ -24,7 +24,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
 import java.util.Date;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.SafeBuffer;
@@ -132,7 +131,7 @@ public class MP4Parser implements XPEGParser {
     }
 
     @Override
-    public String getTransferSyntaxUID(boolean fragmented) throws InternalException {
+    public String getTransferSyntaxUID(boolean fragmented) throws IOException {
         switch (visualSampleEntryType) {
             case VisualSampleEntryTypeAVC1:
                 switch (profile_idc) {
@@ -168,8 +167,8 @@ public class MP4Parser implements XPEGParser {
         throw new AssertionError("visualSampleEntryType:" + visualSampleEntryType);
     }
 
-    private InternalException profileLevelNotSupported(String format) {
-        return new InternalException(String.format(format, profile_idc, level_idc));
+    private IOException profileLevelNotSupported(String format) {
+        return new IOException(String.format(format, profile_idc, level_idc));
     }
 
     private boolean isBDCompatible() {
@@ -194,7 +193,7 @@ public class MP4Parser implements XPEGParser {
                 return box;
             channel.position(box.end);
         }
-        throw new InternalException(boxNotFound(type));
+        throw new IOException(boxNotFound(type));
     }
 
     private int[] readInts(SeekableByteChannel channel, long end) throws IOException {

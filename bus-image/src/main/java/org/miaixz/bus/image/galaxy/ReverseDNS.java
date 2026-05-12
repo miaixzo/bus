@@ -31,6 +31,10 @@ public class ReverseDNS {
 
     static final boolean DISABLED = isFalse(ReverseDNS.class.getName());
 
+    private ReverseDNS() {
+
+    }
+
     private static boolean isFalse(String name) {
         try {
             String s = System.getProperty(name);

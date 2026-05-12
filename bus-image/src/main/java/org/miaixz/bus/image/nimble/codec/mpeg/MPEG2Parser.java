@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.SafeBuffer;
@@ -156,7 +155,7 @@ public class MPEG2Parser implements XPEGParser {
             SafeBuffer.position(buf, data[2] == 0 ? data[1] == 0 ? 2 : 1 : 0);
             data[0] = 0;
         }
-        throw new InternalException("MPEG2 sequence header not found");
+        throw new IOException("MPEG2 sequence header not found");
     }
 
     private void skip(SeekableByteChannel channel, long n) throws IOException {
@@ -179,7 +178,7 @@ public class MPEG2Parser implements XPEGParser {
                 i += data[i + 2] == 0 ? data[i + 1] == 0 ? 1 : 2 : 3;
             }
         } while (pos > 0);
-        throw new InternalException("last MPEG2 Group of Pictures not found");
+        throw new IOException("last MPEG2 Group of Pictures not found");
     }
 
     private int readStartCode(SeekableByteChannel channel) throws IOException {
@@ -188,7 +187,7 @@ public class MPEG2Parser implements XPEGParser {
         SafeBuffer.rewind(buf);
         int startCode = buf.getInt();
         if ((startCode & 0xfffffe00) != 0) {
-            throw new InternalException(
+            throw new IOException(
                     String.format("Invalid MPEG2 start code %4XH on position %d", startCode, channel.position() - 4));
         }
         return startCode;

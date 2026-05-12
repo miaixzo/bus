@@ -202,7 +202,7 @@ public enum State {
     }
 
     public void writeAReleaseRQ(Association as) throws IOException {
-
+        throw new IOException(toString());
     }
 
     public void write(Association as, AAbort aa) {
@@ -210,7 +210,7 @@ public enum State {
     }
 
     public void writePDataTF(Association as) throws IOException {
-
+        throw new IOException(toString());
     }
 
     public void closeSocket(Association as) {

@@ -29,7 +29,6 @@ import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StreamKit;
@@ -530,8 +529,8 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
         }
     }
 
-    private InternalException tagValueTooLargeException() {
-        return new InternalException(String.format("0x%s %s", Tag.toHexString(tag), VALUE_TOO_LARGE));
+    private IOException tagValueTooLargeException() {
+        return new IOException(String.format("0x%s %s", Tag.toHexString(tag), VALUE_TOO_LARGE));
     }
 
     public void readHeader() throws IOException {
@@ -924,7 +923,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
             attrs.setNull(sqtag, VR.SQ);
         else if (!undefLen && pos != endPos) {
             if (!recoverSequenceExceedsEncodedLength || (pos - endPos) > TREAT_SQ_AS_UN_MAX_EXCEED_LENGTH)
-                throw new InternalException(String.format(SEQUENCE_EXCEED_ENCODED_LENGTH, Tag.toString(sqtag), len));
+                throw new IOException(String.format(SEQUENCE_EXCEED_ENCODED_LENGTH, Tag.toString(sqtag), len));
             Logger.info(false, "Image", TREAT_SQ_AS_UN, Tag.toString(sqtag), len);
             reset();
             tag = sqtag;
@@ -1062,12 +1061,12 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
             }
         }
         if (rlen < 8 || !guessTransferSyntax(b134, rlen, false) && !guessTransferSyntax(b134, rlen, true))
-            throw new InternalException(NOT_A_DICOM_STREAM);
+            throw new IOException(NOT_A_DICOM_STREAM);
         reset();
         hasfmi = Tag.isFileMetaInformation(ByteKit.bytesToTag(b134, 0, bigEndian));
     }
 
-    private boolean guessTransferSyntax(byte[] b132, int rlen, boolean bigEndian) throws InternalException {
+    private boolean guessTransferSyntax(byte[] b132, int rlen, boolean bigEndian) throws IOException {
         int tag1 = ByteKit.bytesToTag(b132, 0, bigEndian);
         VR vr = ElementDictionary.vrOf(tag1, null);
         if (vr == VR.UN)
@@ -1093,7 +1092,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
             return false;
 
         if (bigEndian)
-            throw new InternalException(IMPLICIT_VR_BIG_ENDIAN);
+            throw new IOException(IMPLICIT_VR_BIG_ENDIAN);
 
         this.tsuid = UID.ImplicitVRLittleEndian.uid;
         this.bigEndian = false;

@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.SafeBuffer;
@@ -59,7 +58,7 @@ public class JPEGParser implements XPEGParser {
                 break;
 
             default:
-                throw new InternalException("JPEG SOI/SOC marker not found");
+                throw new IOException("JPEG SOI/SOC marker not found");
         }
     }
 
@@ -114,7 +113,7 @@ public class JPEGParser implements XPEGParser {
     }
 
     @Override
-    public String getTransferSyntaxUID(boolean fragmented) throws InternalException {
+    public String getTransferSyntaxUID(boolean fragmented) throws IOException {
         return params.transferSyntaxUID();
     }
 
@@ -179,7 +178,7 @@ public class JPEGParser implements XPEGParser {
 
     private void requiresFF(SeekableByteChannel channel, int v) throws IOException {
         if (v != 0xff)
-            throw new InternalException(String.format("unexpected %2XH on position %d", v, channel.position() - 4));
+            throw new IOException(String.format("unexpected %2XH on position %d", v, channel.position() - 4));
     }
 
     public interface Params {
@@ -198,7 +197,7 @@ public class JPEGParser implements XPEGParser {
 
         String colorPhotometricInterpretation();
 
-        String transferSyntaxUID() throws InternalException;
+        String transferSyntaxUID() throws IOException;
     }
 
     private static class Segment {
@@ -303,7 +302,7 @@ public class JPEGParser implements XPEGParser {
         }
 
         @Override
-        public String transferSyntaxUID() throws InternalException {
+        public String transferSyntaxUID() throws IOException {
             switch (sof) {
                 case JPEG.SOF0:
                     return UID.JPEGBaseline8Bit.uid;
@@ -320,7 +319,7 @@ public class JPEGParser implements XPEGParser {
                 case JPEG.SOF55:
                     return sosParams.get(3) == 0 ? UID.JPEGLSLossless.uid : UID.JPEGLSNearLossless.uid;
             }
-            throw new InternalException(String.format("JPEG SOF%d not supported", sof & 0xf));
+            throw new IOException(String.format("JPEG SOF%d not supported", sof & 0xf));
         }
     }
 

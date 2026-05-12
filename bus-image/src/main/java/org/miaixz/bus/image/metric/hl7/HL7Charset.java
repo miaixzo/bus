@@ -33,6 +33,10 @@ public class HL7Charset {
 
     private static final Map<String, String> CHARSET_NAMES_MAP = new HashMap<>();
 
+    private HL7Charset() {
+
+    }
+
     /**
      * Extend/override mapping of field MSH-18-character to named charset specified by
      * <a href="http://www.hl7.eu/HL7v2x/v251/hl7v251tab0211.htm">HL7 table 0211 - Alternate character sets</a>.. For

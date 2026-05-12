@@ -139,7 +139,8 @@ public class LookupTableFactory {
     public void setModalityLUT(Attributes attrs) {
         rescaleIntercept = attrs.getFloat(Tag.RescaleIntercept, 0);
         rescaleSlope = attrs.getFloat(Tag.RescaleSlope, 1);
-        modalityLUT = createLUT(storedValue, attrs.getNestedDataset(Tag.ModalityLUTSequence));
+        boolean unsigned = attrs.getInt(Tag.PixelRepresentation, -1) == 0;
+        modalityLUT = createLUT(storedValue, attrs.getNestedDataset(Tag.ModalityLUTSequence), unsigned);
     }
 
     /**
@@ -169,7 +170,8 @@ public class LookupTableFactory {
                         new StoredValue.Unsigned(log2(len)),
                         resetOffset(desc),
                         pLUT.getSafeBytes(Tag.LUTData),
-                        pLUT.bigEndian());
+                        pLUT.bigEndian(),
+                        attrs.getInt(Tag.PixelRepresentation, -1) == 0);
             }
         } else {
             String pShape;
@@ -236,7 +238,11 @@ public class LookupTableFactory {
         }
         if (vLUT != null) {
             adjustVOILUTDescriptor(vLUT);
-            voiLUT = createLUT(modalityLUT != null ? new StoredValue.Unsigned(modalityLUT.outBits) : storedValue, vLUT);
+            boolean unsigned = img.getInt(Tag.PixelRepresentation, -1) == 0;
+            voiLUT = createLUT(
+                    modalityLUT != null ? new StoredValue.Unsigned(modalityLUT.outBits) : storedValue,
+                    vLUT,
+                    unsigned);
         }
     }
 
@@ -254,8 +260,8 @@ public class LookupTableFactory {
             for (int i = vLUT.bigEndian() ? 0 : 1; i < data.length; i += 2)
                 hiByte |= data[i];
             if ((hiByte & 0x80) == 0) {
-                desc[2] = 8 + (31 - Integer.numberOfLeadingZeros(hiByte & 0xFF));
-                vLUT.setInt(Tag.LUTDescriptor, VR.US, desc);
+                desc[2] = 40 - Integer.numberOfLeadingZeros(hiByte & 0xFF);
+                vLUT.setInt(Tag.LUTDescriptor, VR.SS, desc);
             }
         }
     }
@@ -263,14 +269,20 @@ public class LookupTableFactory {
     /**
      * Creates a {@link LookupTable} from a DICOM sequence item.
      *
-     * @param inBits The bit depth of the input data for the LUT.
-     * @param attrs  The attributes of the LUT sequence item.
+     * @param inBits   The bit depth of the input data for the LUT.
+     * @param attrs    The attributes of the LUT sequence item.
+     * @param unsigned {@code true} if the LUT descriptor offset is unsigned.
      * @return A new {@link LookupTable}, or {@code null} if the attributes are invalid.
      */
-    private LookupTable createLUT(StoredValue inBits, Attributes attrs) {
+    private LookupTable createLUT(StoredValue inBits, Attributes attrs, boolean unsigned) {
         if (attrs == null)
             return null;
-        return createLUT(inBits, attrs.getInts(Tag.LUTDescriptor), attrs.getSafeBytes(Tag.LUTData), attrs.bigEndian());
+        return createLUT(
+                inBits,
+                attrs.getInts(Tag.LUTDescriptor),
+                attrs.getSafeBytes(Tag.LUTData),
+                attrs.bigEndian(),
+                unsigned);
     }
 
     /**
@@ -280,15 +292,16 @@ public class LookupTableFactory {
      * @param desc      The LUT Descriptor attribute (entry count, first value mapped, bits per entry).
      * @param data      The LUT Data as a byte array.
      * @param bigEndian {@code true} if the LUT data is big-endian.
+     * @param unsigned  {@code true} if the LUT descriptor offset is unsigned.
      * @return A new {@link LookupTable}, or {@code null} if the components are invalid.
      */
-    private LookupTable createLUT(StoredValue inBits, int[] desc, byte[] data, boolean bigEndian) {
+    private LookupTable createLUT(StoredValue inBits, int[] desc, byte[] data, boolean bigEndian, boolean unsigned) {
         if (desc == null || desc.length != 3 || data == null) {
             return null;
         }
 
         int len = desc[0] == 0 ? 0x10000 : desc[0];
-        int offset = (short) desc[1];
+        int offset = unsigned ? desc[1] & 0xffff : (short) desc[1];
         int outBits = desc[2];
 
         if (data.length == len << 1) { // 16-bit LUT data

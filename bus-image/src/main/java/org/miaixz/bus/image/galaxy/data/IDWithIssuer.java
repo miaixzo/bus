@@ -34,6 +34,11 @@ import org.miaixz.bus.image.Tag;
 public class IDWithIssuer {
 
     /**
+     * Shared empty array instance.
+     */
+    public static final IDWithIssuer[] EMPTY = {};
+
+    /**
      * The actual identifier string.
      */
     private final String id;

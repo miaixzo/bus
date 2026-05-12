@@ -30,7 +30,6 @@ import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.*;
@@ -237,8 +236,7 @@ public class Compressor extends Decompressor implements Closeable {
                     end - start,
                     maxDiff);
         if (maxDiff > maxPixelValueError)
-            throw new InternalException(
-                    "Decompressed pixel data differs up to " + maxDiff + " from original pixel data");
+            throw new IOException("Decompressed pixel data differs up to " + maxDiff + " from original pixel data");
 
     }
 
