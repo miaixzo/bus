@@ -34,7 +34,7 @@ Add the required cloud provider SDK(s):
     <amazon.s3.version>2.40.15</amazon.s3.version>
     <jackson.version>2.21.0</jackson.version>
     <sardine.version>5.13</sardine.version>
-    <jsch.version>2.27.7</jsch.version>
+    <jsch.version>2.28.2</jsch.version>
     <smbj.version>0.14.0</smbj.version>
   </properties>
 ```
