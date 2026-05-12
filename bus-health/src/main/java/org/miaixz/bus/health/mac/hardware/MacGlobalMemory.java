@@ -155,8 +155,17 @@ final class MacGlobalMemory extends AbstractGlobalMemory {
      */
     @Override
     public List<PhysicalMemory> getPhysicalMemory() {
+        return parseSystemProfilerMemory(Executor.runNative("system_profiler SPMemoryDataType"));
+    }
+
+    /**
+     * Parses the output of {@code system_profiler SPMemoryDataType} into physical memory objects.
+     *
+     * @param lines the output lines from system profiler
+     * @return the parsed physical memory modules
+     */
+    static List<PhysicalMemory> parseSystemProfilerMemory(List<String> lines) {
         List<PhysicalMemory> pmList = new ArrayList<>();
-        List<String> sp = Executor.runNative("system_profiler SPMemoryDataType");
         int bank = 0;
         String bankLabel = Normal.UNKNOWN;
         long capacity = 0L;
@@ -165,12 +174,12 @@ final class MacGlobalMemory extends AbstractGlobalMemory {
         String memoryType = Normal.UNKNOWN;
         String partNumber = Normal.UNKNOWN;
         String serialNumber = Normal.UNKNOWN;
-        for (String line : sp) {
+        for (String line : lines) {
             if (line.trim().startsWith("BANK")) {
                 // Save previous bank
                 if (bank++ > 0) {
                     pmList.add(
-                            new PhysicalMemory(bankLabel, capacity, speed, manufacturer, memoryType, Normal.UNKNOWN,
+                            new PhysicalMemory(bankLabel, capacity, speed, manufacturer, memoryType, partNumber,
                                     serialNumber));
                 }
                 bankLabel = line.trim();
@@ -212,7 +221,53 @@ final class MacGlobalMemory extends AbstractGlobalMemory {
                 }
             }
         }
-        pmList.add(new PhysicalMemory(bankLabel, capacity, speed, manufacturer, memoryType, partNumber, serialNumber));
+        if (bank > 0 && capacity > 0) {
+            // Intel/socketed format: save the last bank
+            pmList.add(
+                    new PhysicalMemory(bankLabel, capacity, speed, manufacturer, memoryType, partNumber, serialNumber));
+        } else {
+            // Apple Silicon format: no BANK lines, parse top-level keys
+            for (String line : lines) {
+                String[] split = line.trim().split(Symbol.COLON);
+                if (split.length == 2) {
+                    String key = split[0].trim();
+                    String value = split[1].trim();
+                    switch (key) {
+                        case "Memory":
+                            capacity = Parsing.parseDecimalMemorySizeToBinary(value);
+                            break;
+
+                        case "Type":
+                            memoryType = value;
+                            break;
+
+                        case "Speed":
+                            speed = Parsing.parseHertz(split[1]);
+                            break;
+
+                        case "Manufacturer":
+                            manufacturer = value;
+                            break;
+
+                        case "Part Number":
+                            partNumber = value;
+                            break;
+
+                        case "Serial Number":
+                            serialNumber = value;
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+            }
+            if (capacity > 0) {
+                pmList.add(
+                        new PhysicalMemory(bankLabel, capacity, speed, manufacturer, memoryType, partNumber,
+                                serialNumber));
+            }
+        }
 
         return pmList;
     }

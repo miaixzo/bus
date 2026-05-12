@@ -73,6 +73,16 @@ final class MacLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
      * @return A list of {@link LogicalVolumeGroup} objects.
      */
     static List<LogicalVolumeGroup> getLogicalVolumeGroups() {
+        return parseDiskutilCsList(Executor.runNative(DISKUTIL_CS_LIST));
+    }
+
+    /**
+     * Parses the output of {@code diskutil cs list} into logical volume groups.
+     *
+     * @param lines the output lines from diskutil
+     * @return a list of logical volume groups
+     */
+    static List<LogicalVolumeGroup> parseDiskutilCsList(List<String> lines) {
         Map<String, Map<String, Set<String>>> logicalVolumesMap = new HashMap<>();
         Map<String, Set<String>> physicalVolumesMap = new HashMap<>();
 
@@ -81,7 +91,7 @@ final class MacLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
         boolean lookForPVName = false;
         int indexOf;
         // Parse `diskutil cs list` to populate logical volume map
-        for (String line : Executor.runNative(DISKUTIL_CS_LIST)) {
+        for (String line : lines) {
             if (line.contains(LOGICAL_VOLUME_GROUP)) {
                 // Disks that follow should be attached to this VG
                 lookForVGName = true;
@@ -109,7 +119,9 @@ final class MacLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
             }
         }
         return logicalVolumesMap.entrySet().stream()
-                .map(e -> new MacLogicalVolumeGroup(e.getKey(), e.getValue(), physicalVolumesMap.get(e.getKey())))
+                .map(
+                        e -> new MacLogicalVolumeGroup(e.getKey(), e.getValue(),
+                                physicalVolumesMap.getOrDefault(e.getKey(), Collections.emptySet())))
                 .collect(Collectors.toList());
     }
 
