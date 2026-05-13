@@ -51,22 +51,27 @@ public class MppsSCP {
      * The main device for this SCP.
      */
     private final Device device = new Device("mppsscp");
+
     /**
      * The Application Entity that accepts associations.
      */
     private final ApplicationEntity ae = new ApplicationEntity(Symbol.STAR);
+
     /**
      * The network connection configuration.
      */
     private final Connection conn = new Connection();
+
     /**
      * The directory to store received MPPS objects.
      */
     private File storageDir;
+
     /**
      * The Information Object Definition (IOD) for validating N-CREATE requests.
      */
     private IOD mppsNCreateIOD;
+
     /**
      * The Information Object Definition (IOD) for validating N-SET requests.
      */

@@ -197,6 +197,9 @@ public interface Pageable extends Serializable {
 
     /**
      * Implementation of Pageable interface.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     final class PageRequest implements Pageable {
 
@@ -390,6 +393,7 @@ public interface Pageable extends Serializable {
         public String toString() {
             return String.format("Page request [number: %d, size %d, sort: %s]", pageNo, pageSize, sort);
         }
+
     }
 
 }

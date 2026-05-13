@@ -25,38 +25,83 @@ import java.util.Date;
 import java.util.Objects;
 
 /**
+ * Represents the DateRange type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class DateRange implements Serializable {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852262327192L;
 
+    /**
+     * The start value.
+     */
     private final Date start;
+
+    /**
+     * The end value.
+     */
     private final Date end;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param start the start.
+     * @param end   the end.
+     */
     public DateRange(Date start, Date end) {
         this.start = start;
         this.end = end;
     }
 
+    /**
+     * Gets the start date.
+     *
+     * @return the start date.
+     */
     public final Date getStartDate() {
         return start;
     }
 
+    /**
+     * Gets the end date.
+     *
+     * @return the end date.
+     */
     public final Date getEndDate() {
         return end;
     }
 
+    /**
+     * Determines whether start date exeeds end date.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean isStartDateExeedsEndDate() {
         return start != null && end != null && start.after(end);
     }
 
+    /**
+     * Executes the contains operation.
+     *
+     * @param when the when.
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean contains(Date when) {
         return !(start != null && start.after(when) || end != null && end.before(when));
     }
 
+    /**
+     * Compares this instance with another object for equality.
+     *
+     * @param object the object.
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean equals(Object object) {
         if (object == this)
@@ -68,6 +113,11 @@ public class DateRange implements Serializable {
         return (Objects.equals(start, other.start)) && (Objects.equals(end, other.end));
     }
 
+    /**
+     * Returns the hash code.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public int hashCode() {
         int code = 0;
@@ -78,6 +128,11 @@ public class DateRange implements Serializable {
         return code;
     }
 
+    /**
+     * Returns the string representation.
+     *
+     * @return the string representation.
+     */
     @Override
     public String toString() {
         return "[" + start + ", " + end + "]";

@@ -20,17 +20,26 @@
 package org.miaixz.bus.image.galaxy.dict.mitra_object_document_1_0;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "MITRA OBJECT DOCUMENT 1.0";
 
-    /** (0029,xx00) VR=OB VM=1 IMPAX Object Document */
+    /**
+     * (0029,xx00) VR=OB VM=1 IMPAX Object Document
+     */
     public static final int IMPAXObjectDocument = 0x00290000;
 
-    /** (0029,xx01) VR=OB VM=1 IMPAX Markup XML Stored */
+    /**
+     * (0029,xx01) VR=OB VM=1 IMPAX Markup XML Stored
+     */
     public static final int IMPAXMarkupXMLStored = 0x00290001;
 
 }

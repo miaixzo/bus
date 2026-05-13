@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.GEMS_0039;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEMS_0039";
 
-    /** (0039,xx95) VR=LO VM=1 SR Application Name */
+    /**
+     * (0039,xx95) VR=LO VM=1 SR Application Name
+     */
     public static final int SRApplicationName = 0x00390095;
 
 }

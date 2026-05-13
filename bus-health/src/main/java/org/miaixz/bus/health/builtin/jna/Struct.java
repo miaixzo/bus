@@ -47,6 +47,9 @@ public interface Struct {
      */
     /**
      * The CloseableSysinfo class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseableSysinfo extends Sysinfo implements AutoCloseable {
 
@@ -57,6 +60,7 @@ public interface Struct {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
     /*
@@ -65,6 +69,9 @@ public interface Struct {
 
     /**
      * The CloseableHostCpuLoadInfo class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseableHostCpuLoadInfo extends HostCpuLoadInfo implements AutoCloseable {
 
@@ -75,10 +82,14 @@ public interface Struct {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
     /**
      * The CloseableProcTaskInfo class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseableProcTaskInfo extends ProcTaskInfo implements AutoCloseable {
 
@@ -89,10 +100,14 @@ public interface Struct {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
     /**
      * The CloseableProcTaskAllInfo class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseableProcTaskAllInfo extends ProcTaskAllInfo implements AutoCloseable {
 
@@ -103,10 +118,14 @@ public interface Struct {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
     /**
      * The CloseableRUsageInfoV2 class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseableRUsageInfoV2 extends RUsageInfoV2 implements AutoCloseable {
 
@@ -117,10 +136,14 @@ public interface Struct {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
     /**
      * The CloseableTimeval class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseableTimeval extends Timeval implements AutoCloseable {
 
@@ -131,10 +154,14 @@ public interface Struct {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
     /**
      * The CloseableVMStatistics class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseableVMStatistics extends VMStatistics implements AutoCloseable {
 
@@ -145,10 +172,14 @@ public interface Struct {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
     /**
      * The CloseableVnodePathInfo class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseableVnodePathInfo extends VnodePathInfo implements AutoCloseable {
 
@@ -159,10 +190,14 @@ public interface Struct {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
     /**
      * The CloseableXswUsage class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseableXswUsage extends XswUsage implements AutoCloseable {
 
@@ -173,6 +208,7 @@ public interface Struct {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
     /*
@@ -181,6 +217,9 @@ public interface Struct {
 
     /**
      * The CloseableMibIfRow class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseableMibIfRow extends MIB_IFROW implements AutoCloseable {
 
@@ -191,10 +230,14 @@ public interface Struct {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
     /**
      * The CloseableMibIfRow2 class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseableMibIfRow2 extends MIB_IF_ROW2 implements AutoCloseable {
 
@@ -205,10 +248,14 @@ public interface Struct {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
     /**
      * The CloseableMibTcpStats class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseableMibTcpStats extends MIB_TCPSTATS implements AutoCloseable {
 
@@ -219,10 +266,14 @@ public interface Struct {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
     /**
      * The CloseableMibUdpStats class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseableMibUdpStats extends MIB_UDPSTATS implements AutoCloseable {
 
@@ -233,10 +284,14 @@ public interface Struct {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
     /**
      * The CloseablePdhRawCounter class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseablePdhRawCounter extends PDH_RAW_COUNTER implements AutoCloseable {
 
@@ -247,10 +302,14 @@ public interface Struct {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
     /**
      * The CloseablePerformanceInformation class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseablePerformanceInformation extends PERFORMANCE_INFORMATION implements AutoCloseable {
 
@@ -261,10 +320,14 @@ public interface Struct {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
     /**
      * The CloseableSpDeviceInterfaceData class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseableSpDeviceInterfaceData extends SP_DEVICE_INTERFACE_DATA implements AutoCloseable {
 
@@ -275,10 +338,14 @@ public interface Struct {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
     /**
      * The CloseableSpDevinfoData class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseableSpDevinfoData extends SP_DEVINFO_DATA implements AutoCloseable {
 
@@ -289,10 +356,14 @@ public interface Struct {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
     /**
      * The CloseableSystemInfo class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseableSystemInfo extends SYSTEM_INFO implements AutoCloseable {
 
@@ -303,6 +374,7 @@ public interface Struct {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
 }

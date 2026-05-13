@@ -30,9 +30,9 @@ import java.util.Objects;
  * of operations.
  * <p>
  * Example:
- * 
+ *
  * <pre>{@code
- * 
+ *
  * Map<String, Integer> map = new TolerantMap<>(new HashMap<>(), -1);
  * Integer value = map.get("nonexistent_key"); // returns -1 instead of null
  * }</pre>

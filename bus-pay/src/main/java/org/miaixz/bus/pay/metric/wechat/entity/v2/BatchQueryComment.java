@@ -44,30 +44,37 @@ public class BatchQueryComment extends Voucher {
      * Merchant ID.
      */
     private String mch_id;
+
     /**
      * Random string.
      */
     private String nonce_str;
+
     /**
      * Signature.
      */
     private String sign;
+
     /**
      * Signature type.
      */
     private String sign_type;
+
     /**
      * Begin time.
      */
     private String begin_time;
+
     /**
      * End time.
      */
     private String end_time;
+
     /**
      * Offset.
      */
     private String offset;
+
     /**
      * Limit.
      */

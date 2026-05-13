@@ -54,19 +54,23 @@ public final class RealConnectionPool {
      * The maximum number of idle connections for each address.
      */
     private final int maxIdleConnections;
+
     /**
      * The duration in nanoseconds to keep idle connections alive.
      */
     private final long keepAliveDurationNs;
+
     /**
      * A deque of connections in this pool, ordered by most recently used first.
      */
     private final Deque<RealConnection> connections = new ArrayDeque<>();
+
     /**
      * Database of routes that have failed TCP connection attempts. This is used to blacklist routes that are unlikely
      * to be reachable.
      */
     final RouteDatabase routeDatabase = new RouteDatabase();
+
     /**
      * True if a background cleanup thread is running. Guarded by this.
      */

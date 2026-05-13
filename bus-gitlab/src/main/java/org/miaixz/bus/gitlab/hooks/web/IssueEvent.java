@@ -25,6 +25,12 @@ import java.util.List;
 import org.miaixz.bus.gitlab.models.Assignee;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+/**
+ * The issue event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class IssueEvent extends AbstractEvent {
 
     @Serial
@@ -115,7 +121,14 @@ public class IssueEvent extends AbstractEvent {
         this.objectAttributes = objectAttributes;
     }
 
+    /**
+     * The object attributes class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public static class ObjectAttributes extends EventIssue {
+
     }
 
     @Override

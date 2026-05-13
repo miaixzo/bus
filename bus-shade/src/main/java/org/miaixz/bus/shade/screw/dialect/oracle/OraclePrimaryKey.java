@@ -40,21 +40,25 @@ public class OraclePrimaryKey implements PrimaryKey {
      */
     @MappingField(value = "TABLE_NAME")
     private String tableName;
+
     /**
      * The name of the primary key constraint.
      */
     @MappingField(value = "PK_NAME")
     private String pkName;
+
     /**
      * The schema of the table.
      */
     @MappingField(value = "TABLE_SCHEM")
     private String tableSchem;
+
     /**
      * The name of the column in the primary key.
      */
     @MappingField(value = "COLUMN_NAME")
     private String columnName;
+
     /**
      * The sequence number of the column within the primary key (for composite keys).
      */

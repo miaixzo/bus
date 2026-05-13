@@ -62,14 +62,17 @@ public class MacOSProcess extends AbstractOSProcess {
      * The ARGMAX constant.
      */
     private static final int ARGMAX = SysctlKit.sysctl("kern.argmax", 0);
+
     /**
      * The TICKS_PER_MS constant.
      */
     private static final long TICKS_PER_MS;
+
     /**
      * The LOG_MAC_SYSCTL_WARNING constant.
      */
     private static final boolean LOG_MAC_SYSCTL_WARNING = Config.get(Config._MAC_SYSCTL_LOGWARNING, false);
+
     /**
      * The MAC_RLIMIT_NOFILE constant.
      */
@@ -138,127 +141,158 @@ public class MacOSProcess extends AbstractOSProcess {
      * The os value.
      */
     private final MacOperatingSystem os;
+
     /**
      * The argsEnviron value.
      */
     private final Supplier<Pair<List<String>, Map<String, String>>> argsEnviron = Memoizer
             .memoize(this::queryArgsAndEnvironment);
+
     /**
      * The commandLine value.
      */
     private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
+
     /**
      * The majorVersion value.
      */
     private int majorVersion;
+
     /**
      * The minorVersion value.
      */
     private int minorVersion;
+
     /**
      * The name value.
      */
     private String name = Normal.EMPTY;
+
     /**
      * The path value.
      */
     private String path = Normal.EMPTY;
+
     /**
      * The currentWorkingDirectory value.
      */
     private String currentWorkingDirectory;
+
     /**
      * The user value.
      */
     private String user;
+
     /**
      * The userID value.
      */
     private String userID;
+
     /**
      * The group value.
      */
     private String group;
+
     /**
      * The groupID value.
      */
     private String groupID;
+
     /**
      * The state value.
      */
     private State state = State.INVALID;
+
     /**
      * The parentProcessID value.
      */
     private int parentProcessID;
+
     /**
      * The threadCount value.
      */
     private int threadCount;
+
     /**
      * The priority value.
      */
     private int priority;
+
     /**
      * The virtualSize value.
      */
     private long virtualSize;
+
     /**
      * The residentSetSize value.
      */
     private long residentSetSize;
+
     /**
      * The memoryFootprint value.
      */
     private long memoryFootprint;
+
     /**
      * The kernelTime value.
      */
     private long kernelTime;
+
     /**
      * The userTime value.
      */
     private long userTime;
+
     /**
      * The startTime value.
      */
     private long startTime;
+
     /**
      * The upTime value.
      */
     private long upTime;
+
     /**
      * The bytesRead value.
      */
     private long bytesRead;
+
     /**
      * The bytesWritten value.
      */
     private long bytesWritten;
+
     /**
      * The openFiles value.
      */
     private long openFiles;
+
     /**
      * The bitness value.
      */
     private int bitness;
+
     /**
      * The minorFaults value.
      */
     private long minorFaults;
+
     /**
      * The majorFaults value.
      */
     private long majorFaults;
+
     /**
      * The contextSwitches value.
      */
     private long contextSwitches;
+
     /**
      * The voluntaryContextSwitches value.
      */
     private long voluntaryContextSwitches;
+
     /**
      * The involuntaryContextSwitches value.
      */

@@ -40,6 +40,7 @@ public class LineCounter implements Closeable {
      * The input stream from which lines are to be counted.
      */
     private final InputStream is;
+
     /**
      * The buffer size used for reading the input stream. A larger buffer size may improve performance.
      */

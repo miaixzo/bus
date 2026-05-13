@@ -44,6 +44,7 @@ public class BytesResource implements Resource, Serializable {
      * The byte array representing the resource content.
      */
     private final byte[] bytes;
+
     /**
      * The name of the resource.
      */

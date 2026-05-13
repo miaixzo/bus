@@ -20,38 +20,61 @@
 package org.miaixz.bus.image.galaxy.dict.GEIIS_PACS;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEIIS PACS";
 
-    /** (0903,xx10) VR=US VM=1 Reject Image Flag */
+    /**
+     * (0903,xx10) VR=US VM=1 Reject Image Flag
+     */
     public static final int RejectImageFlag = 0x09030010;
 
-    /** (0903,xx11) VR=US VM=1 Significant Flag */
+    /**
+     * (0903,xx11) VR=US VM=1 Significant Flag
+     */
     public static final int SignificantFlag = 0x09030011;
 
-    /** (0903,xx12) VR=US VM=1 Confidential Flag */
+    /**
+     * (0903,xx12) VR=US VM=1 Confidential Flag
+     */
     public static final int ConfidentialFlag = 0x09030012;
 
-    /** (0903,xx20) VR=CS VM=1 ? */
+    /**
+     * (0903,xx20) VR=CS VM=1 ?
+     */
     public static final int _0903_xx20_ = 0x09030020;
 
-    /** (0907,xx21) VR=US VM=1 Prefetch Algorithm */
+    /**
+     * (0907,xx21) VR=US VM=1 Prefetch Algorithm
+     */
     public static final int PrefetchAlgorithm = 0x09070021;
 
-    /** (0907,xx22) VR=US VM=1 Limit Recent Studies */
+    /**
+     * (0907,xx22) VR=US VM=1 Limit Recent Studies
+     */
     public static final int LimitRecentStudies = 0x09070022;
 
-    /** (0907,xx23) VR=US VM=1 Limit Oldest Studies */
+    /**
+     * (0907,xx23) VR=US VM=1 Limit Oldest Studies
+     */
     public static final int LimitOldestStudies = 0x09070023;
 
-    /** (0907,xx24) VR=US VM=1 Limit Recent Months */
+    /**
+     * (0907,xx24) VR=US VM=1 Limit Recent Months
+     */
     public static final int LimitRecentMonths = 0x09070024;
 
-    /** (0907,xx31) VR=UI VM=1-n Exclude Study UIDs */
+    /**
+     * (0907,xx31) VR=UI VM=1-n Exclude Study UIDs
+     */
     public static final int ExcludeStudyUIDs = 0x09070031;
 
 }

@@ -45,10 +45,12 @@ public class VersionRegistry implements Registry<VersionAssets> {
      * Durable version store.
      */
     private final VersionStore store;
+
     /**
      * Version publishing workflow facade.
      */
     private final VersionPublisher publisher;
+
     /**
      * Optional shared watch manager.
      */

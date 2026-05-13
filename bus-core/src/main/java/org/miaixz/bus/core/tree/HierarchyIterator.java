@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.TreeKit;
  * <p>
  * This iterator bridges the gap between hierarchical data structures and traditional collections, allowing you to
  * operate on nodes in a tree or graph as if they were in a standard iterable collection. For example:
- * 
+ *
  * <pre>{@code
  * Tree root = // ... build your tree structure
  * // Find all nodes at level 3 and sort them by weight
@@ -48,9 +48,9 @@ import org.miaixz.bus.core.xyz.TreeKit;
  * }</pre>
  *
  * @param <T> The type of elements in the hierarchy.
- * @author Kimi Liu
  * @see EasyStream#iterateHierarchies
  * @see StreamKit#iterateHierarchies
+ * @author Kimi Liu
  * @since Java 21+
  */
 public abstract class HierarchyIterator<T> implements Iterator<T> {
@@ -59,14 +59,17 @@ public abstract class HierarchyIterator<T> implements Iterator<T> {
      * Function to discover the next level of nodes.
      */
     protected final Function<T, Collection<T>> elementDiscoverer;
+
     /**
      * A filter for nodes. Nodes that do not match (and their subtrees) will be ignored.
      */
     protected final Predicate<T> filter;
+
     /**
      * A set of nodes that have already been visited to prevent cycles.
      */
     protected final Set<T> accessed = new HashSet<>();
+
     /**
      * A queue of nodes waiting to be traversed.
      */
@@ -188,6 +191,8 @@ public abstract class HierarchyIterator<T> implements Iterator<T> {
      * Implements depth-first traversal.
      *
      * @param <T> The type of the elements.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static class DepthFirst<T> extends HierarchyIterator<T> {
 
@@ -217,12 +222,15 @@ public abstract class HierarchyIterator<T> implements Iterator<T> {
                 }
             }
         }
+
     }
 
     /**
      * Implements breadth-first traversal.
      *
      * @param <T> The type of the elements.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static class BreadthFirst<T> extends HierarchyIterator<T> {
 

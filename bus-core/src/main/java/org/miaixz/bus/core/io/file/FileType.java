@@ -52,50 +52,62 @@ public class FileType {
      * Java source file extension.
      */
     public static final String JAVA = ".java";
+
     /**
      * Java compiled class file extension.
      */
     public static final String CLASS = ".class";
+
     /**
      * Java Archive (JAR) file extension.
      */
     public static final String JAR = ".jar";
+
     /**
      * Extension form for paths within a JAR file.
      */
     public static final String JAR_PATH_EXT = ".jar!";
+
     /**
      * Microsoft Excel document extension (legacy).
      */
     public static final String TYPE_XLS = ".xls";
+
     /**
      * Microsoft Excel document extension (OpenXML).
      */
     public static final String TYPE_XLSX = ".xlsx";
+
     /**
      * Microsoft Word document extension (legacy).
      */
     public static final String TYPE_DOC = ".doc";
+
     /**
      * Microsoft Word document extension (OpenXML).
      */
     public static final String TYPE_DOCX = ".docx";
+
     /**
      * Microsoft PowerPoint document extension (legacy).
      */
     public static final String TYPE_PPT = ".ppt";
+
     /**
      * Microsoft PowerPoint document extension (OpenXML).
      */
     public static final String TYPE_PPTX = ".pptx";
+
     /**
      * Microsoft PowerPoint Slideshow extension (legacy).
      */
     public static final String TYPE_PPS = ".pps";
+
     /**
      * Microsoft PowerPoint Slideshow extension (OpenXML).
      */
     public static final String TYPE_PPSX = ".ppsx";
+
     /**
      * XML format extension.
      */
@@ -105,22 +117,27 @@ public class FileType {
      * PSD format, Photoshop's proprietary format.
      */
     public static final String TYPE_PSD = "psd";
+
     /**
      * GIF format.
      */
     public static final String TYPE_GIF = "gif";
+
     /**
      * JPG format.
      */
     public static final String TYPE_JPG = "jpg";
+
     /**
      * JPEG format.
      */
     public static final String TYPE_JPEG = "jpeg";
+
     /**
      * BMP format.
      */
     public static final String TYPE_BMP = "bmp";
+
     /**
      * PNG format.
      */
@@ -234,7 +251,10 @@ public class FileType {
             put(".accdb", "application/msaccess");
             // visio
             put(".vsd", "application/vnd.visio");
-            /** Less common document types */
+
+            /**
+             * Less common document types
+             */
             put(".323", "text/h323");
             put(".rqy", "text/x-ms-rqy");
             put(".rtx", "text/richtext");

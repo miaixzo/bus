@@ -36,26 +36,32 @@ public class PhysicalMemory {
      * The bankLabel value.
      */
     private final String bankLabel;
+
     /**
      * The capacity value.
      */
     private final long capacity;
+
     /**
      * The clockSpeed value.
      */
     private final long clockSpeed;
+
     /**
      * The manufacturer value.
      */
     private final String manufacturer;
+
     /**
      * The memoryType value.
      */
     private final String memoryType;
+
     /**
      * The partNumber value.
      */
     private final String partNumber;
+
     /**
      * The serialNumber value.
      */

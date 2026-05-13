@@ -42,6 +42,7 @@ public class Builder {
      * The path to the Crontab configuration file.
      */
     public static final String CRONTAB_CONFIG_PATH = "config/tempus.setting";
+
     /**
      * An alternative path to the Crontab configuration file.
      */
@@ -51,10 +52,12 @@ public class Builder {
      * Lock for thread-safe operations on the scheduler.
      */
     private static final Lock lock = new ReentrantLock();
+
     /**
      * The global scheduler instance for all cron tasks.
      */
     private static final Scheduler scheduler = new Scheduler();
+
     /**
      * The cron setting configuration.
      */

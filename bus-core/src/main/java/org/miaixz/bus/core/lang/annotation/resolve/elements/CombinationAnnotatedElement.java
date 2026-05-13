@@ -50,10 +50,12 @@ public class CombinationAnnotatedElement implements AnnotatedElement, Serializab
      * retained.
      */
     private final Predicate<Annotation> predicate;
+
     /**
      * A map storing all annotations found on the element and its meta-annotations, keyed by annotation type.
      */
     private Map<Class<? extends Annotation>, Annotation> annotationMap;
+
     /**
      * A map storing annotations directly declared on the element, keyed by annotation type.
      */

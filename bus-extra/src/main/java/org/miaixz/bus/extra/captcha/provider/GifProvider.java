@@ -46,14 +46,17 @@ public class GifProvider extends AbstractProvider {
      * Quantizer sampling interval - default is 10ms.
      */
     private int quality = 10;
+
     /**
      * Frame loop count.
      */
     private int repeat = 0;
+
     /**
      * Minimum color range for random colors.
      */
     private int minColor = 0;
+
     /**
      * Maximum color range for random colors.
      */

@@ -84,16 +84,24 @@ public final class Win32Process {
 
     /**
      * Process command lines.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum CommandLineProperty {
         PROCESSID, COMMANDLINE
+
     }
 
     /**
      * Process properties accessible from WTSEnumerateProcesses in Vista+
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum ProcessXPProperty {
         PROCESSID, NAME, KERNELMODETIME, USERMODETIME, THREADCOUNT, PAGEFILEUSAGE, HANDLECOUNT, EXECUTABLEPATH
+
     }
 
 }

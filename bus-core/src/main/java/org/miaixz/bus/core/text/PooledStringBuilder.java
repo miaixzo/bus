@@ -31,7 +31,7 @@ import java.io.IOException;
  * </p>
  *
  * <h2>Usage Example</h2>
- * 
+ *
  * <pre>
  * <code>
  * try (PooledStringBuilder sb = StringBuilderPool.acquire(100)) {

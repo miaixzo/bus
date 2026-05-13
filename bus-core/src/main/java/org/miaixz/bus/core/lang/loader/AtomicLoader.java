@@ -28,13 +28,13 @@ import org.miaixz.bus.core.Loader;
 /**
  * An atomic reference-based lazy loader. It implements lazy loading using {@link AtomicReference}, following this
  * process:
- * 
+ *
  * <pre>
  * 1. Checks if a loaded object already exists in the reference; if so, returns it.
  * 2. If not, it initializes an object and then re-checks if another thread has already loaded an object into the reference.
  *    If not, it sets its newly created object; otherwise, it returns the existing object.
  * </pre>
- * 
+ *
  * Although the object initialization operation might be called multiple times in a multi-threaded environment when the
  * object has not yet been created, it always ensures that the same object is eventually returned.
  *

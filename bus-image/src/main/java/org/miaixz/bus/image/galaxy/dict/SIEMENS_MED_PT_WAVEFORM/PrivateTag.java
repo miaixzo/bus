@@ -20,26 +20,41 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_PT_WAVEFORM;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS MED PT WAVEFORM";
 
-    /** (0071,xx46) VR=UN VM=1 Starting Respiratory Amplitude */
+    /**
+     * (0071,xx46) VR=UN VM=1 Starting Respiratory Amplitude
+     */
     public static final int StartingRespiratoryAmplitude = 0x00710046;
 
-    /** (0071,xx47) VR=UN VM=1 Starting Respiratory Phase */
+    /**
+     * (0071,xx47) VR=UN VM=1 Starting Respiratory Phase
+     */
     public static final int StartingRespiratoryPhase = 0x00710047;
 
-    /** (0071,xx48) VR=UN VM=1 Ending Respiratory Amplitude */
+    /**
+     * (0071,xx48) VR=UN VM=1 Ending Respiratory Amplitude
+     */
     public static final int EndingRespiratoryAmplitude = 0x00710048;
 
-    /** (0071,xx49) VR=UN VM=1 Ending Respiratory Phase */
+    /**
+     * (0071,xx49) VR=UN VM=1 Ending Respiratory Phase
+     */
     public static final int EndingRespiratoryPhase = 0x00710049;
 
-    /** (0071,xx50) VR=CS VM=1 Respiratory Trigger Type */
+    /**
+     * (0071,xx50) VR=CS VM=1 Respiratory Trigger Type
+     */
     public static final int RespiratoryTriggerType = 0x00710050;
 
 }

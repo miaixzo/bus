@@ -29,11 +29,23 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+/**
+ * The event label class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class EventLabel implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 2852231062892L;
 
+    /**
+     * The label type enum.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public enum LabelType {
 
         PROJECT_LABEL, GROUP_LABEL;
@@ -55,6 +67,7 @@ public class EventLabel implements Serializable {
         public String toString() {
             return (enumHelper.toString(this));
         }
+
     }
 
     private Long id;
@@ -65,6 +78,10 @@ public class EventLabel implements Serializable {
     private Date updatedAt;
     private Boolean template;
     private String description;
+
+    /**
+     * The type field.
+     */
     private LabelType type;
     private Long groupId;
 

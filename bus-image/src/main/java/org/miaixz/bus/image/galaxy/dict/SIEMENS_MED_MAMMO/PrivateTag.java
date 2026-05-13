@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_MAMMO;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS MED MAMMO";
 
-    /** (0029,xx5A) VR=CS VM=1 ? */
+    /**
+     * (0029,xx5A) VR=CS VM=1 ?
+     */
     public static final int _0029_xx5A_ = 0x0029005A;
 
 }

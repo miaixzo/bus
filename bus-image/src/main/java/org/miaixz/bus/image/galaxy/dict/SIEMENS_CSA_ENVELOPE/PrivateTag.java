@@ -20,17 +20,26 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_CSA_ENVELOPE;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS CSA ENVELOPE";
 
-    /** (0029,xx10) VR=OB VM=1 syngo Report Data */
+    /**
+     * (0029,xx10) VR=OB VM=1 syngo Report Data
+     */
     public static final int syngoReportData = 0x00290010;
 
-    /** (0029,xx11) VR=OB VM=1 syngo Report Presentation */
+    /**
+     * (0029,xx11) VR=OB VM=1 syngo Report Presentation
+     */
     public static final int syngoReportPresentation = 0x00290011;
 
 }

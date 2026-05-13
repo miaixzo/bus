@@ -44,10 +44,12 @@ public class LineWatcher extends SimpleWatcher implements Runnable {
      * The {@link RandomAccessFile} instance used to read the file content.
      */
     private final RandomAccessFile randomAccessFile;
+
     /**
      * The character set used to decode the lines read from the file.
      */
     private final Charset charset;
+
     /**
      * The handler that consumes each new line read from the file.
      */

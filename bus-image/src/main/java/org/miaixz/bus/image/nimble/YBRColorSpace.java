@@ -23,38 +23,80 @@ import java.awt.color.ColorSpace;
 import java.io.Serial;
 
 /**
+ * Represents the YBRColorSpace type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public final class YBRColorSpace extends ColorSpace {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852287982516L;
 
+    /**
+     * The cs rgb value.
+     */
     private final ColorSpace csRGB;
+
+    /**
+     * The ybr value.
+     */
     private final YBR ybr;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param csRGB the cs rgb.
+     * @param ybr   the ybr.
+     */
     public YBRColorSpace(ColorSpace csRGB, YBR ybr) {
         super(TYPE_YCbCr, 3);
         this.csRGB = csRGB;
         this.ybr = ybr;
     }
 
+    /**
+     * Converts this value to rgb.
+     *
+     * @param ybr the ybr.
+     * @return the operation result.
+     */
     @Override
     public float[] toRGB(float[] ybr) {
         return this.ybr.toRGB(ybr);
     }
 
+    /**
+     * Executes the from rgb operation.
+     *
+     * @param rgb the rgb.
+     * @return the operation result.
+     */
     @Override
     public float[] fromRGB(float[] rgb) {
         return this.ybr.fromRGB(rgb);
     }
 
+    /**
+     * Converts this value to ciexyz.
+     *
+     * @param colorvalue the colorvalue.
+     * @return the operation result.
+     */
     @Override
     public float[] toCIEXYZ(float[] colorvalue) {
         return csRGB.toCIEXYZ(toRGB(colorvalue));
     }
 
+    /**
+     * Executes the from ciexyz operation.
+     *
+     * @param xyzvalue the xyzvalue.
+     * @return the operation result.
+     */
     @Override
     public float[] fromCIEXYZ(float[] xyzvalue) {
         return fromRGB(csRGB.fromCIEXYZ(xyzvalue));

@@ -22,8 +22,8 @@ package org.miaixz.bus.core.xml;
 /**
  * XML security-related features for preventing XXE (XML External Entity) attacks.
  *
- * @author Kimi Liu
  * @see <a href="https://blog.spoock.com/2018/10/23/java-xxe/">Java XXE</a>
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class XmlFeatures {

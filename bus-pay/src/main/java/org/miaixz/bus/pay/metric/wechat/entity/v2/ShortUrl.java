@@ -43,26 +43,32 @@ public class ShortUrl extends Voucher {
      * Sub-merchant App ID.
      */
     private String sub_appid;
+
     /**
      * Merchant ID.
      */
     private String mch_id;
+
     /**
      * Sub-merchant ID.
      */
     private String sub_mch_id;
+
     /**
      * The long URL to be converted.
      */
     private String long_url;
+
     /**
      * Random string.
      */
     private String nonce_str;
+
     /**
      * Signature.
      */
     private String sign;
+
     /**
      * Signature type.
      */

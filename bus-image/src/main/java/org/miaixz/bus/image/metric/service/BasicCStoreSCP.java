@@ -31,19 +31,39 @@ import org.miaixz.bus.image.metric.net.PDVInputStream;
 import org.miaixz.bus.image.metric.pdu.PresentationContext;
 
 /**
+ * Represents the BasicCStoreSCP type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class BasicCStoreSCP extends AbstractImageService {
 
+    /**
+     * Creates a new instance.
+     */
     public BasicCStoreSCP() {
         super(Symbol.STAR);
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param sopClasses the sop classes.
+     */
     public BasicCStoreSCP(String... sopClasses) {
         super(sopClasses);
     }
 
+    /**
+     * Executes the on dimse rq operation.
+     *
+     * @param as    the as.
+     * @param pc    the pc.
+     * @param dimse the dimse.
+     * @param rq    the rq.
+     * @param data  the data.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes rq, PDVInputStream data)
             throws IOException {
@@ -55,10 +75,30 @@ public class BasicCStoreSCP extends AbstractImageService {
         as.tryWriteDimseRSP(pc, rsp);
     }
 
+    /**
+     * Executes the store operation.
+     *
+     * @param as   the as.
+     * @param pc   the pc.
+     * @param rq   the rq.
+     * @param data the data.
+     * @param rsp  the rsp.
+     * @throws IOException if the operation cannot be completed.
+     */
     protected void store(Association as, PresentationContext pc, Attributes rq, PDVInputStream data, Attributes rsp)
             throws IOException {
     }
 
+    /**
+     * Executes the on dimse rq operation.
+     *
+     * @param as    the as.
+     * @param pc    the pc.
+     * @param dimse the dimse.
+     * @param cmd   the cmd.
+     * @param data  the data.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     protected void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes cmd, Attributes data)
             throws IOException {

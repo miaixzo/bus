@@ -23,26 +23,49 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
+ * Represents the AEExtension type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class AEExtension implements Serializable {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852269683081L;
 
+    /**
+     * The ae value.
+     */
     protected ApplicationEntity ae;
 
+    /**
+     * Gets the application entity.
+     *
+     * @return the application entity.
+     */
     public final ApplicationEntity getApplicationEntity() {
         return ae;
     }
 
+    /**
+     * Sets the application entity.
+     *
+     * @param ae the ae.
+     */
     void setApplicationEntity(ApplicationEntity ae) {
         if (ae != null && this.ae != null)
             throw new IllegalStateException("already owned by AE: " + ae.getAETitle());
         this.ae = ae;
     }
 
+    /**
+     * Executes the reconfigure operation.
+     *
+     * @param from the from.
+     */
     public void reconfigure(AEExtension from) {
 
     }

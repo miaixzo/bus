@@ -44,70 +44,87 @@ public class CustomDeclare extends Voucher {
      * Signature.
      */
     private String sign;
+
     /**
      * Signature type.
      */
     private String sign_type;
+
     /**
      * Merchant ID.
      */
     private String mch_id;
+
     /**
      * Merchant's order number.
      */
     private String out_trade_no;
+
     /**
      * WeChat's order number.
      */
     private String transaction_id;
+
     /**
      * Customs location (e.g., GUANGZHOU_ZS, HANGZHOU).
      */
     private String customs;
+
     /**
      * Merchant's customs registration number.
      */
     private String mch_customs_no;
+
     /**
      * Duty fee.
      */
     private String duty;
+
     /**
      * Action type: ADD or MODIFY.
      */
     private String action_type;
+
     /**
      * Merchant's customs sub-order number.
      */
     private String sub_order_no;
+
     /**
      * WeChat's customs sub-order ID.
      */
     private String sub_order_id;
+
     /**
      * Currency type.
      */
     private String fee_type;
+
     /**
      * Order fee.
      */
     private String order_fee;
+
     /**
      * Transport fee.
      */
     private String transport_fee;
+
     /**
      * Product fee.
      */
     private String product_fee;
+
     /**
      * Certificate type (e.g., ID_CARD).
      */
     private String cert_type;
+
     /**
      * Certificate ID number.
      */
     private String cert_id;
+
     /**
      * Name associated with the certificate.
      */

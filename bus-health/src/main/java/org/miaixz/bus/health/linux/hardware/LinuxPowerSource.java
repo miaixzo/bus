@@ -49,6 +49,9 @@ public final class LinuxPowerSource extends AbstractPowerSource {
 
     /**
      * The Prop enum.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     enum Prop {
         POWER_SUPPLY_NAME, POWER_SUPPLY_STATUS, POWER_SUPPLY_CAPACITY, POWER_SUPPLY_PRESENT, POWER_SUPPLY_ONLINE,
@@ -58,11 +61,15 @@ public final class LinuxPowerSource extends AbstractPowerSource {
         POWER_SUPPLY_MODEL_NAME, POWER_SUPPLY_MANUFACTURER, POWER_SUPPLY_SERIAL_NUMBER, POWER_SUPPLY_TEMP,
         POWER_SUPPLY_TIME_TO_EMPTY_NOW, POWER_SUPPLY_TIME_TO_FULL_NOW, POWER_SUPPLY_MANUFACTURE_YEAR,
         POWER_SUPPLY_MANUFACTURE_MONTH, POWER_SUPPLY_MANUFACTURE_DAY
+
     }
 
     /**
      * Initialization-on-demand holder: the map is only constructed if the non-udev path is reached, avoiding
      * unnecessary work on systems where udev is available.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static final class PropByName {
 
@@ -75,6 +82,7 @@ public final class LinuxPowerSource extends AbstractPowerSource {
                 MAP.put(p.name(), p);
             }
         }
+
     }
 
     /**

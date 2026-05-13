@@ -38,6 +38,9 @@ import java.io.OutputStream;
  * e.addFrame(image2);
  * e.finish();
  * </pre>
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class AnimatedGifEncoder {
 
@@ -45,10 +48,12 @@ public class AnimatedGifEncoder {
      * The width of the image frames.
      */
     protected int width;
+
     /**
      * The height of the image frames.
      */
     protected int height;
+
     /**
      * The transparent color, if specified.
      */
@@ -70,6 +75,7 @@ public class AnimatedGifEncoder {
      * The repeat setting, where 0 means infinite loop.
      */
     protected int repeat = -1;
+
     /**
      * Frame delay in hundredths of a second.
      */
@@ -82,6 +88,7 @@ public class AnimatedGifEncoder {
      * The output stream to write the GIF to.
      */
     protected OutputStream out;
+
     /**
      * The current frame image.
      */
@@ -122,6 +129,7 @@ public class AnimatedGifEncoder {
      * Flag for the first frame.
      */
     protected boolean firstFrame = true;
+
     /**
      * Flag indicating if the size has been set. If false, size is taken from the first frame.
      */

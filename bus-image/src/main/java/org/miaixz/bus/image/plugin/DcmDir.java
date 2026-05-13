@@ -56,30 +56,37 @@ public class DcmDir {
      * Default number of characters per line for output.
      */
     private static final int DEFAULT_WIDTH = 78;
+
     /**
      * The standard DICOM element dictionary.
      */
     private static final ElementDictionary DICT = ElementDictionary.getStandardElementDictionary();
+
     /**
      * Information about the file-set.
      */
     private final FilesetInfo fsInfo = new FilesetInfo();
+
     /**
      * Flag to indicate if only records in use should be processed.
      */
     private boolean inUse;
+
     /**
      * The width for formatted output.
      */
     private int width = DEFAULT_WIDTH;
+
     /**
      * Encoding options for writing DICOM data.
      */
     private ImageEncodingOptions encOpts = ImageEncodingOptions.DEFAULT;
+
     /**
      * Flag to preserve the original sequence length.
      */
     private boolean origSeqLength;
+
     /**
      * Flag to check for duplicate instance references.
      */
@@ -89,14 +96,17 @@ public class DcmDir {
      * The DICOMDIR file.
      */
     private File file;
+
     /**
      * Reader for the DICOMDIR.
      */
     private ImageDirReader in;
+
     /**
      * Writer for the DICOMDIR.
      */
     private ImageDirWriter out;
+
     /**
      * Factory for creating DICOMDIR records.
      */
@@ -106,10 +116,12 @@ public class DcmDir {
      * Path to a CSV file for importing records.
      */
     private String csv;
+
     /**
      * Delimiter character for the CSV file.
      */
     private char delim;
+
     /**
      * Quote character for the CSV file.
      */
@@ -657,6 +669,9 @@ public class DcmDir {
 
     /**
      * A simple CSV parser to convert lines of a CSV file into DICOM attributes.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static class CSVParser {
 
@@ -664,14 +679,17 @@ public class DcmDir {
          * The regex pattern to split CSV fields.
          */
         private final Pattern pattern;
+
         /**
          * The DICOM tags corresponding to the CSV columns.
          */
         private final int[] tags;
+
         /**
          * The DICOM VRs corresponding to the CSV columns.
          */
         private final VR[] vrs;
+
         /**
          * The quote character used in the CSV.
          */
@@ -747,6 +765,7 @@ public class DcmDir {
                     ? field.substring(1, field.length() - 1).replace(String.valueOf(doubleQuote), String.valueOf(quot))
                     : field;
         }
+
     }
 
 }

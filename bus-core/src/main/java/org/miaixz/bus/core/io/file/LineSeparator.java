@@ -21,17 +21,17 @@ package org.miaixz.bus.core.io.file;
 
 /**
  * Enumeration for common line separator types. Line separators include:
- * 
+ *
  * <pre>
  * Mac system line separator: "\r"
  * Linux system line separator: "\n"
  * Windows system line separator: "\r\n"
  * </pre>
  *
- * @author Kimi Liu
  * @see #MAC
  * @see #LINUX
  * @see #WINDOWS
+ * @author Kimi Liu
  * @since Java 21+
  */
 public enum LineSeparator {

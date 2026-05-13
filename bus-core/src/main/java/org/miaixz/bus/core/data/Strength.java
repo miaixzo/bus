@@ -42,6 +42,7 @@ public class Strength {
      */
     private static final String[] DICTIONARY = { "password", "abc123", "iloveyou", "adobe123", "123123", "sunshine",
             "1314520", "a1b2c3", "123qwe", "aaa111", "qweasd", "admin", "passwd" };
+
     /**
      * Number length.
      */
@@ -295,6 +296,9 @@ public class Strength {
 
     /**
      * Password strength level enum.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum PASSWD_LEVEL {
         /**
@@ -317,10 +321,14 @@ public class Strength {
          * Extremely strong.
          */
         EXTREMELY_STRONG
+
     }
 
     /**
      * Character type enum.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum CHAR_TYPE {
         /**
@@ -339,6 +347,7 @@ public class Strength {
          * Special character.
          */
         OTHER_CHAR
+
     }
 
 }

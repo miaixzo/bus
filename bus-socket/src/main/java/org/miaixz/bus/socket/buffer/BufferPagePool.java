@@ -42,6 +42,7 @@ public final class BufferPagePool {
      * effectively acting as a no-op pool where allocations fall back to creating new buffers.
      */
     public static final BufferPagePool DEFAULT_BUFFER_PAGE_POOL = new BufferPagePool(0, 1, false);
+
     /**
      * A daemon thread executor for periodically reclaiming memory resources from the buffer pages.
      */
@@ -50,14 +51,17 @@ public final class BufferPagePool {
         thread.setDaemon(true);
         return thread;
     });
+
     /**
      * A cursor for round-robin allocation of buffer pages.
      */
     private final AtomicInteger cursor = new AtomicInteger(0);
+
     /**
      * An array of {@link BufferPage} instances that constitute the pool.
      */
     private BufferPage[] bufferPages;
+
     /**
      * A flag indicating whether the pool is active and can be used for allocations.
      */

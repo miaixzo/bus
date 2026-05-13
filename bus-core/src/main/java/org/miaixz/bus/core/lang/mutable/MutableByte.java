@@ -26,8 +26,8 @@ import org.miaixz.bus.core.xyz.CompareKit;
 /**
  * A mutable {@code byte} wrapper.
  *
- * @author Kimi Liu
  * @see Byte
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class MutableByte extends Number implements Comparable<MutableByte>, Mutable<Number> {

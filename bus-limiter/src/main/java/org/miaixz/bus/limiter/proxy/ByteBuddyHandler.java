@@ -51,6 +51,7 @@ public class ByteBuddyHandler implements InvocationHandler {
      * The {@link ByteBuddyProxy} instance that holds the target bean for which method calls are being intercepted.
      */
     private final ByteBuddyProxy byteBuddyProxy;
+
     /**
      * A cache to store resolved {@link Method} objects, keyed by their unique string representation. This prevents
      * repeated reflection lookups for the same method.

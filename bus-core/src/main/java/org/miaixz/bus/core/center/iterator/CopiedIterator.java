@@ -36,12 +36,10 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * <p>
  * The {@code remove()} method of this iterator is not supported and will always throw an
  * {@link UnsupportedOperationException}, as modifications to the copied list would not affect the original collection.
- * 
  *
  * <p>
  * It is important to ensure atomicity during the construction of this object (i.e., the original object should not be
  * modified). It is recommended to acquire a lock before constructing this object and release it afterwards.
- * 
  *
  * @param <E> the type of elements returned by this iterator
  * @author Kimi Liu

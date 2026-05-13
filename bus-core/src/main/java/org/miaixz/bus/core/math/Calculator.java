@@ -50,6 +50,7 @@ public class Calculator {
      * The stack used to store the postfix expression (Reverse Polish Notation).
      */
     private final Stack<String> postfixStack = new Stack<>();
+
     /**
      * Operator priorities, indexed by the operator's ASCII value minus 40.
      * <p>

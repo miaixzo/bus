@@ -105,6 +105,9 @@ public interface PinyinProvider extends Provider {
         return CollKit.join(split, separator, (s) -> String.valueOf(!s.isEmpty() ? s.charAt(0) : Normal.EMPTY));
     }
 
+    /**
+     * The type method.
+     */
     @Override
     default Object type() {
         return EnumValue.Povider.PINYIN;

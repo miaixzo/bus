@@ -34,6 +34,9 @@ import org.miaixz.bus.logger.Logger;
 
 /**
  * This class represents a duration in time.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class Duration implements Serializable {
 

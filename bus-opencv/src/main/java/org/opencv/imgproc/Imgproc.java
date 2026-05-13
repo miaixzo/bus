@@ -21,6 +21,12 @@ import org.opencv.utils.Converters;
 
 // C++: class Imgproc
 
+/**
+ * The imgproc class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Imgproc {
 
     private static final int IPL_BORDER_CONSTANT = 0, IPL_BORDER_REPLICATE = 1, IPL_BORDER_REFLECT = 2,

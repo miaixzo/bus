@@ -20,13 +20,26 @@
 package org.miaixz.bus.image.galaxy.data;
 
 /**
+ * Represents the TypeOfPatientID type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class TypeOfPatientID {
 
+    /**
+     * The text value.
+     */
     public static final String TEXT = "TEXT";
+
+    /**
+     * The rfid value.
+     */
     public static final String RFID = "RFID";
+
+    /**
+     * The barcode value.
+     */
     public static final String BARCODE = "BARCODE";
 
 }

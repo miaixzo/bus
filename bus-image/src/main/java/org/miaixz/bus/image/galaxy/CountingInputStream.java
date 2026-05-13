@@ -32,56 +32,123 @@ import java.util.Objects;
  */
 public class CountingInputStream extends FilterInputStream {
 
+    /**
+     * The count value.
+     */
     private volatile long count;
+
+    /**
+     * The mark value.
+     */
     private volatile long mark;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param in the in.
+     */
     public CountingInputStream(InputStream in) {
         super(Objects.requireNonNull(in));
     }
 
+    /**
+     * Gets the count.
+     *
+     * @return the count.
+     */
     public long getCount() {
         return count;
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int read() throws IOException {
         return incCount(in.read());
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @param b   the b.
+     * @param off the off.
+     * @param len the len.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
         return addCount(in.read(b, off, len));
     }
 
+    /**
+     * Executes the skip operation.
+     *
+     * @param n the n.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public long skip(long n) throws IOException {
         return addCount(in.skip(n));
     }
 
+    /**
+     * Executes the mark operation.
+     *
+     * @param readlimit the readlimit.
+     */
     @Override
     public synchronized void mark(int readlimit) {
         in.mark(readlimit);
         mark = count;
     }
 
+    /**
+     * Executes the reset operation.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public synchronized void reset() throws IOException {
         in.reset();
         count = mark;
     }
 
+    /**
+     * Executes the inc count operation.
+     *
+     * @param read the read.
+     * @return the operation result.
+     */
     private int incCount(int read) {
         if (read >= 0)
             count++;
         return read;
     }
 
+    /**
+     * Adds the count.
+     *
+     * @param read the read.
+     * @return the operation result.
+     */
     private int addCount(int read) {
         if (read > 0)
             count += read;
         return read;
     }
 
+    /**
+     * Adds the count.
+     *
+     * @param skip the skip.
+     * @return the operation result.
+     */
     private long addCount(long skip) {
         if (skip > 0)
             count += skip;

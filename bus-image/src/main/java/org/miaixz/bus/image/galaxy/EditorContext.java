@@ -33,7 +33,7 @@ import org.miaixz.bus.image.nimble.opencv.op.MaskArea;
 /**
  * Represents the context for an editing operation within the image processing workflow. This class holds information
  * about the transfer syntax, source and destination nodes, properties, and any abort conditions or masking areas.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -43,26 +43,32 @@ public class EditorContext {
      * The Transfer Syntax UID (TSUID) being used for the operation.
      */
     private final String tsuid;
+
     /**
      * The source node involved in the operation.
      */
     private final Node sourceNode;
+
     /**
      * The destination node involved in the operation.
      */
     private final Node destinationNode;
+
     /**
      * A set of properties associated with the editing context.
      */
     private final Properties properties;
+
     /**
      * The current abort status, indicating if the operation should be aborted and why.
      */
     private Abort abort;
+
     /**
      * A message providing more details about the abort condition.
      */
     private String abortMessage;
+
     /**
      * The mask area applied during image processing, if any.
      */
@@ -71,7 +77,7 @@ public class EditorContext {
     /**
      * Constructs an {@code EditorContext} with the specified transfer syntax UID, source node, and destination node.
      * Initializes abort status to {@link Abort#NONE} and creates an empty {@link Properties} object.
-     * 
+     *
      * @param tsuid           The Transfer Syntax UID.
      * @param sourceNode      The source node.
      * @param destinationNode The destination node.
@@ -86,7 +92,7 @@ public class EditorContext {
 
     /**
      * Returns the current abort status.
-     * 
+     *
      * @return The {@link Abort} status.
      */
     public Abort getAbort() {
@@ -95,16 +101,16 @@ public class EditorContext {
 
     /**
      * Sets the abort status for the editing operation.
-     * 
+     *
      * @param abort The {@link Abort} status to set.
      */
     public void setAbort(Abort abort) {
-        this.abort = abort;
+        this.abort = Objects.requireNonNullElse(abort, Abort.NONE);
     }
 
     /**
      * Returns the abort message, if any.
-     * 
+     *
      * @return The abort message string.
      */
     public String getAbortMessage() {
@@ -113,7 +119,7 @@ public class EditorContext {
 
     /**
      * Sets the abort message for the editing operation.
-     * 
+     *
      * @param abortMessage The message to set.
      */
     public void setAbortMessage(String abortMessage) {
@@ -122,7 +128,7 @@ public class EditorContext {
 
     /**
      * Returns the Transfer Syntax UID.
-     * 
+     *
      * @return The TSUID string.
      */
     public String getTsuid() {
@@ -131,7 +137,7 @@ public class EditorContext {
 
     /**
      * Returns the source node.
-     * 
+     *
      * @return The {@link Node} representing the source.
      */
     public Node getSourceNode() {
@@ -140,7 +146,7 @@ public class EditorContext {
 
     /**
      * Returns the destination node.
-     * 
+     *
      * @return The {@link Node} representing the destination.
      */
     public Node getDestinationNode() {
@@ -149,7 +155,7 @@ public class EditorContext {
 
     /**
      * Returns the mask area applied during image processing.
-     * 
+     *
      * @return The {@link MaskArea} object, or {@code null} if no mask is applied.
      */
     public MaskArea getMaskArea() {
@@ -158,7 +164,7 @@ public class EditorContext {
 
     /**
      * Sets the mask area for image processing.
-     * 
+     *
      * @param maskArea The {@link MaskArea} object to set.
      */
     public void setMaskArea(MaskArea maskArea) {
@@ -167,7 +173,7 @@ public class EditorContext {
 
     /**
      * Returns the properties associated with this editing context.
-     * 
+     *
      * @return The {@link Properties} object.
      */
     public Properties getProperties() {
@@ -176,7 +182,7 @@ public class EditorContext {
 
     /**
      * Returns an {@link Editable} representation of a {@link PlanarImage} based on the current mask area.
-     * 
+     *
      * @return An {@link Editable} image.
      */
     public Editable<PlanarImage> getEditable() {
@@ -185,7 +191,7 @@ public class EditorContext {
 
     /**
      * Checks if pixel processing is enabled, either by a mask area or a "defacing" property.
-     * 
+     *
      * @return {@code true} if pixel processing is enabled, {@code false} otherwise.
      */
     public boolean hasPixelProcessing() {
@@ -193,7 +199,42 @@ public class EditorContext {
     }
 
     /**
+     * Sets the abort status with a message.
+     *
+     * @param abort   The abort status to set.
+     * @param message The abort message.
+     */
+    public void setAbort(Abort abort, String message) {
+        setAbort(abort);
+        setAbortMessage(message);
+    }
+
+    /**
+     * Checks if processing should be aborted.
+     *
+     * @return {@code true} when the abort status is not {@link Abort#NONE}.
+     */
+    public boolean shouldAbort() {
+        return abort != Abort.NONE;
+    }
+
+    /**
+     * Returns the string representation.
+     *
+     * @return the string representation.
+     */
+    @Override
+    public String toString() {
+        return "EditorContext{" + "tsuid='" + tsuid + '\'' + ", sourceNode=" + sourceNode + ", destinationNode="
+                + destinationNode + ", abort=" + abort + ", abortMessage='" + abortMessage + '\'' + ", maskArea="
+                + maskArea + ", propertiesCount=" + properties.size() + '}';
+    }
+
+    /**
      * Abort status allows to skip the file transfer or abort the DICOM association.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum Abort {
         /**
@@ -209,6 +250,7 @@ public class EditorContext {
          * one source.
          */
         CONNECTION_EXCEPTION
+
     }
 
 }

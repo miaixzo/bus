@@ -83,22 +83,27 @@ public class Binder {
      * The prefix for placeholders.
      */
     private final String placeholderPrefix;
+
     /**
      * The suffix for placeholders.
      */
     private final String placeholderSuffix;
+
     /**
      * The simple prefix for nested placeholders.
      */
     private final String simplePrefix;
+
     /**
      * The separator for default values in placeholders.
      */
     private final String valueSeparator;
+
     /**
      * A flag to indicate whether to ignore unresolvable placeholders.
      */
     private final boolean ignoreUnresolvablePlaceholders;
+
     /**
      * The source of properties.
      */

@@ -20,23 +20,36 @@
 package org.miaixz.bus.image.galaxy.dict.GEIIS_RA1000;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEIIS_RA1000";
 
-    /** (0071,xx01) VR=CS VM=1 ? */
+    /**
+     * (0071,xx01) VR=CS VM=1 ?
+     */
     public static final int _0071_xx01_ = 0x00710001;
 
-    /** (0071,xx20) VR=ST VM=1 ? */
+    /**
+     * (0071,xx20) VR=ST VM=1 ?
+     */
     public static final int _0071_xx20_ = 0x00710020;
 
-    /** (0071,xx21) VR=US VM=1 ? */
+    /**
+     * (0071,xx21) VR=US VM=1 ?
+     */
     public static final int _0071_xx21_ = 0x00710021;
 
-    /** (0071,xx22) VR=US VM=1 ? */
+    /**
+     * (0071,xx22) VR=US VM=1 ?
+     */
     public static final int _0071_xx22_ = 0x00710022;
 
 }

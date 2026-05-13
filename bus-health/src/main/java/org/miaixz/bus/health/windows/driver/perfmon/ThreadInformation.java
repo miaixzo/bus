@@ -81,6 +81,9 @@ public final class ThreadInformation {
 
     /**
      * Thread performance counters
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum ThreadPerformanceProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 
@@ -121,6 +124,7 @@ public final class ThreadInformation {
         public String getCounter() {
             return counter;
         }
+
     }
 
 }

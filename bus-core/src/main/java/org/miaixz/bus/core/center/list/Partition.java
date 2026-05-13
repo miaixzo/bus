@@ -40,6 +40,7 @@ public class Partition<T> extends AbstractList<List<T>> {
      * The list to be partitioned.
      */
     protected final List<T> list;
+
     /**
      * The length of each partition.
      */

@@ -42,6 +42,7 @@ public class ResourceManager {
      * used for logging or to avoid re-registering rules.
      */
     private static final Set<String> PROTECTED_METHODS = new HashSet<>();
+
     /**
      * A concurrent hash map to store {@link Protection} instances, keyed by the resource identifier. Each entry
      * represents the current limiting state for a specific resource.
@@ -121,6 +122,9 @@ public class ResourceManager {
     /**
      * Represents the protection state for a single resource, including its limiting configuration and current access
      * allowance.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static class Protection {
 
@@ -128,10 +132,12 @@ public class ResourceManager {
          * The {@link Limiting} annotation object that defines the limiting rules for this resource.
          */
         Limiting limiting;
+
         /**
          * The {@link LocalDateTime} when the current limiting period for this resource will expire.
          */
         LocalDateTime targetTime;
+
         /**
          * The number of remaining requests allowed within the current limiting period.
          */
@@ -174,6 +180,7 @@ public class ResourceManager {
         public boolean isAllow() {
             return allowCount > 0;
         }
+
     }
 
 }

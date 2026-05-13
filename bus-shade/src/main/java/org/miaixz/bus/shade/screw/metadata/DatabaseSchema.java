@@ -43,6 +43,7 @@ public class DatabaseSchema implements Serializable {
      * The name of the database.
      */
     private String database;
+
     /**
      * A list of {@link TableSchema} objects representing the tables in the database.
      */

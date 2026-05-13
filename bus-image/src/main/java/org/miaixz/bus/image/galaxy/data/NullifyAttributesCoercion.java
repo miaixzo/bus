@@ -22,28 +22,63 @@ package org.miaixz.bus.image.galaxy.data;
 import java.util.Objects;
 
 /**
+ * Represents the NullifyAttributesCoercion type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class NullifyAttributesCoercion implements AttributesCoercion {
 
+    /**
+     * The nullify tags value.
+     */
     private final int[] nullifyTags;
+
+    /**
+     * The next value.
+     */
     private final AttributesCoercion next;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param nullifyTags the nullify tags.
+     * @param next        the next.
+     */
     public NullifyAttributesCoercion(int[] nullifyTags, AttributesCoercion next) {
         this.nullifyTags = Objects.requireNonNull(nullifyTags);
         this.next = next;
     }
 
+    /**
+     * Executes the value of operation.
+     *
+     * @param nullifyTags the nullify tags.
+     * @param next        the next.
+     * @return the operation result.
+     */
     public static AttributesCoercion valueOf(int[] nullifyTags, AttributesCoercion next) {
         return nullifyTags != null && nullifyTags.length > 0 ? new NullifyAttributesCoercion(nullifyTags, next) : next;
     }
 
+    /**
+     * Executes the remap uid operation.
+     *
+     * @param uid the uid.
+     * @return the operation result.
+     */
     @Override
     public String remapUID(String uid) {
         return next != null ? next.remapUID(uid) : uid;
     }
 
+    /**
+     * Executes the coerce operation.
+     *
+     * @param attrs    the attrs.
+     * @param modified the modified.
+     * @throws Exception if the operation cannot be completed.
+     */
     @Override
     public void coerce(Attributes attrs, Attributes modified) throws Exception {
         VR.Holder vr = new VR.Holder();

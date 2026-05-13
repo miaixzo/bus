@@ -28,6 +28,9 @@ import jakarta.ws.rs.core.Response;
 
 /**
  * This class implements the client side API for the GitLab Todos API.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class TodosApi extends AbstractApi {
 

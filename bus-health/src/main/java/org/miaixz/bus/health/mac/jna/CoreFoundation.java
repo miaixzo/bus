@@ -49,6 +49,9 @@ public interface CoreFoundation extends com.sun.jna.platform.mac.CoreFoundation 
     /**
      * Enum of values used for {@link CFDateFormatterStyle} in {@link #CFDateFormatterCreate}. Use
      * {@link CFDateFormatterStyle#index} for the expected integer value corresponding to the C-style enum.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     enum CFDateFormatterStyle {
 
@@ -81,6 +84,7 @@ public interface CoreFoundation extends com.sun.jna.platform.mac.CoreFoundation 
         public CFIndex index() {
             return new CFIndex(this.ordinal());
         }
+
     }
 
     /**

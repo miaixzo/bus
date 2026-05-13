@@ -40,21 +40,49 @@ import org.miaixz.bus.image.nimble.stream.SegmentedInputImageStream;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the StreamSegment type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public abstract class StreamSegment {
 
+    /**
+     * The seg position value.
+     */
     private final long[] segPosition;
+
+    /**
+     * The seg length value.
+     */
     private final long[] segLength;
+
+    /**
+     * The image descriptor value.
+     */
     private final ImageDescriptor imageDescriptor;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param startPos        the start pos.
+     * @param length          the length.
+     * @param imageDescriptor the image descriptor.
+     */
     StreamSegment(long[] startPos, long[] length, ImageDescriptor imageDescriptor) {
         this.segPosition = startPos;
         this.segLength = length;
         this.imageDescriptor = imageDescriptor;
     }
 
+    /**
+     * Gets the stream segment.
+     *
+     * @param iis   the iis.
+     * @param param the param.
+     * @return the stream segment.
+     * @throws IOException if the operation cannot be completed.
+     */
     public static StreamSegment getStreamSegment(ImageInputStream iis, ImageReadParam param) throws IOException {
 
         if (iis instanceof SegmentedImageStream) {
@@ -69,12 +97,24 @@ public abstract class StreamSegment {
         throw new IllegalArgumentException("No stream adaptor found for " + iis.getClass().getName() + "!");
     }
 
+    /**
+     * Determines whether input stream.
+     *
+     * @param iis the iis.
+     * @return true if the condition is met; otherwise false.
+     */
     public static boolean supportsInputStream(Object iis) {
         // This list must reflect getStreamSegment()'s implementation
         return (iis instanceof SegmentedImageStream) || (iis instanceof SegmentedInputImageStream)
                 || (iis instanceof BytesWithImageImageDescriptor);
     }
 
+    /**
+     * Gets the file stream segment.
+     *
+     * @param iis the iis.
+     * @return the file stream segment.
+     */
     private static StreamSegment getFileStreamSegment(SegmentedInputImageStream iis) {
         try {
 
@@ -117,6 +157,13 @@ public abstract class StreamSegment {
         return null;
     }
 
+    /**
+     * Gets the segments.
+     *
+     * @param iis the iis.
+     * @return the segments.
+     * @throws IOException if the operation cannot be completed.
+     */
     private static long[][] getSegments(SegmentedInputImageStream iis) throws IOException {
         Integer curSegment = iis.getCurSegment();
         if (curSegment != null && curSegment >= 0) {
@@ -152,6 +199,12 @@ public abstract class StreamSegment {
         return null;
     }
 
+    /**
+     * Gets the byte.
+     *
+     * @param inputStream the input stream.
+     * @return the byte.
+     */
     public static byte[] getByte(ByteArrayInputStream inputStream) {
         if (inputStream != null) {
             try {
@@ -167,14 +220,29 @@ public abstract class StreamSegment {
         return null;
     }
 
+    /**
+     * Gets the image descriptor.
+     *
+     * @return the image descriptor.
+     */
     public ImageDescriptor getImageDescriptor() {
         return imageDescriptor;
     }
 
+    /**
+     * Gets the seg position.
+     *
+     * @return the seg position.
+     */
     public long[] getSegPosition() {
         return segPosition;
     }
 
+    /**
+     * Gets the seg length.
+     *
+     * @return the seg length.
+     */
     public long[] getSegLength() {
         return segLength;
     }

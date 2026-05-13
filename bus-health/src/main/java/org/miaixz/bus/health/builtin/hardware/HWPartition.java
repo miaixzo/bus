@@ -38,34 +38,42 @@ public class HWPartition {
      * The identification value.
      */
     private final String identification;
+
     /**
      * The name value.
      */
     private final String name;
+
     /**
      * The type value.
      */
     private final String type;
+
     /**
      * The uuid value.
      */
     private final String uuid;
+
     /**
      * The label value.
      */
     private final String label;
+
     /**
      * The size value.
      */
     private final long size;
+
     /**
      * The major value.
      */
     private final int major;
+
     /**
      * The minor value.
      */
     private final int minor;
+
     /**
      * The mountPoint value.
      */

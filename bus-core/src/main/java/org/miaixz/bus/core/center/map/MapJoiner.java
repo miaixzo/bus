@@ -40,6 +40,7 @@ public class MapJoiner {
      * The underlying joiner used to concatenate formatted map entries.
      */
     private final StringJoiner joiner;
+
     /**
      * The separator placed between each key and its corresponding value.
      */

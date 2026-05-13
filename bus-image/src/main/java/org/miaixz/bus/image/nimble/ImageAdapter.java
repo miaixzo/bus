@@ -24,7 +24,7 @@ import java.awt.image.DataBufferUShort;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import org.miaixz.bus.core.xyz.MathKit;
-import org.miaixz.bus.image.nimble.opencv.ImageProcessor;
+import org.miaixz.bus.image.nimble.opencv.ImageAnalyzer;
 import org.miaixz.bus.image.nimble.opencv.LookupTableCV;
 import org.miaixz.bus.image.nimble.opencv.PlanarImage;
 import org.miaixz.bus.image.nimble.opencv.lut.*;
@@ -34,10 +34,10 @@ import org.opencv.core.Core.MinMaxLocResult;
 import org.opencv.core.CvType;
 
 /**
- * DICOM图像适配器类，用于处理DICOM图像的各种属性和转换。
- *
+ * DICOM image adapter for handling DICOM image attributes and transformations.
  * <p>
- * 该类提供了处理DICOM图像的模态LUT、VOI LUT、窗口/级别调整等功能。 它还负责计算图像的最小/最大值，处理像素填充值，以及管理预设的窗口/级别集合。
+ * This class handles modality LUTs, VOI LUTs, and window/level adjustments for DICOM images. It also computes image
+ * min/max values, applies pixel padding rules, and manages preset window/level collections.
  * </p>
  *
  * @author Kimi Liu
@@ -46,37 +46,41 @@ import org.opencv.core.CvType;
 public class ImageAdapter {
 
     /**
-     * LUT缓存映射
+     * LUT cache map.
      */
     private static final Map<LutParameters, LookupTableCV> LUT_Cache = new ConcurrentHashMap();
 
     /**
-     * 图像描述符
+     * Image descriptor.
      */
     private final ImageDescriptor desc;
+
     /**
-     * 最小/最大值结果
+     * Minimum and maximum value result.
      */
     private final MinMaxLocResult minMax;
+
     /**
-     * 帧索引
+     * Frame index.
      */
     private final int frameIndex;
+
     /**
-     * 存储的位数
+     * Stored bit count.
      */
     private int bitsStored;
+
     /**
-     * 窗口/级别预设集合
+     * Window and level preset collection.
      */
     private List<PresetWindowLevel> windowingPresetCollection = null;
 
     /**
-     * 构造方法
+     * Creates a new instance.
      *
-     * @param image      平面图像
-     * @param desc       图像描述符
-     * @param frameIndex 帧索引
+     * @param image      Planar image.
+     * @param desc       Image descriptor.
+     * @param frameIndex Frame index.
      */
     public ImageAdapter(PlanarImage image, ImageDescriptor desc, int frameIndex) {
         int depth = CvType.depth(Objects.requireNonNull(image).type());
@@ -96,12 +100,12 @@ public class ImageAdapter {
     }
 
     /**
-     * 获取图像的最小/最大值
+     * Gets the image minimum and maximum values.
      *
-     * @param image      平面图像
-     * @param desc       图像描述符
-     * @param frameIndex 帧索引
-     * @return 最小/最大值结果
+     * @param image      Planar image.
+     * @param desc       Image descriptor.
+     * @param frameIndex Frame index.
+     * @return Minimum and maximum value result.
      */
     public static MinMaxLocResult getMinMaxValues(PlanarImage image, ImageDescriptor desc, int frameIndex) {
         MinMaxLocResult val = desc.getMinMaxPixelValue(frameIndex);
@@ -120,17 +124,17 @@ public class ImageAdapter {
         }
         // When not monochrome and no padding value, use default minimum and maximum values
         if (val == null) {
-            val = ImageProcessor.findRawMinMaxValues(image, !monochrome);
+            val = ImageAnalyzer.findRawMinMaxValues(image, !monochrome);
         }
         return val;
     }
 
     /**
-     * 查找图像的最小/最大值
+     * Finds the image minimum and maximum values.
      *
-     * @param image      平面图像
-     * @param frameIndex 帧索引
-     * @return 最小/最大值结果
+     * @param image      Planar image.
+     * @param frameIndex Frame index.
+     * @return Minimum and maximum value result.
      */
     private MinMaxLocResult findMinMaxValues(PlanarImage image, int frameIndex) {
         // This function can be called multiple times from inner class Load. min and max will only be calculated once.
@@ -153,11 +157,11 @@ public class ImageAdapter {
     }
 
     /**
-     * 从图像计算最小/最大值，排除提供的值范围
+     * Computes the image minimum and maximum values while excluding the supplied padding range.
      *
-     * @param paddingValueMin 要从最小值中排除的填充值
-     * @param paddingValueMax 要从最大值中排除的填充值
-     * @return 最小/最大值结果
+     * @param paddingValueMin Padding value excluded from the minimum value search.
+     * @param paddingValueMax Padding value excluded from the maximum value search.
+     * @return Minimum and maximum value result.
      */
     private static MinMaxLocResult findMinMaxValues(
             PlanarImage image,
@@ -169,7 +173,7 @@ public class ImageAdapter {
             val.minVal = 0.0;
             val.maxVal = 255.0;
         } else {
-            val = ImageProcessor.findMinMaxValues(image.toMat(), paddingValueMin, paddingValueMax);
+            val = ImageAnalyzer.findMinMaxValues(image.toMat(), paddingValueMin, paddingValueMax);
             // Handle case where minimum and maximum are equal, e.g., black image
             // Maximum value+1 to display correct value
             if (val != null && val.minVal == val.maxVal) {
@@ -180,55 +184,55 @@ public class ImageAdapter {
     }
 
     /**
-     * 获取存储的位数
+     * Gets the stored bit count.
      *
-     * @return 存储的位数
+     * @return Stored bit count.
      */
     public int getBitsStored() {
         return bitsStored;
     }
 
     /**
-     * 设置存储的位数
+     * Sets the stored bit count.
      *
-     * @param bitsStored 存储的位数
+     * @param bitsStored Stored bit count.
      */
     public void setBitsStored(int bitsStored) {
         this.bitsStored = bitsStored;
     }
 
     /**
-     * 获取最小/最大值结果
+     * Gets the minimum and maximum value result.
      *
-     * @return 最小/最大值结果
+     * @return Minimum and maximum value result.
      */
     public MinMaxLocResult getMinMax() {
         return minMax;
     }
 
     /**
-     * 获取图像描述符
+     * Gets the image descriptor.
      *
-     * @return 图像描述符
+     * @return Image descriptor.
      */
     public ImageDescriptor getImageDescriptor() {
         return desc;
     }
 
     /**
-     * 获取帧索引
+     * Gets the frame index.
      *
-     * @return 帧索引
+     * @return Frame index.
      */
     public int getFrameIndex() {
         return frameIndex;
     }
 
     /**
-     * 获取最小分配值
+     * Gets the minimum allocated value.
      *
-     * @param wl 窗口/级别表示
-     * @return 最小分配值
+     * @param wl Window and level presentation.
+     * @return Minimum allocated value.
      */
     public int getMinAllocatedValue(WlPresentation wl) {
         boolean signed = isModalityLutOutSigned(wl);
@@ -238,10 +242,10 @@ public class ImageAdapter {
     }
 
     /**
-     * 获取最大分配值
+     * Gets the maximum allocated value.
      *
-     * @param wl 窗口/级别表示
-     * @return 最大分配值
+     * @param wl Window and level presentation.
+     * @return Maximum allocated value.
      */
     public int getMaxAllocatedValue(WlPresentation wl) {
         boolean signed = isModalityLutOutSigned(wl);
@@ -250,10 +254,11 @@ public class ImageAdapter {
     }
 
     /**
-     * 在使用重缩放斜率和截距进行模态像素变换的情况下， 即使像素表示是无符号的，输出范围也可能是有符号的。
+     * When modality pixel transformation uses rescale slope and intercept, the output range can be signed even when the
+     * pixel representation is unsigned.
      *
-     * @param wl 窗口/级别表示
-     * @return 如果模态像素变换的输出可以是有符号的，则返回true
+     * @param wl Window and level presentation.
+     * @return true if the modality pixel transformation output can be signed.
      */
     public boolean isModalityLutOutSigned(WlPresentation wl) {
         boolean signed = desc.isSigned();
@@ -261,25 +266,25 @@ public class ImageAdapter {
     }
 
     /**
-     * @return 返回模态像素变换后的最小值，如果存在填充，则在像素填充操作之后。
+     * @return The minimum value after modality pixel transformation and pixel padding when present.
      */
     public double getMinValue(WlPresentation wl) {
         return minMaxValue(true, wl);
     }
 
     /**
-     * @return 返回模态像素变换后的最大值，如果存在填充，则在像素填充操作之后。
+     * @return The maximum value after modality pixel transformation and pixel padding when present.
      */
     public double getMaxValue(WlPresentation wl) {
         return minMaxValue(false, wl);
     }
 
     /**
-     * 计算最小或最大值
+     * Computes the minimum or maximum value.
      *
-     * @param minVal 是否计算最小值
-     * @param wl     窗口/级别表示
-     * @return 最小或最大值
+     * @param minVal Whether to compute the minimum value.
+     * @param wl     Window and level presentation.
+     * @return Minimum or maximum value.
      */
     private double minMaxValue(boolean minVal, WlPresentation wl) {
         Number min = pixelToRealValue(minMax.minVal, wl);
@@ -295,10 +300,10 @@ public class ImageAdapter {
     }
 
     /**
-     * 获取重缩放截距
+     * Gets the rescale intercept.
      *
-     * @param dcm DICOM对象
-     * @return 重缩放截距
+     * @param dcm DICOM object.
+     * @return Rescale intercept.
      */
     public double getRescaleIntercept(PresentationLutObject dcm) {
         if (dcm != null) {
@@ -311,10 +316,10 @@ public class ImageAdapter {
     }
 
     /**
-     * 获取重缩放斜率
+     * Gets the rescale slope.
      *
-     * @param dcm DICOM对象
-     * @return 重缩放斜率
+     * @param dcm DICOM object.
+     * @return Rescale slope.
      */
     public double getRescaleSlope(PresentationLutObject dcm) {
         if (dcm != null) {
@@ -327,20 +332,20 @@ public class ImageAdapter {
     }
 
     /**
-     * 获取全动态范围宽度
+     * Gets the full dynamic range width.
      *
-     * @param wl 窗口/级别表示
-     * @return 全动态范围宽度
+     * @param wl Window and level presentation.
+     * @return Full dynamic range width.
      */
     public double getFullDynamicWidth(WlPresentation wl) {
         return getMaxValue(wl) - getMinValue(wl);
     }
 
     /**
-     * 获取全动态范围中心
+     * Gets the full dynamic range center.
      *
-     * @param wl 窗口/级别表示
-     * @return 全动态范围中心
+     * @param wl Window and level presentation.
+     * @return Full dynamic range center.
      */
     public double getFullDynamicCenter(WlPresentation wl) {
         double minValue = getMinValue(wl);
@@ -349,7 +354,8 @@ public class ImageAdapter {
     }
 
     /**
-     * @return 默认预设作为预设列表的第一个元素 注意：永远不应该返回null，因为至少有一个预设是auto
+     * @return The default preset as the first preset list element. This should never be null because at least one auto
+     *         preset exists.
      */
     public PresetWindowLevel getDefaultPreset(WlPresentation wlp) {
         List<PresetWindowLevel> presetList = getPresetList(wlp);
@@ -357,21 +363,21 @@ public class ImageAdapter {
     }
 
     /**
-     * 获取预设列表
+     * Gets the preset list.
      *
-     * @param wl 窗口/级别表示
-     * @return 预设列表
+     * @param wl Window and level presentation.
+     * @return Preset list.
      */
     public synchronized List<PresetWindowLevel> getPresetList(WlPresentation wl) {
         return getPresetList(wl, false);
     }
 
     /**
-     * 获取预设列表
+     * Gets the preset list.
      *
-     * @param wl     窗口/级别表示
-     * @param reload 是否重新加载
-     * @return 预设列表
+     * @param wl     Window and level presentation.
+     * @param reload Whether to reload the preset list.
+     * @return Preset list.
      */
     public synchronized List<PresetWindowLevel> getPresetList(WlPresentation wl, boolean reload) {
         if (minMax != null && (windowingPresetCollection == null || reload)) {
@@ -381,9 +387,9 @@ public class ImageAdapter {
     }
 
     /**
-     * 获取预设集合大小
+     * Gets the preset collection size.
      *
-     * @return 预设集合大小
+     * @return Preset collection size.
      */
     public int getPresetCollectionSize() {
         if (windowingPresetCollection == null) {
@@ -393,10 +399,10 @@ public class ImageAdapter {
     }
 
     /**
-     * 获取默认LUT形状
+     * Gets the default LUT shape.
      *
-     * @param wlp 窗口/级别表示
-     * @return 默认LUT形状
+     * @param wlp Window and level presentation.
+     * @return Default LUT shape.
      */
     public LutShape getDefaultShape(WlPresentation wlp) {
         PresetWindowLevel defaultPreset = getDefaultPreset(wlp);
@@ -404,10 +410,10 @@ public class ImageAdapter {
     }
 
     /**
-     * 获取默认窗口宽度
+     * Gets the default window width.
      *
-     * @param wlp 窗口/级别表示
-     * @return 默认窗口宽度
+     * @param wlp Window and level presentation.
+     * @return Default window width.
      */
     public double getDefaultWindow(WlPresentation wlp) {
         PresetWindowLevel defaultPreset = getDefaultPreset(wlp);
@@ -416,10 +422,10 @@ public class ImageAdapter {
     }
 
     /**
-     * 获取默认窗口级别
+     * Gets the default window level.
      *
-     * @param wlp 窗口/级别表示
-     * @return 默认窗口级别
+     * @param wlp Window and level presentation.
+     * @return Default window level.
      */
     public double getDefaultLevel(WlPresentation wlp) {
         PresetWindowLevel defaultPreset = getDefaultPreset(wlp);
@@ -433,11 +439,11 @@ public class ImageAdapter {
     }
 
     /**
-     * 将像素值转换为实际值
+     * Converts a pixel value to a real value.
      *
-     * @param pixelValue 像素值
-     * @param wlp        窗口/级别表示
-     * @return 实际值
+     * @param pixelValue Pixel value.
+     * @param wlp        Window and level presentation.
+     * @return Real value.
      */
     public Number pixelToRealValue(Number pixelValue, WlPresentation wlp) {
         if (pixelValue != null) {
@@ -453,11 +459,11 @@ public class ImageAdapter {
     }
 
     /**
-     * DICOM PS 3.3 $C.11.1 模态LUT模块
+     * DICOM PS 3.3 C.11.1 modality LUT module.
      *
-     * @param wlp              窗口/级别表示
-     * @param inverseLUTAction 是否反转LUT操作
-     * @return 模态LUT
+     * @param wlp              Window and level presentation.
+     * @param inverseLUTAction Whether to invert the LUT action.
+     * @return Modality LUT.
      */
     public LookupTableCV getModalityLookup(WlPresentation wlp, boolean inverseLUTAction) {
         Integer paddingValue = desc.getPixelPaddingValue();
@@ -525,10 +531,10 @@ public class ImageAdapter {
     }
 
     /**
-     * 判断光度解释是否需要反转
+     * Determines whether the photometric interpretation must be inverted.
      *
-     * @param pr 表现状态LUT
-     * @return 如果需要反转返回true，否则返回false
+     * @param pr Presentation state LUT.
+     * @return true if inversion is required; otherwise false.
      */
     public boolean isPhotometricInterpretationInverse(PresentationStateLut pr) {
         Optional<String> prLUTShape = pr == null ? Optional.empty() : pr.getPrLutShapeMode();
@@ -537,13 +543,13 @@ public class ImageAdapter {
     }
 
     /**
-     * 获取LUT参数
+     * Gets the LUT parameters.
      *
-     * @param pixelPadding       是否像素填充
-     * @param mLUTSeq            模态LUT序列
-     * @param inversePaddingMLUT 是否反转填充模态LUT
-     * @param pr                 表现LUT对象
-     * @return LUT参数
+     * @param pixelPadding       Whether pixel padding is enabled.
+     * @param mLUTSeq            Modality LUT sequence.
+     * @param inversePaddingMLUT Whether to invert the padded modality LUT.
+     * @param pr                 Presentation LUT object.
+     * @return LUT parameters.
      */
     public LutParameters getLutParameters(
             boolean pixelPadding,
@@ -579,9 +585,8 @@ public class ImageAdapter {
     }
 
     /**
-     * @return 8位无符号查找表
-     *
-     * @param wl 窗口/级别参数
+     * @return 8-bit unsigned lookup table.
+     * @param wl Window and level parameters.
      */
     public LookupTableCV getVOILookup(WlParams wl) {
         if (wl == null || wl.getLutShape() == null) {

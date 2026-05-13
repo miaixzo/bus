@@ -74,18 +74,22 @@ final class WindowsGpuStats implements GpuStats {
      * The luidPrefix value.
      */
     private final String luidPrefix;
+
     /**
      * The lhmParent value.
      */
     private final String lhmParent;
+
     /**
      * The pciBusNumber value.
      */
     private final int pciBusNumber;
+
     /**
      * The pciBusId value.
      */
     private final String pciBusId;
+
     /**
      * The cardName value.
      */

@@ -43,6 +43,7 @@ public class LimitedInputStream extends FilterInputStream {
      * {@code -1} will be returned after the limit is reached.
      */
     private final boolean throwWhenReachLimit;
+
     /**
      * The remaining number of bytes that can be read from the stream.
      */

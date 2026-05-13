@@ -43,10 +43,12 @@ public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<
      * The list of comparators in the chain.
      */
     private final List<Comparator<E>> chain;
+
     /**
      * A BitSet to track whether the corresponding comparator is reversed.
      */
     private final BitSet orderingBits;
+
     /**
      * Whether the comparator chain is locked. A locked chain cannot have new comparators added. The chain is locked
      * when the first comparison begins.

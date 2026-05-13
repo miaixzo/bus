@@ -49,18 +49,22 @@ public class ImageDirWriter extends ImageDirReader {
      * Constant for FileSetConsistencyFlag (0004,1212) indicating known inconsistencies.
      */
     private final static int KNOWN_INCONSISTENCIES = 0xFFFF;
+
     /**
      * Constant for FileSetConsistencyFlag (0004,1212) indicating no known inconsistencies.
      */
     private final static int NO_KNOWN_INCONSISTENCIES = 0;
+
     /**
      * Constant for RecordInUseFlag (0004,1410) indicating a record is in use.
      */
     private final static int IN_USE = 0xFFFF;
+
     /**
      * Constant for RecordInUseFlag (0004,1410) indicating a record is inactive.
      */
     private final static int INACTIVE = 0;
+
     /**
      * Comparator for sorting {@link Attributes} based on their item position.
      */
@@ -68,37 +72,45 @@ public class ImageDirWriter extends ImageDirReader {
         long d = item1.getItemPosition() - item2.getItemPosition();
         return d < 0 ? -1 : d > 0 ? 1 : 0;
     };
+
     /**
      * Byte array representing the header for Directory Information.
      */
     private final byte[] dirInfoHeader = { 0x04, 0x00, 0x00, 0x12, 'U', 'L', 4, 0, 0, 0, 0, 0, 0x04, 0x00, 0x02, 0x12,
             'U', 'L', 4, 0, 0, 0, 0, 0, 0x04, 0x00, 0x12, 0x12, 'U', 'S', 2, 0, 0, 0, 0x04, 0x00, 0x20, 0x12, 'S', 'Q',
             0, 0, 0, 0, 0, 0 };
+
     /**
      * Byte array representing the header for Directory Records.
      */
     private final byte[] dirRecordHeader = { 0x04, 0x00, 0x00, 0x14, 'U', 'L', 4, 0, 0, 0, 0, 0, 0x04, 0x00, 0x10, 0x14,
             'U', 'S', 2, 0, 0, 0, 0x04, 0x00, 0x20, 0x14, 'U', 'L', 4, 0, 0, 0, 0, 0 };
+
     /**
      * The {@link ImageOutputStream} used for writing to the DICOMDIR file.
      */
     private final ImageOutputStream out;
+
     /**
      * The file pointer position of the first directory record.
      */
     private final int firstRecordPos;
+
     /**
      * A list of dirty (modified) directory records that need to be written to the file.
      */
     private final List<Attributes> dirtyRecords = new ArrayList<>();
+
     /**
      * A map to keep track of the last child record added to a parent record, used for efficient appending.
      */
     private final IdentityHashMap<Attributes, Attributes> lastChildRecords = new IdentityHashMap<>();
+
     /**
      * The file pointer position where the next record will be written.
      */
     private int nextRecordPos;
+
     /**
      * The length of the file before any modifications, used for rollback.
      */
@@ -365,6 +377,9 @@ public class ImageDirWriter extends ImageDirReader {
         }
     }
 
+    /**
+     * Executes the clear cache operation.
+     */
     @Override
     public void clearCache() {
         lastChildRecords.clear();
@@ -397,6 +412,11 @@ public class ImageDirWriter extends ImageDirReader {
         rollbackLen = -1;
     }
 
+    /**
+     * Executes the close operation.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void close() throws IOException {
         commit();

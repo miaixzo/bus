@@ -43,7 +43,7 @@ import org.springframework.core.annotation.Order;
  *
  * <p>
  * <strong>Usage Example:</strong>
- * 
+ *
  * <pre>{@code
  * &#64;RestController
  * &#64;RequestMapping("/user")

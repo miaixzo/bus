@@ -5,6 +5,12 @@ import java.util.List;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+/**
+ * The create runner params class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class CreateRunnerParams implements Serializable {
 
     private static final long serialVersionUID = 2852250855126L;

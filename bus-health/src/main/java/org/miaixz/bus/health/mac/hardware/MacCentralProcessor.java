@@ -66,28 +66,44 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
      * The ARM_P_CORES constant.
      */
     private static final Set<String> ARM_P_CORES = Stream
-            .of("apple,firestorm arm,v8", "apple,avalanche arm,v8", "apple,everest arm,v8").collect(Collectors.toSet());
+            .of("apple,firestorm arm,v8", "apple,avalanche arm,v8", "apple,everest arm,v8", "apple,donan arm,v8")
+            .collect(Collectors.toSet());
 
     /**
      * The ARM_CPUTYPE constant.
      */
     private static final int ARM_CPUTYPE = 0x0100000C;
+
     /**
      * The M1_CPUFAMILY constant.
      */
     private static final int M1_CPUFAMILY = 0x1b588bb3;
+
     /**
      * The M2_CPUFAMILY constant.
      */
     private static final int M2_CPUFAMILY = 0xda33d83d;
+
     /**
      * The M3_CPUFAMILY constant.
      */
     private static final int M3_CPUFAMILY = 0x8765edea;
+
+    /**
+     * The M3_PRO_CPUFAMILY constant.
+     */
+    private static final int M3_PRO_CPUFAMILY = 0x5f4dea93;
+
+    /**
+     * The M4_CPUFAMILY constant.
+     */
+    private static final int M4_CPUFAMILY = 0x6f5129ac;
+
     /**
      * The DEFAULT_FREQUENCY constant.
      */
     private static final long DEFAULT_FREQUENCY = 2_400_000_000L;
+
     /**
      * The CPU_N constant.
      */
@@ -97,6 +113,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
      * The vendor value.
      */
     private final Supplier<String> vendor = Memoizer.memoize(MacCentralProcessor::platformExpert);
+
     /**
      * The isArmCpu value.
      */
@@ -108,6 +125,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
      * The performanceCoreFrequency value.
      */
     private long performanceCoreFrequency = DEFAULT_FREQUENCY;
+
     /**
      * The efficiencyCoreFrequency value.
      */
@@ -197,6 +215,10 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
 
                         case 3:
                             family = M3_CPUFAMILY;
+                            break;
+
+                        case 4:
+                            family = M4_CPUFAMILY;
                             break;
 
                         default:

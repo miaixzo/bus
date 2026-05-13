@@ -20,20 +20,31 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MEDCOM_OOG;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS MEDCOM OOG";
 
-    /** (0029,xx08) VR=CS VM=1 MedCom OOG Type */
+    /**
+     * (0029,xx08) VR=CS VM=1 MedCom OOG Type
+     */
     public static final int MedComOOGType = 0x00290008;
 
-    /** (0029,xx09) VR=LO VM=1 MedCom OOG Version */
+    /**
+     * (0029,xx09) VR=LO VM=1 MedCom OOG Version
+     */
     public static final int MedComOOGVersion = 0x00290009;
 
-    /** (0029,xx10) VR=OB VM=1 MedCom OOG Info */
+    /**
+     * (0029,xx10) VR=OB VM=1 MedCom OOG Info
+     */
     public static final int MedComOOGInfo = 0x00290010;
 
 }

@@ -130,6 +130,8 @@ public abstract class AbstractReader {
      * A functional interface for a supplier that can throw a {@link Throwable}.
      *
      * @param <T> The type of the result.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FunctionalInterface
     protected interface ThrowableSupplier<T> {
@@ -141,6 +143,7 @@ public abstract class AbstractReader {
          * @throws Throwable if unable to compute a result
          */
         T get() throws Throwable;
+
     }
 
 }

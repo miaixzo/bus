@@ -42,6 +42,9 @@ public class RegistryChange<T extends Assets> implements Change<T> {
 
     /**
      * Registry mutation kinds that can produce a change notification.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum Action {
         /**
@@ -56,6 +59,7 @@ public class RegistryChange<T extends Assets> implements Change<T> {
          * One entry was deregistered.
          */
         DEREGISTER
+
     }
 
     /**
@@ -68,70 +72,87 @@ public class RegistryChange<T extends Assets> implements Change<T> {
      * Identifier of the affected asset.
      */
     private String id;
+
     /**
      * Mutation action represented by this event.
      */
     private Action action;
+
     /**
      * Asset type affected by the mutation.
      */
     private Type type;
+
     /**
      * Namespace containing the affected asset.
      */
     private String namespace_id;
+
     /**
      * Application identifier containing the affected asset.
      */
     private String app_id;
+
     /**
      * Method or operation name of the affected asset, when applicable.
      */
     private String method;
+
     /**
      * Version label of the affected asset, when applicable.
      */
     private String version;
+
     /**
      * Runtime instance fingerprint associated with the change, when applicable.
      */
     private String fingerprint;
+
     /**
      * Optional upstream source identifier attached during forwarding.
      */
     private String source;
+
     /**
      * Logical event type used by downstream bridge and audit pipelines.
      */
     private String eventType;
+
     /**
      * Optional error message attached to failed or partially applied changes.
      */
     private String errorMessage;
+
     /**
      * Normalized asset snapshot after the mutation.
      */
     private T asset;
+
     /**
      * Asset snapshot before the mutation.
      */
     private T previousAsset;
+
     /**
      * Runtime instance snapshot associated with API registration changes.
      */
     private Instance instance;
+
     /**
      * Runtime instance snapshot before the mutation.
      */
     private Instance previousInstance;
+
     /**
      * Lightweight diff payload describing the concrete change set.
      */
     private Map<String, Object> changeSet;
+
     /**
      * Ordering sequence assigned to this registry event.
      */
     private long sequence;
+
     /**
      * Creation time of this registry event in epoch milliseconds.
      */

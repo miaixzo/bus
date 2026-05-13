@@ -76,10 +76,12 @@ public class HierarchicalAnnotatedElements implements AnnotatedElement, Iterable
      * ignored.
      */
     protected final BiFunction<Set<AnnotatedElement>, AnnotatedElement, AnnotatedElement> elementFactory;
+
     /**
      * The wrapped {@link AnnotatedElement} object.
      */
     protected final AnnotatedElement source;
+
     /**
      * A lazy-loaded set of all {@link AnnotatedElement}s in the hierarchy. This set is initialized upon the first call
      * to {@link #getElementMappings()}. The elements in this collection are ordered by their distance from the wrapped

@@ -86,6 +86,8 @@ public class SimpleScheduler<T> {
      * in the {@link #run()} method and provide a way to retrieve the current result via {@link #getResult()}.
      *
      * @param <T> The type of the result produced by the job.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public interface Job<T> extends Runnable {
 
@@ -95,6 +97,7 @@ public class SimpleScheduler<T> {
          * @return The execution result.
          */
         T getResult();
+
     }
 
 }

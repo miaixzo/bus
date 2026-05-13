@@ -34,8 +34,8 @@ import org.miaixz.bus.core.xyz.IteratorKit;
  * for configuring size-bounded caches, allowing capacity to be measured by factors other than just the number of
  * entries.
  *
- * @author Kimi Liu
  * @see <a href="http://code.google.com/p/concurrentlinkedhashmap/">ConcurrentLinkedHashMap Project</a>
+ * @author Kimi Liu
  * @since Java 21+
  */
 public final class Weighers {
@@ -179,10 +179,15 @@ public final class Weighers {
 
     /**
      * An {@link EntryWeigher} implementation that assigns a weight of 1 to every entry.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     enum SingletonEntryWeigher implements EntryWeigher<Object, Object> {
 
-        /** Singleton instance. */
+        /**
+         * Singleton instance.
+         */
         INSTANCE;
 
         /**
@@ -196,14 +201,20 @@ public final class Weighers {
         public int weightOf(final Object key, final Object value) {
             return 1;
         }
+
     }
 
     /**
      * A {@link Weigher} implementation that assigns a weight of 1 to every value.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     enum SingletonWeigher implements Weigher<Object> {
 
-        /** Singleton instance. */
+        /**
+         * Singleton instance.
+         */
         INSTANCE;
 
         /**
@@ -216,14 +227,20 @@ public final class Weighers {
         public int weightOf(final Object value) {
             return 1;
         }
+
     }
 
     /**
      * A {@link Weigher} implementation for byte arrays, where the weight is the length of the array.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     enum ByteArrayWeigher implements Weigher<byte[]> {
 
-        /** Singleton instance. */
+        /**
+         * Singleton instance.
+         */
         INSTANCE;
 
         /**
@@ -236,14 +253,20 @@ public final class Weighers {
         public int weightOf(final byte[] value) {
             return value.length;
         }
+
     }
 
     /**
      * A {@link Weigher} implementation for {@link Iterable} objects, where the weight is the number of elements.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     enum IterableWeigher implements Weigher<Iterable<?>> {
 
-        /** Singleton instance. */
+        /**
+         * Singleton instance.
+         */
         INSTANCE;
 
         /**
@@ -259,14 +282,20 @@ public final class Weighers {
             }
             return IteratorKit.size(values);
         }
+
     }
 
     /**
      * A {@link Weigher} implementation for {@link Collection} objects, where the weight is the number of elements.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     enum CollectionWeigher implements Weigher<Collection<?>> {
 
-        /** Singleton instance. */
+        /**
+         * Singleton instance.
+         */
         INSTANCE;
 
         /**
@@ -279,14 +308,20 @@ public final class Weighers {
         public int weightOf(final Collection<?> values) {
             return values.size();
         }
+
     }
 
     /**
      * A {@link Weigher} implementation for {@link List} objects, where the weight is the number of elements.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     enum ListWeigher implements Weigher<List<?>> {
 
-        /** Singleton instance. */
+        /**
+         * Singleton instance.
+         */
         INSTANCE;
 
         /**
@@ -299,14 +334,20 @@ public final class Weighers {
         public int weightOf(final List<?> values) {
             return values.size();
         }
+
     }
 
     /**
      * A {@link Weigher} implementation for {@link Set} objects, where the weight is the number of elements.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     enum SetWeigher implements Weigher<Set<?>> {
 
-        /** Singleton instance. */
+        /**
+         * Singleton instance.
+         */
         INSTANCE;
 
         /**
@@ -319,14 +360,20 @@ public final class Weighers {
         public int weightOf(final Set<?> values) {
             return values.size();
         }
+
     }
 
     /**
      * A {@link Weigher} implementation for {@link Map} objects, where the weight is the number of entries.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     enum MapWeigher implements Weigher<Map<?, ?>> {
 
-        /** Singleton instance. */
+        /**
+         * Singleton instance.
+         */
         INSTANCE;
 
         /**
@@ -339,6 +386,7 @@ public final class Weighers {
         public int weightOf(final Map<?, ?> values) {
             return values.size();
         }
+
     }
 
     /**
@@ -346,6 +394,8 @@ public final class Weighers {
      *
      * @param <K> The type of keys.
      * @param <V> The type of values.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static final class EntryWeigherView<K, V> implements EntryWeigher<K, V>, Serializable {
 
@@ -370,6 +420,7 @@ public final class Weighers {
         public int weightOf(final K key, final V value) {
             return weigher.weightOf(value);
         }
+
     }
 
 }

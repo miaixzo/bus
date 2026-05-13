@@ -29,11 +29,16 @@ import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 
 /**
+ * Defines the Photometric values.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public enum Photometric {
 
+    /**
+     * The monochrome1 value.
+     */
     MONOCHROME1(true, true, false, false) {
 
         @Override
@@ -41,6 +46,9 @@ public enum Photometric {
             return ColorModelFactory.createMonochromeColorModel(bits, dataType);
         }
     },
+    /**
+     * The monochrome2 value.
+     */
     MONOCHROME2(true, false, false, false) {
 
         @Override
@@ -48,6 +56,9 @@ public enum Photometric {
             return ColorModelFactory.createMonochromeColorModel(bits, dataType);
         }
     },
+    /**
+     * The palette color value.
+     */
     PALETTE_COLOR(false, false, false, false) {
 
         @Override
@@ -60,6 +71,9 @@ public enum Photometric {
             return ColorModelFactory.createPaletteColorModel(bits, dataType, cspace, ds);
         }
     },
+    /**
+     * The rgb value.
+     */
     RGB(false, false, false, false) {
 
         @Override
@@ -92,6 +106,9 @@ public enum Photometric {
             return this;
         }
     },
+    /**
+     * The ybr full value.
+     */
     YBR_FULL(false, false, true, false) {
 
         @Override
@@ -99,6 +116,9 @@ public enum Photometric {
             return ColorModelFactory.createYBRFullColorModel(bits, dataType, new YBRColorSpace(cspace, YBR.FULL));
         }
     },
+    /**
+     * The ybr full 422 value.
+     */
     YBR_FULL_422(false, false, true, true) {
 
         @Override
@@ -120,6 +140,9 @@ public enum Photometric {
             return new SampledSampleModel(w, h, ColorSubsampling.YBR_XXX_422);
         }
     },
+    /**
+     * The ybr ict value.
+     */
     YBR_ICT(false, false, true, false) {
 
         @Override
@@ -128,6 +151,9 @@ public enum Photometric {
         }
 
     },
+    /**
+     * The ybr partial 420 value.
+     */
     YBR_PARTIAL_420(false, false, true, true) {
 
         @Override
@@ -149,6 +175,9 @@ public enum Photometric {
             return new SampledSampleModel(w, h, ColorSubsampling.YBR_XXX_420);
         }
     },
+    /**
+     * The ybr partial 422 value.
+     */
     YBR_PARTIAL_422(false, false, true, true) {
 
         @Override
@@ -170,6 +199,9 @@ public enum Photometric {
             return new SampledSampleModel(w, h, ColorSubsampling.YBR_XXX_422);
         }
     },
+    /**
+     * The ybr rct value.
+     */
     YBR_RCT(false, false, true, false) {
 
         @Override
@@ -178,11 +210,34 @@ public enum Photometric {
         }
     };
 
+    /**
+     * The monochrome value.
+     */
     private final boolean monochrome;
+
+    /**
+     * The inverse value.
+     */
     private final boolean inverse;
+
+    /**
+     * The ybr value.
+     */
     private final boolean ybr;
+
+    /**
+     * The sub sampled value.
+     */
     private final boolean subSampled;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param monochrome the monochrome.
+     * @param inverse    the inverse.
+     * @param ybr        the ybr.
+     * @param subSampled the sub sampled.
+     */
     Photometric(boolean monochrome, boolean inverse, boolean ybr, boolean subSampled) {
         this.monochrome = monochrome;
         this.inverse = inverse;
@@ -190,36 +245,96 @@ public enum Photometric {
         this.subSampled = subSampled;
     }
 
+    /**
+     * Creates a value from the supplied input.
+     *
+     * @param s the s.
+     * @return the operation result.
+     */
     public static Photometric fromString(String s) {
         return s.equals("PALETTE COLOR") ? PALETTE_COLOR : valueOf(s);
     }
 
+    /**
+     * Executes the frame length operation.
+     *
+     * @param w             the w.
+     * @param h             the h.
+     * @param samples       the samples.
+     * @param bitsAllocated the bits allocated.
+     * @return the operation result.
+     */
     public int frameLength(int w, int h, int samples, int bitsAllocated) {
         return w * h * samples * bitsAllocated / 8;
     }
 
+    /**
+     * Determines whether monochrome.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean isMonochrome() {
         return monochrome;
     }
 
+    /**
+     * Determines whether ybr.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean isYBR() {
         return ybr;
     }
 
+    /**
+     * Executes the compress operation.
+     *
+     * @param tsuid the tsuid.
+     * @return the operation result.
+     */
     public Photometric compress(String tsuid) {
         return this;
     }
 
+    /**
+     * Determines whether inverse.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean isInverse() {
         return inverse;
     }
 
+    /**
+     * Determines whether sub sampled.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean isSubSampled() {
         return subSampled;
     }
 
+    /**
+     * Creates the color model.
+     *
+     * @param bits     the bits.
+     * @param dataType the data type.
+     * @param cspace   the cspace.
+     * @param ds       the ds.
+     * @return the operation result.
+     */
     public abstract ColorModel createColorModel(int bits, int dataType, ColorSpace cspace, Attributes ds);
 
+    /**
+     * Creates the sample model.
+     *
+     * @param dataType the data type.
+     * @param w        the w.
+     * @param h        the h.
+     * @param samples  the samples.
+     * @param banded   the banded.
+     * @return the operation result.
+     */
     public SampleModel createSampleModel(int dataType, int w, int h, int samples, boolean banded) {
         int[] indicies = new int[samples];
         for (int i = 1; i < samples; i++)

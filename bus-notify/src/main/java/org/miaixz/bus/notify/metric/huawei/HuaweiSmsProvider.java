@@ -49,6 +49,7 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiNotice, Context> {
      * Success code for Huawei Cloud SMS API responses.
      */
     public static final String SUCCESS_CODE = "000000";
+
     /**
      * Used to format the authentication header field, assigning a value to the "X-WSSE" parameter. No modification
      * required.

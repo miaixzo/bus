@@ -62,18 +62,22 @@ public class SSLContextBuilder implements Builder<SSLContext> {
      * The SSL protocol to use.
      */
     private String protocol = Protocol.TLS.name;
+
     /**
      * The key managers.
      */
     private KeyManager[] keyManagers;
+
     /**
      * The trust managers.
      */
     private TrustManager[] trustManagers;
+
     /**
      * The secure random number generator.
      */
     private SecureRandom secureRandom;
+
     /**
      * The security provider.
      */

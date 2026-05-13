@@ -40,10 +40,12 @@ public final class AsynchronousChannelProvider extends java.nio.channels.spi.Asy
      * Signal indicating a read monitor event.
      */
     public static final int READ_MONITOR_SIGNAL = -2;
+
     /**
      * Signal indicating that data is available for reading.
      */
     public static final int READABLE_SIGNAL = -3;
+
     /**
      * Flag indicating whether low memory mode is enabled.
      */

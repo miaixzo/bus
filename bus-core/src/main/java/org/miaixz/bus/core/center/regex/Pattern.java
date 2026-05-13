@@ -37,66 +37,81 @@ public class Pattern {
      * Regular expression for English letters, numbers, and underscores.
      */
     public static final java.util.regex.Pattern GENERAL_PATTERN = java.util.regex.Pattern.compile(Regex.GENERAL);
+
     /**
      * Regular expression for numbers.
      */
     public static final java.util.regex.Pattern NUMBERS_PATTERN = java.util.regex.Pattern.compile(Regex.NUMBERS);
+
     /**
      * Regular expression for letters.
      */
     public static final java.util.regex.Pattern WORD_PATTERN = java.util.regex.Pattern.compile(Regex.WORD);
+
     /**
      * Regular expression for non-numbers.
      */
     public static final java.util.regex.Pattern NOT_NUMBERS_PATTERN = java.util.regex.Pattern
             .compile(Regex.NOT_NUMBERS);
+
     /**
      * Regular expression for strings starting with non-numbers.
      */
     public static final java.util.regex.Pattern WITH_NOT_NUMBERS_PATTERN = java.util.regex.Pattern
             .compile(Regex.WITH_NOT_NUMBERS);
+
     /**
      * Regular expression for spaces.
      */
     public static final java.util.regex.Pattern SPACES_PATTERN = java.util.regex.Pattern.compile(Regex.SPACES);
+
     /**
      * Regular expression for space-colon-space sequence.
      */
     public static final java.util.regex.Pattern SPACES_COLON_SPACE_PATTERN = java.util.regex.Pattern
             .compile(Regex.SPACES_COLON_SPACE);
+
     /**
      * Regular expression for validating hexadecimal strings.
      */
     public static final java.util.regex.Pattern VALID_HEX_PATTERN = java.util.regex.Pattern.compile(Regex.VALID_HEX);
+
     /**
      * Regular expression for a single Chinese character, referencing Unicode ranges from Wikipedia (<a href=
      * "https://zh.wikipedia.org/wiki/%E6%B1%89%E5%AD%97">https://zh.wikipedia.org/wiki/%E6%B1%89%E5%AD%97</a>).
      */
     public static final java.util.regex.Pattern CHINESE_PATTERN = java.util.regex.Pattern.compile(Regex.CHINESE);
+
     /**
      * Regular expression for multiple Chinese characters.
      */
     public static final java.util.regex.Pattern CHINESES_PATTERN = java.util.regex.Pattern.compile(Regex.CHINESES);
+
     /**
      * Regular expression for capturing groups.
      */
     public static final java.util.regex.Pattern GROUP_VAR_PATTERN = java.util.regex.Pattern.compile(Regex.GROUP_VAR);
+
     /**
      * Regular expression to quickly distinguish between IP addresses and hostnames.
      */
     public static final java.util.regex.Pattern IP_ADDRESS_PATTERN = java.util.regex.Pattern.compile(Regex.IP_ADDRESS);
+
     /**
      * Regular expression for IPv4 addresses, using groups for easy parsing of each segment.
      */
     public static final java.util.regex.Pattern IPV4_PATTERN = java.util.regex.Pattern.compile(Regex.IPV4);
+
     /**
      * Regular expression for IPv6 addresses.
      */
     public static final java.util.regex.Pattern IPV6_PATTERN = java.util.regex.Pattern.compile(Regex.IPV6);
+
     /**
      * Regular expression for currency values.
      */
     public static final java.util.regex.Pattern MONEY_PATTERN = java.util.regex.Pattern.compile(Regex.MONEY);
+
     /**
      * Regular expression for email addresses, compliant with RFC 5322. Note that this regex is more lenient. Regex
      * source: <a href="http://emailregex.com/">http://emailregex.com/</a> References:
@@ -107,89 +122,108 @@ public class Pattern {
      */
     public static final java.util.regex.Pattern EMAIL_PATTERN = java.util.regex.Pattern
             .compile(Regex.EMAIL, java.util.regex.Pattern.CASE_INSENSITIVE);
+
     /**
      * Regular expression for mainland China mobile phone numbers. Example: +86 180 5690 2500, 2-digit area code + 13
      * digits.
      */
     public static final java.util.regex.Pattern MOBILE_PATTERN = java.util.regex.Pattern.compile(Regex.MOBILE);
+
     /**
      * Regular expression for Hong Kong mobile phone numbers. Example: +852 5100 6590, 3-digit area code + 10 digits,
      * Hong Kong mobile numbers are 8 digits.
      */
     public static final java.util.regex.Pattern MOBILE_HK_PATTERN = java.util.regex.Pattern.compile(Regex.MOBILE_HK);
+
     /**
      * Regular expression for Taiwan mobile phone numbers. Example: +886 09 60 000000, 3-digit area code + number
      * starting with 09 + 8 digits, Taiwan mobile numbers are 10 digits.
      */
     public static final java.util.regex.Pattern MOBILE_TW_PATTERN = java.util.regex.Pattern.compile(Regex.MOBILE_TW);
+
     /**
      * Regular expression for Macau mobile phone numbers. Example: +853 68 00000, 3-digit area code + number starting
      * with 6 + 7 digits, Macau mobile numbers are 8 digits.
      */
     public static final java.util.regex.Pattern MOBILE_MO_PATTERN = java.util.regex.Pattern.compile(Regex.MOBILE_MO);
+
     /**
      * Regular expression for landline phone numbers.
      */
     public static final java.util.regex.Pattern TEL_PATTERN = java.util.regex.Pattern.compile(Regex.TEL);
+
     /**
      * Regular expression for landline phone numbers, including 400 and 800 service numbers.
      */
     public static final java.util.regex.Pattern TEL_400_800_PATTERN = java.util.regex.Pattern
             .compile(Regex.TEL_400_800);
+
     /**
      * Regular expression for 18-digit Chinese Resident Identity Card numbers.
      */
     public static final java.util.regex.Pattern CITIZEN_ID_PATTERN = java.util.regex.Pattern.compile(Regex.CITIZEN_ID);
+
     /**
      * Regular expression for postal codes, compatible with Hong Kong, Macau, and Taiwan.
      */
     public static final java.util.regex.Pattern ZIP_CODE_PATTERN = java.util.regex.Pattern.compile(Regex.ZIP_CODE);
+
     /**
      * Regular expression for birth dates.
      */
     public static final java.util.regex.Pattern BIRTHDAY_PATTERN = java.util.regex.Pattern.compile(Regex.BIRTHDAY);
+
     /**
      * Regular expression for URIs. Definition can be found at:
      * <a href="https://www.ietf.org/rfc/rfc3986.html#appendix-B">https://www.ietf.org/rfc/rfc3986.html#appendix-B</a>
      */
     public static final java.util.regex.Pattern URI_PATTERN = java.util.regex.Pattern.compile(Regex.URI);
+
     /**
      * Regular expression for URLs.
      */
     public static final java.util.regex.Pattern URL_PATTERN = java.util.regex.Pattern.compile(Regex.URL);
+
     /**
      * Regular expression for protocol-based URLs (from: <a href="http://urlregex.com/">http://urlregex.com/</a>). This
      * regex supports URLs with protocols like FTP, File, etc.
      */
     public static final java.util.regex.Pattern URL_HTTP_PATTERN = java.util.regex.Pattern
             .compile(Regex.URL_HTTP, java.util.regex.Pattern.CASE_INSENSITIVE);
+
     /**
      * Regular expression for Chinese characters, English letters, numbers, and underscores.
      */
     public static final java.util.regex.Pattern GENERAL_WITH_CHINESE_PATTERN = java.util.regex.Pattern
             .compile(Regex.GENERAL_WITH_CHINESE);
+
     /**
      * Regular expression for UUIDs.
      */
     public static final java.util.regex.Pattern UUID_PATTERN = java.util.regex.Pattern.compile(Regex.UUID);
+
     /**
      * Regular expression for UUIDs without hyphens.
      */
     public static final java.util.regex.Pattern UUID_SIMPLE_PATTERN = java.util.regex.Pattern
             .compile(Regex.UUID_SIMPLE);
+
     /**
      * Regular expression for MAC addresses.
      */
     public static final java.util.regex.Pattern MAC_ADDRESS_PATTERN = java.util.regex.Pattern
             .compile(Regex.MAC_ADDRESS);
+
     /**
      * Regular expression for hexadecimal strings.
      */
     public static final java.util.regex.Pattern HEX_PATTERN = java.util.regex.Pattern.compile(Regex.HEX);
+
     /**
      * Regular expression for time formats.
      */
     public static final java.util.regex.Pattern TIME_PATTERN = java.util.regex.Pattern.compile(Regex.TIME);
+
     /**
      * Regular expression for Chinese vehicle license plate numbers (compatible with new energy vehicle plates).
      */
@@ -209,6 +243,7 @@ public class Pattern {
      */
     public static final java.util.regex.Pattern CREDIT_CODE_PATTERN = java.util.regex.Pattern
             .compile(Regex.CREDIT_CODE);
+
     /**
      * Regular expression for Vehicle Identification Number (VIN). Also known as: Vehicle Identification Code, Chassis
      * Number, Seventeen-digit Code. Standard: GB 16735-2019. Official standard address:
@@ -245,6 +280,7 @@ public class Pattern {
      */
     public static final java.util.regex.Pattern CAR_DRIVING_LICENCE_PATTERN = java.util.regex.Pattern
             .compile(Regex.CAR_DRIVING_LICENCE);
+
     /**
      * Regular expression for Chinese names. Uyghur names use a middle dot (·). The correct middle dot is the one found
      * on the top-left of the keyboard (before '1') in Chinese input method. Incorrect characters: {@code ．.。．.} Correct
@@ -276,6 +312,7 @@ public class Pattern {
      */
     public static final java.util.regex.Pattern CHINESE_NAME_PATTERN = java.util.regex.Pattern
             .compile(Regex.CHINESE_NAME);
+
     /**
      * Regular expression for invalid characters in Windows filenames.
      */

@@ -37,18 +37,22 @@ public final class PerfmonConsts {
      * The TOTAL_INSTANCE constant.
      */
     public static final String TOTAL_INSTANCE = "_Total";
+
     /**
      * The TOTAL_OR_IDLE_INSTANCES constant.
      */
     public static final String TOTAL_OR_IDLE_INSTANCES = "_Total|Idle";
+
     /**
      * The TOTAL_INSTANCES constant.
      */
     public static final String TOTAL_INSTANCES = "*_Total";
+
     /**
      * The NOT_TOTAL_INSTANCE constant.
      */
     public static final String NOT_TOTAL_INSTANCE = "^" + TOTAL_INSTANCE;
+
     /**
      * The NOT_TOTAL_INSTANCES constant.
      */
@@ -58,6 +62,7 @@ public final class PerfmonConsts {
      * Perfmon counter names and corresponding WMI tables
      */
     public static final String MEMORY = "Memory";
+
     /**
      * The WIN32_PERF_RAW_DATA_PERF_OS_MEMORY constant.
      */
@@ -67,6 +72,7 @@ public final class PerfmonConsts {
      * The PAGING_FILE constant.
      */
     public static final String PAGING_FILE = "Paging File";
+
     /**
      * The WIN32_PERF_RAW_DATA_PERF_OS_PAGING_FILE constant.
      */
@@ -76,6 +82,7 @@ public final class PerfmonConsts {
      * The PHYSICAL_DISK constant.
      */
     public static final String PHYSICAL_DISK = "PhysicalDisk";
+
     /**
      * The WIN32_PERF_RAW_DATA_PERF_DISK_PHYSICAL_DISK_WHERE_NAME_NOT_TOTAL constant.
      */
@@ -85,20 +92,24 @@ public final class PerfmonConsts {
      * The PROCESS constant.
      */
     public static final String PROCESS = "Process";
+
     /**
      * The WIN32_PERFPROC_PROCESS constant.
      */
     public static final String WIN32_PERFPROC_PROCESS = "Win32_PerfRawData_PerfProc_Process";
+
     /**
      * The WIN32_PERFPROC_PROCESS_WHERE_NOT_NAME_LIKE_TOTAL constant.
      */
     public static final String WIN32_PERFPROC_PROCESS_WHERE_NOT_NAME_LIKE_TOTAL = WIN32_PERFPROC_PROCESS
             + " WHERE NOT Name LIKE \"%_Total\"";
+
     /**
      * The WIN32_PERFPROC_PROCESS_WHERE_NAME_TOTAL constant.
      */
     public static final String WIN32_PERFPROC_PROCESS_WHERE_NAME_TOTAL = WIN32_PERFPROC_PROCESS
             + " WHERE Name=\"_Total\"";
+
     /**
      * The WIN32_PERFPROC_PROCESS_WHERE_IDPROCESS_0 constant.
      */
@@ -108,10 +119,12 @@ public final class PerfmonConsts {
      * The THREAD constant.
      */
     public static final String THREAD = "Thread";
+
     /**
      * The WIN32_PERF_RAW_DATA_PERF_PROC_THREAD constant.
      */
     public static final String WIN32_PERF_RAW_DATA_PERF_PROC_THREAD = "Win32_PerfRawData_PerfProc_Thread";
+
     /**
      * The WIN32_PERF_RAW_DATA_PERF_PROC_THREAD_WHERE_NOT_NAME_LIKE_TOTAL constant.
      */
@@ -122,10 +135,12 @@ public final class PerfmonConsts {
      * The PROCESSOR constant.
      */
     public static final String PROCESSOR = "Processor";
+
     /**
      * The WIN32_PERF_RAW_DATA_PERF_OS_PROCESSOR_WHERE_NAME_NOT_TOTAL constant.
      */
     public static final String WIN32_PERF_RAW_DATA_PERF_OS_PROCESSOR_WHERE_NAME_NOT_TOTAL = "Win32_PerfRawData_PerfOS_Processor WHERE Name!=\"_Total\"";
+
     /**
      * The WIN32_PERF_RAW_DATA_PERF_OS_PROCESSOR_WHERE_NAME_TOTAL constant.
      */
@@ -136,10 +151,12 @@ public final class PerfmonConsts {
      * The PROCESSOR_INFORMATION constant.
      */
     public static final String PROCESSOR_INFORMATION = "Processor Information";
+
     /**
      * The WIN32_PERF_RAW_DATA_COUNTERS_PROCESSOR_INFORMATION_WHERE_NOT_NAME_LIKE_TOTAL constant.
      */
     public static final String WIN32_PERF_RAW_DATA_COUNTERS_PROCESSOR_INFORMATION_WHERE_NOT_NAME_LIKE_TOTAL = "Win32_PerfRawData_Counters_ProcessorInformation WHERE NOT Name LIKE \"%_Total\"";
+
     /**
      * The WIN32_PERF_FORMATTED_DATA_COUNTERS_PROCESSOR_INFORMATION_WHERE_NOT_NAME_LIKE_TOTAL constant.
      */
@@ -149,6 +166,7 @@ public final class PerfmonConsts {
      * The SYSTEM constant.
      */
     public static final String SYSTEM = "System";
+
     /**
      * The WIN32_PERF_RAW_DATA_PERF_OS_SYSTEM constant.
      */
@@ -158,6 +176,7 @@ public final class PerfmonConsts {
      * The GPU_ENGINE constant.
      */
     public static final String GPU_ENGINE = "GPU Engine";
+
     /**
      * The GPU_ADAPTER_MEMORY constant.
      */

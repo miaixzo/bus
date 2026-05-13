@@ -87,6 +87,8 @@ public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue
      * A `Predicate` that checks if there is sufficient free memory.
      *
      * @param <E> The element type.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class MemoryChecker<E> implements Predicate<E> {
 
@@ -114,11 +116,15 @@ public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue
         public boolean test(final E e) {
             return FreeMemoryCalculator.INSTANCE.getResult() > maxFreeMemory;
         }
+
     }
 
     /**
      * A scheduled task that periodically calculates the available free memory. This avoids calling
      * `Runtime.getRuntime().freeMemory()` on every single queue operation.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class FreeMemoryCalculator extends SimpleScheduler<Long> {
 
@@ -156,6 +162,7 @@ public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue
                 }
             }, 50); // Updates every 50 milliseconds
         }
+
     }
 
 }

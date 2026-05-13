@@ -28,21 +28,57 @@ import java.util.Objects;
 import org.miaixz.bus.image.Tag;
 
 /**
+ * Represents the Code type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class Code implements Serializable {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852262087160L;
 
+    /**
+     * The no code meaning value.
+     */
     private static final String NO_CODE_MEANING = "<none>";
+
+    /**
+     * The key value.
+     */
     private transient final Key key = new Key();
+
+    /**
+     * The code value value.
+     */
     private String codeValue;
+
+    /**
+     * The coding scheme designator value.
+     */
     private String codingSchemeDesignator;
+
+    /**
+     * The coding scheme version value.
+     */
     private String codingSchemeVersion;
+
+    /**
+     * The code meaning value.
+     */
     private String codeMeaning;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param codeValue              the code value.
+     * @param codingSchemeDesignator the coding scheme designator.
+     * @param codingSchemeVersion    the coding scheme version.
+     * @param codeMeaning            the code meaning.
+     */
     public Code(String codeValue, String codingSchemeDesignator, String codingSchemeVersion, String codeMeaning) {
         if (codeValue == null)
             throw new NullPointerException("Missing Code Value");
@@ -61,6 +97,11 @@ public class Code implements Serializable {
         this.codeMeaning = codeMeaning;
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param s the s.
+     */
     public Code(String s) {
         int len = s.length();
         if (len < 9 || s.charAt(0) != '(' || s.charAt(len - 2) != '"' || s.charAt(len - 1) != ')')
@@ -86,18 +127,42 @@ public class Code implements Serializable {
         this.codeMeaning = trimsubstring(s, startMeaning, len - 2, false);
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param item the item.
+     */
     public Code(Attributes item) {
         this(codeValueOf(item), item.getString(Tag.CodingSchemeDesignator, null),
                 item.getString(Tag.CodingSchemeVersion, null), item.getString(Tag.CodeMeaning, NO_CODE_MEANING));
     }
 
+    /**
+     * Creates a new instance.
+     */
     protected Code() {
     } // needed for JPA
 
+    /**
+     * Executes the nullify dcm01 operation.
+     *
+     * @param codingSchemeDesignator the coding scheme designator.
+     * @param codingSchemeVersion    the coding scheme version.
+     * @return the operation result.
+     */
     private static String nullifyDCM01(String codingSchemeDesignator, String codingSchemeVersion) {
         return "01".equals(codingSchemeVersion) && "DCM".equals(codingSchemeDesignator) ? null : codingSchemeVersion;
     }
 
+    /**
+     * Executes the trimsubstring operation.
+     *
+     * @param s     the s.
+     * @param start the start.
+     * @param end   the end.
+     * @param empty the empty.
+     * @return the operation result.
+     */
     private static String trimsubstring(String s, int start, int end, boolean empty) {
         try {
             String trim = s.substring(start, end).trim();
@@ -108,6 +173,12 @@ public class Code implements Serializable {
         throw new IllegalArgumentException(s);
     }
 
+    /**
+     * Executes the code value of operation.
+     *
+     * @param item the item.
+     * @return the operation result.
+     */
     private static String codeValueOf(Attributes item) {
         String codeValue;
         return (codeValue = item.getString(Tag.CodeValue)) != null ? codeValue
@@ -115,6 +186,12 @@ public class Code implements Serializable {
                         : item.getString(Tag.URNCodeValue);
     }
 
+    /**
+     * Determines whether urn.
+     *
+     * @param codeValue the code value.
+     * @return true if the condition is met; otherwise false.
+     */
     private static boolean isURN(String codeValue) {
         if (codeValue.indexOf(':') > 0)
             try {
@@ -126,27 +203,58 @@ public class Code implements Serializable {
         return false;
     }
 
+    /**
+     * Gets the code value.
+     *
+     * @return the code value.
+     */
     public final String getCodeValue() {
         return codeValue;
     }
 
+    /**
+     * Gets the coding scheme designator.
+     *
+     * @return the coding scheme designator.
+     */
     public final String getCodingSchemeDesignator() {
         return codingSchemeDesignator;
     }
 
+    /**
+     * Gets the coding scheme version.
+     *
+     * @return the coding scheme version.
+     */
     public final String getCodingSchemeVersion() {
         return codingSchemeVersion;
     }
 
+    /**
+     * Gets the code meaning.
+     *
+     * @return the code meaning.
+     */
     public final String getCodeMeaning() {
         return codeMeaning;
     }
 
+    /**
+     * Returns the hash code.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public int hashCode() {
         return codeValue.hashCode();
     }
 
+    /**
+     * Compares this instance with another object for equality.
+     *
+     * @param o the o.
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -156,6 +264,12 @@ public class Code implements Serializable {
         return equalsIgnoreMeaning(other) && Objects.equals(codeMeaning, other.getCodeMeaning());
     }
 
+    /**
+     * Executes the equals ignore meaning operation.
+     *
+     * @param other the other.
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean equalsIgnoreMeaning(Code other) {
         if (other == this)
             return true;
@@ -164,6 +278,11 @@ public class Code implements Serializable {
                 && Objects.equals(codingSchemeVersion, other.getCodingSchemeVersion());
     }
 
+    /**
+     * Returns the string representation.
+     *
+     * @return the string representation.
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -177,6 +296,11 @@ public class Code implements Serializable {
         return sb.toString();
     }
 
+    /**
+     * Converts this value to item.
+     *
+     * @return the operation result.
+     */
     public Attributes toItem() {
         Attributes codeItem = new Attributes(codingSchemeVersion != null ? 4 : 3);
         if (codingSchemeDesignator == null) {
@@ -196,20 +320,45 @@ public class Code implements Serializable {
         return codeItem;
     }
 
+    /**
+     * Executes the key operation.
+     *
+     * @return the operation result.
+     */
     public final Key key() {
         return key;
     }
 
+    /**
+     * Represents the Key type.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public final class Key {
 
+        /**
+         * Creates a new instance.
+         */
         private Key() {
         }
 
+        /**
+         * Returns the hash code.
+         *
+         * @return true if the condition is met; otherwise false.
+         */
         @Override
         public int hashCode() {
             return codeValue.hashCode();
         }
 
+        /**
+         * Compares this instance with another object for equality.
+         *
+         * @param o the o.
+         * @return true if the condition is met; otherwise false.
+         */
         @Override
         public boolean equals(Object o) {
             if (o == this)
@@ -220,9 +369,15 @@ public class Code implements Serializable {
             return equalsIgnoreMeaning(other.outer());
         }
 
+        /**
+         * Executes the outer operation.
+         *
+         * @return the operation result.
+         */
         private Code outer() {
             return Code.this;
         }
+
     }
 
 }

@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.Assert;
  * sublists will not exceed 1.
  *
  * <pre>{@code
- * 
+ *
  * List<Integer> list = List.of(1, 2, 3, 4, 5);
  * AvgPartition<Integer> partition = new AvgPartition<>(list, 3);
  * // partition.get(0) -> [1, 2]
@@ -49,6 +49,7 @@ public class AvgPartition<T> extends Partition<T> {
      * The desired number of partitions.
      */
     final int limit;
+
     /**
      * The number of remaining elements after division, which are distributed one by one among the first
      * {@code remainder} partitions.

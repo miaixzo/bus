@@ -59,46 +59,57 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      * itself.
      */
     private final boolean isOutputFormulaValues = true;
+
     /**
      * List of {@link BoundSheetRecord}s, which can be used to obtain sheet names.
      */
     private final List<BoundSheetRecord> boundSheetRecords = new ArrayList<>();
+
     /**
      * Row handler for processing each row.
      */
     private final RowHandler rowHandler;
+
     /**
      * Listener used to parse formulas and build the stub workbook.
      */
     private SheetRecordCollectingListener workbookBuildingListener;
+
     /**
      * Stub workbook, used for formula calculation.
      */
     private HSSFWorkbook stubWorkbook;
+
     /**
      * Static string table record.
      */
     private SSTRecord sstRecord;
+
     /**
      * Listener for tracking formatting.
      */
     private FormatTrackingHSSFListener formatListener;
+
     /**
      * Flag indicating if the next record contains the string value of a formula.
      */
     private boolean isOutputNextStringRecord;
+
     /**
      * Container for storing cell values of the current row.
      */
     private List<Object> rowCellList = new ArrayList<>();
+
     /**
      * Custom sheet ID to process. If -1, all sheets are processed.
      */
     private int sheetIndex = -1;
+
     /**
      * Sheet name, mainly used when reading by sheet name.
      */
     private String sheetName;
+
     /**
      * Current rId index (sheet index tracking).
      */

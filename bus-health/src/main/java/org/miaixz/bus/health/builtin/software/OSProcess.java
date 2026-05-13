@@ -443,6 +443,9 @@ public interface OSProcess {
 
     /**
      * Process and Thread Execution States
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     enum State {
         /**
@@ -481,6 +484,7 @@ public interface OSProcess {
          * Special case of waiting if the process has been intentionally suspended (Windows only)
          */
         SUSPENDED
+
     }
 
 }

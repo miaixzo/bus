@@ -25,6 +25,12 @@ import java.util.Date;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import java.io.Serial;
 
+/**
+ * The external status check protected branch class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class ExternalStatusCheckProtectedBranch implements Serializable {
 
     @Serial

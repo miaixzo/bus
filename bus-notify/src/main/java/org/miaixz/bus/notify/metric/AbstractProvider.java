@@ -35,7 +35,7 @@ import lombok.AllArgsConstructor;
  *
  * @param <T> The type of {@link Notice} this provider handles.
  * @param <K> The type of {@link Context} this provider uses.
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 21+
  */
 @AllArgsConstructor

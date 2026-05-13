@@ -41,13 +41,26 @@ import org.miaixz.bus.image.nimble.codec.ImageReaderFactory.ImageReaderParam;
 import org.miaixz.bus.image.nimble.extend.ImageReaderExtension;
 
 /**
+ * Represents the LdapImageReaderConfiguration type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class LdapImageReaderConfiguration extends LdapDicomConfigurationExtension {
 
+    /**
+     * The cn image reader factory value.
+     */
     private static final String CN_IMAGE_READER_FACTORY = "cn=Image Reader Factory,";
 
+    /**
+     * Stores the childs.
+     *
+     * @param diffs    the diffs.
+     * @param deviceDN the device dn.
+     * @param device   the device.
+     * @throws NamingException if the operation cannot be completed.
+     */
     @Override
     protected void storeChilds(ConfigurationChanges diffs, String deviceDN, Device device) throws NamingException {
         ImageReaderExtension ext = device.getDeviceExtension(ImageReaderExtension.class);
@@ -55,10 +68,25 @@ public class LdapImageReaderConfiguration extends LdapDicomConfigurationExtensio
             store(diffs, deviceDN, ext.getImageReaderFactory());
     }
 
+    /**
+     * Executes the dn of operation.
+     *
+     * @param tsuid          the tsuid.
+     * @param imageReadersDN the image readers dn.
+     * @return the operation result.
+     */
     private String dnOf(String tsuid, String imageReadersDN) {
         return LdapBuilder.dnOf("dicomTransferSyntax", tsuid, imageReadersDN);
     }
 
+    /**
+     * Executes the store operation.
+     *
+     * @param diffs    the diffs.
+     * @param deviceDN the device dn.
+     * @param factory  the factory.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void store(ConfigurationChanges diffs, String deviceDN, ImageReaderFactory factory) throws NamingException {
         String imageReadersDN = CN_IMAGE_READER_FACTORY + deviceDN;
         config.createSubcontext(
@@ -73,6 +101,15 @@ public class LdapImageReaderConfiguration extends LdapDicomConfigurationExtensio
         }
     }
 
+    /**
+     * Stores the to.
+     *
+     * @param ldapObj the ldap obj.
+     * @param tsuid   the tsuid.
+     * @param param   the param.
+     * @param attrs   the attrs.
+     * @return the operation result.
+     */
     private Attributes storeTo(
             ConfigurationChanges.ModifiedObject ldapObj,
             String tsuid,
@@ -87,6 +124,14 @@ public class LdapImageReaderConfiguration extends LdapDicomConfigurationExtensio
         return attrs;
     }
 
+    /**
+     * Loads the childs.
+     *
+     * @param device   the device.
+     * @param deviceDN the device dn.
+     * @throws NamingException   if the operation cannot be completed.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     protected void loadChilds(Device device, String deviceDN) throws NamingException, InternalException {
         String imageReadersDN = CN_IMAGE_READER_FACTORY + deviceDN;
@@ -115,6 +160,15 @@ public class LdapImageReaderConfiguration extends LdapDicomConfigurationExtensio
         device.addDeviceExtension(new ImageReaderExtension(factory));
     }
 
+    /**
+     * Executes the merge childs operation.
+     *
+     * @param diffs    the diffs.
+     * @param prev     the prev.
+     * @param device   the device.
+     * @param deviceDN the device dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     @Override
     protected void mergeChilds(ConfigurationChanges diffs, Device prev, Device device, String deviceDN)
             throws NamingException {
@@ -134,6 +188,15 @@ public class LdapImageReaderConfiguration extends LdapDicomConfigurationExtensio
         }
     }
 
+    /**
+     * Executes the merge operation.
+     *
+     * @param diffs          the diffs.
+     * @param prev           the prev.
+     * @param factory        the factory.
+     * @param imageReadersDN the image readers dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void merge(
             ConfigurationChanges diffs,
             ImageReaderFactory prev,
@@ -170,6 +233,15 @@ public class LdapImageReaderConfiguration extends LdapDicomConfigurationExtensio
         }
     }
 
+    /**
+     * Stores the diffs.
+     *
+     * @param ldapObj   the ldap obj.
+     * @param prevParam the prev param.
+     * @param param     the param.
+     * @param mods      the mods.
+     * @return the operation result.
+     */
     private List<ModificationItem> storeDiffs(
             ConfigurationChanges.ModifiedObject ldapObj,
             ImageReaderParam prevParam,

@@ -40,6 +40,7 @@ public class NativeSloTracker implements SloTracker {
      * Registered SLO definitions keyed by SLO name.
      */
     private final ConcurrentHashMap<String, SloDefinition> definitions = new ConcurrentHashMap<>();
+
     /**
      * Callbacks fired when the error budget for a named SLO is exhausted.
      */
@@ -55,9 +56,12 @@ public class NativeSloTracker implements SloTracker {
      * @param target           SLO target fraction, e.g. 0.999
      * @param tags             optional tag filters
      * @param budget           the error budget tracking instance
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private record SloDefinition(String timerOrMeterName, boolean isLatency, long thresholdMs, double maxErrorRatio,
             double target, Tag[] tags, ErrorBudget budget) {
+
     }
 
     /**

@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.vortex.routing.mq;
 
+import java.util.Map;
 import java.util.concurrent.*;
 
 import org.miaixz.bus.core.cache.provider.LRUCache;
@@ -30,6 +31,7 @@ import org.miaixz.bus.extra.mq.MQConfig;
 import org.miaixz.bus.extra.mq.MQFactory;
 import org.miaixz.bus.extra.mq.Message;
 import org.miaixz.bus.extra.mq.Producer;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.vortex.Context;
@@ -233,7 +235,7 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
         return Mono.fromCallable(() -> {
             Producer producer = getOrCreateProducer(assets);
             producer.send(message);
-            return "{\"status\": \"Request forwarded to MQ\"}";
+            return JsonKit.toJsonString(Map.of("status", "Request forwarded to MQ"));
         }).subscribeOn(Schedulers.fromExecutor(this.executor)).doOnError(
                 e -> Logger.error(
                         false,

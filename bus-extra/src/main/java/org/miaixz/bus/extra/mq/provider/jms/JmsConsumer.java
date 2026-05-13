@@ -163,6 +163,8 @@ public class JmsConsumer implements Consumer {
      *
      * @param topic      The message topic, typically representing the consumer group in this context.
      * @param jmsMessage The raw Jakarta JMS message instance.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private record JmsMessage(String topic, jakarta.jms.Message jmsMessage) implements Message {
 
@@ -200,6 +202,7 @@ public class JmsConsumer implements Consumer {
                 throw new MQueueException(e);
             }
         }
+
     }
 
 }

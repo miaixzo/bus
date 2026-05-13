@@ -20,11 +20,16 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_CT_APPL_MEASUREMENT;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS CT APPL MEASUREMENT";
 
     /**
@@ -37,7 +42,9 @@ public class PrivateTag {
      */
     public static final int OncologyMeasurementRecistStandard = 0x00290001;
 
-    /** (0029,xx10) VR=CS VM=1 DualEnergy ROI Annotation Mode */
+    /**
+     * (0029,xx10) VR=CS VM=1 DualEnergy ROI Annotation Mode
+     */
     public static final int DualEnergyROIAnnotationMode = 0x00290010;
 
 }

@@ -22,21 +22,41 @@ package org.miaixz.bus.image.galaxy.data;
 import org.miaixz.bus.image.Tag;
 
 /**
+ * Represents the StandardElementDictionary type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class StandardElementDictionary extends ElementDictionary {
 
+    /**
+     * The instance value.
+     */
     public static final ElementDictionary INSTANCE = new StandardElementDictionary();
 
+    /**
+     * Creates a new instance.
+     */
     private StandardElementDictionary() {
         super(null, Tag.class);
     }
 
+    /**
+     * Executes the keyword of operation.
+     *
+     * @param tag the tag.
+     * @return the operation result.
+     */
     public String keywordOf(int tag) {
         return Keyword.valueOf(tag);
     }
 
+    /**
+     * Executes the tm tag of operation.
+     *
+     * @param daTag the da tag.
+     * @return the operation result.
+     */
     public int tmTagOf(int daTag) {
         switch (daTag) {
             case 524306:
@@ -167,6 +187,12 @@ public class StandardElementDictionary extends ElementDictionary {
         }
     }
 
+    /**
+     * Executes the da tag of operation.
+     *
+     * @param tmTag the tm tag.
+     * @return the operation result.
+     */
     public int daTagOf(int tmTag) {
         switch (tmTag) {
             case 524307:
@@ -297,6 +323,12 @@ public class StandardElementDictionary extends ElementDictionary {
         }
     }
 
+    /**
+     * Executes the vr of operation.
+     *
+     * @param tag the tag.
+     * @return the operation result.
+     */
     public VR vrOf(int tag) {
         if ((tag & '\uffff') == 0) {
             return VR.UL;

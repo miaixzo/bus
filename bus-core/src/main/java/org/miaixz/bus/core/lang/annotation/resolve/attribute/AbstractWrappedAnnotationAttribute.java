@@ -29,11 +29,11 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 /**
  * Base implementation of {@link WrappedAnnotationAttribute}.
  *
- * @author Kimi Liu
- * @since Java 21+
  * @see ForceAliasedAnnotationAttribute
  * @see AliasedAnnotationAttribute
  * @see MirroredAnnotationAttribute
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public abstract class AbstractWrappedAnnotationAttribute implements WrappedAnnotationAttribute {
 

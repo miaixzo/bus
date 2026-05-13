@@ -108,8 +108,8 @@ import org.miaixz.bus.core.lang.Assert;
  * non-factory methods, it is necessary to check with {@link #isEmpty()} before performing operations.
  *
  * @param <T> the type of the boundary values, which must be comparable
- * @author Kimi Liu
  * @see Bound
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class BoundedRange<T extends Comparable<? super T>> implements PredicateX<T> {
@@ -121,10 +121,12 @@ public class BoundedRange<T extends Comparable<? super T>> implements PredicateX
      * A static instance representing a doubly unbounded range, i.e., {@code {x | -∞ < x < +∞}}.
      */
     private static final BoundedRange ALL = new BoundedRange(Bound.noneLowerBound(), Bound.noneUpperBound());
+
     /**
      * The lower bound of this range.
      */
     private final Bound<T> lowerBound;
+
     /**
      * The upper bound of this range.
      */

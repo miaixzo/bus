@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * in one, one license one code", the taxpayer identification number == unified social credit code. Policy see the State
  * Administration of Taxation: <a href="https://www.chinatax.gov.cn/n810219/n810724/c1838941/content.html">What are the
  * changes to the taxpayer identification number after "three certificates in one"?</a> Rules:
- * 
+ *
  * <pre>
  * Part 1: Registration management department code, 1 digit (number or uppercase English letter)
  * Part 2: Institution category code, 1 digit (number or uppercase English letter)
@@ -62,10 +62,12 @@ public class CreditCode {
      * Weighting factor.
      */
     private static final int[] WEIGHT = { 1, 3, 9, 27, 19, 26, 16, 17, 20, 29, 25, 13, 8, 24, 10, 30, 28 };
+
     /**
      * Code character set.
      */
     private static final char[] BASE_CODE_ARRAY = "0123456789ABCDEFGHJKLMNPQRTUWXY".toCharArray();
+
     /**
      * Map from code characters to their index.
      */

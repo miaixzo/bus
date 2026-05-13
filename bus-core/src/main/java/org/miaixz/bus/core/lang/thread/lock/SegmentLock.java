@@ -60,6 +60,7 @@ import org.miaixz.bus.core.xyz.ListKit;
  *
  * @param <L> The type of the lock or synchronization primitive managed by the segments (e.g., {@link Lock},
  *            {@link Semaphore}, {@link ReadWriteLock}).
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -70,6 +71,7 @@ public abstract class SegmentLock<L> {
      * save memory (applicable in lazy-loading scenarios).
      */
     private static final int LARGE_LAZY_CUTOFF = 1024;
+
     /**
      * A bitmask representing all bits set, used for maximum integer value.
      */
@@ -251,6 +253,9 @@ public abstract class SegmentLock<L> {
     /**
      * A weak-reference safe {@link ReadWriteLock} implementation that ensures the read and write locks maintain a
      * strong reference to themselves to prevent premature garbage collection.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static final class WeakSafeReadWriteLock implements ReadWriteLock {
 
@@ -282,11 +287,15 @@ public abstract class SegmentLock<L> {
         public java.util.concurrent.locks.Lock writeLock() {
             return new WeakSafeLock(delegate.writeLock(), this);
         }
+
     }
 
     /**
      * A weak-reference safe {@link Lock} wrapper that maintains a strong reference to its enclosing
      * {@link WeakSafeReadWriteLock} to prevent premature garbage collection.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static final class WeakSafeLock implements java.util.concurrent.locks.Lock {
 
@@ -364,11 +373,15 @@ public abstract class SegmentLock<L> {
         public Condition newCondition() {
             return new WeakSafeCondition(delegate.newCondition(), strongReference);
         }
+
     }
 
     /**
      * A weak-reference safe {@link Condition} wrapper that maintains a strong reference to its enclosing
      * {@link WeakSafeReadWriteLock} to prevent premature garbage collection.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static final class WeakSafeCondition implements Condition {
 
@@ -466,12 +479,15 @@ public abstract class SegmentLock<L> {
         public void signalAll() {
             delegate.signalAll();
         }
+
     }
 
     /**
      * Abstract base class for segment locks, ensuring that the number of segments is a power of two.
      *
      * @param <L> The type of the lock or synchronization primitive.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private abstract static class PowerOfTwoSegmentLock<L> extends SegmentLock<L> {
 
@@ -513,6 +529,7 @@ public abstract class SegmentLock<L> {
         public final L get(final Object key) {
             return getAt(indexFor(key));
         }
+
     }
 
     /**
@@ -520,6 +537,8 @@ public abstract class SegmentLock<L> {
      * segments are initialized upon construction.
      *
      * @param <L> The type of the lock or synchronization primitive.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class CompactSegmentLock<L> extends PowerOfTwoSegmentLock<L> {
 
@@ -564,6 +583,7 @@ public abstract class SegmentLock<L> {
         public int size() {
             return array.length;
         }
+
     }
 
     /**
@@ -571,6 +591,8 @@ public abstract class SegmentLock<L> {
      * store segments. Segments are lazily loaded and can be garbage collected if not in use.
      *
      * @param <L> The type of the lock or synchronization primitive.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class SmallLazySegmentLock<L> extends PowerOfTwoSegmentLock<L> {
 
@@ -649,6 +671,8 @@ public abstract class SegmentLock<L> {
          * A weak reference that also stores the index of the element in the {@link AtomicReferenceArray}.
          *
          * @param <L> The type of the referent.
+         * @author Kimi Liu
+         * @since Java 21+
          */
         private static final class ArrayReference<L> extends WeakReference<L> {
 
@@ -665,7 +689,9 @@ public abstract class SegmentLock<L> {
                 super(referent, queue);
                 this.index = index;
             }
+
         }
+
     }
 
     /**
@@ -673,6 +699,8 @@ public abstract class SegmentLock<L> {
      * segments. Segments are lazily loaded and can be garbage collected if not in use.
      *
      * @param <L> The type of the lock or synchronization primitive.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class LargeLazySegmentLock<L> extends PowerOfTwoSegmentLock<L> {
 
@@ -724,10 +752,14 @@ public abstract class SegmentLock<L> {
         public int size() {
             return size;
         }
+
     }
 
     /**
      * Padding lock used to reduce cache-line interference.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class PaddedLock extends ReentrantLock {
 
@@ -744,11 +776,15 @@ public abstract class SegmentLock<L> {
         PaddedLock() {
             super(false);
         }
+
     }
 
     /**
      * A {@link Semaphore} subclass that includes padding to avoid false sharing in highly contended scenarios. This can
      * improve performance in some multi-threaded applications.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class PaddedSemaphore extends Semaphore {
 
@@ -763,6 +799,7 @@ public abstract class SegmentLock<L> {
         PaddedSemaphore(final int permits) {
             super(permits, false);
         }
+
     }
 
 }

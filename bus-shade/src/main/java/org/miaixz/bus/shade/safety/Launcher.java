@@ -53,14 +53,17 @@ public class Launcher {
      * Command-line arguments passed to the application.
      */
     public final String[] args;
+
     /**
      * Provider for decryption operations.
      */
     public final DecryptorProvider decryptorProvider;
+
     /**
      * Provider for encryption operations.
      */
     public final EncryptorProvider encryptorProvider;
+
     /**
      * The encryption/decryption key used by the providers.
      */

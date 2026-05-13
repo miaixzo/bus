@@ -100,6 +100,7 @@ public enum AliPayApi implements Matcher {
      * The API method name.
      */
     private final String method;
+
     /**
      * The description of the API.
      */

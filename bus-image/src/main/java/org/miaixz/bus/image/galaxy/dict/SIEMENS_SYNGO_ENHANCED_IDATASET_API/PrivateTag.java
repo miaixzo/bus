@@ -20,20 +20,31 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_ENHANCED_IDATASET_API;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS SYNGO ENHANCED IDATASET API";
 
-    /** (0027,xx01) VR=CS VM=1 Business Unit Code */
+    /**
+     * (0027,xx01) VR=CS VM=1 Business Unit Code
+     */
     public static final int BusinessUnitCode = 0x00270001;
 
-    /** (0027,xx02) VR=LO VM=1 Application Type */
+    /**
+     * (0027,xx02) VR=LO VM=1 Application Type
+     */
     public static final int ApplicationType = 0x00270002;
 
-    /** (0027,xx03) VR=SQ VM=1 Application Attributes Sequenc */
+    /**
+     * (0027,xx03) VR=SQ VM=1 Application Attributes Sequenc
+     */
     public static final int ApplicationAttributesSequence = 0x00270003;
 
 }

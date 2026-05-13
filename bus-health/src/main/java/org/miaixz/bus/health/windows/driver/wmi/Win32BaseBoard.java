@@ -53,9 +53,13 @@ public final class Win32BaseBoard {
 
     /**
      * Baseboard description properties.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum BaseBoardProperty {
         MANUFACTURER, MODEL, PRODUCT, VERSION, SERIALNUMBER
+
     }
 
 }

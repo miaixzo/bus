@@ -80,23 +80,35 @@ public final class Win32Processor {
 
     /**
      * Processor voltage properties.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum VoltProperty {
         CURRENTVOLTAGE, VOLTAGECAPS
+
     }
 
     /**
      * Processor ID property
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum ProcessorIdProperty {
         PROCESSORID
+
     }
 
     /**
      * Processor bitness property
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum BitnessProperty {
         ADDRESSWIDTH
+
     }
 
 }

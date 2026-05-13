@@ -170,6 +170,9 @@ public interface OSThread {
 
     /**
      * Constants which may be used to filter Thread lists
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     final class ThreadFiltering {
 
@@ -183,6 +186,7 @@ public interface OSThread {
          */
         private ThreadFiltering() {
         }
+
     }
 
 }

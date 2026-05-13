@@ -296,6 +296,9 @@ public class MapperConfiguration implements InitializingBean {
     /**
      * A custom {@link VFS} implementation for MyBatis that works correctly in a Spring Boot environment, especially
      * with executable jars.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class SpringBootVFS extends VFS {
 
@@ -393,6 +396,9 @@ public class MapperConfiguration implements InitializingBean {
 
     /**
      * AOT processor that discovers MapperFactoryBean beans and registers runtime hints for native compilation.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static class MyBatisBeanFactoryInitializationAotProcessor
             implements BeanFactoryInitializationAotProcessor, BeanRegistrationExcludeFilter {
@@ -516,10 +522,14 @@ public class MapperConfiguration implements InitializingBean {
                 hints.reflection().registerType(type, MemberCategory.values());
             }
         }
+
     }
 
     /**
      * Utility class to resolve actual parameter and return types from mapper methods with generics.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static class MyBatisMapperTypes {
 
@@ -559,10 +569,14 @@ public class MapperConfiguration implements InitializingBean {
             }
             return result;
         }
+
     }
 
     /**
      * Post-processor that ensures MapperFactoryBean bean definitions include generic type information.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static class MyBatisMapperFactoryBeanPostProcessor implements MergedBeanDefinitionPostProcessor, BeanFactoryAware {
 
@@ -579,11 +593,15 @@ public class MapperConfiguration implements InitializingBean {
                 Class<?> beanType,
                 String beanName) {
         }
+
     }
 
     /**
      * Converts String-based mapperInterface properties to Class objects in MapperFactoryBean definitions. Necessary
      * because AOT-generated bean definitions set mapperInterface as String.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static class MapperInterfaceStringToClassConverter
             implements org.springframework.beans.factory.config.BeanFactoryPostProcessor {
@@ -685,6 +703,7 @@ public class MapperConfiguration implements InitializingBean {
                     "Mapper interface conversion finished: processedMapperFactoryBeanCount={}",
                     processedCount);
         }
+
     }
 
 }

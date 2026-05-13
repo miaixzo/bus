@@ -61,20 +61,24 @@ public class Crypto extends AbstractCrypto<Crypto> {
      * The {@link Cipher} responsible for performing encryption or decryption operations.
      */
     protected Cipher cipher;
+
     /**
      * The block size for encryption. A value of -1 indicates that the block size is not explicitly set and should be
      * determined dynamically.
      */
     protected int encryptBlockSize = -1;
+
     /**
      * The block size for decryption. A value of -1 indicates that the block size is not explicitly set and should be
      * determined dynamically.
      */
     protected int decryptBlockSize = -1;
+
     /**
      * Algorithm-specific parameters, such as initialization vectors (IVs) or other cryptographic settings.
      */
     private AlgorithmParameterSpec algorithmParameterSpec;
+
     /**
      * Custom {@link SecureRandom} instance for generating random numbers, allowing for custom seeds.
      */

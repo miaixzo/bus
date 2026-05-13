@@ -42,14 +42,17 @@ public abstract class AbstractFileCache implements Serializable {
      * The total cache capacity in bytes.
      */
     protected final int capacity;
+
     /**
      * The maximum size of a file that can be cached. Files larger than this will not be cached.
      */
     protected final int maxFileSize;
+
     /**
      * The default timeout for cache entries in milliseconds. A value of 0 means no timeout.
      */
     protected final long timeout;
+
     /**
      * The underlying cache implementation.
      */

@@ -37,34 +37,42 @@ class LZWEncoder {
      * The maximum number of bits per code.
      */
     static final int BITS = 12;
+
     /**
      * The hash table size, chosen for 80% occupancy.
      */
     static final int HSIZE = 5003;
+
     /**
      * The image width.
      */
     private final int imgW;
+
     /**
      * The image height.
      */
     private final int imgH;
+
     /**
      * The array of pixels to be encoded.
      */
     private final byte[] pixAry;
+
     /**
      * The initial code size.
      */
     private final int initCodeSize;
+
     /**
      * The number of remaining pixels to be processed.
      */
     private int remaining;
+
     /**
      * The current pixel being processed.
      */
     private int curPixel;
+
     /**
      * The current number of bits per code.
      */
@@ -85,10 +93,12 @@ class LZWEncoder {
      * The hash table for LZW encoding.
      */
     int[] htab = new int[HSIZE];
+
     /**
      * The code table for LZW encoding.
      */
     int[] codetab = new int[HSIZE];
+
     /**
      * The hash table size, for dynamic sizing.
      */
@@ -101,35 +111,43 @@ class LZWEncoder {
      * Flag to indicate if the table should be cleared.
      */
     boolean clear_flg = false;
+
     /**
      * The initial number of bits for encoding.
      */
     int g_init_bits;
+
     /**
      * The clear code used in LZW compression.
      */
     int ClearCode;
+
     /**
      * The end-of-information code.
      */
     int EOFCode;
+
     /**
      * The current accumulator for bits.
      */
     int cur_accum = 0;
+
     /**
      * The current number of bits in the accumulator.
      */
     int cur_bits = 0;
+
     /**
      * Masks for bit manipulation.
      */
     int masks[] = { 0x0000, 0x0001, 0x0003, 0x0007, 0x000F, 0x001F, 0x003F, 0x007F, 0x00FF, 0x01FF, 0x03FF, 0x07FF,
             0x0FFF, 0x1FFF, 0x3FFF, 0x7FFF, 0xFFFF };
+
     /**
      * The number of characters in the current packet.
      */
     int a_count;
+
     /**
      * The accumulator for the packet.
      */

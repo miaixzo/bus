@@ -51,6 +51,7 @@ public class SevenZArchiver implements Archiver {
      * The SeekableByteChannel used for writing, especially for in-memory operations.
      */
     private SeekableByteChannel channel;
+
     /**
      * The target OutputStream, used when archiving to a stream.
      */

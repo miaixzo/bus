@@ -28,27 +28,59 @@ import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 import org.miaixz.bus.image.nimble.ImageMetaData;
 
 /**
+ * Represents the ImageFileInputStream type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class ImageFileInputStream extends ImageInputStream implements ImageReaderDescriptor {
 
+    /**
+     * The path value.
+     */
     private final Path path;
+
+    /**
+     * The metadata value.
+     */
     private ImageMetaData metadata;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param path the path.
+     * @throws IOException if the operation cannot be completed.
+     */
     public ImageFileInputStream(Path path) throws IOException {
         super(Files.newInputStream(path));
         this.path = path;
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param path the path.
+     * @throws IOException if the operation cannot be completed.
+     */
     public ImageFileInputStream(String path) throws IOException {
         this(FileSystems.getDefault().getPath(path));
     }
 
+    /**
+     * Gets the path.
+     *
+     * @return the path.
+     */
     public Path getPath() {
         return path;
     }
 
+    /**
+     * Gets the metadata.
+     *
+     * @return the metadata.
+     * @throws IOException if the operation cannot be completed.
+     */
     public ImageMetaData getMetadata() throws IOException {
         if (metadata == null) {
             this.metadata = new ImageMetaData(this);
@@ -56,6 +88,11 @@ public class ImageFileInputStream extends ImageInputStream implements ImageReade
         return metadata;
     }
 
+    /**
+     * Gets the image descriptor.
+     *
+     * @return the image descriptor.
+     */
     @Override
     public ImageDescriptor getImageDescriptor() {
         try {

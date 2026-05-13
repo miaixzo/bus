@@ -60,6 +60,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
      * WebSocket connections require HTTP/1.1 to perform the upgrade.
      */
     private static final List<Protocol> ONLY_HTTP1 = Collections.singletonList(Protocol.HTTP_1_1);
+
     /**
      * The maximum number of bytes to enqueue before trigger a graceful shutdown.
      */
@@ -74,22 +75,27 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
      * The listener for WebSocket events.
      */
     final WebSocketListener listener;
+
     /**
      * The original HTTP request that initiated this WebSocket.
      */
     private final Request originalRequest;
+
     /**
      * A source of random data for generating the client key and masking frames.
      */
     private final Random random;
+
     /**
      * The interval for sending pings, in milliseconds. 0 means no pings.
      */
     private final long pingIntervalMillis;
+
     /**
      * The client-generated key for the WebSocket handshake.
      */
     private final String key;
+
     /**
      * The task that writes frames to the network.
      */
@@ -99,66 +105,82 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
      * A queue of pong frames to be sent.
      */
     private final ArrayDeque<ByteString> pongQueue = new ArrayDeque<>();
+
     /**
      * A queue of message and close frames to be sent.
      */
     private final ArrayDeque<Object> messageAndCloseQueue = new ArrayDeque<>();
+
     /**
      * The underlying HTTP call.
      */
     private NewCall call;
+
     /**
      * The reader for incoming frames.
      */
     private WebSocketReader reader;
+
     /**
      * The writer for outgoing frames.
      */
     private WebSocketWriter writer;
+
     /**
      * The executor for sending pings and canceling the connection.
      */
     private ScheduledExecutorService executor;
+
     /**
      * The combined sink and source for the connection. Null until the connection is established.
      */
     private Streams streams;
+
     /**
      * The total size in bytes of enqueued messages.
      */
     private long queueSize;
+
     /**
      * True if we have enqueued a close frame. No further messages will be accepted.
      */
     private boolean enqueuedClose;
+
     /**
      * A task that will cancel the connection if a graceful close doesn't complete.
      */
     private ScheduledFuture<?> cancelFuture;
+
     /**
      * The close code received from the peer, or -1 if none.
      */
     private int receivedCloseCode = -1;
+
     /**
      * The close reason received from the peer, or null if none.
      */
     private String receivedCloseReason;
+
     /**
      * True if this WebSocket has failed.
      */
     private boolean failed;
+
     /**
      * The number of pings we have sent.
      */
     private int sentPingCount;
+
     /**
      * The number of pings we have received.
      */
     private int receivedPingCount;
+
     /**
      * The number of pongs we have received.
      */
     private int receivedPongCount;
+
     /**
      * True if we are awaiting a pong from the peer.
      */
@@ -859,6 +881,9 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
 
     /**
      * A data class for enqueued messages.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static final class Message {
 
@@ -866,6 +891,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
          * The opcode of the message.
          */
         final int formatOpcode;
+
         /**
          * The message data.
          */
@@ -875,10 +901,14 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
             this.formatOpcode = formatOpcode;
             this.data = data;
         }
+
     }
 
     /**
      * A data class for enqueued close frames.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static final class Close {
 
@@ -886,10 +916,12 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
          * The close code.
          */
         final int code;
+
         /**
          * The close reason.
          */
         final ByteString reason;
+
         /**
          * The timeout for canceling the connection after sending the close frame.
          */
@@ -900,10 +932,14 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
             this.reason = reason;
             this.cancelAfterCloseMillis = cancelAfterCloseMillis;
         }
+
     }
 
     /**
      * A holder for the sink and source of a WebSocket connection.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public abstract static class Streams implements Closeable {
 
@@ -911,10 +947,12 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
          * True if this is a client stream.
          */
         public final boolean client;
+
         /**
          * The source for reading incoming data.
          */
         public final BufferSource source;
+
         /**
          * The sink for writing outgoing data.
          */
@@ -925,10 +963,14 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
             this.source = source;
             this.sink = sink;
         }
+
     }
 
     /**
      * The task for sending periodic pings.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private final class PingRunnable implements Runnable {
 
@@ -942,10 +984,14 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         public void run() {
             writePingFrame();
         }
+
     }
 
     /**
      * The task for canceling the connection if a graceful close times out.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     final class CancelRunnable implements Runnable {
 
@@ -956,6 +1002,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         public void run() {
             cancel();
         }
+
     }
 
 }

@@ -50,30 +50,37 @@ final class LinuxFirmware extends AbstractFirmware {
      */
     private static final DateTimeFormatter VCGEN_FORMATTER = DateTimeFormatter
             .ofPattern("MMM d uuuu HH:mm:ss", Locale.ENGLISH);
+
     /**
      * The vcGenCmd value.
      */
     private final Supplier<VcGenCmdStrings> vcGenCmd = Memoizer.memoize(LinuxFirmware::queryVcGenCmd);
+
     /**
      * The manufacturer value.
      */
     private final Supplier<String> manufacturer = Memoizer.memoize(this::queryManufacturer);
+
     /**
      * The description value.
      */
     private final Supplier<String> description = Memoizer.memoize(this::queryDescription);
+
     /**
      * The releaseDate value.
      */
     private final Supplier<String> releaseDate = Memoizer.memoize(this::queryReleaseDate);
+
     /**
      * The biosNameRev value.
      */
     private final Supplier<Pair<String, String>> biosNameRev = Memoizer.memoize(Dmidecode::queryBiosNameRev);
+
     /**
      * The version value.
      */
     private final Supplier<String> version = Memoizer.memoize(this::queryVersion);
+
     /**
      * The name value.
      */
@@ -236,6 +243,9 @@ final class LinuxFirmware extends AbstractFirmware {
 
     /**
      * The VcGenCmdStrings class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static final class VcGenCmdStrings {
 
@@ -243,18 +253,22 @@ final class LinuxFirmware extends AbstractFirmware {
          * The releaseDate value.
          */
         private final String releaseDate;
+
         /**
          * The manufacturer value.
          */
         private final String manufacturer;
+
         /**
          * The version value.
          */
         private final String version;
+
         /**
          * The name value.
          */
         private final String name;
+
         /**
          * The description value.
          */
@@ -321,6 +335,7 @@ final class LinuxFirmware extends AbstractFirmware {
         String getDescription() {
             return description;
         }
+
     }
 
 }

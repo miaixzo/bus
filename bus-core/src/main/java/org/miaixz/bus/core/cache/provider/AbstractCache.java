@@ -65,6 +65,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
      * A map of locks for each key to reduce lock granularity during write operations.
      */
     protected final Map<K, Lock> keyLockMap = new ConcurrentHashMap<>();
+
     /**
      * The underlying map that stores the cache data.
      */
@@ -74,6 +75,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
      * The cache capacity. A value of {@code 0} indicates no size limit.
      */
     protected int capacity;
+
     /**
      * The default cache timeout in milliseconds. A value of {@code 0} indicates no limit.
      */
@@ -88,6 +90,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
      * A counter for the number of cache hits.
      */
     protected LongAdder hitCount = new LongAdder();
+
     /**
      * A counter for the number of cache misses.
      */

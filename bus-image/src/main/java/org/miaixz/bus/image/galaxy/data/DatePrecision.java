@@ -24,7 +24,7 @@ import java.util.Calendar;
 /**
  * Represents the precision of a date/time value and whether timezone information is included. This class is used to
  * specify desired precision for formatting dates and to retrieve the actual precision of parsed dates.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -37,6 +37,7 @@ public class DatePrecision {
      * as a return value, indicating the precision of the parsed date.
      */
     public int lastField;
+
     /**
      * Specifies whether a formatted date includes a timezone in the stored value itself. This is only used for values
      * of {@link VR#DT}. For methods that format a DT date time, this acts as an input to specify whether the timezone
@@ -60,7 +61,7 @@ public class DatePrecision {
 
     /**
      * Constructs a new {@code DatePrecision} with the specified last field precision and no timezone inclusion.
-     * 
+     *
      * @param lastField The last field of precision (e.g., {@link Calendar#SECOND}, {@link Calendar#MILLISECOND}).
      */
     public DatePrecision(int lastField) {
@@ -69,7 +70,7 @@ public class DatePrecision {
 
     /**
      * Constructs a new {@code DatePrecision} with the specified last field precision and timezone inclusion setting.
-     * 
+     *
      * @param lastField       The last field of precision (e.g., {@link Calendar#SECOND}, {@link Calendar#MILLISECOND}).
      * @param includeTimezone {@code true} if timezone offset should be included in formatted output, {@code false}
      *                        otherwise.

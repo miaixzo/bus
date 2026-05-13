@@ -47,14 +47,17 @@ public interface SolarisLibc extends CLibrary {
      * The UTX_USERSIZE value.
      */
     int UTX_USERSIZE = 32;
+
     /**
      * The UTX_LINESIZE value.
      */
     int UTX_LINESIZE = 32;
+
     /**
      * The UTX_IDSIZE value.
      */
     int UTX_IDSIZE = 4;
+
     /**
      * The UTX_HOSTSIZE value.
      */
@@ -64,14 +67,17 @@ public interface SolarisLibc extends CLibrary {
      * The PRCLSZ value.
      */
     int PRCLSZ = 8;
+
     /**
      * The PRFNSZ value.
      */
     int PRFNSZ = 16;
+
     /**
      * The PRLNSZ value.
      */
     int PRLNSZ = 32;
+
     /**
      * The PRARGSZ value.
      */
@@ -99,6 +105,9 @@ public interface SolarisLibc extends CLibrary {
      * <p>
      * This class maps to the native Solaris utmpx structure representing user accounting database entries.
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "ut_user", "ut_id", "ut_line", "ut_pid", "ut_type", "ut_exit", "ut_tv", "ut_session", "pad",
             "ut_syslen", "ut_host" })
@@ -148,6 +157,7 @@ public interface SolarisLibc extends CLibrary {
          * The ut_host value.
          */
         public byte[] ut_host = new byte[UTX_HOSTSIZE]; // host name
+
     }
 
     /**
@@ -155,6 +165,9 @@ public interface SolarisLibc extends CLibrary {
      * <p>
      * This class maps to the native Solaris exit_status structure which is part of utmpx.
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "e_termination", "e_exit" })
     class Exit_status extends Structure {
@@ -167,6 +180,7 @@ public interface SolarisLibc extends CLibrary {
          * The e_exit value.
          */
         public short e_exit; // Process exit status
+
     }
 
     /**
@@ -175,6 +189,9 @@ public interface SolarisLibc extends CLibrary {
      * This class maps to the native Solaris timeval structure: {@code struct timeval { time_t tv_sec; suseconds_t
      * tv_usec; }; }
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "tv_sec", "tv_usec" })
     class Timeval extends Structure {
@@ -187,10 +204,14 @@ public interface SolarisLibc extends CLibrary {
          * The tv_usec value.
          */
         public NativeLong tv_usec; // microseconds
+
     }
 
     /**
      * Structure for psinfo file
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class SolarisPsInfo {
 
@@ -309,6 +330,7 @@ public interface SolarisLibc extends CLibrary {
          * The pr_pad2 value.
          */
         public byte[] pr_pad2 = new byte[3];
+
         /**
          * The pr_taskid value.
          */
@@ -389,10 +411,14 @@ public interface SolarisLibc extends CLibrary {
             this.pr_filler = Builder.readIntFromBuffer(buff);
             this.pr_lwp = new SolarisLwpsInfo(buff);
         }
+
     }
 
     /**
      * Nested Structure for psinfo file
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class SolarisLwpsInfo {
 
@@ -455,6 +481,7 @@ public interface SolarisLibc extends CLibrary {
          * The pr_pad value.
          */
         public short pr_pad;
+
         /**
          * The pr_start value.
          */
@@ -527,10 +554,14 @@ public interface SolarisLibc extends CLibrary {
             this.pr_last_onproc = Builder.readLongFromBuffer(buff);
             Builder.readByteArrayFromBuffer(buff, this.pr_name);
         }
+
     }
 
     /**
      * Structure for usage file
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class SolarisPrUsage {
 
@@ -696,10 +727,14 @@ public interface SolarisLibc extends CLibrary {
                 this.filler[i] = Builder.readNativeLongFromBuffer(buff);
             }
         }
+
     }
 
     /**
      * 32/64-bit timestruc required for psinfo and lwpsinfo structures
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class Timestruc {
 
@@ -721,6 +756,7 @@ public interface SolarisLibc extends CLibrary {
             this.tv_sec = Builder.readNativeLongFromBuffer(buff);
             this.tv_nsec = Builder.readNativeLongFromBuffer(buff);
         }
+
     }
 
 }

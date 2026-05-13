@@ -44,6 +44,7 @@ public record CodePointIter(String text) implements Iterable<Integer> {
              * The total length of the string in characters.
              */
             private final int length = text.length();
+
             /**
              * The index of the next code point to be returned.
              */

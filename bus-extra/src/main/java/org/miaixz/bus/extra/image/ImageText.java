@@ -40,18 +40,22 @@ public class ImageText implements Serializable {
      * The text content.
      */
     private String pressText;
+
     /**
      * The color of the text.
      */
     private Color color;
+
     /**
      * The font used to render the text.
      */
     private Font font;
+
     /**
      * The starting position (top-left) of the text.
      */
     private Point point;
+
     /**
      * The transparency of the text (0.0f to 1.0f).
      */

@@ -294,6 +294,9 @@ public class PageBuilder {
 
     /**
      * Result object containing pagination SQL and related information.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class PaginationResult {
 

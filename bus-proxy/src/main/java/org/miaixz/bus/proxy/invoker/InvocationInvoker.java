@@ -35,9 +35,14 @@ import java.lang.reflect.Method;
  */
 public class InvocationInvoker implements ProxyChain {
 
-    /** The underlying AspectJ join point. */
+    /**
+     * The underlying AspectJ join point.
+     */
     private final ProceedingJoinPoint joinPoint;
-    /** The lazily initialized method from the join point. */
+
+    /**
+     * The lazily initialized method from the join point.
+     */
     private Method method;
 
     /**

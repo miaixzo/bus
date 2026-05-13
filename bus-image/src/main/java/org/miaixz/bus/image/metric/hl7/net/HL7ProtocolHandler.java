@@ -32,30 +32,67 @@ import org.miaixz.bus.image.metric.net.TCPProtocolHandler;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Defines the HL7ProtocolHandler values.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public enum HL7ProtocolHandler implements TCPProtocolHandler {
 
+    /**
+     * The instance value.
+     */
     INSTANCE;
 
+    /**
+     * Executes the on accept operation.
+     *
+     * @param conn the conn.
+     * @param s    the s.
+     */
     @Override
     public void onAccept(Connection conn, Socket s) {
         conn.getDevice().execute(new HL7Receiver(conn, s));
     }
 
+    /**
+     * Represents the HL7Receiver type.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     private static class HL7Receiver implements Runnable {
 
+        /**
+         * The conn value.
+         */
         final Connection conn;
+
+        /**
+         * The s value.
+         */
         final Socket s;
+
+        /**
+         * The hl7dev value.
+         */
         final HL7DeviceExtension hl7dev;
 
+        /**
+         * Creates a new instance.
+         *
+         * @param conn the conn.
+         * @param s    the s.
+         */
         HL7Receiver(Connection conn, Socket s) {
             this.conn = conn;
             this.s = s;
             this.hl7dev = conn.getDevice().getDeviceExtensionNotNull(HL7DeviceExtension.class);
         }
 
+        /**
+         * Executes the run operation.
+         */
         public void run() {
             int messageCount = 0;
             try {
@@ -111,6 +148,7 @@ public enum HL7ProtocolHandler implements TCPProtocolHandler {
                 conn.close(s);
             }
         }
+
     }
 
 }

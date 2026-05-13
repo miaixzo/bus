@@ -158,15 +158,22 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
 
     /**
      * A simple mix-in interface that applies the {@code @JsonFilter} annotation to all classes.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @com.fasterxml.jackson.annotation.JsonFilter(FILTER_ID)
     interface FilterMixIn {
         // This interface is intentionally empty. It's only used to carry the annotation.
+
     }
 
     /**
      * A custom {@link PropertyFilter} that implements the unified filtering logic. It respects @Include, @Transient,
      * and excludes null/empty values.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static class IncludeTransientPropertyFilter extends SimpleBeanPropertyFilter {
 

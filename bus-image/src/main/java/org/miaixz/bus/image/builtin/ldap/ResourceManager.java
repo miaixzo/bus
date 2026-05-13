@@ -28,23 +28,49 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
+ * Represents the ResourceManager type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 final class ResourceManager {
 
+    /**
+     * The app resource file name value.
+     */
     private static final String APP_RESOURCE_FILE_NAME = "ldap.properties";
 
+    /**
+     * The properties cache value.
+     */
     private static final WeakHashMap<ClassLoader, Properties> propertiesCache = new WeakHashMap<>(11);
 
+    /**
+     * Gets the context class loader.
+     *
+     * @return the context class loader.
+     */
     private static ClassLoader getContextClassLoader() {
         return Thread.currentThread().getContextClassLoader();
     }
 
+    /**
+     * Gets the resource as stream.
+     *
+     * @param cl   the cl.
+     * @param name the name.
+     * @return the resource as stream.
+     */
     private static InputStream getResourceAsStream(final ClassLoader cl, final String name) {
         return cl.getResourceAsStream(name);
     }
 
+    /**
+     * Gets the initial environment.
+     *
+     * @return the initial environment.
+     * @throws InternalException if the operation cannot be completed.
+     */
     public static Properties getInitialEnvironment() throws InternalException {
         ClassLoader cl = getContextClassLoader();
         synchronized (propertiesCache) {

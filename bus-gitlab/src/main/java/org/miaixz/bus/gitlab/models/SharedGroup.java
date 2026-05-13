@@ -27,6 +27,12 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serial;
 
+/**
+ * The shared group class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class SharedGroup implements Serializable {
 
     @Serial

@@ -47,6 +47,7 @@ final class OpenBsdVirtualMemory extends AbstractVirtualMemory {
      */
     private final Supplier<Triplet<Integer, Integer, Integer>> usedTotalPgin = Memoizer
             .memoize(OpenBsdVirtualMemory::queryVmstat, Memoizer.defaultExpiration());
+
     /**
      * The pgout value.
      */

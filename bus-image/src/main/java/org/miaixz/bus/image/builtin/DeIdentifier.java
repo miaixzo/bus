@@ -213,10 +213,12 @@ public class DeIdentifier {
      * Constant string indicating that longitudinal temporal information is unmodified.
      */
     private static final String UNMODIFIED = "UNMODIFIED";
+
     /**
      * Constant string indicating that longitudinal temporal information is removed.
      */
     private static final String REMOVED = "REMOVED";
+
     /**
      * Constant string indicating a positive affirmation, used for PatientIdentityRemoved tag.
      */
@@ -226,18 +228,22 @@ public class DeIdentifier {
      * The set of de-identification options applied by this de-identifier.
      */
     private final EnumSet<Option> options;
+
     /**
      * Attributes containing dummy values used for replacement during de-identification.
      */
     private final Attributes dummyValues = new Attributes();
+
     /**
      * Combined array of tags to be zeroed out or replaced with dummy values.
      */
     private final int[] o;
+
     /**
      * Array of tags to be removed.
      */
     private int[] x = X;
+
     /**
      * Array of UID tags to be remapped.
      */
@@ -454,6 +460,9 @@ public class DeIdentifier {
     /**
      * Enumeration of de-identification options, corresponding to DICOM PS3.15 Annex E. Each option is associated with a
      * {@link Code} from {@link DeIdentificationMethod}.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum Option {
 
@@ -505,6 +514,7 @@ public class DeIdentifier {
         Option(Code code) {
             this.code = code;
         }
+
     }
 
 }

@@ -19,37 +19,40 @@
 */
 package org.miaixz.bus.vortex.routing.rest;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.NonNull;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
-import org.miaixz.bus.vortex.Holder;
+import org.miaixz.bus.vortex.Egress;
 import org.miaixz.bus.vortex.routing.Coordinator;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
-import reactor.netty.http.client.HttpClient;
 
 /**
  * The core executor for executing RESTful HTTP requests to downstream services.
@@ -66,48 +69,10 @@ import reactor.netty.http.client.HttpClient;
 public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
 
     /**
-     * A cached, pre-configured {@link ExchangeStrategies} instance for the {@link WebClient}.
-     * <p>
-     * This is initialized statically to avoid redundant object creation. It sets a generous memory limit for codecs to
-     * prevent errors when handling moderately large response bodies.
-     */
-    private static final ExchangeStrategies CACHED_EXCHANGE_STRATEGIES = ExchangeStrategies.builder()
-            .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(Math.toIntExact(Normal.MEBI_128))).build();
-
-    /**
-     * A cached {@link HttpClient} instance that uses the shared connection pool.
-     * <p>
-     * This is initialized once and reused for all requests to avoid redundant HttpClient creation.
-     */
-    private static volatile HttpClient CACHED_HTTP_CLIENT;
-
-    /**
      * Default constructor.
-     * <p>
-     * The HTTP connection pool is obtained from {@link Holder#connectionProvider()} which is configured globally via
-     * {@code vortex.performance.maxConnections} property.
      */
     public RestExecutor() {
 
-    }
-
-    /**
-     * Gets the cached HTTP client, initializing it lazily if needed.
-     * <p>
-     * Uses double-checked locking for thread-safe lazy initialization.
-     *
-     * @return The cached HttpClient instance
-     */
-    private HttpClient getHttpClient() {
-        if (CACHED_HTTP_CLIENT == null) {
-            synchronized (RestExecutor.class) {
-                if (CACHED_HTTP_CLIENT == null) {
-                    CACHED_HTTP_CLIENT = HttpClient.create(Holder.connectionProvider());
-                    Logger.info(true, "Vortex", "Shared HTTP client initialized: protocol=http");
-                }
-            }
-        }
-        return CACHED_HTTP_CLIENT;
     }
 
     /**
@@ -137,11 +102,8 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 path,
                 baseUrl);
 
-        WebClient webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(getHttpClient()))
-                .exchangeStrategies(CACHED_EXCHANGE_STRATEGIES).baseUrl(baseUrl).build();
-
         Assets assets = context.getAssets();
-        String targetUri = buildTargetUri(assets, context);
+        URI targetUri = buildTargetUri(assets, context, baseUrl);
         Logger.info(
                 true,
                 "Vortex",
@@ -151,8 +113,8 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 path,
                 targetUri);
 
-        WebClient.RequestBodySpec bodySpec = webClient.method(HttpMethod.valueOf(context.getHttpMethod().value()))
-                .uri(targetUri);
+        WebClient.RequestBodySpec bodySpec = Egress
+                .request(HttpMethod.valueOf(context.getHttpMethod().value()), targetUri);
         Logger.info(
                 true,
                 "Vortex",
@@ -290,7 +252,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             Mono<String> jsonBodyMono = Mono.fromCallable(() -> {
                 String json = JsonKit.toJsonString(params);
                 String fixed = fixJsonEncoding(json);
-                int backslashCount = fixed.length() - fixed.replace("\\", "").length();
+                int backslashCount = fixed.length() - fixed.replace(Symbol.BACKSLASH, Normal.EMPTY).length();
                 Logger.debug(
                         true,
                         "Vortex",
@@ -413,35 +375,98 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * @param context The request context.
      * @return The constructed target URI string, including query parameters.
      */
-    private String buildTargetUri(Assets assets, Context context) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(assets.getUrl());
+    private URI buildTargetUri(Assets assets, Context context, String baseUrl) {
+        URI routeUri = UrlKit.toURI(assets.getUrl());
+        String routeUrl = stripQueryAndFragment(assets.getUrl());
+        String routeBaseUrl = routeUri.isAbsolute() ? routeUrl : joinPath(baseUrl, routeUrl);
+        String rawQuery = buildForwardQuery(context, routeUri.getRawQuery());
+        return UrlKit
+                .toURI(StringKit.isBlank(rawQuery) ? routeBaseUrl : routeBaseUrl + Symbol.QUESTION_MARK + rawQuery);
+    }
 
+    /**
+     * Builds the downstream REST query string after removing gateway control parameters.
+     *
+     * @param context       request context
+     * @param assetRawQuery query configured on the route URL, if any
+     * @return raw query string
+     */
+    private String buildForwardQuery(Context context, String assetRawQuery) {
+        List<String> parts = new ArrayList<>();
+        if (StringKit.isNotBlank(assetRawQuery)) {
+            parts.add(assetRawQuery);
+        }
         Map<String, String> query = context.getQuery();
-        MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
-
         if (!query.isEmpty()) {
-            query.forEach((key, value) -> {
-                if (!Args.isForwardingControlParameter(key)) {
-                    multiValueMap.add(key, value);
-                }
-            });
+            query.forEach((key, value) -> addQueryPair(parts, key, value));
         }
 
         if (context.getHttpMethod() == HTTP.Method.GET) {
             Map<String, Object> parameters = context.getParameters();
             if (!parameters.isEmpty()) {
-                parameters.forEach((k, v) -> {
-                    multiValueMap.remove(k);
-                    multiValueMap.add(k, String.valueOf(v));
+                parameters.forEach((key, value) -> {
+                    parts.removeIf(part -> part.startsWith(key + Symbol.EQUAL));
+                    addQueryPair(parts, key, String.valueOf(value));
                 });
             }
         }
 
-        if (!multiValueMap.isEmpty()) {
-            builder.queryParams(multiValueMap);
-        }
+        return String.join(Symbol.AND, parts);
+    }
 
-        return builder.build().toUriString();
+    /**
+     * Adds one query pair using UrlKit encoding rules.
+     *
+     * @param parts query parts
+     * @param key   parameter key
+     * @param value parameter value
+     */
+    private void addQueryPair(List<String> parts, String key, String value) {
+        if (Args.isForwardingControlParameter(key)) {
+            return;
+        }
+        parts.add(UrlKit.toQuery(Map.of(key, StringKit.toStringOrEmpty(value)), Charset.UTF_8));
+    }
+
+    /**
+     * Appends a path to a base URL with one separator.
+     *
+     * @param baseUrl base URL
+     * @param path    path suffix
+     * @return joined URL
+     */
+    private String joinPath(String baseUrl, String path) {
+        if (StringKit.isBlank(path)) {
+            return baseUrl;
+        }
+        boolean baseEnds = baseUrl.endsWith(Symbol.SLASH);
+        boolean pathStarts = path.startsWith(Symbol.SLASH);
+        if (baseEnds && pathStarts) {
+            return baseUrl + path.substring(1);
+        }
+        if (!baseEnds && !pathStarts) {
+            return baseUrl + Symbol.SLASH + path;
+        }
+        return baseUrl + path;
+    }
+
+    /**
+     * Removes query and fragment from one URL.
+     *
+     * @param url source URL
+     * @return URL without query and fragment
+     */
+    private String stripQueryAndFragment(String url) {
+        int queryIndex = url.indexOf(Symbol.C_QUESTION_MARK);
+        int fragmentIndex = url.indexOf(Symbol.C_HASH);
+        int end = url.length();
+        if (queryIndex >= 0) {
+            end = Math.min(end, queryIndex);
+        }
+        if (fragmentIndex >= 0) {
+            end = Math.min(end, fragmentIndex);
+        }
+        return url.substring(0, end);
     }
 
     /**

@@ -75,14 +75,17 @@ public class ICloudDriveProvider extends AbstractProvider {
      * HTTP client for making API requests.
      */
     private final Httpd client;
+
     /**
      * CloudKit API authentication token.
      */
     private final String apiToken;
+
     /**
      * CloudKit container identifier.
      */
     private final String containerIdentifier;
+
     /**
      * CloudKit environment (production or development).
      */

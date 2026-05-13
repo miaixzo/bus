@@ -20,17 +20,26 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_CT_VA0__ORI;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS CT VA0 ORI";
 
-    /** (0009,xx20) VR=LO VM=1 ? */
+    /**
+     * (0009,xx20) VR=LO VM=1 ?
+     */
     public static final int _0009_xx20_ = 0x00090020;
 
-    /** (0009,xx30) VR=LO VM=1 ? */
+    /**
+     * (0009,xx30) VR=LO VM=1 ?
+     */
     public static final int _0009_xx30_ = 0x00090030;
 
 }

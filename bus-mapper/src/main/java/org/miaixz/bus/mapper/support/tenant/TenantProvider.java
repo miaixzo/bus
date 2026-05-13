@@ -59,9 +59,12 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * <p>
  * <b>Example 1: Simple lambda (use configuration file)</b>
  * </p>
- * 
- * <pre>{@code
- * @Component
+ *
+ * <pre>
+ * {@code
+ *
+ * &#64;author Kimi Liu
+ * &#64;Component
  * public class SimpleTenantProvider implements TenantProvider {
  *
  *     public String getTenantId() {
@@ -69,12 +72,13 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  *     }
  *     // No getConfig() override - configuration from application.yml
  * }
- * }</pre>
+ * }
+ * </pre>
  *
  * <p>
  * <b>Example 2: Context-based dynamic tenant ID</b>
  * </p>
- * 
+ *
  * <pre>{@code
  * @Component
  * public class ContextAwareTenantProvider implements TenantProvider {
@@ -97,7 +101,7 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * <p>
  * <b>Example 3: Full configuration from Provider</b>
  * </p>
- * 
+ *
  * <pre>{@code
  * @Component
  * public class CustomTenantProvider implements TenantProvider {
@@ -114,10 +118,10 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * }
  * }</pre>
  *
- * @author Kimi Liu
  * @see TenantConfig
  * @see TenantHandler
  * @see MapperProvider
+ * @author Kimi Liu
  * @since Java 21+
  */
 @FunctionalInterface

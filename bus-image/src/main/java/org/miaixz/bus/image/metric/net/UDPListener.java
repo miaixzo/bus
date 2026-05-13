@@ -26,17 +26,40 @@ import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the UDPListener type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class UDPListener implements Listener {
 
+    /**
+     * The max package len value.
+     */
     private static final int MAX_PACKAGE_LEN = 0x10000;
 
+    /**
+     * The conn value.
+     */
     private final Connection conn;
+
+    /**
+     * The handler value.
+     */
     private final UDPProtocolHandler handler;
+
+    /**
+     * The ds value.
+     */
     private final DatagramSocket ds;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param conn    the conn.
+     * @param handler the handler.
+     * @throws IOException if the operation cannot be completed.
+     */
     public UDPListener(Connection conn, UDPProtocolHandler handler) throws IOException {
         this.conn = conn;
         this.handler = handler;
@@ -58,6 +81,9 @@ public class UDPListener implements Listener {
         conn.getDevice().execute(() -> listen());
     }
 
+    /**
+     * Executes the listen operation.
+     */
     public void listen() {
         SocketAddress sockAddr = ds.getLocalSocketAddress();
         Logger.info(true, "Image", "Start UDP listener on {}", sockAddr);
@@ -86,11 +112,21 @@ public class UDPListener implements Listener {
         Logger.info(false, "Image", "Stop UDP listener on {}", sockAddr);
     }
 
+    /**
+     * Gets the end point.
+     *
+     * @return the end point.
+     */
     @Override
     public SocketAddress getEndPoint() {
         return ds.getLocalSocketAddress();
     }
 
+    /**
+     * Executes the close operation.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void close() throws IOException {
         try {

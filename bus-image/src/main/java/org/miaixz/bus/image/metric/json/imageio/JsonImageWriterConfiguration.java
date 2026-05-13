@@ -32,11 +32,19 @@ import org.miaixz.bus.image.nimble.extend.ImageWriterExtension;
 import jakarta.json.stream.JsonParser;
 
 /**
+ * Represents the JsonImageWriterConfiguration type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class JsonImageWriterConfiguration extends JsonConfigurationExtension {
 
+    /**
+     * Stores the to.
+     *
+     * @param device the device.
+     * @param writer the writer.
+     */
     @Override
     protected void storeTo(Device device, JSONWriter writer) {
         ImageWriterExtension ext = device.getDeviceExtension(ImageWriterExtension.class);
@@ -60,6 +68,14 @@ public class JsonImageWriterConfiguration extends JsonConfigurationExtension {
         writer.writeEnd();
     }
 
+    /**
+     * Loads the device extension.
+     *
+     * @param device the device.
+     * @param reader the reader.
+     * @param config the config.
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean loadDeviceExtension(Device device, JSONReader reader, ConfigurationDelegate config) {
         if (!reader.getString().equals("dcmImageWriter"))

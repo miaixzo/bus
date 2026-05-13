@@ -59,6 +59,7 @@ public class Builder {
      * Query parameter map.
      */
     private final Map<String, String> params = new LinkedHashMap<>(7);
+
     /**
      * Base URL.
      */

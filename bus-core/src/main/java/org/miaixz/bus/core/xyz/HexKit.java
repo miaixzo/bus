@@ -35,8 +35,8 @@ import org.miaixz.bus.core.lang.Symbol;
  * hexadecimal related tools, including encoding and decoding inherited from {@link Hex}, as well as other conversion
  * and identification tools.
  *
- * @author Kimi Liu
  * @see Hex
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class HexKit extends Hex {

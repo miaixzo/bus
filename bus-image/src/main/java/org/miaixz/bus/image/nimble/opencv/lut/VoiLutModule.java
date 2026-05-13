@@ -36,16 +36,41 @@ import org.miaixz.bus.image.nimble.opencv.LookupTableCV;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the VoiLutModule type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class VoiLutModule {
 
+    /**
+     * The window center value.
+     */
     private List<Double> windowCenter;
+
+    /**
+     * The window width value.
+     */
     private List<Double> windowWidth;
+
+    /**
+     * The lut explanation value.
+     */
     private List<String> lutExplanation;
+
+    /**
+     * The lut value.
+     */
     private List<LookupTableCV> lut;
+
+    /**
+     * The window center width explanation value.
+     */
     private List<String> windowCenterWidthExplanation;
+
+    /**
+     * The voi lut function value.
+     */
     private String voiLutFunction;
 
     /**
@@ -64,6 +89,11 @@ public class VoiLutModule {
         init(Objects.requireNonNull(dcm));
     }
 
+    /**
+     * Executes the init operation.
+     *
+     * @param dcm the dcm.
+     */
     private void init(Attributes dcm) {
         Optional<double[]> wc = Optional.ofNullable(dcm.getDoubles(Tag.WindowCenter));
         Optional<double[]> ww = Optional.ofNullable(dcm.getDoubles(Tag.WindowWidth));
@@ -88,6 +118,9 @@ public class VoiLutModule {
         }
     }
 
+    /**
+     * Executes the log lut consistency operation.
+     */
     private void logLutConsistency() {
         // If multiple Window center and window width values are present, both Attributes shall have
         // the same number of values and shall be considered as pairs. Multiple values indicate that
@@ -106,26 +139,56 @@ public class VoiLutModule {
         }
     }
 
+    /**
+     * Gets the window center.
+     *
+     * @return the window center.
+     */
     public List<Double> getWindowCenter() {
         return windowCenter;
     }
 
+    /**
+     * Gets the window width.
+     *
+     * @return the window width.
+     */
     public List<Double> getWindowWidth() {
         return windowWidth;
     }
 
+    /**
+     * Gets the lut explanation.
+     *
+     * @return the lut explanation.
+     */
     public List<String> getLutExplanation() {
         return lutExplanation;
     }
 
+    /**
+     * Gets the lut.
+     *
+     * @return the lut.
+     */
     public List<LookupTableCV> getLut() {
         return lut;
     }
 
+    /**
+     * Gets the window center width explanation.
+     *
+     * @return the window center width explanation.
+     */
     public List<String> getWindowCenterWidthExplanation() {
         return windowCenterWidthExplanation;
     }
 
+    /**
+     * Gets the voi lut function.
+     *
+     * @return the voi lut function.
+     */
     public Optional<String> getVoiLutFunction() {
         return Optional.ofNullable(voiLutFunction);
     }

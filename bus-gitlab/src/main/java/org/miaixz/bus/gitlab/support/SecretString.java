@@ -24,6 +24,9 @@ import java.util.Arrays;
 /**
  * This class implements a CharSequence that can be cleared of it's contained characters. This class is utilized to pass
  * around secrets (passwords) instead of a String instance.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class SecretString implements CharSequence, AutoCloseable {
 

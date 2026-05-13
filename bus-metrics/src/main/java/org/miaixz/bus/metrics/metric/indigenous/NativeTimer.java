@@ -54,6 +54,7 @@ public class NativeTimer implements Timer {
      * Metric name used in snapshots and registry keys.
      */
     private final String name;
+
     /**
      * Tags associated with this timer instance.
      */
@@ -63,10 +64,12 @@ public class NativeTimer implements Timer {
      * Total number of recordings.
      */
     private final AtomicLong countTotal = new AtomicLong();
+
     /**
      * Running sum of all recorded durations in nanoseconds.
      */
     private final DoubleAdder sumNanos = new DoubleAdder();
+
     /**
      * Maximum recorded duration in nanoseconds.
      */
@@ -76,10 +79,12 @@ public class NativeTimer implements Timer {
      * T-Digest for accurate quantile estimation over the lifetime of this timer.
      */
     private final TDigest lifetimeDigest = new TDigest();
+
     /**
      * Rolling 1-minute T-Digest; rotated every 60 seconds by the scheduler.
      */
     private volatile TDigest digest1m = new TDigest();
+
     /**
      * Rolling 5-minute T-Digest; rotated every 5 minutes by the scheduler.
      */
@@ -94,6 +99,7 @@ public class NativeTimer implements Timer {
      * Registered SLA violation callbacks.
      */
     private final List<ViolationSpec> violations = new ArrayList<>(2);
+
     /**
      * Counter incremented on each recording; used to throttle violation checks.
      */
@@ -157,7 +163,9 @@ public class NativeTimer implements Timer {
         checkViolations();
     }
 
-    /** Returns the total number of recordings. */
+    /**
+     * Returns the total number of recordings.
+     */
     @Override
     public long count() {
         return countTotal.get();
@@ -238,7 +246,9 @@ public class NativeTimer implements Timer {
         return this;
     }
 
-    /** Returns an atomic snapshot of histogram state for cross-instance aggregation. */
+    /**
+     * Returns an atomic snapshot of histogram state for cross-instance aggregation.
+     */
     @Override
     public TimerSnapshot snapshot() {
         long[] bucketsCopy;
@@ -252,12 +262,16 @@ public class NativeTimer implements Timer {
         return new TimerSnapshot(name, tags, countTotal.get(), sumNanos.sum(), maxNanos, bucketsCopy, bounds);
     }
 
-    /** Called by NativeProvider's scheduler every 60 seconds to rotate the 1m digest. */
+    /**
+     * Called by NativeProvider's scheduler every 60 seconds to rotate the 1m digest.
+     */
     public void rotate1m() {
         digest1m = new TDigest();
     }
 
-    /** Called every 5 minutes to rotate the 5m digest. */
+    /**
+     * Called every 5 minutes to rotate the 5m digest.
+     */
     public void rotate5m() {
         digest5m = new TDigest();
     }
@@ -290,9 +304,12 @@ public class NativeTimer implements Timer {
      * @param thresholdNanos the threshold in nanoseconds above which a violation is fired
      * @param checkEvery     fire the check once every N recordings
      * @param callback       the callback to invoke on violation
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private record ViolationSpec(double percentile, long thresholdNanos, int checkEvery,
             Consumer<ViolationEvent> callback) {
+
     }
 
 }

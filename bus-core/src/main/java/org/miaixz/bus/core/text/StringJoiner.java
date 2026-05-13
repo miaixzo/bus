@@ -56,30 +56,37 @@ public class StringJoiner implements Appendable, Serializable {
      * The Appendable to which the strings will be appended.
      */
     private Appendable appendable;
+
     /**
      * The delimiter to be used between each element.
      */
     private CharSequence delimiter;
+
     /**
      * The prefix to be added to the result.
      */
     private CharSequence prefix;
+
     /**
      * The suffix to be added to the result.
      */
     private CharSequence suffix;
+
     /**
      * Whether to wrap each element with the prefix and suffix, or the entire string.
      */
     private boolean wrapElement;
+
     /**
      * The strategy for handling null elements.
      */
     private NullMode nullMode = NullMode.NULL_STRING;
+
     /**
      * The default string to return if no elements are added.
      */
     private String emptyResult = Normal.EMPTY;
+
     /**
      * A flag to indicate if the appendable already has content, to decide whether to add a delimiter first.
      */
@@ -481,6 +488,9 @@ public class StringJoiner implements Appendable, Serializable {
 
     /**
      * Defines the strategy for handling null elements.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum NullMode {
         /**
@@ -495,6 +505,7 @@ public class StringJoiner implements Appendable, Serializable {
          * Converts null elements to the string "null".
          */
         NULL_STRING
+
     }
 
 }

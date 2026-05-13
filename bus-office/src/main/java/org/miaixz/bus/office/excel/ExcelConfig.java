@@ -41,6 +41,7 @@ public class ExcelConfig {
      * Alias map for header rows.
      */
     protected Map<String, String> headerAlias;
+
     /**
      * Cell value processing interface.
      */

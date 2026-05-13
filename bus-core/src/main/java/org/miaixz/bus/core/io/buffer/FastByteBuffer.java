@@ -35,6 +35,7 @@ public class FastByteBuffer extends FastBuffer {
      * The collection of byte array chunks that store the buffer's data.
      */
     private byte[][] buffers = new byte[16][];
+
     /**
      * The currently active byte array chunk for writing.
      */

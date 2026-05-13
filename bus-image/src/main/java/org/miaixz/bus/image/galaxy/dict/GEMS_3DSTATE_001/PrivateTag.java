@@ -20,26 +20,41 @@
 package org.miaixz.bus.image.galaxy.dict.GEMS_3DSTATE_001;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEMS_3DSTATE_001";
 
-    /** (0047,xxE9) VR=FL VM=3 ? */
+    /**
+     * (0047,xxE9) VR=FL VM=3 ?
+     */
     public static final int _0047_xxE9_ = 0x004700E9;
 
-    /** (0047,xxEA) VR=DS VM=3 ? */
+    /**
+     * (0047,xxEA) VR=DS VM=3 ?
+     */
     public static final int _0047_xxEA_ = 0x004700EA;
 
-    /** (0047,xxEB) VR=DS VM=3 ? */
+    /**
+     * (0047,xxEB) VR=DS VM=3 ?
+     */
     public static final int _0047_xxEB_ = 0x004700EB;
 
-    /** (0047,xxEC) VR=FL VM=1 ? */
+    /**
+     * (0047,xxEC) VR=FL VM=1 ?
+     */
     public static final int _0047_xxEC_ = 0x004700EC;
 
-    /** (0047,xxED) VR=CS VM=1 ? */
+    /**
+     * (0047,xxED) VR=CS VM=1 ?
+     */
     public static final int _0047_xxED_ = 0x004700ED;
 
 }

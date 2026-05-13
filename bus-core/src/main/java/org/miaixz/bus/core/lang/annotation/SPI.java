@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.Normal;
  * defined and third parties can provide implementations.
  * <p>
  * This SPI mechanism offers several enhancements over the standard Java {@link java.util.ServiceLoader}:
- * 
+ *
  * <pre>
  *   1. Supports both singleton and prototype scopes for implementation classes.
  *   2. Allows setting a default implementation class.

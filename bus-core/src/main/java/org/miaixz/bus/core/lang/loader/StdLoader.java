@@ -93,6 +93,9 @@ public class StdLoader extends ResourceLoader implements Loader {
 
     /**
      * An {@link Enumeration} implementation for iterating over resources found by a {@link StdLoader}.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class Enumerator extends ResourceEnumerator implements Enumeration<Resource> {
 
@@ -100,18 +103,22 @@ public class StdLoader extends ResourceLoader implements Loader {
          * The path to search for resources.
          */
         private final String path;
+
         /**
          * Whether to search for resources in subdirectories recursively.
          */
         private final boolean recursively;
+
         /**
          * The filter to apply to resources.
          */
         private final Filter filter;
+
         /**
          * The enumeration of URLs found by the class loader for the given path.
          */
         private final Enumeration<URL> urls;
+
         /**
          * The current enumeration of resources being processed.
          */

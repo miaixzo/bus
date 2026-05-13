@@ -86,6 +86,12 @@ public enum PatchJPEGLS {
      */
     ISO2JAI_IF_APP_OR_COM;
 
+    /**
+     * Creates the jpegls coding param.
+     *
+     * @param jpeg the jpeg.
+     * @return the operation result.
+     */
     public JPEGLSCodingParam createJPEGLSCodingParam(byte[] jpeg) {
         JPEGHeader jpegHeader = new JPEGHeader(jpeg, JPEG.SOS);
         int soiOff = jpegHeader.offsetOf(JPEG.SOI);

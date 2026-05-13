@@ -44,6 +44,7 @@ public abstract class ComputeIterator<T> implements Iterator<T> {
      * The next element to be returned by the iterator.
      */
     private T next;
+
     /**
      * A flag indicating if the iterator has been fully read.
      */

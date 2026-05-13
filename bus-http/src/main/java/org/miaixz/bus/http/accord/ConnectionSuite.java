@@ -70,6 +70,7 @@ public final class ConnectionSuite {
             CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256, CipherSuite.TLS_RSA_WITH_AES_256_GCM_SHA384,
             CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA, CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA,
             CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA, };
+
     /**
      * A TLS connection with extensions like SNI and ALPN available.
      */
@@ -248,6 +249,9 @@ public final class ConnectionSuite {
 
     /**
      * A builder for creating {@link ConnectionSuite} instances.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static final class Builder {
 
@@ -384,6 +388,7 @@ public final class ConnectionSuite {
         public ConnectionSuite build() {
             return new ConnectionSuite(this);
         }
+
     }
 
 }

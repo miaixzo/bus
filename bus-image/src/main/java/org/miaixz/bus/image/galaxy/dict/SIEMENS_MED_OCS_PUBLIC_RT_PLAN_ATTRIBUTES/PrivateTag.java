@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_OCS_PUBLIC_RT_PLAN_ATTRIBUTES;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS MED OCS PUBLIC RT PLAN ATTRIBUTES";
 
-    /** (0039,xx01) VR=UT VM=1 External Attributes */
+    /**
+     * (0039,xx01) VR=UT VM=1 External Attributes
+     */
     public static final int ExternalAttributes = 0x00390001;
 
 }

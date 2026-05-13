@@ -33,30 +33,74 @@ import java.nio.Buffer;
  */
 public class SafeBuffer {
 
+    /**
+     * Executes the clear operation.
+     *
+     * @param buf the buf.
+     * @return the operation result.
+     */
     public static Buffer clear(Buffer buf) {
         return buf.clear();
     }
 
+    /**
+     * Executes the flip operation.
+     *
+     * @param buf the buf.
+     * @return the operation result.
+     */
     public static Buffer flip(Buffer buf) {
         return buf.flip();
     }
 
+    /**
+     * Executes the limit operation.
+     *
+     * @param buf      the buf.
+     * @param newLimit the new limit.
+     * @return the operation result.
+     */
     public static Buffer limit(Buffer buf, int newLimit) {
         return buf.limit(newLimit);
     }
 
+    /**
+     * Executes the mark operation.
+     *
+     * @param buf the buf.
+     * @return the operation result.
+     */
     public static Buffer mark(Buffer buf) {
         return buf.mark();
     }
 
+    /**
+     * Executes the position operation.
+     *
+     * @param buf         the buf.
+     * @param newPosition the new position.
+     * @return the operation result.
+     */
     public static Buffer position(Buffer buf, int newPosition) {
         return buf.position(newPosition);
     }
 
+    /**
+     * Executes the reset operation.
+     *
+     * @param buf the buf.
+     * @return the operation result.
+     */
     public static Buffer reset(Buffer buf) {
         return buf.reset();
     }
 
+    /**
+     * Executes the rewind operation.
+     *
+     * @param buf the buf.
+     * @return the operation result.
+     */
     public static Buffer rewind(Buffer buf) {
         return buf.rewind();
     }

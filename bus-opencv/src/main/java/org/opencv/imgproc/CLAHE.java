@@ -10,6 +10,9 @@ import org.opencv.core.Size;
 // C++: class CLAHE
 /**
  * Base class for Contrast Limited Adaptive Histogram Equalization.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class CLAHE extends Algorithm {
 

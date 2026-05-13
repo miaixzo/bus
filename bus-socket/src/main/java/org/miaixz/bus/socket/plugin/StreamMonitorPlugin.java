@@ -69,6 +69,7 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
                     e.getClass().getSimpleName());
         }
     };
+
     /**
      * A {@link BiConsumer} that logs outgoing byte streams in red hexadecimal format. It displays the timestamp, local
      * and remote addresses, and the byte content.
@@ -114,6 +115,7 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
                     e.getClass().getSimpleName());
         }
     };
+
     /**
      * A {@link BiConsumer} that logs outgoing byte streams in red text format. It displays the timestamp, local and
      * remote addresses, and the byte content as a string.
@@ -136,10 +138,12 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
                     e.getClass().getSimpleName());
         }
     };
+
     /**
      * The consumer for processing and logging incoming byte streams.
      */
     private final BiConsumer<AsynchronousSocketChannel, byte[]> inputStreamConsumer;
+
     /**
      * The consumer for processing and logging outgoing byte streams.
      */
@@ -173,6 +177,8 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
      * A {@link CompletionHandler} wrapper that logs the read/written data before delegating to the original handler.
      *
      * @param <A> the type of the attachment object
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static class MonitorCompletionHandler<A> implements CompletionHandler<Integer, A> {
 
@@ -180,14 +186,17 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
          * The original completion handler to delegate to.
          */
         CompletionHandler<Integer, A> handler;
+
         /**
          * The consumer to log the byte stream.
          */
         BiConsumer<AsynchronousSocketChannel, byte[]> consumer;
+
         /**
          * The buffer containing the data.
          */
         ByteBuffer buffer;
+
         /**
          * The asynchronous socket channel being monitored.
          */
@@ -235,10 +244,14 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
         public void failed(Throwable exc, A attachment) {
             handler.failed(exc, attachment);
         }
+
     }
 
     /**
      * Utility class for console color codes.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static class ConsoleColors {
 
@@ -246,6 +259,7 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
          * ANSI escape code to reset console colors.
          */
         public static final String RESET = "\033[0m";
+
         /**
          * ANSI escape code for blue text.
          */
@@ -261,6 +275,9 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
     /**
      * An internal {@link AsynchronousSocketChannelProxy} that intercepts read and write operations to log the byte
      * streams using the configured consumers.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class StreamMonitorAsynchronousSocketChannel extends AsynchronousSocketChannelProxy {
 
@@ -302,6 +319,7 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
                     attachment,
                     new MonitorCompletionHandler<>(this, handler, outputStreamConsumer, src));
         }
+
     }
 
 }

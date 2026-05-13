@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_PRINT_SERVICE;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS SYNGO PRINT SERVICE";
 
-    /** (0029,xx10) VR=IS VM=1 Sheet Numbe */
+    /**
+     * (0029,xx10) VR=IS VM=1 Sheet Numbe
+     */
     public static final int SheetNumber = 0x00290010;
 
 }

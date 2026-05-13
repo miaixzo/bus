@@ -26,11 +26,16 @@ import org.miaixz.bus.image.galaxy.io.ImageEncodingOptions;
 import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
 
 /**
+ * Defines the Value contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface Value {
 
+    /**
+     * The null value.
+     */
     Value NULL = new Value() {
 
         @Override
@@ -63,14 +68,50 @@ public interface Value {
         }
     };
 
+    /**
+     * Determines whether empty.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     boolean isEmpty();
 
+    /**
+     * Converts this value to bytes.
+     *
+     * @param vr        the vr.
+     * @param bigEndian the big endian.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     byte[] toBytes(VR vr, boolean bigEndian) throws IOException;
 
+    /**
+     * Writes the to.
+     *
+     * @param out the out.
+     * @param vr  the vr.
+     * @throws IOException if the operation cannot be completed.
+     */
     void writeTo(ImageOutputStream out, VR vr) throws IOException;
 
+    /**
+     * Executes the calc length operation.
+     *
+     * @param encOpts    the enc opts.
+     * @param explicitVR the explicit vr.
+     * @param vr         the vr.
+     * @return the operation result.
+     */
     int calcLength(ImageEncodingOptions encOpts, boolean explicitVR, VR vr);
 
+    /**
+     * Gets the encoded length.
+     *
+     * @param encOpts    the enc opts.
+     * @param explicitVR the explicit vr.
+     * @param vr         the vr.
+     * @return the encoded length.
+     */
     int getEncodedLength(ImageEncodingOptions encOpts, boolean explicitVR, VR vr);
 
 }

@@ -20,20 +20,31 @@
 package org.miaixz.bus.image.galaxy.dict.DLX_ANNOT_01;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "DLX_ANNOT_01";
 
-    /** (70XX,xx04) VR=ST VM=1 TextAnnotation */
+    /**
+     * (70XX,xx04) VR=ST VM=1 TextAnnotation
+     */
     public static final int TextAnnotation = 0x70000004;
 
-    /** (70XX,xx05) VR=IS VM=2 Box */
+    /**
+     * (70XX,xx05) VR=IS VM=2 Box
+     */
     public static final int Box = 0x70000005;
 
-    /** (70XX,xx07) VR=IS VM=2 ArrowEnd */
+    /**
+     * (70XX,xx07) VR=IS VM=2 ArrowEnd
+     */
     public static final int ArrowEnd = 0x70000007;
 
 }

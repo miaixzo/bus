@@ -82,6 +82,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
      * Pagination builder for sorting and SQL generation
      */
     private final PageBuilder paginationBuilder;
+
     /**
      * Custom parameter name mappings (e.g., "count=countSql")
      */
@@ -91,6 +92,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
      * Whether to enable pagination reasonableness. If enabled, page numbers will be adjusted to be within valid ranges.
      */
     private boolean reasonable = false;
+
     /**
      * Whether to support passing pagination parameters through method arguments.
      */
@@ -733,6 +735,9 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
 
     /**
      * SQL source for count queries.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class CountSqlSource implements SqlSource {
 
@@ -760,6 +765,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
 
             return countBoundSql;
         }
+
     }
 
 }

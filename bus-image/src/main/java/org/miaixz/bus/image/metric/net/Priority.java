@@ -20,13 +20,26 @@
 package org.miaixz.bus.image.metric.net;
 
 /**
+ * Represents the Priority type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class Priority {
 
+    /**
+     * The normal value.
+     */
     public static final int NORMAL = 0;
+
+    /**
+     * The high value.
+     */
     public static final int HIGH = 1;
+
+    /**
+     * The low value.
+     */
     public static final int LOW = 2;
 
 }

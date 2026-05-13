@@ -235,6 +235,9 @@ public class VersionAssets extends Assets {
 
     /**
      * Version-specific metadata payload stored directly in the raw asset metadata JSON payload.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @Setter
@@ -244,26 +247,32 @@ public class VersionAssets extends Assets {
          * Semantic version string.
          */
         private String semver;
+
         /**
          * Human-readable changelog for this version.
          */
         private String changelog;
+
         /**
          * Artifact coordinates or download URL for this version.
          */
         private String artifact;
+
         /**
          * Optional compatible API or schema range.
          */
         private String compatibleRange;
+
         /**
          * Release timestamp in epoch milliseconds.
          */
         private Long releasedAt;
+
         /**
          * Support end timestamp in epoch milliseconds.
          */
         private Long supportUntil;
+
         /**
          * Current release state of this version.
          */

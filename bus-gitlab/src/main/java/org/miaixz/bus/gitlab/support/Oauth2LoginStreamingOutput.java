@@ -29,6 +29,9 @@ import org.miaixz.bus.core.lang.Charset;
  * This StreamingOutput implementation is utilized to send a OAuth2 token request in a secure manner. The password is
  * never copied to a String, instead it is contained in a SecretString that is cleared when an instance of this class is
  * finalized.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class Oauth2LoginStreamingOutput implements StreamingOutput, AutoCloseable {
 

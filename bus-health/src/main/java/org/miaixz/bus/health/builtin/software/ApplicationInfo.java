@@ -38,19 +38,23 @@ public class ApplicationInfo {
      * The name of the application.
      */
     private final String name;
+
     /**
      * The version of the application.
      */
     private final String version;
+
     /**
      * The vendor or publisher of the application.
      */
     private final String vendor;
+
     /**
      * The installation or last modified timestamp of the application in milliseconds since epoch. This represents the
      * Unix timestamp.
      */
     private final long timestamp;
+
     /**
      * A map containing additional application details such as install location, source, etc. Keys are field names, and
      * values are corresponding details.

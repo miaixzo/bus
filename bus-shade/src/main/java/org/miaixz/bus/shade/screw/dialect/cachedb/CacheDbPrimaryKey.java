@@ -40,26 +40,31 @@ public class CacheDbPrimaryKey implements PrimaryKey {
      */
     @MappingField(value = "TABLE_CATALOG")
     private String tableCat;
+
     /**
      * The name of the table.
      */
     @MappingField(value = "TABLE_NAME")
     private String tableName;
+
     /**
      * The schema of the table.
      */
     @MappingField(value = "TABLE_SCHEM")
     private String tableSchem;
+
     /**
      * The name of the column in the primary key.
      */
     @MappingField(value = "COLUMN_NAME")
     private String columnName;
+
     /**
      * The sequence number of the column within the primary key (for composite keys).
      */
     @MappingField(value = "KEY_SEQ")
     private String keySeq;
+
     /**
      * The name of the primary key constraint.
      */

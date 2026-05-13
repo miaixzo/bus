@@ -40,6 +40,7 @@ public class DigesterFactory {
      * The prototype {@link MessageDigest} instance used for cloning.
      */
     private final MessageDigest prototype;
+
     /**
      * Indicates whether the prototype {@link MessageDigest} supports cloning.
      */

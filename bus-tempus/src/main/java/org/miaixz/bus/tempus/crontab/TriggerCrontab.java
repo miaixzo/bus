@@ -253,6 +253,8 @@ public class TriggerCrontab extends Repertoire {
      *
      * @param id        ID.
      * @param timestamp Trigger time.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private record TriggerTime(String id, long timestamp) implements Comparable<TriggerTime> {
 
@@ -267,6 +269,7 @@ public class TriggerCrontab extends Repertoire {
         public int compareTo(TriggerTime other) {
             return Long.compare(this.timestamp, other.timestamp);
         }
+
     }
 
 }

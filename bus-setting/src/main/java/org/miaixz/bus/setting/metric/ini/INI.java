@@ -25,6 +25,9 @@ import java.util.function.Supplier;
 /**
  * A builder for creating an {@link IniSetting} object programmatically. It provides a fluent API to add sections,
  * properties, and comments.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class INI {
 
@@ -32,26 +35,32 @@ public class INI {
      * The list of INI elements (sections, properties, comments).
      */
     private final List<IniElement> elements;
+
     /**
      * A queue for properties added before their corresponding section is defined.
      */
     private final LinkedList<Supplier<IniProperty>> waitForSections = new LinkedList<>();
+
     /**
      * The most recently added section.
      */
     private IniSection lastSection;
+
     /**
      * The current line number, starting from 1.
      */
     private int line = 1;
+
     /**
      * The creator function for sections.
      */
     private IniSectionCreator iniSectionCreator = IniSectionCreator.DEFAULT;
+
     /**
      * The creator function for comments.
      */
     private IniCommentCreator iniCommentCreator = IniCommentCreator.DEFAULT;
+
     /**
      * The creator function for properties.
      */

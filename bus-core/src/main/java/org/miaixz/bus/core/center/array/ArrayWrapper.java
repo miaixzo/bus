@@ -50,10 +50,12 @@ public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
      * The component type of the array.
      */
     private final Class<E> componentType;
+
     /**
      * The wrapped array object.
      */
     private A array;
+
     /**
      * The length of the array.
      */

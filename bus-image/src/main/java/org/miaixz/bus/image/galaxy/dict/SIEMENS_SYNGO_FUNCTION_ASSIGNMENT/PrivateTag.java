@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_FUNCTION_ASSIGNMENT;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS SYNGO FUNCTION ASSIGNMENT";
 
-    /** (0029,xx01) VR=LO VM=1 Data Reference */
+    /**
+     * (0029,xx01) VR=LO VM=1 Data Reference
+     */
     public static final int DataReference = 0x00290001;
 
 }

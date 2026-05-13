@@ -19,113 +19,276 @@
 */
 package org.miaixz.bus.image.nimble.opencv.lut;
 
+import java.util.Objects;
+import java.util.Set;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.nimble.opencv.LookupTableCV;
 
 /**
+ * Represents a lookup table transformation shape for medical image processing.
+ * <p>
+ * A {@code LutShape} defines how pixel values are transformed during window/level operations. It can be either:
+ * <ul>
+ * <li>A predefined mathematical function (LINEAR, SIGMOID, LOG, etc.)
+ * <li>A custom lookup table with arbitrary transformation values
+ * </ul>
+ * <p>
+ * The LINEAR and SIGMOID functions comply with DICOM Part 3 standard specifications for presentation LUT shapes, while
+ * other functions provide enhanced visualization capabilities for specific medical imaging needs.
+ * <p>
+ * This class is immutable and thread-safe. Instances can be compared by their underlying function or lookup table
+ * content, ignoring explanation differences.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public final class LutShape {
 
-    public static final LutShape LINEAR = new LutShape(eFunction.LINEAR);
-    public static final LutShape SIGMOID = new LutShape(eFunction.SIGMOID);
-    public static final LutShape SIGMOID_NORM = new LutShape(eFunction.SIGMOID_NORM);
-    public static final LutShape LOG = new LutShape(eFunction.LOG);
-    public static final LutShape LOG_INV = new LutShape(eFunction.LOG_INV);
     /**
-     * A LutShape can be either a predefined function or a custom shape with a provided lookup table. That is a LutShape
-     * can be defined as a function or by a lookup but not both
+     * The linear value.
      */
-    private final eFunction function;
+    public static final LutShape LINEAR = new LutShape(Function.LINEAR);
+
+    /**
+     * The sigmoid value.
+     */
+    public static final LutShape SIGMOID = new LutShape(Function.SIGMOID);
+
+    /**
+     * The sigmoid norm value.
+     */
+    public static final LutShape SIGMOID_NORM = new LutShape(Function.SIGMOID_NORM);
+
+    /**
+     * The log value.
+     */
+    public static final LutShape LOG = new LutShape(Function.LOG);
+
+    /**
+     * The log inv value.
+     */
+    public static final LutShape LOG_INV = new LutShape(Function.LOG_INV);
+
+    /**
+     * Enumeration of predefined lookup table transformation functions.
+     * <p>
+     * LINEAR and SIGMOID are defined according to DICOM Part 3 standard. Other functions provide custom implementations
+     * for specialized imaging needs.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    public enum Function {
+
+        /**
+         * Linear transformation: f(x) = x
+         */
+        LINEAR("Linear"),
+        /**
+         * Sigmoid transformation: f(x) = 1/(1+e^(-x))
+         */
+        SIGMOID("Sigmoid"),
+        /**
+         * Normalized sigmoid transformation with enhanced contrast
+         */
+        SIGMOID_NORM("Sigmoid Normalize"),
+        /**
+         * Logarithmic transformation: f(x) = log(x)
+         */
+        LOG("Logarithmic"),
+        /**
+         * Inverse logarithmic transformation: f(x) = e^x
+         */
+        LOG_INV("Logarithmic Inverse");
+
+        /**
+         * The description value.
+         */
+        private final String description;
+
+        /**
+         * Creates a new instance.
+         *
+         * @param description the description.
+         */
+        Function(String description) {
+            this.description = description;
+        }
+
+        /**
+         * Returns the description.
+         *
+         * @return the description.
+         */
+        public String getDescription() {
+            return description;
+        }
+
+        /**
+         * Returns the string representation.
+         *
+         * @return the string representation.
+         */
+        @Override
+        public String toString() {
+            return description;
+        }
+
+    }
+
+    /**
+     * The function value.
+     */
+    private final Function function;
+
+    /**
+     * The explanation value.
+     */
     private final String explanation;
+
+    /**
+     * The lookup value.
+     */
     private final LookupTableCV lookup;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param lookup      the lookup.
+     * @param explanation the explanation.
+     */
     public LutShape(LookupTableCV lookup, String explanation) {
-        if (lookup == null) {
-            throw new IllegalArgumentException();
-        }
         this.function = null;
-        this.explanation = explanation;
-        this.lookup = lookup;
+        this.explanation = normalizeExplanation(explanation);
+        this.lookup = Objects.requireNonNull(lookup, "Lookup table cannot be null");
     }
 
-    public LutShape(eFunction function) {
-        this(function, function.toString());
+    /**
+     * Creates a new instance.
+     *
+     * @param function the function.
+     */
+    public LutShape(Function function) {
+        this(function, function.getDescription());
     }
 
-    public LutShape(eFunction function, String explanation) {
-        if (function == null) {
-            throw new IllegalArgumentException();
-        }
-        this.function = function;
-        this.explanation = explanation;
+    /**
+     * Creates a new instance.
+     *
+     * @param function    the function.
+     * @param explanation the explanation.
+     */
+    public LutShape(Function function, String explanation) {
+        this.function = Objects.requireNonNull(function, "Function cannot be null");
+        this.explanation = normalizeExplanation(explanation);
         this.lookup = null;
     }
 
-    public static LutShape getLutShape(String shape) {
-        if (shape != null) {
-            String val = shape.toUpperCase();
-            return switch (val) {
-                case "LINEAR" -> LutShape.LINEAR;
-                case "SIGMOID" -> LutShape.SIGMOID;
-                case "SIGMOID_NORM" -> LutShape.SIGMOID_NORM;
-                case "LOG" -> LutShape.LOG;
-                case "LOG_INV" -> LutShape.LOG_INV;
-                default -> null;
-            };
-        }
-        return null;
+    /**
+     * Normalizes the explanation.
+     *
+     * @param explanation the explanation.
+     * @return the operation result.
+     */
+    private static String normalizeExplanation(String explanation) {
+        return Objects.toString(explanation, "");
     }
 
-    public eFunction getFunctionType() {
+    /**
+     * Returns the function type.
+     *
+     * @return the function type.
+     */
+    public Function getFunctionType() {
         return function;
     }
 
+    /**
+     * Returns the lookup.
+     *
+     * @return the lookup.
+     */
     public LookupTableCV getLookup() {
         return lookup;
     }
 
+    /**
+     * Returns the explanation.
+     *
+     * @return the explanation.
+     */
+    public String getExplanation() {
+        return explanation;
+    }
+
+    /**
+     * Returns the string representation.
+     *
+     * @return the string representation.
+     */
     @Override
     public String toString() {
         return explanation;
     }
 
     /**
-     * LutShape objects are defined either by a factory function or by a custom LUT. They can be equal even if they have
-     * different explanation property
+     * Checks whether the function condition is true.
+     *
+     * @return true if the function condition is true; otherwise false.
      */
-    @Override
-    public boolean equals(Object object) {
-        if (object instanceof LutShape shape) {
-            return (function != null) ? function.equals(shape.function) : lookup.equals(shape.lookup);
-        }
-        return super.equals(object);
-    }
-
-    @Override
-    public int hashCode() {
-        return (function != null) ? function.hashCode() : lookup.hashCode();
+    public boolean isFunction() {
+        return function != null;
     }
 
     /**
-     * LINEAR and SIGMOID descriptors are defined as DICOM standard LUT function Other LUT functions have their own
-     * custom implementation
+     * Executes the equals operation.
+     *
+     * @param o the o.
+     * @return true if the equals condition is true; otherwise false.
      */
-    public enum eFunction {
+    @Override
+    public boolean equals(Object o) {
+        return this == o || (o instanceof LutShape other && isFunction() == other.isFunction()
+                && Objects.equals(explanation, other.explanation) && Objects.equals(lookup, other.lookup));
+    }
 
-        LINEAR("Linear"), SIGMOID("Sigmoid"), SIGMOID_NORM("Sigmoid Normalize"), LOG("Logarithmic"),
-        LOG_INV("Logarithmic Inverse");
+    /**
+     * Checks whether the hash code condition is true.
+     *
+     * @return true if the hash code condition is true; otherwise false.
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(isFunction(), explanation, lookup);
+    }
 
-        final String explanation;
-
-        eFunction(String explanation) {
-            this.explanation = explanation;
+    /**
+     * Returns the LUT shape.
+     *
+     * @param shape the shape.
+     * @return the LUT shape.
+     */
+    public static LutShape getLutShape(String shape) {
+        if (!StringKit.hasText(shape)) {
+            return null;
         }
+        return switch (shape.trim().toUpperCase()) {
+            case "LINEAR" -> LINEAR;
+            case "SIGMOID" -> SIGMOID;
+            case "SIGMOID_NORM" -> SIGMOID_NORM;
+            case "LOG" -> LOG;
+            case "LOG_INV" -> LOG_INV;
+            default -> null;
+        };
+    }
 
-        @Override
-        public String toString() {
-            return explanation;
-        }
+    /**
+     * Returns the all predefined.
+     *
+     * @return the all predefined.
+     */
+    public static Set<LutShape> getAllPredefined() {
+        return Set.of(LINEAR, SIGMOID, SIGMOID_NORM, LOG, LOG_INV);
     }
 
 }

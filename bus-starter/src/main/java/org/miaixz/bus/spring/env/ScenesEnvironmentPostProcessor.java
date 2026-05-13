@@ -152,6 +152,9 @@ public class ScenesEnvironmentPostProcessor implements EnvironmentPostProcessor,
     /**
      * A simple data class to hold a reference to a scene-specific configuration resource along with its name and the
      * {@link PropertySourceLoader} capable of loading it.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class SceneConfigDataReference {
 
@@ -225,6 +228,7 @@ public class ScenesEnvironmentPostProcessor implements EnvironmentPostProcessor,
         public void setName(String name) {
             this.name = name;
         }
+
     }
 
 }

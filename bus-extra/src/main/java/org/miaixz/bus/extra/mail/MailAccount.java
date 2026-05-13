@@ -49,62 +49,77 @@ public class MailAccount implements Serializable {
             "config/mailAccount.setting", "mail.setting" };
     @Serial
     private static final long serialVersionUID = 2852285572363L;
+
     /**
      * Mail transport protocol property key.
      */
     private static final String MAIL_PROTOCOL = "mail.transport.protocol";
+
     /**
      * SMTP server host property key.
      */
     private static final String SMTP_HOST = "mail.smtp.host";
+
     /**
      * SMTP server port property key.
      */
     private static final String SMTP_PORT = "mail.smtp.port";
+
     /**
      * SMTP authentication property key.
      */
     private static final String SMTP_AUTH = "mail.smtp.auth";
+
     /**
      * SMTP authentication mechanisms property key.
      */
     private static final String SMTP_AUTH_MECHANISMS = "mail.smtp.auth.mechanisms";
+
     /**
      * SMTP timeout property key.
      */
     private static final String SMTP_TIMEOUT = "mail.smtp.timeout";
+
     /**
      * SMTP connection timeout property key.
      */
     private static final String SMTP_CONNECTION_TIMEOUT = "mail.smtp.connectiontimeout";
+
     /**
      * SMTP write timeout property key.
      */
     private static final String SMTP_WRITE_TIMEOUT = "mail.smtp.writetimeout";
+
     /**
      * STARTTLS enable property key.
      */
     private static final String STARTTLS_ENABLE = "mail.smtp.starttls.enable";
+
     /**
      * SSL enable property key.
      */
     private static final String SSL_ENABLE = "mail.smtp.ssl.enable";
+
     /**
      * SSL protocols property key.
      */
     private static final String SSL_PROTOCOLS = "mail.smtp.ssl.protocols";
+
     /**
      * Socket factory class property key.
      */
     private static final String SOCKET_FACTORY = "mail.smtp.socketFactory.class";
+
     /**
      * Socket factory fallback property key.
      */
     private static final String SOCKET_FACTORY_FALLBACK = "mail.smtp.socketFactory.fallback";
+
     /**
      * Socket factory port property key.
      */
     private static final String SOCKET_FACTORY_PORT = "smtp.socketFactory.port";
+
     /**
      * Mail debug property key.
      */
@@ -114,78 +129,97 @@ public class MailAccount implements Serializable {
      * The SMTP server host.
      */
     private String host;
+
     /**
      * The SMTP server port.
      */
     private Integer port;
+
     /**
      * Indicates whether authentication is required.
      */
     private Boolean auth;
+
     /**
      * Authentication mechanisms, such as XOAUTH2, separated by spaces or commas.
      */
     private String authMechanisms;
+
     /**
      * The username for authentication.
      */
     private String user;
+
     /**
      * The password for authentication, stored as a char array for security.
      */
     private char[] pass;
+
     /**
      * The sender's email address, compliant with RFC-822.
      */
     private String from;
+
     /**
      * Enables debug mode, which displays communication with the mail server.
      */
     private boolean debug;
+
     /**
      * The character set for encoding email content and headers.
      */
     private java.nio.charset.Charset charset = Charset.UTF_8;
+
     /**
      * Indicates whether to encode attachment filenames using the specified charset.
      */
     private boolean encodefilename = true;
+
     /**
      * Enables STARTTLS for a secure connection, upgrading a plain text connection to an encrypted one.
      */
     private boolean starttlsEnable = false;
+
     /**
      * Enables SSL for a secure connection.
      */
     private Boolean sslEnable;
+
     /**
      * The SSL protocols to use, separated by spaces.
      */
     private String sslProtocols;
+
     /**
      * The name of the class implementing javax.net.SocketFactory for creating SMTP sockets.
      */
     private String socketFactoryClass = "javax.net.ssl.SSLSocketFactory";
+
     /**
      * If true, falls back to java.net.Socket if the specified socket factory fails.
      */
     private boolean socketFactoryFallback;
+
     /**
      * The port to connect to when using the specified socket factory.
      */
     private int socketFactoryPort = 465;
+
     /**
      * The SMTP timeout in milliseconds.
      */
     private long timeout;
+
     /**
      * The socket connection timeout in milliseconds.
      */
     private long connectionTimeout;
+
     /**
      * The socket write timeout in milliseconds.
      */
     private long writeTimeout;
+
     /**
      * A map for custom properties that will override default settings.
      */

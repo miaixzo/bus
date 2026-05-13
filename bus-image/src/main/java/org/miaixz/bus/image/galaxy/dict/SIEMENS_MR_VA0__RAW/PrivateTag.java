@@ -20,50 +20,81 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MR_VA0__RAW;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS MR VA0 RAW";
 
-    /** (0021,xx00) VR=CS VM=1 Sequence Type */
+    /**
+     * (0021,xx00) VR=CS VM=1 Sequence Type
+     */
     public static final int SequenceType = 0x00210000;
 
-    /** (0021,xx01) VR=IS VM=1 Vector Size Original */
+    /**
+     * (0021,xx01) VR=IS VM=1 Vector Size Original
+     */
     public static final int VectorSizeOriginal = 0x00210001;
 
-    /** (0021,xx02) VR=IS VM=1 Vector Size Extended */
+    /**
+     * (0021,xx02) VR=IS VM=1 Vector Size Extended
+     */
     public static final int VectorSizeExtended = 0x00210002;
 
-    /** (0021,xx03) VR=DS VM=1 Acquired Spectral Range */
+    /**
+     * (0021,xx03) VR=DS VM=1 Acquired Spectral Range
+     */
     public static final int AcquiredSpectralRange = 0x00210003;
 
-    /** (0021,xx04) VR=DS VM=3 VOI Position */
+    /**
+     * (0021,xx04) VR=DS VM=3 VOI Position
+     */
     public static final int VOIPosition = 0x00210004;
 
-    /** (0021,xx05) VR=DS VM=3 VOI Size */
+    /**
+     * (0021,xx05) VR=DS VM=3 VOI Size
+     */
     public static final int VOISize = 0x00210005;
 
-    /** (0021,xx06) VR=IS VM=3 CSI Matrix Size Original */
+    /**
+     * (0021,xx06) VR=IS VM=3 CSI Matrix Size Original
+     */
     public static final int CSIMatrixSizeOriginal = 0x00210006;
 
-    /** (0021,xx07) VR=IS VM=3 CSI Matrix Size Extended */
+    /**
+     * (0021,xx07) VR=IS VM=3 CSI Matrix Size Extended
+     */
     public static final int CSIMatrixSizeExtended = 0x00210007;
 
-    /** (0021,xx08) VR=DS VM=3 Spatial Grid Shift */
+    /**
+     * (0021,xx08) VR=DS VM=3 Spatial Grid Shift
+     */
     public static final int SpatialGridShift = 0x00210008;
 
-    /** (0021,xx09) VR=DS VM=1 Signal Limits Minimum */
+    /**
+     * (0021,xx09) VR=DS VM=1 Signal Limits Minimum
+     */
     public static final int SignalLimitsMinimum = 0x00210009;
 
-    /** (0021,xx10) VR=DS VM=1 Signal Limits Maximum */
+    /**
+     * (0021,xx10) VR=DS VM=1 Signal Limits Maximum
+     */
     public static final int SignalLimitsMaximum = 0x00210010;
 
-    /** (0021,xx11) VR=DS VM=1 Spec Info Mask */
+    /**
+     * (0021,xx11) VR=DS VM=1 Spec Info Mask
+     */
     public static final int SpecInfoMask = 0x00210011;
 
-    /** (0021,xx12) VR=DS VM=1 EPI Time Rate of Change of Magnitude */
+    /**
+     * (0021,xx12) VR=DS VM=1 EPI Time Rate of Change of Magnitude
+     */
     public static final int EPITimeRateOfChangeOfMagnitude = 0x00210012;
 
     /**
@@ -86,43 +117,69 @@ public class PrivateTag {
      */
     public static final int EPITimeRateOfChangeLegalLimit1 = 0x00210016;
 
-    /** (0021,xx17) VR=IS VM=1 EPI Operation Mode Flag */
+    /**
+     * (0021,xx17) VR=IS VM=1 EPI Operation Mode Flag
+     */
     public static final int EPIOperationModeFlag = 0x00210017;
 
-    /** (0021,xx18) VR=DS VM=1 EPI Field Calculation Safety Factor */
+    /**
+     * (0021,xx18) VR=DS VM=1 EPI Field Calculation Safety Factor
+     */
     public static final int EPIFieldCalculationSafetyFactor = 0x00210018;
 
-    /** (0021,xx19) VR=DS VM=1 EPI Legal Limit 1 of Change Value */
+    /**
+     * (0021,xx19) VR=DS VM=1 EPI Legal Limit 1 of Change Value
+     */
     public static final int EPILegalLimit1OfChangeValue = 0x00210019;
 
-    /** (0021,xx20) VR=DS VM=1 EPI Legal Limit 2 of Change Value */
+    /**
+     * (0021,xx20) VR=DS VM=1 EPI Legal Limit 2 of Change Value
+     */
     public static final int EPILegalLimit2OfChangeValue = 0x00210020;
 
-    /** (0021,xx21) VR=DS VM=1 EPI Rise Time */
+    /**
+     * (0021,xx21) VR=DS VM=1 EPI Rise Time
+     */
     public static final int EPIRiseTime = 0x00210021;
 
-    /** (0021,xx30) VR=DS VM=16 Array Coil ADC Offset */
+    /**
+     * (0021,xx30) VR=DS VM=16 Array Coil ADC Offset
+     */
     public static final int ArrayCoilADCOffset = 0x00210030;
 
-    /** (0021,xx31) VR=DS VM=16 Array Coil Preamplifier Gain */
+    /**
+     * (0021,xx31) VR=DS VM=16 Array Coil Preamplifier Gain
+     */
     public static final int ArrayCoilPreamplifierGain = 0x00210031;
 
-    /** (0021,xx50) VR=LO VM=1 Saturation Type */
+    /**
+     * (0021,xx50) VR=LO VM=1 Saturation Type
+     */
     public static final int SaturationType = 0x00210050;
 
-    /** (0021,xx51) VR=DS VM=3 Saturation Normal Vector */
+    /**
+     * (0021,xx51) VR=DS VM=3 Saturation Normal Vector
+     */
     public static final int SaturationNormalVector = 0x00210051;
 
-    /** (0021,xx52) VR=DS VM=3 Saturation Position Vector */
+    /**
+     * (0021,xx52) VR=DS VM=3 Saturation Position Vector
+     */
     public static final int SaturationPositionVector = 0x00210052;
 
-    /** (0021,xx53) VR=DS VM=6 Saturation Thickness */
+    /**
+     * (0021,xx53) VR=DS VM=6 Saturation Thickness
+     */
     public static final int SaturationThickness = 0x00210053;
 
-    /** (0021,xx54) VR=DS VM=6 Saturation Width */
+    /**
+     * (0021,xx54) VR=DS VM=6 Saturation Width
+     */
     public static final int SaturationWidth = 0x00210054;
 
-    /** (0021,xx55) VR=DS VM=6 Saturation Distance */
+    /**
+     * (0021,xx55) VR=DS VM=6 Saturation Distance
+     */
     public static final int SaturationDistance = 0x00210055;
 
 }

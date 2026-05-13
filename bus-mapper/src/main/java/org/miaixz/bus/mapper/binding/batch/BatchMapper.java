@@ -72,7 +72,7 @@ import org.miaixz.bus.mapper.provider.BatchProvider;
  * </p>
  *
  * <pre>{@code
- * 
+ *
  * public interface UserMapper extends BatchMapper<User> {
  * }
  *

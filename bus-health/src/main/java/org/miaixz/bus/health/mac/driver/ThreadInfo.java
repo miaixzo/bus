@@ -78,6 +78,9 @@ public final class ThreadInfo {
 
     /**
      * Class to encapsulate mach thread information.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Immutable
     public static class ThreadStats {
@@ -86,22 +89,27 @@ public final class ThreadInfo {
          * The threadId value.
          */
         private final int threadId;
+
         /**
          * The userTime value.
          */
         private final long userTime;
+
         /**
          * The systemTime value.
          */
         private final long systemTime;
+
         /**
          * The upTime value.
          */
         private final long upTime;
+
         /**
          * The state value.
          */
         private final OSProcess.State state;
+
         /**
          * The priority value.
          */
@@ -206,6 +214,7 @@ public final class ThreadInfo {
         public int getPriority() {
             return priority;
         }
+
     }
 
 }

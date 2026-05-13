@@ -26,8 +26,8 @@ package org.miaixz.bus.core.center.map.concurrent;
  *
  * @param <K> The type of the key in the map entry.
  * @param <V> The type of the value in the map entry.
- * @author Kimi Liu
  * @see <a href="http://code.google.com/p/concurrentlinkedhashmap/">ConcurrentLinkedHashMap Project</a>
+ * @author Kimi Liu
  * @since Java 21+
  */
 public interface EntryWeigher<K, V> {

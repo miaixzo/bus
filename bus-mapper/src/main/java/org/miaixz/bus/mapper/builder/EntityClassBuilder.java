@@ -40,6 +40,7 @@ public class EntityClassBuilder {
      * A thread-safe store for table metadata, keyed by entity class.
      */
     private static final Map<Class<?>, TableMeta> TABLE_META_STORE = Collections.synchronizedMap(new WeakHashMap<>());
+
     /**
      * A thread-safe store for column metadata, keyed by entity class.
      */

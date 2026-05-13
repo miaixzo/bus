@@ -84,6 +84,7 @@ public class AntPathMatcher {
      * A cache for tokenized pattern strings, mapping a pattern string to its tokenized parts.
      */
     private final Map<String, String[]> tokenizedPatternCache = new ConcurrentHashMap<>(256);
+
     /**
      * A cache for compiled {@link AntPathStringMatcher} instances, mapping a pattern string to its matcher.
      */
@@ -662,6 +663,9 @@ public class AntPathMatcher {
 
     /**
      * A helper class for matching a string against a single Ant-style pattern.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     protected static class AntPathStringMatcher {
 
@@ -669,26 +673,32 @@ public class AntPathMatcher {
          * A pre-compiled pattern for finding wildcards (`?`, `*`) and URI template variables (`{...}`).
          */
         private static final Pattern GLOB_PATTERN = Pattern.compile("\\?|\\*|\\{((?:\\{[^/]+?}|[^/{}]|\\\\[{}])+?)}");
+
         /**
          * The default regex pattern for a URI template variable if no specific pattern is defined.
          */
         private static final String DEFAULT_VARIABLE_PATTERN = "((?s).*)";
+
         /**
          * The original raw pattern string.
          */
         private final String rawPattern;
+
         /**
          * Whether the matching should be case-sensitive.
          */
         private final boolean caseSensitive;
+
         /**
          * Indicates if the pattern contains no wildcards, allowing for a simple string equality check.
          */
         private final boolean exactMatch;
+
         /**
          * The compiled {@link Pattern} for this Ant-style pattern.
          */
         private final Pattern pattern;
+
         /**
          * A list of URI template variable names extracted from the pattern.
          */
@@ -789,10 +799,14 @@ public class AntPathMatcher {
             }
             return false;
         }
+
     }
 
     /**
      * A comparator for sorting Ant-style patterns by specificity.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     protected static class AntPatternComparator implements Comparator<String> {
 
@@ -882,6 +896,9 @@ public class AntPathMatcher {
 
         /**
          * A helper class to hold information about a pattern's specificity.
+         *
+         * @author Kimi Liu
+         * @since Java 21+
          */
         private static class PatternInfo {
 
@@ -889,26 +906,32 @@ public class AntPathMatcher {
              * The pattern string this info object is for.
              */
             private final String pattern;
+
             /**
              * The number of URI template variables (`{...}`) in the pattern.
              */
             private int uriVars;
+
             /**
              * The number of single-character wildcards (`*`) in the pattern.
              */
             private int singleWildcards;
+
             /**
              * The number of multi-directory wildcards (`**`) in the pattern.
              */
             private int doubleWildcards;
+
             /**
              * {@code true} if the pattern is a 'catch-all' pattern (/**).
              */
             private boolean catchAllPattern;
+
             /**
              * {@code true} if the pattern is a prefix pattern (ends with /** but is not /**).
              */
             private boolean prefixPattern;
+
             /**
              * The calculated length of the pattern, treating variables as a single character.
              */
@@ -1025,11 +1048,16 @@ public class AntPathMatcher {
                 }
                 return this.length;
             }
+
         }
+
     }
 
     /**
      * A simple cache for patterns that depend on the configured path separator.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class PathSeparatorPatternCache {
 
@@ -1037,6 +1065,7 @@ public class AntPathMatcher {
          * A pattern string for `/{separator}*`.
          */
         private final String endsOnWildCard;
+
         /**
          * A pattern string for `/{separator}**`.
          */
@@ -1069,6 +1098,7 @@ public class AntPathMatcher {
         public String getEndsOnDoubleWildCard() {
             return this.endsOnDoubleWildCard;
         }
+
     }
 
 }

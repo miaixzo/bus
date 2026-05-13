@@ -60,14 +60,14 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * <ul>
  * <li><b>Attribute Aliasing with {@link Alias}:</b> If attributes are linked via {@link Alias}, setting a value for one
  * is equivalent to setting it for all linked attributes.
- * 
+ *
  * <pre>{@code
  * &#64;Alias("alias")
  * String value() default "";
  * &#64;Alias("value")
  * String alias() default "";
  * }</pre>
- * 
+ *
  * </li>
  * <li><b>Attribute Overrides:</b> If an annotation has an attribute with the same name and type as an attribute on its
  * meta-annotation, its value will override the meta-annotation's attribute value.</li>
@@ -83,13 +83,13 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * information. The cache is backed by a {@link WeakConcurrentMap} and can be cleared manually by calling
  * {@link #clearCaches()}.
  *
- * @author Kimi Liu
  * @see ResolvedAnnotationMapping
  * @see GenericAnnotationMapping
  * @see HierarchicalAnnotatedElements
  * @see RepeatableMetaAnnotatedElement
  * @see MetaAnnotatedElement
  * @see RepeatableAnnotationCollector
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class AnnotatedElements {
@@ -104,14 +104,17 @@ public class AnnotatedElements {
      * Cache for {@link MetaAnnotatedElement} with attribute resolution enabled.
      */
     private static final Map<AnnotatedElement, MetaAnnotatedElement<ResolvedAnnotationMapping>> RESOLVED_ELEMENT_CACHE = new WeakConcurrentMap<>();
+
     /**
      * Cache for {@link MetaAnnotatedElement} with attribute resolution disabled.
      */
     private static final Map<AnnotatedElement, MetaAnnotatedElement<GenericAnnotationMapping>> ELEMENT_CACHE = new WeakConcurrentMap<>();
+
     /**
      * Cache for {@link RepeatableMetaAnnotatedElement} with attribute resolution enabled.
      */
     private static final Map<AnnotatedElement, RepeatableMetaAnnotatedElement<ResolvedAnnotationMapping>> RESOLVED_REPEATABLE_ELEMENT_CACHE = new WeakConcurrentMap<>();
+
     /**
      * Cache for {@link RepeatableMetaAnnotatedElement} with attribute resolution disabled.
      */
@@ -669,6 +672,9 @@ public class AnnotatedElements {
 
     /**
      * An {@link AnnotatedElement} implementation backed by a constant array of annotations.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class ConstantElement implements AnnotatedElement {
 
@@ -707,10 +713,14 @@ public class AnnotatedElements {
         public Annotation[] getDeclaredAnnotations() {
             return annotations.clone();
         }
+
     }
 
     /**
      * An {@link AnnotatedElement} implementation that contains no annotations.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class EmptyElement implements AnnotatedElement {
 
@@ -743,6 +753,7 @@ public class AnnotatedElements {
         public Annotation[] getDeclaredAnnotations() {
             return new Annotation[0];
         }
+
     }
 
 }

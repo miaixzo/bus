@@ -42,6 +42,7 @@ public class HMacJWTSigner implements JWTSigner {
      * The HMAC algorithm instance, used for performing signing and verification.
      */
     private final HMac hMac;
+
     /**
      * The character encoding, default is UTF-8.
      */

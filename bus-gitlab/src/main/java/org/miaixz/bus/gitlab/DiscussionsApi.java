@@ -35,6 +35,9 @@ import jakarta.ws.rs.core.Response;
 /**
  * This class implements the client side API for the GitLab Discussions API. See
  * <a href="https://docs.gitlab.com/ee/api/discussions.html">Discussions API at GitLab</a> for more information.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class DiscussionsApi extends AbstractApi {
 

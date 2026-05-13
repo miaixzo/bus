@@ -396,6 +396,9 @@ public interface SqlScript {
 
     /**
      * A functional interface for supplying a string, ensuring it starts with a newline character.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     interface LRSupplier extends SupplierX<String> {
 

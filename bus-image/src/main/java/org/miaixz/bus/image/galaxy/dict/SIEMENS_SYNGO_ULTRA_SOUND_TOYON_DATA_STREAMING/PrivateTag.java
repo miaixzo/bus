@@ -20,23 +20,36 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_ULTRA_SOUND_TOYON_DATA_STREAMING;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS SYNGO ULTRA-SOUND TOYON DATA STREAMING";
 
-    /** (7FD1,xx01) VR=OB VM=1 Padding */
+    /**
+     * (7FD1,xx01) VR=OB VM=1 Padding
+     */
     public static final int Padding = 0x7FD10001;
 
-    /** (7FD1,xx09) VR=UI VM=1 Volume Version ID */
+    /**
+     * (7FD1,xx09) VR=UI VM=1 Volume Version ID
+     */
     public static final int VolumeVersionID = 0x7FD10009;
 
-    /** (7FD1,xx10) VR=OB VM=1 Volume Payload */
+    /**
+     * (7FD1,xx10) VR=OB VM=1 Volume Payload
+     */
     public static final int VolumePayload = 0x7FD10010;
 
-    /** (7FD1,xx11) VR=OB VM=1 After Payload */
+    /**
+     * (7FD1,xx11) VR=OB VM=1 After Payload
+     */
     public static final int AfterPayload = 0x7FD10011;
 
 }

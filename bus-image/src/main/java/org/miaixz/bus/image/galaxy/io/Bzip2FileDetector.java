@@ -31,7 +31,7 @@ import org.miaixz.bus.core.xyz.StreamKit;
 /**
  * A {@link FileTypeDetector} implementation that detects Bzip2 compressed files. It checks for the Bzip2 magic number
  * (0x42 0x5A 0x68) at the beginning of the file. It also handles specific file extensions for VCF Bzip2 files.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -39,7 +39,7 @@ public class Bzip2FileDetector extends FileTypeDetector {
 
     /**
      * Checks if the given filename ends with any of the specified extensions (case-insensitive).
-     * 
+     *
      * @param filename The name of the file.
      * @param exts     An array of extensions to check against.
      * @return {@code true} if the filename ends with one of the extensions, {@code false} otherwise.
@@ -53,6 +53,13 @@ public class Bzip2FileDetector extends FileTypeDetector {
         return false;
     }
 
+    /**
+     * Executes the probe content type operation.
+     *
+     * @param path the path.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public String probeContentType(Path path) throws IOException {
         byte[] b = new byte[3];

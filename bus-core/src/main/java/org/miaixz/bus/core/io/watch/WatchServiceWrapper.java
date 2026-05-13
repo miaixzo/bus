@@ -54,11 +54,13 @@ public class WatchServiceWrapper extends SimpleWrapper<WatchService> implements 
      * modification, and deletion.
      */
     private WatchEvent.Kind<?>[] events;
+
     /**
      * The array of {@link WatchEvent.Modifier} representing optional modifiers for the watch service, such as
      * monitoring frequency.
      */
     private WatchEvent.Modifier[] modifiers;
+
     /**
      * A flag indicating whether this {@code WatchServiceWrapper} has been closed.
      */

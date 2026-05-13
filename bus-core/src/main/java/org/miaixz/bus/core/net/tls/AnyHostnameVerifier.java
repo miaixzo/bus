@@ -51,6 +51,7 @@ public class AnyHostnameVerifier implements HostnameVerifier {
      * See {@link X509Certificate#getSubjectAlternativeNames()}. DNS alternative name type.
      */
     private static final int ALT_DNS_NAME = 2;
+
     /**
      * See {@link X509Certificate#getSubjectAlternativeNames()}. IP address alternative name type.
      */

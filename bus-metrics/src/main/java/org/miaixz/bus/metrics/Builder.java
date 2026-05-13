@@ -252,7 +252,9 @@ public final class Builder {
      */
     public static final String OTEL_SCOPE = "bus-metrics";
 
-    /** Private constructor; this is a static constants class. */
+    /**
+     * Private constructor; this is a static constants class.
+     */
     private Builder() {
     }
 

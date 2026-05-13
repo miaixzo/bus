@@ -27,6 +27,12 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serial;
 
+/**
+ * The ssh key class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class SshKey implements Serializable {
 
     @Serial

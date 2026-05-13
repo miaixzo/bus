@@ -47,58 +47,72 @@ public final class DateBuilder {
      * Year.
      */
     private int year;
+
     /**
      * Month, starting from 1.
      */
     private int month;
+
     /**
      * Week number. ISO8601 standard, 1 for Monday, 2 for Tuesday, and so on.
      */
     private int week;
+
     /**
      * Day of month.
      */
     private int day;
+
     /**
      * Hour.
      */
     private int hour;
+
     /**
      * Minute.
      */
     private int minute;
+
     /**
      * Second.
      */
     private int second;
+
     /**
      * Nanosecond.
      */
     private int nanosecond;
+
     /**
      * Unix timestamp (seconds).
      */
     private long unixsecond;
+
     /**
      * Millisecond.
      */
     private long millisecond;
+
     /**
      * Flag indicating if time zone offset has been set.
      */
     private boolean flag;
+
     /**
      * Time zone offset in minutes.
      */
     private int zoneOffset;
+
     /**
      * Time zone.
      */
     private TimeZone zone;
+
     /**
      * AM flag.
      */
     private boolean am;
+
     /**
      * PM flag.
      */

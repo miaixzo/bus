@@ -61,45 +61,55 @@ public class CopyOptions implements Serializable {
      * superclasses/interfaces will be copied.
      */
     protected Class<?> editable;
+
     /**
      * Whether to ignore null values from the source object. If true, null values are not copied.
      */
     protected boolean ignoreNullValue;
+
     /**
      * Whether to ignore errors that occur during the copy process (e.g., type conversion errors).
      */
     protected boolean ignoreError;
+
     /**
      * Whether to ignore case when matching property names.
      */
     protected boolean ignoreCase;
+
     /**
      * An editor for field names and values, allowing for custom transformation rules (e.g., converting camelCase to
      * snake_case).
      */
     protected UnaryOperator<MutableEntry<Object, Object>> fieldEditor;
+
     /**
      * Whether to ignore fields marked with the {@code transient} keyword or {@code @Transient} annotation.
      */
     protected boolean transientSupport = true;
+
     /**
      * Whether to override the destination's existing values. If false, a value is only copied if the corresponding
      * property in the destination is null.
      */
     protected boolean override = true;
+
     /**
      * Whether to automatically convert property names to camelCase for matching. This helps resolve mismatches between
      * map keys (e.g., snake_case) and bean property names (camelCase).
      */
     protected boolean autoTransCamelCase = true;
+
     /**
      * A custom type converter. If not set, the global {@link Convert} utility is used.
      */
     protected Converter converter = (type, value) -> Convert.convertWithCheck(type, value, null, ignoreError);
+
     /**
      * The custom {@link BeanDesc} class to use for bean analysis.
      */
     protected Class<BeanDesc> beanDescClass;
+
     /**
      * A filter to determine which properties should be copied.
      */

@@ -53,16 +53,19 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
      */
     private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._UNIX_FREEBSD_FS_PATH_EXCLUDES);
+
     /**
      * The FS_PATH_INCLUDES constant.
      */
     private static final List<PathMatcher> FS_PATH_INCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._UNIX_FREEBSD_FS_PATH_INCLUDES);
+
     /**
      * The FS_VOLUME_EXCLUDES constant.
      */
     private static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._UNIX_FREEBSD_FS_VOLUME_EXCLUDES);
+
     /**
      * The FS_VOLUME_INCLUDES constant.
      */

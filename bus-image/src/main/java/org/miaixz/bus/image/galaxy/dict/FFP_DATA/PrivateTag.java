@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.FFP_DATA;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "FFP DATA";
 
-    /** (0009,xx01) VR=UN VM=1 CR Header Information */
+    /**
+     * (0009,xx01) VR=UN VM=1 CR Header Information
+     */
     public static final int CRHeaderInformation = 0x00090001;
 
 }

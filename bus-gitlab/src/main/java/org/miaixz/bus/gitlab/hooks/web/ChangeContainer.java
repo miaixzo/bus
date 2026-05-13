@@ -21,6 +21,12 @@ package org.miaixz.bus.gitlab.hooks.web;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+/**
+ * The change container class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class ChangeContainer<T> {
 
     private T previous;

@@ -29,8 +29,8 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
  *
  * @param <T> The type of the input to the function.
  * @param <R> The type of the result of the function.
- * @author Kimi Liu
  * @see Function
+ * @author Kimi Liu
  * @since Java 21+
  */
 @FunctionalInterface

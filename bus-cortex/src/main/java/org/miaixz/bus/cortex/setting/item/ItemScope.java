@@ -58,38 +58,47 @@ public class ItemScope {
      * Namespace containing the target setting entries.
      */
     private String namespace_id;
+
     /**
      * Setting group filter.
      */
     private String group;
+
     /**
      * Optional profile filter representing the target environment.
      */
     private String profile_id;
+
     /**
      * Optional application identifier used to match application-bound settings.
      */
     private String app_id;
+
     /**
      * Optional label selector.
      */
     private Map<String, String> labels;
+
     /**
      * Optional advanced metadata selectors.
      */
     private List<Selector> selectors;
+
     /**
      * Optional request identifier propagated across control-plane operations.
      */
     private String requestId;
+
     /**
      * Whether deleted or tombstoned entries should be included.
      */
     private boolean includeDeleted;
+
     /**
      * Maximum number of entries to return.
      */
     private int limit = 100;
+
     /**
      * Number of matching entries to skip.
      */

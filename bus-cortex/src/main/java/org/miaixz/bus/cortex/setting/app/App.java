@@ -53,6 +53,7 @@ public class App extends Setting {
      * Legacy application code kept only for compatibility and display. {@code id} remains the authoritative identifier.
      */
     private String code;
+
     /**
      * Display name.
      */

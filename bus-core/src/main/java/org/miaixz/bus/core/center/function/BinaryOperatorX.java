@@ -31,8 +31,8 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
  * for finding minimum and maximum elements.
  *
  * @param <T> The type of the operands and result of the operator.
- * @author Kimi Liu
  * @see BinaryOperator
+ * @author Kimi Liu
  * @since Java 21+
  */
 @FunctionalInterface

@@ -46,6 +46,9 @@ public interface IOReport extends Library {
 
     /**
      * Opaque handle returned by {@link #IOReportCreateSubscription}.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class IOReportSubscriptionRef extends CFTypeRef {
 
@@ -64,6 +67,7 @@ public interface IOReport extends Library {
         public IOReportSubscriptionRef(Pointer p) {
             super(p);
         }
+
     }
 
     /**
@@ -187,4 +191,5 @@ public interface IOReport extends Library {
      * @return residency ticks
      */
     long IOReportStateGetResidency(CFDictionaryRef channel, int index);
+
 }

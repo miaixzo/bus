@@ -77,14 +77,21 @@ public interface InternetProtocolStats {
 
     /**
      * The TCP connection state as described in RFC 793.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     enum TcpState {
         UNKNOWN, CLOSED, LISTEN, SYN_SENT, SYN_RECV, ESTABLISHED, FIN_WAIT_1, FIN_WAIT_2, CLOSE_WAIT, CLOSING, LAST_ACK,
         TIME_WAIT, NONE
+
     }
 
     /**
      * Encapsulates statistics associated with a TCP connection.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Immutable
     final class TcpStats {
@@ -93,38 +100,47 @@ public interface InternetProtocolStats {
          * The connectionsEstablished value.
          */
         private final long connectionsEstablished;
+
         /**
          * The connectionsActive value.
          */
         private final long connectionsActive;
+
         /**
          * The connectionsPassive value.
          */
         private final long connectionsPassive;
+
         /**
          * The connectionFailures value.
          */
         private final long connectionFailures;
+
         /**
          * The connectionsReset value.
          */
         private final long connectionsReset;
+
         /**
          * The segmentsSent value.
          */
         private final long segmentsSent;
+
         /**
          * The segmentsReceived value.
          */
         private final long segmentsReceived;
+
         /**
          * The segmentsRetransmitted value.
          */
         private final long segmentsRetransmitted;
+
         /**
          * The inErrors value.
          */
         private final long inErrors;
+
         /**
          * The outResets value.
          */
@@ -273,10 +289,14 @@ public interface InternetProtocolStats {
                     + ", segmentsReceived=" + segmentsReceived + ", segmentsRetransmitted=" + segmentsRetransmitted
                     + ", inErrors=" + inErrors + ", outResets=" + outResets + "]";
         }
+
     }
 
     /**
      * Encapsulates statistics associated with a UDP connection.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Immutable
     final class UdpStats {
@@ -285,14 +305,17 @@ public interface InternetProtocolStats {
          * The datagramsSent value.
          */
         private final long datagramsSent;
+
         /**
          * The datagramsReceived value.
          */
         private final long datagramsReceived;
+
         /**
          * The datagramsNoPort value.
          */
         private final long datagramsNoPort;
+
         /**
          * The datagramsReceivedErrors value.
          */
@@ -363,10 +386,14 @@ public interface InternetProtocolStats {
                     + ", datagramsNoPort=" + datagramsNoPort + ", datagramsReceivedErrors=" + datagramsReceivedErrors
                     + "]";
         }
+
     }
 
     /**
      * Encapsulates information associated with an IP connection.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Immutable
     final class IPConnection {
@@ -375,34 +402,42 @@ public interface InternetProtocolStats {
          * The type value.
          */
         private final String type;
+
         /**
          * The localAddress value.
          */
         private final byte[] localAddress;
+
         /**
          * The localPort value.
          */
         private final int localPort;
+
         /**
          * The foreignAddress value.
          */
         private final byte[] foreignAddress;
+
         /**
          * The foreignPort value.
          */
         private final int foreignPort;
+
         /**
          * The state value.
          */
         private final TcpState state;
+
         /**
          * The transmitQueue value.
          */
         private final int transmitQueue;
+
         /**
          * The receiveQueue value.
          */
         private final int receiveQueue;
+
         /**
          * The owningProcessId value.
          */
@@ -545,6 +580,7 @@ public interface InternetProtocolStats {
                     + ", transmitQueue=" + transmitQueue + ", receiveQueue=" + receiveQueue + ", owningProcessId="
                     + owningProcessId + "]";
         }
+
     }
 
 }

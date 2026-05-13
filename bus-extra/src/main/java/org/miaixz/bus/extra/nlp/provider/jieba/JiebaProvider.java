@@ -42,6 +42,7 @@ public class JiebaProvider implements NLPProvider {
      * The underlying Jieba {@link JiebaSegmenter} instance used for performing word segmentation.
      */
     private final JiebaSegmenter jiebaSegmenter;
+
     /**
      * The segmentation mode used by the Jieba segmenter (e.g., SEARCH or INDEX).
      */

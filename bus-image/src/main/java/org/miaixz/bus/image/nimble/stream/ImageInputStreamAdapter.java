@@ -25,26 +25,53 @@ import java.io.InputStream;
 import javax.imageio.stream.ImageInputStream;
 
 /**
+ * Represents the ImageInputStreamAdapter type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class ImageInputStreamAdapter extends InputStream {
 
+    /**
+     * The iis value.
+     */
     private final ImageInputStream iis;
 
+    /**
+     * The marked pos value.
+     */
     private long markedPos;
 
+    /**
+     * The mark exception value.
+     */
     private IOException markException;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param iis the iis.
+     */
     public ImageInputStreamAdapter(ImageInputStream iis) {
         this.iis = iis;
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int read() throws IOException {
         return iis.read();
     }
 
+    /**
+     * Executes the mark operation.
+     *
+     * @param readlimit the readlimit.
+     */
     @Override
     public synchronized void mark(int readlimit) {
         try {
@@ -55,16 +82,35 @@ public class ImageInputStreamAdapter extends InputStream {
         }
     }
 
+    /**
+     * Executes the mark supported operation.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean markSupported() {
         return true;
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @param b   the b.
+     * @param off the off.
+     * @param len the len.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
         return iis.read(b, off, len);
     }
 
+    /**
+     * Executes the reset operation.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public synchronized void reset() throws IOException {
         if (markException != null)
@@ -72,6 +118,13 @@ public class ImageInputStreamAdapter extends InputStream {
         iis.seek(markedPos);
     }
 
+    /**
+     * Executes the skip operation.
+     *
+     * @param n the n.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public long skip(long n) throws IOException {
         return iis.skipBytes((int) n);

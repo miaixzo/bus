@@ -37,6 +37,7 @@ public class SemaphoreRunnable implements Runnable {
      * The actual {@link Runnable} logic to be executed.
      */
     private final Runnable runnable;
+
     /**
      * The {@link Semaphore} used to control concurrent access.
      */

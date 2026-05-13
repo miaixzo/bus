@@ -20,20 +20,31 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_ENCAPSULATED_DOCUMENT_DATA;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS SYNGO ENCAPSULATED DOCUMENT DATA";
 
-    /** (0087,xx20) VR=OB VM=1 Study Model */
+    /**
+     * (0087,xx20) VR=OB VM=1 Study Model
+     */
     public static final int StudyModel = 0x00870020;
 
-    /** (0087,xx30) VR=OB VM=1 Report XML Schema */
+    /**
+     * (0087,xx30) VR=OB VM=1 Report XML Schema
+     */
     public static final int ReportXMLSchema = 0x00870030;
 
-    /** (0087,xx40) VR=OB VM=1 Report Identifier */
+    /**
+     * (0087,xx40) VR=OB VM=1 Report Identifier
+     */
     public static final int ReportIdentifier = 0x00870040;
 
 }

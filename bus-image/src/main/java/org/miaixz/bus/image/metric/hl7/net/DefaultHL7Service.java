@@ -20,17 +20,32 @@
 package org.miaixz.bus.image.metric.hl7.net;
 
 /**
+ * Represents the DefaultHL7Service type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class DefaultHL7Service extends DefaultHL7MessageListener implements HL7Service {
 
+    /**
+     * The message types value.
+     */
     private final String[] messageTypes;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param messageTypes the message types.
+     */
     public DefaultHL7Service(String... messageTypes) {
         this.messageTypes = messageTypes;
     }
 
+    /**
+     * Gets the message types.
+     *
+     * @return the message types.
+     */
     @Override
     public String[] getMessageTypes() {
         return messageTypes;

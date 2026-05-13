@@ -75,134 +75,167 @@ public class StowRS {
      * The boundary string for the multipart request.
      */
     private static final String boundary = "myboundary";
+
     /**
      * A counter for the number of files processed.
      */
     private static final AtomicInteger fileCount = new AtomicInteger();
+
     /**
      * A map to store bulk data objects, keyed by their content location.
      */
     private static final Map<String, StowRSBulkdata> contentLocBulkdata = new HashMap<>();
+
     /**
      * An array of DICOM tags for Study and Series Instance UIDs.
      */
     private static final int[] IUIDS_TAGS = { Tag.StudyInstanceUID, Tag.SeriesInstanceUID };
+
     /**
      * An array of Type 2 DICOM tags that should be present in the metadata.
      */
     private static final int[] TYPE2_TAGS = { Tag.ContentDate, Tag.ContentTime };
+
     /**
      * The standard DICOM element dictionary.
      */
     private static final ElementDictionary DICT = ElementDictionary.getStandardElementDictionary();
+
     /**
      * The URL of the STOW-RS service.
      */
     private static String url;
+
     /**
      * A flag to indicate if the content is a VL Photographic Image.
      */
     private static boolean vlPhotographicImage;
+
     /**
      * A flag to indicate if the content is a Video Photographic Image.
      */
     private static boolean videoPhotographicImage;
+
     /**
      * The desired Accept header for the HTTP request.
      */
     private static String requestAccept;
+
     /**
      * The Content-Type of the request body.
      */
     private static String requestContentType;
+
     /**
      * The path to a metadata file to be merged.
      */
     private static String metadataFilePathStr;
+
     /**
      * The metadata file object.
      */
     private static File metadataFile;
+
     /**
      * A flag to allow connections to any HTTPS host, regardless of certificate validation.
      */
     private static boolean allowAnyHost;
+
     /**
      * A flag to disable the default SSL trust manager.
      */
     private static boolean disableTM;
+
     /**
      * A flag to include the Encapsulated Document Length tag.
      */
     private static boolean encapsulatedDocLength;
+
     /**
      * The value for the HTTP Authorization header.
      */
     private static String authorization;
+
     /**
      * The maximum number of files to include in a single request.
      */
     private static int limit;
+
     /**
      * The file content type specified from the command line.
      */
     private static FileContentType fileContentTypeFromCL;
+
     /**
      * The content type of the first bulk data file processed.
      */
     private static FileContentType firstBulkdataFileContentType;
+
     /**
      * The content type of the current bulk data file being processed.
      */
     private static FileContentType bulkdataFileContentType;
+
     /**
      * The DICOM attributes for the current operation.
      */
     private final Attributes attrs = new Attributes();
+
     /**
      * A list of chunks of data to be sent in separate requests.
      */
     private final List<StowChunk> stowChunks = new ArrayList<>();
+
     /**
      * A flag to exclude APPn segments from JPEG streams.
      */
     private boolean noApp;
+
     /**
      * A flag to include pixel data header information.
      */
     private boolean pixelHeader;
+
     /**
      * A flag related to the Transfer Syntax UID.
      */
     private boolean tsuid;
+
     /**
      * A suffix for generated UIDs.
      */
     private String uidSuffix;
+
     /**
      * The prefix for temporary file names.
      */
     private String tmpPrefix;
+
     /**
      * The suffix for temporary file names.
      */
     private String tmpSuffix;
+
     /**
      * The directory for temporary files.
      */
     private File tmpDir;
+
     /**
      * The total number of files scanned.
      */
     private int filesScanned;
+
     /**
      * The total number of files successfully sent.
      */
     private int filesSent;
+
     /**
      * The total size in bytes of all successfully sent files.
      */
     private long totalSize;
+
     /**
      * A map of custom HTTP request properties.
      */
@@ -1165,64 +1198,150 @@ public class StowRS {
 
     /**
      * An enumeration of supported file content types for encapsulation.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     enum FileContentType {
 
+        /**
+         * The pdf value.
+         */
         PDF(UID.EncapsulatedPDFStorage.uid, Tag.EncapsulatedDocument, MediaType.APPLICATION_PDF,
                 "encapsulatedPDFMetadata.xml"),
+        /**
+         * The cda value.
+         */
         CDA(UID.EncapsulatedCDAStorage.uid, Tag.EncapsulatedDocument, MediaType.TEXT_XML,
                 "encapsulatedCDAMetadata.xml"),
+        /**
+         * The sla value.
+         */
         SLA(UID.EncapsulatedSTLStorage.uid, Tag.EncapsulatedDocument, MediaType.APPLICATION_SLA,
                 "encapsulatedSTLMetadata.xml"),
+        /**
+         * The stl value.
+         */
         STL(UID.EncapsulatedSTLStorage.uid, Tag.EncapsulatedDocument, MediaType.MODEL_STL,
                 "encapsulatedSTLMetadata.xml"),
+        /**
+         * The stl binary value.
+         */
         STL_BINARY(UID.EncapsulatedSTLStorage.uid, Tag.EncapsulatedDocument, MediaType.MODEL_X_STL_BINARY,
                 "encapsulatedSTLMetadata.xml"),
+        /**
+         * The mtl value.
+         */
         MTL(UID.EncapsulatedMTLStorage.uid, Tag.EncapsulatedDocument, MediaType.MODEL_MTL,
                 "encapsulatedMTLMetadata.xml"),
+        /**
+         * The obj value.
+         */
         OBJ(UID.EncapsulatedOBJStorage.uid, Tag.EncapsulatedDocument, MediaType.MODEL_OBJ,
                 "encapsulatedOBJMetadata.xml"),
+        /**
+         * The genozip value.
+         */
         GENOZIP(UID.PrivateEncapsulatedGenozipStorage.uid, Tag.EncapsulatedDocument, MediaType.APPLICATION_VND_GENOZIP,
                 "encapsulatedGenozipMetadata.xml"),
+        /**
+         * The vcf bzip2 value.
+         */
         VCF_BZIP2(UID.PrivateEncapsulatedBzip2VCFStorage.uid, Tag.EncapsulatedDocument,
                 MediaType.APPLICATION_PRS_VCFBZIP2, "encapsulatedVCFBzip2Metadata.xml"),
+        /**
+         * The doc bzip2 value.
+         */
         DOC_BZIP2(UID.PrivateEncapsulatedBzip2DocumentStorage.uid, Tag.EncapsulatedDocument,
                 MediaType.APPLICATION_X_BZIP2, "encapsulatedDocumentBzip2Metadata.xml"),
+        /**
+         * The jphc value.
+         */
         JPHC(vlPhotographicImage ? UID.VLPhotographicImageStorage.uid : UID.SecondaryCaptureImageStorage.uid,
                 Tag.PixelData, MediaType.IMAGE_JPHC,
                 vlPhotographicImage ? "vlPhotographicImageMetadata.xml" : "secondaryCaptureImageMetadata.xml"),
+        /**
+         * The jpeg value.
+         */
         JPEG(vlPhotographicImage ? UID.VLPhotographicImageStorage.uid : UID.SecondaryCaptureImageStorage.uid,
                 Tag.PixelData, MediaType.IMAGE_JPEG,
                 vlPhotographicImage ? "vlPhotographicImageMetadata.xml" : "secondaryCaptureImageMetadata.xml"),
+        /**
+         * The jp2 value.
+         */
         JP2(vlPhotographicImage ? UID.VLPhotographicImageStorage.uid : UID.SecondaryCaptureImageStorage.uid,
                 Tag.PixelData, MediaType.IMAGE_JP2,
                 vlPhotographicImage ? "vlPhotographicImageMetadata.xml" : "secondaryCaptureImageMetadata.xml"),
+        /**
+         * The j2 c value.
+         */
         J2C(vlPhotographicImage ? UID.VLPhotographicImageStorage.uid : UID.SecondaryCaptureImageStorage.uid,
                 Tag.PixelData, MediaType.IMAGE_J2C,
                 vlPhotographicImage ? "vlPhotographicImageMetadata.xml" : "secondaryCaptureImageMetadata.xml"),
+        /**
+         * The jph value.
+         */
         JPH(vlPhotographicImage ? UID.VLPhotographicImageStorage.uid : UID.SecondaryCaptureImageStorage.uid,
                 Tag.PixelData, MediaType.IMAGE_JPH,
                 vlPhotographicImage ? "vlPhotographicImageMetadata.xml" : "secondaryCaptureImageMetadata.xml"),
+        /**
+         * The png value.
+         */
         PNG(vlPhotographicImage ? UID.VLPhotographicImageStorage.uid : UID.SecondaryCaptureImageStorage.uid,
                 Tag.PixelData, MediaType.IMAGE_PNG,
                 vlPhotographicImage ? "vlPhotographicImageMetadata.xml" : "secondaryCaptureImageMetadata.xml"),
+        /**
+         * The gif value.
+         */
         GIF(videoPhotographicImage ? UID.VideoPhotographicImageStorage.uid
                 : vlPhotographicImage ? UID.VLPhotographicImageStorage.uid : UID.SecondaryCaptureImageStorage.uid,
                 Tag.PixelData, MediaType.IMAGE_GIF,
                 vlPhotographicImage || videoPhotographicImage ? "vlPhotographicImageMetadata.xml"
                         : "secondaryCaptureImageMetadata.xml"),
+        /**
+         * The mpeg value.
+         */
         MPEG(UID.VideoPhotographicImageStorage.uid, Tag.PixelData, MediaType.VIDEO_MPEG,
                 "vlPhotographicImageMetadata.xml"),
+        /**
+         * The mp4 value.
+         */
         MP4(UID.VideoPhotographicImageStorage.uid, Tag.PixelData, MediaType.VIDEO_MP4,
                 "vlPhotographicImageMetadata.xml"),
+        /**
+         * The quicktime value.
+         */
         QUICKTIME(UID.VideoPhotographicImageStorage.uid, Tag.PixelData, MediaType.VIDEO_QUICKTIME,
                 "vlPhotographicImageMetadata.xml");
 
+        /**
+         * The cuid value.
+         */
         private final String cuid;
+
+        /**
+         * The bulkdata type tag value.
+         */
         private final int bulkdataTypeTag;
+
+        /**
+         * The media type value.
+         */
         private final String mediaType;
+
+        /**
+         * The sample metadata file value.
+         */
         private final String sampleMetadataFile;
 
+        /**
+         * Creates a new instance.
+         *
+         * @param cuid               the cuid.
+         * @param bulkdataTypeTag    the bulkdata type tag.
+         * @param mediaType          the media type.
+         * @param sampleMetadataFile the sample metadata file.
+         */
         FileContentType(String cuid, int bulkdataTypeTag, String mediaType, String sampleMetadataFile) {
             this.cuid = cuid;
             this.bulkdataTypeTag = bulkdataTypeTag;
@@ -1230,34 +1349,68 @@ public class StowRS {
             this.sampleMetadataFile = sampleMetadataFile;
         }
 
+        /**
+         * Executes the value of operation.
+         *
+         * @param contentType the content type.
+         * @param path        the path.
+         * @return the operation result.
+         */
         static FileContentType valueOf(String contentType, Path path) {
             String fileName = path.toFile().getName();
             String ext = fileName.substring(fileName.lastIndexOf('.') + 1);
             return fileContentType(contentType != null ? contentType : ext);
         }
 
+        /**
+         * Gets the sop class uid.
+         *
+         * @return the sop class uid.
+         */
         public String getSOPClassUID() {
             return cuid;
         }
 
+        /**
+         * Gets the sample metadata resource url.
+         *
+         * @return the sample metadata resource url.
+         */
         public String getSampleMetadataResourceURL() {
             return "resource:" + sampleMetadataFile;
         }
 
+        /**
+         * Gets the bulkdata type tag.
+         *
+         * @return the bulkdata type tag.
+         */
         public int getBulkdataTypeTag() {
             return bulkdataTypeTag;
         }
 
+        /**
+         * Gets the media type.
+         *
+         * @return the media type.
+         */
         public String getMediaType() {
             return mediaType;
         }
+
     }
 
     /**
      * An enumeration to handle parsing of different compressed pixel data formats.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private enum CompressedPixelData {
 
+        /**
+         * The jpeg value.
+         */
         JPEG {
 
             @Override
@@ -1265,6 +1418,9 @@ public class StowRS {
                 setParser(new JPEGParser(channel));
             }
         },
+        /**
+         * The mpeg value.
+         */
         MPEG {
 
             @Override
@@ -1272,6 +1428,9 @@ public class StowRS {
                 setParser(new MPEG2Parser(channel));
             }
         },
+        /**
+         * The mp4 value.
+         */
         MP4 {
 
             @Override
@@ -1280,8 +1439,16 @@ public class StowRS {
             }
         };
 
+        /**
+         * The parser value.
+         */
         private XPEGParser parser;
 
+        /**
+         * Executes the value of operation.
+         *
+         * @return the operation result.
+         */
         static CompressedPixelData valueOf() {
             return bulkdataFileContentType == FileContentType.JP2 || bulkdataFileContentType == FileContentType.J2C
                     || bulkdataFileContentType == FileContentType.JPH || bulkdataFileContentType == FileContentType.JPHC
@@ -1290,129 +1457,285 @@ public class StowRS {
                                     : valueOf(bulkdataFileContentType.name());
         }
 
+        /**
+         * Executes the parse operation.
+         *
+         * @param channel the channel.
+         * @throws IOException if the operation cannot be completed.
+         */
         abstract void parse(SeekableByteChannel channel) throws IOException;
 
+        /**
+         * Gets the parser.
+         *
+         * @return the parser.
+         */
         public XPEGParser getParser() {
             return parser;
         }
 
+        /**
+         * Sets the parser.
+         *
+         * @param parser the parser.
+         */
         void setParser(XPEGParser parser) {
             this.parser = parser;
         }
+
     }
 
     /**
      * A functional interface for consuming a file path, allowing for exceptions.
      *
-     * @param <Path> The type of the path.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     interface StowRSFileConsumer<Path> {
 
+        /**
+         * Executes the accept operation.
+         *
+         * @param path the path.
+         * @throws IOException if the operation cannot be completed.
+         */
         void accept(Path path) throws IOException;
+
     }
 
     /**
      * A functional interface for applying a function to a file path, allowing for exceptions.
      *
-     * @param <Path> The type of the path.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     interface StowRSFileFunction<Path> {
 
+        /**
+         * Executes the apply operation.
+         *
+         * @param path the path.
+         * @throws IOException if the operation cannot be completed.
+         */
         void apply(Path path) throws IOException;
+
     }
 
     /**
      * A container class representing a chunk of data to be sent in a single STOW-RS request.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static class StowChunk {
 
+        /**
+         * The tmp file value.
+         */
         private final File tmpFile;
+
+        /**
+         * The scanned value.
+         */
         private final AtomicInteger scanned = new AtomicInteger();
+
+        /**
+         * The sent value.
+         */
         private int sent;
+
+        /**
+         * The size value.
+         */
         private long size;
 
+        /**
+         * Creates a new instance.
+         *
+         * @param tmpFile the tmp file.
+         */
         StowChunk(File tmpFile) {
             this.tmpFile = tmpFile;
         }
 
+        /**
+         * Sets the attributes.
+         *
+         * @param length the length.
+         */
         void setAttributes(long length) {
             scanned.getAndIncrement();
             this.size += length;
         }
 
+        /**
+         * Gets the scanned.
+         *
+         * @return the scanned.
+         */
         AtomicInteger getScanned() {
             return scanned;
         }
 
+        /**
+         * Gets the tmp file.
+         *
+         * @return the tmp file.
+         */
         File getTmpFile() {
             return tmpFile;
         }
 
+        /**
+         * Gets the size.
+         *
+         * @return the size.
+         */
         long getSize() {
             return size;
         }
 
+        /**
+         * Executes the sent operation.
+         *
+         * @return the operation result.
+         */
         int sent() {
             this.sent = scanned.get();
             return sent;
         }
+
     }
 
     /**
      * A container class for information about a bulk data file.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static class StowRSBulkdata {
 
+        /**
+         * The bulkdata file path value.
+         */
         Path bulkdataFilePath;
+
+        /**
+         * The bulkdata file value.
+         */
         File bulkdataFile;
+
+        /**
+         * The parser value.
+         */
         XPEGParser parser;
+
+        /**
+         * The file length value.
+         */
         long fileLength;
 
+        /**
+         * Creates a new instance.
+         *
+         * @param bulkdataFilePath the bulkdata file path.
+         */
         StowRSBulkdata(Path bulkdataFilePath) {
             this.bulkdataFilePath = bulkdataFilePath;
             this.bulkdataFile = bulkdataFilePath.toFile();
             this.fileLength = bulkdataFile.length();
         }
 
+        /**
+         * Gets the bulkdata file path.
+         *
+         * @return the bulkdata file path.
+         */
         Path getBulkdataFilePath() {
             return bulkdataFilePath;
         }
 
+        /**
+         * Gets the bulkdata file.
+         *
+         * @return the bulkdata file.
+         */
         File getBulkdataFile() {
             return bulkdataFile;
         }
 
+        /**
+         * Gets the file length.
+         *
+         * @return the file length.
+         */
         long getFileLength() {
             return fileLength;
         }
 
+        /**
+         * Gets the parser.
+         *
+         * @return the parser.
+         */
         XPEGParser getParser() {
             return parser;
         }
 
+        /**
+         * Sets the parser.
+         *
+         * @param parser the parser.
+         */
         void setParser(XPEGParser parser) {
             this.parser = parser;
         }
+
     }
 
     /**
      * A file visitor for traversing directories and applying a function to each file.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static class StowRSFileVisitor extends SimpleFileVisitor<Path> {
 
+        /**
+         * The consumer value.
+         */
         private final StowRSFileConsumer<Path> consumer;
+
+        /**
+         * The continue visit value.
+         */
         private final boolean continueVisit;
 
+        /**
+         * Creates a new instance.
+         *
+         * @param consumer      the consumer.
+         * @param continueVisit the continue visit.
+         */
         StowRSFileVisitor(StowRSFileConsumer<Path> consumer, boolean continueVisit) {
             this.consumer = consumer;
             this.continueVisit = continueVisit;
         }
 
+        /**
+         * Executes the visit file operation.
+         *
+         * @param path  the path.
+         * @param attrs the attrs.
+         * @return the operation result.
+         * @throws IOException if the operation cannot be completed.
+         */
         @Override
         public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
             consumer.accept(path);
             return continueVisit ? FileVisitResult.CONTINUE : FileVisitResult.TERMINATE;
         }
+
     }
 
 }

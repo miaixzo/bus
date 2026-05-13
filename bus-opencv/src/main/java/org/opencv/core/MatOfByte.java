@@ -3,6 +3,12 @@ package org.opencv.core;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The mat of byte class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class MatOfByte extends Mat {
 
     // 8UC(x)
@@ -96,4 +102,5 @@ public class MatOfByte extends Mat {
             ab[i] = a[i];
         return Arrays.asList(ab);
     }
+
 }

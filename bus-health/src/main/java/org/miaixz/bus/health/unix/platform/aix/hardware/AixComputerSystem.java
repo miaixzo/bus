@@ -46,6 +46,7 @@ final class AixComputerSystem extends AbstractComputerSystem {
      * The lsattrStrings value.
      */
     private final Supplier<LsattrStrings> lsattrStrings = Memoizer.memoize(AixComputerSystem::readLsattr);
+
     /**
      * The lscfg value.
      */
@@ -190,6 +191,9 @@ final class AixComputerSystem extends AbstractComputerSystem {
 
     /**
      * The LsattrStrings class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static final class LsattrStrings {
 
@@ -197,10 +201,12 @@ final class AixComputerSystem extends AbstractComputerSystem {
          * The biosVendor value.
          */
         private final String biosVendor;
+
         /**
          * The biosPlatformVersion value.
          */
         private final String biosPlatformVersion;
+
         /**
          * The biosVersion value.
          */
@@ -210,14 +216,17 @@ final class AixComputerSystem extends AbstractComputerSystem {
          * The manufacturer value.
          */
         private final String manufacturer;
+
         /**
          * The model value.
          */
         private final String model;
+
         /**
          * The serialNumber value.
          */
         private final String serialNumber;
+
         /**
          * The uuid value.
          */
@@ -245,6 +254,7 @@ final class AixComputerSystem extends AbstractComputerSystem {
             this.serialNumber = StringKit.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber;
             this.uuid = StringKit.isBlank(uuid) ? Normal.UNKNOWN : uuid;
         }
+
     }
 
 }

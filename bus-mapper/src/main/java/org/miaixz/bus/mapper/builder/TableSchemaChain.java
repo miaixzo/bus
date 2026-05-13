@@ -37,11 +37,13 @@ public class TableSchemaChain implements TableSchemaBuilder.Chain {
      * The list of table factories (TableSchemaBuilder instances) that form the processing chain.
      */
     private final List<TableSchemaBuilder> factories;
+
     /**
      * The index of the current factory in the 'factories' list. This determines which factory the current chain node
      * will execute.
      */
     private final int index;
+
     /**
      * The next node in the processing chain. Declared as volatile and initialized lazily using Double-Checked Locking
      * (DCL) for thread safety.

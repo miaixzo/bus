@@ -49,32 +49,39 @@ public class PropDesc {
      * The invoker for the getter method of the property.
      */
     protected Invoker getter;
+
     /**
      * The invoker for the setter method of the property.
      */
     protected Invoker setter;
+
     /**
      * The name of the field, potentially an alias if an {@link Alias} annotation is present.
      */
     private String fieldName;
+
     /**
      * The invoker for the field itself, if accessible.
      */
     private Invoker field;
+
     /**
      * A cached boolean indicating whether the getter (or field if no getter) has a {@code transient} modifier or
      * annotation.
      */
     private Boolean hasTransientForGetter;
+
     /**
      * A cached boolean indicating whether the setter (or field if no setter) has a {@code transient} modifier or
      * annotation.
      */
     private Boolean hasTransientForSetter;
+
     /**
      * A cached boolean indicating whether the property is readable.
      */
     private Boolean isReadable;
+
     /**
      * A cached boolean indicating whether the property is writable.
      */

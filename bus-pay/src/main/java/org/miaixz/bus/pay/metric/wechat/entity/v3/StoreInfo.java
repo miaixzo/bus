@@ -42,14 +42,17 @@ public class StoreInfo {
      * The store ID.
      */
     private String id;
+
     /**
      * The store name.
      */
     private String name;
+
     /**
      * The area code for the store's location.
      */
     private String area_code;
+
     /**
      * The detailed address of the store.
      */

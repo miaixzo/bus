@@ -25,32 +25,71 @@ import java.io.OutputStream;
 import javax.imageio.stream.ImageOutputStreamImpl;
 
 /**
+ * Represents the OutputStreamAdapter type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class OutputStreamAdapter extends ImageOutputStreamImpl {
 
+    /**
+     * The out value.
+     */
     private final OutputStream out;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param out the out.
+     */
     public OutputStreamAdapter(OutputStream out) {
         this.out = out;
     }
 
+    /**
+     * Executes the write operation.
+     *
+     * @param b the b.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void write(int b) throws IOException {
         out.write(b);
     }
 
+    /**
+     * Executes the write operation.
+     *
+     * @param b   the b.
+     * @param off the off.
+     * @param len the len.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void write(byte[] b, int off, int len) throws IOException {
         out.write(b, off, len);
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int read() throws IOException {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @param b   the b.
+     * @param off the off.
+     * @param len the len.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
         throw new UnsupportedOperationException();

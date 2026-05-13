@@ -47,6 +47,7 @@ public class Httpv {
      * The underlying {@link Httpd} client used for executing requests.
      */
     final Httpd httpd;
+
     /**
      * The base URL used for resolving relative request paths.
      */
@@ -56,26 +57,32 @@ public class Httpv {
      * A map of custom media type mappings.
      */
     final Map<String, String> mediaTypes;
+
     /**
      * The executor for handling asynchronous tasks and callbacks.
      */
     final CoverTasks.Executor executor;
+
     /**
      * An array of preprocessors that can modify requests before they are sent.
      */
     final Preprocessor[] preprocessors;
+
     /**
      * A list of tasks that are associated with a tag for cancellation.
      */
     final List<TagTask> tagTasks;
+
     /**
      * The timeout multiplier for pre-processing tasks, relative to the regular request timeout.
      */
     final int preprocTimeoutTimes;
+
     /**
      * The default character set for request bodies.
      */
     final Charset charset;
+
     /**
      * The default body type for requests (e.g., "form").
      */
@@ -438,6 +445,9 @@ public class Httpv {
 
     /**
      * An interface for configuring the underlying {@link Httpd.Builder}.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public interface HttpvConfig {
 
@@ -452,6 +462,9 @@ public class Httpv {
 
     /**
      * A preprocessor that ensures serial execution of other preprocessors.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class SerialPreprocessor implements Preprocessor {
 
@@ -459,10 +472,12 @@ public class Httpv {
          * The wrapped preprocessor.
          */
         private final Preprocessor preprocessor;
+
         /**
          * The queue of pending tasks.
          */
         private final Queue<PreChain> pendings;
+
         /**
          * Whether a task is currently running.
          */
@@ -516,6 +531,9 @@ public class Httpv {
 
     /**
      * A builder for creating and configuring {@link Httpv} instances.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class Builder {
 
@@ -903,6 +921,9 @@ public class Httpv {
 
     /**
      * Represents a task that is associated with a tag for easy cancellation.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public class TagTask {
 
@@ -910,14 +931,17 @@ public class Httpv {
          * The tag associated with the task.
          */
         String tag;
+
         /**
          * The object that can cancel the task.
          */
         final Cancelable canceler;
+
         /**
          * The HTTP task.
          */
         final CoverHttp<?> task;
+
         /**
          * The timestamp when the task was created.
          */
@@ -953,6 +977,9 @@ public class Httpv {
 
     /**
      * An implementation of the preprocessor chain.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class RealPreChain implements Preprocessor.PreChain {
 

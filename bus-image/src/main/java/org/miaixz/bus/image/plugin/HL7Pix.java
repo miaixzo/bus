@@ -44,22 +44,27 @@ public class HL7Pix extends Device {
      * The local network connection configuration.
      */
     private final Connection conn = new Connection();
+
     /**
      * The remote network connection configuration.
      */
     private final Connection remote = new Connection();
+
     /**
      * The MLLP release protocol version.
      */
     private MLLPRelease mllpRelease;
+
     /**
      * The sending application and facility, formatted as application^facility.
      */
     private String sendingApplication = "hl7pix^miaixz";
+
     /**
      * The receiving application and facility, formatted as application^facility.
      */
     private String receivingApplication = "";
+
     /**
      * The character set to be specified in the MSH-18 field.
      */
@@ -69,6 +74,7 @@ public class HL7Pix extends Device {
      * The underlying socket for the connection.
      */
     private Socket sock;
+
     /**
      * The MLLP connection handler.
      */

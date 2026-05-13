@@ -89,9 +89,9 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * <p>
  * <strong>Usage Example:</strong>
  * </p>
- * 
+ *
  * <pre>{@code
- * 
+ *
  * // Create configuration properties
  * AuthProperties properties = new AuthProperties();
  * // Create the authorization service

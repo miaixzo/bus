@@ -138,6 +138,7 @@ public class Html4Escape extends ReplacerChain {
             { "\u00FE", "&thorn;" }, // þ - lowercase thorn, Icelandic
             { "\u00FF", "&yuml;" }, // ÿ - lowercase y, umlaut
     };
+
     /**
      * Lookup table for extended HTML 4.0 escape characters. This array defines the mapping from various extended
      * characters (Latin Extended-B, Greek, General Punctuation, Letterlike Symbols, Arrows, Mathematical Operators,

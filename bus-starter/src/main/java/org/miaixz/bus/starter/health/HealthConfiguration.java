@@ -169,6 +169,9 @@ public class HealthConfiguration {
      * <p>
      * This condition ensures that the health monitoring beans are only created when the feature is explicitly enabled
      * by the user.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static class EnableHealthCondition implements Condition {
 
@@ -184,6 +187,7 @@ public class HealthConfiguration {
             // The condition matches if any bean with the @EnableHealth annotation exists.
             return !context.getBeanFactory().getBeansWithAnnotation(EnableHealth.class).isEmpty();
         }
+
     }
 
 }

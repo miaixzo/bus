@@ -30,8 +30,10 @@ import jakarta.ws.rs.core.Response;
 
 /**
  * This class provides an entry point to all the GitLab Releases API calls.
- * 
+ *
  * @see <a href="https://docs.gitlab.com/ce/api/releases">Releases API at GitLab</a>
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class ReleasesApi extends AbstractApi {
 

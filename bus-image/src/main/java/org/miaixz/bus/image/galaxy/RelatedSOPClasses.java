@@ -28,13 +28,23 @@ import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.metric.pdu.CommonExtended;
 
 /**
+ * Represents the RelatedSOPClasses type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class RelatedSOPClasses {
 
+    /**
+     * The common ext negs value.
+     */
     private final HashMap<String, CommonExtended> commonExtNegs = new HashMap<>();
 
+    /**
+     * Executes the init operation.
+     *
+     * @param props the props.
+     */
     public void init(Properties props) {
         for (String cuid : props.stringPropertyNames()) {
             commonExtNegs.put(
@@ -44,6 +54,12 @@ public class RelatedSOPClasses {
         }
     }
 
+    /**
+     * Gets the common extended.
+     *
+     * @param cuid the cuid.
+     * @return the common extended.
+     */
     public CommonExtended getCommonExtended(String cuid) {
         CommonExtended commonExtNeg = commonExtNegs.get(cuid);
         return commonExtNeg != null ? commonExtNeg : new CommonExtended(cuid, UID.Storage.uid);

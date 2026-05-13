@@ -31,28 +31,84 @@ import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
 import org.miaixz.bus.image.nimble.codec.TransferSyntaxType;
 
 /**
+ * Represents the EncapsulatedPixelDataImageInputStream type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class EncapsulatedPixelDataImageInputStream extends MemoryCacheImageInputStream
         implements BytesWithImageImageDescriptor {
 
+    /**
+     * The dis value.
+     */
     private final ImageInputStream dis;
+
+    /**
+     * The image descriptor value.
+     */
     private final ImageDescriptor imageDescriptor;
+
+    /**
+     * The ts type value.
+     */
     private final TransferSyntaxType tsType;
+
+    /**
+     * The basic offset table value.
+     */
     private final byte[] basicOffsetTable;
+
+    /**
+     * The frame start word value.
+     */
     private final int frameStartWord;
+
+    /**
+     * The fragm start word value.
+     */
     private int fragmStartWord;
+
+    /**
+     * The fragm end pos value.
+     */
     private long fragmEndPos;
+
+    /**
+     * The frame start pos value.
+     */
     private long frameStartPos;
+
+    /**
+     * The frame end pos value.
+     */
     private long frameEndPos = -1L;
+
+    /**
+     * The end of stream value.
+     */
     private boolean endOfStream;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param dis             the dis.
+     * @param imageDescriptor the image descriptor.
+     * @throws IOException if the operation cannot be completed.
+     */
     public EncapsulatedPixelDataImageInputStream(ImageInputStream dis, ImageDescriptor imageDescriptor)
             throws IOException {
         this(dis, imageDescriptor, TransferSyntaxType.forUID(dis.getTransferSyntax()));
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param dis             the dis.
+     * @param imageDescriptor the image descriptor.
+     * @param tsType          the ts type.
+     * @throws IOException if the operation cannot be completed.
+     */
     public EncapsulatedPixelDataImageInputStream(ImageInputStream dis, ImageDescriptor imageDescriptor,
             TransferSyntaxType tsType) throws IOException {
         super(dis);
@@ -67,11 +123,22 @@ public class EncapsulatedPixelDataImageInputStream extends MemoryCacheImageInput
         frameStartWord = fragmStartWord;
     }
 
+    /**
+     * Gets the image descriptor.
+     *
+     * @return the image descriptor.
+     */
     @Override
     public ImageDescriptor getImageDescriptor() {
         return imageDescriptor;
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int read() throws IOException {
         if (endOfFrame())
@@ -80,6 +147,15 @@ public class EncapsulatedPixelDataImageInputStream extends MemoryCacheImageInput
         return super.read();
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @param b   the b.
+     * @param off the off.
+     * @param len the len.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
         if (endOfFrame())
@@ -88,10 +164,21 @@ public class EncapsulatedPixelDataImageInputStream extends MemoryCacheImageInput
         return super.read(b, off, Math.min(len, (int) ((frameEndPos < 0 ? fragmEndPos : frameEndPos) - streamPos)));
     }
 
+    /**
+     * Executes the seek current frame operation.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     public void seekCurrentFrame() throws IOException {
         seek(frameStartPos);
     }
 
+    /**
+     * Executes the seek next frame operation.
+     *
+     * @return true if the condition is met; otherwise false.
+     * @throws IOException if the operation cannot be completed.
+     */
     public boolean seekNextFrame() throws IOException {
         if (endOfStream)
             return false;
@@ -111,6 +198,12 @@ public class EncapsulatedPixelDataImageInputStream extends MemoryCacheImageInput
         return !endOfStream;
     }
 
+    /**
+     * Gets the bytes.
+     *
+     * @return the bytes.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public ByteBuffer getBytes() throws IOException {
         byte[] array = new byte[8192];
@@ -123,6 +216,12 @@ public class EncapsulatedPixelDataImageInputStream extends MemoryCacheImageInput
         return ByteBuffer.wrap(array, 0, length);
     }
 
+    /**
+     * Reads the item header.
+     *
+     * @return true if the condition is met; otherwise false.
+     * @throws IOException if the operation cannot be completed.
+     */
     private boolean readItemHeader() throws IOException {
         if (!dis.readItemHeader()) {
             endOfStream = true;
@@ -135,6 +234,12 @@ public class EncapsulatedPixelDataImageInputStream extends MemoryCacheImageInput
         return true;
     }
 
+    /**
+     * Executes the end of frame operation.
+     *
+     * @return true if the condition is met; otherwise false.
+     * @throws IOException if the operation cannot be completed.
+     */
     private boolean endOfFrame() throws IOException {
         if (frameEndPos >= 0)
             return streamPos >= frameEndPos;
@@ -150,6 +255,11 @@ public class EncapsulatedPixelDataImageInputStream extends MemoryCacheImageInput
         return true;
     }
 
+    /**
+     * Determines whether end of stream.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean isEndOfStream() {
         return endOfStream;
     }

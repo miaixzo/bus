@@ -55,6 +55,7 @@ public class TemplateContext {
      * </ol>
      */
     private static final Pattern VAR_PATTERN = Pattern.compile("(?<!\\\\)\\{([.$_a-zA-Z]+\\d*[.$_a-zA-Z]*)}");
+
     /**
      * Regular expression for escaped variables.
      */

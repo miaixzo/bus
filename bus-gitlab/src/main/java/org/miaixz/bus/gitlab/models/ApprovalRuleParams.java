@@ -25,6 +25,12 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * The approval rule params class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class ApprovalRuleParams implements Serializable {
 
     @Serial

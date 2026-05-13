@@ -43,7 +43,7 @@ import org.miaixz.bus.http.Httpx;
 
 /**
  * VK login provider.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */

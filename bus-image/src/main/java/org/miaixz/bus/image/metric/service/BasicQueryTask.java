@@ -31,18 +31,51 @@ import org.miaixz.bus.image.metric.Commands;
 import org.miaixz.bus.image.metric.pdu.PresentationContext;
 
 /**
+ * Represents the BasicQueryTask type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class BasicQueryTask implements QueryTask {
 
+    /**
+     * The as value.
+     */
     protected final Association as;
+
+    /**
+     * The pc value.
+     */
     protected final PresentationContext pc;
+
+    /**
+     * The rq value.
+     */
     protected final Attributes rq;
+
+    /**
+     * The keys value.
+     */
     protected final Attributes keys;
+
+    /**
+     * The canceled value.
+     */
     protected volatile boolean canceled;
+
+    /**
+     * The optional keys not supported value.
+     */
     protected boolean optionalKeysNotSupported = false;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param as   the as.
+     * @param pc   the pc.
+     * @param rq   the rq.
+     * @param keys the keys.
+     */
     public BasicQueryTask(Association as, PresentationContext pc, Attributes rq, Attributes keys) {
         this.as = as;
         this.pc = pc;
@@ -50,19 +83,37 @@ public class BasicQueryTask implements QueryTask {
         this.keys = keys;
     }
 
+    /**
+     * Determines whether optional keys not supported.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean isOptionalKeysNotSupported() {
         return optionalKeysNotSupported;
     }
 
+    /**
+     * Sets the optional keys not supported.
+     *
+     * @param optionalKeysNotSupported the optional keys not supported.
+     */
     public void setOptionalKeysNotSupported(boolean optionalKeysNotSupported) {
         this.optionalKeysNotSupported = optionalKeysNotSupported;
     }
 
+    /**
+     * Executes the on cancel rq operation.
+     *
+     * @param as the as.
+     */
     @Override
     public void onCancelRQ(Association as) {
         canceled = true;
     }
 
+    /**
+     * Executes the run operation.
+     */
     @Override
     public void run() {
         try {
@@ -90,17 +141,39 @@ public class BasicQueryTask implements QueryTask {
         }
     }
 
+    /**
+     * Executes the close operation.
+     */
     protected void close() {
     }
 
+    /**
+     * Executes the next match operation.
+     *
+     * @return the operation result.
+     * @throws ImageServiceException if the operation cannot be completed.
+     */
     protected Attributes nextMatch() throws ImageServiceException {
         throw new NoSuchElementException();
     }
 
+    /**
+     * Determines whether more matches.
+     *
+     * @return true if the condition is met; otherwise false.
+     * @throws ImageServiceException if the operation cannot be completed.
+     */
     protected boolean hasMoreMatches() throws ImageServiceException {
         return false;
     }
 
+    /**
+     * Executes the adjust operation.
+     *
+     * @param match the match.
+     * @return the operation result.
+     * @throws ImageServiceException if the operation cannot be completed.
+     */
     protected Attributes adjust(Attributes match) throws ImageServiceException {
         if (match == null)
             return null;

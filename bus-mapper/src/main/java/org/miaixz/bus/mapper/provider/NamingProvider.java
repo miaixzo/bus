@@ -172,6 +172,9 @@ public class NamingProvider implements Provider {
         };
     }
 
+    /**
+     * The type method.
+     */
     @Override
     public String type() {
         return naming.name().toLowerCase();

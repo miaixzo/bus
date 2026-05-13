@@ -47,22 +47,27 @@ public class CoverCall implements Cancelable {
      * A queue for messages sent before the WebSocket connection is established.
      */
     private final List<Object> queues = new ArrayList<>();
+
     /**
      * The executor for handling message serialization.
      */
     private final CoverTasks.Executor executor;
+
     /**
      * A flag indicating if the call has been canceled or the socket has been closed.
      */
     private boolean cancelOrClosed;
+
     /**
      * The underlying WebSocket instance. It is null until the connection is opened.
      */
     private WebSocket webSocket;
+
     /**
      * The character set for message encoding and decoding.
      */
     private Charset charset;
+
     /**
      * The default message type for serialization (e.g., "json", "xml").
      */
@@ -208,6 +213,8 @@ public class CoverCall implements Cancelable {
      * A functional interface for handling WebSocket events.
      *
      * @param <T> The type of data associated with the event.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public interface Register<T> {
 
@@ -223,6 +230,9 @@ public class CoverCall implements Cancelable {
 
     /**
      * Encapsulates information about a WebSocket closure.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class Close {
 
@@ -230,14 +240,17 @@ public class CoverCall implements Cancelable {
          * Custom status code indicating the WebSocket was canceled by the client.
          */
         public static final int CANCELED = 0;
+
         /**
          * Custom status code indicating the WebSocket was closed due to an unexpected exception.
          */
         public static final int EXCEPTION = -1;
+
         /**
          * Custom status code indicating the WebSocket was closed due to a network error.
          */
         public static final int NETWORK_ERROR = -2;
+
         /**
          * Custom status code indicating the WebSocket was closed due to a timeout.
          */
@@ -247,6 +260,7 @@ public class CoverCall implements Cancelable {
          * The WebSocket closing status code.
          */
         private final int code;
+
         /**
          * The human-readable reason for closing.
          */
@@ -309,10 +323,14 @@ public class CoverCall implements Cancelable {
         public String toString() {
             return "Close [code=" + code + ", reason=" + reason + "]";
         }
+
     }
 
     /**
      * A WebSocket listener that bridges Httpd's WebSocket events to the CoverCall's event system.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class Listener extends WebSocketListener {
 
@@ -320,6 +338,7 @@ public class CoverCall implements Cancelable {
          * The client that initiated the WebSocket connection.
          */
         private final Client client;
+
         /**
          * The CoverCall associated with this listener.
          */
@@ -459,18 +478,22 @@ public class CoverCall implements Cancelable {
          * Listener for when the WebSocket connection is successfully opened.
          */
         private Register<CoverResult> onOpen;
+
         /**
          * Listener for when a connection failure occurs.
          */
         private Register<Throwable> onException;
+
         /**
          * Listener for incoming messages.
          */
         private Register<Message> onMessage;
+
         /**
          * Listener for when the server initiates a graceful close.
          */
         private Register<Close> onClosing;
+
         /**
          * Listener for when the connection is fully closed (also called on failure or cancellation).
          */
@@ -480,18 +503,22 @@ public class CoverCall implements Cancelable {
          * Flag to execute the onOpen callback on an I/O thread.
          */
         private boolean openOnIO;
+
         /**
          * Flag to execute the onException callback on an I/O thread.
          */
         private boolean exceptionOnIO;
+
         /**
          * Flag to execute the onMessage callback on an I/O thread.
          */
         private boolean messageOnIO;
+
         /**
          * Flag to execute the onClosing callback on an I/O thread.
          */
         private boolean closingOnIO;
+
         /**
          * Flag to execute the onClosed callback on an I/O thread.
          */
@@ -501,6 +528,7 @@ public class CoverCall implements Cancelable {
          * Client-to-server ping interval in seconds.
          */
         private int pingSeconds = -1;
+
         /**
          * Expected server-to-client pong interval in seconds.
          */
@@ -663,6 +691,7 @@ public class CoverCall implements Cancelable {
          * The text content of the message, if it is a text message.
          */
         private String text;
+
         /**
          * The binary content of the message, if it is a binary message.
          */

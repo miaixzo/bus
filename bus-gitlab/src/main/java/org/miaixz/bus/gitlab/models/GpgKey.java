@@ -21,6 +21,12 @@ package org.miaixz.bus.gitlab.models;
 
 import java.util.Date;
 
+/**
+ * The gpg key class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class GpgKey {
 
     private Long id;

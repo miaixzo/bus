@@ -40,7 +40,7 @@ import lombok.Setter;
 /**
  * DingTalk notification service provider.
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 21+
  */
 @Setter
@@ -50,10 +50,12 @@ public class DingTalkProvider extends AbstractProvider<DingTalkNotice, Context> 
      * Atomic reference for storing the access token.
      */
     private AtomicReference<String> accessToken = new AtomicReference<>();
+
     /**
      * Timestamp of the last token refresh.
      */
     private long refreshTokenTime;
+
     /**
      * Token timeout duration in milliseconds, defaults to 7000 seconds.
      */

@@ -38,6 +38,7 @@ public class SectionFormatter extends AbstractFormatter<IniSection> {
      * The character that marks the beginning of a section header (e.g., '[').
      */
     private final char head;
+
     /**
      * The character that marks the end of a section header (e.g., ']').
      */

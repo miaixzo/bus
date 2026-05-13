@@ -20,23 +20,36 @@
 package org.miaixz.bus.image.galaxy.dict.GEMS_GDXE_ATHENAV2_INTERNAL_USE;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEMS_GDXE_ATHENAV2_INTERNAL_USE";
 
-    /** (7FDF,xx10) VR=LT VM=1 Pixel Data References */
+    /**
+     * (7FDF,xx10) VR=LT VM=1 Pixel Data References
+     */
     public static final int PixelDataReferences = 0x7FDF0010;
 
-    /** (7FDF,xx11) VR=LT VM=1 Pixel Data References (temporary) */
+    /**
+     * (7FDF,xx11) VR=LT VM=1 Pixel Data References (temporary)
+     */
     public static final int PixelDataReferencesTemporary = 0x7FDF0011;
 
-    /** (7FDF,xx20) VR=SS VM=1 Auto Push Tag */
+    /**
+     * (7FDF,xx20) VR=SS VM=1 Auto Push Tag
+     */
     public static final int AutoPushTag = 0x7FDF0020;
 
-    /** (7FDF,xx25) VR=CS VM=1 PPS Status */
+    /**
+     * (7FDF,xx25) VR=CS VM=1 PPS Status
+     */
     public static final int PPSStatus = 0x7FDF0025;
 
 }

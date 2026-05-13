@@ -20,17 +20,26 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_ECAT_FILE_INFO;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS MED ECAT FILE INFO";
 
-    /** (0021,xx00) VR=OB VM=1 ECAT_Main_Header */
+    /**
+     * (0021,xx00) VR=OB VM=1 ECAT_Main_Header
+     */
     public static final int ECATMainHeader = 0x00210000;
 
-    /** (0021,xx01) VR=OB VM=1 ECAT_Image_Subheader */
+    /**
+     * (0021,xx01) VR=OB VM=1 ECAT_Image_Subheader
+     */
     public static final int ECATImageSubheader = 0x00210001;
 
 }

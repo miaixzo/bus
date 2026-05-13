@@ -41,10 +41,12 @@ public class PathMover {
      * The source file or directory to be moved.
      */
     private final Path src;
+
     /**
      * The target destination for the move operation.
      */
     private final Path target;
+
     /**
      * The move options, such as {@link StandardCopyOption#REPLACE_EXISTING}.
      */

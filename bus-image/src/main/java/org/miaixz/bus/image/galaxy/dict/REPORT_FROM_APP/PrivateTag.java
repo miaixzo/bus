@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.REPORT_FROM_APP;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "REPORT_FROM_APP";
 
-    /** (0039,xx95) VR=LO VM=1 ? */
+    /**
+     * (0039,xx95) VR=LO VM=1 ?
+     */
     public static final int _0039_xx95_ = 0x00390095;
 
 }

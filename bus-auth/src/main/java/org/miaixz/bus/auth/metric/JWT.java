@@ -60,18 +60,22 @@ public class JWT implements JWTRegister<JWT> {
      * JWT header information.
      */
     private final JWTHeader header;
+
     /**
      * JWT payload information.
      */
     private final JWTPayload payload;
+
     /**
      * Encoding charset, default is UTF-8.
      */
     private java.nio.charset.Charset charset;
+
     /**
      * Signer, used to generate and verify signatures.
      */
     private JWTSigner signer;
+
     /**
      * The parsed JWT token segments (header, payload, signature).
      */

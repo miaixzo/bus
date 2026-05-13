@@ -20,23 +20,36 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MR_PHOENIX_ATTRIBUTES;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS MR PHOENIX ATTRIBUTES";
 
-    /** (0021,xx01) VR=UL VM=1 Mds Mode Mask */
+    /**
+     * (0021,xx01) VR=UL VM=1 Mds Mode Mask
+     */
     public static final int MdsModeMask = 0x00210001;
 
-    /** (0021,xx02) VR=US VM=1 Dixon */
+    /**
+     * (0021,xx02) VR=US VM=1 Dixon
+     */
     public static final int Dixon = 0x00210002;
 
-    /** (0021,xx03) VR=LT VM=1 Sequence File Name */
+    /**
+     * (0021,xx03) VR=LT VM=1 Sequence File Name
+     */
     public static final int SequenceFileName = 0x00210003;
 
-    /** (0021,xxF1) VR=UL VM=1 Count of Pseudo Attributes */
+    /**
+     * (0021,xxF1) VR=UL VM=1 Count of Pseudo Attributes
+     */
     public static final int CountOfPseudoAttributes = 0x002100F1;
 
 }

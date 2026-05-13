@@ -44,22 +44,27 @@ public class Context {
      */
     @Builder.Default
     private String prefix = Normal.EMPTY;
+
     /**
      * The name of the bucket or container.
      */
     private String bucket;
+
     /**
      * The endpoint URL of the storage service.
      */
     private String endpoint;
+
     /**
      * The access key for authentication.
      */
     private String accessKey;
+
     /**
      * The secret key for authentication.
      */
     private String secretKey;
+
     /**
      * The region where the storage bucket is located.
      */
@@ -80,16 +85,19 @@ public class Context {
      */
     @Builder.Default
     private boolean pathStyle = true;
+
     /**
      * The connection timeout in seconds. Default is 30 seconds.
      */
     @Builder.Default
     private long connectTimeout = 30;
+
     /**
      * The write timeout in seconds. Default is 60 seconds.
      */
     @Builder.Default
     private long writeTimeout = 60;
+
     /**
      * The read timeout in seconds. Default is 30 seconds.
      */

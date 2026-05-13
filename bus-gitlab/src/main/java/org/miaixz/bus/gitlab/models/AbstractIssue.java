@@ -36,6 +36,12 @@ import com.fasterxml.jackson.databind.node.LongNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
 
+/**
+ * The abstract issue class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public abstract class AbstractIssue implements Serializable {
 
     @Serial
@@ -411,6 +417,12 @@ public abstract class AbstractIssue implements Serializable {
         return (JacksonJson.toJsonString(this));
     }
 
+    /**
+     * The task completion status class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public static class TaskCompletionStatus implements Serializable {
 
         @Serial
@@ -439,6 +451,7 @@ public abstract class AbstractIssue implements Serializable {
         public String toString() {
             return (JacksonJson.toJsonString(this));
         }
+
     }
 
 }

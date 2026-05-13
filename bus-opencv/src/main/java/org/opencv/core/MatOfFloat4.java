@@ -3,6 +3,12 @@ package org.opencv.core;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The mat of float 4 class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class MatOfFloat4 extends Mat {
 
     // 32FC4
@@ -77,4 +83,5 @@ public class MatOfFloat4 extends Mat {
             ab[i] = a[i];
         return Arrays.asList(ab);
     }
+
 }

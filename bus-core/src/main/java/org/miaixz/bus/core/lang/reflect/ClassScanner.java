@@ -59,43 +59,53 @@ public class ClassScanner implements Serializable {
      * The package name to scan.
      */
     private final String packageName;
+
     /**
      * The package name with a trailing dot, used to avoid ambiguity when checking prefixes. If the package name is
      * empty, this will also be empty.
      */
     private final String packageNameWithDot;
+
     /**
      * The package directory name, used for file system operations.
      */
     private final String packageDirName;
+
     /**
      * The package path, used for operations within JAR files. On Linux, this is consistent with {@code packageDirName}.
      */
     private final String packagePath;
+
     /**
      * The class filter predicate. Only classes that satisfy this predicate will be included in the scan results.
      */
     private final Predicate<Class<?>> classPredicate;
+
     /**
      * The character set used for decoding URLs and file paths.
      */
     private final java.nio.charset.Charset charset;
+
     /**
      * The set of scanned classes that satisfy the filter conditions.
      */
     private final Set<Class<?>> classes = new HashSet<>();
+
     /**
      * A set of class names that failed to load during scanning, if {@code ignoreLoadError} is true.
      */
     private final Set<String> classesOfLoadError = new HashSet<>();
+
     /**
      * The class loader to use for loading classes.
      */
     private ClassLoader classLoader;
+
     /**
      * Flag indicating whether to initialize classes when loading them.
      */
     private boolean initialize;
+
     /**
      * Flag indicating whether to ignore errors during class loading. If {@code true}, loading errors will be recorded
      * in {@code classesOfLoadError} but will not stop the scan.

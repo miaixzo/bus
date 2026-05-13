@@ -20,23 +20,36 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_DISPLAY_0000;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS MED DISPLAY 0000";
 
-    /** (0029,xx99) VR=CS VM=1 ? */
+    /**
+     * (0029,xx99) VR=CS VM=1 ?
+     */
     public static final int _0029_xx99_ = 0x00290099;
 
-    /** (0029,xxC1) VR=US VM=1-n ? */
+    /**
+     * (0029,xxC1) VR=US VM=1-n ?
+     */
     public static final int _0029_xxC1_ = 0x002900C1;
 
-    /** (0029,xxB0) VR=US VM=1 ? */
+    /**
+     * (0029,xxB0) VR=US VM=1 ?
+     */
     public static final int _0029_xxB0_ = 0x002900B0;
 
-    /** (0029,xxB2) VR=US VM=1-n ? */
+    /**
+     * (0029,xxB2) VR=US VM=1-n ?
+     */
     public static final int _0029_xxB2_ = 0x002900B2;
 
 }

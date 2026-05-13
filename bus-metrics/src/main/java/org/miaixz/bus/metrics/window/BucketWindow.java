@@ -40,6 +40,7 @@ public class BucketWindow {
      * Ring buffer of per-second accumulators.
      */
     private final LongAdder[] buckets;
+
     /**
      * Index of the currently active bucket; advances each second.
      */
@@ -64,14 +65,18 @@ public class BucketWindow {
         buckets[currentBucket].add(value);
     }
 
-    /** Advance time by one second. Called by NativeTimer's background scheduler. */
+    /**
+     * Advance time by one second. Called by NativeTimer's background scheduler.
+     */
     public void advance() {
         int next = (currentBucket + 1) % RING_SIZE;
         buckets[next].reset();
         currentBucket = next;
     }
 
-    /** Sum of all values in the last {@code seconds} seconds. */
+    /**
+     * Sum of all values in the last {@code seconds} seconds.
+     */
     public long sum(int seconds) {
         int cur = currentBucket;
         long total = 0;

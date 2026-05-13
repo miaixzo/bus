@@ -20,26 +20,41 @@
 package org.miaixz.bus.image.galaxy.dict.SPI_P_XSB_DCI_Release_1;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SPI-P-XSB-DCI Release 1";
 
-    /** (0019,xx10) VR=LT VM=1 Video Beam Boost */
+    /**
+     * (0019,xx10) VR=LT VM=1 Video Beam Boost
+     */
     public static final int VideoBeamBoost = 0x00190010;
 
-    /** (0019,xx11) VR=US VM=1 Channel Generating Video Sync */
+    /**
+     * (0019,xx11) VR=US VM=1 Channel Generating Video Sync
+     */
     public static final int ChannelGeneratingVideoSync = 0x00190011;
 
-    /** (0019,xx12) VR=US VM=1 Video Gain */
+    /**
+     * (0019,xx12) VR=US VM=1 Video Gain
+     */
     public static final int VideoGain = 0x00190012;
 
-    /** (0019,xx13) VR=US VM=1 Video Offset */
+    /**
+     * (0019,xx13) VR=US VM=1 Video Offset
+     */
     public static final int VideoOffset = 0x00190013;
 
-    /** (0019,xx20) VR=DS VM=1 RTD Data Compression Factor */
+    /**
+     * (0019,xx20) VR=DS VM=1 RTD Data Compression Factor
+     */
     public static final int RTDDataCompressionFactor = 0x00190020;
 
 }

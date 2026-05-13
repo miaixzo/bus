@@ -36,6 +36,7 @@ public class SegmentBuffer extends AbstractList<ByteString> implements RandomAcc
      * The array of ByteString options.
      */
     public final ByteString[] byteStrings;
+
     /**
      * The trie structure for efficient lookup.
      */

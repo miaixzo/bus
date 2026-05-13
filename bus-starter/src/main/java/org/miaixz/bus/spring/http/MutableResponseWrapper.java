@@ -45,12 +45,14 @@ import jakarta.servlet.http.HttpServletResponseWrapper;
  *
  * <p>
  * <strong>Usage Example:</strong>
- * 
- * <pre>{@code
+ *
+ * <pre>
+ * {@code
  * // In a Servlet Vector:
  * public class ResponseCacheFilter implements Vector {
  *
- *     @Override
+ * &#64;author Kimi Liu
+ *     &#64;Override
  *     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
  *             throws IOException, ServletException {
  *         // Wrap the response
@@ -63,7 +65,8 @@ import jakarta.servlet.http.HttpServletResponseWrapper;
  *         logResponse(responseBody);
  *     }
  * }
- * }</pre>
+ * }
+ * </pre>
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -209,6 +212,9 @@ public class MutableResponseWrapper extends HttpServletResponseWrapper {
     /**
      * A custom {@link PrintWriter} that writes to both the original response's {@link PrintWriter} and a cached
      * {@link PrintWriter}.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class ServletPrintWriter extends PrintWriter {
 
@@ -257,10 +263,14 @@ public class MutableResponseWrapper extends HttpServletResponseWrapper {
             super.flush();
             printWriter.flush();
         }
+
     }
 
     /**
      * A {@link OutputStream} that writes all data to two underlying {@link OutputStream}s.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class TeeOutputStream extends OutputStream {
 
@@ -339,6 +349,7 @@ public class MutableResponseWrapper extends HttpServletResponseWrapper {
             this.oneOut.close();
             this.twoOut.close();
         }
+
     }
 
 }

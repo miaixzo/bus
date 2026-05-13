@@ -225,10 +225,12 @@ public enum MicrosoftScope implements AuthorizeScope {
      * The scope string as defined by Microsoft.
      */
     private final String scope;
+
     /**
      * A description of what the scope grants access to.
      */
     private final String description;
+
     /**
      * Indicates if this scope is enabled by default.
      */

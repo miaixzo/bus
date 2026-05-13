@@ -29,6 +29,12 @@ import org.miaixz.bus.logger.Logger;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
+/**
+ * The gitlab request class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class GitlabRequest {
 
     /**

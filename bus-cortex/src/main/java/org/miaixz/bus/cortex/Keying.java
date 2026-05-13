@@ -88,6 +88,7 @@ public interface Keying<S> {
      * Route-side generation intentionally does not auto-fill these dimensions with persistence defaults.
      * </p>
      *
+     * @author Kimi Liu
      * @param mode        registry key mode
      * @param namespace   namespace
      * @param type        registry type
@@ -98,6 +99,24 @@ public interface Keying<S> {
      * @param verb        numeric verb code
      * @param fingerprint runtime instance fingerprint
      */
+    /**
+     * The type field.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    /**
+     * The type field.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    /**
+     * The type field.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     record RegistrySpec(int mode, String namespace, Type type, String appId, String id, String method, String version,
             Integer verb, String fingerprint) {
 
@@ -105,10 +124,12 @@ public interface Keying<S> {
          * Mode flag for durable registry-entry keys.
          */
         public static final int ENTRY = 1;
+
         /**
          * Mode flag for runtime-instance keys.
          */
         public static final int INSTANCE = 2;
+
         /**
          * Mode flag for runtime route keys and route candidate chains.
          */
@@ -277,6 +298,7 @@ public interface Keying<S> {
         public boolean routable() {
             return methodPart() != null && versionPart() != null && verbPart() != null;
         }
+
     }
 
     /**
@@ -293,6 +315,8 @@ public interface Keying<S> {
      * @param dataId    data identifier
      * @param profile   runtime profile
      * @param revision  revision number
+     * @author Kimi Liu
+     * @since Java 21+
      */
     record SettingSpec(int mode, String namespace, String group, String dataId, String profile, String revision) {
 
@@ -300,30 +324,37 @@ public interface Keying<S> {
          * Mode flag for the logical item identifier.
          */
         public static final int ITEM_ID = 11;
+
         /**
          * Mode flag for the logical profile scope.
          */
         public static final int PROFILE_SCOPE = 12;
+
         /**
          * Mode flag for runtime watch keys.
          */
         public static final int WATCH = 13;
+
         /**
          * Mode flag for runtime overlay keys.
          */
         public static final int OVERLAY = 14;
+
         /**
          * Mode flag for exported logical setting identifiers.
          */
         public static final int EXPORT = 15;
+
         /**
          * Mode flag for current-state entry keys.
          */
         public static final int ENTRY = 16;
+
         /**
          * Mode flag for revision keys.
          */
         public static final int REVISION = 17;
+
         /**
          * Mode flag for revision-sequence keys.
          */
@@ -476,6 +507,7 @@ public interface Keying<S> {
         public String revisionPart() {
             return revision == null || revision.isBlank() ? null : revision.trim();
         }
+
     }
 
 }

@@ -44,10 +44,12 @@ public class JdPayRequest extends Voucher {
      * The version number of the interface.
      */
     private String version;
+
     /**
      * The merchant number.
      */
     private String merchant;
+
     /**
      * The encrypted request data.
      */

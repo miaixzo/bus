@@ -70,18 +70,22 @@ public class JpushSmsProvider extends AbstractProvider<JpushNotice, Context> {
                 entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
                 entity != null && entity.getSignature() != null);
         Map<String, String> bodys = new HashMap<>();
+
         /**
          * The signature ID for the SMS.
          */
         bodys.put("sign_id", entity.getSignature());
+
         /**
          * The recipient's mobile number.
          */
         bodys.put("mobile", entity.getReceive());
+
         /**
          * The template ID for the SMS message.
          */
         bodys.put("temp_id", entity.getTemplate());
+
         /**
          * The parameters for the SMS template.
          */

@@ -45,18 +45,22 @@ public final class BufferPage {
      * A lock to ensure thread-safe allocation and cleaning of buffers.
      */
     private final ReentrantLock lock = new ReentrantLock();
+
     /**
      * The underlying physical buffer for this page.
      */
     private final ByteBuffer buffer;
+
     /**
      * A queue of virtual buffers that are pending cleanup and recycling.
      */
     private final ConcurrentLinkedQueue<VirtualBuffer> cleanBuffers = new ConcurrentLinkedQueue<>();
+
     /**
      * A list of currently available (free) virtual buffers within this page.
      */
     private final List<VirtualBuffer> availableBuffers;
+
     /**
      * A flag indicating whether the buffer page is currently idle.
      */

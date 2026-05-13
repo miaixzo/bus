@@ -40,7 +40,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * <li>If an escape character is to be read, it must be defined as '\\'.</li>
  * <li>Newline characters and spaces after an escape character in a multi-line escaped sequence will be ignored.</li>
  * </ul>
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */

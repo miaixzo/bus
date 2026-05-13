@@ -20,17 +20,26 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_AX_INSPACE_EP;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS AX INSPACE_EP";
 
-    /** (0009,xx50) VR=UI VM=1 ? */
+    /**
+     * (0009,xx50) VR=UI VM=1 ?
+     */
     public static final int _0009_xx50_ = 0x00090050;
 
-    /** (0009,xx51) VR=UI VM=1 ? */
+    /**
+     * (0009,xx51) VR=UI VM=1 ?
+     */
     public static final int _0009_xx51_ = 0x00090051;
 
 }

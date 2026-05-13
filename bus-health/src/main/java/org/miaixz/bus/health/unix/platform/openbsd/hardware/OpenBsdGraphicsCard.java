@@ -45,6 +45,7 @@ final class OpenBsdGraphicsCard extends AbstractGraphicsCard {
      * The PCI_CLASS_DISPLAY constant.
      */
     private static final String PCI_CLASS_DISPLAY = "Class: 03 Display";
+
     /**
      * The PCI_DUMP_HEADER constant.
      */

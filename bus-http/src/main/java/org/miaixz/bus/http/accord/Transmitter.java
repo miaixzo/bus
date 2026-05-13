@@ -52,6 +52,7 @@ public class Transmitter {
     private final RealConnectionPool connectionPool;
     private final NewCall call;
     private final EventListener eventListener;
+
     /**
      * The connection that carries the request and response. Guarded by connectionPool.
      */
@@ -59,6 +60,7 @@ public class Transmitter {
     private Object callStackTrace;
     private Request request;
     private ExchangeFinder exchangeFinder;
+
     /**
      * The exchange that is currently in progress. Guarded by connectionPool.
      */
@@ -406,6 +408,9 @@ public class Transmitter {
 
     /**
      * A weak reference to a transmitter, used to detect connection leaks.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static final class TransmitterReference extends WeakReference<Transmitter> {
 
@@ -419,6 +424,7 @@ public class Transmitter {
             super(referent);
             this.callStackTrace = callStackTrace;
         }
+
     }
 
 }

@@ -45,6 +45,7 @@ public class MapWrapper<K, V>
 
     @Serial
     private static final long serialVersionUID = 2852267777760L;
+
     /**
      * The underlying (raw) map that all operations are delegated to.
      */

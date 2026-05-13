@@ -27,6 +27,9 @@ import java.io.Serial;
 /**
  * This class contains the sizing information from the project. To get this information, ProjectApi.getProject() has to
  * be called with parameter statistics=true which is only allowed for GitLab admins.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class ProjectStatistics implements Serializable {
 

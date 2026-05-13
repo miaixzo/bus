@@ -40,46 +40,55 @@ public class MariadbTable implements Table {
      */
     @MappingField(value = "TABLE_CAT")
     private String tableCat;
+
     /**
      * Table name.
      */
     @MappingField(value = "TABLE_NAME")
     private String tableName;
+
     /**
      * Self-referencing column name.
      */
     @MappingField(value = "SELF_REFERENCING_COL_NAME")
     private Object selfReferencingColName;
+
     /**
      * Table schema.
      */
     @MappingField(value = "TABLE_CAT")
     private Object tableSchem;
+
     /**
      * Type schema.
      */
     @MappingField(value = "TYPE_SCHEM")
     private Object typeSchem;
+
     /**
      * Type catalog.
      */
     @MappingField(value = "TABLE_CAT")
     private Object typeCat;
+
     /**
      * Table type.
      */
     @MappingField(value = "TABLE_TYPE")
     private String tableType;
+
     /**
      * Remarks or comments about the table.
      */
     @MappingField(value = "REMARKS")
     private String remarks;
+
     /**
      * Reference generation method.
      */
     @MappingField(value = "REF_GENERATION")
     private Object refGeneration;
+
     /**
      * Type name.
      */

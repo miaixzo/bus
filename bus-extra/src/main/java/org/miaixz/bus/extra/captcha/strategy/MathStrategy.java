@@ -47,6 +47,7 @@ public class MathStrategy implements CodeStrategy {
      * The maximum length of numbers involved in the calculation.
      */
     private final int numberLength;
+
     /**
      * Whether the calculation result is allowed to be a negative number.
      */

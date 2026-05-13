@@ -44,18 +44,22 @@ public class QueryBaiTiao extends Voucher {
      * Version number.
      */
     private String version;
+
     /**
      * Merchant number.
      */
     private String merchant;
+
     /**
      * Transaction number.
      */
     private String tradeNum;
+
     /**
      * Transaction amount.
      */
     private String amount;
+
     /**
      * Signature.
      */

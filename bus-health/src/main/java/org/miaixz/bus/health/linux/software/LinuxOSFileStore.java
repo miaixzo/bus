@@ -38,10 +38,12 @@ public class LinuxOSFileStore extends AbstractOSFileStore {
      * The logicalVolume value.
      */
     private String logicalVolume;
+
     /**
      * The description value.
      */
     private String description;
+
     /**
      * The fsType value.
      */
@@ -51,18 +53,22 @@ public class LinuxOSFileStore extends AbstractOSFileStore {
      * The freeSpace value.
      */
     private long freeSpace;
+
     /**
      * The usableSpace value.
      */
     private long usableSpace;
+
     /**
      * The totalSpace value.
      */
     private long totalSpace;
+
     /**
      * The freeInodes value.
      */
     private long freeInodes;
+
     /**
      * The totalInodes value.
      */

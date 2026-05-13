@@ -29,6 +29,9 @@ import com.sun.jna.ptr.PointerByReference;
 /**
  * JNA bindings for libsystemd. This class should be considered non-API as it may be removed if/when its code is
  * incorporated into the JNA project.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 @ThreadSafe
 public interface Systemd extends Library {

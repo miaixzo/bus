@@ -51,54 +51,67 @@ public final class Response implements Closeable {
      * The original request that initiated this response.
      */
     final Request request;
+
     /**
      * The protocol used for the response (e.g., HTTP/1.1, HTTP/2).
      */
     final Protocol protocol;
+
     /**
      * The HTTP status code.
      */
     final int code;
+
     /**
      * The HTTP status message.
      */
     final String message;
+
     /**
      * The TLS handshake information, or null for non-TLS connections.
      */
     final Handshake handshake;
+
     /**
      * The response headers.
      */
     final Headers headers;
+
     /**
      * The response body, which may be null (e.g., for HEAD requests).
      */
     final ResponseBody body;
+
     /**
      * The network response, obtained directly from the network (not from cache).
      */
     final Response networkResponse;
+
     /**
      * The cache response, obtained from the cache.
      */
     final Response cacheResponse;
+
     /**
      * The prior response, if this response was triggered by a redirect or authentication.
      */
     final Response priorResponse;
+
     /**
      * The timestamp when the request was sent, in milliseconds.
      */
     final long sentRequestAtMillis;
+
     /**
      * The timestamp when the response headers were received, in milliseconds.
      */
     final long receivedResponseAtMillis;
+
     /**
      * The exchange object that manages the request and response transmission.
      */
     final Exchange exchange;
+
     /**
      * The cache control directives, lazily initialized.
      */
@@ -431,6 +444,9 @@ public final class Response implements Closeable {
 
     /**
      * A builder for creating and modifying {@link Response} instances.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class Builder {
 
@@ -438,50 +454,62 @@ public final class Response implements Closeable {
          * The request that initiated this response.
          */
         Request request;
+
         /**
          * The protocol used for the response.
          */
         Protocol protocol;
+
         /**
          * The HTTP status code.
          */
         int code = -1;
+
         /**
          * The HTTP status message.
          */
         String message;
+
         /**
          * The TLS handshake information.
          */
         Handshake handshake;
+
         /**
          * The response headers builder.
          */
         Headers.Builder headers;
+
         /**
          * The response body.
          */
         ResponseBody body;
+
         /**
          * The network response.
          */
         Response networkResponse;
+
         /**
          * The cache response.
          */
         Response cacheResponse;
+
         /**
          * The prior response.
          */
         Response priorResponse;
+
         /**
          * The timestamp when the request was sent.
          */
         long sentRequestAtMillis;
+
         /**
          * The timestamp when the response was received.
          */
         long receivedResponseAtMillis;
+
         /**
          * The exchange object.
          */
@@ -750,6 +778,7 @@ public final class Response implements Closeable {
                 throw new IllegalStateException("message == null");
             return new Response(this);
         }
+
     }
 
 }

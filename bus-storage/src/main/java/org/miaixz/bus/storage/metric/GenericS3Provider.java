@@ -68,6 +68,7 @@ public class GenericS3Provider extends AbstractProvider {
      * S3 client instance for interacting with the S3-compatible service.
      */
     protected S3Client client;
+
     /**
      * S3 presigner for generating pre-signed URLs with limited validity.
      */

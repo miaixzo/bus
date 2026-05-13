@@ -65,6 +65,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
     private static final int MAX_TUNNEL_ATTEMPTS = 21;
 
     public final RealConnectionPool connectionPool;
+
     /**
      * The current streams being carried by this connection.
      */
@@ -74,29 +75,35 @@ public final class RealConnection extends Http2Connection.Listener implements Co
      * The following fields are initialized by connect() and are never re-allocated.
      */
     private final Route route;
+
     /**
      * If true, no new streams can be created on this connection.
      */
     boolean noNewExchanges;
+
     /**
      * The number of times there was a problem establishing a stream that could be due to route chosen. Guarded by
      * {@link #connectionPool}.
      */
     int routeFailureCount;
     int successCount;
+
     /**
      * The nanotime timestamp when {@code allocations.size()} became zero.
      */
     long idleAtNanos = Long.MAX_VALUE;
+
     /**
      * The low-level TCP socket.
      */
     private Socket rawSocket;
+
     /**
      * The application-layer socket. This may be an {@link SSLSocket} layered over {@link #rawSocket}, or
      * {@link #rawSocket} itself if this connection is not using SSL.
      */
     private Socket socket;
+
     /**
      * The following fields are in the connected state and are guarded by connectionPool.
      */
@@ -106,6 +113,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
     private BufferSource source;
     private BufferSink sink;
     private int refusedStreamCount;
+
     /**
      * The maximum number of concurrent streams this connection can carry. New streams can be created on this connection
      * if {@code allocations.size() < allocationLimit}.

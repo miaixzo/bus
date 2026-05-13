@@ -39,6 +39,7 @@ public abstract class MapRowHandler extends AbstractRowHandler<Map<String, Objec
      * The 0-based index of the header row.
      */
     private final int headerRowIndex;
+
     /**
      * The list of header names.
      */

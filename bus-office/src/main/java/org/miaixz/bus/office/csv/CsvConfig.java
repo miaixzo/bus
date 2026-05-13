@@ -45,14 +45,17 @@ public class CsvConfig<T extends CsvConfig<T>> implements Serializable {
      * Field separator, default is comma ','.
      */
     protected char fieldSeparator = Symbol.C_COMMA;
+
     /**
      * Text delimiter, default is double quotes.
      */
     protected char textDelimiter = Symbol.C_DOUBLE_QUOTES;
+
     /**
      * Comment character, used to distinguish comment lines, default is '#'.
      */
     protected Character commentCharacter = Symbol.C_HASH;
+
     /**
      * Header alias map.
      */

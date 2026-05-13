@@ -53,10 +53,12 @@ public class AnyTrustManager extends X509ExtendedTrustManager {
      * A global singleton trust manager that trusts all client and server certificates.
      */
     public static final AnyTrustManager INSTANCE = new AnyTrustManager();
+
     /**
      * An array containing the singleton {@link #INSTANCE}, which trusts all certificates.
      */
     public static final X509TrustManager[] TRUST_ANYS = { INSTANCE };
+
     /**
      * An empty array of {@link X509Certificate}s.
      */

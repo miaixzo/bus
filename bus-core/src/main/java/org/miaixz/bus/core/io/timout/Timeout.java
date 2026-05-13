@@ -73,10 +73,12 @@ public class Timeout {
      * True if a {@code deadlineNanoTime} is defined. There is no equivalent to null or 0 for {@link System#nanoTime}.
      */
     private boolean hasDeadline;
+
     /**
      * The deadline in nanoseconds, as returned by {@link System#nanoTime()}.
      */
     private long deadlineNanoTime;
+
     /**
      * The timeout duration in nanoseconds.
      */

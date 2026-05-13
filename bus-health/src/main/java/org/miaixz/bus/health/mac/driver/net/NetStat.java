@@ -47,14 +47,17 @@ public final class NetStat {
      * Control Network (CTL_NET) MIB value.
      */
     private static final int CTL_NET = 4;
+
     /**
      * Protocol Family Route (PF_ROUTE) MIB value.
      */
     private static final int PF_ROUTE = 17;
+
     /**
      * Net Route Interface List 2 (NET_RT_IFLIST2) MIB value.
      */
     private static final int NET_RT_IFLIST2 = 6;
+
     /**
      * Routing Message Interface Info 2 (RTM_IFINFO2) message type.
      */
@@ -122,6 +125,9 @@ public final class NetStat {
 
     /**
      * Class to encapsulate network interface data for method return.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Immutable
     public static class IFdata {
@@ -130,42 +136,52 @@ public final class NetStat {
          * The ifType value.
          */
         private final int ifType;
+
         /**
          * The oPackets value.
          */
         private final long oPackets;
+
         /**
          * The iPackets value.
          */
         private final long iPackets;
+
         /**
          * The oBytes value.
          */
         private final long oBytes;
+
         /**
          * The iBytes value.
          */
         private final long iBytes;
+
         /**
          * The oErrors value.
          */
         private final long oErrors;
+
         /**
          * The iErrors value.
          */
         private final long iErrors;
+
         /**
          * The collisions value.
          */
         private final long collisions;
+
         /**
          * The iDrops value.
          */
         private final long iDrops;
+
         /**
          * The speed value.
          */
         private final long speed;
+
         /**
          * The timeStamp value.
          */
@@ -300,6 +316,7 @@ public final class NetStat {
         public long getTimeStamp() {
             return timeStamp;
         }
+
     }
 
 }

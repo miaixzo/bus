@@ -48,10 +48,12 @@ public class FileResource implements Resource, Serializable {
      * The underlying {@link File} object.
      */
     private final File file;
+
     /**
      * The last modified timestamp of the file at the time of creation.
      */
     private final long lastModified;
+
     /**
      * The name of the resource.
      */

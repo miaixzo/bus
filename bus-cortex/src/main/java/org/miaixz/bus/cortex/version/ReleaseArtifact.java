@@ -43,18 +43,22 @@ public class ReleaseArtifact {
      * Artifact category, such as binary, manifest, schema, or documentation.
      */
     private String artifactType;
+
     /**
      * Cortex resource type represented by this artifact.
      */
     private String resourceType;
+
     /**
      * Identifier of the Cortex resource represented by this artifact.
      */
     private String resourceId;
+
     /**
      * Integrity checksum for the referenced payload.
      */
     private String checksum;
+
     /**
      * Storage reference or URL for the artifact payload.
      */

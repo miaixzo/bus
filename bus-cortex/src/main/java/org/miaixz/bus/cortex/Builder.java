@@ -43,15 +43,18 @@ public final class Builder {
      * Default namespace used when no explicit namespace is specified.
      */
     public static final String DEFAULT_NAMESPACE = Normal.DEFAULT;
+
     /**
      * Default health probe interval in milliseconds (30 s). Recommended value for {@link HealthProbeScheduler}.
      */
     public static final long DEFAULT_HEALTH_INTERVAL_MS = 30000L;
+
     /**
      * Default health probe timeout in milliseconds (5 s). Used by {@link TcpProber} and recommended for
      * {@link HealthProbeScheduler}.
      */
     public static final long DEFAULT_HEALTH_TIMEOUT_MS = 5000L;
+
     /**
      * Default security-token expiry in seconds (24 h).
      */
@@ -61,22 +64,27 @@ public final class Builder {
      * CacheX key prefix for registry entries ({@code reg:}).
      */
     public static final String REG_PREFIX = "reg" + Symbol.COLON;
+
     /**
      * CacheX key prefix for setting entries ({@code cfg:}).
      */
     public static final String CFG_PREFIX = "cfg" + Symbol.COLON;
+
     /**
      * CacheX key prefix for setting-domain entries. Uses the historical {@code cfg:} prefix for key compatibility.
      */
     public static final String SETTING_PREFIX = CFG_PREFIX;
+
     /**
      * CacheX key prefix for security and token entries ({@code sec:}).
      */
     public static final String SECURITY_PREFIX = "sec" + Symbol.COLON;
+
     /**
      * CacheX key prefix for sequence counters ({@code seq:}).
      */
     public static final String SEQUENCE_PREFIX = "seq" + Symbol.COLON;
+
     /**
      * CacheX key prefix for audit log entries ({@code audit:}).
      */

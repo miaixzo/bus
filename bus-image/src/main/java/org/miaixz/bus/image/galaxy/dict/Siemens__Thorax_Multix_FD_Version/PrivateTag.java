@@ -20,17 +20,26 @@
 package org.miaixz.bus.image.galaxy.dict.Siemens__Thorax_Multix_FD_Version;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "Siemens: Thorax/Multix FD Version";
 
-    /** (0017,xx00) VR=LO VM=1 ? */
+    /**
+     * (0017,xx00) VR=LO VM=1 ?
+     */
     public static final int _0017_xx00_ = 0x00170000;
 
-    /** (0017,xx01) VR=LO VM=1 ? */
+    /**
+     * (0017,xx01) VR=LO VM=1 ?
+     */
     public static final int _0017_xx01_ = 0x00170001;
 
 }

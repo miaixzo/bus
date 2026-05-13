@@ -35,10 +35,12 @@ public class Supervisor implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 2852287618105L;
+
     /**
      * A list of currently active launchers.
      */
     protected final List<Launcher> launchers = new ArrayList<>();
+
     /**
      * The scheduler that this supervisor belongs to.
      */

@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * <p>
  * This class provides a way to represent a file system path in memory without needing to access the physical file
  * system. It can be used for testing, simulating file system operations, or handling file paths in memory.
- * 
+ *
  * <p>
  * A virtual path can be associated with a {@link Resource} object, which represents the content at that path.
  *

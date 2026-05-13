@@ -65,50 +65,62 @@ public class StoreSCP {
      * The main device for this SCP.
      */
     public final Device device = new Device("storescp");
+
     /**
      * The Application Entity that accepts associations.
      */
     public final ApplicationEntity ae = new ApplicationEntity(Symbol.STAR);
+
     /**
      * The network connection configuration.
      */
     public final Connection conn = new Connection();
+
     /**
      * The base directory where received DICOM files are stored.
      */
     public final String storageDir;
+
     /**
      * A list of nodes that are authorized to send files.
      */
     public final List<Node> authorizedCallingNodes;
+
     /**
      * A progress handler to monitor the storage process.
      */
     public final ImageProgress progress;
+
     /**
      * A handler for post-processing of received files.
      */
     public Efforts efforts;
+
     /**
      * A format string for generating custom file paths.
      */
     public Format filePathFormat;
+
     /**
      * A regex pattern used with the file path format.
      */
     public Pattern regex;
+
     /**
      * The default status to be returned in C-STORE responses.
      */
     public volatile int status = Status.Success;
+
     /**
      * An array of delays (in ms) to simulate latency before receiving data.
      */
     private int[] receiveDelays;
+
     /**
      * An array of delays (in ms) to simulate processing time before sending a response.
      */
     private int[] responseDelays;
+
     /**
      * The core service implementation that handles C-STORE requests.
      */

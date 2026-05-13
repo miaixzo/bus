@@ -56,6 +56,7 @@ public class MacUsbDevice extends AbstractUsbDevice {
      * The IOUSB constant.
      */
     private static final String IOUSB = "IOUSB";
+
     /**
      * The IOSERVICE constant.
      */

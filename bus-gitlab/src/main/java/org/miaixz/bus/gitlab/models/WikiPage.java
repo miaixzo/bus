@@ -24,6 +24,12 @@ import java.io.Serializable;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import java.io.Serial;
 
+/**
+ * The wiki page class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class WikiPage implements Serializable {
 
     @Serial

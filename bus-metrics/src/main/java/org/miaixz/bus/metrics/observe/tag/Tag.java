@@ -52,7 +52,9 @@ public record Tag(String key, String value) {
         return new Tag(key, value);
     }
 
-    /** Returns {@code key="value"} suitable for use in Prometheus label strings. */
+    /**
+     * Returns {@code key="value"} suitable for use in Prometheus label strings.
+     */
     @Override
     public String toString() {
         return key + "=\"" + value + "\"";

@@ -20,107 +20,176 @@
 package org.miaixz.bus.image.galaxy.dict.GEMS_SENO_02;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEMS_SENO_02";
 
-    /** (0045,xx01) VR=LO VM=1 Digital Senograph Configuration */
+    /**
+     * (0045,xx01) VR=LO VM=1 Digital Senograph Configuration
+     */
     public static final int DigitalSenographConfiguration = 0x00450001;
 
-    /** (0045,xx02) VR=LT VM=1 System Series Description */
+    /**
+     * (0045,xx02) VR=LT VM=1 System Series Description
+     */
     public static final int SystemSeriesDescription = 0x00450002;
 
-    /** (0045,xx03) VR=CS VM=1 Track */
+    /**
+     * (0045,xx03) VR=CS VM=1 Track
+     */
     public static final int Track = 0x00450003;
 
-    /** (0045,xx04) VR=CS VM=1 AES */
+    /**
+     * (0045,xx04) VR=CS VM=1 AES
+     */
     public static final int AES = 0x00450004;
 
-    /** (0045,xx06) VR=DS VM=1 Angulation */
+    /**
+     * (0045,xx06) VR=DS VM=1 Angulation
+     */
     public static final int Angulation = 0x00450006;
 
-    /** (0045,xx07) VR=DS VM=1 Compression Thickness */
+    /**
+     * (0045,xx07) VR=DS VM=1 Compression Thickness
+     */
     public static final int CompressionThickness = 0x00450007;
 
-    /** (0045,xx08) VR=DS VM=1 Compression Force */
+    /**
+     * (0045,xx08) VR=DS VM=1 Compression Force
+     */
     public static final int CompressionForce = 0x00450008;
 
-    /** (0045,xx09) VR=DS VM=1 Real Magnification Factor */
+    /**
+     * (0045,xx09) VR=DS VM=1 Real Magnification Factor
+     */
     public static final int RealMagnificationFactor = 0x00450009;
 
-    /** (0045,xx0A) VR=DS VM=1 Displayed Magnification Factor */
+    /**
+     * (0045,xx0A) VR=DS VM=1 Displayed Magnification Factor
+     */
     public static final int DisplayedMagnificationFactor = 0x0045000A;
 
-    /** (0045,xx0B) VR=CS VM=1 Senograph Type */
+    /**
+     * (0045,xx0B) VR=CS VM=1 Senograph Type
+     */
     public static final int SenographType = 0x0045000B;
 
-    /** (0045,xx0C) VR=DS VM=1 Integration Time */
+    /**
+     * (0045,xx0C) VR=DS VM=1 Integration Time
+     */
     public static final int IntegrationTime = 0x0045000C;
 
-    /** (0045,xx0D) VR=DS VM=1 ROI Origin X and Y */
+    /**
+     * (0045,xx0D) VR=DS VM=1 ROI Origin X and Y
+     */
     public static final int ROIOriginXY = 0x0045000D;
 
-    /** (0045,xx0E) VR=CS VM=1 Correction Type */
+    /**
+     * (0045,xx0E) VR=CS VM=1 Correction Type
+     */
     public static final int CorrectionType = 0x0045000E;
 
-    /** (0045,xx0F) VR=CS VM=1 Acquisition Type */
+    /**
+     * (0045,xx0F) VR=CS VM=1 Acquisition Type
+     */
     public static final int AcquisitionType = 0x0045000F;
 
-    /** (0045,xx10) VR=DS VM=2 CCD Temperature */
+    /**
+     * (0045,xx10) VR=DS VM=2 CCD Temperature
+     */
     public static final int CCDTemperature = 0x00450010;
 
-    /** (0045,xx11) VR=DS VM=2 Receptor Size cm X and Y */
+    /**
+     * (0045,xx11) VR=DS VM=2 Receptor Size cm X and Y
+     */
     public static final int ReceptorSizeCmXY = 0x00450011;
 
-    /** (0045,xx12) VR=IS VM=2 Receptor Size Pixels X and Y */
+    /**
+     * (0045,xx12) VR=IS VM=2 Receptor Size Pixels X and Y
+     */
     public static final int ReceptorSizePixelsXY = 0x00450012;
 
-    /** (0045,xx13) VR=ST VM=1 Screen */
+    /**
+     * (0045,xx13) VR=ST VM=1 Screen
+     */
     public static final int Screen = 0x00450013;
 
-    /** (0045,xx14) VR=DS VM=1 Pixel Pitch Microns */
+    /**
+     * (0045,xx14) VR=DS VM=1 Pixel Pitch Microns
+     */
     public static final int PixelPitchMicrons = 0x00450014;
 
-    /** (0045,xx15) VR=IS VM=1 Pixel Depth Bits */
+    /**
+     * (0045,xx15) VR=IS VM=1 Pixel Depth Bits
+     */
     public static final int PixelDepthBits = 0x00450015;
 
-    /** (0045,xx16) VR=IS VM=2 Binning Factor X and Y */
+    /**
+     * (0045,xx16) VR=IS VM=2 Binning Factor X and Y
+     */
     public static final int BinningFactorXY = 0x00450016;
 
-    /** (0045,xx17) VR=DS VM=1 Quantum Gain */
+    /**
+     * (0045,xx17) VR=DS VM=1 Quantum Gain
+     */
     public static final int QuantumGain = 0x00450017;
 
-    /** (0045,xx18) VR=DS VM=1 Electron/EDU Ratio */
+    /**
+     * (0045,xx18) VR=DS VM=1 Electron/EDU Ratio
+     */
     public static final int ElectronEDURatio = 0x00450018;
 
-    /** (0045,xx19) VR=DS VM=1 Electronic Gain */
+    /**
+     * (0045,xx19) VR=DS VM=1 Electronic Gain
+     */
     public static final int ElectronicGain = 0x00450019;
 
-    /** (0045,xx1A) VR=OB VM=1 IDS Data Buffer */
+    /**
+     * (0045,xx1A) VR=OB VM=1 IDS Data Buffer
+     */
     public static final int IDSDataBuffer = 0x0045001A;
 
-    /** (0045,xx1B) VR=LO VM=1 Clinical View */
+    /**
+     * (0045,xx1B) VR=LO VM=1 Clinical View
+     */
     public static final int ClinicalView = 0x0045001B;
 
-    /** (0045,xx1C) VR=CS VM=1 Breast Laterality */
+    /**
+     * (0045,xx1C) VR=CS VM=1 Breast Laterality
+     */
     public static final int BreastLaterality = 0x0045001C;
 
-    /** (0045,xx1D) VR=DS VM=1 Mean Of Raw Gray Levels */
+    /**
+     * (0045,xx1D) VR=DS VM=1 Mean Of Raw Gray Levels
+     */
     public static final int MeanOfRawGrayLevels = 0x0045001D;
 
-    /** (0045,xx1E) VR=DS VM=1 Mean Of Offset Gray Levels */
+    /**
+     * (0045,xx1E) VR=DS VM=1 Mean Of Offset Gray Levels
+     */
     public static final int MeanOfOffsetGrayLevels = 0x0045001E;
 
-    /** (0045,xx1F) VR=DS VM=1 Mean Of Corrected Gray Levels */
+    /**
+     * (0045,xx1F) VR=DS VM=1 Mean Of Corrected Gray Levels
+     */
     public static final int MeanOfCorrectedGrayLevels = 0x0045001F;
 
-    /** (0045,xx20) VR=DS VM=1 Mean Of Region Gray Levels */
+    /**
+     * (0045,xx20) VR=DS VM=1 Mean Of Region Gray Levels
+     */
     public static final int MeanOfRegionGrayLevels = 0x00450020;
 
-    /** (0045,xx21) VR=DS VM=1 Mean Of Log Region Gray Levels */
+    /**
+     * (0045,xx21) VR=DS VM=1 Mean Of Log Region Gray Levels
+     */
     public static final int MeanOfLogRegionGrayLevels = 0x00450021;
 
     /**
@@ -143,22 +212,34 @@ public class PrivateTag {
      */
     public static final int StandardDeviationOfLogRegionGrayLevels = 0x00450025;
 
-    /** (0045,xx26) VR=OB VM=1 MAO Buffer */
+    /**
+     * (0045,xx26) VR=OB VM=1 MAO Buffer
+     */
     public static final int MAOBuffer = 0x00450026;
 
-    /** (0045,xx27) VR=IS VM=1 Set Number */
+    /**
+     * (0045,xx27) VR=IS VM=1 Set Number
+     */
     public static final int SetNumber = 0x00450027;
 
-    /** (0045,xx28) VR=CS VM=1 WindowingType (LINEAR or GAMMA) */
+    /**
+     * (0045,xx28) VR=CS VM=1 WindowingType (LINEAR or GAMMA)
+     */
     public static final int WindowingType = 0x00450028;
 
-    /** (0045,xx29) VR=DS VM=1-n WindowingParameters */
+    /**
+     * (0045,xx29) VR=DS VM=1-n WindowingParameters
+     */
     public static final int WindowingParameters = 0x00450029;
 
-    /** (0045,xx2A) VR=IS VM=1 Crosshair Cursor X Coordinates */
+    /**
+     * (0045,xx2A) VR=IS VM=1 Crosshair Cursor X Coordinates
+     */
     public static final int CrosshairCursorXCoordinates = 0x0045002A;
 
-    /** (0045,xx2B) VR=IS VM=1 Crosshair Cursor Y Coordinates */
+    /**
+     * (0045,xx2B) VR=IS VM=1 Crosshair Cursor Y Coordinates
+     */
     public static final int CrosshairCursorYCoordinates = 0x0045002B;
 
     /**
@@ -211,85 +292,139 @@ public class PrivateTag {
      */
     public static final int ReferenceLandmarkBYImageCoordinates = 0x00450035;
 
-    /** (0045,xx36) VR=DS VM=1 X-Ray Source X Location */
+    /**
+     * (0045,xx36) VR=DS VM=1 X-Ray Source X Location
+     */
     public static final int XRaySourceXLocation = 0x00450036;
 
-    /** (0045,xx37) VR=DS VM=1 X-Ray Source Y Locatio */
+    /**
+     * (0045,xx37) VR=DS VM=1 X-Ray Source Y Locatio
+     */
     public static final int XRaySourceYLocation = 0x00450037;
 
-    /** (0045,xx38) VR=DS VM=1 X-Ray Source Z Locatio */
+    /**
+     * (0045,xx38) VR=DS VM=1 X-Ray Source Z Locatio
+     */
     public static final int XRaySourceZLocation = 0x00450038;
 
-    /** (0045,xx39) VR=US VM=1 Vignette Rows */
+    /**
+     * (0045,xx39) VR=US VM=1 Vignette Rows
+     */
     public static final int VignetteRows = 0x00450039;
 
-    /** (0045,xx3A) VR=US VM=1 Vignette Columns */
+    /**
+     * (0045,xx3A) VR=US VM=1 Vignette Columns
+     */
     public static final int VignetteColumns = 0x0045003A;
 
-    /** (0045,xx3B) VR=US VM=1 Vignette Bits Allocated */
+    /**
+     * (0045,xx3B) VR=US VM=1 Vignette Bits Allocated
+     */
     public static final int VignetteBitsAllocated = 0x0045003B;
 
-    /** (0045,xx3C) VR=US VM=1 Vignette Bits Stored */
+    /**
+     * (0045,xx3C) VR=US VM=1 Vignette Bits Stored
+     */
     public static final int VignetteBitsStored = 0x0045003C;
 
-    /** (0045,xx3D) VR=US VM=1 Vignette High Bit */
+    /**
+     * (0045,xx3D) VR=US VM=1 Vignette High Bit
+     */
     public static final int VignetteHighBit = 0x0045003D;
 
-    /** (0045,xx3E) VR=US VM=1 Vignette Pixel Representation */
+    /**
+     * (0045,xx3E) VR=US VM=1 Vignette Pixel Representation
+     */
     public static final int VignettePixelRepresentation = 0x0045003E;
 
-    /** (0045,xx3F) VR=OB VM=1 Vignette Pixel Data */
+    /**
+     * (0045,xx3F) VR=OB VM=1 Vignette Pixel Data
+     */
     public static final int VignettePixelData = 0x0045003F;
 
-    /** (0045,xx49) VR=DS VM=1 Radiological Thickness */
+    /**
+     * (0045,xx49) VR=DS VM=1 Radiological Thickness
+     */
     public static final int RadiologicalThickness = 0x00450049;
 
-    /** (0045,xx50) VR=UI VM=1 Fallback Instance UID (CR or SC) */
+    /**
+     * (0045,xx50) VR=UI VM=1 Fallback Instance UID (CR or SC)
+     */
     public static final int FallbackInstanceUID = 0x00450050;
 
-    /** (0045,xx51) VR=UI VM=1 Fallback Series UID (CR or SC) */
+    /**
+     * (0045,xx51) VR=UI VM=1 Fallback Series UID (CR or SC)
+     */
     public static final int FallbackSeriesUID = 0x00450051;
 
-    /** (0045,xx52) VR=IS VM=1 Raw Diagnostic Low */
+    /**
+     * (0045,xx52) VR=IS VM=1 Raw Diagnostic Low
+     */
     public static final int RawDiagnosticLow = 0x00450052;
 
-    /** (0045,xx53) VR=IS VM=1 Raw Diagnostic High */
+    /**
+     * (0045,xx53) VR=IS VM=1 Raw Diagnostic High
+     */
     public static final int RawDiagnosticHigh = 0x00450053;
 
-    /** (0045,xx54) VR=DS VM=1 Exponent */
+    /**
+     * (0045,xx54) VR=DS VM=1 Exponent
+     */
     public static final int Exponent = 0x00450054;
 
-    /** (0045,xx55) VR=IS VM=1 A Coefficients */
+    /**
+     * (0045,xx55) VR=IS VM=1 A Coefficients
+     */
     public static final int ACoefficients = 0x00450055;
 
-    /** (0045,xx56) VR=DS VM=1 Noise Reduction Sensitivity */
+    /**
+     * (0045,xx56) VR=DS VM=1 Noise Reduction Sensitivity
+     */
     public static final int NoiseReductionSensitivity = 0x00450056;
 
-    /** (0045,xx57) VR=DS VM=1 Noise Reduction Threshold */
+    /**
+     * (0045,xx57) VR=DS VM=1 Noise Reduction Threshold
+     */
     public static final int NoiseReductionThreshold = 0x00450057;
 
-    /** (0045,xx58) VR=DS VM=1 Mu */
+    /**
+     * (0045,xx58) VR=DS VM=1 Mu
+     */
     public static final int Mu = 0x00450058;
 
-    /** (0045,xx59) VR=IS VM=1 Threshold */
+    /**
+     * (0045,xx59) VR=IS VM=1 Threshold
+     */
     public static final int Threshold = 0x00450059;
 
-    /** (0045,xx60) VR=IS VM=4 Breast ROI X */
+    /**
+     * (0045,xx60) VR=IS VM=4 Breast ROI X
+     */
     public static final int BreastROIX = 0x00450060;
 
-    /** (0045,xx61) VR=IS VM=4 Breast ROI Y */
+    /**
+     * (0045,xx61) VR=IS VM=4 Breast ROI Y
+     */
     public static final int BreastROIY = 0x00450061;
 
-    /** (0045,xx62) VR=IS VM=1 User Window Center */
+    /**
+     * (0045,xx62) VR=IS VM=1 User Window Center
+     */
     public static final int UserWindowCenter = 0x00450062;
 
-    /** (0045,xx63) VR=IS VM=1 User Window Width */
+    /**
+     * (0045,xx63) VR=IS VM=1 User Window Width
+     */
     public static final int UserWindowWidth = 0x00450063;
 
-    /** (0045,xx64) VR=IS VM=1 Segmentation Threshold */
+    /**
+     * (0045,xx64) VR=IS VM=1 Segmentation Threshold
+     */
     public static final int SegmentationThreshold = 0x00450064;
 
-    /** (0045,xx65) VR=IS VM=1 Detector Entrance Dose */
+    /**
+     * (0045,xx65) VR=IS VM=1 Detector Entrance Dose
+     */
     public static final int DetectorEntranceDose = 0x00450065;
 
     /**
@@ -297,19 +432,29 @@ public class PrivateTag {
      */
     public static final int AsymmetricalCollimationInformation = 0x00450066;
 
-    /** (0045,xx71) VR=OB VM=1 STX Buffer */
+    /**
+     * (0045,xx71) VR=OB VM=1 STX Buffer
+     */
     public static final int STXBuffer = 0x00450071;
 
-    /** (0045,xx72) VR=DS VM=2 Image Crop Point */
+    /**
+     * (0045,xx72) VR=DS VM=2 Image Crop Point
+     */
     public static final int ImageCropPoint = 0x00450072;
 
-    /** (0045,xx90) VR=SH VM=1 Premium View Beta */
+    /**
+     * (0045,xx90) VR=SH VM=1 Premium View Beta
+     */
     public static final int PremiumViewBeta = 0x00450090;
 
-    /** (0045,xxA0) VR=DS VM=1 Signal Average Factor */
+    /**
+     * (0045,xxA0) VR=DS VM=1 Signal Average Factor
+     */
     public static final int SignalAverageFactor = 0x004500A0;
 
-    /** (0045,xxA1) VR=DS VM=2-n Organ Dose for Source Images */
+    /**
+     * (0045,xxA1) VR=DS VM=2-n Organ Dose for Source Images
+     */
     public static final int OrganDoseForSourceImages = 0x004500A1;
 
     /**
@@ -327,7 +472,9 @@ public class PrivateTag {
      */
     public static final int SOPInstanceUIDForLossyCompression = 0x004500A6;
 
-    /** (0045,xxA7) VR=LT VM=1 Reconstruction Parameters */
+    /**
+     * (0045,xxA7) VR=LT VM=1 Reconstruction Parameters
+     */
     public static final int ReconstructionParameters = 0x004500A7;
 
     /**
@@ -335,19 +482,29 @@ public class PrivateTag {
      */
     public static final int EntranceDoseIndGyForCompleteDBTSequence = 0x004500A8;
 
-    /** (0045,xxA9) VR=DS VM=1 Replacement Image */
+    /**
+     * (0045,xxA9) VR=DS VM=1 Replacement Image
+     */
     public static final int ReplacementImage = 0x004500A9;
 
-    /** (0045,xxAA) VR=SQ VM=1 Replaced Image Sequence */
+    /**
+     * (0045,xxAA) VR=SQ VM=1 Replaced Image Sequence
+     */
     public static final int ReplacemeImageSequence = 0x004500AA;
 
-    /** (0045,xxAB) VR=DS VM=1 Cumulative Organ Dose in dGy */
+    /**
+     * (0045,xxAB) VR=DS VM=1 Cumulative Organ Dose in dGy
+     */
     public static final int CumulativeOrganDoseIndGy = 0x004500AB;
 
-    /** (0045,xxAC) VR=DS VM=1 Cumulative Entrance dose in mGy */
+    /**
+     * (0045,xxAC) VR=DS VM=1 Cumulative Entrance dose in mGy
+     */
     public static final int CumulativeEntranceDoseInmGy = 0x004500AC;
 
-    /** (0045,xxAD) VR=LO VM=1-n Paddle Properties */
+    /**
+     * (0045,xxAD) VR=LO VM=1-n Paddle Properties
+     */
     public static final int PaddleProperties = 0x004500AD;
 
 }

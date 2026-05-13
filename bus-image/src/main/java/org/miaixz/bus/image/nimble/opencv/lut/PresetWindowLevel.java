@@ -41,19 +41,51 @@ import org.miaixz.bus.image.nimble.stream.ImageDescriptor;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the PresetWindowLevel type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PresetWindowLevel {
 
+    /**
+     * The preset list by modality value.
+     */
     private static final Map<String, List<PresetWindowLevel>> presetListByModality = getPresetListByModality();
 
+    /**
+     * The name value.
+     */
     private final String name;
+
+    /**
+     * The window value.
+     */
     private final double window;
+
+    /**
+     * The level value.
+     */
     private final double level;
+
+    /**
+     * The shape value.
+     */
     private final LutShape shape;
+
+    /**
+     * The key code value.
+     */
     private int keyCode = 0;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param name   the name.
+     * @param window the window.
+     * @param level  the level.
+     * @param shape  the shape.
+     */
     public PresetWindowLevel(String name, Double window, Double level, LutShape shape) {
         this.name = Objects.requireNonNull(name);
         this.window = Objects.requireNonNull(window);
@@ -61,6 +93,14 @@ public class PresetWindowLevel {
         this.shape = Objects.requireNonNull(shape);
     }
 
+    /**
+     * Gets the preset collection.
+     *
+     * @param adapter the adapter.
+     * @param type    the type.
+     * @param wl      the wl.
+     * @return the preset collection.
+     */
     public static List<PresetWindowLevel> getPresetCollection(ImageAdapter adapter, String type, WlPresentation wl) {
         if (adapter == null || wl == null) {
             throw new IllegalArgumentException("Null parameter");
@@ -98,6 +138,13 @@ public class PresetWindowLevel {
         return presetList;
     }
 
+    /**
+     * Gets the default lut shape.
+     *
+     * @param vLut         the v lut.
+     * @param dicomKeyWord the dicom key word.
+     * @return the default lut shape.
+     */
     private static LutShape getDefaultLutShape(VoiLutModule vLut, String dicomKeyWord) {
         Optional<String> lutFunctionDescriptor = vLut.getVoiLutFunction();
 
@@ -105,14 +152,23 @@ public class PresetWindowLevel {
         LutShape defaultLutShape = LutShape.LINEAR;
         if (lutFunctionDescriptor.isPresent()) {
             if ("SIGMOID".equalsIgnoreCase(lutFunctionDescriptor.get())) {
-                defaultLutShape = new LutShape(LutShape.eFunction.SIGMOID, LutShape.eFunction.SIGMOID + dicomKeyWord);
+                defaultLutShape = new LutShape(LutShape.Function.SIGMOID, LutShape.Function.SIGMOID + dicomKeyWord);
             } else if ("LINEAR".equalsIgnoreCase(lutFunctionDescriptor.get())) {
-                defaultLutShape = new LutShape(LutShape.eFunction.LINEAR, LutShape.eFunction.LINEAR + dicomKeyWord);
+                defaultLutShape = new LutShape(LutShape.Function.LINEAR, LutShape.Function.LINEAR + dicomKeyWord);
             }
         }
         return defaultLutShape;
     }
 
+    /**
+     * Builds the preset from lut data.
+     *
+     * @param adapter      the adapter.
+     * @param wl           the wl.
+     * @param vLut         the v lut.
+     * @param dicomKeyWord the dicom key word.
+     * @param presetList   the preset list.
+     */
     private static void buildPresetFromLutData(
             ImageAdapter adapter,
             WlPresentation wl,
@@ -147,6 +203,14 @@ public class PresetWindowLevel {
         }
     }
 
+    /**
+     * Gets the preset explanation.
+     *
+     * @param wlExplanationList  the wl explanation list.
+     * @param index              the index.
+     * @param defaultExplanation the default explanation.
+     * @return the preset explanation.
+     */
     private static String getPresetExplanation(List<String> wlExplanationList, int index, String defaultExplanation) {
         String explanation = defaultExplanation;
         if (index < wlExplanationList.size()) {
@@ -158,6 +222,16 @@ public class PresetWindowLevel {
         return explanation;
     }
 
+    /**
+     * Builds the preset.
+     *
+     * @param levelList         the level list.
+     * @param windowList        the window list.
+     * @param wlExplanationList the wl explanation list.
+     * @param dicomKeyWord      the dicom key word.
+     * @param defaultLutShape   the default lut shape.
+     * @param presetList        the preset list.
+     */
     private static void buildPreset(
             List<Double> levelList,
             List<Double> windowList,
@@ -188,6 +262,13 @@ public class PresetWindowLevel {
         }
     }
 
+    /**
+     * Gets the window center.
+     *
+     * @param vLut the v lut.
+     * @param wl   the wl.
+     * @return the window center.
+     */
     private static List<Double> getWindowCenter(VoiLutModule vLut, WlPresentation wl) {
         List<Double> luts = new ArrayList<>();
         if (wl.getPresentationState() instanceof PresentationLutObject pr) {
@@ -200,6 +281,13 @@ public class PresetWindowLevel {
         return luts;
     }
 
+    /**
+     * Gets the window width.
+     *
+     * @param vLut the v lut.
+     * @param wl   the wl.
+     * @return the window width.
+     */
     private static List<Double> getWindowWidth(VoiLutModule vLut, WlPresentation wl) {
         List<Double> luts = new ArrayList<>();
         PresentationStateLut pr = wl.getPresentationState();
@@ -213,6 +301,13 @@ public class PresetWindowLevel {
         return luts;
     }
 
+    /**
+     * Gets the voi lut data.
+     *
+     * @param vLut the v lut.
+     * @param wl   the wl.
+     * @return the voi lut data.
+     */
     private static List<LookupTableCV> getVoiLutData(VoiLutModule vLut, WlPresentation wl) {
         List<LookupTableCV> luts = new ArrayList<>();
         if (wl.getPresentationState() instanceof PresentationLutObject pr) {
@@ -225,6 +320,13 @@ public class PresetWindowLevel {
         return luts;
     }
 
+    /**
+     * Gets the voi lut explanation.
+     *
+     * @param vLut the v lut.
+     * @param wl   the wl.
+     * @return the voi lut explanation.
+     */
     private static List<String> getVoiLUTExplanation(VoiLutModule vLut, WlPresentation wl) {
         List<String> luts = new ArrayList<>();
         if (wl.getPresentationState() instanceof PresentationLutObject pr) {
@@ -237,6 +339,15 @@ public class PresetWindowLevel {
         return luts;
     }
 
+    /**
+     * Builds the preset from lut data.
+     *
+     * @param adapter     the adapter.
+     * @param voiLUTsData the voi lu ts data.
+     * @param wl          the wl.
+     * @param explanation the explanation.
+     * @return the operation result.
+     */
     public static PresetWindowLevel buildPresetFromLutData(
             ImageAdapter adapter,
             LookupTableCV voiLUTsData,
@@ -277,6 +388,11 @@ public class PresetWindowLevel {
         return new PresetWindowLevel(newLutShape.toString(), fullDynamicWidth, fullDynamicCenter, newLutShape);
     }
 
+    /**
+     * Gets the preset list by modality.
+     *
+     * @return the preset list by modality.
+     */
     public static Map<String, List<PresetWindowLevel>> getPresetListByModality() {
         Map<String, List<PresetWindowLevel>> presets = new TreeMap<>();
 
@@ -318,6 +434,14 @@ public class PresetWindowLevel {
         return presets;
     }
 
+    /**
+     * Gets the integer tag attribute.
+     *
+     * @param xmler        the xmler.
+     * @param attribute    the attribute.
+     * @param defaultValue the default value.
+     * @return the integer tag attribute.
+     */
     public static Integer getIntegerTagAttribute(XMLStreamReader xmler, String attribute, Integer defaultValue) {
         if (attribute != null) {
             String val = xmler.getAttributeValue(null, attribute);
@@ -332,6 +456,14 @@ public class PresetWindowLevel {
         return defaultValue;
     }
 
+    /**
+     * Reads the preset list by modality.
+     *
+     * @param xmler                    the xmler.
+     * @param presets                  the presets.
+     * @param List<PresetWindowLevel>> the list<preset window level>>.
+     * @throws XMLStreamException if the operation cannot be completed.
+     */
     private static void readPresetListByModality(XMLStreamReader xmler, Map<String, List<PresetWindowLevel>> presets)
             throws XMLStreamException {
         int eventType = xmler.next();
@@ -361,47 +493,103 @@ public class PresetWindowLevel {
         }
     }
 
+    /**
+     * Gets the name.
+     *
+     * @return the name.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Gets the window.
+     *
+     * @return the window.
+     */
     public double getWindow() {
         return window;
     }
 
+    /**
+     * Gets the level.
+     *
+     * @return the level.
+     */
     public double getLevel() {
         return level;
     }
 
+    /**
+     * Gets the lut shape.
+     *
+     * @return the lut shape.
+     */
     public LutShape getLutShape() {
         return shape;
     }
 
+    /**
+     * Gets the key code.
+     *
+     * @return the key code.
+     */
     public int getKeyCode() {
         return keyCode;
     }
 
+    /**
+     * Sets the key code.
+     *
+     * @param keyCode the key code.
+     */
     public void setKeyCode(int keyCode) {
         this.keyCode = keyCode;
     }
 
+    /**
+     * Gets the min box.
+     *
+     * @return the min box.
+     */
     public double getMinBox() {
         return level - window / 2.0;
     }
 
+    /**
+     * Gets the max box.
+     *
+     * @return the max box.
+     */
     public double getMaxBox() {
         return level + window / 2.0;
     }
 
+    /**
+     * Determines whether auto level.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean isAutoLevel() {
         return keyCode == 0x30;
     }
 
+    /**
+     * Returns the string representation.
+     *
+     * @return the string representation.
+     */
     @Override
     public String toString() {
         return name;
     }
 
+    /**
+     * Compares this instance with another object for equality.
+     *
+     * @param o the o.
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -415,6 +603,11 @@ public class PresetWindowLevel {
                 && name.equals(that.name) && shape.equals(that.shape);
     }
 
+    /**
+     * Returns the hash code.
+     *
+     * @return the hash code.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(name, window, level, shape);

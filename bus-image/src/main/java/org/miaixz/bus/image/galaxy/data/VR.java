@@ -226,6 +226,9 @@ public enum VR {
      */
     UV(0x5556, 12, 0, BinaryValueType.ULONG, false);
 
+    /**
+     * The value of value.
+     */
     private static final VR[] VALUE_OF = new VR[1024];
 
     static {
@@ -233,12 +236,40 @@ public enum VR {
             VALUE_OF[indexOf(vr.code)] = vr;
     }
 
+    /**
+     * The code value.
+     */
     private final int code;
+
+    /**
+     * The header length value.
+     */
     private final int headerLength;
+
+    /**
+     * The padding byte value.
+     */
     private final int paddingByte;
+
+    /**
+     * The value type value.
+     */
     private final ValueType valueType;
+
+    /**
+     * The inline binary value.
+     */
     private final boolean inlineBinary;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param code         the code.
+     * @param headerLength the header length.
+     * @param paddingByte  the padding byte.
+     * @param valueType    the value type.
+     * @param inlineBinary the inline binary.
+     */
     VR(int code, int headerLength, int paddingByte, ValueType valueType, boolean inlineBinary) {
         this.code = code;
         this.headerLength = headerLength;
@@ -247,153 +278,415 @@ public enum VR {
         this.inlineBinary = inlineBinary;
     }
 
+    /**
+     * Executes the index of operation.
+     *
+     * @param code the code.
+     * @return the operation result.
+     */
     private static int indexOf(int code) {
         return ((code & 0x1f00) >> 3) | (code & 0x1f);
     }
 
+    /**
+     * Executes the value of operation.
+     *
+     * @param code the code.
+     * @return the operation result.
+     */
     public static VR valueOf(int code) {
         return ((code ^ 0x4040) & 0xffffe0e0) == 0 ? VALUE_OF[indexOf(code)] : null;
     }
 
+    /**
+     * Executes the code operation.
+     *
+     * @return the operation result.
+     */
     public int code() {
         return code;
     }
 
+    /**
+     * Executes the header length operation.
+     *
+     * @return the operation result.
+     */
     public int headerLength() {
         return headerLength;
     }
 
+    /**
+     * Executes the padding byte operation.
+     *
+     * @return the operation result.
+     */
     public int paddingByte() {
         return paddingByte;
     }
 
+    /**
+     * Determines whether temporal type.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean isTemporalType() {
         return valueType.isTemporalType();
     }
 
+    /**
+     * Determines whether string type.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean isStringType() {
         return valueType.isStringValue();
     }
 
+    /**
+     * Executes the use specific character set operation.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean useSpecificCharacterSet() {
         return valueType.useSpecificCharacterSet();
     }
 
+    /**
+     * Determines whether int type.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean isIntType() {
         return valueType.isIntValue();
     }
 
+    /**
+     * Determines whether inline binary.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean isInlineBinary() {
         return inlineBinary;
     }
 
+    /**
+     * Executes the num endian bytes operation.
+     *
+     * @return the operation result.
+     */
     public int numEndianBytes() {
         return valueType.numEndianBytes();
     }
 
+    /**
+     * Converts this value to ggle endian.
+     *
+     * @param b        the b.
+     * @param preserve the preserve.
+     * @return the operation result.
+     */
     public byte[] toggleEndian(byte[] b, boolean preserve) {
         return valueType.toggleEndian(b, preserve);
     }
 
+    /**
+     * Converts this value to bytes.
+     *
+     * @param val the val.
+     * @param cs  the cs.
+     * @return the operation result.
+     */
     public byte[] toBytes(Object val, SpecificCharacterSet cs) {
         return valueType.toBytes(val, cs);
     }
 
+    /**
+     * Converts this value to strings.
+     *
+     * @param val       the val.
+     * @param bigEndian the big endian.
+     * @param cs        the cs.
+     * @return the operation result.
+     */
     public Object toStrings(Object val, boolean bigEndian, SpecificCharacterSet cs) {
         return valueType.toStrings(val, bigEndian, cs);
     }
 
+    /**
+     * Returns the string representation.
+     *
+     * @param val        the val.
+     * @param bigEndian  the big endian.
+     * @param valueIndex the value index.
+     * @param defVal     the def val.
+     * @return the string representation.
+     */
     public String toString(Object val, boolean bigEndian, int valueIndex, String defVal) {
         return valueType.toString(val, bigEndian, valueIndex, defVal);
     }
 
+    /**
+     * Converts this value to int.
+     *
+     * @param val        the val.
+     * @param bigEndian  the big endian.
+     * @param valueIndex the value index.
+     * @param defVal     the def val.
+     * @return the operation result.
+     */
     public int toInt(Object val, boolean bigEndian, int valueIndex, int defVal) {
         return valueType.toInt(val, bigEndian, valueIndex, defVal);
     }
 
+    /**
+     * Converts this value to ints.
+     *
+     * @param val       the val.
+     * @param bigEndian the big endian.
+     * @return the operation result.
+     */
     public int[] toInts(Object val, boolean bigEndian) {
         return valueType.toInts(val, bigEndian);
     }
 
+    /**
+     * Converts this value to long.
+     *
+     * @param val        the val.
+     * @param bigEndian  the big endian.
+     * @param valueIndex the value index.
+     * @param defVal     the def val.
+     * @return the operation result.
+     */
     public long toLong(Object val, boolean bigEndian, int valueIndex, long defVal) {
         return valueType.toLong(val, bigEndian, valueIndex, defVal);
     }
 
+    /**
+     * Converts this value to longs.
+     *
+     * @param val       the val.
+     * @param bigEndian the big endian.
+     * @return the operation result.
+     */
     public long[] toLongs(Object val, boolean bigEndian) {
         return valueType.toLongs(val, bigEndian);
     }
 
+    /**
+     * Converts this value to float.
+     *
+     * @param val        the val.
+     * @param bigEndian  the big endian.
+     * @param valueIndex the value index.
+     * @param defVal     the def val.
+     * @return the operation result.
+     */
     public float toFloat(Object val, boolean bigEndian, int valueIndex, float defVal) {
         return valueType.toFloat(val, bigEndian, valueIndex, defVal);
     }
 
+    /**
+     * Converts this value to floats.
+     *
+     * @param val       the val.
+     * @param bigEndian the big endian.
+     * @return the operation result.
+     */
     public float[] toFloats(Object val, boolean bigEndian) {
         return valueType.toFloats(val, bigEndian);
     }
 
+    /**
+     * Converts this value to double.
+     *
+     * @param val        the val.
+     * @param bigEndian  the big endian.
+     * @param valueIndex the value index.
+     * @param defVal     the def val.
+     * @return the operation result.
+     */
     public double toDouble(Object val, boolean bigEndian, int valueIndex, double defVal) {
         return valueType.toDouble(val, bigEndian, valueIndex, defVal);
     }
 
+    /**
+     * Converts this value to doubles.
+     *
+     * @param val       the val.
+     * @param bigEndian the big endian.
+     * @return the operation result.
+     */
     public double[] toDoubles(Object val, boolean bigEndian) {
         return valueType.toDoubles(val, bigEndian);
     }
 
+    /**
+     * Converts this value to temporal.
+     *
+     * @param val        the val.
+     * @param valueIndex the value index.
+     * @param precision  the precision.
+     * @return the operation result.
+     */
     public Temporal toTemporal(Object val, int valueIndex, DatePrecision precision) {
         return valueType.toTemporal(val, valueIndex, precision);
     }
 
+    /**
+     * Converts this value to date.
+     *
+     * @param val        the val.
+     * @param tz         the tz.
+     * @param valueIndex the value index.
+     * @param ceil       the ceil.
+     * @param defVal     the def val.
+     * @param precision  the precision.
+     * @return the operation result.
+     */
     public Date toDate(Object val, TimeZone tz, int valueIndex, boolean ceil, Date defVal, DatePrecision precision) {
         return valueType.toDate(val, tz, valueIndex, ceil, defVal, precision);
     }
 
+    /**
+     * Converts this value to dates.
+     *
+     * @param val       the val.
+     * @param tz        the tz.
+     * @param ceil      the ceil.
+     * @param precision the precision.
+     * @return the operation result.
+     */
     public Date[] toDates(Object val, TimeZone tz, boolean ceil, DatePrecision precision) {
         return valueType.toDate(val, tz, ceil, precision);
     }
 
+    /**
+     * Converts this value to value.
+     *
+     * @param b the b.
+     * @return the operation result.
+     */
     Object toValue(byte[] b) {
         return valueType.toValue(b);
     }
 
+    /**
+     * Converts this value to value.
+     *
+     * @param s         the s.
+     * @param bigEndian the big endian.
+     * @return the operation result.
+     */
     Object toValue(String s, boolean bigEndian) {
         return valueType.toValue(s, bigEndian);
     }
 
+    /**
+     * Converts this value to value.
+     *
+     * @param ss        the ss.
+     * @param bigEndian the big endian.
+     * @return the operation result.
+     */
     Object toValue(String[] ss, boolean bigEndian) {
         return valueType.toValue(ss, bigEndian);
     }
 
+    /**
+     * Converts this value to value.
+     *
+     * @param is        the is.
+     * @param bigEndian the big endian.
+     * @return the operation result.
+     */
     Object toValue(int[] is, boolean bigEndian) {
         return valueType.toValue(is, bigEndian);
     }
 
+    /**
+     * Converts this value to value.
+     *
+     * @param ls        the ls.
+     * @param bigEndian the big endian.
+     * @return the operation result.
+     */
     Object toValue(long[] ls, boolean bigEndian) {
         return valueType.toValue(ls, bigEndian);
     }
 
+    /**
+     * Converts this value to value.
+     *
+     * @param fs        the fs.
+     * @param bigEndian the big endian.
+     * @return the operation result.
+     */
     Object toValue(float[] fs, boolean bigEndian) {
         return valueType.toValue(fs, bigEndian);
     }
 
+    /**
+     * Converts this value to value.
+     *
+     * @param ds        the ds.
+     * @param bigEndian the big endian.
+     * @return the operation result.
+     */
     Object toValue(double[] ds, boolean bigEndian) {
         return valueType.toValue(ds, bigEndian);
     }
 
+    /**
+     * Converts this value to value.
+     *
+     * @param ds        the ds.
+     * @param tz        the tz.
+     * @param precision the precision.
+     * @return the operation result.
+     */
     public Object toValue(Date[] ds, TimeZone tz, DatePrecision precision) {
         return valueType.toValue(ds, tz, precision);
     }
 
+    /**
+     * Executes the prompt operation.
+     *
+     * @param val       the val.
+     * @param bigEndian the big endian.
+     * @param cs        the cs.
+     * @param maxChars  the max chars.
+     * @param sb        the sb.
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean prompt(Object val, boolean bigEndian, SpecificCharacterSet cs, int maxChars, StringBuilder sb) {
         return valueType.prompt(val, bigEndian, cs, maxChars, sb);
     }
 
+    /**
+     * Executes the vm of operation.
+     *
+     * @param val the val.
+     * @return the operation result.
+     */
     public int vmOf(Object val) {
         return valueType.vmOf(val);
     }
 
+    /**
+     * Represents the Holder type.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public static class Holder {
 
+        /**
+         * The vr value.
+         */
         public VR vr;
+
     }
 
 }

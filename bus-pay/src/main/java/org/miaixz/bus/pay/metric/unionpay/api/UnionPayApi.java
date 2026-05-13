@@ -99,6 +99,7 @@ public enum UnionPayApi implements Matcher {
      * The API endpoint.
      */
     private final String method;
+
     /**
      * The description of the API.
      */

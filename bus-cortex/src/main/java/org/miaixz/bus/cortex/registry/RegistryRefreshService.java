@@ -43,10 +43,12 @@ public class RegistryRefreshService {
      * API registry whose cache projections may be refreshed.
      */
     private final ApiRegistry apiRegistry;
+
     /**
      * MCP registry whose cache projections may be refreshed.
      */
     private final McpRegistry mcpRegistry;
+
     /**
      * Prompt registry whose cache projections may be refreshed.
      */

@@ -50,6 +50,7 @@ public class RelevantException extends IOException {
      * The error code associated with this exception.
      */
     protected String errcode;
+
     /**
      * The error message associated with this exception.
      */

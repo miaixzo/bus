@@ -61,6 +61,9 @@ public interface CaptchaProvider extends Provider {
      */
     void write(OutputStream out);
 
+    /**
+     * The type method.
+     */
     @Override
     default Object type() {
         return EnumValue.Povider.CAPTCHA;

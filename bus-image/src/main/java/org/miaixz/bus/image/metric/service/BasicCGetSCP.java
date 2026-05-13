@@ -29,15 +29,32 @@ import org.miaixz.bus.image.metric.Commands;
 import org.miaixz.bus.image.metric.pdu.PresentationContext;
 
 /**
+ * Represents the BasicCGetSCP type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class BasicCGetSCP extends AbstractImageService {
 
+    /**
+     * Creates a new instance.
+     *
+     * @param sopClasses the sop classes.
+     */
     public BasicCGetSCP(String... sopClasses) {
         super(sopClasses);
     }
 
+    /**
+     * Executes the on dimse rq operation.
+     *
+     * @param as    the as.
+     * @param pc    the pc.
+     * @param dimse the dimse.
+     * @param cmd   the cmd.
+     * @param keys  the keys.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes cmd, Attributes keys)
             throws IOException {
@@ -51,6 +68,15 @@ public class BasicCGetSCP extends AbstractImageService {
             as.tryWriteDimseRSP(pc, Commands.mkCGetRSP(cmd, Status.Success));
     }
 
+    /**
+     * Executes the calculate matches operation.
+     *
+     * @param as   the as.
+     * @param pc   the pc.
+     * @param rq   the rq.
+     * @param keys the keys.
+     * @return the operation result.
+     */
     protected RetrieveTask calculateMatches(Association as, PresentationContext pc, Attributes rq, Attributes keys) {
         return null;
     }

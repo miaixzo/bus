@@ -48,26 +48,32 @@ public class ItemCuratorService {
      * Current-state store for setting entries.
      */
     private final StoreBackedItemStore entryStore;
+
     /**
      * ItemRevision-history store used for rollback and audits.
      */
     private final ItemRevisionStore revisionStore;
+
     /**
      * Effective-value resolver for external and internal reads.
      */
     private final ItemValueResolver resolver;
+
     /**
      * Publisher that coordinates current-state writes and history snapshots.
      */
     private final SettingPublisher publisher;
+
     /**
      * Optional centralized setting enforcer.
      */
     private final SettingEnforcer enforcer;
+
     /**
      * Optional shared Cortex guard.
      */
     private final CortexGuard cortexGuard;
+
     /**
      * Setting-domain key strategy.
      */

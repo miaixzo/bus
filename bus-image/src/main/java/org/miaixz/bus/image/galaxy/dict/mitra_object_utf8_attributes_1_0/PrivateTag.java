@@ -20,47 +20,76 @@
 package org.miaixz.bus.image.galaxy.dict.mitra_object_utf8_attributes_1_0;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "MITRA OBJECT UTF8 ATTRIBUTES 1.0";
 
-    /** (0033,xx02) VR=OB VM=1 ? */
+    /**
+     * (0033,xx02) VR=OB VM=1 ?
+     */
     public static final int _0033_xx02_ = 0x00330002;
 
-    /** (0033,xx04) VR=CS VM=1 ? */
+    /**
+     * (0033,xx04) VR=CS VM=1 ?
+     */
     public static final int _0033_xx04_ = 0x00330004;
 
-    /** (0033,xx06) VR=OB VM=1 ? */
+    /**
+     * (0033,xx06) VR=OB VM=1 ?
+     */
     public static final int _0033_xx06_ = 0x00330006;
 
-    /** (0033,xx08) VR=OB VM=1 ? */
+    /**
+     * (0033,xx08) VR=OB VM=1 ?
+     */
     public static final int _0033_xx08_ = 0x00330008;
 
-    /** (0033,xx0A) VR=OB VM=1 ? */
+    /**
+     * (0033,xx0A) VR=OB VM=1 ?
+     */
     public static final int _0033_xx0A_ = 0x0033000A;
 
-    /** (0033,xx0C) VR=LO VM=1 ? */
+    /**
+     * (0033,xx0C) VR=LO VM=1 ?
+     */
     public static final int _0033_xx0C_ = 0x0033000C;
 
-    /** (0033,xx0E) VR=OB VM=1 ? */
+    /**
+     * (0033,xx0E) VR=OB VM=1 ?
+     */
     public static final int _0033_xx0E_ = 0x0033000E;
 
-    /** (0033,xx13) VR=PN VM=1 ? */
+    /**
+     * (0033,xx13) VR=PN VM=1 ?
+     */
     public static final int _0033_xx13_ = 0x00330013;
 
-    /** (0033,xx14) VR=OB VM=1 ? */
+    /**
+     * (0033,xx14) VR=OB VM=1 ?
+     */
     public static final int _0033_xx14_ = 0x00330014;
 
-    /** (0033,xx15) VR=OB VM=1 ? */
+    /**
+     * (0033,xx15) VR=OB VM=1 ?
+     */
     public static final int _0033_xx15_ = 0x00330015;
 
-    /** (0033,xx16) VR=PN VM=1 ? */
+    /**
+     * (0033,xx16) VR=PN VM=1 ?
+     */
     public static final int _0033_xx16_ = 0x00330016;
 
-    /** (0033,xx19) VR=PN VM=1 ? */
+    /**
+     * (0033,xx19) VR=PN VM=1 ?
+     */
     public static final int _0033_xx19_ = 0x00330019;
 
 }

@@ -45,14 +45,44 @@ import org.miaixz.bus.logger.Logger;
  */
 public class SegmentedInputImageStream extends ImageInputStreamImpl {
 
+    /**
+     * The default buffer size value.
+     */
     private static final int DEFAULT_BUFFER_SIZE = 8192;
+
+    /**
+     * The stream value.
+     */
     private final ImageInputStream stream;
+
+    /**
+     * The fragments value.
+     */
     private final List<Object> fragments;
+
+    /**
+     * The cur segment value.
+     */
     private int curSegment = 0;
+
+    /**
+     * Constants for the first segment, last segment values.
+     */
     private int firstSegment = 1, lastSegment = Integer.MAX_VALUE;
     // The end of the current segment, in streamPos units, not in underlying stream units
+    /**
+     * The cur segment end value.
+     */
     private long curSegmentEnd = -1;
+
+    /**
+     * The byte frag value.
+     */
     private byte[] byteFrag;
+
+    /**
+     * The image descriptor value.
+     */
     private ImageDescriptor imageDescriptor;
 
     /**
@@ -73,6 +103,15 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
         seek(0);
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param iis            the iis.
+     * @param streamPosition the stream position.
+     * @param length         the length.
+     * @param singleFrame    the single frame.
+     * @throws IOException if the operation cannot be completed.
+     */
     public SegmentedInputImageStream(ImageInputStream iis, long streamPosition, int length, boolean singleFrame)
             throws IOException {
         fragments = new Fragments(VR.OB, false, 16);
@@ -99,14 +138,30 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
         seek(0);
     }
 
+    /**
+     * Gets the image descriptor.
+     *
+     * @return the image descriptor.
+     */
     public ImageDescriptor getImageDescriptor() {
         return imageDescriptor;
     }
 
+    /**
+     * Sets the image descriptor.
+     *
+     * @param imageDescriptor the image descriptor.
+     */
     public void setImageDescriptor(ImageDescriptor imageDescriptor) {
         this.imageDescriptor = imageDescriptor;
     }
 
+    /**
+     * Executes the seek operation.
+     *
+     * @param pos the pos.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void seek(long pos) throws IOException {
         super.seek(pos);
@@ -162,6 +217,13 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
         curSegment = -1;
     }
 
+    /**
+     * Updates the bulk data.
+     *
+     * @param endBulk the end bulk.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     BulkData updateBulkData(int endBulk) throws IOException {
         BulkData last = null;
         for (int i = 1; i <= endBulk; i++) {
@@ -189,6 +251,14 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
         return last;
     }
 
+    /**
+     * Reads the bulk at.
+     *
+     * @param testOffset the test offset.
+     * @param at         the at.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     BulkData readBulkAt(long testOffset, int at) throws IOException {
         byte[] data = new byte[8];
         stream.seek(testOffset);
@@ -220,6 +290,12 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
         return bulk;
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int read() throws IOException {
         if (!prepareRead())
@@ -233,6 +309,12 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
         return val;
     }
 
+    /**
+     * Executes the prepare read operation.
+     *
+     * @return true if the condition is met; otherwise false.
+     * @throws IOException if the operation cannot be completed.
+     */
     private boolean prepareRead() throws IOException {
         if (curSegment < 0)
             return false;
@@ -245,6 +327,15 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
         return curSegment >= 0 && curSegment < lastSegment;
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @param b   the b.
+     * @param off the off.
+     * @param len the len.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
         if (!prepareRead())
@@ -265,6 +356,11 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
         return nbytes;
     }
 
+    /**
+     * Gets the last segment end.
+     *
+     * @return the last segment end.
+     */
     public long getLastSegmentEnd() {
         synchronized (fragments) {
             BulkData bulk = (BulkData) fragments.get(fragments.size() - 1);
@@ -272,6 +368,12 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
         }
     }
 
+    /**
+     * Gets the offset post pixel data.
+     *
+     * @return the offset post pixel data.
+     * @throws IOException if the operation cannot be completed.
+     */
     public long getOffsetPostPixelData() throws IOException {
         long ret = getLastSegmentEnd();
         if (ret != -1) {
@@ -304,6 +406,11 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
         return transferred;
     }
 
+    /**
+     * Executes the length operation.
+     *
+     * @return the operation result.
+     */
     @Override
     public long length() {
         try {
@@ -320,18 +427,39 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
         }
     }
 
+    /**
+     * Gets the stream.
+     *
+     * @return the stream.
+     */
     public ImageInputStream getStream() {
         return stream;
     }
 
+    /**
+     * Gets the cur segment.
+     *
+     * @return the cur segment.
+     */
     public int getCurSegment() {
         return curSegment;
     }
 
+    /**
+     * Gets the fragments.
+     *
+     * @return the fragments.
+     */
     public List<Object> getFragments() {
         return fragments;
     }
 
+    /**
+     * Gets the last segment.
+     *
+     * @return the last segment.
+     * @throws IOException if the operation cannot be completed.
+     */
     public Integer getLastSegment() throws IOException {
         seek(Long.MAX_VALUE);
         return lastSegment;

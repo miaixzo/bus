@@ -23,6 +23,12 @@ import java.util.List;
 
 import org.miaixz.bus.gitlab.models.Reviewer;
 
+/**
+ * The merge request changes class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class MergeRequestChanges extends EventChanges {
 
     private ChangeContainer<String> mergeStatus;

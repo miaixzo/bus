@@ -29,6 +29,9 @@ import jakarta.ws.rs.core.Response;
 
 /**
  * See: <a href="https://docs.gitlab.com/ee/api/keys.html">GitLab Key API Documentaion</a>
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class KeysApi extends AbstractApi {
 

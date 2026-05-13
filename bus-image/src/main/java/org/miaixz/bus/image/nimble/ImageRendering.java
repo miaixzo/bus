@@ -25,7 +25,7 @@ import java.util.Objects;
 import java.util.Optional;
 import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.image.nimble.opencv.ImageCV;
-import org.miaixz.bus.image.nimble.opencv.ImageProcessor;
+import org.miaixz.bus.image.nimble.opencv.ImageTransformer;
 import org.miaixz.bus.image.nimble.opencv.LookupTableCV;
 import org.miaixz.bus.image.nimble.opencv.PlanarImage;
 import org.miaixz.bus.image.nimble.opencv.lut.PresentationStateLut;
@@ -200,7 +200,7 @@ public class ImageRendering {
         }
         double slope = 255.0 / range;
         double yint = 255.0 - slope * high;
-        return ImageProcessor.rescaleToByte(ImageCV.toMat(imageSource), slope, yint);
+        return ImageTransformer.rescaleToByte(ImageCV.toMat(imageSource), slope, yint);
     }
 
     /**
@@ -234,7 +234,7 @@ public class ImageRendering {
                     desc.getModalityLutForFrame(frameIndex).adaptWithOverlayBitMask(high - bitsStored);
                 }
                 // Set all bits outside of Bits Stored to 0.
-                return ImageProcessor.bitwiseAnd(img.toMat(), val);
+                return ImageTransformer.bitwiseAnd(img.toMat(), val);
             }
         }
         return img;

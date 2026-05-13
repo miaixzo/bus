@@ -41,6 +41,7 @@ public class NullCell implements Cell {
      * The row this cell belongs to.
      */
     private final Row row;
+
     /**
      * The 0-based column index of this cell.
      */

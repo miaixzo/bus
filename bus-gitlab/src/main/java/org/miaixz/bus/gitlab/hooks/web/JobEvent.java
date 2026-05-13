@@ -24,6 +24,12 @@ import java.util.Date;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+/**
+ * The job event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class JobEvent extends AbstractEvent {
 
     @Serial

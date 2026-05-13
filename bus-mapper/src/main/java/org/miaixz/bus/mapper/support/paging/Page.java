@@ -378,6 +378,8 @@ public class Page<T> extends ArrayList<T> {
      * Builder for creating Page instances.
      *
      * @param <T> the type of content
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class Builder<T> {
 
@@ -429,6 +431,7 @@ public class Page<T> extends ArrayList<T> {
         public Page<T> build() {
             return new Page<>(result, pageable, total);
         }
+
     }
 
 }

@@ -41,34 +41,42 @@ public class UserAgent {
      * Whether the device is a mobile platform.
      */
     private boolean mobile;
+
     /**
      * The browser type.
      */
     private Browser browser;
+
     /**
      * The device type.
      */
     private Device device;
+
     /**
      * The operating system type.
      */
     private NOS nos;
+
     /**
      * The engine type.
      */
     private Engine engine;
+
     /**
      * The browser version.
      */
     private String version;
+
     /**
      * The engine version.
      */
     private String engineVersion;
+
     /**
      * The name of the User-Agent component.
      */
     private String name;
+
     /**
      * The regex pattern for matching this component.
      */

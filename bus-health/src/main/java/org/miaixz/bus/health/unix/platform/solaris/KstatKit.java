@@ -276,6 +276,9 @@ public final class KstatKit {
      * instantiated using the {@link KstatKit#openChain} method. Instantiating this object updates the chain using
      * {@link LibKstat#kstat_chain_update}. The control object should be closed with {@link #close}, which releases the
      * lock and allows another instance to be instantiated.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static final class KstatChain implements AutoCloseable {
 
@@ -385,6 +388,7 @@ public final class KstatKit {
         public void close() {
             CHAIN.unlock();
         }
+
     }
 
 }

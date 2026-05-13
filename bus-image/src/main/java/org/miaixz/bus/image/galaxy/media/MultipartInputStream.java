@@ -29,19 +29,54 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
+ * Represents the MultipartInputStream type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class MultipartInputStream extends FilterInputStream {
 
+    /**
+     * The boundary value.
+     */
     private final byte[] boundary;
+
+    /**
+     * The buffer value.
+     */
     private final byte[] buffer;
+
+    /**
+     * The mark buffer value.
+     */
     private byte[] markBuffer;
+
+    /**
+     * The rpos value.
+     */
     private int rpos;
+
+    /**
+     * The markpos value.
+     */
     private int markpos;
+
+    /**
+     * The boundary seen value.
+     */
     private boolean boundarySeen;
+
+    /**
+     * The mark boundary seen value.
+     */
     private boolean markBoundarySeen;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param in       the in.
+     * @param boundary the boundary.
+     */
     protected MultipartInputStream(InputStream in, String boundary) {
         super(in);
         this.boundary = boundary.getBytes();
@@ -49,6 +84,15 @@ public class MultipartInputStream extends FilterInputStream {
         this.rpos = buffer.length;
     }
 
+    /**
+     * Reads the fully.
+     *
+     * @param in  the in.
+     * @param b   the b.
+     * @param off the off.
+     * @param len the len.
+     * @throws IOException if the operation cannot be completed.
+     */
     private static void readFully(InputStream in, byte[] b, int off, int len) throws IOException {
         if (off < 0 || len < 0 || off + len > b.length)
             throw new IndexOutOfBoundsException();
@@ -61,6 +105,12 @@ public class MultipartInputStream extends FilterInputStream {
         }
     }
 
+    /**
+     * Executes the unquote operation.
+     *
+     * @param s the s.
+     * @return the operation result.
+     */
     private static String unquote(String s) {
         int srcEnd = s.length() - 1;
         if (srcEnd < 0 || s.charAt(0) != '\"') {
@@ -81,11 +131,26 @@ public class MultipartInputStream extends FilterInputStream {
         return new String(cs, 0, count);
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int read() throws IOException {
         return isBoundary() ? -1 : (buffer[rpos++] & 0xff);
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @param b   the b.
+     * @param off the off.
+     * @param len the len.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
         if (isBoundary())
@@ -97,6 +162,13 @@ public class MultipartInputStream extends FilterInputStream {
         return l;
     }
 
+    /**
+     * Executes the skip operation.
+     *
+     * @param n the n.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public long skip(long n) throws IOException {
         if (isBoundary())
@@ -107,6 +179,11 @@ public class MultipartInputStream extends FilterInputStream {
         return l;
     }
 
+    /**
+     * Executes the mark operation.
+     *
+     * @param readlimit the readlimit.
+     */
     @Override
     public synchronized void mark(int readlimit) {
         super.mark(readlimit);
@@ -115,6 +192,11 @@ public class MultipartInputStream extends FilterInputStream {
         markBoundarySeen = boundarySeen;
     }
 
+    /**
+     * Executes the reset operation.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public synchronized void reset() throws IOException {
         super.reset();
@@ -123,20 +205,42 @@ public class MultipartInputStream extends FilterInputStream {
         boundarySeen = markBoundarySeen;
     }
 
+    /**
+     * Executes the close operation.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void close() throws IOException {
         // NOOP
     }
 
+    /**
+     * Executes the skip all operation.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     public void skipAll() throws IOException {
         while (!isBoundary())
             rpos += remaining();
     }
 
+    /**
+     * Determines whether zip.
+     *
+     * @return true if the condition is met; otherwise false.
+     * @throws IOException if the operation cannot be completed.
+     */
     public boolean isZIP() throws IOException {
         return !isBoundary() && buffer[rpos] == 'P' && buffer[rpos + 1] == 'K';
     }
 
+    /**
+     * Determines whether boundary.
+     *
+     * @return true if the condition is met; otherwise false.
+     * @throws IOException if the operation cannot be completed.
+     */
     private boolean isBoundary() throws IOException {
         if (boundarySeen)
             return true;
@@ -158,6 +262,11 @@ public class MultipartInputStream extends FilterInputStream {
         return true;
     }
 
+    /**
+     * Executes the remaining operation.
+     *
+     * @return the operation result.
+     */
     private int remaining() {
         for (int i = rpos + 1; i < buffer.length; i++)
             if (buffer[i] == boundary[0])
@@ -166,6 +275,12 @@ public class MultipartInputStream extends FilterInputStream {
         return buffer.length - rpos;
     }
 
+    /**
+     * Reads the header params.
+     *
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     public Map<String, List<String>> readHeaderParams() throws IOException {
         Map<String, List<String>> map = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         Field field = new Field();
@@ -186,6 +301,13 @@ public class MultipartInputStream extends FilterInputStream {
         return map;
     }
 
+    /**
+     * Reads the header param.
+     *
+     * @param field the field.
+     * @return true if the condition is met; otherwise false.
+     * @throws IOException if the operation cannot be completed.
+     */
     private boolean readHeaderParam(Field field) throws IOException {
         field.reset();
         OUTER: while (!isBoundary()) {
@@ -197,19 +319,45 @@ public class MultipartInputStream extends FilterInputStream {
         return !field.isEmpty();
     }
 
+    /**
+     * Represents the Field type.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     private static final class Field {
 
+        /**
+         * The buffer value.
+         */
         byte[] buffer = new byte[256];
+
+        /**
+         * The length value.
+         */
         int length;
 
+        /**
+         * Executes the reset operation.
+         */
         void reset() {
             length = 0;
         }
 
+        /**
+         * Determines whether empty.
+         *
+         * @return true if the condition is met; otherwise false.
+         */
         boolean isEmpty() {
             return length == 0;
         }
 
+        /**
+         * Executes the grow buffer operation.
+         *
+         * @param grow the grow.
+         */
         void growBuffer(int grow) {
             if (length + grow > buffer.length) {
                 byte[] copy = new byte[length + grow];
@@ -218,6 +366,12 @@ public class MultipartInputStream extends FilterInputStream {
             }
         }
 
+        /**
+         * Executes the append operation.
+         *
+         * @param b the b.
+         * @return true if the condition is met; otherwise false.
+         */
         boolean append(byte b) {
             if (b == '\n' && length > 0 && buffer[length - 1] == '\r') {
                 length--;
@@ -228,6 +382,11 @@ public class MultipartInputStream extends FilterInputStream {
             return true;
         }
 
+        /**
+         * Returns the string representation.
+         *
+         * @return the string representation.
+         */
         public String toString() {
             return new String(buffer, 0, length);
         }

@@ -25,6 +25,12 @@ import java.util.List;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import java.io.Serial;
 
+/**
+ * The compare results class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class CompareResults implements Serializable {
 
     @Serial

@@ -52,6 +52,7 @@ public class StrictBeanDesc extends AbstractBeanDesc {
      * Whether to ignore case when matching methods and fields.
      */
     private final boolean ignoreCase;
+
     /**
      * Whether to match primitive types and their wrapper types when matching methods and fields. For example, if a
      * field is of type {@code int}, a setter could be {@code setXXX(int value)} or {@code setXXX(Integer value)}. If a

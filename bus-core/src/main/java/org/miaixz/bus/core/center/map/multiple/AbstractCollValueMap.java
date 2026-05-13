@@ -38,10 +38,10 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  *
  * @param <K> The type of keys in the map.
  * @param <V> The type of values stored in the collections.
- * @author Kimi Liu
  * @see CollectionValueMap
  * @see SetValueMap
  * @see ListValueMap
+ * @author Kimi Liu
  * @since Java 21+
  */
 public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collection<V>>

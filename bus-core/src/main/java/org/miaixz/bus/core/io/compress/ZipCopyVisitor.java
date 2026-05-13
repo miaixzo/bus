@@ -39,10 +39,12 @@ public class ZipCopyVisitor extends SimpleFileVisitor<Path> {
      * The source Path, or base path, used to calculate the relative path of the file being copied.
      */
     private final Path source;
+
     /**
      * The target FileSystem, representing the Zip file.
      */
     private final FileSystem fileSystem;
+
     /**
      * Copy options, such as skipping existing files.
      */

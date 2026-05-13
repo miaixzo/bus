@@ -39,18 +39,22 @@ public class TimerCrontab {
      * The task to be executed.
      */
     private final Runnable task;
+
     /**
      * A description of the task.
      */
     public String desc;
+
     /**
      * The time slot (bucket) this task belongs to.
      */
     public TimerTaskList timerTaskList;
+
     /**
      * The next task in the linked list.
      */
     public TimerCrontab next;
+
     /**
      * The previous task in the linked list.
      */

@@ -38,6 +38,7 @@ public class NOS extends UserAgent {
      * Constant for an unknown operating system.
      */
     public static final NOS UNKNOWN = new NOS(Normal.UNKNOWN, null);
+
     /**
      * A list of supported operating systems.
      */

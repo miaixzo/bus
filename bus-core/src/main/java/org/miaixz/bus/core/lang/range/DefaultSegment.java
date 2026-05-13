@@ -35,6 +35,7 @@ public class DefaultSegment<T extends Number> implements Segment<T> {
      * The beginning index of the segment.
      */
     protected T beginIndex;
+
     /**
      * The ending index of the segment.
      */

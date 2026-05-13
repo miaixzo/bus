@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Specification: <a href="https://tools.ietf.org/html/rfc6238">RFC&nbsp;6238</a>
  * </p>
  *
- *
  * <p>
  * Time synchronization is required. It's based on a comparison between the client's dynamic password and the dynamic
  * password verification server's time. A new password is typically generated every 30 seconds. It requires that the

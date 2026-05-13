@@ -43,21 +43,43 @@ import org.miaixz.bus.image.nimble.opencv.PlanarImage;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the ImageAdapter type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class ImageAdapter {
 
+    /**
+     * The empty bytes value.
+     */
     protected static final byte[] EMPTY_BYTES = {};
+
+    /**
+     * The image read param value.
+     */
     private static final ImageReadParam IMAGE_READ_PARAM = new ImageReadParam();
 
     static {
         IMAGE_READ_PARAM.setReleaseImageAfterProcessing(true);
     }
 
+    /**
+     * Creates a new instance.
+     */
     private ImageAdapter() {
     }
 
+    /**
+     * Writes the dicom file.
+     *
+     * @param data     the data.
+     * @param syntax   the syntax.
+     * @param editable the editable.
+     * @param desc     the desc.
+     * @param file     the file.
+     * @return true if the condition is met; otherwise false.
+     */
     public static boolean writeDicomFile(
             Attributes data,
             AdaptTransferSyntax syntax,
@@ -107,6 +129,17 @@ public class ImageAdapter {
         return true;
     }
 
+    /**
+     * Writes the image.
+     *
+     * @param syntax   the syntax.
+     * @param desc     the desc.
+     * @param imgData  the img data.
+     * @param dataSet  the data set.
+     * @param dstTsuid the dst tsuid.
+     * @param dos      the dos.
+     * @throws IOException if the operation cannot be completed.
+     */
     private static void writeImage(
             AdaptTransferSyntax syntax,
             BytesWithImageDescriptor desc,
@@ -134,6 +167,12 @@ public class ImageAdapter {
         }
     }
 
+    /**
+     * Executes the check syntax operation.
+     *
+     * @param syntax  the syntax.
+     * @param imgData the img data.
+     */
     public static void checkSyntax(AdaptTransferSyntax syntax, ImageOutputData imgData) {
         if (!syntax.requested.equals(imgData.getTsuid())) {
             syntax.suitable = imgData.getTsuid();
@@ -146,6 +185,16 @@ public class ImageAdapter {
         }
     }
 
+    /**
+     * Builds the data writer.
+     *
+     * @param data     the data.
+     * @param syntax   the syntax.
+     * @param editable the editable.
+     * @param desc     the desc.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     public static DataWriter buildDataWriter(
             Attributes data,
             AdaptTransferSyntax syntax,
@@ -178,6 +227,13 @@ public class ImageAdapter {
         };
     }
 
+    /**
+     * Determines whether transcodable.
+     *
+     * @param origUid the orig uid.
+     * @param desUid  the des uid.
+     * @return true if the condition is met; otherwise false.
+     */
     private static boolean isTranscodable(String origUid, String desUid) {
         if (!desUid.equals(origUid)) {
             return !(Builder.isNative(origUid) && Builder.isNative(desUid));
@@ -185,6 +241,14 @@ public class ImageAdapter {
         return false;
     }
 
+    /**
+     * Executes the image transcode operation.
+     *
+     * @param data    the data.
+     * @param syntax  the syntax.
+     * @param context the context.
+     * @return the operation result.
+     */
     public static BytesWithImageDescriptor imageTranscode(
             Attributes data,
             AdaptTransferSyntax syntax,
@@ -347,12 +411,29 @@ public class ImageAdapter {
         return null;
     }
 
+    /**
+     * Copies the value.
+     *
+     * @param original the original.
+     * @param copy     the copy.
+     * @param tag      the tag.
+     */
     private static void copyValue(Attributes original, Attributes copy, int tag) {
         if (original.containsValue(tag)) {
             copy.setValue(tag, original.getVR(tag), original.getValue(tag));
         }
     }
 
+    /**
+     * Executes the ge dicom output data operation.
+     *
+     * @param reader      the reader.
+     * @param outputTsuid the output tsuid.
+     * @param desc        the desc.
+     * @param editable    the editable.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     private static ImageOutputData geDicomOutputData(
             ImageReader reader,
             String outputTsuid,
@@ -363,14 +444,45 @@ public class ImageAdapter {
         return new ImageOutputData(images, desc.getImageDescriptor(), outputTsuid);
     }
 
+    /**
+     * Represents the AdaptTransferSyntax type.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public static class AdaptTransferSyntax {
 
+        /**
+         * The original value.
+         */
         private final String original;
+
+        /**
+         * The requested value.
+         */
         private final String requested;
+
+        /**
+         * The suitable value.
+         */
         private String suitable;
+
+        /**
+         * The jpeg quality value.
+         */
         private int jpegQuality;
+
+        /**
+         * The compression ratio factor value.
+         */
         private int compressionRatioFactor;
 
+        /**
+         * Creates a new instance.
+         *
+         * @param original  the original.
+         * @param requested the requested.
+         */
         public AdaptTransferSyntax(String original, String requested) {
             if (!StringKit.hasText(original) || !StringKit.hasText(requested)) {
                 throw new IllegalArgumentException("A non empty value is required");
@@ -381,39 +493,80 @@ public class ImageAdapter {
             this.jpegQuality = 85;
         }
 
+        /**
+         * Gets the original.
+         *
+         * @return the original.
+         */
         public String getOriginal() {
             return original;
         }
 
+        /**
+         * Gets the requested.
+         *
+         * @return the requested.
+         */
         public String getRequested() {
             return requested;
         }
 
+        /**
+         * Gets the suitable.
+         *
+         * @return the suitable.
+         */
         public String getSuitable() {
             return suitable;
         }
 
+        /**
+         * Sets the suitable.
+         *
+         * @param suitable the suitable.
+         */
         public void setSuitable(String suitable) {
             if (TransferSyntaxType.forUID(suitable) != TransferSyntaxType.UNKNOWN) {
                 this.suitable = suitable;
             }
         }
 
+        /**
+         * Gets the jpeg quality.
+         *
+         * @return the jpeg quality.
+         */
         public int getJpegQuality() {
             return jpegQuality;
         }
 
+        /**
+         * Sets the jpeg quality.
+         *
+         * @param jpegQuality the jpeg quality.
+         */
         public void setJpegQuality(int jpegQuality) {
             this.jpegQuality = jpegQuality;
         }
 
+        /**
+         * Gets the compression ratio factor.
+         *
+         * @return the compression ratio factor.
+         */
         public int getCompressionRatioFactor() {
             return compressionRatioFactor;
         }
 
+        /**
+         * Sets the compression ratio factor.
+         *
+         * @param compressionRatioFactor the compression ratio factor.
+         */
         public void setCompressionRatioFactor(int compressionRatioFactor) {
             this.compressionRatioFactor = compressionRatioFactor;
         }
+
     }
 
 }

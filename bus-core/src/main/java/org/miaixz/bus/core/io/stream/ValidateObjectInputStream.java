@@ -41,6 +41,7 @@ public class ValidateObjectInputStream extends ObjectInputStream {
      * A set of class names that are explicitly allowed for deserialization (whitelist).
      */
     private Set<String> whiteClassSet;
+
     /**
      * A set of class names that are explicitly forbidden for deserialization (blacklist).
      */
@@ -120,18 +121,7 @@ public class ValidateObjectInputStream extends ObjectInputStream {
             }
         }
 
-        // If whitelist is empty, all classes are allowed (after blacklist check).
-        if (CollKit.isEmpty(this.whiteClassSet)) {
-            return;
-        }
-
-        // Java internal classes are always allowed if a whitelist is present.
-        if (className.startsWith("java.")) {
-            return;
-        }
-
-        // Check against whitelist
-        if (this.whiteClassSet.contains(className)) {
+        if (CollKit.isEmpty(this.whiteClassSet) || this.whiteClassSet.contains(className)) {
             return;
         }
 

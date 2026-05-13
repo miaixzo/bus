@@ -55,14 +55,17 @@ public class PartitionPool<T> implements ObjectPool<T> {
      * The configuration settings for this object pool partition.
      */
     private final PoolConfig config;
+
     /**
      * The factory responsible for creating, validating, and destroying objects.
      */
     private final ObjectFactory<T> objectFactory;
+
     /**
      * The blocking queue that holds the available poolable objects.
      */
     private BlockingQueue<Poolable<T>> queue;
+
     /**
      * The total number of objects currently managed by this partition, including both idle and actively borrowed
      * objects.

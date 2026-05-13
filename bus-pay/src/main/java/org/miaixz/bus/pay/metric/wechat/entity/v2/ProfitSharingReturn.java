@@ -44,50 +44,62 @@ public class ProfitSharingReturn extends Voucher {
      * Sub-merchant App ID.
      */
     private String sub_appid;
+
     /**
      * Merchant ID.
      */
     private String mch_id;
+
     /**
      * Sub-merchant ID.
      */
     private String sub_mch_id;
+
     /**
      * Random string.
      */
     private String nonce_str;
+
     /**
      * Signature.
      */
     private String sign;
+
     /**
      * Signature type.
      */
     private String sign_type;
+
     /**
      * Order ID.
      */
     private String order_id;
+
     /**
      * Merchant order number.
      */
     private String out_order_no;
+
     /**
      * Merchant return number.
      */
     private String out_return_no;
+
     /**
      * Return account type.
      */
     private String return_account_type;
+
     /**
      * Return account.
      */
     private String return_account;
+
     /**
      * Return amount.
      */
     private String return_amount;
+
     /**
      * Description.
      */

@@ -26,13 +26,25 @@ import org.miaixz.bus.image.metric.Association;
 import org.miaixz.bus.image.metric.Connection;
 
 /**
+ * Defines the ImageProtocolHandler values.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public enum ImageProtocolHandler implements TCPProtocolHandler {
 
+    /**
+     * The instance value.
+     */
     INSTANCE;
 
+    /**
+     * Executes the on accept operation.
+     *
+     * @param conn the conn.
+     * @param s    the s.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void onAccept(Connection conn, Socket s) throws IOException {
         new Association(null, conn, s);

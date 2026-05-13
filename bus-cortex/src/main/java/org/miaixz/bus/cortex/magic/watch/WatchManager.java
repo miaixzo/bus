@@ -61,38 +61,47 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
      * Default source name for setting-domain watch events.
      */
     public static final String SETTING_SOURCE = "setting-center";
+
     /**
      * Default event type for setting updates.
      */
     public static final String SETTING_UPDATE_EVENT = "setting-update";
+
     /**
      * Default event type for setting deletes.
      */
     public static final String SETTING_DELETE_EVENT = "setting-delete";
+
     /**
      * Default source name for registry-domain watch events.
      */
     public static final String REGISTRY_SOURCE = "registry-center";
+
     /**
      * Event type for registry asset registrations.
      */
     public static final String REGISTRY_REGISTER_EVENT = "registry-register";
+
     /**
      * Event type for registry asset updates.
      */
     public static final String REGISTRY_UPDATE_EVENT = "registry-update";
+
     /**
      * Event type for registry asset deregistrations.
      */
     public static final String REGISTRY_DEREGISTER_EVENT = "registry-deregister";
+
     /**
      * Event type for runtime instance availability.
      */
     public static final String REGISTRY_INSTANCE_UP_EVENT = "registry-instance-up";
+
     /**
      * Event type for runtime instance removal.
      */
     public static final String REGISTRY_INSTANCE_DOWN_EVENT = "registry-instance-down";
+
     /**
      * Event type for runtime instance health state changes.
      */
@@ -100,50 +109,63 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
 
     /**
      * Backpressure policy applied when one watch subscription is slower than the emitted event rate.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum OverflowStrategy {
         /**
          * Drops the newest event when the per-watch backlog is already full.
          */
         DROP_LATEST
+
     }
 
     /**
      * Watch entries keyed by generated watch identifier.
      */
     private final Map<String, WatchSubscription<?>> entries = new ConcurrentHashMap<>();
+
     /**
      * Maximum number of watch subscriptions allowed per namespace.
      */
     private final int maxWatchesPerNamespace;
+
     /**
      * Maximum idle time in milliseconds before a watch subscription expires.
      */
     private final long watchExpireMs;
+
     /**
      * Maximum number of pending events allowed for one watch subscription.
      */
     private final int maxPendingPerWatch;
+
     /**
      * Strategy applied when one subscription exceeds its pending backlog limit.
      */
     private final OverflowStrategy overflowStrategy;
+
     /**
      * Shared sequence source used for ordered watch notifications.
      */
     private final Sequence sequence;
+
     /**
      * Namespace watch counters used to enforce per-namespace subscription limits without full scans.
      */
     private final Map<String, AtomicInteger> namespaceCounts = new ConcurrentHashMap<>();
+
     /**
      * Global watch listeners used for diagnostics and side-channel observation.
      */
     private final List<Listener<Watch<Object>>> globalListeners = new CopyOnWriteArrayList<>();
+
     /**
      * Shared asynchronous dispatcher used to isolate listener failures from publisher threads.
      */
     private final ExecutorService dispatcher = Executors.newVirtualThreadPerTaskExecutor();
+
     /**
      * Whether this manager has been closed.
      */

@@ -27,7 +27,7 @@ import org.miaixz.bus.auth.metric.JWT;
  * Provides functionality to parse JWT tokens, converting string-formatted JWT tokens (in the format
  * header.payload.signature) into {@link JWT} objects.
  * </p>
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */

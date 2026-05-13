@@ -55,25 +55,30 @@ public class AioClient {
                 thread.setDaemon(true);
                 return thread;
             });
+
     /**
      * Client service configuration. All setXX() methods of AioClient are used to set configuration items.
      */
     private final Context context = new Context();
+
     /**
      * The session object for the network connection.
      *
      * @see TcpSession
      */
     private TcpSession session;
+
     /**
      * IO event handling thread group. As a client, this AsynchronousChannelGroup only needs a thread pool of size 2 to
      * meet the communication read and write requirements.
      */
     private AsynchronousChannelGroup asynchronousChannelGroup;
+
     /**
      * Binds the local address.
      */
     private SocketAddress localAddress;
+
     /**
      * Connection timeout in milliseconds.
      */
@@ -83,10 +88,12 @@ public class AioClient {
      * Write buffer pool.
      */
     private BufferPagePool writeBufferPool = null;
+
     /**
      * Read buffer pool.
      */
     private BufferPagePool readBufferPool = null;
+
     /**
      * Whether to enable low memory mode.
      */

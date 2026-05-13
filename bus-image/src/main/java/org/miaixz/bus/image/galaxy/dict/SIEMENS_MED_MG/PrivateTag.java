@@ -20,35 +20,56 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_MG;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS MED MG";
 
-    /** (0029,xx10) VR=US VM=1 List of Group Numbers */
+    /**
+     * (0029,xx10) VR=US VM=1 List of Group Numbers
+     */
     public static final int ListOfGroupNumbers = 0x00290010;
 
-    /** (0029,xx15) VR=LO VM=1 List of Shadow Owner Codes */
+    /**
+     * (0029,xx15) VR=LO VM=1 List of Shadow Owner Codes
+     */
     public static final int ListOfShadowOwnerCodes = 0x00290015;
 
-    /** (0029,xx20) VR=US VM=1 List of Element Numbers */
+    /**
+     * (0029,xx20) VR=US VM=1 List of Element Numbers
+     */
     public static final int ListOfElementNumbers = 0x00290020;
 
-    /** (0029,xx30) VR=US VM=1 List of Total Display Length */
+    /**
+     * (0029,xx30) VR=US VM=1 List of Total Display Length
+     */
     public static final int ListOfTotalDisplayLength = 0x00290030;
 
-    /** (0029,xx40) VR=LO VM=1-n List of Display Prefix */
+    /**
+     * (0029,xx40) VR=LO VM=1-n List of Display Prefix
+     */
     public static final int ListOfDisplayPrefix = 0x00290040;
 
-    /** (0029,xx50) VR=LO VM=1-n List of Display Postfix */
+    /**
+     * (0029,xx50) VR=LO VM=1-n List of Display Postfix
+     */
     public static final int ListOfDisplayPostfix = 0x00290050;
 
-    /** (0029,xx60) VR=US VM=1 List of Text Position */
+    /**
+     * (0029,xx60) VR=US VM=1 List of Text Position
+     */
     public static final int ListOfTextPosition = 0x00290060;
 
-    /** (0029,xx70) VR=LO VM=1 List of Text Concatenation */
+    /**
+     * (0029,xx70) VR=LO VM=1 List of Text Concatenation
+     */
     public static final int ListOfTextConcatenation = 0x00290070;
 
 }

@@ -32,13 +32,13 @@ import org.miaixz.bus.core.xyz.*;
  * A service loader for key-value pair services, which uses {@link Properties} to load and store services. Service files
  * are located by default under {@code META-INF/bus/}, with the file name being the fully qualified name of the service
  * interface class. The content of the file is similar to:
- * 
+ *
  * <pre>
  *     # This is a comment
  *     service1 = com.example.Service1
  *     service2 = com.example.Service2
  * </pre>
- * 
+ *
  * The corresponding service can be obtained by calling the {@link #getService(String)} method with the name before the
  * equals sign.
  *
@@ -57,6 +57,7 @@ public class MapServiceLoader<S> extends AbstractServiceLoader<S> {
      * Cache for service instances.
      */
     private final SimpleCache<String, S> serviceCache;
+
     /**
      * Stores the loaded service definitions.
      */

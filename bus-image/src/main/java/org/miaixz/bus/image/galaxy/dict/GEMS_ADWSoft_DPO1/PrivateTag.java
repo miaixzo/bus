@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.GEMS_ADWSoft_DPO1;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEMS_ADWSoft_DPO1";
 
-    /** (0039,xx95) VR=LO VM=1 ? */
+    /**
+     * (0039,xx95) VR=LO VM=1 ?
+     */
     public static final int _0039_xx95_ = 0x00390095;
 
 }

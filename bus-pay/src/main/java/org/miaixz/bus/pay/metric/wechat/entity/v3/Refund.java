@@ -44,34 +44,42 @@ public class Refund {
      * Sub-merchant ID (for service providers).
      */
     private String sub_mchid;
+
     /**
      * WeChat Pay's original order number.
      */
     private String transaction_id;
+
     /**
      * Merchant's original order number.
      */
     private String out_trade_no;
+
     /**
      * Merchant's unique refund number.
      */
     private String out_refund_no;
+
     /**
      * Reason for the refund.
      */
     private String reason;
+
     /**
      * URL for receiving asynchronous refund notifications.
      */
     private String notify_url;
+
     /**
      * Source of the refund funds (e.g., AVAILABLE).
      */
     private String funds_account;
+
     /**
      * Amount details for the refund.
      */
     private RefundAmount amount;
+
     /**
      * Details of the specific goods being refunded.
      */

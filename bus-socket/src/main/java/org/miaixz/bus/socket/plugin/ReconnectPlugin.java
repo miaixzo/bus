@@ -38,10 +38,12 @@ class ReconnectPlugin extends AbstractPlugin {
      * The asynchronous channel group to be used for reconnection, if provided.
      */
     private final AsynchronousChannelGroup asynchronousChannelGroup;
+
     /**
      * The AIO client instance that this plugin manages for reconnection.
      */
     private final AioClient client;
+
     /**
      * A flag indicating whether the plugin has been explicitly shut down.
      */

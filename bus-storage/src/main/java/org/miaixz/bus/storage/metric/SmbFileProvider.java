@@ -65,14 +65,17 @@ public class SmbFileProvider extends AbstractProvider {
      * The SMB client instance for establishing connections.
      */
     private final SMBClient client;
+
     /**
      * The SMB connection to the server.
      */
     private Connection connection;
+
     /**
      * The SMB session established with the server.
      */
     private Session session;
+
     /**
      * The connected disk share.
      */

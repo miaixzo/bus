@@ -47,6 +47,7 @@ public class EscapeKit {
      * Characters that should not be escaped for JS compatibility.
      */
     private static final String NOT_ESCAPE_CHARS = "*@-_+./";
+
     /**
      * Predicate that identifies characters requiring JavaScript-style escaping.
      */

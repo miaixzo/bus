@@ -25,19 +25,36 @@ import java.io.InputStream;
 import org.miaixz.bus.image.metric.DataWriter;
 
 /**
+ * Represents the InputStreamDataWriter type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class InputStreamDataWriter implements DataWriter {
 
+    /**
+     * The in value.
+     */
     private final InputStream in;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param in the in.
+     */
     public InputStreamDataWriter(InputStream in) {
         if (in == null)
             throw new NullPointerException();
         this.in = in;
     }
 
+    /**
+     * Writes the to.
+     *
+     * @param out   the out.
+     * @param tsuid the tsuid.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void writeTo(PDVOutputStream out, String tsuid) throws IOException {
         out.copyFrom(in);

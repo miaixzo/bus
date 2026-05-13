@@ -38,10 +38,12 @@ public class CompositeCellValue implements CellValue<Object> {
      * The cell object.
      */
     private final Cell cell;
+
     /**
      * The cell type.
      */
     private final CellType cellType;
+
     /**
      * The cell editor.
      */

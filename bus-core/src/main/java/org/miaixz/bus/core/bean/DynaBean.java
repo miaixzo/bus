@@ -48,6 +48,7 @@ public class DynaBean implements Cloneable, Serializable {
      * The class of the bean.
      */
     private final Class<?> beanClass;
+
     /**
      * The actual bean object.
      */

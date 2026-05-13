@@ -50,10 +50,12 @@ public abstract class Repertoire implements Serializable {
      * Default initial capacity for the task table.
      */
     public static final int DEFAULT_CAPACITY = 256;
+
     /**
      * Read-write lock to ensure thread safety.
      */
     public final ReadWriteLock lock;
+
     /**
      * Task table with one-to-one mapping of ID, pattern, and task. Uses TripleTable for storage to facilitate fast
      * lookup and updates.

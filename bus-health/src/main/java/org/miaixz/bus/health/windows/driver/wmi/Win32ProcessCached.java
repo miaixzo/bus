@@ -53,6 +53,7 @@ public final class Win32ProcessCached {
      */
     @GuardedBy("commandLineCacheLock")
     private final Map<Integer, Pair<Long, String>> commandLineCache = new HashMap<>();
+
     /**
      * The commandLineCacheLock value.
      */

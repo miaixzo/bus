@@ -50,18 +50,22 @@ public class GenericNotice extends Notice {
      * SMTP host property key.
      */
     private static final String SMTP_HOST = "mail.smtp.host";
+
     /**
      * SMTP port property key.
      */
     private static final String SMTP_PORT = "mail.smtp.port";
+
     /**
      * SMTP authentication property key.
      */
     private static final String SMTP_AUTH = "mail.smtp.auth";
+
     /**
      * SMTP timeout property key.
      */
     private static final String SMTP_TIMEOUT = "mail.smtp.timeout";
+
     /**
      * SMTP connection timeout property key.
      */
@@ -71,10 +75,12 @@ public class GenericNotice extends Notice {
      * Socket factory class property key.
      */
     private static final String SOCKEY_FACTORY = "mail.smtp.socketFactory.class";
+
     /**
      * Socket factory port property key.
      */
     private static final String SOCKEY_FACTORY_PORT = "smtp.socketFactory.port";
+
     /**
      * Socket factory fallback property key.
      */
@@ -84,6 +90,7 @@ public class GenericNotice extends Notice {
      * TLS enable property key.
      */
     private static final String MAIL_TLS_ENABLE = "mail.smtp.starttls.enable";
+
     /**
      * Mail protocol property key.
      */
@@ -93,6 +100,7 @@ public class GenericNotice extends Notice {
      * Split long parameters property key.
      */
     private static final String SPLIT_LONG_PARAMS = "mail.mime.splitlongparameters";
+
     /**
      * Mail debug property key.
      */
@@ -102,31 +110,38 @@ public class GenericNotice extends Notice {
      * The SMTP server domain name.
      */
     private String host;
+
     /**
      * The SMTP service port.
      */
     private Integer port;
+
     /**
      * Indicates whether username and password authentication is required.
      */
     private Boolean auth;
+
     /**
      * The username for authentication.
      */
     private String user;
+
     /**
      * The password for authentication.
      */
     private String pass;
+
     /**
      * Whether to enable debug mode. Debug mode displays the communication process with the mail server. Disabled by
      * default.
      */
     private boolean debug;
+
     /**
      * The character set used for encoding email body, sender, recipient, and other Chinese characters.
      */
     private java.nio.charset.Charset charset;
+
     /**
      * Whether to split overly long parameters into multiple parts. Defaults to false (attachment names for domestic
      * email do not support splitting).
@@ -139,20 +154,24 @@ public class GenericNotice extends Notice {
      * communication port.
      */
     private boolean startttlsEnable;
+
     /**
      * Uses SSL for secure connection.
      */
     private Boolean sslEnable;
+
     /**
      * The name of the class that implements the {@code javax.net.SocketFactory} interface. This class will be used to
      * create SMTP sockets.
      */
     private String socketFactoryClass = "javax.net.ssl.SSLSocketFactory";
+
     /**
      * If set to true, failure to create a socket using the specified socket factory class will result in using a socket
      * created with {@code java.net.Socket} class. Defaults to true.
      */
     private boolean socketFactoryFallback;
+
     /**
      * The specified port to connect to when using the specified socket factory. If not set, the default port will be
      * used.
@@ -163,6 +182,7 @@ public class GenericNotice extends Notice {
      * The SMTP timeout duration in milliseconds. Defaults to no timeout.
      */
     private long timeout;
+
     /**
      * The socket connection timeout value in milliseconds. Defaults to no timeout.
      */
@@ -172,6 +192,7 @@ public class GenericNotice extends Notice {
      * A comma-separated list of carbon copy (CC) recipients.
      */
     private String ccs;
+
     /**
      * A comma-separated list of blind carbon copy (BCC) recipients.
      */
@@ -181,6 +202,7 @@ public class GenericNotice extends Notice {
      * The subject of the email.
      */
     private String title;
+
     /**
      * The content of the email.
      */
@@ -190,6 +212,7 @@ public class GenericNotice extends Notice {
      * A list of attachments for the email.
      */
     private File[] attachments;
+
     /**
      * Whether to use a global session. Defaults to true.
      */

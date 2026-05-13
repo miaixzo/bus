@@ -44,10 +44,12 @@ public abstract class RequestBuilder<T extends RequestBuilder> {
      * A unique identifier for the request.
      */
     protected String id;
+
     /**
      * The URL for the request.
      */
     protected String url;
+
     /**
      * An optional tag for the request, used for cancellation.
      */
@@ -57,10 +59,12 @@ public abstract class RequestBuilder<T extends RequestBuilder> {
      * A map of request headers.
      */
     protected Map<String, String> headers;
+
     /**
      * A map of request parameters (e.g., query string or form data).
      */
     protected Map<String, String> params;
+
     /**
      * A map of pre-encoded request parameters.
      */

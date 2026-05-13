@@ -47,42 +47,52 @@ public class GrayRule {
      * Gray-routing strategy type.
      */
     private GrayType type;
+
     /**
      * Explicit client IP addresses matched by the rule.
      */
     private List<String> ipList;
+
     /**
      * Inclusive client IP range in string form.
      */
     private String ipRange;
+
     /**
      * Traffic percentage selected by the rule.
      */
     private int percentage;
+
     /**
      * Request header name used for header-based matching.
      */
     private String headerKey;
+
     /**
      * Required request header value for header-based matching.
      */
     private String headerValue;
+
     /**
      * Tenant identifier matched by tenant-based rules.
      */
     private String tenant;
+
     /**
      * User identifier matched by user-based rules.
      */
     private String userId;
+
     /**
      * Label key used by label-based rules.
      */
     private String labelKey;
+
     /**
      * Label value used by label-based rules.
      */
     private String labelValue;
+
     /**
      * Setting content returned when the rule matches.
      */

@@ -267,6 +267,9 @@ public interface NetworkIF {
 
     /**
      * The current operational state of a network interface. As described in RFC 2863.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     enum IfOperStatus {
 

@@ -51,6 +51,7 @@ public abstract class MacOperatingSystem extends AbstractOperatingSystem {
      * The SYSTEM_LIBRARY_LAUNCH_AGENTS constant.
      */
     private static final String SYSTEM_LIBRARY_LAUNCH_AGENTS = "/System/Library/LaunchAgents";
+
     /**
      * The SYSTEM_LIBRARY_LAUNCH_DAEMONS constant.
      */
@@ -65,10 +66,12 @@ public abstract class MacOperatingSystem extends AbstractOperatingSystem {
      * The osXVersion value.
      */
     protected final String osXVersion;
+
     /**
      * The major value.
      */
     protected final int major;
+
     /**
      * The minor value.
      */

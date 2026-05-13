@@ -30,8 +30,8 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
  * A serializable {@link Predicate} interface that supports throwing exceptions and logical combination operations.
  *
  * @param <T> The type of the input to the predicate.
- * @author Kimi Liu
  * @see Predicate
+ * @author Kimi Liu
  * @since Java 21+
  */
 @FunctionalInterface

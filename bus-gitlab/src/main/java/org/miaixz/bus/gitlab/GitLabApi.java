@@ -38,6 +38,9 @@ import org.miaixz.bus.logger.Logger;
 /**
  * This class is provides a simplified interface to a GitLab API server, and divides the API up into a separate API
  * class for each concern.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class GitLabApi implements AutoCloseable {
 
@@ -384,11 +387,18 @@ public class GitLabApi implements AutoCloseable {
             gitLabApi.setIgnoreCertificateErrors(true);
         }
 
+        /**
+         * The OAuth 2 API class.
+         *
+         * @author Kimi Liu
+         * @since Java 21+
+         */
         class Oauth2Api extends AbstractApi {
 
             Oauth2Api(GitLabApi gitlabApi) {
                 super(gitlabApi);
             }
+
         }
 
         try (Oauth2LoginStreamingOutput stream = new Oauth2LoginStreamingOutput(username, password)) {
@@ -983,11 +993,18 @@ public class GitLabApi implements AutoCloseable {
      */
     public Version getVersion() throws GitLabApiException {
 
+        /**
+         * The version API class.
+         *
+         * @author Kimi Liu
+         * @since Java 21+
+         */
         class VersionApi extends AbstractApi {
 
             VersionApi(GitLabApi gitlabApi) {
                 super(gitlabApi);
             }
+
         }
 
         Response response = new VersionApi(this).get(Response.Status.OK, null, "version");
@@ -2016,6 +2033,9 @@ public class GitLabApi implements AutoCloseable {
 
     /**
      * Specifies the version of the GitLab API to communicate with.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum ApiVersion {
 
@@ -2024,6 +2044,7 @@ public class GitLabApi implements AutoCloseable {
         public String getApiNamespace() {
             return ("/api/" + name().toLowerCase());
         }
+
     }
 
 }

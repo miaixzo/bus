@@ -24,17 +24,34 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
+ * Represents the MultipartParser type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class MultipartParser {
 
+    /**
+     * The boundary value.
+     */
     private final String boundary;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param boundary the boundary.
+     */
     public MultipartParser(String boundary) {
         this.boundary = boundary;
     }
 
+    /**
+     * Executes the parse operation.
+     *
+     * @param in      the in.
+     * @param handler the handler.
+     * @throws IOException if the operation cannot be completed.
+     */
     public void parse(InputStream in, Handler handler) throws IOException {
         new MultipartInputStream(in, "--" + boundary).skipAll(); // skip preamble
         for (int i = 1;; i++) {
@@ -55,9 +72,23 @@ public class MultipartParser {
         }
     }
 
+    /**
+     * Defines the Handler contract.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public interface Handler {
 
+        /**
+         * Executes the body part operation.
+         *
+         * @param partNumber the part number.
+         * @param in         the in.
+         * @throws IOException if the operation cannot be completed.
+         */
         void bodyPart(int partNumber, MultipartInputStream in) throws IOException;
+
     }
 
 }

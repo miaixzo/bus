@@ -24,40 +24,92 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
+ * Represents the ItemPointer type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class ItemPointer implements Serializable {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852263859002L;
 
+    /**
+     * The sequence tag value.
+     */
     public final int sequenceTag;
+
+    /**
+     * The private creator value.
+     */
     public final String privateCreator;
+
+    /**
+     * The item index value.
+     */
     public final int itemIndex;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param sequenceTag the sequence tag.
+     */
     public ItemPointer(int sequenceTag) {
         this(null, sequenceTag, -1);
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param sequenceTag the sequence tag.
+     * @param itemIndex   the item index.
+     */
     public ItemPointer(int sequenceTag, int itemIndex) {
         this(null, sequenceTag, itemIndex);
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param privateCreator the private creator.
+     * @param sequenceTag    the sequence tag.
+     */
     public ItemPointer(String privateCreator, int sequenceTag) {
         this(privateCreator, sequenceTag, -1);
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param privateCreator the private creator.
+     * @param sequenceTag    the sequence tag.
+     * @param itemIndex      the item index.
+     */
     public ItemPointer(String privateCreator, int sequenceTag, int itemIndex) {
         this.sequenceTag = sequenceTag;
         this.privateCreator = privateCreator;
         this.itemIndex = itemIndex;
     }
 
+    /**
+     * Executes the equals ignore item index operation.
+     *
+     * @param that the that.
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean equalsIgnoreItemIndex(ItemPointer that) {
         return sequenceTag == that.sequenceTag && Objects.equals(privateCreator, that.privateCreator);
     }
 
+    /**
+     * Compares this instance with another object for equality.
+     *
+     * @param o the o.
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -69,11 +121,21 @@ public class ItemPointer implements Serializable {
                 && Objects.equals(privateCreator, that.privateCreator);
     }
 
+    /**
+     * Returns the hash code.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(sequenceTag, privateCreator, itemIndex);
     }
 
+    /**
+     * Returns the string representation.
+     *
+     * @return the string representation.
+     */
     @Override
     public String toString() {
         return "ItemPointer{" + "sequenceTag=" + sequenceTag + ", privateCreator='" + privateCreator + '\''

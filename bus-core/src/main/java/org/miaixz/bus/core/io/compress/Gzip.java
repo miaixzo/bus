@@ -41,6 +41,7 @@ public class Gzip implements Closeable {
      * The source input stream.
      */
     private InputStream source;
+
     /**
      * The target output stream.
      */

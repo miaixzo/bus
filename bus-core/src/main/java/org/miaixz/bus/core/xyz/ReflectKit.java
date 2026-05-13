@@ -113,6 +113,7 @@ public class ReflectKit {
      * A table mapping the 9 primitive types to their descriptors and names.
      */
     private static final TripletTable<Class<?>, Character, String> PRIMITIVE_TABLE = new TripletTable<>(9);
+
     /**
      * Constructor cache.
      */

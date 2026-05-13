@@ -44,10 +44,12 @@ public class Detail {
      * Original price of the order.
      */
     private int cost_price;
+
     /**
      * Product receipt ID.
      */
     private String invoice_id;
+
     /**
      * List of single products.
      */

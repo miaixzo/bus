@@ -43,10 +43,12 @@ public class RowGroup implements Serializable {
      * Group name.
      */
     private String name;
+
     /**
      * Cell style for this group.
      */
     private CellStyle style;
+
     /**
      * Child groups.
      */

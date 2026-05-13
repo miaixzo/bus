@@ -49,47 +49,60 @@ public class Http2Stream {
      * The stream ID.
      */
     final int id;
+
     /**
      * The connection this stream belongs to.
      */
     final Http2Connection connection;
+
     /**
      * The sink for writing outgoing data.
      */
     final FramingSink sink;
-    /** Timeout for reading from this stream. */
+
+    /**
+     * Timeout for reading from this stream.
+     */
     final StreamTimeout readTimeout = new StreamTimeout();
+
     /**
      * Timeout for writing to this stream.
      */
     final StreamTimeout writeTimeout = new StreamTimeout();
+
     /**
      * Received headers yet to be {@linkplain #takeHeaders taken} or {@linkplain FramingSource#read read}.
      */
     private final Deque<Headers> headersQueue = new ArrayDeque<>();
+
     /**
      * Source for reading data from the peer.
      */
     private final FramingSource source;
+
     /**
      * Total number of bytes consumed by the application (using {@link FramingSource#read}), but not yet acknowledged by
      * sending a {@code WINDOW_UPDATE} on this stream.
      */
     long unacknowledgedBytesRead = 0;
+
     /**
      * Number of bytes that can be written to the stream before receiving a window update. Even if this is positive,
      * writes may block until there are available bytes in {@code connection.bytesLeftInWriteWindow}.
      */
     long bytesLeftInWriteWindow;
+
     /**
      * The reason this stream was abnormally closed. If multiple reasons cause the abnormal closure of this stream
      * (e.g., both peers close it almost simultaneously), this is the first reason this peer is aware of.
      */
     Http2ErrorCode errorCode = null;
+
     /**
      * The exception that caused this stream to be closed.
      */
     IOException errorException;
+
     /**
      * True if response headers have been sent or received.
      */
@@ -486,6 +499,9 @@ public class Http2Stream {
     /**
      * A source that reads the incoming data frames of a stream. Although this class uses synchronization to safely
      * receive incoming data frames, it is not intended for use by multiple readers.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private class FramingSource implements Source {
 
@@ -503,15 +519,18 @@ public class Http2Stream {
          * Maximum number of bytes to buffer before reporting a flow control error.
          */
         private final long maxByteCount;
+
         /**
          * True if the caller has closed this stream.
          */
         boolean closed;
+
         /**
          * True if either side has cleanly shut down this stream. We will receive no more bytes beyond those already in
          * the buffer.
          */
         boolean finished;
+
         /**
          * Received trailers. Null unless the server has provided trailers. Undefined until the stream is exhausted.
          * Guarded by Http2Stream.this.
@@ -671,14 +690,20 @@ public class Http2Stream {
             }
             cancelStreamIfNecessary();
         }
+
     }
 
     /**
      * A sink that writes outgoing data frames of a stream. This class is not thread safe.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class FramingSink implements Sink {
 
-        /** The size of the buffer to emit. */
+        /**
+         * The size of the buffer to emit.
+         */
         private static final long EMIT_BUFFER_SIZE = 16384;
 
         /**
@@ -686,12 +711,17 @@ public class Http2Stream {
          * outgoing connection. Batching saves the (small) framing overhead.
          */
         private final Buffer sendBuffer = new Buffer();
-        /** True if the caller has closed this stream. */
+
+        /**
+         * True if the caller has closed this stream.
+         */
         boolean closed;
+
         /**
          * True if either side has cleanly shut down this stream. We shall send no more bytes.
          */
         boolean finished;
+
         /**
          * Trailers to send at the end of the stream.
          */
@@ -788,11 +818,15 @@ public class Http2Stream {
             connection.flush();
             cancelStreamIfNecessary();
         }
+
     }
 
     /**
      * The Okio timeout watchdog will call {@link #timedOut} if the timeout is reached. In that case we close the stream
      * (asynchronously) which will notify the waiting thread.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class StreamTimeout extends AsyncTimeout {
 
@@ -820,6 +854,7 @@ public class Http2Stream {
             if (exit())
                 throw newTimeoutException(null);
         }
+
     }
 
 }

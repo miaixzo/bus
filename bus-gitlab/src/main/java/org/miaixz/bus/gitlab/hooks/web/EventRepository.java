@@ -22,6 +22,12 @@ package org.miaixz.bus.gitlab.hooks.web;
 import org.miaixz.bus.gitlab.models.AccessLevel;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+/**
+ * The event repository class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class EventRepository {
 
     private String name;

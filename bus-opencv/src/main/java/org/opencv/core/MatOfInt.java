@@ -3,6 +3,12 @@ package org.opencv.core;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The mat of int class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class MatOfInt extends Mat {
 
     // 32SC1
@@ -77,4 +83,5 @@ public class MatOfInt extends Mat {
             ab[i] = a[i];
         return Arrays.asList(ab);
     }
+
 }

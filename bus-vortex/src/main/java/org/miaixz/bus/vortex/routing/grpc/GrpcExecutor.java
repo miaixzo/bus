@@ -26,6 +26,7 @@ import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.cortex.Assets;
@@ -187,7 +188,7 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
             url.append(Symbol.SLASH).append(fullMethodName);
         }
 
-        return url.toString();
+        return UrlKit.normalize(url.toString(), false);
     }
 
 }

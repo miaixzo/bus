@@ -26,12 +26,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Represents the HL7Charset type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class HL7Charset {
 
+    /**
+     * The charset names map value.
+     */
     private static final Map<String, String> CHARSET_NAMES_MAP = new HashMap<>();
+
+    /**
+     * Creates a new instance.
+     */
+    private HL7Charset() {
+
+    }
 
     /**
      * Extend/override mapping of field MSH-18-character to named charset specified by
@@ -61,6 +73,12 @@ public class HL7Charset {
         CHARSET_NAMES_MAP.clear();
     }
 
+    /**
+     * Converts this value to charset name.
+     *
+     * @param code the code.
+     * @return the operation result.
+     */
     public static String toCharsetName(String code) {
         if (code == null)
             code = "";
@@ -120,6 +138,12 @@ public class HL7Charset {
         return "US-ASCII";
     }
 
+    /**
+     * Converts this value to dicom character set code.
+     *
+     * @param code the code.
+     * @return the operation result.
+     */
     public static String toDicomCharacterSetCode(String code) {
         if (code != null && !code.isEmpty())
             switch (code) {

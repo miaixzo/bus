@@ -24,11 +24,23 @@ import java.io.Serializable;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import java.io.Serial;
 
+/**
+ * The wiki attachment class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class WikiAttachment implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 2852283267221L;
 
+    /**
+     * The link class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public static class Link implements Serializable {
 
         @Serial
@@ -57,6 +69,7 @@ public class WikiAttachment implements Serializable {
         public String toString() {
             return (JacksonJson.toJsonString(this));
         }
+
     }
 
     private String fileName;

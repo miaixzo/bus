@@ -30,6 +30,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.io.Serial;
 
+/**
+ * The iteration filter class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class IterationFilter implements Serializable {
 
     @Serial
@@ -156,6 +162,12 @@ public class IterationFilter implements Serializable {
         return (this);
     }
 
+    /**
+     * The iteration filter state enum.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public enum IterationFilterState {
 
         OPENED, UPCOMING, CURRENT, CLOSED, ALL;
@@ -177,8 +189,15 @@ public class IterationFilter implements Serializable {
         public String toString() {
             return (enumHelper.toString(this));
         }
+
     }
 
+    /**
+     * The iteration filter in enum.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public enum IterationFilterIn {
 
         TITLE, CADENCE_TITLE;
@@ -200,6 +219,7 @@ public class IterationFilter implements Serializable {
         public String toString() {
             return (enumHelper.toString(this));
         }
+
     }
 
 }

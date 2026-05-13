@@ -688,6 +688,8 @@ public class CortexConfiguration {
      * Type-safe view over the optional durable registry store provided by the host application.
      *
      * @param <T> target asset subtype
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static final class TypedRegistryStore<T extends Assets> implements RegistryStore<T> {
 
@@ -888,6 +890,7 @@ public class CortexConfiguration {
             throw new IllegalStateException("Registry store returned " + decoded.getClass().getName() + " but "
                     + type.getName() + " was required");
         }
+
     }
 
 }

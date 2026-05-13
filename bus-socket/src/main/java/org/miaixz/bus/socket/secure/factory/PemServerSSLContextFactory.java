@@ -48,6 +48,7 @@ public class PemServerSSLContextFactory implements SSLContextFactory {
      * A list of PEM-encoded certificates in byte array format.
      */
     private List<byte[]> certificates = new ArrayList<>();
+
     /**
      * The PEM-encoded private key in byte array format.
      */

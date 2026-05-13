@@ -28,11 +28,20 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.io.Serial;
 
+/**
+ * The commit ref class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class CommitRef implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 2852239992782L;
 
+    /**
+     * The type field.
+     */
     private RefType type;
     private String name;
 
@@ -43,7 +52,8 @@ public class CommitRef implements Serializable {
      * categorization and filtering of references based on their nature.
      * </p>
      *
-     * @since 17
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum RefType {
 
@@ -87,6 +97,7 @@ public class CommitRef implements Serializable {
         public String toString() {
             return (enumHelper.toString(this));
         }
+
     }
 
     public RefType getType() {

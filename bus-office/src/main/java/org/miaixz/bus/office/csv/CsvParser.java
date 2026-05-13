@@ -54,42 +54,52 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
      * The CSV read configuration.
      */
     private final CsvReadConfig config;
+
     /**
      * The CSV tokener used to read characters from the input stream.
      */
     private final CsvTokener tokener;
+
     /**
      * The current field being built.
      */
     private final StringBuilder currentField = new StringBuilder(512);
+
     /**
      * The previous special delimiter character encountered.
      */
     private int preChar = -1;
+
     /**
      * Flag indicating whether the parser is currently inside a quoted field.
      */
     private boolean inQuotes;
+
     /**
      * The header row of the CSV data.
      */
     private CsvRow header;
+
     /**
      * The current line number being parsed.
      */
     private long lineNo = -1;
+
     /**
      * The number of lines consumed while inside a quoted field (handling multi-line fields).
      */
     private long inQuotesLineCount;
+
     /**
      * The number of fields in the first data line, used to check for consistent field counts across rows.
      */
     private int firstLineFieldCount = -1;
+
     /**
      * The maximum number of fields found in any row so far, used for initial row capacity optimization.
      */
     private int maxFieldCount;
+
     /**
      * Flag indicating whether the parsing is finished.
      */

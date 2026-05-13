@@ -26,6 +26,12 @@ import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+/**
+ * The branch access level class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class BranchAccessLevel implements Serializable {
 
     @Serial

@@ -38,6 +38,7 @@ public class ASCIIStrCache {
      * The maximum length of the ASCII character set (0-127).
      */
     private static final int ASCII_LENGTH = 128;
+
     /**
      * The cache array for ASCII character strings. Each index corresponds to an ASCII character's integer value, and
      * the value is its {@link String} representation.

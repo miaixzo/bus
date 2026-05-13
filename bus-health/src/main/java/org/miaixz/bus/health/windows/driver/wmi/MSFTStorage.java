@@ -110,31 +110,47 @@ public final class MSFTStorage {
 
     /**
      * Properties to identify the storage pool. The Object ID uniquely defines the pool.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum StoragePoolProperty {
         FRIENDLYNAME, OBJECTID
+
     }
 
     /**
      * Properties to link a storage pool with a physical disk. OSHI parses these references to strings that can match
      * the object IDs.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum StoragePoolToPhysicalDiskProperty {
         STORAGEPOOL, PHYSICALDISK
+
     }
 
     /**
      * Properties for a physical disk. The Object ID uniquely defines the disk.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum PhysicalDiskProperty {
         FRIENDLYNAME, PHYSICALLOCATION, OBJECTID
+
     }
 
     /**
      * Properties for a virtual disk. The Object ID uniquely defines the disk.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum VirtualDiskProperty {
         FRIENDLYNAME, OBJECTID
+
     }
 
 }

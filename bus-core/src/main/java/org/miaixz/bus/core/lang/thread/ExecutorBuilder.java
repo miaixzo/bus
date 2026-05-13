@@ -62,32 +62,39 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
      * The default capacity for the waiting queue, used if no specific queue is provided.
      */
     public static final int DEFAULT_QUEUE_CAPACITY = Integer.MAX_VALUE;
+
     /**
      * The number of core threads in the pool. These threads are kept alive even if they are idle.
      */
     private int corePoolSize;
+
     /**
      * The maximum number of threads allowed in the pool. This includes both core and non-core threads.
      */
     private int maxPoolSize = Integer.MAX_VALUE;
+
     /**
      * The maximum time that excess idle threads will wait for new tasks before terminating. Default is 60 seconds,
      * converted to nanoseconds.
      */
     private long keepAliveTime = TimeUnit.SECONDS.toNanos(60);
+
     /**
      * The queue used to hold tasks before they are executed. This queue will only hold {@link Runnable} tasks.
      */
     private BlockingQueue<Runnable> workQueue;
+
     /**
      * The factory used to create new threads. Allows for custom thread naming and configuration.
      */
     private ThreadFactory threadFactory;
+
     /**
      * The handler for tasks that cannot be executed by the thread pool, either because the pool is saturated or shut
      * down. This is invoked when the thread pool and its waiting queue are both full.
      */
     private RejectedExecutionHandler handler;
+
     /**
      * A boolean flag indicating whether core threads are allowed to time out and terminate if they remain idle for the
      * {@code keepAliveTime}.

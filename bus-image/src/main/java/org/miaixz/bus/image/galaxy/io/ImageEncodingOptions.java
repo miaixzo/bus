@@ -37,18 +37,22 @@ public class ImageEncodingOptions {
      * Indicates whether group length should be encoded.
      */
     public final boolean groupLength;
+
     /**
      * Indicates whether sequence lengths should be encoded as undefined.
      */
     public final boolean undefSequenceLength;
+
     /**
      * Indicates whether empty sequence lengths should be encoded as undefined.
      */
     public final boolean undefEmptySequenceLength;
+
     /**
      * Indicates whether item lengths should be encoded as undefined.
      */
     public final boolean undefItemLength;
+
     /**
      * Indicates whether empty item lengths should be encoded as undefined.
      */

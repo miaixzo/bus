@@ -144,6 +144,9 @@ public interface Cipher {
     /**
      * A marker interface for cipher parameters, such as keys, initialization vectors (IVs), and other cryptographic
      * settings.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     interface Parameters {
 

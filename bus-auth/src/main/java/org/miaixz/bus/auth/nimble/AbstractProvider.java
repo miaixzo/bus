@@ -57,10 +57,12 @@ public abstract class AbstractProvider implements Provider {
      * The context object containing protocol-specific configurations.
      */
     protected Context context;
+
     /**
      * The protocol object defining protocol endpoints or configurations.
      */
     protected Complex complex;
+
     /**
      * The cache implementation used to store state or other temporary data.
      */

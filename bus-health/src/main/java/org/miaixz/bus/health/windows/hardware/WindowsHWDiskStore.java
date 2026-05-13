@@ -62,6 +62,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
      * The PHYSICALDRIVE_PREFIX constant.
      */
     private static final String PHYSICALDRIVE_PREFIX = "\\\\.\\PHYSICALDRIVE";
+
     /**
      * The DEVICE_ID constant.
      */
@@ -83,30 +84,37 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
      * The reads value.
      */
     private long reads = 0L;
+
     /**
      * The readBytes value.
      */
     private long readBytes = 0L;
+
     /**
      * The writes value.
      */
     private long writes = 0L;
+
     /**
      * The writeBytes value.
      */
     private long writeBytes = 0L;
+
     /**
      * The currentQueueLength value.
      */
     private long currentQueueLength = 0L;
+
     /**
      * The transferTime value.
      */
     private long transferTime = 0L;
+
     /**
      * The timeStamp value.
      */
     private long timeStamp = 0L;
+
     /**
      * The partitionList value.
      */
@@ -499,6 +507,9 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
 
     /**
      * Maps to store read/write bytes per drive index
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static final class DiskStats {
 
@@ -506,34 +517,44 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
          * The readMap value.
          */
         private final Map<String, Long> readMap = new HashMap<>();
+
         /**
          * The readByteMap value.
          */
         private final Map<String, Long> readByteMap = new HashMap<>();
+
         /**
          * The writeMap value.
          */
         private final Map<String, Long> writeMap = new HashMap<>();
+
         /**
          * The writeByteMap value.
          */
         private final Map<String, Long> writeByteMap = new HashMap<>();
+
         /**
          * The queueLengthMap value.
          */
         private final Map<String, Long> queueLengthMap = new HashMap<>();
+
         /**
          * The diskTimeMap value.
          */
         private final Map<String, Long> diskTimeMap = new HashMap<>();
+
         /**
          * The timeStamp value.
          */
         private long timeStamp;
+
     }
 
     /**
      * Maps for the partition structure
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static final class PartitionMaps {
 
@@ -541,14 +562,17 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
          * The driveToPartitionMap value.
          */
         private final Map<String, List<String>> driveToPartitionMap = new HashMap<>();
+
         /**
          * The partitionToLogicalDriveMap value.
          */
         private final Map<String, List<Pair<String, Long>>> partitionToLogicalDriveMap = new HashMap<>();
+
         /**
          * The partitionMap value.
          */
         private final Map<String, List<HWPartition>> partitionMap = new HashMap<>();
+
     }
 
 }

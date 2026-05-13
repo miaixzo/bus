@@ -52,18 +52,22 @@ public interface CLibrary extends LibCAPI, Library {
      * Size of the ut_line field in a utmpx structure.
      */
     int UT_LINESIZE = 32;
+
     /**
      * Size of the ut_name field in a utmpx structure.
      */
     int UT_NAMESIZE = 32;
+
     /**
      * Size of the ut_host field in a utmpx structure.
      */
     int UT_HOSTSIZE = 256;
+
     /**
      * Session leader of a logged in user.
      */
     int LOGIN_PROCESS = 6;
+
     /**
      * Normal process.
      */
@@ -212,6 +216,9 @@ public interface CLibrary extends LibCAPI, Library {
 
     /**
      * Socket address structure.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "sa_family", "sa_data" })
     class Sockaddr extends Structure {
@@ -220,6 +227,7 @@ public interface CLibrary extends LibCAPI, Library {
          * Address family.
          */
         public short sa_family;
+
         /**
          * Socket address data.
          */
@@ -227,13 +235,21 @@ public interface CLibrary extends LibCAPI, Library {
 
         /**
          * A reference to a {@link Sockaddr} structure.
+         *
+         * @author Kimi Liu
+         * @since Java 21+
          */
         public static class ByReference extends Sockaddr implements Structure.ByReference {
+
         }
+
     }
 
     /**
      * TCP statistics structure for BSD.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class BsdTcpstat {
 
@@ -241,50 +257,64 @@ public interface CLibrary extends LibCAPI, Library {
          * Connections initiated.
          */
         public int tcps_connattempt;
+
         /**
          * Connections accepted.
          */
         public int tcps_accepts;
+
         /**
          * Connections dropped.
          */
         public int tcps_drops;
+
         /**
          * Embryonic connections dropped.
          */
         public int tcps_conndrops;
+
         /**
          * Packets sent.
          */
         public int tcps_sndpack;
+
         /**
          * Packets retransmitted.
          */
         public int tcps_sndrexmitpack;
+
         /**
          * Packets received.
          */
         public int tcps_rcvpack;
+
         /**
          * Packets received with bad checksum.
          */
         public int tcps_rcvbadsum;
+
         /**
          * Packets received with bad offset.
          */
         public int tcps_rcvbadoff;
+
         /**
          * Packets dropped for lack of memory.
          */
         public int tcps_rcvmemdrop;
+
         /**
          * Packets received shorter than header.
          */
         public int tcps_rcvshort;
+
     }
 
     /**
      * UDP statistics structure for BSD.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class BsdUdpstat {
 
@@ -292,38 +322,49 @@ public interface CLibrary extends LibCAPI, Library {
          * Total input packets.
          */
         public int udps_ipackets;
+
         /**
          * Dropped due to no socket.
          */
         public int udps_hdrops;
+
         /**
          * Checksum error.
          */
         public int udps_badsum;
+
         /**
          * Data length larger than packet.
          */
         public int udps_badlen;
+
         /**
          * Total output packets.
          */
         public int udps_opackets;
+
         /**
          * No multicast destination.
          */
         public int udps_noportmcast;
+
         /**
          * Software checksummed packets received.
          */
         public int udps_rcv6_swcsum;
+
         /**
          * Software checksummed packets sent.
          */
         public int udps_snd6_swcsum;
+
     }
 
     /**
      * IP statistics structure for BSD.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class BsdIpstat {
 
@@ -331,34 +372,44 @@ public interface CLibrary extends LibCAPI, Library {
          * Total packets received.
          */
         public int ips_total;
+
         /**
          * Checksum bad.
          */
         public int ips_badsum;
+
         /**
          * Packet too short.
          */
         public int ips_tooshort;
+
         /**
          * Not enough data.
          */
         public int ips_toosmall;
+
         /**
          * Bad header length.
          */
         public int ips_badhlen;
+
         /**
          * Bad packet length.
          */
         public int ips_badlen;
+
         /**
          * Delivered to upper level protocols.
          */
         public int ips_delivered;
+
     }
 
     /**
      * IPv6 statistics structure for BSD.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class BsdIp6stat {
 
@@ -366,14 +417,19 @@ public interface CLibrary extends LibCAPI, Library {
          * Total packets received.
          */
         public long ip6s_total;
+
         /**
          * Total output packets.
          */
         public long ip6s_localout;
+
     }
 
     /**
      * Address information structure.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "ai_flags", "ai_family", "ai_socktype", "ai_protocol", "ai_addrlen", "ai_addr", "ai_canonname",
             "ai_next" })
@@ -383,30 +439,37 @@ public interface CLibrary extends LibCAPI, Library {
          * Input flags.
          */
         public int ai_flags;
+
         /**
          * Address family for socket.
          */
         public int ai_family;
+
         /**
          * Socket type.
          */
         public int ai_socktype;
+
         /**
          * Protocol for socket.
          */
         public int ai_protocol;
+
         /**
          * Length of socket address.
          */
         public int ai_addrlen;
+
         /**
          * Socket address for socket.
          */
         public Sockaddr.ByReference ai_addr;
+
         /**
          * Canonical name for service location.
          */
         public String ai_canonname;
+
         /**
          * Pointer to next in list.
          */
@@ -438,9 +501,14 @@ public interface CLibrary extends LibCAPI, Library {
 
         /**
          * A reference to an {@link Addrinfo} structure.
+         *
+         * @author Kimi Liu
+         * @since Java 21+
          */
         public static class ByReference extends Addrinfo implements Structure.ByReference {
+
         }
+
     }
 
 }

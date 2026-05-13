@@ -20,11 +20,16 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MR_EXTRACTED_CSA_HEADER;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS MR EXTRACTED CSA HEADER";
 
     /**
@@ -37,7 +42,9 @@ public class PrivateTag {
      */
     public static final int ExtractedMRHeaderCreatorIdentificationCode = 0x00250002;
 
-    /** (0025,xx03) VR=AT VM=1 Extracted MR Header Tag */
+    /**
+     * (0025,xx03) VR=AT VM=1 Extracted MR Header Tag
+     */
     public static final int ExtractedMRHeaderTag = 0x00250003;
 
 }

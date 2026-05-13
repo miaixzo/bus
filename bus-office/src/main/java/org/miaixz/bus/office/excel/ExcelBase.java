@@ -51,19 +51,23 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
      * Excel configuration, cannot be null.
      */
     protected C config;
+
     /**
      * Flag indicating whether the Excel workbook has been closed.
      */
     protected boolean isClosed;
+
     /**
      * The target file. This parameter is {@code null} if the user reads from a stream or creates their own Workbook or
      * Sheet.
      */
     protected File targetFile;
+
     /**
      * The Excel workbook instance.
      */
     protected Workbook workbook;
+
     /**
      * The current Sheet in the Excel workbook.
      */

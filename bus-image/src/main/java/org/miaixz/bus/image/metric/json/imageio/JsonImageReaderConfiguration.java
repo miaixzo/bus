@@ -32,11 +32,19 @@ import org.miaixz.bus.image.nimble.extend.ImageReaderExtension;
 import jakarta.json.stream.JsonParser;
 
 /**
+ * Represents the JsonImageReaderConfiguration type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class JsonImageReaderConfiguration extends JsonConfigurationExtension {
 
+    /**
+     * Stores the to.
+     *
+     * @param device the device.
+     * @param writer the writer.
+     */
     @Override
     protected void storeTo(Device device, JSONWriter writer) {
         ImageReaderExtension ext = device.getDeviceExtension(ImageReaderExtension.class);
@@ -59,6 +67,14 @@ public class JsonImageReaderConfiguration extends JsonConfigurationExtension {
         writer.writeEnd();
     }
 
+    /**
+     * Loads the device extension.
+     *
+     * @param device the device.
+     * @param reader the reader.
+     * @param config the config.
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean loadDeviceExtension(Device device, JSONReader reader, ConfigurationDelegate config) {
         if (!reader.getString().equals("dcmImageReader"))

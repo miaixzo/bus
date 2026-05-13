@@ -22,7 +22,7 @@ package org.miaixz.bus.image.galaxy.data;
 /**
  * Interface for coercing DICOM attributes. Implementations of this interface can modify or remap attributes within a
  * DICOM dataset.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -46,7 +46,7 @@ public interface AttributesCoercion {
     /**
      * Coerces the given DICOM attributes. This method can modify the attributes in place or record changes in the
      * {@code modified} attributes object.
-     * 
+     *
      * @param attrs    The attributes to coerce.
      * @param modified A collection to store modified attributes, or {@code null} if not needed.
      * @throws Exception if an error occurs during coercion.
@@ -55,7 +55,7 @@ public interface AttributesCoercion {
 
     /**
      * Remaps a given UID to a new UID. This is typically used for anonymization or de-identification purposes.
-     * 
+     *
      * @param uid The original UID to remap.
      * @return The remapped UID, or the original UID if no remapping is performed.
      */

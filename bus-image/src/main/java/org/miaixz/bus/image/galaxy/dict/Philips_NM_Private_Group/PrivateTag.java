@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.Philips_NM_Private_Group;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "Philips NM Private Group";
 
-    /** (7043,xx00) VR=SH VM=1 ? */
+    /**
+     * (7043,xx00) VR=SH VM=1 ?
+     */
     public static final int _7043_xx00_ = 0x70430000;
 
 }

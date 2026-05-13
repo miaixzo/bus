@@ -37,10 +37,12 @@ public class Seven7EntryInputStream extends InputStream {
      * The {@link SevenZFile} being read.
      */
     private final SevenZFile sevenZFile;
+
     /**
      * The total size of the entry in bytes.
      */
     private final long size;
+
     /**
      * The number of bytes already read from the stream.
      */

@@ -79,34 +79,42 @@ public class SM2 extends AbstractCrypto<SM2> {
      * SM2 Engine.
      */
     protected SM2Engine engine;
+
     /**
      * Signer.
      */
     protected SM2Signer signer;
+
     /**
      * EC private key parameters.
      */
     private ECPrivateKeyParameters privateKeyParams;
+
     /**
      * EC public key parameters.
      */
     private ECPublicKeyParameters publicKeyParams;
+
     /**
      * DSA encoding.
      */
     private DSAEncoding encoding = StandardDSAEncoding.INSTANCE;
+
     /**
      * SM3 digest.
      */
     private Digest digest = new SM3Digest();
+
     /**
      * C1C3C2 mode.
      */
     private SM2Engine.Mode mode = SM2Engine.Mode.C1C3C2;
+
     /**
      * Custom random number generator.
      */
     private SecureRandom random;
+
     /**
      * Whether to remove the 04 uncompressed flag.
      */

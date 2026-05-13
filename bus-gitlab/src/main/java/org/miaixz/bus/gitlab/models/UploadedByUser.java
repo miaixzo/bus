@@ -24,6 +24,12 @@ import java.io.Serializable;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import java.io.Serial;
 
+/**
+ * The uploaded by user class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class UploadedByUser implements Serializable {
 
     @Serial

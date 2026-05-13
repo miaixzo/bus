@@ -60,70 +60,87 @@ public class StoreSCU implements AutoCloseable {
      * A managing SOP Class Relationship extended negotiation.
      */
     public final RelatedSOPClasses relSOPClasses = new RelatedSOPClasses();
+
     /**
      * The Application Entity used by this SCU.
      */
     private final ApplicationEntity ae;
+
     /**
      * The remote connection configuration.
      */
     private final Connection remote;
+
     /**
      * The A-ASSOCIATE-RQ message to be sent.
      */
     private final AAssociateRQ rq = new AAssociateRQ();
+
     /**
      * A list of editors to be applied to the DICOM attributes before sending.
      */
     private final List<Editors> dicomEditors;
+
     /**
      * The overall status and progress of the C-STORE operation.
      */
     private final Status state;
+
     /**
      * Additional attributes to be merged into each object before sending.
      */
     private Attributes attrs;
+
     /**
      * A suffix to be appended to SOP Instance UIDs if they are modified.
      */
     private String uidSuffix;
+
     /**
      * A flag to enable SOP Class Relationship extended negotiation.
      */
     private boolean relExtNeg;
+
     /**
      * The priority of the C-STORE request.
      */
     private int priority;
+
     /**
      * The prefix for the temporary file name.
      */
     private String tmpPrefix = "storescu-";
+
     /**
      * The suffix for the temporary file name.
      */
     private String tmpSuffix;
+
     /**
      * The directory for the temporary file.
      */
     private File tmpDir;
+
     /**
      * The temporary file used to store the list of files to be sent.
      */
     private File tmpFile;
+
     /**
      * The active DICOM association.
      */
     private Association as;
+
     /**
      * The total size in bytes of all successfully sent files.
      */
     private long totalSize = 0;
+
     /**
      * The total number of files scanned.
      */
     private int filesScanned;
+
     /**
      * A factory for creating DIMSE response handlers for each C-STORE request.
      */
@@ -510,6 +527,17 @@ public class StoreSCU implements AutoCloseable {
         }
     }
 
+    /**
+     * Processes the and send.
+     *
+     * @param data   the data.
+     * @param cuid   the cuid.
+     * @param iuid   the iuid.
+     * @param syntax the syntax.
+     * @param f      the f.
+     * @throws IOException          if the operation cannot be completed.
+     * @throws InterruptedException if the operation cannot be completed.
+     */
     private void processAndSend(
             Attributes data,
             String cuid,
@@ -655,6 +683,9 @@ public class StoreSCU implements AutoCloseable {
 
     /**
      * A factory for creating DIMSE response handlers for C-STORE operations.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public interface RSPHandlerFactory {
 
@@ -665,6 +696,7 @@ public class StoreSCU implements AutoCloseable {
          * @return A new {@link DimseRSPHandler}.
          */
         DimseRSPHandler createDimseRSPHandler(File f);
+
     }
 
 }

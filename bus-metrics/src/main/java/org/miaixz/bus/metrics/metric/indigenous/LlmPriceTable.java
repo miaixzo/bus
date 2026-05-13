@@ -31,7 +31,9 @@ import java.util.Map;
  */
 public final class LlmPriceTable {
 
-    /** Per-million-token prices in USD keyed by model ID; value is {inputUsdPerM, outputUsdPerM}. */
+    /**
+     * Per-million-token prices in USD keyed by model ID; value is {inputUsdPerM, outputUsdPerM}.
+     */
     private static final Map<String, double[]> PRICES = new HashMap<>();
 
     static {
@@ -45,7 +47,9 @@ public final class LlmPriceTable {
         PRICES.put("gemini-1.5-flash", new double[] { 0.075, 0.3 });
     }
 
-    /** Private constructor; this is a static utility class. */
+    /**
+     * Private constructor; this is a static utility class.
+     */
     private LlmPriceTable() {
     }
 

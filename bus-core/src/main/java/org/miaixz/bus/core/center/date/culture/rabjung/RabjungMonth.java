@@ -38,11 +38,13 @@ public class RabjungMonth extends MonthParts {
      * Names of Tibetan months.
      */
     public static final String[] NAMES = { "正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月" };
+
     /**
      * Aliases for Tibetan months.
      */
     public static final String[] ALIAS = { "神变月", "苦行月", "具香月", "萨嘎月", "作净月", "明净月", "具醉月", "具贤月", "天降月", "持众月", "庄严月",
             "满意月" };
+
     /**
      * Indicates if this is a leap month.
      */

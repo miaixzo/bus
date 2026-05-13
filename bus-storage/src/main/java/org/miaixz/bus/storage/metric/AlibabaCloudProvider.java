@@ -61,7 +61,7 @@ import org.miaixz.bus.storage.Context;
  * <strong>Configuration Example:</strong>
  *
  * <pre>{@code
- * 
+ *
  * Context context = Context.builder().endpoint("https://oss-ap-southeast-1.aliyuncs.com") // Singapore
  *         .bucket("my-bucket").accessKey("ALIBABA_INTL_ACCESS_KEY").secretKey("ALIBABA_INTL_SECRET_KEY")
  *         .region("ap-southeast-1").build();

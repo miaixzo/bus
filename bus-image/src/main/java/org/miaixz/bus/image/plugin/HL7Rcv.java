@@ -61,38 +61,47 @@ public class HL7Rcv {
      * The main device for this receiver.
      */
     private final Device device = new Device("hl7rcv");
+
     /**
      * The HL7 device extension.
      */
     private final HL7DeviceExtension hl7Ext = new HL7DeviceExtension();
+
     /**
      * The HL7 application that handles all message types.
      */
     private final HL7Application hl7App = new HL7Application(Symbol.STAR);
+
     /**
      * The network connection configuration.
      */
     private final Connection conn = new Connection();
+
     /**
      * The directory to store received messages.
      */
     private String storageDir;
+
     /**
      * The default character set to use if not specified in the message.
      */
     private String charset;
+
     /**
      * The compiled XSLT templates for response generation.
      */
     private Templates tpls;
+
     /**
      * Parameters to be passed to the XSLT transformation.
      */
     private String[] xsltParams;
+
     /**
      * A flag to use UUIDs for filenames when storing messages.
      */
     private boolean useUUIDForFilename;
+
     /**
      * A delay in milliseconds before sending a response.
      */

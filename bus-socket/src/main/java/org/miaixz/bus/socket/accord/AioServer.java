@@ -53,27 +53,33 @@ public class AioServer {
      * Thread sequence number for naming.
      */
     private static long threadSeqNumber;
+
     /**
      * Server configuration context. All setXX() methods of AioServer are used to set configuration items in this
      * context.
      */
     private final Context context = new Context();
+
     /**
      * Asynchronous server socket channel.
      */
     private AsynchronousServerSocketChannel serverSocketChannel = null;
+
     /**
      * Asynchronous channel group for handling I/O events.
      */
     private AsynchronousChannelGroup asynchronousChannelGroup;
+
     /**
      * Whether to enable low memory mode.
      */
     private boolean lowMemory = true;
+
     /**
      * Write buffer pool.
      */
     private BufferPagePool writeBufferPool = null;
+
     /**
      * Read buffer pool.
      */

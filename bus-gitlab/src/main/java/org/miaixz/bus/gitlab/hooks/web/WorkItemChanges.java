@@ -21,6 +21,12 @@ package org.miaixz.bus.gitlab.hooks.web;
 
 import java.util.Date;
 
+/**
+ * The work item changes class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class WorkItemChanges extends EventChanges {
 
     private ChangeContainer<String> heathStatus;

@@ -38,6 +38,7 @@ public class Browser extends UserAgent {
      * Constant for an unknown browser.
      */
     public static final Browser UNKNOWN = new Browser(Normal.UNKNOWN, null, null);
+
     /**
      * A regex pattern for matching other browser versions.
      */

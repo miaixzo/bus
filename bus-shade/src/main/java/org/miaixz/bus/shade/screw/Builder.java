@@ -34,6 +34,7 @@ public class Builder {
      * The percent sign symbol (%).
      */
     public static final String PERCENT_SIGN = Symbol.PERCENT;
+
     /**
      * A constant string indicating that a feature is not yet supported.
      */
@@ -43,38 +44,47 @@ public class Builder {
      * The default locale string ("zh_CN").
      */
     public static final String DEFAULT_LOCALE = "zh_CN";
+
     /**
      * A constant string for the Mac operating system.
      */
     public static final String MAC = "Mac";
+
     /**
      * A constant string for the Windows operating system.
      */
     public static final String WINDOWS = "Windows";
+
     /**
      * A constant string representing zero decimal digits ("0").
      */
     public static final String ZERO_DECIMAL_DIGITS = "0";
+
     /**
      * The default description for the database design document.
      */
     public static final String DESCRIPTION = "数据库设计文档";
+
     /**
      * The connection property key for MySQL to use the Information Schema.
      */
     public static final String USE_INFORMATION_SCHEMA = "useInformationSchema";
+
     /**
      * The connection property key for Oracle to retrieve remarks.
      */
     public static final String ORACLE_REMARKS = "remarks";
+
     /**
      * The string representation of zero ("0").
      */
     public static final String ZERO = "0";
+
     /**
      * The string "N", typically representing "No".
      */
     public static final String N = "N";
+
     /**
      * The string "Y", typically representing "Yes".
      */

@@ -207,6 +207,9 @@ public interface PowerSource {
 
     /**
      * Units of Battery Capacity
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     enum CapacityUnits {
         /**
@@ -224,6 +227,7 @@ public interface PowerSource {
          * of charge and the ratio of max/design capacity still represents state of health.
          */
         RELATIVE
+
     }
 
 }

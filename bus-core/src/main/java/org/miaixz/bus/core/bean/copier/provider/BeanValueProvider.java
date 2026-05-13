@@ -40,6 +40,7 @@ public class BeanValueProvider implements ValueProvider<String> {
      * The bean object from which values are retrieved.
      */
     private final Object bean;
+
     /**
      * The {@link BeanDesc} describing the properties of the bean.
      */

@@ -30,7 +30,6 @@ import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.*;
@@ -44,27 +43,89 @@ import org.miaixz.bus.image.nimble.codec.jpeg.PatchJPEGLSOutputStream;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the Compressor type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class Compressor extends Decompressor implements Closeable {
 
+    /**
+     * The pixeldata vr value.
+     */
     private final VR.Holder pixeldataVR = new VR.Holder();
+
+    /**
+     * The pixeldata value.
+     */
     private BulkData pixeldata;
+
+    /**
+     * The compressor value.
+     */
     private ImageWriter compressor;
+
+    /**
+     * The verifier value.
+     */
     private ImageReader verifier;
+
+    /**
+     * The patch jpegls value.
+     */
     private PatchJPEGLS patchJPEGLS;
+
+    /**
+     * The compress param value.
+     */
     private ImageWriteParam compressParam;
+
+    /**
+     * The iis value.
+     */
     private ImageInputStream iis;
+
+    /**
+     * The ex value.
+     */
     private IOException ex;
+
+    /**
+     * The embedded overlays value.
+     */
     private int[] embeddedOverlays;
+
+    /**
+     * The max pixel value error value.
+     */
     private int maxPixelValueError = -1;
+
+    /**
+     * The avg pixel value block size value.
+     */
     private int avgPixelValueBlockSize = 1;
+
+    /**
+     * The bits compressed value.
+     */
     private int bitsCompressed;
+
+    /**
+     * The bi2 value.
+     */
     private BufferedImage bi2;
 
+    /**
+     * The verify param value.
+     */
     private ImageReadParam verifyParam;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param dataset the dataset.
+     * @param from    the from.
+     */
     public Compressor(Attributes dataset, String from) {
         super(dataset, from);
 
@@ -83,6 +144,14 @@ public class Compressor extends Decompressor implements Closeable {
         embeddedOverlays = Overlays.getEmbeddedOverlayGroupOffsets(dataset);
     }
 
+    /**
+     * Executes the compress operation.
+     *
+     * @param tsuid  the tsuid.
+     * @param params the params.
+     * @return true if the condition is met; otherwise false.
+     * @throws IOException if the operation cannot be completed.
+     */
     public boolean compress(String tsuid, Property... params) throws IOException {
 
         if (tsuid == null)
@@ -150,6 +219,13 @@ public class Compressor extends Decompressor implements Closeable {
         return true;
     }
 
+    /**
+     * Executes the cat operation.
+     *
+     * @param a the a.
+     * @param b the b.
+     * @return the operation result.
+     */
     private Property[] cat(Property[] a, Property[] b) {
         if (a.length == 0)
             return b;
@@ -161,6 +237,9 @@ public class Compressor extends Decompressor implements Closeable {
         return c;
     }
 
+    /**
+     * Executes the close operation.
+     */
     public void close() {
         if (iis != null)
             try {
@@ -170,6 +249,9 @@ public class Compressor extends Decompressor implements Closeable {
         dispose();
     }
 
+    /**
+     * Executes the dispose operation.
+     */
     @Override
     public void dispose() {
         super.dispose();
@@ -184,6 +266,13 @@ public class Compressor extends Decompressor implements Closeable {
         verifier = null;
     }
 
+    /**
+     * Reads the frame.
+     *
+     * @param frameIndex the frame index.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     public BufferedImage readFrame(int frameIndex) throws IOException {
         if (iis == null)
             iis = new FileImageInputStream(file);
@@ -217,6 +306,13 @@ public class Compressor extends Decompressor implements Closeable {
         return bi;
     }
 
+    /**
+     * Executes the verify operation.
+     *
+     * @param cache the cache.
+     * @param index the index.
+     * @throws IOException if the operation cannot be completed.
+     */
     private void verify(MemoryCacheImageOutputStream cache, int index) throws IOException {
         if (verifier == null)
             return;
@@ -237,11 +333,17 @@ public class Compressor extends Decompressor implements Closeable {
                     end - start,
                     maxDiff);
         if (maxDiff > maxPixelValueError)
-            throw new InternalException(
-                    "Decompressed pixel data differs up to " + maxDiff + " from original pixel data");
+            throw new IOException("Decompressed pixel data differs up to " + maxDiff + " from original pixel data");
 
     }
 
+    /**
+     * Executes the max diff operation.
+     *
+     * @param raster  the raster.
+     * @param raster2 the raster2.
+     * @return the operation result.
+     */
     private int maxDiff(WritableRaster raster, WritableRaster raster2) {
         ComponentSampleModel csm = (ComponentSampleModel) raster.getSampleModel();
         ComponentSampleModel csm2 = (ComponentSampleModel) raster2.getSampleModel();
@@ -281,6 +383,12 @@ public class Compressor extends Decompressor implements Closeable {
         }
     }
 
+    /**
+     * Executes the sum operation.
+     *
+     * @param samples the samples.
+     * @return the operation result.
+     */
     private int sum(int[] samples) {
         int sum = 0;
         for (int sample : samples)
@@ -288,6 +396,15 @@ public class Compressor extends Decompressor implements Closeable {
         return sum;
     }
 
+    /**
+     * Executes the max diff operation.
+     *
+     * @param csm   the csm.
+     * @param data  the data.
+     * @param csm2  the csm2.
+     * @param data2 the data2.
+     * @return the operation result.
+     */
     private int maxDiff(ComponentSampleModel csm, short[] data, ComponentSampleModel csm2, short[] data2) {
         int w = csm.getWidth() * csm.getPixelStride();
         int h = csm.getHeight();
@@ -303,6 +420,15 @@ public class Compressor extends Decompressor implements Closeable {
         return maxDiff;
     }
 
+    /**
+     * Executes the max diff operation.
+     *
+     * @param csm    the csm.
+     * @param banks  the banks.
+     * @param csm2   the csm2.
+     * @param banks2 the banks2.
+     * @return the operation result.
+     */
     private int maxDiff(ComponentSampleModel csm, byte[][] banks, ComponentSampleModel csm2, byte[][] banks2) {
         int w = csm.getWidth();
         int h = csm.getHeight();
@@ -332,6 +458,12 @@ public class Compressor extends Decompressor implements Closeable {
         return maxDiff;
     }
 
+    /**
+     * Executes the nullify unused bits operation.
+     *
+     * @param bitsStored the bits stored.
+     * @param bi         the bi.
+     */
     private void nullifyUnusedBits(int bitsStored, BufferedImage bi) {
         DataBuffer db = bi.getRaster().getDataBuffer();
         switch (db.getDataType()) {
@@ -345,12 +477,24 @@ public class Compressor extends Decompressor implements Closeable {
         }
     }
 
+    /**
+     * Executes the nullify unused bits operation.
+     *
+     * @param bitsStored the bits stored.
+     * @param data       the data.
+     */
     private void nullifyUnusedBits(int bitsStored, short[] data) {
         int mask = (1 << bitsStored) - 1;
         for (int i = 0; i < data.length; i++)
             data[i] &= mask;
     }
 
+    /**
+     * Executes the extract embedded overlays operation.
+     *
+     * @param frameIndex the frame index.
+     * @param bi         the bi.
+     */
     private void extractEmbeddedOverlays(int frameIndex, BufferedImage bi) {
         for (int gg0000 : embeddedOverlays) {
             int ovlyRow = dataset.getInt(Tag.OverlayRows | gg0000, 0);
@@ -374,37 +518,84 @@ public class Compressor extends Decompressor implements Closeable {
         }
     }
 
+    /**
+     * Reads the fully.
+     *
+     * @param data the data.
+     * @throws IOException if the operation cannot be completed.
+     */
     private void readFully(short[] data) throws IOException {
         iis.readFully(data, 0, data.length);
     }
 
+    /**
+     * Represents the CacheOutputStream type.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     private static class CacheOutputStream extends FilterOutputStream {
 
+        /**
+         * Creates a new instance.
+         */
         public CacheOutputStream() {
             super(null);
         }
 
+        /**
+         * Executes the set operation.
+         *
+         * @param out the out.
+         */
         public void set(OutputStream out) {
             this.out = out;
         }
+
     }
 
+    /**
+     * Represents the FlushlessMemoryCacheImageOutputStream type.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     private static class FlushlessMemoryCacheImageOutputStream extends MemoryCacheImageOutputStream
             implements BytesWithImageImageDescriptor {
 
+        /**
+         * The image descriptor value.
+         */
         private final ImageDescriptor imageDescriptor;
 
+        /**
+         * Creates a new instance.
+         *
+         * @param stream          the stream.
+         * @param imageDescriptor the image descriptor.
+         */
         public FlushlessMemoryCacheImageOutputStream(OutputStream stream, ImageDescriptor imageDescriptor) {
             super(stream);
             this.imageDescriptor = imageDescriptor;
         }
 
+        /**
+         * Executes the flush operation.
+         *
+         * @throws IOException if the operation cannot be completed.
+         */
         @Override
         public void flush() throws IOException {
             // defer flush to writeTo()
             Logger.debug(false, "Image", "Ignore invoke of MemoryCacheImageOutputStream.flush()");
         }
 
+        /**
+         * Gets the bytes.
+         *
+         * @return the bytes.
+         * @throws IOException if the operation cannot be completed.
+         */
         @Override
         public ByteBuffer getBytes() throws IOException {
             byte[] array = new byte[8192];
@@ -417,28 +608,74 @@ public class Compressor extends Decompressor implements Closeable {
             return ByteBuffer.wrap(array, 0, length);
         }
 
+        /**
+         * Gets the image descriptor.
+         *
+         * @return the image descriptor.
+         */
         @Override
         public ImageDescriptor getImageDescriptor() {
             return imageDescriptor;
         }
+
     }
 
+    /**
+     * Represents the CompressedFrame type.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     private class CompressedFrame implements Value {
 
+        /**
+         * The frame index value.
+         */
         private final int frameIndex;
+
+        /**
+         * The cacheout value.
+         */
         private final CacheOutputStream cacheout = new CacheOutputStream();
+
+        /**
+         * The stream length value.
+         */
         private int streamLength;
+
+        /**
+         * The cache value.
+         */
         private MemoryCacheImageOutputStream cache;
 
+        /**
+         * Creates a new instance.
+         *
+         * @param frameIndex the frame index.
+         * @throws IOException if the operation cannot be completed.
+         */
         public CompressedFrame(int frameIndex) throws IOException {
             this.frameIndex = frameIndex;
         }
 
+        /**
+         * Determines whether empty.
+         *
+         * @return true if the condition is met; otherwise false.
+         */
         @Override
         public boolean isEmpty() {
             return false;
         }
 
+        /**
+         * Converts this value to bytes.
+         *
+         * @param vr        the vr.
+         * @param bigEndian the big endian.
+         * @return the operation result.
+         * @throws IOException if the operation cannot be completed.
+         */
         @Override
         public byte[] toBytes(VR vr, boolean bigEndian) throws IOException {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -446,16 +683,39 @@ public class Compressor extends Decompressor implements Closeable {
             return out.toByteArray();
         }
 
+        /**
+         * Writes the to.
+         *
+         * @param out the out.
+         * @param vr  the vr.
+         * @throws IOException if the operation cannot be completed.
+         */
         @Override
         public void writeTo(ImageOutputStream out, VR vr) throws IOException {
             writeTo(out);
         }
 
+        /**
+         * Executes the calc length operation.
+         *
+         * @param encOpts    the enc opts.
+         * @param explicitVR the explicit vr.
+         * @param vr         the vr.
+         * @return the operation result.
+         */
         @Override
         public int calcLength(ImageEncodingOptions encOpts, boolean explicitVR, VR vr) {
             return getEncodedLength(encOpts, explicitVR, vr);
         }
 
+        /**
+         * Gets the encoded length.
+         *
+         * @param encOpts    the enc opts.
+         * @param explicitVR the explicit vr.
+         * @param vr         the vr.
+         * @return the encoded length.
+         */
         @Override
         public int getEncodedLength(ImageEncodingOptions encOpts, boolean explicitVR, VR vr) {
             try {
@@ -466,6 +726,12 @@ public class Compressor extends Decompressor implements Closeable {
             return (streamLength + 1) & ~1;
         }
 
+        /**
+         * Writes the to.
+         *
+         * @param out the out.
+         * @throws IOException if the operation cannot be completed.
+         */
         private void writeTo(OutputStream out) throws IOException {
             compress();
             try {
@@ -486,6 +752,11 @@ public class Compressor extends Decompressor implements Closeable {
             }
         }
 
+        /**
+         * Executes the compress operation.
+         *
+         * @throws IOException if the operation cannot be completed.
+         */
         private void compress() throws IOException {
             if (cache != null)
                 return;

@@ -52,14 +52,17 @@ public final class SessionWtsData {
      * The WTS_ACTIVE constant.
      */
     private static final int WTS_ACTIVE = 0;
+
     /**
      * The WTS_CLIENTADDRESS constant.
      */
     private static final int WTS_CLIENTADDRESS = 14;
+
     /**
      * The WTS_SESSIONINFO constant.
      */
     private static final int WTS_SESSIONINFO = 24;
+
     /**
      * The WTS_CLIENTPROTOCOLTYPE constant.
      */

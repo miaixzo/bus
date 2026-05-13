@@ -48,14 +48,17 @@ final class LinuxGpuStats implements GpuStats {
      * The drmDevicePath value.
      */
     private final String drmDevicePath;
+
     /**
      * The driverName value.
      */
     private final String driverName;
+
     /**
      * The pciBusId value.
      */
     private final String pciBusId;
+
     /**
      * The cardName value.
      */

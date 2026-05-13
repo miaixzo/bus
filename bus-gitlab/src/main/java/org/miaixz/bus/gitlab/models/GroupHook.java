@@ -23,6 +23,12 @@ import java.io.Serializable;
 import java.util.Date;
 import java.io.Serial;
 
+/**
+ * The group hook class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class GroupHook implements Serializable {
 
     @Serial

@@ -3,6 +3,12 @@ package org.opencv.core;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The mat of double class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class MatOfDouble extends Mat {
 
     // 64FC(x)
@@ -77,4 +83,5 @@ public class MatOfDouble extends Mat {
             ab[i] = a[i];
         return Arrays.asList(ab);
     }
+
 }

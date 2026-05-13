@@ -25,7 +25,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Multi-string finder. Implemented using the Aho-Corasick automaton algorithm.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -35,14 +35,17 @@ public class MultiStringFinder {
      * Character index map. Maps characters to their integer indices.
      */
     protected final Map<Character, Integer> charIndexMap = new HashMap<>();
+
     /**
      * Total number of unique characters.
      */
     protected final int allCharSize;
+
     /**
      * The root node of the Aho-Corasick automaton.
      */
     protected final Node root;
+
     /**
      * Total number of nodes in the automaton.
      */
@@ -192,6 +195,9 @@ public class MultiStringFinder {
 
     /**
      * Represents a node in the Aho-Corasick automaton.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     protected static class Node {
 
@@ -311,6 +317,7 @@ public class MultiStringFinder {
         public String toString() {
             return value + ":" + nodeIndex;
         }
+
     }
 
 }

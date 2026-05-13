@@ -136,110 +136,137 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
      * The dispatcher that manages the execution of asynchronous requests.
      */
     final Dispatcher dispatcher;
+
     /**
      * The proxy to use for network connections. If null, a proxy will be selected by the proxySelector.
      */
     final Proxy proxy;
+
     /**
      * The list of protocols to negotiate when connecting to a remote server.
      */
     final List<Protocol> protocols;
+
     /**
      * The list of connection specs to use when establishing a connection.
      */
     final List<ConnectionSuite> connectionSuites;
+
     /**
      * An immutable list of interceptors that observe the full span of each call.
      */
     final List<Interceptor> interceptors;
+
     /**
      * An immutable list of interceptors that observe a single network request and response.
      */
     final List<Interceptor> networkInterceptors;
+
     /**
      * The factory for creating event listeners for monitoring request lifecycle events.
      */
     final EventListener.Factory eventListenerFactory;
+
     /**
      * The selector for choosing a proxy for a given URI.
      */
     final ProxySelector proxySelector;
+
     /**
      * The cookie jar for managing HTTP cookies.
      */
     final CookieJar cookieJar;
+
     /**
      * The cache for storing and retrieving responses.
      */
     final Cache cache;
+
     /**
      * The internal cache interface for custom caching implementations.
      */
     final InternalCache internalCache;
+
     /**
      * The socket factory for creating plain TCP connections.
      */
     final SocketFactory socketFactory;
+
     /**
      * The SSL socket factory for creating HTTPS connections.
      */
     final SSLSocketFactory sslSocketFactory;
+
     /**
      * The cleaner for normalizing certificate chains.
      */
     final CertificateChainCleaner certificateChainCleaner;
+
     /**
      * The verifier for checking hostnames in HTTPS connections.
      */
     final javax.net.ssl.HostnameVerifier hostnameVerifier;
+
     /**
      * The pinner for restricting which certificates are trusted.
      */
     final CertificatePinner certificatePinner;
+
     /**
      * The authenticator for handling challenges from proxy servers.
      */
     final Authenticator proxyAuthenticator;
+
     /**
      * The authenticator for handling challenges from origin servers.
      */
     final Authenticator authenticator;
+
     /**
      * The connection pool for managing and reusing HTTP and HTTPS connections.
      */
     final ConnectionPool connectionPool;
+
     /**
      * The DNS service for resolving hostnames to IP addresses.
      */
     final DnsX dns;
+
     /**
      * Whether to follow redirects from HTTPS to HTTP and vice versa.
      */
     final boolean followSslRedirects;
+
     /**
      * Whether to follow HTTP redirects.
      */
     final boolean followRedirects;
+
     /**
      * Whether to retry the request when a connection failure occurs.
      */
     final boolean retryOnConnectionFailure;
+
     /**
      * The default timeout for the entire call, in milliseconds.
      */
     final int callTimeout;
+
     /**
      * The default timeout for establishing a new connection, in milliseconds.
      */
     final int connectTimeout;
+
     /**
      * The default timeout for reading data from a connection, in milliseconds.
      */
     final int readTimeout;
+
     /**
      * The default timeout for writing data to a connection, in milliseconds.
      */
     final int writeTimeout;
+
     /**
      * The interval for sending WebSocket pings, in milliseconds.
      */
@@ -591,6 +618,9 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
 
     /**
      * A builder for configuring and creating {@link Httpd} instances.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class Builder {
 
@@ -598,110 +628,137 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
          * The list of application interceptors.
          */
         final List<Interceptor> interceptors = new ArrayList<>();
+
         /**
          * The list of network interceptors.
          */
         final List<Interceptor> networkInterceptors = new ArrayList<>();
+
         /**
          * The dispatcher for managing asynchronous requests.
          */
         Dispatcher dispatcher;
+
         /**
          * The HTTP proxy configuration.
          */
         Proxy proxy;
+
         /**
          * The list of supported protocols.
          */
         List<Protocol> protocols;
+
         /**
          * The list of supported connection specifications.
          */
         List<ConnectionSuite> connectionSuites;
+
         /**
          * The factory for creating event listeners.
          */
         EventListener.Factory eventListenerFactory;
+
         /**
          * The selector for choosing a proxy.
          */
         ProxySelector proxySelector;
+
         /**
          * The manager for handling cookies.
          */
         CookieJar cookieJar;
+
         /**
          * The cache instance for storing responses.
          */
         Cache cache;
+
         /**
          * The internal cache interface.
          */
         InternalCache internalCache;
+
         /**
          * The factory for creating sockets.
          */
         SocketFactory socketFactory;
+
         /**
          * The factory for creating SSL sockets.
          */
         SSLSocketFactory sslSocketFactory;
+
         /**
          * The cleaner for certificate chains.
          */
         CertificateChainCleaner certificateChainCleaner;
+
         /**
          * The verifier for hostnames.
          */
         javax.net.ssl.HostnameVerifier hostnameVerifier;
+
         /**
          * The pinner for certificates.
          */
         CertificatePinner certificatePinner;
+
         /**
          * The authenticator for proxy servers.
          */
         Authenticator proxyAuthenticator;
+
         /**
          * The authenticator for origin servers.
          */
         Authenticator authenticator;
+
         /**
          * The connection pool for reusing connections.
          */
         ConnectionPool connectionPool;
+
         /**
          * The DNS service.
          */
         DnsX dns;
+
         /**
          * Whether to follow SSL redirects.
          */
         boolean followSslRedirects;
+
         /**
          * Whether to follow HTTP redirects.
          */
         boolean followRedirects;
+
         /**
          * Whether to retry on connection failure.
          */
         boolean retryOnConnectionFailure;
+
         /**
          * The call timeout in milliseconds.
          */
         int callTimeout;
+
         /**
          * The connection timeout in milliseconds.
          */
         int connectTimeout;
+
         /**
          * The read timeout in milliseconds.
          */
         int readTimeout;
+
         /**
          * The write timeout in milliseconds.
          */
         int writeTimeout;
+
         /**
          * The WebSocket ping interval in milliseconds.
          */
@@ -1271,6 +1328,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         public Httpd build() {
             return new Httpd(this);
         }
+
     }
 
 }

@@ -47,7 +47,7 @@ import jakarta.annotation.Resource;
  * </ul>
  * <p>
  * <strong>Configuration Example (in {@code application.yml}):</strong>
- * 
+ *
  * <pre>{@code
  * bus:
  *   auth:
@@ -57,9 +57,9 @@ import jakarta.annotation.Resource;
  * </pre>
  * <p>
  * <strong>Usage in Code:</strong>
- * 
+ *
  * <pre>{@code
- * 
+ *
  * &#64;Autowired
  * private AuthService authService;
  *

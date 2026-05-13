@@ -1,6 +1,12 @@
 package org.opencv.core;
 
 //javadoc:Rect2d_
+/**
+ * The rect 2 d class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Rect2d {
 
     public double x, y, width, height;
@@ -103,4 +109,5 @@ public class Rect2d {
     public String toString() {
         return "{" + x + ", " + y + ", " + width + "x" + height + "}";
     }
+
 }

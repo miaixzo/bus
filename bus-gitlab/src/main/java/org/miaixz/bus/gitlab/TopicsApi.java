@@ -30,6 +30,12 @@ import org.miaixz.bus.gitlab.models.TopicParams;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 
+/**
+ * The topics API class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class TopicsApi extends AbstractApi {
 
     public TopicsApi(GitLabApi gitLabApi) {

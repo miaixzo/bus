@@ -23,19 +23,43 @@ import java.awt.*;
 import java.util.Objects;
 
 /**
+ * Represents the CIELab type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class CIELab {
 
     // Initialize white points of D65 light point (CIELab standard white point)
+    /**
+     * The d65 white point x value.
+     */
     private static final double D65_WHITE_POINT_X = 0.950456;
+
+    /**
+     * The d65 white point y value.
+     */
     private static final double D65_WHITE_POINT_Y = 1.0;
+
+    /**
+     * The d65 white point z value.
+     */
     private static final double D65_WHITE_POINT_Z = 1.088754;
 
+    /**
+     * Creates a new instance.
+     */
     private CIELab() {
     }
 
+    /**
+     * Executes the dicom lab2rgb operation.
+     *
+     * @param l the l.
+     * @param a the a.
+     * @param b the b.
+     * @return the operation result.
+     */
     private static double[] dicomLab2rgb(double l, double a, double b) {
         // lab to xyz
         double cl = (l + 16) / 116;
@@ -67,6 +91,14 @@ public class CIELab {
         return new double[] { gammaCorrection(r), gammaCorrection(g), gammaCorrection(bl) };
     }
 
+    /**
+     * Executes the rgb2 dicom lab operation.
+     *
+     * @param r the r.
+     * @param g the g.
+     * @param b the b.
+     * @return the operation result.
+     */
     private static double[] rgb2DicomLab(double r, double g, double b) {
         // rgb to xyz
         r = invGammaCorrection(r);
@@ -90,6 +122,12 @@ public class CIELab {
         return new double[] { cl, ca, cb };
     }
 
+    /**
+     * Executes the labf operation.
+     *
+     * @param n the n.
+     * @return the operation result.
+     */
     private static double labf(double n) {
         if (n >= 8.85645167903563082e-3) {
             return (Math.pow(n, 0.333333333333333));
@@ -98,6 +136,12 @@ public class CIELab {
         }
     }
 
+    /**
+     * Executes the labf inv operation.
+     *
+     * @param n the n.
+     * @return the operation result.
+     */
     private static double labfInv(double n) {
         if (n >= 0.206896551724137931) {
             return n * n * n;
@@ -106,6 +150,12 @@ public class CIELab {
         }
     }
 
+    /**
+     * Executes the gamma correction operation.
+     *
+     * @param n the n.
+     * @return the operation result.
+     */
     private static double gammaCorrection(double n) {
         if (n <= 0.0031306684425005883) {
             return 12.92 * n;
@@ -114,6 +164,12 @@ public class CIELab {
         }
     }
 
+    /**
+     * Executes the inv gamma correction operation.
+     *
+     * @param n the n.
+     * @return the operation result.
+     */
     private static double invGammaCorrection(double n) {
         if (n <= 0.0404482362771076) {
             return (n / 12.92);

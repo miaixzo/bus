@@ -46,6 +46,9 @@ import jakarta.ws.rs.ext.WriterInterceptorContext;
  *
  * This class was patterned after org.glassfish.jersey.logging.LoggingInterceptor, but written in such a way that it
  * could be sub-classed and have its behavior modified.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 @Priority(Integer.MIN_VALUE)
 public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponseFilter, WriterInterceptor {
@@ -343,6 +346,9 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
     /**
      * This class is responsible for logging the request entities, it will truncate at maxEntitySize and add
      * "...more..." to the end of the entity log string.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     protected class LoggingStream extends FilterOutputStream {
 
@@ -369,6 +375,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
 
             out.write(i);
         }
+
     }
 
 }

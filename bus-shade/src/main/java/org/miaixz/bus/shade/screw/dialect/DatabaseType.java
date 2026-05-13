@@ -88,11 +88,13 @@ public enum DatabaseType implements Serializable {
      */
     @Getter
     private final String name;
+
     /**
      * A descriptive string for the database type.
      */
     @Getter
     private final String desc;
+
     /**
      * The class that implements the database query logic for this type.
      */

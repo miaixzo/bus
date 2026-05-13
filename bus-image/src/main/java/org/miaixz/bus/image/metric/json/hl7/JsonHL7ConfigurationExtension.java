@@ -27,13 +27,32 @@ import org.miaixz.bus.image.metric.json.JSONReader;
 import org.miaixz.bus.image.metric.json.JSONWriter;
 
 /**
+ * Defines the JsonHL7ConfigurationExtension contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface JsonHL7ConfigurationExtension {
 
+    /**
+     * Stores the to.
+     *
+     * @param hl7App the hl7 app.
+     * @param device the device.
+     * @param writer the writer.
+     */
     void storeTo(HL7Application hl7App, Device device, JSONWriter writer);
 
+    /**
+     * Loads the hl7 application extension.
+     *
+     * @param device the device.
+     * @param hl7App the hl7 app.
+     * @param reader the reader.
+     * @param config the config.
+     * @return true if the condition is met; otherwise false.
+     * @throws InternalException if the operation cannot be completed.
+     */
     boolean loadHL7ApplicationExtension(
             Device device,
             HL7Application hl7App,

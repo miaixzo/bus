@@ -48,14 +48,17 @@ public class EncryptCertificate implements Serializable {
      * The encryption algorithm used (e.g., AEAD_AES_256_GCM).
      */
     private String algorithm;
+
     /**
      * The nonce (number used once) for decryption.
      */
     private String nonce;
+
     /**
      * The associated data for decryption.
      */
     private String associated_data;
+
     /**
      * The base64-encoded ciphertext of the certificate content.
      */

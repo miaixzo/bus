@@ -53,6 +53,7 @@ public class Z85 implements Encoder<byte[], String>, Decoder<String, byte[]>, Se
             'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
             'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '.', '-', ':', '+', '=', '^', '!', '/', '*', '?', '&', '<', '>',
             '(', ')', '[', ']', '{', '}', '@', '%', '$', '#' };
+
     /**
      * The Z85 lookup table for decoding.
      */

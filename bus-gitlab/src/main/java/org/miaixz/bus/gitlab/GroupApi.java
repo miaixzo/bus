@@ -33,13 +33,16 @@ import org.miaixz.bus.logger.Logger;
 
 /**
  * This class implements the client side API for the GitLab groups calls.
- * 
+ *
  * @see <a href="https://docs.gitlab.com/ce/api/groups.html">Groups API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/members.html">Group and project members API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/access_requests.html">Group and project access requests API</a>
  * @see <a href="https://docs.gitlab.com/ce/api/group_badges.html">Group badges API</a>
  * @see <a href="https://docs.gitlab.com/ee/api/audit_events.html#retrieve-all-group-audit-events">Group audit events
  *      API</a>
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class GroupApi extends AbstractApi {
 

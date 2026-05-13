@@ -20,26 +20,41 @@
 package org.miaixz.bus.image.galaxy.dict.Philips_US_Imaging_DD_066;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "Philips US Imaging DD 066";
 
-    /** (200D,xx00) VR=OB VM=1 ? */
+    /**
+     * (200D,xx00) VR=OB VM=1 ?
+     */
     public static final int _200D_xx00_ = 0x200D0000;
 
-    /** (200D,xx01) VR=LO VM=1 ? */
+    /**
+     * (200D,xx01) VR=LO VM=1 ?
+     */
     public static final int _200D_xx01_ = 0x200D0001;
 
-    /** (200D,xx02) VR=LO VM=1 ? */
+    /**
+     * (200D,xx02) VR=LO VM=1 ?
+     */
     public static final int _200D_xx02_ = 0x200D0002;
 
-    /** (200D,xx03) VR=LO VM=1 ? */
+    /**
+     * (200D,xx03) VR=LO VM=1 ?
+     */
     public static final int _200D_xx03_ = 0x200D0003;
 
-    /** (200D,xx04) VR=LO VM=1 ? */
+    /**
+     * (200D,xx04) VR=LO VM=1 ?
+     */
     public static final int _200D_xx04_ = 0x200D0004;
 
 }

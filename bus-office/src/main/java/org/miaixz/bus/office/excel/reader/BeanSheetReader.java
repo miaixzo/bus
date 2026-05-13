@@ -40,6 +40,7 @@ public class BeanSheetReader<T> implements SheetReader<List<T>> {
      * The bean class to convert each row to.
      */
     private final Class<T> beanClass;
+
     /**
      * The map sheet reader used to read the sheet.
      */

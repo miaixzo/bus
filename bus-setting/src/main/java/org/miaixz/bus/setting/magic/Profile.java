@@ -49,14 +49,17 @@ public class Profile implements Serializable {
      * A cache for {@link Setting} instances, keyed by file name.
      */
     private final Map<String, Setting> settingMap = new ConcurrentHashMap<>();
+
     /**
      * The name of the current active profile.
      */
     private String profile;
+
     /**
      * The character set for reading settings files.
      */
     private Charset charset;
+
     /**
      * Whether to enable variable substitution in settings files.
      */

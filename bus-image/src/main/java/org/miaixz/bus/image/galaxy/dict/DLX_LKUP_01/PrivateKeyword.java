@@ -20,13 +20,24 @@
 package org.miaixz.bus.image.galaxy.dict.DLX_LKUP_01;
 
 /**
+ * Represents the PrivateKeyword type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateKeyword {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "DLX_LKUP_01";
 
+    /**
+     * Executes the value of operation.
+     *
+     * @param tag the tag.
+     * @return the operation result.
+     */
     public static String valueOf(int tag) {
 
         int tmp = tag & 0xFFE00000;

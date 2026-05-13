@@ -46,20 +46,24 @@ public class FtpConfig implements Serializable {
      * the initial connection to the FTP server.
      */
     private Connector connector;
+
     /**
      * The character set used for encoding and decoding file names and other text-based data during FTP operations.
      * Defaults to UTF-8 if not specified.
      */
     private Charset charset;
+
     /**
      * The socket connection timeout duration in milliseconds. This specifies how long to wait for a connection to be
      * established before timing out.
      */
     private long soTimeout;
+
     /**
      * The server language code, which can be used for locale-specific FTP commands or responses.
      */
     private String serverLanguageCode;
+
     /**
      * A keyword identifying the server system type, which might influence certain FTP command behaviors.
      */

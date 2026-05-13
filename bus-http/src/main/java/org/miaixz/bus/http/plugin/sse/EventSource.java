@@ -46,6 +46,9 @@ public interface EventSource {
 
     /**
      * A factory for creating new {@link EventSource} instances.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     interface Factory {
 
@@ -59,6 +62,7 @@ public interface EventSource {
          * @return A new {@link EventSource} instance.
          */
         EventSource newEventSource(Request request, EventSourceListener listener);
+
     }
 
 }

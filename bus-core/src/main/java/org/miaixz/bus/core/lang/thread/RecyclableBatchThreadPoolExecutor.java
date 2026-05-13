@@ -297,6 +297,8 @@ public class RecyclableBatchThreadPoolExecutor {
      * submitted to a thread pool but also potentially executed by the main thread if it becomes idle.
      *
      * @param <R> The type of the result returned by the task.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class IdempotentTask<R> implements Callable<TaskResult<R>> {
 
@@ -304,10 +306,12 @@ public class RecyclableBatchThreadPoolExecutor {
          * The index of this task within the batch processing sequence.
          */
         private final int index;
+
         /**
          * The delegate {@link Callable} representing the actual task logic.
          */
         private final Callable<List<R>> delegate;
+
         /**
          * An atomic boolean to ensure the task's delegate is executed only once.
          */
@@ -338,6 +342,7 @@ public class RecyclableBatchThreadPoolExecutor {
             }
             return new TaskResult<>(null, false);
         }
+
     }
 
     /**
@@ -345,6 +350,8 @@ public class RecyclableBatchThreadPoolExecutor {
      * executed).
      *
      * @param <R> The type of the result.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class TaskResult<R> {
 
@@ -352,6 +359,7 @@ public class RecyclableBatchThreadPoolExecutor {
          * The list of results produced by the task.
          */
         private final List<R> result;
+
         /**
          * A boolean flag indicating whether this result is effective (i.e., the task was executed).
          */
@@ -368,6 +376,7 @@ public class RecyclableBatchThreadPoolExecutor {
             this.result = result;
             this.effective = effective;
         }
+
     }
 
     /**
@@ -375,6 +384,8 @@ public class RecyclableBatchThreadPoolExecutor {
      * execution and retrieval of results.
      *
      * @param <R> The type of the result produced by the encapsulated logic.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class Warp<R> {
 
@@ -382,6 +393,7 @@ public class RecyclableBatchThreadPoolExecutor {
          * The {@link Supplier} that provides the processing logic.
          */
         private final Supplier<R> supplier;
+
         /**
          * The result of the execution of the supplier.
          */
@@ -428,6 +440,7 @@ public class RecyclableBatchThreadPoolExecutor {
             result = supplier.get();
             return this;
         }
+
     }
 
 }

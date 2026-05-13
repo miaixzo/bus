@@ -45,10 +45,12 @@ public abstract class TextFinder implements Finder, Serializable {
      * The text to be searched.
      */
     protected CharSequence text;
+
     /**
      * The end position for the search.
      */
     protected int endIndex = -1;
+
     /**
      * Flag indicating whether to search in reverse (from end to start).
      */

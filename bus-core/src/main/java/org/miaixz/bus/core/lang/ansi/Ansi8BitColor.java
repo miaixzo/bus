@@ -41,14 +41,17 @@ public class Ansi8BitColor implements AnsiElement {
      * The prefix for 8-bit foreground color ANSI escape sequences.
      */
     private static final String PREFIX_FORE = "38;5;";
+
     /**
      * The prefix for 8-bit background color ANSI escape sequences.
      */
     private static final String PREFIX_BACK = "48;5;";
+
     /**
      * The prefix indicating whether it's a foreground or background color.
      */
     private final String prefix;
+
     /**
      * The 8-bit color code (0-255).
      */

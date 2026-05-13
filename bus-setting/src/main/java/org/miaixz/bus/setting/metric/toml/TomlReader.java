@@ -49,14 +49,17 @@ public class TomlReader {
      * The TOML string data to be parsed.
      */
     private final String data;
+
     /**
      * Flag indicating whether to enforce strict ASCII for bare keys.
      */
     private final boolean strictAsciiBareKeys;
+
     /**
      * The current parsing position in the data string.
      */
     private int pos = 0;
+
     /**
      * The current line number for error reporting.
      */

@@ -54,14 +54,14 @@ import org.miaixz.bus.core.xyz.PredicateKit;
  * <li>{@link #TYPE_HIERARCHY_AND_META_ANNOTATION}: Same as {@link #TYPE_HIERARCHY}, plus meta-annotations.</li>
  * </ul>
  *
- * @author Kimi Liu
- * @since Java 21+
  * @see TypeAnnotationScanner
  * @see MethodAnnotationScanner
  * @see FieldAnnotationScanner
  * @see MetaAnnotationScanner
  * @see ElementAnnotationScanner
  * @see CompositeAnnotationScanner
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public interface AnnotationScanner {
 

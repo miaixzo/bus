@@ -52,12 +52,14 @@ public enum EngineFileType implements Serializable {
     @Getter
     @Setter
     private String fileSuffix;
+
     /**
      * The prefix for the template file name.
      */
     @Getter
     @Setter
     private String templateNamePrefix;
+
     /**
      * A description of the file type.
      */

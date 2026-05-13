@@ -39,10 +39,12 @@ public class StatusLine {
      * The HTTP protocol, such as {@link Protocol#HTTP_1_1}.
      */
     public final Protocol protocol;
+
     /**
      * The HTTP status code, such as 200.
      */
     public final int code;
+
     /**
      * The HTTP status message, such as "OK".
      */

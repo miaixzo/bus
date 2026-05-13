@@ -23,7 +23,7 @@ runs:
       uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ inputs.tag }}
-        name: Release ${{ inputs.version }}
+        name: ${{ inputs.version }}
         prerelease: ${{ inputs.prerelease }}
         body_path: ${{ inputs.body_path }}
         generate_release_notes: false

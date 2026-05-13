@@ -37,10 +37,12 @@ public class AppendableWriter extends Writer implements Appendable {
      * The underlying {@link Appendable} to which all operations are delegated.
      */
     private final Appendable appendable;
+
     /**
      * A flag indicating if the underlying appendable is also {@link Flushable}.
      */
     private final boolean flushable;
+
     /**
      * A flag indicating if the writer has been closed.
      */

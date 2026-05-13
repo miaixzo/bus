@@ -40,7 +40,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  * <p>
  * <strong>Usage Example:</strong>
  * </p>
- * 
+ *
  * <pre>{@code
  * &#64;RestController
  * &#64;RequestMapping("/user")

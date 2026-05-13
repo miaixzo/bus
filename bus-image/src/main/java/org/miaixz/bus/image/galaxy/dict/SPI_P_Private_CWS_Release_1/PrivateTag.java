@@ -20,20 +20,31 @@
 package org.miaixz.bus.image.galaxy.dict.SPI_P_Private_CWS_Release_1;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SPI-P-Private-CWS Release 1";
 
-    /** (0021,xx00) VR=LT VM=1 Window Of Images ID */
+    /**
+     * (0021,xx00) VR=LT VM=1 Window Of Images ID
+     */
     public static final int WindowOfImagesID = 0x00210000;
 
-    /** (0021,xx01) VR=CS VM=1 Window Of Images Type */
+    /**
+     * (0021,xx01) VR=CS VM=1 Window Of Images Type
+     */
     public static final int WindowOfImagesType = 0x00210001;
 
-    /** (0021,xx02) VR=IS VM=1-n WindowOfImagesScope */
+    /**
+     * (0021,xx02) VR=IS VM=1-n WindowOfImagesScope
+     */
     public static final int WindowOfImagesScope = 0x00210002;
 
 }

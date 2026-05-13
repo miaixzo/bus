@@ -27,7 +27,7 @@ import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.nimble.opencv.ImageCV;
-import org.miaixz.bus.image.nimble.opencv.ImageProcessor;
+import org.miaixz.bus.image.nimble.opencv.ImageTransformer;
 import org.miaixz.bus.image.nimble.opencv.PlanarImage;
 import org.miaixz.bus.image.nimble.stream.ImageDescriptor;
 import org.opencv.core.CvType;
@@ -48,10 +48,25 @@ import org.opencv.core.CvType;
 public record OverlayData(int groupOffset, int rows, int columns, int imageFrameOrigin, int framesInOverlay,
         int[] origin, byte[] data) {
 
+    /**
+     * Returns the overlay data.
+     *
+     * @param dcm            the DCM.
+     * @param activationMask the activation mask.
+     * @return the overlay data.
+     */
     public static List<OverlayData> getOverlayData(Attributes dcm, int activationMask) {
         return getOverlayData(dcm, activationMask, false);
     }
 
+    /**
+     * Returns the overlay data.
+     *
+     * @param dcm            the DCM.
+     * @param activationMask the activation mask.
+     * @param pr             the pr.
+     * @return the overlay data.
+     */
     private static List<OverlayData> getOverlayData(Attributes dcm, int activationMask, boolean pr) {
         List<OverlayData> data = new ArrayList<>();
         for (int i = 0; i < 16; i++) {
@@ -74,6 +89,14 @@ public record OverlayData(int groupOffset, int rows, int columns, int imageFrame
         return data.isEmpty() ? Collections.emptyList() : data;
     }
 
+    /**
+     * Checks whether the layer activate condition is true.
+     *
+     * @param dcm    the DCM.
+     * @param gg0000 the gg 0000.
+     * @param pr     the pr.
+     * @return true if the layer activate condition is true; otherwise false.
+     */
     private static boolean isLayerActivate(Attributes dcm, int gg0000, boolean pr) {
         if (pr) {
             String layerName = dcm.getString(Tag.OverlayActivationLayer | gg0000);
@@ -82,10 +105,27 @@ public record OverlayData(int groupOffset, int rows, int columns, int imageFrame
         return true;
     }
 
+    /**
+     * Returns the pr overlay data.
+     *
+     * @param dcm            the DCM.
+     * @param activationMask the activation mask.
+     * @return the pr overlay data.
+     */
     public static List<OverlayData> getPrOverlayData(Attributes dcm, int activationMask) {
         return getOverlayData(dcm, activationMask, true);
     }
 
+    /**
+     * Returns the overlay image.
+     *
+     * @param imageSource  the image source.
+     * @param currentImage the current image.
+     * @param desc         the desc.
+     * @param params       the params.
+     * @param frameIndex   the frame index.
+     * @return the overlay image.
+     */
     public static PlanarImage getOverlayImage(
             final PlanarImage imageSource,
             PlanarImage currentImage,
@@ -116,6 +156,19 @@ public record OverlayData(int groupOffset, int rows, int columns, int imageFrame
         return currentImage;
     }
 
+    /**
+     * Returns the overlay image.
+     *
+     * @param imageSource      the image source.
+     * @param currentImage     the current image.
+     * @param params           the params.
+     * @param frameIndex       the frame index.
+     * @param height           the height.
+     * @param width            the width.
+     * @param embeddedOverlays the embedded overlays.
+     * @param overlays         the overlays.
+     * @return the overlay image.
+     */
     private static ImageCV getOverlayImage(
             PlanarImage imageSource,
             PlanarImage currentImage,
@@ -143,9 +196,17 @@ public record OverlayData(int groupOffset, int rows, int columns, int imageFrame
 
         applyOverlay(overlays, pixelData, frameIndex, width);
         overlay.put(0, 0, pixelData);
-        return ImageProcessor.overlay(currentImage.toMat(), overlay, params.getOverlayColor().orElse(Color.WHITE));
+        return ImageTransformer.overlay(currentImage.toMat(), overlay, params.getOverlayColor().orElse(Color.WHITE));
     }
 
+    /**
+     * Applies the overlay.
+     *
+     * @param overlays   the overlays.
+     * @param pixelData  the pixel data.
+     * @param frameIndex the frame index.
+     * @param width      the width.
+     */
     private static void applyOverlay(List<OverlayData> overlays, byte[] pixelData, int frameIndex, int width) {
         byte pixVal = (byte) 255;
         for (OverlayData data : overlays) {
@@ -164,6 +225,19 @@ public record OverlayData(int groupOffset, int rows, int columns, int imageFrame
         }
     }
 
+    /**
+     * Sets the overlay pixel data.
+     *
+     * @param ovOff     the ov off.
+     * @param ovWidth   the ov width.
+     * @param ovHeight  the ov height.
+     * @param x0        the x 0.
+     * @param y0        the y 0.
+     * @param pix       the pix.
+     * @param pixelData the pixel data.
+     * @param pixVal    the pix val.
+     * @param width     the width.
+     */
     private static void setOverlayPixelData(
             int ovOff,
             int ovWidth,
@@ -185,6 +259,14 @@ public record OverlayData(int groupOffset, int rows, int columns, int imageFrame
         }
     }
 
+    /**
+     * Returns the overlay image.
+     *
+     * @param imageSource the image source.
+     * @param overlays    the overlays.
+     * @param frameIndex  the frame index.
+     * @return the overlay image.
+     */
     public static PlanarImage getOverlayImage(PlanarImage imageSource, List<OverlayData> overlays, int frameIndex) {
         int width = imageSource.width();
         int height = imageSource.height();
@@ -195,6 +277,12 @@ public record OverlayData(int groupOffset, int rows, int columns, int imageFrame
         return overlay;
     }
 
+    /**
+     * Executes the equals operation.
+     *
+     * @param o the o.
+     * @return true if the equals condition is true; otherwise false.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -207,6 +295,11 @@ public record OverlayData(int groupOffset, int rows, int columns, int imageFrame
                 && Arrays.equals(origin, that.origin) && Arrays.equals(data, that.data);
     }
 
+    /**
+     * Checks whether the hash code condition is true.
+     *
+     * @return true if the hash code condition is true; otherwise false.
+     */
     @Override
     public int hashCode() {
         int result = Objects.hash(groupOffset, rows, columns, imageFrameOrigin, framesInOverlay);
@@ -215,6 +308,11 @@ public record OverlayData(int groupOffset, int rows, int columns, int imageFrame
         return result;
     }
 
+    /**
+     * Returns the string representation.
+     *
+     * @return the string representation.
+     */
     @Override
     public String toString() {
         return "OverlayData{" + "groupOffset=" + groupOffset + ", rows=" + rows + ", columns=" + columns + '}';

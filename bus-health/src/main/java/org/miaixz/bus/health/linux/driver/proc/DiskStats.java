@@ -69,6 +69,9 @@ public final class DiskStats {
 
     /**
      * Enum corresponding to the fields in the output of {@code /proc/diskstats}
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum IoStat {
         /**
@@ -153,6 +156,7 @@ public final class DiskStats {
          * The total number of milliseconds spent by all flush requests.
          */
         FLUSHES_MS
+
     }
 
 }

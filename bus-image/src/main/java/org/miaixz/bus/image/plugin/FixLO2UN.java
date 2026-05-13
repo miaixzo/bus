@@ -50,14 +50,17 @@ public class FixLO2UN extends SimpleFileVisitor<Path> {
      */
     private final ByteBuffer buffer = ByteBuffer.wrap(new byte[] { 0x55, 0x4e, 0, 0, 0, 0, 0, 0 })
             .order(ByteOrder.LITTLE_ENDIAN);
+
     /**
      * The source path to be processed.
      */
     private final Path srcPath;
+
     /**
      * The destination path for the corrected files.
      */
     private final Path destPath;
+
     /**
      * An enum to manage destination path logic (file or directory).
      */
@@ -221,6 +224,9 @@ public class FixLO2UN extends SimpleFileVisitor<Path> {
     /**
      * An enum to handle the logic for determining the destination path, which can be either a single file or a
      * directory, preserving the source's subdirectory structure.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private enum Dest {
 
@@ -260,6 +266,7 @@ public class FixLO2UN extends SimpleFileVisitor<Path> {
         Path dstFile(Path srcFile, Path srcPath, Path destPath) {
             return destPath;
         }
+
     }
 
 }

@@ -61,14 +61,17 @@ public class Version implements Comparable<Version>, Serializable {
      * The original, unparsed version string.
      */
     private final String version;
+
     /**
      * A list of numeric or string components representing the main version number.
      */
     private final List<Object> sequence;
+
     /**
      * A list of numeric or string components representing the pre-release identifier.
      */
     private final List<Object> pre;
+
     /**
      * A list of numeric or string components representing the build metadata.
      */

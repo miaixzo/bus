@@ -51,6 +51,7 @@ public class PartitionIterator<T> implements IterableIterator<List<T>>, Serializ
      * The underlying iterator whose elements are to be partitioned.
      */
     protected final Iterator<T> iterator;
+
     /**
      * The size of each partition (batch). The last batch may contain fewer elements than this size.
      */

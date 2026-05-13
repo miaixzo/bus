@@ -33,6 +33,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.*;
 
+/**
+ * The application settings class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class ApplicationSettings implements Serializable {
 
     @Serial

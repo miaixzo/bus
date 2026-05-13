@@ -33,14 +33,17 @@ public class Configure {
      * Time zone.
      */
     private TimeZone timezone = TimeZone.getDefault();
+
     /**
      * Whether to support second matching.
      */
     private boolean matchSecond;
+
     /**
      * Whether to use daemon thread.
      */
     private boolean daemon;
+
     /**
      * Whether to use trigger queue.
      */

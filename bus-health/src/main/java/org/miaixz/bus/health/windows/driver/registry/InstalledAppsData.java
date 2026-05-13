@@ -34,6 +34,8 @@ import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinReg;
 
 /**
+ * The installed apps data class.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -50,6 +52,7 @@ public final class InstalledAppsData {
      * The REGISTRY_PATHS constant.
      */
     private static final Map<WinReg.HKEY, List<String>> REGISTRY_PATHS = new HashMap<>();
+
     /**
      * The ACCESS_FLAGS constant.
      */

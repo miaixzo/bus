@@ -40,12 +40,14 @@ public class SyncInputStream extends FilterInputStream {
      * The length of the stream content. A value of -1 indicates an unknown length.
      */
     private final long length;
+
     /**
      * Flag indicating whether EOF (End-Of-File) errors should be ignored. In HTTP, for Transfer-Encoding: Chunked, a
      * zero-length chunk usually signals the end. If the server does not follow this specification or the response does
      * not end normally, an EOF exception may occur. This option determines whether to ignore such exceptions.
      */
     private final boolean isIgnoreEOFError;
+
     /**
      * Flag indicating whether the stream is handled asynchronously. If {@code true}, the original stream is held. If
      * {@code false}, the entire body content is read into a {@link ByteArrayInputStream} during initialization.

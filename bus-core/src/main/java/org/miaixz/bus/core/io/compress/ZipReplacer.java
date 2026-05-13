@@ -41,6 +41,7 @@ public class ZipReplacer implements Closeable {
      * The Zip reader for the source Zip file.
      */
     private final ZipReader zipReader;
+
     /**
      * Flag indicating whether to ignore case when comparing paths.
      */

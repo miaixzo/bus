@@ -20,23 +20,36 @@
 package org.miaixz.bus.image.galaxy.dict.GEMS_LUNAR_RAW;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEMS_LUNAR_RAW";
 
-    /** (7003,xx01) VR=ST VM=1 enCORE File Name */
+    /**
+     * (7003,xx01) VR=ST VM=1 enCORE File Name
+     */
     public static final int enCOREFileName = 0x70030001;
 
-    /** (7003,xx02) VR=OB VM=1 enCORE File Data */
+    /**
+     * (7003,xx02) VR=OB VM=1 enCORE File Data
+     */
     public static final int enCOREFileData = 0x70030002;
 
-    /** (7003,xx03) VR=UL VM=1 enCORE File Length */
+    /**
+     * (7003,xx03) VR=UL VM=1 enCORE File Length
+     */
     public static final int enCOREFileLength = 0x70030003;
 
-    /** (7003,xx04) VR=LO VM=1 enCORE File Modified Time */
+    /**
+     * (7003,xx04) VR=LO VM=1 enCORE File Modified Time
+     */
     public static final int enCOREFileModifiedTime = 0x70030004;
 
 }

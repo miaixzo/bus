@@ -46,22 +46,27 @@ public final class PerfCounterQuery {
      * Multiple classes use these constants
      */
     public static final String TOTAL_INSTANCE = "_Total";
+
     /**
      * The TOTAL_OR_IDLE_INSTANCES constant.
      */
     public static final String TOTAL_OR_IDLE_INSTANCES = "_Total|Idle";
+
     /**
      * The TOTAL_INSTANCES constant.
      */
     public static final String TOTAL_INSTANCES = "*_Total";
+
     /**
      * The NOT_TOTAL_INSTANCE constant.
      */
     public static final String NOT_TOTAL_INSTANCE = "^" + TOTAL_INSTANCE;
+
     /**
      * The NOT_TOTAL_INSTANCES constant.
      */
     public static final String NOT_TOTAL_INSTANCES = "^" + TOTAL_INSTANCES;
+
     /**
      * The IS_VISTA_OR_GREATER constant.
      */
@@ -239,6 +244,9 @@ public final class PerfCounterQuery {
 
     /**
      * Contract for Counter Property Enums
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public interface PdhCounterProperty {
 
@@ -251,6 +259,7 @@ public final class PerfCounterQuery {
          * @return Returns the counter.
          */
         String getCounter();
+
     }
 
 }

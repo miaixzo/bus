@@ -24,6 +24,12 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
+/**
+ * The jackson JSON enum helper class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class JacksonJsonEnumHelper<E extends Enum<E>> {
 
     private Map<String, E> valuesMap;

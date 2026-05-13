@@ -45,22 +45,27 @@ public class ProcessConfig implements Serializable {
      * A list of table names to ignore during processing.
      */
     private List<String> ignoreTableName;
+
     /**
      * A list of table name prefixes to ignore. Tables with these prefixes will be excluded.
      */
     private List<String> ignoreTablePrefix;
+
     /**
      * A list of table name suffixes to ignore. Tables with these suffixes will be excluded.
      */
     private List<String> ignoreTableSuffix;
+
     /**
      * A list of specific table names to include. If specified, only these tables will be processed.
      */
     private List<String> designatedTableName;
+
     /**
      * A list of table name prefixes to include. If specified, only tables with these prefixes will be processed.
      */
     private List<String> designatedTablePrefix;
+
     /**
      * A list of table name suffixes to include. If specified, only tables with these suffixes will be processed.
      */

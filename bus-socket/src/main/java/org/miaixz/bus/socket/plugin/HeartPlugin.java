@@ -47,18 +47,22 @@ public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
      * Default callback for handling session timeouts, which closes the session immediately.
      */
     private static final TimeoutCallback DEFAULT_TIMEOUT_CALLBACK = (session, lastTime) -> session.close(true);
+
     /**
      * A map to store the last activity timestamp for each session.
      */
     private Map<Session, Long> sessionMap = new HashMap<>();
+
     /**
      * The frequency at which heartbeats are sent, in milliseconds.
      */
     private long heartRate;
+
     /**
      * The maximum time (in milliseconds) a session can be inactive before being considered timed out.
      */
     private long timeout;
+
     /**
      * The callback to execute when a session times out.
      */
@@ -222,6 +226,9 @@ public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
 
     /**
      * Callback interface for handling session timeouts.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public interface TimeoutCallback {
 
@@ -232,6 +239,7 @@ public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
          * @param lastTime the last activity timestamp of the session
          */
         void callback(Session session, long lastTime);
+
     }
 
 }

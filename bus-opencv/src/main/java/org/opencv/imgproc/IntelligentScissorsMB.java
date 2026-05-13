@@ -18,6 +18,9 @@ import org.opencv.core.Point;
  * href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.138.3811&amp;rep=rep1&amp;type=pdf"&gt;"Intelligent
  * Scissors for Image Composition"&lt;/a&gt; algorithm designed by Eric N. Mortensen and William A. Barrett, Brigham
  * Young University CITE: Mortensen95intelligentscissors
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class IntelligentScissorsMB {
 

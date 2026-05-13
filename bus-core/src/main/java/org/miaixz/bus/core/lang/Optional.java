@@ -39,8 +39,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  * from JDK 16, with some adjustments and additions, offering more utility functions than JDK 8's {@code Optional}.
  *
  * @param <T> The type of the value held by this {@code Optional}.
- * @author Kimi Liu
  * @see java.util.Optional
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class Optional<T> {
@@ -49,10 +49,12 @@ public class Optional<T> {
      * An empty {@code Optional} instance.
      */
     private static final Optional<?> EMPTY = new Optional<>(null);
+
     /**
      * The actual value held by this {@code Optional}.
      */
     private final T value;
+
     /**
      * Stores a {@link Throwable} if an operation within {@link #ofTry(SupplierX)} fails.
      */

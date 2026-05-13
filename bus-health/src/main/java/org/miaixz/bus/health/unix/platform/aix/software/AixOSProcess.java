@@ -67,19 +67,23 @@ public class AixOSProcess extends AbstractOSProcess {
      */
     private final Supplier<Long> affinityMask = Memoizer
             .memoize(PerfstatCpu::queryCpuAffinityMask, Memoizer.defaultExpiration());
+
     /**
      * The os value.
      */
     private final AixOperatingSystem os;
+
     /**
      * The bitness value.
      */
     private final Supplier<Integer> bitness = Memoizer.memoize(this::queryBitness);
+
     /**
      * The psinfo value.
      */
     private final Supplier<AixLibc.AixPsInfo> psinfo = Memoizer
             .memoize(this::queryPsInfo, Memoizer.defaultExpiration());
+
     /**
      * The cmdEnv value.
      */
@@ -90,86 +94,107 @@ public class AixOSProcess extends AbstractOSProcess {
      * The procCpu value.
      */
     private final Supplier<perfstat_process_t[]> procCpu;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The commandLineBackup value.
      */
     private String commandLineBackup;
+
     /**
      * The commandLine value.
      */
     private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
+
     /**
      * The user value.
      */
     private String user;
+
     /**
      * The userID value.
      */
     private String userID;
+
     /**
      * The group value.
      */
     private String group;
+
     /**
      * The groupID value.
      */
     private String groupID;
+
     /**
      * The parentProcessID value.
      */
     private int parentProcessID;
+
     /**
      * The threadCount value.
      */
     private int threadCount;
+
     /**
      * The priority value.
      */
     private int priority;
+
     /**
      * The virtualSize value.
      */
     private long virtualSize;
+
     /**
      * The residentSetSize value.
      */
     private long residentSetSize;
+
     /**
      * The privateResidentMemory value.
      */
     private long privateResidentMemory;
+
     /**
      * The kernelTime value.
      */
     private long kernelTime;
+
     /**
      * The userTime value.
      */
     private long userTime;
+
     /**
      * The startTime value.
      */
     private long startTime;
+
     /**
      * The upTime value.
      */
     private long upTime;
+
     /**
      * The bytesRead value.
      */
     private long bytesRead;
+
     /**
      * The bytesWritten value.
      */
     private long bytesWritten;
+
     /**
      * The path value.
      */
     private String path = Normal.EMPTY;
+
     /**
      * The state value.
      */

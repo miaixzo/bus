@@ -44,7 +44,9 @@ import java.util.List;
  */
 public class Filter {
 
-    /** The desensitization context. */
+    /**
+     * The desensitization context.
+     */
     private final Context sensitiveContext;
 
     /**

@@ -43,50 +43,62 @@ public class AuthInfo extends Voucher {
      * Merchant ID.
      */
     private String mch_id;
+
     /**
      * Sub-merchant App ID (for service providers).
      */
     private String sub_appid;
+
     /**
      * Sub-merchant ID (for service providers).
      */
     private String sub_mch_id;
+
     /**
      * Current timestamp.
      */
     private String now;
+
     /**
      * Version number.
      */
     private String version;
+
     /**
      * Signature type.
      */
     private String sign_type;
+
     /**
      * Random string.
      */
     private String nonce_str;
+
     /**
      * Store ID.
      */
     private String store_id;
+
     /**
      * Store name.
      */
     private String store_name;
+
     /**
      * Device ID.
      */
     private String device_id;
+
     /**
      * Raw data for face recognition initialization.
      */
     private String rawdata;
+
     /**
      * Additional data.
      */
     private String attach;
+
     /**
      * Signature.
      */

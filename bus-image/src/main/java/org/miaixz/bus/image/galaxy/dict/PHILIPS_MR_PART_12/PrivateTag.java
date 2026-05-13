@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.PHILIPS_MR_PART_12;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "PHILIPS MR/PART 12";
 
-    /** (0009,xx10) VR=US VM=1 ? */
+    /**
+     * (0009,xx10) VR=US VM=1 ?
+     */
     public static final int _0009_xx10_ = 0x00090010;
 
 }

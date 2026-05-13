@@ -53,9 +53,13 @@ public final class Win32OperatingSystem {
 
     /**
      * Operating System properties
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum OSVersionProperty {
         VERSION, PRODUCTTYPE, BUILDNUMBER, CSDVERSION, SUITEMASK
+
     }
 
 }

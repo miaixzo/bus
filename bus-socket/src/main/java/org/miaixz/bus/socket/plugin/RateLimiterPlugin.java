@@ -45,18 +45,22 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
      * The read rate limit threshold in bytes per second.
      */
     private final int readRateLimiter;
+
     /**
      * The write rate limit threshold in bytes per second.
      */
     private final int writeRateLimiter;
+
     /**
      * Flag indicating whether rate limiting is enabled.
      */
     private final boolean enabled;
+
     /**
      * A small buffer time to account for scheduling delays, in milliseconds.
      */
     private final int bufferTime = 10;
+
     /**
      * A scheduled executor service for delaying read/write operations when rate limits are hit.
      */
@@ -87,11 +91,15 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
 
     /**
      * An internal channel proxy that applies rate limiting to read and write operations.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class RateLimiterChannel extends AsynchronousSocketChannelProxy {
 
         private final int readRateLimiter;
         private final int writeRateLimiter;
+
         /**
          * The timestamp of the last read rate limiting window boundary.
          */
@@ -101,10 +109,12 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
          * The number of bytes read within the current rate limiting window.
          */
         private int readSize;
+
         /**
          * The timestamp of the last write rate limiting window boundary.
          */
         private long latestWriteTime;
+
         /**
          * The number of bytes written within the current rate limiting window.
          */
@@ -253,6 +263,7 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
                 }
             });
         }
+
     }
 
 }

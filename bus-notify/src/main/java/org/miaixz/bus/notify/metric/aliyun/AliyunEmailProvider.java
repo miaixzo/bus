@@ -92,22 +92,27 @@ public class AliyunEmailProvider extends AliyunProvider<AliyunNotice, Context> {
          * The signature method used for authentication.
          */
         bodys.put("SignatureMethod", "HMAC-SHA1");
+
         /**
          * A unique random number to prevent replay attacks.
          */
         bodys.put("SignatureNonce", UUID.randomUUID().toString());
+
         /**
          * The AccessKey ID of your Alibaba Cloud account.
          */
         bodys.put("AccessKeyId", context.getAppKey());
+
         /**
          * The version of the signature algorithm.
          */
         bodys.put("SignatureVersion", "1.0");
+
         /**
          * The timestamp of the API request in UTC format.
          */
         bodys.put("Timestamp", DateKit.format(new Date(), Fields.UTC));
+
         /**
          * The format of the response, typically JSON.
          */
@@ -117,10 +122,12 @@ public class AliyunEmailProvider extends AliyunProvider<AliyunNotice, Context> {
          * The API action to be performed, e.g., SingleSendMail.
          */
         bodys.put("Action", "SingleSendMail");
+
         /**
          * The API version.
          */
         bodys.put("Version", "2015-11-23");
+
         /**
          * The region ID of the service, e.g., cn-hangzhou.
          */
@@ -130,10 +137,12 @@ public class AliyunEmailProvider extends AliyunProvider<AliyunNotice, Context> {
          * The subject of the email.
          */
         bodys.put("Subject", entity.getSubject());
+
         /**
          * The sender's alias.
          */
         bodys.put("FromAlias", entity.getSender());
+
         /**
          * The recipient's email address.
          */
@@ -155,10 +164,12 @@ public class AliyunEmailProvider extends AliyunProvider<AliyunNotice, Context> {
          * The reply-to email address.
          */
         bodys.put("ReplyAddress", entity.getSender());
+
         /**
          * The reply-to email address.
          */
         bodys.put("ReplyToAddress", entity.getSender());
+
         /**
          * The reply-to address alias.
          */
@@ -168,6 +179,7 @@ public class AliyunEmailProvider extends AliyunProvider<AliyunNotice, Context> {
          * Click tracking setting.
          */
         bodys.put("ClickTrace", getSign(bodys));
+
         /**
          * The signature for the request.
          */

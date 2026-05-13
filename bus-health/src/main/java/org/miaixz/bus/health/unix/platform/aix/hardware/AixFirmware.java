@@ -35,10 +35,12 @@ final class AixFirmware extends AbstractFirmware {
      * The manufacturer value.
      */
     private final String manufacturer;
+
     /**
      * The name value.
      */
     private final String name;
+
     /**
      * The version value.
      */

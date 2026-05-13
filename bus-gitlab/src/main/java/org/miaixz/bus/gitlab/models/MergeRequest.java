@@ -29,6 +29,12 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serial;
 
+/**
+ * The merge request class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class MergeRequest implements Serializable {
 
     @Serial

@@ -42,6 +42,7 @@ public class HttpResource implements Resource, Serializable {
      * The wrapped resource.
      */
     private final Resource resource;
+
     /**
      * The custom Content-Type for this HTTP resource.
      */

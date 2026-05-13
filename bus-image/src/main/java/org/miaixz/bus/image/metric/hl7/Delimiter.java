@@ -20,11 +20,16 @@
 package org.miaixz.bus.image.metric.hl7;
 
 /**
+ * Defines the Delimiter values.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public enum Delimiter {
 
+    /**
+     * The field value.
+     */
     field {
 
         @Override
@@ -32,6 +37,9 @@ public enum Delimiter {
             return null;
         }
     },
+    /**
+     * The component value.
+     */
     component {
 
         @Override
@@ -39,6 +47,9 @@ public enum Delimiter {
             return repeat;
         }
     },
+    /**
+     * The repeat value.
+     */
     repeat {
 
         @Override
@@ -46,6 +57,9 @@ public enum Delimiter {
             return field;
         }
     },
+    /**
+     * The escape value.
+     */
     escape {
 
         @Override
@@ -53,6 +67,9 @@ public enum Delimiter {
             return subcomponent;
         }
     },
+    /**
+     * The subcomponent value.
+     */
     subcomponent {
 
         @Override
@@ -61,13 +78,30 @@ public enum Delimiter {
         }
     };
 
+    /**
+     * The default value.
+     */
     static final String DEFAULT = "|^~\\&";
+
+    /**
+     * The escape value.
+     */
     static final String ESCAPE = "FSRET";
 
+    /**
+     * Executes the attribute operation.
+     *
+     * @return the operation result.
+     */
     String attribute() {
         return name() + "Delimiter";
     }
 
+    /**
+     * Executes the parent operation.
+     *
+     * @return the operation result.
+     */
     abstract Delimiter parent();
 
 }

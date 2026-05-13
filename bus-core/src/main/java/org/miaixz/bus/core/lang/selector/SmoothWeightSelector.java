@@ -29,7 +29,7 @@ import org.miaixz.bus.core.xyz.CollKit;
  * <p>
  * The algorithm is as follows: For a set of servers with weights (e.g., A:5, B:3, C:2), the total weight is 10. Each
  * server maintains a `currentWeight`, initialized to 0.
- * 
+ *
  * <pre>
  * Request | currentWeight = currentWeight + weight | Max Weight | Selected | Update: max_weight - totalWeight, others unchanged
  * ----------------------------------------------------------------------------------------------------------------------------

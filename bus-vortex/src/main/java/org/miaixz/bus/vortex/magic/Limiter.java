@@ -36,9 +36,9 @@ import org.miaixz.bus.vortex.strategy.LimiterStrategy;
  * {@link #acquire()} method throws an exception, allowing the request to be rejected quickly with a "Too Many Requests"
  * error.
  *
- * @author Kimi Liu
  * @see com.google.common.util.concurrent.RateLimiter
  * @see LimiterStrategy
+ * @author Kimi Liu
  * @since Java 21+
  */
 @Getter

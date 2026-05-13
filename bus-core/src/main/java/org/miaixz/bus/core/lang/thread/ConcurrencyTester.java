@@ -30,7 +30,7 @@ import org.miaixz.bus.core.center.date.StopWatch;
  *
  * <p>
  * Example usage:
- * 
+ *
  * <pre>
  * // Simulate 1000 concurrent threads
  * ConcurrencyTester ct = new ConcurrencyTester(1000);
@@ -50,10 +50,12 @@ public class ConcurrencyTester implements Closeable {
      * The {@link SyncFinisher} used to manage and synchronize the concurrent execution of tasks.
      */
     private final SyncFinisher sf;
+
     /**
      * The {@link StopWatch} used to measure the total time taken for all concurrent tasks to complete.
      */
     private final StopWatch timeInterval;
+
     /**
      * The measured execution time in milliseconds for the last test run.
      */

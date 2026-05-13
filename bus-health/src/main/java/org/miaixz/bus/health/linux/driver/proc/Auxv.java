@@ -40,14 +40,17 @@ public final class Auxv {
      * end of vector
      */
     public static final int AT_NULL = 0;
+
     /**
      * system page size
      */
     public static final int AT_PAGESZ = 6;
+
     /**
      * arch dependent hints at CPU capabilities
      */
     public static final int AT_HWCAP = 16;
+
     /**
      * frequency at which times() increments
      */

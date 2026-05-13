@@ -37,6 +37,7 @@ public abstract class IoCopier<S, T> {
      * The buffer size.
      */
     protected final int bufferSize;
+
     /**
      * The total number of bytes to copy. Use {@link Long#MAX_VALUE} for unlimited.
      */

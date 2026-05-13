@@ -49,10 +49,12 @@ public class AnnotationProxy<T extends Annotation> implements Annotation, Invoca
      * The original annotation instance.
      */
     private final T annotation;
+
     /**
      * The type of the annotation.
      */
     private final Class<T> type;
+
     /**
      * A cache of the annotation's attribute values, keyed by method name.
      */

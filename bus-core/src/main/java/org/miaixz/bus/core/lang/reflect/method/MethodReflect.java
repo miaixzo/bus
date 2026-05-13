@@ -44,16 +44,19 @@ public class MethodReflect {
      * The class for which methods are being reflected.
      */
     private final Class<?> clazz;
+
     /**
      * Cached array of public methods for the current class and its superclasses/interfaces. This cache is volatile to
      * ensure visibility across threads.
      */
     private volatile Method[] publicMethods;
+
     /**
      * Cached array of declared methods for the current class (excluding inherited methods). This cache is volatile to
      * ensure visibility across threads.
      */
     private volatile Method[] declaredMethods;
+
     /**
      * Cached array of all methods (declared and inherited) for the current class. This cache is volatile to ensure
      * visibility across threads.

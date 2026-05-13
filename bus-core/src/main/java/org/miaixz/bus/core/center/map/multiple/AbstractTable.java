@@ -51,6 +51,7 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
      * Cached collection view of all values in the table. Lazily initialized.
      */
     private transient Collection<V> values;
+
     /**
      * Cached set view of all cells in the table. Lazily initialized.
      */
@@ -137,6 +138,8 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
      * @param <R> The type of the row key.
      * @param <C> The type of the column key.
      * @param <V> The type of the value.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class SimpleCell<R, C, V> implements Cell<R, C, V>, Serializable {
 
@@ -229,10 +232,14 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
         public String toString() {
             return Symbol.PARENTHESE_LEFT + rowKey + Symbol.COMMA + columnKey + ")=" + value;
         }
+
     }
 
     /**
      * A {@link Collection} view of the values contained in the table.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private class Values extends AbstractCollection<V> {
 
@@ -273,10 +280,14 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
         public int size() {
             return AbstractTable.this.size();
         }
+
     }
 
     /**
      * A {@link Set} view of the cells contained in the table.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private class CellSet extends AbstractSet<Cell<R, C, V>> {
 
@@ -337,10 +348,14 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
         public int size() {
             return AbstractTable.this.size();
         }
+
     }
 
     /**
      * An iterator for traversing the cells of the table.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private class CellIterator implements Iterator<Cell<R, C, V>> {
 
@@ -383,6 +398,7 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
                 rowIterator.remove();
             }
         }
+
     }
 
 }

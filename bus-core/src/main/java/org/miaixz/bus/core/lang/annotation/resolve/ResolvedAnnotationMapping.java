@@ -74,8 +74,8 @@ import org.miaixz.bus.core.xyz.*;
  * the attribute in {@code c} being directly overridden by {@code a}.</li>
  * </ul>
  *
- * @author Kimi Liu
  * @see MetaAnnotatedElement
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> {
@@ -119,10 +119,12 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
      * The original annotation object.
      */
     private final Annotation annotation;
+
     /**
      * Indicates whether the attributes of this annotation have been resolved (aliasing and overriding applied).
      */
     private final boolean resolved;
+
     /**
      * Cached proxy object for the resolved annotation, created on demand.
      */
@@ -632,6 +634,9 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
 
     /**
      * Represents a set of aliased attributes. All attributes in a group share the same instance of this class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private class AliasSet {
 

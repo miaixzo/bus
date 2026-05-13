@@ -39,6 +39,7 @@ public class TransSpliterator<F, T> implements Spliterator<T> {
      * The underlying source spliterator that provides the original elements.
      */
     private final Spliterator<F> from;
+
     /**
      * The function used to transform each element from the source type {@code F} to the target type {@code T}.
      */

@@ -20,17 +20,26 @@
 package org.miaixz.bus.image.galaxy.dict.agfa_kosd_1_0;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "AGFA KOSD 1.0";
 
-    /** (0035,xx00) VR=SH VM=1 ? */
+    /**
+     * (0035,xx00) VR=SH VM=1 ?
+     */
     public static final int _0035_xx00_ = 0x00350000;
 
-    /** (0035,xx03) VR=LT VM=1 ? */
+    /**
+     * (0035,xx03) VR=LT VM=1 ?
+     */
     public static final int _0035_xx03_ = 0x00350003;
 
 }

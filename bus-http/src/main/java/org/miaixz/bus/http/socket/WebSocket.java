@@ -94,6 +94,9 @@ public interface WebSocket {
 
     /**
      * A factory for creating WebSockets.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     interface Factory {
 
@@ -107,6 +110,7 @@ public interface WebSocket {
          * @return The new WebSocket.
          */
         WebSocket newWebSocket(Request request, WebSocketListener listener);
+
     }
 
 }

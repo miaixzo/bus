@@ -107,8 +107,10 @@ public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 
     /**
      * Error codes specific to Toutiao (ByteDance) authorization login.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
-
     public static class Toutiao {
 
         /**
@@ -216,6 +218,7 @@ public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
             }
             return EC999;
         }
+
     }
 
 }

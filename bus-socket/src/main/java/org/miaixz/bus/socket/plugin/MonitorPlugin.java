@@ -44,50 +44,62 @@ public final class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnabl
      * The number of bytes flowed into the server during the current monitoring cycle.
      */
     private final LongAdder inFlow = new LongAdder();
+
     /**
      * The number of bytes flowed out of the server during the current monitoring cycle.
      */
     private final LongAdder outFlow = new LongAdder();
+
     /**
      * The number of messages that failed to be processed during the current monitoring cycle.
      */
     private final LongAdder processFailNum = new LongAdder();
+
     /**
      * The number of messages processed during the current monitoring cycle.
      */
     private final LongAdder processMsgNum = new LongAdder();
+
     /**
      * The number of new connections established during the current monitoring cycle.
      */
     private final LongAdder newConnect = new LongAdder();
+
     /**
      * The number of connections disconnected during the current monitoring cycle.
      */
     private final LongAdder disConnect = new LongAdder();
+
     /**
      * The number of read operations performed during the current monitoring cycle.
      */
     private final LongAdder readCount = new LongAdder();
+
     /**
      * The number of write operations performed during the current monitoring cycle.
      */
     private final LongAdder writeCount = new LongAdder();
+
     /**
      * The frequency (in seconds) at which the monitoring task is executed.
      */
     private final int seconds;
+
     /**
      * A flag indicating whether the monitor is for UDP connections.
      */
     private final boolean udp;
+
     /**
      * The cumulative total number of connections since the plugin was enabled.
      */
     private long totalConnect;
+
     /**
      * The cumulative total number of messages processed since the plugin was enabled.
      */
     private long totalProcessMsgNum = 0;
+
     /**
      * The current number of online connections.
      */

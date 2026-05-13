@@ -31,34 +31,88 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
+ * Represents the HL7Parser type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class HL7Parser {
 
+    /**
+     * The namespace value.
+     */
     private static final String NAMESPACE = "http://aurora.regenstrief.org/xhl7";
+
+    /**
+     * The ch value.
+     */
     private final ContentHandler ch;
+
+    /**
+     * The atts value.
+     */
     private final AttributesImpl atts = new AttributesImpl();
+
+    /**
+     * The open value.
+     */
     private final EnumSet<Delimiter> open = EnumSet.noneOf(Delimiter.class);
+
+    /**
+     * The namespace value.
+     */
     private String namespace = Normal.EMPTY;
+
+    /**
+     * The delimiters value.
+     */
     private String delimiters;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param ch the ch.
+     */
     public HL7Parser(ContentHandler ch) {
         this.ch = ch;
     }
 
+    /**
+     * Determines whether include namespace declaration.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public final boolean isIncludeNamespaceDeclaration() {
         return namespace == NAMESPACE;
     }
 
+    /**
+     * Sets the include namespace declaration.
+     *
+     * @param includeNameSpaceDeclaration the include name space declaration.
+     */
     public final void setIncludeNamespaceDeclaration(boolean includeNameSpaceDeclaration) {
         this.namespace = includeNameSpaceDeclaration ? NAMESPACE : Normal.EMPTY;
     }
 
+    /**
+     * Executes the parse operation.
+     *
+     * @param reader the reader.
+     * @throws IOException  if the operation cannot be completed.
+     * @throws SAXException if the operation cannot be completed.
+     */
     public void parse(Reader reader) throws IOException, SAXException {
         parse(reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader));
     }
 
+    /**
+     * Executes the parse operation.
+     *
+     * @param reader the reader.
+     * @throws IOException  if the operation cannot be completed.
+     * @throws SAXException if the operation cannot be completed.
+     */
     public void parse(BufferedReader reader) throws IOException, SAXException {
         startDocument();
         delimiters = Delimiter.DEFAULT;
@@ -117,21 +171,42 @@ public class HL7Parser {
         endDocument();
     }
 
+    /**
+     * Determines whether header segment.
+     *
+     * @param line the line.
+     * @return true if the condition is met; otherwise false.
+     */
     private boolean isHeaderSegment(String line) {
         return (line.startsWith("MSH") || line.startsWith("BHS") || line.startsWith("FHS"));
     }
 
+    /**
+     * Executes the start document operation.
+     *
+     * @throws SAXException if the operation cannot be completed.
+     */
     private void startDocument() throws SAXException {
         ch.startDocument();
         addAttribute("xml-space", "preserved");
         startElement("hl7");
     }
 
+    /**
+     * Executes the end document operation.
+     *
+     * @throws SAXException if the operation cannot be completed.
+     */
     private void endDocument() throws SAXException {
         endElement("hl7");
         ch.endDocument();
     }
 
+    /**
+     * Sets the delimiters.
+     *
+     * @param delimiters the delimiters.
+     */
     private void setDelimiters(String delimiters) {
         Delimiter[] a = Delimiter.values();
         for (int i = 0; i < a.length; i++)
@@ -139,10 +214,22 @@ public class HL7Parser {
         this.delimiters = delimiters;
     }
 
+    /**
+     * Adds the attribute.
+     *
+     * @param name  the name.
+     * @param value the value.
+     */
     private void addAttribute(String name, String value) {
         atts.addAttribute(namespace, name, name, "NMTOKEN", value);
     }
 
+    /**
+     * Executes the delimiter operation.
+     *
+     * @param tk the tk.
+     * @return the operation result.
+     */
     private Delimiter delimiter(String tk) {
         if (tk.length() != 1)
             return null;
@@ -151,10 +238,22 @@ public class HL7Parser {
         return index >= 0 ? Delimiter.values()[index] : null;
     }
 
+    /**
+     * Executes the escape index operation.
+     *
+     * @param tk the tk.
+     * @return the operation result.
+     */
     private int escapeIndex(String tk) {
         return tk.length() != 1 ? Delimiter.ESCAPE.indexOf(tk.charAt(0)) : -1;
     }
 
+    /**
+     * Converts this value to kenize.
+     *
+     * @param s the s.
+     * @return the operation result.
+     */
     private String[] tokenize(String s) {
         StringTokenizer stk = new StringTokenizer(s, delimiters, true);
         String[] tks = new String[stk.countTokens()];
@@ -164,16 +263,34 @@ public class HL7Parser {
         return tks;
     }
 
+    /**
+     * Executes the start element operation.
+     *
+     * @param d the d.
+     * @throws SAXException if the operation cannot be completed.
+     */
     private void startElement(Delimiter d) throws SAXException {
         startElement(d.name());
         open.add(d);
     }
 
+    /**
+     * Executes the start element operation.
+     *
+     * @param name the name.
+     * @throws SAXException if the operation cannot be completed.
+     */
     private void startElement(String name) throws SAXException {
         ch.startElement(namespace, name, name, atts);
         atts.clear();
     }
 
+    /**
+     * Executes the end element operation.
+     *
+     * @param delimiter the delimiter.
+     * @throws SAXException if the operation cannot be completed.
+     */
     private void endElement(Delimiter delimiter) throws SAXException {
         Delimiter d = Delimiter.escape;
         do
@@ -182,6 +299,12 @@ public class HL7Parser {
         while (d != delimiter);
     }
 
+    /**
+     * Executes the end element operation.
+     *
+     * @param name the name.
+     * @throws SAXException if the operation cannot be completed.
+     */
     private void endElement(String name) throws SAXException {
         ch.endElement(namespace, name, name);
     }

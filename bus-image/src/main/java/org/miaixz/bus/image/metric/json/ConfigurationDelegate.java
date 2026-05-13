@@ -23,11 +23,20 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.Device;
 
 /**
+ * Defines the ConfigurationDelegate contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface ConfigurationDelegate {
 
+    /**
+     * Finds the device.
+     *
+     * @param name the name.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     Device findDevice(String name) throws InternalException;
 
 }

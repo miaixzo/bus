@@ -61,10 +61,12 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
      * Configuration for type support during JSON serialization.
      */
     protected String autoType;
+
     /**
      * Unified URL prefix for controllers.
      */
     protected String prefix;
+
     /**
      * Sentinel request interceptor for handling requests.
      */

@@ -34,14 +34,17 @@ public class FilesetInfo {
      * The Unique Identifier (UID) of the fileset.
      */
     private String uid;
+
     /**
      * The identifier of the fileset.
      */
     private String id;
+
     /**
      * The descriptor file associated with the fileset.
      */
     private File descFile;
+
     /**
      * The character set used for the descriptor file.
      */

@@ -43,66 +43,82 @@ public class Trans2Pocket extends Voucher {
      * Merchant ID.
      */
     private String mch_id;
+
     /**
      * Device information.
      */
     private String device_info;
+
     /**
      * Random string.
      */
     private String nonce_str;
+
     /**
      * Signature.
      */
     private String sign;
+
     /**
      * Merchant's payment number.
      */
     private String partner_trade_no;
+
     /**
      * Recipient's OpenID.
      */
     private String openid;
+
     /**
      * Name check option (NO_CHECK, FORCE_CHECK).
      */
     private String check_name;
+
     /**
      * Recipient's real name.
      */
     private String re_user_name;
+
     /**
      * Amount in cents.
      */
     private String amount;
+
     /**
      * Description of the payment.
      */
     private String desc;
+
     /**
      * Client IP address of the machine making the request.
      */
     private String spbill_create_ip;
+
     /**
      * WeCom-specific signature.
      */
     private String workwx_sign;
+
     /**
      * WeCom message type.
      */
     private String ww_msg_type;
+
     /**
      * Approval number.
      */
     private String approval_number;
+
     /**
      * Approval type.
      */
     private String approval_type;
+
     /**
      * Activity name.
      */
     private String act_name;
+
     /**
      * WeCom application agent ID.
      */

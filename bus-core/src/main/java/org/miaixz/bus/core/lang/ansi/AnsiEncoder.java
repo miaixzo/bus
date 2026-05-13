@@ -40,10 +40,12 @@ public class AnsiEncoder {
      * The starting sequence for an ANSI escape code.
      */
     private static final String ENCODE_START = "\033[";
+
     /**
      * The ending sequence for an ANSI escape code.
      */
     private static final String ENCODE_END = "m";
+
     /**
      * The ANSI reset code, which resets all formatting to default.
      */

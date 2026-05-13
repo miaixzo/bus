@@ -48,31 +48,37 @@ public class TenantBuilder {
      */
     private static final Pattern SELECT_PATTERN = Pattern
             .compile("\\s*SELECT\\s+.*?\\s+FROM\\s+(\\w+)\\s*(.*)", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+
     /**
      * INSERT statement regex.
      */
     private static final Pattern INSERT_PATTERN = Pattern.compile(
             "\\s*INSERT\\s+INTO\\s+(\\w+)\\s*\\(([^)]+)\\)\\s*VALUES\\s*\\(([^)]+)\\)",
             Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+
     /**
      * UPDATE statement regex.
      */
     private static final Pattern UPDATE_PATTERN = Pattern.compile(
             "\\s*UPDATE\\s+(\\w+)\\s+SET\\s+(.*?)(?:\\s+WHERE\\s+(.*))?$",
             Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+
     /**
      * DELETE statement regex.
      */
     private static final Pattern DELETE_PATTERN = Pattern
             .compile("\\s*DELETE\\s+FROM\\s+(\\w+)\\s*(?:WHERE\\s+(.*))?$", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+
     /**
      * WHERE clause regex.
      */
     private static final Pattern WHERE_PATTERN = Pattern.compile("\\s+WHERE\\s+", Pattern.CASE_INSENSITIVE);
+
     /**
      * Tenant configuration.
      */
     private final TenantConfig config;
+
     /**
      * SQL cache (original SQL -> actual SQL).
      */

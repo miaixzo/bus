@@ -25,6 +25,12 @@ import java.util.List;
 import org.miaixz.bus.gitlab.models.User;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+/**
+ * The work item event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class WorkItemEvent extends AbstractEvent {
 
     @Serial
@@ -102,7 +108,14 @@ public class WorkItemEvent extends AbstractEvent {
         return (JacksonJson.toJsonString(this));
     }
 
+    /**
+     * The object attributes class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public static class ObjectAttributes extends EventWorkItem {
+
     }
 
 }

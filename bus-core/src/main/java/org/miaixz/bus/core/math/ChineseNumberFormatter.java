@@ -30,7 +30,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * A class for converting numbers to Chinese numerals. It includes:
- * 
+ *
  * <pre>
  * 1. Converting numbers to standard Chinese characters (e.g., 一百二十一).
  * 2. Converting numbers to financial Chinese characters (e.g., 壹佰贰拾壹).
@@ -59,18 +59,22 @@ public class ChineseNumberFormatter {
      * Whether to use traditional characters (financial format).
      */
     private boolean useTraditional;
+
     /**
      * Whether to use money mode (adds currency units like Yuan, Jiao, Fen).
      */
     private boolean moneyMode;
+
     /**
      * Whether to use colloquial mode (e.g., '十一' instead of '一十一').
      */
     private boolean colloquialMode;
+
     /**
      * The character or string to represent negative numbers.
      */
     private String negativeName = "负";
+
     /**
      * The name of the main currency unit (e.g., '元' or '圆').
      */

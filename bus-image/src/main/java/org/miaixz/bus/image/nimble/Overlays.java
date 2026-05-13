@@ -31,19 +31,42 @@ import org.miaixz.bus.image.galaxy.data.Sequence;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the Overlays type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class Overlays {
 
+    /**
+     * Gets the active overlay group offsets.
+     *
+     * @param psattrs the psattrs.
+     * @return the active overlay group offsets.
+     */
     public static int[] getActiveOverlayGroupOffsets(Attributes psattrs) {
         return getOverlayGroupOffsets(psattrs, Tag.OverlayActivationLayer, -1);
     }
 
+    /**
+     * Gets the active overlay group offsets.
+     *
+     * @param attrs          the attrs.
+     * @param activationMask the activation mask.
+     * @return the active overlay group offsets.
+     */
     public static int[] getActiveOverlayGroupOffsets(Attributes attrs, int activationMask) {
         return getOverlayGroupOffsets(attrs, Tag.OverlayRows, activationMask);
     }
 
+    /**
+     * Gets the overlay group offsets.
+     *
+     * @param attrs          the attrs.
+     * @param tag            the tag.
+     * @param activationMask the activation mask.
+     * @return the overlay group offsets.
+     */
     public static int[] getOverlayGroupOffsets(Attributes attrs, int tag, int activationMask) {
         int len = 0;
         int[] result = new int[Normal._16];
@@ -55,6 +78,12 @@ public class Overlays {
         return Arrays.copyOf(result, len);
     }
 
+    /**
+     * Gets the embedded overlay group offsets.
+     *
+     * @param attrs the attrs.
+     * @return the embedded overlay group offsets.
+     */
     public static int[] getEmbeddedOverlayGroupOffsets(Attributes attrs) {
         int len = 0;
         int[] result = new int[Normal._16];
@@ -79,6 +108,15 @@ public class Overlays {
         return Arrays.copyOf(result, len);
     }
 
+    /**
+     * Executes the extract from pixeldata operation.
+     *
+     * @param raster   the raster.
+     * @param mask     the mask.
+     * @param ovlyData the ovly data.
+     * @param off      the off.
+     * @param length   the length.
+     */
     public static void extractFromPixeldata(Raster raster, int mask, byte[] ovlyData, int off, int length) {
         ComponentSampleModel sm = (ComponentSampleModel) raster.getSampleModel();
         int rows = raster.getHeight();
@@ -127,6 +165,18 @@ public class Overlays {
         }
     }
 
+    /**
+     * Executes the extract from pixeldata operation.
+     *
+     * @param pixeldata the pixeldata.
+     * @param rows      the rows.
+     * @param columns   the columns.
+     * @param stride    the stride.
+     * @param mask      the mask.
+     * @param ovlyData  the ovly data.
+     * @param off       the off.
+     * @param length    the length.
+     */
     private static void extractFromPixeldata(
             byte[] pixeldata,
             int rows,
@@ -144,6 +194,18 @@ public class Overlays {
         }
     }
 
+    /**
+     * Executes the extract from pixeldata operation.
+     *
+     * @param pixeldata the pixeldata.
+     * @param rows      the rows.
+     * @param columns   the columns.
+     * @param stride    the stride.
+     * @param mask      the mask.
+     * @param ovlyData  the ovly data.
+     * @param off       the off.
+     * @param length    the length.
+     */
     private static void extractFromPixeldata(
             short[] pixeldata,
             int rows,
@@ -162,20 +224,51 @@ public class Overlays {
         }
     }
 
+    /**
+     * Gets the recommended grayscale pixel value.
+     *
+     * @param psAttrs the ps attrs.
+     * @param gg0000  the gg0000.
+     * @param bits    the bits.
+     * @return the recommended grayscale pixel value.
+     */
     public static int[] getRecommendedGrayscalePixelValue(Attributes psAttrs, int gg0000, int bits) {
         int[] grayscaleValue = getRecommendedPixelValue(Tag.RecommendedDisplayGrayscaleValue, psAttrs, gg0000);
         return grayscaleValue != null && grayscaleValue.length > 0 ? new int[] { grayscaleValue[0] >> (16 - bits) }
                 : null;
     }
 
+    /**
+     * Gets the recommended rgb pixel value.
+     *
+     * @param psAttrs the ps attrs.
+     * @param gg0000  the gg0000.
+     * @return the recommended rgb pixel value.
+     */
     public static int[] getRecommendedRGBPixelValue(Attributes psAttrs, int gg0000) {
         return getRecommendedRGBPixelValue(psAttrs, gg0000, Function.identity());
     }
 
+    /**
+     * Gets the recommended rgb pixel value.
+     *
+     * @param psAttrs the ps attrs.
+     * @param gg0000  the gg0000.
+     * @param cspace  the cspace.
+     * @return the recommended rgb pixel value.
+     */
     public static int[] getRecommendedRGBPixelValue(Attributes psAttrs, int gg0000, ColorSpace cspace) {
         return getRecommendedRGBPixelValue(psAttrs, gg0000, cspace::fromRGB);
     }
 
+    /**
+     * Gets the recommended rgb pixel value.
+     *
+     * @param psAttrs the ps attrs.
+     * @param gg0000  the gg0000.
+     * @param fromRGB the from rgb.
+     * @return the recommended rgb pixel value.
+     */
     private static int[] getRecommendedRGBPixelValue(
             Attributes psAttrs,
             int gg0000,
@@ -184,6 +277,13 @@ public class Overlays {
         return cieLabValue != null && cieLabValue.length == 3 ? cieLab2RGB(cieLabValue, fromRGB) : null;
     }
 
+    /**
+     * Executes the cie lab2 rgb operation.
+     *
+     * @param cieLabValue      the cie lab value.
+     * @param adjustColorSpace the adjust color space.
+     * @return the operation result.
+     */
     private static int[] cieLab2RGB(int[] cieLabValue, Function<float[], float[]> adjustColorSpace) {
         float[] colorvalue = { (cieLabValue[0] & 0xffff) / 655.35f, ((cieLabValue[1] & 0xffff) - 0x8080) / 257.0f,
                 ((cieLabValue[2] & 0xffff) - 0x8080) / 257.0f };
@@ -196,6 +296,14 @@ public class Overlays {
         return pixel;
     }
 
+    /**
+     * Gets the recommended pixel value.
+     *
+     * @param tag     the tag.
+     * @param psAttrs the ps attrs.
+     * @param gg0000  the gg0000.
+     * @return the recommended pixel value.
+     */
     private static int[] getRecommendedPixelValue(int tag, Attributes psAttrs, int gg0000) {
         int tagOverlayActivationLayer = Tag.OverlayActivationLayer | gg0000;
         String layerName = psAttrs.getString(tagOverlayActivationLayer);
@@ -214,6 +322,16 @@ public class Overlays {
         throw new IllegalArgumentException("No Graphic Layer: " + layerName);
     }
 
+    /**
+     * Applies the overlay.
+     *
+     * @param frameIndex the frame index.
+     * @param raster     the raster.
+     * @param attrs      the attrs.
+     * @param gg0000     the gg0000.
+     * @param pixelValue the pixel value.
+     * @param ovlyData   the ovly data.
+     */
     public static void applyOverlay(
             int frameIndex,
             WritableRaster raster,
@@ -224,6 +342,16 @@ public class Overlays {
         applyOverlay(frameIndex, raster, attrs, gg0000, new int[] { pixelValue }, ovlyData);
     }
 
+    /**
+     * Applies the overlay.
+     *
+     * @param frameIndex the frame index.
+     * @param raster     the raster.
+     * @param attrs      the attrs.
+     * @param gg0000     the gg0000.
+     * @param pixelValue the pixel value.
+     * @param ovlyData   the ovly data.
+     */
     public static void applyOverlay(
             int frameIndex,
             WritableRaster raster,

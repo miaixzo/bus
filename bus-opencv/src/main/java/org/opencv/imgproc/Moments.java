@@ -1,6 +1,12 @@
 package org.opencv.imgproc;
 
 //javadoc:Moments
+/**
+ * The moments class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Moments {
 
     public double m00;
@@ -341,4 +347,5 @@ public class Moments {
     public void set_nu03(double nu03) {
         this.nu03 = nu03;
     }
+
 }

@@ -28,7 +28,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
  * A utility class for loading services using the SPI (Service Provider Interface) mechanism. The process is as follows:
- * 
+ *
  * <pre>
  *     1. Create an interface and its implementation classes.
  *     2. Create a file with the same name as the fully qualified name of the interface

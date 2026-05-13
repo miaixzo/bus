@@ -20,17 +20,26 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_Ultrasound_S2000;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS Ultrasound S2000";
 
-    /** (0021,xx00) VR=US VM=1 Nipple Position */
+    /**
+     * (0021,xx00) VR=US VM=1 Nipple Position
+     */
     public static final int NipplePosition = 0x00210000;
 
-    /** (0021,xx01) VR=US VM=1 ABVS Clip Derived From Volume */
+    /**
+     * (0021,xx01) VR=US VM=1 ABVS Clip Derived From Volume
+     */
     public static final int ABVSClipDerivedFromVolume = 0x00210001;
 
 }

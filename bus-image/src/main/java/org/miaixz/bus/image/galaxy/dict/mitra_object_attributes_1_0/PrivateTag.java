@@ -20,26 +20,41 @@
 package org.miaixz.bus.image.galaxy.dict.mitra_object_attributes_1_0;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "MITRA OBJECT ATTRIBUTES 1.0";
 
-    /** (0033,xx02) VR=LO VM=1 ? */
+    /**
+     * (0033,xx02) VR=LO VM=1 ?
+     */
     public static final int _0033_xx02_ = 0x00330002;
 
-    /** (0033,xx04) VR=LO VM=1 ? */
+    /**
+     * (0033,xx04) VR=LO VM=1 ?
+     */
     public static final int _0033_xx04_ = 0x00330004;
 
-    /** (0033,xx06) VR=LO VM=1 ? */
+    /**
+     * (0033,xx06) VR=LO VM=1 ?
+     */
     public static final int _0033_xx06_ = 0x00330006;
 
-    /** (0033,xx08) VR=LO VM=1 ? */
+    /**
+     * (0033,xx08) VR=LO VM=1 ?
+     */
     public static final int _0033_xx08_ = 0x00330008;
 
-    /** (0033,xx0A) VR=LO VM=1 ? */
+    /**
+     * (0033,xx0A) VR=LO VM=1 ?
+     */
     public static final int _0033_xx0A_ = 0x0033000A;
 
 }

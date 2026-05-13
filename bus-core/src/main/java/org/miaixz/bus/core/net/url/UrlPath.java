@@ -44,6 +44,7 @@ public class UrlPath {
      * The list of path segments.
      */
     private List<CharSequence> segments;
+
     /**
      * Whether to append a trailing slash to the path.
      */

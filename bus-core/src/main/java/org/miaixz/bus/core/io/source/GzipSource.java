@@ -42,14 +42,17 @@ public class GzipSource implements Source {
      * Flag bit for CRC in GZIP header.
      */
     private static final byte FHCRC = 1;
+
     /**
      * Flag bit for extra field in GZIP header.
      */
     private static final byte FEXTRA = 2;
+
     /**
      * Flag bit for file name in GZIP header.
      */
     private static final byte FNAME = 3;
+
     /**
      * Flag bit for file comment in GZIP header.
      */
@@ -59,14 +62,17 @@ public class GzipSource implements Source {
      * Represents the header section of the GZIP stream.
      */
     private static final byte SECTION_HEADER = 0;
+
     /**
      * Represents the body section of the GZIP stream.
      */
     private static final byte SECTION_BODY = 1;
+
     /**
      * Represents the trailer section of the GZIP stream.
      */
     private static final byte SECTION_TRAILER = 2;
+
     /**
      * Represents the state where the GZIP stream has been fully processed.
      */
@@ -76,19 +82,23 @@ public class GzipSource implements Source {
      * The underlying source of compressed bytes.
      */
     private final BufferSource source;
+
     /**
      * The inflater used for decompressing the GZIP data.
      */
     private final Inflater inflater;
+
     /**
      * An {@link InflaterSource} that mediates data exchange between the compressed source buffer and the decompressed
      * sink buffer.
      */
     private final InflaterSource inflaterSource;
+
     /**
      * CRC32 checksum calculator for verifying GZIP header and decompressed body.
      */
     private final CRC32 crc = new CRC32();
+
     /**
      * The current section of the GZIP stream being processed.
      */

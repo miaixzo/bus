@@ -41,6 +41,9 @@ public interface Preprocessor {
     /**
      * Represents a chain of preprocessors. It provides access to the current HTTP task and allows the chain to proceed
      * to the next preprocessor or to the final request execution.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     interface PreChain {
 

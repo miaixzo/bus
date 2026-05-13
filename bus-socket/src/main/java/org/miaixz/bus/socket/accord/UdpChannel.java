@@ -47,26 +47,32 @@ public class UdpChannel {
      * The service context, containing configuration settings.
      */
     public final Context context;
+
     /**
      * The buffer page for write operations.
      */
     private final BufferPage writeBufferPage;
+
     /**
      * The underlying UDP channel.
      */
     private final DatagramChannel channel;
+
     /**
      * A queue for pending outgoing messages.
      */
     private ConcurrentLinkedQueue<ResponseUnit> responseTasks;
+
     /**
      * The worker responsible for handling I/O operations.
      */
     private Worker worker;
+
     /**
      * The selection key for this channel's registration with a selector.
      */
     private SelectionKey selectionKey;
+
     /**
      * Holds a response unit that failed to send and needs to be retried.
      */
@@ -258,6 +264,9 @@ public class UdpChannel {
 
     /**
      * A data holder for a pending response, containing the session and the data to be sent.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static final class ResponseUnit {
 
@@ -265,6 +274,7 @@ public class UdpChannel {
          * The session to which the data should be sent.
          */
         private final UdpSession session;
+
         /**
          * The data to be sent.
          */

@@ -40,26 +40,31 @@ public class MySqlPrimaryKey implements PrimaryKey {
      */
     @MappingField(value = "TABLE_CAT")
     private String tableCat;
+
     /**
      * Table name.
      */
     @MappingField(value = "TABLE_NAME")
     private String tableName;
+
     /**
      * Primary key name (may be {@code null}).
      */
     @MappingField(value = "PK_NAME")
     private String pkName;
+
     /**
      * Table schema (may be {@code null}).
      */
     @MappingField(value = "TABLE_SCHEM")
     private String tableSchem;
+
     /**
      * Column name.
      */
     @MappingField(value = "COLUMN_NAME")
     private String columnName;
+
     /**
      * Sequence number within the primary key (1-based).
      */

@@ -39,6 +39,7 @@ public class BoolArrayMatcher implements PartMatcher {
      * The minimum value defined in the cron expression for this part.
      */
     protected final int minValue;
+
     /**
      * A boolean array where the index represents the value and {@code true} indicates a match.
      */

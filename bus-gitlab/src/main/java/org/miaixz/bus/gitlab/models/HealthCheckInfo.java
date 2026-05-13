@@ -33,6 +33,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.io.Serial;
 
+/**
+ * The health check info class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class HealthCheckInfo implements Serializable {
 
     @Serial
@@ -123,6 +129,9 @@ public class HealthCheckInfo implements Serializable {
     /**
      * This desrializer can deserialize on object containing a HealthCheckItem or an array containing a single
      * HealthCheckItem.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class HealthCheckItemDeserializer extends JsonDeserializer<HealthCheckItem> {
 
@@ -143,6 +152,7 @@ public class HealthCheckInfo implements Serializable {
 
             return (healthCheckItem);
         }
+
     }
 
 }

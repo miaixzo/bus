@@ -29,6 +29,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+/**
+ * The iteration class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Iteration implements Serializable {
 
     @Serial
@@ -49,6 +55,12 @@ public class Iteration implements Serializable {
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date dueDate;
 
+    /**
+     * The iteration state enum.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public enum IterationState {
 
         UPCOMMING(1), CURRENT(2), CLOSED(3);
@@ -78,6 +90,7 @@ public class Iteration implements Serializable {
         public String toString() {
             return name();
         }
+
     }
 
     private String webUrl;

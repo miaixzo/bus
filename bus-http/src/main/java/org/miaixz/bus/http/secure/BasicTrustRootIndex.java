@@ -36,7 +36,9 @@ import java.util.Set;
  */
 public class BasicTrustRootIndex implements TrustRootIndex {
 
-    /** A map from a certificate's subject X.500 principal to the certificate itself. */
+    /**
+     * A map from a certificate's subject X.500 principal to the certificate itself.
+     */
     private final Map<X500Principal, Set<X509Certificate>> subjectToCaCerts;
 
     /**

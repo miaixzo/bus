@@ -127,14 +127,17 @@ public class CortexProperties {
      * Bridge-specific starter properties.
      */
     private Bridge bridge = new Bridge();
+
     /**
      * Guard-specific starter properties.
      */
     private Guard guard = new Guard();
+
     /**
      * Audit-specific starter properties.
      */
     private Audit audit = new Audit();
+
     /**
      * Version-registry starter properties.
      */
@@ -209,6 +212,9 @@ public class CortexProperties {
 
     /**
      * Nested watch properties.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @Setter
@@ -229,6 +235,9 @@ public class CortexProperties {
 
     /**
      * Nested bridge properties.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @Setter
@@ -304,6 +313,9 @@ public class CortexProperties {
 
     /**
      * Nested guard properties.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @Setter
@@ -324,10 +336,14 @@ public class CortexProperties {
          * Default token guard configuration.
          */
         private Token token = new Token();
+
     }
 
     /**
      * Nested token-guard properties.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @Setter
@@ -343,6 +359,9 @@ public class CortexProperties {
 
     /**
      * Nested audit properties.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @Setter
@@ -358,10 +377,14 @@ public class CortexProperties {
          * Enables the default audit logger bean.
          */
         private boolean enabled = false;
+
     }
 
     /**
      * Nested version properties.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @Setter
@@ -377,6 +400,7 @@ public class CortexProperties {
          * Enables the version registry bean.
          */
         private boolean enabled = false;
+
     }
 
 }

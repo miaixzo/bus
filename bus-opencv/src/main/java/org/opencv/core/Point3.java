@@ -1,6 +1,12 @@
 package org.opencv.core;
 
 //javadoc:Point3_
+/**
+ * The point 3 class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Point3 {
 
     public double x, y, z;
@@ -78,4 +84,5 @@ public class Point3 {
     public String toString() {
         return "{" + x + ", " + y + ", " + z + "}";
     }
+
 }

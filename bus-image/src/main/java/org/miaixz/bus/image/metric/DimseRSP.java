@@ -24,39 +24,41 @@ import java.io.IOException;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 
 /**
+ * Defines the DimseRSP contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface DimseRSP {
 
     /**
-     * 发送下一个响应，完成后返回false
+     * Returns the related value.
      *
-     * @return 如果有更多要发送的响应，则为True
-     * @throws IOException          网络交互中是否有问题
-     * @throws InterruptedException 如果线程被中断
+     * @return true if the condition is met; otherwise false.
+     * @throws IOException          if the operation cannot be completed.
+     * @throws InterruptedException if the operation cannot be completed.
      */
     boolean next() throws IOException, InterruptedException;
 
     /**
-     * 获取响应命令对象
+     * Gets the related value.
      *
-     * @return 属性命令对象
+     * @return the result.
      */
     Attributes getCommand();
 
     /**
-     * 获取此响应中包含的数据集，如果没有数据集，则为null
+     * Gets the related value.
      *
-     * @return 属性此响应中包含的数据集(如果有)
+     * @return true if the condition is met; otherwise false.
      */
     Attributes getDataset();
 
     /**
-     * 如果这是可以取消*的DIMSE操作(例如C-FIND)，请取消操作
+     * Provides DICOM processing details.
      *
-     * @param association 关联活动的关联对象
-     * @throws IOException 网络交互中是否有问题。
+     * @param association the association.
+     * @throws IOException if the operation cannot be completed.
      */
     void cancel(Association association) throws IOException;
 

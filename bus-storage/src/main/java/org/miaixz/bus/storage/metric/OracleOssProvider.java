@@ -39,7 +39,7 @@ import org.miaixz.bus.storage.Context;
  * </ul>
  * <p>
  * <strong>Endpoint Format:</strong>
- * 
+ *
  * <pre>
  * https://{namespace}.compat.objectstorage.{region}.oraclecloud.com
  *
@@ -51,7 +51,7 @@ import org.miaixz.bus.storage.Context;
  * </pre>
  * <p>
  * <strong>Usage Example:</strong>
- * 
+ *
  * <pre>{@code
  * Context context = Context.builder().endpoint("https://mycompany.compat.objectstorage.us-phoenix-1.oraclecloud.com")
  *         .bucket("my-bucket").accessKey("your-access-key").secretKey("your-secret-key").region("us-phoenix-1")

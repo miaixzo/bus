@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.DLX_PATNT_01;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "DLX_PATNT_01";
 
-    /** (0011,xx01) VR=LT VM=1 Patient DOB */
+    /**
+     * (0011,xx01) VR=LT VM=1 Patient DOB
+     */
     public static final int PatientDOB = 0x00110001;
 
 }

@@ -58,11 +58,13 @@ import lombok.Setter;
  * <p>
  * <strong>Usage Example:</strong>
  *
- * <pre>{@code
+ * <pre>
+ * {@code
  * // In a Servlet Vector:
  * public class XSSFilter implements Vector {
  *
- *     @Override
+ * &#64;author Kimi Liu
+ *     &#64;Override
  *     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
  *             throws IOException, ServletException {
  *         // Wrap the request
@@ -71,7 +73,8 @@ import lombok.Setter;
  *         chain.doFilter(wrappedRequest, response);
  *     }
  * }
- * }</pre>
+ * }
+ * </pre>
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -268,6 +271,9 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
 
     /**
      * A custom {@link ServletInputStream} wrapper that allows the request body content to be read multiple times.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @Setter
@@ -325,6 +331,7 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
         public int read() throws IOException {
             return this.inputStream.read();
         }
+
     }
 
 }

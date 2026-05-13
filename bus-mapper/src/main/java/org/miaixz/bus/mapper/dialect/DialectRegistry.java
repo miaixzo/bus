@@ -405,6 +405,9 @@ public final class DialectRegistry {
 
     /**
      * Default dialect for unknown databases
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class DefaultDialect extends AbstractDialect {
 
@@ -447,6 +450,7 @@ public final class DialectRegistry {
         public String buildPaginationSql(String originalSql, Pageable pageable) {
             return originalSql;
         }
+
     }
 
 }

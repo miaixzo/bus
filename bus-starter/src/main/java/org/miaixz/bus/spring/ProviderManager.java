@@ -41,6 +41,7 @@ public class ProviderManager {
      * A cache for provider beans, keyed by their interface class.
      */
     public static final Map<Class<Provider<?>>, Collection<Provider<?>>> CACHED_PROVIDERS = new ConcurrentHashMap<>();
+
     /**
      * The Spring {@link ConfigurableApplicationContext}, which is lazily initialized.
      */

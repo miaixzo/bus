@@ -32,6 +32,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.io.Serial;
 
+/**
+ * The export status class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class ExportStatus implements Serializable {
 
     @Serial
@@ -39,6 +45,9 @@ public class ExportStatus implements Serializable {
 
     /**
      * Enum representing the status of the export.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum Status {
 
@@ -67,6 +76,7 @@ public class ExportStatus implements Serializable {
         public String toString() {
             return (enumHelper.toString(this));
         }
+
     }
 
     private Long id;

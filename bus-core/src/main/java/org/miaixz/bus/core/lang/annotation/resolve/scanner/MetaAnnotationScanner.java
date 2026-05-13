@@ -34,9 +34,9 @@ import org.miaixz.bus.core.xyz.*;
  * <p>
  * Note: when the element being scanned is an enum class, there may be conflicts with {@link TypeAnnotationScanner}.
  *
+ * @see TypeAnnotationScanner
  * @author Kimi Liu
  * @since Java 21+
- * @see TypeAnnotationScanner
  */
 public class MetaAnnotationScanner implements AnnotationScanner {
 

@@ -39,6 +39,7 @@ public class CharFinder extends TextFinder {
      * The character to be searched.
      */
     private final char c;
+
     /**
      * Whether to ignore case during the search.
      */

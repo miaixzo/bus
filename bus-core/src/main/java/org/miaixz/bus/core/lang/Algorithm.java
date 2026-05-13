@@ -32,7 +32,9 @@ import javax.crypto.Cipher;
  */
 public enum Algorithm {
 
-    /****************************** Asymmetric - Algorithm Types ******************************/
+    /**
+     * Asymmetric - Algorithm Types *****************************
+     */
 
     /**
      * RSA algorithm.
@@ -63,7 +65,9 @@ public enum Algorithm {
      */
     ECDSA("ECDSA"),
 
-    /***************************** Asymmetric - Signature Algorithms *****************************/
+    /**
+     * Asymmetric - Signature Algorithms ****************************
+     */
 
     /**
      * RSA signature algorithm with no digest.
@@ -137,7 +141,9 @@ public enum Algorithm {
      */
     SHA512WITHRSA_PSS("SHA512WithRSA/PSS"),
 
-    /****************************** Digest - Algorithm Types *****************************/
+    /**
+     * Digest - Algorithm Types ****************************
+     */
 
     /**
      * MD2 message digest algorithm.
@@ -168,7 +174,9 @@ public enum Algorithm {
      */
     SHA1PRNG("SHA1PRNG"),
 
-    /***************************** Digest - HMAC Algorithms *****************************/
+    /**
+     * Digest - HMAC Algorithms ****************************
+     */
 
     /**
      * HmacMD5 algorithm.
@@ -199,7 +207,9 @@ public enum Algorithm {
      */
     SM4CMAC("SM4CMAC"),
 
-    /***************************** Symmetric - Algorithm Types *****************************/
+    /**
+     * Symmetric - Algorithm Types ****************************
+     */
 
     /**
      * Default AES encryption mode: AES/ECB/PKCS5Padding.
@@ -243,7 +253,9 @@ public enum Algorithm {
      */
     PBEWITHSHA1ANDRC2_40("PBEWithSHA1AndRC2_40"),
 
-    /******************************* National Algorithms *******************************/
+    /**
+     * National Algorithms ******************************
+     */
 
     /**
      * SM1 symmetric algorithm.
@@ -264,7 +276,9 @@ public enum Algorithm {
      */
     SM4("SM4"),
 
-    /******************************* Other Algorithms *******************************/
+    /**
+     * Other Algorithms ******************************
+     */
 
     /**
      * ZUC algorithm - ZUC-128.
@@ -317,6 +331,9 @@ public enum Algorithm {
      *
      * @see <a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#Cipher"> Cipher
      *      section in Standard Names for Java Cryptography Architecture</a>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum Mode {
         /**
@@ -356,10 +373,14 @@ public enum Algorithm {
          * cannot perform integrity checks on encrypted messages.
          */
         GCM
+
     }
 
     /**
      * Enumeration for Cipher operation types.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum Type {
 
@@ -402,6 +423,7 @@ public enum Algorithm {
         public int getValue() {
             return this.value;
         }
+
     }
 
 }

@@ -20,8 +20,10 @@
 package org.miaixz.bus.image.galaxy;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.image.Status;
 import org.miaixz.bus.image.Tag;
@@ -40,18 +42,22 @@ public class ImageProgress implements CancelListener {
      * A list of listeners to be notified of progress updates.
      */
     private final List<ProgressListener> listenerList;
+
     /**
      * The attributes associated with the image operation.
      */
-    private Attributes attributes;
+    private final AtomicReference<Attributes> attributes;
+
     /**
      * A volatile flag indicating whether the operation has been cancelled.
      */
     private volatile boolean cancel;
+
     /**
      * The file being processed.
      */
-    private File processedFile;
+    private final AtomicReference<File> processedFile;
+
     /**
      * A volatile flag indicating if the last sub-operation failed.
      */
@@ -63,7 +69,9 @@ public class ImageProgress implements CancelListener {
      */
     public ImageProgress() {
         this.cancel = false;
-        this.listenerList = new ArrayList<>();
+        this.listenerList = new CopyOnWriteArrayList<>();
+        this.attributes = new AtomicReference<>();
+        this.processedFile = new AtomicReference<>();
     }
 
     /**
@@ -72,7 +80,7 @@ public class ImageProgress implements CancelListener {
      * @return The {@link Attributes} object.
      */
     public Attributes getAttributes() {
-        return attributes;
+        return attributes.get();
     }
 
     /**
@@ -82,12 +90,9 @@ public class ImageProgress implements CancelListener {
      * @param attributes The {@link Attributes} to set.
      */
     public void setAttributes(Attributes attributes) {
-        synchronized (this) {
-            int failed = getNumberOfFailedSuboperations();
-            failed = Math.max(failed, 0);
-            this.attributes = attributes;
-            lastFailed = failed < getNumberOfFailedSuboperations();
-        }
+        int previousFailed = getNumberOfFailedSuboperations();
+        this.attributes.set(attributes);
+        lastFailed = previousFailed >= 0 && previousFailed < getNumberOfFailedSuboperations();
 
         fireProgress();
     }
@@ -106,8 +111,8 @@ public class ImageProgress implements CancelListener {
      *
      * @return The {@link File} being processed.
      */
-    public synchronized File getProcessedFile() {
-        return processedFile;
+    public File getProcessedFile() {
+        return processedFile.get();
     }
 
     /**
@@ -115,8 +120,27 @@ public class ImageProgress implements CancelListener {
      *
      * @param processedFile The {@link File} to set as the processed file.
      */
-    public synchronized void setProcessedFile(File processedFile) {
-        this.processedFile = processedFile;
+    public void setProcessedFile(File processedFile) {
+        this.processedFile.set(processedFile);
+    }
+
+    /**
+     * Retrieves the path of the file currently being processed.
+     *
+     * @return The processed file path, or {@code null} when no file is set.
+     */
+    public Path getProcessedPath() {
+        File file = processedFile.get();
+        return file == null ? null : file.toPath();
+    }
+
+    /**
+     * Sets the path being processed while preserving the existing file-based bus-image API.
+     *
+     * @param processedPath The processed file path.
+     */
+    public void setProcessedPath(Path processedPath) {
+        this.processedFile.set(processedPath == null ? null : processedPath.toFile());
     }
 
     /**
@@ -159,6 +183,13 @@ public class ImageProgress implements CancelListener {
     }
 
     /**
+     * Resets the cancellation flag, allowing the same progress holder to be reused.
+     */
+    public void resetCancel() {
+        this.cancel = false;
+    }
+
+    /**
      * Checks if the image operation has been cancelled.
      *
      * @return {@code true} if the operation is cancelled, {@code false} otherwise.
@@ -168,13 +199,49 @@ public class ImageProgress implements CancelListener {
     }
 
     /**
+     * Alias aligned with the Weasis progress API naming.
+     *
+     * @return {@code true} if the operation is cancelled.
+     */
+    public boolean isCancelled() {
+        return isCancel();
+    }
+
+    /**
+     * Checks if the current status is pending.
+     *
+     * @return {@code true} if current status is pending.
+     */
+    public boolean isPending() {
+        return Status.isPending(getStatus());
+    }
+
+    /**
+     * Checks if the current status is success.
+     *
+     * @return {@code true} if current status is success.
+     */
+    public boolean isCompleted() {
+        return getStatus() == Status.Success;
+    }
+
+    /**
+     * Checks if the current status is a final failure.
+     *
+     * @return {@code true} if current status is a final failure.
+     */
+    public boolean isFailed() {
+        return Status.isFailure(getStatus());
+    }
+
+    /**
      * Retrieves the integer value of a specified tag from the associated attributes.
      *
      * @param tag The tag to retrieve.
      * @return The integer value of the tag, or -1 if attributes are null or the tag is not found.
      */
     private int getIntTag(int tag) {
-        Attributes dcm = attributes;
+        Attributes dcm = attributes.get();
         if (dcm == null) {
             return -1;
         }
@@ -191,7 +258,7 @@ public class ImageProgress implements CancelListener {
         if (isCancel()) {
             return Status.Cancel;
         }
-        Attributes dcm = attributes;
+        Attributes dcm = attributes.get();
         if (dcm == null) {
             return Status.Pending;
         }
@@ -204,7 +271,7 @@ public class ImageProgress implements CancelListener {
      * @return The error comment string, or {@code null} if attributes are null or the tag is not found.
      */
     public String getErrorComment() {
-        Attributes dcm = attributes;
+        Attributes dcm = attributes.get();
         if (dcm == null) {
             return null;
         }

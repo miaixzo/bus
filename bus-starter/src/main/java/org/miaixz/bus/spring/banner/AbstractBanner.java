@@ -43,14 +43,17 @@ public abstract class AbstractBanner implements Banner {
      * The resource class used to load the banner resource.
      */
     protected Class<?> resourceClass;
+
     /**
      * The location of the banner resource (e.g., "/banner.txt").
      */
     protected String resourceLocation;
+
     /**
      * The default banner text to use if the resource cannot be loaded.
      */
     protected String defaultBanner;
+
     /**
      * The final banner text, after loading and processing.
      */

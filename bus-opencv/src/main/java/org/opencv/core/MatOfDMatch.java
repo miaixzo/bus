@@ -3,6 +3,12 @@ package org.opencv.core;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The mat of d match class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class MatOfDMatch extends Mat {
 
     // 32FC4
@@ -79,4 +85,5 @@ public class MatOfDMatch extends Mat {
         DMatch[] adm = toArray();
         return Arrays.asList(adm);
     }
+
 }

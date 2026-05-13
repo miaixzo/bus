@@ -28,6 +28,12 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serial;
 
+/**
+ * The project access token class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class ProjectAccessToken implements Serializable {
 
     @Serial

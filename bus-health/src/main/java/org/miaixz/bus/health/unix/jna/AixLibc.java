@@ -43,10 +43,12 @@ public interface AixLibc extends CLibrary {
      * Size of the {@code pr_clname} field in {@code AixLwpsInfo}.
      */
     int PRCLSZ = 8;
+
     /**
      * Size of the {@code pr_fname} field in {@code AixPsInfo}.
      */
     int PRFNSZ = 16;
+
     /**
      * Size of the {@code pr_psargs} field in {@code AixPsInfo}.
      */
@@ -61,6 +63,9 @@ public interface AixLibc extends CLibrary {
 
     /**
      * Represents the process information structure on AIX.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class AixPsInfo {
 
@@ -68,106 +73,132 @@ public interface AixLibc extends CLibrary {
          * Process flags from proc struct p_flag.
          */
         public int pr_flag;
+
         /**
          * Process flags from proc struct p_flag2.
          */
         public int pr_flag2;
+
         /**
          * Number of threads in process.
          */
         public int pr_nlwp;
+
         /**
          * Reserved for future use.
          */
         public int pr__pad1;
+
         /**
          * Real user ID.
          */
         public long pr_uid;
+
         /**
          * Effective user ID.
          */
         public long pr_euid;
+
         /**
          * Real group ID.
          */
         public long pr_gid;
+
         /**
          * Effective group ID.
          */
         public long pr_egid;
+
         /**
          * Unique process ID.
          */
         public long pr_pid;
+
         /**
          * Process ID of parent.
          */
         public long pr_ppid;
+
         /**
          * PID of process group leader.
          */
         public long pr_pgid;
+
         /**
          * Session ID.
          */
         public long pr_sid;
+
         /**
          * Controlling tty device.
          */
         public long pr_ttydev;
+
         /**
          * Internal address of proc struct.
          */
         public long pr_addr;
+
         /**
          * Size of process image in KB (1024) units.
          */
         public long pr_size;
+
         /**
          * Resident set size in KB (1024) units.
          */
         public long pr_rssize;
+
         /**
          * Process start time, time since epoch.
          */
         public Timestruc pr_start;
+
         /**
          * User + system CPU time for this process.
          */
         public Timestruc pr_time;
+
         /**
          * Corral ID.
          */
         public short pr_cid;
+
         /**
          * Reserved for future use.
          */
         public short pr__pad2;
+
         /**
          * Initial argument count.
          */
         public int pr_argc;
+
         /**
          * Address of initial argument vector in user process.
          */
         public long pr_argv;
+
         /**
          * Address of initial environment vector in user process.
          */
         public long pr_envp;
+
         /**
          * Last component of exec()ed pathname.
          */
         public byte[] pr_fname = new byte[PRFNSZ];
+
         /**
          * Initial characters of arg list.
          */
         public byte[] pr_psargs = new byte[PRARGSZ];
+
         /**
          * Reserved for future use.
          */
         public long[] pr__pad = new long[8];
+
         /**
          * "Representative" thread info.
          */
@@ -214,6 +245,9 @@ public interface AixLibc extends CLibrary {
 
     /**
      * Represents the lightweight process (thread) information structure on AIX.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class AixLwpsInfo {
 
@@ -221,50 +255,62 @@ public interface AixLibc extends CLibrary {
          * Thread ID.
          */
         public long pr_lwpid;
+
         /**
          * Internal address of thread.
          */
         public long pr_addr;
+
         /**
          * Wait address for sleeping thread.
          */
         public long pr_wchan;
+
         /**
          * Thread flags.
          */
         public int pr_flag;
+
         /**
          * Type of thread wait.
          */
         public byte pr_wtype;
+
         /**
          * Numeric scheduling state.
          */
         public byte pr_state;
+
         /**
          * Printable character representing pr_state.
          */
         public byte pr_sname;
+
         /**
          * Nice value for CPU usage.
          */
         public byte pr_nice;
+
         /**
          * Priority, high value = high priority.
          */
         public int pr_pri;
+
         /**
          * Scheduling policy.
          */
         public int pr_policy;
+
         /**
          * Printable character representing pr_policy.
          */
         public byte[] pr_clname = new byte[PRCLSZ];
+
         /**
          * Processor on which thread last ran.
          */
         public int pr_onpro;
+
         /**
          * Processor to which thread is bound.
          */
@@ -290,10 +336,14 @@ public interface AixLibc extends CLibrary {
             this.pr_onpro = Builder.readIntFromBuffer(buff);
             this.pr_bindpro = Builder.readIntFromBuffer(buff);
         }
+
     }
 
     /**
      * 64-bit timestruc required for psinfo structure.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class Timestruc {
 
@@ -301,10 +351,12 @@ public interface AixLibc extends CLibrary {
          * Seconds.
          */
         public long tv_sec;
+
         /**
          * Nanoseconds.
          */
         public int tv_nsec;
+
         /**
          * Padding.
          */
@@ -320,6 +372,7 @@ public interface AixLibc extends CLibrary {
             this.tv_nsec = Builder.readIntFromBuffer(buff);
             this.pad = Builder.readIntFromBuffer(buff);
         }
+
     }
 
 }

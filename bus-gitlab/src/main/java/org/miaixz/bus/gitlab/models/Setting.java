@@ -31,6 +31,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * This enum provides constants and value validation for the available GitLab application settings. See
  * <a href="https://docs.gitlab.com/ce/api/settings.html#list-of-settings-that-can-be-accessed-via-api-calls"> List of
  * settings that can be accessed via API calls</a> for more information.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public enum Setting {
 
@@ -1941,6 +1944,9 @@ public enum Setting {
 
     private static JacksonJsonEnumHelper<Setting> enumHelper = new JacksonJsonEnumHelper<>(Setting.class);
 
+    /**
+     * The type field.
+     */
     private Class<?> type;
     private Class<?>[] types;
 

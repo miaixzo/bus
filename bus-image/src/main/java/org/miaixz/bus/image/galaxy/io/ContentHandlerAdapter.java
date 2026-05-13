@@ -49,78 +49,97 @@ public class ContentHandlerAdapter extends DefaultHandler {
      * Flag indicating whether parsing should be lenient, ignoring certain errors.
      */
     private final boolean lenient;
+
     /**
      * Stack of {@link Attributes} objects, representing the current nesting level in DICOM sequences.
      */
     private final LinkedList<Attributes> items = new LinkedList<>();
+
     /**
      * Stack of {@link Sequence} objects, representing the current sequence being parsed.
      */
     private final LinkedList<Sequence> seqs = new LinkedList<>();
+
     /**
      * Output stream used to collect binary data from inline binary elements.
      */
     private final ByteArrayOutputStream bout = new ByteArrayOutputStream(64);
+
     /**
      * Buffer for handling partial character data when decoding inline binary.
      */
     private final char[] carry = new char[4];
+
     /**
      * String builder for collecting character data for string values.
      */
     private final StringBuilder sb = new StringBuilder(64);
+
     /**
      * List to store multiple values for a multi-valued DICOM attribute.
      */
     private final ArrayList<String> values = new ArrayList<>();
+
     /**
      * Creator for {@link BulkData} objects, allowing custom handling of bulk data storage.
      */
     private BulkData.Creator bulkDataCreator = BulkData::new;
+
     /**
      * Stores File Meta Information attributes.
      */
     private Attributes fmi;
+
     /**
      * Flag indicating the endianness of the current dataset.
      */
     private boolean bigEndian;
+
     /**
      * Length of the {@code carry} buffer currently in use.
      */
     private int carryLen;
+
     /**
      * Current {@link PersonName} object being parsed.
      */
     private PersonName pn;
+
     /**
      * Current {@link PersonName.Group} being parsed.
      */
     private PersonName.Group pnGroup;
+
     /**
      * The DICOM tag of the attribute currently being parsed.
      */
     private int tag;
+
     /**
      * The private creator of the attribute currently being parsed.
      */
     private String privateCreator;
+
     /**
      * The Value Representation (VR) of the attribute currently being parsed.
      */
     private VR vr;
+
     /**
      * Current {@link BulkData} object being parsed.
      */
     private BulkData bulkData;
+
     /**
      * Current {@link Fragments} object being parsed.
      */
     private Fragments dataFragments;
+
     /**
      * Flag indicating whether character data should be processed.
      */
     private boolean processCharacters;
+
     /**
      * Flag indicating whether the current element is an inline binary element.
      */
@@ -208,6 +227,14 @@ public class ContentHandlerAdapter extends DefaultHandler {
         return items.getFirst();
     }
 
+    /**
+     * Executes the start element operation.
+     *
+     * @param uri       the uri.
+     * @param localName the local name.
+     * @param qName     the q name.
+     * @param atts      the atts.
+     */
     @Override
     public void startElement(String uri, String localName, String qName, org.xml.sax.Attributes atts) {
         switch (qName) {
@@ -369,6 +396,14 @@ public class ContentHandlerAdapter extends DefaultHandler {
         this.pnGroup = pnGroup;
     }
 
+    /**
+     * Executes the characters operation.
+     *
+     * @param ch     the ch.
+     * @param offset the offset.
+     * @param len    the len.
+     * @throws SAXException if the operation cannot be completed.
+     */
     @Override
     public void characters(char[] ch, int offset, int len) throws SAXException {
         if (processCharacters)
@@ -397,6 +432,14 @@ public class ContentHandlerAdapter extends DefaultHandler {
                 sb.append(ch, offset, len);
     }
 
+    /**
+     * Executes the end element operation.
+     *
+     * @param uri       the uri.
+     * @param localName the local name.
+     * @param qName     the q name.
+     * @throws SAXException if the operation cannot be completed.
+     */
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         switch (qName) {
@@ -443,6 +486,9 @@ public class ContentHandlerAdapter extends DefaultHandler {
         processCharacters = false;
     }
 
+    /**
+     * Executes the end document operation.
+     */
     @Override
     public void endDocument() {
         if (fmi != null)

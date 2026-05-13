@@ -25,6 +25,12 @@ import java.util.Date;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import java.io.Serial;
 
+/**
+ * The snippet class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Snippet implements Serializable {
 
     @Serial

@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.DL_INTERNAL_USE;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "DL_INTERNAL_USE";
 
-    /** (0015,xx8F) VR=IS VM=1 ? */
+    /**
+     * (0015,xx8F) VR=IS VM=1 ?
+     */
     public static final int _0015_xx8F_ = 0x0015008F;
 
 }

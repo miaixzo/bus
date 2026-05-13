@@ -34,164 +34,197 @@ import org.miaixz.bus.image.galaxy.data.Code;
 public class AcquisitionModality {
 
     /**
-     * Autorefraction modality.
+     * The autorefraction value.
      */
     public static final Code Autorefraction = new Code("AR", "DCM", null, "Autorefraction");
+
     /**
-     * Bone Mineral Densitometry modality.
+     * The bone mineral densitometry value.
      */
     public static final Code BoneMineralDensitometry = new Code("BMD", "DCM", null, "Bone Mineral Densitometry");
+
     /**
-     * Ultrasound Bone Densitometry modality.
+     * The ultrasound bone densitometry value.
      */
     public static final Code UltrasoundBoneDensitometry = new Code("BDUS", "DCM", null, "Ultrasound Bone Densitometry");
+
     /**
-     * Cardiac Electrophysiology modality.
+     * The cardiac electrophysiology value.
      */
     public static final Code CardiacElectrophysiology = new Code("EPS", "DCM", null, "Cardiac Electrophysiology");
+
     /**
-     * Computed Radiography modality.
+     * The computed radiography value.
      */
     public static final Code ComputedRadiography = new Code("CR", "DCM", null, "Computed Radiography");
+
     /**
-     * Computed Tomography modality.
+     * The computed tomography value.
      */
     public static final Code ComputedTomography = new Code("CT", "DCM", null, "Computed Tomography");
+
     /**
-     * Digital Radiography modality.
+     * The digital radiography value.
      */
     public static final Code DigitalRadiography = new Code("DX", "DCM", null, "Digital Radiography");
+
     /**
-     * Electrocardiography modality.
+     * The electrocardiography value.
      */
     public static final Code Electrocardiography = new Code("ECG", "DCM", null, "Electrocardiography");
+
     /**
-     * Endoscopy modality.
+     * The endoscopy value.
      */
     public static final Code Endoscopy = new Code("ES", "DCM", null, "Endoscopy");
+
     /**
-     * External-camera Photography modality.
+     * The external camera photography value.
      */
     public static final Code ExternalCameraPhotography = new Code("XC", "DCM", null, "External-camera Photography");
+
     /**
-     * General Microscopy modality.
+     * The general microscopy value.
      */
     public static final Code GeneralMicroscopy = new Code("GM", "DCM", null, "General Microscopy");
+
     /**
-     * Hemodynamic Waveform modality.
+     * The hemodynamic waveform value.
      */
     public static final Code HemodynamicWaveform = new Code("HD", "DCM", null, "Hemodynamic Waveform");
+
     /**
-     * Intra-oral Radiography modality.
+     * The intra oral radiography value.
      */
     public static final Code IntraOralRadiography = new Code("IO", "DCM", null, "Intra-oral Radiography");
+
     /**
-     * Intravascular Optical Coherence Tomography modality.
+     * The intravascular optical coherence value.
      */
     public static final Code IntravascularOpticalCoherence = new Code("IVOCT", "DCM", null,
             "Intravascular Optical Coherence Tomography");
+
     /**
-     * Intravascular Ultrasound modality.
+     * The intravascular ultrasound value.
      */
     public static final Code IntravascularUltrasound = new Code("IVUS", "DCM", null, "Intravascular Ultrasound");
+
     /**
-     * Keratometry modality.
+     * The keratometry value.
      */
     public static final Code Keratometry = new Code("KER", "DCM", null, "Keratometry");
+
     /**
-     * Lensometry modality.
+     * The lensometry value.
      */
     public static final Code Lensometry = new Code("LEN", "DCM", null, "Lensometry");
+
     /**
-     * Magnetic Resonance modality.
+     * The magnetic resonance value.
      */
     public static final Code MagneticResonance = new Code("MR", "DCM", null, "Magnetic Resonance");
+
     /**
-     * Mammography modality.
+     * The mammography value.
      */
     public static final Code Mammography = new Code("MG", "DCM", null, "Mammography");
+
     /**
-     * Nuclear Medicine modality.
+     * The nuclear medicine value.
      */
     public static final Code NuclearMedicine = new Code("NM", "DCM", null, "Nuclear Medicine");
+
     /**
-     * Ophthalmic Axial Measurements modality.
+     * The ophthalmic axial measurements value.
      */
     public static final Code OphthalmicAxialMeasurements = new Code("OAM", "DCM", null,
             "Ophthalmic Axial Measurements");
+
     /**
-     * Optical Coherence Tomography modality.
+     * The optical coherence tomography value.
      */
     public static final Code OpticalCoherenceTomography = new Code("OCT", "DCM", null, "Optical Coherence Tomography");
+
     /**
-     * Ophthalmic Mapping modality.
+     * The ophthalmic mapping value.
      */
     public static final Code OphthalmicMapping = new Code("OPM", "DCM", null, "Ophthalmic Mapping");
+
     /**
-     * Ophthalmic Photography modality.
+     * The ophthalmic photography value.
      */
     public static final Code OphthalmicPhotography = new Code("OP", "DCM", null, "Ophthalmic Photography");
+
     /**
-     * Ophthalmic Refraction modality.
+     * The ophthalmic refraction value.
      */
     public static final Code OphthalmicRefraction = new Code("OPR", "DCM", null, "Ophthalmic Refraction");
+
     /**
-     * Ophthalmic Tomography modality.
+     * The ophthalmic tomography value.
      */
     public static final Code OphthalmicTomography = new Code("OPT", "DCM", null, "Ophthalmic Tomography");
+
     /**
-     * Ophthalmic Visual Field modality.
+     * The ophthalmic visual field value.
      */
     public static final Code OphthalmicVisualField = new Code("OPV", "DCM", null, "Ophthalmic Visual Field");
+
     /**
-     * Optical Surface Scanner modality.
+     * The optical surface scanner value.
      */
     public static final Code OpticalSurfaceScanner = new Code("OSS", "DCM", null, "Optical Surface Scanner");
+
     /**
-     * Panoramic X-Ray modality.
+     * The panoramic x ray value.
      */
     public static final Code PanoramicXRay = new Code("PX", "DCM", null, "Panoramic X-Ray");
+
     /**
-     * Positron Emission Tomography modality.
+     * The positron emission tomography value.
      */
     public static final Code PositronEmissionTomography = new Code("PT", "DCM", null, "Positron emission tomography");
+
     /**
-     * Radiofluoroscopy modality.
+     * The radiofluoroscopy value.
      */
     public static final Code Radiofluoroscopy = new Code("RF", "DCM", null, "Radiofluoroscopy");
+
     /**
-     * Radiographic imaging modality.
+     * The radiographic imaging value.
      */
     public static final Code RadiographicImaging = new Code("RG", "DCM", null, "Radiographic imaging");
+
     /**
-     * Slide Microscopy modality.
+     * The slide microscopy value.
      */
     public static final Code SlideMicroscopy = new Code("SM", "DCM", null, "Slide Microscopy");
+
     /**
-     * Subjective Refraction modality.
+     * The subjective refraction value.
      */
     public static final Code SubjectiveRefraction = new Code("SRF", "DCM", null, "Subjective Refraction");
+
     /**
-     * Ultrasound modality.
+     * The ultrasound value.
      */
     public static final Code Ultrasound = new Code("US", "DCM", null, "Ultrasound");
+
     /**
-     * Visual Acuity modality.
+     * The visual acuity value.
      */
     public static final Code VisualAcuity = new Code("VA", "DCM", null, "Visual Acuity");
+
     /**
-     * X-Ray Angiography modality.
+     * The x ray angiography value.
      */
     public static final Code XRayAngiography = new Code("XA", "DCM", null, "X-Ray Angiography");
 
     /**
-     * A map holding all defined acquisition modalities, keyed by their code value.
+     * The modalities value.
      */
     private static final Map<String, Code> MODALITIES = new HashMap<>(50);
 
-    /**
-     * Static initializer block to populate the {@link #MODALITIES} map with predefined acquisition modalities.
-     */
     static {
         Code[] codes = { Autorefraction, BoneMineralDensitometry, UltrasoundBoneDensitometry, CardiacElectrophysiology,
                 ComputedRadiography, ComputedTomography, DigitalRadiography, Electrocardiography, Endoscopy,
@@ -209,32 +242,30 @@ public class AcquisitionModality {
     }
 
     /**
-     * Retrieves the {@link Code} object for a given modality string.
+     * Executes the code of operation.
      *
-     * @param modality The string representation of the modality code value.
-     * @return The {@link Code} object corresponding to the modality, or {@code null} if not found.
+     * @param modality the modality.
+     * @return the operation result.
      */
     public static Code codeOf(String modality) {
         return MODALITIES.get(modality);
     }
 
     /**
-     * Adds a new {@link Code} object representing an acquisition modality to the internal map. If a code with the same
-     * code value already exists, it will be replaced.
+     * Adds the code.
      *
-     * @param code The {@link Code} object to add.
-     * @return The previous {@link Code} associated with the specified code value, or {@code null} if there was no
-     *         mapping for the code value.
+     * @param code the code.
+     * @return the operation result.
      */
     public static Code addCode(Code code) {
         return MODALITIES.put(code.getCodeValue(), code);
     }
 
     /**
-     * Removes the {@link Code} object associated with the specified modality string from the internal map.
+     * Removes the code.
      *
-     * @param modality The string representation of the modality code value to remove.
-     * @return The {@link Code} object that was removed, or {@code null} if no code was associated with the modality.
+     * @param modality the modality.
+     * @return the operation result.
      */
     public static Code removeCode(String modality) {
         return MODALITIES.remove(modality);

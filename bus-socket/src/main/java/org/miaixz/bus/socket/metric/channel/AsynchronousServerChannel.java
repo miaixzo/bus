@@ -44,42 +44,51 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
      * The actual underlying {@link SocketChannel}.
      */
     protected final SocketChannel channel;
+
     /**
      * The {@link AsynchronousChannelGroup.Worker} responsible for handling read events.
      */
     private final AsynchronousChannelGroup.Worker readWorker;
     private final boolean lowMemory;
     private final AsynchronousChannelGroup channelGroup;
+
     /**
      * The buffer used to receive data from the read channel. After decoding, the buffer is freed for the next batch of
      * data.
      */
     private ByteBuffer readBuffer;
+
     /**
      * The buffer used to hold data pending for write operations.
      */
     private ByteBuffer writeBuffer;
+
     /**
      * The completion handler for read events.
      */
     private CompletionHandler<Number, Object> readCompletionHandler;
+
     /**
      * The completion handler for write events.
      */
     private CompletionHandler<Number, Object> writeCompletionHandler;
+
     /**
      * The attachment object associated with the read completion handler.
      */
     private Object readAttachment;
+
     /**
      * The attachment object associated with the write completion handler.
      */
     private Object writeAttachment;
     private SelectionKey readSelectionKey;
+
     /**
      * A flag to indicate if a write operation was interrupted.
      */
     private boolean writeInterrupted;
+
     /**
      * Counter for read invoker recursion depth, to prevent excessive recursion.
      */

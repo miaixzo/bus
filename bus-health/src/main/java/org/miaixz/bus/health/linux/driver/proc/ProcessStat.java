@@ -47,6 +47,7 @@ public final class ProcessStat {
      * and 3.5 has 52.
      */
     public static final int PROC_PID_STAT_LENGTH;
+
     /**
      * The SOCKET constant.
      */
@@ -231,6 +232,9 @@ public final class ProcessStat {
 
     /**
      * Enum corresponding to the fields in the output of {@code /proc/[pid]/stat}
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum PidStat {
         /**
@@ -490,10 +494,14 @@ public final class ProcessStat {
          * The thread's exit status in the form reported by waitpid(2).
          */
         EXIT_CODE
+
     }
 
     /**
      * Enum corresponding to the fields in the output of {@code /proc/[pid]/statm}
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum PidStatM {
         /**
@@ -524,6 +532,7 @@ public final class ProcessStat {
          * Dirty pages (unused since Linux 2.6; always 0)
          */
         DT
+
     }
 
 }

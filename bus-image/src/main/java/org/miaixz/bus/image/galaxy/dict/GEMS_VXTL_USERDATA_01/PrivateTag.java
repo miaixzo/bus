@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.GEMS_VXTL_USERDATA_01;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEMS_VXTL_USERDATA_01";
 
-    /** (0047,xx11) VR=LT VM=1 ? */
+    /**
+     * (0047,xx11) VR=LT VM=1 ?
+     */
     public static final int _0047_xx11_ = 0x00470011;
 
 }

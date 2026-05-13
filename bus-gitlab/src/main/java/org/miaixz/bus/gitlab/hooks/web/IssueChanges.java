@@ -21,6 +21,12 @@ package org.miaixz.bus.gitlab.hooks.web;
 
 import java.util.Date;
 
+/**
+ * The issue changes class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class IssueChanges extends EventChanges {
 
     private ChangeContainer<Date> dueDate;

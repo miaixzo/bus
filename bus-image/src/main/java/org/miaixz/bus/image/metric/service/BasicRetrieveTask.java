@@ -42,31 +42,114 @@ import org.miaixz.bus.image.metric.pdu.PresentationContext;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the BasicRetrieveTask type.
+ *
+ * @param <T> the t type.
  * @author Kimi Liu
  * @since Java 21+
  */
 public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTask {
 
+    /**
+     * The rq value.
+     */
     protected final Dimse rq;
+
+    /**
+     * The rqas value.
+     */
     protected final Association rqas;
+
+    /**
+     * The storeas value.
+     */
     protected final Association storeas;
+
+    /**
+     * The pc value.
+     */
     protected final PresentationContext pc;
+
+    /**
+     * The rq cmd value.
+     */
     protected final Attributes rqCmd;
+
+    /**
+     * The msg id value.
+     */
     protected final int msgId;
+
+    /**
+     * The priority value.
+     */
     protected final int priority;
+
+    /**
+     * The insts value.
+     */
     protected final List<T> insts;
+
+    /**
+     * The completed value.
+     */
     protected final List<T> completed;
+
+    /**
+     * The warning value.
+     */
     protected final List<T> warning;
+
+    /**
+     * The failed value.
+     */
     protected final List<T> failed;
+
+    /**
+     * The status value.
+     */
     protected int status = Status.Success;
+
+    /**
+     * The pending rsp value.
+     */
     protected boolean pendingRSP;
+
+    /**
+     * The pending rsp interval value.
+     */
     protected int pendingRSPInterval;
+
+    /**
+     * The canceled value.
+     */
     protected boolean canceled;
+
+    /**
+     * The outstanding rsp value.
+     */
     protected int outstandingRSP = 0;
+
+    /**
+     * The outstanding rsp lock value.
+     */
     protected Object outstandingRSPLock = new Object();
 
+    /**
+     * The write pending rsp value.
+     */
     private ScheduledFuture<?> writePendingRSP;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param rq      the rq.
+     * @param rqas    the rqas.
+     * @param pc      the pc.
+     * @param rqCmd   the rq cmd.
+     * @param insts   the insts.
+     * @param storeas the storeas.
+     */
     public BasicRetrieveTask(Dimse rq, Association rqas, PresentationContext pc, Attributes rqCmd, List<T> insts,
             Association storeas) {
         this.rq = rq;
@@ -82,51 +165,109 @@ public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTas
         this.failed = new ArrayList<>(insts.size());
     }
 
+    /**
+     * Sets the send pending rsp.
+     *
+     * @param pendingRSP the pending rsp.
+     */
     public void setSendPendingRSP(boolean pendingRSP) {
         this.pendingRSP = pendingRSP;
     }
 
+    /**
+     * Sets the send pending rsp interval.
+     *
+     * @param pendingRSPInterval the pending rsp interval.
+     */
     public void setSendPendingRSPInterval(int pendingRSPInterval) {
         this.pendingRSPInterval = pendingRSPInterval;
     }
 
+    /**
+     * Determines whether c move.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean isCMove() {
         return rq == Dimse.C_MOVE_RQ;
     }
 
+    /**
+     * Determines whether canceled.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean isCanceled() {
         return canceled;
     }
 
+    /**
+     * Gets the status.
+     *
+     * @return the status.
+     */
     public int getStatus() {
         return status;
     }
 
+    /**
+     * Gets the request association.
+     *
+     * @return the request association.
+     */
     public Association getRequestAssociation() {
         return rqas;
     }
 
+    /**
+     * Gets the store association.
+     *
+     * @return the store association.
+     */
     public Association getStoreAssociation() {
         return storeas;
     }
 
+    /**
+     * Gets the completed.
+     *
+     * @return the completed.
+     */
     public List<T> getCompleted() {
         return completed;
     }
 
+    /**
+     * Gets the warning.
+     *
+     * @return the warning.
+     */
     public List<T> getWarning() {
         return warning;
     }
 
+    /**
+     * Gets the failed.
+     *
+     * @return the failed.
+     */
     public List<T> getFailed() {
         return failed;
     }
 
+    /**
+     * Executes the on cancel rq operation.
+     *
+     * @param as the as.
+     */
     @Override
     public void onCancelRQ(Association as) {
         canceled = true;
     }
 
+    /**
+     * Executes the run operation.
+     */
     @Override
     public void run() {
         rqas.addCancelRQHandler(msgId, this);
@@ -194,6 +335,9 @@ public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTas
         }
     }
 
+    /**
+     * Executes the start write pending rsp operation.
+     */
     private void startWritePendingRSP() {
         writePendingRSP = rqas.getApplicationEntity().getDevice().scheduleAtFixedRate(
                 () -> BasicRetrieveTask.this.writePendingRSP(),
@@ -202,11 +346,19 @@ public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTas
                 TimeUnit.SECONDS);
     }
 
+    /**
+     * Executes the stop write pending rsp operation.
+     */
     private void stopWritePendingRSP() {
         if (writePendingRSP != null)
             writePendingRSP.cancel(false);
     }
 
+    /**
+     * Executes the wait for outstanding c store rsp operation.
+     *
+     * @param storeas the storeas.
+     */
     private void waitForOutstandingCStoreRSP(Association storeas) {
         try {
             synchronized (outstandingRSPLock) {
@@ -224,6 +376,11 @@ public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTas
         }
     }
 
+    /**
+     * Executes the release store association operation.
+     *
+     * @param storeas the storeas.
+     */
     protected void releaseStoreAssociation(Association storeas) {
         try {
             if (storeas.isReadyForDataTransfer())
@@ -233,6 +390,16 @@ public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTas
         }
     }
 
+    /**
+     * Executes the cstore operation.
+     *
+     * @param storeas    the storeas.
+     * @param inst       the inst.
+     * @param tsuid      the tsuid.
+     * @param dataWriter the data writer.
+     * @throws IOException          if the operation cannot be completed.
+     * @throws InterruptedException if the operation cannot be completed.
+     */
     protected void cstore(Association storeas, T inst, String tsuid, DataWriter dataWriter)
             throws IOException, InterruptedException {
         DimseRSPHandler rspHandler = new CStoreRSPHandler(storeas.nextMessageID(), inst);
@@ -245,20 +412,44 @@ public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTas
         }
     }
 
+    /**
+     * Executes the select transfer syntax for operation.
+     *
+     * @param storeas the storeas.
+     * @param inst    the inst.
+     * @return the operation result.
+     * @throws Exception if the operation cannot be completed.
+     */
     protected String selectTransferSyntaxFor(Association storeas, T inst) throws Exception {
         return inst.tsuid;
     }
 
+    /**
+     * Creates the data writer.
+     *
+     * @param inst  the inst.
+     * @param tsuid the tsuid.
+     * @return the operation result.
+     * @throws Exception if the operation cannot be completed.
+     */
     protected DataWriter createDataWriter(T inst, String tsuid) throws Exception {
         ImageInputStream in = new ImageInputStream(inst.getFile());
         in.readFileMetaInformation();
         return new InputStreamDataWriter(in);
     }
 
+    /**
+     * Writes the pending rsp.
+     */
     public void writePendingRSP() {
         writeRSP(Status.Pending);
     }
 
+    /**
+     * Writes the rsp.
+     *
+     * @param status the status.
+     */
     private void writeRSP(int status) {
         Attributes cmd = Commands.mkRSP(rqCmd, status, rq);
         if (status == Status.Pending || status == Status.Cancel)
@@ -278,6 +469,12 @@ public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTas
         writeRSP(cmd, data);
     }
 
+    /**
+     * Writes the rsp.
+     *
+     * @param cmd  the cmd.
+     * @param data the data.
+     */
     private void writeRSP(Attributes cmd, Attributes data) {
         try {
             rqas.writeDimseRSP(pc, cmd, data);
@@ -294,22 +491,52 @@ public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTas
         }
     }
 
+    /**
+     * Executes the remaining operation.
+     *
+     * @return the operation result.
+     */
     private int remaining() {
         return insts.size() - completed.size() - warning.size() - failed.size();
     }
 
+    /**
+     * Executes the close operation.
+     */
     protected void close() {
     }
 
+    /**
+     * Represents the CStoreRSPHandler type.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     private final class CStoreRSPHandler extends DimseRSPHandler {
 
+        /**
+         * The inst value.
+         */
         private final T inst;
 
+        /**
+         * Creates a new instance.
+         *
+         * @param msgId the msg id.
+         * @param inst  the inst.
+         */
         public CStoreRSPHandler(int msgId, T inst) {
             super(msgId);
             this.inst = inst;
         }
 
+        /**
+         * Executes the on dimse rsp operation.
+         *
+         * @param as   the as.
+         * @param cmd  the cmd.
+         * @param data the data.
+         */
         @Override
         public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
             super.onDimseRSP(as, cmd, data);
@@ -329,6 +556,11 @@ public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTas
             }
         }
 
+        /**
+         * Executes the on close operation.
+         *
+         * @param as the as.
+         */
         @Override
         public void onClose(Association as) {
             super.onClose(as);
@@ -337,6 +569,7 @@ public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTas
                 outstandingRSPLock.notify();
             }
         }
+
     }
 
 }

@@ -50,14 +50,17 @@ public class SaltParser {
      * The message digest algorithm used for key derivation.
      */
     private final MessageDigest digest;
+
     /**
      * The desired key length in bytes.
      */
     private final int keyLength;
+
     /**
      * The desired IV (Initialization Vector) length in bytes.
      */
     private final int ivLength;
+
     /**
      * The algorithm name, used to determine default IV length for some algorithms.
      */

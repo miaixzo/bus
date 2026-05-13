@@ -27,6 +27,7 @@ import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -118,7 +119,10 @@ public class OpenAIProvider implements LlmProvider {
         Assert.notBlank(apiKey, "API key must not be blank");
 
         this.type = type;
-        this.endpoint = endpoint.endsWith(Symbol.SLASH) ? endpoint.substring(0, endpoint.length() - 1) : endpoint;
+        String normalizedEndpoint = UrlKit.normalize(endpoint, false);
+        this.endpoint = normalizedEndpoint.endsWith(Symbol.SLASH)
+                ? normalizedEndpoint.substring(0, normalizedEndpoint.length() - 1)
+                : normalizedEndpoint;
         this.apiKey = apiKey;
         this.model = model;
 
@@ -147,7 +151,8 @@ public class OpenAIProvider implements LlmProvider {
 
         Logger.debug(true, "Vortex", "Sending non-streaming request to {}: model={}", type, request.getModel());
 
-        return webClient.post().uri("/v1/chat/completions").bodyValue(requestBody).retrieve().bodyToMono(String.class)
+        String chatCompletionsPath = Symbol.SLASH + "v1" + Symbol.SLASH + "chat" + Symbol.SLASH + "completions";
+        return webClient.post().uri(chatCompletionsPath).bodyValue(requestBody).retrieve().bodyToMono(String.class)
                 .map(this::parseResponse)
                 .doOnError(e -> Logger.error(false, "Vortex", "Request failed: {}", e.getClass().getSimpleName()));
     }
@@ -174,8 +179,9 @@ public class OpenAIProvider implements LlmProvider {
 
         Logger.debug(true, "Vortex", "Sending streaming request to {}: model={}", type, request.getModel());
 
-        return webClient.post().uri("/v1/chat/completions").bodyValue(requestBody).retrieve().bodyToFlux(String.class)
-                .map(chunk -> "data: " + chunk + "\n\n").doOnError(
+        String chatCompletionsPath = Symbol.SLASH + "v1" + Symbol.SLASH + "chat" + Symbol.SLASH + "completions";
+        return webClient.post().uri(chatCompletionsPath).bodyValue(requestBody).retrieve().bodyToFlux(String.class)
+                .map(chunk -> "data: " + chunk + Symbol.LF + Symbol.LF).doOnError(
                         e -> Logger
                                 .error(false, "Vortex", "Streaming request failed: {}", e.getClass().getSimpleName()));
     }

@@ -50,11 +50,13 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
      * The manufacturer value.
      */
     private final Supplier<String> manufacturer = Memoizer.memoize(this::queryManufacturer);
+
     /**
      * The familyVersionInfo value.
      */
     private final Supplier<Pair<String, OSVersionInfo>> familyVersionInfo = Memoizer
             .memoize(this::queryFamilyVersionInfo);
+
     /**
      * The bitness value.
      */

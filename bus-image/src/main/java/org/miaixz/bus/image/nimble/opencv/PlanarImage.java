@@ -23,73 +23,204 @@ import org.opencv.core.Mat;
 import org.opencv.core.Size;
 
 /**
+ * Represents a planar image with OpenCV Mat functionality. Provides resource management through AutoCloseable and
+ * memory size calculation through ImageSize.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface PlanarImage extends ImageSize, AutoCloseable {
 
+    /**
+     * Executes the channels operation.
+     *
+     * @return the operation result.
+     */
+    // Core properties
     int channels();
 
+    /**
+     * Executes the dims operation.
+     *
+     * @return the operation result.
+     */
     int dims();
 
+    /**
+     * Executes the depth operation.
+     *
+     * @return the operation result.
+     */
     int depth();
 
+    /**
+     * Executes the elem size operation.
+     *
+     * @return the operation result.
+     */
     long elemSize();
 
+    /**
+     * Executes the elem size 1 operation.
+     *
+     * @return the operation result.
+     */
     long elemSize1();
 
-    void release();
-
+    /**
+     * Executes the size operation.
+     *
+     * @return the operation result.
+     */
     Size size();
 
+    /**
+     * Executes the type operation.
+     *
+     * @return the operation result.
+     */
     int type();
 
+    /**
+     * Executes the height operation.
+     *
+     * @return the operation result.
+     */
     int height();
 
+    /**
+     * Executes the width operation.
+     *
+     * @return the operation result.
+     */
     int width();
 
+    /**
+     * Returns the get.
+     *
+     * @param row    the row.
+     * @param column the column.
+     * @return the get.
+     */
+    // Data access
     double[] get(int row, int column);
 
+    /**
+     * Returns the get.
+     *
+     * @param i         the i.
+     * @param j         the j.
+     * @param pixelData the pixel data.
+     * @return the get.
+     */
     int get(int i, int j, byte[] pixelData);
 
+    /**
+     * Returns the get.
+     *
+     * @param i    the i.
+     * @param j    the j.
+     * @param data the data.
+     * @return the get.
+     */
     int get(int i, int j, short[] data);
 
+    /**
+     * Returns the get.
+     *
+     * @param i    the i.
+     * @param j    the j.
+     * @param data the data.
+     * @return the get.
+     */
     int get(int i, int j, int[] data);
 
+    /**
+     * Returns the get.
+     *
+     * @param i    the i.
+     * @param j    the j.
+     * @param data the data.
+     * @return the get.
+     */
     int get(int i, int j, float[] data);
 
+    /**
+     * Returns the get.
+     *
+     * @param i    the i.
+     * @param j    the j.
+     * @param data the data.
+     * @return the get.
+     */
     int get(int i, int j, double[] data);
 
+    /**
+     * Executes the assign to operation.
+     *
+     * @param dstImg the dst img.
+     */
+    // Operations
     void assignTo(Mat dstImg);
 
-    boolean isHasBeenReleased();
+    /**
+     * Executes the release operation.
+     */
+    void release();
 
+    /**
+     * Checks whether the released condition is true.
+     *
+     * @return true if the released condition is true; otherwise false.
+     */
+    // Resource management
+    boolean isReleased();
+
+    /**
+     * Checks whether the released after processing condition is true.
+     *
+     * @return true if the released after processing condition is true; otherwise false.
+     */
     boolean isReleasedAfterProcessing();
 
+    /**
+     * Sets the released after processing.
+     *
+     * @param releasedAfterProcessing the released after processing.
+     */
     void setReleasedAfterProcessing(boolean releasedAfterProcessing);
 
+    /**
+     * Executes the close operation.
+     */
     @Override
     void close();
 
+    /**
+     * Executes the to mat operation.
+     *
+     * @return the operation result.
+     */
     default Mat toMat() {
         if (this instanceof Mat mat) {
             return mat;
-        } else {
-            throw new IllegalAccessError("Not implemented yet");
         }
+        throw new UnsupportedOperationException("Conversion to Mat not supported for this implementation");
     }
 
+    /**
+     * Executes the to image CV operation.
+     *
+     * @return the operation result.
+     */
     default ImageCV toImageCV() {
-        if (this instanceof Mat) {
-            if (this instanceof ImageCV img) {
-                return img;
-            }
-            ImageCV dstImg = new ImageCV();
-            this.assignTo(dstImg);
-            return dstImg;
-        } else {
-            throw new IllegalAccessError("Not implemented yet");
+        if (this instanceof ImageCV imageCV) {
+            return imageCV;
         }
+        if (this instanceof Mat mat) {
+            return ImageCV.fromMat(mat);
+        }
+        throw new UnsupportedOperationException("Conversion to ImageCV not supported for this implementation");
     }
 
 }

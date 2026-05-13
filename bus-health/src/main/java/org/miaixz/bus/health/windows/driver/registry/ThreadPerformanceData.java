@@ -180,6 +180,9 @@ public final class ThreadPerformanceData {
 
     /**
      * Class to encapsulate data from the registry performance counter block
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Immutable
     public static class PerfCounterBlock {
@@ -188,42 +191,52 @@ public final class ThreadPerformanceData {
          * The name value.
          */
         private final String name;
+
         /**
          * The threadID value.
          */
         private final int threadID;
+
         /**
          * The owningProcessID value.
          */
         private final int owningProcessID;
+
         /**
          * The startTime value.
          */
         private final long startTime;
+
         /**
          * The userTime value.
          */
         private final long userTime;
+
         /**
          * The kernelTime value.
          */
         private final long kernelTime;
+
         /**
          * The priority value.
          */
         private final int priority;
+
         /**
          * The threadState value.
          */
         private final int threadState;
+
         /**
          * The threadWaitReason value.
          */
         private final int threadWaitReason;
+
         /**
          * The startAddress value.
          */
         private final long startAddress;
+
         /**
          * The contextSwitches value.
          */
@@ -336,6 +349,7 @@ public final class ThreadPerformanceData {
         public long getContextSwitches() {
             return contextSwitches;
         }
+
     }
 
 }

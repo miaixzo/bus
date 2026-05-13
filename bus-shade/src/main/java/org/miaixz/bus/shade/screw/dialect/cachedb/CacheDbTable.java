@@ -40,46 +40,55 @@ public class CacheDbTable implements Table {
      */
     @MappingField(value = "TABLE_CAT")
     private String tableCat;
+
     /**
      * The name of the table.
      */
     @MappingField(value = "TABLE_NAME")
     private String tableName;
+
     /**
      * The name of the designated "identifier" column of a typed table (may be {@code null}).
      */
     @MappingField(value = "SELF_REFERENCING_COL_NAME")
     private String selfReferencingColName;
+
     /**
      * The schema of the table.
      */
     @MappingField(value = "TABLE_SCHEM")
     private String tableSchem;
+
     /**
      * The schema of the typed table (may be {@code null}).
      */
     @MappingField(value = "TYPE_SCHEM")
     private String typeSchem;
+
     /**
      * The catalog of the typed table (may be {@code null}).
      */
     @MappingField(value = "TYPE_CAT")
     private Object typeCat;
+
     /**
      * The type of the table (e.g., "TABLE", "VIEW", etc.).
      */
     @MappingField(value = "TABLE_TYPE")
     private String tableType;
+
     /**
      * The explanatory comment on the table.
      */
     @MappingField(value = "REMARKS")
     private String remarks;
+
     /**
      * Specifies how values in SELF_REFERENCING_COL_NAME are created.
      */
     @MappingField(value = "REF_GENERATION")
     private String refGeneration;
+
     /**
      * The type name of the typed table (may be {@code null}).
      */

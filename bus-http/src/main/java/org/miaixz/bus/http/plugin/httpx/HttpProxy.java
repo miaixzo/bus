@@ -39,18 +39,22 @@ public class HttpProxy {
      * The proxy server's hostname or IP address.
      */
     public final String hostAddress;
+
     /**
      * The proxy server's port number.
      */
     public final int port;
+
     /**
      * The username for proxy authentication. Can be null if no authentication is required.
      */
     public final String user;
+
     /**
      * The password for proxy authentication. Can be null if no authentication is required.
      */
     public final String password;
+
     /**
      * The type of proxy (e.g., HTTP, SOCKS).
      */

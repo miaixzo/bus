@@ -51,10 +51,12 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
      * The KSTAT_SYSTEM_CPU constant.
      */
     private static final String KSTAT_SYSTEM_CPU = "kstat:/system/cpu/";
+
     /**
      * The INFO constant.
      */
     private static final String INFO = "/info";
+
     /**
      * The SYS constant.
      */
@@ -64,6 +66,7 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
      * The KSTAT_PM_CPU constant.
      */
     private static final String KSTAT_PM_CPU = "kstat:/pm/cpu/";
+
     /**
      * The PSTATE constant.
      */

@@ -78,11 +78,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <bus.version>8.6.6</bus.version>
-        <lombok.version>1.18.44</lombok.version>
+        <lombok.version>1.18.46</lombok.version>
         <amazon.s3.version>2.40.15</amazon.s3.version>
         <jackson.version>2.21.0</jackson.version>
         <sardine.version>5.13</sardine.version>
-        <jsch.version>2.27.7</jsch.version>
+        <jsch.version>2.28.2</jsch.version>
         <smbj.version>0.14.0</smbj.version>
     </properties>
 

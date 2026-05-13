@@ -24,6 +24,12 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+/**
+ * The package type enum.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public enum PackageType {
 
     MAVEN, NPM, CONAN, PYPI, COMPOSER, NUGET, HELM, GOLANG, GENERIC;

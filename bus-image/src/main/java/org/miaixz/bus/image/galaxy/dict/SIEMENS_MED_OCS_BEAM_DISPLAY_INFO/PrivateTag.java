@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_OCS_BEAM_DISPLAY_INFO;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS MED OCS BEAM DISPLAY INFO";
 
-    /** (0039,xx76) VR=CS VM=1 Beam Display Properties */
+    /**
+     * (0039,xx76) VR=CS VM=1 Beam Display Properties
+     */
     public static final int BeamDisplayProperties = 0x00390076;
 
 }

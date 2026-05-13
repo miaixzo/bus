@@ -22,7 +22,7 @@ package org.miaixz.bus.image.galaxy.data;
 /**
  * Enumeration representing the standard separators and their escape sequences used in HL7 messages. This class provides
  * utility methods for escaping and unescaping strings according to HL7 rules.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -53,6 +53,7 @@ public enum HL7Separator {
      * The actual separator character as a string.
      */
     public final String separator;
+
     /**
      * The HL7 escape sequence for the separator.
      */
@@ -60,7 +61,7 @@ public enum HL7Separator {
 
     /**
      * Constructs an {@code HL7Separator} enum constant.
-     * 
+     *
      * @param separator      The character string used as a separator.
      * @param escapeSequence The HL7 escape sequence for this separator.
      */
@@ -72,7 +73,7 @@ public enum HL7Separator {
     /**
      * Escapes all standard HL7 separators in the given string. The order of escaping is: ESCAPE, REPETITION,
      * SUBCOMPONENT, COMPONENT, FIELD.
-     * 
+     *
      * @param s The string to escape.
      * @return The escaped string.
      */
@@ -83,7 +84,7 @@ public enum HL7Separator {
     /**
      * Unescapes all standard HL7 escape sequences in the given string. The order of unescaping is the reverse of
      * escaping: FIELD, COMPONENT, SUBCOMPONENT, REPETITION, ESCAPE.
-     * 
+     *
      * @param s The string to unescape.
      * @return The unescaped string.
      */
@@ -93,7 +94,7 @@ public enum HL7Separator {
 
     /**
      * Escapes occurrences of this separator in the given string with its corresponding escape sequence.
-     * 
+     *
      * @param s The string to process.
      * @return The string with this separator escaped.
      */
@@ -103,7 +104,7 @@ public enum HL7Separator {
 
     /**
      * Unescapes occurrences of this separator's escape sequence in the given string with its corresponding separator.
-     * 
+     *
      * @param s The string to process.
      * @return The string with this separator unescaped.
      */

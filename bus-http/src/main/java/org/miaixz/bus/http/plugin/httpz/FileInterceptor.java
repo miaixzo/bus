@@ -65,6 +65,9 @@ public abstract class FileInterceptor implements Interceptor, ProgressListener {
 
     /**
      * A {@link ResponseBody} decorator that reports download progress as the body is being read.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class DownloadFileProgressResponseBody extends ResponseBody {
 
@@ -72,10 +75,12 @@ public abstract class FileInterceptor implements Interceptor, ProgressListener {
          * The original response body.
          */
         private final ResponseBody body;
+
         /**
          * The listener to notify of progress updates.
          */
         private final ProgressListener progressListener;
+
         /**
          * A buffered source to efficiently read from the response body.
          */

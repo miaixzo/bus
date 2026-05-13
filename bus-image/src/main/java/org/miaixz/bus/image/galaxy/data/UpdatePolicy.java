@@ -20,10 +20,31 @@
 package org.miaixz.bus.image.galaxy.data;
 
 /**
+ * Defines the UpdatePolicy values.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public enum UpdatePolicy {
-    SUPPLEMENT, MERGE, OVERWRITE, REPLACE, PRESERVE
+    /**
+     * Constant for the supplement value.
+     */
+    SUPPLEMENT,
+    /**
+     * Constant for the merge value.
+     */
+    MERGE,
+    /**
+     * Constant for the overwrite value.
+     */
+    OVERWRITE,
+    /**
+     * Constant for the replace value.
+     */
+    REPLACE,
+    /**
+     * Constant for the preserve value.
+     */
+    PRESERVE
 
 }

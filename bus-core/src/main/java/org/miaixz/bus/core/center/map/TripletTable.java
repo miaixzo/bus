@@ -51,10 +51,12 @@ public class TripletTable<L, M, R> implements Iterable<Triplet<L, M, R>>, Serial
      * The list storing the left values of the triplets.
      */
     private final List<L> lefts;
+
     /**
      * The list storing the middle values of the triplets.
      */
     private final List<M> middles;
+
     /**
      * The list storing the right values of the triplets.
      */

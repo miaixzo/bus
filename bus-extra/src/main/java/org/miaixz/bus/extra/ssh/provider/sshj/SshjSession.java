@@ -55,6 +55,7 @@ public class SshjSession implements Session {
      * The underlying SSHJ client.
      */
     private final SSHClient ssh;
+
     /**
      * The underlying raw SSHJ session.
      */

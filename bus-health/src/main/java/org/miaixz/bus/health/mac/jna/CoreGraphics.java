@@ -54,22 +54,27 @@ public interface CoreGraphics extends Library {
      * Option to include all windows in the window list.
      */
     int kCGWindowListOptionAll = 0;
+
     /**
      * Option to include only on-screen windows in the window list.
      */
     int kCGWindowListOptionOnScreenOnly = 1 << 0;
+
     /**
      * Option to include on-screen windows above a specified window in the window list.
      */
     int kCGWindowListOptionOnScreenAboveWindow = 1 << 1;
+
     /**
      * Option to include on-screen windows below a specified window in the window list.
      */
     int kCGWindowListOptionOnScreenBelowWindow = 1 << 2;
+
     /**
      * Option to include a specific window in the window list.
      */
     int kCGWindowListOptionIncludingWindow = 1 << 3;
+
     /**
      * Option to exclude desktop elements from the window list.
      */
@@ -98,6 +103,9 @@ public interface CoreGraphics extends Library {
      * <p>
      * This class maps to the native macOS structure: {@code struct CGPoint { CGFloat x; CGFloat y; }; }
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "x", "y" })
     class CGPoint extends Structure {
@@ -106,6 +114,7 @@ public interface CoreGraphics extends Library {
          * The x-coordinate of the point.
          */
         public double x;
+
         /**
          * The y-coordinate of the point.
          */
@@ -118,6 +127,9 @@ public interface CoreGraphics extends Library {
      * <p>
      * This class maps to the native macOS structure: {@code struct CGSize { CGFloat width; CGFloat height; }; }
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "width", "height" })
     class CGSize extends Structure {
@@ -126,10 +138,12 @@ public interface CoreGraphics extends Library {
          * The width component of the size.
          */
         public double width;
+
         /**
          * The height component of the size.
          */
         public double height;
+
     }
 
     /**
@@ -137,6 +151,9 @@ public interface CoreGraphics extends Library {
      * <p>
      * This class maps to the native macOS structure: {@code struct CGRect { CGPoint origin; CGSize size; }; }
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "origin", "size" })
     class CGRect extends Structure implements AutoCloseable {
@@ -145,6 +162,7 @@ public interface CoreGraphics extends Library {
          * The origin point (x, y) of the rectangle.
          */
         public CGPoint origin;
+
         /**
          * The size (width, height) of the rectangle.
          */
@@ -157,6 +175,7 @@ public interface CoreGraphics extends Library {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
 }

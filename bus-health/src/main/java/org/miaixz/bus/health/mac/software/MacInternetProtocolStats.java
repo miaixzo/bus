@@ -49,16 +49,19 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
      * The isElevated value.
      */
     private final boolean isElevated;
+
     /**
      * The establishedv4v6 value.
      */
     private final Supplier<Pair<Long, Long>> establishedv4v6 = Memoizer
             .memoize(NetStat::queryTcpnetstat, Memoizer.defaultExpiration());
+
     /**
      * The tcpstat value.
      */
     private final Supplier<CLibrary.BsdTcpstat> tcpstat = Memoizer
             .memoize(MacInternetProtocolStats::queryTcpstat, Memoizer.defaultExpiration());
+
     /**
      * The udpstat value.
      */
@@ -71,6 +74,7 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
      */
     private final Supplier<CLibrary.BsdIpstat> ipstat = Memoizer
             .memoize(MacInternetProtocolStats::queryIpstat, Memoizer.defaultExpiration());
+
     /**
      * The ip6stat value.
      */

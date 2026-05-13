@@ -45,7 +45,7 @@ import org.miaixz.bus.core.xyz.RandomKit;
  * </ul>
  * <p>
  * Reference: https://github.com/zjcscut/framework-mesh/blob/master/ulid4j/src/main/java/cn/vlts/ulid/ULID.java
- * 
+ *
  * <pre>{@code
  *   01AN4Z07BY      79KA1307SR9X4MV3
  *  |----------|    |----------------|
@@ -65,10 +65,12 @@ public class ULID implements Comparable<ULID>, Serializable {
      * Timestamp component mask
      */
     private static final long TIMESTAMP_MASK = 0xffff000000000000L;
+
     /**
      * The length of randomness component of ULID
      */
     private static final int RANDOMNESS_BYTE_LEN = 10;
+
     /**
      * The least significant 64 bits increase overflow, 0xffffffffffffffffL + 1
      */

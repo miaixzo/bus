@@ -164,6 +164,9 @@ public class Phase extends Samsara {
 
     /**
      * Represents a specific day within a moon phase.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class PhaseDay extends Replenish {
 

@@ -135,6 +135,9 @@ public interface Collector {
      * <p>
      * It stores the number of hits, total requests, and the calculated hit rate percentage.
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class Snapshot {
 
@@ -237,6 +240,7 @@ public interface Collector {
         public String getRate() {
             return rate;
         }
+
     }
 
 }

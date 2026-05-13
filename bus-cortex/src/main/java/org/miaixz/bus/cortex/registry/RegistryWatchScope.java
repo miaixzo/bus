@@ -45,18 +45,22 @@ public class RegistryWatchScope {
      * Registry query criteria for the watch subscription.
      */
     private RegistryQuery query;
+
     /**
      * Event types accepted by the subscription.
      */
     private List<String> eventTypes;
+
     /**
      * Watch source identity.
      */
     private String source;
+
     /**
      * Caller-supplied request identifier for tracing.
      */
     private String requestId;
+
     /**
      * Maximum pending event count for the subscription.
      */

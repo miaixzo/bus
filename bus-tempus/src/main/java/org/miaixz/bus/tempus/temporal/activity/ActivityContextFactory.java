@@ -26,7 +26,6 @@ package org.miaixz.bus.tempus.temporal.activity;
  *
  * @param <R> the activity input type
  * @param <C> the activity context type
- *
  * @author Kimi Liu
  * @since Java 21+
  */

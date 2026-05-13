@@ -273,6 +273,9 @@ public final class PerfCounterWildcardQuery {
 
     /**
      * Contract for Counter Property Enums
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public interface PdhCounterWildcardProperty {
 
@@ -281,6 +284,7 @@ public final class PerfCounterWildcardQuery {
          *         counter.
          */
         String getCounter();
+
     }
 
 }

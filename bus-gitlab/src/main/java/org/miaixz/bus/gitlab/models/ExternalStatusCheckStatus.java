@@ -28,6 +28,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.io.Serial;
 
+/**
+ * The external status check status class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class ExternalStatusCheckStatus implements Serializable {
 
     @Serial
@@ -38,6 +44,12 @@ public class ExternalStatusCheckStatus implements Serializable {
     private String externalUrl;
     private Status status;
 
+    /**
+     * The status enum.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public enum Status {
 
         PASSED, FAILED, PENDING;
@@ -58,6 +70,7 @@ public class ExternalStatusCheckStatus implements Serializable {
         public String toString() {
             return (enumHelper.toString(this));
         }
+
     }
 
     public Long getId() {

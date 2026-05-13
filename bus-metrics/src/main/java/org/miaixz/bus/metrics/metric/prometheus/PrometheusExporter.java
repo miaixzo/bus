@@ -37,7 +37,9 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
  */
 public class PrometheusExporter {
 
-    /** The metrics provider to scrape; must be a {@link NativeProvider} for full export support. */
+    /**
+     * The metrics provider to scrape; must be a {@link NativeProvider} for full export support.
+     */
     private final Provider provider;
 
     /**

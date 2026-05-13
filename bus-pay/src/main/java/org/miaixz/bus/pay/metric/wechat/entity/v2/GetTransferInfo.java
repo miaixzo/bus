@@ -44,14 +44,17 @@ public class GetTransferInfo extends Voucher {
      * Random string.
      */
     private String nonce_str;
+
     /**
      * Signature.
      */
     private String sign;
+
     /**
      * Partner trade number.
      */
     private String partner_trade_no;
+
     /**
      * Merchant ID.
      */

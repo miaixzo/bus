@@ -25,6 +25,12 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+/**
+ * The access level enum.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public enum AccessLevel {
 
     INVALID(-1), NONE(0), MINIMAL_ACCESS(5), GUEST(10), REPORTER(20), DEVELOPER(30), MAINTAINER(40), OWNER(50),

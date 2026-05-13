@@ -22,11 +22,18 @@ package org.miaixz.bus.image.metric.service;
 import org.miaixz.bus.image.metric.DimseRQHandler;
 
 /**
+ * Defines the ImageService contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface ImageService extends DimseRQHandler {
 
+    /**
+     * Gets the sop classes.
+     *
+     * @return the sop classes.
+     */
     String[] getSOPClasses();
 
 }

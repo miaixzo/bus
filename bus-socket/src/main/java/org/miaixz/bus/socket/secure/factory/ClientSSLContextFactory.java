@@ -44,6 +44,7 @@ public class ClientSSLContextFactory implements SSLContextFactory {
      * The input stream for the trust store file.
      */
     private InputStream trustInputStream;
+
     /**
      * The password for the trust store.
      */

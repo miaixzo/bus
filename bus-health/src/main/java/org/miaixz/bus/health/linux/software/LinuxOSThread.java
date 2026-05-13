@@ -57,46 +57,57 @@ public class LinuxOSThread extends AbstractOSThread {
      * The threadId value.
      */
     private final int threadId;
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The state value.
      */
     private OSProcess.State state = OSProcess.State.INVALID;
+
     /**
      * The minorFaults value.
      */
     private long minorFaults;
+
     /**
      * The majorFaults value.
      */
     private long majorFaults;
+
     /**
      * The startMemoryAddress value.
      */
     private long startMemoryAddress;
+
     /**
      * The contextSwitches value.
      */
     private long contextSwitches;
+
     /**
      * The kernelTime value.
      */
     private long kernelTime;
+
     /**
      * The userTime value.
      */
     private long userTime;
+
     /**
      * The startTime value.
      */
     private long startTime;
+
     /**
      * The upTime value.
      */
     private long upTime;
+
     /**
      * The priority value.
      */
@@ -284,6 +295,9 @@ public class LinuxOSThread extends AbstractOSThread {
     /**
      * Enum used to update attributes. The order field represents the 1-indexed numeric order of the stat in
      * /proc/pid/task/tid/stat per the man file.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private enum ThreadPidStat {
 
@@ -314,6 +328,7 @@ public class LinuxOSThread extends AbstractOSThread {
         public int getOrder() {
             return this.order;
         }
+
     }
 
 }

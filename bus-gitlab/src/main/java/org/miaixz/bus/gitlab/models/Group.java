@@ -30,6 +30,12 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serial;
 
+/**
+ * The group class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Group extends AbstractGroup<Group> {
 
     @Serial
@@ -43,7 +49,8 @@ public class Group extends AbstractGroup<Group> {
      * LFS objects, and job artifacts.
      * </p>
      *
-     * @since 17
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public class Statistics {
 
@@ -115,6 +122,7 @@ public class Group extends AbstractGroup<Group> {
         public void setJobArtifactsSize(Long jobArtifactsSize) {
             this.jobArtifactsSize = jobArtifactsSize;
         }
+
     }
 
     private String path;

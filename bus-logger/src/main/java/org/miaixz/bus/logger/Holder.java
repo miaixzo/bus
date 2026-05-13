@@ -142,6 +142,9 @@ public class Holder {
     /**
      * This inner class holds the singleton instance of the {@link Factory}. This approach ensures that the instance is
      * created only when it is first needed.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class InstanceHolder {
 

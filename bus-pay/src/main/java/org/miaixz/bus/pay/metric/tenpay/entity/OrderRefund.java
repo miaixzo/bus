@@ -44,46 +44,57 @@ public class OrderRefund extends Voucher {
      * Sub-merchant App ID.
      */
     private String sub_appid;
+
     /**
      * Merchant ID.
      */
     private String mch_id;
+
     /**
      * Sub-merchant ID.
      */
     private String sub_mch_id;
+
     /**
      * Random string.
      */
     private String nonce_str;
+
     /**
      * Signature.
      */
     private String sign;
+
     /**
      * Transaction ID.
      */
     private String transaction_id;
+
     /**
      * Merchant order number.
      */
     private String out_trade_no;
+
     /**
      * Merchant refund number.
      */
     private String out_refund_no;
+
     /**
      * Refund fee.
      */
     private String refund_fee;
+
     /**
      * Operator ID.
      */
     private String op_user_id;
+
     /**
      * Operator password.
      */
     private String op_user_passwd;
+
     /**
      * Refund account.
      */

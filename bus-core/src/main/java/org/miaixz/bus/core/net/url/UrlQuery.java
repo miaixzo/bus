@@ -31,11 +31,11 @@ import org.miaixz.bus.core.xyz.*;
 
 /**
  * Represents the query part of a URL, which is a collection of key-value pairs. For example:
- * 
+ *
  * <pre>
  *   key1=v1&amp;key2=&amp;key3=v3
  * </pre>
- * 
+ *
  * This class provides methods for parsing and building query strings. When parsing, you can specify a charset to decode
  * the content. When building, you can specify a charset to encode the key-value pairs.
  *
@@ -52,6 +52,7 @@ public class UrlQuery {
             .addSafe(Symbol.C_STAR).setEncodeSpaceAsPlus(true).build();
 
     private final TableMap<CharSequence, CharSequence> query;
+
     /**
      * The encoding mode for the query parameters.
      */
@@ -424,6 +425,9 @@ public class UrlQuery {
 
     /**
      * Defines the encoding mode for query parameters, which determines how names and values are encoded.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum EncodeMode {
         /**
@@ -438,6 +442,7 @@ public class UrlQuery {
          * Strict mode, where all characters except for unreserved characters are escaped.
          */
         STRICT
+
     }
 
 }

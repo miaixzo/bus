@@ -59,9 +59,12 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * <p>
  * <b>Example 1: Simple user-based visibility (use configuration file)</b>
  * </p>
- * 
- * <pre>{@code
- * @Component
+ *
+ * <pre>
+ * {@code
+ *
+ * &#64;author Kimi Liu
+ * &#64;Component
  * public class SimpleVisibleProvider implements VisibleProvider {
  *
  *     public String getVisible(String tableName, String tableAlias) {
@@ -70,12 +73,13 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  *     }
  *     // No getConfig() override - configuration from application.yml
  * }
- * }</pre>
+ * }
+ * </pre>
  *
  * <p>
  * <b>Example 2: Context-based dynamic visibility</b>
  * </p>
- * 
+ *
  * <pre>{@code
  * @Component
  * public class ContextAwareVisibleProvider implements VisibleProvider {
@@ -100,7 +104,7 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * <p>
  * <b>Example 3: Full configuration from Provider</b>
  * </p>
- * 
+ *
  * <pre>{@code
  * @Component
  * public class CustomVisibleProvider implements VisibleProvider {
@@ -122,10 +126,10 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * }
  * }</pre>
  *
- * @author Kimi Liu
  * @see VisibleConfig
  * @see VisibleHandler
  * @see MapperProvider
+ * @author Kimi Liu
  * @since Java 21+
  */
 @FunctionalInterface

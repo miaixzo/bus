@@ -22,6 +22,9 @@ package org.miaixz.bus.gitlab.hooks.system;
 /**
  * This interface defines an event listener for the event fired when a System Hook notification has been received from a
  * GitLab server.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public interface SystemHookListener extends java.util.EventListener {
 

@@ -49,7 +49,7 @@ import org.miaixz.bus.core.lang.Symbol;
  * metadata management
  *
  * Usage Examples:
- * 
+ *
  * <pre>
  * // Maven integration (recommended):
  * {@code <java classname="org.miaixz.bus.Nativex"
@@ -65,10 +65,11 @@ import org.miaixz.bus.core.lang.Symbol;
  * }
  * </pre>
  *
- * @author Kimi Liu
- * @since Java 21+
  * @see <a href="https://graalvm.org/latest/reference/native-image/BuildConfiguration/">GraalVM Native Image
  *      Configuration</a>
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class Nativex {
 
@@ -452,6 +453,9 @@ public class Nativex {
 
     /**
      * Project metadata holder class for Java 8 compatibility.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class Metadata {
 
@@ -476,6 +480,7 @@ public class Nativex {
         public String getVersion() {
             return version;
         }
+
     }
 
     /**

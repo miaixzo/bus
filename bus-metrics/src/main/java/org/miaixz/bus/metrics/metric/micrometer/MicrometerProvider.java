@@ -105,7 +105,9 @@ public class MicrometerProvider implements Provider {
                 .tags(toMicrometerTags(tags)).register(registry);
         return new Counter() {
 
-            /** Increments the counter by one. */
+            /**
+             * Increments the counter by one.
+             */
             @Override
             public void increment() {
                 c.increment();
@@ -151,7 +153,9 @@ public class MicrometerProvider implements Provider {
                 .tags(toMicrometerTags(tags)).register(registry);
         return new Meter() {
 
-            /** Increments the meter by one. */
+            /**
+             * Increments the meter by one.
+             */
             @Override
             public void increment() {
                 increment(1);
@@ -235,14 +239,18 @@ public class MicrometerProvider implements Provider {
         Meter successes = meter(name + ".successes", tags);
         return new RatePair() {
 
-            /** Records a successful event, incrementing both total and successes meters. */
+            /**
+             * Records a successful event, incrementing both total and successes meters.
+             */
             @Override
             public void recordSuccess() {
                 total.increment();
                 successes.increment();
             }
 
-            /** Records an error event, incrementing both total and errors meters. */
+            /**
+             * Records an error event, incrementing both total and errors meters.
+             */
             @Override
             public void recordError() {
                 total.increment();
@@ -549,10 +557,14 @@ public class MicrometerProvider implements Provider {
             long startNs = System.nanoTime();
             return new LlmSample() {
 
-                /** Nanosecond timestamp of the first token; -1 if not yet recorded. */
+                /**
+                 * Nanosecond timestamp of the first token; -1 if not yet recorded.
+                 */
                 private volatile long firstTokenNs = -1;
 
-                /** Records the nanosecond timestamp of the first token received. */
+                /**
+                 * Records the nanosecond timestamp of the first token received.
+                 */
                 @Override
                 public void recordFirstToken() {
                     firstTokenNs = System.nanoTime();
@@ -629,37 +641,49 @@ public class MicrometerProvider implements Provider {
         return new NativeSloTracker();
     }
 
-    /** Returns an empty iterable; Micrometer registry enumeration is not supported. */
+    /**
+     * Returns an empty iterable; Micrometer registry enumeration is not supported.
+     */
     @Override
     public Iterable<Counter> counters() {
         return Collections.emptyList();
     }
 
-    /** Returns an empty iterable; Micrometer registry enumeration is not supported. */
+    /**
+     * Returns an empty iterable; Micrometer registry enumeration is not supported.
+     */
     @Override
     public Iterable<Meter> meters() {
         return Collections.emptyList();
     }
 
-    /** Returns an empty iterable; Micrometer registry enumeration is not supported. */
+    /**
+     * Returns an empty iterable; Micrometer registry enumeration is not supported.
+     */
     @Override
     public Iterable<Gauge> gauges() {
         return Collections.emptyList();
     }
 
-    /** Returns an empty iterable; Micrometer registry enumeration is not supported. */
+    /**
+     * Returns an empty iterable; Micrometer registry enumeration is not supported.
+     */
     @Override
     public Iterable<Timer> timers() {
         return Collections.emptyList();
     }
 
-    /** Returns an empty iterable; Micrometer registry enumeration is not supported. */
+    /**
+     * Returns an empty iterable; Micrometer registry enumeration is not supported.
+     */
     @Override
     public Iterable<Histogram> histograms() {
         return Collections.emptyList();
     }
 
-    /** Returns an empty iterable; Micrometer registry enumeration is not supported. */
+    /**
+     * Returns an empty iterable; Micrometer registry enumeration is not supported.
+     */
     @Override
     public Iterable<LlmTimer> llmTimers() {
         return Collections.emptyList();

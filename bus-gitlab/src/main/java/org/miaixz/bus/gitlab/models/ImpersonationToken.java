@@ -31,6 +31,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+/**
+ * The impersonation token class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class ImpersonationToken implements Serializable {
 
     @Serial
@@ -106,7 +112,12 @@ public class ImpersonationToken implements Serializable {
         this.description = description;
     }
 
-    /** Enum to specify the scope of an ImpersonationToken. */
+    /**
+     * Enum to specify the scope of an ImpersonationToken.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public enum Scope {
 
         API, READ_API, READ_USER, READ_REPOSITORY, WRITE_REPOSITORY, READ_REGISTRY, WRITE_REGISTRY, K8S_PROXY, SUDO;
@@ -127,6 +138,7 @@ public class ImpersonationToken implements Serializable {
         public String toString() {
             return (enumHelper.toString(this));
         }
+
     }
 
     public Long getId() {

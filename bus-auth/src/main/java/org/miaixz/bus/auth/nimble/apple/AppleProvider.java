@@ -263,22 +263,30 @@ public class AppleProvider extends AbstractProvider {
 
     /**
      * Data class for Apple user name information.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Data
     static class AppleUserInfo {
 
         private AppleUsername name;
         private String email;
+
     }
 
     /**
      * Data class for Apple username components.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Data
     static class AppleUsername {
 
         private String firstName;
         private String lastName;
+
     }
 
 }

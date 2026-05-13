@@ -46,9 +46,9 @@ import reactor.core.publisher.Mono;
  * lookup.
  * </p>
  *
- * @author Kimi Liu
  * @see AbstractRegistry
  * @see Assets
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class AssetsRegistry extends AbstractRegistry<Assets> {
@@ -57,10 +57,12 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
      * Route-key strategy used for canonical and compatibility key generation.
      */
     protected final Keying<Keying.RegistrySpec> keying;
+
     /**
      * Compatibility alias index from one route-key mode to the canonical route-key set.
      */
     private final Map<String, Set<String>> aliasIndex = new ConcurrentHashMap<>();
+
     /**
      * Reverse lookup from canonical route key to the registered alias keys.
      */
@@ -544,15 +546,15 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
             return null;
         }
         String normalized = method.trim();
-        while (normalized.length() > Args.MCP_PATH_PREFIX.length() + 1 && normalized.endsWith("/")) {
+        while (normalized.length() > Args.MCP_PATH_PREFIX.length() + 1 && normalized.endsWith(Symbol.SLASH)) {
             normalized = normalized.substring(0, normalized.length() - 1);
         }
-        if (!normalized.startsWith(Args.MCP_PATH_PREFIX + "/")) {
+        if (!normalized.startsWith(Args.MCP_PATH_PREFIX + Symbol.SLASH)) {
             return null;
         }
-        String servicePath = normalized.substring((Args.MCP_PATH_PREFIX + "/").length());
-        if (StringKit.isBlank(servicePath) || servicePath.contains("*") || servicePath.contains("..")
-                || servicePath.contains("//")) {
+        String servicePath = normalized.substring((Args.MCP_PATH_PREFIX + Symbol.SLASH).length());
+        if (StringKit.isBlank(servicePath) || servicePath.contains(Symbol.STAR)
+                || servicePath.contains(Symbol.DOUBLE_DOT) || servicePath.contains(Symbol.FORWARDSLASH)) {
             return null;
         }
         return normalized;
@@ -583,6 +585,8 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
      *
      * @param assets        matched route asset
      * @param remainingPath remaining path after the matched route prefix, or an empty string for an exact match
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public record RouteMatch(Assets assets, String remainingPath) {
 

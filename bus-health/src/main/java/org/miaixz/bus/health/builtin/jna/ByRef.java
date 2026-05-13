@@ -43,6 +43,9 @@ public interface ByRef {
 
     /**
      * The CloseableIntByReference class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseableIntByReference extends IntByReference implements AutoCloseable {
 
@@ -69,10 +72,14 @@ public interface ByRef {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
     /**
      * The CloseableLongByReference class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseableLongByReference extends LongByReference implements AutoCloseable {
 
@@ -99,10 +106,14 @@ public interface ByRef {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
     /**
      * The CloseableNativeLongByReference class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseableNativeLongByReference extends NativeLongByReference implements AutoCloseable {
 
@@ -129,10 +140,14 @@ public interface ByRef {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
     /**
      * The CloseablePointerByReference class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseablePointerByReference extends PointerByReference implements AutoCloseable {
 
@@ -143,10 +158,14 @@ public interface ByRef {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
     /**
      * The CloseableLONGLONGByReference class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseableLONGLONGByReference extends LONGLONGByReference implements AutoCloseable {
 
@@ -157,10 +176,14 @@ public interface ByRef {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
     /**
      * The CloseableULONGptrByReference class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseableULONGptrByReference extends ULONG_PTRByReference implements AutoCloseable {
 
@@ -171,10 +194,14 @@ public interface ByRef {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
     /**
      * The CloseableHANDLEByReference class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseableHANDLEByReference extends HANDLEByReference implements AutoCloseable {
 
@@ -185,10 +212,14 @@ public interface ByRef {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
     /**
      * The CloseableSizeTByReference class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseableSizeTByReference extends size_t.ByReference implements AutoCloseable {
 
@@ -215,10 +246,14 @@ public interface ByRef {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
     /**
      * The CloseablePROCESSENTRY32ByReference class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class CloseablePROCESSENTRY32ByReference extends PROCESSENTRY32.ByReference implements AutoCloseable {
 
@@ -229,6 +264,7 @@ public interface ByRef {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
 }

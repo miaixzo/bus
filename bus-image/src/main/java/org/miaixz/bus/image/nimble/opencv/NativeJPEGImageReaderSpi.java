@@ -29,15 +29,31 @@ import javax.imageio.stream.ImageInputStream;
 import org.miaixz.bus.core.Version;
 
 /**
+ * Represents the NativeJPEGImageReaderSpi type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class NativeJPEGImageReaderSpi extends ImageReaderSpi {
 
+    /**
+     * The names value.
+     */
     static final String[] NAMES = { "jpeg-cv" };
+
+    /**
+     * The suffixes value.
+     */
     static final String[] SUFFIXES = {};
+
+    /**
+     * The mimes value.
+     */
     static final String[] MIMES = {};
 
+    /**
+     * Creates a new instance.
+     */
     public NativeJPEGImageReaderSpi() {
         super("Miaixz Team", Version._VERSION, NAMES, SUFFIXES, MIMES, NativeImageReader.class.getName(),
                 new Class[] { ImageInputStream.class }, new String[] {}, false, // supportsStandardStreamMetadataFormat
@@ -49,21 +65,44 @@ public class NativeJPEGImageReaderSpi extends ImageReaderSpi {
                 null, null, null, null);
     }
 
+    /**
+     * Gets the description.
+     *
+     * @param locale the locale.
+     * @return the description.
+     */
     @Override
     public String getDescription(Locale locale) {
         return "Natively-accelerated JPEG Image Reader (8/12/16 bits, IJG 6b based)";
     }
 
+    /**
+     * Gets the file suffixes.
+     *
+     * @return the file suffixes.
+     */
     @Override
     public String[] getFileSuffixes() {
         return SUFFIXES;
     }
 
+    /**
+     * Gets the mime types.
+     *
+     * @return the mime types.
+     */
     @Override
     public String[] getMIMETypes() {
         return MIMES;
     }
 
+    /**
+     * Determines whether decode input.
+     *
+     * @param source the source.
+     * @return true if the condition is met; otherwise false.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public boolean canDecodeInput(Object source) throws IOException {
         // NativeImageReader.read() eventually instantiates a StreamSegment,
@@ -134,6 +173,12 @@ public class NativeJPEGImageReaderSpi extends ImageReaderSpi {
         }
     }
 
+    /**
+     * Creates the reader instance.
+     *
+     * @param extension the extension.
+     * @return the operation result.
+     */
     @Override
     public ImageReader createReaderInstance(Object extension) {
         return new NativeImageReader(this, false);

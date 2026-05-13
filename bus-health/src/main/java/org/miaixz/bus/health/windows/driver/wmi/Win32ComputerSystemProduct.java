@@ -54,9 +54,13 @@ public final class Win32ComputerSystemProduct {
 
     /**
      * Computer System ID number
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum ComputerSystemProductProperty {
         IDENTIFYINGNUMBER, UUID
+
     }
 
 }

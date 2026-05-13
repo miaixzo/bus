@@ -63,6 +63,7 @@ public class JschSftp extends AbstractFtp {
      * The underlying JSch session.
      */
     private Session session;
+
     /**
      * The underlying JSch SFTP channel.
      */
@@ -923,6 +924,9 @@ public class JschSftp extends AbstractFtp {
 
     /**
      * Enumeration of file transfer modes supported by JSch.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum Mode {
         /**
@@ -937,6 +941,7 @@ public class JschSftp extends AbstractFtp {
          * Append mode: If the target file exists, the transferred file will be appended to the end of it.
          */
         APPEND
+
     }
 
 }

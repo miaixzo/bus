@@ -42,6 +42,7 @@ public class BeanMap implements Map<String, Object> {
      * The underlying Java Bean instance that this map wraps.
      */
     private final Object bean;
+
     /**
      * A cache of property descriptors for the bean, mapping property names to their metadata.
      */

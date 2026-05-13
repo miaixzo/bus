@@ -147,6 +147,9 @@ public final class ProcessWtsData {
 
     /**
      * Class to encapsulate data from WTS Process Info
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Immutable
     public static class WtsInfo {
@@ -155,26 +158,32 @@ public final class ProcessWtsData {
          * The name value.
          */
         private final String name;
+
         /**
          * The path value.
          */
         private final String path;
+
         /**
          * The threadCount value.
          */
         private final int threadCount;
+
         /**
          * The virtualSize value.
          */
         private final long virtualSize;
+
         /**
          * The kernelTime value.
          */
         private final long kernelTime;
+
         /**
          * The userTime value.
          */
         private final long userTime;
+
         /**
          * The openFiles value.
          */
@@ -250,6 +259,7 @@ public final class ProcessWtsData {
         public long getOpenFiles() {
             return openFiles;
         }
+
     }
 
 }

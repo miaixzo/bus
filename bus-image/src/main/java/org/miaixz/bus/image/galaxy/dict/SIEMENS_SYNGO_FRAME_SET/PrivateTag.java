@@ -20,20 +20,31 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_FRAME_SET;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS SYNGO FRAME SET";
 
-    /** (0029,xx10) VR=SQ VM=1 Image Frame Sequence */
+    /**
+     * (0029,xx10) VR=SQ VM=1 Image Frame Sequence
+     */
     public static final int ImageFrameSequence = 0x00290010;
 
-    /** (0029,xx12) VR=CS VM=1 Type of Progression */
+    /**
+     * (0029,xx12) VR=CS VM=1 Type of Progression
+     */
     public static final int TypeOfProgression = 0x00290012;
 
-    /** (0029,xx14) VR=IS VM=1 Representation Level */
+    /**
+     * (0029,xx14) VR=IS VM=1 Representation Level
+     */
     public static final int RepresentationLevel = 0x00290014;
 
     /**
@@ -41,10 +52,14 @@ public class PrivateTag {
      */
     public static final int RepresentationInformationSequence = 0x00290016;
 
-    /** (0029,xx18) VR=IS VM=1 Number of Representations */
+    /**
+     * (0029,xx18) VR=IS VM=1 Number of Representations
+     */
     public static final int NumberOfRepresentations = 0x00290018;
 
-    /** (0029,xx20) VR=IS VM=1 Representation Pixel Offse */
+    /**
+     * (0029,xx20) VR=IS VM=1 Representation Pixel Offse
+     */
     public static final int RepresentationPixelOffset = 0x00290020;
 
 }

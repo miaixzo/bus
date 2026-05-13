@@ -8,6 +8,9 @@ package org.opencv.img_hash;
  * Image hash based on color moments.
  *
  * See CITE: tang2012perceptual for details.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class ColorMomentHash extends ImgHashBase {
 

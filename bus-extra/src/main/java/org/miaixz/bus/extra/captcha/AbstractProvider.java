@@ -49,34 +49,42 @@ public abstract class AbstractProvider implements CaptchaProvider {
      * The width of the image.
      */
     protected int width;
+
     /**
      * The height of the image.
      */
     protected int height;
+
     /**
      * The number of interfering elements in the CAPTCHA.
      */
     protected int interfereCount;
+
     /**
      * The font.
      */
     protected Font font;
+
     /**
      * The CAPTCHA code.
      */
     protected String code;
+
     /**
      * The CAPTCHA image bytes.
      */
     protected byte[] imageBytes;
+
     /**
      * The CAPTCHA code generator.
      */
     protected CodeStrategy generator;
+
     /**
      * The background color.
      */
     protected Color background = Color.WHITE;
+
     /**
      * The text transparency.
      */

@@ -31,6 +31,8 @@ import org.miaixz.bus.logger.Logger;
  * Represents a pixel embedded overlay in DICOM attributes which is defined by the group offset and the bit position.
  * This type of overlay has been retired in DICOM standard, but it is still used in some old DICOM files.
  *
+ * @param groupOffset the group offset.
+ * @param bitPosition the bit position.
  * @author Kimi Liu
  * @since Java 21+
  */

@@ -191,6 +191,9 @@ public class Context extends org.miaixz.bus.core.Context {
 
     /**
      * Unified mapper configuration holder.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class MapperConfig {
 
@@ -251,6 +254,9 @@ public class Context extends org.miaixz.bus.core.Context {
 
         /**
          * Fluent builder for MapperConfig.
+         *
+         * @author Kimi Liu
+         * @since Java 21+
          */
         public static class Builder {
 
@@ -319,7 +325,9 @@ public class Context extends org.miaixz.bus.core.Context {
             public MapperConfig build() {
                 return config;
             }
+
         }
+
     }
 
 }

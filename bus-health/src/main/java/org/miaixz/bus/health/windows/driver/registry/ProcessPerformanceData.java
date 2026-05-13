@@ -46,6 +46,7 @@ public final class ProcessPerformanceData {
      * The PROCESS constant.
      */
     public static final String PROCESS = "Process";
+
     /**
      * The PERFDATA constant.
      */
@@ -173,6 +174,9 @@ public final class ProcessPerformanceData {
 
     /**
      * Class to encapsulate data from the registry performance counter block
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Immutable
     public static class PerfCounterBlock {
@@ -181,38 +185,47 @@ public final class ProcessPerformanceData {
          * The name value.
          */
         private final String name;
+
         /**
          * The parentProcessID value.
          */
         private final int parentProcessID;
+
         /**
          * The priority value.
          */
         private final int priority;
+
         /**
          * The privateWorkingSetSize value.
          */
         private final long privateWorkingSetSize;
+
         /**
          * The workingSetSize value.
          */
         private final long workingSetSize;
+
         /**
          * The startTime value.
          */
         private final long startTime;
+
         /**
          * The upTime value.
          */
         private final long upTime;
+
         /**
          * The bytesRead value.
          */
         private final long bytesRead;
+
         /**
          * The bytesWritten value.
          */
         private final long bytesWritten;
+
         /**
          * The pageFaults value.
          */
@@ -315,6 +328,7 @@ public final class ProcessPerformanceData {
         public long getPageFaults() {
             return pageFaults;
         }
+
     }
 
 }

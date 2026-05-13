@@ -69,10 +69,12 @@ public class RegisterConverter extends ConverterWithRoot implements Serializable
      * Default type converter map.
      */
     private final Map<Class<?>, Converter> defaultConverterMap;
+
     /**
      * User-defined type converter set, stores converters with custom matching rules for certain types of objects.
      */
     private volatile Set<MatcherConverter> converterSet;
+
     /**
      * User-defined precise type converter map, mainly stores converters for explicitly defined types (no subclasses).
      */

@@ -43,43 +43,53 @@ public final class WriteBuffer extends OutputStream {
      * The buffer page that provides the underlying memory for this WriteBuffer.
      */
     private final BufferPage bufferPage;
+
     /**
      * A consumer function that is called to flush the buffer data.
      */
     private final Consumer<VirtualBuffer> writeConsumer;
+
     /**
      * The default size of memory chunks allocated from the buffer page.
      */
     private final int chunkSize;
+
     /**
      * A semaphore to prevent concurrent write operations, which could lead to exceptions.
      */
     private final Semaphore semaphore = new Semaphore(1);
+
     /**
      * The read index for the {@code items} array, used for polling buffers.
      */
     private int takeIndex;
+
     /**
      * The write index for the {@code items} array, used for adding new buffers.
      */
     private int putIndex;
+
     /**
      * The number of virtual buffers currently stored in the {@code items} array.
      */
     private int count;
+
     /**
      * A temporary buffer to hold data currently being written by the application. It is enqueued to {@code items} when
      * full or flushed.
      */
     private VirtualBuffer writeInBuf;
+
     /**
      * A flag indicating whether this WriteBuffer has been closed.
      */
     private boolean closed = false;
+
     /**
      * A cache for writing small data types (up to 8 bytes) to avoid repeated array allocation.
      */
     private byte[] cacheByte;
+
     /**
      * A consumer that is notified upon completion of an asynchronous write operation.
      */

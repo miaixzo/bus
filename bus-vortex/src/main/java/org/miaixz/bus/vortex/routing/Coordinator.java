@@ -20,6 +20,7 @@
 package org.miaixz.bus.vortex.routing;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Executor;
@@ -52,14 +53,14 @@ import reactor.core.publisher.Mono;
  *
  * @param <I> The input type expected by this coordinator
  * @param <O> The output type produced by this coordinator
- * @author Kimi Liu
- * @since Java 21+
  * @see Executor
  * @see org.miaixz.bus.vortex.routing.rest.RestExecutor
  * @see org.miaixz.bus.vortex.routing.ws.WsExecutor
  * @see org.miaixz.bus.vortex.routing.grpc.GrpcExecutor
  * @see org.miaixz.bus.vortex.routing.mq.MqExecutor
  * @see org.miaixz.bus.vortex.routing.mcp.McpExecutor
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public abstract class Coordinator<I, O> implements Executor<I, O> {
 
@@ -109,7 +110,7 @@ public abstract class Coordinator<I, O> implements Executor<I, O> {
             }
             baseUrlBuilder.append(assets.getPath());
         }
-        return baseUrlBuilder.toString();
+        return UrlKit.normalize(baseUrlBuilder.toString(), false);
     }
 
     /**

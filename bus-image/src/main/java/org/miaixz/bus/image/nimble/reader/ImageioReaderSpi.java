@@ -24,24 +24,57 @@ import java.io.InputStream;
 import java.util.Locale;
 
 import javax.imageio.ImageReader;
+import javax.imageio.spi.IIORegistry;
 import javax.imageio.spi.ImageReaderSpi;
 import javax.imageio.stream.ImageInputStream;
 
 import org.miaixz.bus.image.galaxy.data.Implementation;
 
 /**
+ * Represents the ImageioReaderSpi type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class ImageioReaderSpi extends ImageReaderSpi {
 
+    /**
+     * The vendor name value.
+     */
     private static final String vendorName = "org.miaixz.bus.image";
+
+    /**
+     * The version value.
+     */
     private static final String version = Implementation.getVersionName();
+
+    /**
+     * The format names value.
+     */
     private static final String[] formatNames = { "dicom", "DICOM" };
+
+    /**
+     * The suffixes value.
+     */
     private static final String[] suffixes = { "dcm", "dic", "dicm", "dicom" };
+
+    /**
+     * The mime types value.
+     */
     private static final String[] MIMETypes = { "application/dicom" };
+
+    /**
+     * The input types value.
+     */
     private static final Class<?>[] inputTypes = { ImageInputStream.class, InputStream.class, ImageioMetaData.class };
 
+    static {
+        ImageioCodec.disableDiskCache();
+    }
+
+    /**
+     * Creates a new instance.
+     */
     public ImageioReaderSpi() {
         super(vendorName, version, formatNames, suffixes, MIMETypes, ImageioReader.class.getName(), inputTypes, null, // writerSpiNames
                 false, // supportsStandardStreamMetadataFormat
@@ -56,11 +89,56 @@ public class ImageioReaderSpi extends ImageReaderSpi {
                 null); // extraImageMetadataFormatClassNames
     }
 
+    /**
+     * Gets the description.
+     *
+     * @param locale the locale.
+     * @return the description.
+     */
     @Override
     public String getDescription(Locale locale) {
         return "DICOM Image Reader";
     }
 
+    /**
+     * Executes the register service provider operation.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
+    public static boolean registerServiceProvider() {
+        try {
+            IIORegistry.getDefaultInstance().registerServiceProvider(new ImageioReaderSpi());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * Executes the deregister service provider operation.
+     *
+     * @param serviceProvider the service provider.
+     * @return true if the condition is met; otherwise false.
+     */
+    public static boolean deregisterServiceProvider(ImageioReaderSpi serviceProvider) {
+        if (serviceProvider == null) {
+            return false;
+        }
+        try {
+            IIORegistry.getDefaultInstance().deregisterServiceProvider(serviceProvider);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * Determines whether decode input.
+     *
+     * @param source the source.
+     * @return true if the condition is met; otherwise false.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public boolean canDecodeInput(Object source) throws IOException {
         ImageInputStream iis = (ImageInputStream) source;
@@ -74,6 +152,13 @@ public class ImageioReaderSpi extends ImageReaderSpi {
         }
     }
 
+    /**
+     * Creates the reader instance.
+     *
+     * @param extension the extension.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public ImageReader createReaderInstance(Object extension) throws IOException {
         return new ImageioReader(this);

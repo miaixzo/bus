@@ -43,6 +43,7 @@ public class Deidentify {
      * The de-identifier instance with configured options.
      */
     private final DeIdentifier deidentifier;
+
     /**
      * Encoding options for writing the de-identified DICOM file.
      */

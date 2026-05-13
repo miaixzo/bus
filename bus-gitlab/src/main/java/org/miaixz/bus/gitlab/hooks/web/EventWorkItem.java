@@ -24,6 +24,12 @@ import java.util.List;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+/**
+ * The event work item class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class EventWorkItem {
 
     private Long authorId;
@@ -46,6 +52,10 @@ public class EventWorkItem {
     private Long updatedById;
     private Integer weight;
     private String healthStatus;
+
+    /**
+     * The type field.
+     */
     private String type;
     private String url;
     private Integer totalTimeSpent;

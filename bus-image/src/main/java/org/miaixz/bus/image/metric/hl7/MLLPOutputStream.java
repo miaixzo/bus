@@ -24,42 +24,81 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
+ * Represents the MLLPOutputStream type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class MLLPOutputStream extends FilterOutputStream {
 
     /**
-     * 消息开始
+     * Provides DICOM processing details.
      */
     private static final int SOM = 0x0b;
+
     /**
-     * 消息结束
+     * Provides DICOM processing details.
      */
     private static final byte[] EOM = { 0x1c, 0x0d };
 
+    /**
+     * The som written value.
+     */
     private boolean somWritten;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param out the out.
+     */
     public MLLPOutputStream(OutputStream out) {
         super(out);
     }
 
+    /**
+     * Executes the write operation.
+     *
+     * @param b the b.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public synchronized void write(int b) throws IOException {
         writeStartBlock();
         out.write(b);
     }
 
+    /**
+     * Executes the write operation.
+     *
+     * @param b   the b.
+     * @param off the off.
+     * @param len the len.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public synchronized void write(byte[] b, int off, int len) throws IOException {
         writeStartBlock();
         out.write(b, off, len);
     }
 
+    /**
+     * Writes the message.
+     *
+     * @param b the b.
+     * @throws IOException if the operation cannot be completed.
+     */
     public void writeMessage(byte[] b) throws IOException {
         writeMessage(b, 0, b.length);
     }
 
+    /**
+     * Writes the message.
+     *
+     * @param b   the b.
+     * @param off the off.
+     * @param len the len.
+     * @throws IOException if the operation cannot be completed.
+     */
     public synchronized void writeMessage(byte[] b, int off, int len) throws IOException {
         if (somWritten)
             throw new IllegalStateException();
@@ -72,6 +111,11 @@ public class MLLPOutputStream extends FilterOutputStream {
         out.flush();
     }
 
+    /**
+     * Writes the start block.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     private void writeStartBlock() throws IOException {
         if (!somWritten) {
             out.write(SOM);
@@ -79,6 +123,11 @@ public class MLLPOutputStream extends FilterOutputStream {
         }
     }
 
+    /**
+     * Executes the finish operation.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     public synchronized void finish() throws IOException {
         if (!somWritten)
             throw new IllegalStateException();

@@ -53,6 +53,7 @@ public class StreamSCU {
      * Helper for managing SOP Class Relationship extended negotiation.
      */
     public final RelatedSOPClasses relSOPClasses = new RelatedSOPClasses();
+
     /**
      * A map to track the SOP Instance UIDs of objects currently being processed.
      */
@@ -62,50 +63,62 @@ public class StreamSCU {
      * The Application Entity for this SCU.
      */
     private final ApplicationEntity ae;
+
     /**
      * The remote connection configuration.
      */
     private final Connection remote;
+
     /**
      * The A-ASSOCIATE-RQ message.
      */
     private final AAssociateRQ rq = new AAssociateRQ();
+
     /**
      * The DICOM device for this SCU.
      */
     private final Device device;
+
     /**
      * The local network connection configuration.
      */
     private final Connection conn;
+
     /**
      * The overall status and progress of the C-STORE operation.
      */
     private final Status state;
+
     /**
      * Advanced configuration options.
      */
     private final Args options;
+
     /**
      * An atomic flag to control the association closure countdown.
      */
     private final AtomicBoolean countdown = new AtomicBoolean(false);
+
     /**
      * A scheduled executor for closing idle associations.
      */
     private final ScheduledExecutorService closeAssociationExecutor = Executors.newSingleThreadScheduledExecutor();
+
     /**
      * Additional attributes to be merged.
      */
     private Attributes attrs;
+
     /**
      * A flag to enable SOP Class Relationship extended negotiation.
      */
     private boolean relExtNeg;
+
     /**
      * The active DICOM association.
      */
     private Association as;
+
     /**
      * The task to be executed for closing an idle association.
      */
@@ -116,18 +129,22 @@ public class StreamSCU {
             close(false);
         }
     };
+
     /**
      * The last recorded status code from a C-STORE response.
      */
     private int lastStatusCode = Integer.MIN_VALUE;
+
     /**
      * A counter for the number of status logs to prevent flooding.
      */
     private int nbStatusLog = 0;
+
     /**
      * The total number of sub-operations expected.
      */
     private int numberOfSuboperations = 0;
+
     /**
      * A factory for creating DIMSE response handlers.
      */
@@ -184,13 +201,13 @@ public class StreamSCU {
             Builder.notifyProgession(state.getProgress(), cmd, ps, numberOfSuboperations);
         }
     };
+
     /**
      * The future result of the scheduled close task.
      */
     private ScheduledFuture<?> scheduledFuture;
 
     /**
-     *
      * Constructs a new {@code StreamSCU} with basic node configurations.
      *
      * @param callingNode The configuration of the calling DICOM node.
@@ -202,7 +219,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Constructs a new {@code StreamSCU} with advanced parameters.
      *
      * @param params      Advanced configuration parameters.
@@ -215,7 +231,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Constructs a new {@code StreamSCU} with advanced parameters and a progress handler.
      *
      * @param params      Advanced configuration parameters.
@@ -250,7 +265,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Selects the most appropriate transfer syntax from the ones offered by the SCP.
      *
      * @param as     The active association.
@@ -272,7 +286,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Sends a C-STORE request over the active association.
      *
      * @param cuid       The SOP Class UID of the object.
@@ -292,7 +305,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Gets the configuration of the calling node.
      *
      * @return The calling node.
@@ -302,7 +314,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Gets the configuration of the called node.
      *
      * @return The called node.
@@ -312,7 +323,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Gets the local node information from the active association.
      *
      * @return The local node, or {@code null} if not associated.
@@ -322,7 +332,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Gets the remote node information from the active association.
      *
      * @return The remote node, or {@code null} if not associated.
@@ -332,7 +341,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Selects an appropriate transfer syntax for a given SOP Class.
      *
      * @param cuid  The SOP Class UID.
@@ -344,7 +352,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Gets the device associated with this SCU.
      *
      * @return The device.
@@ -354,7 +361,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Gets the A-ASSOCIATE-RQ message.
      *
      * @return The A-ASSOCIATE-RQ.
@@ -364,7 +370,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Gets the remote connection configuration.
      *
      * @return The remote connection.
@@ -374,7 +379,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Gets the attributes to be merged.
      *
      * @return The attributes.
@@ -384,7 +388,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Sets the attributes to be merged.
      *
      * @param attrs The attributes.
@@ -394,7 +397,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Enables or disables SOP Class Relationship extended negotiation.
      *
      * @param enable {@code true} to enable.
@@ -404,7 +406,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Gets the advanced configuration options.
      *
      * @return The arguments.
@@ -414,7 +415,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Checks if an association is currently established.
      *
      * @return {@code true} if associated.
@@ -424,7 +424,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Checks if the current association is ready for data transfer.
      *
      * @return {@code true} if ready.
@@ -434,7 +433,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Gets the negotiated transfer syntaxes for a given SOP Class.
      *
      * @param cuid The SOP Class UID.
@@ -445,7 +443,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Gets the number of sub-operations.
      *
      * @return The number of sub-operations.
@@ -455,7 +452,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Sets the number of sub-operations.
      *
      * @param numberOfSuboperations The number of sub-operations.
@@ -465,7 +461,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Gets the current status of the operation.
      *
      * @return The status.
@@ -475,7 +470,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Gets the response handler factory.
      *
      * @return The factory.
@@ -485,7 +479,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Establishes a DICOM association with the remote AE.
      *
      * @throws IOException if the connection fails.
@@ -523,7 +516,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Closes the DICOM association.
      *
      * @param force If {@code true}, closes immediately. If {@code false}, only closes if the countdown is active.
@@ -561,7 +553,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Adds a presentation context for a given SOP Class and Transfer Syntax to the association request.
      *
      * @param cuid  The SOP Class UID.
@@ -598,7 +589,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Starts a countdown to close the association after a period of inactivity.
      */
     public synchronized void triggerCloseExecutor() {
@@ -608,7 +598,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Prepares for a transfer by ensuring the association is open and the necessary presentation contexts are
      * negotiated.
      *
@@ -660,7 +649,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Handles the dynamic addition of a new transfer syntax by waiting for current transfers to complete and then
      * closing the association so it can be re-negotiated.
      *
@@ -699,7 +687,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Removes a SOP Instance UID from the map of currently processed instances.
      *
      * @param iuid The UID to remove.
@@ -709,7 +696,6 @@ public class StreamSCU {
     }
 
     /**
-     *
      * Adds a SOP Instance UID to the map of currently processed instances.
      *
      * @param iuid The UID to add.
@@ -719,19 +705,21 @@ public class StreamSCU {
     }
 
     /**
-     *
      * A factory for creating DIMSE response handlers.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FunctionalInterface
     public interface RSPHandlerFactory {
 
         /**
-         *
          * Creates a new DIMSE response handler.
          *
          * @return A new {@link DimseRSPHandler}.
          */
         DimseRSPHandler createDimseRSPHandler();
+
     }
 
 }

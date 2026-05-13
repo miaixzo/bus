@@ -265,6 +265,9 @@ public final class CupsPrinter extends AbstractPrinter {
 
     /**
      * Factory interface for creating concrete printer instances.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FunctionalInterface
     protected interface PrinterFactory {
@@ -291,6 +294,7 @@ public final class CupsPrinter extends AbstractPrinter {
                 boolean isDefault,
                 boolean isLocal,
                 String portName);
+
     }
 
 }

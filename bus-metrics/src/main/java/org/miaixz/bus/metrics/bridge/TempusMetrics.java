@@ -33,7 +33,9 @@ import org.miaixz.bus.metrics.Metrics;
  */
 public class TempusMetrics {
 
-    /** Private constructor; this is a static utility class. */
+    /**
+     * Private constructor; this is a static utility class.
+     */
     private TempusMetrics() {
 
     }

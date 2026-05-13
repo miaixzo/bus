@@ -43,38 +43,47 @@ public class WebSocketWriter {
      * True if this is a client-side writer, which must mask outgoing frames.
      */
     final boolean isClient;
+
     /**
      * A source of randomness for generating mask keys.
      */
     final Random random;
+
     /**
      * The destination sink for writing frames.
      */
     final BufferSink sink;
+
     /**
      * A buffer for the destination sink.
      */
     final Buffer sinkBuffer;
+
     /**
      * A per-message buffer for partial writes.
      */
     final Buffer buffer = new Buffer();
+
     /**
      * A sink for writing a single message frame.
      */
     final FrameSink frameSink = new FrameSink();
+
     /**
      * The mask key for masking client frames.
      */
     private final byte[] maskKey;
+
     /**
      * A cursor for efficiently applying the mask.
      */
     private final Buffer.UnsafeCursor maskCursor;
+
     /**
      * True if the writer has been closed.
      */
     boolean writerClosed;
+
     /**
      * True if a message sink is currently active.
      */
@@ -276,6 +285,9 @@ public class WebSocketWriter {
 
     /**
      * A sink for writing the payload of a single message frame.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     final class FrameSink implements Sink {
 
@@ -283,14 +295,17 @@ public class WebSocketWriter {
          * The opcode for this message.
          */
         int formatOpcode;
+
         /**
          * The total length of the message.
          */
         long contentLength;
+
         /**
          * True if this is the first frame of the message.
          */
         boolean isFirstFrame;
+
         /**
          * True if this sink is closed.
          */
@@ -336,6 +351,7 @@ public class WebSocketWriter {
             closed = true;
             activeWriter = false;
         }
+
     }
 
 }

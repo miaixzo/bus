@@ -45,22 +45,50 @@ import org.miaixz.bus.image.metric.hl7.net.HL7DeviceExtension;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the LdapHL7Configuration type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class LdapHL7Configuration extends LdapDicomConfigurationExtension implements HL7Configuration {
 
+    /**
+     * The hl7 attrs value.
+     */
     static final String[] HL7_ATTRS = { "dicomDeviceName", "hl7ApplicationName", "hl7OtherApplicationName",
             "dicomDescription", "dicomApplicationCluster", "dicomInstalled", "dicomNetworkConnectionReference" };
+
+    /**
+     * The cn unique hl7 application names registry value.
+     */
     private static final String CN_UNIQUE_HL7_APPLICATION_NAMES_REGISTRY = "cn=Unique HL7 Application Names Registry,";
+
+    /**
+     * The extensions value.
+     */
     private final List<LdapHL7ConfigurationExtension> extensions = new ArrayList<>();
+
+    /**
+     * The app names registry dn value.
+     */
     private String appNamesRegistryDN;
 
+    /**
+     * Adds the hl7 configuration extension.
+     *
+     * @param ext the ext.
+     */
     public void addHL7ConfigurationExtension(LdapHL7ConfigurationExtension ext) {
         ext.setHL7Configuration(this);
         extensions.add(ext);
     }
 
+    /**
+     * Removes the hl7 configuration extension.
+     *
+     * @param ext the ext.
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean removeHL7ConfigurationExtension(LdapHL7ConfigurationExtension ext) {
         if (!extensions.remove(ext))
             return false;
@@ -69,6 +97,13 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
         return true;
     }
 
+    /**
+     * Executes the register hl7 application operation.
+     *
+     * @param name the name.
+     * @return true if the condition is met; otherwise false.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public boolean registerHL7Application(String name) throws InternalException {
         try {
@@ -89,6 +124,13 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
         }
     }
 
+    /**
+     * Executes the register hl7 app operation.
+     *
+     * @param name the name.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private String registerHL7App(String name) throws InternalException {
         ensureAppNamesRegistryExists();
         try {
@@ -123,6 +165,12 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
         }
     }
 
+    /**
+     * Executes the unregister hl7 application operation.
+     *
+     * @param name the name.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public void unregisterHL7Application(String name) throws InternalException {
         if (appNamesRegistryExists())
@@ -155,6 +203,11 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
             }
     }
 
+    /**
+     * Executes the ensure app names registry exists operation.
+     *
+     * @throws InternalException if the operation cannot be completed.
+     */
     private void ensureAppNamesRegistryExists() throws InternalException {
         if (appNamesRegistryDN != null)
             return;
@@ -186,6 +239,12 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
         appNamesRegistryDN = dn;
     }
 
+    /**
+     * Executes the app names registry exists operation.
+     *
+     * @return true if the condition is met; otherwise false.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private boolean appNamesRegistryExists() throws InternalException {
         if (appNamesRegistryDN != null)
             return true;
@@ -216,6 +275,12 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
         return true;
     }
 
+    /**
+     * Executes the list registered hl7 application names operation.
+     *
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public String[] listRegisteredHL7ApplicationNames() throws InternalException {
         if (!appNamesRegistryExists())
@@ -224,6 +289,13 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
         return config.list(appNamesRegistryDN, "(objectclass=hl7UniqueApplicationName)", "hl7ApplicationName");
     }
 
+    /**
+     * Finds the hl7 application.
+     *
+     * @param name the name.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public HL7Application findHL7Application(String name) throws InternalException {
         Device device = config.findDevice("(&(objectclass=hl7Application)(hl7ApplicationName=" + name + "))", name);
@@ -231,6 +303,13 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
         return hl7Ext.getHL7Application(name);
     }
 
+    /**
+     * Executes the list hl7 app infos operation.
+     *
+     * @param keys the keys.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public synchronized HL7ApplicationInfo[] listHL7AppInfos(HL7ApplicationInfo keys) throws InternalException {
         if (!config.configurationExists())
@@ -283,6 +362,16 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
         return results.toArray(new HL7ApplicationInfo[results.size()]);
     }
 
+    /**
+     * Loads the from.
+     *
+     * @param hl7AppInfo the hl7 app info.
+     * @param attrs      the attrs.
+     * @param deviceName the device name.
+     * @param connCache  the conn cache.
+     * @throws NamingException   if the operation cannot be completed.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private void loadFrom(
             HL7ApplicationInfo hl7AppInfo,
             Attributes attrs,
@@ -298,6 +387,12 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
             hl7AppInfo.getConnections().add(config.findConnection(connDN, connCache));
     }
 
+    /**
+     * Converts this value to filter.
+     *
+     * @param keys the keys.
+     * @return the operation result.
+     */
     private String toFilter(HL7ApplicationInfo keys) {
         if (keys == null)
             return "(objectclass=hl7Application)";
@@ -311,6 +406,13 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
         return sb.toString();
     }
 
+    /**
+     * Executes the append filter operation.
+     *
+     * @param attrid the attrid.
+     * @param value  the value.
+     * @param sb     the sb.
+     */
     private void appendFilter(String attrid, String value, StringBuilder sb) {
         if (value == null)
             return;
@@ -318,6 +420,13 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
         sb.append('(').append(attrid).append('=').append(value).append(')');
     }
 
+    /**
+     * Executes the append filter operation.
+     *
+     * @param attrid the attrid.
+     * @param values the values.
+     * @param sb     the sb.
+     */
     private void appendFilter(String attrid, String[] values, StringBuilder sb) {
         if (values.length == 0)
             return;
@@ -333,6 +442,14 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
         sb.append(")");
     }
 
+    /**
+     * Stores the childs.
+     *
+     * @param diffs    the diffs.
+     * @param deviceDN the device dn.
+     * @param device   the device.
+     * @throws NamingException if the operation cannot be completed.
+     */
     @Override
     protected void storeChilds(ConfigurationChanges diffs, String deviceDN, Device device) throws NamingException {
         HL7DeviceExtension hl7Ext = device.getDeviceExtension(HL7DeviceExtension.class);
@@ -343,6 +460,14 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
             store(diffs, hl7App, deviceDN);
     }
 
+    /**
+     * Executes the store operation.
+     *
+     * @param diffs    the diffs.
+     * @param hl7App   the hl7 app.
+     * @param deviceDN the device dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void store(ConfigurationChanges diffs, HL7Application hl7App, String deviceDN) throws NamingException {
         String appDN = hl7appDN(hl7App.getApplicationName(), deviceDN);
         ConfigurationChanges.ModifiedObject ldapObj = ConfigurationChanges
@@ -358,10 +483,26 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
             ext.storeChilds(ConfigurationChanges.nullifyIfNotVerbose(diffs, diffs), appDN, hl7App);
     }
 
+    /**
+     * Executes the hl7app dn operation.
+     *
+     * @param name     the name.
+     * @param deviceDN the device dn.
+     * @return the operation result.
+     */
     private String hl7appDN(String name, String deviceDN) {
         return LdapBuilder.dnOf("hl7ApplicationName", name, deviceDN);
     }
 
+    /**
+     * Stores the to.
+     *
+     * @param ldapObj  the ldap obj.
+     * @param hl7App   the hl7 app.
+     * @param deviceDN the device dn.
+     * @param attrs    the attrs.
+     * @return the operation result.
+     */
     private Attributes storeTo(
             ConfigurationChanges.ModifiedObject ldapObj,
             HL7Application hl7App,
@@ -398,6 +539,14 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
         return attrs;
     }
 
+    /**
+     * Loads the childs.
+     *
+     * @param device   the device.
+     * @param deviceDN the device dn.
+     * @throws NamingException   if the operation cannot be completed.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     protected void loadChilds(Device device, String deviceDN) throws NamingException, InternalException {
         NamingEnumeration<SearchResult> ne = config.search(deviceDN, "(objectclass=hl7Application)");
@@ -415,6 +564,16 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
         }
     }
 
+    /**
+     * Loads the hl7 application.
+     *
+     * @param sr       the sr.
+     * @param deviceDN the device dn.
+     * @param device   the device.
+     * @return the operation result.
+     * @throws NamingException   if the operation cannot be completed.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private HL7Application loadHL7Application(SearchResult sr, String deviceDN, Device device)
             throws NamingException, InternalException {
         Attributes attrs = sr.getAttributes();
@@ -427,6 +586,13 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
         return hl7app;
     }
 
+    /**
+     * Loads the from.
+     *
+     * @param hl7app the hl7app.
+     * @param attrs  the attrs.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void loadFrom(HL7Application hl7app, Attributes attrs) throws NamingException {
         hl7app.setAcceptedSendingApplications(LdapBuilder.stringArray(attrs.get("hl7AcceptedSendingApplication")));
         hl7app.setOtherApplicationNames(LdapBuilder.stringArray(attrs.get("hl7OtherApplicationName")));
@@ -441,6 +607,15 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
             ext.loadFrom(hl7app, attrs);
     }
 
+    /**
+     * Executes the merge childs operation.
+     *
+     * @param diffs    the diffs.
+     * @param prev     the prev.
+     * @param device   the device.
+     * @param deviceDN the device dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     @Override
     protected void mergeChilds(ConfigurationChanges diffs, Device prev, Device device, String deviceDN)
             throws NamingException {
@@ -468,6 +643,15 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
         }
     }
 
+    /**
+     * Executes the merge operation.
+     *
+     * @param diffs    the diffs.
+     * @param prev     the prev.
+     * @param app      the app.
+     * @param deviceDN the device dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void merge(ConfigurationChanges diffs, HL7Application prev, HL7Application app, String deviceDN)
             throws NamingException {
         String appDN = hl7appDN(app.getApplicationName(), deviceDN);
@@ -479,6 +663,16 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
             ext.mergeChilds(diffs, prev, app, appDN);
     }
 
+    /**
+     * Stores the diffs.
+     *
+     * @param ldapObj  the ldap obj.
+     * @param a        the a.
+     * @param b        the b.
+     * @param deviceDN the device dn.
+     * @param mods     the mods.
+     * @return the operation result.
+     */
     private List<ModificationItem> storeDiffs(
             ConfigurationChanges.ModifiedObject ldapObj,
             HL7Application a,
@@ -538,6 +732,13 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
         return mods;
     }
 
+    /**
+     * Executes the register operation.
+     *
+     * @param device the device.
+     * @param dns    the dns.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     protected void register(Device device, List<String> dns) throws InternalException {
         HL7DeviceExtension hl7Ext = device.getDeviceExtension(HL7DeviceExtension.class);
@@ -550,6 +751,14 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
         }
     }
 
+    /**
+     * Executes the register diff operation.
+     *
+     * @param prev   the prev.
+     * @param device the device.
+     * @param dns    the dns.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     protected void registerDiff(Device prev, Device device, List<String> dns) throws InternalException {
         HL7DeviceExtension prevHL7Ext = prev.getDeviceExtension(HL7DeviceExtension.class);
@@ -568,6 +777,13 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
         }
     }
 
+    /**
+     * Executes the mark for unregister operation.
+     *
+     * @param prev   the prev.
+     * @param device the device.
+     * @param dns    the dns.
+     */
     @Override
     protected void markForUnregister(Device prev, Device device, List<String> dns) {
         HL7DeviceExtension prevHL7Ext = prev.getDeviceExtension(HL7DeviceExtension.class);
@@ -581,6 +797,14 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
         }
     }
 
+    /**
+     * Executes the mark for unregister operation.
+     *
+     * @param deviceDN the device dn.
+     * @param dns      the dns.
+     * @throws NamingException   if the operation cannot be completed.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     protected void markForUnregister(String deviceDN, List<String> dns) throws NamingException, InternalException {
         if (!appNamesRegistryExists())

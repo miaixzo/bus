@@ -1,6 +1,12 @@
 package org.opencv.core;
 
 //javadoc:Range
+/**
+ * The range class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Range {
 
     public int start, end;
@@ -81,4 +87,5 @@ public class Range {
     public String toString() {
         return "[" + start + ", " + end + ")";
     }
+
 }

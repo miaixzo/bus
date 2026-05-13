@@ -38,9 +38,9 @@ import org.miaixz.bus.crypto.center.Sign;
  * encoding is UTF-8.
  * </p>
  *
+ * @see JWTSigner
  * @author Kimi Liu
  * @since Java 21+
- * @see JWTSigner
  */
 public class RSAJWTSigner implements JWTSigner {
 

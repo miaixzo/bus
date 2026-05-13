@@ -29,7 +29,7 @@ package org.miaixz.bus.core.basic.service;
  *
  * <p>
  * Example: in {@code META-INF/services/org.miaixz.bus.core.basic.service.ErrorService}
- * 
+ *
  * <pre>
  * <code>
  * org.miaixz.bus.xxx.BusinessErrorService

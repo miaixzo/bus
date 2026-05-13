@@ -1,5 +1,11 @@
 package org.opencv.core;
 
+/**
+ * The cv exception class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class CvException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
@@ -12,4 +18,5 @@ public class CvException extends RuntimeException {
     public String toString() {
         return "CvException [" + super.toString() + "]";
     }
+
 }

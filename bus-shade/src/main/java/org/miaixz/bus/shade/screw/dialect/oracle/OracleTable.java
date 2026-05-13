@@ -40,21 +40,25 @@ public class OracleTable implements Table {
      */
     @MappingField(value = "TABLE_CAT")
     private String tableCat;
+
     /**
      * The name of the table.
      */
     @MappingField(value = "TABLE_NAME")
     private String tableName;
+
     /**
      * The schema of the table.
      */
     @MappingField(value = "TABLE_SCHEM")
     private String tableSchem;
+
     /**
      * The type of the table (e.g., "TABLE", "VIEW", etc.).
      */
     @MappingField(value = "TABLE_TYPE")
     private String tableType;
+
     /**
      * The explanatory comment on the table.
      */

@@ -18,11 +18,11 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 医学图形/图像处理 AR : Autorefracti MD : Bone Mineral Densitometry EPS : Cardiac Electrophysiology CR : Computed Radiography
- * CT : Computed Tomography DX : Digital Radiography ECG : Electrocardiography ES : Endoscopy XC : External-camera
- * Photography GM : General Microscopy HD : Hemodynamic Waveform IO : Intra-oral Radiography KER : Keratometry LEN :
- * Lensometry MR : Magnetic Resonance MG : Mammography OP : Ophthalmic Photography OSS : Optical Surface Scanner RF :
- * Radiofluoroscopy RG : Radiographic imaging VA : Visual Acuity XA : X-Ray Angiography
+ * Provides DICOM processing details. CT : Computed Tomography DX : Digital Radiography ECG : Electrocardiography ES :
+ * Endoscopy XC : External-camera Photography GM : General Microscopy HD : Hemodynamic Waveform IO : Intra-oral
+ * Radiography KER : Keratometry LEN : Lensometry MR : Magnetic Resonance MG : Mammography OP : Ophthalmic Photography
+ * OSS : Optical Surface Scanner RF : Radiofluoroscopy RG : Radiographic imaging VA : Visual Acuity XA : X-Ray
+ * Angiography
  *
  * @author Kimi Liu
  * @since Java 21+

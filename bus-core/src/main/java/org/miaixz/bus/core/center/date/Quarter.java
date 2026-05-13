@@ -26,11 +26,11 @@ import org.miaixz.bus.core.lang.Assert;
 /**
  * Enumeration for quarters of a year.
  *
- * @author Kimi Liu
  * @see #Q1
  * @see #Q2
  * @see #Q3
  * @see #Q4
+ * @author Kimi Liu
  * @since Java 21+
  */
 public enum Quarter {
@@ -61,6 +61,7 @@ public enum Quarter {
      * The code of the quarter.
      */
     private final int code;
+
     /**
      * The name of the quarter.
      */

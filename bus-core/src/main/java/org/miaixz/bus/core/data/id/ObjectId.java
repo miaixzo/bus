@@ -41,7 +41,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  *     | Timestamp | Random Number | Auto-incrementing Counter |
  *     |   4 bytes |   4 bytes     |    4 bytes                |
  * </pre>
- * 
+ *
  * Reference: <a href=
  * "https://github.com/mongodb/mongo-java-driver/blob/master/bson/src/main/org/bson/types/ObjectId.java">ObjectId</a>
  *
@@ -54,6 +54,7 @@ public class ObjectId {
      * A thread-safe counter for generating unique IDs.
      */
     private static final AtomicInteger NEXT_INC = new AtomicInteger(RandomKit.randomInt());
+
     /**
      * The machine identifier.
      */

@@ -49,7 +49,7 @@ import org.miaixz.bus.core.lang.Normal;
  * This annotation serves as a marker for Row-Level Security (RLS). It instructs the underlying framework (e.g., MyBatis
  * Interceptor, AOP Aspect) to automatically inject SQL predicates to filter data based on the current user's context
  * (e.g., Tenant ID, Department ID, or User ID).
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */

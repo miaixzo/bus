@@ -73,6 +73,7 @@ public class SMTPMessage extends MimeMessage {
      * The mail account configuration.
      */
     private final MailAccount mailAccount;
+
     /**
      * The multipart content of the email, holding the body, attachments, and images.
      */

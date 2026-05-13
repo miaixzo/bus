@@ -27,6 +27,12 @@ import java.util.List;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+/**
+ * The blame class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Blame implements Serializable {
 
     @Serial

@@ -52,10 +52,12 @@ public class ThymeleafTemplate implements Template, Serializable {
      * The raw Thymeleaf template engine object.
      */
     private final TemplateEngine engine;
+
     /**
      * The template path or content.
      */
     private final String template;
+
     /**
      * The character set for the template.
      */

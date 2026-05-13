@@ -43,14 +43,17 @@ public class Emf2sf {
      * The core component for extracting frames.
      */
     private final MultiframeExtractor extractor = new MultiframeExtractor();
+
     /**
      * An array of specific frame numbers to extract (1-based). If null, all frames are extracted.
      */
     private int[] frames;
+
     /**
      * A formatter for the output filenames.
      */
     private DecimalFormat outFileFormat;
+
     /**
      * The directory where the single-frame files will be saved.
      */

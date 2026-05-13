@@ -51,6 +51,9 @@ public final class PagingFile {
 
     /**
      * For swap file usage
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum PagingPercentProperty implements PerfCounterQuery.PdhCounterProperty {
 
@@ -60,6 +63,7 @@ public final class PagingFile {
          * The instance value.
          */
         private final String instance;
+
         /**
          * The counter value.
          */
@@ -95,6 +99,7 @@ public final class PagingFile {
         public String getCounter() {
             return counter;
         }
+
     }
 
 }

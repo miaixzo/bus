@@ -48,78 +48,97 @@ public final class UnoUrl {
      * The character set for encoding usernames.
      */
     public static final String USERNAME_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#";
+
     /**
      * The character set for encoding passwords.
      */
     public static final String PASSWORD_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#";
+
     /**
      * The character set for encoding path segments.
      */
     public static final String PATH_SEGMENT_ENCODE_SET = " \"<>^`{}|/\\?#";
+
     /**
      * The character set for encoding URI path segments.
      */
     public static final String PATH_SEGMENT_ENCODE_SET_URI = Symbol.BRACKET;
+
     /**
      * The character set for encoding query parameters.
      */
     public static final String QUERY_ENCODE_SET = " \"'<>#";
+
     /**
      * The character set for re-encoding query components.
      */
     public static final String QUERY_COMPONENT_REENCODE_SET = " \"'<>#&=";
+
     /**
      * The character set for encoding query components.
      */
     public static final String QUERY_COMPONENT_ENCODE_SET = " !\"#$&'(),/:;<=>?@[]\\^`{|}~";
+
     /**
      * The character set for encoding URI query components.
      */
     public static final String QUERY_COMPONENT_ENCODE_SET_URI = "\\^`{|}";
+
     /**
      * The character set for encoding form data.
      */
     public static final String FORM_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#&!$(),~";
+
     /**
      * The character set for encoding fragments.
      */
     public static final String FRAGMENT_ENCODE_SET = Normal.EMPTY;
+
     /**
      * The character set for encoding URI fragments.
      */
     public static final String FRAGMENT_ENCODE_SET_URI = " \"#<>\\^`{|}";
+
     /**
      * The URL scheme (http or https).
      */
     final String scheme;
+
     /**
      * The canonicalized hostname.
      */
     final String host;
+
     /**
      * The port number (80, 443, or user-specified, in the range 1-65535).
      */
     final int port;
+
     /**
      * The decoded username.
      */
     private final String username;
+
     /**
      * The decoded password.
      */
     private final String password;
+
     /**
      * The list of decoded path segments.
      */
     private final List<String> pathSegments;
+
     /**
      * The list of decoded query parameter names and values.
      */
     private final List<String> queryNamesAndValues;
+
     /**
      * The decoded fragment.
      */
     private final String fragment;
+
     /**
      * The canonicalized URL string.
      */
@@ -917,6 +936,9 @@ public final class UnoUrl {
 
     /**
      * A builder for creating {@link UnoUrl} instances.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static final class Builder {
 
@@ -924,34 +946,42 @@ public final class UnoUrl {
          * The error message for an invalid host.
          */
         static final String INVALID_HOST = "Invalid URL host";
+
         /**
          * The list of encoded path segments.
          */
         final List<String> encodedPathSegments = new ArrayList<>();
+
         /**
          * The scheme of the URL.
          */
         String scheme;
+
         /**
          * The encoded username.
          */
         String encodedUsername = Normal.EMPTY;
+
         /**
          * The encoded password.
          */
         String encodedPassword = Normal.EMPTY;
+
         /**
          * The hostname.
          */
         String host;
+
         /**
          * The port number.
          */
         int port = -1;
+
         /**
          * The list of encoded query parameter names and values.
          */
         List<String> encodedQueryNamesAndValues;
+
         /**
          * The encoded fragment.
          */
@@ -1901,6 +1931,7 @@ public final class UnoUrl {
                 encodedPathSegments.add(Normal.EMPTY);
             }
         }
+
     }
 
 }

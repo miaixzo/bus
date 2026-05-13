@@ -227,6 +227,9 @@ public final class ServerSentEventReader {
 
     /**
      * Callback interface for handling server-sent events and retry time changes.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public interface Callback {
 
@@ -245,6 +248,7 @@ public final class ServerSentEventReader {
          * @param timeMs The retry time in milliseconds.
          */
         void onRetryChange(long timeMs);
+
     }
 
 }

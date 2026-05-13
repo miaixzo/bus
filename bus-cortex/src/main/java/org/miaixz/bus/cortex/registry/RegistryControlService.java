@@ -58,30 +58,37 @@ public class RegistryControlService {
      * API registry used for service-definition management operations.
      */
     private final ApiRegistry apiRegistry;
+
     /**
      * MCP registry used for tool-definition management operations.
      */
     private final McpRegistry mcpRegistry;
+
     /**
      * Prompt registry used for prompt-definition management operations.
      */
     private final PromptRegistry promptRegistry;
+
     /**
      * Optional shared guard applied to registry mutations.
      */
     private final CortexGuard cortexGuard;
+
     /**
      * Route-key strategy used for alias registration and dependency resolution.
      */
     private final Keying<Keying.RegistrySpec> keying;
+
     /**
      * Externally supplied batch executors ordered before the default executor.
      */
     private final List<RegistryBatchExecutor> batchExecutors;
+
     /**
      * Externally supplied batch resolvers used by the default batch executor.
      */
     private final List<RegistryBatchResolver> batchResolvers;
+
     /**
      * Default batch executor preserving historical behavior.
      */
@@ -1125,6 +1132,9 @@ public class RegistryControlService {
 
     /**
      * Control-service backed operations exposed to registry batch executors.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private class ControlRegistryBatchOperations implements RegistryBatchOperations {
 

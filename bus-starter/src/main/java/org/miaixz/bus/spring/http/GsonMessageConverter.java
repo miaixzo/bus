@@ -160,6 +160,9 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
     /**
      * Custom {@link com.google.gson.TypeAdapterFactory} that restricts deserialization to types within a specified
      * package prefix (autoTypePrefix).
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class AutoTypeAdapterFactory implements com.google.gson.TypeAdapterFactory {
 
@@ -196,6 +199,7 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
             }
             return null; // Delegate to default adapter
         }
+
     }
 
 }

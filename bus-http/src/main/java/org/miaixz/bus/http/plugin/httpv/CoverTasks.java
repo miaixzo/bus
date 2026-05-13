@@ -70,26 +70,32 @@ public class CoverTasks {
          * Executor for I/O-bound operations.
          */
         private final java.util.concurrent.Executor ioExecutor;
+
         /**
          * Executor for main-thread (e.g., UI) operations. Can be null.
          */
         private final java.util.concurrent.Executor mainExecutor;
+
         /**
          * Global listener for download progress events.
          */
         private final Downloads.Listener downloadListener;
+
         /**
          * Global listener for successful HTTP response events.
          */
         private final Listener<CoverResult> responseListener;
+
         /**
          * Global listener for exceptions that occur during HTTP tasks.
          */
         private final Listener<IOException> exceptionListener;
+
         /**
          * Global listener for task completion events (both success and failure).
          */
         private final Listener<CoverResult.State> completeListener;
+
         /**
          * An array of converters for serializing and deserializing data.
          */
@@ -388,6 +394,8 @@ public class CoverTasks {
          * A functional interface for applying a conversion operation.
          *
          * @param <T> The return type of the conversion.
+         * @author Kimi Liu
+         * @since Java 21+
          */
         public interface ConvertFunc<T> {
 
@@ -405,6 +413,8 @@ public class CoverTasks {
          * A container for holding converted data along with its content type.
          *
          * @param <T> The type of the data.
+         * @author Kimi Liu
+         * @since Java 21+
          */
         public static class Data<T> {
 
@@ -412,6 +422,7 @@ public class CoverTasks {
              * The converted data.
              */
             public T data;
+
             /**
              * The content type of the data.
              */
@@ -427,6 +438,7 @@ public class CoverTasks {
                 this.data = data;
                 this.contentType = contentType;
             }
+
         }
 
     }

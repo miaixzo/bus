@@ -46,7 +46,7 @@ import org.miaixz.bus.storage.Context;
  * <strong>Configuration Example:</strong>
  *
  * <pre>{@code
- * 
+ *
  * Context context = Context.builder().endpoint("https://s3.filebase.com").bucket("my-bucket")
  *         .accessKey("FILEBASE_ACCESS_KEY").secretKey("FILEBASE_SECRET_KEY").region("us-east-1").build();
  *

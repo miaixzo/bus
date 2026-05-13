@@ -49,26 +49,32 @@ public class VfsResource implements Resource {
      * Method reference for {@code VirtualFile.exists()}.
      */
     private static final Method VIRTUAL_FILE_METHOD_EXISTS;
+
     /**
      * Method reference for {@code VirtualFile.openStream()}.
      */
     private static final Method VIRTUAL_FILE_METHOD_GET_INPUT_STREAM;
+
     /**
      * Method reference for {@code VirtualFile.getSize()}.
      */
     private static final Method VIRTUAL_FILE_METHOD_GET_SIZE;
+
     /**
      * Method reference for {@code VirtualFile.getLastModified()}.
      */
     private static final Method VIRTUAL_FILE_METHOD_GET_LAST_MODIFIED;
+
     /**
      * Method reference for {@code VirtualFile.toURL()}.
      */
     private static final Method VIRTUAL_FILE_METHOD_TO_URL;
+
     /**
      * Method reference for {@code VirtualFile.getName()}.
      */
     private static final Method VIRTUAL_FILE_METHOD_GET_NAME;
+
     /**
      * Method reference for {@code VirtualFile.getPhysicalFile()}.
      */
@@ -93,6 +99,7 @@ public class VfsResource implements Resource {
      * The underlying {@code org.jboss.vfs.VirtualFile} instance.
      */
     private final Object virtualFile;
+
     /**
      * The last modified timestamp of the resource at the time of creation.
      */

@@ -30,14 +30,14 @@ import java.lang.annotation.Target;
  * parameter). This helps the injector distinguish between multiple implementations of the same type.
  * <p>
  * For example, you could create a custom annotation like {@code @Red}:
- * 
+ *
  * <pre>
  *   {@code @Binding}
  *   {@code @Retention(RUNTIME)}
  *   {@code @Target({FIELD, PARAMETER, METHOD})}
  *   public @interface Red {}
  * </pre>
- * 
+ *
  * This {@code @Red} annotation could then be used to request the injection of a specific "red" implementation of a
  * service. This concept is similar to {@code jakarta.inject.Qualifier}.
  *

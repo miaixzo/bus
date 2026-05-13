@@ -59,7 +59,9 @@ public interface Histogram {
      */
     double percentile(double p);
 
-    /** Returns an atomic snapshot for cross-instance aggregation. */
+    /**
+     * Returns an atomic snapshot for cross-instance aggregation.
+     */
     TimerSnapshot snapshot();
 
 }

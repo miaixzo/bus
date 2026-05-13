@@ -42,9 +42,13 @@ public final class Polardb extends AbstractDialect {
 
     /**
      * Internal Polardb engine families currently supported by the framework.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private enum Engine {
         UNKNOWN, MYSQL, POSTGRESQL
+
     }
 
     /**

@@ -27,16 +27,29 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * Represents the CompressionRules type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class CompressionRules implements Iterable<CompressionRule>, Serializable {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852288199011L;
 
+    /**
+     * The list value.
+     */
     private final List<CompressionRule> list = new ArrayList<>();
 
+    /**
+     * Executes the add operation.
+     *
+     * @param rule the rule.
+     */
     public void add(CompressionRule rule) {
         if (findByCommonName(rule.getCommonName()) != null)
             throw new IllegalStateException("CompressionRule with cn: '" + rule.getCommonName() + "' already exists");
@@ -46,19 +59,39 @@ public class CompressionRules implements Iterable<CompressionRule>, Serializable
         list.add(index, rule);
     }
 
+    /**
+     * Executes the add operation.
+     *
+     * @param rules the rules.
+     */
     public void add(CompressionRules rules) {
         for (CompressionRule rule : rules)
             add(rule);
     }
 
+    /**
+     * Executes the remove operation.
+     *
+     * @param ac the ac.
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean remove(CompressionRule ac) {
         return list.remove(ac);
     }
 
+    /**
+     * Executes the clear operation.
+     */
     public void clear() {
         list.clear();
     }
 
+    /**
+     * Finds the by common name.
+     *
+     * @param commonName the common name.
+     * @return the operation result.
+     */
     public CompressionRule findByCommonName(String commonName) {
         for (CompressionRule rule : list)
             if (commonName.equals(rule.getCommonName()))
@@ -66,6 +99,13 @@ public class CompressionRules implements Iterable<CompressionRule>, Serializable
         return null;
     }
 
+    /**
+     * Finds the compression rule.
+     *
+     * @param aeTitle         the ae title.
+     * @param imageDescriptor the image descriptor.
+     * @return the operation result.
+     */
     public CompressionRule findCompressionRule(String aeTitle, ImageDescriptor imageDescriptor) {
         for (CompressionRule ac : list)
             if (ac.matchesCondition(aeTitle, imageDescriptor))
@@ -73,6 +113,11 @@ public class CompressionRules implements Iterable<CompressionRule>, Serializable
         return null;
     }
 
+    /**
+     * Executes the iterator operation.
+     *
+     * @return the operation result.
+     */
     @Override
     public Iterator<CompressionRule> iterator() {
         return list.iterator();

@@ -20,18 +20,51 @@
 package org.miaixz.bus.image.nimble.opencv;
 
 /**
+ * Represents the SOFSegment type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 class SOFSegment {
 
+    /**
+     * The jfif value.
+     */
     private final boolean jfif;
+
+    /**
+     * The marker value.
+     */
     private final int marker;
+
+    /**
+     * The sample precision value.
+     */
     private final int samplePrecision;
+
+    /**
+     * The lines value.
+     */
     private final int lines; // height
+    /**
+     * The samples per line value.
+     */
     private final int samplesPerLine; // width
+    /**
+     * The components value.
+     */
     private final int components;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param jfif            the jfif.
+     * @param marker          the marker.
+     * @param samplePrecision the sample precision.
+     * @param lines           the lines.
+     * @param samplesPerLine  the samples per line.
+     * @param components      the components.
+     */
     SOFSegment(boolean jfif, int marker, int samplePrecision, int lines, int samplesPerLine, int components) {
         this.jfif = jfif;
         this.marker = marker;
@@ -41,30 +74,65 @@ class SOFSegment {
         this.components = components;
     }
 
+    /**
+     * Determines whether jfif.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean isJFIF() {
         return jfif;
     }
 
+    /**
+     * Gets the marker.
+     *
+     * @return the marker.
+     */
     public int getMarker() {
         return marker;
     }
 
+    /**
+     * Gets the sample precision.
+     *
+     * @return the sample precision.
+     */
     public int getSamplePrecision() {
         return samplePrecision;
     }
 
+    /**
+     * Gets the lines.
+     *
+     * @return the lines.
+     */
     public int getLines() {
         return lines;
     }
 
+    /**
+     * Gets the samples per line.
+     *
+     * @return the samples per line.
+     */
     public int getSamplesPerLine() {
         return samplesPerLine;
     }
 
+    /**
+     * Gets the components.
+     *
+     * @return the components.
+     */
     public int getComponents() {
         return components;
     }
 
+    /**
+     * Returns the string representation.
+     *
+     * @return the string representation.
+     */
     @Override
     public String toString() {
         return String.format(

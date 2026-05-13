@@ -30,7 +30,7 @@ import java.util.TimeZone;
 /**
  * A matcher for a single cron expression. A {@code PatternMatcher} consists of seven {@link PartMatcher} instances,
  * each representing one of the seven fields in a cron expression:
- * 
+ *
  * <pre>
  *    0      1     2        3         4       5        6
  * SECOND MINUTE HOUR DAY_OF_MONTH MONTH DAY_OF_WEEK YEAR

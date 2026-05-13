@@ -20,26 +20,41 @@
 package org.miaixz.bus.image.galaxy.dict.GE_1_2_840_113708_794_1_1_2_0;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "1.2.840.113708.794.1.1.2.0";
 
-    /** (0087,xx10) VR=CS VM=1 Media Type */
+    /**
+     * (0087,xx10) VR=CS VM=1 Media Type
+     */
     public static final int MediaType = 0x00870010;
 
-    /** (0087,xx20) VR=CS VM=1 Media Location */
+    /**
+     * (0087,xx20) VR=CS VM=1 Media Location
+     */
     public static final int MediaLocation = 0x00870020;
 
-    /** (0087,xx30) VR=ST VM=1 Storage File ID */
+    /**
+     * (0087,xx30) VR=ST VM=1 Storage File ID
+     */
     public static final int StorageFileID = 0x00870030;
 
-    /** (0087,xx40) VR=DS VM=1 Study or Image Size in MB */
+    /**
+     * (0087,xx40) VR=DS VM=1 Study or Image Size in MB
+     */
     public static final int StudyOrImageSizeInMB = 0x00870040;
 
-    /** (0087,xx50) VR=IS VM=1 Estimated Retrieve Time */
+    /**
+     * (0087,xx50) VR=IS VM=1 Estimated Retrieve Time
+     */
     public static final int EstimatedRetrieveTime = 0x00870050;
 
 }

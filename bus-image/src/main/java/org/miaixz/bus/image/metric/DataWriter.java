@@ -24,11 +24,20 @@ import java.io.IOException;
 import org.miaixz.bus.image.metric.net.PDVOutputStream;
 
 /**
+ * Defines the DataWriter contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface DataWriter {
 
+    /**
+     * Writes the to.
+     *
+     * @param out   the out.
+     * @param tsuid the tsuid.
+     * @throws IOException if the operation cannot be completed.
+     */
     void writeTo(PDVOutputStream out, String tsuid) throws IOException;
 
 }

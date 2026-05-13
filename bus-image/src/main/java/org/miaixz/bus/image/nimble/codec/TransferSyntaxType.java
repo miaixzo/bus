@@ -25,23 +25,100 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.VR;
 
 /**
+ * Defines the TransferSyntaxType values.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public enum TransferSyntaxType {
 
-    NATIVE(false, false, true, 16, 0), JPEG_BASELINE(true, true, false, 8, 0), JPEG_EXTENDED(true, true, false, 12, 0),
-    JPEG_SPECTRAL(true, true, false, 12, 0), JPEG_PROGRESSIVE(true, true, false, 12, 0),
-    JPEG_LOSSLESS(true, true, true, 16, 0), JPEG_LS(true, true, true, 16, 0), JPEG_2000(true, true, true, 16, 0),
-    RLE(true, false, true, 16, 1), JPIP(false, false, true, 16, 0), MPEG(true, false, false, 8, 0),
-    DEFLATED(false, false, true, 16, 0), UNKNOWN(false, false, true, 16, 0);
+    /**
+     * Constant for the native value.
+     */
+    NATIVE(false, false, true, 16, 0),
+    /**
+     * Constant for the jpeg baseline value.
+     */
+    JPEG_BASELINE(true, true, false, 8, 0),
+    /**
+     * Constant for the jpeg extended value.
+     */
+    JPEG_EXTENDED(true, true, false, 12, 0),
+    /**
+     * Constant for the jpeg spectral value.
+     */
+    JPEG_SPECTRAL(true, true, false, 12, 0),
+    /**
+     * Constant for the jpeg progressive value.
+     */
+    JPEG_PROGRESSIVE(true, true, false, 12, 0),
+    /**
+     * Constant for the jpeg lossless value.
+     */
+    JPEG_LOSSLESS(true, true, true, 16, 0),
+    /**
+     * Constant for the jpeg ls value.
+     */
+    JPEG_LS(true, true, true, 16, 0),
+    /**
+     * Constant for the jpeg 2000 value.
+     */
+    JPEG_2000(true, true, true, 16, 0),
+    /**
+     * Constant for the rle value.
+     */
+    RLE(true, false, true, 16, 1),
+    /**
+     * Constant for the jpip value.
+     */
+    JPIP(false, false, true, 16, 0),
+    /**
+     * Constant for the mpeg value.
+     */
+    MPEG(true, false, false, 8, 0),
+    /**
+     * Constant for the deflated value.
+     */
+    DEFLATED(false, false, true, 16, 0),
+    /**
+     * Constant for the unknown value.
+     */
+    UNKNOWN(false, false, true, 16, 0);
 
+    /**
+     * The pixeldata encapsulated value.
+     */
     private final boolean pixeldataEncapsulated;
+
+    /**
+     * The frame span multiple fragments value.
+     */
     private final boolean frameSpanMultipleFragments;
+
+    /**
+     * The encode signed value.
+     */
     private final boolean encodeSigned;
+
+    /**
+     * The max bits stored value.
+     */
     private final int maxBitsStored;
+
+    /**
+     * The planar configuration value.
+     */
     private final int planarConfiguration;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param pixeldataEncapsulated      the pixeldata encapsulated.
+     * @param frameSpanMultipleFragments the frame span multiple fragments.
+     * @param encodeSigned               the encode signed.
+     * @param maxBitsStored              the max bits stored.
+     * @param planarConfiguration        the planar configuration.
+     */
     TransferSyntaxType(boolean pixeldataEncapsulated, boolean frameSpanMultipleFragments, boolean encodeSigned,
             int maxBitsStored, int planarConfiguration) {
         this.pixeldataEncapsulated = pixeldataEncapsulated;
@@ -51,6 +128,12 @@ public enum TransferSyntaxType {
         this.planarConfiguration = planarConfiguration;
     }
 
+    /**
+     * Executes the for uid operation.
+     *
+     * @param uid the uid.
+     * @return the operation result.
+     */
     public static TransferSyntaxType forUID(String uid) {
         switch (UID.from(uid)) {
             case UID.ImplicitVRLittleEndian:
@@ -122,6 +205,12 @@ public enum TransferSyntaxType {
         }
     }
 
+    /**
+     * Determines whether lossy compression.
+     *
+     * @param uid the uid.
+     * @return true if the condition is met; otherwise false.
+     */
     public static boolean isLossyCompression(String uid) {
         switch (UID.from(uid)) {
             case UID.JPEGBaseline8Bit:
@@ -155,6 +244,12 @@ public enum TransferSyntaxType {
         }
     }
 
+    /**
+     * Determines whether ybr compression.
+     *
+     * @param uid the uid.
+     * @return true if the condition is met; otherwise false.
+     */
     public static boolean isYBRCompression(String uid) {
         switch (UID.from(uid)) {
             case UID.JPEGBaseline8Bit:
@@ -173,26 +268,57 @@ public enum TransferSyntaxType {
         }
     }
 
+    /**
+     * Determines whether pixeldata encapsulated.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean isPixeldataEncapsulated() {
         return pixeldataEncapsulated;
     }
 
+    /**
+     * Determines whether encode signed.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean canEncodeSigned() {
         return encodeSigned;
     }
 
+    /**
+     * Executes the may frame span multiple fragments operation.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean mayFrameSpanMultipleFragments() {
         return frameSpanMultipleFragments;
     }
 
+    /**
+     * Gets the planar configuration.
+     *
+     * @return the planar configuration.
+     */
     public int getPlanarConfiguration() {
         return planarConfiguration;
     }
 
+    /**
+     * Gets the max bits stored.
+     *
+     * @return the max bits stored.
+     */
     public int getMaxBitsStored() {
         return maxBitsStored;
     }
 
+    /**
+     * Executes the adjust bits stored to12 operation.
+     *
+     * @param attrs the attrs.
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean adjustBitsStoredTo12(Attributes attrs) {
         if (maxBitsStored == 12) {
             int bitsStored = attrs.getInt(Tag.BitsStored, 8);

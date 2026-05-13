@@ -60,15 +60,18 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
      * The BOOTTIME constant.
      */
     private static final long BOOTTIME = querySystemBootTimeMillis() / 1000L;
+
     /**
      * The config value.
      */
     private final Supplier<perfstat_partition_config_t> config = Memoizer.memoize(PerfstatConfig::queryConfig);
+
     /**
      * The procCpu value.
      */
     private final Supplier<perfstat_process_t[]> procCpu = Memoizer
             .memoize(PerfstatProcess::queryProcesses, Memoizer.defaultExpiration());
+
     /**
      * The installedAppsSupplier value.
      */

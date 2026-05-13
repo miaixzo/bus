@@ -20,20 +20,31 @@
 package org.miaixz.bus.image.galaxy.dict.SPI_P_Private_DiDi_Release_1;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SPI-P-Private-DiDi Release 1";
 
-    /** (0019,xx00) VR=LT VM=1 Post Mode String */
+    /**
+     * (0019,xx00) VR=LT VM=1 Post Mode String
+     */
     public static final int PostModeString = 0x00190000;
 
-    /** (0019,xx01) VR=LT VM=1 Post Data */
+    /**
+     * (0019,xx01) VR=LT VM=1 Post Data
+     */
     public static final int PostData = 0x00190001;
 
-    /** (0019,xx10) VR=LT VM=1 Image Header */
+    /**
+     * (0019,xx10) VR=LT VM=1 Image Header
+     */
     public static final int ImageHeader = 0x00190010;
 
 }

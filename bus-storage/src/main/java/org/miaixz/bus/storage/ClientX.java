@@ -65,6 +65,7 @@ public class ClientX implements SdkHttpClient {
      * HTTP client instance.
      */
     private final Httpd httpd;
+
     /**
      * Thread pool executor for asynchronous operations.
      */
@@ -231,6 +232,9 @@ public class ClientX implements SdkHttpClient {
 
     /**
      * Implementation of {@link ExecutableHttpRequest} for this client.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private class HttpExecutableHttpRequest implements ExecutableHttpRequest {
 
@@ -238,6 +242,7 @@ public class ClientX implements SdkHttpClient {
          * The HTTP call instance.
          */
         private final NewCall call;
+
         /**
          * Flag indicating if the request has been aborted.
          */
@@ -316,6 +321,7 @@ public class ClientX implements SdkHttpClient {
             }
             return null;
         }
+
     }
 
     /**
@@ -323,6 +329,9 @@ public class ClientX implements SdkHttpClient {
      * <p>
      * Optimizes performance by reducing memory allocation and using streaming.
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class CustomRequestBody extends RequestBody {
 
@@ -330,10 +339,12 @@ public class ClientX implements SdkHttpClient {
          * The content stream provider.
          */
         private final ContentStreamProvider contentStreamProvider;
+
         /**
          * The HTTP request.
          */
         private final SdkHttpRequest httpRequest;
+
         /**
          * The content length, calculated lazily.
          */
@@ -428,11 +439,15 @@ public class ClientX implements SdkHttpClient {
                 return length;
             }
         }
+
     }
 
     /**
      * An asynchronous content publisher wrapper that converts AWS SDK's {@link SdkHttpContentPublisher} to
      * {@link RequestBody}.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class AsyncContentPublisherWrapper extends RequestBody {
 
@@ -440,10 +455,12 @@ public class ClientX implements SdkHttpClient {
          * The content publisher.
          */
         private final SdkHttpContentPublisher contentPublisher;
+
         /**
          * The HTTP request.
          */
         private final SdkHttpRequest httpRequest;
+
         /**
          * The content length, calculated lazily.
          */
@@ -579,6 +596,7 @@ public class ClientX implements SdkHttpClient {
             }
             return contentLength != null ? contentLength : -1L;
         }
+
     }
 
     /**
@@ -587,6 +605,9 @@ public class ClientX implements SdkHttpClient {
      * <p>
      * Optimizes performance by reducing memory allocation and using efficient buffer management.
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class ByteBufferPublisher implements Publisher<ByteBuffer> {
 
@@ -594,10 +615,12 @@ public class ClientX implements SdkHttpClient {
          * The input stream to read from.
          */
         private final InputStream inputStream;
+
         /**
          * The size of the buffer to use for reading.
          */
         private final int bufferSize;
+
         /**
          * The executor service for emitting data.
          */
@@ -633,11 +656,19 @@ public class ClientX implements SdkHttpClient {
         public void subscribe(Subscriber<? super ByteBuffer> subscriber) {
             subscriber.onSubscribe(new Subscription() {
 
-                /** Flag indicating if the subscription has been cancelled. */
+                /**
+                 * Flag indicating if the subscription has been cancelled.
+                 */
                 private volatile boolean cancelled = false;
-                /** The amount of data requested by the subscriber. */
+
+                /**
+                 * The amount of data requested by the subscriber.
+                 */
                 private volatile long requested = 0;
-                /** Lock object for synchronizing the requested count. */
+
+                /**
+                 * Lock object for synchronizing the requested count.
+                 */
                 private final Object lock = new Object();
 
                 @Override
@@ -700,10 +731,14 @@ public class ClientX implements SdkHttpClient {
                 }
             });
         }
+
     }
 
     /**
      * Builder pattern for {@code ClientX}.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class ClientBuilder implements SdkHttpClient.Builder<ClientBuilder> {
 
@@ -711,6 +746,7 @@ public class ClientX implements SdkHttpClient {
          * The HTTP client builder.
          */
         private Httpd.Builder httpdBuilder;
+
         /**
          * The executor service for callbacks.
          */
@@ -847,6 +883,7 @@ public class ClientX implements SdkHttpClient {
         public ClientX build() {
             return new ClientX(this);
         }
+
     }
 
     /**
@@ -855,6 +892,9 @@ public class ClientX implements SdkHttpClient {
      * This interceptor ensures generic S3 protocol compatibility and does not depend on specific storage service type
      * detection.
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class S3CompatibilityInterceptor implements Interceptor {
 
@@ -964,6 +1004,7 @@ public class ClientX implements SdkHttpClient {
             // By default, overwriting is not allowed
             return false;
         }
+
     }
 
 }

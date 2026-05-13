@@ -47,15 +47,18 @@ public class TemplateConfig implements Serializable {
      * Character set for template files.
      */
     private java.nio.charset.Charset charset;
+
     /**
      * Path to the template files. This can be a relative path if {@link ResourceMode#CLASSPATH} or
      * {@link ResourceMode#WEB_ROOT} is used.
      */
     private String path;
+
     /**
      * Resource loading mode for templates. Defines how template resources are located and loaded.
      */
     private ResourceMode resourceMode;
+
     /**
      * Custom template provider class. Allows specifying a particular template engine implementation when multiple are
      * available.
@@ -256,6 +259,9 @@ public class TemplateConfig implements Serializable {
 
     /**
      * Enumeration defining different modes for loading template resources.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum ResourceMode {
         /**
@@ -279,6 +285,7 @@ public class TemplateConfig implements Serializable {
          * sequence.
          */
         COMPOSITE
+
     }
 
 }

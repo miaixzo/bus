@@ -41,6 +41,7 @@ public class Builder {
      * is its string representation.
      */
     private static final Map<Method, String> MAP = new ConcurrentHashMap<>();
+
     /**
      * A lock object used for synchronizing access to the {@link #MAP} when resolving method names.
      */

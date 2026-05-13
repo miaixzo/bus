@@ -51,6 +51,7 @@ public class CIN {
      * Minimum length of a Chinese citizen ID number.
      */
     public static final int CHINA_ID_MIN_LENGTH = 15;
+
     /**
      * Maximum length of a Chinese citizen ID number.
      */
@@ -60,6 +61,7 @@ public class CIN {
      * Weighting factor for each digit.
      */
     private static final int[] POWER = { 7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 };
+
     /**
      * Province and city code table.
      */

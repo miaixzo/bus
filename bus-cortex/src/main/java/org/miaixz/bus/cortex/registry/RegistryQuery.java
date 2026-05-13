@@ -49,46 +49,57 @@ public class RegistryQuery {
      * Registry namespace identifier.
      */
     private String namespace_id;
+
     /**
      * Registry asset type.
      */
     private Type type;
+
     /**
      * Registry asset identifier.
      */
     private String id;
+
     /**
      * Application identifier used for route lookups.
      */
     private String app_id;
+
     /**
      * Method or route name used for route lookups.
      */
     private String method;
+
     /**
      * Route version used for route lookups.
      */
     private String version;
+
     /**
      * Required asset labels.
      */
     private Map<String, String> labels;
+
     /**
      * Selector expressions applied to asset labels or metadata.
      */
     private List<Selector> selectors;
+
     /**
      * Desired runtime state.
      */
     private String state;
+
     /**
      * Whether disabled entries should be included.
      */
     private boolean includeDisabled;
+
     /**
      * Result offset for pagination.
      */
     private int offset;
+
     /**
      * Maximum result size for pagination.
      */

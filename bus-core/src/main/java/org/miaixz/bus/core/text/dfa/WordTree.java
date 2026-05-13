@@ -45,6 +45,7 @@ public class WordTree extends HashMap<Character, WordTree> {
      * A set of characters that mark the end of a word at this node.
      */
     private Set<Character> endCharacterSet = null;
+
     /**
      * A filter for characters, allowing certain characters to be ignored during matching.
      */

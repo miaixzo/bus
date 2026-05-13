@@ -22,21 +22,39 @@ package org.miaixz.bus.image.metric.pdu;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
+ * Represents the AAssociateAC type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class AAssociateAC extends AAssociateRQAC {
 
+    /**
+     * Sets the identity rq.
+     *
+     * @param identityRQ the identity rq.
+     */
     @Override
     public void setIdentityRQ(IdentityRQ identityRQ) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Returns the string representation.
+     *
+     * @return the string representation.
+     */
     @Override
     public String toString() {
         return promptTo(new StringBuilder(Normal._512)).toString();
     }
 
+    /**
+     * Executes the prompt to operation.
+     *
+     * @param sb the sb.
+     * @return the operation result.
+     */
     StringBuilder promptTo(StringBuilder sb) {
         return promptTo("A-ASSOCIATE-AC[", sb);
     }

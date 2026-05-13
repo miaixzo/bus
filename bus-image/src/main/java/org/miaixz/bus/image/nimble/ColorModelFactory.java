@@ -27,31 +27,74 @@ import java.awt.image.ComponentColorModel;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 
 /**
+ * Represents the ColorModelFactory type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class ColorModelFactory {
 
+    /**
+     * Creates the monochrome color model.
+     *
+     * @param bits     the bits.
+     * @param dataType the data type.
+     * @return the operation result.
+     */
     public static ColorModel createMonochromeColorModel(int bits, int dataType) {
         return new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_GRAY), new int[] { bits }, false, // hasAlpha
                 false, // isAlphaPremultiplied
                 Transparency.OPAQUE, dataType);
     }
 
+    /**
+     * Creates the palette color model.
+     *
+     * @param bits     the bits.
+     * @param dataType the data type.
+     * @param cspace   the cspace.
+     * @param ds       the ds.
+     * @return the operation result.
+     */
     public static ColorModel createPaletteColorModel(int bits, int dataType, ColorSpace cspace, Attributes ds) {
         return new PaletteColorModel(bits, dataType, cspace, ds);
     }
 
+    /**
+     * Creates the rgb color model.
+     *
+     * @param bits     the bits.
+     * @param dataType the data type.
+     * @param cspace   the cspace.
+     * @return the operation result.
+     */
     public static ColorModel createRGBColorModel(int bits, int dataType, ColorSpace cspace) {
         return new ComponentColorModel(cspace, new int[] { bits, bits, bits }, false, false, Transparency.OPAQUE,
                 dataType);
     }
 
+    /**
+     * Creates the ybr full color model.
+     *
+     * @param bits     the bits.
+     * @param dataType the data type.
+     * @param cspace   the cspace.
+     * @return the operation result.
+     */
     public static ColorModel createYBRFullColorModel(int bits, int dataType, ColorSpace cspace) {
         return new ComponentColorModel(cspace, new int[] { bits, bits, bits }, false, false, Transparency.OPAQUE,
                 dataType);
     }
 
+    /**
+     * Creates the ybr color model.
+     *
+     * @param bits        the bits.
+     * @param dataType    the data type.
+     * @param cspace      the cspace.
+     * @param subsampling the subsampling.
+     * @return the operation result.
+     */
     public static ColorModel createYBRColorModel(
             int bits,
             int dataType,

@@ -41,14 +41,17 @@ public class LookupReplacer extends StringReplacer {
      * The map containing lookup keys and their replacement values.
      */
     private final Map<String, String> lookupMap;
+
     /**
      * A set of characters representing the first character of each lookup key, used for quick pre-filtering.
      */
     private final Set<Character> keyPrefixSkeyet;
+
     /**
      * The minimum length of a lookup key.
      */
     private final int minLength;
+
     /**
      * The maximum length of a lookup key.
      */

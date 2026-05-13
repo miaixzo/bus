@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.reflect.TypeReference;
 
 /**
  * Utility class for {@link Type}. Main functions include:
- * 
+ *
  * <pre>
  * 1. Getting parameter and return types of methods.
  * 2. Getting generic parameter types.

@@ -38,6 +38,7 @@ public class NativeGauge<T> implements Gauge {
      * Weak reference to the observed state object; prevents memory leaks on GC.
      */
     private final WeakReference<T> stateRef;
+
     /**
      * Function that extracts the gauge value from the state object.
      */
@@ -54,7 +55,9 @@ public class NativeGauge<T> implements Gauge {
         this.fn = fn;
     }
 
-    /** Returns the current gauge value, or {@link Double#NaN} if the state object has been GC'd. */
+    /**
+     * Returns the current gauge value, or {@link Double#NaN} if the state object has been GC'd.
+     */
     @Override
     public double value() {
         T obj = stateRef.get();

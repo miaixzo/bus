@@ -38,11 +38,33 @@ import org.miaixz.bus.logger.Logger;
  */
 public class PatchJPEGLSOutputStream extends ImageOutputStreamImpl {
 
+    /**
+     * The ios value.
+     */
     private final ImageOutputStream ios;
+
+    /**
+     * The patch jpeg ls value.
+     */
     private final PatchJPEGLS patchJpegLS;
+
+    /**
+     * The jpegheader value.
+     */
     private byte[] jpegheader;
+
+    /**
+     * The jpegheader index value.
+     */
     private int jpegheaderIndex;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param ios         the ios.
+     * @param patchJpegLS the patch jpeg ls.
+     * @throws IOException if the operation cannot be completed.
+     */
     public PatchJPEGLSOutputStream(ImageOutputStream ios, PatchJPEGLS patchJpegLS) throws IOException {
         if (ios == null)
             throw new NullPointerException("ios");
@@ -53,6 +75,14 @@ public class PatchJPEGLSOutputStream extends ImageOutputStreamImpl {
         this.jpegheader = patchJpegLS != null ? new byte[256] : null;
     }
 
+    /**
+     * Executes the write operation.
+     *
+     * @param b   the b.
+     * @param off the off.
+     * @param len the len.
+     * @throws IOException if the operation cannot be completed.
+     */
     public void write(byte[] b, int off, int len) throws IOException {
         if (jpegheader == null) {
             ios.write(b, off, len);
@@ -78,10 +108,22 @@ public class PatchJPEGLSOutputStream extends ImageOutputStreamImpl {
         streamPos += len;
     }
 
+    /**
+     * Executes the write operation.
+     *
+     * @param b the b.
+     * @throws IOException if the operation cannot be completed.
+     */
     public void write(byte[] b) throws IOException {
         write(b, 0, b.length);
     }
 
+    /**
+     * Executes the write operation.
+     *
+     * @param b the b.
+     * @throws IOException if the operation cannot be completed.
+     */
     public void write(int b) throws IOException {
         if (jpegheader == null) {
             ios.write(b);
@@ -90,10 +132,25 @@ public class PatchJPEGLSOutputStream extends ImageOutputStreamImpl {
             write(new byte[] { (byte) b }, 0, 1);
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     public int read() throws IOException {
         return ios.read();
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @param b   the b.
+     * @param off the off.
+     * @param len the len.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     public int read(byte[] b, int off, int len) throws IOException {
         return ios.read(b, off, len);
     }

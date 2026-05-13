@@ -38,10 +38,12 @@ public class PptStyle {
      * Font object containing font name, style, and size.
      */
     private final Font font;
+
     /**
      * Font color; if {@code null}, no color is applied.
      */
     private final Color color;
+
     /**
      * Paragraph text alignment; if {@code null}, no alignment is applied.
      */

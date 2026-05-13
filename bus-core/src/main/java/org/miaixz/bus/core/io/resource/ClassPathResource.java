@@ -46,10 +46,12 @@ public class ClassPathResource extends UrlResource {
      * The path of the resource relative to the ClassPath.
      */
     private final String path;
+
     /**
      * The ClassLoader used to load the resource.
      */
     private final ClassLoader classLoader;
+
     /**
      * The Class used to locate the resource.
      */

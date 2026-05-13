@@ -82,6 +82,8 @@ public class MongoProperties {
      * Represents settings for the connection pool to a MongoDB server.
      *
      * @see com.mongodb.connection.ConnectionPoolSettings
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Data
     public static class Connection {
@@ -90,37 +92,46 @@ public class MongoProperties {
          * The maximum number of connections in the pool. Default is 100.
          */
         private int maxSize = 100;
+
         /**
          * The minimum number of connections in the pool.
          */
         private int minSize;
+
         /**
          * The maximum time a thread will wait for a connection to become available. Default is 2 minutes.
          */
         private long maxWaitTimeMilliSeconds = 1000 * 60 * 2;
+
         /**
          * The maximum lifetime of a connection in the pool. An idle or in-use connection will be closed when it exceeds
          * this time.
          */
         private long maxConnectionLifeTimeMilliSeconds;
+
         /**
          * The maximum time a connection can remain idle in the pool before being removed.
          */
         private long maxConnectionIdleTimeMilliSeconds;
+
         /**
          * The initial delay before the first run of the maintenance task.
          */
         private long maintenanceInitialDelayMilliSeconds;
+
         /**
          * The frequency at which the maintenance task runs. Default is 1 minute.
          */
         private long maintenanceFrequencyMilliSeconds = MILLISECONDS.convert(1, MINUTES);
+
     }
 
     /**
      * Represents settings for connecting to MongoDB via SSL/TLS.
      *
      * @see com.mongodb.connection.SslSettings
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Data
     public static class Ssl {
@@ -129,16 +140,20 @@ public class MongoProperties {
          * Whether SSL/TLS is enabled.
          */
         private boolean enabled;
+
         /**
          * Whether to allow invalid hostnames. If true, the driver will not perform hostname verification.
          */
         private boolean invalidHostNameAllowed;
+
     }
 
     /**
      * Represents settings for the cluster.
      *
      * @see com.mongodb.connection.ClusterSettings
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Data
     public static class Cluster {
@@ -147,28 +162,35 @@ public class MongoProperties {
          * The mode for connecting to the cluster.
          */
         private ClusterConnectionMode mode;
+
         /**
          * The required type of the cluster. Default is UNKNOWN.
          */
         private ClusterType requiredClusterType = ClusterType.UNKNOWN;
+
         /**
          * The required name of the replica set.
          */
         private String requiredReplicaSetName;
+
         /**
          * The acceptable latency window for selecting a server from multiple suitable servers. Default is 15ms.
          */
         private long localThresholdMilliSeconds = 15;
+
         /**
          * The timeout for server selection. Default is 30 seconds.
          */
         private long serverSelectionTimeoutMilliSeconds = 30000;
+
     }
 
     /**
      * Represents settings for monitoring each server in the cluster.
      *
      * @see com.mongodb.connection.ServerSettings
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Data
     public static class Server {
@@ -177,16 +199,20 @@ public class MongoProperties {
          * The frequency at which the driver sends a heartbeat to the server. Default is 10 seconds.
          */
         private long heartbeatFrequencyMilliSeconds = 10000;
+
         /**
          * The minimum frequency for heartbeats. Default is 500ms.
          */
         private long minHeartbeatFrequencyMilliSeconds = 500;
+
     }
 
     /**
      * Represents settings for the network socket.
      *
      * @see com.mongodb.connection.SocketSettings
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Data
     public static class Socket {
@@ -195,18 +221,22 @@ public class MongoProperties {
          * The timeout for establishing a new socket connection. Default is 10 seconds.
          */
         private long connectTimeoutMilliSeconds = 10000;
+
         /**
          * The timeout for reading from a socket. Default is 10 seconds.
          */
         private long readTimeoutMilliSeconds = 10000;
+
         /**
          * The size of the socket receive buffer.
          */
         private int receiveBufferSize;
+
         /**
          * The size of the socket send buffer.
          */
         private int sendBufferSize;
+
     }
 
 }

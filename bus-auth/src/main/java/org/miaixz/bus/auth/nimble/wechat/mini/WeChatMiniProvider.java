@@ -136,6 +136,9 @@ public class WeChatMiniProvider extends AbstractProvider {
 
     /**
      * Data class representing the response from WeChat Mini Program's jscode2session API.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Data
     private static class JSCode2SessionResponse {
@@ -144,18 +147,22 @@ public class WeChatMiniProvider extends AbstractProvider {
          * Error code returned by the API.
          */
         private String errcode;
+
         /**
          * Error message returned by the API.
          */
         private String errmsg;
+
         /**
          * Session key for the user.
          */
         private String session_key;
+
         /**
          * User's OpenID.
          */
         private String openid;
+
         /**
          * User's UnionID.
          */

@@ -42,15 +42,18 @@ public final class Cookie {
      * Regular expression for parsing the year part of a date.
      */
     private static final Pattern YEAR_PATTERN = Pattern.compile("(\\d{2,4})[^\\d]*");
+
     /**
      * Regular expression for parsing the month part of a date.
      */
     private static final Pattern MONTH_PATTERN = Pattern
             .compile("(?i)(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec).*");
+
     /**
      * Regular expression for parsing the day of the month part of a date.
      */
     private static final Pattern DAY_OF_MONTH_PATTERN = Pattern.compile("(\\d{1,2})[^\\d]*");
+
     /**
      * Regular expression for parsing the time part of a date.
      */
@@ -60,34 +63,42 @@ public final class Cookie {
      * The name of the cookie.
      */
     private final String name;
+
     /**
      * The value of the cookie.
      */
     private final String value;
+
     /**
      * The expiration time of the cookie.
      */
     private final long expiresAt;
+
     /**
      * The domain of the cookie.
      */
     private final String domain;
+
     /**
      * The path of the cookie.
      */
     private final String path;
+
     /**
      * Whether the cookie is secure (HTTPS only).
      */
     private final boolean secure;
+
     /**
      * Whether the cookie is HTTP only.
      */
     private final boolean httpOnly;
+
     /**
      * Whether the cookie is persistent.
      */
     private final boolean persistent;
+
     /**
      * Whether the cookie is host only.
      */
@@ -694,6 +705,9 @@ public final class Cookie {
 
     /**
      * A builder for creating {@link Cookie} instances.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class Builder {
 
@@ -701,34 +715,42 @@ public final class Cookie {
          * The name of the cookie.
          */
         String name;
+
         /**
          * The value of the cookie.
          */
         String value;
+
         /**
          * The expiration time of the cookie.
          */
         long expiresAt = org.miaixz.bus.http.Builder.MAX_DATE;
+
         /**
          * The domain of the cookie.
          */
         String domain;
+
         /**
          * The path of the cookie.
          */
         String path = Symbol.SLASH;
+
         /**
          * Whether the cookie is secure.
          */
         boolean secure;
+
         /**
          * Whether the cookie is HTTP only.
          */
         boolean httpOnly;
+
         /**
          * Whether the cookie is persistent.
          */
         boolean persistent;
+
         /**
          * Whether the cookie is host only.
          */
@@ -872,6 +894,7 @@ public final class Cookie {
         public Cookie build() {
             return new Cookie(this);
         }
+
     }
 
 }

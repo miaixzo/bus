@@ -42,6 +42,9 @@ public interface GenId<T> {
 
     /**
      * Default null implementation, throws an {@link UnsupportedOperationException}.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class NULL implements GenId<Object> {
 
@@ -57,6 +60,7 @@ public interface GenId<T> {
         public Object genId(TableMeta table, ColumnMeta column) {
             throw new UnsupportedOperationException();
         }
+
     }
 
 }

@@ -42,10 +42,12 @@ public abstract class AbstractMetroHash<R extends AbstractMetroHash<R>> implemen
      * The seed for the hash function.
      */
     final long seed;
+
     /**
      * Internal state variables for the hash calculation.
      */
     long v0, v1, v2, v3;
+
     /**
      * The number of 32-byte chunks processed.
      */

@@ -45,6 +45,7 @@ public final class FormBody extends RequestBody {
      * The list of encoded field names.
      */
     private final List<String> encodedNames;
+
     /**
      * The list of encoded field values.
      */
@@ -180,6 +181,9 @@ public final class FormBody extends RequestBody {
 
     /**
      * A builder for creating {@link FormBody} instances.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static final class Builder {
 
@@ -187,10 +191,12 @@ public final class FormBody extends RequestBody {
          * The list of field names.
          */
         private final List<String> names = new ArrayList<>();
+
         /**
          * The list of field values.
          */
         private final List<String> values = new ArrayList<>();
+
         /**
          * The character set for encoding.
          */
@@ -262,6 +268,7 @@ public final class FormBody extends RequestBody {
         public FormBody build() {
             return new FormBody(names, values);
         }
+
     }
 
 }

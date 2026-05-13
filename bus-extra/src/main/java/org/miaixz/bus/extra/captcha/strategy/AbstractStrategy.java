@@ -39,6 +39,7 @@ public abstract class AbstractStrategy implements CodeStrategy {
      * The base character set from which to randomly select characters for the CAPTCHA string.
      */
     protected final String baseStr;
+
     /**
      * The length of the CAPTCHA code.
      */

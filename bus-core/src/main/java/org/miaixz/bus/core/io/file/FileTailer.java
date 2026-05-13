@@ -59,14 +59,17 @@ public class FileTailer implements Serializable {
      * The character set used for reading the file.
      */
     private final java.nio.charset.Charset charset;
+
     /**
      * The handler responsible for processing each new line read from the file.
      */
     private final ConsumerX<String> lineHandler;
+
     /**
      * The number of lines to read from the end of the file when the tailer starts. If 0, no initial lines are read.
      */
     private final int initReadLine;
+
     /**
      * The interval in milliseconds at which the file is checked for new content.
      */
@@ -76,14 +79,17 @@ public class FileTailer implements Serializable {
      * The absolute path of the file being tailed.
      */
     private final String filePath;
+
     /**
      * The {@link RandomAccessFile} used for reading the file content.
      */
     private final RandomAccessFile randomAccessFile;
+
     /**
      * The scheduled executor service used to periodically check for file changes.
      */
     private final ScheduledExecutorService executorService;
+
     /**
      * A {@link WatchMonitor} to detect if the tailed file is removed.
      */
@@ -319,6 +325,9 @@ public class FileTailer implements Serializable {
 
     /**
      * A concrete implementation of {@link ConsumerX} that prints each accepted string (line) to the console.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class ConsoleLineHandler implements ConsumerX<String> {
 
@@ -338,6 +347,7 @@ public class FileTailer implements Serializable {
         public void accepting(final String line) {
             Console.log(line);
         }
+
     }
 
 }

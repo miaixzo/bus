@@ -20,29 +20,46 @@
 package org.miaixz.bus.image.galaxy.dict.http___www_gemedicalsystems_com_it_solutions_orthoview_2_1;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "http://www.gemedicalsystems.com/it_solutions/orthoview/2.1";
 
-    /** (3117,xx10) VR=DT VM=1 OrthoView Session Date/Time */
+    /**
+     * (3117,xx10) VR=DT VM=1 OrthoView Session Date/Time
+     */
     public static final int OrthoViewSessionDateTime = 0x31170010;
 
-    /** (3117,xx20) VR=PN VM=1 OrthoView Session Creator */
+    /**
+     * (3117,xx20) VR=PN VM=1 OrthoView Session Creator
+     */
     public static final int OrthoViewSessionCreator = 0x31170020;
 
-    /** (3117,xx30) VR=CS VM=1 OrthoView Session Completion Flag */
+    /**
+     * (3117,xx30) VR=CS VM=1 OrthoView Session Completion Flag
+     */
     public static final int OrthoViewSessionCompletionFlag = 0x31170030;
 
-    /** (3117,xx40) VR=SQ VM=1 OrthoView File Sequence */
+    /**
+     * (3117,xx40) VR=SQ VM=1 OrthoView File Sequence
+     */
     public static final int OrthoViewFileSequence = 0x31170040;
 
-    /** (3117,xx50) VR=ST VM=1 OrthoView File Name */
+    /**
+     * (3117,xx50) VR=ST VM=1 OrthoView File Name
+     */
     public static final int OrthoViewFileName = 0x31170050;
 
-    /** (3117,xx60) VR=OB VM=1 OrthoView File Content */
+    /**
+     * (3117,xx60) VR=OB VM=1 OrthoView File Content
+     */
     public static final int OrthoViewFileContent = 0x31170060;
 
 }

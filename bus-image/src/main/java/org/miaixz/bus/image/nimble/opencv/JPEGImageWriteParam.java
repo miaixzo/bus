@@ -24,11 +24,16 @@ import java.util.Locale;
 import javax.imageio.ImageWriteParam;
 
 /**
+ * Represents the JPEGImageWriteParam type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class JPEGImageWriteParam extends ImageWriteParam {
 
+    /**
+     * The compression types value.
+     */
     private static final String[] COMPRESSION_TYPES = { "BASELINE", // JPEG Baseline: Imgcodecs.JPEG_baseline (0)
             "EXTENDED", // JPEG Extended sequential: Imgcodecs.JPEG_sequential (1)
             "SPECTRAL", // JPEG Spectral Selection: Imgcodecs.JPEG_spectralSelection (2) (Retired from DICOM)
@@ -47,6 +52,11 @@ public class JPEGImageWriteParam extends ImageWriteParam {
      */
     private int pointTransform;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param locale the locale.
+     */
     public JPEGImageWriteParam(Locale locale) {
         super(locale);
         super.canWriteCompressed = true;
@@ -57,6 +67,11 @@ public class JPEGImageWriteParam extends ImageWriteParam {
         this.pointTransform = 0;
     }
 
+    /**
+     * Gets the mode.
+     *
+     * @return the mode.
+     */
     public int getMode() {
         switch (compressionType.charAt(0)) {
             case 'B':
@@ -74,18 +89,38 @@ public class JPEGImageWriteParam extends ImageWriteParam {
         return 4;
     }
 
+    /**
+     * Gets the prediction.
+     *
+     * @return the prediction.
+     */
     public int getPrediction() {
         return isCompressionLossless() ? (compressionType.charAt(9) - '0') : 0;
     }
 
+    /**
+     * Gets the point transform.
+     *
+     * @return the point transform.
+     */
     public int getPointTransform() {
         return pointTransform;
     }
 
+    /**
+     * Sets the point transform.
+     *
+     * @param pointTransform the point transform.
+     */
     public void setPointTransform(int pointTransform) {
         this.pointTransform = pointTransform;
     }
 
+    /**
+     * Determines whether compression lossless.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean isCompressionLossless() {
         return compressionType.charAt(0) == 'L';

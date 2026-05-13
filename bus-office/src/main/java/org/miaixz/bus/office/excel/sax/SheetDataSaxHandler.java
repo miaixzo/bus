@@ -43,7 +43,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * This class processes the stream of SAX events for Excel XML data, specifically looking for the content inside the
  * {@code <sheetData>} element.
  * </p>
- * 
+ *
  * <pre>
  * &lt;sheetData&gt;&lt;/sheetData&gt;
  * </pre>

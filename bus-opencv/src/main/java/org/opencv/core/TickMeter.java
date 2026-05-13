@@ -14,6 +14,9 @@ package org.opencv.core;
  * TickMeter_average
  *
  * SEE: getTickCount, getTickFrequency
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class TickMeter {
 

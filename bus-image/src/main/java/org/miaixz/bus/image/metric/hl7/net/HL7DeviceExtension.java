@@ -30,11 +30,16 @@ import org.miaixz.bus.image.metric.hl7.HL7Exception;
 import org.miaixz.bus.image.metric.net.DeviceExtension;
 
 /**
+ * Represents the HL7DeviceExtension type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class HL7DeviceExtension extends DeviceExtension {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852267701967L;
 
@@ -43,11 +48,26 @@ public class HL7DeviceExtension extends DeviceExtension {
         Connection.registerTCPProtocolHandler(Connection.Protocol.HL7_MLLP2, HL7ProtocolHandler.INSTANCE);
     }
 
+    /**
+     * The hl7apps value.
+     */
     private final LinkedHashMap<String, HL7Application> hl7apps = new LinkedHashMap<>();
 
+    /**
+     * The hl7 message listener value.
+     */
     private transient HL7MessageListener hl7MessageListener;
+
+    /**
+     * The hl7 connection monitor value.
+     */
     private transient HL7ConnectionMonitor hl7ConnectionMonitor;
 
+    /**
+     * Executes the verify not used operation.
+     *
+     * @param conn the conn.
+     */
     @Override
     public void verifyNotUsed(Connection conn) {
         for (HL7Application app : hl7apps.values())
@@ -55,11 +75,22 @@ public class HL7DeviceExtension extends DeviceExtension {
                 throw new IllegalStateException(conn + " used by HL7 Application: " + app.getApplicationName());
     }
 
+    /**
+     * Adds the hl7 application.
+     *
+     * @param hl7App the hl7 app.
+     */
     public void addHL7Application(HL7Application hl7App) {
         hl7App.setDevice(device);
         hl7apps.put(hl7App.getApplicationName(), hl7App);
     }
 
+    /**
+     * Removes the hl7 application.
+     *
+     * @param name the name.
+     * @return the operation result.
+     */
     public HL7Application removeHL7Application(String name) {
         HL7Application hl7App = hl7apps.remove(name);
         if (hl7App != null)
@@ -68,14 +99,33 @@ public class HL7DeviceExtension extends DeviceExtension {
         return hl7App;
     }
 
+    /**
+     * Removes the hl7 application.
+     *
+     * @param hl7App the hl7 app.
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean removeHL7Application(HL7Application hl7App) {
         return removeHL7Application(hl7App.getApplicationName()) != null;
     }
 
+    /**
+     * Gets the hl7 application.
+     *
+     * @param name the name.
+     * @return the hl7 application.
+     */
     public HL7Application getHL7Application(String name) {
         return hl7apps.get(name);
     }
 
+    /**
+     * Gets the hl7 application.
+     *
+     * @param name               the name.
+     * @param matchOtherAppNames the match other app names.
+     * @return the hl7 application.
+     */
     public HL7Application getHL7Application(String name, boolean matchOtherAppNames) {
         HL7Application app = hl7apps.get(name);
         if (app == null)
@@ -87,34 +137,79 @@ public class HL7DeviceExtension extends DeviceExtension {
         return app;
     }
 
+    /**
+     * Determines whether hl7 application.
+     *
+     * @param name the name.
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean containsHL7Application(String name) {
         return hl7apps.containsKey(name);
     }
 
+    /**
+     * Gets the hl7 application names.
+     *
+     * @return the hl7 application names.
+     */
     public Collection<String> getHL7ApplicationNames() {
         return hl7apps.keySet();
     }
 
+    /**
+     * Gets the hl7 applications.
+     *
+     * @return the hl7 applications.
+     */
     public Collection<HL7Application> getHL7Applications() {
         return hl7apps.values();
     }
 
+    /**
+     * Gets the hl7 message listener.
+     *
+     * @return the hl7 message listener.
+     */
     public final HL7MessageListener getHL7MessageListener() {
         return hl7MessageListener;
     }
 
+    /**
+     * Sets the hl7 message listener.
+     *
+     * @param listener the listener.
+     */
     public final void setHL7MessageListener(HL7MessageListener listener) {
         this.hl7MessageListener = listener;
     }
 
+    /**
+     * Gets the hl7 connection monitor.
+     *
+     * @return the hl7 connection monitor.
+     */
     public HL7ConnectionMonitor getHL7ConnectionMonitor() {
         return hl7ConnectionMonitor;
     }
 
+    /**
+     * Sets the hl7 connection monitor.
+     *
+     * @param hl7ConnectionMonitor the hl7 connection monitor.
+     */
     public void setHL7ConnectionMonitor(HL7ConnectionMonitor hl7ConnectionMonitor) {
         this.hl7ConnectionMonitor = hl7ConnectionMonitor;
     }
 
+    /**
+     * Executes the on message operation.
+     *
+     * @param conn the conn.
+     * @param s    the s.
+     * @param msg  the msg.
+     * @return the operation result.
+     * @throws HL7Exception if the operation cannot be completed.
+     */
     UnparsedHL7Message onMessage(Connection conn, Socket s, UnparsedHL7Message msg) throws HL7Exception {
         HL7Application hl7App = getHL7Application(msg.msh().getReceivingApplicationWithFacility(), true);
         if (hl7App == null || !hl7App.isInstalled() || !hl7App.getConnections().contains(conn))
@@ -124,11 +219,21 @@ public class HL7DeviceExtension extends DeviceExtension {
         return hl7App.onMessage(conn, s, msg);
     }
 
+    /**
+     * Executes the reconfigure operation.
+     *
+     * @param from the from.
+     */
     @Override
     public void reconfigure(DeviceExtension from) {
         reconfigureHL7Applications((HL7DeviceExtension) from);
     }
 
+    /**
+     * Executes the reconfigure hl7 applications operation.
+     *
+     * @param from the from.
+     */
     private void reconfigureHL7Applications(HL7DeviceExtension from) {
         hl7apps.keySet().retainAll(from.hl7apps.keySet());
         for (HL7Application src : from.hl7apps.values()) {

@@ -45,10 +45,12 @@ public class IntHashMap<V> implements Cloneable, Serializable {
      * The default initial capacity of the hash map.
      */
     private static final int DEFAULT_CAPACITY = 32;
+
     /**
      * The minimum capacity for the hash map.
      */
     private static final int MINIMUM_CAPACITY = 4;
+
     /**
      * The maximum capacity for the hash map.
      */
@@ -58,10 +60,12 @@ public class IntHashMap<V> implements Cloneable, Serializable {
      * Represents a free (empty) slot in the hash table.
      */
     private static final byte FREE = 0;
+
     /**
      * Represents a full (occupied) slot in the hash table.
      */
     private static final byte FULL = 1;
+
     /**
      * Represents a removed slot in the hash table.
      */
@@ -71,18 +75,22 @@ public class IntHashMap<V> implements Cloneable, Serializable {
      * The array storing the keys.
      */
     private transient int[] keys;
+
     /**
      * The array storing the values.
      */
     private transient Object[] values;
+
     /**
      * The array storing the state of each slot (FREE, FULL, REMOVED).
      */
     private transient byte[] states;
+
     /**
      * The number of free slots available before resizing is needed.
      */
     private transient int free;
+
     /**
      * The number of key-value mappings in this map.
      */
@@ -406,6 +414,8 @@ public class IntHashMap<V> implements Cloneable, Serializable {
      * A functional interface for visiting key-value pairs in the {@code IntHashMap} efficiently.
      *
      * @param <V> The type of values in the map.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public interface Visitor<V> {
 
@@ -417,6 +427,7 @@ public class IntHashMap<V> implements Cloneable, Serializable {
          * @return {@code true} to continue iteration, {@code false} to stop.
          */
         boolean visit(int key, V value);
+
     }
 
 }

@@ -39,10 +39,12 @@ public class CRC8 implements Checksum, Serializable {
      * The initial value for the CRC calculation.
      */
     private final short init;
+
     /**
      * The CRC lookup table.
      */
     private final short[] crcTable = new short[256];
+
     /**
      * The current CRC value.
      */

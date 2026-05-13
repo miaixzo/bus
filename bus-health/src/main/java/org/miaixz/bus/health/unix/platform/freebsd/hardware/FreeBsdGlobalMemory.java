@@ -42,14 +42,17 @@ final class FreeBsdGlobalMemory extends AbstractGlobalMemory {
      * The total value.
      */
     private final Supplier<Long> total = Memoizer.memoize(FreeBsdGlobalMemory::queryPhysMem);
+
     /**
      * The pageSize value.
      */
     private final Supplier<Long> pageSize = Memoizer.memoize(FreeBsdGlobalMemory::queryPageSize);
+
     /**
      * The available value.
      */
     private final Supplier<Long> available = Memoizer.memoize(this::queryVmStats, Memoizer.defaultExpiration());
+
     /**
      * The vm value.
      */

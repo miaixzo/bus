@@ -47,6 +47,7 @@ public final class LoadAverage {
      * The loadAvgThread value.
      */
     private static Thread loadAvgThread = null;
+
     /**
      * The loadAverages value.
      */

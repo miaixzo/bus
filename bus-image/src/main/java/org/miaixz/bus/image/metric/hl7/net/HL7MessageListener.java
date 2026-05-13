@@ -25,11 +25,23 @@ import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.hl7.HL7Exception;
 
 /**
+ * Defines the HL7MessageListener contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface HL7MessageListener {
 
+    /**
+     * Executes the on message operation.
+     *
+     * @param hl7App the hl7 app.
+     * @param conn   the conn.
+     * @param s      the s.
+     * @param msg    the msg.
+     * @return the operation result.
+     * @throws HL7Exception if the operation cannot be completed.
+     */
     UnparsedHL7Message onMessage(HL7Application hl7App, Connection conn, Socket s, UnparsedHL7Message msg)
             throws HL7Exception;
 

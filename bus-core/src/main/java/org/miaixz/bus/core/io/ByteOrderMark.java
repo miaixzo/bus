@@ -53,24 +53,29 @@ public class ByteOrderMark implements Predicate<byte[]>, Comparable<ByteOrderMar
      */
     public static final ByteOrderMark UTF_8 = new ByteOrderMark(Charset.DEFAULT_UTF_8, (byte) 0xEF, (byte) 0xBB,
             (byte) 0xBF);
+
     /**
      * UTF-16BE BOM (Big-Endian).
      */
     public static final ByteOrderMark UTF_16BE = new ByteOrderMark(Charset.DEFAULT_UTF_16_BE, (byte) 0xFE, (byte) 0xFF);
+
     /**
      * UTF-16LE BOM (Little-Endian).
      */
     public static final ByteOrderMark UTF_16LE = new ByteOrderMark(Charset.DEFAULT_UTF_16_LE, (byte) 0xFF, (byte) 0xFE);
+
     /**
      * UTF-32BE BOM (Big-Endian).
      */
     public static final ByteOrderMark UTF_32BE = new ByteOrderMark(Charset.DEFAULT_UTF_32_BE, (byte) 0x00, (byte) 0x00,
             (byte) 0xFE, (byte) 0xFF);
+
     /**
      * UTF-32LE BOM (Little-Endian).
      */
     public static final ByteOrderMark UTF_32LE = new ByteOrderMark(Charset.DEFAULT_UTF_32_LE, (byte) 0xFF, (byte) 0xFE,
             (byte) 0x00, (byte) 0x00);
+
     /**
      * All predefined BOM information.
      */
@@ -80,6 +85,7 @@ public class ByteOrderMark implements Predicate<byte[]>, Comparable<ByteOrderMar
      * The character set name defined by this BOM.
      */
     private final String charsetName;
+
     /**
      * The byte sequence that makes up this BOM.
      */

@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  *
  * <p>
  * Example usage:
- * 
+ *
  * <pre>
  * // Simulate 1000 concurrent threads
  * SyncFinisher sf = new SyncFinisher(1000);
@@ -53,22 +53,27 @@ public class SyncFinisher implements Closeable {
      * A set of workers to be executed concurrently.
      */
     private final Set<Worker> workers;
+
     /**
      * The number of threads to be used for concurrent execution.
      */
     private final int threadSize;
+
     /**
      * A latch used to ensure all worker threads start at approximately the same time.
      */
     private final CountDownLatch beginLatch;
+
     /**
      * The {@link ExecutorService} used to execute the worker threads.
      */
     private ExecutorService executorService;
+
     /**
      * Flag indicating whether all worker threads should begin at the same time.
      */
     private boolean isBeginAtSameTime;
+
     /**
      * A latch used to wait for all worker threads to complete their execution.
      */
@@ -282,6 +287,9 @@ public class SyncFinisher implements Closeable {
     /**
      * Abstract worker class representing a task to be executed by a thread. Workers can be configured to start
      * simultaneously with other workers.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public abstract class Worker implements Runnable {
 
@@ -318,6 +326,7 @@ public class SyncFinisher implements Closeable {
          * The core task content to be implemented by concrete worker classes.
          */
         public abstract void work();
+
     }
 
 }

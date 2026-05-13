@@ -32,7 +32,9 @@ import org.miaixz.bus.setting.metric.ini.IniElement;
  */
 public abstract class AbstractFormatter<E extends IniElement> implements ElementFormatter<E> {
 
-    /** The formatter used to parse comments. */
+    /**
+     * The formatter used to parse comments.
+     */
     private CommentFormatter commentElementFormatter;
 
     /**

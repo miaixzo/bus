@@ -34,31 +34,67 @@ import org.miaixz.bus.image.metric.pdu.PresentationContext;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the ImageServiceRegistry type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class ImageServiceRegistry implements DimseRQHandler {
 
+    /**
+     * The services value.
+     */
     private final HashMap<String, DimseRQHandler> services = new HashMap<>();
 
+    /**
+     * Adds the dicom service.
+     *
+     * @param service the service.
+     */
     public void addDicomService(ImageService service) {
         addDimseRQHandler(service, service.getSOPClasses());
     }
 
+    /**
+     * Adds the dimse rq handler.
+     *
+     * @param service    the service.
+     * @param sopClasses the sop classes.
+     */
     public synchronized void addDimseRQHandler(DimseRQHandler service, String... sopClasses) {
         for (String uid : sopClasses)
             services.put(uid, service);
     }
 
+    /**
+     * Removes the dicom service.
+     *
+     * @param service the service.
+     */
     public void removeDicomService(ImageService service) {
         removeDimseRQHandler(service.getSOPClasses());
     }
 
+    /**
+     * Removes the dimse rq handler.
+     *
+     * @param sopClasses the sop classes.
+     */
     public synchronized void removeDimseRQHandler(String... sopClasses) {
         for (String uid : sopClasses)
             services.remove(uid);
     }
 
+    /**
+     * Executes the on dimse rq operation.
+     *
+     * @param as    the as.
+     * @param pc    the pc.
+     * @param dimse the dimse.
+     * @param cmd   the cmd.
+     * @param data  the data.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes cmd, PDVInputStream data)
             throws IOException {
@@ -76,6 +112,15 @@ public class ImageServiceRegistry implements DimseRQHandler {
         }
     }
 
+    /**
+     * Executes the rsp for dimse rq exception operation.
+     *
+     * @param as    the as.
+     * @param pc    the pc.
+     * @param dimse the dimse.
+     * @param cmd   the cmd.
+     * @param e     the e.
+     */
     private void rspForDimseRQException(
             Association as,
             PresentationContext pc,
@@ -86,6 +131,15 @@ public class ImageServiceRegistry implements DimseRQHandler {
         as.tryWriteDimseRSP(pc, rsp, e.getDataset());
     }
 
+    /**
+     * Executes the lookup service operation.
+     *
+     * @param as    the as.
+     * @param dimse the dimse.
+     * @param cmd   the cmd.
+     * @return the operation result.
+     * @throws ImageServiceException if the operation cannot be completed.
+     */
     private DimseRQHandler lookupService(Association as, Dimse dimse, Attributes cmd) throws ImageServiceException {
         String cuid = cmd.getString(dimse.tagOfSOPClassUID());
         if (cuid == null)
@@ -114,6 +168,11 @@ public class ImageServiceRegistry implements DimseRQHandler {
         throw new ImageServiceException(dimse.isCService() ? Status.SOPclassNotSupported : Status.NoSuchSOPclass);
     }
 
+    /**
+     * Executes the on close operation.
+     *
+     * @param as the as.
+     */
     @Override
     public void onClose(Association as) {
         for (DimseRQHandler service : services.values())

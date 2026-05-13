@@ -24,6 +24,12 @@ import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serial;
 
+/**
+ * The project approvals config class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class ProjectApprovalsConfig implements Serializable {
 
     @Serial

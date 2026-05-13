@@ -34,6 +34,9 @@ import org.miaixz.bus.logger.Logger;
 /**
  * This class implements the client side API for the GitLab Application Settings API. See
  * <a href="https://docs.gitlab.com/ee/api/settings.html">Application Settings API at GitLab</a> for more information.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class ApplicationSettingsApi extends AbstractApi {
 

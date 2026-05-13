@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.image;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -50,6 +51,7 @@ public class Status {
      * Pending: The operation is in progress.
      */
     public static final int Pending = 0xFF00;
+
     /**
      * Pending with Warning: The operation is in progress but has encountered warnings.
      */
@@ -197,22 +199,27 @@ public class Status {
      * Failure (0xA700): Out of Resources.
      */
     public static final int OutOfResources = 0xA700;
+
     /**
      * Failure (0xA701): Unable to calculate number of matches.
      */
     public static final int UnableToCalculateNumberOfMatches = 0xA701;
+
     /**
      * Failure (0xA702): Unable to perform sub-operations.
      */
     public static final int UnableToPerformSubOperations = 0xA702;
+
     /**
      * Failure (0xA801): Move Destination unknown.
      */
     public static final int MoveDestinationUnknown = 0xA801;
+
     /**
      * Failure (0xA900): Identifier does not match SOP Class.
      */
     public static final int IdentifierDoesNotMatchSOPClass = 0xA900;
+
     /**
      * Failure (0xA900): Data Set does not match SOP Class Error. (Alias for {@link #IdentifierDoesNotMatchSOPClass}).
      */
@@ -222,14 +229,17 @@ public class Status {
      * Warning (0xB000): Coercion of Data Elements. (Also used for One or more failures).
      */
     public static final int OneOrMoreFailures = 0xB000;
+
     /**
      * Warning (0xB000): Coercion of Data Elements.
      */
     public static final int CoercionOfDataElements = 0xB000;
+
     /**
      * Warning (0xB006): Elements discarded.
      */
     public static final int ElementsDiscarded = 0xB006;
+
     /**
      * Warning (0xB007): Data Set does not match SOP Class Warning.
      */
@@ -239,6 +249,7 @@ public class Status {
      * Failure (0xC000): Unable to process. (Alias for {@link #CannotUnderstand}).
      */
     public static final int UnableToProcess = 0xC000;
+
     /**
      * Failure (0xC000): Cannot understand.
      */
@@ -248,18 +259,22 @@ public class Status {
      * Warning (0xB300): UPS created with modifications.
      */
     public static final int UPSCreatedWithModifications = 0xB300;
+
     /**
      * Failure (0xB301): UPS deletion lock not granted.
      */
     public static final int UPSDeletionLockNotGranted = 0xB301;
+
     /**
      * Warning (0xB304): UPS already in requested state of CANCELED.
      */
     public static final int UPSAlreadyInRequestedStateOfCanceled = 0xB304;
+
     /**
      * Warning (0xB305): UPS coerced invalid values to valid values.
      */
     public static final int UPSCoercedInvalidValuesToValidValues = 0xB305;
+
     /**
      * Warning (0xB306): UPS already in requested state of COMPLETED.
      */
@@ -269,54 +284,67 @@ public class Status {
      * Failure (0xC300): UPS may no longer be updated.
      */
     public static final int UPSMayNoLongerBeUpdated = 0xC300;
+
     /**
      * Failure (0xC301): UPS transaction UID not correct.
      */
     public static final int UPSTransactionUIDNotCorrect = 0xC301;
+
     /**
      * Failure (0xC302): UPS already in progress.
      */
     public static final int UPSAlreadyInProgress = 0xC302;
+
     /**
      * Failure (0xC303): UPS state may not be changed to SCHEDULED.
      */
     public static final int UPSStateMayNotChangedToScheduled = 0xC303;
+
     /**
      * Failure (0xC304): UPS has not met final state requirements.
      */
     public static final int UPSNotMetFinalStateRequirements = 0xC304;
+
     /**
      * Failure (0xC307): UPS does not exist.
      */
     public static final int UPSDoesNotExist = 0xC307;
+
     /**
      * Failure (0xC308): UPS unknown receiving AET.
      */
     public static final int UPSUnknownReceivingAET = 0xC308;
+
     /**
      * Failure (0xC309): UPS not scheduled.
      */
     public static final int UPSNotScheduled = 0xC309;
+
     /**
      * Failure (0xC310): UPS not yet in progress.
      */
     public static final int UPSNotYetInProgress = 0xC310;
+
     /**
      * Failure (0xC311): UPS already completed.
      */
     public static final int UPSAlreadyCompleted = 0xC311;
+
     /**
      * Failure (0xC312): UPS performer cannot be contacted.
      */
     public static final int UPSPerformerCannotBeContacted = 0xC312;
+
     /**
      * Failure (0xC313): UPS performer chooses not to cancel.
      */
     public static final int UPSPerformerChoosesNotToCancel = 0xC313;
+
     /**
      * Failure (0xC314): UPS action not appropriate.
      */
     public static final int UPSActionNotAppropriate = 0xC314;
+
     /**
      * Failure (0xC315): UPS does not support event reports.
      */
@@ -326,10 +354,12 @@ public class Status {
      * A list of DICOM response attributes received during the operation.
      */
     private final List<Attributes> dicomRSP;
+
     /**
      * The progress tracker for the operation, which may contain sub-operation counts.
      */
     private final ImageProgress progress;
+
     /**
      * A list of DICOM parameters used as matching keys in a query.
      */
@@ -339,26 +369,32 @@ public class Status {
      * The primary DICOM status code of the operation. Volatile for thread safety.
      */
     private volatile int status;
+
     /**
      * A human-readable message describing the overall status.
      */
-    private String message;
+    private volatile String message;
+
     /**
      * A specific error message, typically from an exception.
      */
-    private String errorMessage;
+    private volatile String errorMessage;
+
     /**
      * The date and time when the network connection was established.
      */
     private LocalDateTime startConnectionDateTime;
+
     /**
      * The date and time when the data transfer started.
      */
     private LocalDateTime startTransferDateTime;
+
     /**
      * The date and time when the data transfer ended.
      */
     private LocalDateTime endTransferDateTime;
+
     /**
      * The total size in bytes of the data transferred.
      */
@@ -404,6 +440,16 @@ public class Status {
      */
     public static boolean isPending(int status) {
         return (status & Pending) == Pending;
+    }
+
+    /**
+     * Checks if the given status code is a final error status.
+     *
+     * @param status The DICOM status code to check.
+     * @return {@code true} if the status is not success, cancel, pending, or unknown.
+     */
+    public static boolean isFailure(int status) {
+        return !isPending(status) && status != -1 && status != Success && status != Cancel;
     }
 
     /**
@@ -466,7 +512,7 @@ public class Status {
                 msg.append(error);
             }
 
-            if (!Status.isPending(s) && s != -1 && s != Status.Success && s != Status.Cancel) {
+            if (Status.isFailure(s)) {
                 if (msg.length() > 0) {
                     msg.append("\n");
                 }
@@ -544,7 +590,7 @@ public class Status {
      * @return A list of {@link Attributes}.
      */
     public List<Attributes> getDicomRSP() {
-        return dicomRSP;
+        return List.copyOf(dicomRSP);
     }
 
     /**
@@ -553,7 +599,55 @@ public class Status {
      * @return A list of {@link ImageParam}.
      */
     public List<ImageParam> getDicomMatchingKeys() {
-        return dicomMatchingKeys;
+        return List.copyOf(dicomMatchingKeys);
+    }
+
+    /**
+     * Gets the elapsed transfer time.
+     *
+     * @return The transfer duration, or {@code null} when start or end time is missing.
+     */
+    public Duration getProcessTime() {
+        if (startTransferDateTime != null && endTransferDateTime != null) {
+            return Duration.between(startTransferDateTime, endTransferDateTime);
+        }
+        return null;
+    }
+
+    /**
+     * Checks if the current status is pending.
+     *
+     * @return {@code true} if current status is pending.
+     */
+    public boolean isPending() {
+        return isPending(getStatus());
+    }
+
+    /**
+     * Checks if the current status is success.
+     *
+     * @return {@code true} if current status is success.
+     */
+    public boolean isSuccess() {
+        return getStatus() == Success;
+    }
+
+    /**
+     * Checks if the current status is cancel.
+     *
+     * @return {@code true} if current status is cancel.
+     */
+    public boolean isCanceled() {
+        return getStatus() == Cancel;
+    }
+
+    /**
+     * Checks if the current status is a final error status.
+     *
+     * @return {@code true} if current status is a final error.
+     */
+    public boolean isFailure() {
+        return isFailure(getStatus());
     }
 
     /**
@@ -652,7 +746,9 @@ public class Status {
      * @param dicomRSP The {@link Attributes} object from a DICOM response.
      */
     public void addDicomRSP(Attributes dicomRSP) {
-        this.dicomRSP.add(dicomRSP);
+        if (dicomRSP != null) {
+            this.dicomRSP.add(dicomRSP);
+        }
     }
 
     /**
@@ -661,7 +757,9 @@ public class Status {
      * @param param The {@link ImageParam} used as a matching key.
      */
     public void addDicomMatchingKeys(ImageParam param) {
-        this.dicomMatchingKeys.add(param);
+        if (param != null) {
+            this.dicomMatchingKeys.add(param);
+        }
     }
 
     /**

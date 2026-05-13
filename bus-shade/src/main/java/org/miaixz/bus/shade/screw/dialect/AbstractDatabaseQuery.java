@@ -50,6 +50,7 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
      * Cache for storing retrieved column information to avoid redundant database queries.
      */
     protected final Map<String, List<Column>> columnsCaching = new ConcurrentHashMap<>();
+
     /**
      * The JDBC data source used to obtain database connections.
      */

@@ -43,14 +43,17 @@ public class Authorizer {
      * Authentication source (e.g., TWITTER, SAML).
      */
     private String source;
+
     /**
      * Context configuration, containing protocol-specific parameters.
      */
     private Context context;
+
     /**
      * Cache implementation, used to store temporary data such as state.
      */
     private CacheX cache;
+
     /**
      * Array of custom protocol configurations.
      */

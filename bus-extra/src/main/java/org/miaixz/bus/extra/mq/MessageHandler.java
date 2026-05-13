@@ -35,4 +35,5 @@ public interface MessageHandler {
      * @param message The {@link Message} object to be handled.
      */
     void handle(Message message);
+
 }

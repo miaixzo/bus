@@ -36,6 +36,9 @@ import java.io.Serial;
 
 /**
  * This is the exception that will be thrown if any exception occurs while communicating with a GitLab API endpoint.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class GitLabApiException extends Exception {
 

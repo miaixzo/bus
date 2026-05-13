@@ -30,19 +30,39 @@ import org.miaixz.bus.image.metric.Commands;
 import org.miaixz.bus.image.metric.pdu.PresentationContext;
 
 /**
+ * Represents the BasicCEchoSCP type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class BasicCEchoSCP extends AbstractImageService {
 
+    /**
+     * Creates a new instance.
+     */
     public BasicCEchoSCP() {
         super(UID.Verification.uid);
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param sopClasses the sop classes.
+     */
     public BasicCEchoSCP(String... sopClasses) {
         super(sopClasses);
     }
 
+    /**
+     * Executes the on dimse rq operation.
+     *
+     * @param as    the as.
+     * @param pc    the pc.
+     * @param dimse the dimse.
+     * @param cmd   the cmd.
+     * @param data  the data.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes cmd, Attributes data)
             throws IOException {

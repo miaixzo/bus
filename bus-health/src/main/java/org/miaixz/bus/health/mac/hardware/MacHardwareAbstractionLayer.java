@@ -143,4 +143,5 @@ public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstracti
     public List<Printer> getPrinters() {
         return CupsPrinter.getPrinters();
     }
+
 }

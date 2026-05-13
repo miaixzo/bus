@@ -43,18 +43,22 @@ public class CacheObject<K, V> implements Serializable {
      * The key of the cached object.
      */
     protected final K key;
+
     /**
      * The value of the cached object.
      */
     protected final V object;
+
     /**
      * The Time-To-Live (TTL) for this object in milliseconds. A value of 0 means it never expires.
      */
     protected final long ttl;
+
     /**
      * The timestamp of the last access to this object.
      */
     protected volatile long lastAccess;
+
     /**
      * The number of times this object has been accessed.
      */

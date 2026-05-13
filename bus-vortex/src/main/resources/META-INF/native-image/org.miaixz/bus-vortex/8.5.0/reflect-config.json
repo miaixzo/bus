@@ -44,6 +44,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.vortex.Egress",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "allDeclaredClasses": true,
+    "allPublicClasses": true
+  },
+  {
     "name": "org.miaixz.bus.vortex.Executor",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,

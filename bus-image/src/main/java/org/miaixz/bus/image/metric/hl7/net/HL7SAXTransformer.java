@@ -40,16 +40,37 @@ import org.miaixz.bus.image.metric.hl7.HL7Parser;
 import org.xml.sax.SAXException;
 
 /**
+ * Represents the HL7SAXTransformer type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class HL7SAXTransformer {
 
+    /**
+     * The factory value.
+     */
     private static final SAXTransformerFactory factory = (SAXTransformerFactory) TransformerFactory.newInstance();
 
+    /**
+     * Creates a new instance.
+     */
     private HL7SAXTransformer() {
     }
 
+    /**
+     * Executes the transform operation.
+     *
+     * @param data         the data.
+     * @param hl7charset   the hl7charset.
+     * @param dicomCharset the dicom charset.
+     * @param templates    the templates.
+     * @param setup        the setup.
+     * @return the operation result.
+     * @throws TransformerConfigurationException if the operation cannot be completed.
+     * @throws IOException                       if the operation cannot be completed.
+     * @throws SAXException                      if the operation cannot be completed.
+     */
     public static Attributes transform(
             byte[] data,
             String hl7charset,
@@ -68,6 +89,20 @@ public class HL7SAXTransformer {
         return attrs;
     }
 
+    /**
+     * Executes the transform operation.
+     *
+     * @param attrs                       the attrs.
+     * @param hl7charset                  the hl7charset.
+     * @param templates                   the templates.
+     * @param includeNameSpaceDeclaration the include name space declaration.
+     * @param includeKeword               the include keword.
+     * @param setup                       the setup.
+     * @return the operation result.
+     * @throws TransformerConfigurationException if the operation cannot be completed.
+     * @throws SAXException                      if the operation cannot be completed.
+     * @throws UnsupportedEncodingException      if the operation cannot be completed.
+     */
     public static byte[] transform(
             Attributes attrs,
             String hl7charset,

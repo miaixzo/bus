@@ -198,6 +198,9 @@ public abstract class DicomFiles {
 
     /**
      * Callback interface for processing each DICOM file found during a scan operation.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public interface Callback {
 
@@ -212,6 +215,7 @@ public abstract class DicomFiles {
          * @throws Exception if an error occurs during processing.
          */
         boolean dicomFile(File f, Attributes fmi, long dsPos, Attributes ds) throws Exception;
+
     }
 
 }

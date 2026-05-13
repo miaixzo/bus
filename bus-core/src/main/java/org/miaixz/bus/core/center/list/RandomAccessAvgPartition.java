@@ -27,7 +27,7 @@ import java.util.RandomAccess;
  * list is divided into different blocks, with the length of each block evenly distributed (the difference in count does
  * not exceed 1). This class extends {@link AvgPartition} and additionally implements {@link RandomAccess}, indicating
  * that its sub-lists can be accessed efficiently by index.
- * 
+ *
  * <pre>
  *     Example:
  *     List: [1, 2, 3, 4]
@@ -36,7 +36,7 @@ import java.util.RandomAccess;
  *     Partition into 4: [1], [2], [3], [4]
  *     Partition into 5: [1], [2], [3], [4], []
  * </pre>
- * 
+ *
  * Partitioning is performed on the original list. The returned partitions are immutable abstract lists, and changes to
  * the original list's elements will also be reflected in the partitions.
  *

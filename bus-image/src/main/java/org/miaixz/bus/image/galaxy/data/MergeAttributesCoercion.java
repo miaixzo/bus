@@ -20,24 +20,52 @@
 package org.miaixz.bus.image.galaxy.data;
 
 /**
+ * Represents the MergeAttributesCoercion type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class MergeAttributesCoercion implements AttributesCoercion {
 
+    /**
+     * The new attrs value.
+     */
     private final Attributes newAttrs;
+
+    /**
+     * The next value.
+     */
     private final AttributesCoercion next;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param mergedAttrs the merged attrs.
+     * @param next        the next.
+     */
     public MergeAttributesCoercion(Attributes mergedAttrs, AttributesCoercion next) {
         this.newAttrs = mergedAttrs;
         this.next = next;
     }
 
+    /**
+     * Executes the remap uid operation.
+     *
+     * @param uid the uid.
+     * @return the operation result.
+     */
     @Override
     public String remapUID(String uid) {
         return next != null ? next.remapUID(uid) : uid;
     }
 
+    /**
+     * Executes the coerce operation.
+     *
+     * @param attrs    the attrs.
+     * @param modified the modified.
+     * @throws Exception if the operation cannot be completed.
+     */
     @Override
     public void coerce(Attributes attrs, Attributes modified) throws Exception {
         Attributes.unifyCharacterSets(attrs, newAttrs);

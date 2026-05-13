@@ -65,6 +65,9 @@ public class PreventObjects {
      * data source. Implements {@link Serializable} so it survives round-trips through distributed caches;
      * {@link #readResolve()} guarantees that deserialization always returns the single canonical instance.
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static final class NullMarker implements Serializable {
 
@@ -86,6 +89,7 @@ public class PreventObjects {
         private Object readResolve() {
             return INSTANCE;
         }
+
     }
 
 }

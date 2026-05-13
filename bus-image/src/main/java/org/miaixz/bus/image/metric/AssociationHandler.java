@@ -29,22 +29,45 @@ import org.miaixz.bus.image.metric.net.IdentityNegotiator;
 import org.miaixz.bus.image.metric.pdu.*;
 
 /**
+ * Represents the AssociationHandler type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class AssociationHandler {
 
+    /**
+     * The user id negotiator value.
+     */
     private IdentityNegotiator userIdNegotiator = new IdentityNegotiator() {
     };
 
+    /**
+     * Gets the user id negotiator.
+     *
+     * @return the user id negotiator.
+     */
     public IdentityNegotiator getUserIdNegotiator() {
         return userIdNegotiator;
     }
 
+    /**
+     * Sets the user id negotiator.
+     *
+     * @param userIdNegotiator the user id negotiator.
+     */
     public void setUserIdNegotiator(IdentityNegotiator userIdNegotiator) {
         this.userIdNegotiator = Objects.requireNonNull(userIdNegotiator);
     }
 
+    /**
+     * Executes the negotiate operation.
+     *
+     * @param as the as.
+     * @param rq the rq.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     protected AAssociateAC negotiate(Association as, AAssociateRQ rq) throws IOException {
         if ((rq.getProtocolVersion() & 1) == 0)
             throw new AAssociateRJ(AAssociateRJ.RESULT_REJECTED_PERMANENT, AAssociateRJ.SOURCE_SERVICE_PROVIDER_ACSE,
@@ -67,6 +90,14 @@ public class AssociationHandler {
         return makeAAssociateAC(as, rq, userIdentity);
     }
 
+    /**
+     * Executes the make a associate ac operation.
+     *
+     * @param as           the as.
+     * @param rq           the rq.
+     * @param userIdentity the user identity.
+     * @return the operation result.
+     */
     protected AAssociateAC makeAAssociateAC(Association as, AAssociateRQ rq, IdentityAC userIdentity) {
         AAssociateAC ac = new AAssociateAC();
         ac.setImplVersionName(Implementation.getVersionName());
@@ -86,6 +117,11 @@ public class AssociationHandler {
         return ac;
     }
 
+    /**
+     * Executes the on close operation.
+     *
+     * @param as the as.
+     */
     protected void onClose(Association as) {
         DimseRQHandler tmp = as.getApplicationEntity().getDimseRQHandler();
         if (tmp != null)

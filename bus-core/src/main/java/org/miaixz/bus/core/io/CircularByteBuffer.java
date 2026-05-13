@@ -36,14 +36,17 @@ public class CircularByteBuffer {
      * The underlying byte array used as the buffer.
      */
     private final byte[] buffer;
+
     /**
      * The index of the first byte in the buffer (the read position).
      */
     private int startOffset;
+
     /**
      * The index where the next byte will be written (the write position).
      */
     private int endOffset;
+
     /**
      * The current number of bytes stored in the buffer.
      */

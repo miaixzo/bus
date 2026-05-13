@@ -74,6 +74,7 @@ public class Vector extends Nature {
      * Label selector map.
      */
     private Map<String, String> labels;
+
     /**
      * Advanced metadata selectors used together with exact labels.
      */
@@ -83,22 +84,27 @@ public class Vector extends Nature {
      * Instance state selector.
      */
     private String state;
+
     /**
      * Optional logical purpose such as query, watch, rebuild or export.
      */
     private String purpose;
+
     /**
      * Whether the caller expects watch semantics instead of one-off query semantics.
      */
     private boolean watch;
+
     /**
      * Whether the caller expects a durable refresh or rebuild instead of cache-only lookup.
      */
     private boolean refresh;
+
     /**
      * Optional request identifier propagated across control-plane operations.
      */
     private String requestId;
+
     /**
      * Whether disabled or tombstoned records should be included.
      */
@@ -161,6 +167,9 @@ public class Vector extends Nature {
 
     /**
      * Fluent builder for {@link Vector}.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static final class Builder {
 

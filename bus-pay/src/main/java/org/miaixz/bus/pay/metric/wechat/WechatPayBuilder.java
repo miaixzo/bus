@@ -59,6 +59,7 @@ public class WechatPayBuilder {
 
     private static final String FIELD_SIGN = "sign";
     private static final String FIELD_SIGN_TYPE = "sign_type";
+
     /**
      * Maximum plaintext size for RSA encryption.
      */

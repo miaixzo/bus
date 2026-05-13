@@ -27,6 +27,9 @@ import jakarta.ws.rs.core.Response;
 
 /**
  * This class provides an entry point to all the GitLab API markdown calls.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class MarkdownApi extends AbstractApi {
 

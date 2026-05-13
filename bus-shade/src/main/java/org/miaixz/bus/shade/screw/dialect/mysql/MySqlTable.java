@@ -40,46 +40,55 @@ public class MySqlTable implements Table {
      */
     @MappingField(value = "TABLE_CAT")
     private String tableCat;
+
     /**
      * Table name.
      */
     @MappingField(value = "TABLE_NAME")
     private String tableName;
+
     /**
      * Name of the designated "identifier" column of a typed table (may be {@code null}).
      */
     @MappingField(value = "SELF_REFERENCING_COL_NAME")
     private String selfReferencingColName;
+
     /**
      * Table schema (may be {@code null}).
      */
     @MappingField(value = "TABLE_SCHEM")
     private String tableSchem;
+
     /**
      * Type schema (may be {@code null}).
      */
     @MappingField(value = "TYPE_SCHEM")
     private String typeSchem;
+
     /**
      * Type catalog (may be {@code null}).
      */
     @MappingField(value = "TABLE_CAT")
     private Object typeCat;
+
     /**
      * Table type (e.g., "TABLE", "VIEW", "SYSTEM TABLE").
      */
     @MappingField(value = "TABLE_TYPE")
     private String tableType;
+
     /**
      * Explanatory comment on the table.
      */
     @MappingField(value = "REMARKS")
     private String remarks;
+
     /**
      * Specifies how values in SELF_REFERENCING_COL_NAME are created (e.g., "SYSTEM", "USER", "DERIVED").
      */
     @MappingField(value = "REF_GENERATION")
     private String refGeneration;
+
     /**
      * Typed table type name (may be {@code null}).
      */

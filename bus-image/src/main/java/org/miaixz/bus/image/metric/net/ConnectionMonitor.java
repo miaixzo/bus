@@ -24,19 +24,55 @@ import java.net.Socket;
 import org.miaixz.bus.image.metric.Connection;
 
 /**
+ * Defines the ConnectionMonitor contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface ConnectionMonitor {
 
+    /**
+     * Executes the on connection established operation.
+     *
+     * @param conn       the conn.
+     * @param remoteConn the remote conn.
+     * @param s          the s.
+     */
     void onConnectionEstablished(Connection conn, Connection remoteConn, Socket s);
 
+    /**
+     * Executes the on connection failed operation.
+     *
+     * @param conn       the conn.
+     * @param remoteConn the remote conn.
+     * @param s          the s.
+     * @param e          the e.
+     */
     void onConnectionFailed(Connection conn, Connection remoteConn, Socket s, Throwable e);
 
+    /**
+     * Executes the on connection rejected blacklisted operation.
+     *
+     * @param conn the conn.
+     * @param s    the s.
+     */
     void onConnectionRejectedBlacklisted(Connection conn, Socket s);
 
+    /**
+     * Executes the on connection rejected operation.
+     *
+     * @param conn the conn.
+     * @param s    the s.
+     * @param e    the e.
+     */
     void onConnectionRejected(Connection conn, Socket s, Throwable e);
 
+    /**
+     * Executes the on connection accepted operation.
+     *
+     * @param conn the conn.
+     * @param s    the s.
+     */
     void onConnectionAccepted(Connection conn, Socket s);
 
 }

@@ -59,7 +59,7 @@ import org.miaixz.bus.storage.Context;
  * <strong>Configuration Example:</strong>
  *
  * <pre>{@code
- * 
+ *
  * Context context = Context.builder().endpoint("https://cos.ap-singapore.myqcloud.com") // Singapore
  *         .bucket("my-bucket-1234567890") // Bucket name with APPID suffix
  *         .accessKey("TENCENT_INTL_SECRET_ID").secretKey("TENCENT_INTL_SECRET_KEY").region("ap-singapore").build();

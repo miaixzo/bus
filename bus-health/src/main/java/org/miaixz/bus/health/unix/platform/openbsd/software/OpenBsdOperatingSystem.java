@@ -50,6 +50,7 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
      */
     static final String PS_COMMAND_ARGS = Arrays.stream(PsKeywords.values()).map(Enum::name)
             .map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(Symbol.COMMA));
+
     /**
      * The BOOTTIME constant.
      */
@@ -352,10 +353,14 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
 
     /**
      * Package-private for use by OpenBsdOSProcess
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     enum PsKeywords {
         STATE, PID, PPID, USER, UID, GROUP, GID, PRI, VSZ, RSS, ETIME, CPUTIME, COMM, MAJFLT, MINFLT, NVCSW, NIVCSW,
         ARGS // ARGS must always be last
+
     }
 
 }

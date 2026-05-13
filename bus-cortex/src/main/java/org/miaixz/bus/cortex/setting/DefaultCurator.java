@@ -50,14 +50,17 @@ public class DefaultCurator implements Curator {
      * Application service that backs setting reads, writes, and history operations.
      */
     private final ItemCuratorService settingCuratorService;
+
     /**
      * Watch manager used to register and remove setting subscriptions.
      */
     private final WatchManager watchManager;
+
     /**
      * Namespace identifier served by this curator instance.
      */
     private final String namespace_id;
+
     /**
      * Optional runtime overlay service consulted before durable setting resolution.
      */

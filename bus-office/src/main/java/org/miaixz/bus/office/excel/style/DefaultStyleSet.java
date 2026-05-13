@@ -46,22 +46,27 @@ public class DefaultStyleSet implements StyleSet, Serializable {
      * Workbook reference.
      */
     private final Workbook workbook;
+
     /**
      * Header cell style.
      */
     private final CellStyle headCellStyle;
+
     /**
      * Default cell style.
      */
     private final CellStyle cellStyle;
+
     /**
      * Default numeric cell style.
      */
     private final CellStyle cellStyleForNumber;
+
     /**
      * Default date cell style.
      */
     private final CellStyle cellStyleForDate;
+
     /**
      * Default hyperlink cell style.
      */

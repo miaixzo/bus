@@ -86,10 +86,12 @@ public class Http2Connection implements Closeable {
     final Listener listener;
     final Map<Integer, Http2Stream> streams = new LinkedHashMap<>();
     final String connectionName;
+
     /**
      * User code that runs in response to push promise events.
      */
     final PushObserver pushObserver;
+
     /**
      * Settings we communicate to the peer.
      */
@@ -99,25 +101,30 @@ public class Http2Connection implements Closeable {
     final ReaderRunnable readerRunnable;
 
     final Set<Integer> currentPushRequests = new LinkedHashSet<>();
+
     /**
      * Asynchronously writes frames to the outgoing socket.
      */
     private final ScheduledExecutorService writerExecutor;
+
     /**
      * Ensures push promise callback events are sent in order for each stream.
      */
     private final ExecutorService pushExecutor;
     int lastGoodStreamId;
     int nextStreamId;
+
     /**
      * The total number of bytes consumed by the application, but not yet acknowledged by sending a
      * {@code WINDOW_UPDATE} frame on this connection.
      */
     long unacknowledgedBytesRead = 0;
+
     /**
      * The number of bytes that can be written on this connection before receiving a window update.
      */
     long bytesLeftInWriteWindow;
+
     /**
      * Settings we receive from the peer.
      */
@@ -130,6 +137,7 @@ public class Http2Connection implements Closeable {
     private long degradedPongsReceived = 0L;
     private long awaitPingsSent = 0L;
     private long awaitPongsReceived = 0L;
+
     /**
      * Consider this connection to be unhealthy if a degraded pong isn't received by this time.
      */
@@ -938,6 +946,12 @@ public class Http2Connection implements Closeable {
         }
     }
 
+    /**
+     * The builder class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public static class Builder {
 
         Socket socket;
@@ -990,10 +1004,14 @@ public class Http2Connection implements Closeable {
         public Http2Connection build() {
             return new Http2Connection(this);
         }
+
     }
 
     /**
      * Listener of streams and settings initiated by the peer.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public abstract static class Listener {
 
@@ -1031,8 +1049,15 @@ public class Http2Connection implements Closeable {
          */
         public void onSettings(Http2Connection connection) {
         }
+
     }
 
+    /**
+     * The ping runnable class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     class PingRunnable extends NamedRunnable {
 
         final boolean reply;
@@ -1053,8 +1078,15 @@ public class Http2Connection implements Closeable {
         public void execute() {
             writePing(reply, payload1, payload2);
         }
+
     }
 
+    /**
+     * The interval ping runnable class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     class IntervalPingRunnable extends NamedRunnable {
 
         IntervalPingRunnable() {
@@ -1081,11 +1113,15 @@ public class Http2Connection implements Closeable {
                 writePing(false, INTERVAL_PING, 0);
             }
         }
+
     }
 
     /**
      * Methods in this class must not lock FrameWriter. If a method needs to write a frame, create an async task to do
      * so.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class ReaderRunnable extends NamedRunnable implements Http2Reader.Handler {
 
@@ -1469,6 +1505,7 @@ public class Http2Connection implements Closeable {
                 long maxAge) {
 
         }
+
     }
 
 }

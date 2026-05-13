@@ -44,6 +44,7 @@ public class ComposeX<A, B, C> implements Function<A, C>, Serializable {
      * The second function in the composition, which takes input of type B and returns type C.
      */
     private final Function<B, C> g;
+
     /**
      * The first function in the composition, which takes input of type A and returns type B.
      */

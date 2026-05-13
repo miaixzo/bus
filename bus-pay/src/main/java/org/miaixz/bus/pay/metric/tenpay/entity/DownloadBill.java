@@ -44,22 +44,27 @@ public class DownloadBill extends Voucher {
      * Merchant ID.
      */
     private String mch_id;
+
     /**
      * Random string.
      */
     private String nonce_str;
+
     /**
      * Signature.
      */
     private String sign;
+
     /**
      * Bill date.
      */
     private String bill_date;
+
     /**
      * Bill type.
      */
     private String bill_type;
+
     /**
      * Tar type.
      */

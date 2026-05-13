@@ -45,18 +45,22 @@ public class Node {
      * The Application Entity Title (AET). Must not be empty and must be 16 characters or less.
      */
     private final String aet;
+
     /**
      * The hostname or IP address of the node.
      */
     private final String hostname;
+
     /**
      * The port number for the DICOM service. Must be between 1 and 65535.
      */
     private final Integer port;
+
     /**
      * A flag indicating whether hostname validation should be performed during connection.
      */
     private final boolean validateHostname;
+
     /**
      * The unique identifier for the node, typically from a database.
      */
@@ -115,20 +119,73 @@ public class Node {
      * @throws IllegalArgumentException if AET is missing, exceeds 16 characters, or if the port is out of bounds.
      */
     public Node(Long id, String aet, String hostname, Integer port, boolean validateHostname) {
+        validateAet(aet);
+        validatePort(port);
+        this.id = id;
+        this.aet = aet.trim();
+        this.hostname = hostname;
+        this.port = port;
+        this.validateHostname = validateHostname;
+    }
+
+    /**
+     * Creates a node with only an AE Title.
+     *
+     * @param aet The Application Entity Title.
+     * @return A new node.
+     */
+    public static Node of(String aet) {
+        return new Node(aet);
+    }
+
+    /**
+     * Creates a node with AE Title, hostname, and port.
+     *
+     * @param aet      The Application Entity Title.
+     * @param hostname The hostname or IP address.
+     * @param port     The DICOM port.
+     * @return A new node.
+     */
+    public static Node of(String aet, String hostname, Integer port) {
+        return new Node(aet, hostname, port);
+    }
+
+    /**
+     * Creates a node with hostname validation enabled.
+     *
+     * @param id       The optional node identifier.
+     * @param aet      The Application Entity Title.
+     * @param hostname The hostname or IP address.
+     * @param port     The DICOM port.
+     * @return A new node.
+     */
+    public static Node withHostnameValidation(Long id, String aet, String hostname, Integer port) {
+        return new Node(id, aet, hostname, port, true);
+    }
+
+    /**
+     * Validates the aet.
+     *
+     * @param aet the aet.
+     */
+    private static void validateAet(String aet) {
         if (!StringKit.hasText(aet)) {
             throw new IllegalArgumentException("Missing AETitle");
         }
         if (aet.length() > 16) {
             throw new IllegalArgumentException("AETitle has more than 16 characters");
         }
+    }
+
+    /**
+     * Validates the port.
+     *
+     * @param port the port.
+     */
+    private static void validatePort(Integer port) {
         if (port != null && (port < 1 || port > 65535)) {
             throw new IllegalArgumentException("Port is out of bound");
         }
-        this.id = id;
-        this.aet = aet.trim();
-        this.hostname = hostname;
-        this.port = port;
-        this.validateHostname = validateHostname;
     }
 
     /**

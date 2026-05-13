@@ -32,7 +32,6 @@ import org.miaixz.bus.core.lang.Normal;
  * <p>
  * When a key is {@code put} into the map, it is converted to lowercase. If a lowercase version of the key already
  * exists, its value will be overwritten. This map does not preserve the original casing of keys.
- * 
  *
  * @param <K> The type of keys in the map (typically {@code String} or a type convertible to {@code String}).
  * @param <V> The type of values in the map.

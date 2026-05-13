@@ -43,10 +43,12 @@ public class Range<T> implements Iterable<T>, Serializable {
 
     @Serial
     private static final long serialVersionUID = 2852275092763L;
+
     /**
      * The starting object of the range.
      */
     private final T start;
+
     /**
      * The ending object of the range.
      */
@@ -56,10 +58,12 @@ public class Range<T> implements Iterable<T>, Serializable {
      * The stepper defines how to increment or decrement the objects in the range.
      */
     private final Stepper<T> stepper;
+
     /**
      * Indicates whether the starting element is included in the range.
      */
     private final boolean includeStart;
+
     /**
      * Indicates whether the ending element is included in the range.
      */
@@ -121,6 +125,7 @@ public class Range<T> implements Iterable<T>, Serializable {
              * The current index in the iteration, starting from 0.
              */
             private int index = 0;
+
             /**
              * The next object to be returned by the iterator.
              */
@@ -237,6 +242,8 @@ public class Range<T> implements Iterable<T>, Serializable {
      * </pre>
      *
      * @param <T> the type of object to be stepped
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public interface Stepper<T> {
 
@@ -252,6 +259,7 @@ public class Range<T> implements Iterable<T>, Serializable {
          * @return the object after incrementing by one step, or {@code null} if the stepping has ended
          */
         T step(T current, T end, int index);
+
     }
 
 }

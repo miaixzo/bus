@@ -79,6 +79,7 @@ public enum JdPayApi implements Matcher {
      * The API method URL.
      */
     private final String method;
+
     /**
      * The description of the API.
      */

@@ -44,46 +44,57 @@ public class Transfer extends Voucher {
      * Merchant App ID.
      */
     private String mch_appid;
+
     /**
      * Merchant ID.
      */
     private String mchid;
+
     /**
      * Device information.
      */
     private String device_info;
+
     /**
      * Random string.
      */
     private String nonce_str;
+
     /**
      * Signature.
      */
     private String sign;
+
     /**
      * Partner trade number.
      */
     private String partner_trade_no;
+
     /**
      * OpenID.
      */
     private String openid;
+
     /**
      * Check name.
      */
     private String check_name;
+
     /**
      * Recipient user name.
      */
     private String re_user_name;
+
     /**
      * Amount.
      */
     private String amount;
+
     /**
      * Description.
      */
     private String desc;
+
     /**
      * Client IP address.
      */

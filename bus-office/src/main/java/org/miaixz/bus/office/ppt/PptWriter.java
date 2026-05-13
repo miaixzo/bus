@@ -42,10 +42,12 @@ public class PptWriter implements Closeable {
      * The underlying {@link XMLSlideShow} instance.
      */
     private final XMLSlideShow ppt;
+
     /**
      * The target file to write the presentation to.
      */
     protected File targetFile;
+
     /**
      * Flag indicating whether the writer has been closed.
      */

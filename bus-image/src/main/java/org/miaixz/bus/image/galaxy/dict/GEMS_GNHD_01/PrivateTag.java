@@ -20,17 +20,26 @@
 package org.miaixz.bus.image.galaxy.dict.GEMS_GNHD_01;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEMS_GNHD_01";
 
-    /** (0033,xx01) VR=UN VM=1 ? */
+    /**
+     * (0033,xx01) VR=UN VM=1 ?
+     */
     public static final int _0033_xx01_ = 0x00330001;
 
-    /** (0033,xx02) VR=UN VM=1 ? */
+    /**
+     * (0033,xx02) VR=UN VM=1 ?
+     */
     public static final int _0033_xx02_ = 0x00330002;
 
 }

@@ -19,17 +19,19 @@
 */
 /**
  * bus.image
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 module bus.image {
 
     requires java.desktop;
+    requires java.net.http;
     requires java.naming;
     requires java.xml;
 
     requires bus.core;
+    requires bus.crypto;
     requires bus.logger;
     requires bus.health;
     requires bus.setting;
@@ -40,6 +42,7 @@ module bus.image {
 
     exports org.miaixz.bus.image;
     exports org.miaixz.bus.image.builtin;
+    exports org.miaixz.bus.image.builtin.hp;
     exports org.miaixz.bus.image.builtin.ldap;
     exports org.miaixz.bus.image.galaxy;
     exports org.miaixz.bus.image.galaxy.data;
@@ -385,12 +388,15 @@ module bus.image {
     exports org.miaixz.bus.image.metric.net;
     exports org.miaixz.bus.image.metric.pdu;
     exports org.miaixz.bus.image.metric.service;
+    exports org.miaixz.bus.image.metric.web;
     exports org.miaixz.bus.image.nimble;
     exports org.miaixz.bus.image.nimble.codec;
     exports org.miaixz.bus.image.nimble.codec.jpeg;
     exports org.miaixz.bus.image.nimble.codec.mp4;
     exports org.miaixz.bus.image.nimble.codec.mpeg;
     exports org.miaixz.bus.image.nimble.extend;
+    exports org.miaixz.bus.image.nimble.geometry;
+    exports org.miaixz.bus.image.nimble.mpr;
     exports org.miaixz.bus.image.nimble.opencv;
     exports org.miaixz.bus.image.nimble.opencv.lut;
     exports org.miaixz.bus.image.nimble.opencv.op;
@@ -399,5 +405,22 @@ module bus.image {
     exports org.miaixz.bus.image.nimble.reader;
     exports org.miaixz.bus.image.nimble.stream;
     exports org.miaixz.bus.image.plugin;
+
+    uses org.miaixz.bus.image.galaxy.data.ElementDictionary;
+
+    provides java.nio.file.spi.FileTypeDetector
+            with org.miaixz.bus.image.galaxy.io.ImageFileDetector, org.miaixz.bus.image.galaxy.io.GenozipFileDetector;
+
+    provides javax.imageio.spi.ImageReaderSpi
+            with org.miaixz.bus.image.nimble.ImageReaderSpi, org.miaixz.bus.image.nimble.reader.RLEImageioReaderSpi,
+            org.miaixz.bus.image.nimble.opencv.NativeJLSImageReaderSpi,
+            org.miaixz.bus.image.nimble.opencv.NativeJPEGImageReaderSpi,
+            org.miaixz.bus.image.nimble.opencv.NativeJ2kImageReaderSpi,
+            org.miaixz.bus.image.nimble.opencv.NativeJXLImageReaderSpi;
+
+    provides javax.imageio.spi.ImageWriterSpi with org.miaixz.bus.image.nimble.opencv.NativeJLSImageWriterSpi,
+            org.miaixz.bus.image.nimble.opencv.NativeJPEGImageWriterSpi,
+            org.miaixz.bus.image.nimble.opencv.NativeJ2kImageWriterSpi,
+            org.miaixz.bus.image.nimble.opencv.NativeJXLImageWriterSpi;
 
 }

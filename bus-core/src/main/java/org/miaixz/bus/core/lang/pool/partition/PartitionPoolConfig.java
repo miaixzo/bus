@@ -34,6 +34,7 @@ public class PartitionPoolConfig extends PoolConfig {
 
     @Serial
     private static final long serialVersionUID = 2852272551279L;
+
     /**
      * The number of partitions in the partitioned object pool. Each partition acts as an independent sub-pool.
      */

@@ -20,17 +20,26 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MR_CM_03;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS MR CM 03";
 
-    /** (0021,xx01) VR=IS VM=1 ? */
+    /**
+     * (0021,xx01) VR=IS VM=1 ?
+     */
     public static final int _0021_xx01_ = 0x00210001;
 
-    /** (0021,xx02) VR=CS VM=1 ? */
+    /**
+     * (0021,xx02) VR=CS VM=1 ?
+     */
     public static final int _0021_xx02_ = 0x00210002;
 
 }

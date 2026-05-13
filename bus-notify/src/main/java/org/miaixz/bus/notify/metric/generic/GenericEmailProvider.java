@@ -47,7 +47,7 @@ import jakarta.mail.internet.*;
 /**
  * Generic email service provider implementation.
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class GenericEmailProvider extends AbstractProvider<GenericNotice, Context> {

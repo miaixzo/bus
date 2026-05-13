@@ -45,22 +45,27 @@ public class HL7Pdq extends Device {
      * The local network connection configuration.
      */
     private final Connection conn = new Connection();
+
     /**
      * The remote network connection configuration.
      */
     private final Connection remote = new Connection();
+
     /**
      * The MLLP release protocol version.
      */
     private MLLPRelease mllpRelease;
+
     /**
      * The sending application and facility, formatted as application^facility.
      */
     private String sendingApplication = "hl7pdq^miaixz";
+
     /**
      * The receiving application and facility, formatted as application^facility.
      */
     private String receivingApplication = "";
+
     /**
      * The character set to be specified in the MSH-18 field.
      */
@@ -70,13 +75,13 @@ public class HL7Pdq extends Device {
      * The underlying socket for the connection.
      */
     private Socket sock;
+
     /**
      * The MLLP connection handler.
      */
     private MLLPConnection mllp;
 
     /**
-     * 
      * Constructs a new {@code HL7Pdq} device.
      *
      * @throws IOException if an I/O error occurs.
@@ -87,7 +92,6 @@ public class HL7Pdq extends Device {
     }
 
     /**
-     * 
      * Counts the number of query parameters in an iterator. Query parameters are identified by a leading '@' character.
      *
      * @param args The iterator of string arguments.
@@ -101,7 +105,6 @@ public class HL7Pdq extends Device {
     }
 
     /**
-     * 
      * Sets the MLLP release protocol to be used.
      *
      * @param mllpRelease The MLLP release version.
@@ -111,7 +114,6 @@ public class HL7Pdq extends Device {
     }
 
     /**
-     * 
      * Gets the configured sending application and facility.
      *
      * @return The sending application string.
@@ -121,7 +123,6 @@ public class HL7Pdq extends Device {
     }
 
     /**
-     * 
      * Sets the sending application and facility.
      *
      * @param sendingApplication The sending application string (e.g., "APP^FACILITY").
@@ -131,7 +132,6 @@ public class HL7Pdq extends Device {
     }
 
     /**
-     * 
      * Gets the configured receiving application and facility.
      *
      * @return The receiving application string.
@@ -141,7 +141,6 @@ public class HL7Pdq extends Device {
     }
 
     /**
-     * 
      * Sets the receiving application and facility.
      *
      * @param receivingApplication The receiving application string (e.g., "APP^FACILITY").
@@ -151,7 +150,6 @@ public class HL7Pdq extends Device {
     }
 
     /**
-     * 
      * Sets the character set to be used for encoding the HL7 message. This value will be placed in the MSH-18 field.
      *
      * @param charset The name of the character set.
@@ -161,7 +159,6 @@ public class HL7Pdq extends Device {
     }
 
     /**
-     * 
      * Opens the MLLP connection to the remote peer.
      *
      * @throws IOException              if an I/O error occurs.
@@ -175,7 +172,6 @@ public class HL7Pdq extends Device {
     }
 
     /**
-     * 
      * Closes the MLLP connection.
      */
     public void close() {
@@ -183,7 +179,6 @@ public class HL7Pdq extends Device {
     }
 
     /**
-     * 
      * Sends a Patient Demographics Query (PDQ) message.
      *
      * @param queryParams The query parameters for the QPD segment.

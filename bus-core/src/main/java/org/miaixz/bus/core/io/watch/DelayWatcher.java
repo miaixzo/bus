@@ -46,11 +46,13 @@ public class DelayWatcher implements Watcher {
      * within the specified delay period.
      */
     private final Set<Path> eventSet = new ConcurrentHashSet<>();
+
     /**
      * The actual {@link Watcher} instance that will handle the events after processing. This watcher should not be
      * another {@code DelayWatcher} to avoid infinite recursion.
      */
     private final Watcher watcher;
+
     /**
      * The delay time in milliseconds. Modify events for the same file within this duration will be debounced.
      */

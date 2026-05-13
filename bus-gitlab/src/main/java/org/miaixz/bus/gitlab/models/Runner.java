@@ -29,6 +29,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.io.Serial;
 
+/**
+ * The runner class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Runner implements Serializable {
 
     @Serial
@@ -95,6 +101,9 @@ public class Runner implements Serializable {
 
     /**
      * Enum to use for RunnersApi filtering on status.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum RunnerStatus {
 
@@ -116,10 +125,14 @@ public class Runner implements Serializable {
         public String toString() {
             return (enumHelper.toString(this));
         }
+
     }
 
     /**
      * Enum to use for RunnersApi filtering on type.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum RunnerType {
 
@@ -141,6 +154,7 @@ public class Runner implements Serializable {
         public String toString() {
             return (enumHelper.toString(this));
         }
+
     }
 
     public String getName() {

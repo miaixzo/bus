@@ -35,8 +35,8 @@ import lombok.experimental.SuperBuilder;
  * error message (in the {@link #message} field). It provides a consistent return type for provider methods, simplifying
  * error handling for the caller.
  *
- * @author Kimi Liu
  * @see org.miaixz.bus.vortex.provider.AuthorizeProvider
+ * @author Kimi Liu
  * @since Java 21+
  */
 @Getter

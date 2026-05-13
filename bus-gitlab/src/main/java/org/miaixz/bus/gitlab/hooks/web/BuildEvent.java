@@ -8,6 +8,9 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 /**
  * The documentation at: <a href="https://docs.gitlab.com/ee/user/project/integrations/webhook_events.html#job-events">
  * Job Events</a> is incorrect, this class represents the actual content of the Job Hook event.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class BuildEvent extends AbstractEvent {
 

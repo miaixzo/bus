@@ -80,12 +80,20 @@ public sealed interface CardinalityPolicy
 
     /**
      * Accept the first N distinct values; replace subsequent novel values with "__overflow__".
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     final class FirstN implements CardinalityPolicy {
 
-        /** Maximum number of distinct values to allow before overflowing. */
+        /**
+         * Maximum number of distinct values to allow before overflowing.
+         */
         private final int max;
-        /** Set of distinct values seen so far; thread-safe. */
+
+        /**
+         * Set of distinct values seen so far; thread-safe.
+         */
         private final Set<String> seen = Collections.synchronizedSet(new HashSet<>());
 
         /**
@@ -114,17 +122,26 @@ public sealed interface CardinalityPolicy
             }
             return "__overflow__";
         }
+
     }
 
     /**
      * Keep the N most frequent values using a Count-Min Sketch approximation; infrequent values are replaced with
      * "__other__".
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     final class TopN implements CardinalityPolicy {
 
-        /** Maximum number of top-frequency values to retain. */
+        /**
+         * Maximum number of top-frequency values to retain.
+         */
         private final int max;
-        /** Frequency map for all observed values; bounded to {@code max * 4} entries before pruning. */
+
+        /**
+         * Frequency map for all observed values; bounded to {@code max * 4} entries before pruning.
+         */
         private final ConcurrentHashMap<String, AtomicLong> freq = new ConcurrentHashMap<>();
 
         /**
@@ -175,17 +192,25 @@ public sealed interface CardinalityPolicy
             long threshold = computeThreshold();
             freq.entrySet().removeIf(e -> e.getValue().get() < threshold);
         }
+
     }
 
     /**
      * Deny this tag key entirely; it is stripped from all metrics.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     final class Deny implements CardinalityPolicy {
 
-        /** Singleton instance; this policy has no state. */
+        /**
+         * Singleton instance; this policy has no state.
+         */
         static final Deny INSTANCE = new Deny();
 
-        /** Private constructor; use {@link #INSTANCE} singleton. */
+        /**
+         * Private constructor; use {@link #INSTANCE} singleton.
+         */
         private Deny() {
         }
 
@@ -199,6 +224,7 @@ public sealed interface CardinalityPolicy
         public String evaluate(String value) {
             return null; // null signals "strip this tag"
         }
+
     }
 
 }

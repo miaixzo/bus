@@ -36,18 +36,22 @@ public abstract class AbstractHWDiskStore implements HWDiskStore {
      * The name value.
      */
     private final String name;
+
     /**
      * The model value.
      */
     private final String model;
+
     /**
      * The serial value.
      */
     private final String serial;
+
     /**
      * The size value.
      */
     private final long size;
+
     /**
      * The diskType value.
      */

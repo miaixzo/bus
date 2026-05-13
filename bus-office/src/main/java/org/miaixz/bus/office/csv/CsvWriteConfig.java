@@ -39,10 +39,12 @@ public class CsvWriteConfig extends CsvConfig<CsvWriteConfig> implements Seriali
      * Whether to always use text delimiters (quotes). Default is {@code false}, delimiters are added as needed.
      */
     protected boolean alwaysDelimitText;
+
     /**
      * The newline character(s) to use. Default is CR+LF.
      */
     protected char[] lineDelimiter = { Symbol.C_CR, Symbol.C_LF };
+
     /**
      * Whether to enable DDE safe mode. If enabled, content that might pose a DDE attack risk will be handled.
      */

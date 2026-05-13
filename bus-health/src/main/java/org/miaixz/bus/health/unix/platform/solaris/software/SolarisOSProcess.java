@@ -66,113 +66,140 @@ public class SolarisOSProcess extends AbstractOSProcess {
      * The bitness value.
      */
     private final Supplier<Integer> bitness = Memoizer.memoize(this::queryBitness);
+
     /**
      * The psinfo value.
      */
     private final Supplier<SolarisLibc.SolarisPsInfo> psinfo = Memoizer
             .memoize(this::queryPsInfo, Memoizer.defaultExpiration());
+
     /**
      * The cmdEnv value.
      */
     private final Supplier<Pair<List<String>, Map<String, String>>> cmdEnv = Memoizer
             .memoize(this::queryCommandlineEnvironment);
+
     /**
      * The prusage value.
      */
     private final Supplier<SolarisLibc.SolarisPrUsage> prusage = Memoizer
             .memoize(this::queryPrUsage, Memoizer.defaultExpiration());
+
     /**
      * The name value.
      */
     private String name;
+
     /**
      * The path value.
      */
     private String path = Normal.EMPTY;
+
     /**
      * The commandLineBackup value.
      */
     private String commandLineBackup;
+
     /**
      * The commandLine value.
      */
     private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
+
     /**
      * The user value.
      */
     private String user;
+
     /**
      * The userID value.
      */
     private String userID;
+
     /**
      * The group value.
      */
     private String group;
+
     /**
      * The groupID value.
      */
     private String groupID;
+
     /**
      * The state value.
      */
     private OSProcess.State state = OSProcess.State.INVALID;
+
     /**
      * The parentProcessID value.
      */
     private int parentProcessID;
+
     /**
      * The threadCount value.
      */
     private int threadCount;
+
     /**
      * The priority value.
      */
     private int priority;
+
     /**
      * The virtualSize value.
      */
     private long virtualSize;
+
     /**
      * The residentSetSize value.
      */
     private long residentSetSize;
+
     /**
      * The residentSetSizePrivate value.
      */
     private long residentSetSizePrivate;
+
     /**
      * The kernelTime value.
      */
     private long kernelTime;
+
     /**
      * The userTime value.
      */
     private long userTime;
+
     /**
      * The startTime value.
      */
     private long startTime;
+
     /**
      * The upTime value.
      */
     private long upTime;
+
     /**
      * The bytesRead value.
      */
     private long bytesRead;
+
     /**
      * The bytesWritten value.
      */
     private long bytesWritten;
+
     /**
      * The minorFaults value.
      */
     private long minorFaults;
+
     /**
      * The majorFaults value.
      */
     private long majorFaults;
+
     /**
      * The contextSwitches value.
      */

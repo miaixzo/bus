@@ -28,10 +28,9 @@ import org.miaixz.bus.core.lang.Assert;
  * <p>
  * If two compared objects are of the same type, it returns {@code 0}. By default, if an object's type is not in the
  * specified list, it is sorted at the beginning.
- * 
+ *
  * <p>
  * This class is adapted from Spring Framework with some modifications.
- * 
  *
  * @param <T> the type of objects to be compared.
  * @author Kimi Liu
@@ -43,6 +42,7 @@ public class InstanceCompare<T> implements Comparator<T> {
      * Whether to place objects at the end if their type is not in the specified order.
      */
     private final boolean atEndIfMiss;
+
     /**
      * The array of classes that defines the sort order.
      */

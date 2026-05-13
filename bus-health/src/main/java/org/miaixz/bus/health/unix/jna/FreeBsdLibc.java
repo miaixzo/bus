@@ -44,18 +44,22 @@ public interface FreeBsdLibc extends CLibrary {
      * Size of the ut_user field in a utmpx structure.
      */
     int UTX_USERSIZE = 32;
+
     /**
      * Size of the ut_line field in a utmpx structure.
      */
     int UTX_LINESIZE = 16;
+
     /**
      * Size of the ut_id field in a utmpx structure.
      */
     int UTX_IDSIZE = 8;
+
     /**
      * Size of the ut_host field in a utmpx structure.
      */
     int UTX_HOSTSIZE = 128;
+
     /**
      * Size of a 64-bit unsigned integer.
      */
@@ -68,6 +72,7 @@ public interface FreeBsdLibc extends CLibrary {
      * Size of an integer.
      */
     int INT_SIZE = Native.getNativeSize(int.class);
+
     /**
      * Number of CPU states.
      */
@@ -80,18 +85,22 @@ public interface FreeBsdLibc extends CLibrary {
      * CPU user state index.
      */
     int CP_USER = 0;
+
     /**
      * CPU nice state index.
      */
     int CP_NICE = 1;
+
     /**
      * CPU system state index.
      */
     int CP_SYS = 2;
+
     /**
      * CPU interrupt state index.
      */
     int CP_INTR = 3;
+
     /**
      * CPU idle state index.
      */
@@ -122,6 +131,9 @@ public interface FreeBsdLibc extends CLibrary {
      * <p>
      * This class maps to the native FreeBSD utmpx structure representing user accounting database entries.
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "ut_type", "ut_tv", "ut_id", "ut_pid", "ut_user", "ut_line", "ut_host", "ut_spare" })
     class FreeBsdUtmpx extends Structure {
@@ -130,34 +142,42 @@ public interface FreeBsdLibc extends CLibrary {
          * Type of entry.
          */
         public short ut_type;
+
         /**
          * Time entry was made.
          */
         public Timeval ut_tv;
+
         /**
          * etc/inittab id (usually line #).
          */
         public byte[] ut_id = new byte[UTX_IDSIZE];
+
         /**
          * Process id.
          */
         public int ut_pid;
+
         /**
          * User login name.
          */
         public byte[] ut_user = new byte[UTX_USERSIZE];
+
         /**
          * Device name.
          */
         public byte[] ut_line = new byte[UTX_LINESIZE];
+
         /**
          * Host name.
          */
         public byte[] ut_host = new byte[UTX_HOSTSIZE];
+
         /**
          * Spare bytes.
          */
         public byte[] ut_spare = new byte[64];
+
     }
 
     /**
@@ -166,6 +186,9 @@ public interface FreeBsdLibc extends CLibrary {
      * This class maps to the native FreeBSD timeval structure: {@code struct timeval { time_t tv_sec; suseconds_t
      * tv_usec; }; }
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "tv_sec", "tv_usec" })
     class Timeval extends Structure {
@@ -174,10 +197,12 @@ public interface FreeBsdLibc extends CLibrary {
          * Seconds.
          */
         public long tv_sec;
+
         /**
          * Microseconds.
          */
         public long tv_usec;
+
     }
 
     /**
@@ -185,6 +210,9 @@ public interface FreeBsdLibc extends CLibrary {
      * <p>
      * This class maps to the native FreeBSD CPU time tracking structure.
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "cpu_ticks" })
     class CpTime extends Structure implements AutoCloseable {
@@ -204,6 +232,7 @@ public interface FreeBsdLibc extends CLibrary {
                 ((Memory) p).close();
             }
         }
+
     }
 
 }

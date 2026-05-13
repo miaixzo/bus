@@ -32,6 +32,9 @@ import jakarta.ws.rs.core.Response;
 /**
  * This class implements the client side API for the GitLab Instance Audit Event API. See
  * <a href="https://docs.gitlab.com/ee/api/audit_events.html">Audit Event API at GitLab</a> for more information.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class AuditEventApi extends AbstractApi {
 

@@ -26,8 +26,8 @@ import org.miaixz.bus.core.xyz.CompareKit;
 /**
  * A mutable {@code int} wrapper.
  *
- * @author Kimi Liu
  * @see Integer
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class MutableInt extends Number implements Comparable<MutableInt>, Mutable<Number> {

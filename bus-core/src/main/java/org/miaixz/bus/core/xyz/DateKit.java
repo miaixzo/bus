@@ -49,8 +49,8 @@ import org.miaixz.bus.core.text.CharsBacker;
 /**
  * Date and time utility class.
  *
- * @author Kimi Liu
  * @see Fields Utility class for common date formats.
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class DateKit extends Calendar {
@@ -1722,6 +1722,9 @@ public class DateKit extends Calendar {
 
     /**
      * Utility class for `java.sql` date/time types.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class SQL {
 
@@ -1785,6 +1788,7 @@ public class DateKit extends Calendar {
             throw new UnsupportedOperationException(
                     StringKit.format("Unsupported target Date type: {}", targetClass.getName()));
         }
+
     }
 
 }

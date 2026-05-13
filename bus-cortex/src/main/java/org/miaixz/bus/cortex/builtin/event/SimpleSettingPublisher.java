@@ -40,6 +40,7 @@ public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
      * Shared cache used to store published setting content.
      */
     private final CacheX<String, Object> cacheX;
+
     /**
      * Setting-domain key strategy.
      */

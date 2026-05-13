@@ -20,20 +20,31 @@
 package org.miaixz.bus.image.galaxy.dict.DLX_EXAMS_01;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "DLX_EXAMS_01";
 
-    /** (0015,xx01) VR=DS VM=1 Stenosis Calibration Ratio */
+    /**
+     * (0015,xx01) VR=DS VM=1 Stenosis Calibration Ratio
+     */
     public static final int StenosisCalibrationRatio = 0x00150001;
 
-    /** (0015,xx02) VR=DS VM=1 Stenosis Magnification */
+    /**
+     * (0015,xx02) VR=DS VM=1 Stenosis Magnification
+     */
     public static final int StenosisMagnification = 0x00150002;
 
-    /** (0015,xx03) VR=DS VM=1 Cardiac Calibration Ratio */
+    /**
+     * (0015,xx03) VR=DS VM=1 Cardiac Calibration Ratio
+     */
     public static final int CardiacCalibrationRatio = 0x00150003;
 
 }

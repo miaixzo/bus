@@ -34,10 +34,12 @@ public class YesNo {
      * Code representing a 'Yes' response.
      */
     public static final Code Yes = new Code("373066001", "SCT", null, "Yes");
+
     /**
      * Code representing a 'No' response.
      */
     public static final Code No = new Code("373067005", "SCT", null, "No");
+
     /**
      * Code representing an 'Undetermined' response.
      */

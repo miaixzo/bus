@@ -25,7 +25,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
- * 
+ *
  * Enumeration for various internationalization (I18n) languages and locales. Each enum constant represents a specific
  * language or language-country combination, providing both a language code and a descriptive name.
  *

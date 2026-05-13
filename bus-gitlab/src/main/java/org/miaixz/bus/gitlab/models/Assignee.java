@@ -22,6 +22,12 @@ package org.miaixz.bus.gitlab.models;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import java.io.Serial;
 
+/**
+ * The assignee class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Assignee extends AbstractUser<Assignee> {
 
     @Serial

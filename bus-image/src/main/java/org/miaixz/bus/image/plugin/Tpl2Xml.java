@@ -51,10 +51,12 @@ public class Tpl2Xml {
      * Constant for XML version 1.0.
      */
     private static final String XML_1_0 = "1.0";
+
     /**
      * Constant for XML version 1.1.
      */
     private static final String XML_1_1 = "1.1";
+
     /**
      * The license block to be included as a comment in the generated XML files.
      */
@@ -76,6 +78,7 @@ public class Tpl2Xml {
             + " ~ limitations under the License.                                                ~\n"
             + " ~                                                                               ~\n"
             + " ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" + "*/";
+
     /**
      * The root element name for the generated XML files.
      */
@@ -85,10 +88,12 @@ public class Tpl2Xml {
      * Whether to format the XML output with indentation.
      */
     private boolean indent = false;
+
     /**
      * The XML version to be used in the output.
      */
     private String xmlVersion = XML_1_0;
+
     /**
      * The path to the output directory.
      */
@@ -225,13 +230,35 @@ public class Tpl2Xml {
 
     /**
      * Represents a single element from a private dictionary template.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static class DictionaryElement {
 
+        /**
+         * The vr value.
+         */
         private final String vr;
+
+        /**
+         * The vm value.
+         */
         private final String vm;
+
+        /**
+         * The value value.
+         */
         private final String value;
+
+        /**
+         * The tag value.
+         */
         private String tag;
+
+        /**
+         * The keyword value.
+         */
         private String keyword;
 
         /**
@@ -362,6 +389,7 @@ public class Tpl2Xml {
                     return null;
             }
         }
+
     }
 
 }

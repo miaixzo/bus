@@ -44,66 +44,82 @@ public class MicroPay extends Voucher {
      * Sub-merchant App ID.
      */
     private String sub_appid;
+
     /**
      * Merchant ID.
      */
     private String mch_id;
+
     /**
      * Sub-merchant ID.
      */
     private String sub_mch_id;
+
     /**
      * Random string.
      */
     private String nonce_str;
+
     /**
      * Signature.
      */
     private String sign;
+
     /**
      * Body of the request.
      */
     private String body;
+
     /**
      * Attached data.
      */
     private String attach;
+
     /**
      * Out trade number.
      */
     private String out_trade_no;
+
     /**
      * Fee type.
      */
     private String fee_type;
+
     /**
      * Total fee.
      */
     private String total_fee;
+
     /**
      * IP address of the client.
      */
     private String spbill_create_ip;
+
     /**
      * Limit pay.
      */
     private String limit_pay;
+
     /**
      * Promotion tag.
      */
     private String promotion_tag;
+
     /**
      * Asynchronous notification URL.
      */
     private String notify_url;
+
     /**
      * Device information.
      */
     private String device_info;
+
     /**
      * Authorization code.
      */
     private String auth_code;
+
     /**
      * Trade type.
      */

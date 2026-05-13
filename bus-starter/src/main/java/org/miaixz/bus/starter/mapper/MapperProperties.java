@@ -234,6 +234,9 @@ public class MapperProperties {
 
     /**
      * Operation safety configuration class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @Setter
@@ -248,10 +251,14 @@ public class MapperProperties {
          * Enable/disable strict mode for operation safety checks (default: true).
          */
         private boolean strictMode = true;
+
     }
 
     /**
      * Tenant configuration class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @Setter
@@ -276,10 +283,14 @@ public class MapperProperties {
          * Mappers to ignore tenant filtering (comma-separated).
          */
         private String ignoreMappers;
+
     }
 
     /**
      * Audit configuration class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @Setter
@@ -314,10 +325,14 @@ public class MapperProperties {
          * Whether to print audit logs to console.
          */
         private boolean printConsole = false;
+
     }
 
     /**
      * Populate configuration class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @Setter
@@ -347,10 +362,14 @@ public class MapperProperties {
          * Whether to enable modifier field.
          */
         private boolean modifier = true;
+
     }
 
     /**
      * Visible configuration class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @Setter
@@ -365,10 +384,14 @@ public class MapperProperties {
          * Tables to ignore visibility filtering (comma-separated).
          */
         private String ignore;
+
     }
 
     /**
      * Prefix configuration class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @Setter
@@ -388,6 +411,7 @@ public class MapperProperties {
          * Tables to ignore prefix (comma-separated).
          */
         private String ignore;
+
     }
 
     /**

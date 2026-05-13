@@ -61,9 +61,12 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * <p>
  * <b>Example 1: Simple implementation (use configuration file)</b>
  * </p>
- * 
- * <pre>{@code
- * @Component
+ *
+ * <pre>
+ * {@code
+ *
+ * &#64;author Kimi Liu
+ * &#64;Component
  * public class SimplePopulateProvider implements PopulateProvider {
  *
  *     public Object getCurrentUser() {
@@ -71,12 +74,13 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  *     }
  *     // No getConfig() override - configuration from application.yml
  * }
- * }</pre>
+ * }
+ * </pre>
  *
  * <p>
  * <b>Example 2: Context-based dynamic user resolution</b>
  * </p>
- * 
+ *
  * <pre>{@code
  * @Component
  * public class ContextAwarePopulateProvider implements PopulateProvider {
@@ -100,7 +104,7 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * <p>
  * <b>Example 3: Full configuration from Provider</b>
  * </p>
- * 
+ *
  * <pre>{@code
  * @Component
  * public class CustomPopulateProvider implements PopulateProvider {
@@ -120,10 +124,10 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * }
  * }</pre>
  *
- * @author Kimi Liu
  * @see PopulateConfig
  * @see PopulateHandler
  * @see MapperProvider
+ * @author Kimi Liu
  * @since Java 21+
  */
 @FunctionalInterface

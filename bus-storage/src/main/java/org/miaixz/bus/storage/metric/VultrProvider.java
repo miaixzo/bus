@@ -67,7 +67,7 @@ import org.miaixz.bus.storage.Context;
  * <strong>Configuration Example:</strong>
  *
  * <pre>{@code
- * 
+ *
  * Context context = Context.builder().endpoint("https://ewr1.vultrobjects.com") // Region-specific endpoint
  *         .bucket("my-bucket").accessKey("VULTR_ACCESS_KEY").secretKey("VULTR_SECRET_KEY").region("ewr1").build();
  *

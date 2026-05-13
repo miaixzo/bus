@@ -83,6 +83,9 @@ public abstract class ResourceLoader implements Loader {
 
     /**
      * Abstract base class for resource enumerators, providing common functionality for iterating over resources.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     protected abstract static class ResourceEnumerator implements Enumeration<Resource> {
 
@@ -114,6 +117,7 @@ public abstract class ResourceLoader implements Loader {
                 throw new NoSuchElementException();
             }
         }
+
     }
 
 }

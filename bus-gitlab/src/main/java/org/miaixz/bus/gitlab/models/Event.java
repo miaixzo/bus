@@ -26,6 +26,12 @@ import org.miaixz.bus.gitlab.models.Constants.TargetType;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import java.io.Serial;
 
+/**
+ * The event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Event implements Serializable {
 
     @Serial

@@ -46,14 +46,17 @@ public class MetroHash128 extends AbstractMetroHash<MetroHash128> implements Has
      * Constant K0 used in the MetroHash128 algorithm.
      */
     private static final long K0 = 0xC83A91E1L;
+
     /**
      * Constant K1 used in the MetroHash128 algorithm.
      */
     private static final long K1 = 0x8648DBDBL;
+
     /**
      * Constant K2 used in the MetroHash128 algorithm.
      */
     private static final long K2 = 0x7BDEC03BL;
+
     /**
      * Constant K3 used in the MetroHash128 algorithm.
      */

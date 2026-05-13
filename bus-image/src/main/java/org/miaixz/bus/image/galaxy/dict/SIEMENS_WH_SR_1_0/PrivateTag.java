@@ -20,17 +20,26 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_WH_SR_1_0;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS WH SR 1.0";
 
-    /** (0071,xx01) VR=LO VM=1 ? */
+    /**
+     * (0071,xx01) VR=LO VM=1 ?
+     */
     public static final int _0071_xx01_ = 0x00710001;
 
-    /** (0071,xx02) VR=LO VM=1 ? */
+    /**
+     * (0071,xx02) VR=LO VM=1 ?
+     */
     public static final int _0071_xx02_ = 0x00710002;
 
 }

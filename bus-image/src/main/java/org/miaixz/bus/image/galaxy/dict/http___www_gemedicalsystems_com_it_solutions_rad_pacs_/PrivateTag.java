@@ -20,20 +20,31 @@
 package org.miaixz.bus.image.galaxy.dict.http___www_gemedicalsystems_com_it_solutions_rad_pacs_;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "http://www.gemedicalsystems.com/it_solutions/rad_pacs/";
 
-    /** (3115,xx01) VR=UT VM=1 Reference to pacs study */
+    /**
+     * (3115,xx01) VR=UT VM=1 Reference to pacs study
+     */
     public static final int ReferenceToPacsStudy = 0x31150001;
 
-    /** (3115,xx02) VR=UT VM=1 Reference to pacs image */
+    /**
+     * (3115,xx02) VR=UT VM=1 Reference to pacs image
+     */
     public static final int ReferenceToPacsImage = 0x31150002;
 
-    /** (3115,xx03) VR=CS VM=1 Pacs examnotes flag */
+    /**
+     * (3115,xx03) VR=CS VM=1 Pacs examnotes flag
+     */
     public static final int PacsExamnotesFlag = 0x31150003;
 
 }

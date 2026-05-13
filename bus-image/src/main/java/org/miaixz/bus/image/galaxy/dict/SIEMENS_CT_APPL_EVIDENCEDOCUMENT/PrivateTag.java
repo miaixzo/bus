@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_CT_APPL_EVIDENCEDOCUMENT;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS CT APPL EVIDENCEDOCUMENT";
 
-    /** (0029,xx00) VR=UT VM=1 Private Task Datamodel */
+    /**
+     * (0029,xx00) VR=UT VM=1 Private Task Datamodel
+     */
     public static final int PrivateTaskDatamodel = 0x00290000;
 
 }

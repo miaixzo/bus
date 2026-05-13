@@ -27,6 +27,9 @@ import java.io.Serializable;
 /**
  * This class is used by the ProtectedBranchesAPi to set up the allowed_to_push, allowed_to_merge, and
  * allowed_to_unprotect values.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class AllowedTo implements Serializable {
 

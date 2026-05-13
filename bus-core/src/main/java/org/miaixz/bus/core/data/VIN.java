@@ -64,15 +64,18 @@ public class VIN {
      * Weighting factors, see Appendix A, Table A.3
      */
     private static final int[] WEIGHT = { 8, 7, 6, 5, 4, 3, 2, 10, 0, 9, 8, 7, 6, 5, 4, 3, 2 };
+
     /**
      * The cycle of the year code.
      */
     private static final int YEAR_LOOP = 30;
+
     /**
      * The characters used to represent the year.
      */
     private static final char[] YEAR_ID = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'R',
             'S', 'T', 'V', 'W', 'X', 'Y', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+
     /**
      * A map from year characters to their corresponding index.
      */

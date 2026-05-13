@@ -30,26 +30,56 @@ import org.miaixz.bus.image.galaxy.data.VR;
 import org.miaixz.bus.image.galaxy.data.ValidationResult;
 
 /**
+ * Represents the ImageServiceException type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class ImageServiceException extends IOException {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852276570267L;
 
+    /**
+     * The rsp value.
+     */
     private final Attributes rsp;
+
+    /**
+     * The data value.
+     */
     private Attributes data;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param status the status.
+     */
     public ImageServiceException(int status) {
         rsp = new Attributes();
         setStatus(status);
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param status  the status.
+     * @param message the message.
+     */
     public ImageServiceException(int status, String message) {
         this(status, message, true);
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param status       the status.
+     * @param message      the message.
+     * @param errorComment the error comment.
+     */
     public ImageServiceException(int status, String message, boolean errorComment) {
         super(message);
         rsp = new Attributes();
@@ -59,10 +89,23 @@ public class ImageServiceException extends IOException {
         }
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param status the status.
+     * @param cause  the cause.
+     */
     public ImageServiceException(int status, Throwable cause) {
         this(status, cause, true);
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param status       the status.
+     * @param cause        the cause.
+     * @param errorComment the error comment.
+     */
     public ImageServiceException(int status, Throwable cause, boolean errorComment) {
         super(cause);
         rsp = new Attributes();
@@ -72,6 +115,12 @@ public class ImageServiceException extends IOException {
         }
     }
 
+    /**
+     * Executes the initial cause of operation.
+     *
+     * @param e the e.
+     * @return the operation result.
+     */
     public static Throwable initialCauseOf(Throwable e) {
         if (e == null)
             return null;
@@ -82,6 +131,13 @@ public class ImageServiceException extends IOException {
         return e;
     }
 
+    /**
+     * Executes the value of operation.
+     *
+     * @param result the result.
+     * @param attrs  the attrs.
+     * @return the operation result.
+     */
     public static ImageServiceException valueOf(ValidationResult result, Attributes attrs) {
         if (result.hasNotAllowedAttributes())
             return new ImageServiceException(Status.NoSuchAttribute, result.getErrorComment(), false)
@@ -98,40 +154,89 @@ public class ImageServiceException extends IOException {
         return null;
     }
 
+    /**
+     * Gets the status.
+     *
+     * @return the status.
+     */
     public int getStatus() {
         return rsp.getInt(Tag.Status, 0);
     }
 
+    /**
+     * Sets the status.
+     *
+     * @param status the status.
+     */
     private void setStatus(int status) {
         rsp.setInt(Tag.Status, VR.US, status);
     }
 
+    /**
+     * Sets the uid.
+     *
+     * @param tag   the tag.
+     * @param value the value.
+     * @return the operation result.
+     */
     public ImageServiceException setUID(int tag, String value) {
         rsp.setString(tag, VR.UI, value);
         return this;
     }
 
+    /**
+     * Sets the error comment.
+     *
+     * @param val the val.
+     * @return the operation result.
+     */
     public ImageServiceException setErrorComment(String val) {
         if (val != null)
             rsp.setString(Tag.ErrorComment, VR.LO, Builder.truncate(val, 64));
         return this;
     }
 
+    /**
+     * Sets the error id.
+     *
+     * @param val the val.
+     * @return the operation result.
+     */
     public ImageServiceException setErrorID(int val) {
         rsp.setInt(Tag.ErrorID, VR.US, val);
         return this;
     }
 
+    /**
+     * Sets the event type id.
+     *
+     * @param val the val.
+     * @return the operation result.
+     */
     public ImageServiceException setEventTypeID(int val) {
         rsp.setInt(Tag.EventTypeID, VR.US, val);
         return this;
     }
 
+    /**
+     * Sets the action type id.
+     *
+     * @param val the val.
+     * @return the operation result.
+     */
     public ImageServiceException setActionTypeID(int val) {
         rsp.setInt(Tag.ActionTypeID, VR.US, val);
         return this;
     }
 
+    /**
+     * Sets the number of completed failed warning suboperations.
+     *
+     * @param completed the completed.
+     * @param failed    the failed.
+     * @param warning   the warning.
+     * @return the operation result.
+     */
     public ImageServiceException setNumberOfCompletedFailedWarningSuboperations(
             int completed,
             int failed,
@@ -142,26 +247,56 @@ public class ImageServiceException extends IOException {
         return this;
     }
 
+    /**
+     * Sets the offending elements.
+     *
+     * @param tags the tags.
+     * @return the operation result.
+     */
     public ImageServiceException setOffendingElements(int... tags) {
         rsp.setInt(Tag.OffendingElement, VR.AT, tags);
         return this;
     }
 
+    /**
+     * Sets the attribute identifier list.
+     *
+     * @param tags the tags.
+     * @return the operation result.
+     */
     public ImageServiceException setAttributeIdentifierList(int... tags) {
         rsp.setInt(Tag.AttributeIdentifierList, VR.AT, tags);
         return this;
     }
 
+    /**
+     * Executes the mk rsp operation.
+     *
+     * @param cmdField the cmd field.
+     * @param msgId    the msg id.
+     * @return the operation result.
+     */
     public Attributes mkRSP(int cmdField, int msgId) {
         rsp.setInt(Tag.CommandField, VR.US, cmdField);
         rsp.setInt(Tag.MessageIDBeingRespondedTo, VR.US, msgId);
         return rsp;
     }
 
+    /**
+     * Gets the dataset.
+     *
+     * @return the dataset.
+     */
     public final Attributes getDataset() {
         return data;
     }
 
+    /**
+     * Sets the dataset.
+     *
+     * @param data the data.
+     * @return the operation result.
+     */
     public final ImageServiceException setDataset(Attributes data) {
         this.data = data;
         return this;

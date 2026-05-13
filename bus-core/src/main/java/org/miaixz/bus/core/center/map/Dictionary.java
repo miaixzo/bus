@@ -53,6 +53,7 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
      */
     @Serial
     private static final long serialVersionUID = 2852273032017L;
+
     /**
      * Flag indicating whether keys in this dictionary are case-insensitive.
      */

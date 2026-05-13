@@ -50,6 +50,7 @@ public class MultiResource implements Resource, Iterable<Resource>, Iterator<Res
      * The list of resources managed by this composite resource.
      */
     private final List<Resource> resources;
+
     /**
      * The current cursor position within the list of resources.
      */

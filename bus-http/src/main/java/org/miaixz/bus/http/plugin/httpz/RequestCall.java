@@ -36,14 +36,17 @@ public class RequestCall {
      * The HTTP client used to execute the call.
      */
     private final Httpd httpd;
+
     /**
      * The abstract representation of the HTTP request.
      */
     private final HttpRequest httpRequest;
+
     /**
      * The final, built Httpd Request object.
      */
     private Request request;
+
     /**
      * The underlying Httpd Call object.
      */

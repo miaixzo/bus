@@ -37,38 +37,47 @@ public class Symbol {
      * Character: '0'
      */
     public static final char C_ZERO = '0';
+
     /**
      * String: "0"
      */
     public static final String ZERO = Normal.EMPTY + C_ZERO;
+
     /**
      * Character: Chinese numeral '零' (zero)
      */
     public static final char C_UL_ZERO = '零';
+
     /**
      * String: Chinese numeral "零" (zero)
      */
     public static final String UL_ZERO = Normal.EMPTY + C_UL_ZERO;
+
     /**
      * Character: '1'
      */
     public static final char C_ONE = '1';
+
     /**
      * String: "1"
      */
     public static final String ONE = Normal.EMPTY + C_ONE;
+
     /**
      * Character: Chinese numeral '一' (one, simplified)
      */
     public static final char C_L_ONE = '一';
+
     /**
      * String: Chinese numeral "一" (one, simplified)
      */
     public static final String L_ONE = Normal.EMPTY + C_L_ONE;
+
     /**
      * Character: Chinese numeral '壹' (one, traditional/financial)
      */
     public static final char C_U_ONE = '壹';
+
     /**
      * String: Chinese numeral "壹" (one, traditional/financial)
      */
@@ -78,46 +87,57 @@ public class Symbol {
      * Character: '2'
      */
     public static final char C_TWO = '2';
+
     /**
      * String: "2"
      */
     public static final String TWO = Normal.EMPTY + C_TWO;
+
     /**
      * Character: Chinese numeral '二' (two, simplified)
      */
     public static final char C_L_TWO = '二';
+
     /**
      * String: Chinese numeral "二" (two, simplified)
      */
     public static final String S_TWO = Normal.EMPTY + C_L_TWO;
+
     /**
      * Character: Chinese numeral '贰' (two, traditional/financial)
      */
     public static final char C_U_TWO = '贰';
+
     /**
      * String: Chinese numeral "贰" (two, traditional/financial)
      */
     public static final String T_TWO = Normal.EMPTY + C_U_TWO;
+
     /**
      * Character: '3'
      */
     public static final char C_THREE = '3';
+
     /**
      * String: "3"
      */
     public static final String THREE = Normal.EMPTY + C_THREE;
+
     /**
      * Character: Chinese numeral '三' (three, simplified)
      */
     public static final char C_L_THREE = '三';
+
     /**
      * String: Chinese numeral "三" (three, simplified)
      */
     public static final String S_THREE = Normal.EMPTY + C_L_THREE;
+
     /**
      * Character: Chinese numeral '叁' (three, traditional/financial)
      */
     public static final char C_U_THREE = '叁';
+
     /**
      * String: Chinese numeral "叁" (three, traditional/financial)
      */
@@ -127,22 +147,27 @@ public class Symbol {
      * Character: '4'
      */
     public static final char C_FOUR = '4';
+
     /**
      * String: "4"
      */
     public static final String FOUR = Normal.EMPTY + C_FOUR;
+
     /**
      * Character: Chinese numeral '四' (four, simplified)
      */
     public static final char C_L_FOUR = '四';
+
     /**
      * String: Chinese numeral "四" (four, simplified)
      */
     public static final String S_FOUR = Normal.EMPTY + C_L_FOUR;
+
     /**
      * Character: Chinese numeral '肆' (four, traditional/financial)
      */
     public static final char C_U_FOUR = '肆';
+
     /**
      * String: Chinese numeral "肆" (four, traditional/financial)
      */
@@ -152,46 +177,57 @@ public class Symbol {
      * Character: '5'
      */
     public static final char C_FIVE = '5';
+
     /**
      * String: "5"
      */
     public static final String FIVE = Normal.EMPTY + C_FIVE;
+
     /**
      * Character: Chinese numeral '五' (five, simplified)
      */
     public static final char C_L_FIVE = '五';
+
     /**
      * String: Chinese numeral "五" (five, simplified)
      */
     public static final String S_FIVE = Normal.EMPTY + C_L_FIVE;
+
     /**
      * Character: Chinese numeral '伍' (five, traditional/financial)
      */
     public static final char C_U_FIVE = '伍';
+
     /**
      * String: Chinese numeral "伍" (five, traditional/financial)
      */
     public static final String T_FIVE = Normal.EMPTY + C_U_FIVE;
+
     /**
      * Character: '6'
      */
     public static final char C_SIX = '6';
+
     /**
      * String: "6"
      */
     public static final String SIX = Normal.EMPTY + C_SIX;
+
     /**
      * Character: Chinese numeral '六' (six, simplified)
      */
     public static final char C_L_SIX = '六';
+
     /**
      * String: Chinese numeral "六" (six, simplified)
      */
     public static final String L_SIX = Normal.EMPTY + C_L_SIX;
+
     /**
      * Character: Chinese numeral '陆' (six, traditional/financial)
      */
     public static final char C_U_SIX = '陆';
+
     /**
      * String: Chinese numeral "陆" (six, traditional/financial)
      */
@@ -201,22 +237,27 @@ public class Symbol {
      * Character: '7'
      */
     public static final char C_SEVEN = '7';
+
     /**
      * String: "7"
      */
     public static final String SEVEN = Normal.EMPTY + C_SEVEN;
+
     /**
      * Character: Chinese numeral '七' (seven, simplified)
      */
     public static final char C_L_SEVEN = '七';
+
     /**
      * String: Chinese numeral "七" (seven, simplified)
      */
     public static final String L_SEVEN = Normal.EMPTY + C_L_SEVEN;
+
     /**
      * Character: Chinese numeral '柒' (seven, traditional/financial)
      */
     public static final char C_U_SEVEN = '柒';
+
     /**
      * String: Chinese numeral "柒" (seven, traditional/financial)
      */
@@ -226,22 +267,27 @@ public class Symbol {
      * Character: '8'
      */
     public static final char C_EIGHT = '8';
+
     /**
      * String: "8"
      */
     public static final String EIGHT = Normal.EMPTY + C_EIGHT;
+
     /**
      * Character: Chinese numeral '八' (eight, simplified)
      */
     public static final char C_L_EIGHT = '八';
+
     /**
      * String: Chinese numeral "八" (eight, simplified)
      */
     public static final String L_EIGHT = Normal.EMPTY + C_L_EIGHT;
+
     /**
      * Character: Chinese numeral '捌' (eight, traditional/financial)
      */
     public static final char C_U_EIGHT = '捌';
+
     /**
      * String: Chinese numeral "捌" (eight, traditional/financial)
      */
@@ -251,22 +297,27 @@ public class Symbol {
      * Character: '9'
      */
     public static final char C_NINE = '9';
+
     /**
      * String: "9"
      */
     public static final String NINE = Normal.EMPTY + C_NINE;
+
     /**
      * Character: Chinese numeral '九' (nine, simplified)
      */
     public static final char C_L_NINE = '九';
+
     /**
      * String: Chinese numeral "九" (nine, simplified)
      */
     public static final String L_NINE = Normal.EMPTY + C_L_NINE;
+
     /**
      * Character: Chinese numeral '玖' (nine, traditional/financial)
      */
     public static final char C_U_NINE = '玖';
+
     /**
      * String: Chinese numeral "玖" (nine, traditional/financial)
      */
@@ -276,22 +327,27 @@ public class Symbol {
      * Integer: 10
      */
     public static final int C_TEN = 10;
+
     /**
      * String: "10"
      */
     public static final String TEN = Normal.EMPTY + C_TEN;
+
     /**
      * Character: Chinese numeral '十' (ten, simplified)
      */
     public static final char C_L_TEN = '十';
+
     /**
      * String: Chinese numeral "十" (ten, simplified)
      */
     public static final String L_TEN = Normal.EMPTY + C_L_TEN;
+
     /**
      * Character: Chinese numeral '拾' (ten, traditional/financial)
      */
     public static final char C_U_TEN = '拾';
+
     /**
      * String: Chinese numeral "拾" (ten, traditional/financial)
      */
@@ -301,22 +357,27 @@ public class Symbol {
      * Integer: 100
      */
     public static final int C_ONE_HUNDRED = 100;
+
     /**
      * String: "100"
      */
     public static final String ONE_HUNDRED = Normal.EMPTY + C_ONE_HUNDRED;
+
     /**
      * Character: Chinese numeral '百' (hundred, simplified)
      */
     public static final char C_L_ONE_HUNDRED = '百';
+
     /**
      * String: Chinese numeral "百" (hundred, simplified)
      */
     public static final String L_ONE_HUNDRED = Normal.EMPTY + C_L_ONE_HUNDRED;
+
     /**
      * Character: Chinese numeral '佰' (hundred, traditional/financial)
      */
     public static final char C_U_ONE_HUNDRED = '佰';
+
     /**
      * String: Chinese numeral "佰" (hundred, traditional/financial)
      */
@@ -326,22 +387,27 @@ public class Symbol {
      * Integer: 1000
      */
     public static final int C_ONE_THOUSAND = 1000;
+
     /**
      * String: "1000"
      */
     public static final String ONE_THOUSAND = Normal.EMPTY + C_ONE_THOUSAND;
+
     /**
      * Character: Chinese numeral '千' (thousand, simplified)
      */
     public static final char C_L_ONE_THOUSAND = '千';
+
     /**
      * String: Chinese numeral "千" (thousand, simplified)
      */
     public static final String L_ONE_THOUSAND = Normal.EMPTY + C_L_ONE_THOUSAND;
+
     /**
      * Character: Chinese numeral '仟' (thousand, traditional/financial)
      */
     public static final char C_U_ONE_THOUSAND = '仟';
+
     /**
      * String: Chinese numeral "仟" (thousand, traditional/financial)
      */
@@ -351,22 +417,27 @@ public class Symbol {
      * Character: '万' (ten thousand)
      */
     public static final char C_TEN_THOUSAND = 10000;
+
     /**
      * String: "10000"
      */
     public static final String TEN_THOUSAND = Normal.EMPTY + C_TEN_THOUSAND;
+
     /**
      * Character: Chinese numeral '万' (ten thousand, simplified)
      */
     public static final char C_L_TEN_THOUSAND = '万';
+
     /**
      * String: Chinese numeral "万" (ten thousand, simplified)
      */
     public static final String L_TEN_THOUSAND = Normal.EMPTY + C_L_TEN_THOUSAND;
+
     /**
      * Character: Chinese numeral '萬' (ten thousand, traditional)
      */
     public static final char C_U_TEN_THOUSAND = '萬';
+
     /**
      * String: Chinese numeral "萬" (ten thousand, traditional)
      */
@@ -376,22 +447,27 @@ public class Symbol {
      * Integer: 100,000,000
      */
     public static final int C_ONE_HUNDRED_MILLION = 100000000;
+
     /**
      * String: "100000000"
      */
     public static final String ONE_HUNDRED_MILLION = Normal.EMPTY + C_ONE_HUNDRED_MILLION;
+
     /**
      * Character: Chinese numeral '亿' (hundred million, simplified)
      */
     public static final char C_L_ONE_HUNDRED_MILLION = '亿';
+
     /**
      * String: Chinese numeral "亿" (hundred million, simplified)
      */
     public static final String L_ONE_HUNDRED_MILLION = Normal.EMPTY + C_L_ONE_HUNDRED_MILLION;
+
     /**
      * Character: Chinese numeral '億' (hundred million, traditional)
      */
     public static final char C_U_ONE_HUNDRED_MILLION = '億';
+
     /**
      * String: Chinese numeral "億" (hundred million, traditional)
      */
@@ -401,6 +477,7 @@ public class Symbol {
      * Character: 'X'
      */
     public static final char C_X = 'X';
+
     /**
      * String: "X"
      */
@@ -410,6 +487,7 @@ public class Symbol {
      * Character: comma ','
      */
     public static final char C_COMMA = ',';
+
     /**
      * String: ","
      */
@@ -419,6 +497,7 @@ public class Symbol {
      * Character: colon ':'
      */
     public static final char C_COLON = ':';
+
     /**
      * String: ":"
      */
@@ -428,6 +507,7 @@ public class Symbol {
      * Character: tilde '~'
      */
     public static final char C_TILDE = '~';
+
     /**
      * String: "~"
      */
@@ -437,6 +517,7 @@ public class Symbol {
      * Character: space ' '
      */
     public static final char C_SPACE = ' ';
+
     /**
      * String: " "
      */
@@ -446,6 +527,7 @@ public class Symbol {
      * Character: tab '\t'
      */
     public static final char C_TAB = '	';
+
     /**
      * String: "\t"
      */
@@ -455,10 +537,12 @@ public class Symbol {
      * Character: dot '.'
      */
     public static final char C_DOT = '.';
+
     /**
      * String: "."
      */
     public static final String DOT = Normal.EMPTY + C_DOT;
+
     /**
      * String: ".."
      */
@@ -468,6 +552,7 @@ public class Symbol {
      * Character: semicolon ';'
      */
     public static final char C_SEMICOLON = ';';
+
     /**
      * String: ";"
      */
@@ -477,6 +562,7 @@ public class Symbol {
      * Character: underscore '_'
      */
     public static final char C_UNDERLINE = '_';
+
     /**
      * String: "_"
      */
@@ -486,6 +572,7 @@ public class Symbol {
      * Character: single quote '\''
      */
     public static final char C_SINGLE_QUOTE = '\'';
+
     /**
      * String: "'"
      */
@@ -495,6 +582,7 @@ public class Symbol {
      * Character: double quotes '"'
      */
     public static final char C_DOUBLE_QUOTES = '"';
+
     /**
      * String: '"'
      */
@@ -504,6 +592,7 @@ public class Symbol {
      * Character: exclamation mark '!'
      */
     public static final char C_NOT = '!';
+
     /**
      * String: "!"
      */
@@ -513,6 +602,7 @@ public class Symbol {
      * Character: ampersand 'amp;'
      */
     public static final char C_AND = '&';
+
     /**
      * String: "amp;"
      */
@@ -522,6 +612,7 @@ public class Symbol {
      * Character: pipe '|'
      */
     public static final char C_OR = '|';
+
     /**
      * String: "|"
      */
@@ -531,6 +622,7 @@ public class Symbol {
      * Character: at symbol '@'
      */
     public static final char C_AT = '@';
+
     /**
      * String: "@"
      */
@@ -540,6 +632,7 @@ public class Symbol {
      * Character: asterisk '*'
      */
     public static final char C_STAR = '*';
+
     /**
      * String: "*"
      */
@@ -549,6 +642,7 @@ public class Symbol {
      * Character: Chinese Yuan symbol '¥'
      */
     public static final char C_CNY = '¥';
+
     /**
      * String: "¥"
      */
@@ -558,6 +652,7 @@ public class Symbol {
      * Character: Chinese character for Yuan '元'
      */
     public static final char C_CNY_YUAN = '元';
+
     /**
      * String: "元"
      */
@@ -567,6 +662,7 @@ public class Symbol {
      * Character: Chinese character for Jiao (ten cents) '角'
      */
     public static final char C_CNY_JIAO = '角';
+
     /**
      * String: "角"
      */
@@ -576,6 +672,7 @@ public class Symbol {
      * Character: Chinese character for Fen (cent) '分'
      */
     public static final char C_CNY_FEN = '分';
+
     /**
      * String: "分"
      */
@@ -585,6 +682,7 @@ public class Symbol {
      * Character: Chinese character for "exact" or "integer" '整'
      */
     public static final char C_CNY_ZHENG = '整';
+
     /**
      * String: "整"
      */
@@ -594,6 +692,7 @@ public class Symbol {
      * Character: dollar sign '$'
      */
     public static final char C_DOLLAR = '$';
+
     /**
      * String: "$"
      */
@@ -603,6 +702,7 @@ public class Symbol {
      * Character: hash sign '#'
      */
     public static final char C_HASH = '#';
+
     /**
      * String: "#"
      */
@@ -612,6 +712,7 @@ public class Symbol {
      * Character: percent sign '%'
      */
     public static final char C_PERCENT = '%';
+
     /**
      * String: "%"
      */
@@ -621,6 +722,7 @@ public class Symbol {
      * Character: caret '^'
      */
     public static final char C_CARET = '^';
+
     /**
      * String: "^"
      */
@@ -630,6 +732,7 @@ public class Symbol {
      * Character: line sign '－'
      */
     public static final char C_LINE = '－';
+
     /**
      * String: "－"
      */
@@ -639,6 +742,7 @@ public class Symbol {
      * Character: minus sign '-'
      */
     public static final char C_MINUS = '-';
+
     /**
      * String: "-"
      */
@@ -648,6 +752,7 @@ public class Symbol {
      * Character: plus sign '+'
      */
     public static final char C_PLUS = '+';
+
     /**
      * String: "+"
      */
@@ -657,6 +762,7 @@ public class Symbol {
      * Character: equals sign '='
      */
     public static final char C_EQUAL = '=';
+
     /**
      * String: "="
      */
@@ -666,6 +772,7 @@ public class Symbol {
      * Character: greater than sign '&gt;'
      */
     public static final char C_GT = '>';
+
     /**
      * String: "&gt;"
      */
@@ -675,6 +782,7 @@ public class Symbol {
      * Character: less than sign '&lt;'
      */
     public static final char C_LT = '<';
+
     /**
      * String: "&lt;"
      */
@@ -684,6 +792,7 @@ public class Symbol {
      * String: greater than or equal to "&gt;="
      */
     public static final String GE = ">=";
+
     /**
      * String: less than or equal to "&lt;="
      */
@@ -693,6 +802,7 @@ public class Symbol {
      * Character: left parenthesis '('
      */
     public static final char C_PARENTHESE_LEFT = '(';
+
     /**
      * String: "("
      */
@@ -702,6 +812,7 @@ public class Symbol {
      * Character: right parenthesis ')'
      */
     public static final char C_PARENTHESE_RIGHT = ')';
+
     /**
      * String: ")"
      */
@@ -711,6 +822,7 @@ public class Symbol {
      * Character: left curly brace '{'
      */
     public static final char C_BRACE_LEFT = '{';
+
     /**
      * String: "{"
      */
@@ -720,6 +832,7 @@ public class Symbol {
      * Character: right curly brace '}'
      */
     public static final char C_BRACE_RIGHT = '}';
+
     /**
      * String: "}"
      */
@@ -729,6 +842,7 @@ public class Symbol {
      * Character: left square bracket '['
      */
     public static final char C_BRACKET_LEFT = '[';
+
     /**
      * String: "["
      */
@@ -738,6 +852,7 @@ public class Symbol {
      * Character: right square bracket ']'
      */
     public static final char C_BRACKET_RIGHT = ']';
+
     /**
      * String: "]"
      */
@@ -747,6 +862,7 @@ public class Symbol {
      * Character: question mark '?'
      */
     public static final char C_QUESTION_MARK = '?';
+
     /**
      * String: "?"
      */
@@ -756,10 +872,12 @@ public class Symbol {
      * Character: slash '/'
      */
     public static final char C_SLASH = '/';
+
     /**
      * String: "/"
      */
     public static final String SLASH = Normal.EMPTY + C_SLASH;
+
     /**
      * String: double slash "//"
      */
@@ -769,6 +887,7 @@ public class Symbol {
      * Character: backslash '\'
      */
     public static final char C_BACKSLASH = '\\';
+
     /**
      * String: "\" (backslash)
      */
@@ -778,6 +897,7 @@ public class Symbol {
      * Character: carriage return '\r'
      */
     public static final char C_CR = '\r';
+
     /**
      * String: "\r"
      */
@@ -787,6 +907,7 @@ public class Symbol {
      * Character: line feed '\n'
      */
     public static final char C_LF = '\n';
+
     /**
      * String: "\n"
      */
@@ -796,6 +917,7 @@ public class Symbol {
      * Character: horizontal tab '\t'
      */
     public static final char C_HT = '	';
+
     /**
      * String: "\t"
      */

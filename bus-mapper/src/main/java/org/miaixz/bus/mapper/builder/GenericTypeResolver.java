@@ -575,6 +575,9 @@ public class GenericTypeResolver {
     /**
      * An implementation of the standard Java reflection {@link ParameterizedType} interface. This custom implementation
      * is used to hold resolved generic type arguments.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class ParameterizedTypes implements ParameterizedType {
 
@@ -647,11 +650,15 @@ public class GenericTypeResolver {
             return "ParameterizedTypes [rawType=" + rawType + ", ownerType=" + ownerType + ", actualTypeArguments="
                     + Arrays.toString(actualTypeArguments) + "]";
         }
+
     }
 
     /**
      * An implementation of the standard Java reflection {@link WildcardType} interface. This custom implementation is
      * used to hold resolved wildcard bounds.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class WildcardTypes implements WildcardType {
 
@@ -698,11 +705,15 @@ public class GenericTypeResolver {
         }
 
         // Omitted toString(), hashCode(), equals() for brevity, but should typically be included in production code
+
     }
 
     /**
      * An implementation of the standard Java reflection {@link GenericArrayType} interface. This custom implementation
      * is used to hold a resolved generic component type.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class GenericArrayTypes implements GenericArrayType {
 

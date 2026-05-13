@@ -28,8 +28,8 @@ import org.miaixz.bus.core.lang.annotation.Alias;
  * A wrapper interface for enhancing annotations, providing additional capabilities such as attribute resolution.
  *
  * @param <T> The type of the annotation being wrapped.
- * @author Kimi Liu
  * @see AnnotationMappingProxy
+ * @author Kimi Liu
  * @since Java 21+
  */
 public interface AnnotationMapping<T extends Annotation> extends Annotation {

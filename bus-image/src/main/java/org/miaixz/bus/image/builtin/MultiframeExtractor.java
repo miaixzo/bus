@@ -43,41 +43,37 @@ import org.miaixz.bus.image.galaxy.data.*;
 public class MultiframeExtractor {
 
     /**
-     * A map storing the implementations for different SOP Class UIDs.
+     * The impls value.
      */
     private static final HashMap<String, Impl> impls = new HashMap<>(8);
 
     /**
-     * An array of tags that should be excluded (not copied) during the extraction process.
+     * The exclude tags value.
      */
     private static final int[] EXCLUDE_TAGS = { Tag.ReferencedImageEvidenceSequence, Tag.SourceImageEvidenceSequence,
             Tag.DimensionIndexSequence, Tag.NumberOfFrames, Tag.SharedFunctionalGroupsSequence,
             Tag.PerFrameFunctionalGroupsSequence, Tag.PixelData };
 
     /**
-     * A flag indicating whether the Series Instance UID should be preserved during extraction.
+     * The preserve series instance UID value.
      */
     private boolean preserveSeriesInstanceUID;
 
     /**
-     * The format string used to generate instance numbers for extracted single frames.
+     * The instance number format value.
      */
     private String instanceNumberFormat = "%s%04d";
 
     /**
-     * The UID mapper used to remap UIDs during extraction.
+     * The UID mapper value.
      */
     private UIDMapper uidMapper = new HashUIDMapper();
 
     /**
-     * The accessor used to retrieve the number of frames from a DICOM dataset.
+     * The nof accessor value.
      */
     private NumberOfFramesAccessor nofAccessor = new NumberOfFramesAccessor();
 
-    /**
-     * Static initializer block to populate the {@link #impls} map with supported multi-frame SOP Class UIDs and their
-     * corresponding extraction implementations.
-     */
     static {
         impls.put(UID.EnhancedCTImageStorage.uid, Impl.EnhancedCTImageExtractor);
         impls.put(UID.EnhancedMRImageStorage.uid, Impl.EnhancedMRImageExtractor);
@@ -102,20 +98,20 @@ public class MultiframeExtractor {
     }
 
     /**
-     * Checks if the specified SOP Class UID is supported for multi-frame extraction.
+     * Checks whether the supported SOP class condition is true.
      *
-     * @param cuid The SOP Class UID to check.
-     * @return {@code true} if the SOP Class is supported, {@code false} otherwise.
+     * @param cuid the cuid.
+     * @return true if the supported SOP class condition is true; otherwise false.
      */
     public static boolean isSupportedSOPClass(String cuid) {
         return impls.containsKey(cuid);
     }
 
     /**
-     * Returns the legacy single-frame SOP Class UID corresponding to a given multi-frame SOP Class UID.
+     * Executes the legacy SOP class UID operation.
      *
-     * @param mfcuid The multi-frame SOP Class UID.
-     * @return The legacy single-frame SOP Class UID, or {@code null} if the multi-frame SOP Class is not supported.
+     * @param mfcuid the mfcuid.
+     * @return the operation result.
      */
     public static String legacySOPClassUID(String mfcuid) {
         Impl impl = impls.get(mfcuid);
@@ -123,11 +119,10 @@ public class MultiframeExtractor {
     }
 
     /**
-     * Retrieves the {@link Impl} (implementation) for a given multi-frame SOP Class UID.
+     * Executes the impl for operation.
      *
-     * @param mfcuid The multi-frame SOP Class UID.
-     * @return The {@link Impl} corresponding to the SOP Class.
-     * @throws IllegalArgumentException if the SOP Class is not supported.
+     * @param mfcuid the mfcuid.
+     * @return the operation result.
      */
     private static Impl implFor(String mfcuid) {
         Impl impl = impls.get(mfcuid);
@@ -137,39 +132,36 @@ public class MultiframeExtractor {
     }
 
     /**
-     * Gets the flag indicating whether the Series Instance UID should be preserved.
+     * Checks whether the preserve series instance UID condition is true.
      *
-     * @return {@code true} if Series Instance UID is preserved, {@code false} otherwise.
+     * @return true if the preserve series instance UID condition is true; otherwise false.
      */
     public final boolean isPreserveSeriesInstanceUID() {
         return preserveSeriesInstanceUID;
     }
 
     /**
-     * Sets the flag indicating whether the Series Instance UID should be preserved.
+     * Sets the preserve series instance UID.
      *
-     * @param preserveSeriesInstanceUID {@code true} to preserve Series Instance UID, {@code false} otherwise.
+     * @param preserveSeriesInstanceUID the preserve series instance UID.
      */
     public final void setPreserveSeriesInstanceUID(boolean preserveSeriesInstanceUID) {
         this.preserveSeriesInstanceUID = preserveSeriesInstanceUID;
     }
 
     /**
-     * Gets the format string used for generating instance numbers.
+     * Returns the instance number format.
      *
-     * @return The instance number format string.
+     * @return the instance number format.
      */
     public final String getInstanceNumberFormat() {
         return instanceNumberFormat;
     }
 
     /**
-     * Sets the format string used for generating instance numbers. The format string must be compatible with
-     * {@link String#format(String, Object...)} and accept two arguments: the original instance number string and the
-     * frame index + 1.
+     * Sets the instance number format.
      *
-     * @param instanceNumberFormat The new instance number format string.
-     * @throws IllegalArgumentException if the format string is invalid.
+     * @param instanceNumberFormat the instance number format.
      */
     public final void setInstanceNumberFormat(String instanceNumberFormat) {
         String.format(instanceNumberFormat, "1", 1);
@@ -177,19 +169,18 @@ public class MultiframeExtractor {
     }
 
     /**
-     * Gets the currently configured {@link UIDMapper}.
+     * Returns the UID mapper.
      *
-     * @return The {@link UIDMapper} instance.
+     * @return the UID mapper.
      */
     public final UIDMapper getUIDMapper() {
         return uidMapper;
     }
 
     /**
-     * Sets the {@link UIDMapper} to be used for remapping UIDs.
+     * Sets the UID mapper.
      *
-     * @param uidMapper The new {@link UIDMapper} instance.
-     * @throws NullPointerException if {@code uidMapper} is {@code null}.
+     * @param uidMapper the UID mapper.
      */
     public final void setUIDMapper(UIDMapper uidMapper) {
         if (uidMapper == null)
@@ -198,19 +189,18 @@ public class MultiframeExtractor {
     }
 
     /**
-     * Gets the currently configured {@link NumberOfFramesAccessor}.
+     * Returns the number of frames accessorr.
      *
-     * @return The {@link NumberOfFramesAccessor} instance.
+     * @return the number of frames accessorr.
      */
     public final NumberOfFramesAccessor getNumberOfFramesAccessorr() {
         return nofAccessor;
     }
 
     /**
-     * Sets the {@link NumberOfFramesAccessor} to be used for retrieving the number of frames.
+     * Sets the number of frames accessor.
      *
-     * @param accessor The new {@link NumberOfFramesAccessor} instance.
-     * @throws NullPointerException if {@code accessor} is {@code null}.
+     * @param accessor the accessor.
      */
     public final void setNumberOfFramesAccessor(NumberOfFramesAccessor accessor) {
         if (accessor == null)
@@ -219,26 +209,24 @@ public class MultiframeExtractor {
     }
 
     /**
-     * Extracts a specific frame from an enhanced multi-frame image and returns it as a legacy single-frame image.
+     * Extracts the extract.
      *
-     * @param emf   The enhanced multi-frame {@link Attributes} from which to extract the frame.
-     * @param frame The 0-based index of the frame to extract.
-     * @return An {@link Attributes} object representing the extracted single-frame image.
+     * @param emf   the emf.
+     * @param frame the frame.
+     * @return the operation result.
      */
     public Attributes extract(Attributes emf, int frame) {
         return implFor(emf.getString(Tag.SOPClassUID)).extract(this, emf, frame);
     }
 
     /**
-     * Extracts a specific frame from a multi-frame image. This private helper method performs the core logic of
-     * extracting a single frame, handling functional groups, pixel data, and updating UIDs and instance numbers.
+     * Extracts the extract.
      *
-     * @param emf      The multi-frame {@link Attributes} object.
-     * @param frame    The 0-based index of the frame to extract.
-     * @param cuid     The SOP Class UID for the target single-frame image.
-     * @param enhanced A boolean indicating if the source image is an enhanced multi-frame image.
-     * @return An {@link Attributes} object representing the extracted single-frame image.
-     * @throws IllegalArgumentException if required functional group sequences are missing for enhanced images.
+     * @param emf      the emf.
+     * @param frame    the frame.
+     * @param cuid     the cuid.
+     * @param enhanced the enhanced.
+     * @return the operation result.
      */
     private Attributes extract(Attributes emf, int frame, String cuid, boolean enhanced) {
         Attributes dest = new Attributes(emf.size() * 2);
@@ -274,11 +262,10 @@ public class MultiframeExtractor {
     }
 
     /**
-     * Adjusts the Referenced Image Sequence or Source Image Sequence in the given attributes. It converts multi-frame
-     * references into multiple single-frame references based on the number of frames.
+     * Executes the adjust referenced images operation.
      *
-     * @param attrs The {@link Attributes} object containing the sequence to adjust.
-     * @param sqtag The tag of the sequence to adjust (e.g., {@link Tag#ReferencedImageSequence}).
+     * @param attrs the attrs.
+     * @param sqtag the sqtag.
      */
     private void adjustReferencedImages(Attributes attrs, int sqtag) {
         Sequence sq = attrs.getSequence(sqtag);
@@ -310,11 +297,10 @@ public class MultiframeExtractor {
     }
 
     /**
-     * Adds functional group attributes to the destination attributes. This method copies attributes from shared or
-     * per-frame functional group sequences.
+     * Adds the function groups.
      *
-     * @param dest The destination {@link Attributes} object.
-     * @param fgs  The source {@link Attributes} object representing functional groups.
+     * @param dest the dest.
+     * @param fgs  the fgs.
      */
     private void addFunctionGroups(Attributes dest, Attributes fgs) {
         dest.addSelected(fgs, Tag.ReferencedImageSequence);
@@ -325,12 +311,11 @@ public class MultiframeExtractor {
     }
 
     /**
-     * Adds the pixel data for a specific frame to the destination attributes. It handles both byte array and
-     * {@link BulkData} pixel data representations.
+     * Adds the pixel data.
      *
-     * @param dest  The destination {@link Attributes} object.
-     * @param src   The source {@link Attributes} object containing the multi-frame pixel data.
-     * @param frame The 0-based index of the frame whose pixel data is to be added.
+     * @param dest  the dest.
+     * @param src   the src.
+     * @param frame the frame.
      */
     private void addPixelData(Attributes dest, Attributes src, int frame) {
         VR.Holder vr = new VR.Holder();
@@ -347,24 +332,24 @@ public class MultiframeExtractor {
     }
 
     /**
-     * Extracts pixel data for a specific frame from a {@link BulkData} object.
+     * Extracts the pixel data.
      *
-     * @param src    The source {@link BulkData} object.
-     * @param frame  The 0-based index of the frame to extract.
-     * @param length The length of a single frame's pixel data in bytes.
-     * @return A new {@link BulkData} object representing the extracted frame's pixel data.
+     * @param src    the src.
+     * @param frame  the frame.
+     * @param length the length.
+     * @return the operation result.
      */
     private BulkData extractPixelData(BulkData src, int frame, int length) {
         return new BulkData(src.uriWithoutQuery(), src.offset() + (long) frame * length, length, src.bigEndian());
     }
 
     /**
-     * Extracts pixel data for a specific frame from a byte array.
+     * Extracts the pixel data.
      *
-     * @param src    The source byte array containing multi-frame pixel data.
-     * @param frame  The 0-based index of the frame to extract.
-     * @param length The length of a single frame's pixel data in bytes.
-     * @return A byte array containing the extracted frame's pixel data.
+     * @param src    the src.
+     * @param frame  the frame.
+     * @param length the length.
+     * @return the operation result.
      */
     private byte[] extractPixelData(byte[] src, int frame, int length) {
         byte[] dest = new byte[length];
@@ -373,10 +358,10 @@ public class MultiframeExtractor {
     }
 
     /**
-     * Calculates the length of a single frame's pixel data in bytes.
+     * Executes the calc frame length operation.
      *
-     * @param src The source {@link Attributes} object containing image dimensions and pixel information.
-     * @return The calculated frame length in bytes.
+     * @param src the src.
+     * @return the operation result.
      */
     private int calcFrameLength(Attributes src) {
         return src.getInt(Tag.Rows, 0) * src.getInt(Tag.Columns, 0) * (src.getInt(Tag.BitsAllocated, 8) >> 3)
@@ -384,12 +369,11 @@ public class MultiframeExtractor {
     }
 
     /**
-     * Creates an instance number string for a single frame. It formats the instance number using the configured
-     * {@link #instanceNumberFormat}.
+     * Creates the instance number.
      *
-     * @param mfinstno The original multi-frame instance number string.
-     * @param frame    The 0-based index of the frame.
-     * @return The formatted instance number string.
+     * @param mfinstno the mfinstno.
+     * @param frame    the frame.
+     * @return the operation result.
      */
     private String createInstanceNumber(String mfinstno, int frame) {
         String s = String.format(instanceNumberFormat, mfinstno, frame + 1);
@@ -399,6 +383,9 @@ public class MultiframeExtractor {
     /**
      * Enumeration defining implementations for extracting single frames from different multi-frame SOP Classes. Each
      * implementation specifies the target single-frame SOP Class UID and whether it's an enhanced image.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private enum Impl {
 
@@ -413,12 +400,12 @@ public class MultiframeExtractor {
         EnhancedMRImageExtractor(UID.MRImageStorage.uid, true) {
 
             /**
-             * Extracts a single frame from an Enhanced MR Image and applies MR-specific corrections.
+             * Extracts the extract.
              *
-             * @param mfe   The {@link MultiframeExtractor} instance.
-             * @param emf   The enhanced multi-frame MR image attributes.
-             * @param frame The 0-based index of the frame to extract.
-             * @return The extracted single-frame MR image attributes.
+             * @param mfe   the mfe.
+             * @param emf   the emf.
+             * @param frame the frame.
+             * @return the operation result.
              */
             @Override
             Attributes extract(MultiframeExtractor mfe, Attributes emf, int frame) {
@@ -431,10 +418,9 @@ public class MultiframeExtractor {
             }
 
             /**
-             * Sets the Echo Time (Tag.EchoTime) in the single-frame MR image attributes. If Effective Echo Time
-             * (Tag.EffectiveEchoTime) is 0, Echo Time is set to null.
+             * Sets the echo time.
              *
-             * @param sf The single-frame MR image attributes.
+             * @param sf the sf.
              */
             void setEchoTime(Attributes sf) {
                 double echoTime = sf.getDouble(Tag.EffectiveEchoTime, 0);
@@ -445,10 +431,9 @@ public class MultiframeExtractor {
             }
 
             /**
-             * Sets the Scanning Sequence (Tag.ScanningSequence) in the single-frame MR image attributes based on
-             * various pulse sequence related tags.
+             * Sets the scanning sequence.
              *
-             * @param sf The single-frame MR image attributes.
+             * @param sf the sf.
              */
             void setScanningSequence(Attributes sf) {
                 List<String> list = new ArrayList<>(3);
@@ -465,10 +450,9 @@ public class MultiframeExtractor {
             }
 
             /**
-             * Sets the Sequence Variant (Tag.SequenceVariant) in the single-frame MR image attributes based on various
-             * sequence related tags.
+             * Sets the sequence variant.
              *
-             * @param sf The single-frame MR image attributes.
+             * @param sf the sf.
              */
             void setSequenceVariant(Attributes sf) {
                 List<String> list = new ArrayList<>(5);
@@ -492,10 +476,9 @@ public class MultiframeExtractor {
             }
 
             /**
-             * Sets the Scan Options (Tag.ScanOptions) in the single-frame MR image attributes based on various
-             * scan-related tags and image type.
+             * Sets the scan options.
              *
-             * @param sf The single-frame MR image attributes.
+             * @param sf the sf.
              */
             void setScanOptions(Attributes sf) {
                 List<String> list = new ArrayList<>(3);
@@ -603,20 +586,20 @@ public class MultiframeExtractor {
         RTImageExtractor(UID.RTImageStorage.uid, false);
 
         /**
-         * The SOP Class UID of the corresponding single-frame image.
+         * The sfcuid value.
          */
         private final String sfcuid;
 
         /**
-         * Indicates whether the image is an enhanced multi-frame image.
+         * The enhanced value.
          */
         private final boolean enhanced;
 
         /**
-         * Constructs an {@code Impl} with the specified single-frame SOP Class UID and enhanced flag.
+         * Creates a new instance.
          *
-         * @param sfcuid   The single-frame SOP Class UID.
-         * @param enhanced {@code true} if it's an enhanced multi-frame image, {@code false} otherwise.
+         * @param sfcuid   the sfcuid.
+         * @param enhanced the enhanced.
          */
         Impl(String sfcuid, boolean enhanced) {
             this.sfcuid = sfcuid;
@@ -624,16 +607,17 @@ public class MultiframeExtractor {
         }
 
         /**
-         * Extracts a single frame from the multi-frame image using the provided {@link MultiframeExtractor}.
+         * Extracts the extract.
          *
-         * @param mfe   The {@link MultiframeExtractor} instance.
-         * @param emf   The multi-frame image attributes.
-         * @param frame The 0-based index of the frame to extract.
-         * @return The extracted single-frame image attributes.
+         * @param mfe   the mfe.
+         * @param emf   the emf.
+         * @param frame the frame.
+         * @return the operation result.
          */
         Attributes extract(MultiframeExtractor mfe, Attributes emf, int frame) {
             return mfe.extract(emf, frame, sfcuid, enhanced);
         }
+
     }
 
 }

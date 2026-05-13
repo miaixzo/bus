@@ -46,6 +46,7 @@ public class JcsegProvider implements NLPProvider {
      * The Jcseg segmenter configuration.
      */
     private final SegmenterConfig config;
+
     /**
      * The Jcseg dictionary.
      */

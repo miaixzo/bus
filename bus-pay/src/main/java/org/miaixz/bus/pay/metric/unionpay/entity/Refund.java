@@ -44,62 +44,77 @@ public class Refund extends Voucher {
      * Service name.
      */
     private String service;
+
     /**
      * Version number.
      */
     private String version;
+
     /**
      * Character set.
      */
     private String charset;
+
     /**
      * Signature type.
      */
     private String sign_type;
+
     /**
      * Merchant ID.
      */
     private String mch_id;
+
     /**
      * Merchant order number.
      */
     private String out_trade_no;
+
     /**
      * Transaction ID.
      */
     private String transaction_id;
+
     /**
      * Merchant refund number.
      */
     private String out_refund_no;
+
     /**
      * Total fee.
      */
     private String total_fee;
+
     /**
      * Refund fee.
      */
     private String refund_fee;
+
     /**
      * Operator ID.
      */
     private String op_user_id;
+
     /**
      * Refund channel.
      */
     private String refund_channel;
+
     /**
      * Random string.
      */
     private String nonce_str;
+
     /**
      * Signature.
      */
     private String sign;
+
     /**
      * Agent signature number.
      */
     private String sign_agentno;
+
     /**
      * Group number.
      */

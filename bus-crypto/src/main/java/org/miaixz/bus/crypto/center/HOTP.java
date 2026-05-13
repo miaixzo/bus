@@ -50,18 +50,22 @@ public class HOTP {
      * Divisors for truncation.
      */
     private static final int[] MOD_DIVISORS = { 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000 };
+
     /**
      * The HMAC algorithm implementation.
      */
     private final HMac mac;
+
     /**
      * The length of the password.
      */
     private final int passwordLength;
+
     /**
      * The divisor for the truncation calculation.
      */
     private final int modDivisor;
+
     /**
      * Buffer for the counter.
      */

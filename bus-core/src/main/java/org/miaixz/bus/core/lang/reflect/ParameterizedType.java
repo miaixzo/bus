@@ -43,10 +43,12 @@ public class ParameterizedType implements java.lang.reflect.ParameterizedType, S
      * The actual type arguments for this parameterized type.
      */
     private final Type[] actualTypeArguments;
+
     /**
      * The owner type of this parameterized type, or {@code null} if this is a top-level type.
      */
     private final Type ownerType;
+
     /**
      * The raw type (typically a class) of this parameterized type.
      */

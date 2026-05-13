@@ -32,8 +32,8 @@ import java.util.List;
  * implementation to use a different DNS server, to prefer IPv6 addresses over IPv4 addresses, or to force the use of
  * specific known IP addresses for testing or other purposes.
  *
- * @author Kimi Liu
  * @see <a href="https://en.wikipedia.org/wiki/Domain_Name_System">Domain Name System on Wikipedia</a>
+ * @author Kimi Liu
  * @since Java 21+
  */
 public interface DnsX {

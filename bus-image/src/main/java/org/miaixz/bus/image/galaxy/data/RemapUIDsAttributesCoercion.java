@@ -25,25 +25,53 @@ import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.UID;
 
 /**
+ * Represents the RemapUIDsAttributesCoercion type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class RemapUIDsAttributesCoercion implements AttributesCoercion {
 
+    /**
+     * The uid map value.
+     */
     private final Map<String, String> uidMap;
+
+    /**
+     * The next value.
+     */
     private final AttributesCoercion next;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param uidMap the uid map.
+     * @param next   the next.
+     */
     public RemapUIDsAttributesCoercion(Map<String, String> uidMap, AttributesCoercion next) {
         this.uidMap = uidMap;
         this.next = next;
     }
 
+    /**
+     * Executes the remap uid operation.
+     *
+     * @param uid the uid.
+     * @return the operation result.
+     */
     @Override
     public String remapUID(String uid) {
         String remappedUID = uidMap != null ? Builder.maskNull(uidMap.get(uid), uid) : uid;
         return next != null ? next.remapUID(remappedUID) : remappedUID;
     }
 
+    /**
+     * Executes the coerce operation.
+     *
+     * @param attrs    the attrs.
+     * @param modified the modified.
+     * @throws Exception if the operation cannot be completed.
+     */
     @Override
     public void coerce(Attributes attrs, Attributes modified) throws Exception {
         if (uidMap != null && !uidMap.isEmpty())

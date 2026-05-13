@@ -60,6 +60,9 @@ public final class NvmlKit {
 
     /**
      * The Holder class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static final class Holder {
 
@@ -67,6 +70,7 @@ public final class NvmlKit {
          * The LIB constant.
          */
         static final Nvml.NvmlLibrary LIB;
+
         /**
          * The LIBRARY_LOADED constant.
          */
@@ -85,6 +89,7 @@ public final class NvmlKit {
             LIB = lib;
             LIBRARY_LOADED = loaded;
         }
+
     }
 
     // Lazy device enumeration state — written once on first successful enumeration, read-only thereafter.
@@ -94,6 +99,7 @@ public final class NvmlKit {
      * The devicesEnumerated value.
      */
     private static volatile boolean devicesEnumerated = false;
+
     /**
      * The DEVICE_BUS_IDS constant.
      */

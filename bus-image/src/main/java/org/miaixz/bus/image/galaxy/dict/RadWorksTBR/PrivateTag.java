@@ -20,17 +20,26 @@
 package org.miaixz.bus.image.galaxy.dict.RadWorksTBR;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "RadWorksTBR";
 
-    /** (3111,xx02) VR=CS VM=1 Compression Type */
+    /**
+     * (3111,xx02) VR=CS VM=1 Compression Type
+     */
     public static final int CompressionType = 0x31110002;
 
-    /** (3111,xxFF) VR=SQ VM=1 Query Result */
+    /**
+     * (3111,xxFF) VR=SQ VM=1 Query Result
+     */
     public static final int QueryResult = 0x311100FF;
 
 }

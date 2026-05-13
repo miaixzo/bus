@@ -48,23 +48,28 @@ public class FormatPeriod implements Serializable {
      * The maximum number of formatting levels.
      */
     private final int levelMaxCount;
+
     /**
      * The duration in milliseconds.
      */
     private long betweenMs;
+
     /**
      * The formatting level.
      */
     private Chrono chrono;
+
     /**
      * The formatter function for levels.
      */
     private Function<Chrono, String> formatter = Chrono::getName;
+
     /**
      * Whether it is in simple mode. This flag is used to customize whether to output parts with 0 in between. If
      * {@code true}, outputs "1 hour 3 seconds"; if {@code false}, outputs "1 hour 0 minutes 3 seconds".
      */
     private boolean simpleMode = true;
+
     /**
      * The separator, defaults to "". Can be adjusted via {@link #setSeparator(String)}.
      */

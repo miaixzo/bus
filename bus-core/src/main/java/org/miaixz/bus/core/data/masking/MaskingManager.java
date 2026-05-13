@@ -50,6 +50,7 @@ public class MaskingManager {
      * The map of masking handlers.
      */
     private final Map<String, MaskingHandler> handlerMap;
+
     /**
      * The character used for masking.
      */
@@ -337,6 +338,9 @@ public class MaskingManager {
     /**
      * A static nested class, which is a static member inner class. The instance of this inner class is not bound to the
      * instance of the outer class, and it is loaded only when it is called, thus achieving lazy loading.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class SingletonHolder {
 
@@ -344,6 +348,7 @@ public class MaskingManager {
          * The static initializer is guaranteed to be thread-safe by the JVM.
          */
         private static final MaskingManager INSTANCE = registerDefault(Symbol.C_STAR);
+
     }
 
 }

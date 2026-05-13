@@ -36,12 +36,10 @@ import org.miaixz.bus.image.galaxy.data.UIDVisitor;
 
 /**
  * An enumeration of DICOM Unique Identifiers (UIDs).
- *
  * <p>
  * This enum defines various UIDs used in the DICOM standard, including SOP Classes, Transfer Syntaxes, Information
  * Models, and more. Each enum constant holds a UID string and its corresponding description.
  * </p>
- *
  * <p>
  * Additionally, this class provides utility methods for creating, validating, and transforming UIDs. This includes
  * methods for generating UIDs based on UUIDs and for remapping UIDs in DICOM attributes according to a specified
@@ -2227,6 +2225,7 @@ public enum UID {
      * Regular expression pattern for validating UID format.
      */
     public static final Pattern PATTERN = Pattern.compile("[012]((\\.0)|(\\.[1-9]\\d*))+");
+
     /**
      * The US-ASCII charset.
      */
@@ -2238,6 +2237,7 @@ public enum UID {
      * @see <a href="http://www.oid-info.com/get/2.25">OID repository {joint-iso-itu-t(2) uuid(25)}</a>
      */
     private static final String UUID_ROOT = "2.25";
+
     /**
      * The default root for UID generation, initialized to {@link #UUID_ROOT}.
      */
@@ -2247,6 +2247,7 @@ public enum UID {
      * The UID string.
      */
     public final String uid;
+
     /**
      * The description of the UID.
      */

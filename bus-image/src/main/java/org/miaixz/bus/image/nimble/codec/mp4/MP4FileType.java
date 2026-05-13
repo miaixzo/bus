@@ -22,13 +22,25 @@ package org.miaixz.bus.image.nimble.codec.mp4;
 import java.nio.ByteBuffer;
 
 /**
+ * Represents the MP4FileType type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class MP4FileType {
 
+    /**
+     * The brands value.
+     */
     private final int[] brands;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param majorBrand       the major brand.
+     * @param minorVersion     the minor version.
+     * @param compatibleBrands the compatible brands.
+     */
     public MP4FileType(int majorBrand, int minorVersion, int... compatibleBrands) {
         this.brands = new int[2 + compatibleBrands.length];
         brands[0] = majorBrand;
@@ -36,6 +48,12 @@ public class MP4FileType {
         System.arraycopy(compatibleBrands, 0, brands, 2, compatibleBrands.length);
     }
 
+    /**
+     * Executes the append4 cc operation.
+     *
+     * @param sb    the sb.
+     * @param brand the brand.
+     */
     private static void append4CC(StringBuilder sb, int brand) {
         sb.append((char) ((brand >>> 24) & 0xFF));
         sb.append((char) ((brand >>> 16) & 0xFF));
@@ -43,6 +61,11 @@ public class MP4FileType {
         sb.append((char) ((brand >>> 0) & 0xFF));
     }
 
+    /**
+     * Returns the string representation.
+     *
+     * @return the string representation.
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -55,6 +78,11 @@ public class MP4FileType {
         return sb.toString();
     }
 
+    /**
+     * Converts this value to bytes.
+     *
+     * @return the operation result.
+     */
     public byte[] toBytes() {
         ByteBuffer bb = ByteBuffer.allocate(size());
         bb.putInt(bb.remaining());
@@ -65,21 +93,41 @@ public class MP4FileType {
         return bb.array();
     }
 
+    /**
+     * Executes the size operation.
+     *
+     * @return the operation result.
+     */
     public int size() {
         return (2 + brands.length) * 4;
     }
 
+    /**
+     * Executes the major brand operation.
+     *
+     * @return the operation result.
+     */
     public int majorBrand() {
         return brands[0];
     }
 
+    /**
+     * Executes the minor version operation.
+     *
+     * @return the operation result.
+     */
     public int minorVersion() {
         return brands[1];
     }
 
+    /**
+     * Executes the compatible brands operation.
+     *
+     * @return the operation result.
+     */
     public int[] compatibleBrands() {
         int[] compatibleBrands = new int[brands.length - 2];
-        System.arraycopy(brands, 2, brands, 0, compatibleBrands.length);
+        System.arraycopy(brands, 2, compatibleBrands, 0, compatibleBrands.length);
         return compatibleBrands;
     }
 

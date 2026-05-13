@@ -53,10 +53,12 @@ public enum Gender {
      * The integer key representing the gender.
      */
     private final int key;
+
     /**
      * The string code representing the gender (e.g., "M", "F", "U").
      */
     private final String code;
+
     /**
      * The descriptive name of the gender in Chinese.
      */

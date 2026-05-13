@@ -42,6 +42,7 @@ public class Between implements Serializable {
      * The beginning date of the interval.
      */
     private final long begin;
+
     /**
      * The ending date of the interval.
      */

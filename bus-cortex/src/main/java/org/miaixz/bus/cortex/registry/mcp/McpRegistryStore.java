@@ -23,7 +23,7 @@ import org.miaixz.bus.cortex.registry.RegistryStore;
 
 /**
  * Durable storage contract for MCP registry entries.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */

@@ -20,10 +20,9 @@
 package org.miaixz.bus.image.nimble;
 
 /**
- * 字节查找表类，用于处理DICOM图像中的字节级查找表操作。
- *
+ * Provides DICOM processing details.
  * <p>
- * 该类继承自LookupTable，专门用于处理8位查找表(LUT)操作。 它提供了各种查找方法，支持字节到字节、字节到短整型、短整型到字节以及短整型到短整型的查找转换。
+ * Provides DICOM processing details.
  * </p>
  *
  * @author Kimi Liu
@@ -32,17 +31,17 @@ package org.miaixz.bus.image.nimble;
 public class ByteLookupTable extends LookupTable {
 
     /**
-     * 查找表数据
+     * Provides DICOM processing details.
      */
     private final byte[] lut;
 
     /**
-     * 构造方法，使用现有的查找表数据
+     * Creates a new instance.
      *
-     * @param inBits  输入位数
-     * @param outBits 输出位数
-     * @param offset  偏移量
-     * @param lut     查找表数据
+     * @param inBits  the in bits.
+     * @param outBits the out bits.
+     * @param offset  the offset.
+     * @param lut     the lut.
      */
     ByteLookupTable(StoredValue inBits, int outBits, int offset, byte[] lut) {
         super(inBits, outBits, offset);
@@ -50,15 +49,15 @@ public class ByteLookupTable extends LookupTable {
     }
 
     /**
-     * 构造方法，根据指定的参数创建查找表
+     * Creates a new instance.
      *
-     * @param inBits  输入位数
-     * @param outBits 输出位数
-     * @param minOut  最小输出值
-     * @param maxOut  最大输出值
-     * @param offset  偏移量
-     * @param size    查找表大小
-     * @param flip    是否翻转
+     * @param inBits  the in bits.
+     * @param outBits the out bits.
+     * @param minOut  the min out.
+     * @param maxOut  the max out.
+     * @param offset  the offset.
+     * @param size    the size.
+     * @param flip    the flip.
      */
     ByteLookupTable(StoredValue inBits, int outBits, int minOut, int maxOut, int offset, int size, boolean flip) {
         this(inBits, outBits, offset, new byte[minOut == maxOut ? 1 : size]);
@@ -74,9 +73,9 @@ public class ByteLookupTable extends LookupTable {
     }
 
     /**
-     * 获取查找表长度
+     * Gets the related value.
      *
-     * @return 查找表长度
+     * @return the result.
      */
     @Override
     public int length() {
@@ -84,13 +83,13 @@ public class ByteLookupTable extends LookupTable {
     }
 
     /**
-     * 查找转换：字节数组到字节数组
+     * Provides DICOM processing details.
      *
-     * @param src     源数组
-     * @param srcPos  源起始位置
-     * @param dest    目标数组
-     * @param destPos 目标起始位置
-     * @param length  转换长度
+     * @param src     the src.
+     * @param srcPos  the src pos.
+     * @param dest    the dest.
+     * @param destPos the dest pos.
+     * @param length  the length.
      */
     @Override
     public void lookup(byte[] src, int srcPos, byte[] dest, int destPos, int length) {
@@ -99,10 +98,10 @@ public class ByteLookupTable extends LookupTable {
     }
 
     /**
-     * 计算索引
+     * Provides DICOM processing details.
      *
-     * @param pixel 像素值
-     * @return 索引值
+     * @param pixel the pixel.
+     * @return the result.
      */
     private int index(int pixel) {
         int index = inBits.valueOf(pixel) - offset;
@@ -110,13 +109,13 @@ public class ByteLookupTable extends LookupTable {
     }
 
     /**
-     * 查找转换：短整型数组到字节数组
+     * Provides DICOM processing details.
      *
-     * @param src     源数组
-     * @param srcPos  源起始位置
-     * @param dest    目标数组
-     * @param destPos 目标起始位置
-     * @param length  转换长度
+     * @param src     the src.
+     * @param srcPos  the src pos.
+     * @param dest    the dest.
+     * @param destPos the dest pos.
+     * @param length  the length.
      */
     @Override
     public void lookup(short[] src, int srcPos, byte[] dest, int destPos, int length) {
@@ -125,13 +124,13 @@ public class ByteLookupTable extends LookupTable {
     }
 
     /**
-     * 查找转换：字节数组到短整型数组
+     * Provides DICOM processing details.
      *
-     * @param src     源数组
-     * @param srcPos  源起始位置
-     * @param dest    目标数组
-     * @param destPos 目标起始位置
-     * @param length  转换长度
+     * @param src     the src.
+     * @param srcPos  the src pos.
+     * @param dest    the dest.
+     * @param destPos the dest pos.
+     * @param length  the length.
      */
     @Override
     public void lookup(byte[] src, int srcPos, short[] dest, int destPos, int length) {
@@ -140,13 +139,13 @@ public class ByteLookupTable extends LookupTable {
     }
 
     /**
-     * 查找转换：短整型数组到短整型数组
+     * Provides DICOM processing details.
      *
-     * @param src     源数组
-     * @param srcPos  源起始位置
-     * @param dest    目标数组
-     * @param destPos 目标起始位置
-     * @param length  转换长度
+     * @param src     the src.
+     * @param srcPos  the src pos.
+     * @param dest    the dest.
+     * @param destPos the dest pos.
+     * @param length  the length.
      */
     @Override
     public void lookup(short[] src, int srcPos, short[] dest, int destPos, int length) {
@@ -155,10 +154,10 @@ public class ByteLookupTable extends LookupTable {
     }
 
     /**
-     * 调整输出位数
+     * Provides DICOM processing details.
      *
-     * @param outBits 输出位数
-     * @return 调整后的查找表
+     * @param outBits the out bits.
+     * @return the result.
      */
     @Override
     public LookupTable adjustOutBits(int outBits) {
@@ -184,7 +183,7 @@ public class ByteLookupTable extends LookupTable {
     }
 
     /**
-     * 反转查找表
+     * Provides DICOM processing details.
      */
     @Override
     public void inverse() {
@@ -195,10 +194,10 @@ public class ByteLookupTable extends LookupTable {
     }
 
     /**
-     * 组合查找表
+     * Provides DICOM processing details.
      *
-     * @param other 另一个查找表
-     * @return 组合后的查找表
+     * @param other the other.
+     * @return the result.
      */
     @Override
     public LookupTable combine(LookupTable other) {

@@ -20,17 +20,26 @@
 package org.miaixz.bus.image.galaxy.dict.agfa_displayable_images;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "agfa/displayableImages";
 
-    /** (2E13,xx10) VR=IS VM=1 ? */
+    /**
+     * (2E13,xx10) VR=IS VM=1 ?
+     */
     public static final int _2E13_xx10_ = 0x2E130010;
 
-    /** (2E13,xx11) VR=IS VM=1 ? */
+    /**
+     * (2E13,xx11) VR=IS VM=1 ?
+     */
     public static final int _2E13_xx11_ = 0x2E130011;
 
 }

@@ -23,13 +23,26 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 /**
+ * Defines the BytesWithImageImageDescriptor contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface BytesWithImageImageDescriptor {
 
+    /**
+     * Gets the bytes.
+     *
+     * @return the bytes.
+     * @throws IOException if the operation cannot be completed.
+     */
     ByteBuffer getBytes() throws IOException;
 
+    /**
+     * Gets the image descriptor.
+     *
+     * @return the image descriptor.
+     */
     ImageDescriptor getImageDescriptor();
 
 }

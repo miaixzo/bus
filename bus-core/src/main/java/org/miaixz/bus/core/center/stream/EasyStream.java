@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.*;
  *
  * <p>
  * Intermediate Operations and Terminal Operations
- * 
+ *
  * <p>
  * Stream operations are divided into <em>intermediate operations</em> and <em>terminal operations</em>. A stream only
  * truly executes its previous <em>intermediate operations</em> when a <em>terminal operation</em> is performed.
@@ -60,7 +60,7 @@ import org.miaixz.bus.core.xyz.*;
  *
  * <p>
  * Sequential Streams and Parallel Streams
- * 
+ *
  * Streams are divided into two types: <em>sequential streams</em> and <em>parallel streams</em>:
  * <ul>
  * <li>Sequential Streams: All operations on the stream are performed by the current thread.</li>
@@ -70,8 +70,8 @@ import org.miaixz.bus.core.xyz.*;
  * Different types of streams can be converted to each other using {@link #sequential()} or {@link #parallel()}.
  *
  * @param <T> the type of the elements in the stream
- * @author Kimi Liu
  * @see java.util.stream.Stream
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
@@ -489,6 +489,8 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
      * A builder for {@code EasyStream} instances.
      *
      * @param <T> the type of the elements
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public interface Builder<T> extends Consumer<T>, org.miaixz.bus.core.Builder<EasyStream<T>> {
 
@@ -503,6 +505,7 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
             accept(t);
             return this;
         }
+
     }
 
 }

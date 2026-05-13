@@ -37,26 +37,32 @@ public class Builder extends Sensitive {
      * Constant for enabling all processing (e.g., desensitization and encryption).
      */
     public static final String ALL = "ALL";
+
     /**
      * Constant for enabling only desensitization.
      */
     public static final String SENS = "SENS";
+
     /**
      * Constant for enabling only data security (encryption/decryption).
      */
     public static final String SAFE = "SAFE";
+
     /**
      * Constant for processing on input/write operations (e.g., encryption).
      */
     public static final String IN = "IN";
+
     /**
      * Constant for processing on output/read operations (e.g., decryption).
      */
     public static final String OUT = "OUT";
+
     /**
      * Constant for performing no processing.
      */
     public static final String NOTHING = "NOTHING";
+
     /**
      * Constant for applying global encryption rules.
      */

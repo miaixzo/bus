@@ -236,6 +236,9 @@ public abstract class ResponseBody implements Closeable {
 
     /**
      * A character stream reader that is aware of the Byte Order Mark (BOM).
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static final class BomAwareReader extends Reader {
 
@@ -243,14 +246,17 @@ public abstract class ResponseBody implements Closeable {
          * The data source.
          */
         private final BufferSource source;
+
         /**
          * The character set.
          */
         private final java.nio.charset.Charset charset;
+
         /**
          * Whether the reader is closed.
          */
         private boolean closed;
+
         /**
          * The delegate reader.
          */
@@ -303,6 +309,7 @@ public abstract class ResponseBody implements Closeable {
                 source.close();
             }
         }
+
     }
 
 }

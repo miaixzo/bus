@@ -53,10 +53,12 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
      * The salt value used in the digest process.
      */
     protected byte[] salt;
+
     /**
      * The position at which the salt is inserted into the data before digestion. Defaults to 0 (beginning).
      */
     protected int saltPosition;
+
     /**
      * The number of times the digest algorithm is applied. If less than or equal to 1, it defaults to 1.
      */

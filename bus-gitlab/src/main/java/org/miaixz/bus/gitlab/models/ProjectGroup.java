@@ -21,6 +21,12 @@ package org.miaixz.bus.gitlab.models;
 
 import java.io.Serial;
 
+/**
+ * The project group class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class ProjectGroup extends AbstractGroup<ProjectGroup> {
 
     @Serial

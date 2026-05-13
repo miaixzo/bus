@@ -44,7 +44,7 @@ import lombok.Setter;
  * <p>
  * Example — Redis single-node with Prometheus metrics:
  * </p>
- * 
+ *
  * <pre>{@code
  * bus:
  *   cache:
@@ -60,7 +60,7 @@ import lombok.Setter;
  * <p>
  * Example — Redis Cluster with MySQL metrics:
  * </p>
- * 
+ *
  * <pre>{@code
  * bus:
  *   cache:
@@ -78,7 +78,7 @@ import lombok.Setter;
  * <p>
  * Example — Caffeine with in-memory metrics:
  * </p>
- * 
+ *
  * <pre>{@code
  * bus:
  *   cache:

@@ -49,13 +49,13 @@ import org.miaixz.bus.core.xyz.*;
  * <p>
  * Service files are located by default under {@code META-INF/services/}, with the file name being the fully qualified
  * name of the service interface class. The content is a list of implementation class names:
- * 
+ *
  * <pre>
  *     # This is a comment
  *     com.example.Service1
  *     com.example.Service2
  * </pre>
- * 
+ *
  * Services can be retrieved by their index using the {@link #getService(int)} method.
  *
  * @param <S> The type of the service.
@@ -68,6 +68,7 @@ public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
      * A list of fully qualified service class names.
      */
     private final List<String> serviceNames;
+
     /**
      * Cache for service instances, mapping class names to service objects.
      */

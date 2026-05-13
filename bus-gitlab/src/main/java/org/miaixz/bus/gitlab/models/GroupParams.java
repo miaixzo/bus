@@ -30,6 +30,9 @@ import java.io.Serial;
  * This class is utilized by the <code>org.miaixz.bus.gitlab.GroupApi#createGroup(GroupParams)</code> and
  * <code>org.miaixz.bus.gitlab.GroupApi#updateGroup(Object, GroupParams)</code> methods to set the parameters for the
  * call to the GitLab API.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class GroupParams implements Serializable {
 

@@ -35,7 +35,10 @@ import org.miaixz.bus.logger.Logger;
 import com.sun.jna.platform.linux.Udev;
 
 /**
+ * The linux logical volume group class.
  *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class LinuxLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
 
@@ -43,14 +46,17 @@ public class LinuxLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
      * The BLOCK constant.
      */
     private static final String BLOCK = "block";
+
     /**
      * The DM_UUID constant.
      */
     private static final String DM_UUID = "DM_UUID";
+
     /**
      * The DM_VG_NAME constant.
      */
     private static final String DM_VG_NAME = "DM_VG_NAME";
+
     /**
      * The DM_LV_NAME constant.
      */

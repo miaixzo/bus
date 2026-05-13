@@ -44,68 +44,84 @@ public class WatchSubscription<T> {
      * Vector that defines what this watch subscription is tracking.
      */
     private Vector vector;
+
     /**
      * Canonical namespace identifier used for quota accounting and event envelopes.
      */
     private String namespace_id;
+
     /**
      * Listener to invoke when the watched values change.
      */
     private Listener<Watch<T>> listener;
+
     /**
      * Unix epoch milliseconds when the watch subscription was created.
      */
     private long createdAt;
+
     /**
      * Unix epoch milliseconds of the last access, used for expiry.
      */
     private long lastAccess;
+
     /**
      * Unix epoch milliseconds of the last dispatched event.
      */
     private long lastEventAt;
+
     /**
      * Unix epoch milliseconds when the watch should expire.
      */
     private long expiresAt;
+
     /**
      * Number of dispatch attempts executed for the subscription.
      */
     private long dispatchCount;
+
     /**
      * Number of events currently accepted but not yet fully delivered to the listener.
      */
     private long pendingCount;
+
     /**
      * Highest observed pending count for this subscription.
      */
     private long peakPendingCount;
+
     /**
      * Last watch event sequence emitted for this subscription. This is intentionally separate from dispatch count so
      * consumers can validate event ordering across filtered and retried notifications.
      */
     private long lastSequence;
+
     /**
      * Number of events dropped before they entered the serial dispatch chain.
      */
     private long droppedCount;
+
     /**
      * Unix epoch milliseconds of the last dropped event.
      */
     private long lastDroppedAt;
+
     /**
      * Number of failed dispatch attempts.
      */
     private long failureCount;
+
     /**
      * Last error observed while dispatching to the listener.
      */
     private String lastError;
+
     /**
      * Tail of the per-subscription dispatch chain. Events are appended to this chain so one subscriber observes
      * notifications in the same order they were emitted.
      */
     private CompletableFuture<Void> dispatchTail = CompletableFuture.completedFuture(null);
+
     /**
      * Unix epoch milliseconds of the last successfully delivered event.
      */

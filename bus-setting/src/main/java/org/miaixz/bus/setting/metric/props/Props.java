@@ -62,14 +62,17 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
      * A cache for {@code Props} instances, keyed by file path.
      */
     private static final Map<String, Props> CACHE_PROPS = new ConcurrentHashMap<>();
+
     /**
      * The {@link Resource} object representing the properties file.
      */
     private Resource resource;
+
     /**
      * A monitor for watching file changes to support auto-reloading.
      */
     private WatchMonitor watchMonitor;
+
     /**
      * The character set used for reading the properties file.
      */

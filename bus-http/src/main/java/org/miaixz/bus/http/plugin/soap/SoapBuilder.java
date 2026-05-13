@@ -56,30 +56,37 @@ public class SoapBuilder {
      * The SOAP protocol version (SOAP 1.1: text/xml, SOAP 1.2: application/soap+xml).
      */
     private final Protocol protocol;
+
     /**
      * The namespace URI to be applied to the method.
      */
     private final String namespaceURI;
+
     /**
      * A map to store header information.
      */
     private final Map<String, String> headers = new HashMap<>();
+
     /**
      * The URL of the web service.
      */
     private String url;
+
     /**
      * The SOAP message.
      */
     private SOAPMessage message;
+
     /**
      * The message factory for creating SOAP messages.
      */
     private MessageFactory factory;
+
     /**
      * The SOAP body element representing the method.
      */
     private SOAPBodyElement methodEle;
+
     /**
      * The default character encoding.
      */

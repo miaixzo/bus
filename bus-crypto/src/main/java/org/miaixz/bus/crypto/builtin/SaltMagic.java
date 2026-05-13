@@ -44,6 +44,7 @@ public class SaltMagic {
      * The length of the salt value in bytes.
      */
     public static final byte SALT_LEN = 8;
+
     /**
      * OpenSSL's magic initial bytes, indicating salted encryption.
      */

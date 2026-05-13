@@ -24,6 +24,12 @@ import java.util.List;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+/**
+ * The event issue class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class EventIssue {
 
     private Long assigneeId;
@@ -65,6 +71,10 @@ public class EventIssue {
     private String humanTimeChange;
     private Long weight;
     private String healthStatus;
+
+    /**
+     * The type field.
+     */
     private String type;
     private String severity;
     private List<EventLabel> labels;

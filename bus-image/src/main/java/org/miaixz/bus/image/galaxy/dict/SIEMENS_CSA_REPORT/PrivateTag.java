@@ -20,23 +20,36 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_CSA_REPORT;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS CSA REPORT";
 
-    /** (0029,xx08) VR=CS VM=1 Report Type */
+    /**
+     * (0029,xx08) VR=CS VM=1 Report Type
+     */
     public static final int ReportType = 0x00290008;
 
-    /** (0029,xx09) VR=LO VM=1 Report Version */
+    /**
+     * (0029,xx09) VR=LO VM=1 Report Version
+     */
     public static final int ReportVersion = 0x00290009;
 
-    /** (0029,xx15) VR=US VM=1 SR Variant */
+    /**
+     * (0029,xx15) VR=US VM=1 SR Variant
+     */
     public static final int SRVariant = 0x00290015;
 
-    /** (0029,xx17) VR=UI VM=1 SC SOP Instance UID */
+    /**
+     * (0029,xx17) VR=UI VM=1 SC SOP Instance UID
+     */
     public static final int SCSOPInstanceUID = 0x00290017;
 
 }

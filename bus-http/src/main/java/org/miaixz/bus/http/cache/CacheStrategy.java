@@ -97,6 +97,9 @@ public class CacheStrategy {
 
     /**
      * A factory for creating {@link CacheStrategy} instances.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class Factory {
 
@@ -331,6 +334,7 @@ public class CacheStrategy {
         private boolean isFreshnessLifetimeHeuristic() {
             return cacheResponse.cacheControl().maxAgeSeconds() == -1 && expires == null;
         }
+
     }
 
 }

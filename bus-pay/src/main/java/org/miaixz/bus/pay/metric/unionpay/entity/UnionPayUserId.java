@@ -44,42 +44,52 @@ public class UnionPayUserId extends Voucher {
      * Service name.
      */
     private String service;
+
     /**
      * Version number.
      */
     private String version;
+
     /**
      * Character set.
      */
     private String charset;
+
     /**
      * Signature type.
      */
     private String sign_type;
+
     /**
      * Merchant ID.
      */
     private String mch_id;
+
     /**
      * Random string.
      */
     private String nonce_str;
+
     /**
      * Signature.
      */
     private String sign;
+
     /**
      * User authorization code.
      */
     private String user_auth_code;
+
     /**
      * App UP identifier.
      */
     private String app_up_identifier;
+
     /**
      * Agent signature number.
      */
     private String sign_agentno;
+
     /**
      * Group number.
      */

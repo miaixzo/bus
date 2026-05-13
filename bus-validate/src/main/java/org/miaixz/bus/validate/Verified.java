@@ -55,14 +55,17 @@ public class Verified extends Provider {
      * List of validation criterions.
      */
     private List<Criterion> list;
+
     /**
      * The value of the property being validated.
      */
     private Object object;
+
     /**
      * The name of the property being validated.
      */
     private String field;
+
     /**
      * The validation context.
      */

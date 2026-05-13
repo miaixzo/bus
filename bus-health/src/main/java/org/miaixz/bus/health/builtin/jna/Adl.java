@@ -40,20 +40,28 @@ public interface Adl {
      * The ADL_OK value.
      */
     int ADL_OK = 0;
+
     /**
      * The ADL_OVERDRIVE_VERSION_N value.
      */
     int ADL_OVERDRIVE_VERSION_N = 8;
+
     /**
      * The ADL_FAN_SPEED_MODE_PERCENT value.
      */
     int ADL_FAN_SPEED_MODE_PERCENT = 1;
+
     /**
      * The ADL_OVERDRIVE_TEMPERATURE_EDGE value.
      */
     int ADL_OVERDRIVE_TEMPERATURE_EDGE = 1;
 
-    /** ADL malloc callback: allocates memory and returns a pointer. Uses __stdcall per ADL SDK. */
+    /**
+     * ADL malloc callback: allocates memory and returns a pointer. Uses __stdcall per ADL SDK.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     interface AdlMallocCallback extends StdCallLibrary.StdCallCallback {
 
         /**
@@ -63,10 +71,14 @@ public interface Adl {
          * @return the invoke result
          */
         Pointer invoke(int size);
+
     }
 
     /**
      * The AdlLibrary interface.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     interface AdlLibrary extends Library {
 
@@ -179,10 +191,14 @@ public interface Adl {
                 int iAdapterIndex,
                 int iPowerType,
                 IntByReference lpCurrentValue);
+
     }
 
     /**
      * The AdapterInfo class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "iSize", "iAdapterIndex", "strUDID", "iBusNumber", "iDeviceNumber", "iFunctionNumber", "iVendorID",
             "strAdapterName", "strDisplayName", "iPresent", "iExist", "strDriverPath", "strDriverPathExt",
@@ -193,66 +209,84 @@ public interface Adl {
          * The iSize value.
          */
         public int iSize;
+
         /**
          * The iAdapterIndex value.
          */
         public int iAdapterIndex;
+
         /**
          * The strUDID value.
          */
         public byte[] strUDID = new byte[256];
+
         /**
          * The iBusNumber value.
          */
         public int iBusNumber;
+
         /**
          * The iDeviceNumber value.
          */
         public int iDeviceNumber;
+
         /**
          * The iFunctionNumber value.
          */
         public int iFunctionNumber;
+
         /**
          * The iVendorID value.
          */
         public int iVendorID;
+
         /**
          * The strAdapterName value.
          */
         public byte[] strAdapterName = new byte[256];
+
         /**
          * The strDisplayName value.
          */
         public byte[] strDisplayName = new byte[256];
+
         /**
          * The iPresent value.
          */
         public int iPresent;
+
         /**
          * The iExist value.
          */
         public int iExist;
+
         /**
          * The strDriverPath value.
          */
         public byte[] strDriverPath = new byte[256];
+
         /**
          * The strDriverPathExt value.
          */
         public byte[] strDriverPathExt = new byte[256];
+
         /**
          * The strPNPString value.
          */
         public byte[] strPNPString = new byte[256];
+
         /**
          * The iOSDisplayIndex value.
          */
         public int iOSDisplayIndex;
+
     }
 
     /**
      * The ADLODNPerformanceStatus class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "iCoreClock", "iMemoryClock", "iDCEFClock", "iGFXClock", "iUVDClock", "iVCEClock",
             "iGPUActivityPercent", "iCurrentCorePerformanceLevel", "iCurrentMemoryPerformanceLevel",
@@ -264,78 +298,99 @@ public interface Adl {
          * The iCoreClock value.
          */
         public int iCoreClock;
+
         /**
          * The iMemoryClock value.
          */
         public int iMemoryClock;
+
         /**
          * The iDCEFClock value.
          */
         public int iDCEFClock;
+
         /**
          * The iGFXClock value.
          */
         public int iGFXClock;
+
         /**
          * The iUVDClock value.
          */
         public int iUVDClock;
+
         /**
          * The iVCEClock value.
          */
         public int iVCEClock;
+
         /**
          * The iGPUActivityPercent value.
          */
         public int iGPUActivityPercent;
+
         /**
          * The iCurrentCorePerformanceLevel value.
          */
         public int iCurrentCorePerformanceLevel;
+
         /**
          * The iCurrentMemoryPerformanceLevel value.
          */
         public int iCurrentMemoryPerformanceLevel;
+
         /**
          * The iCurrentDCEFPerformanceLevel value.
          */
         public int iCurrentDCEFPerformanceLevel;
+
         /**
          * The iCurrentGFXPerformanceLevel value.
          */
         public int iCurrentGFXPerformanceLevel;
+
         /**
          * The iUVDPerformanceLevel value.
          */
         public int iUVDPerformanceLevel;
+
         /**
          * The iVCEPerformanceLevel value.
          */
         public int iVCEPerformanceLevel;
+
         /**
          * The iCurrentBusSpeed value.
          */
         public int iCurrentBusSpeed;
+
         /**
          * The iCurrentBusLanes value.
          */
         public int iCurrentBusLanes;
+
         /**
          * The iMaximumBusLanes value.
          */
         public int iMaximumBusLanes;
+
         /**
          * The iVDDC value.
          */
         public int iVDDC;
+
         /**
          * The iVDDCI value.
          */
         public int iVDDCI;
+
     }
 
     /**
      * The ADLODNFanControl class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "iMode", "iFanControlMode", "iCurrentFanSpeedMode", "iCurrentFanSpeed", "iTargetFanSpeed",
             "iTargetTemperature", "iMinPerformanceClock", "iMinFanLimit" })
@@ -345,33 +400,42 @@ public interface Adl {
          * The iMode value.
          */
         public int iMode;
+
         /**
          * The iFanControlMode value.
          */
         public int iFanControlMode;
+
         /**
          * The iCurrentFanSpeedMode value.
          */
         public int iCurrentFanSpeedMode;
+
         /**
          * The iCurrentFanSpeed value.
          */
         public int iCurrentFanSpeed;
+
         /**
          * The iTargetFanSpeed value.
          */
         public int iTargetFanSpeed;
+
         /**
          * The iTargetTemperature value.
          */
         public int iTargetTemperature;
+
         /**
          * The iMinPerformanceClock value.
          */
         public int iMinPerformanceClock;
+
         /**
          * The iMinFanLimit value.
          */
         public int iMinFanLimit;
+
     }
+
 }

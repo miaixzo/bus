@@ -65,6 +65,7 @@ import com.sun.jna.win32.StdCallLibrary;
 public final class WindowsDxgi {
 
     // IID for IDXGIFactory {7B7166EC-21C7-44AE-B21A-C9AE321AE369}
+
     /**
      * The IID_IDXGI_FACTORY constant.
      */
@@ -89,6 +90,9 @@ public final class WindowsDxgi {
 
     /**
      * Minimal binding to {@code dxgi.dll} just to call {@code CreateDXGIFactory}.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private interface DxgiLib extends StdCallLibrary {
 
@@ -105,6 +109,7 @@ public final class WindowsDxgi {
          * @return HRESULT
          */
         int CreateDXGIFactory(REFIID riid, PointerByReference ppFactory);
+
     }
 
     /**
@@ -144,6 +149,9 @@ public final class WindowsDxgi {
      * <li>SharedSystemMemory: SIZE_T = 8 bytes</li>
      * <li>AdapterLuid: LUID = 8 bytes</li>
      * </ul>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "Description", "VendorId", "DeviceId", "SubSysId", "Revision", "DedicatedVideoMemory",
             "DedicatedSystemMemory", "SharedSystemMemory", "AdapterLuidLowPart", "AdapterLuidHighPart" })
@@ -153,18 +161,22 @@ public final class WindowsDxgi {
          * The Description value.
          */
         public char[] Description = new char[128];
+
         /**
          * The VendorId value.
          */
         public int VendorId;
+
         /**
          * The DeviceId value.
          */
         public int DeviceId;
+
         /**
          * The SubSysId value.
          */
         public int SubSysId;
+
         /**
          * The Revision value.
          */
@@ -174,22 +186,27 @@ public final class WindowsDxgi {
          * The DedicatedVideoMemory value.
          */
         public com.sun.jna.platform.win32.BaseTSD.SIZE_T DedicatedVideoMemory;
+
         /**
          * The DedicatedSystemMemory value.
          */
         public com.sun.jna.platform.win32.BaseTSD.SIZE_T DedicatedSystemMemory;
+
         /**
          * The SharedSystemMemory value.
          */
         public com.sun.jna.platform.win32.BaseTSD.SIZE_T SharedSystemMemory;
+
         /**
          * The AdapterLuidLowPart value.
          */
         public int AdapterLuidLowPart;
+
         /**
          * The AdapterLuidHighPart value.
          */
         public int AdapterLuidHighPart;
+
     }
 
     // -------------------------------------------------------------------------
@@ -214,6 +231,9 @@ public final class WindowsDxgi {
      * slot 8  GetDesc         (IDXGIAdapter)
      * slot 9  CheckInterfaceSupport (IDXGIAdapter)
      * </pre>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static final class DxgiAdapter extends COMInvoker {
 
@@ -244,6 +264,7 @@ public final class WindowsDxgi {
         int Release() {
             return _invokeNativeInt(2, new Object[] { getPointer() });
         }
+
     }
 
     // -------------------------------------------------------------------------
@@ -266,6 +287,9 @@ public final class WindowsDxgi {
      * slot 6  GetParent       (IDXGIObject)
      * slot 7  EnumAdapters    (IDXGIFactory)
      * </pre>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static final class DxgiFactory extends COMInvoker {
 
@@ -300,6 +324,7 @@ public final class WindowsDxgi {
         int Release() {
             return _invokeNativeInt(2, new Object[] { getPointer() });
         }
+
     }
 
     // -------------------------------------------------------------------------
@@ -476,4 +501,5 @@ public final class WindowsDxgi {
         return name.toLowerCase(java.util.Locale.ROOT).replace("(r)", "").replace("(tm)", "").replaceAll("\\s+", " ")
                 .trim();
     }
+
 }

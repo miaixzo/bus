@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.APEX_PRIVATE;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "APEX_PRIVATE";
 
-    /** (0027,xx11) VR=DS VM=1 Bed Position */
+    /**
+     * (0027,xx11) VR=DS VM=1 Bed Position
+     */
     public static final int BedPosition = 0x00270011;
 
 }

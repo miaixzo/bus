@@ -22,23 +22,54 @@ package org.miaixz.bus.image.nimble;
 import java.awt.image.*;
 
 /**
+ * Represents the LookupTable type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public abstract class LookupTable {
 
+    /**
+     * The in bits value.
+     */
     protected StoredValue inBits;
+
+    /**
+     * The out bits value.
+     */
     protected int outBits;
+
+    /**
+     * The offset value.
+     */
     protected int offset;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param inBits  the in bits.
+     * @param outBits the out bits.
+     * @param offset  the offset.
+     */
     public LookupTable(StoredValue inBits, int outBits, int offset) {
         this.inBits = inBits;
         this.outBits = outBits;
         this.offset = offset;
     }
 
+    /**
+     * Executes the length operation.
+     *
+     * @return the operation result.
+     */
     public abstract int length();
 
+    /**
+     * Executes the lookup operation.
+     *
+     * @param srcRaster  the src raster.
+     * @param destRaster the dest raster.
+     */
     public void lookup(Raster srcRaster, Raster destRaster) {
         ComponentSampleModel sm = (ComponentSampleModel) srcRaster.getSampleModel();
         ComponentSampleModel destsm = (ComponentSampleModel) destRaster.getSampleModel();
@@ -85,6 +116,14 @@ public abstract class LookupTable {
                 "Lookup " + src.getClass() + " -> " + dest.getClass() + " not supported");
     }
 
+    /**
+     * Executes the lookup operation.
+     *
+     * @param sm     the sm.
+     * @param src    the src.
+     * @param destsm the destsm.
+     * @param dest   the dest.
+     */
     private void lookup(ComponentSampleModel sm, byte[] src, ComponentSampleModel destsm, byte[] dest) {
         int w = sm.getWidth();
         int h = sm.getHeight();
@@ -94,6 +133,14 @@ public abstract class LookupTable {
             lookup(src, y * stride, dest, y * destStride, w);
     }
 
+    /**
+     * Executes the lookup operation.
+     *
+     * @param sm     the sm.
+     * @param src    the src.
+     * @param destsm the destsm.
+     * @param dest   the dest.
+     */
     private void lookup(ComponentSampleModel sm, short[] src, ComponentSampleModel destsm, byte[] dest) {
         int w = sm.getWidth();
         int h = sm.getHeight();
@@ -103,6 +150,14 @@ public abstract class LookupTable {
             lookup(src, y * stride, dest, y * destStride, w);
     }
 
+    /**
+     * Executes the lookup operation.
+     *
+     * @param sm     the sm.
+     * @param src    the src.
+     * @param destsm the destsm.
+     * @param dest   the dest.
+     */
     private void lookup(ComponentSampleModel sm, byte[] src, ComponentSampleModel destsm, short[] dest) {
         int w = sm.getWidth();
         int h = sm.getHeight();
@@ -112,6 +167,14 @@ public abstract class LookupTable {
             lookup(src, y * stride, dest, y * destStride, w);
     }
 
+    /**
+     * Executes the lookup operation.
+     *
+     * @param sm     the sm.
+     * @param src    the src.
+     * @param destsm the destsm.
+     * @param dest   the dest.
+     */
     private void lookup(ComponentSampleModel sm, short[] src, ComponentSampleModel destsm, short[] dest) {
         int w = sm.getWidth();
         int h = sm.getHeight();
@@ -121,18 +184,69 @@ public abstract class LookupTable {
             lookup(src, y * stride, dest, y * destStride, w);
     }
 
+    /**
+     * Executes the lookup operation.
+     *
+     * @param src     the src.
+     * @param srcPost the src post.
+     * @param dest    the dest.
+     * @param destPos the dest pos.
+     * @param length  the length.
+     */
     public abstract void lookup(byte[] src, int srcPost, byte[] dest, int destPos, int length);
 
+    /**
+     * Executes the lookup operation.
+     *
+     * @param src     the src.
+     * @param srcPost the src post.
+     * @param dest    the dest.
+     * @param destPos the dest pos.
+     * @param length  the length.
+     */
     public abstract void lookup(short[] src, int srcPost, byte[] dest, int destPos, int length);
 
+    /**
+     * Executes the lookup operation.
+     *
+     * @param src     the src.
+     * @param srcPost the src post.
+     * @param dest    the dest.
+     * @param destPos the dest pos.
+     * @param length  the length.
+     */
     public abstract void lookup(byte[] src, int srcPost, short[] dest, int destPos, int length);
 
+    /**
+     * Executes the lookup operation.
+     *
+     * @param src     the src.
+     * @param srcPost the src post.
+     * @param dest    the dest.
+     * @param destPos the dest pos.
+     * @param length  the length.
+     */
     public abstract void lookup(short[] src, int srcPost, short[] dest, int destPos, int length);
 
+    /**
+     * Executes the adjust out bits operation.
+     *
+     * @param outBits the out bits.
+     * @return the operation result.
+     */
     public abstract LookupTable adjustOutBits(int outBits);
 
+    /**
+     * Executes the inverse operation.
+     */
     public abstract void inverse();
 
+    /**
+     * Executes the combine operation.
+     *
+     * @param lut the lut.
+     * @return the operation result.
+     */
     public abstract LookupTable combine(LookupTable lut);
 
 }

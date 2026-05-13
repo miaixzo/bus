@@ -31,7 +31,7 @@ import java.util.Map;
 /**
  * Context configuration class, supporting protocols such as OAuth2, SAML, and LDAP. * This class holds various
  * configuration parameters required for authentication processes.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */

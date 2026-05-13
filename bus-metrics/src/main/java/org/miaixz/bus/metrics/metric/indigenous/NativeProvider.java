@@ -58,45 +58,59 @@ public class NativeProvider implements Provider {
      * Registry of all counters keyed by canonical metric key.
      */
     private final ConcurrentHashMap<String, NativeCounter> counters = new ConcurrentHashMap<>();
+
     /**
      * Registry of all meters keyed by canonical metric key.
      */
     private final ConcurrentHashMap<String, NativeMeter> meters = new ConcurrentHashMap<>();
+
     /**
      * Registry of all rate pairs keyed by canonical metric key.
      */
     private final ConcurrentHashMap<String, NativeRatePair> ratePairs = new ConcurrentHashMap<>();
+
     /**
      * Registry of all gauges keyed by canonical metric key.
      */
     private final ConcurrentHashMap<String, NativeGauge<?>> gauges = new ConcurrentHashMap<>();
+
     /**
      * Registry of all timers keyed by canonical metric key.
      */
     private final ConcurrentHashMap<String, NativeTimer> timers = new ConcurrentHashMap<>();
+
     /**
      * Registry of all histograms keyed by canonical metric key.
      */
     private final ConcurrentHashMap<String, NativeHistogram> histograms = new ConcurrentHashMap<>();
+
     /**
      * Registry of all LLM timers keyed by canonical metric key.
      */
     private final ConcurrentHashMap<String, NativeLlmTimer> llmTimers = new ConcurrentHashMap<>();
 
-    /** Shared SLO tracker instance for this provider. */
+    /**
+     * Shared SLO tracker instance for this provider.
+     */
     private final NativeSloTracker sloTracker = new NativeSloTracker();
 
-    /** Shared daemon scheduler: EWMA tick every 5s, timer rotation every 60s/300s. */
+    /**
+     * Shared daemon scheduler: EWMA tick every 5s, timer rotation every 60s/300s.
+     */
     private static final ScheduledExecutorService SCHEDULER = Executors.newSingleThreadScheduledExecutor(r -> {
         Thread t = new Thread(r, Builder.THREAD_NAME_TICK);
         t.setDaemon(true);
         return t;
     });
 
-    /** Counts 5-second ticks; used to derive 60s (12 ticks) and 300s (60 ticks) rotation intervals. */
+    /**
+     * Counts 5-second ticks; used to derive 60s (12 ticks) and 300s (60 ticks) rotation intervals.
+     */
     private final AtomicInteger tickCount = new AtomicInteger(0);
 
-    /** Creates a new NativeProvider and starts the shared background tick scheduler. */
+    /**
+     * Creates a new NativeProvider and starts the shared background tick scheduler.
+     */
     public NativeProvider() {
         Logger.info(
                 true,
@@ -115,7 +129,9 @@ public class NativeProvider implements Provider {
                 Builder.TICK_INTERVAL_SECONDS);
     }
 
-    /** Advances EWMA tick counters and rotates rolling digest windows on schedule. */
+    /**
+     * Advances EWMA tick counters and rotates rolling digest windows on schedule.
+     */
     private void tick() {
         int n = tickCount.incrementAndGet();
         meters.values().forEach(NativeMeter::tick);

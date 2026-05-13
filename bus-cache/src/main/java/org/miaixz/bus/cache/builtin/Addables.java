@@ -103,6 +103,8 @@ public class Addables {
      * An interface for objects that can be built by adding elements to them.
      *
      * @param <T> The type of the object being built.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public interface Addable<T> {
 
@@ -129,10 +131,14 @@ public class Addables {
          * @return The built object.
          */
         T get();
+
     }
 
     /**
      * An {@link Addable} implementation for building arrays.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class ArrayAddable implements Addable<Object[]> {
 
@@ -177,10 +183,14 @@ public class Addables {
         public Object[] get() {
             return this.instance;
         }
+
     }
 
     /**
      * An {@link Addable} implementation for building collections.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class CollectionAddable implements Addable<Collection> {
 
@@ -230,10 +240,14 @@ public class Addables {
         public Collection get() {
             return this.instance;
         }
+
     }
 
     /**
      * An {@link Addable} implementation for building maps.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class MapAddable implements Addable<Map> {
 
@@ -290,6 +304,7 @@ public class Addables {
         public Map get() {
             return instance;
         }
+
     }
 
 }

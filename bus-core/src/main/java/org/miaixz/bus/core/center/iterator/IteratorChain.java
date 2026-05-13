@@ -38,6 +38,7 @@ public class IteratorChain<T> implements Iterator<T>, Chain<Iterator<T>, Iterato
      * A list containing all the iterators in this chain.
      */
     protected final List<Iterator<T>> allIterators = new ArrayList<>();
+
     /**
      * The index of the current iterator being processed in the {@link #allIterators} list. Initialized to -1,
      * indicating no iterator has been started yet.

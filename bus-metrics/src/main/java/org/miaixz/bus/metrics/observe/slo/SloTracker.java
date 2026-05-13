@@ -58,10 +58,14 @@ public interface SloTracker {
      */
     SloTracker trackAvailability(String sloName, String meterName, double maxErrorRatio, double target, Tag... tags);
 
-    /** Current compliance ratio (0.0–1.0) for the given SLO. Returns 1.0 if unknown. */
+    /**
+     * Current compliance ratio (0.0–1.0) for the given SLO. Returns 1.0 if unknown.
+     */
     double compliance(String sloName);
 
-    /** Remaining error budget fraction (1.0 = full, 0.0 = exhausted). Returns 1.0 if unknown. */
+    /**
+     * Remaining error budget fraction (1.0 = full, 0.0 = exhausted). Returns 1.0 if unknown.
+     */
     double errorBudgetRemaining(String sloName);
 
     /**

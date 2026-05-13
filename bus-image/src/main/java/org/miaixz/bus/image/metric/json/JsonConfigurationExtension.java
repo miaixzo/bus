@@ -24,34 +24,80 @@ import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.metric.net.ApplicationEntity;
 
 /**
+ * Represents the JsonConfigurationExtension type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class JsonConfigurationExtension {
 
+    /**
+     * The config value.
+     */
     protected JsonConfiguration config;
 
+    /**
+     * Gets the json configuration.
+     *
+     * @return the json configuration.
+     */
     public JsonConfiguration getJsonConfiguration() {
         return config;
     }
 
+    /**
+     * Sets the json configuration.
+     *
+     * @param config the config.
+     */
     public void setJsonConfiguration(JsonConfiguration config) {
         if (config != null && this.config != null)
             throw new IllegalStateException("already owned by other Json Configuration");
         this.config = config;
     }
 
+    /**
+     * Stores the to.
+     *
+     * @param device the device.
+     * @param writer the writer.
+     */
     protected void storeTo(Device device, JSONWriter writer) {
     }
 
+    /**
+     * Stores the to.
+     *
+     * @param ae     the ae.
+     * @param writer the writer.
+     */
     protected void storeTo(ApplicationEntity ae, JSONWriter writer) {
     }
 
+    /**
+     * Loads the device extension.
+     *
+     * @param device the device.
+     * @param reader the reader.
+     * @param config the config.
+     * @return true if the condition is met; otherwise false.
+     * @throws InternalException if the operation cannot be completed.
+     */
     public boolean loadDeviceExtension(Device device, JSONReader reader, ConfigurationDelegate config)
             throws InternalException {
         return false;
     }
 
+    /**
+     * Loads the application entity extension.
+     *
+     * @param device the device.
+     * @param ae     the ae.
+     * @param reader the reader.
+     * @param config the config.
+     * @return true if the condition is met; otherwise false.
+     * @throws InternalException if the operation cannot be completed.
+     */
     public boolean loadApplicationEntityExtension(
             Device device,
             ApplicationEntity ae,

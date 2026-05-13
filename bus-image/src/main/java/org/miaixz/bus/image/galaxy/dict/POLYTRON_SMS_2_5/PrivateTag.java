@@ -20,23 +20,36 @@
 package org.miaixz.bus.image.galaxy.dict.POLYTRON_SMS_2_5;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "POLYTRON-SMS 2.5";
 
-    /** (0009,xx02) VR=OB VM=1 ? */
+    /**
+     * (0009,xx02) VR=OB VM=1 ?
+     */
     public static final int _0009_xx02_ = 0x00090002;
 
-    /** (0009,xx04) VR=OB VM=1 ? */
+    /**
+     * (0009,xx04) VR=OB VM=1 ?
+     */
     public static final int _0009_xx04_ = 0x00090004;
 
-    /** (0009,xx06) VR=OB VM=1 ? */
+    /**
+     * (0009,xx06) VR=OB VM=1 ?
+     */
     public static final int _0009_xx06_ = 0x00090006;
 
-    /** (0089,xx10) VR=OB VM=1 ? */
+    /**
+     * (0089,xx10) VR=OB VM=1 ?
+     */
     public static final int _0089_xx10_ = 0x00890010;
 
 }

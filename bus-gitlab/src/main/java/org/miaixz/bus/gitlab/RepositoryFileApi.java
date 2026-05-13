@@ -42,6 +42,9 @@ import org.miaixz.bus.logger.Logger;
  * This class provides an entry point to all the GitLab API repository files calls. See
  * <a href="https://docs.gitlab.com/ce/api/repository_files.html">Repository Files API at GitLab</a> for more
  * information.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class RepositoryFileApi extends AbstractApi {
 

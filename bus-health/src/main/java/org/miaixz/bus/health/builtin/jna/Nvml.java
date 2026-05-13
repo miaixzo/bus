@@ -39,18 +39,22 @@ public interface Nvml {
      * The NVML_SUCCESS value.
      */
     int NVML_SUCCESS = 0;
+
     /**
      * The NVML_TEMPERATURE_GPU value.
      */
     int NVML_TEMPERATURE_GPU = 0;
+
     /**
      * The NVML_CLOCK_GRAPHICS value.
      */
     int NVML_CLOCK_GRAPHICS = 0;
+
     /**
      * The NVML_CLOCK_MEM value.
      */
     int NVML_CLOCK_MEM = 2;
+
     /**
      * The NVML_DEVICE_NAME_BUFFER_SIZE value.
      */
@@ -58,6 +62,9 @@ public interface Nvml {
 
     /**
      * The NvmlLibrary interface.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     interface NvmlLibrary extends Library {
 
@@ -166,10 +173,14 @@ public interface Nvml {
          * @return the nvml device get fan speed result
          */
         int nvmlDeviceGetFanSpeed(Pointer device, IntByReference speed);
+
     }
 
     /**
      * The NvmlUtilization class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "gpu", "memory" })
     class NvmlUtilization extends Structure {
@@ -178,14 +189,19 @@ public interface Nvml {
          * The gpu value.
          */
         public int gpu;
+
         /**
          * The memory value.
          */
         public int memory;
+
     }
 
     /**
      * The NvmlMemory class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "total", "free", "used" })
     class NvmlMemory extends Structure {
@@ -194,18 +210,24 @@ public interface Nvml {
          * The total value.
          */
         public long total;
+
         /**
          * The free value.
          */
         public long free;
+
         /**
          * The used value.
          */
         public long used;
+
     }
 
     /**
      * The NvmlPciInfo class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "busIdLegacy", "domain", "bus", "device", "pciDeviceId", "pciSubSystemId", "busId" })
     class NvmlPciInfo extends Structure {
@@ -214,29 +236,37 @@ public interface Nvml {
          * The busIdLegacy value.
          */
         public byte[] busIdLegacy = new byte[16];
+
         /**
          * The domain value.
          */
         public int domain;
+
         /**
          * The bus value.
          */
         public int bus;
+
         /**
          * The device value.
          */
         public int device;
+
         /**
          * The pciDeviceId value.
          */
         public int pciDeviceId;
+
         /**
          * The pciSubSystemId value.
          */
         public int pciSubSystemId;
+
         /**
          * The busId value.
          */
         public byte[] busId = new byte[32];
+
     }
+
 }

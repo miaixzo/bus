@@ -26,6 +26,9 @@ import java.io.Serial;
 
 /**
  * This class is used to filter commit status when getting lists of them.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class CommitStatusFilter implements Serializable {
 

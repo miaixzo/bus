@@ -28,7 +28,6 @@ import org.miaixz.bus.core.lang.Assert;
 /**
  * Enumeration for months, corresponding to the int values of months in {@link Calendar}.
  *
- * @author Kimi Liu
  * @see Calendar#JANUARY
  * @see Calendar#FEBRUARY
  * @see Calendar#MARCH
@@ -42,6 +41,7 @@ import org.miaixz.bus.core.lang.Assert;
  * @see Calendar#NOVEMBER
  * @see Calendar#DECEMBER
  * @see Calendar#UNDECIMBER
+ * @author Kimi Liu
  * @since Java 21+
  */
 public enum Month {

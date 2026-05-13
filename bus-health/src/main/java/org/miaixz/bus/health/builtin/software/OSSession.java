@@ -49,14 +49,17 @@ public class OSSession {
      * The userName value.
      */
     private final String userName;
+
     /**
      * The terminalDevice value.
      */
     private final String terminalDevice;
+
     /**
      * The loginTime value.
      */
     private final long loginTime;
+
     /**
      * The host value.
      */

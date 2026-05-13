@@ -53,4 +53,5 @@ public enum Endpoint {
      * Configuration key for the revoke token endpoint.
      */
     REVOKE
+
 }

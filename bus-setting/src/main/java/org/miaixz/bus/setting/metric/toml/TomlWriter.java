@@ -57,26 +57,32 @@ public class TomlWriter {
      * The underlying writer where the TOML data will be written.
      */
     private final Writer writer;
+
     /**
      * The number of characters to use for each level of indentation.
      */
     private final int indentSize;
+
     /**
      * The character to use for indentation (either a space or a tab).
      */
     private final char indentCharacter;
+
     /**
      * The string used for line breaks (e.g., "\n" or "\r\n").
      */
     private final String lineSeparator;
+
     /**
      * A linked list that keeps track of the current table path (e.g., ["table", "subtable"]).
      */
     private final LinkedList<String> tablesNames = new LinkedList<>();
+
     /**
      * A counter to prevent writing more than two consecutive newlines.
      */
     private int lineBreaks = 0;
+
     /**
      * The current level of indentation for nested tables. Initialized to -1 to prevent indenting the root level.
      */

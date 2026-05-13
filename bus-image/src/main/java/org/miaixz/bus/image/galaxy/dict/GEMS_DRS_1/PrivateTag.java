@@ -20,29 +20,46 @@
 package org.miaixz.bus.image.galaxy.dict.GEMS_DRS_1;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEMS_DRS_1";
 
-    /** (0037,xx10) VR=LO VM=1 ReferringDepartment */
+    /**
+     * (0037,xx10) VR=LO VM=1 ReferringDepartment
+     */
     public static final int ReferringDepartment = 0x00370010;
 
-    /** (0037,xx20) VR=US VM=1 ScreenNumber */
+    /**
+     * (0037,xx20) VR=US VM=1 ScreenNumber
+     */
     public static final int ScreenNumber = 0x00370020;
 
-    /** (0037,xx40) VR=SH VM=1 LeftOrientation */
+    /**
+     * (0037,xx40) VR=SH VM=1 LeftOrientation
+     */
     public static final int LeftOrientation = 0x00370040;
 
-    /** (0037,xx42) VR=SH VM=1 RightOrientation */
+    /**
+     * (0037,xx42) VR=SH VM=1 RightOrientation
+     */
     public static final int RightOrientation = 0x00370042;
 
-    /** (0037,xx50) VR=CS VM=1 Inversion */
+    /**
+     * (0037,xx50) VR=CS VM=1 Inversion
+     */
     public static final int Inversion = 0x00370050;
 
-    /** (0037,xx60) VR=US VM=1 DSA */
+    /**
+     * (0037,xx60) VR=US VM=1 DSA
+     */
     public static final int DSA = 0x00370060;
 
 }

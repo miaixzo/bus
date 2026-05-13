@@ -48,10 +48,12 @@ public class Binding extends Namespace {
      * table, while service-level code may treat it as the owner id.
      */
     private String item_id;
+
     /**
      * Binding kind. Allowed values are {@code APP} and {@code PROFILE}.
      */
     private String type;
+
     /**
      * Referenced target identifier.
      */

@@ -36,24 +36,30 @@ public class NativeMeter implements Meter {
      * Lock-free accumulator for the cumulative event count.
      */
     private final LongAdder adder = new LongAdder();
+
     /**
      * 1-minute EWMA rate calculator.
      */
     private final EwmaRate m1 = EwmaRate.oneMinute();
+
     /**
      * 5-minute EWMA rate calculator.
      */
     private final EwmaRate m5 = EwmaRate.fiveMinutes();
+
     /**
      * 15-minute EWMA rate calculator.
      */
     private final EwmaRate m15 = EwmaRate.fifteenMinutes();
+
     /**
      * Nanosecond timestamp at creation; used to compute mean rate.
      */
     private final long startNanos = System.nanoTime();
 
-    /** Increment by one. */
+    /**
+     * Increment by one.
+     */
     @Override
     public void increment() {
         increment(1);
@@ -72,38 +78,50 @@ public class NativeMeter implements Meter {
         m15.mark(amount);
     }
 
-    /** Returns the cumulative count since creation. */
+    /**
+     * Returns the cumulative count since creation.
+     */
     @Override
     public long count() {
         return adder.sum();
     }
 
-    /** Called by the global 5-second tick scheduler in NativeProvider. */
+    /**
+     * Called by the global 5-second tick scheduler in NativeProvider.
+     */
     public void tick() {
         m1.tick();
         m5.tick();
         m15.tick();
     }
 
-    /** Returns the 1-minute EWMA rate in events/second. */
+    /**
+     * Returns the 1-minute EWMA rate in events/second.
+     */
     @Override
     public double oneMinuteRate() {
         return m1.rate();
     }
 
-    /** Returns the 5-minute EWMA rate in events/second. */
+    /**
+     * Returns the 5-minute EWMA rate in events/second.
+     */
     @Override
     public double fiveMinuteRate() {
         return m5.rate();
     }
 
-    /** Returns the 15-minute EWMA rate in events/second. */
+    /**
+     * Returns the 15-minute EWMA rate in events/second.
+     */
     @Override
     public double fifteenMinuteRate() {
         return m15.rate();
     }
 
-    /** Returns the mean rate since creation in events/second. */
+    /**
+     * Returns the mean rate since creation in events/second.
+     */
     @Override
     public double meanRate() {
         double elapsedSeconds = (System.nanoTime() - startNanos) / 1_000_000_000.0;

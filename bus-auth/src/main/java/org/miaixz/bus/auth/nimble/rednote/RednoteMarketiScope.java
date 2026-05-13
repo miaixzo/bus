@@ -26,7 +26,7 @@ import lombok.Getter;
 
 /**
  * Xiaohongshu Commercial Platform OAuth authorization scopes.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -55,10 +55,12 @@ public enum RednoteMarketiScope implements AuthorizeScope {
      * The scope string as defined by Xiaohongshu.
      */
     private final String scope;
+
     /**
      * A description of what the scope grants access to.
      */
     private final String description;
+
     /**
      * Indicates if this scope is enabled by default.
      */

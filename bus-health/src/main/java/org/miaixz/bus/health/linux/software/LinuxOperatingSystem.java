@@ -62,10 +62,12 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      * This static field identifies if the udev library can be loaded.
      */
     public static final boolean HAS_UDEV;
+
     /**
      * This static field identifies if the gettid function is in the c library.
      */
     public static final boolean HAS_GETTID;
+
     /**
      * This static field identifies if the syscall for gettid returns sane results.
      */
@@ -75,34 +77,42 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      * The BOOTTIME constant.
      */
     static final long BOOTTIME;
+
     /**
      * The OS_RELEASE_LOG constant.
      */
     private static final String OS_RELEASE_LOG = "os-release: {}";
+
     /**
      * The LSB_RELEASE_A_LOG constant.
      */
     private static final String LSB_RELEASE_A_LOG = "lsb_release -a: {}";
+
     /**
      * The LSB_RELEASE_LOG constant.
      */
     private static final String LSB_RELEASE_LOG = "lsb-release: {}";
+
     /**
      * The RELEASE_DELIM constant.
      */
     private static final String RELEASE_DELIM = " release ";
+
     /**
      * The DOUBLE_QUOTES constant.
      */
     private static final String DOUBLE_QUOTES = "(?:^\")|(?:\"$)";
+
     /**
      * Jiffies per second, used for process time counters.
      */
     private static final long USER_HZ;
+
     /**
      * The PAGE_SIZE constant.
      */
     private static final long PAGE_SIZE;
+
     /**
      * OS Name for manufacturer
      */

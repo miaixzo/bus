@@ -26,17 +26,45 @@ import java.io.OutputStream;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 
 /**
+ * Represents the PDVInputStream type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public abstract class PDVInputStream extends InputStream {
 
+    /**
+     * Reads the dataset.
+     *
+     * @param tsuid the tsuid.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     public abstract Attributes readDataset(String tsuid) throws IOException;
 
+    /**
+     * Copies the to.
+     *
+     * @param out    the out.
+     * @param length the length.
+     * @throws IOException if the operation cannot be completed.
+     */
     public abstract void copyTo(OutputStream out, int length) throws IOException;
 
+    /**
+     * Copies the to.
+     *
+     * @param out the out.
+     * @throws IOException if the operation cannot be completed.
+     */
     public abstract void copyTo(OutputStream out) throws IOException;
 
+    /**
+     * Executes the skip all operation.
+     *
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     public abstract long skipAll() throws IOException;
 
 }

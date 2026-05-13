@@ -55,58 +55,72 @@ public final class SmcKit {
      * Instance of IOKit.
      */
     private static final IOKit IO = IOKit.INSTANCE;
+
     /**
      * Thread-safe map for caching info retrieved by a key necessary for subsequent calls.
      */
     private static Map<Integer, SMCKeyDataKeyInfo> keyInfoCache = new ConcurrentHashMap<>();
+
     /**
      * Byte array used for matching return type
      */
     private static final byte[] DATATYPE_SP78 = Parsing.asciiStringToByteArray("sp78", 5);
+
     /**
      * Byte array used for matching FPE2 return type.
      */
     private static final byte[] DATATYPE_FPE2 = Parsing.asciiStringToByteArray("fpe2", 5);
+
     /**
      * Byte array used for matching FLT return type.
      */
     private static final byte[] DATATYPE_FLT = Parsing.asciiStringToByteArray("flt ", 5);
+
     /**
      * SMC key for the number of fans.
      */
     public static final String SMC_KEY_FAN_NUM = "FNum";
+
     /**
      * SMC key for fan speed, where %d is the fan index.
      */
     public static final String SMC_KEY_FAN_SPEED = "F%dAc";
+
     /**
      * SMC key for CPU temperature.
      */
     public static final String SMC_KEY_CPU_TEMP = "TC0P";
+
     /**
      * SMC key for CPU voltage.
      */
     public static final String SMC_KEY_CPU_VOLTAGE = "VC0C";
+
     /**
      * Apple Silicon keys, tried in order until one returns a positive value.
      */
     public static final String[] SMC_KEYS_CPU_TEMP_AS = { "Tp09", "Tp0T", "Tp01", "Tp05", "Tp0D" };
+
     /**
      * SMC key for CPU temperature.
      */
     public static final String[] SMC_KEYS_GPU_TEMP_AS = { "Tg05", "Tg0D", "Tg0f", "Tg0j" };
+
     /**
      * SMC key for CPU voltage.
      */
     public static final String SMC_KEY_CPU_VOLTAGE_AS = "VP0C";
+
     /**
      * SMC command to read bytes.
      */
     public static final byte SMC_CMD_READ_BYTES = 5;
+
     /**
      * SMC command to read key information.
      */
     public static final byte SMC_CMD_READ_KEYINFO = 9;
+
     /**
      * Kernel index for SMC.
      */
@@ -146,7 +160,6 @@ public final class SmcKit {
      * Close connection to SMC.
      *
      * @param conn The connection
-     *
      * @return 0 if successful, nonzero if failure
      */
     public static int smcClose(IOConnect conn) {

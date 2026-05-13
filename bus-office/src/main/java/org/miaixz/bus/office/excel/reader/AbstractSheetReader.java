@@ -35,6 +35,7 @@ public abstract class AbstractSheetReader<T> implements SheetReader<T> {
      * The range of cells to read.
      */
     protected final CellRangeAddress cellRangeAddress;
+
     /**
      * Excel configuration settings.
      */

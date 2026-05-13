@@ -20,38 +20,61 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_CT_VA0__IDE;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS CT VA0 IDE";
 
-    /** (0009,xx10) VR=LO VM=1 ? */
+    /**
+     * (0009,xx10) VR=LO VM=1 ?
+     */
     public static final int _0009_xx10_ = 0x00090010;
 
-    /** (0009,xx30) VR=CS VM=1 ? */
+    /**
+     * (0009,xx30) VR=CS VM=1 ?
+     */
     public static final int _0009_xx30_ = 0x00090030;
 
-    /** (0009,xx31) VR=SH VM=1 ? */
+    /**
+     * (0009,xx31) VR=SH VM=1 ?
+     */
     public static final int _0009_xx31_ = 0x00090031;
 
-    /** (0009,xx32) VR=SH VM=1 ? */
+    /**
+     * (0009,xx32) VR=SH VM=1 ?
+     */
     public static final int _0009_xx32_ = 0x00090032;
 
-    /** (0009,xx34) VR=SH VM=1 ? */
+    /**
+     * (0009,xx34) VR=SH VM=1 ?
+     */
     public static final int _0009_xx34_ = 0x00090034;
 
-    /** (0009,xx40) VR=LO VM=1 ? */
+    /**
+     * (0009,xx40) VR=LO VM=1 ?
+     */
     public static final int _0009_xx40_ = 0x00090040;
 
-    /** (0009,xx42) VR=LO VM=1 ? */
+    /**
+     * (0009,xx42) VR=LO VM=1 ?
+     */
     public static final int _0009_xx42_ = 0x00090042;
 
-    /** (0009,xx50) VR=DA VM=1 ? */
+    /**
+     * (0009,xx50) VR=DA VM=1 ?
+     */
     public static final int _0009_xx50_ = 0x00090050;
 
-    /** (0009,xx51) VR=TM VM=1 ? */
+    /**
+     * (0009,xx51) VR=TM VM=1 ?
+     */
     public static final int _0009_xx51_ = 0x00090051;
 
 }

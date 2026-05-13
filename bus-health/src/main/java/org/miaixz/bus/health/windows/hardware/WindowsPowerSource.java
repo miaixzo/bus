@@ -54,10 +54,12 @@ public final class WindowsPowerSource extends AbstractPowerSource {
      */
     private static final Guid.GUID GUID_DEVCLASS_BATTERY = Guid.GUID
             .fromString("{72631E54-78A4-11D0-BCF7-00AA00B7B32A}");
+
     /**
      * The CHAR_WIDTH constant.
      */
     private static final int CHAR_WIDTH = W32APITypeMapper.DEFAULT == W32APITypeMapper.UNICODE ? 2 : 1;
+
     /**
      * The X64 constant.
      */
@@ -67,22 +69,27 @@ public final class WindowsPowerSource extends AbstractPowerSource {
      * The BATTERY_SYSTEM_BATTERY constant.
      */
     private static final int BATTERY_SYSTEM_BATTERY = 0x80000000;
+
     /**
      * The BATTERY_IS_SHORT_TERM constant.
      */
     private static final int BATTERY_IS_SHORT_TERM = 0x20000000;
+
     /**
      * The BATTERY_POWER_ON_LINE constant.
      */
     private static final int BATTERY_POWER_ON_LINE = 0x00000001;
+
     /**
      * The BATTERY_DISCHARGING constant.
      */
     private static final int BATTERY_DISCHARGING = 0x00000002;
+
     /**
      * The BATTERY_CHARGING constant.
      */
     private static final int BATTERY_CHARGING = 0x00000004;
+
     /**
      * The BATTERY_CAPACITY_RELATIVE constant.
      */
@@ -92,10 +99,12 @@ public final class WindowsPowerSource extends AbstractPowerSource {
      * The IOCTL_BATTERY_QUERY_TAG constant.
      */
     private static final int IOCTL_BATTERY_QUERY_TAG = 0x294040;
+
     /**
      * The IOCTL_BATTERY_QUERY_STATUS constant.
      */
     private static final int IOCTL_BATTERY_QUERY_STATUS = 0x29404c;
+
     /**
      * The IOCTL_BATTERY_QUERY_INFORMATION constant.
      */

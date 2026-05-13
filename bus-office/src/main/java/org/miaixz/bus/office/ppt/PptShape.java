@@ -316,6 +316,9 @@ public class PptShape {
 
     /**
      * Shape type enumeration.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum Type {
         /**
@@ -342,11 +345,15 @@ public class PptShape {
          * Other/unknown shape type.
          */
         OTHER
+
     }
 
     /**
      * Structured data extracted from a single shape, including type, position, text content, table data, and picture
      * metadata.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class Data {
 

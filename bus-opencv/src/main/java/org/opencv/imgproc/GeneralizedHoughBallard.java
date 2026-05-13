@@ -8,6 +8,9 @@ package org.opencv.imgproc;
  * finds arbitrary template in the grayscale image using Generalized Hough Transform
  *
  * Detects position only without translation and rotation CITE: Ballard1981 .
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class GeneralizedHoughBallard extends GeneralizedHough {
 

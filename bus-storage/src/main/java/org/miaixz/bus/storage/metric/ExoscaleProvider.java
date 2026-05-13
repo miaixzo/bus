@@ -48,7 +48,7 @@ import org.miaixz.bus.storage.Context;
  * <strong>Configuration Example:</strong>
  *
  * <pre>{@code
- * 
+ *
  * Context context = Context.builder().endpoint("https://sos-ch-gva-2.exo.io") // Zone-specific endpoint
  *         .bucket("my-bucket").accessKey("EXO_ACCESS_KEY").secretKey("EXO_SECRET_KEY").region("ch-gva-2").build();
  *

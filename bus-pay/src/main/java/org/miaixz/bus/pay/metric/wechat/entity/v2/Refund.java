@@ -44,58 +44,72 @@ public class Refund extends Voucher {
      * Sub-merchant App ID.
      */
     private String sub_appid;
+
     /**
      * Merchant ID.
      */
     private String mch_id;
+
     /**
      * Sub-merchant ID.
      */
     private String sub_mch_id;
+
     /**
      * Random string.
      */
     private String nonce_str;
+
     /**
      * Signature.
      */
     private String sign;
+
     /**
      * Signature type.
      */
     private String sign_type;
+
     /**
      * WeChat transaction ID.
      */
     private String transaction_id;
+
     /**
      * Merchant order number.
      */
     private String out_trade_no;
+
     /**
      * Merchant refund number.
      */
     private String out_refund_no;
+
     /**
      * Total amount of the order.
      */
     private String total_fee;
+
     /**
      * Refund amount.
      */
     private String refund_fee;
+
     /**
      * Refund fee type.
      */
     private String refund_fee_type;
+
     /**
      * Refund description.
      */
     private String refund_desc;
+
     /**
      * Refund account.
      */
     private String refund_account;
+
     /**
      * Asynchronous notification URL.
      */

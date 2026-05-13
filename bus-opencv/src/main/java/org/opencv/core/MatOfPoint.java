@@ -3,6 +3,12 @@ package org.opencv.core;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The mat of point class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class MatOfPoint extends Mat {
 
     // 32SC2
@@ -76,4 +82,5 @@ public class MatOfPoint extends Mat {
         Point[] ap = toArray();
         return Arrays.asList(ap);
     }
+
 }

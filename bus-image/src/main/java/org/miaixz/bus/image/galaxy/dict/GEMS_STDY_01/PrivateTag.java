@@ -20,29 +20,46 @@
 package org.miaixz.bus.image.galaxy.dict.GEMS_STDY_01;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEMS_STDY_01";
 
-    /** (0023,xx01) VR=SL VM=1 Number Of Series In Study */
+    /**
+     * (0023,xx01) VR=SL VM=1 Number Of Series In Study
+     */
     public static final int NumberOfSeriesInStudy = 0x00230001;
 
-    /** (0023,xx02) VR=SL VM=1 Number Of Unarchived Series */
+    /**
+     * (0023,xx02) VR=SL VM=1 Number Of Unarchived Series
+     */
     public static final int NumberOfUnarchivedSeries = 0x00230002;
 
-    /** (0023,xx10) VR=SS VM=1 Reference Image Field */
+    /**
+     * (0023,xx10) VR=SS VM=1 Reference Image Field
+     */
     public static final int ReferenceImageField = 0x00230010;
 
-    /** (0023,xx50) VR=SS VM=1 Summary Image */
+    /**
+     * (0023,xx50) VR=SS VM=1 Summary Image
+     */
     public static final int SummaryImage = 0x00230050;
 
-    /** (0023,xx70) VR=FD VM=1 Start Time Secs In First Axial */
+    /**
+     * (0023,xx70) VR=FD VM=1 Start Time Secs In First Axial
+     */
     public static final int StartTimeSecsInFirstAxial = 0x00230070;
 
-    /** (0023,xx74) VR=SL VM=1 Number Of Updates To Header */
+    /**
+     * (0023,xx74) VR=SL VM=1 Number Of Updates To Header
+     */
     public static final int NumberOfUpdatesToHeader = 0x00230074;
 
     /**
@@ -50,7 +67,9 @@ public class PrivateTag {
      */
     public static final int IndicatesIfStudyHasCompleteInfo = 0x0023007D;
 
-    /** (0023,xx80) VR=SQ VM=1 Has MPPS Related Tags */
+    /**
+     * (0023,xx80) VR=SQ VM=1 Has MPPS Related Tags
+     */
     public static final int HasMPPSRelatedTags = 0x00230080;
 
 }

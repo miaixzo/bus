@@ -36,26 +36,32 @@ public class MacOSThread extends AbstractOSThread {
      * The threadId value.
      */
     private final int threadId;
+
     /**
      * The state value.
      */
     private final OSProcess.State state;
+
     /**
      * The kernelTime value.
      */
     private final long kernelTime;
+
     /**
      * The userTime value.
      */
     private final long userTime;
+
     /**
      * The startTime value.
      */
     private final long startTime;
+
     /**
      * The upTime value.
      */
     private final long upTime;
+
     /**
      * The priority value.
      */

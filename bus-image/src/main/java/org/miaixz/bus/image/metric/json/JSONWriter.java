@@ -47,29 +47,70 @@ import jakarta.json.stream.JsonGenerator;
  */
 public class JSONWriter implements ImageInputHandler {
 
+    /**
+     * The double max bits value.
+     */
     private static final int DOUBLE_MAX_BITS = 53;
 
+    /**
+     * The gen value.
+     */
     private final JsonGenerator gen;
+
+    /**
+     * The has items value.
+     */
     private final Deque<Boolean> hasItems = new ArrayDeque<>();
+
+    /**
+     * The json type by vr value.
+     */
     private final EnumMap<VR, JsonValue.ValueType> jsonTypeByVR = new EnumMap<>(VR.class);
+
+    /**
+     * The replace bulk data uri value.
+     */
     private String replaceBulkDataURI;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param gen the gen.
+     */
     public JSONWriter(JsonGenerator gen) {
         this.gen = gen;
     }
 
+    /**
+     * Executes the require is ds sv uv operation.
+     *
+     * @param vr the vr.
+     * @return the operation result.
+     */
     private static VR requireIS_DS_SV_UV(VR vr) {
         if (vr != VR.DS && vr != VR.IS && vr != VR.SV && vr != VR.UV)
             throw new IllegalArgumentException("vr:" + vr);
         return vr;
     }
 
+    /**
+     * Executes the require number or string operation.
+     *
+     * @param jsonType the json type.
+     * @return the operation result.
+     */
     private static JsonValue.ValueType requireNumberOrString(JsonValue.ValueType jsonType) {
         if (jsonType != JsonValue.ValueType.NUMBER && jsonType != JsonValue.ValueType.STRING)
             throw new IllegalArgumentException("jsonType:" + jsonType);
         return jsonType;
     }
 
+    /**
+     * Converts this value to strings.
+     *
+     * @param map the map.
+     * @return the operation result.
+     */
     private static <T> String[] toStrings(Map<String, T> map) {
         String[] ss = new String[map.size()];
         int i = 0;
@@ -78,6 +119,13 @@ public class JSONWriter implements ImageInputHandler {
         return ss;
     }
 
+    /**
+     * Compares this instance with another object for equality.
+     *
+     * @param a  the a.
+     * @param a2 the a2.
+     * @return true if the condition is met; otherwise false.
+     */
     public static <T> boolean equals(T[] a, T[] a2) {
         int length = a.length;
         if (a2.length != length)
@@ -92,14 +140,30 @@ public class JSONWriter implements ImageInputHandler {
         return true;
     }
 
+    /**
+     * Sets the json type.
+     *
+     * @param vr        the vr.
+     * @param valueType the value type.
+     */
     public void setJsonType(VR vr, JsonValue.ValueType valueType) {
         jsonTypeByVR.put(requireIS_DS_SV_UV(vr), requireNumberOrString(valueType));
     }
 
+    /**
+     * Gets the replace bulk data uri.
+     *
+     * @return the replace bulk data uri.
+     */
     public String getReplaceBulkDataURI() {
         return replaceBulkDataURI;
     }
 
+    /**
+     * Sets the replace bulk data uri.
+     *
+     * @param replaceBulkDataURI the replace bulk data uri.
+     */
     public void setReplaceBulkDataURI(String replaceBulkDataURI) {
         this.replaceBulkDataURI = replaceBulkDataURI;
     }
@@ -133,6 +197,15 @@ public class JSONWriter implements ImageInputHandler {
         }
     }
 
+    /**
+     * Writes the attribute.
+     *
+     * @param tag   the tag.
+     * @param vr    the vr.
+     * @param value the value.
+     * @param cs    the cs.
+     * @param attrs the attrs.
+     */
     private void writeAttribute(int tag, VR vr, Object value, SpecificCharacterSet cs, Attributes attrs) {
         if (Tag.isGroupLength(tag))
             return;
@@ -146,6 +219,12 @@ public class JSONWriter implements ImageInputHandler {
         gen.writeEnd();
     }
 
+    /**
+     * Writes the value.
+     *
+     * @param value     the value.
+     * @param bigEndian the big endian.
+     */
     private void writeValue(Value value, boolean bigEndian) {
         if (value.isEmpty())
             return;
@@ -177,6 +256,13 @@ public class JSONWriter implements ImageInputHandler {
         }
     }
 
+    /**
+     * Reads the value.
+     *
+     * @param dis   the dis.
+     * @param attrs the attrs.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void readValue(ImageInputStream dis, Attributes attrs) throws IOException {
         int tag = dis.tag();
@@ -209,6 +295,15 @@ public class JSONWriter implements ImageInputHandler {
         }
     }
 
+    /**
+     * Writes the value.
+     *
+     * @param vr        the vr.
+     * @param val       the val.
+     * @param bigEndian the big endian.
+     * @param cs        the cs.
+     * @param preserve  the preserve.
+     */
     private void writeValue(VR vr, Object val, boolean bigEndian, SpecificCharacterSet cs, boolean preserve) {
         switch (vr) {
             case AE:
@@ -270,6 +365,14 @@ public class JSONWriter implements ImageInputHandler {
         }
     }
 
+    /**
+     * Writes the string values.
+     *
+     * @param vr        the vr.
+     * @param val       the val.
+     * @param bigEndian the big endian.
+     * @param cs        the cs.
+     */
     private void writeStringValues(VR vr, Object val, boolean bigEndian, SpecificCharacterSet cs) {
         gen.writeStartArray("Value");
         Object o = vr.toStrings(val, bigEndian, cs);
@@ -315,6 +418,11 @@ public class JSONWriter implements ImageInputHandler {
         gen.writeEnd();
     }
 
+    /**
+     * Writes the number.
+     *
+     * @param s the s.
+     */
     private void writeNumber(String s) {
         try {
             long l = Builder.parseIS(s);
@@ -332,6 +440,13 @@ public class JSONWriter implements ImageInputHandler {
         gen.write(s);
     }
 
+    /**
+     * Writes the double values.
+     *
+     * @param vr        the vr.
+     * @param val       the val.
+     * @param bigEndian the big endian.
+     */
     private void writeDoubleValues(VR vr, Object val, boolean bigEndian) {
         gen.writeStartArray("Value");
         int vm = vr.vmOf(val);
@@ -354,6 +469,13 @@ public class JSONWriter implements ImageInputHandler {
         gen.writeEnd();
     }
 
+    /**
+     * Writes the int values.
+     *
+     * @param vr        the vr.
+     * @param val       the val.
+     * @param bigEndian the big endian.
+     */
     private void writeIntValues(VR vr, Object val, boolean bigEndian) {
         gen.writeStartArray("Value");
         int vm = vr.vmOf(val);
@@ -363,6 +485,13 @@ public class JSONWriter implements ImageInputHandler {
         gen.writeEnd();
     }
 
+    /**
+     * Writes the u int values.
+     *
+     * @param vr        the vr.
+     * @param val       the val.
+     * @param bigEndian the big endian.
+     */
     private void writeUIntValues(VR vr, Object val, boolean bigEndian) {
         gen.writeStartArray("Value");
         int vm = vr.vmOf(val);
@@ -372,6 +501,14 @@ public class JSONWriter implements ImageInputHandler {
         gen.writeEnd();
     }
 
+    /**
+     * Writes the long values.
+     *
+     * @param toString  the to string.
+     * @param vr        the vr.
+     * @param val       the val.
+     * @param bigEndian the big endian.
+     */
     private void writeLongValues(LongFunction<String> toString, VR vr, Object val, boolean bigEndian) {
         gen.writeStartArray("Value");
         boolean asString = jsonTypeByVR.get(vr) != JsonValue.ValueType.NUMBER;
@@ -387,6 +524,11 @@ public class JSONWriter implements ImageInputHandler {
         gen.writeEnd();
     }
 
+    /**
+     * Writes the person name.
+     *
+     * @param s the s.
+     */
     private void writePersonName(String s) {
         PersonName pn = new PersonName(s, true);
         gen.writeStartObject();
@@ -396,17 +538,38 @@ public class JSONWriter implements ImageInputHandler {
         gen.writeEnd();
     }
 
+    /**
+     * Writes the pn group.
+     *
+     * @param name  the name.
+     * @param pn    the pn.
+     * @param group the group.
+     */
     private void writePNGroup(String name, PersonName pn, Group group) {
         if (pn.contains(group))
             gen.write(name, pn.toString(group, true));
     }
 
+    /**
+     * Writes the inline binary.
+     *
+     * @param vr        the vr.
+     * @param b         the b.
+     * @param bigEndian the big endian.
+     * @param preserve  the preserve.
+     */
     private void writeInlineBinary(VR vr, byte[] b, boolean bigEndian, boolean preserve) {
         if (bigEndian)
             b = vr.toggleEndian(b, preserve);
         gen.write("InlineBinary", encodeBase64(b));
     }
 
+    /**
+     * Executes the encode base64 operation.
+     *
+     * @param b the b.
+     * @return the operation result.
+     */
     private String encodeBase64(byte[] b) {
         int len = (b.length * 4 / 3 + 3) & ~3;
         char[] ch = new char[len];
@@ -414,10 +577,22 @@ public class JSONWriter implements ImageInputHandler {
         return new String(ch);
     }
 
+    /**
+     * Writes the bulk data.
+     *
+     * @param blkdata the blkdata.
+     */
     private void writeBulkData(BulkData blkdata) {
         gen.write("BulkDataURI", replaceBulkDataURI != null ? replaceBulkDataURI : blkdata.getURI());
     }
 
+    /**
+     * Reads the value.
+     *
+     * @param dis the dis.
+     * @param seq the seq.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void readValue(ImageInputStream dis, Sequence seq) throws IOException {
         if (!hasItems.getLast()) {
@@ -430,6 +605,13 @@ public class JSONWriter implements ImageInputHandler {
         gen.writeEnd();
     }
 
+    /**
+     * Reads the value.
+     *
+     * @param dis   the dis.
+     * @param frags the frags.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void readValue(ImageInputStream dis, Fragments frags) throws IOException {
         int len = dis.length();
@@ -456,78 +638,180 @@ public class JSONWriter implements ImageInputHandler {
         }
     }
 
+    /**
+     * Executes the start dataset operation.
+     *
+     * @param dis the dis.
+     */
     @Override
     public void startDataset(ImageInputStream dis) {
         gen.writeStartObject();
     }
 
+    /**
+     * Executes the end dataset operation.
+     *
+     * @param dis the dis.
+     */
     @Override
     public void endDataset(ImageInputStream dis) {
         gen.writeEnd();
     }
 
+    /**
+     * Writes the start object.
+     *
+     * @return the operation result.
+     */
     public JsonGenerator writeStartObject() {
         return gen.writeStartObject();
     }
 
+    /**
+     * Writes the start object.
+     *
+     * @param name the name.
+     * @return the operation result.
+     */
     public JsonGenerator writeStartObject(String name) {
         return gen.writeStartObject(name);
     }
 
+    /**
+     * Writes the start array.
+     *
+     * @return the operation result.
+     */
     public JsonGenerator writeStartArray() {
         return gen.writeStartArray();
     }
 
+    /**
+     * Writes the start array.
+     *
+     * @param name the name.
+     * @return the operation result.
+     */
     public JsonGenerator writeStartArray(String name) {
         return gen.writeStartArray(name);
     }
 
+    /**
+     * Executes the write operation.
+     *
+     * @param name  the name.
+     * @param value the value.
+     * @return the operation result.
+     */
     public JsonGenerator write(String name, int value) {
         return gen.write(name, value);
     }
 
+    /**
+     * Executes the write operation.
+     *
+     * @param name  the name.
+     * @param value the value.
+     * @return the operation result.
+     */
     public JsonGenerator write(String name, boolean value) {
         return gen.write(name, value);
     }
 
+    /**
+     * Writes the end.
+     *
+     * @return the operation result.
+     */
     public JsonGenerator writeEnd() {
         return gen.writeEnd();
     }
 
+    /**
+     * Executes the write operation.
+     *
+     * @param value the value.
+     * @return the operation result.
+     */
     public JsonGenerator write(String value) {
         return gen.write(value);
     }
 
+    /**
+     * Writes the not null or def.
+     *
+     * @param name   the name.
+     * @param value  the value.
+     * @param defVal the def val.
+     */
     public <T> void writeNotNullOrDef(String name, T value, T defVal) {
         if (value != null && !value.equals(defVal))
             gen.write(name, value.toString());
     }
 
+    /**
+     * Writes the not null.
+     *
+     * @param name  the name.
+     * @param value the value.
+     */
     public void writeNotNull(String name, Boolean value) {
         if (value != null)
             gen.write(name, value.booleanValue());
     }
 
+    /**
+     * Writes the not null.
+     *
+     * @param name  the name.
+     * @param value the value.
+     */
     public void writeNotNull(String name, Integer value) {
         if (value != null)
             gen.write(name, value.intValue());
     }
 
+    /**
+     * Writes the not null.
+     *
+     * @param name  the name.
+     * @param value the value.
+     */
     public void writeNotNull(String name, Long value) {
         if (value != null)
             gen.write(name, value.longValue());
     }
 
+    /**
+     * Writes the not null or def.
+     *
+     * @param name   the name.
+     * @param value  the value.
+     * @param defVal the def val.
+     */
     public void writeNotNullOrDef(String name, TimeZone value, TimeZone defVal) {
         if (value != null && !value.equals(defVal))
             gen.write(name, value.getID());
     }
 
+    /**
+     * Writes the not null.
+     *
+     * @param name  the name.
+     * @param value the value.
+     */
     public void writeNotNull(String name, Date value) {
         if (value != null)
             gen.write(name, Format.formatDT(null, value));
     }
 
+    /**
+     * Writes the not empty.
+     *
+     * @param name    the name.
+     * @param values  the values.
+     * @param defVals the def vals.
+     */
     public <T> void writeNotEmpty(String name, T[] values, T... defVals) {
         if (values.length != 0 && !equals(values, defVals)) {
             gen.writeStartArray(name);
@@ -537,10 +821,22 @@ public class JSONWriter implements ImageInputHandler {
         }
     }
 
+    /**
+     * Writes the not empty.
+     *
+     * @param name the name.
+     * @param map  the map.
+     */
     public <T> void writeNotEmpty(String name, Map<String, T> map) {
         writeNotEmpty(name, toStrings(map));
     }
 
+    /**
+     * Writes the not empty.
+     *
+     * @param name   the name.
+     * @param values the values.
+     */
     public void writeNotEmpty(String name, int[] values) {
         if (values.length != 0) {
             gen.writeStartArray(name);
@@ -550,21 +846,48 @@ public class JSONWriter implements ImageInputHandler {
         }
     }
 
+    /**
+     * Writes the not def.
+     *
+     * @param name   the name.
+     * @param value  the value.
+     * @param defVal the def val.
+     */
     public void writeNotDef(String name, long value, long defVal) {
         if (value != defVal)
             gen.write(name, value);
     }
 
+    /**
+     * Writes the not def.
+     *
+     * @param name   the name.
+     * @param value  the value.
+     * @param defVal the def val.
+     */
     public void writeNotDef(String name, int value, int defVal) {
         if (value != defVal)
             gen.write(name, value);
     }
 
+    /**
+     * Writes the not def.
+     *
+     * @param name   the name.
+     * @param value  the value.
+     * @param defVal the def val.
+     */
     public void writeNotDef(String name, boolean value, boolean defVal) {
         if (value != defVal)
             gen.write(name, value);
     }
 
+    /**
+     * Writes the conn refs.
+     *
+     * @param conns the conns.
+     * @param refs  the refs.
+     */
     public void writeConnRefs(List<Connection> conns, List<Connection> refs) {
         writeStartArray("dicomNetworkConnectionReference");
         for (Connection ref : refs)

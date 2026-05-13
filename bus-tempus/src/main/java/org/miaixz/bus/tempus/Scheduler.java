@@ -84,22 +84,27 @@ public class Scheduler implements Serializable {
      * Scheduled task configuration.
      */
     public final Configure config;
+
     /**
      * Timer.
      */
     private CronTimer timer;
+
     /**
      * Scheduled task table.
      */
     public Repertoire repertoire;
+
     /**
      * Thread pool for executing TaskLauncher and TaskExecutor.
      */
     public ExecutorService threadExecutor;
+
     /**
      * Task manager.
      */
     public Manager manager;
+
     /**
      * Listener manager list.
      */

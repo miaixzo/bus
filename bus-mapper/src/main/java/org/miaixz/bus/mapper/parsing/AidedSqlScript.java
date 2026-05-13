@@ -41,12 +41,14 @@ import org.miaixz.bus.mapper.dialect.Dialect;
  * Usage Pattern 1: Callback Style (simplified coding)
  * </p>
  *
- * <pre>{@code
+ * <pre>
+ * {@code
  *
  * // Implement for simplified SQL building
  * public class UserMapperSql implements AidedSqlScript {
  *
- *     @Override
+ * &#64;author Kimi Liu
+ *     &#64;Override
  *     public String getSql(TableMeta entity, SqlScript sqlScript) {
  *         return sqlScript.where(() -> sqlScript.ifTest("name != null", "name = #{name}"));
  *     }
@@ -56,7 +58,8 @@ import org.miaixz.bus.mapper.dialect.Dialect;
  * String sql = SqlScript.caching(context, (entity, script) -> {
  *     return script.where(() -> script.ifTest("status != null", "status = #{status}"));
  * });
- * }</pre>
+ * }
+ * </pre>
  *
  * <p>
  * Usage Pattern 2: Dialect Style (multi-database support)

@@ -50,32 +50,42 @@ public abstract class HttpRequest {
      * The unique identifier for this request.
      */
     protected String id;
+
     /**
      * The request URL.
      */
     protected String url;
+
     /**
      * The request body as a raw string (e.g., for JSON).
      */
     protected String body;
+
     /**
      * The request parameters (e.g., for form submissions or query strings).
      */
     protected Map<String, String> params;
+
     /**
      * The pre-encoded request parameters.
      */
     protected Map<String, String> encodedParams;
-    /** The request headers. */
+
+    /**
+     * The request headers.
+     */
     protected Map<String, String> headers;
+
     /**
      * The multipart body for file uploads.
      */
     protected MultipartBody multipartBody;
+
     /**
      * A list of files for multipart uploads.
      */
     protected List<MultipartFile> list;
+
     /**
      * The builder for the final Httpd Request.
      */

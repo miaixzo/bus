@@ -26,23 +26,46 @@ import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
 import org.miaixz.bus.image.metric.net.PDVOutputStream;
 
 /**
+ * Represents the DataWriterAdapter type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class DataWriterAdapter implements DataWriter {
 
+    /**
+     * The data value.
+     */
     private final Attributes data;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param data the data.
+     */
     public DataWriterAdapter(Attributes data) {
         if (data == null)
             throw new NullPointerException();
         this.data = data;
     }
 
+    /**
+     * Executes the for attributes operation.
+     *
+     * @param data the data.
+     * @return the operation result.
+     */
     public static DataWriterAdapter forAttributes(Attributes data) {
         return data != null ? new DataWriterAdapter(data) : null;
     }
 
+    /**
+     * Writes the to.
+     *
+     * @param out   the out.
+     * @param tsuid the tsuid.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void writeTo(PDVOutputStream out, String tsuid) throws IOException {
         ImageOutputStream dos = new ImageOutputStream(out, tsuid);
@@ -50,6 +73,11 @@ public class DataWriterAdapter implements DataWriter {
         dos.finish();
     }
 
+    /**
+     * Gets the dataset.
+     *
+     * @return the dataset.
+     */
     public final Attributes getDataset() {
         return data;
     }

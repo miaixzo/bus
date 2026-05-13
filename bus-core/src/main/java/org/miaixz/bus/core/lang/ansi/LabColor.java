@@ -46,10 +46,12 @@ public class LabColor {
      * L: Luminance (lightness) component of the LAB color.
      */
     private final double l;
+
     /**
      * A: Green-red component of the LAB color. Positive values indicate red, negative values indicate green.
      */
     private final double a;
+
     /**
      * B: Blue-yellow component of the LAB color. Positive values indicate yellow, negative values indicate blue.
      */

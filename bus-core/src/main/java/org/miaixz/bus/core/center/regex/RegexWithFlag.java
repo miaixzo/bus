@@ -33,6 +33,7 @@ public class RegexWithFlag {
      * The regular expression string.
      */
     private final String regex;
+
     /**
      * The flags for the regular expression, e.g., {@link java.util.regex.Pattern#CASE_INSENSITIVE}.
      */

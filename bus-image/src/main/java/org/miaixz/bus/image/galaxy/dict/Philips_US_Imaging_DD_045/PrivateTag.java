@@ -20,35 +20,56 @@
 package org.miaixz.bus.image.galaxy.dict.Philips_US_Imaging_DD_045;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "Philips US Imaging DD 045";
 
-    /** (200D,xxF1) VR=SQ VM=1 ? */
+    /**
+     * (200D,xxF1) VR=SQ VM=1 ?
+     */
     public static final int _200D_xxF1_ = 0x200D00F1;
 
-    /** (200D,xxF3) VR=OB VM=1 ? */
+    /**
+     * (200D,xxF3) VR=OB VM=1 ?
+     */
     public static final int _200D_xxF3_ = 0x200D00F3;
 
-    /** (200D,xxF4) VR=SQ VM=1 ? */
+    /**
+     * (200D,xxF4) VR=SQ VM=1 ?
+     */
     public static final int _200D_xxF4_ = 0x200D00F4;
 
-    /** (200D,xxF5) VR=SQ VM=1 ? */
+    /**
+     * (200D,xxF5) VR=SQ VM=1 ?
+     */
     public static final int _200D_xxF5_ = 0x200D00F5;
 
-    /** (200D,xxF6) VR=SQ VM=1 ? */
+    /**
+     * (200D,xxF6) VR=SQ VM=1 ?
+     */
     public static final int _200D_xxF6_ = 0x200D00F6;
 
-    /** (200D,xxF8) VR=SQ VM=1 ? */
+    /**
+     * (200D,xxF8) VR=SQ VM=1 ?
+     */
     public static final int _200D_xxF8_ = 0x200D00F8;
 
-    /** (200D,xxFA) VR=CS VM=1 ? */
+    /**
+     * (200D,xxFA) VR=CS VM=1 ?
+     */
     public static final int _200D_xxFA_ = 0x200D00FA;
 
-    /** (200D,xxFB) VR=OB VM=1 ? */
+    /**
+     * (200D,xxFB) VR=OB VM=1 ?
+     */
     public static final int _200D_xxFB_ = 0x200D00FB;
 
 }

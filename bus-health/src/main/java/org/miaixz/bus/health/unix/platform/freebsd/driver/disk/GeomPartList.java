@@ -43,6 +43,7 @@ public final class GeomPartList {
      * The GEOM_PART_LIST constant.
      */
     private static final String GEOM_PART_LIST = "geom part list";
+
     /**
      * The STAT_FILESIZE constant.
      */

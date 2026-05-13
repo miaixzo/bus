@@ -41,20 +41,24 @@ public class SimpleCollector<T, A, R> implements Collector<T, A, R> {
      * A function that creates a new mutable result container.
      */
     private final Supplier<A> supplier;
+
     /**
      * A function that folds a value into a mutable result container.
      */
     private final BiConsumer<A, T> accumulator;
+
     /**
      * A function that accepts two partial results and merges them. This is used in parallel streams to combine results
      * from different threads.
      */
     private final BinaryOperator<A> combiner;
+
     /**
      * A function that performs the final transformation from the intermediate accumulation type A to the final result
      * type R.
      */
     private final Function<A, R> finisher;
+
     /**
      * A {@code Set} of {@link Characteristics} indicating properties of the Collector.
      * <ul>

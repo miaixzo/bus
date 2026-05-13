@@ -440,6 +440,9 @@ public abstract class AbstractPayloadConverter implements PayloadConverter {
 
     /**
      * Holds the lazily initialized default adapter to avoid eager framework detection during class loading.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static final class DefaultPayloadAdapterHolder {
 
@@ -453,6 +456,7 @@ public abstract class AbstractPayloadConverter implements PayloadConverter {
          */
         private DefaultPayloadAdapterHolder() {
         }
+
     }
 
 }

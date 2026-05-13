@@ -29,13 +29,13 @@ import java.lang.annotation.*;
  * can provide a distinct identifier for a specific bean implementation.
  * <p>
  * For example:
- * 
+ *
  * <pre>
  *   {@code @Qualifier}
  *   {@code @Retention(RetentionPolicy.RUNTIME)}
  *   public @interface Offline {}
  * </pre>
- * 
+ *
  * This {@code @Offline} annotation can then be used at an injection point to request a specific "offline"
  * implementation of a service. This concept is central to standards like JSR-330 ({@code jakarta.inject.Qualifier}).
  *

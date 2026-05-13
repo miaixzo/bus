@@ -55,38 +55,47 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
      * The CF constant.
      */
     private static final CoreFoundation CF = CoreFoundation.INSTANCE;
+
     /**
      * The DA constant.
      */
     private static final DiskArbitration DA = DiskArbitration.INSTANCE;
+
     /**
      * The currentQueueLength value.
      */
     private final long currentQueueLength = 0L;
+
     /**
      * The reads value.
      */
     private long reads = 0L;
+
     /**
      * The readBytes value.
      */
     private long readBytes = 0L;
+
     /**
      * The writes value.
      */
     private long writes = 0L;
+
     /**
      * The writeBytes value.
      */
     private long writeBytes = 0L;
+
     /**
      * The transferTime value.
      */
     private long transferTime = 0L;
+
     /**
      * The timeStamp value.
      */
     private long timeStamp = 0L;
+
     /**
      * The partitionList value.
      */
@@ -578,6 +587,9 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
 
     /**
      * Enum to hold CFStringRef keys for DiskArbitration and IOKit lookups.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private enum CFKey {
 
@@ -671,6 +683,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
         public String getKey() {
             return this.key;
         }
+
     }
 
 }

@@ -40,30 +40,37 @@ public class HttpzState {
      * The maximum number of error messages to store.
      */
     private static final int MAX_ERROR_MSG_COUNT = 100;
+
     /**
      * A counter for the total number of requests made.
      */
     protected static AtomicInteger reqTotalCount = new AtomicInteger(0);
+
     /**
      * A counter for the number of failed requests (e.g., non-2xx responses).
      */
     protected static AtomicInteger reqFailureCount = new AtomicInteger(0);
+
     /**
      * A counter for the number of requests that resulted in an exception.
      */
     protected static AtomicInteger reqExceptionCount = new AtomicInteger(0);
+
     /**
      * The time when the statistics tracking started.
      */
     protected static Date startTime = new Date();
+
     /**
      * The timestamp of the last recorded request activity.
      */
     protected static Date lastAccessTime;
+
     /**
      * A deque to store the most recent error messages.
      */
     protected static LinkedBlockingDeque<String> errorMsgs = new LinkedBlockingDeque<>(MAX_ERROR_MSG_COUNT);
+
     /**
      * A flag to stop statistics collection.
      */

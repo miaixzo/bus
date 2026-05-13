@@ -35,7 +35,6 @@ import org.miaixz.bus.core.center.function.SupplierX;
  * <p>
  * When methods like {@code putValue} or {@code putAllValues} are called, a value collection will be created for the key
  * (if one doesn't exist), and new values will be appended to this collection.
- * 
  *
  * @param <K> The type of keys in the map.
  * @param <V> The type of values stored in the collections.

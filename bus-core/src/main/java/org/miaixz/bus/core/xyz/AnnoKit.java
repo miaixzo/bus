@@ -61,18 +61,22 @@ public class AnnoKit {
      * JDK annotation attribute field name.
      */
     private static final String JDK_MEMBER_ATTRIBUTE = "memberValues";
+
     /**
      * Spring annotation attribute field name.
      */
     private static final String SPRING_MEMBER_ATTRIBUTE = "valueCache";
+
     /**
      * Bus annotation attribute field name.
      */
     private static final String BUS_MEMBER_ATTRIBUTE = "valueCache";
+
     /**
      * Spring synthesized annotation handler class name.
      */
     private static final String SPRING_INVOCATION_HANDLER = "SynthesizedMergedAnnotationInvocationHandler";
+
     /**
      * Cache for directly declared annotations, stored using a weak-reference concurrent map.
      */

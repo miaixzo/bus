@@ -26,6 +26,12 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serial;
 
+/**
+ * The label class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Label implements Serializable {
 
     @Serial

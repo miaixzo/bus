@@ -24,11 +24,19 @@ import java.net.DatagramPacket;
 import org.miaixz.bus.image.metric.Connection;
 
 /**
+ * Defines the UDPProtocolHandler contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface UDPProtocolHandler {
 
+    /**
+     * Executes the on receive operation.
+     *
+     * @param conn   the conn.
+     * @param packet the packet.
+     */
     void onReceive(Connection conn, DatagramPacket packet);
 
 }

@@ -41,10 +41,12 @@ public class EwmaRate {
      * 1-minute EWMA: alpha = 1 - exp(-5/60)
      */
     public static final double M1_ALPHA = Builder.EWMA_M1_ALPHA;
+
     /**
      * 5-minute EWMA: alpha = 1 - exp(-5/300)
      */
     public static final double M5_ALPHA = Builder.EWMA_M5_ALPHA;
+
     /**
      * 15-minute EWMA: alpha = 1 - exp(-5/900)
      */
@@ -54,18 +56,22 @@ public class EwmaRate {
      * Smoothing factor; determines how quickly the average responds to changes.
      */
     private final double alpha;
+
     /**
      * Tick interval in seconds; used to compute instantaneous rate.
      */
     private final double intervalSeconds;
+
     /**
      * Whether the first tick has been processed; false until first {@link #tick()} call.
      */
     private volatile boolean initialized = false;
+
     /**
      * Current EWMA rate in events/second.
      */
     private volatile double rate = 0.0;
+
     /**
      * Accumulates event counts between ticks.
      */
@@ -83,17 +89,23 @@ public class EwmaRate {
         this.intervalSeconds = intervalUnit.toNanos(interval) / 1_000_000_000.0;
     }
 
-    /** Returns a new EWMA configured for a 1-minute moving average, ticked every 5 seconds. */
+    /**
+     * Returns a new EWMA configured for a 1-minute moving average, ticked every 5 seconds.
+     */
     public static EwmaRate oneMinute() {
         return new EwmaRate(M1_ALPHA, 5, TimeUnit.SECONDS);
     }
 
-    /** Returns a new EWMA configured for a 5-minute moving average, ticked every 5 seconds. */
+    /**
+     * Returns a new EWMA configured for a 5-minute moving average, ticked every 5 seconds.
+     */
     public static EwmaRate fiveMinutes() {
         return new EwmaRate(M5_ALPHA, 5, TimeUnit.SECONDS);
     }
 
-    /** Returns a new EWMA configured for a 15-minute moving average, ticked every 5 seconds. */
+    /**
+     * Returns a new EWMA configured for a 15-minute moving average, ticked every 5 seconds.
+     */
     public static EwmaRate fifteenMinutes() {
         return new EwmaRate(M15_ALPHA, 5, TimeUnit.SECONDS);
     }

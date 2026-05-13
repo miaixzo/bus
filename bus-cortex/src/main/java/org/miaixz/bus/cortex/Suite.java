@@ -35,6 +35,7 @@ public final class Suite {
      * Traits explicitly declared by the backing store.
      */
     private final EnumSet<Trait> declared;
+
     /**
      * Declared traits that are currently available for use.
      */

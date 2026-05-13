@@ -47,10 +47,12 @@ public class NanoId {
      * The default length of the ID.
      */
     public static final int DEFAULT_SIZE = 21;
+
     /**
      * The default random number generator, using {@link SecureRandom} for robustness.
      */
     private static final SecureRandom DEFAULT_NUMBER_GENERATOR = RandomKit.getSecureRandom();
+
     /**
      * The default alphabet, using URL-safe Base64 characters.
      */

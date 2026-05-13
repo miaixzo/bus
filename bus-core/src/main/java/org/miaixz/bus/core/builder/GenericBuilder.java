@@ -35,17 +35,17 @@ import org.miaixz.bus.core.center.function.Consumer3X;
  *
  * <p>
  * Example of creating a new object:
- * 
+ *
  * <pre>{@code
- * 
+ *
  * Box box = GenericBuilder.of(Box::new).with(Box::setId, 1024L).with(Box::setTitle, "Hello World!").build();
  * }</pre>
  *
  * <p>
  * Example of modifying an existing object:
- * 
+ *
  * <pre>{@code
- * 
+ *
  * Box existingBox = new Box();
  * Box modifiedBox = GenericBuilder.of(() -> existingBox).with(Box::setTitle, "Hello Friend!").build();
  * }</pre>

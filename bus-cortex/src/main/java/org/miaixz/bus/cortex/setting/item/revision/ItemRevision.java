@@ -41,10 +41,12 @@ public class ItemRevision extends Item {
      * Current item entry identifier.
      */
     private String item_id;
+
     /**
      * Diff summary against the previous revision when available.
      */
     private String diff;
+
     /**
      * Parent revision that this revision rolled back from.
      */

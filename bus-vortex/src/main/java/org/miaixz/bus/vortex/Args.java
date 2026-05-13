@@ -19,21 +19,17 @@
 */
 package org.miaixz.bus.vortex;
 
-import java.util.Map;
-
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.Specifics;
 import org.miaixz.bus.vortex.strategy.RequestStrategy;
 import org.miaixz.bus.vortex.strategy.qualifier.McpQualifierStrategy;
 import org.miaixz.bus.vortex.strategy.qualifier.RestQualifierStrategy;
 import org.miaixz.bus.vortex.strategy.vetting.McpVettingStrategy;
 import org.miaixz.bus.vortex.strategy.vetting.RestVettingStrategy;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * A central repository for constants defining the gateway's public API contract and for binding configuration
@@ -43,12 +39,12 @@ import lombok.Setter;
  * "language" of the gateway. It also contains nested static classes that serve as models for type-safe configuration
  * binding from application properties (e.g., YAML or .properties files) using {@code @ConfigurationProperties}.
  *
- * @author Kimi Liu
  * @see RestQualifierStrategy
  * @see McpQualifierStrategy
  * @see RestVettingStrategy
  * @see McpVettingStrategy
  * @see RequestStrategy
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class Args extends Specifics {
@@ -113,37 +109,37 @@ public class Args extends Specifics {
     /**
      * The base URI path for standard RESTful API requests.
      */
-    public static final String REST_PATH_PREFIX = "/router/rest";
+    public static final String REST_PATH_PREFIX = Symbol.SLASH + "router" + Symbol.SLASH + "rest";
 
     /**
      * The base URI path for requests to be forwarded to a Message Queue.
      */
-    public static final String MQ_PATH_PREFIX = "/router/mq";
+    public static final String MQ_PATH_PREFIX = Symbol.SLASH + "router" + Symbol.SLASH + "mq";
 
     /**
      * The base URI path for requests to the MCP.
      */
-    public static final String MCP_PATH_PREFIX = "/router/mcp";
+    public static final String MCP_PATH_PREFIX = Symbol.SLASH + "router" + Symbol.SLASH + "mcp";
 
     /**
      * The base URI path for standard gRPC requests.
      */
-    public static final String GRPC_PATH_PREFIX = "/router/grpc";
+    public static final String GRPC_PATH_PREFIX = Symbol.SLASH + "router" + Symbol.SLASH + "grpc";
 
     /**
      * The base URI path for WebSocket connections.
      */
-    public static final String WS_PATH_PREFIX = "/router/ws";
+    public static final String WS_PATH_PREFIX = Symbol.SLASH + "router" + Symbol.SLASH + "ws";
 
     /**
      * The base URI path for Large Language Model (LLM) proxy requests.
      */
-    public static final String LLM_PATH_PREFIX = "/router/llm";
+    public static final String LLM_PATH_PREFIX = Symbol.SLASH + "router" + Symbol.SLASH + "llm";
 
     /**
      * The base URI path for custom (CST) requests.
      */
-    public static final String CST_PATH_PREFIX = "/router/cst";
+    public static final String CST_PATH_PREFIX = Symbol.SLASH + "router" + Symbol.SLASH + "cst";
 
     /**
      * A constant for a default API version, e.g., "1.0".
@@ -179,24 +175,6 @@ public class Args extends Specifics {
      * Route protocol for LLM assets.
      */
     public static final int PROTOCOL_LLM = 6;
-
-    /**
-     * Pre-built mapping table for protocol to router key. Using static map for O(1) lookup instead of switch expression
-     * evaluation on every request.
-     */
-    public static final Map<Integer, String> PROTOCOL_TO_ROUTER = Map.of(
-            PROTOCOL_HTTP,
-            Protocol.HTTP.getName(),
-            PROTOCOL_MQ,
-            Protocol.MQ.getName(),
-            PROTOCOL_MCP,
-            Protocol.MCP.getName(),
-            PROTOCOL_GRPC,
-            Protocol.GRPC.getName(),
-            PROTOCOL_WS,
-            Protocol.WS.getName(),
-            PROTOCOL_LLM,
-            "llm");
 
     /**
      * Checks if the given path is a RESTful API proxy request path.
@@ -307,6 +285,9 @@ public class Args extends Specifics {
     /**
      * A configuration properties model for rate limiting settings, typically bound from application properties under a
      * prefix like {@code vortex.limit}.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @Setter
@@ -325,6 +306,7 @@ public class Args extends Specifics {
          * Whether rate limiting is globally enabled.
          */
         private boolean enabled;
+
     }
 
 }

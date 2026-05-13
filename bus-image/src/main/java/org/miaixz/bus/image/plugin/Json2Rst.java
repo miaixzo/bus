@@ -45,22 +45,27 @@ public class Json2Rst {
      * A constant string of '=' characters used for underlining titles in RST.
      */
     private static final String UNDERLINE = "===============================================================";
+
     /**
      * The input directory containing the JSON schema files.
      */
     private final File indir;
+
     /**
      * The output directory where the RST files will be generated.
      */
     private final File outdir;
+
     /**
      * A queue of input files to be processed.
      */
     private final LinkedList<File> inFiles = new LinkedList<>();
+
     /**
      * A set to keep track of all processed references to avoid duplicates.
      */
     private final HashSet<String> totRefs = new HashSet<>();
+
     /**
      * The format string for the RST tabular columns directive.
      */

@@ -38,7 +38,7 @@ import org.miaixz.bus.storage.Context;
  * </ul>
  * <p>
  * <strong>Endpoint Format:</strong>
- * 
+ *
  * <pre>
  * Standard Endpoint:
  * https://{region}.digitaloceanspaces.com
@@ -55,7 +55,7 @@ import org.miaixz.bus.storage.Context;
  * </pre>
  * <p>
  * <strong>Usage Example:</strong>
- * 
+ *
  * <pre>{@code
  * Context context = Context.builder().endpoint("https://nyc3.digitaloceanspaces.com").bucket("my-space")
  *         .accessKey("your-access-key").secretKey("your-secret-key").region("nyc3").build();
@@ -98,7 +98,7 @@ import org.miaixz.bus.storage.Context;
  * </ul>
  * <p>
  * <strong>CDN Integration:</strong>
- * 
+ *
  * <pre>
  * Enable CDN for your Space to get:
  * - Global content delivery

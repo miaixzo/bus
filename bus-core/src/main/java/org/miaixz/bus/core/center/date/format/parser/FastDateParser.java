@@ -44,8 +44,8 @@ import org.miaixz.bus.core.xyz.ZoneKit;
  * Thread-safe date parser, replacing {@link java.text.SimpleDateFormat}, used to convert date strings to {@link Date}
  * objects.
  *
- * @author Kimi Liu
  * @see FastDatePrinter
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class FastDateParser extends SimpleDatePrinter implements PositionDateParser {
@@ -533,6 +533,9 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
 
     /**
      * Interface for date field parsing strategies.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     interface Strategy {
 
@@ -556,10 +559,14 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         default boolean isNumber() {
             return false;
         }
+
     }
 
     /**
      * Class to store parsing strategy and field width.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class StrategyAndWidth {
 
@@ -567,6 +574,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
          * The parsing strategy.
          */
         final Strategy strategy;
+
         /**
          * The field width.
          */
@@ -597,10 +605,14 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
             lt.previous();
             return nextStrategy.isNumber() ? width : 0;
         }
+
     }
 
     /**
      * Strategy for parsing a single field.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static abstract class PatternStrategy implements Strategy {
 
@@ -662,10 +674,14 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
          * @param value  The field value.
          */
         abstract void setCalendar(FastDateParser parser, Calendar cal, String value);
+
     }
 
     /**
      * Strategy for copying static or quoted fields in the format pattern.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class CopyQuotedStrategy implements Strategy {
 
@@ -714,10 +730,14 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
             pos.setIndex(formatField.length() + pos.getIndex());
             return true;
         }
+
     }
 
     /**
      * Strategy for parsing text fields (case-insensitive).
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class CaseInsensitiveTextStrategy extends PatternStrategy {
 
@@ -725,10 +745,12 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
          * The calendar field.
          */
         final int field;
+
         /**
          * The locale.
          */
         final Locale locale;
+
         /**
          * Map of field values (lowercase keys).
          */
@@ -764,10 +786,14 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
             final Integer iVal = lKeyValues.get(value.toLowerCase(locale));
             cal.set(field, iVal);
         }
+
     }
 
     /**
      * Strategy for parsing number fields.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class NumberStrategy implements Strategy {
 
@@ -854,6 +880,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         int modify(final FastDateParser parser, final int iValue) {
             return iValue;
         }
+
     }
 
     /**
@@ -881,6 +908,9 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
 
     /**
      * Strategy for parsing time zone fields.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static class TimeZoneStrategy extends PatternStrategy {
 
@@ -888,22 +918,27 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
          * Regular expression for RFC 822 time zone format.
          */
         private static final String RFC_822_TIME_ZONE = "[+-]\\d{4}";
+
         /**
          * Regular expression for UTC time zone with offset format.
          */
         private static final String UTC_TIME_ZONE_WITH_OFFSET = "[+-]\\d{2}:\\d{2}";
+
         /**
          * Regular expression for GMT option.
          */
         private static final String GMT_OPTION = "GMT[+-]\\d{1,2}:\\d{2}";
+
         /**
          * Index for time zone ID.
          */
         private static final int ID = 0;
+
         /**
          * The locale.
          */
         private final Locale locale;
+
         /**
          * Map of time zone names to information.
          */
@@ -977,6 +1012,9 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
 
         /**
          * Time zone information class.
+         *
+         * @author Kimi Liu
+         * @since Java 21+
          */
         private static class TzInfo {
 
@@ -984,6 +1022,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
              * The time zone object.
              */
             TimeZone zone;
+
             /**
              * Daylight saving time offset.
              */
@@ -999,11 +1038,16 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
                 zone = tz;
                 dstOffset = useDst ? tz.getDSTSavings() : 0;
             }
+
         }
+
     }
 
     /**
      * Strategy for parsing ISO 8601 time zone formats.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class ISO8601TimeZoneStrategy extends PatternStrategy {
 
@@ -1011,10 +1055,12 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
          * ISO 8601 single hour strategy.
          */
         private static final Strategy ISO_8601_1_STRATEGY = new ISO8601TimeZoneStrategy("(Z|(?:[+-]\\d{2}))");
+
         /**
          * ISO 8601 hour and minute strategy.
          */
         private static final Strategy ISO_8601_2_STRATEGY = new ISO8601TimeZoneStrategy("(Z|(?:[+-]\\d{2}\\d{2}))");
+
         /**
          * ISO 8601 hour and minute strategy with colon.
          */
@@ -1061,10 +1107,14 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
                 cal.setTimeZone(ZoneKit.getTimeZone("GMT" + value));
             }
         }
+
     }
 
     /**
      * Strategy parser for parsing format strings.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private class StrategyParser {
 
@@ -1072,6 +1122,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
          * The defining calendar.
          */
         final private Calendar definingCalendar;
+
         /**
          * The current parsing index.
          */
@@ -1145,6 +1196,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
             final String formatField = sb.toString();
             return new StrategyAndWidth(new CopyQuotedStrategy(formatField), formatField.length());
         }
+
     }
 
 }

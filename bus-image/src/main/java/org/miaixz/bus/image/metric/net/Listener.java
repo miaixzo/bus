@@ -23,11 +23,18 @@ import java.io.Closeable;
 import java.net.SocketAddress;
 
 /**
+ * Defines the Listener contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface Listener extends Closeable {
 
+    /**
+     * Gets the end point.
+     *
+     * @return the end point.
+     */
     SocketAddress getEndPoint();
 
 }

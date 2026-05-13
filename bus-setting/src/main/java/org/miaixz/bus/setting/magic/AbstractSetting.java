@@ -51,6 +51,7 @@ public abstract class AbstractSetting
      * The default delimiter for array-type values.
      */
     public static final String DEFAULT_DELIMITER = Symbol.COMMA;
+
     /**
      * The default group name for settings.
      */

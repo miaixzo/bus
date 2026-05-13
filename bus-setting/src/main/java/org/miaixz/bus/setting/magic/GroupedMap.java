@@ -45,14 +45,17 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
      * Lock for ensuring thread-safe access.
      */
     private final ReentrantReadWriteLock cacheLock = new ReentrantReadWriteLock();
+
     /**
      * Read lock.
      */
     private final ReadLock readLock = cacheLock.readLock();
+
     /**
      * Write lock.
      */
     private final WriteLock writeLock = cacheLock.writeLock();
+
     /**
      * Cached size of all key-value pairs across all groups. -1 indicates it needs recalculation.
      */

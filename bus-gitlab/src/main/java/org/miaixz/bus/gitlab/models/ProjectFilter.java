@@ -29,6 +29,9 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 /**
  * This class is used to filter Projects when getting lists of projects for a specified user.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class ProjectFilter implements Serializable {
 

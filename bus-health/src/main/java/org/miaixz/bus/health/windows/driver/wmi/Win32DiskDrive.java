@@ -52,9 +52,13 @@ public final class Win32DiskDrive {
 
     /**
      * Disk drive properties
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum DiskDriveProperty {
         INDEX, MANUFACTURER, MEDIATYPE, MODEL, NAME, SERIALNUMBER, SIZE
+
     }
 
 }

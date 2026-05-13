@@ -35,4 +35,5 @@ import java.time.Instant;
  */
 public record SloEvent(String sloName, double target, double compliance, double budgetRemaining, double burnRate,
         Instant detectedAt) {
+
 }

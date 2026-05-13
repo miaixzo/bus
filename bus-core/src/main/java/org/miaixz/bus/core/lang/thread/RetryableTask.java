@@ -44,23 +44,28 @@ public class RetryableTask<T> {
      * The supplier representing the task to be executed.
      */
     private final Supplier<T> sup;
+
     /**
      * The retry strategy, a {@link BiPredicate} that returns {@code true} if a retry should occur. The predicate
      * receives the task result and any thrown {@link Throwable}.
      */
     private final BiPredicate<T, Throwable> predicate;
+
     /**
      * The result of the task execution.
      */
     private T result;
+
     /**
      * The maximum number of retry attempts. Default is 3.
      */
     private long maxAttempts = 3;
+
     /**
      * The delay duration between retry attempts. Default is 1 second.
      */
     private Duration delay = Duration.ofSeconds(1);
+
     /**
      * The last {@link Throwable} encountered during task execution, if any.
      */

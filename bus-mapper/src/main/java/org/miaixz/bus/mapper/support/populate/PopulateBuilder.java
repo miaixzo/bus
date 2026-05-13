@@ -354,6 +354,9 @@ public class PopulateBuilder {
 
     /**
      * Entity metadata holder.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class EntityMetadata {
 

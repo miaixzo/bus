@@ -49,6 +49,9 @@ import java.util.ArrayList;
  *
  * No copyright asserted on the source code of this class. May be used for any purpose, however, refer to the Unisys LZW
  * patent for any additional restrictions. Please forward any corrections to questions at fmsware.com.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class GifDecoder {
 
@@ -66,18 +69,22 @@ public class GifDecoder {
      * File read status: Unable to open source.
      */
     public static final int STATUS_OPEN_ERROR = 2;
+
     /**
      * The maximum decoder pixel stack size.
      */
     protected static final int MaxStackSize = 4096;
+
     /**
      * The buffered input stream.
      */
     protected BufferedInputStream in;
+
     /**
      * The current status of the decoder.
      */
     protected int status;
+
     /**
      * The full image width.
      */
@@ -172,6 +179,7 @@ public class GifDecoder {
      * The last disposal method used.
      */
     protected int lastDispose = 0;
+
     /**
      * Flag indicating if a transparent color is used.
      */
@@ -190,14 +198,17 @@ public class GifDecoder {
      * LZW decoder working array.
      */
     protected short[] prefix;
+
     /**
      * LZW decoder working array.
      */
     protected byte[] suffix;
+
     /**
      * LZW decoder working array.
      */
     protected byte[] pixelStack;
+
     /**
      * Byte array of pixel data.
      */
@@ -876,6 +887,9 @@ public class GifDecoder {
 
     /**
      * A frame as part of a GIF animation.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static class GifFrame {
 
@@ -883,6 +897,7 @@ public class GifDecoder {
          * The image contents of the frame.
          */
         public BufferedImage image;
+
         /**
          * The display delay for this frame.
          */
@@ -898,6 +913,7 @@ public class GifDecoder {
             this.image = image;
             this.delay = delay;
         }
+
     }
 
 }

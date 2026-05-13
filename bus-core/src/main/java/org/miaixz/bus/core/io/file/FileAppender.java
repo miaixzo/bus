@@ -50,18 +50,22 @@ public class FileAppender implements Serializable {
      * The internal {@link FileWriter} used for writing data to the file.
      */
     private final FileWriter writer;
+
     /**
      * The maximum number of lines to hold in memory before flushing to the file.
      */
     private final int capacity;
+
     /**
      * A flag indicating whether each appended content should be treated as a new line.
      */
     private final boolean isNewLineMode;
+
     /**
      * The internal list used to cache data lines before flushing them to the file.
      */
     private final List<String> list;
+
     /**
      * The lock used to protect write operations, ensuring thread safety. If {@code null} is provided during
      * construction, a no-op lock is used.

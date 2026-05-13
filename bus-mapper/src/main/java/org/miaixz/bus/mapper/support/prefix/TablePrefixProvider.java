@@ -59,9 +59,12 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * <p>
  * <b>Example 1: Simple static prefix (use configuration file)</b>
  * </p>
- * 
- * <pre>{@code
- * @Component
+ *
+ * <pre>
+ * {@code
+ *
+ * &#64;author Kimi Liu
+ * &#64;Component
  * public class SimplePrefixProvider implements TablePrefixProvider {
  *
  *     public String getPrefix() {
@@ -69,12 +72,13 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  *     }
  *     // No getConfig() override - configuration from application.yml
  * }
- * }</pre>
+ * }
+ * </pre>
  *
  * <p>
  * <b>Example 2: Context-based dynamic prefix</b>
  * </p>
- * 
+ *
  * <pre>{@code
  * @Component
  * public class ContextAwarePrefixProvider implements TablePrefixProvider {
@@ -92,7 +96,7 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * <p>
  * <b>Example 3: Environment-based with configuration override</b>
  * </p>
- * 
+ *
  * <pre>{@code
  * @Component
  * public class CustomPrefixProvider implements TablePrefixProvider {
@@ -112,10 +116,10 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * }
  * }</pre>
  *
- * @author Kimi Liu
  * @see TablePrefixConfig
  * @see TablePrefixHandler
  * @see MapperProvider
+ * @author Kimi Liu
  * @since Java 21+
  */
 @FunctionalInterface

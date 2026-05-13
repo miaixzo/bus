@@ -44,7 +44,7 @@ import org.miaixz.bus.storage.Context;
  * <strong>Configuration Example:</strong>
  *
  * <pre>{@code
- * 
+ *
  * Context context = Context.builder().endpoint("https://objectstorage.kr-central-1.kakaoi.io").bucket("my-bucket")
  *         .accessKey("KAKAO_ACCESS_KEY").secretKey("KAKAO_SECRET_KEY").region("kr-central-1").build();
  *

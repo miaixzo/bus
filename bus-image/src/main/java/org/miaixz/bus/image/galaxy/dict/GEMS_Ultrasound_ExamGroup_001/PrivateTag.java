@@ -20,17 +20,26 @@
 package org.miaixz.bus.image.galaxy.dict.GEMS_Ultrasound_ExamGroup_001;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEMS_Ultrasound_ExamGroup_001";
 
-    /** (6005,xx10) VR=UT VM=1 ? */
+    /**
+     * (6005,xx10) VR=UT VM=1 ?
+     */
     public static final int _6005_xx10_ = 0x60050010;
 
-    /** (6005,xx20) VR=UT VM=1 ? */
+    /**
+     * (6005,xx20) VR=UT VM=1 ?
+     */
     public static final int _6005_xx20_ = 0x60050020;
 
 }

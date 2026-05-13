@@ -44,22 +44,27 @@ public class RegistryRefreshScope {
      * Registry namespace identifier.
      */
     private String namespace_id;
+
     /**
      * Registry asset type.
      */
     private Type type;
+
     /**
      * Registry asset identifier.
      */
     private String id;
+
     /**
      * Logical refresh mode such as refresh or rebuild.
      */
     private String refreshMode;
+
     /**
      * Caller-supplied request identifier for tracing.
      */
     private String requestId;
+
     /**
      * Whether disabled entries should be included.
      */

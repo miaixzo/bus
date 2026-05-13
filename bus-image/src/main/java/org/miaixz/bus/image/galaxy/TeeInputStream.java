@@ -25,13 +25,24 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * Represents the TeeInputStream type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class TeeInputStream extends FilterInputStream {
 
+    /**
+     * The out value.
+     */
     private final OutputStream out;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param in  the in.
+     * @param out the out.
+     */
     public TeeInputStream(InputStream in, OutputStream out) {
         super(in);
         if (out == null)
@@ -39,6 +50,12 @@ public class TeeInputStream extends FilterInputStream {
         this.out = out;
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int read() throws IOException {
         int b = super.read();
@@ -47,6 +64,15 @@ public class TeeInputStream extends FilterInputStream {
         return b;
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @param b   the b.
+     * @param off the off.
+     * @param len the len.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
         len = super.read(b, off, len);

@@ -38,6 +38,12 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.Serial;
 
+/**
+ * The todo class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Todo implements Serializable {
 
     @Serial
@@ -164,6 +170,12 @@ public class Todo implements Serializable {
 
     // This deserializer will determine the target type and deserialize to the correct class (either MergeRequest or
     // Issue).
+    /**
+     * The target deserializer class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     private static class TargetDeserializer extends JsonDeserializer<Object> {
 
         @Override
@@ -179,6 +191,7 @@ public class Todo implements Serializable {
                 return mapper.treeToValue(root, Issue.class);
             }
         }
+
     }
 
 }

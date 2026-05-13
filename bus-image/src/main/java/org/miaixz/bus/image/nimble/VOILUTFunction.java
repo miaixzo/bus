@@ -20,10 +20,23 @@
 package org.miaixz.bus.image.nimble;
 
 /**
+ * Defines the VOILUTFunction values.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public enum VOILUTFunction {
-    LINEAR, LINEAR_EXACT, SIGMOID
+    /**
+     * Constant for the linear value.
+     */
+    LINEAR,
+    /**
+     * Constant for the linear exact value.
+     */
+    LINEAR_EXACT,
+    /**
+     * Constant for the sigmoid value.
+     */
+    SIGMOID
 
 }

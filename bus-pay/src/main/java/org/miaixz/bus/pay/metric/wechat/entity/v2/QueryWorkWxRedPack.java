@@ -43,14 +43,17 @@ public class QueryWorkWxRedPack extends Voucher {
      * Random string.
      */
     private String nonce_str;
+
     /**
      * Signature.
      */
     private String sign;
+
     /**
      * Merchant's bill number.
      */
     private String mch_billno;
+
     /**
      * Merchant ID.
      */

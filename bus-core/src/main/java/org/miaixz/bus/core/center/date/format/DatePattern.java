@@ -43,10 +43,12 @@ public class DatePattern {
      */
     private static final ConcurrentMap<TimeZoneDisplayKey, String> C_TIME_ZONE_DISPLAY_CACHE = new ConcurrentHashMap<>(
             7);
+
     /**
      * The list of formatting rules derived from the pattern.
      */
     private final Rule[] rules;
+
     /**
      * An estimated length of the formatted string.
      */
@@ -352,6 +354,9 @@ public class DatePattern {
 
     /**
      * An interface for a single formatting rule.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public interface Rule {
 
@@ -370,10 +375,14 @@ public class DatePattern {
          * @throws IOException if an I/O error occurs.
          */
         void appendTo(Appendable buf, Calendar calendar) throws IOException;
+
     }
 
     /**
      * An extension of {@link Rule} for formatting numeric fields.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public interface NumberRule extends Rule {
 
@@ -385,10 +394,14 @@ public class DatePattern {
          * @throws IOException if an I/O error occurs.
          */
         void appendTo(Appendable buffer, int value) throws IOException;
+
     }
 
     /**
      * A rule to output a literal character.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class CharacterLiteral implements Rule {
 
@@ -422,10 +435,14 @@ public class DatePattern {
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             buffer.append(mValue);
         }
+
     }
 
     /**
      * A rule to output a literal string.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class StringLiteral implements Rule {
 
@@ -459,10 +476,14 @@ public class DatePattern {
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             buffer.append(mValue);
         }
+
     }
 
     /**
      * A rule to output a text field from a set of values (e.g., month name, day of the week).
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class TextField implements Rule {
 
@@ -505,10 +526,14 @@ public class DatePattern {
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             buffer.append(mValues[calendar.get(mField)]);
         }
+
     }
 
     /**
      * A rule for formatting a number field without padding.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class UnpaddedNumberField implements NumberRule {
 
@@ -561,10 +586,14 @@ public class DatePattern {
                 appendFullDigits(buffer, value, 1);
             }
         }
+
     }
 
     /**
      * A rule for formatting the month field without padding (1-12).
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class UnpaddedMonthField implements NumberRule {
 
@@ -614,10 +643,14 @@ public class DatePattern {
                 appendDigits(buffer, value);
             }
         }
+
     }
 
     /**
      * A rule for formatting a number field with padding.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class PaddedNumberField implements NumberRule {
 
@@ -669,10 +702,14 @@ public class DatePattern {
         public final void appendTo(final Appendable buffer, final int value) throws IOException {
             appendFullDigits(buffer, value, mSize);
         }
+
     }
 
     /**
      * A rule for formatting a number field with two digits.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class TwoDigitNumberField implements NumberRule {
 
@@ -723,10 +760,14 @@ public class DatePattern {
                 appendFullDigits(buffer, value, 2);
             }
         }
+
     }
 
     /**
      * A rule for formatting the year with two digits.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class TwoDigitYearField implements NumberRule {
 
@@ -772,10 +813,14 @@ public class DatePattern {
         public final void appendTo(final Appendable buffer, final int value) throws IOException {
             appendDigits(buffer, value);
         }
+
     }
 
     /**
      * A rule for formatting the month with two digits (01-12).
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class TwoDigitMonthField implements NumberRule {
 
@@ -821,10 +866,14 @@ public class DatePattern {
         public final void appendTo(final Appendable buffer, final int value) throws IOException {
             appendDigits(buffer, value);
         }
+
     }
 
     /**
      * A rule for formatting the hour in 12-hour format (1-12).
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class TwelveHourField implements NumberRule {
 
@@ -875,10 +924,14 @@ public class DatePattern {
         public void appendTo(final Appendable buffer, final int value) throws IOException {
             mRule.appendTo(buffer, value);
         }
+
     }
 
     /**
      * A rule for formatting the hour in 24-hour format (1-24).
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class TwentyFourHourField implements NumberRule {
 
@@ -929,10 +982,14 @@ public class DatePattern {
         public void appendTo(final Appendable buffer, final int value) throws IOException {
             mRule.appendTo(buffer, value);
         }
+
     }
 
     /**
      * A rule for formatting the day of the week as a number (1=Monday...7=Sunday).
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class DayInWeekField implements NumberRule {
 
@@ -980,10 +1037,14 @@ public class DatePattern {
         public void appendTo(final Appendable buffer, final int value) throws IOException {
             mRule.appendTo(buffer, value);
         }
+
     }
 
     /**
      * A rule for formatting the week-based year.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class WeekYear implements NumberRule {
 
@@ -1034,10 +1095,14 @@ public class DatePattern {
         public void appendTo(final Appendable buffer, final int value) throws IOException {
             mRule.appendTo(buffer, value);
         }
+
     }
 
     /**
      * A rule for formatting the timezone name.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class TimeZoneNameRule implements Rule {
 
@@ -1082,10 +1147,14 @@ public class DatePattern {
                 buffer.append(getTimeZoneDisplay(zone, false, mStyle, mLocale));
             }
         }
+
     }
 
     /**
      * A rule for formatting the timezone as a numeric offset (e.g., +/-HHMM or +/-HH:mm).
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class TimeZoneNumberRule implements Rule {
 
@@ -1134,10 +1203,14 @@ public class DatePattern {
             final int minutes = offset / (60 * 1000) - 60 * hours;
             appendDigits(buffer, minutes);
         }
+
     }
 
     /**
      * A rule for formatting the timezone in ISO 8601 format.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class Iso8601_Rule implements Rule {
 
@@ -1203,10 +1276,14 @@ public class DatePattern {
             final int minutes = offset / (60 * 1000) - 60 * hours;
             appendDigits(buffer, minutes);
         }
+
     }
 
     /**
      * A composite key for caching timezone display names.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class TimeZoneDisplayKey {
 
@@ -1250,6 +1327,7 @@ public class DatePattern {
             }
             return false;
         }
+
     }
 
 }

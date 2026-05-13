@@ -27,7 +27,7 @@ import org.miaixz.bus.core.lang.Assert;
  * Represents a class member, providing access to class modifiers and other class-level information.
  * <p>
  * Example usage:
- * 
+ *
  * <pre>
  * ClassMember member = new ClassMember(String.class);
  * System.out.println(member.getModifiers());

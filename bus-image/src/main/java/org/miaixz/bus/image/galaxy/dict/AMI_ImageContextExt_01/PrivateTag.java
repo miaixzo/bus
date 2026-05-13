@@ -20,17 +20,26 @@
 package org.miaixz.bus.image.galaxy.dict.AMI_ImageContextExt_01;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "AMI ImageContextExt_01";
 
-    /** (3107,xxA0) VR=CS VM=1 Window Function */
+    /**
+     * (3107,xxA0) VR=CS VM=1 Window Function
+     */
     public static final int WindowFunction = 0x310700A0;
 
-    /** (3107,xxB0) VR=DS VM=1 Window Slope */
+    /**
+     * (3107,xxB0) VR=DS VM=1 Window Slope
+     */
     public static final int WindowSlope = 0x310700B0;
 
 }

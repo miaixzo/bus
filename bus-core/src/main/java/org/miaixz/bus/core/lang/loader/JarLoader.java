@@ -47,6 +47,7 @@ public class JarLoader extends ResourceLoader implements Loader {
      * The context URL for resources within the JAR.
      */
     private final URL context;
+
     /**
      * The JAR file instance.
      */
@@ -107,6 +108,9 @@ public class JarLoader extends ResourceLoader implements Loader {
 
     /**
      * An {@link Enumeration} implementation for iterating over resources within a JAR file.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class Enumerator extends ResourceEnumerator implements Enumeration<Resource> {
 
@@ -114,22 +118,27 @@ public class JarLoader extends ResourceLoader implements Loader {
          * The context URL for resources within the JAR.
          */
         private final URL context;
+
         /**
          * The base path to search for resources.
          */
         private final String path;
+
         /**
          * The folder path, ensuring it ends with a slash for consistent path matching.
          */
         private final String folder;
+
         /**
          * Whether to search for resources in subdirectories recursively.
          */
         private final boolean recursively;
+
         /**
          * The filter to apply to resources.
          */
         private final Filter filter;
+
         /**
          * The enumeration of JAR entries within the JAR file.
          */

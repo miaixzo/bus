@@ -53,6 +53,7 @@ final class WindowsComputerSystem extends AbstractComputerSystem {
      */
     private final Supplier<Pair<String, String>> manufacturerModel = Memoizer
             .memoize(WindowsComputerSystem::queryManufacturerModel);
+
     /**
      * The serialNumberUUID value.
      */

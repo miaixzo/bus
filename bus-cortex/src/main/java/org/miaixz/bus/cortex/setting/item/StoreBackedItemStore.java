@@ -53,10 +53,12 @@ public class StoreBackedItemStore {
      * Shared cache used for current-state projection.
      */
     private final CacheX<String, Object> cacheX;
+
     /**
      * Optional durable current-state store.
      */
     private final ItemStore store;
+
     /**
      * Setting-domain key strategy.
      */

@@ -20,11 +20,18 @@
 package org.miaixz.bus.image.metric;
 
 /**
+ * Defines the CancelRQHandler contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface CancelRQHandler {
 
+    /**
+     * Executes the on cancel rq operation.
+     *
+     * @param association the association.
+     */
     void onCancelRQ(Association association);
 
 }

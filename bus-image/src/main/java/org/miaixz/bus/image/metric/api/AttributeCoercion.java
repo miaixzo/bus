@@ -31,43 +31,45 @@ import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.metric.TransferCapability;
 
 /**
- * 属性强制转换类，用于定义在特定条件下对DICOM属性进行强制转换的规则。 该类实现了Serializable和Comparable接口，支持序列化和比较操作。
- * 属性强制转换规则可以基于SOP类、DIMSE操作、角色和AE标题等条件进行匹配。
+ * Compares related values. Provides DICOM processing details.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class AttributeCoercion implements Serializable, Comparable<AttributeCoercion> {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852262397936L;
 
     /**
-     * 通用名称
+     * Provides DICOM processing details.
      */
     private final String commonName;
 
     /**
-     * 条件对象
+     * Provides DICOM processing details.
      */
     private final Condition condition;
 
     /**
-     * URI标识
+     * Provides DICOM processing details.
      */
     private final String uri;
 
     /**
-     * 构造一个属性强制转换规则
+     * Creates a new instance.
      *
-     * @param commonName 通用名称
-     * @param sopClasses SOP类数组
-     * @param dimse      DIMSE操作
-     * @param role       角色（SCU或SCP）
-     * @param aeTitles   AE标题数组
-     * @param uri        URI标识
-     * @throws NullPointerException     如果commonName为null
-     * @throws IllegalArgumentException 如果commonName为空
+     * @param commonName the common name.
+     * @param sopClasses the sop classes.
+     * @param dimse      the dimse.
+     * @param role       the role.
+     * @param aeTitles   the ae titles.
+     * @param uri        the uri.
+     * @throws NullPointerException     if the operation cannot be completed.
+     * @throws IllegalArgumentException if the operation cannot be completed.
      */
     public AttributeCoercion(String commonName, String[] sopClasses, Dimse dimse, TransferCapability.Role role,
             String[] aeTitles, String uri) {
@@ -81,11 +83,11 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
     }
 
     /**
-     * 将CUID列表追加到字符串构建器
+     * Adds the related value.
      *
-     * @param sb     字符串构建器
-     * @param indent 缩进字符串
-     * @param cuids  CUID数组
+     * @param sb     the sb.
+     * @param indent the indent.
+     * @param cuids  the cuids.
      */
     private static void promptCUIDsTo(StringBuilder sb, String indent, String[] cuids) {
         if (cuids.length == 0)
@@ -98,11 +100,11 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
     }
 
     /**
-     * 将AE标题列表追加到字符串构建器
+     * Adds the related value.
      *
-     * @param sb     字符串构建器
-     * @param indent 缩进字符串
-     * @param aets   AE标题数组
+     * @param sb     the sb.
+     * @param indent the indent.
+     * @param aets   the aets.
      */
     private static void promptAETsTo(StringBuilder sb, String indent, String[] aets) {
         if (aets.length == 0)
@@ -115,77 +117,77 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
     }
 
     /**
-     * 获取通用名称
+     * Gets the related value.
      *
-     * @return 通用名称
+     * @return the result.
      */
     public final String getCommonName() {
         return commonName;
     }
 
     /**
-     * 获取SOP类数组
+     * Gets the related value.
      *
-     * @return SOP类数组
+     * @return the result.
      */
     public final String[] getSOPClasses() {
         return condition.sopClasses;
     }
 
     /**
-     * 获取DIMSE操作
+     * Gets the related value.
      *
-     * @return DIMSE操作
+     * @return the result.
      */
     public final Dimse getDIMSE() {
         return condition.dimse;
     }
 
     /**
-     * 获取角色
+     * Gets the related value.
      *
-     * @return 角色（SCU或SCP）
+     * @return the result.
      */
     public final TransferCapability.Role getRole() {
         return condition.role;
     }
 
     /**
-     * 获取AE标题数组
+     * Gets the related value.
      *
-     * @return AE标题数组
+     * @return the result.
      */
     public final String[] getAETitles() {
         return condition.aeTitles;
     }
 
     /**
-     * 获取URI标识
+     * Gets the related value.
      *
-     * @return URI标识
+     * @return the result.
      */
     public final String getURI() {
         return uri;
     }
 
     /**
-     * 检查是否匹配指定条件
+     * Determines whether the condition is met.
      *
-     * @param sopClass SOP类
-     * @param dimse    DIMSE操作
-     * @param role     角色（SCU或SCP）
-     * @param aeTitle  AE标题
-     * @return 如果匹配则返回true，否则返回false
+     * @param sopClass the sop class.
+     * @param dimse    the dimse.
+     * @param role     the role.
+     * @param aeTitle  the ae title.
+     * @return true if the condition is met; otherwise false.
      */
     public boolean matchesCondition(String sopClass, Dimse dimse, TransferCapability.Role role, String aeTitle) {
         return condition.matches(sopClass, dimse, role, aeTitle);
     }
 
     /**
-     * 比较两个属性强制转换规则的优先级
+     * Compares related values.
      *
-     * @param o 要比较的属性强制转换规则
-     * @return 如果此规则的优先级高于指定规则则返回负数，如果低于则返回正数，如果相等则返回0
+     * @param o the o.
+     * @return true if the condition is met; otherwise false.
      */
     @Override
     public int compareTo(AttributeCoercion o) {
@@ -193,9 +195,9 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
     }
 
     /**
-     * 返回此属性强制转换规则的字符串表示
+     * Returns the related value.
      *
-     * @return 属性强制转换规则的字符串表示
+     * @return the result.
      */
     @Override
     public String toString() {
@@ -203,11 +205,11 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
     }
 
     /**
-     * 将此属性强制转换规则的提示信息追加到指定的字符串构建器
+     * Adds the related value.
      *
-     * @param sb     字符串构建器
-     * @param indent 缩进字符串
-     * @return 追加后的字符串构建器
+     * @param sb     the sb.
+     * @param indent the indent.
+     * @return the result.
      */
     public StringBuilder promptTo(StringBuilder sb, String indent) {
         String indent2 = indent + Symbol.SPACE;
@@ -223,46 +225,52 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
     }
 
     /**
-     * 条件类，用于存储和匹配属性强制转换的条件
+     * Provides DICOM processing details.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class Condition implements Serializable, Comparable<Condition> {
 
+        /**
+         * The serial version uid value.
+         */
         @Serial
         private static final long serialVersionUID = 2852262539097L;
 
         /**
-         * SOP类数组
+         * Provides DICOM processing details.
          */
         final String[] sopClasses;
 
         /**
-         * DIMSE操作
+         * Provides DICOM processing details.
          */
         final Dimse dimse;
 
         /**
-         * 角色（SCU或SCP）
+         * Provides DICOM processing details.
          */
         final TransferCapability.Role role;
 
         /**
-         * AE标题数组
+         * Provides DICOM processing details.
          */
         final String[] aeTitles;
 
         /**
-         * 权重，用于比较条件优先级
+         * Compares related values.
          */
         final int weight;
 
         /**
-         * 构造一个条件对象
+         * Creates a new instance.
          *
-         * @param sopClasses SOP类数组
-         * @param dimse      DIMSE操作
-         * @param role       角色（SCU或SCP）
-         * @param aeTitles   AE标题数组
-         * @throws NullPointerException 如果dimse或role为null
+         * @param sopClasses the sop classes.
+         * @param dimse      the dimse.
+         * @param role       the role.
+         * @param aeTitles   the ae titles.
+         * @throws NullPointerException if the operation cannot be completed.
          */
         public Condition(String[] sopClasses, Dimse dimse, TransferCapability.Role role, String[] aeTitles) {
             if (dimse == null)
@@ -277,11 +285,11 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
         }
 
         /**
-         * 检查数组是否为空或包含指定对象
+         * Determines whether the condition is met.
          *
-         * @param a 数组
-         * @param o 要查找的对象
-         * @return 如果数组为空或包含指定对象则返回true，否则返回false
+         * @param a the a.
+         * @param o the o.
+         * @return true if the condition is met; otherwise false.
          */
         private static boolean isEmptyOrContains(Object[] a, Object o) {
             if (o == null || a.length == 0)
@@ -293,10 +301,10 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
         }
 
         /**
-         * 比较两个条件的优先级
+         * Compares related values.
          *
-         * @param o 要比较的条件
-         * @return 如果此条件的优先级高于指定条件则返回负数，如果低于则返回正数，如果相等则返回0
+         * @param o the o.
+         * @return true if the condition is met; otherwise false.
          */
         @Override
         public int compareTo(Condition o) {
@@ -304,18 +312,19 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
         }
 
         /**
-         * 检查是否匹配指定条件
+         * Determines whether the condition is met.
          *
-         * @param sopClass SOP类
-         * @param dimse    DIMSE操作
-         * @param role     角色（SCU或SCP）
-         * @param aeTitle  AE标题
-         * @return 如果匹配则返回true，否则返回false
+         * @param sopClass the sop class.
+         * @param dimse    the dimse.
+         * @param role     the role.
+         * @param aeTitle  the ae title.
+         * @return true if the condition is met; otherwise false.
          */
         public boolean matches(String sopClass, Dimse dimse, TransferCapability.Role role, String aeTitle) {
             return this.dimse == dimse && this.role == role && isEmptyOrContains(this.aeTitles, aeTitle)
                     && isEmptyOrContains(this.sopClasses, sopClass);
         }
+
     }
 
 }

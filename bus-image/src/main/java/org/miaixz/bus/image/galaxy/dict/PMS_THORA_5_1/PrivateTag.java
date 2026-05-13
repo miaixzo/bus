@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.PMS_THORA_5_1;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "PMS-THORA-5.1";
 
-    /** (0089,xx20) VR=SQ VM=1 ? */
+    /**
+     * (0089,xx20) VR=SQ VM=1 ?
+     */
     public static final int _0089_xx20_ = 0x00890020;
 
 }

@@ -28,8 +28,8 @@ import java.nio.ByteBuffer;
  * Users can handle the events they are interested in by implementing the {@link Handler} interface.
  * </p>
  *
- * @author Kimi Liu
  * @see Handler
+ * @author Kimi Liu
  * @since Java 21+
  */
 public enum Status {
@@ -85,4 +85,5 @@ public enum Status {
      * An internal exception occurred within the framework.
      */
     INTERNAL_EXCEPTION
+
 }

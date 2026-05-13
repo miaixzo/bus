@@ -230,4 +230,5 @@ public interface GpuStats extends AutoCloseable {
      *                               {@link GraphicsCard#createStatsSession()}
      */
     double getFanSpeedPercent();
+
 }

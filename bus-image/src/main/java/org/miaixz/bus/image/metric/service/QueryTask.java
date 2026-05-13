@@ -22,6 +22,8 @@ package org.miaixz.bus.image.metric.service;
 import org.miaixz.bus.image.metric.CancelRQHandler;
 
 /**
+ * Defines the QueryTask contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */

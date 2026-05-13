@@ -1,21 +1,32 @@
 package org.opencv.core;
 
 //javadoc:TermCriteria
+/**
+ * The term criteria class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class TermCriteria {
 
     /**
      * The maximum number of iterations or elements to compute
      */
     public static final int COUNT = 1;
+
     /**
      * The maximum number of iterations or elements to compute
      */
     public static final int MAX_ITER = COUNT;
+
     /**
      * The desired accuracy threshold or change in parameters at which the iterative algorithm is terminated.
      */
     public static final int EPS = 2;
 
+    /**
+     * The type field.
+     */
     public int type;
     public int maxCount;
     public double epsilon;
@@ -88,4 +99,5 @@ public class TermCriteria {
     public String toString() {
         return "{ type: " + type + ", maxCount: " + maxCount + ", epsilon: " + epsilon + "}";
     }
+
 }

@@ -36,10 +36,12 @@ public class OSService {
      * The name value.
      */
     private final String name;
+
     /**
      * The processID value.
      */
     private final int processID;
+
     /**
      * The state value.
      */
@@ -93,9 +95,13 @@ public class OSService {
 
     /**
      * Service Execution States
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum State {
         RUNNING, STOPPED, OTHER
+
     }
 
 }

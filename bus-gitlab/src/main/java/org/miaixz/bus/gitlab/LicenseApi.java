@@ -29,8 +29,10 @@ import jakarta.ws.rs.core.Response;
 
 /**
  * This class provides an entry point to all the GitLab API license calls.
- * 
+ *
  * @see <a href="https://docs.gitlab.com/ce/api/license.html">License API</a>
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class LicenseApi extends AbstractApi {
 

@@ -45,6 +45,7 @@ public class NullCompare<T> implements Comparator<T>, Serializable {
      * Indicates whether {@code null} is considered greater than non-null values.
      */
     protected final boolean nullGreater;
+
     /**
      * The actual comparator to use for non-null objects.
      */

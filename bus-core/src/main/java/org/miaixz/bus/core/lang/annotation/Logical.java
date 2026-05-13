@@ -29,6 +29,9 @@ import org.miaixz.bus.core.lang.Normal;
 /**
  * Marks a field as a logical status column, typically used for implementing soft deletes in a persistence layer. This
  * annotation allows frameworks to automatically handle filtering for active or inactive records.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

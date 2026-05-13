@@ -31,23 +31,65 @@ import org.miaixz.bus.image.galaxy.data.VR;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Defines the QueryRetrieveLevel2 values.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public enum QueryRetrieveLevel2 {
 
-    PATIENT(Tag.PatientID, VR.LO), STUDY(Tag.StudyInstanceUID, VR.UI), SERIES(Tag.SeriesInstanceUID, VR.UI),
+    /**
+     * Constant for the patient value.
+     */
+    PATIENT(Tag.PatientID, VR.LO),
+    /**
+     * Constant for the study value.
+     */
+    STUDY(Tag.StudyInstanceUID, VR.UI),
+    /**
+     * Constant for the series value.
+     */
+    SERIES(Tag.SeriesInstanceUID, VR.UI),
+    /**
+     * The image value.
+     */
     IMAGE(Tag.SOPInstanceUID, VR.UI);
 
+    /**
+     * The dict value.
+     */
     private static final ElementDictionary DICT = ElementDictionary.getStandardElementDictionary();
+
+    /**
+     * The unique key value.
+     */
     private final int uniqueKey;
+
+    /**
+     * The vr of unique key value.
+     */
     private final VR vrOfUniqueKey;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param uniqueKey     the unique key.
+     * @param vrOfUniqueKey the vr of unique key.
+     */
     QueryRetrieveLevel2(int uniqueKey, VR vrOfUniqueKey) {
         this.uniqueKey = uniqueKey;
         this.vrOfUniqueKey = vrOfUniqueKey;
     }
 
+    /**
+     * Validates the query identifier.
+     *
+     * @param keys       the keys.
+     * @param levels     the levels.
+     * @param relational the relational.
+     * @return the operation result.
+     * @throws ImageServiceException if the operation cannot be completed.
+     */
     public static QueryRetrieveLevel2 validateQueryIdentifier(
             Attributes keys,
             EnumSet<QueryRetrieveLevel2> levels,
@@ -55,6 +97,16 @@ public enum QueryRetrieveLevel2 {
         return validateIdentifier(keys, levels, relational, false, true);
     }
 
+    /**
+     * Validates the query identifier.
+     *
+     * @param keys       the keys.
+     * @param levels     the levels.
+     * @param relational the relational.
+     * @param lenient    the lenient.
+     * @return the operation result.
+     * @throws ImageServiceException if the operation cannot be completed.
+     */
     public static QueryRetrieveLevel2 validateQueryIdentifier(
             Attributes keys,
             EnumSet<QueryRetrieveLevel2> levels,
@@ -63,6 +115,15 @@ public enum QueryRetrieveLevel2 {
         return validateIdentifier(keys, levels, relational, lenient, true);
     }
 
+    /**
+     * Validates the retrieve identifier.
+     *
+     * @param keys       the keys.
+     * @param levels     the levels.
+     * @param relational the relational.
+     * @return the operation result.
+     * @throws ImageServiceException if the operation cannot be completed.
+     */
     public static QueryRetrieveLevel2 validateRetrieveIdentifier(
             Attributes keys,
             EnumSet<QueryRetrieveLevel2> levels,
@@ -70,6 +131,16 @@ public enum QueryRetrieveLevel2 {
         return validateIdentifier(keys, levels, relational, false, false);
     }
 
+    /**
+     * Validates the retrieve identifier.
+     *
+     * @param keys       the keys.
+     * @param levels     the levels.
+     * @param relational the relational.
+     * @param lenient    the lenient.
+     * @return the operation result.
+     * @throws ImageServiceException if the operation cannot be completed.
+     */
     public static QueryRetrieveLevel2 validateRetrieveIdentifier(
             Attributes keys,
             EnumSet<QueryRetrieveLevel2> levels,
@@ -78,6 +149,17 @@ public enum QueryRetrieveLevel2 {
         return validateIdentifier(keys, levels, relational, lenient, false);
     }
 
+    /**
+     * Validates the identifier.
+     *
+     * @param keys       the keys.
+     * @param levels     the levels.
+     * @param relational the relational.
+     * @param lenient    the lenient.
+     * @param query      the query.
+     * @return the operation result.
+     * @throws ImageServiceException if the operation cannot be completed.
+     */
     private static QueryRetrieveLevel2 validateIdentifier(
             Attributes keys,
             EnumSet<QueryRetrieveLevel2> levels,
@@ -108,28 +190,67 @@ public enum QueryRetrieveLevel2 {
         return level;
     }
 
+    /**
+     * Executes the missing attribute operation.
+     *
+     * @param tag the tag.
+     * @return the operation result.
+     */
     private static ImageServiceException missingAttribute(int tag) {
         return identifierDoesNotMatchSOPClass("Missing " + DICT.keywordOf(tag) + Symbol.SPACE + Tag.toString(tag), tag);
     }
 
+    /**
+     * Executes the invalid attribute value operation.
+     *
+     * @param tag   the tag.
+     * @param value the value.
+     * @return the operation result.
+     */
     private static ImageServiceException invalidAttributeValue(int tag, String value) {
         return identifierDoesNotMatchSOPClass(
                 "Invalid " + DICT.keywordOf(tag) + Symbol.SPACE + Tag.toString(tag) + " - " + value,
                 tag);
     }
 
+    /**
+     * Executes the identifier does not match sop class operation.
+     *
+     * @param comment the comment.
+     * @param tag     the tag.
+     * @return the operation result.
+     */
     private static ImageServiceException identifierDoesNotMatchSOPClass(String comment, int tag) {
         return new ImageServiceException(Status.IdentifierDoesNotMatchSOPClass, comment).setOffendingElements(tag);
     }
 
+    /**
+     * Executes the unique key operation.
+     *
+     * @return the operation result.
+     */
     public int uniqueKey() {
         return uniqueKey;
     }
 
+    /**
+     * Executes the vr of unique key operation.
+     *
+     * @return the operation result.
+     */
     public VR vrOfUniqueKey() {
         return vrOfUniqueKey;
     }
 
+    /**
+     * Executes the check unique key operation.
+     *
+     * @param keys     the keys.
+     * @param optional the optional.
+     * @param lenient  the lenient.
+     * @param multiple the multiple.
+     * @throws ImageServiceException if the operation cannot be completed.
+     */
     private void checkUniqueKey(Attributes keys, boolean optional, boolean lenient, boolean multiple)
             throws ImageServiceException {
         String[] ids = keys.getStrings(uniqueKey);

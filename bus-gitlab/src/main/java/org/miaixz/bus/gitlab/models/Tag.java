@@ -25,6 +25,12 @@ import java.util.Date;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import java.io.Serial;
 
+/**
+ * The tag class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Tag implements Serializable {
 
     @Serial

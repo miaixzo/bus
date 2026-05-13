@@ -20,20 +20,31 @@
 package org.miaixz.bus.image.galaxy.dict.GEMS_IT_US_REPORT;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEMS_IT_US_REPORT";
 
-    /** (0045,xx11) VR=OW VM=1 Vivid excel file */
+    /**
+     * (0045,xx11) VR=OW VM=1 Vivid excel file
+     */
     public static final int VividExcelFile = 0x00450011;
 
-    /** (0045,xx12) VR=OW VM=1 Vivid CHM file */
+    /**
+     * (0045,xx12) VR=OW VM=1 Vivid CHM file
+     */
     public static final int VividCHMFile = 0x00450012;
 
-    /** (0045,xx13) VR=OW VM=1 Vivid PDF file */
+    /**
+     * (0045,xx13) VR=OW VM=1 Vivid PDF file
+     */
     public static final int VividPDFFile = 0x00450013;
 
 }

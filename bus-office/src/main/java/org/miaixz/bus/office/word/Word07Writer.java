@@ -46,10 +46,12 @@ public class Word07Writer implements Closeable {
      * The underlying {@link XWPFDocument} instance.
      */
     private final XWPFDocument doc;
+
     /**
      * The target file to write the document to.
      */
     protected File targetFile;
+
     /**
      * Flag indicating whether the writer has been closed.
      */

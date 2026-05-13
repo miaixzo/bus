@@ -27,6 +27,12 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serial;
 
+/**
+ * The job attributes class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class JobAttributes implements Serializable {
 
     @Serial

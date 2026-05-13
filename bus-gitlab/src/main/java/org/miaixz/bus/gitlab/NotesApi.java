@@ -29,6 +29,12 @@ import org.miaixz.bus.gitlab.support.ISO8601;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 
+/**
+ * The notes API class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class NotesApi extends AbstractApi {
 
     public NotesApi(GitLabApi gitLabApi) {

@@ -50,7 +50,7 @@ import org.miaixz.bus.image.nimble.codec.TransferSyntaxType;
 import org.miaixz.bus.image.nimble.codec.jpeg.JPEGParser;
 import org.miaixz.bus.image.nimble.opencv.ImageCV;
 import org.miaixz.bus.image.nimble.opencv.ImageConversion;
-import org.miaixz.bus.image.nimble.opencv.ImageProcessor;
+import org.miaixz.bus.image.nimble.opencv.ImageTransformer;
 import org.miaixz.bus.image.nimble.opencv.PlanarImage;
 import org.miaixz.bus.image.nimble.stream.*;
 import org.miaixz.bus.logger.Logger;
@@ -60,10 +60,11 @@ import org.opencv.imgproc.Imgproc;
 import org.opencv.osgi.OpenCVNativeLoader;
 
 /**
- * DICOM图像读取器，用于从DICOM对象中读取图像数据。
- *
+ * DICOM image reader for reading image data from DICOM objects.
  * <p>
- * 该类支持包含像素数据的所有DICOM对象，使用OpenCV本地库来读取压缩和未压缩的像素数据。 它提供了多种图像读取方法，包括原始图像读取、模态LUT应用、VOI LUT应用等。
+ * This class supports DICOM objects that contain pixel data and uses the OpenCV native library to read compressed and
+ * uncompressed pixel data. It provides image reading operations for raw images, modality LUT application, VOI LUT
+ * application, and related workflows.
  * </p>
  *
  * @author Kimi Liu
@@ -72,7 +73,7 @@ import org.opencv.osgi.OpenCVNativeLoader;
 public class ImageReader extends javax.imageio.ImageReader {
 
     /**
-     * 需要批量处理的DICOM标签集合
+     * DICOM tags that should be handled as bulk data.
      */
     public static Set<Integer> BULK_TAGS = Set.of(
             Tag.PixelDataProviderURL,
@@ -97,7 +98,7 @@ public class ImageReader extends javax.imageio.ImageReader {
             Tag.PixelData);
 
     /**
-     * 批量数据描述符
+     * Bulk data descriptor.
      */
     public static final BulkDataDescriptor BULK_DATA_DESCRIPTOR = (itemPointer, privateCreator, tag, vr, length) -> {
         int tagNormalized = Tag.normalizeRepeatingGroup(tag);
@@ -116,23 +117,27 @@ public class ImageReader extends javax.imageio.ImageReader {
     };
 
     /**
-     * 存储系列UID到浮点图像转换状态的映射
+     * Mapping from series UID to float image conversion state.
      */
     private static final Map<String, Boolean> series2FloatImages = new ConcurrentHashMap<>();
+
     /**
-     * 是否允许浮点图像转换
+     * Whether float image conversion is allowed.
      */
     private static boolean allowFloatImageConversion = false;
+
     /**
-     * 片段位置列表
+     * Fragment position list.
      */
     private final ArrayList<Integer> fragmentsPositions = new ArrayList<>();
+
     /**
-     * 带图像描述符的字节数据
+     * Byte data with image descriptor.
      */
     private BytesWithImageDescriptor bdis;
+
     /**
-     * DICOM图像文件输入流
+     * DICOM image file input stream.
      */
     private ImageFileInputStream dis;
 
@@ -143,22 +148,22 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 构造方法
+     * Creates a new instance.
      *
-     * @param originatingProvider 图像读取器服务提供者
+     * @param originatingProvider Image reader service provider.
      */
     public ImageReader(ImageReaderSpi originatingProvider) {
         super(originatingProvider);
     }
 
     /**
-     * 判断是否为YBR颜色模型
+     * Determines whether the image uses a YBR color model.
      *
-     * @param channel 通道
-     * @param pmi     光度解释
-     * @param param   图像读取参数
-     * @return 如果是YBR颜色模型返回true，否则返回false
-     * @throws IOException 如果发生I/O错误
+     * @param channel Channel.
+     * @param pmi     Photometric interpretation.
+     * @param param   Image read parameters.
+     * @return true if the image uses a YBR color model; otherwise false.
+     * @throws IOException if an I/O error occurs.
      */
     private static boolean isYbrModel(SeekableByteChannel channel, Photometric pmi, ImageReadParam param)
             throws IOException {
@@ -187,12 +192,12 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 判断是否需要将YBR转换为RGB
+     * Determines whether YBR data should be converted to RGB.
      *
-     * @param pmi        光度解释
-     * @param tsuid      传输语法UID
-     * @param isYbrModel 判断是否为YBR模型的函数
-     * @return 如果需要转换返回true，否则返回false
+     * @param pmi        Photometric interpretation.
+     * @param tsuid      Transfer syntax UID.
+     * @param isYbrModel Supplier that determines whether the image uses a YBR model.
+     * @return true if conversion is required; otherwise false.
      */
     private static boolean ybr2rgb(Photometric pmi, String tsuid, BooleanSupplier isYbrModel) {
         // Options only applicable to IJG native decoder
@@ -219,11 +224,11 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 应用处理后释放图像的设置
+     * Applies the release-after-processing setting to the image.
      *
-     * @param imageCV 图像CV对象
-     * @param param   图像读取参数
-     * @return 处理后的图像CV对象
+     * @param imageCV ImageCV object.
+     * @param param   Image read parameters.
+     * @return Processed ImageCV object.
      */
     public static ImageCV applyReleaseImageAfterProcessing(ImageCV imageCV, ImageReadParam param) {
         if (isReleaseImageAfterProcessing(param)) {
@@ -233,19 +238,19 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 判断是否在处理后释放图像
+     * Determines whether the image should be released after processing.
      *
-     * @param param 图像读取参数
-     * @return 如果在处理后释放图像返回true，否则返回false
+     * @param param Image read parameters.
+     * @return true if the image should be released after processing; otherwise false.
      */
     public static boolean isReleaseImageAfterProcessing(ImageReadParam param) {
         return param != null && param.getReleaseImageAfterProcessing().orElse(Boolean.FALSE);
     }
 
     /**
-     * 关闭Mat对象
+     * Closes the Mat object.
      *
-     * @param mat 要关闭的Mat对象
+     * @param mat Mat object to close.
      */
     public static void closeMat(Mat mat) {
         if (mat != null) {
@@ -254,10 +259,10 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 判断传输语法是否受支持
+     * Determines whether the transfer syntax is supported.
      *
-     * @param uid 传输语法UID
-     * @return 如果受支持返回true，否则返回false
+     * @param uid Transfer syntax UID.
+     * @return true if the syntax is supported; otherwise false.
      */
     public static boolean isSupportedSyntax(String uid) {
         return switch (UID.from(uid)) {
@@ -267,11 +272,11 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 设置输入源
+     * Sets the input source.
      *
-     * @param input           输入源
-     * @param seekForwardOnly 是否只向前查找
-     * @param ignoreMetadata  是否忽略元数据
+     * @param input           Input source.
+     * @param seekForwardOnly Whether seeking is forward-only.
+     * @param ignoreMetadata  Whether metadata is ignored.
      */
     @Override
     public void setInput(Object input, boolean seekForwardOnly, boolean ignoreMetadata) {
@@ -291,9 +296,9 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 获取图像描述符
+     * Gets the image descriptor.
      *
-     * @return 图像描述符
+     * @return Image descriptor.
      */
     public ImageDescriptor getImageDescriptor() {
         if (bdis != null)
@@ -302,10 +307,10 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 返回研究中的常规图像数量。不包括覆盖层。
+     * Returns the number of regular images in the study, excluding overlays.
      *
-     * @param allowSearch 是否允许搜索
-     * @return 图像数量
+     * @param allowSearch Whether searching is allowed.
+     * @return Image count.
      */
     @Override
     public int getNumImages(boolean allowSearch) {
@@ -313,10 +318,10 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 获取图像宽度
+     * Gets the image width.
      *
-     * @param frameIndex 帧索引
-     * @return 图像宽度
+     * @param frameIndex Frame index.
+     * @return Image width.
      */
     @Override
     public int getWidth(int frameIndex) {
@@ -325,10 +330,10 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 获取图像高度
+     * Gets the image height.
      *
-     * @param frameIndex 帧索引
-     * @return 图像高度
+     * @param frameIndex Frame index.
+     * @return Image height.
      */
     @Override
     public int getHeight(int frameIndex) {
@@ -337,10 +342,10 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 获取图像类型
+     * Gets the image types.
      *
-     * @param frameIndex 帧索引
-     * @return 图像类型迭代器
+     * @param frameIndex Frame index.
+     * @return Image type iterator.
      */
     @Override
     public Iterator<ImageTypeSpecifier> getImageTypes(int frameIndex) {
@@ -348,9 +353,9 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 获取默认读取参数
+     * Gets the default read parameters.
      *
-     * @return 默认读取参数
+     * @return Default read parameters.
      */
     @Override
     public javax.imageio.ImageReadParam getDefaultReadParam() {
@@ -358,10 +363,11 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 获取流元数据。除非没有图像或已调用getStreamMetadata并指定了像素数据后节点， 否则可能不包含像素数据后的元数据。
+     * Gets the stream metadata. Metadata after pixel data may be omitted unless no image exists or getStreamMetadata
+     * has been called with a node after pixel data.
      *
-     * @return 流元数据
-     * @throws IOException 如果发生I/O错误
+     * @return Stream metadata.
+     * @throws IOException if an I/O error occurs.
      */
     @Override
     public ImageMetaData getStreamMetadata() throws IOException {
@@ -369,10 +375,10 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 获取图像元数据
+     * Gets the image metadata.
      *
-     * @param frameIndex 帧索引
-     * @return 图像元数据
+     * @param frameIndex Frame index.
+     * @return Image metadata.
      */
     @Override
     public IIOMetadata getImageMetadata(int frameIndex) {
@@ -380,9 +386,9 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 判断是否可以读取光栅
+     * Determines whether rasters can be read.
      *
-     * @return 如果可以读取光栅返回true，否则返回false
+     * @return true if rasters can be read; otherwise false.
      */
     @Override
     public boolean canReadRaster() {
@@ -390,11 +396,11 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 读取光栅
+     * Reads the raster.
      *
-     * @param frameIndex 帧索引
-     * @param param      图像读取参数
-     * @return 光栅
+     * @param frameIndex Frame index.
+     * @param param      Image read parameters.
+     * @return Raster.
      */
     @Override
     public Raster readRaster(int frameIndex, javax.imageio.ImageReadParam param) {
@@ -408,11 +414,11 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 读取图像
+     * Reads the image.
      *
-     * @param frameIndex 帧索引
-     * @param param      图像读取参数
-     * @return 缓冲图像
+     * @param frameIndex Frame index.
+     * @param param      Image read parameters.
+     * @return Buffered image.
      */
     @Override
     public BufferedImage read(int frameIndex, javax.imageio.ImageReadParam param) {
@@ -426,10 +432,10 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 获取默认读取参数
+     * Gets the default read parameters.
      *
-     * @param param 图像读取参数
-     * @return DICOM图像读取参数
+     * @param param Image read parameters.
+     * @return DICOMImage read parameters.
      */
     protected ImageReadParam getDefaultReadParam(javax.imageio.ImageReadParam param) {
         ImageReadParam dcmParam;
@@ -446,7 +452,7 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 重置内部状态
+     * Resets the internal state.
      */
     private void resetInternalState() {
         IoKit.close(dis);
@@ -456,9 +462,9 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 检查索引是否有效
+     * Checks whether the index is valid.
      *
-     * @param frameIndex 帧索引
+     * @param frameIndex Frame index.
      */
     private void checkIndex(int frameIndex) {
         if (frameIndex < 0 || frameIndex >= getImageDescriptor().getFrames())
@@ -466,7 +472,7 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 释放资源
+     * Releases resources.
      */
     @Override
     public void dispose() {
@@ -474,14 +480,14 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 判断文件中的图像是否需要从YBR转换为RGB
+     * Determines whether an image read from a file should be converted from YBR to RGB.
      *
-     * @param pmi   光度解释
-     * @param tsuid 传输语法UID
-     * @param seg   分段输入图像流
-     * @param frame 帧索引
-     * @param param 图像读取参数
-     * @return 如果需要转换返回true，否则返回false
+     * @param pmi   Photometric interpretation.
+     * @param tsuid Transfer syntax UID.
+     * @param seg   Segmented input image stream.
+     * @param frame Frame index.
+     * @param param Image read parameters.
+     * @return true if conversion is required; otherwise false.
      */
     private boolean fileYbr2rgb(
             Photometric pmi,
@@ -502,13 +508,13 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 判断字节数组中的图像是否需要从YBR转换为RGB
+     * Determines whether an image read from bytes should be converted from YBR to RGB.
      *
-     * @param pmi   光度解释
-     * @param tsuid 传输语法UID
-     * @param frame 帧索引
-     * @param param 图像读取参数
-     * @return 如果需要转换返回true，否则返回false
+     * @param pmi   Photometric interpretation.
+     * @param tsuid Transfer syntax UID.
+     * @param frame Frame index.
+     * @param param Image read parameters.
+     * @return true if conversion is required; otherwise false.
      */
     private boolean byteYbr2rgb(Photometric pmi, String tsuid, int frame, ImageReadParam param) {
         BooleanSupplier isYbrModel = () -> {
@@ -523,11 +529,11 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 获取延迟加载的平面图像列表
+     * Gets the lazily loaded planar image list.
      *
-     * @param param  图像读取参数
-     * @param editor 图像编辑器
-     * @return 延迟加载的平面图像供应者列表
+     * @param param  Image read parameters.
+     * @param editor Image editor.
+     * @return List of lazily loaded planar image suppliers.
      */
     public List<SupplierEx<PlanarImage, IOException>> getLazyPlanarImages(
             ImageReadParam param,
@@ -568,21 +574,21 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 获取所有平面图像
+     * Gets all planar images.
      *
-     * @return 平面图像列表
-     * @throws IOException 如果发生I/O错误
+     * @return Planar image list.
+     * @throws IOException if an I/O error occurs.
      */
     public List<PlanarImage> getPlanarImages() throws IOException {
         return getPlanarImages(null);
     }
 
     /**
-     * 获取所有平面图像
+     * Gets all planar images.
      *
-     * @param param 图像读取参数
-     * @return 平面图像列表
-     * @throws IOException 如果发生I/O错误
+     * @param param Image read parameters.
+     * @return Planar image list.
+     * @throws IOException if an I/O error occurs.
      */
     public List<PlanarImage> getPlanarImages(ImageReadParam param) throws IOException {
         List<PlanarImage> list = new ArrayList<>();
@@ -593,22 +599,22 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 获取平面图像
+     * Gets the planar image.
      *
-     * @return 平面图像
-     * @throws IOException 如果发生I/O错误
+     * @return Planar image.
+     * @throws IOException if an I/O error occurs.
      */
     public PlanarImage getPlanarImage() throws IOException {
         return getPlanarImage(0, null);
     }
 
     /**
-     * 获取平面图像
+     * Gets the planar image.
      *
-     * @param frame 帧索引
-     * @param param 图像读取参数
-     * @return 平面图像
-     * @throws IOException 如果发生I/O错误
+     * @param frame Frame index.
+     * @param param Image read parameters.
+     * @return Planar image.
+     * @throws IOException if an I/O error occurs.
      */
     public PlanarImage getPlanarImage(int frame, ImageReadParam param) throws IOException {
         PlanarImage img = getRawImage(frame, param);
@@ -622,10 +628,10 @@ public class ImageReader extends javax.imageio.ImageReader {
             }
         }
         if (param != null && param.getSourceRegion() != null) {
-            out = ImageProcessor.crop(out.toMat(), param.getSourceRegion());
+            out = ImageTransformer.crop(out.toMat(), param.getSourceRegion());
         }
         if (param != null && param.getSourceRenderSize() != null) {
-            out = ImageProcessor.scale(out.toMat(), param.getSourceRenderSize(), Imgproc.INTER_LANCZOS4);
+            out = ImageTransformer.scale(out.toMat(), param.getSourceRenderSize(), Imgproc.INTER_LANCZOS4);
         }
         String seriesUID = desc.getSeriesInstanceUID();
         if (allowFloatImageConversion && StringKit.hasText(seriesUID)) {
@@ -646,13 +652,13 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 处理范围外的LUT
+     * Handles values outside the LUT range.
      *
-     * @param input      输入图像
-     * @param desc       图像描述符
-     * @param frameIndex 帧索引
-     * @param forceFloat 是否强制转换为浮点型
-     * @return 处理后的图像
+     * @param input      Input image.
+     * @param desc       Image descriptor.
+     * @param frameIndex Frame index.
+     * @param forceFloat Whether conversion to float is forced.
+     * @return Processed image.
      */
     static PlanarImage rangeOutsideLut(PlanarImage input, ImageDescriptor desc, int frameIndex, boolean forceFloat) {
         OptionalDouble rescaleSlope = desc.getModalityLutForFrame(frameIndex).getRescaleSlope();
@@ -678,11 +684,11 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 判断是否在LUT范围外
+     * Determines whether values are outside the LUT range.
      *
-     * @param rescale 重缩放参数
-     * @param desc    图像描述符
-     * @return 如果在LUT范围外返回true，否则返回false
+     * @param rescale Rescale parameters.
+     * @param desc    Image descriptor.
+     * @return true if values are outside the LUT range; otherwise false.
      */
     private static boolean rangeOutsideLut(Pair<Double, Double> rescale, ImageDescriptor desc) {
         boolean outputSigned = rescale.getLeft() < 0 || desc.isSigned();
@@ -691,12 +697,12 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 获取重缩放斜率和截距
+     * Gets the rescale slope and intercept.
      *
-     * @param slope     斜率
-     * @param intercept 截距
-     * @param minMax    最小最大值结果
-     * @return 重缩放斜率和截距对
+     * @param slope     Slope.
+     * @param intercept Intercept.
+     * @param minMax    Minimum and maximum value result.
+     * @return Rescale slope and intercept pair.
      */
     private static Pair<Double, Double> getRescaleSlopeAndIntercept(
             double slope,
@@ -708,12 +714,12 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 获取原始图像
+     * Gets the raw image.
      *
-     * @param frame 帧索引
-     * @param param 图像读取参数
-     * @return 原始图像
-     * @throws IOException 如果发生I/O错误
+     * @param frame Frame index.
+     * @param param Image read parameters.
+     * @return Raw image.
+     * @throws IOException if an I/O error occurs.
      */
     public PlanarImage getRawImage(int frame, ImageReadParam param) throws IOException {
         if (dis == null) {
@@ -724,12 +730,12 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 从文件获取原始图像
+     * Gets the raw image from a file.
      *
-     * @param frame 帧索引
-     * @param param 图像读取参数
-     * @return 原始图像
-     * @throws IOException 如果发生I/O错误
+     * @param frame Frame index.
+     * @param param Image read parameters.
+     * @return Raw image.
+     * @throws IOException if an I/O error occurs.
      */
     protected PlanarImage getRawImageFromFile(int frame, ImageReadParam param) throws IOException {
         if (dis == null) {
@@ -810,11 +816,11 @@ public class ImageReader extends javax.imageio.ImageReader {
                 MatOfInt dicomparams = new MatOfInt(Imgcodecs.IMREAD_UNCHANGED, dcmFlags, desc.getColumns(),
                         desc.getRows(), Imgcodecs.DICOM_CP_UNKNOWN, desc.getSamples(), bits,
                         desc.isBanded() ? Imgcodecs.ILV_NONE : Imgcodecs.ILV_SAMPLE, streamVR);
-                ImageCV imageCV = ImageCV.toImageCV(
+                ImageCV imageCV = ImageCV.fromMat(
                         Imgcodecs.dicomRawFileRead(seg.path().toString(), positions, lengths, dicomparams, pmi.name()));
                 return applyReleaseImageAfterProcessing(imageCV, param);
             }
-            ImageCV imageCV = ImageCV.toImageCV(
+            ImageCV imageCV = ImageCV.fromMat(
                     Imgcodecs.dicomJpgFileRead(
                             seg.path().toString(),
                             positions,
@@ -829,12 +835,12 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 从字节数组获取原始图像
+     * Gets the raw image from bytes.
      *
-     * @param frame 帧索引
-     * @param param 图像读取参数
-     * @return 原始图像
-     * @throws IOException 如果发生I/O错误
+     * @param frame Frame index.
+     * @param param Image read parameters.
+     * @return Raw image.
+     * @throws IOException if an I/O error occurs.
      */
     protected PlanarImage getRawImageFromBytes(int frame, ImageReadParam param) throws IOException {
         if (bdis == null) {
@@ -874,10 +880,10 @@ public class ImageReader extends javax.imageio.ImageReader {
                 MatOfInt dicomparams = new MatOfInt(Imgcodecs.IMREAD_UNCHANGED, dcmFlags, desc.getColumns(),
                         desc.getRows(), Imgcodecs.DICOM_CP_UNKNOWN, desc.getSamples(), bits,
                         desc.isBanded() ? Imgcodecs.ILV_NONE : Imgcodecs.ILV_SAMPLE, streamVR);
-                ImageCV imageCV = ImageCV.toImageCV(Imgcodecs.dicomRawMatRead(buf, dicomparams, pmi.name()));
+                ImageCV imageCV = ImageCV.fromMat(Imgcodecs.dicomRawMatRead(buf, dicomparams, pmi.name()));
                 return applyReleaseImageAfterProcessing(imageCV, param);
             }
-            ImageCV imageCV = ImageCV.toImageCV(Imgcodecs.dicomJpgMatRead(buf, dcmFlags, Imgcodecs.IMREAD_UNCHANGED));
+            ImageCV imageCV = ImageCV.fromMat(Imgcodecs.dicomJpgMatRead(buf, dcmFlags, Imgcodecs.IMREAD_UNCHANGED));
             return applyReleaseImageAfterProcessing(imageCV, param);
         } finally {
             closeMat(buf);
@@ -885,13 +891,13 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 构建分段图像输入流
+     * Builds a segmented image input stream.
      *
-     * @param frameIndex 帧索引
-     * @param fragments  片段
-     * @param bulkData   批量数据
-     * @return 分段图像输入流
-     * @throws IOException 如果发生I/O错误
+     * @param frameIndex Frame index.
+     * @param fragments  Fragments.
+     * @param bulkData   Bulk data.
+     * @return Segmented image input stream.
+     * @throws IOException if an I/O error occurs.
      */
     private ExtendSegmentedInputImageStream buildSegmentedImageInputStream(
             int frameIndex,
@@ -968,42 +974,41 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * 添加系列到浮点图像映射
+     * Adds a series-to-float-image mapping.
      *
-     * @param seriesInstanceUID  系列实例UID
-     * @param forceToFloatImages 是否强制转换为浮点图像
+     * @param seriesInstanceUID  Series instance UID.
+     * @param forceToFloatImages Whether conversion to float images is forced.
      */
     public static void addSeriesToFloatImages(String seriesInstanceUID, Boolean forceToFloatImages) {
         series2FloatImages.put(seriesInstanceUID, forceToFloatImages);
     }
 
     /**
-     * 获取强制转换为浮点图像的设置
+     * Gets the force-to-float-image setting.
      *
-     * @param seriesInstanceUID 系列实例UID
-     * @return 是否强制转换为浮点图像
+     * @param seriesInstanceUID Series instance UID.
+     * @return Whether conversion to float images is forced.
      */
     public static Boolean getForceToFloatImages(String seriesInstanceUID) {
         return series2FloatImages.get(seriesInstanceUID);
     }
 
     /**
-     * 移除系列到浮点图像映射
+     * Removes a series-to-float-image mapping.
      *
-     * @param seriesInstanceUID 系列实例UID
+     * @param seriesInstanceUID Series instance UID.
      */
     public static void removeSeriesToFloatImages(String seriesInstanceUID) {
         series2FloatImages.remove(seriesInstanceUID);
     }
 
     /**
-     * 允许在模态LUT的结果超出原始图像类型范围时将图像转换为浮点图像。
-     *
+     * Allows conversion to float images when the modality LUT result falls outside the original image type range.
      * <p>
-     * 注意：默认情况下，不允许转换。如果转换设置为true，当系列被释放时必须调用<code>
-     * removeSeriesToFloatImages()</code>。
+     * Note: conversion is disabled by default. If conversion is enabled, <code>
+     * removeSeriesToFloatImages()</code> must be called when the series is released.
      *
-     * @param allowFloatImageConversion 是否允许转换为浮点图像
+     * @param allowFloatImageConversion Whether conversion to float images is allowed.
      */
     public static void setAllowFloatImageConversion(boolean allowFloatImageConversion) {
         ImageReader.allowFloatImageConversion = allowFloatImageConversion;

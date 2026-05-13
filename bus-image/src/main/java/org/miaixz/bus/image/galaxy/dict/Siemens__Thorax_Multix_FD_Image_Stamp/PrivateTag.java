@@ -20,26 +20,41 @@
 package org.miaixz.bus.image.galaxy.dict.Siemens__Thorax_Multix_FD_Image_Stamp;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "Siemens: Thorax/Multix FD Image Stamp";
 
-    /** (0023,xx00) VR=US VM=1 ? */
+    /**
+     * (0023,xx00) VR=US VM=1 ?
+     */
     public static final int _0023_xx00_ = 0x00230000;
 
-    /** (0023,xx01) VR=US VM=1 ? */
+    /**
+     * (0023,xx01) VR=US VM=1 ?
+     */
     public static final int _0023_xx01_ = 0x00230001;
 
-    /** (0023,xx02) VR=US VM=1 ? */
+    /**
+     * (0023,xx02) VR=US VM=1 ?
+     */
     public static final int _0023_xx02_ = 0x00230002;
 
-    /** (0023,xx03) VR=US VM=1 ? */
+    /**
+     * (0023,xx03) VR=US VM=1 ?
+     */
     public static final int _0023_xx03_ = 0x00230003;
 
-    /** (0023,xx04) VR=US VM=1 ? */
+    /**
+     * (0023,xx04) VR=US VM=1 ?
+     */
     public static final int _0023_xx04_ = 0x00230004;
 
 }

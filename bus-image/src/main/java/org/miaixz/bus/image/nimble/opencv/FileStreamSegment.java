@@ -30,28 +30,60 @@ import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the FileStreamSegment type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class FileStreamSegment extends StreamSegment {
 
+    /**
+     * The file path value.
+     */
     private final String filePath;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param file            the file.
+     * @param startPos        the start pos.
+     * @param length          the length.
+     * @param imageDescriptor the image descriptor.
+     */
     FileStreamSegment(File file, long[] startPos, long[] length, ImageDescriptor imageDescriptor) {
         super(startPos, length, imageDescriptor);
         this.filePath = file.getAbsolutePath();
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param fdes            the fdes.
+     * @param startPos        the start pos.
+     * @param length          the length.
+     * @param imageDescriptor the image descriptor.
+     */
     FileStreamSegment(RandomAccessFile fdes, long[] startPos, long[] length, ImageDescriptor imageDescriptor) {
         super(startPos, length, imageDescriptor);
         this.filePath = getFilePath(fdes);
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param stream the stream.
+     */
     FileStreamSegment(SegmentedImageStream stream) {
         super(stream.getSegmentPositions(), stream.getSegmentLengths(), stream.getImageDescriptor());
         this.filePath = stream.getFile().getAbsolutePath();
     }
 
+    /**
+     * Gets the file path.
+     *
+     * @param file the file.
+     * @return the file path.
+     */
     public static String getFilePath(RandomAccessFile file) {
         try {
             Field fpath = RandomAccessFile.class.getDeclaredField("path");
@@ -65,6 +97,12 @@ public class FileStreamSegment extends StreamSegment {
         return null;
     }
 
+    /**
+     * Gets the random access file.
+     *
+     * @param fstream the fstream.
+     * @return the random access file.
+     */
     public static RandomAccessFile getRandomAccessFile(FileImageInputStream fstream) {
         try {
             Field fRaf = FileImageInputStream.class.getDeclaredField("raf");
@@ -78,6 +116,12 @@ public class FileStreamSegment extends StreamSegment {
         return null;
     }
 
+    /**
+     * Gets the random access file.
+     *
+     * @param fstream the fstream.
+     * @return the random access file.
+     */
     public static RandomAccessFile getRandomAccessFile(FileImageOutputStream fstream) {
         try {
             Field fRaf = FileImageOutputStream.class.getDeclaredField("raf");
@@ -91,6 +135,11 @@ public class FileStreamSegment extends StreamSegment {
         return null;
     }
 
+    /**
+     * Gets the file path.
+     *
+     * @return the file path.
+     */
     public String getFilePath() {
         return filePath;
     }

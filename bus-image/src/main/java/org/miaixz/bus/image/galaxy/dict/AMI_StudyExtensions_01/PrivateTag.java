@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.AMI_StudyExtensions_01;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "AMI StudyExtensions_01";
 
-    /** (3111,xx01) VR=UL VM=1 Last Released Annot Label */
+    /**
+     * (3111,xx01) VR=UL VM=1 Last Released Annot Label
+     */
     public static final int LastReleasedAnnotLabel = 0x31110001;
 
 }

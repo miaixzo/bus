@@ -85,6 +85,7 @@ public class CronPattern {
      * The original cron expression string.
      */
     private final String pattern;
+
     /**
      * The list of pattern matchers for each part of the cron expression.
      */

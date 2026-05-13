@@ -39,10 +39,12 @@ public final class Uptime {
      * The MINUTE_MS constant.
      */
     private static final long MINUTE_MS = 60L * 1000L;
+
     /**
      * The HOUR_MS constant.
      */
     private static final long HOUR_MS = 60L * MINUTE_MS;
+
     /**
      * The DAY_MS constant.
      */

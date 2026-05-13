@@ -48,6 +48,9 @@ public @interface Named {
      * A concrete, serializable implementation of the {@link Named} annotation. This class allows for the programmatic
      * creation of {@code Named} annotation instances, which is useful for frameworks that operate on annotations at
      * runtime.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class Names implements Named, Serializable {
 

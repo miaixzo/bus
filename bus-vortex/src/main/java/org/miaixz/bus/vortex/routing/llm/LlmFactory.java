@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -68,7 +69,7 @@ public class LlmFactory {
         Assert.notBlank(endpoint, "Endpoint URL must not be blank");
         Assert.notBlank(apiKey, "API key must not be blank");
 
-        final String cacheKey = type + ":" + endpoint + ":" + apiKey;
+        final String cacheKey = type + Symbol.COLON + endpoint + Symbol.COLON + apiKey;
 
         return providerCache.computeIfAbsent(cacheKey, key -> {
             Logger.info(true, "Vortex", "Creating provider: type={}, endpoint={}", type, endpoint);

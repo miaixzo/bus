@@ -46,17 +46,34 @@ import org.opencv.core.MatOfDouble;
 import org.opencv.imgcodecs.Imgcodecs;
 
 /**
+ * Represents the NativeImageReader type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class NativeImageReader extends ImageReader implements Closeable {
 
+    /**
+     * The can encode signed value.
+     */
     private final boolean canEncodeSigned;
 
+    /**
+     * The params value.
+     */
     private final ImageParameters params = new ImageParameters();
 
+    /**
+     * The iis value.
+     */
     private ImageInputStream iis;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param originatingProvider the originating provider.
+     * @param canEncodeSigned     the can encode signed.
+     */
     protected NativeImageReader(ImageReaderSpi originatingProvider, boolean canEncodeSigned) {
         super(originatingProvider);
         this.canEncodeSigned = canEncodeSigned;
@@ -78,6 +95,17 @@ public class NativeImageReader extends ImageReader implements Closeable {
                 createColorModel(params, colorSpace, redPalette, greenPalette, bluePalette, alphaPalette));
     }
 
+    /**
+     * Creates the color model.
+     *
+     * @param params       the params.
+     * @param colorSpace   the color space.
+     * @param redPalette   the red palette.
+     * @param greenPalette the green palette.
+     * @param bluePalette  the blue palette.
+     * @param alphaPalette the alpha palette.
+     * @return the operation result.
+     */
     private static ColorModel createColorModel(
             ImageParameters params,
             ColorSpace colorSpace,
@@ -139,6 +167,13 @@ public class NativeImageReader extends ImageReader implements Closeable {
         return colorModel;
     }
 
+    /**
+     * Creates the image type.
+     *
+     * @param params     the params.
+     * @param colorModel the color model.
+     * @return the operation result.
+     */
     protected static final ImageTypeSpecifier createImageType(ImageParameters params, ColorModel colorModel) {
 
         int nType = params.getDataType();
@@ -162,12 +197,24 @@ public class NativeImageReader extends ImageReader implements Closeable {
         return new ImageTypeSpecifier(colorModel, sampleModel);
     }
 
+    /**
+     * Executes the close mat operation.
+     *
+     * @param mat the mat.
+     */
     public static void closeMat(Mat mat) {
         if (mat != null) {
             mat.release();
         }
     }
 
+    /**
+     * Gets the sof segment.
+     *
+     * @param iis the iis.
+     * @return the sof segment.
+     * @throws IOException if the operation cannot be completed.
+     */
     public static SOFSegment getSOFSegment(ImageInputStream iis) throws IOException {
         iis.mark();
         try {
@@ -234,6 +281,15 @@ public class NativeImageReader extends ImageReader implements Closeable {
         }
     }
 
+    /**
+     * Gets the sof.
+     *
+     * @param iis    the iis.
+     * @param jfif   the jfif.
+     * @param marker the marker.
+     * @return the sof.
+     * @throws IOException if the operation cannot be completed.
+     */
     protected static SOFSegment getSOF(ImageInputStream iis, boolean jfif, int marker) throws IOException {
         readUnsignedShort(iis);
         int samplePrecision = readUnsignedByte(iis);
@@ -243,6 +299,13 @@ public class NativeImageReader extends ImageReader implements Closeable {
         return new SOFSegment(jfif, marker, samplePrecision, lines, samplesPerLine, componentsInFrame);
     }
 
+    /**
+     * Reads the unsigned byte.
+     *
+     * @param iis the iis.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     private static int readUnsignedByte(ImageInputStream iis) throws IOException {
         int ch = iis.read();
         if (ch < 0) {
@@ -251,6 +314,13 @@ public class NativeImageReader extends ImageReader implements Closeable {
         return ch;
     }
 
+    /**
+     * Reads the unsigned short.
+     *
+     * @param iis the iis.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     private static int readUnsignedShort(ImageInputStream iis) throws IOException {
         int ch1 = iis.read();
         int ch2 = iis.read();
@@ -260,16 +330,29 @@ public class NativeImageReader extends ImageReader implements Closeable {
         return (ch1 << 8) + ch2;
     }
 
+    /**
+     * Executes the dispose operation.
+     */
     @Override
     public void dispose() {
         resetInternalState();
     }
 
+    /**
+     * Executes the close operation.
+     */
     @Override
     public void close() {
         dispose();
     }
 
+    /**
+     * Sets the input.
+     *
+     * @param input           the input.
+     * @param seekForwardOnly the seek forward only.
+     * @param ignoreMetadata  the ignore metadata.
+     */
     @Override
     public void setInput(Object input, boolean seekForwardOnly, boolean ignoreMetadata) {
         super.setInput(input, seekForwardOnly, ignoreMetadata);
@@ -285,25 +368,55 @@ public class NativeImageReader extends ImageReader implements Closeable {
         }
     }
 
+    /**
+     * Executes the reset internal state operation.
+     */
     private void resetInternalState() {
         params.setBytesPerLine(0);
     }
 
+    /**
+     * Gets the num images.
+     *
+     * @param allowSearch the allow search.
+     * @return the num images.
+     */
     @Override
     public int getNumImages(boolean allowSearch) {
         return 1;
     }
 
+    /**
+     * Gets the width.
+     *
+     * @param frameIndex the frame index.
+     * @return the width.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int getWidth(int frameIndex) throws IOException {
         return params.getWidth();
     }
 
+    /**
+     * Gets the height.
+     *
+     * @param frameIndex the frame index.
+     * @return the height.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int getHeight(int frameIndex) throws IOException {
         return params.getHeight();
     }
 
+    /**
+     * Gets the image types.
+     *
+     * @param frameIndex the frame index.
+     * @return the image types.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public Iterator<ImageTypeSpecifier> getImageTypes(int frameIndex) throws IOException {
 
@@ -312,16 +425,35 @@ public class NativeImageReader extends ImageReader implements Closeable {
         return Collections.singletonList(imageType).iterator();
     }
 
+    /**
+     * Gets the stream metadata.
+     *
+     * @return the stream metadata.
+     */
     @Override
     public IIOMetadata getStreamMetadata() {
         return null;
     }
 
+    /**
+     * Gets the image metadata.
+     *
+     * @param imageIndex the image index.
+     * @return the image metadata.
+     */
     @Override
     public IIOMetadata getImageMetadata(int imageIndex) {
         return null;
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @param imageIndex the image index.
+     * @param param      the param.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public BufferedImage read(int imageIndex, ImageReadParam param) throws IOException {
         PlanarImage img = getNativeImage(param);
@@ -332,6 +464,13 @@ public class NativeImageReader extends ImageReader implements Closeable {
         return bufferedImage;
     }
 
+    /**
+     * Gets the native image.
+     *
+     * @param param the param.
+     * @return the native image.
+     * @throws IOException if the operation cannot be completed.
+     */
     private PlanarImage getNativeImage(ImageReadParam param) throws IOException {
         StreamSegment seg = StreamSegment.getStreamSegment(iis, param);
         ImageDescriptor desc = seg.getImageDescriptor();
@@ -348,7 +487,7 @@ public class NativeImageReader extends ImageReader implements Closeable {
             try {
                 positions = new MatOfDouble(SegmentedImageStream.getDoubleArray(seg.getSegPosition()));
                 lengths = new MatOfDouble(SegmentedImageStream.getDoubleArray(seg.getSegLength()));
-                return ImageCV.toImageCV(
+                return ImageCV.fromMat(
                         Imgcodecs.dicomJpgFileRead(
                                 ((FileStreamSegment) seg).getFilePath(),
                                 positions,
@@ -365,7 +504,7 @@ public class NativeImageReader extends ImageReader implements Closeable {
                 ByteBuffer b = ((MemoryStreamSegment) seg).getCache();
                 buf = new Mat(1, b.limit(), CvType.CV_8UC1);
                 buf.put(0, 0, b.array());
-                return ImageCV.toImageCV(Imgcodecs.dicomJpgMatRead(buf, dcmFlags, Imgcodecs.IMREAD_UNCHANGED));
+                return ImageCV.fromMat(Imgcodecs.dicomJpgMatRead(buf, dcmFlags, Imgcodecs.IMREAD_UNCHANGED));
             } finally {
                 closeMat(buf);
             }
@@ -373,6 +512,12 @@ public class NativeImageReader extends ImageReader implements Closeable {
         return null;
     }
 
+    /**
+     * Executes the ybr2rgb operation.
+     *
+     * @param pmi the pmi.
+     * @return true if the condition is met; otherwise false.
+     */
     private boolean ybr2rgb(Photometric pmi) {
         // Preserve YBR for JPEG Lossless (1.2.840.10008.1.2.4.57, 1.2.840.10008.1.2.4.70)
         if (params.getJpegMarker() == 0xffc3) {
@@ -395,6 +540,13 @@ public class NativeImageReader extends ImageReader implements Closeable {
         return true;
     }
 
+    /**
+     * Builds the image.
+     *
+     * @param iis the iis.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     public ImageParameters buildImage(ImageInputStream iis) throws IOException {
         if (iis != null && params.getBytesPerLine() < 1) {
             SOFSegment sof = getSOFSegment(iis);

@@ -78,9 +78,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <bus.version>8.6.6</bus.version>
-        <lombok.version>1.18.44</lombok.version>
+        <lombok.version>1.18.46</lombok.version>
         <poi.version>5.5.1</poi.version>
-        <ofdrw.version>2.3.7</ofdrw.version>
+        <ofdrw.version>2.3.9</ofdrw.version>
     </properties>
 
     <dependencies>

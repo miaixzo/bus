@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Keys;
  * Example usage:
  *
  * <pre>{@code
- * 
+ *
  * Errors error = ErrorRegistry.builder().key("AUTH_001").value("Authentication failed").build();
  * }</pre>
  *
@@ -118,6 +118,9 @@ public class ErrorRegistry implements Errors {
 
     /**
      * A builder for {@link ErrorRegistry}, supporting a fluent, chainable interface.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class Builder {
 
@@ -167,6 +170,7 @@ public class ErrorRegistry implements Errors {
         public ErrorRegistry build() {
             return new ErrorRegistry(this);
         }
+
     }
 
 }

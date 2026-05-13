@@ -26,6 +26,12 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serial;
 
+/**
+ * The references class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class References implements Serializable {
 
     @Serial

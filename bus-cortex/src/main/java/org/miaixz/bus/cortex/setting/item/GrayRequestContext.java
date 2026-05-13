@@ -47,18 +47,22 @@ public class GrayRequestContext {
      * Client IP address used for gray-routing evaluation.
      */
     private String clientIp;
+
     /**
      * Optional caller user identifier.
      */
     private String userId;
+
     /**
      * Optional caller tenant identifier.
      */
     private String tenant;
+
     /**
      * Request headers available to gray-routing rules.
      */
     private Map<String, String> headers;
+
     /**
      * Optional logical request labels.
      */

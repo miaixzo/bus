@@ -48,10 +48,12 @@ public class UniNotice extends Notice {
      * The name of the template variable.
      */
     private String templateName;
+
     /**
      * The retry interval in milliseconds.
      */
     private int retryInterval;
+
     /**
      * The maximum number of retries.
      */

@@ -24,11 +24,23 @@ import java.io.Serializable;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import java.io.Serial;
 
+/**
+ * The tree item class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class TreeItem implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 2852282298357L;
 
+    /**
+     * The type enum.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public enum Type {
 
         TREE, BLOB, COMMIT;
@@ -37,12 +49,17 @@ public class TreeItem implements Serializable {
         public String toString() {
             return (name().toLowerCase());
         }
+
     }
 
     private String id;
     private String mode;
     private String name;
     private String path;
+
+    /**
+     * The type field.
+     */
     private Type type;
 
     public String getId() {

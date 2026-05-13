@@ -41,18 +41,22 @@ public class UdpBootstrap {
      * The service context, containing configuration settings.
      */
     private final Context context = new Context();
+
     /**
      * The worker responsible for handling I/O operations.
      */
     private Worker worker;
+
     /**
      * Flag indicating whether the worker was created internally by this bootstrap.
      */
     private boolean innerWorker = false;
+
     /**
      * The buffer pool for write operations.
      */
     private BufferPagePool writeBufferPool = null;
+
     /**
      * The buffer pool for read operations.
      */

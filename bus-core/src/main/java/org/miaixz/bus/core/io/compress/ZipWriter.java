@@ -42,10 +42,12 @@ public class ZipWriter implements Closeable {
      * The underlying {@link ZipOutputStream}.
      */
     private final ZipOutputStream out;
+
     /**
      * The Zip file being written to.
      */
     private File zipFile;
+
     /**
      * Custom buffer size for writing operations.
      */

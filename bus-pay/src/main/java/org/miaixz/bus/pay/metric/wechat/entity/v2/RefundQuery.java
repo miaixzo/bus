@@ -44,42 +44,52 @@ public class RefundQuery extends Voucher {
      * Sub-merchant App ID.
      */
     private String sub_appid;
+
     /**
      * Merchant ID.
      */
     private String mch_id;
+
     /**
      * Sub-merchant ID.
      */
     private String sub_mch_id;
+
     /**
      * Random string.
      */
     private String nonce_str;
+
     /**
      * Signature.
      */
     private String sign;
+
     /**
      * Signature type.
      */
     private String sign_type;
+
     /**
      * WeChat transaction ID.
      */
     private String transaction_id;
+
     /**
      * Merchant order number.
      */
     private String out_trade_no;
+
     /**
      * Merchant refund number.
      */
     private String out_refund_no;
+
     /**
      * Refund ID.
      */
     private String refund_id;
+
     /**
      * Offset.
      */

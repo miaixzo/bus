@@ -58,16 +58,24 @@ public final class LhmSensor {
 
     /**
      * Sensor properties returned by LHM WMI queries.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum LhmSensorProperty {
         NAME, VALUE, PARENT;
+
     }
 
     /**
      * LHM Hardware properties.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum LhmHardwareProperty {
         IDENTIFIER, NAME;
+
     }
 
     /**

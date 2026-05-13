@@ -38,9 +38,11 @@ import org.miaixz.bus.logger.Logger;
 
 /**
  * This class provides an entry point to all the GitLab Tags and Protected Tags API calls.
- * 
+ *
  * @see <a href="https://docs.gitlab.com/ce/api/tags.html">Tags API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/protected_tags.html">Protected Tags API at GitLab</a>
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class TagsApi extends AbstractApi {
 

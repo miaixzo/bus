@@ -20,35 +20,56 @@
 package org.miaixz.bus.image.galaxy.dict.GEMS_SEND_02;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEMS_SEND_02";
 
-    /** (0045,xx55) VR=DS VM=8 A_Coefficients used in Multiresolution Algorithm */
+    /**
+     * (0045,xx55) VR=DS VM=8 A_Coefficients used in Multiresolution Algorithm
+     */
     public static final int ACoefficients = 0x00450055;
 
-    /** (0045,xx62) VR=IS VM=1 User Window Center */
+    /**
+     * (0045,xx62) VR=IS VM=1 User Window Center
+     */
     public static final int UserWindowCenter = 0x00450062;
 
-    /** (0045,xx63) VR=IS VM=1 User Window Width */
+    /**
+     * (0045,xx63) VR=IS VM=1 User Window Width
+     */
     public static final int UserWindowWidth = 0x00450063;
 
-    /** (0045,xx65) VR=IS VM=1 Requested Detector Entrance Dose */
+    /**
+     * (0045,xx65) VR=IS VM=1 Requested Detector Entrance Dose
+     */
     public static final int RequestedDetectorEntranceDose = 0x00450065;
 
-    /** (0045,xx67) VR=DS VM=3 VOI LUT Assymmetry Parameter Beta */
+    /**
+     * (0045,xx67) VR=DS VM=3 VOI LUT Assymmetry Parameter Beta
+     */
     public static final int VOILUTAssymmetryParameterBeta = 0x00450067;
 
-    /** (0045,xx69) VR=IS VM=1 Collimator Rotation */
+    /**
+     * (0045,xx69) VR=IS VM=1 Collimator Rotation
+     */
     public static final int CollimatorRotation = 0x00450069;
 
-    /** (0045,xx72) VR=IS VM=1 Collimator Width */
+    /**
+     * (0045,xx72) VR=IS VM=1 Collimator Width
+     */
     public static final int CollimatorWidth = 0x00450072;
 
-    /** (0045,xx73) VR=IS VM=1 Collimator Height */
+    /**
+     * (0045,xx73) VR=IS VM=1 Collimator Height
+     */
     public static final int CollimatorHeight = 0x00450073;
 
 }

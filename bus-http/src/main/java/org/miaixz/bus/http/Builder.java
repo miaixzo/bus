@@ -63,30 +63,37 @@ public class Builder {
      * Maximum date value (December 31, 9999).
      */
     public static final long MAX_DATE = 253402300799999L;
+
     /**
      * An empty {@link Headers} instance.
      */
     public static final Headers EMPTY_HEADERS = Headers.of();
+
     /**
      * An empty {@link ResponseBody} instance.
      */
     public static final ResponseBody EMPTY_RESPONSE = ResponseBody.of(null, Normal.EMPTY_BYTE_ARRAY);
+
     /**
      * The UTC (Coordinated Universal Time) timezone.
      */
     public static final TimeZone UTC = TimeZone.getTimeZone("GMT");
+
     /**
      * A comparator that orders strings naturally.
      */
     public static final Comparator<String> NATURAL_ORDER = String::compareTo;
+
     /**
      * Byte string containing characters that delimit quoted strings.
      */
     public static final ByteString QUOTED_STRING_DELIMITERS = ByteString.encodeUtf8("\"\\");
+
     /**
      * Byte string containing characters that delimit tokens.
      */
     public static final ByteString TOKEN_DELIMITERS = ByteString.encodeUtf8("\t ,=");
+
     /**
      * Array of browser-compatible date format strings.
      */
@@ -96,46 +103,57 @@ public class Builder {
             "EEE dd-MMM-yyyy HH:mm:ss z", "EEE dd MMM yyyy HH:mm:ss z", "EEE dd-MMM-yyyy HH-mm-ss z",
             "EEE dd-MMM-yy HH:mm:ss z", "EEE dd MMM yy HH:mm:ss z", "EEE,dd-MMM-yy HH:mm:ss z",
             "EEE,dd-MMM-yyyy HH:mm:ss z", "EEE, dd-MM-yyyy HH:mm:ss z", "EEE MMM d yyyy HH:mm:ss z", };
+
     /**
      * Array of browser-compatible date formatters.
      */
     public static final DateFormat[] BROWSER_COMPATIBLE_DATE_FORMATS = new DateFormat[BROWSER_COMPATIBLE_DATE_FORMAT_STRINGS.length];
+
     /**
      * The HTTP CONNECT method.
      */
     public static final String CONNECT = "CONNECT";
+
     /**
      * The STOMP CONNECTED frame command.
      */
     public static final String CONNECTED = "CONNECTED";
+
     /**
      * The STOMP SEND frame command.
      */
     public static final String SEND = "SEND";
+
     /**
      * The STOMP MESSAGE frame command.
      */
     public static final String MESSAGE = "MESSAGE";
+
     /**
      * The STOMP SUBSCRIBE frame command.
      */
     public static final String SUBSCRIBE = "SUBSCRIBE";
+
     /**
      * The STOMP UNSUBSCRIBE frame command.
      */
     public static final String UNSUBSCRIBE = "UNSUBSCRIBE";
+
     /**
      * The STOMP ACK frame command.
      */
     public static final String ACK = "ACK";
+
     /**
      * The STOMP UNKNOWN frame command.
      */
     public static final String UNKNOWN = "UNKNOWN";
+
     /**
      * The STOMP ERROR frame command.
      */
     public static final String ERROR = "ERROR";
+
     /**
      * A {@link SegmentBuffer} containing common Unicode Byte Order Marks (BOMs).
      */
@@ -145,10 +163,12 @@ public class Builder {
             ByteString.decodeHex("fffe"),
             ByteString.decodeHex("0000ffff"),
             ByteString.decodeHex("ffff0000"));
+
     /**
      * Reflective method for adding suppressed exceptions to a {@link Throwable}.
      */
     private static final Method addSuppressedExceptionMethod;
+
     /**
      * A thread-local {@link DateFormat} for RFC 1123 date formatting.
      */

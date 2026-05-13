@@ -33,13 +33,18 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * This class is used to filter Pipelines when getting lists of them.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class PipelineFilter implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 2852269565389L;
 
-    /** pipelines, one of: running, pending, finished, branches, tags */
+    /**
+     * pipelines, one of: running, pending, finished, branches, tags
+     */
     private PipelineScope scope;
 
     /**
@@ -48,28 +53,44 @@ public class PipelineFilter implements Serializable {
      */
     private PipelineStatus status;
 
-    /** The ref of pipelines */
+    /**
+     * The ref of pipelines
+     */
     private PipelineSource source;
 
-    /** The ref of pipelines. */
+    /**
+     * The ref of pipelines.
+     */
     private String ref;
 
-    /** The SHA of pipelines. */
+    /**
+     * The SHA of pipelines.
+     */
     private String sha;
 
-    /** If true, returns pipelines with invalid configurations. */
+    /**
+     * If true, returns pipelines with invalid configurations.
+     */
     private Boolean yamlErrors;
 
-    /** The name of the user who triggered pipelines. */
+    /**
+     * The name of the user who triggered pipelines.
+     */
     private String name;
 
-    /** The username of the user who triggered pipelines */
+    /**
+     * The username of the user who triggered pipelines
+     */
     private String username;
 
-    /** Return pipelines updated after the specified date. */
+    /**
+     * Return pipelines updated after the specified date.
+     */
     private Date updatedAfter;
 
-    /** Return pipelines updated before the specified date. */
+    /**
+     * Return pipelines updated before the specified date.
+     */
     private Date updatedBefore;
 
     /**

@@ -6,6 +6,12 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * The error tracking client key class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class ErrorTrackingClientKey implements Serializable {
 
     private static final long serialVersionUID = 1L;

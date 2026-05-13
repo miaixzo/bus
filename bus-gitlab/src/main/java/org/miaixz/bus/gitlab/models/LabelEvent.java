@@ -28,12 +28,23 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.io.Serial;
 
+/**
+ * The label event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class LabelEvent implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 2852260316959L;
 
-    /** Enum to use for specifying the label event resource type. */
+    /**
+     * Enum to use for specifying the label event resource type.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public enum ResourceType {
 
         ISSUE, EPIC, MERGE_REQUEST;
@@ -55,6 +66,7 @@ public class LabelEvent implements Serializable {
         public String toString() {
             return (enumHelper.toString(this));
         }
+
     }
 
     private Long id;

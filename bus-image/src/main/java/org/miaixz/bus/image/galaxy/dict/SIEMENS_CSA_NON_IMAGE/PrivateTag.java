@@ -20,23 +20,36 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_CSA_NON_IMAGE;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS CSA NON-IMAGE";
 
-    /** (0029,xx08) VR=CS VM=1 CSA Data Type */
+    /**
+     * (0029,xx08) VR=CS VM=1 CSA Data Type
+     */
     public static final int CSADataType = 0x00290008;
 
-    /** (0029,xx09) VR=LO VM=1 CSA Data Version */
+    /**
+     * (0029,xx09) VR=LO VM=1 CSA Data Version
+     */
     public static final int CSADataVersion = 0x00290009;
 
-    /** (0029,xx10) VR=OB VM=1 CSA Data Info */
+    /**
+     * (0029,xx10) VR=OB VM=1 CSA Data Info
+     */
     public static final int CSADataInfo = 0x00290010;
 
-    /** (7FE1,xx10) VR=OB VM=1 CSA Data */
+    /**
+     * (7FE1,xx10) VR=OB VM=1 CSA Data
+     */
     public static final int CSAData = 0x7FE10010;
 
 }

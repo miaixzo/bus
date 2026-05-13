@@ -64,14 +64,17 @@ public class SshjSftp extends AbstractFtp {
      * The underlying SSHJ SSH client.
      */
     private SSHClient ssh;
+
     /**
      * The underlying SSHJ SFTP client.
      */
     private SFTPClient sftp;
+
     /**
      * The SSHJ session, used for executing commands.
      */
     private Session session;
+
     /**
      * The current working directory on the remote server.
      */

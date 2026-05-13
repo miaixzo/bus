@@ -58,10 +58,12 @@ public class CommonsFtp extends AbstractFtp {
      * The underlying FTP client from Apache Commons Net.
      */
     private FTPClient client;
+
     /**
      * The connection lifecycle (ACTIVE or PASSIVE).
      */
     private EnumValue.Lifecycle lifecycle;
+
     /**
      * Whether to return to the current working directory after an operation is completed.
      */

@@ -42,22 +42,27 @@ public class RefundGoodsDetail {
      * The merchant's internal goods ID.
      */
     private String merchant_goods_id;
+
     /**
      * The WeChat Pay goods ID.
      */
     private String wechatpay_goods_id;
+
     /**
      * The name of the goods.
      */
     private String goods_name;
+
     /**
      * The unit price of the goods in cents.
      */
     private int unit_price;
+
     /**
      * The refund amount for this specific item in cents.
      */
     private int refund_amount;
+
     /**
      * The quantity of this item being refunded.
      */

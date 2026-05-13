@@ -39,6 +39,7 @@ public class Argon2 {
      * The length of the hash output in bytes.
      */
     private int hashLength = DEFAULT_HASH_LENGTH;
+
     /**
      * The builder for Argon2 parameters.
      */

@@ -26,31 +26,69 @@ import java.util.concurrent.ScheduledExecutorService;
 import org.miaixz.bus.image.Device;
 
 /**
+ * Represents the DeviceService type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class DeviceService implements DeviceServiceInterface {
 
+    /**
+     * The device value.
+     */
     protected Device device;
+
+    /**
+     * The executor value.
+     */
     protected ExecutorService executor;
+
+    /**
+     * The scheduled executor value.
+     */
     protected ScheduledExecutorService scheduledExecutor;
 
+    /**
+     * Executes the init operation.
+     *
+     * @param device the device.
+     */
     protected void init(Device device) {
         setDevice(device);
     }
 
+    /**
+     * Gets the device.
+     *
+     * @return the device.
+     */
     public Device getDevice() {
         return device;
     }
 
+    /**
+     * Sets the device.
+     *
+     * @param device the device.
+     */
     public void setDevice(Device device) {
         this.device = device;
     }
 
+    /**
+     * Determines whether running.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean isRunning() {
         return executor != null;
     }
 
+    /**
+     * Executes the start operation.
+     *
+     * @throws Exception if the operation cannot be completed.
+     */
     public void start() throws Exception {
         if (device == null)
             throw new IllegalStateException("Not initialized");
@@ -68,6 +106,9 @@ public class DeviceService implements DeviceServiceInterface {
         }
     }
 
+    /**
+     * Executes the stop operation.
+     */
     public void stop() {
         if (device != null)
             device.unbindConnections();
@@ -79,10 +120,20 @@ public class DeviceService implements DeviceServiceInterface {
         scheduledExecutor = null;
     }
 
+    /**
+     * Executes the executer service operation.
+     *
+     * @return the operation result.
+     */
     protected ExecutorService executerService() {
         return Executors.newCachedThreadPool();
     }
 
+    /**
+     * Executes the scheduled executer service operation.
+     *
+     * @return the operation result.
+     */
     protected ScheduledExecutorService scheduledExecuterService() {
         return Executors.newSingleThreadScheduledExecutor();
     }

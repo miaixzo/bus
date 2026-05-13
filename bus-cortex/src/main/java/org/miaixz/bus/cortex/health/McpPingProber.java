@@ -38,6 +38,7 @@ public class McpPingProber implements Prober {
      */
 
     private static final String PING_PAYLOAD = "{\"jsonrpc\":\"2.0\",\"method\":\"ping\",\"id\":1}";
+
     /**
      * Request timeout in milliseconds.
      */

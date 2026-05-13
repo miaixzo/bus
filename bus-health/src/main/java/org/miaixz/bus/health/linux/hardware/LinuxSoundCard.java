@@ -47,10 +47,12 @@ final class LinuxSoundCard extends AbstractSoundCard {
      * The CARD_FOLDER constant.
      */
     private static final String CARD_FOLDER = "card";
+
     /**
      * The CARDS_FILE constant.
      */
     private static final String CARDS_FILE = "cards";
+
     /**
      * The ID_FILE constant.
      */

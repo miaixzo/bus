@@ -39,10 +39,12 @@ public abstract class Session {
      * Session status: closed.
      */
     protected static final byte SESSION_STATUS_CLOSED = 1;
+
     /**
      * Session status: in the process of closing.
      */
     protected static final byte SESSION_STATUS_CLOSING = 2;
+
     /**
      * Session status: active and enabled.
      */
@@ -56,11 +58,13 @@ public abstract class Session {
      * @see Session#SESSION_STATUS_ENABLED
      */
     protected byte status = SESSION_STATUS_ENABLED;
+
     /**
      * Whether the read channel has reached the end-of-stream.
      */
     protected boolean eof;
     protected int modCount = 0;
+
     /**
      * An optional attachment object.
      */

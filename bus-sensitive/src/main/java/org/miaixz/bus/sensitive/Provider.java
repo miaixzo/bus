@@ -47,7 +47,9 @@ import java.util.List;
  */
 public class Provider<T> {
 
-    /** An array of specific field names to desensitize. If not null, only these fields are considered. */
+    /**
+     * An array of specific field names to desensitize. If not null, only these fields are considered.
+     */
     private String[] value;
 
     /**

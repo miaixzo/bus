@@ -30,7 +30,7 @@ import org.miaixz.bus.core.xyz.StreamKit;
 /**
  * A {@link FileTypeDetector} implementation that detects Genozip compressed files. It checks for the Genozip magic
  * number (0x27 0x05 0x20 0x12) at the beginning of the file.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -41,6 +41,13 @@ public class GenozipFileDetector extends FileTypeDetector {
      */
     public final static String APPLICATION_VND_GENOZIP = "application/vnd.genozip";
 
+    /**
+     * Executes the probe content type operation.
+     *
+     * @param path the path.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public String probeContentType(Path path) throws IOException {
         byte[] b = new byte[4];

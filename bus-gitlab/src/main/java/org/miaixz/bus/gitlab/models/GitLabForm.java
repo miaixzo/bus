@@ -24,6 +24,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The Git lab form class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class GitLabForm {
 
     private Map<String, GitLabFormValue> formValues = new LinkedHashMap<>();

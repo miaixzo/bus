@@ -36,6 +36,7 @@ public class MergedCell {
      * The first cell in the merged region, i.e., the top-left cell.
      */
     private final Cell first;
+
     /**
      * The range of the merged cells.
      */

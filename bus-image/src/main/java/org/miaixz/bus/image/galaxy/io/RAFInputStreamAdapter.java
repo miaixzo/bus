@@ -24,36 +24,81 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 
 /**
+ * Represents the RAFInputStreamAdapter type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class RAFInputStreamAdapter extends InputStream {
 
+    /**
+     * The raf value.
+     */
     private final RandomAccessFile raf;
+
+    /**
+     * The marked pos value.
+     */
     private long markedPos;
+
+    /**
+     * The mark exception value.
+     */
     private IOException markException;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param raf the raf.
+     */
     public RAFInputStreamAdapter(RandomAccessFile raf) {
         if (raf == null)
             throw new NullPointerException();
         this.raf = raf;
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int read() throws IOException {
         return raf.read();
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @param b   the b.
+     * @param off the off.
+     * @param len the len.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
         return raf.read(b, off, len);
     }
 
+    /**
+     * Executes the skip operation.
+     *
+     * @param n the n.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public long skip(long n) throws IOException {
         return raf.skipBytes((int) n);
     }
 
+    /**
+     * Executes the mark operation.
+     *
+     * @param readlimit the readlimit.
+     */
     @Override
     public synchronized void mark(int readlimit) {
         try {
@@ -64,6 +109,11 @@ public class RAFInputStreamAdapter extends InputStream {
         }
     }
 
+    /**
+     * Executes the reset operation.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public synchronized void reset() throws IOException {
         if (markException != null)
@@ -71,6 +121,11 @@ public class RAFInputStreamAdapter extends InputStream {
         raf.seek(markedPos);
     }
 
+    /**
+     * Executes the mark supported operation.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean markSupported() {
         return true;

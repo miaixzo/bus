@@ -50,6 +50,7 @@ public class Holder implements org.miaixz.bus.core.Holder {
      * configured, this might be {@code null}.
      */
     private static final java.security.Provider provider = _createProvider();
+
     /**
      * Flag indicating whether to use the custom {@link java.security.Provider}. Defaults to {@code true}.
      */

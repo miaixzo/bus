@@ -44,31 +44,37 @@ public class Receiver extends Voucher {
      * Type of profit sharing receiver. MERCHANT_ID: Merchant ID (mch_id or sub_mch_id) PERSONAL_OPENID: Personal openid
      */
     private String type;
+
     /**
      * Account of profit sharing receiver. When type is MERCHANT_ID, it is the merchant ID (mch_id or sub_mch_id). When
      * type is PERSONAL_OPENID, it is the personal openid.
      */
     private String account;
+
     /**
      * Full name of profit sharing receiver. When type is MERCHANT_ID, it is the full merchant name (required). When
      * type is PERSONAL_OPENID, it is the personal name (optional, validated if provided).
      */
     private String name;
+
     /**
      * Relationship type with the profit sharer. Relationship between sub-merchant and receiver. This field is an enum:
      * SERVICE_PROVIDER: Service provider STORE: Store STAFF: Employee STORE_OWNER: Store owner PARTNER: Partner
      * HEADQUARTER: Headquarters BRAND: Brand DISTRIBUTOR: Distributor USER: User SUPPLIER: Supplier CUSTOM: Custom
      */
     private String relation_type;
+
     /**
      * Custom profit sharing relationship. This field has a maximum of 10 characters. Required when relation_type is
      * CUSTOM. Not required when relation_type is not CUSTOM.
      */
     private String custom_relation;
+
     /**
      * Amount.
      */
     private int amount;
+
     /**
      * Description of profit sharing.
      */

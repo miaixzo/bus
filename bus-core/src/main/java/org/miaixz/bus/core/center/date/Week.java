@@ -29,7 +29,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 /**
  * Enumeration for weeks, corresponding to the int values of weeks in {@link Calendar}.
  *
- * @author Kimi Liu
  * @see #SUNDAY
  * @see #MONDAY
  * @see #TUESDAY
@@ -37,6 +36,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @see #THURSDAY
  * @see #FRIDAY
  * @see #SATURDAY
+ * @author Kimi Liu
  * @since Java 21+
  */
 public enum Week {
@@ -79,6 +79,7 @@ public enum Week {
      * The week value corresponding to {@link Calendar}.
      */
     private final int code;
+
     /**
      * The name of the week.
      */

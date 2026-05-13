@@ -42,22 +42,27 @@ public class DefaultFormatter implements Format {
      * Formatter for comment lines.
      */
     protected final ElementFormatter<IniComment> commentElementFormatter;
+
     /**
      * Formatter for section headers.
      */
     protected final ElementFormatter<IniSection> sectionElementFormatter;
+
     /**
      * Formatter for property lines (key-value pairs).
      */
     protected final ElementFormatter<IniProperty> propertyElementFormatter;
+
     /**
      * The most recently parsed section, used to associate properties with it.
      */
     protected IniSection lastSection;
+
     /**
      * The current physical line number being read.
      */
     private int lineNumber = 0;
+
     /**
      * The current effective line number, excluding empty lines.
      */

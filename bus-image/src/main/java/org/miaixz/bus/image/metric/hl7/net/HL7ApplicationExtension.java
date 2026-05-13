@@ -23,26 +23,49 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
+ * Represents the HL7ApplicationExtension type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class HL7ApplicationExtension implements Serializable {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852267557616L;
 
+    /**
+     * The hl7 app value.
+     */
     protected HL7Application hl7App;
 
+    /**
+     * Gets the hl7 application.
+     *
+     * @return the hl7 application.
+     */
     public final HL7Application getHL7Application() {
         return hl7App;
     }
 
+    /**
+     * Sets the hl7 application.
+     *
+     * @param hl7App the hl7 app.
+     */
     void setHL7Application(HL7Application hl7App) {
         if (hl7App != null && this.hl7App != null)
             throw new IllegalStateException("already owned by HL7 Application: " + hl7App.getApplicationName());
         this.hl7App = hl7App;
     }
 
+    /**
+     * Executes the reconfigure operation.
+     *
+     * @param from the from.
+     */
     public void reconfigure(HL7ApplicationExtension from) {
 
     }
