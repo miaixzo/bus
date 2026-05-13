@@ -3,9 +3,6 @@ package org.opencv.core;
 //javadoc:TermCriteria
 /**
  * The term criteria class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class TermCriteria {
 

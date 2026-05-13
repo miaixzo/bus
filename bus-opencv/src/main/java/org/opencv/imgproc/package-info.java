@@ -22,8 +22,5 @@
  * <p>
  * This package contains a comprehensive set of image processing functions including geometric transformations, color
  * space conversions, filtering, feature detection, and other computer vision algorithms.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 package org.opencv.imgproc;

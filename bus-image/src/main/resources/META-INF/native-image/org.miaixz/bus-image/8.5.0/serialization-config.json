@@ -1,0 +1,198 @@
+{
+  "types": [
+    {
+      "name": "org.miaixz.bus.image.Device"
+    },
+    {
+      "name": "org.miaixz.bus.image.Format"
+    },
+    {
+      "name": "org.miaixz.bus.image.IOD"
+    },
+    {
+      "name": "org.miaixz.bus.image.IOD$And"
+    },
+    {
+      "name": "org.miaixz.bus.image.IOD$CompositeCondition"
+    },
+    {
+      "name": "org.miaixz.bus.image.IOD$DataElement"
+    },
+    {
+      "name": "org.miaixz.bus.image.IOD$MemberOf"
+    },
+    {
+      "name": "org.miaixz.bus.image.IOD$Or"
+    },
+    {
+      "name": "org.miaixz.bus.image.IOD$Present"
+    },
+    {
+      "name": "org.miaixz.bus.image.builtin.ldap.LdapEnv"
+    },
+    {
+      "name": "org.miaixz.bus.image.galaxy.data.AttributeSelector"
+    },
+    {
+      "name": "org.miaixz.bus.image.galaxy.data.Attributes"
+    },
+    {
+      "name": "org.miaixz.bus.image.galaxy.data.BulkData"
+    },
+    {
+      "name": "org.miaixz.bus.image.galaxy.data.BulkDataWithPrefix"
+    },
+    {
+      "name": "org.miaixz.bus.image.galaxy.data.Code"
+    },
+    {
+      "name": "org.miaixz.bus.image.galaxy.data.DateRange"
+    },
+    {
+      "name": "org.miaixz.bus.image.galaxy.data.Fragments"
+    },
+    {
+      "name": "org.miaixz.bus.image.galaxy.data.Issuer"
+    },
+    {
+      "name": "org.miaixz.bus.image.galaxy.data.ItemPointer"
+    },
+    {
+      "name": "org.miaixz.bus.image.galaxy.data.Sequence"
+    },
+    {
+      "name": "org.miaixz.bus.image.galaxy.data.ValueSelector"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.Connection"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.Property"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.StorageOptions"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.TransferCapability"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.api.AttributeCoercion"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.api.AttributeCoercion$Condition"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.api.AttributeCoercions"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.hl7.ERRSegment"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.hl7.HL7Exception"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.hl7.HL7Message"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.hl7.HL7Segment"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.hl7.net.HL7Application"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.hl7.net.HL7ApplicationExtension"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.hl7.net.HL7ApplicationInfo"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.hl7.net.HL7DeviceExtension"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.hl7.net.UnparsedHL7Message"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.net.AEExtension"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.net.ApplicationEntity"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.net.ApplicationEntityInfo"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.net.DeviceExtension"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.net.NoPresentationException"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.net.NoRolesException"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.pdu.AAbort"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.pdu.AAssociateRJ"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.service.ImageServiceException"
+    },
+    {
+      "name": "org.miaixz.bus.image.metric.service.InstanceLocator"
+    },
+    {
+      "name": "org.miaixz.bus.image.nimble.CIELabColorSpace"
+    },
+    {
+      "name": "org.miaixz.bus.image.nimble.YBRColorSpace"
+    },
+    {
+      "name": "org.miaixz.bus.image.nimble.codec.CompressionRule"
+    },
+    {
+      "name": "org.miaixz.bus.image.nimble.codec.CompressionRule$Condition"
+    },
+    {
+      "name": "org.miaixz.bus.image.nimble.codec.CompressionRules"
+    },
+    {
+      "name": "org.miaixz.bus.image.nimble.codec.ImageReaderFactory"
+    },
+    {
+      "name": "org.miaixz.bus.image.nimble.codec.ImageReaderFactory$ImageReaderParam"
+    },
+    {
+      "name": "org.miaixz.bus.image.nimble.codec.ImageWriterFactory"
+    },
+    {
+      "name": "org.miaixz.bus.image.nimble.codec.ImageWriterFactory$ImageWriterParam"
+    },
+    {
+      "name": "org.miaixz.bus.image.nimble.extend.ImageReaderExtension"
+    },
+    {
+      "name": "org.miaixz.bus.image.nimble.extend.ImageWriterExtension"
+    },
+    {
+      "name": "org.miaixz.bus.image.nimble.opencv.seg.Segment"
+    },
+    {
+      "name": "org.miaixz.bus.image.plugin.HL7Pdq"
+    },
+    {
+      "name": "org.miaixz.bus.image.plugin.HL7Pix"
+    },
+    {
+      "name": "org.miaixz.bus.image.plugin.HL7Snd"
+    },
+    {
+      "name": "org.miaixz.bus.image.plugin.IanSCP"
+    },
+    {
+      "name": "org.miaixz.bus.image.plugin.MoveSCU"
+    }
+  ],
+  "lambdaCapturingTypes": [],
+  "proxies": []
+}

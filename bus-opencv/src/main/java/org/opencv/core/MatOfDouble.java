@@ -5,9 +5,6 @@ import java.util.List;
 
 /**
  * The mat of double class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class MatOfDouble extends Mat {
 

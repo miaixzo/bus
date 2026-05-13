@@ -5,9 +5,6 @@ import java.util.List;
 
 /**
  * The mat of float 4 class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class MatOfFloat4 extends Mat {
 

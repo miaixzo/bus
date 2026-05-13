@@ -3,9 +3,6 @@ package org.opencv.core;
 //javadoc:Scalar_
 /**
  * The scalar class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class Scalar {
 

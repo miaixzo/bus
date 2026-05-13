@@ -10,9 +10,6 @@ import org.opencv.core.MatOfDouble;
  * Image hash based on block mean.
  *
  * See CITE: zauner2010implementation for details.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class BlockMeanHash extends ImgHashBase {
 

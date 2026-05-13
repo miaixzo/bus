@@ -3,9 +3,6 @@ package org.opencv.core;
 //javadoc:RotatedRect_
 /**
  * The rotated rect class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class RotatedRect {
 

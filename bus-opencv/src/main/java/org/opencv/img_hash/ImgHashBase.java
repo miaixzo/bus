@@ -9,9 +9,6 @@ import org.opencv.core.Mat;
 // C++: class ImgHashBase
 /**
  * The base class for image hash algorithms
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class ImgHashBase extends Algorithm {
 

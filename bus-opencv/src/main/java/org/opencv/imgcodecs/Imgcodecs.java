@@ -15,9 +15,6 @@ import org.opencv.utils.Converters;
 
 /**
  * The imgcodecs class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class Imgcodecs {
 

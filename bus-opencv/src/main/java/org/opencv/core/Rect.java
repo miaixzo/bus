@@ -3,9 +3,6 @@ package org.opencv.core;
 //javadoc:Rect_
 /**
  * The rect class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class Rect {
 

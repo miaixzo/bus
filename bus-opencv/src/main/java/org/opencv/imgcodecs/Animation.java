@@ -15,9 +15,6 @@ import org.opencv.utils.Converters;
  * Represents an animation with multiple frames. The {@code Animation} struct is designed to store and manage data for
  * animated sequences such as those from animated formats (e.g., GIF, AVIF, APNG, WebP). It provides support for
  * looping, background color settings, frame timing, and frame storage.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class Animation {
 

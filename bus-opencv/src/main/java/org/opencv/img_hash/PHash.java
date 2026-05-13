@@ -10,9 +10,6 @@ package org.opencv.img_hash;
  * Slower than average_hash, but tolerant of minor modifications
  *
  * This algorithm can combat more variation than averageHash, for more details please refer to CITE: lookslikeit
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class PHash extends ImgHashBase {
 

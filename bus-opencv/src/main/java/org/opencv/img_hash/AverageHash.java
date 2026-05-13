@@ -9,9 +9,6 @@ package org.opencv.img_hash;
  *
  * This is a fast image hashing algorithm, but only work on simple case. For more details, please refer to CITE:
  * lookslikeit
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class AverageHash extends ImgHashBase {
 

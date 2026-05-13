@@ -2,9 +2,6 @@ package org.opencv.core;
 
 /**
  * The cv exception class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class CvException extends RuntimeException {
 

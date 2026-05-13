@@ -3,9 +3,6 @@ package org.opencv.core;
 //javadoc: KeyPoint
 /**
  * The key point class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class KeyPoint {
 

@@ -5,9 +5,6 @@ import java.util.List;
 
 /**
  * The mat of point 3 class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class MatOfPoint3 extends Mat {
 

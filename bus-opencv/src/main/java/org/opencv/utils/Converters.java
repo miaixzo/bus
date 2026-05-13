@@ -23,9 +23,6 @@ import org.opencv.core.KeyPoint;
 
 /**
  * The converters class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class Converters {
 

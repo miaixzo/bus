@@ -5,9 +5,6 @@ import java.util.List;
 
 /**
  * The mat of point class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class MatOfPoint extends Mat {
 

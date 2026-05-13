@@ -5,9 +5,6 @@ import java.util.List;
 
 /**
  * The mat of rect 2 d class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class MatOfRect2d extends Mat {
 

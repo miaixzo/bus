@@ -6,9 +6,6 @@ import java.nio.ByteBuffer;
 //javadoc: Mat
 /**
  * The mat class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class Mat extends CleanableMat {
 
@@ -1119,9 +1116,6 @@ public class Mat extends CleanableMat {
 
     /**
      * The tuple 2 class.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Tuple2<T> {
 
@@ -1145,9 +1139,6 @@ public class Mat extends CleanableMat {
 
     /**
      * The tuple 3 class.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Tuple3<T> {
 
@@ -1177,9 +1168,6 @@ public class Mat extends CleanableMat {
 
     /**
      * The tuple 4 class.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Tuple4<T> {
 
@@ -1215,9 +1203,6 @@ public class Mat extends CleanableMat {
 
     /**
      * The atable interface.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
      */
     public interface Atable<T> {
 
@@ -1241,9 +1226,6 @@ public class Mat extends CleanableMat {
 
     /**
      * The atable base class.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
      */
     private static class AtableBase {
 
@@ -1266,9 +1248,6 @@ public class Mat extends CleanableMat {
 
     /**
      * The atable byte class.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
      */
     private static class AtableByte extends AtableBase implements Atable<Byte> {
 
@@ -1336,9 +1315,6 @@ public class Mat extends CleanableMat {
 
     /**
      * The atable double class.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
      */
     private static class AtableDouble extends AtableBase implements Atable<Double> {
 
@@ -1406,9 +1382,6 @@ public class Mat extends CleanableMat {
 
     /**
      * The atable float class.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
      */
     private static class AtableFloat extends AtableBase implements Atable<Float> {
 
@@ -1476,9 +1449,6 @@ public class Mat extends CleanableMat {
 
     /**
      * The atable integer class.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
      */
     private static class AtableInteger extends AtableBase implements Atable<Integer> {
 
@@ -1546,9 +1516,6 @@ public class Mat extends CleanableMat {
 
     /**
      * The atable short class.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
      */
     private static class AtableShort extends AtableBase implements Atable<Short> {
 

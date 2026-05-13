@@ -3,9 +3,6 @@ package org.opencv.imgproc;
 //javadoc:Moments
 /**
  * The moments class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class Moments {
 

@@ -3,9 +3,6 @@ package org.opencv.core;
 //javadoc:Rect2d_
 /**
  * The rect 2 d class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class Rect2d {
 

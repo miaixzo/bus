@@ -5,9 +5,6 @@ import java.util.List;
 
 /**
  * The mat of int 4 class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class MatOfInt4 extends Mat {
 

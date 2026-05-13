@@ -5,9 +5,6 @@ import java.util.List;
 
 /**
  * The mat of d match class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class MatOfDMatch extends Mat {
 

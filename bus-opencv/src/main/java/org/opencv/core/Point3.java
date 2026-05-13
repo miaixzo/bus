@@ -3,9 +3,6 @@ package org.opencv.core;
 //javadoc:Point3_
 /**
  * The point 3 class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class Point3 {
 

@@ -2,9 +2,6 @@ package org.opencv.core;
 
 /**
  * The cv type class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public final class CvType {
 

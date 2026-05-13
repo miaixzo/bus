@@ -17,9 +17,6 @@ import org.opencv.utils.Converters;
 
 /**
  * The subdiv 2 d class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class Subdiv2D {
 

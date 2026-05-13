@@ -22,8 +22,5 @@
  * <p>
  * This package contains fundamental OpenCV classes including Mat (matrix), Point, Size, Rect, Scalar, and other core
  * data types used throughout the OpenCV library for image processing and computer vision tasks.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 package org.opencv.core;

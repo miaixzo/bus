@@ -5,9 +5,6 @@ import java.util.List;
 
 /**
  * The mat of byte class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class MatOfByte extends Mat {
 

@@ -9,9 +9,6 @@ import org.opencv.core.Mat;
 
 /**
  * The img hash class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class Img_hash {
 

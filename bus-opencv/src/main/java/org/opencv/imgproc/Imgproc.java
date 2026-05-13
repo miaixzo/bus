@@ -23,9 +23,6 @@ import org.opencv.utils.Converters;
 
 /**
  * The imgproc class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class Imgproc {
 

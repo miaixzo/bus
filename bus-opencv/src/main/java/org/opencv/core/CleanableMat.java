@@ -4,9 +4,6 @@ import java.lang.ref.Cleaner;
 
 /**
  * The cleanable mat class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class CleanableMat {
 

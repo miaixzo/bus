@@ -3,9 +3,6 @@ package org.opencv.core;
 //javadoc:Range
 /**
  * The range class.
- *
- * @author Kimi Liu
- * @since Java 21+
  */
 public class Range {
 
