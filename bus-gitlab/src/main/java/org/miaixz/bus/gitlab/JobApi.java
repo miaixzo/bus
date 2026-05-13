@@ -88,7 +88,7 @@ public class JobApi extends AbstractApi implements Constants {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "jobs");
-        return (response.readEntity(new GenericType<List<Job>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -266,7 +266,7 @@ public class JobApi extends AbstractApi implements Constants {
                 "pipelines",
                 pipelineId,
                 "jobs");
-        return (response.readEntity(new GenericType<List<Job>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -455,7 +455,7 @@ public class JobApi extends AbstractApi implements Constants {
         Response response = getWithAccepts(
                 Response.Status.OK,
                 formData.asMap(),
-                MediaType.MEDIA_TYPE_WILDCARD,
+                MediaType.WILDCARD,
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "jobs",
@@ -511,7 +511,7 @@ public class JobApi extends AbstractApi implements Constants {
         Response response = getWithAccepts(
                 Response.Status.OK,
                 formData.asMap(),
-                MediaType.MEDIA_TYPE_WILDCARD,
+                MediaType.WILDCARD,
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "jobs",
@@ -541,7 +541,7 @@ public class JobApi extends AbstractApi implements Constants {
         Response response = getWithAccepts(
                 Response.Status.OK,
                 null,
-                MediaType.MEDIA_TYPE_WILDCARD,
+                MediaType.WILDCARD,
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "jobs",
@@ -589,7 +589,7 @@ public class JobApi extends AbstractApi implements Constants {
         Response response = getWithAccepts(
                 Response.Status.OK,
                 null,
-                MediaType.MEDIA_TYPE_WILDCARD,
+                MediaType.WILDCARD,
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "jobs",

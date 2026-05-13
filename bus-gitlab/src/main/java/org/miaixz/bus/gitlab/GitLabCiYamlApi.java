@@ -53,7 +53,7 @@ public class GitLabCiYamlApi extends AbstractApi {
      */
     public List<GitLabCiTemplateElement> getAllGitLabCiYamlTemplates() throws GitLabApiException {
         Response response = get(Response.Status.OK, null, "templates", "gitlab_ci_ymls");
-        return (response.readEntity(new GenericType<List<GitLabCiTemplateElement>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 

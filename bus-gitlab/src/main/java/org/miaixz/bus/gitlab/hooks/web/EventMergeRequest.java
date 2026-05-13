@@ -21,11 +21,13 @@ package org.miaixz.bus.gitlab.hooks.web;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.miaixz.bus.gitlab.models.Assignee;
 import org.miaixz.bus.gitlab.models.Duration;
 import org.miaixz.bus.gitlab.support.JacksonJson;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
  * The event merge request class.
@@ -73,7 +75,11 @@ public class EventMergeRequest {
 
     private Long updatedById;
     private String mergeError;
-    private Map<String, String> mergeParams;
+
+    /**
+     * Parameters used when the merge request is merged or scheduled for auto-merge.
+     */
+    private MergeParams mergeParams;
     private Boolean mergeWhenPipelineSucceeds;
     private Long mergeUserId;
     private Date deletedAt;
@@ -383,11 +389,21 @@ public class EventMergeRequest {
         this.mergeError = mergeError;
     }
 
-    public Map<String, String> getMergeParams() {
+    /**
+     * Gets the merge parameters included in the webhook event.
+     *
+     * @return the merge parameters
+     */
+    public MergeParams getMergeParams() {
         return mergeParams;
     }
 
-    public void setMergeParams(Map<String, String> mergeParams) {
+    /**
+     * Sets the merge parameters included in the webhook event.
+     *
+     * @param mergeParams the merge parameters
+     */
+    public void setMergeParams(MergeParams mergeParams) {
         this.mergeParams = mergeParams;
     }
 
@@ -541,6 +557,253 @@ public class EventMergeRequest {
 
     public void setOldrev(String oldrev) {
         this.oldrev = oldrev;
+    }
+
+    /**
+     * Merge parameters included in merge request webhook payloads.
+     */
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class MergeParams {
+
+        /**
+         * Auto-merge strategy selected for the merge request.
+         */
+        private String autoMergeStrategy;
+
+        /**
+         * Raw remove-source-branch value supplied by GitLab.
+         */
+        private String forceRemoveSourceBranch;
+
+        /**
+         * Flag indicating whether the source branch should be removed.
+         */
+        private Boolean shouldRemoveSourceBranch;
+
+        /**
+         * Commit message used for the merge commit.
+         */
+        private String commitMessage;
+
+        /**
+         * Commit message used for the squash commit.
+         */
+        private String squashCommitMessage;
+
+        /**
+         * Source branch SHA expected when merging.
+         */
+        private String sha;
+
+        /**
+         * Merge train reference details.
+         */
+        private TrainRef trainRef;
+
+        /**
+         * Gets the auto-merge strategy selected for the merge request.
+         *
+         * @return the auto-merge strategy
+         */
+        public String getAutoMergeStrategy() {
+            return autoMergeStrategy;
+        }
+
+        /**
+         * Sets the auto-merge strategy selected for the merge request.
+         *
+         * @param autoMergeStrategy the auto-merge strategy
+         */
+        public void setAutoMergeStrategy(String autoMergeStrategy) {
+            this.autoMergeStrategy = autoMergeStrategy;
+        }
+
+        /**
+         * Gets the raw remove-source-branch value supplied by GitLab.
+         *
+         * @return the raw remove-source-branch value
+         */
+        public String getForceRemoveSourceBranch() {
+            return forceRemoveSourceBranch;
+        }
+
+        /**
+         * Sets the raw remove-source-branch value supplied by GitLab.
+         *
+         * @param forceRemoveSourceBranch the raw remove-source-branch value
+         */
+        public void setForceRemoveSourceBranch(String forceRemoveSourceBranch) {
+            this.forceRemoveSourceBranch = forceRemoveSourceBranch;
+        }
+
+        /**
+         * Gets whether the source branch should be removed.
+         *
+         * @return {@code true} if the source branch should be removed
+         */
+        public Boolean getShouldRemoveSourceBranch() {
+            return shouldRemoveSourceBranch;
+        }
+
+        /**
+         * Sets whether the source branch should be removed.
+         *
+         * @param shouldRemoveSourceBranch {@code true} if the source branch should be removed
+         */
+        public void setShouldRemoveSourceBranch(Boolean shouldRemoveSourceBranch) {
+            this.shouldRemoveSourceBranch = shouldRemoveSourceBranch;
+        }
+
+        /**
+         * Gets the merge commit message.
+         *
+         * @return the merge commit message
+         */
+        public String getCommitMessage() {
+            return commitMessage;
+        }
+
+        /**
+         * Sets the merge commit message.
+         *
+         * @param commitMessage the merge commit message
+         */
+        public void setCommitMessage(String commitMessage) {
+            this.commitMessage = commitMessage;
+        }
+
+        /**
+         * Gets the squash commit message.
+         *
+         * @return the squash commit message
+         */
+        public String getSquashCommitMessage() {
+            return squashCommitMessage;
+        }
+
+        /**
+         * Sets the squash commit message.
+         *
+         * @param squashCommitMessage the squash commit message
+         */
+        public void setSquashCommitMessage(String squashCommitMessage) {
+            this.squashCommitMessage = squashCommitMessage;
+        }
+
+        /**
+         * Gets the source branch SHA expected when merging.
+         *
+         * @return the source branch SHA
+         */
+        public String getSha() {
+            return sha;
+        }
+
+        /**
+         * Sets the source branch SHA expected when merging.
+         *
+         * @param sha the source branch SHA
+         */
+        public void setSha(String sha) {
+            this.sha = sha;
+        }
+
+        /**
+         * Gets the merge train reference details.
+         *
+         * @return the merge train reference details
+         */
+        public TrainRef getTrainRef() {
+            return trainRef;
+        }
+
+        /**
+         * Sets the merge train reference details.
+         *
+         * @param trainRef the merge train reference details
+         */
+        public void setTrainRef(TrainRef trainRef) {
+            this.trainRef = trainRef;
+        }
+
+        /**
+         * Merge train reference SHAs included in merge request webhook payloads.
+         */
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        public static class TrainRef {
+
+            /**
+             * Commit SHA for the merge train reference.
+             */
+            private String commitSha;
+
+            /**
+             * Merge commit SHA for the merge train reference.
+             */
+            private String mergeCommitSha;
+
+            /**
+             * Squash commit SHA for the merge train reference.
+             */
+            private String squashCommitSha;
+
+            /**
+             * Gets the commit SHA for the merge train reference.
+             *
+             * @return the commit SHA
+             */
+            public String getCommitSha() {
+                return commitSha;
+            }
+
+            /**
+             * Sets the commit SHA for the merge train reference.
+             *
+             * @param commitSha the commit SHA
+             */
+            public void setCommitSha(String commitSha) {
+                this.commitSha = commitSha;
+            }
+
+            /**
+             * Gets the merge commit SHA for the merge train reference.
+             *
+             * @return the merge commit SHA
+             */
+            public String getMergeCommitSha() {
+                return mergeCommitSha;
+            }
+
+            /**
+             * Sets the merge commit SHA for the merge train reference.
+             *
+             * @param mergeCommitSha the merge commit SHA
+             */
+            public void setMergeCommitSha(String mergeCommitSha) {
+                this.mergeCommitSha = mergeCommitSha;
+            }
+
+            /**
+             * Gets the squash commit SHA for the merge train reference.
+             *
+             * @return the squash commit SHA
+             */
+            public String getSquashCommitSha() {
+                return squashCommitSha;
+            }
+
+            /**
+             * Sets the squash commit SHA for the merge train reference.
+             *
+             * @param squashCommitSha the squash commit SHA
+             */
+            public void setSquashCommitSha(String squashCommitSha) {
+                this.squashCommitSha = squashCommitSha;
+            }
+
+        }
+
     }
 
     @Override

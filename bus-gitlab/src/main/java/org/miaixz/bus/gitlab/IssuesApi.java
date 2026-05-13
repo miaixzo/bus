@@ -1067,7 +1067,7 @@ public class IssuesApi extends AbstractApi implements Constants {
                 "issues",
                 issueIid,
                 "closed_by");
-        return (response.readEntity(new GenericType<List<MergeRequest>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -1313,7 +1313,7 @@ public class IssuesApi extends AbstractApi implements Constants {
                 "issues",
                 issueIid,
                 "participants");
-        return (response.readEntity(new GenericType<List<Participant>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 

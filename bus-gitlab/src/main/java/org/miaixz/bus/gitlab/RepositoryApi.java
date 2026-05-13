@@ -75,7 +75,7 @@ public class RepositoryApi extends AbstractApi {
      * <code>GitLab Endpoint: GET /projects/:id/repository/branches</code>
      * </pre>
      *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of a Long(ID), String(path), or Project instance
      * @return the list of repository branches for the specified project
      * @throws GitLabApiException if any exception occurs
      */
@@ -90,7 +90,7 @@ public class RepositoryApi extends AbstractApi {
      * <code>GitLab Endpoint: GET /projects/:id/repository/branches</code>
      * </pre>
      *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of a Long(ID), String(path), or Project instance
      * @param page            the page to get
      * @param perPage         the number of Branch instances per page
      * @return the list of repository branches for the specified project
@@ -104,7 +104,7 @@ public class RepositoryApi extends AbstractApi {
                 getProjectIdOrPath(projectIdOrPath),
                 "repository",
                 "branches");
-        return (response.readEntity(new GenericType<List<Branch>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -115,7 +115,7 @@ public class RepositoryApi extends AbstractApi {
      * <code>GitLab Endpoint: GET /projects/:id/repository/branches</code>
      * </pre>
      *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of a Long(ID), String(path), or Project instance
      * @param itemsPerPage    the number of Project instances that will be fetched per page
      * @return the list of repository branches for the specified project ID
      * @throws GitLabApiException if any exception occurs
@@ -539,7 +539,7 @@ public class RepositoryApi extends AbstractApi {
         Response response = getWithAccepts(
                 Response.Status.OK,
                 null,
-                MediaType.MEDIA_TYPE_WILDCARD,
+                MediaType.WILDCARD,
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "repository",
@@ -794,7 +794,7 @@ public class RepositoryApi extends AbstractApi {
      * @param from            the commit SHA or branch name
      * @param to              the commit SHA or branch name
      * @param straight        specifies the comparison method, true for direct comparison between from and to
-     *                        (from..to), false to compare using merge base (from…to)’.
+     *                        (from..to), false to compare using merge base (from...to)
      * @return a CompareResults containing the results of the comparison
      * @throws GitLabApiException if any exception occurs
      */
@@ -802,6 +802,31 @@ public class RepositoryApi extends AbstractApi {
             throws GitLabApiException {
         Form formData = new GitLabApiForm().withParam("from", from, true).withParam("to", to, true)
                 .withParam("straight", straight);
+        Response response = get(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "repository",
+                "compare");
+        return (response.readEntity(CompareResults.class));
+    }
+
+    /**
+     * Compare branches, tags or commits.
+     *
+     * @param projectIdOrPath the project in the form of a Long(ID), String(path), or Project instance
+     * @param from            the commit SHA or branch name
+     * @param to              the commit SHA or branch name
+     * @param fromProjectId   the ID to compare from
+     * @param straight        specifies the comparison method
+     * @return a CompareResults containing the results of the comparison
+     * @throws GitLabApiException if any exception occurs
+     */
+    public CompareResults compare(Object projectIdOrPath, String from, String to, Long fromProjectId, Boolean straight)
+            throws GitLabApiException {
+        Form formData = new GitLabApiForm().withParam("from", from, true).withParam("to", to, true)
+                .withParam("straight", straight).withParam("from_project_id", fromProjectId);
         Response response = get(
                 Response.Status.OK,
                 formData.asMap(),
@@ -997,7 +1022,7 @@ public class RepositoryApi extends AbstractApi {
 
     /**
      * <p>
-     * Delete all branches that are merged into the project’s default branch.
+     * Delete all branches that are merged into the project's default branch.
      * </p>
      * NOTE: Protected branches will not be deleted as part of this operation.
      *

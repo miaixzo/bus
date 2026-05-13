@@ -55,7 +55,7 @@ public class SnippetsApi extends AbstractApi {
     public List<Snippet> getSnippets(boolean downloadContent) throws GitLabApiException {
 
         Response response = get(Response.Status.OK, getDefaultPerPageParam(), "snippets");
-        List<Snippet> snippets = (response.readEntity(new GenericType<List<Snippet>>() {
+        List<Snippet> snippets = (response.readEntity(new GenericType<>() {
         }));
 
         if (downloadContent) {

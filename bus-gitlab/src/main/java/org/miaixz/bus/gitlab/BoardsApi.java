@@ -80,7 +80,7 @@ public class BoardsApi extends AbstractApi {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "boards");
-        return (response.readEntity(new GenericType<List<Board>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -283,7 +283,7 @@ public class BoardsApi extends AbstractApi {
                 "boards",
                 boardId,
                 "lists");
-        return (response.readEntity(new GenericType<List<BoardList>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -495,7 +495,7 @@ public class BoardsApi extends AbstractApi {
                 "groups",
                 getGroupIdOrPath(groupIdOrPath),
                 "boards");
-        return (response.readEntity(new GenericType<List<Board>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -691,7 +691,7 @@ public class BoardsApi extends AbstractApi {
                 "boards",
                 boardId,
                 "lists");
-        return (response.readEntity(new GenericType<List<BoardList>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -901,7 +901,7 @@ public class BoardsApi extends AbstractApi {
                 "groups",
                 getGroupIdOrPath(groupIdOrPath),
                 "epic_boards");
-        return (response.readEntity(new GenericType<List<Board>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -1019,7 +1019,7 @@ public class BoardsApi extends AbstractApi {
                 "epic_boards",
                 boardId,
                 "lists");
-        return (response.readEntity(new GenericType<List<BoardList>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 

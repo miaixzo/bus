@@ -76,7 +76,7 @@ public class TopicsApi extends AbstractApi {
      */
     public List<Topic> getTopics(int page, int perPage) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "topics");
-        return (response.readEntity(new GenericType<List<Topic>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 

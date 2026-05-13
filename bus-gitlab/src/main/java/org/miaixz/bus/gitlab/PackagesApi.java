@@ -84,7 +84,7 @@ public class PackagesApi extends AbstractApi {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "packages");
-        return response.readEntity(new GenericType<List<Package>>() {
+        return response.readEntity(new GenericType<>() {
         });
     }
 
@@ -223,7 +223,7 @@ public class PackagesApi extends AbstractApi {
                 "packages",
                 packageId,
                 "package_files");
-        return response.readEntity(new GenericType<List<PackageFile>>() {
+        return response.readEntity(new GenericType<>() {
         });
     }
 

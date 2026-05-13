@@ -82,7 +82,7 @@ public class ContainerRegistryApi extends AbstractApi {
                 getProjectIdOrPath(projectIdOrPath),
                 "registry",
                 "repositories");
-        return response.readEntity(new GenericType<List<RegistryRepository>>() {
+        return response.readEntity(new GenericType<>() {
         });
     }
 
@@ -226,7 +226,7 @@ public class ContainerRegistryApi extends AbstractApi {
                 repositoryId,
                 "tags",
                 tagName);
-        return response.readEntity(new GenericType<RegistryRepositoryTag>() {
+        return response.readEntity(new GenericType<>() {
         });
     }
 

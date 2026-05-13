@@ -158,7 +158,7 @@ public class EventsApi extends AbstractApi {
                 .withParam("scope", scope != null ? scope.toValue().toLowerCase() : null);
 
         Response response = get(Response.Status.OK, formData.asMap(), "events");
-        return (response.readEntity(new GenericType<List<Event>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -344,7 +344,7 @@ public class EventsApi extends AbstractApi {
                 "users",
                 getUserIdOrUsername(userIdOrUsername),
                 "events");
-        return (response.readEntity(new GenericType<List<Event>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -475,7 +475,7 @@ public class EventsApi extends AbstractApi {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "events");
-        return (response.readEntity(new GenericType<List<Event>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 

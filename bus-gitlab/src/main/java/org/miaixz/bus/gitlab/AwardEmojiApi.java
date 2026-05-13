@@ -60,7 +60,7 @@ public class AwardEmojiApi extends AbstractApi {
                 "issues",
                 issueIid,
                 "award_emoji");
-        return response.readEntity(new GenericType<List<AwardEmoji>>() {
+        return response.readEntity(new GenericType<>() {
         });
     }
 
@@ -86,7 +86,7 @@ public class AwardEmojiApi extends AbstractApi {
                 "merge_requests",
                 mergeRequestIid,
                 "award_emoji");
-        return response.readEntity(new GenericType<List<AwardEmoji>>() {
+        return response.readEntity(new GenericType<>() {
         });
     }
 
@@ -111,7 +111,7 @@ public class AwardEmojiApi extends AbstractApi {
                 "snippets",
                 snippetId,
                 "award_emoji");
-        return response.readEntity(new GenericType<List<AwardEmoji>>() {
+        return response.readEntity(new GenericType<>() {
         });
     }
 
@@ -140,7 +140,7 @@ public class AwardEmojiApi extends AbstractApi {
                 "notes",
                 noteId,
                 "award_emoji");
-        return response.readEntity(new GenericType<List<AwardEmoji>>() {
+        return response.readEntity(new GenericType<>() {
         });
     }
 
@@ -187,7 +187,7 @@ public class AwardEmojiApi extends AbstractApi {
                 "notes",
                 noteId,
                 "award_emoji");
-        return response.readEntity(new GenericType<List<AwardEmoji>>() {
+        return response.readEntity(new GenericType<>() {
         });
     }
 
@@ -459,11 +459,8 @@ public class AwardEmojiApi extends AbstractApi {
      * @return an AwardEmoji instance for the added award emoji
      * @throws GitLabApiException if any exception occurs
      */
-    public AwardEmoji addMergeRequestAwardEmoji(
-            Object projectIdOrPath,
-            Integer mergeRequestIid,
-            Integer noteId,
-            String name) throws GitLabApiException {
+    public AwardEmoji addMergeRequestAwardEmoji(Object projectIdOrPath, Long mergeRequestIid, Long noteId, String name)
+            throws GitLabApiException {
         GitLabApiForm form = new GitLabApiForm().withParam("name", name, true);
         Response response = post(
                 Response.Status.CREATED,

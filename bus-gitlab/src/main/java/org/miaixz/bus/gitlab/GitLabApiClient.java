@@ -237,17 +237,18 @@ public class GitLabApiClient implements AutoCloseable {
 
         this.secretToken = secretToken;
 
+        // Disable auto-discovery of feature and services lookup, this will force Jersey
+        // to use the features and services explicitly configured by gitlab4j
         clientConfig = new ClientConfig();
+        clientConfig.property(ClientProperties.FEATURE_AUTO_DISCOVERY_DISABLE, true);
+        clientConfig.property(ClientProperties.METAINF_SERVICES_LOOKUP_DISABLE, true);
+        clientConfig.property(ClientProperties.FOLLOW_REDIRECTS, true);
+
         if (clientConfigProperties != null) {
             for (Map.Entry<String, Object> propertyEntry : clientConfigProperties.entrySet()) {
                 clientConfig.property(propertyEntry.getKey(), propertyEntry.getValue());
             }
         }
-
-        // Disable auto-discovery of feature and services lookup, this will force Jersey
-        // to use the features and services explicitly configured by gitlab4j
-        clientConfig.property(ClientProperties.FEATURE_AUTO_DISCOVERY_DISABLE, true);
-        clientConfig.property(ClientProperties.METAINF_SERVICES_LOOKUP_DISABLE, true);
 
         clientConfig.register(JacksonJson.class);
         clientConfig.register(MultiPartFeature.class);
@@ -323,6 +324,13 @@ public class GitLabApiClient implements AutoCloseable {
     void setRequestTimeout(Integer connectTimeout, Integer readTimeout) {
         this.connectTimeout = connectTimeout;
         this.readTimeout = readTimeout;
+        clientConfig.property(ClientProperties.CONNECT_TIMEOUT, connectTimeout);
+        clientConfig.property(ClientProperties.READ_TIMEOUT, readTimeout);
+
+        // Recreate the Client instance if already created.
+        if (apiClient != null) {
+            createApiClient();
+        }
         Logger.info(
                 false,
                 "GitLab",
@@ -1150,7 +1158,7 @@ public class GitLabApiClient implements AutoCloseable {
                 accept,
                 tokenType,
                 sudoAsId != null && sudoAsId.intValue() > 0);
-        WebTarget target = apiClient.target(url.toExternalForm()).property(ClientProperties.FOLLOW_REDIRECTS, true);
+        WebTarget target = apiClient.target(url.toExternalForm());
         if (queryParams != null) {
             for (Map.Entry<String, List<String>> param : queryParams.entrySet()) {
                 target = target.queryParam(param.getKey(), param.getValue().toArray());
@@ -1171,16 +1179,6 @@ public class GitLabApiClient implements AutoCloseable {
         // If sudo as ID is set add the Sudo header
         if (sudoAsId != null && sudoAsId.intValue() > 0)
             builder = builder.header(SUDO_HEADER, sudoAsId);
-
-        // Set the per request connect timeout
-        if (connectTimeout != null) {
-            builder.property(ClientProperties.CONNECT_TIMEOUT, connectTimeout);
-        }
-
-        // Set the per request read timeout
-        if (readTimeout != null) {
-            builder.property(ClientProperties.READ_TIMEOUT, readTimeout);
-        }
 
         Logger.debug(
                 false,

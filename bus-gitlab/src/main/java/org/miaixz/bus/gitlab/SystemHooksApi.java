@@ -67,7 +67,7 @@ public class SystemHooksApi extends AbstractApi {
      */
     public List<SystemHook> getSystemHooks(int page, int perPage) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "hooks");
-        return (response.readEntity(new GenericType<List<SystemHook>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 

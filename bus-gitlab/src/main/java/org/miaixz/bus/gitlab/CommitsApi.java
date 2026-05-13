@@ -553,7 +553,7 @@ public class CommitsApi extends AbstractApi {
                 "commits",
                 sha,
                 "statuses");
-        return (response.readEntity(new GenericType<List<CommitStatus>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 

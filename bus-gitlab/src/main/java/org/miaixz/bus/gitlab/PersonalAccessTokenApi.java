@@ -105,7 +105,7 @@ public class PersonalAccessTokenApi extends AbstractApi {
      */
     public List<PersonalAccessToken> getPersonalAccessTokens() throws GitLabApiException {
         Response response = get(Response.Status.OK, null, "personal_access_tokens");
-        return response.readEntity(new GenericType<List<PersonalAccessToken>>() {
+        return response.readEntity(new GenericType<>() {
         });
     }
 

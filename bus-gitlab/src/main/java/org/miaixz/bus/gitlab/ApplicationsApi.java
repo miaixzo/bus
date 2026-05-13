@@ -73,7 +73,7 @@ public class ApplicationsApi extends AbstractApi {
                 jakarta.ws.rs.core.Response.Status.OK,
                 getPageQueryParams(page, perPage),
                 "applications");
-        return (response.readEntity(new GenericType<List<Application>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 

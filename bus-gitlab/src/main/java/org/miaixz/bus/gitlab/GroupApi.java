@@ -95,7 +95,7 @@ public class GroupApi extends AbstractApi {
      */
     public List<Group> getGroups(int page, int perPage) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "groups");
-        return (response.readEntity(new GenericType<List<Group>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -152,7 +152,7 @@ public class GroupApi extends AbstractApi {
         Form formData = new GitLabApiForm().withParam("search", search).withParam(PAGE_PARAM, page)
                 .withParam(PER_PAGE_PARAM, perPage);
         Response response = get(Response.Status.OK, formData.asMap(), "groups");
-        return (response.readEntity(new GenericType<List<Group>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -359,7 +359,7 @@ public class GroupApi extends AbstractApi {
                 "groups",
                 getGroupIdOrPath(groupIdOrPath),
                 "subgroups");
-        return (response.readEntity(new GenericType<List<Group>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -580,7 +580,7 @@ public class GroupApi extends AbstractApi {
                 "groups",
                 getGroupIdOrPath(groupIdOrPath),
                 "projects");
-        return (response.readEntity(new GenericType<List<Project>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -614,6 +614,138 @@ public class GroupApi extends AbstractApi {
      */
     public Stream<Project> getProjectsStream(Object groupIdOrPath) throws GitLabApiException {
         return (getProjects(groupIdOrPath, getDefaultPerPage()).stream());
+    }
+
+    /**
+     * Gets the groups where the specified group has been invited. When accessed without authentication, only public
+     * shared groups are returned.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: GET /groups/:id/groups/shared</code>
+     * </pre>
+     *
+     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
+     * @param filter        the filter values for the query
+     * @return a list of groups where the specified group has been invited and that match the filter
+     * @throws GitLabApiException if any exception occurs
+     */
+    public List<Group> getSharedGroups(Object groupIdOrPath, SharedGroupsFilter filter) throws GitLabApiException {
+        return (getSharedGroups(groupIdOrPath, filter, getDefaultPerPage()).all());
+    }
+
+    /**
+     * Gets a pager of groups where the specified group has been invited. When accessed without authentication, only
+     * public shared groups are returned.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: GET /groups/:id/groups/shared</code>
+     * </pre>
+     *
+     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
+     * @param filter        the filter values for the query
+     * @param itemsPerPage  the number of Group instances that will be fetched per page
+     * @return a pager of groups where the specified group has been invited and that match the filter
+     * @throws GitLabApiException if any exception occurs
+     */
+    public Pager<Group> getSharedGroups(Object groupIdOrPath, SharedGroupsFilter filter, int itemsPerPage)
+            throws GitLabApiException {
+        GitLabApiForm formData = new GitLabApiForm(filter.getQueryParams());
+        return (new Pager<Group>(this, Group.class, itemsPerPage, formData.asMap(), "groups",
+                getGroupIdOrPath(groupIdOrPath), "groups", "shared"));
+    }
+
+    /**
+     * Gets a stream of groups where the specified group has been invited. When accessed without authentication, only
+     * public shared groups are returned.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: GET /groups/:id/groups/shared</code>
+     * </pre>
+     *
+     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
+     * @param filter        the filter values for the query
+     * @return a stream of groups where the specified group has been invited and that match the filter
+     * @throws GitLabApiException if any exception occurs
+     */
+    public Stream<Group> getSharedGroupsStream(Object groupIdOrPath, SharedGroupsFilter filter)
+            throws GitLabApiException {
+        return (getSharedGroups(groupIdOrPath, filter, getDefaultPerPage()).stream());
+    }
+
+    /**
+     * Gets the groups where the specified group has been invited. When accessed without authentication, only public
+     * shared groups are returned.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: GET /groups/:id/groups/shared</code>
+     * </pre>
+     *
+     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
+     * @return a list of groups where the specified group has been invited
+     * @throws GitLabApiException if any exception occurs
+     */
+    public List<Group> getSharedGroups(Object groupIdOrPath) throws GitLabApiException {
+        return (getSharedGroups(groupIdOrPath, getDefaultPerPage()).all());
+    }
+
+    /**
+     * Gets one page of groups where the specified group has been invited. When accessed without authentication, only
+     * public shared groups are returned.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: GET /groups/:id/groups/shared</code>
+     * </pre>
+     *
+     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
+     * @param page          the page to get
+     * @param perPage       the number of Group instances per page
+     * @return a page of groups where the specified group has been invited
+     * @throws GitLabApiException if any exception occurs
+     */
+    public List<Group> getSharedGroups(Object groupIdOrPath, int page, int perPage) throws GitLabApiException {
+        Response response = get(
+                Response.Status.OK,
+                getPageQueryParams(page, perPage),
+                "groups",
+                getGroupIdOrPath(groupIdOrPath),
+                "groups",
+                "shared");
+        return (response.readEntity(new GenericType<>() {
+        }));
+    }
+
+    /**
+     * Gets a pager of groups where the specified group has been invited. When accessed without authentication, only
+     * public shared groups are returned.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: GET /groups/:id/groups/shared</code>
+     * </pre>
+     *
+     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
+     * @param itemsPerPage  the number of Group instances that will be fetched per page
+     * @return a pager of groups where the specified group has been invited
+     * @throws GitLabApiException if any exception occurs
+     */
+    public Pager<Group> getSharedGroups(Object groupIdOrPath, int itemsPerPage) throws GitLabApiException {
+        return (new Pager<Group>(this, Group.class, itemsPerPage, null, "groups", getGroupIdOrPath(groupIdOrPath),
+                "groups", "shared"));
+    }
+
+    /**
+     * Gets a stream of groups where the specified group has been invited. When accessed without authentication, only
+     * public shared groups are returned.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: GET /groups/:id/groups/shared</code>
+     * </pre>
+     *
+     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
+     * @return a stream of groups where the specified group has been invited
+     * @throws GitLabApiException if any exception occurs
+     */
+    public Stream<Group> getSharedGroupsStream(Object groupIdOrPath) throws GitLabApiException {
+        return (getSharedGroups(groupIdOrPath, getDefaultPerPage()).stream());
     }
 
     /**
@@ -858,7 +990,7 @@ public class GroupApi extends AbstractApi {
                 "groups",
                 getGroupIdOrPath(groupIdOrPath),
                 "members");
-        return (response.readEntity(new GenericType<List<Member>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -1308,7 +1440,7 @@ public class GroupApi extends AbstractApi {
                 "groups",
                 getGroupIdOrPath(groupIdOrPath),
                 "ldap_group_links");
-        return (response.readEntity(new GenericType<List<LdapGroupLink>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -1418,7 +1550,7 @@ public class GroupApi extends AbstractApi {
                 "groups",
                 getGroupIdOrPath(groupIdOrPath),
                 "saml_group_links");
-        return (response.readEntity(new GenericType<List<SamlGroupLink>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -1525,7 +1657,7 @@ public class GroupApi extends AbstractApi {
     }
 
     /**
-     * Get list of a group’s variables.
+     * Get list of a group's variables.
      *
      * <pre>
      * <code>GitLab Endpoint: GET /groups/:id/variables</code>
@@ -1559,7 +1691,7 @@ public class GroupApi extends AbstractApi {
                 "groups",
                 getGroupIdOrPath(groupIdOrPath),
                 "variables");
-        return (response.readEntity(new GenericType<List<Variable>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -1966,7 +2098,7 @@ public class GroupApi extends AbstractApi {
     }
 
     /**
-     * Gets a list of a group’s badges and its group badges.
+     * Gets a list of a group's badges and its group badges.
      *
      * <pre>
      * <code>GitLab Endpoint: GET /groups/:id/badges</code>
@@ -1981,16 +2113,16 @@ public class GroupApi extends AbstractApi {
     }
 
     /**
-     * Gets a list of a group’s badges, case-sensitively filtered on bagdeName if non-null.
+     * Gets a list of a group's badges, optionally filtered by badge name.
      *
      * <pre>
      * <code>GitLab Endpoint: GET /groups/:id/badges?name=:name</code>
      * </pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param badgeName     The name to filter on (case-sensitive), ignored if null.
-     * @return All badges of the GitLab item, case insensitively filtered on name.
-     * @throws GitLabApiException If any problem is encountered
+     * @param badgeName     the badge name to filter on; ignored when {@code null}
+     * @return all badges of the GitLab item filtered on name
+     * @throws GitLabApiException if any exception occurs
      */
     public List<Badge> getBadges(Object groupIdOrPath, String badgeName) throws GitLabApiException {
         Form queryParam = new GitLabApiForm().withParam("name", badgeName);
@@ -2000,7 +2132,7 @@ public class GroupApi extends AbstractApi {
                 "groups",
                 getGroupIdOrPath(groupIdOrPath),
                 "badges");
-        return (response.readEntity(new GenericType<List<Badge>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -2206,7 +2338,7 @@ public class GroupApi extends AbstractApi {
         Response response = getWithAccepts(
                 Response.Status.OK,
                 null,
-                MediaType.MEDIA_TYPE_WILDCARD,
+                MediaType.WILDCARD,
                 "groups",
                 getGroupIdOrPath(groupIdOrPath),
                 "avatar");
@@ -2416,7 +2548,7 @@ public class GroupApi extends AbstractApi {
                 "groups",
                 getGroupIdOrPath(groupIdOrPath),
                 "iterations");
-        return (response.readEntity(new GenericType<List<Iteration>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -2433,7 +2565,7 @@ public class GroupApi extends AbstractApi {
      */
     public List<GroupAccessToken> getGroupAccessTokens(Object groupIdOrPath) throws GitLabApiException {
         Response response = get(Response.Status.OK, null, "groups", getGroupIdOrPath(groupIdOrPath), "access_tokens");
-        return (response.readEntity(new GenericType<List<GroupAccessToken>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -2596,7 +2728,7 @@ public class GroupApi extends AbstractApi {
      */
     public List<UploadedFile> getUploadFiles(Object groupIdOrPath) throws GitLabApiException {
         Response response = get(Response.Status.OK, null, "groups", getGroupIdOrPath(groupIdOrPath), "uploads");
-        return (response.readEntity(new GenericType<List<UploadedFile>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 

@@ -862,22 +862,6 @@ public class ContextBuilder extends WebUtils {
     }
 
     /**
-     * Sets the authorization information for the current request using only a user ID.
-     * <p>
-     * This is a convenience method that creates an {@link Authorize} object with only the user ID.
-     * </p>
-     *
-     * @param id The user ID to set.
-     * @return The created {@link Authorize} object.
-     * @deprecated Use {@link #setAuthorize(Authorize)} instead for more complete authorization information.
-     */
-    public static Authorize setAuthorize(@Nullable String id) {
-        Authorize authorize = Authorize.builder().x_user_id(id).build();
-        setAuthorize(authorize);
-        return getAuthorize();
-    }
-
-    /**
      * Gets the tenant ID from various sources with a defined priority: custom provider > user authorization object >
      * header &gt; parameter &gt; JSON body.
      *

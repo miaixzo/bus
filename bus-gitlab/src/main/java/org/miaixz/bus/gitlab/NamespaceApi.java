@@ -70,7 +70,7 @@ public class NamespaceApi extends AbstractApi {
      */
     public List<Namespace> getNamespaces(int page, int perPage) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "namespaces");
-        return (response.readEntity(new GenericType<List<Namespace>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -137,7 +137,7 @@ public class NamespaceApi extends AbstractApi {
         GitLabApiForm formData = new GitLabApiForm().withParam("search", query, true).withParam(PAGE_PARAM, page)
                 .withParam(PER_PAGE_PARAM, perPage);
         Response response = get(Response.Status.OK, formData.asMap(), "namespaces");
-        return (response.readEntity(new GenericType<List<Namespace>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 

@@ -55,6 +55,11 @@ public class MergeRequestParams implements Serializable {
     private Integer approvalsBeforeMerge;
 
     /**
+     * Flag indicating whether the merge request should be created as a draft.
+     */
+    private Boolean draft;
+
+    /**
      * Set the source branch. This is for merge request creation only.
      *
      * @param sourceBranch the sourceBranch to set
@@ -211,7 +216,7 @@ public class MergeRequestParams implements Serializable {
     }
 
     /**
-     * Flag indicating if the merge request’s discussion is locked. If the discussion is locked only project members can
+     * Flag indicating if the merge request's discussion is locked. If the discussion is locked only project members can
      * add, edit or resolve comments. This is for merge request updates only.
      *
      * @param discussionLocked the discussionLocked to set
@@ -245,6 +250,17 @@ public class MergeRequestParams implements Serializable {
     }
 
     /**
+     * Set the draft flag of the merge request.
+     *
+     * @param draft the draft flag to set
+     * @return the reference to this MergeRequestParams instance
+     */
+    public MergeRequestParams withDraft(Boolean draft) {
+        this.draft = draft;
+        return (this);
+    }
+
+    /**
      * Get the form params specified by this instance.
      *
      * @param isCreate set to true if this is for a create merge request API call, set to false if this is for an update
@@ -253,8 +269,15 @@ public class MergeRequestParams implements Serializable {
      */
     public GitLabForm getForm(boolean isCreate) {
 
+        String titleToUse;
+        if (Boolean.TRUE.equals(draft)) {
+            titleToUse = "Draft: " + (title != null ? title : "");
+        } else {
+            titleToUse = title;
+        }
+
         GitLabForm form = new GitLabForm().withParam("target_branch", targetBranch, isCreate)
-                .withParam("title", title, isCreate).withParam("assignee_id", assigneeId)
+                .withParam("title", titleToUse, isCreate).withParam("assignee_id", assigneeId)
                 .withParam("assignee_ids", assigneeIds).withParam("reviewer_ids", reviewerIds)
                 .withParam("milestone_id", milestoneId)
                 .withParam("labels", (labels != null ? String.join(",", labels) : null))

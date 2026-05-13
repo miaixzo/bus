@@ -89,7 +89,7 @@ public class DiscussionsApi extends AbstractApi {
                     "issues",
                     issueIid,
                     "discussions");
-            return (response.readEntity(new GenericType<List<Discussion>>() {
+            return (response.readEntity(new GenericType<>() {
             }));
         }
     }
@@ -175,7 +175,7 @@ public class DiscussionsApi extends AbstractApi {
                     "snippets",
                     snippetId,
                     "discussions");
-            return (response.readEntity(new GenericType<List<Discussion>>() {
+            return (response.readEntity(new GenericType<>() {
             }));
         }
     }
@@ -261,7 +261,7 @@ public class DiscussionsApi extends AbstractApi {
                     "epics",
                     epicId,
                     "discussions");
-            return (response.readEntity(new GenericType<List<Discussion>>() {
+            return (response.readEntity(new GenericType<>() {
             }));
         }
     }
@@ -350,7 +350,7 @@ public class DiscussionsApi extends AbstractApi {
                     "merge_requests",
                     mergeRequestIid,
                     "discussions");
-            return (response.readEntity(new GenericType<List<Discussion>>() {
+            return (response.readEntity(new GenericType<>() {
             }));
         }
     }
@@ -558,7 +558,7 @@ public class DiscussionsApi extends AbstractApi {
                     "commits",
                     commitSha,
                     "discussions");
-            return (response.readEntity(new GenericType<List<Discussion>>() {
+            return (response.readEntity(new GenericType<>() {
             }));
         }
     }

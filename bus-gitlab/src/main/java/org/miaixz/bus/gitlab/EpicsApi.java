@@ -83,7 +83,7 @@ public class EpicsApi extends AbstractApi {
                 "groups",
                 getGroupIdOrPath(groupIdOrPath),
                 "epics");
-        return (response.readEntity(new GenericType<List<Epic>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -521,7 +521,7 @@ public class EpicsApi extends AbstractApi {
                 "epics",
                 epicIid,
                 "issues");
-        return (response.readEntity(new GenericType<List<EpicIssue>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -647,7 +647,7 @@ public class EpicsApi extends AbstractApi {
                 epicIid,
                 "issues",
                 epicIssueId);
-        return response.readEntity(new GenericType<List<EpicIssue>>() {
+        return response.readEntity(new GenericType<>() {
         });
     }
 
@@ -795,7 +795,7 @@ public class EpicsApi extends AbstractApi {
                 epicIid,
                 "epics",
                 childEpicId);
-        return response.readEntity(new GenericType<List<ChildEpic>>() {
+        return response.readEntity(new GenericType<>() {
         });
     }
 

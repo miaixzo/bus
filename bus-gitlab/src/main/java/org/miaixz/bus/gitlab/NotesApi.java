@@ -81,7 +81,7 @@ public class NotesApi extends AbstractApi {
                 "issues",
                 issueIid,
                 "notes");
-        return (response.readEntity(new GenericType<List<Note>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -369,7 +369,7 @@ public class NotesApi extends AbstractApi {
                 "merge_requests",
                 mergeRequestIid,
                 "notes");
-        return (response.readEntity(new GenericType<List<Note>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -642,7 +642,7 @@ public class NotesApi extends AbstractApi {
                 "epics",
                 epicId,
                 "notes");
-        return (response.readEntity(new GenericType<List<Note>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 

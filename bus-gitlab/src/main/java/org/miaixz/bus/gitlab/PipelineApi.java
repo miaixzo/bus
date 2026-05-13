@@ -84,7 +84,7 @@ public class PipelineApi extends AbstractApi implements Constants {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "pipelines");
-        return (response.readEntity(new GenericType<List<Pipeline>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -260,7 +260,7 @@ public class PipelineApi extends AbstractApi implements Constants {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "pipelines");
-        return (response.readEntity(new GenericType<List<Pipeline>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -574,7 +574,7 @@ public class PipelineApi extends AbstractApi implements Constants {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "pipeline_schedules");
-        return (response.readEntity(new GenericType<List<PipelineSchedule>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -921,7 +921,7 @@ public class PipelineApi extends AbstractApi implements Constants {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "triggers");
-        return (response.readEntity(new GenericType<List<Trigger>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 

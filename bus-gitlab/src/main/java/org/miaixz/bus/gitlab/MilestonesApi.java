@@ -80,7 +80,7 @@ public class MilestonesApi extends AbstractApi {
                 "groups",
                 getGroupIdOrPath(groupIdOrPath),
                 "milestones");
-        return (response.readEntity(new GenericType<List<Milestone>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -136,7 +136,7 @@ public class MilestonesApi extends AbstractApi {
                 "groups",
                 getGroupIdOrPath(groupIdOrPath),
                 "milestones");
-        return (response.readEntity(new GenericType<List<Milestone>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -160,7 +160,7 @@ public class MilestonesApi extends AbstractApi {
                 "groups",
                 getGroupIdOrPath(groupIdOrPath),
                 "milestones");
-        return (response.readEntity(new GenericType<List<Milestone>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -187,7 +187,7 @@ public class MilestonesApi extends AbstractApi {
                 "groups",
                 getGroupIdOrPath(groupIdOrPath),
                 "milestones");
-        return (response.readEntity(new GenericType<List<Milestone>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -286,7 +286,7 @@ public class MilestonesApi extends AbstractApi {
                 "milestones",
                 milestoneId,
                 "merge_requests");
-        return (response.readEntity(new GenericType<List<MergeRequest>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -459,7 +459,7 @@ public class MilestonesApi extends AbstractApi {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "milestones");
-        return (response.readEntity(new GenericType<List<Milestone>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -515,7 +515,7 @@ public class MilestonesApi extends AbstractApi {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "milestones");
-        return (response.readEntity(new GenericType<List<Milestone>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -539,7 +539,7 @@ public class MilestonesApi extends AbstractApi {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "milestones");
-        return (response.readEntity(new GenericType<List<Milestone>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -566,7 +566,7 @@ public class MilestonesApi extends AbstractApi {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "milestones");
-        return (response.readEntity(new GenericType<List<Milestone>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 

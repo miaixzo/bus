@@ -1060,7 +1060,32 @@ public interface Constants {
         /**
          * Grants read-only access to the user's primary email address using OpenID Connect.
          */
-        EMAIL;
+        EMAIL,
+
+        /**
+         * Grants read (pull) access to a Container Registry.
+         */
+        READ_REGISTRY,
+
+        /**
+         * Grants write (push) access to a Container Registry.
+         */
+        WRITE_REGISTRY,
+
+        /**
+         * Grants pull access through the dependency proxy.
+         */
+        READ_VIRTUAL_REGISTRY,
+
+        /**
+         * Grants push, pull and delete access through the dependency proxy.
+         */
+        WRITE_VIRTUAL_REGISTRY,
+
+        /**
+         * Grants permission to rotate this token using the personal access token API.
+         */
+        SELF_ROTATE;
 
         private static JacksonJsonEnumHelper<ApplicationScope> enumHelper = new JacksonJsonEnumHelper<>(
                 ApplicationScope.class);
@@ -1149,21 +1174,73 @@ public interface Constants {
      */
     public enum DeployTokenScope {
 
-        READ_REPOSITORY, READ_REGISTRY;
+        /**
+         * Grants read access to repositories.
+         */
+        READ_REPOSITORY,
 
+        /**
+         * Grants read (pull) access to the container registry.
+         */
+        READ_REGISTRY,
+
+        /**
+         * Grants write (push) access to the container registry.
+         */
+        WRITE_REGISTRY,
+
+        /**
+         * Grants read access through the virtual registry.
+         */
+        READ_VIRTUAL_REGISTRY,
+
+        /**
+         * Grants write access through the virtual registry.
+         */
+        WRITE_VIRTUAL_REGISTRY,
+
+        /**
+         * Grants read access to the package registry.
+         */
+        READ_PACKAGE_REGISTRY,
+
+        /**
+         * Grants write access to the package registry.
+         */
+        WRITE_PACKAGE_REGISTRY;
+
+        /**
+         * JSON enum conversion helper.
+         */
         private static JacksonJsonEnumHelper<DeployTokenScope> enumHelper = new JacksonJsonEnumHelper<>(
                 DeployTokenScope.class);
 
+        /**
+         * Converts a GitLab API value into a deploy token scope.
+         *
+         * @param value the GitLab API value
+         * @return the matching deploy token scope
+         */
         @JsonCreator
         public static DeployTokenScope forValue(String value) {
             return enumHelper.forValue(value);
         }
 
+        /**
+         * Converts this deploy token scope to the GitLab API value.
+         *
+         * @return the GitLab API value
+         */
         @JsonValue
         public String toValue() {
             return (enumHelper.toString(this));
         }
 
+        /**
+         * Converts this deploy token scope to the GitLab API value.
+         *
+         * @return the GitLab API value
+         */
         @Override
         public String toString() {
             return (enumHelper.toString(this));
@@ -1330,21 +1407,93 @@ public interface Constants {
      */
     public enum ProjectAccessTokenScope {
 
-        API, READ_API, READ_REGISTRY, WRITE_REGISTRY, READ_REPOSITORY, WRITE_REPOSITORY, CREATE_RUNNER;
+        /**
+         * Grants complete read/write access to the API.
+         */
+        API,
 
+        /**
+         * Grants read access to the API.
+         */
+        READ_API,
+
+        /**
+         * Grants read (pull) access to the container registry.
+         */
+        READ_REGISTRY,
+
+        /**
+         * Grants write (push) access to the container registry.
+         */
+        WRITE_REGISTRY,
+
+        /**
+         * Grants read-only access to repositories.
+         */
+        READ_REPOSITORY,
+
+        /**
+         * Grants read-write access to repositories.
+         */
+        WRITE_REPOSITORY,
+
+        /**
+         * Grants create access to runners.
+         */
+        CREATE_RUNNER,
+
+        /**
+         * Grants access to manage runners.
+         */
+        MANAGE_RUNNER,
+
+        /**
+         * Grants access to GitLab Duo related API endpoints.
+         */
+        AI_FEATURES,
+
+        /**
+         * Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
+         */
+        K8S_PROXY,
+
+        /**
+         * Grants permission to rotate this token using the project access token API.
+         */
+        SELF_ROTATE;
+
+        /**
+         * JSON enum conversion helper.
+         */
         private static JacksonJsonEnumHelper<ProjectAccessTokenScope> enumHelper = new JacksonJsonEnumHelper<>(
                 ProjectAccessTokenScope.class);
 
+        /**
+         * Converts a GitLab API value into a project access token scope.
+         *
+         * @param value the GitLab API value
+         * @return the matching project access token scope
+         */
         @JsonCreator
         public static ProjectAccessTokenScope forValue(String value) {
             return enumHelper.forValue(value);
         }
 
+        /**
+         * Converts this project access token scope to the GitLab API value.
+         *
+         * @return the GitLab API value
+         */
         @JsonValue
         public String toValue() {
             return (enumHelper.toString(this));
         }
 
+        /**
+         * Converts this project access token scope to the GitLab API value.
+         *
+         * @return the GitLab API value
+         */
         @Override
         public String toString() {
             return (enumHelper.toString(this));

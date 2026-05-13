@@ -731,7 +731,7 @@ public class ProjectApi extends AbstractApi implements Constants {
      * <code>GitLab Endpoint: GET /projects/:id</code>
      * </pre>
      *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of a Long(ID), String(path), or Project instance
      * @return the specified project
      * @throws GitLabApiException if any exception occurs
      */
@@ -1206,7 +1206,7 @@ public class ProjectApi extends AbstractApi implements Constants {
         Response response = getWithAccepts(
                 Response.Status.OK,
                 null,
-                MediaType.MEDIA_TYPE_WILDCARD,
+                MediaType.WILDCARD,
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "avatar");
@@ -3100,11 +3100,15 @@ public class ProjectApi extends AbstractApi implements Constants {
      * authorEmailRegex (optional) - All commit author emails must match this, e.g. @my-company.com$
      * fileNameRegex (optional) - All committed filenames must not match this, e.g. `(jar
      * maxFileSize (optional) - Maximum file size (MB)
-     * commitCommitterCheck (optional) - Users can only push commits to this repository that were committed with one of their own verified emails.
+     * commitCommitterCheck (optional) - Users can only push commits to this repository that were committed with one of
+     * their own verified emails.
+     * commitCommitterNameCheck (optional) - Users can only push commits to this repository if the commit author name
+     * is consistent with their GitLab account name.
      * rejectUnsignedCommits (optional) - Reject commit when it is not signed through GPG
+     * rejectNonDcoCommits (optional) - Reject commit when it is not DCO certified
      *</code>
      *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
+     * @param projectIdOrPath the project in the form of a Long(ID), String(path), or Project instance, required
      * @param pushRule        the PushRule instance containing the push rule configuration to add
      * @return a PushRules instance with the newly created push rule info
      * @throws GitLabApiException if any exception occurs
@@ -3120,7 +3124,9 @@ public class ProjectApi extends AbstractApi implements Constants {
                 .withParam("file_name_regex", pushRule.getFileNameRegex())
                 .withParam("max_file_size", pushRule.getMaxFileSize())
                 .withParam("commit_committer_check", pushRule.getCommitCommitterCheck())
-                .withParam("reject_unsigned_commits", pushRule.getRejectUnsignedCommits());
+                .withParam("commit_committer_name_check", pushRule.getCommitCommitterNameCheck())
+                .withParam("reject_unsigned_commits", pushRule.getRejectUnsignedCommits())
+                .withParam("reject_non_dco_commits", pushRule.getRejectNonDcoCommits());
 
         Response response = post(
                 Response.Status.CREATED,
@@ -3150,11 +3156,15 @@ public class ProjectApi extends AbstractApi implements Constants {
      * authorEmailRegex (optional) - All commit author emails must match this, e.g. @my-company.com$
      * fileNameRegex (optional) - All committed filenames must not match this, e.g. `(jar
      * maxFileSize (optional) - Maximum file size (MB)
-     * commitCommitterCheck (optional) - Users can only push commits to this repository that were committed with one of their own verified emails.
+     * commitCommitterCheck (optional) - Users can only push commits to this repository that were committed with one of
+     * their own verified emails.
+     * commitCommitterNameCheck (optional) - Users can only push commits to this repository if the commit author name
+     * is consistent with their GitLab account name.
      * rejectUnsignedCommits (optional) - Reject commit when it is not signed through GPG
+     * rejectNonDcoCommits (optional) - Reject commit when it is not DCO certified
      *</code>
      *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
+     * @param projectIdOrPath the project in the form of a Long(ID), String(path), or Project instance, required
      * @param pushRule        the PushRules instance containing the push rule configuration to update
      * @return a PushRules instance with the newly created push rule info
      * @throws GitLabApiException if any exception occurs
@@ -3170,7 +3180,9 @@ public class ProjectApi extends AbstractApi implements Constants {
                 .withParam("file_name_regex", pushRule.getFileNameRegex())
                 .withParam("max_file_size", pushRule.getMaxFileSize())
                 .withParam("commit_committer_check", pushRule.getCommitCommitterCheck())
-                .withParam("reject_unsigned_commits", pushRule.getRejectUnsignedCommits());
+                .withParam("commit_committer_name_check", pushRule.getCommitCommitterNameCheck())
+                .withParam("reject_unsigned_commits", pushRule.getRejectUnsignedCommits())
+                .withParam("reject_non_dco_commits", pushRule.getRejectNonDcoCommits());
 
         final Response response = putWithFormData(
                 Response.Status.OK,
@@ -3959,7 +3971,7 @@ public class ProjectApi extends AbstractApi implements Constants {
     }
 
     /**
-     * Gets a list of a project’s badges and its group badges.
+     * Gets a list of a project's badges and its group badges.
      *
      * <pre>
      * <code>GitLab Endpoint: GET /projects/:id/badges</code>
@@ -3974,27 +3986,63 @@ public class ProjectApi extends AbstractApi implements Constants {
     }
 
     /**
-     * Gets a list of a project’s badges and its group badges, case-sensitively filtered on bagdeName if non-null.
+     * Gets a list of a project's badges and its group badges, optionally filtered by badge name.
      *
      * <pre>
      * <code>GitLab Endpoint: GET /projects/:id/badges?name=:name</code>
      * </pre>
      *
      * @param projectIdOrPath the project in the form of a Long(ID), String(path), or Project instance
-     * @param bagdeName       The name to filter on (case-sensitive), ignored if null.
-     * @return All badges of the GitLab item, case insensitively filtered on name.
-     * @throws GitLabApiException If any problem is encountered
+     * @param badgeName       the badge name to filter on; ignored when {@code null}
+     * @return all badges of the GitLab item filtered on name
+     * @throws GitLabApiException if any exception occurs
      */
-    public List<Badge> getBadges(Object projectIdOrPath, String bagdeName) throws GitLabApiException {
-        Form queryParam = new GitLabApiForm().withParam("name", bagdeName);
+    public List<Badge> getBadges(Object projectIdOrPath, String badgeName) throws GitLabApiException {
+        Form queryParam = new GitLabApiForm().withParam("name", badgeName);
         Response response = get(
                 Response.Status.OK,
                 queryParam.asMap(),
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "badges");
-        return (response.readEntity(new GenericType<List<Badge>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
+    }
+
+    /**
+     * Gets a pager of a project's badges and its group badges.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/badges</code>
+     * </pre>
+     *
+     * @param projectIdOrPath the project in the form of a Long(ID), String(path), or Project instance
+     * @param itemsPerPage    the number of Badge instances that will be fetched per page
+     * @return a pager of Badge instances for the specified project
+     * @throws GitLabApiException if any exception occurs
+     */
+    public Pager<Badge> getBadges(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
+        return getBadges(projectIdOrPath, null, itemsPerPage);
+    }
+
+    /**
+     * Gets a pager of a project's badges and its group badges, optionally filtered by badge name.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/badges?name=:name</code>
+     * </pre>
+     *
+     * @param projectIdOrPath the project in the form of a Long(ID), String(path), or Project instance
+     * @param badgeName       the badge name to filter on; ignored when {@code null}
+     * @param itemsPerPage    the number of Badge instances that will be fetched per page
+     * @return a pager of Badge instances for the specified project
+     * @throws GitLabApiException if any exception occurs
+     */
+    public Pager<Badge> getBadges(Object projectIdOrPath, String badgeName, int itemsPerPage)
+            throws GitLabApiException {
+        Form queryParam = new GitLabApiForm().withParam("name", badgeName);
+        return new Pager<Badge>(this, Badge.class, itemsPerPage, queryParam.asMap(), "projects",
+                getProjectIdOrPath(projectIdOrPath), "badges");
     }
 
     /**
@@ -4492,6 +4540,38 @@ public class ProjectApi extends AbstractApi implements Constants {
     }
 
     /**
+     * Get all pull mirrors for the specified project.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/mirror/pull</code>
+     * </pre>
+     *
+     * @param projectIdOrPath the project in the form of a Long(ID), String(path), or Project instance
+     * @return a list of project's pull mirrors
+     * @throws GitLabApiException if any exception occurs
+     */
+    public List<PullMirror> getPullMirrors(final Object projectIdOrPath) throws GitLabApiException {
+        return (getPullMirrors(projectIdOrPath, getDefaultPerPage()).all());
+    }
+
+    /**
+     * Get a Pager of pull mirrors for the specified project.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/mirror/pull</code>
+     * </pre>
+     *
+     * @param projectIdOrPath the project in the form of a Long(ID), String(path), or Project instance
+     * @param itemsPerPage    the number of items per page
+     * @return a Pager of project's pull mirrors
+     * @throws GitLabApiException if any exception occurs
+     */
+    public Pager<PullMirror> getPullMirrors(final Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
+        return new Pager<PullMirror>(this, PullMirror.class, itemsPerPage, null, "projects",
+                getProjectIdOrPath(projectIdOrPath), "mirror", "pull");
+    }
+
+    /**
      * Get all remote mirrors and their statuses for the specified project.
      *
      * <pre>
@@ -4779,6 +4859,59 @@ public class ProjectApi extends AbstractApi implements Constants {
                 "iterations");
         return (response.readEntity(new GenericType<>() {
         }));
+    }
+
+    /**
+     * Get project templates of the specified type.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/templates/:type</code>
+     * </pre>
+     *
+     * @param projectIdOrPath the project in the form of a Long(ID), String(path), or Project instance
+     * @param type            the template type
+     * @return the list of project templates
+     * @throws GitLabApiException if any exception occurs
+     */
+    public List<ProjectTemplate> getProjectTemplates(Object projectIdOrPath, ProjectTemplateType type)
+            throws GitLabApiException {
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "templates",
+                type.toString());
+        return (response.readEntity(new GenericType<>() {
+        }));
+    }
+
+    /**
+     * Get a specific project template of the specified type.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/templates/:type/:name</code>
+     * </pre>
+     *
+     * @param projectIdOrPath the project in the form of a Long(ID), String(path), or Project instance
+     * @param type            the template type
+     * @param templateName    the template key
+     * @return the project template detail
+     * @throws GitLabApiException if any exception occurs
+     */
+    public ProjectTemplateDetail getProjectTemplate(
+            Object projectIdOrPath,
+            ProjectTemplateType type,
+            String templateName) throws GitLabApiException {
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "templates",
+                type.toString(),
+                templateName);
+        return (response.readEntity(ProjectTemplateDetail.class));
     }
 
 }

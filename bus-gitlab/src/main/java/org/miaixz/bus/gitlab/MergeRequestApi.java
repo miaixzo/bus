@@ -91,7 +91,7 @@ public class MergeRequestApi extends AbstractApi {
             response = get(Response.Status.OK, queryParams, "merge_requests");
         }
 
-        return (response.readEntity(new GenericType<List<MergeRequest>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -180,7 +180,7 @@ public class MergeRequestApi extends AbstractApi {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "merge_requests");
-        return (response.readEntity(new GenericType<List<MergeRequest>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -259,7 +259,7 @@ public class MergeRequestApi extends AbstractApi {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "merge_requests");
-        return (response.readEntity(new GenericType<List<MergeRequest>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -466,7 +466,7 @@ public class MergeRequestApi extends AbstractApi {
                 "merge_requests",
                 mergeRequestIid,
                 "commits");
-        return (response.readEntity(new GenericType<List<Commit>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -1489,7 +1489,7 @@ public class MergeRequestApi extends AbstractApi {
                 "merge_requests",
                 mergeRequestIid,
                 "participants");
-        return (response.readEntity(new GenericType<List<Participant>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -1569,7 +1569,7 @@ public class MergeRequestApi extends AbstractApi {
                 "merge_requests",
                 mergeRequestIid,
                 "closes_issues");
-        return (response.readEntity(new GenericType<List<Issue>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 

@@ -880,7 +880,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.gitlab.hooks.system.SystemHookEvent$CreateGroupSystemHookEvent",
+    "name": "org.miaixz.bus.gitlab.hooks.system.CreateGroupSystemHookEvent",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -891,7 +891,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.gitlab.hooks.system.SystemHookEvent$CreateKeySystemHookEvent",
+    "name": "org.miaixz.bus.gitlab.hooks.system.CreateKeySystemHookEvent",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -902,7 +902,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.gitlab.hooks.system.SystemHookEvent$CreateProjectSystemHookEvent",
+    "name": "org.miaixz.bus.gitlab.hooks.system.CreateProjectSystemHookEvent",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -913,7 +913,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.gitlab.hooks.system.SystemHookEvent$CreateUserSystemHookEvent",
+    "name": "org.miaixz.bus.gitlab.hooks.system.CreateUserSystemHookEvent",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -924,7 +924,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.gitlab.hooks.system.SystemHookEvent$DestroyGroupSystemHookEvent",
+    "name": "org.miaixz.bus.gitlab.hooks.system.DestroyGroupSystemHookEvent",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -935,7 +935,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.gitlab.hooks.system.SystemHookEvent$DestroyKeySystemHookEvent",
+    "name": "org.miaixz.bus.gitlab.hooks.system.DestroyKeySystemHookEvent",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -946,7 +946,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.gitlab.hooks.system.SystemHookEvent$DestroyProjectSystemHookEvent",
+    "name": "org.miaixz.bus.gitlab.hooks.system.DestroyProjectSystemHookEvent",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -957,7 +957,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.gitlab.hooks.system.SystemHookEvent$DestroyUserSystemHookEvent",
+    "name": "org.miaixz.bus.gitlab.hooks.system.DestroyUserSystemHookEvent",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -968,7 +968,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.gitlab.hooks.system.SystemHookEvent$NewGroupMemberSystemHookEvent",
+    "name": "org.miaixz.bus.gitlab.hooks.system.NewGroupMemberSystemHookEvent",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -979,7 +979,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.gitlab.hooks.system.SystemHookEvent$NewTeamMemberSystemHookEvent",
+    "name": "org.miaixz.bus.gitlab.hooks.system.NewTeamMemberSystemHookEvent",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -990,7 +990,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.gitlab.hooks.system.SystemHookEvent$RemoveGroupMemberSystemHookEvent",
+    "name": "org.miaixz.bus.gitlab.hooks.system.RemoveGroupMemberSystemHookEvent",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1001,7 +1001,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.gitlab.hooks.system.SystemHookEvent$RemoveTeamMemberSystemHookEvent",
+    "name": "org.miaixz.bus.gitlab.hooks.system.RemoveTeamMemberSystemHookEvent",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1012,7 +1012,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.gitlab.hooks.system.SystemHookEvent$RenameGroupSystemHookEvent",
+    "name": "org.miaixz.bus.gitlab.hooks.system.RenameGroupSystemHookEvent",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1023,7 +1023,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.gitlab.hooks.system.SystemHookEvent$RenameProjectSystemHookEvent",
+    "name": "org.miaixz.bus.gitlab.hooks.system.RenameProjectSystemHookEvent",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1034,7 +1034,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.gitlab.hooks.system.SystemHookEvent$RenameUserSystemHookEvent",
+    "name": "org.miaixz.bus.gitlab.hooks.system.RenameUserSystemHookEvent",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1045,7 +1045,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.gitlab.hooks.system.SystemHookEvent$TransferProjectSystemHookEvent",
+    "name": "org.miaixz.bus.gitlab.hooks.system.TransferProjectSystemHookEvent",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1056,7 +1056,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.gitlab.hooks.system.SystemHookEvent$UpdateProjectSystemHookEvent",
+    "name": "org.miaixz.bus.gitlab.hooks.system.UpdateProjectSystemHookEvent",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1067,7 +1067,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.gitlab.hooks.system.SystemHookEvent$UserFailedLoginSystemHookEvent",
+    "name": "org.miaixz.bus.gitlab.hooks.system.UserFailedLoginSystemHookEvent",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -1277,6 +1277,28 @@
   },
   {
     "name": "org.miaixz.bus.gitlab.hooks.web.EventMergeRequest",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.gitlab.hooks.web.EventMergeRequest$MergeParams",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.gitlab.hooks.web.EventMergeRequest$MergeParams$TrainRef",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4345,6 +4367,39 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.gitlab.models.ProjectTemplate",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.gitlab.models.ProjectTemplateDetail",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.gitlab.models.ProjectTemplateType",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.gitlab.models.ProjectUser",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -4390,6 +4445,17 @@
   },
   {
     "name": "org.miaixz.bus.gitlab.models.PushData",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.gitlab.models.PullMirror",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -4654,6 +4720,17 @@
   },
   {
     "name": "org.miaixz.bus.gitlab.models.SharedGroup",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.gitlab.models.SharedGroupsFilter",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,

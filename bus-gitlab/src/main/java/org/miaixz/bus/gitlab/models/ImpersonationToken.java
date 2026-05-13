@@ -120,20 +120,112 @@ public class ImpersonationToken implements Serializable {
      */
     public enum Scope {
 
-        API, READ_API, READ_USER, READ_REPOSITORY, WRITE_REPOSITORY, READ_REGISTRY, WRITE_REGISTRY, K8S_PROXY, SUDO;
+        /**
+         * Grants complete read/write access to the API.
+         */
+        API,
 
+        /**
+         * Grants read access to the API.
+         */
+        READ_API,
+
+        /**
+         * Grants read-only access to user profile information.
+         */
+        READ_USER,
+
+        /**
+         * Grants read-only access to repositories.
+         */
+        READ_REPOSITORY,
+
+        /**
+         * Grants read-write access to repositories.
+         */
+        WRITE_REPOSITORY,
+
+        /**
+         * Grants read (pull) access to the container registry.
+         */
+        READ_REGISTRY,
+
+        /**
+         * Grants write (push) access to the container registry.
+         */
+        WRITE_REGISTRY,
+
+        /**
+         * Grants read access through the virtual registry.
+         */
+        READ_VIRTUAL_REGISTRY,
+
+        /**
+         * Grants write access through the virtual registry.
+         */
+        WRITE_VIRTUAL_REGISTRY,
+
+        /**
+         * Grants create access to runners.
+         */
+        CREATE_RUNNER,
+
+        /**
+         * Grants access to manage runners.
+         */
+        MANAGE_RUNNER,
+
+        /**
+         * Grants access to GitLab Duo related API endpoints.
+         */
+        AI_FEATURES,
+
+        /**
+         * Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
+         */
+        K8S_PROXY,
+
+        /**
+         * Grants permission to rotate this token using the impersonation token API.
+         */
+        SELF_ROTATE,
+
+        /**
+         * Grants permission to perform API actions as any user when authenticated as an administrator.
+         */
+        SUDO;
+
+        /**
+         * JSON enum conversion helper.
+         */
         private static JacksonJsonEnumHelper<Scope> enumHelper = new JacksonJsonEnumHelper<>(Scope.class);
 
+        /**
+         * Converts a GitLab API value into an impersonation token scope.
+         *
+         * @param value the GitLab API value
+         * @return the matching impersonation token scope
+         */
         @JsonCreator
         public static Scope forValue(String value) {
             return enumHelper.forValue(value);
         }
 
+        /**
+         * Converts this impersonation token scope to the GitLab API value.
+         *
+         * @return the GitLab API value
+         */
         @JsonValue
         public String toValue() {
             return (enumHelper.toString(this));
         }
 
+        /**
+         * Converts this impersonation token scope to the GitLab API value.
+         *
+         * @return the GitLab API value
+         */
         @Override
         public String toString() {
             return (enumHelper.toString(this));

@@ -70,7 +70,7 @@ public class DeployKeysApi extends AbstractApi {
      */
     public List<DeployKey> getDeployKeys(int page, int perPage) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "deploy_keys");
-        return (response.readEntity(new GenericType<List<DeployKey>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -140,7 +140,7 @@ public class DeployKeysApi extends AbstractApi {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "deploy_keys");
-        return (response.readEntity(new GenericType<List<DeployKey>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
