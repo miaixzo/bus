@@ -49,6 +49,9 @@ public interface OperatingSystem {
      * Constants which may be used to filter Process lists in {@link #getProcesses(Predicate, Comparator, int)},
      * {@link #getChildProcesses(int, Predicate, Comparator, int)}, and
      * {@link #getDescendantProcesses(int, Predicate, Comparator, int)}.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     final class ProcessFiltering {
 
@@ -82,12 +85,16 @@ public interface OperatingSystem {
          * Only include 32-bit processes.
          */
         public static final Predicate<OSProcess> BITNESS_32 = p -> p.getBitness() == 32;
+
     }
 
     /**
      * Constants which may be used to sort Process lists in {@link #getProcesses(Predicate, Comparator, int)},
      * {@link #getChildProcesses(int, Predicate, Comparator, int)}, and
      * {@link #getDescendantProcesses(int, Predicate, Comparator, int)}.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     final class ProcessSorting {
 
@@ -146,6 +153,7 @@ public interface OperatingSystem {
          */
         public static final Comparator<OSProcess> NAME_ASC = Comparator
                 .comparing(OSProcess::getName, String.CASE_INSENSITIVE_ORDER);
+
     }
 
     /**
@@ -434,6 +442,9 @@ public interface OperatingSystem {
 
     /**
      * A class representing the Operating System version details.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Immutable
     class OSVersionInfo {
@@ -442,14 +453,17 @@ public interface OperatingSystem {
          * The OS version string.
          */
         private final String version;
+
         /**
          * The code name of the OS.
          */
         private final String codeName;
+
         /**
          * The build number of the OS.
          */
         private final String buildNumber;
+
         /**
          * The string representation of the version info.
          */
@@ -513,6 +527,7 @@ public interface OperatingSystem {
         public String toString() {
             return this.versionStr;
         }
+
     }
 
 }

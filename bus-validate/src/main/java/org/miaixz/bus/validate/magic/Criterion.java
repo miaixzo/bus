@@ -47,14 +47,17 @@ public class Criterion {
      * Indicates if the validation should be applied to each element of an array or collection.
      */
     private boolean array = false;
+
     /**
      * The error code to be used when validation fails.
      */
     private String errcode;
+
     /**
      * The error message template.
      */
     private String errmsg;
+
     /**
      * The name of the field being validated.
      */
@@ -64,26 +67,32 @@ public class Criterion {
      * The name of the validator.
      */
     private String name;
+
     /**
      * The validation groups this rule belongs to.
      */
     private String[] group;
+
     /**
      * The actual annotation instance from which this criterion was built.
      */
     private Annotation annotation;
+
     /**
      * The class of the {@link Matcher} that will perform the validation.
      */
     private Class<?> clazz;
+
     /**
      * A custom exception class to be thrown on validation failure.
      */
     private Class<? extends ValidateException> exception;
+
     /**
      * Parameters for interpolating the error message.
      */
     private Map<String, Object> param;
+
     /**
      * A list of nested validation criterions, used for handling meta-annotations.
      */

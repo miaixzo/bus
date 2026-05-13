@@ -31,11 +31,26 @@ import javax.imageio.ImageWriteParam;
  */
 public class JXLImageWriteParam extends ImageWriteParam {
 
+    /**
+     * The compression types value.
+     */
     private static final String[] COMPRESSION_TYPES = { "LOSSLESS", "LOSSY" };
 
+    /**
+     * The effort value.
+     */
     private int effort = 7;
+
+    /**
+     * The decoding speed value.
+     */
     private int decodingSpeed;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param locale the locale.
+     */
     public JXLImageWriteParam(Locale locale) {
         super(locale);
         super.canWriteCompressed = true;
@@ -45,38 +60,76 @@ public class JXLImageWriteParam extends ImageWriteParam {
         super.compressionQuality = 0.90F;
     }
 
+    /**
+     * Gets the effort.
+     *
+     * @return the effort.
+     */
     public int getEffort() {
         return effort;
     }
 
+    /**
+     * Sets the effort.
+     *
+     * @param effort the effort.
+     */
     public void setEffort(int effort) {
         if (effort < 1 || effort > 9)
             throw new IllegalArgumentException("Effort must be between 1 and 9, got: " + effort);
         this.effort = effort;
     }
 
+    /**
+     * Determines whether compression lossless.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean isCompressionLossless() {
         return "LOSSLESS".equals(compressionType);
     }
 
+    /**
+     * Gets the effective quality.
+     *
+     * @return the effective quality.
+     */
     public float getEffectiveQuality() {
         return isCompressionLossless() ? 1.0F : compressionQuality;
     }
 
+    /**
+     * Sets the lossless.
+     */
     public void setLossless() {
         compressionType = "LOSSLESS";
     }
 
+    /**
+     * Sets the compression quality.
+     *
+     * @param quality the quality.
+     */
     @Override
     public void setCompressionQuality(float quality) {
         super.setCompressionQuality(Math.max(0.0F, Math.min(1.0F, quality)));
     }
 
+    /**
+     * Gets the decoding speed.
+     *
+     * @return the decoding speed.
+     */
     public int getDecodingSpeed() {
         return decodingSpeed;
     }
 
+    /**
+     * Sets the decoding speed.
+     *
+     * @param decodingSpeed the decoding speed.
+     */
     public void setDecodingSpeed(int decodingSpeed) {
         if (decodingSpeed < 0 || decodingSpeed > 4)
             throw new IllegalArgumentException("Decoding speed must be between 0 and 4, got: " + decodingSpeed);

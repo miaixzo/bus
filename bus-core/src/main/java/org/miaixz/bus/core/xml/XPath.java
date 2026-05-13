@@ -34,8 +34,8 @@ import org.xml.sax.InputSource;
 /**
  * Utility class for {@link javax.xml.xpath.XPath}.
  *
- * @author Kimi Liu
  * @see <a href="https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html">Introduction to the JAXP XPath API</a>
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class XPath {

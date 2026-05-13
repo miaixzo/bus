@@ -30,7 +30,6 @@ import java.util.function.Supplier;
  * <p>
  * By calling {@code putValue}, multiple values can be added for the same key, and these values are represented as a
  * set.
- * 
  *
  * @param <K> The type of keys in the map.
  * @param <V> The type of values stored in the sets.

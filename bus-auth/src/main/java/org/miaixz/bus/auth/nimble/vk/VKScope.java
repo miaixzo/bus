@@ -110,10 +110,12 @@ public enum VKScope implements AuthorizeScope {
      * The scope string as defined by VK.
      */
     private final String scope;
+
     /**
      * A description of what the scope grants access to.
      */
     private final String description;
+
     /**
      * Indicates if this scope is enabled by default.
      */

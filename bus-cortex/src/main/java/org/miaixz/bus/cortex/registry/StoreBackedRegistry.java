@@ -48,14 +48,17 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
      * Durable storage adapter.
      */
     protected final RegistryStore<T> store;
+
     /**
      * Post-commit listeners.
      */
     private final List<Listener<RegistryChange<T>>> listeners;
+
     /**
      * Sequence source used for ordered registry change events.
      */
     private final Sequence sequence;
+
     /**
      * Optional reliable change log used as a first-stage outbox.
      */

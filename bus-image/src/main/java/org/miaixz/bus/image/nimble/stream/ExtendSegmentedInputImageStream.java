@@ -24,6 +24,12 @@ import java.util.Arrays;
 import java.util.Objects;
 
 /**
+ * Represents the ExtendSegmentedInputImageStream record.
+ *
+ * @param path             the path.
+ * @param segmentPositions the segment positions.
+ * @param segmentLengths   the segment lengths.
+ * @param imageDescriptor  the image descriptor.
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -31,6 +37,12 @@ public record ExtendSegmentedInputImageStream(
 
         Path path, long[] segmentPositions, int[] segmentLengths, ImageDescriptor imageDescriptor) {
 
+    /**
+     * Executes the equals operation.
+     *
+     * @param o the o.
+     * @return true if the equals condition is true; otherwise false.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -43,6 +55,11 @@ public record ExtendSegmentedInputImageStream(
                 && Objects.equals(imageDescriptor, that.imageDescriptor);
     }
 
+    /**
+     * Checks whether the hash code condition is true.
+     *
+     * @return true if the hash code condition is true; otherwise false.
+     */
     @Override
     public int hashCode() {
         int result = Objects.hash(path, imageDescriptor);
@@ -51,6 +68,11 @@ public record ExtendSegmentedInputImageStream(
         return result;
     }
 
+    /**
+     * Returns the string representation.
+     *
+     * @return the string representation.
+     */
     @Override
     public String toString() {
         return "ExtendSegmentedInputImageStream{" + "path=" + path + '}';

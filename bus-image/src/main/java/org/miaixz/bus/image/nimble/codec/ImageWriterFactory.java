@@ -39,22 +39,49 @@ import org.miaixz.bus.image.nimble.codec.jpeg.PatchJPEGLS;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the ImageWriterFactory type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class ImageWriterFactory implements Serializable {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852288887239L;
 
+    /**
+     * The default factory value.
+     */
     private static volatile ImageWriterFactory defaultFactory;
+
+    /**
+     * The map value.
+     */
     private final TreeMap<String, ImageWriterParam> map = new TreeMap<>();
+
+    /**
+     * The patch jpegls value.
+     */
     private PatchJPEGLS patchJPEGLS;
 
+    /**
+     * Executes the nullify operation.
+     *
+     * @param s the s.
+     * @return the operation result.
+     */
     private static String nullify(String s) {
         return null == s || s.isEmpty() || s.equals(Symbol.STAR) ? null : s;
     }
 
+    /**
+     * Gets the default.
+     *
+     * @return the default.
+     */
     public static ImageWriterFactory getDefault() {
         if (defaultFactory == null)
             defaultFactory = init();
@@ -62,6 +89,11 @@ public class ImageWriterFactory implements Serializable {
         return defaultFactory;
     }
 
+    /**
+     * Sets the default.
+     *
+     * @param factory the factory.
+     */
     public static void setDefault(ImageWriterFactory factory) {
         if (factory == null)
             throw new NullPointerException();
@@ -69,10 +101,18 @@ public class ImageWriterFactory implements Serializable {
         defaultFactory = factory;
     }
 
+    /**
+     * Resets the default.
+     */
     public static void resetDefault() {
         defaultFactory = null;
     }
 
+    /**
+     * Executes the init operation.
+     *
+     * @return the operation result.
+     */
     public static ImageWriterFactory init() {
         ImageWriterFactory factory = new ImageWriterFactory();
         URL url = ResourceKit.getResourceUrl("ImageWriterFactory.properties", ImageWriterFactory.class);
@@ -92,16 +132,34 @@ public class ImageWriterFactory implements Serializable {
         return factory;
     }
 
+    /**
+     * Gets the image writer param.
+     *
+     * @param tsuid the tsuid.
+     * @return the image writer param.
+     */
     public static ImageWriterParam getImageWriterParam(String tsuid) {
         return getDefault().get(tsuid);
     }
 
+    /**
+     * Gets the image writer.
+     *
+     * @param param the param.
+     * @return the image writer.
+     */
     public static ImageWriter getImageWriter(ImageWriterParam param) {
         return Boolean.getBoolean("org.miaixz.bus.image.nimble.codec.useServiceLoader")
                 ? getImageWriterFromServiceLoader(param)
                 : getImageWriterFromImageIOServiceRegistry(param);
     }
 
+    /**
+     * Gets the image writer from image io service registry.
+     *
+     * @param param the param.
+     * @return the image writer from image io service registry.
+     */
     public static ImageWriter getImageWriterFromImageIOServiceRegistry(ImageWriterParam param) {
         Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName(param.formatName);
         if (!iter.hasNext())
@@ -127,6 +185,12 @@ public class ImageWriterFactory implements Serializable {
         return writer;
     }
 
+    /**
+     * Gets the image writer from service loader.
+     *
+     * @param param the param.
+     * @return the image writer from service loader.
+     */
     public static ImageWriter getImageWriterFromServiceLoader(ImageWriterParam param) {
         try {
             return getImageWriterSpi(param).createWriterInstance();
@@ -135,6 +199,12 @@ public class ImageWriterFactory implements Serializable {
         }
     }
 
+    /**
+     * Gets the image writer spi.
+     *
+     * @param param the param.
+     * @return the image writer spi.
+     */
     private static ImageWriterSpi getImageWriterSpi(ImageWriterParam param) {
         Iterator<ImageWriterSpi> iter = new FormatNameFilterIterator<>(
                 ServiceLoader.load(ImageWriterSpi.class).iterator(), param.formatName);
@@ -161,44 +231,113 @@ public class ImageWriterFactory implements Serializable {
         return spi;
     }
 
+    /**
+     * Gets the patch jpegls.
+     *
+     * @return the patch jpegls.
+     */
     public final PatchJPEGLS getPatchJPEGLS() {
         return patchJPEGLS;
     }
 
+    /**
+     * Sets the patch jpegls.
+     *
+     * @param patchJPEGLS the patch jpegls.
+     */
     public final void setPatchJPEGLS(PatchJPEGLS patchJPEGLS) {
         this.patchJPEGLS = patchJPEGLS;
     }
 
+    /**
+     * Executes the get operation.
+     *
+     * @param tsuid the tsuid.
+     * @return the operation result.
+     */
     public ImageWriterParam get(String tsuid) {
         return map.get(tsuid);
     }
 
+    /**
+     * Executes the put operation.
+     *
+     * @param tsuid the tsuid.
+     * @param param the param.
+     * @return the operation result.
+     */
     public ImageWriterParam put(String tsuid, ImageWriterParam param) {
         return map.put(tsuid, param);
     }
 
+    /**
+     * Executes the remove operation.
+     *
+     * @param tsuid the tsuid.
+     * @return the operation result.
+     */
     public ImageWriterParam remove(String tsuid) {
         return map.remove(tsuid);
     }
 
+    /**
+     * Gets the entries.
+     *
+     * @return the entries.
+     */
     public Set<Entry<String, ImageWriterParam>> getEntries() {
         return Collections.unmodifiableMap(map).entrySet();
     }
 
+    /**
+     * Executes the clear operation.
+     */
     public void clear() {
         map.clear();
     }
 
+    /**
+     * Represents the ImageWriterParam type.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public static class ImageWriterParam implements Serializable {
 
+        /**
+         * The serial version uid value.
+         */
         @Serial
         private static final long serialVersionUID = 2852289015819L;
 
+        /**
+         * The format name value.
+         */
         public final String formatName;
+
+        /**
+         * The class name value.
+         */
         public final String className;
+
+        /**
+         * The patch jpegls value.
+         */
         public final PatchJPEGLS patchJPEGLS;
+
+        /**
+         * The image write params value.
+         */
         public final Property[] imageWriteParams;
 
+        /**
+         * Creates a new instance.
+         *
+         * @param formatName       the format name.
+         * @param className        the class name.
+         * @param patchJPEGLS      the patch jpegls.
+         * @param imageWriteParams the image write params.
+         */
         public ImageWriterParam(String formatName, String className, PatchJPEGLS patchJPEGLS,
                 Property[] imageWriteParams) {
             this.formatName = formatName;
@@ -207,16 +346,35 @@ public class ImageWriterFactory implements Serializable {
             this.imageWriteParams = imageWriteParams;
         }
 
+        /**
+         * Creates a new instance.
+         *
+         * @param formatName       the format name.
+         * @param className        the class name.
+         * @param patchJPEGLS      the patch jpegls.
+         * @param imageWriteParams the image write params.
+         */
         public ImageWriterParam(String formatName, String className, String patchJPEGLS, String[] imageWriteParams) {
             this(formatName, className,
                     patchJPEGLS != null && !patchJPEGLS.isEmpty() ? PatchJPEGLS.valueOf(patchJPEGLS) : null,
                     Property.valueOf(imageWriteParams));
         }
 
+        /**
+         * Gets the image write params.
+         *
+         * @return the image write params.
+         */
         public Property[] getImageWriteParams() {
             return imageWriteParams;
         }
 
+        /**
+         * Compares this instance with another object for equality.
+         *
+         * @param o the o.
+         * @return true if the condition is met; otherwise false.
+         */
         @Override
         public boolean equals(Object o) {
             if (this == o)
@@ -236,6 +394,11 @@ public class ImageWriterFactory implements Serializable {
 
         }
 
+        /**
+         * Returns the hash code.
+         *
+         * @return true if the condition is met; otherwise false.
+         */
         @Override
         public int hashCode() {
             int result = formatName.hashCode();
@@ -245,11 +408,17 @@ public class ImageWriterFactory implements Serializable {
             return result;
         }
 
+        /**
+         * Returns the string representation.
+         *
+         * @return the string representation.
+         */
         @Override
         public String toString() {
             return "ImageWriterParam{" + "formatName='" + formatName + '\'' + ", className='" + className + '\''
                     + ", patchJPEGLS=" + patchJPEGLS + ", imageWriteParams=" + Arrays.toString(imageWriteParams) + '}';
         }
+
     }
 
 }

@@ -47,7 +47,7 @@ import org.miaixz.bus.storage.Context;
  * <strong>Configuration Example:</strong>
  *
  * <pre>{@code
- * 
+ *
  * Context context = Context.builder().endpoint("https://kr.object.ncloudstorage.com") // or sgn, jpn
  *         .bucket("my-bucket").accessKey("NAVER_ACCESS_KEY").secretKey("NAVER_SECRET_KEY").region("kr").build();
  *

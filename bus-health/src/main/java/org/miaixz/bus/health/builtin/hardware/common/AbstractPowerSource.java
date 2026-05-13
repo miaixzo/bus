@@ -40,82 +40,102 @@ public abstract class AbstractPowerSource implements PowerSource {
      * The name value.
      */
     private String name;
+
     /**
      * The deviceName value.
      */
     private String deviceName;
+
     /**
      * The remainingCapacityPercent value.
      */
     private double remainingCapacityPercent;
+
     /**
      * The timeRemainingEstimated value.
      */
     private double timeRemainingEstimated;
+
     /**
      * The timeRemainingInstant value.
      */
     private double timeRemainingInstant;
+
     /**
      * The powerUsageRate value.
      */
     private double powerUsageRate;
+
     /**
      * The voltage value.
      */
     private double voltage;
+
     /**
      * The amperage value.
      */
     private double amperage;
+
     /**
      * The powerOnLine value.
      */
     private boolean powerOnLine;
+
     /**
      * The charging value.
      */
     private boolean charging;
+
     /**
      * The discharging value.
      */
     private boolean discharging;
+
     /**
      * The capacityUnits value.
      */
     private CapacityUnits capacityUnits;
+
     /**
      * The currentCapacity value.
      */
     private int currentCapacity;
+
     /**
      * The maxCapacity value.
      */
     private int maxCapacity;
+
     /**
      * The designCapacity value.
      */
     private int designCapacity;
+
     /**
      * The cycleCount value.
      */
     private int cycleCount;
+
     /**
      * The chemistry value.
      */
     private String chemistry;
+
     /**
      * The manufactureDate value.
      */
     private LocalDate manufactureDate;
+
     /**
      * The manufacturer value.
      */
     private String manufacturer;
+
     /**
      * The serialNumber value.
      */
     private String serialNumber;
+
     /**
      * The temperature value.
      */

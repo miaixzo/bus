@@ -42,6 +42,7 @@ public enum GlobalMailAccount {
      * Property key for splitting long parameters in MIME messages.
      */
     private static final String SPLIT_LONG_PARAMS = "mail.mime.splitlongparameters";
+
     /**
      * Property key for the charset used in MIME messages.
      */

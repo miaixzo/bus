@@ -27,7 +27,7 @@ import java.io.SequenceInputStream;
 /**
  * Represents DICOM Bulk Data that includes a prefix byte array before the actual bulk data content. This class extends
  * {@link BulkData} and overrides the {@code openStream()} method to prepend the prefix to the input stream.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -40,7 +40,7 @@ public class BulkDataWithPrefix extends BulkData {
 
     /**
      * Constructs a {@code BulkDataWithPrefix} object.
-     * 
+     *
      * @param uri       The URI reference to the bulk data.
      * @param offset    The offset of the data within the resource (excluding the prefix).
      * @param length    The length of the actual bulk data (excluding the prefix).
@@ -52,6 +52,12 @@ public class BulkDataWithPrefix extends BulkData {
         this.prefix = prefix.clone();
     }
 
+    /**
+     * Opens the stream.
+     *
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public InputStream openStream() throws IOException {
         return new SequenceInputStream(new ByteArrayInputStream(prefix), super.openStream());

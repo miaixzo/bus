@@ -25,22 +25,44 @@ import java.io.Serial;
 import org.miaixz.bus.image.UID;
 
 /**
+ * Represents the NoPresentationException type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class NoPresentationException extends IOException {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852273099158L;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param cuid the cuid.
+     */
     public NoPresentationException(String cuid) {
         super(toMessage(cuid));
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param cuid  the cuid.
+     * @param tsuid the tsuid.
+     */
     public NoPresentationException(String cuid, String tsuid) {
         super(toMessage(cuid, tsuid));
     }
 
+    /**
+     * Converts this value to message.
+     *
+     * @param cuid the cuid.
+     * @return the operation result.
+     */
     private static String toMessage(String cuid) {
         StringBuilder sb = new StringBuilder();
         sb.append("No Presentation Context for Abstract Syntax: ");
@@ -49,6 +71,13 @@ public class NoPresentationException extends IOException {
         return sb.toString();
     }
 
+    /**
+     * Converts this value to message.
+     *
+     * @param cuid  the cuid.
+     * @param tsuid the tsuid.
+     * @return the operation result.
+     */
     private static String toMessage(String cuid, String tsuid) {
         StringBuilder sb = new StringBuilder();
         sb.append("No Presentation Context for Abstract Syntax: ");

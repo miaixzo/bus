@@ -34,8 +34,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  * This class supports both the standard Base32 alphabet and the "Extended Hex" alphabet. See
  * <a href="https://datatracker.ietf.org/doc/html/rfc4648#section-6">RFC 4648 Section 6</a>.
  *
- * @author Kimi Liu
  * @see Base32Provider
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class Base32 {

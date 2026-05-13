@@ -46,9 +46,9 @@ import org.miaixz.bus.core.xyz.IoKit;
  * <p>
  * Usage is very simple. For example, if we need to read an XML from the classpath, we don't need to care whether the
  * file is in a directory or a jar:
- * 
+ *
  * <pre>
- * 
+ *
  * Resource resource = new ClassPathResource("test.xml");
  * String xmlStr = resource.readString();
  * </pre>

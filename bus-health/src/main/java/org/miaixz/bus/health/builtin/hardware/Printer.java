@@ -88,9 +88,13 @@ public interface Printer {
 
     /**
      * Printer status enumeration.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     enum PrinterStatus {
         IDLE, PRINTING, ERROR, OFFLINE, UNKNOWN
+
     }
 
 }

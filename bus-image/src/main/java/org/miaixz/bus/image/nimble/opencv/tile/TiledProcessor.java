@@ -24,12 +24,22 @@ import org.opencv.imgproc.Imgproc;
 
 /**
  * Not an API. This class is under development and can be changed or removed at any moment.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class TiledProcessor {
 
+    /**
+     * Copies the tile from source.
+     *
+     * @param sourceImage the source image.
+     * @param tileInput   the tile input.
+     * @param tile        the tile.
+     * @param mBorderType the m border type.
+     * @param borderX     the border x.
+     * @param borderY     the border y.
+     */
     static void copyTileFromSource(
             Mat sourceImage,
             Mat tileInput,
@@ -81,6 +91,13 @@ public class TiledProcessor {
         }
     }
 
+    /**
+     * Executes the blur operation.
+     *
+     * @param input         the input.
+     * @param numberOfTimes the number of times.
+     * @return the operation result.
+     */
     public Mat blur(Mat input, int numberOfTimes) {
         Mat sourceImage;
         Mat destImage = input.clone();
@@ -92,6 +109,13 @@ public class TiledProcessor {
         return destImage;
     }
 
+    /**
+     * Executes the process operation.
+     *
+     * @param sourceImage the source image.
+     * @param resultImage the result image.
+     * @param tileSize    the tile size.
+     */
     public void process(Mat sourceImage, Mat resultImage, int tileSize) {
 
         if (sourceImage.rows() != resultImage.rows() || sourceImage.cols() != resultImage.cols()) {
@@ -123,6 +147,14 @@ public class TiledProcessor {
         }
     }
 
+    /**
+     * Copies the tile to result image.
+     *
+     * @param tileOutput  the tile output.
+     * @param resultImage the result image.
+     * @param srcTile     the src tile.
+     * @param dstTile     the dst tile.
+     */
     private void copyTileToResultImage(Mat tileOutput, Mat resultImage, Rect srcTile, Rect dstTile) {
         Point br = dstTile.br();
 
@@ -145,6 +177,12 @@ public class TiledProcessor {
         tileView.copyTo(dstView);
     }
 
+    /**
+     * Processes the tile impl.
+     *
+     * @param tileInput  the tile input.
+     * @param tileOutput the tile output.
+     */
     private void processTileImpl(Mat tileInput, Mat tileOutput) {
         Imgproc.blur(tileInput, tileOutput, new Size(7.0, 7.0));
     }

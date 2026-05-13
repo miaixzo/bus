@@ -54,9 +54,13 @@ public final class Win32VideoController {
 
     /**
      * Video Controller properties
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum VideoControllerProperty {
         ADAPTERCOMPATIBILITY, ADAPTERRAM, CONFIGMANAGERERRORCODE, DRIVERVERSION, NAME, PNPDEVICEID;
+
     }
 
 }

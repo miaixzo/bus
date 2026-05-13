@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MR_PS_04;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS MR PS 04";
 
-    /** (0021,xx01) VR=FD VM=1-n ? */
+    /**
+     * (0021,xx01) VR=FD VM=1-n ?
+     */
     public static final int _0021_xx01_ = 0x00210001;
 
 }

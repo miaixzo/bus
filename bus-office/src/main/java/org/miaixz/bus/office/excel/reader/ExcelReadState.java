@@ -39,6 +39,8 @@ public final class ExcelReadState {
      * @param sourceName source file name or logical name
      * @param xlsx       whether the workbook is xlsx
      * @param sheets     resolved sheet list, may be empty when unavailable
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public record WorkbookContext(String sourceName, boolean xlsx, List<SheetContext> sheets) {
 
@@ -49,6 +51,8 @@ public final class ExcelReadState {
      *
      * @param sheetIndex zero-based sheet index
      * @param sheetName  sheet name, may be blank when unavailable
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public record SheetContext(int sheetIndex, String sheetName) {
 
@@ -63,9 +67,12 @@ public final class ExcelReadState {
      * @param currentSheetRows processed rows in current sheet after filtering
      * @param currentRowIndex  last observed sheet row index
      * @param elapsedMillis    elapsed milliseconds since read start
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public record Progress(WorkbookContext workbook, SheetContext currentSheet, long processedRows,
             long currentSheetRows, long currentRowIndex, long elapsedMillis) {
+
     }
 
 }

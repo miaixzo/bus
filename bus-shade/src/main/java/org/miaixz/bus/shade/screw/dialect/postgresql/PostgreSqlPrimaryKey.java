@@ -40,26 +40,31 @@ public class PostgreSqlPrimaryKey implements PrimaryKey {
      */
     @MappingField(value = "pk_name")
     private String pkName;
+
     /**
      * The schema of the table.
      */
     @MappingField(value = "table_schem")
     private String tableSchem;
+
     /**
      * The sequence number of the column within the primary key (for composite keys).
      */
     @MappingField(value = "key_seq")
     private String keySeq;
+
     /**
      * The table catalog (may be {@code null}).
      */
     @MappingField(value = "table_cat")
     private String tableCat;
+
     /**
      * The name of the column in the primary key.
      */
     @MappingField(value = "column_name")
     private String columnName;
+
     /**
      * The name of the table.
      */

@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.GEMS_IQTB_IDEN_47;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEMS_IQTB_IDEN_47";
 
-    /** (0047,xx02) VR=UL VM=1 ? */
+    /**
+     * (0047,xx02) VR=UL VM=1 ?
+     */
     public static final int _0047_xx02_ = 0x00470002;
 
 }

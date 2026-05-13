@@ -40,6 +40,7 @@ public class AnnotationLookupKey implements Serializable {
      * The annotated element (Class, Method, Field, etc.).
      */
     private final AnnotatedElement element;
+
     /**
      * The target annotation type.
      */

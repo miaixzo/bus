@@ -126,6 +126,9 @@ public final class EventSources {
     /**
      * An implementation of the event source factory, responsible for creating {@link RealEventSource} instances and
      * initiating connections.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class FactoryImpl implements EventSource.Factory {
 
@@ -156,6 +159,7 @@ public final class EventSources {
             eventSource.connect(callFactory);
             return eventSource;
         }
+
     }
 
 }

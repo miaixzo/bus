@@ -3,6 +3,12 @@ package org.opencv.core;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The mat of rect 2 d class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class MatOfRect2d extends Mat {
 
     // 64FC4
@@ -79,4 +85,5 @@ public class MatOfRect2d extends Mat {
         Rect2d[] ar = toArray();
         return Arrays.asList(ar);
     }
+
 }

@@ -63,28 +63,34 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
             'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
             'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3',
             '4', '5', '6', '7', '8', '9', '0' };
+
     /**
      * A modulus used in the lottery number calculation to determine the initial character.
      */
     private static final int LOTTERY_MOD = 100;
+
     /**
      * The threshold for determining the number of guard characters. If the alphabet length divided by this threshold is
      * greater than the number of guards, more guards are used.
      */
     private static final double GUARD_THRESHOLD = 12;
+
     /**
      * The threshold for determining the number of separator characters. If the alphabet length divided by the separator
      * length is greater than this threshold, more separators are used.
      */
     private static final double SEPARATOR_THRESHOLD = 3.5;
+
     /**
      * The minimum required length for the alphabet used in encoding and decoding.
      */
     private static final int MIN_ALPHABET_LENGTH = 16;
+
     /**
      * Regular expression pattern to match hexadecimal values for decoding from hex strings.
      */
     private static final Pattern HEX_VALUES_PATTERN = Pattern.compile("[\\w\\W]{1,12}");
+
     /**
      * The default set of separator characters used to delimit encoded numbers within a hash.
      */
@@ -96,22 +102,27 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
      * The effective alphabet used for encoding and decoding after initialization and filtering.
      */
     private final char[] alphabet;
+
     /**
      * The characters used as separators between encoded numbers within a hash.
      */
     private final char[] separators;
+
     /**
      * A set for efficient lookup of separator characters.
      */
     private final Set<Character> separatorsSet;
+
     /**
      * The salt used to randomize the encoding process, enhancing security and uniqueness.
      */
     private final char[] salt;
+
     /**
      * Characters used as "guards" to further obfuscate the hash and meet minimum length requirements.
      */
     private final char[] guards;
+
     /**
      * The minimum desired length of the generated hash. If the encoded hash is shorter, it will be padded.
      */

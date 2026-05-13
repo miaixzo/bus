@@ -19,78 +19,123 @@
 */
 package org.miaixz.bus.image.nimble;
 
+import java.util.Objects;
 import org.opencv.core.Mat;
-import org.opencv.img_hash.*;
+import org.opencv.img_hash.AverageHash;
+import org.opencv.img_hash.BlockMeanHash;
+import org.opencv.img_hash.ColorMomentHash;
+import org.opencv.img_hash.ImgHashBase;
+import org.opencv.img_hash.MarrHildrethHash;
+import org.opencv.img_hash.PHash;
+import org.opencv.img_hash.RadialVarianceHash;
 
 /**
- * Algorithms to compare image content
+ * Algorithms to compare image content of two images.
  *
- * @author Kimi Liu
  * @see <a href="http://qtandopencv.blogspot.com/2016/06/introduction-to-image-hash-module-of.html">Hash for pixel
  *      data</a>
+ * @author Kimi Liu
  * @since Java 21+
  */
 public enum ImageContentHash {
 
-    AVERAGE() {
+    /**
+     * Fast hash algorithm, ideal when speed is prioritized over accuracy.
+     */
+    AVERAGE(AverageHash::create),
 
-        @Override
-        public ImgHashBase getAlgorithm() {
-            return AverageHash.create();
-        }
-    },
-    PHASH() {
+    /**
+     * Perceptual hash, best general-purpose algorithm balancing accuracy and performance.
+     */
+    PHASH(PHash::create),
 
-        @Override
-        public ImgHashBase getAlgorithm() {
-            return PHash.create();
-        }
-    },
-    MARR_HILDRETH() {
+    /**
+     * Structural similarity hash using edge detection.
+     */
+    MARR_HILDRETH(MarrHildrethHash::create),
 
-        @Override
-        public ImgHashBase getAlgorithm() {
-            return MarrHildrethHash.create();
-        }
-    },
-    RADIAL_VARIANCE() {
+    /**
+     * Rotation-invariant hash based on radial variance.
+     */
+    RADIAL_VARIANCE(RadialVarianceHash::create),
 
-        @Override
-        public ImgHashBase getAlgorithm() {
-            return RadialVarianceHash.create();
-        }
-    },
-    BLOCK_MEAN_ZERO() {
+    /**
+     * Block-based mean hash with mode 0 for regional analysis.
+     */
+    BLOCK_MEAN_ZERO(() -> BlockMeanHash.create(0)),
 
-        @Override
-        public ImgHashBase getAlgorithm() {
-            return BlockMeanHash.create(0);
-        }
-    },
-    BLOCK_MEAN_ONE() {
+    /**
+     * Block-based mean hash with mode 1 for enhanced regional analysis.
+     */
+    BLOCK_MEAN_ONE(() -> BlockMeanHash.create(1)),
 
-        @Override
-        public ImgHashBase getAlgorithm() {
-            return BlockMeanHash.create(1);
-        }
-    },
-    COLOR_MOMENT() {
+    /**
+     * Color-based hash using statistical moments.
+     */
+    COLOR_MOMENT(ColorMomentHash::create);
 
-        @Override
-        public ImgHashBase getAlgorithm() {
-            return ColorMomentHash.create();
-        }
-    };
+    /**
+     * The algorithm factory value.
+     */
+    private final AlgorithmFactory algorithmFactory;
 
-    public abstract ImgHashBase getAlgorithm();
+    /**
+     * Creates a new instance.
+     *
+     * @param algorithmFactory the algorithm factory.
+     */
+    ImageContentHash(AlgorithmFactory algorithmFactory) {
+        this.algorithmFactory = algorithmFactory;
+    }
 
+    /**
+     * Gets the algorithm.
+     *
+     * @return the algorithm.
+     */
+    public ImgHashBase getAlgorithm() {
+        return algorithmFactory.create();
+    }
+
+    /**
+     * Compares two values.
+     *
+     * @param imgIn  the img in.
+     * @param imgOut the img out.
+     * @return the operation result.
+     */
     public double compare(Mat imgIn, Mat imgOut) {
+        Objects.requireNonNull(imgIn, "Input image cannot be null");
+        Objects.requireNonNull(imgOut, "Output image cannot be null");
+
+        if (imgIn.empty() || imgOut.empty()) {
+            throw new IllegalArgumentException("Images cannot be empty");
+        }
+
         ImgHashBase hashAlgorithm = getAlgorithm();
         Mat inHash = new Mat();
         Mat outHash = new Mat();
         hashAlgorithm.compute(imgIn, inHash);
         hashAlgorithm.compute(imgOut, outHash);
         return hashAlgorithm.compare(inHash, outHash);
+    }
+
+    /**
+     * Defines the AlgorithmFactory contract.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    @FunctionalInterface
+    private interface AlgorithmFactory {
+
+        /**
+         * Executes the create operation.
+         *
+         * @return the operation result.
+         */
+        ImgHashBase create();
+
     }
 
 }

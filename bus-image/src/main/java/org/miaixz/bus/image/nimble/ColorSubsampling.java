@@ -20,11 +20,16 @@
 package org.miaixz.bus.image.nimble;
 
 /**
+ * Defines the ColorSubsampling values.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public enum ColorSubsampling {
 
+    /**
+     * The ybr xxx 422 value.
+     */
     YBR_XXX_422 {
 
         @Override
@@ -42,6 +47,9 @@ public enum ColorSubsampling {
             return (w * y * 2) + ((x >> 1) << 2) + 2;
         }
     },
+    /**
+     * The ybr xxx 420 value.
+     */
     YBR_XXX_420 {
 
         @Override
@@ -62,10 +70,33 @@ public enum ColorSubsampling {
         }
     };
 
+    /**
+     * Executes the frame length operation.
+     *
+     * @param w the w.
+     * @param h the h.
+     * @return the operation result.
+     */
     public abstract int frameLength(int w, int h);
 
+    /**
+     * Executes the index of y operation.
+     *
+     * @param x the x.
+     * @param y the y.
+     * @param w the w.
+     * @return the operation result.
+     */
     public abstract int indexOfY(int x, int y, int w);
 
+    /**
+     * Executes the index of br operation.
+     *
+     * @param x the x.
+     * @param y the y.
+     * @param w the w.
+     * @return the operation result.
+     */
     public abstract int indexOfBR(int x, int y, int w);
 
 }

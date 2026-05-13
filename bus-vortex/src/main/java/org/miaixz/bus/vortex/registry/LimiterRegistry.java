@@ -25,7 +25,7 @@ import org.miaixz.bus.vortex.magic.Limiter;
  * Default rate limiter registry implementation, providing registration and management functionalities for rate limiter
  * configurations ({@link Limiter}) based on {@link AbstractRegistry}.
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class LimiterRegistry extends AbstractRegistry<Limiter> {

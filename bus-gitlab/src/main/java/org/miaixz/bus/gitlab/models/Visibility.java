@@ -24,6 +24,12 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+/**
+ * The visibility enum.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public enum Visibility {
 
     PUBLIC, PRIVATE, INTERNAL;

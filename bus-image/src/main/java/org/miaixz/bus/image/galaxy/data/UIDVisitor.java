@@ -22,21 +22,53 @@ package org.miaixz.bus.image.galaxy.data;
 import java.util.Map;
 
 /**
+ * Represents the UIDVisitor type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class UIDVisitor implements Visitor {
 
+    /**
+     * The uid map value.
+     */
     private final Map<String, String> uidMap;
+
+    /**
+     * The modified value.
+     */
     private final Attributes modified;
+
+    /**
+     * The replaced value.
+     */
     public int replaced;
+
+    /**
+     * The root seq tag value.
+     */
     private int rootSeqTag;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param uidMap   the uid map.
+     * @param modified the modified.
+     */
     public UIDVisitor(Map<String, String> uidMap, Attributes modified) {
         this.uidMap = uidMap;
         this.modified = modified;
     }
 
+    /**
+     * Executes the visit operation.
+     *
+     * @param attrs the attrs.
+     * @param tag   the tag.
+     * @param vr    the vr.
+     * @param val   the val.
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean visit(Attributes attrs, int tag, VR vr, Object val) {
         if (vr != VR.UI || val == Value.NULL) {
@@ -72,6 +104,14 @@ public class UIDVisitor implements Visitor {
         return true;
     }
 
+    /**
+     * Executes the modified operation.
+     *
+     * @param attrs the attrs.
+     * @param tag   the tag.
+     * @param vr    the vr.
+     * @param val   the val.
+     */
     private void modified(Attributes attrs, int tag, VR vr, Object val) {
         if (modified == null)
             return;

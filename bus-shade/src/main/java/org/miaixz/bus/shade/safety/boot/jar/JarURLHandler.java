@@ -50,14 +50,17 @@ public class JarURLHandler extends URLStreamHandler {
      * The provider responsible for decrypting input streams.
      */
     private final DecryptorProvider decryptorProvider;
+
     /**
      * The provider responsible for encrypting output streams.
      */
     private final EncryptorProvider encryptorProvider;
+
     /**
      * The cryptographic key used for encryption and decryption.
      */
     private final Key key;
+
     /**
      * A set of indexed resource paths that are known to be encrypted and require special handling.
      */

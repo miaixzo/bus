@@ -1,29 +1,40 @@
 package org.opencv.core;
 
 //javadoc: KeyPoint
+/**
+ * The key point class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class KeyPoint {
 
     /**
      * Coordinates of the keypoint.
      */
     public Point pt;
+
     /**
      * Diameter of the useful keypoint adjacent area.
      */
     public float size;
+
     /**
      * Computed orientation of the keypoint (-1 if not applicable).
      */
     public float angle;
+
     /**
      * The response, by which the strongest keypoints have been selected. Can be used for further sorting or
      * subsampling.
      */
     public float response;
+
     /**
      * Octave (pyramid layer), from which the keypoint has been extracted.
      */
     public int octave;
+
     /**
      * Object ID, that can be used to cluster keypoints by an object they belong to.
      */

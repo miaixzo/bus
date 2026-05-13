@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.image;
 
+import org.miaixz.bus.image.builtin.DefaultEditors;
 import org.miaixz.bus.image.galaxy.EditorContext;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 
@@ -40,5 +41,38 @@ public interface Editors {
      *                   state.
      */
     void apply(Attributes attributes, EditorContext context);
+
+    /**
+     * Creates the default bus-image editor for attribute overriding.
+     *
+     * @param tagToOverride DICOM attributes that should override matching target attributes.
+     * @return The default editor implementation.
+     */
+    static Editors defaults(Attributes tagToOverride) {
+        return defaults(false, null, tagToOverride);
+    }
+
+    /**
+     * Creates the default bus-image editor for optional UID regeneration and attribute overriding.
+     *
+     * @param generateUIDs  Whether UI values should be rewritten.
+     * @param tagToOverride DICOM attributes that should override matching target attributes.
+     * @return The default editor implementation.
+     */
+    static Editors defaults(boolean generateUIDs, Attributes tagToOverride) {
+        return defaults(generateUIDs, null, tagToOverride);
+    }
+
+    /**
+     * Creates the default bus-image editor with a deterministic UID rewrite key.
+     *
+     * @param generateUIDs  Whether UI values should be rewritten.
+     * @param globalKey     Hex encoded HMAC key for deterministic UID rewriting.
+     * @param tagToOverride DICOM attributes that should override matching target attributes.
+     * @return The default editor implementation.
+     */
+    static Editors defaults(boolean generateUIDs, String globalKey, Attributes tagToOverride) {
+        return new DefaultEditors(generateUIDs, globalKey, tagToOverride);
+    }
 
 }

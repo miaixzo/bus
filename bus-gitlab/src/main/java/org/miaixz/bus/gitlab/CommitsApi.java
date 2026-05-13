@@ -38,6 +38,9 @@ import jakarta.ws.rs.core.Response;
 /**
  * This class implements the client side API for the GitLab commits calls. See
  * <a href="https://docs.gitlab.com/ce/api/commits.html">Commits API at GitLab</a> for more information.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class CommitsApi extends AbstractApi {
 

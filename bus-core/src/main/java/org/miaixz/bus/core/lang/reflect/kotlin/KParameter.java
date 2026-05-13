@@ -38,10 +38,12 @@ public class KParameter {
      * The {@link Method} object for {@code KParameter.getName()}.
      */
     private static final Method METHOD_GET_NAME;
+
     /**
      * The {@link Method} object for {@code KParameter.getType()}.
      */
     private static final Method METHOD_GET_TYPE;
+
     /**
      * The {@link Method} object for {@code KTypeImpl.getJavaType()}.
      */
@@ -66,6 +68,7 @@ public class KParameter {
      * The name of the Kotlin parameter.
      */
     private final String name;
+
     /**
      * The Java {@link Class} representing the type of the Kotlin parameter.
      */

@@ -26,33 +26,72 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.NotFoundException;
 
 /**
+ * Represents the ConfigurationCache type.
+ *
+ * @param <T> the t type.
  * @author Kimi Liu
  * @since Java 21+
  */
 public abstract class ConfigurationCache<C, T> {
 
+    /**
+     * The cache value.
+     */
     private final Map<String, CacheEntry<T>> cache = new HashMap<>();
+
+    /**
+     * The conf value.
+     */
     private final C conf;
+
+    /**
+     * The stale timeout value.
+     */
     private long staleTimeout;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param conf the conf.
+     */
     public ConfigurationCache(C conf) {
         if (conf == null)
             throw new NullPointerException();
         this.conf = conf;
     }
 
+    /**
+     * Gets the stale timeout.
+     *
+     * @return the stale timeout.
+     */
     public int getStaleTimeout() {
         return (int) (staleTimeout / 1000);
     }
 
+    /**
+     * Sets the stale timeout.
+     *
+     * @param staleTimeout the stale timeout.
+     */
     public void setStaleTimeout(int staleTimeout) {
         this.staleTimeout = staleTimeout * 1000L;
     }
 
+    /**
+     * Executes the clear operation.
+     */
     public void clear() {
         cache.clear();
     }
 
+    /**
+     * Executes the get operation.
+     *
+     * @param key the key.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     public T get(String key) throws InternalException {
         long now = System.currentTimeMillis();
         CacheEntry<T> entry = cache.get(key);
@@ -68,17 +107,46 @@ public abstract class ConfigurationCache<C, T> {
         return entry.value;
     }
 
+    /**
+     * Executes the find operation.
+     *
+     * @param conf the conf.
+     * @param key  the key.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     protected abstract T find(C conf, String key) throws InternalException;
 
+    /**
+     * Represents the CacheEntry type.
+     *
+     * @param <T> the t type.
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     private static final class CacheEntry<T> {
 
+        /**
+         * The value value.
+         */
         final T value;
+
+        /**
+         * The fetch time value.
+         */
         final long fetchTime;
 
+        /**
+         * Creates a new instance.
+         *
+         * @param value     the value.
+         * @param fetchTime the fetch time.
+         */
         CacheEntry(T value, long fetchTime) {
             this.value = value;
             this.fetchTime = fetchTime;
         }
+
     }
 
 }

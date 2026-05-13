@@ -43,9 +43,9 @@ import lombok.Setter;
  *
  * <p>
  * Example usage:
- * 
+ *
  * <pre>{@code
- * 
+ *
  * // Create a media type from a string
  * MediaType mediaType = MediaType.valueOf("application/json;charset=utf-8");
  *
@@ -87,6 +87,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #APPLICATION_XML} media type.
      */
     public static final String APPLICATION_XML = "application/xml";
+
     /**
      * A {@link MediaType} constant representing {@value #APPLICATION_XML} media type.
      */
@@ -96,6 +97,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #APPLICATION_X_PROTOBUF} media type.
      */
     public static final String APPLICATION_X_PROTOBUF = "application/x-protobuf";
+
     /**
      * A {@link MediaType} constant representing {@value #APPLICATION_X_PROTOBUF} media type.
      */
@@ -105,6 +107,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #MULTIPART_MIXED} media type.
      */
     public static final String MULTIPART_MIXED = "multipart/mixed";
+
     /**
      * A {@link MediaType} constant representing {@value #MULTIPART_MIXED} media type.
      */
@@ -114,6 +117,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #MULTIPART_ALTERNATIVE} media type.
      */
     public static final String MULTIPART_ALTERNATIVE = "multipart/alternative";
+
     /**
      * A {@link MediaType} constant representing {@value #MULTIPART_ALTERNATIVE} media type.
      */
@@ -123,6 +127,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #MULTIPART_DIGEST} media type.
      */
     public static final String MULTIPART_DIGEST = "multipart/digest";
+
     /**
      * A {@link MediaType} constant representing {@value #MULTIPART_DIGEST} media type.
      */
@@ -132,6 +137,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #MULTIPART_PARALLEL} media type.
      */
     public static final String MULTIPART_PARALLEL = "multipart/parallel";
+
     /**
      * A {@link MediaType} constant representing {@value #MULTIPART_PARALLEL} media type.
      */
@@ -141,6 +147,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #APPLICATION_ATOM_XML} media type.
      */
     public static final String APPLICATION_ATOM_XML = "application/atom+xml";
+
     /**
      * A {@link MediaType} constant representing {@value #APPLICATION_ATOM_XML} media type.
      */
@@ -150,6 +157,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #APPLICATION_XHTML_XML} media type.
      */
     public static final String APPLICATION_XHTML_XML = "application/xhtml+xml";
+
     /**
      * A {@link MediaType} constant representing {@value #APPLICATION_XHTML_XML} media type.
      */
@@ -159,6 +167,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #APPLICATION_SVG_XML} media type.
      */
     public static final String APPLICATION_SVG_XML = "application/svg+xml";
+
     /**
      * A {@link MediaType} constant representing {@value #APPLICATION_SVG_XML} media type.
      */
@@ -168,6 +177,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #APPLICATION_JSON} media type.
      */
     public static final String APPLICATION_JSON = "application/json";
+
     /**
      * A {@link MediaType} constant representing {@value #APPLICATION_JSON} media type.
      */
@@ -177,6 +187,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #APPLICATION_FORM_URLENCODED} media type.
      */
     public static final String APPLICATION_FORM_URLENCODED = "application/x-www-form-urlencoded";
+
     /**
      * A {@link MediaType} constant representing {@value #APPLICATION_FORM_URLENCODED} media type.
      */
@@ -187,6 +198,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #MULTIPART_FORM_DATA} media type.
      */
     public static final String MULTIPART_FORM_DATA = "multipart/form-data";
+
     /**
      * A {@link MediaType} constant representing {@value #MULTIPART_FORM_DATA} media type.
      */
@@ -196,6 +208,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #APPLICATION_OCTET_STREAM} media type.
      */
     public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
+
     /**
      * A {@link MediaType} constant representing {@value #APPLICATION_OCTET_STREAM} media type.
      */
@@ -205,6 +218,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #TEXT_PLAIN} media type.
      */
     public static final String TEXT_PLAIN = "text/plain";
+
     /**
      * A {@link MediaType} constant representing {@value #TEXT_PLAIN} media type.
      */
@@ -214,6 +228,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #TEXT_XML} media type.
      */
     public static final String TEXT_XML = "text/xml";
+
     /**
      * A {@link MediaType} constant representing {@value #TEXT_XML} media type.
      */
@@ -223,6 +238,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #TEXT_HTML} media type.
      */
     public static final String TEXT_HTML = "text/html";
+
     /**
      * A {@link MediaType} constant representing {@value #TEXT_HTML} media type.
      */
@@ -232,6 +248,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #SERVER_SENT_EVENTS} media type.
      */
     public static final String SERVER_SENT_EVENTS = "text/event-stream";
+
     /**
      * A {@link MediaType} constant representing {@value #SERVER_SENT_EVENTS} media type.
      */
@@ -241,6 +258,7 @@ public class MediaType {
      * {@link String} representation of {@value #APPLICATION_JSON_PATCH_JSON} media type.
      */
     public static final String APPLICATION_JSON_PATCH_JSON = "application/json-patch+json";
+
     /**
      * A {@link MediaType} constant representing {@value #APPLICATION_JSON_PATCH_JSON} media type.
      */
@@ -250,6 +268,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #APPLICATION_SOAP_XML} media type.
      */
     public static final String APPLICATION_SOAP_XML = "application/soap+xml";
+
     /**
      * A {@link MediaType} constant representing {@value #APPLICATION_SOAP_XML} media type.
      */
@@ -259,6 +278,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #APPLICATION_DICOM} media type.
      */
     public final static String APPLICATION_DICOM = "application/dicom";
+
     /**
      * A {@link MediaType} constant representing {@value #APPLICATION_DICOM} media type.
      */
@@ -268,6 +288,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #APPLICATION_DICOM_XML} media type.
      */
     public final static String APPLICATION_DICOM_XML = "application/dicom+xml";
+
     /**
      * A {@link MediaType} constant representing {@value #APPLICATION_DICOM_XML} media type.
      */
@@ -277,6 +298,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #APPLICATION_DICOM_JSON} media type.
      */
     public final static String APPLICATION_DICOM_JSON = "application/dicom+json";
+
     /**
      * A {@link MediaType} constant representing {@value #APPLICATION_DICOM_JSON} media type.
      */
@@ -286,6 +308,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #IMAGE_WILDCARD} media type.
      */
     public final static String IMAGE_WILDCARD = "image/*";
+
     /**
      * A {@link MediaType} constant representing {@value #IMAGE_WILDCARD} media type.
      */
@@ -295,6 +318,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #IMAGE_GIF} media type.
      */
     public final static String IMAGE_GIF = "image/gif";
+
     /**
      * A {@link MediaType} constant representing {@value #IMAGE_GIF} media type.
      */
@@ -304,6 +328,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #IMAGE_PNG} media type.
      */
     public final static String IMAGE_PNG = "image/png";
+
     /**
      * A {@link MediaType} constant representing {@value #IMAGE_PNG} media type.
      */
@@ -313,6 +338,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #IMAGE_JPEG} media type.
      */
     public final static String IMAGE_JPEG = "image/jpeg";
+
     /**
      * A {@link MediaType} constant representing {@value #IMAGE_JPEG} media type.
      */
@@ -322,6 +348,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #IMAGE_JLS} media type.
      */
     public final static String IMAGE_JLS = "image/jls";
+
     /**
      * A {@link MediaType} constant representing {@value #IMAGE_JLS} media type.
      */
@@ -331,6 +358,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #IMAGE_JP2} media type.
      */
     public final static String IMAGE_JP2 = "image/jp2";
+
     /**
      * A {@link MediaType} constant representing {@value #IMAGE_JP2} media type.
      */
@@ -340,6 +368,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #IMAGE_J2C} media type.
      */
     public final static String IMAGE_J2C = "image/j2c";
+
     /**
      * A {@link MediaType} constant representing {@value #IMAGE_J2C} media type.
      */
@@ -349,6 +378,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #IMAGE_JPX} media type.
      */
     public final static String IMAGE_JPX = "image/jpx";
+
     /**
      * A {@link MediaType} constant representing {@value #IMAGE_JPX} media type.
      */
@@ -358,6 +388,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #IMAGE_JPH} media type.
      */
     public final static String IMAGE_JPH = "image/jph";
+
     /**
      * A {@link MediaType} constant representing {@value #IMAGE_JPH} media type.
      */
@@ -367,6 +398,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #IMAGE_JPHC} media type.
      */
     public final static String IMAGE_JPHC = "image/jphc";
+
     /**
      * A {@link MediaType} constant representing {@value #IMAGE_JPHC} media type.
      */
@@ -376,6 +408,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #IMAGE_DICOM_RLE} media type.
      */
     public final static String IMAGE_DICOM_RLE = "image/dicom-rle";
+
     /**
      * A {@link MediaType} constant representing {@value #IMAGE_DICOM_RLE} media type.
      */
@@ -385,6 +418,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #VIDEO_WILDCARD} media type.
      */
     public final static String VIDEO_WILDCARD = "video/*";
+
     /**
      * A {@link MediaType} constant representing {@value #VIDEO_WILDCARD} media type.
      */
@@ -394,6 +428,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #VIDEO_MPEG} media type.
      */
     public final static String VIDEO_MPEG = "video/mpeg";
+
     /**
      * A {@link MediaType} constant representing {@value #VIDEO_MPEG} media type.
      */
@@ -403,6 +438,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #VIDEO_MP4} media type.
      */
     public final static String VIDEO_MP4 = "video/mp4";
+
     /**
      * A {@link MediaType} constant representing {@value #VIDEO_MP4} media type.
      */
@@ -412,6 +448,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #VIDEO_QUICKTIME} media type.
      */
     public final static String VIDEO_QUICKTIME = "video/quicktime";
+
     /**
      * A {@link MediaType} constant representing {@value #VIDEO_QUICKTIME} media type.
      */
@@ -421,6 +458,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #APPLICATION_PDF} media type.
      */
     public final static String APPLICATION_PDF = "application/pdf";
+
     /**
      * A {@link MediaType} constant representing {@value #APPLICATION_PDF} media type.
      */
@@ -430,6 +468,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #TEXT_RTF} media type.
      */
     public final static String TEXT_RTF = "text/rtf";
+
     /**
      * A {@link MediaType} constant representing {@value #TEXT_RTF} media type.
      */
@@ -439,6 +478,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #TEXT_CSV} media type.
      */
     public final static String TEXT_CSV = "text/csv";
+
     /**
      * A {@link MediaType} constant representing {@value #TEXT_CSV} media type.
      */
@@ -448,6 +488,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #TEXT_CSV_UTF8} media type.
      */
     public final static String TEXT_CSV_UTF8 = "text/csv;charset=utf-8";
+
     /**
      * A {@link MediaType} constant representing {@value #TEXT_CSV_UTF8} media type.
      */
@@ -457,6 +498,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #APPLICATION_ZIP} media type.
      */
     public final static String APPLICATION_ZIP = "application/zip";
+
     /**
      * A {@link MediaType} constant representing {@value #APPLICATION_ZIP} media type.
      */
@@ -466,6 +508,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #MULTIPART_RELATED} media type.
      */
     public final static String MULTIPART_RELATED = "multipart/related";
+
     /**
      * A {@link MediaType} constant representing {@value #MULTIPART_RELATED} media type.
      */
@@ -475,6 +518,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #MULTIPART_RELATED_APPLICATION_DICOM} media type.
      */
     public final static String MULTIPART_RELATED_APPLICATION_DICOM = "multipart/related;type=\"application/dicom\"";
+
     /**
      * A {@link MediaType} constant representing {@value #MULTIPART_RELATED_APPLICATION_DICOM} media type.
      */
@@ -485,6 +529,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #MULTIPART_RELATED_APPLICATION_DICOM_XML} media type.
      */
     public final static String MULTIPART_RELATED_APPLICATION_DICOM_XML = "multipart/related;type=\"application/dicom+xml\"";
+
     /**
      * A {@link MediaType} constant representing {@value #MULTIPART_RELATED_APPLICATION_DICOM_XML} media type.
      */
@@ -495,6 +540,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #MODEL_STL} media type.
      */
     public final static String MODEL_STL = "model/stl";
+
     /**
      * A {@link MediaType} constant representing {@value #MODEL_STL} media type.
      */
@@ -504,6 +550,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #MODEL_X_STL_BINARY} media type.
      */
     public final static String MODEL_X_STL_BINARY = "model/x.stl-binary";
+
     /**
      * A {@link MediaType} constant representing {@value #MODEL_X_STL_BINARY} media type.
      */
@@ -513,6 +560,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #APPLICATION_SLA} media type.
      */
     public final static String APPLICATION_SLA = "application/sla";
+
     /**
      * A {@link MediaType} constant representing {@value #APPLICATION_SLA} media type.
      */
@@ -522,6 +570,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #MODEL_OBJ} media type.
      */
     public final static String MODEL_OBJ = "model/obj";
+
     /**
      * A {@link MediaType} constant representing {@value #MODEL_OBJ} media type.
      */
@@ -531,6 +580,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #MODEL_MTL} media type.
      */
     public final static String MODEL_MTL = "model/mtl";
+
     /**
      * A {@link MediaType} constant representing {@value #MODEL_MTL} media type.
      */
@@ -540,6 +590,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #APPLICATION_VND_GENOZIP} media type.
      */
     public final static String APPLICATION_VND_GENOZIP = "application/vnd.genozip";
+
     /**
      * A {@link MediaType} constant representing {@value #APPLICATION_VND_GENOZIP} media type.
      */
@@ -549,14 +600,17 @@ public class MediaType {
      * A {@code String} constant representing {@value #APPLICATION_X_BZIP2} media type.
      */
     public final static String APPLICATION_X_BZIP2 = "application/x-bzip2";
+
     /**
      * A {@link MediaType} constant representing {@value #APPLICATION_X_BZIP2} media type.
      */
     public final static MediaType APPLICATION_X_BZIP2_TYPE = new MediaType("application", "x-bzip2");
+
     /**
      * A {@code String} constant representing {@value #APPLICATION_PRS_VCFBZIP} media type.
      */
     public final static String APPLICATION_PRS_VCFBZIP = "application/prs.vcfbzip";
+
     /**
      * A {@link MediaType} constant representing {@value #APPLICATION_PRS_VCFBZIP} media type.
      */
@@ -566,6 +620,7 @@ public class MediaType {
      * A {@code String} constant representing {@value #APPLICATION_PRS_VCFBZIP2} media type.
      */
     public final static String APPLICATION_PRS_VCFBZIP2 = "application/prs.vcfbzip2";
+
     /**
      * A {@link MediaType} constant representing {@value #APPLICATION_PRS_VCFBZIP2} media type.
      */

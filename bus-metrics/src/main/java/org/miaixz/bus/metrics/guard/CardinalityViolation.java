@@ -34,4 +34,5 @@ import java.time.Instant;
  */
 public record CardinalityViolation(String metricName, String tagKey, String originalValue, String replacedWith,
         Instant detectedAt) {
+
 }

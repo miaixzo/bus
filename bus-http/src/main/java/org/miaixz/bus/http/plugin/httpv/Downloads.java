@@ -38,54 +38,67 @@ public class Downloads {
      * Lock object for synchronizing access to the download status.
      */
     private final Object lock = new Object();
+
     /**
      * A temporary flag to indicate that the next callback should be executed on an I/O thread.
      */
     protected boolean nextOnIO = false;
+
     /**
      * The target file where the content will be saved.
      */
     private File file;
+
     /**
      * The source input stream providing the download content.
      */
     private InputStream input;
+
     /**
      * Callback to be invoked upon successful completion of the download.
      */
     private Callback<File> onSuccess;
+
     /**
      * Callback to be invoked if the download fails.
      */
     private Callback<Failure> onFailure;
+
     /**
      * The executor responsible for running the download task and callbacks.
      */
     private CoverTasks.Executor executor;
+
     /**
      * The number of bytes that have been successfully downloaded and written to the file.
      */
     private long doneBytes;
+
     /**
      * The size of the buffer used for reading from the input stream.
      */
     private int buffSize = 0;
+
     /**
      * The offset in the file from where to start writing. Used for resuming downloads.
      */
     private long seekBytes = 0;
+
     /**
      * A flag indicating whether to append to the file instead of overwriting.
      */
     private boolean appended;
+
     /**
      * The current status of the download (e.g., DOWNLOADING, PAUSED). Volatile for visibility across threads.
      */
     private volatile int status;
+
     /**
      * Flag indicating if the onSuccess callback should run on an I/O thread.
      */
     private boolean sOnIO;
+
     /**
      * Flag indicating if the onFailure callback should run on an I/O thread.
      */
@@ -300,6 +313,9 @@ public class Downloads {
 
     /**
      * Provides methods to control the state of an ongoing download.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public class Control {
 
@@ -379,6 +395,9 @@ public class Downloads {
 
     /**
      * Encapsulates information about a download failure.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public class Failure {
 

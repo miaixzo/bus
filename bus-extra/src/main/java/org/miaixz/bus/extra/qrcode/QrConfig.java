@@ -44,6 +44,7 @@ public class QrConfig {
      * The color black.
      */
     private static final int BLACK = 0xFF000000;
+
     /**
      * The color white.
      */
@@ -53,26 +54,32 @@ public class QrConfig {
      * Width.
      */
     protected int width;
+
     /**
      * Height.
      */
     protected int height;
+
     /**
      * Foreground color (QR code color).
      */
     protected Integer foreColor = BLACK;
+
     /**
      * Background color, defaults to white, null means transparent.
      */
     protected Integer backColor = WHITE;
+
     /**
      * Margin, 0-4.
      */
     protected Integer margin = 2;
+
     /**
      * Sets the amount of information in the QR code, can be set to an integer from 0-40.
      */
     protected Integer qrVersion;
+
     /**
      * Error correction level.
      */
@@ -82,6 +89,7 @@ public class QrConfig {
      * Character encoding.
      */
     protected java.nio.charset.Charset charset = Charset.UTF_8;
+
     /**
      * Logo in the QR code.
      */
@@ -91,10 +99,12 @@ public class QrConfig {
      * Corner radius of the QR code logo, 0-1, as a ratio of width/height.
      */
     protected double imgRound = 0.3;
+
     /**
      * Scaling ratio for the logo in the QR code, e.g., 5 means 1/5 of the smaller dimension (width or height).
      */
     protected int ratio = 6;
+
     /**
      * Symbol shape for DATA_MATRIX.
      */

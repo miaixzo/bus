@@ -44,22 +44,27 @@ public class QueryOrder extends Voucher {
      * Version number.
      */
     private String version;
+
     /**
      * Merchant number.
      */
     private String merchant;
+
     /**
      * Transaction number.
      */
     private String tradeNum;
+
     /**
      * Original transaction number.
      */
     private String oTradeNum;
+
     /**
      * Trade type.
      */
     private String tradeType;
+
     /**
      * Signature.
      */

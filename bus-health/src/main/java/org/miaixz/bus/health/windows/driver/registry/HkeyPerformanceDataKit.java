@@ -47,10 +47,12 @@ public final class HkeyPerformanceDataKit {
      * on-demand.
      */
     private static final String HKEY_PERFORMANCE_TEXT = "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Perflib\\009";
+
     /**
      * The COUNTER constant.
      */
     private static final String COUNTER = "Counter";
+
     /**
      * The COUNTER_INDEX_MAP constant.
      */

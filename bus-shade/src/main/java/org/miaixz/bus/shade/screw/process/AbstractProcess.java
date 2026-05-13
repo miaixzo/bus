@@ -46,14 +46,17 @@ public abstract class AbstractProcess implements Process {
      * Configuration object.
      */
     protected Config config;
+
     /**
      * Cache for table information.
      */
     volatile Map<String, List<? extends Table>> tablesCaching = new ConcurrentHashMap<>();
+
     /**
      * Cache for column information.
      */
     volatile Map<String, List<Column>> columnsCaching = new ConcurrentHashMap<>();
+
     /**
      * Cache for primary key information.
      */

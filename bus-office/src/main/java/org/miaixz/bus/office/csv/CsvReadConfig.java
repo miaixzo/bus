@@ -37,23 +37,28 @@ public class CsvReadConfig extends CsvConfig<CsvReadConfig> implements Serializa
      * Specifies the header line number. A value of -1 indicates no header line.
      */
     protected long headerLineNo = -1;
+
     /**
      * Whether to skip empty rows. Default is {@code true}.
      */
     protected boolean skipEmptyRows = true;
+
     /**
      * Whether to throw an exception if the number of fields in rows differs. Default is {@code false}.
      */
     protected boolean errorOnDifferentFieldCount;
+
     /**
      * The starting line number (inclusive) for reading. This refers to the original file line number.
      */
     protected long beginLineNo;
+
     /**
      * The ending line number (inclusive) for reading. This refers to the original file line number. Default is
      * unlimited.
      */
     protected long endLineNo = Long.MAX_VALUE - 1;
+
     /**
      * Whether to trim whitespace from each field.
      */

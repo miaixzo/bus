@@ -66,150 +66,184 @@ public class Formatter {
      * Month format {@link FormatBuilder}: yyyy-MM
      */
     public static final FormatBuilder NORM_MONTH_FORMAT = FormatBuilder.getInstance(Fields.NORM_MONTH);
+
     /**
      * Month format {@link DateTimeFormatter}: yyyy-MM
      */
     public static final DateTimeFormatter NORM_MONTH_FORMATTER = FormatBuilder.getDateTimeInstance(Fields.NORM_MONTH);
+
     /**
      * Simple month format {@link FormatBuilder}: yyyyMM
      */
     public static final FormatBuilder SIMPLE_MONTH_FORMAT = FormatBuilder.getInstance(Fields.SIMPLE_MONTH);
+
     /**
      * Simple month format {@link DateTimeFormatter}: yyyyMM
      */
     public static final DateTimeFormatter SIMPLE_MONTH_FORMATTER = FormatBuilder
             .getDateTimeInstance(Fields.SIMPLE_MONTH);
+
     /**
      * Standard date format {@link FormatBuilder}: yyyy-MM-dd
      */
     public static final FormatBuilder NORM_DATE_FORMAT = FormatBuilder.getInstance(Fields.NORM_DATE);
+
     /**
      * Standard date format {@link DateTimeFormatter}: yyyy-MM-dd
      */
     public static final DateTimeFormatter NORM_DATE_FORMATTER = FormatBuilder.getDateTimeInstance(Fields.NORM_DATE);
+
     /**
      * Standard hour and minute format {@link FormatBuilder}: HH:mm
      */
     public static final FormatBuilder NORM_HOUR_MINUTE_FORMAT = FormatBuilder.getInstance(Fields.NORM_HOUR_MINUTE);
+
     /**
      * Standard hour and minute format {@link DateTimeFormatter}: HH:mm
      */
     public static final DateTimeFormatter NORM_HOUR_MINUTE_FORMATTER = FormatBuilder
             .getDateTimeInstance(Fields.NORM_HOUR_MINUTE);
+
     /**
      * Standard time format {@link FormatBuilder}: HH:mm:ss
      */
     public static final FormatBuilder NORM_TIME_FORMAT = FormatBuilder.getInstance(Fields.NORM_TIME);
+
     /**
      * Standard time format {@link DateTimeFormatter}: HH:mm:ss
      */
     public static final DateTimeFormatter NORM_TIME_FORMATTER = FormatBuilder.getDateTimeInstance(Fields.NORM_TIME);
+
     /**
      * Standard date and time format, accurate to minute {@link FormatBuilder}: yyyy-MM-dd HH:mm
      */
     public static final FormatBuilder NORM_DATETIME_MINUTE_FORMAT = FormatBuilder
             .getInstance(Fields.NORM_DATETIME_MINUTE);
+
     /**
      * Standard date and time format, accurate to minute {@link DateTimeFormatter}: yyyy-MM-dd HH:mm
      */
     public static final DateTimeFormatter NORM_DATETIME_MINUTE_FORMATTER = FormatBuilder
             .getDateTimeInstance(Fields.NORM_DATETIME_MINUTE);
+
     /**
      * Standard date and time format, accurate to second {@link FormatBuilder}: yyyy-MM-dd HH:mm:ss
      */
     public static final FormatBuilder NORM_DATETIME_FORMAT = FormatBuilder.getInstance(Fields.NORM_DATETIME);
+
     /**
      * Standard date and time format, accurate to second {@link DateTimeFormatter}: yyyy-MM-dd HH:mm:ss
      */
     public static final DateTimeFormatter NORM_DATETIME_FORMATTER = FormatBuilder
             .getDateTimeInstance(Fields.NORM_DATETIME);
+
     /**
      * Standard date and time format, accurate to millisecond {@link FormatBuilder}: yyyy-MM-dd HH:mm:ss.SSS
      */
     public static final FormatBuilder NORM_DATETIME_MS_FORMAT = FormatBuilder.getInstance(Fields.NORM_DATETIME_MS);
+
     /**
      * Standard date and time format, accurate to millisecond {@link DateTimeFormatter}: yyyy-MM-dd HH:mm:ss.SSS
      */
     public static final DateTimeFormatter NORM_DATETIME_MS_FORMATTER = FormatBuilder
             .getDateTimeInstance(Fields.NORM_DATETIME_MS);
+
     /**
      * ISO8601 date and time format, accurate to millisecond {@link FormatBuilder}: yyyy-MM-dd HH:mm:ss,SSS
      */
     public static final FormatBuilder NORM_DATETIME_COMMA_MS_FORMAT = FormatBuilder
             .getInstance(Fields.NORM_DATETIME_COMMA_MS);
+
     /**
      * Standard date format {@link DateTimeFormatter}: yyyy-MM-dd HH:mm:ss,SSS
      */
     public static final DateTimeFormatter NORM_DATETIME_COMMA_MS_FORMATTER = FormatBuilder
             .getDateTimeInstance(Fields.NORM_DATETIME_COMMA_MS);
+
     /**
      * Standard date format {@link FormatBuilder}: MM月dd日
      */
     public static final FormatBuilder CN_MONTH_FORMAT = FormatBuilder.getInstance(Fields.CN_MONTH);
+
     /**
      * Standard date format {@link DateTimeFormatter}: MM月dd日
      */
     public static final DateTimeFormatter CN_MONTH_FORMATTER = FormatBuilder.getDateTimeInstance(Fields.CN_MONTH);
+
     /**
      * Standard date format {@link FormatBuilder}: yyyy年MM月dd日
      */
     public static final FormatBuilder CN_DATE_FORMAT = FormatBuilder.getInstance(Fields.CN_DATE);
+
     /**
      * Standard date format {@link DateTimeFormatter}: yyyy年MM月dd日
      */
     public static final DateTimeFormatter CN_DATE_FORMATTER = FormatBuilder.getDateTimeInstance(Fields.CN_DATE);
+
     /**
      * Standard date format {@link FormatBuilder}: yyyy年MM月dd日HH时mm分ss秒
      */
     public static final FormatBuilder CN_DATE_TIME_FORMAT = FormatBuilder.getInstance(Fields.CN_DATE_TIME);
+
     /**
      * Standard date format {@link DateTimeFormatter}: yyyy年MM月dd日HH时mm分ss秒
      */
     public static final DateTimeFormatter CN_DATE_TIME_FORMATTER = FormatBuilder
             .getDateTimeInstance(Fields.CN_DATE_TIME);
+
     /**
      * Standard date format {@link FormatBuilder}: yyyyMMdd
      */
     public static final FormatBuilder PURE_DATE_FORMAT = FormatBuilder.getInstance(Fields.PURE_DATE);
+
     /**
      * Standard date format {@link DateTimeFormatter}: yyyyMMdd
      */
     public static final DateTimeFormatter PURE_DATE_FORMATTER = FormatBuilder.getDateTimeInstance(Fields.PURE_DATE);
+
     /**
      * Standard hour and minute format {@link FormatBuilder}: HHmm
      */
     public static final FormatBuilder PPURE_HOUR_MINUTE_FORMAT = FormatBuilder.getInstance(Fields.PURE_HOUR_MINUTE);
+
     /**
      * Standard hour and minute format {@link DateTimeFormatter}: HHmm
      */
     public static final DateTimeFormatter PURE_HOUR_MINUTE_FORMATTER = FormatBuilder
             .getDateTimeInstance(Fields.PURE_HOUR_MINUTE);
+
     /**
      * Standard time format {@link FormatBuilder}: HHmmss
      */
     public static final FormatBuilder PURE_TIME_FORMAT = FormatBuilder.getInstance(Fields.PURE_TIME);
+
     /**
      * Standard time format {@link DateTimeFormatter}: HHmmss
      */
     public static final DateTimeFormatter PURE_TIME_FORMATTER = FormatBuilder.getDateTimeInstance(Fields.PURE_TIME);
+
     /**
      * Standard date and time format {@link FormatBuilder}: yyyyMMddHHmmss
      */
     public static final FormatBuilder PURE_DATETIME_FORMAT = FormatBuilder.getInstance(Fields.PURE_DATETIME);
+
     /**
      * Standard date and time format {@link DateTimeFormatter}: yyyyMMddHHmmss
      */
     public static final DateTimeFormatter PURE_DATETIME_FORMATTER = FormatBuilder
             .getDateTimeInstance(Fields.PURE_DATETIME);
+
     /**
      * Standard date and time format, accurate to millisecond {@link FormatBuilder}: yyyyMMddHHmmssSSS
      */
     public static final FormatBuilder PURE_DATETIME_MS_FORMAT = FormatBuilder.getInstance(Fields.PURE_DATETIME_MS);
+
     /**
      * Format wildcard: {@link FormatBuilder} yyyyMMddHHmmss.SSS
      */
     public static final FormatBuilder PURE_DATETIME_TIP_FORMAT = FormatBuilder
             .getInstance(Fields.PURE_DATETIME_TIP_PATTERN);
+
     /**
      * Standard date format {@link DateTimeFormatter}: yyyyMMddHHmmssSSS. See
      * https://stackoverflow.com/questions/22588051/is-java-time-failing-to-parse-fraction-of-second JDK 8 bug at:
@@ -217,57 +251,69 @@ public class Formatter {
      */
     public static final DateTimeFormatter PURE_DATETIME_MS_FORMATTER = new DateTimeFormatterBuilder()
             .appendPattern(Fields.PURE_DATETIME).appendValue(ChronoField.MILLI_OF_SECOND, 3).toFormatter();
+
     /**
      * HTTP header date and time format {@link FormatBuilder}: EEE, dd MMM yyyy HH:mm:ss GMT
      */
     public static final FormatBuilder HTTP_DATETIME_FORMAT_GMT = FormatBuilder
             .getInstance(Fields.HTTP_DATETIME, ZoneKit.getTimeZone("GMT"), Locale.US);
+
     /**
      * HTTP header date and time format {@link FormatBuilder}: EEE, dd MMM yyyy HH:mm:ss z
      */
     public static final FormatBuilder HTTP_DATETIME_FORMAT = FormatBuilder.getInstance(Fields.HTTP_DATETIME, Locale.US);
+
     /**
      * JDK date and time format {@link FormatBuilder}: EEE MMM dd HH:mm:ss zzz yyyy
      */
     public static final FormatBuilder JDK_DATETIME_FORMAT = FormatBuilder.getInstance(Fields.JDK_DATETIME, Locale.US);
+
     /**
      * ISO8601 date and time {@link FormatBuilder}: yyyy-MM-dd'T'HH:mm:ss
      */
     public static final FormatBuilder ISO8601_FORMAT = FormatBuilder.getInstance(Fields.ISO8601);
+
     /**
      * UTC time {@link FormatBuilder}: yyyy-MM-dd'T'HH:mm:ss.SSS
      */
     public static final FormatBuilder ISO8601_MS_FORMAT = FormatBuilder.getInstance(Fields.ISO8601_MS);
+
     /**
      * ISO8601 time {@link FormatBuilder}: yyyy-MM-dd'T'HH:mm:ss'Z'
      */
     public static final FormatBuilder UTC_FORMAT = FormatBuilder
             .getInstance(Fields.UTC, ZoneKit.getTimeZone(ZoneId.UTC.name()));
+
     /**
      * ISO8601 time {@link FormatBuilder}: yyyy-MM-dd'T'HH:mm:ssZ, where Z indicates a time offset, e.g., +0800
      */
     public static final FormatBuilder ISO8601_WITH_ZONE_OFFSET_FORMAT = FormatBuilder
             .getInstance(Fields.ISO8601_WITH_ZONE_OFFSET);
+
     /**
      * ISO8601 time {@link FormatBuilder}: yyyy-MM-dd'T'HH:mm:ssXXX
      */
     public static final FormatBuilder ISO8601_WITH_XXX_OFFSET_FORMAT = FormatBuilder
             .getInstance(Fields.ISO8601_WITH_XXX_OFFSET);
+
     /**
      * ISO8601 time {@link FormatBuilder}: yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
      */
     public static final FormatBuilder UTC_MS_FORMAT = FormatBuilder
             .getInstance(Fields.UTC_MS, ZoneKit.getTimeZone(ZoneId.UTC.name()));
+
     /**
      * ISO8601 time {@link FormatBuilder}: yyyy-MM-dd'T'HH:mm:ss.SSSZ
      */
     public static final FormatBuilder ISO8601_MS_WITH_ZONE_OFFSET_FORMAT = FormatBuilder
             .getInstance(Fields.ISO8601_MS_WITH_ZONE_OFFSET);
+
     /**
      * UTC time {@link FormatBuilder}: yyyy-MM-dd'T'HH:mm:ss.SSSXXX
      */
     public static final FormatBuilder ISO8601_MS_WITH_XXX_OFFSET_FORMAT = FormatBuilder
             .getInstance(Fields.ISO8601_MS_WITH_XXX_OFFSET);
+
     /**
      * Maximum time for hour, minute, second only.
      */

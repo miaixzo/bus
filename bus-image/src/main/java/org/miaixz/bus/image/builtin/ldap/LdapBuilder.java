@@ -49,6 +49,7 @@ public class LdapBuilder {
      * An empty array of {@link Code} objects, used as a default or placeholder.
      */
     private static final Code[] EMPTY_CODES = {};
+
     /**
      * Character array containing digits and uppercase letters, used for ordinal prefixes. The array includes characters
      * '0' through '9' and 'A' through 'Z'.

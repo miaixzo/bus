@@ -42,18 +42,22 @@ public interface OpenBsdLibc extends CLibrary {
      * High kernel: proc, limits
      */
     int CTL_KERN = 1;
+
     /**
      * High kernel: proc, limits
      */
     int CTL_VM = 1;
+
     /**
      * Generic CPU/IO
      */
     int CTL_HW = 6;
+
     /**
      * Machine dependent
      */
     int CTL_MACHDEP = 7;
+
     /**
      * VFS sysctls
      */
@@ -63,34 +67,42 @@ public interface OpenBsdLibc extends CLibrary {
      * String: system version
      */
     int KERN_OSTYPE = 1;
+
     /**
      * String: system release
      */
     int KERN_OSRELEASE = 2;
+
     /**
      * Int: system revision
      */
     int KERN_OSREV = 3;
+
     /**
      * String: compile time info
      */
     int KERN_VERSION = 4;
+
     /**
      * Int: max vnodes
      */
     int KERN_MAXVNODES = 5;
+
     /**
      * Int: max processes
      */
     int KERN_MAXPROC = 6;
+
     /**
      * Int: max arguments to exec
      */
     int KERN_ARGMAX = 8;
+
     /**
      * Array: cp_time
      */
     int KERN_CPTIME = 40;
+
     /**
      * Array: cp_time2
      */
@@ -105,26 +117,32 @@ public interface OpenBsdLibc extends CLibrary {
      * String: machine class
      */
     int HW_MACHINE = 1;
+
     /**
      * String: specific machine model
      */
     int HW_MODEL = 2;
+
     /**
      * Int: software page size
      */
     int HW_PAGESIZE = 7;
+
     /**
      * Get CPU frequency
      */
     int HW_CPUSPEED = 12;
+
     /**
      * CPU found (includes offline)
      */
     int HW_NCPUFOUND = 21;
+
     /**
      * Enable SMT/HT/CMT
      */
     int HW_SMT = 24;
+
     /**
      * Number of cpus being used
      */
@@ -134,6 +152,7 @@ public interface OpenBsdLibc extends CLibrary {
      * Generic filesystem information
      */
     int VFS_GENERIC = 0;
+
     /**
      * Struct: buffer cache statistics given as next argument
      */
@@ -146,22 +165,27 @@ public interface OpenBsdLibc extends CLibrary {
      * Number of CPU states.
      */
     int CPUSTATES = 5;
+
     /**
      * CPU user state index.
      */
     int CP_USER = 0;
+
     /**
      * CPU nice state index.
      */
     int CP_NICE = 1;
+
     /**
      * CPU system state index.
      */
     int CP_SYS = 2;
+
     /**
      * CPU interrupt state index (4 on 6.4 and later).
      */
     int CP_INTR = 3;
+
     /**
      * CPU idle state index (5 on 6.4 and later).
      */
@@ -171,6 +195,7 @@ public interface OpenBsdLibc extends CLibrary {
      * Size of a 64-bit unsigned integer.
      */
     int UINT64_SIZE = Native.getNativeSize(long.class);
+
     /**
      * Size of an integer.
      */
@@ -189,6 +214,9 @@ public interface OpenBsdLibc extends CLibrary {
      * <p>
      * This class maps to the native OpenBSD buffer cache statistics structure.
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "numbufs", "numbufpages", "numdirtypages", "numcleanpages", "pendingwrites", "pendingreads",
             "numwrites", "numreads", "cachehits", "busymapped", "dmapages", "highpages", "delwribufs", "kvaslots",
@@ -277,6 +305,7 @@ public interface OpenBsdLibc extends CLibrary {
             super(p);
             read();
         }
+
     }
 
     /**
@@ -285,6 +314,9 @@ public interface OpenBsdLibc extends CLibrary {
      * This class maps to the native OpenBSD timeval structure: {@code struct timeval { time_t tv_sec; suseconds_t
      * tv_usec; }; }
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "tv_sec", "tv_usec" })
     class Timeval extends Structure {
@@ -293,10 +325,12 @@ public interface OpenBsdLibc extends CLibrary {
          * Seconds.
          */
         public long tv_sec;
+
         /**
          * Microseconds.
          */
         public long tv_usec;
+
     }
 
 }

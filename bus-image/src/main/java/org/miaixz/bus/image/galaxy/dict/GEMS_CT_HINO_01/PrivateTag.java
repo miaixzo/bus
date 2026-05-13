@@ -20,20 +20,31 @@
 package org.miaixz.bus.image.galaxy.dict.GEMS_CT_HINO_01;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEMS_CT_HINO_01";
 
-    /** (004B,xx01) VR=DS VM=1-n Beam Thickess */
+    /**
+     * (004B,xx01) VR=DS VM=1-n Beam Thickess
+     */
     public static final int BeamThickess = 0x004B0001;
 
-    /** (004B,xx02) VR=DS VM=1-n R Time */
+    /**
+     * (004B,xx02) VR=DS VM=1-n R Time
+     */
     public static final int RTime = 0x004B0002;
 
-    /** (004B,xx03) VR=IS VM=1 HBC Number */
+    /**
+     * (004B,xx03) VR=IS VM=1 HBC Number
+     */
     public static final int HBCNumber = 0x004B0003;
 
 }

@@ -55,22 +55,27 @@ public final class Exchange {
      * The transmitter for this exchange, which manages the connection and events.
      */
     final Transmitter transmitter;
+
     /**
      * The call that initiated this exchange.
      */
     final NewCall call;
+
     /**
      * The event listener for this exchange.
      */
     final EventListener eventListener;
+
     /**
      * The finder for this exchange, which locates a connection.
      */
     final ExchangeFinder finder;
+
     /**
      * The codec for this exchange, which handles HTTP-level protocol details.
      */
     final HttpCodec codec;
+
     /**
      * True if the request body need not complete before the response body starts.
      */
@@ -386,10 +391,14 @@ public final class Exchange {
 
     /**
      * A request body that fires events when it completes.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private final class RequestBodySink extends AssignSink {
 
         private boolean completed;
+
         /**
          * The exact number of bytes to be written, or -1L if that is unknown.
          */
@@ -473,10 +482,14 @@ public final class Exchange {
             completed = true;
             return bodyComplete(bytesReceived, false, true, e);
         }
+
     }
 
     /**
      * A response body that fires events when it completes.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     final class ResponseBodySource extends AssignSource {
 
@@ -557,6 +570,7 @@ public final class Exchange {
             completed = true;
             return bodyComplete(bytesReceived, true, false, e);
         }
+
     }
 
 }

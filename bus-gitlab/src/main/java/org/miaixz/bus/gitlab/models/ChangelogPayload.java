@@ -30,6 +30,12 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+/**
+ * The changelog payload class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class ChangelogPayload implements Serializable {
 
     @Serial

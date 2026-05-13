@@ -24,28 +24,58 @@ import java.awt.image.DataBufferByte;
 import java.awt.image.SampleModel;
 
 /**
+ * Represents the SampledSampleModel type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class SampledSampleModel extends SampleModel {
 
+    /**
+     * The subsampling value.
+     */
     private final ColorSubsampling subsampling;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param w           the w.
+     * @param h           the h.
+     * @param subsampling the subsampling.
+     */
     public SampledSampleModel(int w, int h, ColorSubsampling subsampling) {
         super(DataBuffer.TYPE_BYTE, w, h, 3);
         this.subsampling = subsampling;
     }
 
+    /**
+     * Creates the compatible sample model.
+     *
+     * @param w the w.
+     * @param h the h.
+     * @return the operation result.
+     */
     @Override
     public SampleModel createCompatibleSampleModel(int w, int h) {
         return new SampledSampleModel(w, h, subsampling);
     }
 
+    /**
+     * Creates the data buffer.
+     *
+     * @return the operation result.
+     */
     @Override
     public DataBuffer createDataBuffer() {
         return new DataBufferByte(subsampling.frameLength(width, height));
     }
 
+    /**
+     * Creates the subset sample model.
+     *
+     * @param bands the bands.
+     * @return the operation result.
+     */
     @Override
     public SampleModel createSubsetSampleModel(int[] bands) {
         if (bands.length != 3 || bands[0] != 0 || bands[1] != 1 || bands[2] != 2)
@@ -54,6 +84,15 @@ public class SampledSampleModel extends SampleModel {
         return this;
     }
 
+    /**
+     * Gets the data elements.
+     *
+     * @param x      the x.
+     * @param y      the y.
+     * @param object the object.
+     * @param data   the data.
+     * @return the data elements.
+     */
     @Override
     public Object getDataElements(int x, int y, Object object, DataBuffer data) {
         byte[] ret;
@@ -71,31 +110,73 @@ public class SampledSampleModel extends SampleModel {
         return ret;
     }
 
+    /**
+     * Gets the num data elements.
+     *
+     * @return the num data elements.
+     */
     @Override
     public int getNumDataElements() {
         return 3;
     }
 
+    /**
+     * Gets the sample.
+     *
+     * @param x    the x.
+     * @param y    the y.
+     * @param b    the b.
+     * @param data the data.
+     * @return the sample.
+     */
     @Override
     public int getSample(int x, int y, int b, DataBuffer data) {
         return ((byte[]) getDataElements(x, y, null, data))[b];
     }
 
+    /**
+     * Gets the sample size.
+     *
+     * @return the sample size.
+     */
     @Override
     public int[] getSampleSize() {
         return new int[] { 8, 8, 8 };
     }
 
+    /**
+     * Gets the sample size.
+     *
+     * @param band the band.
+     * @return the sample size.
+     */
     @Override
     public int getSampleSize(int band) {
         return 8;
     }
 
+    /**
+     * Sets the data elements.
+     *
+     * @param x      the x.
+     * @param y      the y.
+     * @param object the object.
+     * @param data   the data.
+     */
     @Override
     public void setDataElements(int x, int y, Object object, DataBuffer data) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Sets the sample.
+     *
+     * @param x    the x.
+     * @param y    the y.
+     * @param b    the b.
+     * @param s    the s.
+     * @param data the data.
+     */
     @Override
     public void setSample(int x, int y, int b, int s, DataBuffer data) {
         throw new UnsupportedOperationException();

@@ -53,6 +53,7 @@ public class BigExcelWriter extends ExcelWriter {
      * BigExcelWriter can only be flushed once, so it will not write again after the first call.
      */
     private boolean isFlushed;
+
     /**
      * Auto-splitting sheet sequence.
      */

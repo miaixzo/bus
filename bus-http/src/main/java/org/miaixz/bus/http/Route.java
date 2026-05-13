@@ -38,10 +38,12 @@ public final class Route {
      * The address configuration for the target server.
      */
     final Address address;
+
     /**
      * The proxy used for the connection.
      */
     final Proxy proxy;
+
     /**
      * The target socket address (IP and port).
      */

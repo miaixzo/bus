@@ -361,6 +361,8 @@ public final class PageContext {
      * Functional interface for select operations.
      *
      * @param <T> the type of result expected from the selection
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FunctionalInterface
     public interface PageSelector<T> {
@@ -371,6 +373,7 @@ public final class PageContext {
          * @return the result
          */
         T select();
+
     }
 
 }

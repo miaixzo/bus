@@ -20,14 +20,31 @@
 package org.miaixz.bus.image.metric.net;
 
 /**
+ * Represents the PDVType type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PDVType {
 
+    /**
+     * The data value.
+     */
     public static final int DATA = 0;
+
+    /**
+     * The command value.
+     */
     public static final int COMMAND = 1;
+
+    /**
+     * The pending value.
+     */
     public static final int PENDING = 0;
+
+    /**
+     * The last value.
+     */
     public static final int LAST = 2;
 
 }

@@ -55,38 +55,47 @@ public class Loader {
      * The character that indicates the beginning of a comment line.
      */
     private static final char COMMENT_FLAG_PRE = Symbol.C_HASH;
+
     /**
      * The character used to separate keys from values.
      */
     private char assignFlag = Symbol.C_EQUAL;
+
     /**
      * The character set used to read the settings file.
      */
     private java.nio.charset.Charset charset;
+
     /**
      * Whether to enable variable substitution.
      */
     private boolean isUseVariable;
+
     /**
      * The regular expression for identifying variables.
      */
     private String varRegex = "\\$\\{(.*?)\\}";
+
     /**
      * An editor for modifying values as they are being loaded.
      */
     private ValueEditor valueEditor;
+
     /**
      * A factory for creating the line formatter.
      */
     private Factory formatterFactory;
+
     /**
      * A supplier for the comment formatter.
      */
     private Supplier<ElementFormatter<IniComment>> commentElementFormatterSupplier = CommentFormatter::new;
+
     /**
      * A supplier for the section formatter.
      */
     private Supplier<ElementFormatter<IniSection>> sectionElementFormatterSupplier = SectionFormatter::new;
+
     /**
      * A supplier for the property formatter.
      */
@@ -578,6 +587,9 @@ public class Loader {
     /**
      * A functional interface for editing a property value during the loading process. This can be used for tasks like
      * decrypting encrypted values.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FunctionalInterface
     public interface ValueEditor {
@@ -591,6 +603,7 @@ public class Loader {
          * @return The edited value.
          */
         String edit(String group, String key, String value);
+
     }
 
 }

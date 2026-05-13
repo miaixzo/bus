@@ -167,4 +167,5 @@ public final class LinuxHardwareAbstractionLayer extends AbstractHardwareAbstrac
     public List<Printer> getPrinters() {
         return CupsPrinter.getPrinters();
     }
+
 }

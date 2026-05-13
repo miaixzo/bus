@@ -45,6 +45,7 @@ public class SetFromMap<E> extends AbstractSet<E> implements Serializable {
      * The backing map. The values in this map are always {@link Boolean#TRUE}.
      */
     private final Map<E, Boolean> map;
+
     /**
      * The key set of the backing map, which serves as the actual set implementation.
      */

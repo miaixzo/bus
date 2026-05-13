@@ -785,6 +785,9 @@ public class Headers {
 
     /**
      * Headers Builder.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class Builder {
 
@@ -995,6 +998,7 @@ public class Headers {
         public Headers build() {
             return new Headers(this);
         }
+
     }
 
 }

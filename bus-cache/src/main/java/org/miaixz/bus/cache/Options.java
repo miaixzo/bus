@@ -150,6 +150,9 @@ public class Options {
 
     /**
      * Redis connection and pool settings.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class Redis {
 

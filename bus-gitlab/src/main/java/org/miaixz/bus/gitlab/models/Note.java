@@ -29,12 +29,23 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.io.Serial;
 
+/**
+ * The note class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Note implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 2852265960807L;
 
-    /** Enum to use for ordering the results. */
+    /**
+     * Enum to use for ordering the results.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public static enum OrderBy {
 
         CREATED_AT, UPDATED_AT;
@@ -55,11 +66,18 @@ public class Note implements Serializable {
         public String toString() {
             return (enumHelper.toString(this));
         }
+
     }
 
     // This is not used because the GitLab example JSON is using a funny string for the MERGE_REQUEST notable_type
     // ("Merge request").
     // Once they fix the bug, the notableType field can be changed from String to NotableType.
+    /**
+     * The noteable type enum.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public static enum NoteableType {
 
         COMMIT, EPIC, ISSUE, MERGE_REQUEST, SNIPPET;
@@ -81,8 +99,15 @@ public class Note implements Serializable {
         public String toString() {
             return (enumHelper.toString(this));
         }
+
     }
 
+    /**
+     * The type enum.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public static enum Type {
 
         DISCUSSION_NOTE, DIFF_NOTE;
@@ -103,6 +128,7 @@ public class Note implements Serializable {
         public String toString() {
             return (enumHelper.toString(this));
         }
+
     }
 
     private String attachment;
@@ -128,6 +154,10 @@ public class Note implements Serializable {
     private Participant resolvedBy;
     private Date resolvedAt;
     private Boolean internal;
+
+    /**
+     * The type field.
+     */
     private Type type;
 
     private Position position;

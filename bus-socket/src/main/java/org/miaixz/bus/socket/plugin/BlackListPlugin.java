@@ -84,6 +84,9 @@ public final class BlackListPlugin<T> extends AbstractPlugin<T> {
 
     /**
      * Defines a rule for blacklisting IP addresses.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public interface BlackListRule {
 
@@ -94,6 +97,7 @@ public final class BlackListPlugin<T> extends AbstractPlugin<T> {
          * @return {@code true} if the connection is allowed, {@code false} if it should be rejected
          */
         boolean access(InetSocketAddress address);
+
     }
 
 }

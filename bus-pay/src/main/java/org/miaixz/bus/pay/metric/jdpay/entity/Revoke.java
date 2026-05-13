@@ -44,38 +44,47 @@ public class Revoke extends Voucher {
      * Version number.
      */
     private String version;
+
     /**
      * Merchant number.
      */
     private String merchant;
+
     /**
      * Transaction number.
      */
     private String tradeNum;
+
     /**
      * Original transaction number.
      */
     private String oTradeNum;
+
     /**
      * Transaction amount.
      */
     private String amount;
+
     /**
      * Currency.
      */
     private String currency;
+
     /**
      * Transaction time.
      */
     private String tradeTime;
+
     /**
      * Note.
      */
     private String note;
+
     /**
      * Signature.
      */
     private String sign;
+
     /**
      * Certificate.
      */

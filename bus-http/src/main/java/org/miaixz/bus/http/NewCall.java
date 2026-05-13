@@ -116,6 +116,9 @@ public interface NewCall extends Cloneable {
 
     /**
      * A factory for creating {@link NewCall} instances.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     interface Factory {
 

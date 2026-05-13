@@ -31,6 +31,12 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import org.miaixz.bus.logger.Logger;
 
+/**
+ * The event changes class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public abstract class EventChanges {
 
     private ChangeContainer<Long> authorId;

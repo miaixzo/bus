@@ -40,14 +40,17 @@ public class StringRangeReplacer extends StringReplacer {
      * The inclusive starting index of the character range to be replaced.
      */
     private final int beginInclude;
+
     /**
      * The exclusive ending index of the character range to be replaced.
      */
     private final int endExclude;
+
     /**
      * The string used for replacement within the specified range.
      */
     private final CharSequence replacedStr;
+
     /**
      * Flag indicating whether to treat the input as code points (true) or characters (false).
      */

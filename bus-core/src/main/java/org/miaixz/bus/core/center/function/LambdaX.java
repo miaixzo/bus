@@ -45,30 +45,37 @@ public class LambdaX {
      * An empty array of {@link Type} objects.
      */
     private static final Type[] EMPTY_TYPE = new Type[0];
+
     /**
      * The parameter types of the instantiated method.
      */
     private final Type[] instantiatedMethodParameterTypes;
+
     /**
      * The parameter types of the method or constructor.
      */
     private final Type[] parameterTypes;
+
     /**
      * The return type of the method or constructor.
      */
     private final Type returnType;
+
     /**
      * The name of the method or constructor.
      */
     private final String name;
+
     /**
      * The executable (method or constructor) object.
      */
     private final Executable executable;
+
     /**
      * The class where the method or constructor is declared.
      */
     private final Class<?> clazz;
+
     /**
      * The serialized lambda object.
      */

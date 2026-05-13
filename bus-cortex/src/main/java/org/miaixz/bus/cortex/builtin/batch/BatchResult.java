@@ -47,38 +47,47 @@ public class BatchResult {
      * Total number of processed entries.
      */
     private int total;
+
     /**
      * Number of entries processed successfully.
      */
     private int successCount;
+
     /**
      * Number of entries that failed to process.
      */
     private int failCount;
+
     /**
      * Number of entries inserted.
      */
     private int insertedCount;
+
     /**
      * Number of entries updated.
      */
     private int updatedCount;
+
     /**
      * Number of entries deleted.
      */
     private int deletedCount;
+
     /**
      * Number of entries skipped because no mutation was required.
      */
     private int skippedCount;
+
     /**
      * Total elapsed time in milliseconds.
      */
     private long elapsedMs;
+
     /**
      * Warning messages collected during batch execution.
      */
     private List<String> warnings = new ArrayList<>();
+
     /**
      * Error items for failed entries.
      */
@@ -160,6 +169,9 @@ public class BatchResult {
 
     /**
      * One failed batch entry.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @Setter
@@ -175,22 +187,27 @@ public class BatchResult {
          * Target registry type.
          */
         private Type type;
+
         /**
          * Target namespace.
          */
         private String namespace_id;
+
         /**
          * Entry ID when available.
          */
         private String id;
+
         /**
          * Route method when available.
          */
         private String method;
+
         /**
          * Route version when available.
          */
         private String version;
+
         /**
          * Failure message.
          */

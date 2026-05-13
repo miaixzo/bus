@@ -48,6 +48,7 @@ public class CertificatePinner {
      * The set of configured pins.
      */
     private final Set<Pin> pins;
+
     /**
      * An optional cleaner for the certificate chain.
      */
@@ -205,22 +206,29 @@ public class CertificatePinner {
 
     /**
      * Represents a single certificate pin.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static final class Pin {
 
         private static final String WILDCARD = "*.";
+
         /**
          * A hostname pattern like {@code example.com} or {@code *.example.com}.
          */
         final String pattern;
+
         /**
          * The canonical hostname, extracted from the pattern.
          */
         final String canonicalHostname;
+
         /**
          * The hash algorithm, either {@code sha1/} or {@code sha256/}.
          */
         final String hashAlgorithm;
+
         /**
          * The base64-encoded hash of the certificate's public key.
          */
@@ -274,10 +282,14 @@ public class CertificatePinner {
         public String toString() {
             return hashAlgorithm + hash.base64();
         }
+
     }
 
     /**
      * A builder for creating a {@link CertificatePinner}.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static final class Builder {
 
@@ -310,6 +322,7 @@ public class CertificatePinner {
         public CertificatePinner build() {
             return new CertificatePinner(new LinkedHashSet<>(pins), null);
         }
+
     }
 
 }

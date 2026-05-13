@@ -77,10 +77,12 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
      * The context object containing configuration and other necessary information.
      */
     protected K context;
+
     /**
      * The API address support object.
      */
     protected Complex complex;
+
     /**
      * The cache support object.
      */

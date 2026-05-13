@@ -35,10 +35,12 @@ public class SheetTemplateWriter {
      * The sheet being written to.
      */
     private final Sheet sheet;
+
     /**
      * Excel output configuration.
      */
     private final ExcelWriteConfig config;
+
     /**
      * Template context, storing variables and their position information in the template.
      */

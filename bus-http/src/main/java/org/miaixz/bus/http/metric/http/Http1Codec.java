@@ -56,30 +56,37 @@ public class Http1Codec implements HttpCodec {
      * The initial state. Waiting to write the request headers.
      */
     private static final int STATE_IDLE = 0;
+
     /**
      * The state after writing request headers and before writing the request body.
      */
     private static final int STATE_OPEN_REQUEST_BODY = 1;
+
     /**
      * The state while writing the request body.
      */
     private static final int STATE_WRITING_REQUEST_BODY = 2;
+
     /**
      * The state after writing the request body and before reading response headers.
      */
     private static final int STATE_READ_RESPONSE_HEADERS = 3;
+
     /**
      * The state after reading response headers and before reading the response body.
      */
     private static final int STATE_OPEN_RESPONSE_BODY = 4;
+
     /**
      * The state while reading the response body.
      */
     private static final int STATE_READING_RESPONSE_BODY = 5;
+
     /**
      * The terminal state.
      */
     private static final int STATE_CLOSED = 6;
+
     /**
      * The maximum size of the HTTP header.
      */
@@ -404,6 +411,9 @@ public class Http1Codec implements HttpCodec {
 
     /**
      * An HTTP request body.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private class KnownLengthSink implements Sink {
 
@@ -458,11 +468,15 @@ public class Http1Codec implements HttpCodec {
             detachTimeout(timeout);
             state = STATE_READ_RESPONSE_HEADERS;
         }
+
     }
 
     /**
      * An HTTP body with alternating chunk sizes and chunk bodies. It is the caller's responsibility to buffer chunks;
      * typically by using a buffered sink with this sink.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private class ChunkedSink implements Sink {
 
@@ -528,8 +542,15 @@ public class Http1Codec implements HttpCodec {
             detachTimeout(timeout);
             state = STATE_READ_RESPONSE_HEADERS;
         }
+
     }
 
+    /**
+     * The abstract source class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     private abstract class AbstractSource implements Source {
 
         protected final AssignTimeout timeout = new AssignTimeout(source.timeout());
@@ -578,10 +599,14 @@ public class Http1Codec implements HttpCodec {
 
             state = STATE_CLOSED;
         }
+
     }
 
     /**
      * An HTTP body with a fixed length specified in advance.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private class FixedLengthSource extends AbstractSource {
 
@@ -641,10 +666,14 @@ public class Http1Codec implements HttpCodec {
 
             closed = true;
         }
+
     }
 
     /**
      * An HTTP body with alternating chunk sizes and chunk bodies.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private class ChunkedSource extends AbstractSource {
 
@@ -730,10 +759,14 @@ public class Http1Codec implements HttpCodec {
             }
             closed = true;
         }
+
     }
 
     /**
      * An HTTP message body terminated by the end of the underlying stream.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private class UnknownLengthSource extends AbstractSource {
 
@@ -777,6 +810,7 @@ public class Http1Codec implements HttpCodec {
             }
             closed = true;
         }
+
     }
 
 }

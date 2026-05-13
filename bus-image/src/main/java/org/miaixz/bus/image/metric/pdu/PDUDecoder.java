@@ -45,17 +45,46 @@ import org.miaixz.bus.image.metric.net.PDVType;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the PDUDecoder type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PDUDecoder extends PDVInputStream {
 
+    /**
+     * The unrecognized pdu value.
+     */
     private static final String UNRECOGNIZED_PDU = "{}: unrecognized PDU[type={}, len={}]";
+
+    /**
+     * The invalid pdu length value.
+     */
     private static final String INVALID_PDU_LENGTH = "{}: invalid length of PDU[type={}, len={}]";
+
+    /**
+     * The invalid common extended negotiation value.
+     */
     private static final String INVALID_COMMON_EXTENDED_NEGOTIATION = "{}: invalid Common Extended Negotiation sub-item in PDU[type={}, len={}]";
+
+    /**
+     * The invalid user identity value.
+     */
     private static final String INVALID_USER_IDENTITY = "{}: invalid User Identity sub-item in PDU[type={}, len={}]";
+
+    /**
+     * The invalid pdv value.
+     */
     private static final String INVALID_PDV = "{}: invalid PDV in PDU[type={}, len={}]";
+
+    /**
+     * The unexpected pdv type value.
+     */
     private static final String UNEXPECTED_PDV_TYPE = "{}: unexpected PDV type in PDU[type={}, len={}]";
+
+    /**
+     * The unexpected pdv pcid value.
+     */
     private static final String UNEXPECTED_PDV_PCID = "{}: unexpected pcid in PDV in PDU[type={}, len={}]";
 
     /**
@@ -63,37 +92,104 @@ public class PDUDecoder extends PDVInputStream {
      */
     private static final int MAX_PDU_LEN = 0x1000000;
 
+    /**
+     * The as value.
+     */
     private final Association as;
+
+    /**
+     * The in value.
+     */
     private final InputStream in;
+
+    /**
+     * The th value.
+     */
     private final Thread th;
+
+    /**
+     * The buf value.
+     */
     private byte[] buf = new byte[6 + Connection.DEF_MAX_PDU_LENGTH];
+
+    /**
+     * The pos value.
+     */
     private int pos;
+
+    /**
+     * The pdutype value.
+     */
     private int pdutype;
+
+    /**
+     * The pdulen value.
+     */
     private int pdulen;
+
+    /**
+     * The pcid value.
+     */
     private int pcid = -1;
+
+    /**
+     * The pdvmch value.
+     */
     private int pdvmch;
+
+    /**
+     * The pdvend value.
+     */
     private int pdvend;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param as the as.
+     * @param in the in.
+     */
     public PDUDecoder(Association as, InputStream in) {
         this.as = as;
         this.in = in;
         this.th = Thread.currentThread();
     }
 
+    /**
+     * Executes the remaining operation.
+     *
+     * @return the operation result.
+     */
     private int remaining() {
         return pdulen + 6 - pos;
     }
 
+    /**
+     * Determines whether remaining.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     private boolean hasRemaining() {
         return pos < pdulen + 6;
     }
 
+    /**
+     * Executes the get operation.
+     *
+     * @return the operation result.
+     */
     private int get() {
         if (!hasRemaining())
             throw new IndexOutOfBoundsException();
         return buf[pos++] & 0xFF;
     }
 
+    /**
+     * Executes the get operation.
+     *
+     * @param b   the b.
+     * @param off the off.
+     * @param len the len.
+     */
     private void get(byte[] b, int off, int len) {
         if (len > remaining())
             throw new IndexOutOfBoundsException();
@@ -101,34 +197,65 @@ public class PDUDecoder extends PDVInputStream {
         pos += len;
     }
 
+    /**
+     * Executes the skip operation.
+     *
+     * @param len the len.
+     */
     private void skip(int len) {
         if (len > remaining())
             throw new IndexOutOfBoundsException();
         pos += len;
     }
 
+    /**
+     * Gets the unsigned short.
+     *
+     * @return the unsigned short.
+     */
     private int getUnsignedShort() {
         int val = ByteKit.bytesToUShortBE(buf, pos);
         pos += 2;
         return val;
     }
 
+    /**
+     * Gets the int.
+     *
+     * @return the int.
+     */
     private int getInt() {
         int val = ByteKit.bytesToIntBE(buf, pos);
         pos += 4;
         return val;
     }
 
+    /**
+     * Gets the bytes.
+     *
+     * @param len the len.
+     * @return the bytes.
+     */
     private byte[] getBytes(int len) {
         byte[] bs = new byte[len];
         get(bs, 0, len);
         return bs;
     }
 
+    /**
+     * Executes the decode bytes operation.
+     *
+     * @return the operation result.
+     */
     private byte[] decodeBytes() {
         return getBytes(getUnsignedShort());
     }
 
+    /**
+     * Executes the next pdu operation.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     public void nextPDU() throws IOException {
         checkThread();
         Logger.trace(false, "Image", "PDU wait started: protocol=pdu, association={}", as);
@@ -188,16 +315,30 @@ public class PDUDecoder extends PDVInputStream {
         }
     }
 
+    /**
+     * Executes the check thread operation.
+     */
     private void checkThread() {
         if (th != Thread.currentThread())
             throw new IllegalStateException("Entered by wrong thread");
     }
 
+    /**
+     * Executes the check pdu length operation.
+     *
+     * @param len the len.
+     * @throws AAbort if the operation cannot be completed.
+     */
     private void checkPDULength(int len) throws AAbort {
         if (pdulen != len)
             abort(AAbort.INVALID_PDU_PARAMETER_VALUE, INVALID_PDU_LENGTH);
     }
 
+    /**
+     * Reads the pdu.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     private void readPDU() throws IOException {
         if (pdulen < 4 || pdulen > MAX_PDU_LEN)
             abort(AAbort.INVALID_PDU_PARAMETER_VALUE, INVALID_PDU_LENGTH);
@@ -208,6 +349,13 @@ public class PDUDecoder extends PDVInputStream {
         readFully(10, pdulen - 4);
     }
 
+    /**
+     * Reads the fully.
+     *
+     * @param off the off.
+     * @param len the len.
+     * @throws IOException if the operation cannot be completed.
+     */
     private void readFully(int off, int len) throws IOException {
         try {
             StreamKit.readFully(in, buf, off, len);
@@ -227,6 +375,13 @@ public class PDUDecoder extends PDVInputStream {
         }
     }
 
+    /**
+     * Executes the abort operation.
+     *
+     * @param reason the reason.
+     * @param logmsg the logmsg.
+     * @throws AAbort if the operation cannot be completed.
+     */
     private void abort(int reason, String logmsg) throws AAbort {
         Logger.warn(
                 false,
@@ -240,6 +395,12 @@ public class PDUDecoder extends PDVInputStream {
         throw new AAbort(AAbort.UL_SERIVE_PROVIDER, reason);
     }
 
+    /**
+     * Gets the string.
+     *
+     * @param len the len.
+     * @return the string.
+     */
     private String getString(int len) {
         if (pos + len > pdulen + 6)
             throw new IndexOutOfBoundsException();
@@ -254,10 +415,22 @@ public class PDUDecoder extends PDVInputStream {
         return s;
     }
 
+    /**
+     * Executes the decode string operation.
+     *
+     * @return the operation result.
+     */
     private String decodeString() {
         return getString(getUnsignedShort());
     }
 
+    /**
+     * Executes the decode operation.
+     *
+     * @param rqac the rqac.
+     * @return the operation result.
+     * @throws AAbort if the operation cannot be completed.
+     */
     private AAssociateRQAC decode(AAssociateRQAC rqac) throws AAbort {
         try {
             rqac.setImplVersionName(null);
@@ -276,6 +449,12 @@ public class PDUDecoder extends PDVInputStream {
         return rqac;
     }
 
+    /**
+     * Executes the decode item operation.
+     *
+     * @param rqac the rqac.
+     * @throws AAbort if the operation cannot be completed.
+     */
     private void decodeItem(AAssociateRQAC rqac) throws AAbort {
         int itemType = get();
         get(); // skip reserved byte
@@ -299,6 +478,12 @@ public class PDUDecoder extends PDVInputStream {
         }
     }
 
+    /**
+     * Executes the decode pc operation.
+     *
+     * @param itemLen the item len.
+     * @return the operation result.
+     */
     private PresentationContext decodePC(int itemLen) {
         int pcid = get();
         get(); // skip reserved byte
@@ -327,15 +512,28 @@ public class PDUDecoder extends PDVInputStream {
         return new PresentationContext(pcid, result, as, tss.toArray(new String[tss.size()]));
     }
 
+    /**
+     * Executes the decode user info operation.
+     *
+     * @param itemLength the item length.
+     * @param rqac       the rqac.
+     * @throws AAbort if the operation cannot be completed.
+     */
     private void decodeUserInfo(int itemLength, AAssociateRQAC rqac) throws AAbort {
         int endpos = pos + itemLength;
         while (pos < endpos)
             decodeUserInfoSubItem(rqac);
     }
 
+    /**
+     * Executes the decode user info sub item operation.
+     *
+     * @param rqac the rqac.
+     * @throws AAbort if the operation cannot be completed.
+     */
     private void decodeUserInfoSubItem(AAssociateRQAC rqac) throws AAbort {
         int itemType = get();
-        get(); // 跳过保留字节
+        get(); // DICOM
         int itemLen = getUnsignedShort();
         switch (itemType) {
             case ItemType.MAX_PDU_LENGTH:
@@ -380,6 +578,12 @@ public class PDUDecoder extends PDVInputStream {
         }
     }
 
+    /**
+     * Executes the decode role selection operation.
+     *
+     * @param itemLen the item len.
+     * @return the operation result.
+     */
     private RoleSelection decodeRoleSelection(int itemLen) {
         String cuid = decodeString();
         boolean scu = get() != 0;
@@ -387,6 +591,12 @@ public class PDUDecoder extends PDVInputStream {
         return new RoleSelection(cuid, scu, scp);
     }
 
+    /**
+     * Executes the decode ext neg operation.
+     *
+     * @param itemLen the item len.
+     * @return the operation result.
+     */
     private ExtendedNegotiation decodeExtNeg(int itemLen) {
         int uidLength = getUnsignedShort();
         String cuid = getString(uidLength);
@@ -394,6 +604,13 @@ public class PDUDecoder extends PDVInputStream {
         return new ExtendedNegotiation(cuid, info);
     }
 
+    /**
+     * Executes the decode common ext neg operation.
+     *
+     * @param itemLen the item len.
+     * @return the operation result.
+     * @throws AAbort if the operation cannot be completed.
+     */
     private CommonExtended decodeCommonExtNeg(int itemLen) throws AAbort {
         int endPos = pos + itemLen;
         String sopCUID = getString(getUnsignedShort());
@@ -409,6 +626,13 @@ public class PDUDecoder extends PDVInputStream {
         return new CommonExtended(sopCUID, serviceCUID, relSopCUIDs.toArray(new String[relSopCUIDs.size()]));
     }
 
+    /**
+     * Executes the decode user identity rq operation.
+     *
+     * @param itemLen the item len.
+     * @return the operation result.
+     * @throws AAbort if the operation cannot be completed.
+     */
     private IdentityRQ decodeUserIdentityRQ(int itemLen) throws AAbort {
         int endPos = pos + itemLen;
         int type = get() & 0xff;
@@ -420,6 +644,13 @@ public class PDUDecoder extends PDVInputStream {
         return new IdentityRQ(type, rspReq, primaryField, secondaryField);
     }
 
+    /**
+     * Executes the decode user identity ac operation.
+     *
+     * @param itemLen the item len.
+     * @return the operation result.
+     * @throws AAbort if the operation cannot be completed.
+     */
     private IdentityAC decodeUserIdentityAC(int itemLen) throws AAbort {
         int endPos = pos + itemLen;
         byte[] serverResponse = decodeBytes();
@@ -428,6 +659,11 @@ public class PDUDecoder extends PDVInputStream {
         return new IdentityAC(serverResponse);
     }
 
+    /**
+     * Executes the decode dimse operation.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     public void decodeDIMSE() throws IOException {
         checkThread();
         if (pcid != -1)
@@ -524,6 +760,13 @@ public class PDUDecoder extends PDVInputStream {
         pcid = -1;
     }
 
+    /**
+     * Executes the dimse of operation.
+     *
+     * @param cmd the cmd.
+     * @return the operation result.
+     * @throws AAbort if the operation cannot be completed.
+     */
     private Dimse dimseOf(Attributes cmd) throws AAbort {
         try {
             return Dimse.valueOf(cmd.getInt(Tag.CommandField, 0));
@@ -538,6 +781,12 @@ public class PDUDecoder extends PDVInputStream {
         }
     }
 
+    /**
+     * Reads the command.
+     *
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     private Attributes readCommand() throws IOException {
         ImageInputStream in = new ImageInputStream(this, UID.ImplicitVRLittleEndian.uid);
         try {
@@ -547,6 +796,13 @@ public class PDUDecoder extends PDVInputStream {
         }
     }
 
+    /**
+     * Reads the dataset.
+     *
+     * @param tsuid the tsuid.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public Attributes readDataset(String tsuid) throws IOException {
         ImageInputStream in = new ImageInputStream(this, tsuid);
@@ -557,6 +813,13 @@ public class PDUDecoder extends PDVInputStream {
         }
     }
 
+    /**
+     * Executes the next pdv operation.
+     *
+     * @param expectedPDVType the expected pdv type.
+     * @param expectedPCID    the expected pcid.
+     * @throws IOException if the operation cannot be completed.
+     */
     private void nextPDV(int expectedPDVType, int expectedPCID) throws IOException {
         if (!hasRemaining()) {
             nextPDU();
@@ -592,6 +855,12 @@ public class PDUDecoder extends PDVInputStream {
             abort(AAbort.UNEXPECTED_PDU_PARAMETER, UNEXPECTED_PDV_PCID);
     }
 
+    /**
+     * Determines whether last pdv.
+     *
+     * @return true if the condition is met; otherwise false.
+     * @throws IOException if the operation cannot be completed.
+     */
     private boolean isLastPDV() throws IOException {
         while (pos == pdvend) {
             if ((pdvmch & PDVType.LAST) != 0)
@@ -601,10 +870,21 @@ public class PDUDecoder extends PDVInputStream {
         return false;
     }
 
+    /**
+     * Determines whether pending pdv.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean isPendingPDV() {
         return pcid != -1 && (pdvmch & PDVType.LAST) == 0;
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int read() throws IOException {
         if (th != Thread.currentThread())
@@ -615,6 +895,15 @@ public class PDUDecoder extends PDVInputStream {
         return get();
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @param b   the b.
+     * @param off the off.
+     * @param len the len.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
         if (th != Thread.currentThread())
@@ -627,11 +916,23 @@ public class PDUDecoder extends PDVInputStream {
         return read;
     }
 
+    /**
+     * Executes the available operation.
+     *
+     * @return the operation result.
+     */
     @Override
     public final int available() {
         return pdvend - pos;
     }
 
+    /**
+     * Executes the skip operation.
+     *
+     * @param n the n.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public long skip(long n) throws IOException {
         if (th != Thread.currentThread())
@@ -644,6 +945,11 @@ public class PDUDecoder extends PDVInputStream {
         return skipped;
     }
 
+    /**
+     * Executes the close operation.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void close() throws IOException {
         if (th != Thread.currentThread())
@@ -651,6 +957,12 @@ public class PDUDecoder extends PDVInputStream {
         skipAll();
     }
 
+    /**
+     * Executes the skip all operation.
+     *
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public long skipAll() throws IOException {
         if (th != Thread.currentThread())
@@ -663,6 +975,13 @@ public class PDUDecoder extends PDVInputStream {
         return n;
     }
 
+    /**
+     * Copies the to.
+     *
+     * @param out    the out.
+     * @param length the length.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void copyTo(OutputStream out, int length) throws IOException {
         if (th != Thread.currentThread())
@@ -678,6 +997,12 @@ public class PDUDecoder extends PDVInputStream {
         }
     }
 
+    /**
+     * Copies the to.
+     *
+     * @param out the out.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void copyTo(OutputStream out) throws IOException {
         if (th != Thread.currentThread())

@@ -92,6 +92,7 @@ public enum Type {
      * Human-readable description used only for display and diagnostics.
      */
     private final String desc;
+
     /**
      * Domain classification for boundary-sensitive type filtering.
      */
@@ -368,6 +369,9 @@ public enum Type {
 
     /**
      * Internal type-domain classifier used to keep registry, setting and version boundaries explicit.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private enum Domain {
         /**
@@ -382,6 +386,7 @@ public enum Type {
          * Version release domain.
          */
         VERSION
+
     }
 
 }

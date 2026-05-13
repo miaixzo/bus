@@ -22,7 +22,7 @@ package org.miaixz.bus.image.galaxy;
 /**
  * A listener interface for cancellation events. Implementations of this interface can be notified when a cancellation
  * request is made, allowing them to perform necessary cleanup or stop ongoing operations.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */

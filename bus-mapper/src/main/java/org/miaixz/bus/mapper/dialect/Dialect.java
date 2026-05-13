@@ -105,6 +105,9 @@ public interface Dialect {
      * Each constant represents a stable SQL shape that providers can switch on when building UPSERT statements for a
      * specific database family.
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     enum Type {
 

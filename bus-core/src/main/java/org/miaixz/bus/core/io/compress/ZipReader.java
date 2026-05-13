@@ -48,10 +48,12 @@ public class ZipReader implements Closeable {
      * Default maximum size difference for ZipBomb check.
      */
     private static final int DEFAULT_MAX_SIZE_DIFF = 100;
+
     /**
      * The Zip resource to be read.
      */
     private final ZipResource resource;
+
     /**
      * The maximum size difference multiplier for ZipBomb check. A value of -1 indicates no ZipBomb check.
      */

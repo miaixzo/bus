@@ -36,14 +36,25 @@ import org.miaixz.bus.image.galaxy.data.VR;
 import org.w3c.dom.Node;
 
 /**
+ * Represents the BufferedImages type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class BufferedImages {
 
+    /**
+     * Creates a new instance.
+     */
     private BufferedImages() {
     }
 
+    /**
+     * Executes the convert to int rgb operation.
+     *
+     * @param bi the bi.
+     * @return the operation result.
+     */
     public static BufferedImage convertToIntRGB(BufferedImage bi) {
         ColorModel cm = bi.getColorModel();
         if (cm instanceof DirectColorModel)
@@ -66,6 +77,13 @@ public class BufferedImages {
         return intRGB;
     }
 
+    /**
+     * Executes the convert yb rto rgb operation.
+     *
+     * @param src the src.
+     * @param dst the dst.
+     * @return the operation result.
+     */
     public static BufferedImage convertYBRtoRGB(BufferedImage src, BufferedImage dst) {
         if (src.getColorModel().getTransferType() != DataBuffer.TYPE_BYTE) {
             throw new UnsupportedOperationException("Cannot convert color model to RGB: unsupported transferType"
@@ -108,6 +126,13 @@ public class BufferedImages {
         return dst;
     }
 
+    /**
+     * Executes the convert paletteto rgb operation.
+     *
+     * @param src the src.
+     * @param dst the dst.
+     * @return the operation result.
+     */
     public static BufferedImage convertPalettetoRGB(BufferedImage src, BufferedImage dst) {
         ColorModel pcm = src.getColorModel();
         if (!(pcm instanceof PaletteColorModel || pcm instanceof IndexColorModel)) {
@@ -139,6 +164,13 @@ public class BufferedImages {
         return dst;
     }
 
+    /**
+     * Executes the convert shorts to bytes operation.
+     *
+     * @param src the src.
+     * @param dst the dst.
+     * @return the operation result.
+     */
     public static BufferedImage convertShortsToBytes(BufferedImage src, BufferedImage dst) {
         if (dst == null) {
             dst = new BufferedImage(src.getWidth(), src.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
@@ -161,10 +193,24 @@ public class BufferedImages {
         return dst;
     }
 
+    /**
+     * Executes the replace color model operation.
+     *
+     * @param bi         the bi.
+     * @param colorModel the color model.
+     * @return the operation result.
+     */
     public static BufferedImage replaceColorModel(BufferedImage bi, ColorModel colorModel) {
         return new BufferedImage(colorModel, bi.getRaster(), false, null);
     }
 
+    /**
+     * Executes the convert color operation.
+     *
+     * @param bi         the bi.
+     * @param colorModel the color model.
+     * @return the operation result.
+     */
     public static BufferedImage convertColor(BufferedImage bi, ColorModel colorModel) {
         BufferedImage dest = new BufferedImage(colorModel, Raster
                 .createWritableRaster(colorModel.createCompatibleSampleModel(bi.getWidth(), bi.getHeight()), null),
@@ -250,6 +296,14 @@ public class BufferedImages {
         return attrs;
     }
 
+    /**
+     * Executes the merge frame operation.
+     *
+     * @param graphics the graphics.
+     * @param src      the src.
+     * @param metadata the metadata.
+     * @throws IIOInvalidTreeException if the operation cannot be completed.
+     */
     private static void mergeFrame(Graphics graphics, BufferedImage src, Node metadata) throws IIOInvalidTreeException {
         Node imageDescriptor = getChildNode(metadata, "ImageDescriptor");
         graphics.drawImage(
@@ -259,14 +313,35 @@ public class BufferedImages {
                 null);
     }
 
+    /**
+     * Gets the metadata.
+     *
+     * @param iioImage the iio image.
+     * @return the metadata.
+     */
     private static Node getMetadata(IIOImage iioImage) {
         return iioImage.getMetadata().getAsTree("javax_imageio_gif_image_1.0");
     }
 
+    /**
+     * Gets the delay time.
+     *
+     * @param node the node.
+     * @return the delay time.
+     * @throws IIOInvalidTreeException if the operation cannot be completed.
+     */
     private static String getDelayTime(Node node) throws IIOInvalidTreeException {
         return getStringAttribute(getChildNode(node, "GraphicControlExtension"), "delayTime");
     }
 
+    /**
+     * Gets the string attribute.
+     *
+     * @param node the node.
+     * @param name the name.
+     * @return the string attribute.
+     * @throws IIOInvalidTreeException if the operation cannot be completed.
+     */
     private static String getStringAttribute(Node node, String name) throws IIOInvalidTreeException {
         Node attr = node.getAttributes().getNamedItem(name);
         if (attr == null) {
@@ -275,6 +350,14 @@ public class BufferedImages {
         return attr.getNodeValue();
     }
 
+    /**
+     * Gets the int attribute.
+     *
+     * @param node the node.
+     * @param name the name.
+     * @return the int attribute.
+     * @throws IIOInvalidTreeException if the operation cannot be completed.
+     */
     private static int getIntAttribute(Node node, String name) throws IIOInvalidTreeException {
         try {
             return Integer.parseInt(getStringAttribute(node, name));
@@ -283,6 +366,14 @@ public class BufferedImages {
         }
     }
 
+    /**
+     * Gets the child node.
+     *
+     * @param root the root.
+     * @param name the name.
+     * @return the child node.
+     * @throws IIOInvalidTreeException if the operation cannot be completed.
+     */
     private static Node getChildNode(Node root, String name) throws IIOInvalidTreeException {
         Node child = root.getFirstChild();
         while (child != null) {
@@ -294,6 +385,12 @@ public class BufferedImages {
         throw new IIOInvalidTreeException("Required child " + name + " not present!", root);
     }
 
+    /**
+     * Converts this value to pixeldata.
+     *
+     * @param frames the frames.
+     * @return the operation result.
+     */
     private static byte[] toPixeldata(List<byte[]> frames) {
         byte[] pixeldata = new byte[frames.get(0).length * frames.size()];
         int pos = 0;
@@ -304,6 +401,12 @@ public class BufferedImages {
         return pixeldata;
     }
 
+    /**
+     * Sets the frame time vector.
+     *
+     * @param attrs      the attrs.
+     * @param delayTimes the delay times.
+     */
     private static void setFrameTimeVector(Attributes attrs, List<String> delayTimes) {
         String delayTime0 = delayTimes.get(0);
         for (int i = 1; i < delayTimes.size(); i++) {
@@ -316,6 +419,12 @@ public class BufferedImages {
         attrs.setInt(Tag.FrameIncrementPointer, VR.AT, Tag.FrameTimeVector);
     }
 
+    /**
+     * Converts this value to frame times.
+     *
+     * @param delayTimes the delay times.
+     * @return the operation result.
+     */
     private static String[] toFrameTimes(List<String> delayTimes) {
         String[] frameTimes = new String[delayTimes.size()];
         for (int i = 0; i < frameTimes.length; i++) {
@@ -324,10 +433,22 @@ public class BufferedImages {
         return frameTimes;
     }
 
+    /**
+     * Converts this value to frame time.
+     *
+     * @param delayTime the delay time.
+     * @return the operation result.
+     */
     private static String toFrameTime(String delayTime) {
         return "0".equals(delayTime) ? "0" : (delayTime + "0");
     }
 
+    /**
+     * Returns the string representation.
+     *
+     * @param cs the cs.
+     * @return the string representation.
+     */
     private static String toString(ColorSpace cs) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0, n = cs.getNumComponents(); i < n; i++) {
@@ -336,6 +457,12 @@ public class BufferedImages {
         return sb.append(']').toString();
     }
 
+    /**
+     * Converts this value to monochrome2 pixel data.
+     *
+     * @param raster the raster.
+     * @return the operation result.
+     */
     private static byte[] toMonochrome2PixelData(Raster raster) {
         ComponentSampleModel csb = getComponentSampleModel(raster);
         int pixelStride = csb.getPixelStride();
@@ -353,12 +480,25 @@ public class BufferedImages {
         return dest;
     }
 
+    /**
+     * Converts this value to rgb pixel data.
+     *
+     * @param raster the raster.
+     * @return the operation result.
+     */
     private static byte[] toRGBPixelData(Raster raster) {
         byte[] dest = new byte[raster.getHeight() * raster.getWidth() * 3];
         copyRGBPixelDataTo(raster, dest, 0);
         return dest;
     }
 
+    /**
+     * Copies the rgb pixel data to.
+     *
+     * @param raster the raster.
+     * @param dest   the dest.
+     * @param offset the offset.
+     */
     private static void copyRGBPixelDataTo(Raster raster, byte[] dest, int offset) {
         ComponentSampleModel csb = getComponentSampleModel(raster);
         int pixelStride = csb.getPixelStride();
@@ -378,6 +518,12 @@ public class BufferedImages {
         }
     }
 
+    /**
+     * Gets the data.
+     *
+     * @param raster the raster.
+     * @return the data.
+     */
     private static byte[] getData(Raster raster) {
         DataBuffer dataBuffer = raster.getDataBuffer();
         if (!(dataBuffer instanceof DataBufferByte) || dataBuffer.getNumBanks() > 1) {
@@ -386,6 +532,12 @@ public class BufferedImages {
         return ((DataBufferByte) dataBuffer).getData();
     }
 
+    /**
+     * Gets the component sample model.
+     *
+     * @param raster the raster.
+     * @return the component sample model.
+     */
     private static ComponentSampleModel getComponentSampleModel(Raster raster) {
         SampleModel sb = raster.getSampleModel();
         if (!(sb instanceof ComponentSampleModel)) {
@@ -394,6 +546,17 @@ public class BufferedImages {
         return (ComponentSampleModel) sb;
     }
 
+    /**
+     * Converts this value to image pixel module.
+     *
+     * @param samples   the samples.
+     * @param pmi       the pmi.
+     * @param rows      the rows.
+     * @param columns   the columns.
+     * @param pixelData the pixel data.
+     * @param attrs     the attrs.
+     * @return the operation result.
+     */
     private static Attributes toImagePixelModule(
             int samples,
             String pmi,

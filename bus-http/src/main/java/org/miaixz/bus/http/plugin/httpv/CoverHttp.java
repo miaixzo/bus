@@ -63,90 +63,112 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      * The core HTTP client instance.
      */
     public Httpv httpv;
+
     /**
      * If true, exceptions will not be thrown but will be available in the result object.
      */
     public boolean nothrow;
+
     /**
      * If true, the next callback will be executed on an I/O thread.
      */
     public boolean nextOnIO = false;
+
     /**
      * If true, all preprocessors (both serial and parallel) will be skipped for this request.
      */
     public boolean skipPreproc = false;
+
     /**
      * If true, serial preprocessors will be skipped for this request.
      */
     public boolean skipSerialPreproc = false;
+
     /**
      * The URL path for the request.
      */
     private String urlPath;
+
     /**
      * A tag for identifying or canceling the request.
      */
     private String tag;
+
     /**
      * A map of request headers.
      */
     private Map<String, String> headers;
+
     /**
      * A map of parameters to be substituted in the URL path (e.g., /users/{id}).
      */
     private Map<String, String> pathParams;
+
     /**
      * A map of parameters to be appended to the URL query string.
      */
     private Map<String, String> urlParams;
+
     /**
      * A map of parameters to be included in the request body.
      */
     private Map<String, String> bodyParams;
+
     /**
      * A map of file parameters for multipart requests.
      */
     private Map<String, FilePara> files;
+
     /**
      * The request body object, to be serialized by a message converter.
      */
     private Object requestBody;
+
     /**
      * A specific date format to be used during serialization.
      */
     private String dateFormat;
+
     /**
      * The type of the request body (e.g., "json", "xml", "form").
      */
     private String bodyType;
+
     /**
      * A callback for tracking request body upload progress.
      */
     private Callback<Progress> onProcess;
+
     /**
      * If true, the progress callback will be executed on an I/O thread.
      */
     private boolean processOnIO;
+
     /**
      * The progress callback will be triggered every `stepBytes` bytes.
      */
     private long stepBytes = 0;
+
     /**
      * The progress callback will be triggered at percentage increments defined by this rate.
      */
     private double stepRate = -1;
+
     /**
      * An arbitrary object that can be attached to this request.
      */
     private Object object;
+
     /**
      * The task associated with the tag, used for cancellation.
      */
     private Httpv.TagTask tagTask;
+
     /**
      * The object responsible for canceling this request.
      */
     private Cancelable canceler;
+
     /**
      * The character set for this request.
      */
@@ -967,6 +989,9 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
     /**
      * A container for file parameters used in multipart requests.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static class FilePara {
 
@@ -974,14 +999,17 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
          * The file type or extension.
          */
         String type;
+
         /**
          * The name of the file.
          */
         String fileName;
+
         /**
          * The file content as a byte array.
          */
         byte[] content;
+
         /**
          * The file object.
          */
@@ -1140,6 +1168,9 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
         /**
          * A cancelable wrapper for a synchronous Httpd Call.
+         *
+         * @author Kimi Liu
+         * @since Java 21+
          */
         static class SyncHttpCall implements Cancelable {
 
@@ -1147,10 +1178,12 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
              * The underlying Httpd call.
              */
             NewCall call;
+
             /**
              * Flag indicating if the call has completed.
              */
             boolean done = false;
+
             /**
              * Flag indicating if the call has been canceled.
              */
@@ -1189,22 +1222,27 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
          * Callback for successful response.
          */
         private Callback<CoverResult> onResponse;
+
         /**
          * Callback for exceptions.
          */
         private Callback<IOException> onException;
+
         /**
          * Callback for completion (success, failure, or cancellation).
          */
         private Callback<CoverResult.State> onComplete;
+
         /**
          * Flag to execute onResponse on an I/O thread.
          */
         private boolean rOnIO;
+
         /**
          * Flag to execute onException on an I/O thread.
          */
         private boolean eOnIO;
+
         /**
          * Flag to execute onComplete on an I/O thread.
          */
@@ -1395,6 +1433,9 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
         /**
          * A preliminary implementation of GiveCall used before the actual Httpd call is created.
+         *
+         * @author Kimi Liu
+         * @since Java 21+
          */
         class PreGiveCall implements GiveCall {
 
@@ -1402,10 +1443,12 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
              * The actual GiveCall implementation.
              */
             GiveCall call;
+
             /**
              * Flag indicating if the call has been canceled.
              */
             boolean canceled = false;
+
             /**
              * Latch to wait for the actual call to be set.
              */
@@ -1457,6 +1500,9 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
         /**
          * The standard implementation of GiveCall, wrapping an Httpd NewCall.
+         *
+         * @author Kimi Liu
+         * @since Java 21+
          */
         class OkGiveCall implements GiveCall {
 
@@ -1464,10 +1510,12 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
              * The underlying Httpd call.
              */
             NewCall call;
+
             /**
              * The result of the call.
              */
             CoverResult result;
+
             /**
              * Latch to wait for the result.
              */

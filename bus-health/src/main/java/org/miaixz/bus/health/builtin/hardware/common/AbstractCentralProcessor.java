@@ -50,20 +50,24 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
      */
     private final Supplier<long[]> currentFreq = Memoizer
             .memoize(this::queryCurrentFreq, Memoizer.defaultExpiration() / 2L);
+
     /**
      * The contextSwitches value.
      */
     private final Supplier<Long> contextSwitches = Memoizer
             .memoize(this::queryContextSwitches, Memoizer.defaultExpiration());
+
     /**
      * The interrupts value.
      */
     private final Supplier<Long> interrupts = Memoizer.memoize(this::queryInterrupts, Memoizer.defaultExpiration());
+
     /**
      * The systemCpuLoadTicks value.
      */
     private final Supplier<long[]> systemCpuLoadTicks = Memoizer
             .memoize(this::querySystemCpuLoadTicks, Memoizer.defaultExpiration());
+
     /**
      * The processorCpuLoadTicks value.
      */
@@ -74,14 +78,17 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
      * The physicalPackageCount value.
      */
     private final int physicalPackageCount;
+
     /**
      * The physicalProcessorCount value.
      */
     private final int physicalProcessorCount;
+
     /**
      * The logicalProcessorCount value.
      */
     private final int logicalProcessorCount;
+
     /**
      * The maxFreq value.
      */
@@ -91,14 +98,17 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
      * The logicalProcessors value.
      */
     private final List<LogicalProcessor> logicalProcessors;
+
     /**
      * The physicalProcessors value.
      */
     private final List<PhysicalProcessor> physicalProcessors;
+
     /**
      * The processorCaches value.
      */
     private final List<ProcessorCache> processorCaches;
+
     /**
      * The featureFlags value.
      */

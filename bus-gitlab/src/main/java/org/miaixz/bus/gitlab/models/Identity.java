@@ -24,6 +24,12 @@ import java.io.Serializable;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import java.io.Serial;
 
+/**
+ * The identity class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Identity implements Serializable {
 
     @Serial

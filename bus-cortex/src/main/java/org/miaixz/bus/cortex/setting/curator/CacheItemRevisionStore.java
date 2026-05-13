@@ -48,6 +48,7 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
      * Shared cache that stores serialized {@code setting.item.revision} snapshots.
      */
     private final CacheX<String, Object> cacheX;
+
     /**
      * Setting-domain key strategy.
      */

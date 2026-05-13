@@ -31,7 +31,7 @@ import org.miaixz.bus.notify.magic.Notice;
  * Notifier interface for sending various types of notifications, such as SMS, email, voice, WeChat, etc.
  *
  * @param <T> the type of notice used for the notification, extending {@link Notice}
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 21+
  */
 public interface Provider<T extends Notice> extends org.miaixz.bus.core.Provider {

@@ -23,18 +23,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Represents the ItemPointerVisitor type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public abstract class ItemPointerVisitor implements SequenceVisitor {
 
+    /**
+     * The item pointers value.
+     */
     protected final List<ItemPointer> itemPointers = new ArrayList<>(4);
 
+    /**
+     * Executes the start item operation.
+     *
+     * @param sqTag     the sq tag.
+     * @param itemIndex the item index.
+     */
     @Override
     public void startItem(int sqTag, int itemIndex) {
         itemPointers.add(new ItemPointer(sqTag, itemIndex));
     }
 
+    /**
+     * Executes the end item operation.
+     */
     @Override
     public void endItem() {
         itemPointers.remove(itemPointers.size() - 1);

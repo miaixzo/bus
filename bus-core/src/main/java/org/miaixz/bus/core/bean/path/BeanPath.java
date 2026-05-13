@@ -50,10 +50,12 @@ public class BeanPath<T> implements Iterator<BeanPath<T>> {
      * The current node (part) of the expression.
      */
     private final Node node;
+
     /**
      * The remaining part of the expression (the child path).
      */
     private final String child;
+
     /**
      * The factory for creating, getting, and setting bean values.
      */

@@ -44,15 +44,33 @@ import org.opencv.imgcodecs.Imgcodecs;
  */
 public class NativeJXLImageWriter extends ImageWriter {
 
+    /**
+     * Creates a new instance.
+     *
+     * @param originatingProvider the originating provider.
+     */
     NativeJXLImageWriter(ImageWriterSpi originatingProvider) {
         super(originatingProvider);
     }
 
+    /**
+     * Gets the default write param.
+     *
+     * @return the default write param.
+     */
     @Override
     public ImageWriteParam getDefaultWriteParam() {
         return new JXLImageWriteParam(getLocale());
     }
 
+    /**
+     * Executes the write operation.
+     *
+     * @param streamMetadata the stream metadata.
+     * @param image          the image.
+     * @param param          the param.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void write(IIOMetadata streamMetadata, IIOImage image, ImageWriteParam param) throws IOException {
         if (output == null)
@@ -122,21 +140,49 @@ public class NativeJXLImageWriter extends ImageWriter {
         }
     }
 
+    /**
+     * Gets the default stream metadata.
+     *
+     * @param param the param.
+     * @return the default stream metadata.
+     */
     @Override
     public IIOMetadata getDefaultStreamMetadata(ImageWriteParam param) {
         return null;
     }
 
+    /**
+     * Gets the default image metadata.
+     *
+     * @param imageType the image type.
+     * @param param     the param.
+     * @return the default image metadata.
+     */
     @Override
     public IIOMetadata getDefaultImageMetadata(ImageTypeSpecifier imageType, ImageWriteParam param) {
         return null;
     }
 
+    /**
+     * Executes the convert stream metadata operation.
+     *
+     * @param inData the in data.
+     * @param param  the param.
+     * @return the operation result.
+     */
     @Override
     public IIOMetadata convertStreamMetadata(IIOMetadata inData, ImageWriteParam param) {
         return null;
     }
 
+    /**
+     * Executes the convert image metadata operation.
+     *
+     * @param inData    the in data.
+     * @param imageType the image type.
+     * @param param     the param.
+     * @return the operation result.
+     */
     @Override
     public IIOMetadata convertImageMetadata(IIOMetadata inData, ImageTypeSpecifier imageType, ImageWriteParam param) {
         return null;

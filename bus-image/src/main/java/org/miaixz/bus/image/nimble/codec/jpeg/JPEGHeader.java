@@ -26,14 +26,29 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.VR;
 
 /**
+ * Represents the JPEGHeader type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class JPEGHeader {
 
+    /**
+     * The data value.
+     */
     private final byte[] data;
+
+    /**
+     * The offsets value.
+     */
     private final int[] offsets;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param data       the data.
+     * @param lastMarker the last marker.
+     */
     public JPEGHeader(byte[] data, int lastMarker) {
         int n = 0;
         for (int offset = 0; (offset = nextMarker(data, offset)) != -1;) {
@@ -56,6 +71,13 @@ public class JPEGHeader {
         }
     }
 
+    /**
+     * Executes the next marker operation.
+     *
+     * @param data the data.
+     * @param from the from.
+     * @return the operation result.
+     */
     private static int nextMarker(byte[] data, int from) {
         for (int i = from + 1; i < data.length; i++) {
             if (data[i - 1] == -1 && data[i] != -1 && data[i] != 0) {
@@ -65,6 +87,12 @@ public class JPEGHeader {
         return -1;
     }
 
+    /**
+     * Executes the offset of operation.
+     *
+     * @param marker the marker.
+     * @return the operation result.
+     */
     public int offsetOf(int marker) {
         for (int i = 0; i < offsets.length; i++) {
             if (marker(i) == marker)
@@ -73,6 +101,11 @@ public class JPEGHeader {
         return -1;
     }
 
+    /**
+     * Executes the offset sof operation.
+     *
+     * @return the operation result.
+     */
     public int offsetSOF() {
         for (int i = 0; i < offsets.length; i++) {
             if (JPEG.isSOF(marker(i)))
@@ -81,6 +114,11 @@ public class JPEGHeader {
         return -1;
     }
 
+    /**
+     * Executes the offset after app operation.
+     *
+     * @return the operation result.
+     */
     public int offsetAfterAPP() {
         for (int i = 1; i < offsets.length; i++) {
             if (!JPEG.isAPP(marker(i)))
@@ -89,14 +127,31 @@ public class JPEGHeader {
         return -1;
     }
 
+    /**
+     * Executes the offset operation.
+     *
+     * @param index the index.
+     * @return the operation result.
+     */
     public int offset(int index) {
         return offsets[index];
     }
 
+    /**
+     * Executes the marker operation.
+     *
+     * @param index the index.
+     * @return the operation result.
+     */
     public int marker(int index) {
         return data[offsets[index]] & 255;
     }
 
+    /**
+     * Executes the number of markers operation.
+     *
+     * @return the operation result.
+     */
     public int numberOfMarkers() {
         return offsets.length;
     }
@@ -141,6 +196,11 @@ public class JPEGHeader {
         return attrs;
     }
 
+    /**
+     * Gets the transfer syntax uid.
+     *
+     * @return the transfer syntax uid.
+     */
     public String getTransferSyntaxUID() {
         int sofOffset = offsetSOF();
         if (sofOffset == -1)
@@ -165,6 +225,11 @@ public class JPEGHeader {
         return null;
     }
 
+    /**
+     * Executes the ss operation.
+     *
+     * @return the operation result.
+     */
     private int ss() {
         int offsetSOS = offsetOf(JPEG.SOS);
         return offsetSOS != -1 ? data[offsetSOS + 6] & 255 : -1;

@@ -52,7 +52,7 @@ import reactor.util.annotation.NonNull;
  * This version is enhanced to correctly identify wrapped exceptions by checking the root cause before determining the
  * error code.
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class ErrorsHandler implements WebExceptionHandler {
@@ -209,6 +209,9 @@ public class ErrorsHandler implements WebExceptionHandler {
 
     /**
      * Represents a standardized message structure for API responses, typically used for error messages.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @Setter

@@ -38,10 +38,12 @@ public class RangeNode implements Node {
      * The starting index of the range (inclusive).
      */
     private final int start;
+
     /**
      * The ending index of the range (exclusive).
      */
     private final int end;
+
     /**
      * The step value for iterating through the range.
      */

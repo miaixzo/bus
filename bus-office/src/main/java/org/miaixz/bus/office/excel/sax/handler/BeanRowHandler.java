@@ -41,6 +41,7 @@ public abstract class BeanRowHandler<T> extends AbstractRowHandler<T> {
      * The 0-based index of the header row.
      */
     private final int headerRowIndex;
+
     /**
      * The list of header names.
      */

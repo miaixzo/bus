@@ -24,15 +24,28 @@ import java.util.Locale;
 import javax.imageio.ImageWriteParam;
 
 /**
+ * Represents the J2kImageWriteParam type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class J2kImageWriteParam extends ImageWriteParam {
 
+    /**
+     * The compression types value.
+     */
     private static final String[] COMPRESSION_TYPES = { "LOSSY", "LOSSLESS" };
 
+    /**
+     * The compression ratiofactor value.
+     */
     private int compressionRatiofactor;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param locale the locale.
+     */
     public J2kImageWriteParam(Locale locale) {
         super(locale);
         super.canWriteCompressed = true;
@@ -42,6 +55,11 @@ public class J2kImageWriteParam extends ImageWriteParam {
         this.compressionRatiofactor = 10;
     }
 
+    /**
+     * Sets the compression type.
+     *
+     * @param compressionType the compression type.
+     */
     @Override
     public void setCompressionType(String compressionType) {
         super.setCompressionType(compressionType);
@@ -50,11 +68,21 @@ public class J2kImageWriteParam extends ImageWriteParam {
         }
     }
 
+    /**
+     * Determines whether compression lossless.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean isCompressionLossless() {
         return compressionType.equals("LOSSLESS");
     }
 
+    /**
+     * Gets the compression ratiofactor.
+     *
+     * @return the compression ratiofactor.
+     */
     public int getCompressionRatiofactor() {
         return compressionRatiofactor;
     }

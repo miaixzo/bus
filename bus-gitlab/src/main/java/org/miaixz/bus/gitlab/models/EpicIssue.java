@@ -27,6 +27,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serial;
 
+/**
+ * The epic issue class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class EpicIssue extends AbstractIssue {
 
     @Serial

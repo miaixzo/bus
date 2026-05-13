@@ -207,6 +207,9 @@ public final class TableNameParser {
 
     /**
      * Visitor interface for table names.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public interface TableNameVisitor {
 
@@ -216,6 +219,7 @@ public final class TableNameParser {
          * @param name The token representing the table name.
          */
         void visit(SqlToken name);
+
     }
 
     /**
@@ -468,6 +472,9 @@ public final class TableNameParser {
 
     /**
      * Represents an SQL token.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class SqlToken implements Comparable<SqlToken> {
 

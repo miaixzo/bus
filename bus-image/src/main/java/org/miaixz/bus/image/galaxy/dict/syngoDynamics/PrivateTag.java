@@ -20,20 +20,31 @@
 package org.miaixz.bus.image.galaxy.dict.syngoDynamics;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "syngoDynamics";
 
-    /** (0021,xxAE) VR=OB VM=1 ? */
+    /**
+     * (0021,xxAE) VR=OB VM=1 ?
+     */
     public static final int _0021_xxAE_ = 0x002100AE;
 
-    /** (0021,xxB0) VR=LO VM=1 ? */
+    /**
+     * (0021,xxB0) VR=LO VM=1 ?
+     */
     public static final int _0021_xxB0_ = 0x002100B0;
 
-    /** (0021,xxB1) VR=LO VM=1 ? */
+    /**
+     * (0021,xxB1) VR=LO VM=1 ?
+     */
     public static final int _0021_xxB1_ = 0x002100B1;
 
 }

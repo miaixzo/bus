@@ -32,7 +32,7 @@ import org.miaixz.bus.image.Tag;
  * primitive types. Each enum constant represents a specific binary data format (e.g., BYTE, SHORT, INT, FLOAT, DOUBLE,
  * TAG, LONG, ULONG) and defines how to handle endianness, conversion to/from strings, and conversion to/from primitive
  * arrays.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -399,6 +399,7 @@ enum BinaryValueType implements ValueType {
      * The number of bytes this value type occupies.
      */
     final int numBytes;
+
     /**
      * The number of bytes involved in endian swapping for this value type.
      */
@@ -406,7 +407,7 @@ enum BinaryValueType implements ValueType {
 
     /**
      * Constructs a {@code BinaryValueType} with the specified number of bytes and endian-swapping bytes.
-     * 
+     *
      * @param numBytes       The number of bytes this value type occupies.
      * @param numEndianBytes The number of bytes involved in endian swapping.
      */
@@ -415,26 +416,51 @@ enum BinaryValueType implements ValueType {
         this.numEndianBytes = numEndianBytes;
     }
 
+    /**
+     * Determines whether int value.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean isIntValue() {
         return false;
     }
 
+    /**
+     * Determines whether string value.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean isStringValue() {
         return false;
     }
 
+    /**
+     * Executes the use specific character set operation.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean useSpecificCharacterSet() {
         return false;
     }
 
+    /**
+     * Determines whether temporal type.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean isTemporalType() {
         return false;
     }
 
+    /**
+     * Executes the num endian bytes operation.
+     *
+     * @return the operation result.
+     */
     @Override
     public int numEndianBytes() {
         return numEndianBytes;
@@ -442,7 +468,7 @@ enum BinaryValueType implements ValueType {
 
     /**
      * Converts a byte array segment to its string representation.
-     * 
+     *
      * @param b         The byte array.
      * @param off       The offset in the byte array.
      * @param bigEndian {@code true} if big-endian, {@code false} if little-endian.
@@ -454,7 +480,7 @@ enum BinaryValueType implements ValueType {
 
     /**
      * Converts a byte array segment to an integer.
-     * 
+     *
      * @param b         The byte array.
      * @param off       The offset in the byte array.
      * @param bigEndian {@code true} if big-endian, {@code false} if little-endian.
@@ -467,7 +493,7 @@ enum BinaryValueType implements ValueType {
 
     /**
      * Converts a byte array segment to a long.
-     * 
+     *
      * @param b         The byte array.
      * @param off       The offset in the byte array.
      * @param bigEndian {@code true} if big-endian, {@code false} if little-endian.
@@ -480,7 +506,7 @@ enum BinaryValueType implements ValueType {
 
     /**
      * Converts a byte array segment to a float.
-     * 
+     *
      * @param b         The byte array.
      * @param off       The offset in the byte array.
      * @param bigEndian {@code true} if big-endian, {@code false} if little-endian.
@@ -493,7 +519,7 @@ enum BinaryValueType implements ValueType {
 
     /**
      * Converts a byte array segment to a double.
-     * 
+     *
      * @param b         The byte array.
      * @param off       The offset in the byte array.
      * @param bigEndian {@code true} if big-endian, {@code false} if little-endian.
@@ -506,7 +532,7 @@ enum BinaryValueType implements ValueType {
 
     /**
      * Converts a string to a byte array segment.
-     * 
+     *
      * @param s         The string to convert.
      * @param b         The target byte array.
      * @param off       The offset in the byte array.
@@ -520,7 +546,7 @@ enum BinaryValueType implements ValueType {
 
     /**
      * Converts an integer to a byte array segment.
-     * 
+     *
      * @param i         The integer to convert.
      * @param b         The target byte array.
      * @param off       The offset in the byte array.
@@ -534,7 +560,7 @@ enum BinaryValueType implements ValueType {
 
     /**
      * Converts a long to a byte array segment.
-     * 
+     *
      * @param l         The long to convert.
      * @param b         The target byte array.
      * @param off       The offset in the byte array.
@@ -548,7 +574,7 @@ enum BinaryValueType implements ValueType {
 
     /**
      * Converts a float to a byte array segment.
-     * 
+     *
      * @param f         The float to convert.
      * @param b         The target byte array.
      * @param off       The offset in the byte array.
@@ -562,7 +588,7 @@ enum BinaryValueType implements ValueType {
 
     /**
      * Converts a double to a byte array segment.
-     * 
+     *
      * @param d         The double to convert.
      * @param b         The target byte array.
      * @param off       The offset in the byte array.
@@ -574,6 +600,13 @@ enum BinaryValueType implements ValueType {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Converts this value to bytes.
+     *
+     * @param val the val.
+     * @param cs  the cs.
+     * @return the operation result.
+     */
     @Override
     public byte[] toBytes(Object val, SpecificCharacterSet cs) {
         if (val instanceof byte[])
@@ -582,6 +615,15 @@ enum BinaryValueType implements ValueType {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Returns the string representation.
+     *
+     * @param val        the val.
+     * @param bigEndian  the big endian.
+     * @param valueIndex the value index.
+     * @param defVal     the def val.
+     * @return the string representation.
+     */
     @Override
     public String toString(Object val, boolean bigEndian, int valueIndex, String defVal) {
         if (!(val instanceof byte[] b))
@@ -594,7 +636,7 @@ enum BinaryValueType implements ValueType {
 
     /**
      * Checks if the given length is a multiple of the number of bytes for this value type.
-     * 
+     *
      * @param len The length to check.
      * @throws IllegalArgumentException if the length is not a multiple of {@code numBytes}.
      */
@@ -603,6 +645,14 @@ enum BinaryValueType implements ValueType {
             throw new IllegalArgumentException("length: " + len);
     }
 
+    /**
+     * Converts this value to strings.
+     *
+     * @param val       the val.
+     * @param bigEndian the big endian.
+     * @param cs        the cs.
+     * @return the operation result.
+     */
     @Override
     public Object toStrings(Object val, boolean bigEndian, SpecificCharacterSet cs) {
         if (!(val instanceof byte[] b))
@@ -619,6 +669,15 @@ enum BinaryValueType implements ValueType {
         return ss;
     }
 
+    /**
+     * Converts this value to int.
+     *
+     * @param val        the val.
+     * @param bigEndian  the big endian.
+     * @param valueIndex the value index.
+     * @param defVal     the def val.
+     * @return the operation result.
+     */
     @Override
     public int toInt(Object val, boolean bigEndian, int valueIndex, int defVal) {
         if (!(val instanceof byte[] b))
@@ -629,6 +688,13 @@ enum BinaryValueType implements ValueType {
         return off + numBytes <= len ? toInt(b, off, bigEndian) : defVal;
     }
 
+    /**
+     * Converts this value to ints.
+     *
+     * @param val       the val.
+     * @param bigEndian the big endian.
+     * @return the operation result.
+     */
     @Override
     public int[] toInts(Object val, boolean bigEndian) {
         if (!(val instanceof byte[] b))
@@ -642,6 +708,15 @@ enum BinaryValueType implements ValueType {
         return is;
     }
 
+    /**
+     * Converts this value to long.
+     *
+     * @param val        the val.
+     * @param bigEndian  the big endian.
+     * @param valueIndex the value index.
+     * @param defVal     the def val.
+     * @return the operation result.
+     */
     @Override
     public long toLong(Object val, boolean bigEndian, int valueIndex, long defVal) {
         if (!(val instanceof byte[] b))
@@ -652,6 +727,13 @@ enum BinaryValueType implements ValueType {
         return off + numBytes <= len ? toLong(b, off, bigEndian) : defVal;
     }
 
+    /**
+     * Converts this value to longs.
+     *
+     * @param val       the val.
+     * @param bigEndian the big endian.
+     * @return the operation result.
+     */
     @Override
     public long[] toLongs(Object val, boolean bigEndian) {
         if (!(val instanceof byte[] b))
@@ -665,6 +747,15 @@ enum BinaryValueType implements ValueType {
         return ls;
     }
 
+    /**
+     * Converts this value to float.
+     *
+     * @param val        the val.
+     * @param bigEndian  the big endian.
+     * @param valueIndex the value index.
+     * @param defVal     the def val.
+     * @return the operation result.
+     */
     @Override
     public float toFloat(Object val, boolean bigEndian, int valueIndex, float defVal) {
         if (!(val instanceof byte[] b))
@@ -675,6 +766,13 @@ enum BinaryValueType implements ValueType {
         return off + numBytes <= len ? toFloat(b, off, bigEndian) : defVal;
     }
 
+    /**
+     * Converts this value to floats.
+     *
+     * @param val       the val.
+     * @param bigEndian the big endian.
+     * @return the operation result.
+     */
     @Override
     public float[] toFloats(Object val, boolean bigEndian) {
         if (!(val instanceof byte[] b))
@@ -688,6 +786,15 @@ enum BinaryValueType implements ValueType {
         return fs;
     }
 
+    /**
+     * Converts this value to double.
+     *
+     * @param val        the val.
+     * @param bigEndian  the big endian.
+     * @param valueIndex the value index.
+     * @param defVal     the def val.
+     * @return the operation result.
+     */
     @Override
     public double toDouble(Object val, boolean bigEndian, int valueIndex, double defVal) {
         if (!(val instanceof byte[] b))
@@ -698,6 +805,13 @@ enum BinaryValueType implements ValueType {
         return off + numBytes <= len ? toDouble(b, off, bigEndian) : defVal;
     }
 
+    /**
+     * Converts this value to doubles.
+     *
+     * @param val       the val.
+     * @param bigEndian the big endian.
+     * @return the operation result.
+     */
     @Override
     public double[] toDoubles(Object val, boolean bigEndian) {
         if (!(val instanceof byte[] b))
@@ -711,26 +825,67 @@ enum BinaryValueType implements ValueType {
         return ds;
     }
 
+    /**
+     * Converts this value to temporal.
+     *
+     * @param val        the val.
+     * @param valueIndex the value index.
+     * @param precision  the precision.
+     * @return the operation result.
+     */
     @Override
     public Temporal toTemporal(Object val, int valueIndex, DatePrecision precision) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Converts this value to date.
+     *
+     * @param val        the val.
+     * @param tz         the tz.
+     * @param valueIndex the value index.
+     * @param ceil       the ceil.
+     * @param defVal     the def val.
+     * @param precision  the precision.
+     * @return the operation result.
+     */
     @Override
     public Date toDate(Object val, TimeZone tz, int valueIndex, boolean ceil, Date defVal, DatePrecision precision) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Converts this value to date.
+     *
+     * @param val       the val.
+     * @param tz        the tz.
+     * @param ceil      the ceil.
+     * @param precision the precision.
+     * @return the operation result.
+     */
     @Override
     public Date[] toDate(Object val, TimeZone tz, boolean ceil, DatePrecision precision) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Converts this value to value.
+     *
+     * @param b the b.
+     * @return the operation result.
+     */
     @Override
     public Object toValue(byte[] b) {
         return b != null && b.length > 0 ? b : Value.NULL;
     }
 
+    /**
+     * Converts this value to value.
+     *
+     * @param s         the s.
+     * @param bigEndian the big endian.
+     * @return the operation result.
+     */
     @Override
     public Object toValue(String s, boolean bigEndian) {
         if (s == null || s.isEmpty())
@@ -739,6 +894,13 @@ enum BinaryValueType implements ValueType {
         return toBytes(s, new byte[numBytes], 0, bigEndian);
     }
 
+    /**
+     * Converts this value to value.
+     *
+     * @param ss        the ss.
+     * @param bigEndian the big endian.
+     * @return the operation result.
+     */
     @Override
     public Object toValue(String[] ss, boolean bigEndian) {
         if (ss == null || ss.length == 0)
@@ -754,6 +916,13 @@ enum BinaryValueType implements ValueType {
         return b;
     }
 
+    /**
+     * Converts this value to value.
+     *
+     * @param is        the is.
+     * @param bigEndian the big endian.
+     * @return the operation result.
+     */
     @Override
     public Object toValue(int[] is, boolean bigEndian) {
         if (is == null || is.length == 0)
@@ -766,6 +935,13 @@ enum BinaryValueType implements ValueType {
         return b;
     }
 
+    /**
+     * Converts this value to value.
+     *
+     * @param ls        the ls.
+     * @param bigEndian the big endian.
+     * @return the operation result.
+     */
     @Override
     public Object toValue(long[] ls, boolean bigEndian) {
         if (ls == null || ls.length == 0)
@@ -778,6 +954,13 @@ enum BinaryValueType implements ValueType {
         return b;
     }
 
+    /**
+     * Converts this value to value.
+     *
+     * @param fs        the fs.
+     * @param bigEndian the big endian.
+     * @return the operation result.
+     */
     @Override
     public Object toValue(float[] fs, boolean bigEndian) {
         if (fs == null || fs.length == 0)
@@ -790,6 +973,13 @@ enum BinaryValueType implements ValueType {
         return b;
     }
 
+    /**
+     * Converts this value to value.
+     *
+     * @param ds        the ds.
+     * @param bigEndian the big endian.
+     * @return the operation result.
+     */
     @Override
     public Object toValue(double[] ds, boolean bigEndian) {
         if (ds == null || ds.length == 0)
@@ -802,11 +992,29 @@ enum BinaryValueType implements ValueType {
         return b;
     }
 
+    /**
+     * Converts this value to value.
+     *
+     * @param ds        the ds.
+     * @param tz        the tz.
+     * @param precision the precision.
+     * @return the operation result.
+     */
     @Override
     public Object toValue(Date[] ds, TimeZone tz, DatePrecision precision) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Executes the prompt operation.
+     *
+     * @param val       the val.
+     * @param bigEndian the big endian.
+     * @param cs        the cs.
+     * @param maxChars  the max chars.
+     * @param sb        the sb.
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean prompt(Object val, boolean bigEndian, SpecificCharacterSet cs, int maxChars, StringBuilder sb) {
         if (val instanceof byte[])
@@ -817,7 +1025,7 @@ enum BinaryValueType implements ValueType {
 
     /**
      * Appends the string representation of the byte array to the StringBuilder, respecting maxChars.
-     * 
+     *
      * @param b         The byte array to prompt.
      * @param bigEndian {@code true} if big-endian, {@code false} if little-endian.
      * @param maxChars  The maximum number of characters to append.
@@ -838,6 +1046,12 @@ enum BinaryValueType implements ValueType {
         return true;
     }
 
+    /**
+     * Executes the vm of operation.
+     *
+     * @param val the val.
+     * @return the operation result.
+     */
     @Override
     public int vmOf(Object val) {
         if (val instanceof byte[]) {

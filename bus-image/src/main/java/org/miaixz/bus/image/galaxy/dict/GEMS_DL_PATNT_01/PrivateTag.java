@@ -20,23 +20,36 @@
 package org.miaixz.bus.image.galaxy.dict.GEMS_DL_PATNT_01;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEMS_DL_PATNT_01";
 
-    /** (0011,xx80) VR=UI VM=1 Patient Instance Uid */
+    /**
+     * (0011,xx80) VR=UI VM=1 Patient Instance Uid
+     */
     public static final int PatientInstanceUid = 0x00110080;
 
-    /** (0011,xx81) VR=IS VM=1 Last Study Number */
+    /**
+     * (0011,xx81) VR=IS VM=1 Last Study Number
+     */
     public static final int LastStudyNumber = 0x00110081;
 
-    /** (0011,xx82) VR=CS VM=1 Patient Repaired */
+    /**
+     * (0011,xx82) VR=CS VM=1 Patient Repaired
+     */
     public static final int PatientRepaired = 0x00110082;
 
-    /** (0011,xx83) VR=CS VM=1 Lock Demographics */
+    /**
+     * (0011,xx83) VR=CS VM=1 Lock Demographics
+     */
     public static final int LockDemographics = 0x00110083;
 
 }

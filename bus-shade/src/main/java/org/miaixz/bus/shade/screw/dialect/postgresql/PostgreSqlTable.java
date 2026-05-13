@@ -40,46 +40,55 @@ public class PostgreSqlTable implements Table {
      */
     @MappingField(value = "ref_generation")
     private String refGeneration;
+
     /**
      * The type name of the typed table (may be {@code null}).
      */
     @MappingField(value = "type_name")
     private String typeName;
+
     /**
      * The schema of the typed table (may be {@code null}).
      */
     @MappingField(value = "type_schem")
     private String typeSchem;
+
     /**
      * The schema of the table.
      */
     @MappingField(value = "table_schem")
     private String tableSchem;
+
     /**
      * The catalog of the typed table (may be {@code null}).
      */
     @MappingField(value = "type_cat")
     private String typeCat;
+
     /**
      * The table catalog (may be {@code null}).
      */
     @MappingField(value = "table_cat")
     private Object tableCat;
+
     /**
      * The name of the table.
      */
     @MappingField(value = "table_name")
     private String tableName;
+
     /**
      * The name of the designated "identifier" column of a typed table (may be {@code null}).
      */
     @MappingField(value = "self_referencing_col_name")
     private String selfReferencingColName;
+
     /**
      * The explanatory comment on the table.
      */
     @MappingField(value = "remarks")
     private String remarks;
+
     /**
      * The type of the table (e.g., "TABLE", "VIEW", etc.).
      */

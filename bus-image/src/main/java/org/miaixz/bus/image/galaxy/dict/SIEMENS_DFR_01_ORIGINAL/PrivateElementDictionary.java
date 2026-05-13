@@ -23,22 +23,42 @@ import org.miaixz.bus.image.galaxy.data.ElementDictionary;
 import org.miaixz.bus.image.galaxy.data.VR;
 
 /**
+ * Represents the PrivateElementDictionary type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateElementDictionary extends ElementDictionary {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "";
 
+    /**
+     * Creates a new instance.
+     */
     public PrivateElementDictionary() {
         super("", PrivateTag.class);
     }
 
+    /**
+     * Executes the keyword of operation.
+     *
+     * @param tag the tag.
+     * @return the operation result.
+     */
     @Override
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
 
+    /**
+     * Executes the vr of operation.
+     *
+     * @param tag the tag.
+     * @return the operation result.
+     */
     @Override
     public VR vrOf(int tag) {
 

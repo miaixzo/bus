@@ -49,10 +49,12 @@ public class UrlResource implements Resource, Serializable {
      * The URL of the resource.
      */
     protected URL url;
+
     /**
      * The name of the resource.
      */
     protected String name;
+
     /**
      * The last modified timestamp of the resource. Initialized to 0 for non-file resources.
      */

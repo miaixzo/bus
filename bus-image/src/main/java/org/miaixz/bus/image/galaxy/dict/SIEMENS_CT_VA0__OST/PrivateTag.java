@@ -20,17 +20,26 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_CT_VA0__OST;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS CT VA0 OST";
 
-    /** (6021,xx00) VR=LO VM=1 Osteo Contour Comment */
+    /**
+     * (6021,xx00) VR=LO VM=1 Osteo Contour Comment
+     */
     public static final int OsteoContourComment = 0x60210000;
 
-    /** (6021,xx10) VR=US VM=256 Osteo Contour Buffer */
+    /**
+     * (6021,xx10) VR=US VM=256 Osteo Contour Buffer
+     */
     public static final int OsteoContourBuffer = 0x60210010;
 
 }

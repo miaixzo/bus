@@ -20,41 +20,66 @@
 package org.miaixz.bus.image.galaxy.dict.mitra_presentation_1_0;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "MITRA PRESENTATION 1.0";
 
-    /** (0029,xx00) VR=CS VM=1 Rotation */
+    /**
+     * (0029,xx00) VR=CS VM=1 Rotation
+     */
     public static final int Rotation = 0x00290000;
 
-    /** (0029,xx01) VR=LO VM=1 Window Width */
+    /**
+     * (0029,xx01) VR=LO VM=1 Window Width
+     */
     public static final int WindowWidth = 0x00290001;
 
-    /** (0029,xx02) VR=LO VM=1 Window Centre */
+    /**
+     * (0029,xx02) VR=LO VM=1 Window Centre
+     */
     public static final int WindowCentre = 0x00290002;
 
-    /** (0029,xx03) VR=IS VM=1 Invert */
+    /**
+     * (0029,xx03) VR=IS VM=1 Invert
+     */
     public static final int Invert = 0x00290003;
 
-    /** (0029,xx04) VR=IS VM=1 Has Tabstop */
+    /**
+     * (0029,xx04) VR=IS VM=1 Has Tabstop
+     */
     public static final int HasTabstop = 0x00290004;
 
-    /** (0029,xx05) VR=CS VM=1 Smooth Rotation */
+    /**
+     * (0029,xx05) VR=CS VM=1 Smooth Rotation
+     */
     public static final int SmoothRotation = 0x00290005;
 
-    /** (0029,xx10) VR=CS VM=1 ? */
+    /**
+     * (0029,xx10) VR=CS VM=1 ?
+     */
     public static final int _0029_xx10_ = 0x00290010;
 
-    /** (0029,xx11) VR=CS VM=1 ? */
+    /**
+     * (0029,xx11) VR=CS VM=1 ?
+     */
     public static final int _0029_xx11_ = 0x00290011;
 
-    /** (0029,xx12) VR=CS VM=1 ? */
+    /**
+     * (0029,xx12) VR=CS VM=1 ?
+     */
     public static final int _0029_xx12_ = 0x00290012;
 
-    /** (0029,xx13) VR=CS VM=1 ? */
+    /**
+     * (0029,xx13) VR=CS VM=1 ?
+     */
     public static final int _0029_xx13_ = 0x00290013;
 
 }

@@ -54,11 +54,13 @@ final class WindowsLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
      */
     private static final java.util.regex.Pattern SP_OBJECT_ID = java.util.regex.Pattern
             .compile(".*ObjectId=.*SP:(\\{.*\\}).*");
+
     /**
      * The PD_OBJECT_ID constant.
      */
     private static final java.util.regex.Pattern PD_OBJECT_ID = java.util.regex.Pattern
             .compile(".*ObjectId=.*PD:(\\{.*\\}).*");
+
     /**
      * The VD_OBJECT_ID constant.
      */

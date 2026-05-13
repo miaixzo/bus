@@ -26,30 +26,58 @@ import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.metric.Connection;
 
 /**
+ * Represents the DeviceExtension type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class DeviceExtension implements Serializable {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852270575131L;
 
+    /**
+     * The device value.
+     */
     protected Device device;
 
+    /**
+     * Gets the device.
+     *
+     * @return the device.
+     */
     public final Device getDevice() {
         return device;
     }
 
+    /**
+     * Sets the device.
+     *
+     * @param device the device.
+     */
     public void setDevice(Device device) {
         if (device != null && this.device != null)
             throw new IllegalStateException("already owned by Device: " + device.getDeviceName());
         this.device = device;
     }
 
+    /**
+     * Executes the verify not used operation.
+     *
+     * @param conn the conn.
+     */
     public void verifyNotUsed(Connection conn) {
 
     }
 
+    /**
+     * Executes the reconfigure operation.
+     *
+     * @param from the from.
+     */
     public void reconfigure(DeviceExtension from) {
 
     }

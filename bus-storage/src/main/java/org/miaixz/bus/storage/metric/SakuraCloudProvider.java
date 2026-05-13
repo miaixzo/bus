@@ -47,7 +47,7 @@ import org.miaixz.bus.storage.Context;
  * <strong>Configuration Example:</strong>
  *
  * <pre>{@code
- * 
+ *
  * Context context = Context.builder().endpoint("https://s3.isk01.sakurastorage.jp") // or tk1
  *         .bucket("my-bucket").accessKey("SAKURA_ACCESS_KEY").secretKey("SAKURA_SECRET_KEY").region("is1a").build();
  *

@@ -44,6 +44,7 @@ public enum BeanCache {
      * {@link WeakConcurrentMap} for automatic cleanup of entries when the class is no longer referenced.
      */
     private final WeakConcurrentMap<Class<?>, Map<String, PropertyDescriptor>> pdCache = new WeakConcurrentMap<>();
+
     /**
      * Cache for {@link PropertyDescriptor}s, keyed by class, where property names are case-insensitive. Uses
      * {@link WeakConcurrentMap} for automatic cleanup of entries when the class is no longer referenced.

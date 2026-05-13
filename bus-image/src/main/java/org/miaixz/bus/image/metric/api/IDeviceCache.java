@@ -23,19 +23,48 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.Device;
 
 /**
+ * Defines the IDeviceCache contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface IDeviceCache {
 
+    /**
+     * Gets the stale timeout.
+     *
+     * @return the stale timeout.
+     */
     int getStaleTimeout();
 
+    /**
+     * Sets the stale timeout.
+     *
+     * @param staleTimeout the stale timeout.
+     */
     void setStaleTimeout(int staleTimeout);
 
+    /**
+     * Executes the clear operation.
+     */
     void clear();
 
+    /**
+     * Executes the get operation.
+     *
+     * @param deviceName the device name.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     Device get(String deviceName) throws InternalException;
 
+    /**
+     * Finds the device.
+     *
+     * @param deviceName the device name.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     Device findDevice(String deviceName) throws InternalException;
 
 }

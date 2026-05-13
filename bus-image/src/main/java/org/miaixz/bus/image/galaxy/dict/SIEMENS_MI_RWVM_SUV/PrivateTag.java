@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MI_RWVM_SUV;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS MI RWVM SUV";
 
-    /** (0041,xx01) VR=CS VM=1 SUV Decay Correction Method */
+    /**
+     * (0041,xx01) VR=CS VM=1 SUV Decay Correction Method
+     */
     public static final int SUVDecayCorrectionMethod = 0x00410001;
 
 }

@@ -20,23 +20,36 @@
 package org.miaixz.bus.image.galaxy.dict.DIGISCAN_IMAGE;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "DIGISCAN IMAGE";
 
-    /** (0029,xx31) VR=US VM=1-n ? */
+    /**
+     * (0029,xx31) VR=US VM=1-n ?
+     */
     public static final int _0029_xx31_ = 0x00290031;
 
-    /** (0029,xx32) VR=US VM=1-n ? */
+    /**
+     * (0029,xx32) VR=US VM=1-n ?
+     */
     public static final int _0029_xx32_ = 0x00290032;
 
-    /** (0029,xx33) VR=LO VM=1 ? */
+    /**
+     * (0029,xx33) VR=LO VM=1 ?
+     */
     public static final int _0029_xx33_ = 0x00290033;
 
-    /** (0029,xx34) VR=LO VM=1 ? */
+    /**
+     * (0029,xx34) VR=LO VM=1 ?
+     */
     public static final int _0029_xx34_ = 0x00290034;
 
 }

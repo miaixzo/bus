@@ -44,10 +44,12 @@ public class DownloadHbBill extends Voucher {
      * Signature.
      */
     private String sign;
+
     /**
      * Merchant ID.
      */
     private String mch_id;
+
     /**
      * Bill date.
      */

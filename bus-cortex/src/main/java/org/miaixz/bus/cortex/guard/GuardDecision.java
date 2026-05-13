@@ -44,6 +44,7 @@ public class GuardDecision {
      * Human-readable decision message.
      */
     private final String message;
+
     /**
      * Optional structured details.
      */

@@ -36,21 +36,48 @@ import org.miaixz.bus.core.Version;
  */
 public class NativeJXLImageReaderSpi extends ImageReaderSpi {
 
+    /**
+     * The names value.
+     */
     static final String[] NAMES = { "jpeg-xl-cv", "jpeg-xl", "JPEG-XL" };
+
+    /**
+     * The suffixes value.
+     */
     static final String[] SUFFIXES = { "jxl" };
+
+    /**
+     * The mimes value.
+     */
     static final String[] MIMES = { "image/jxl" };
 
+    /**
+     * Creates a new instance.
+     */
     public NativeJXLImageReaderSpi() {
         super("Miaixz Team", Version._VERSION, NAMES, SUFFIXES, MIMES, NativeImageReader.class.getName(),
                 new Class[] { ImageInputStream.class }, new String[] { NativeJXLImageWriterSpi.class.getName() }, false,
                 null, null, null, null, false, null, null, null, null);
     }
 
+    /**
+     * Gets the description.
+     *
+     * @param locale the locale.
+     * @return the description.
+     */
     @Override
     public String getDescription(Locale locale) {
         return "Natively-accelerated JPEG XL Image Reader";
     }
 
+    /**
+     * Determines whether decode input.
+     *
+     * @param source the source.
+     * @return true if the condition is met; otherwise false.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public boolean canDecodeInput(Object source) throws IOException {
         if (!StreamSegment.supportsInputStream(source))
@@ -82,6 +109,12 @@ public class NativeJXLImageReaderSpi extends ImageReaderSpi {
         }
     }
 
+    /**
+     * Creates the reader instance.
+     *
+     * @param extension the extension.
+     * @return the operation result.
+     */
     @Override
     public ImageReader createReaderInstance(Object extension) {
         return new NativeImageReader(this, false);

@@ -34,18 +34,18 @@ import org.miaixz.bus.core.xyz.StringKit;
  *
  * <p>
  * For example, given an array of filenames: {@code {"xyz2.doc", "xyz1.doc", "xyz12.doc"}}.
- * 
+ *
  * <p>
  * A standard sort with {@code Arrays.sort(filenames);} would result in {@code {"xyz1.doc", "xyz12.doc", "xyz2.doc"}}.
- * 
+ *
  * <p>
  * Using this comparator with {@code Arrays.sort(filenames, new ExplorerCompare());} results in {@code {"xyz1.doc",
  * "xyz2.doc", "xyz12.doc"}}, which matches the order in Windows Explorer.
- * 
  *
- * @author Kimi Liu
  * @see <a href="https://stackoverflow.com/questions/23205020/java-sort-strings-like-windows-explorer">Java - Sort
  *      Strings like Windows Explorer</a>
+ *
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class ExplorerCompare implements Comparator<CharSequence> {

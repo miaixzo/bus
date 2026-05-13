@@ -46,30 +46,37 @@ public class Dcm2Json {
      * Describes how to handle bulk data.
      */
     private final BasicBulkDataDescriptor bulkDataDescriptor = new BasicBulkDataDescriptor();
+
     /**
      * Whether to format the JSON output with indentation.
      */
     private boolean indent = false;
+
     /**
      * Specifies how to include bulk data in the output.
      */
     private ImageInputStream.IncludeBulkData includeBulkData = ImageInputStream.IncludeBulkData.URI;
+
     /**
      * Whether to concatenate bulk data into a single file.
      */
     private boolean catBlkFiles = false;
+
     /**
      * The prefix for bulk data file names.
      */
     private String blkFilePrefix = "blk";
+
     /**
      * The suffix for bulk data file names.
      */
     private String blkFileSuffix;
+
     /**
      * The directory to store bulk data files.
      */
     private File blkDirectory;
+
     /**
      * Whether to encode numeric VRs (DS, IS, SV, UV) as JSON numbers instead of strings.
      */

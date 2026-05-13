@@ -47,26 +47,32 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
      * The SUBSYSTEM_USB constant.
      */
     private static final String SUBSYSTEM_USB = "usb";
+
     /**
      * The DEVTYPE_USB_DEVICE constant.
      */
     private static final String DEVTYPE_USB_DEVICE = "usb_device";
+
     /**
      * The ATTR_PRODUCT constant.
      */
     private static final String ATTR_PRODUCT = "product";
+
     /**
      * The ATTR_MANUFACTURER constant.
      */
     private static final String ATTR_MANUFACTURER = "manufacturer";
+
     /**
      * The ATTR_VENDOR_ID constant.
      */
     private static final String ATTR_VENDOR_ID = "idVendor";
+
     /**
      * The ATTR_PRODUCT_ID constant.
      */
     private static final String ATTR_PRODUCT_ID = "idProduct";
+
     /**
      * The ATTR_SERIAL constant.
      */

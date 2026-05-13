@@ -46,18 +46,22 @@ public final class DevPath {
      * The DISK_BY_UUID constant.
      */
     public static final String DISK_BY_UUID = DEV + "disk/by-uuid";
+
     /**
      * The DM constant.
      */
     public static final String DM = DEV + "dm";
+
     /**
      * The LOOP constant.
      */
     public static final String LOOP = DEV + "loop";
+
     /**
      * The MAPPER constant.
      */
     public static final String MAPPER = DEV + "mapper/";
+
     /**
      * The RAM constant.
      */

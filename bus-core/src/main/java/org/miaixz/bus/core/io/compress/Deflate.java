@@ -43,10 +43,12 @@ public class Deflate implements Closeable {
      * The source input stream.
      */
     private final InputStream source;
+
     /**
      * Flag indicating whether to use the 'nowrap' option for Deflater/Inflater, which is compatible with Gzip.
      */
     private final boolean nowrap;
+
     /**
      * The target output stream.
      */

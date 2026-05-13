@@ -41,14 +41,17 @@ public class ArrayIterator<E> implements IterableIterator<E>, ResettableIterator
      * The array to iterate over.
      */
     private final Object array;
+
     /**
      * The starting index for iteration.
      */
     private int startIndex;
+
     /**
      * The ending index for iteration (exclusive).
      */
     private int endIndex;
+
     /**
      * The current index of the iterator.
      */

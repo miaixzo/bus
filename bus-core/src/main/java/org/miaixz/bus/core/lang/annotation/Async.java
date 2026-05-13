@@ -43,6 +43,9 @@ public @interface Async {
      * the original annotated method. When a {@code public void} method is annotated with {@code @Async}, the framework
      * enhances the class by adding a new method that invokes the original. This class provides the naming convention
      * for that new method.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class MethodNameTransformer {
 
@@ -61,6 +64,7 @@ public @interface Async {
         public static String transform(String methodName) {
             return StringKit.concat(true, new String[] { "__act_", methodName, "_async" });
         }
+
     }
 
 }

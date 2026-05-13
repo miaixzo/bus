@@ -39,6 +39,9 @@ import java.io.Serial;
 
 /**
  * This class is used to filter merge requests when getting lists of them.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class MergeRequestFilter implements Serializable {
 
@@ -514,6 +517,12 @@ public class MergeRequestFilter implements Serializable {
         return params;
     }
 
+    /**
+     * The merge request field enum.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public enum MergeRequestField {
 
         LABELS, MILESTONE, AUTHOR_ID, AUTHOR_USERNAME, ASSIGNEE_ID, ASSIGNEE_USERNAME, REVIEWER_ID, REVIEWER_USERNAME,
@@ -536,6 +545,7 @@ public class MergeRequestFilter implements Serializable {
         public String toString() {
             return (enumHelper.toString(this));
         }
+
     }
 
     private Map<String, Object> toStringMap(Map<MergeRequestField, Object> map) {

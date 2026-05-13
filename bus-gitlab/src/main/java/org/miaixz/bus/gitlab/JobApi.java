@@ -42,6 +42,9 @@ import org.miaixz.bus.logger.Logger;
 
 /**
  * This class provides an entry point to all the GitLab API job calls.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class JobApi extends AbstractApi implements Constants {
 

@@ -40,10 +40,12 @@ public class FormulaCellValue implements CellValue<String>, CellSetter {
      * The formula string.
      */
     private final String formula;
+
     /**
      * The result of the formula. This can be omitted when using ExcelWriter.
      */
     private final Object result;
+
     /**
      * The type of the formula result.
      */

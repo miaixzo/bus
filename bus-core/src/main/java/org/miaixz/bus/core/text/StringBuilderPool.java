@@ -46,7 +46,7 @@ import java.util.function.Consumer;
  * <h2>Usage Examples</h2>
  *
  * <h3>Basic Usage (Try-with-resources)</h3>
- * 
+ *
  * <pre>
  * <code>
  * // Recommended: AutoCloseable pattern
@@ -58,7 +58,7 @@ import java.util.function.Consumer;
  * </pre>
  *
  * <h3>Functional Style</h3>
- * 
+ *
  * <pre>
  * <code>
  * // Inline building with automatic release
@@ -450,6 +450,9 @@ public final class StringBuilderPool {
      * <p>
      * Defines threshold values for each pool tier and the maximum allowed capacity for pooled instances.
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class PoolConfig implements Serializable {
 
@@ -557,6 +560,9 @@ public final class StringBuilderPool {
 
         /**
          * Configuration builder for the fluent API.
+         *
+         * @author Kimi Liu
+         * @since Java 21+
          */
         public static class Builder {
 
@@ -641,7 +647,9 @@ public final class StringBuilderPool {
                 StringBuilderPool.config = config;
                 initializePools();
             }
+
         }
+
     }
 
     /**
@@ -650,6 +658,9 @@ public final class StringBuilderPool {
      * <p>
      * Provides detailed metrics about pool usage including acquisition counts, total build time, and hit rates.
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class PoolStats implements Serializable {
 
@@ -823,6 +834,7 @@ public final class StringBuilderPool {
                     avgBuildTimeNanos,
                     poolHitRate * 100);
         }
+
     }
 
     /**
@@ -831,6 +843,9 @@ public final class StringBuilderPool {
      * <p>
      * Implementations can be used to monitor significant events such as oversized creations and capacity trimming.
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public interface PoolEventListener {
 
@@ -853,6 +868,7 @@ public final class StringBuilderPool {
          * Called when the pool is explicitly cleaned up via {@link StringBuilderPool#cleanup()}.
          */
         void onCleanup();
+
     }
 
 }

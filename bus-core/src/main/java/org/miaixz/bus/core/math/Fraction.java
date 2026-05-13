@@ -50,26 +50,32 @@ public final class Fraction extends Number implements Comparable<Fraction> {
      * {@link Fraction} representing 0.
      */
     public static final Fraction ZERO = new Fraction(0, 1);
+
     /**
      * {@link Fraction} representing 1.
      */
     public static final Fraction ONE = new Fraction(1, 1);
+
     /**
      * The numerator part of the fraction (the 3 in 3/7).
      */
     private final int numerator;
+
     /**
      * The denominator part of the fraction (the 7 in 3/7).
      */
     private final int denominator;
+
     /**
      * Cached output hashCode (class is immutable).
      */
     private transient int hashCode;
+
     /**
      * Cached output toString (class is immutable).
      */
     private transient String toString;
+
     /**
      * Cached output toProperString (class is immutable).
      */

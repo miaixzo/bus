@@ -29,6 +29,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.io.Serial;
 
+/**
+ * The environment class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Environment implements Serializable {
 
     @Serial
@@ -107,6 +113,12 @@ public class Environment implements Serializable {
         this.autoStopAt = autoStopAt;
     }
 
+    /**
+     * The environment state enum.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public enum EnvironmentState {
 
         AVAILABLE, STOPPED;
@@ -128,6 +140,7 @@ public class Environment implements Serializable {
         public String toString() {
             return (enumHelper.toString(this));
         }
+
     }
 
     @Override

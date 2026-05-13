@@ -27,7 +27,6 @@ package org.miaixz.bus.tempus.temporal.notifier;
  * {@link NotificationMode}.
  *
  * @param <R> the activity input type
- *
  * @author Kimi Liu
  * @since Java 21+
  */

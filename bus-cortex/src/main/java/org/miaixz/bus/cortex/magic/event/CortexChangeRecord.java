@@ -42,70 +42,87 @@ public class CortexChangeRecord {
      * Unique change-log record identifier.
      */
     private String id;
+
     /**
      * Idempotency key used to collapse duplicate change-log appends.
      */
     private String idempotencyKey;
+
     /**
      * Logical domain that produced the change.
      */
     private String domain;
+
     /**
      * Mutation action name.
      */
     private String action;
+
     /**
      * Resource type affected by the change.
      */
     private String resourceType;
+
     /**
      * Resource identifier affected by the change.
      */
     private String resourceId;
+
     /**
      * Namespace affected by the change.
      */
     private String namespace_id;
+
     /**
      * Serialized payload for downstream delivery.
      */
     private String payload;
+
     /**
      * Monotonic or timestamp sequence used for delivery ordering.
      */
     private long sequence;
+
     /**
      * Current delivery status.
      */
     private CortexChangeStatus status;
+
     /**
      * Number of failed delivery attempts.
      */
     private int retryCount;
+
     /**
      * Last delivery error message.
      */
     private String lastError;
+
     /**
      * Worker identity that currently owns the delivery lease.
      */
     private String claimedBy;
+
     /**
      * Lease expiration timestamp in epoch milliseconds.
      */
     private long claimedUntil;
+
     /**
      * Next retry timestamp in epoch milliseconds.
      */
     private long nextRetryAt;
+
     /**
      * Terminal dead-letter reason.
      */
     private String deadReason;
+
     /**
      * Creation timestamp in epoch milliseconds.
      */
     private long created;
+
     /**
      * Last modification timestamp in epoch milliseconds.
      */

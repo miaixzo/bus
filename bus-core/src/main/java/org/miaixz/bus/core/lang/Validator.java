@@ -45,7 +45,7 @@ import org.miaixz.bus.core.xyz.*;
  *
  * <p>
  * Example usage:
- * 
+ *
  * <pre>{@code
  * // Check if a value is a valid email
  * boolean isValid = Validator.isEmail("user@example.com");

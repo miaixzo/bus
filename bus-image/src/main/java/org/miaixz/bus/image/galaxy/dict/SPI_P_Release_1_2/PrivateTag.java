@@ -20,26 +20,41 @@
 package org.miaixz.bus.image.galaxy.dict.SPI_P_Release_1_2;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SPI-P Release 1;2";
 
-    /** (0029,xx00) VR=LT VM=1 Subtraction Mask ID */
+    /**
+     * (0029,xx00) VR=LT VM=1 Subtraction Mask ID
+     */
     public static final int SubtractionMaskID = 0x00290000;
 
-    /** (0029,xx04) VR=UN VM=1 Masking Function */
+    /**
+     * (0029,xx04) VR=UN VM=1 Masking Function
+     */
     public static final int MaskingFunction = 0x00290004;
 
-    /** (0029,xx0C) VR=UN VM=1 Proprietary Masking Parameters */
+    /**
+     * (0029,xx0C) VR=UN VM=1 Proprietary Masking Parameters
+     */
     public static final int ProprietaryMaskingParameters = 0x0029000C;
 
-    /** (0029,xx1E) VR=CS VM=1 Subtraction Mask Enable Status */
+    /**
+     * (0029,xx1E) VR=CS VM=1 Subtraction Mask Enable Status
+     */
     public static final int SubtractionMaskEnableStatus = 0x0029001E;
 
-    /** (0029,xx1F) VR=CS VM=1 Subtraction Mask Select Status */
+    /**
+     * (0029,xx1F) VR=CS VM=1 Subtraction Mask Select Status
+     */
     public static final int SubtractionMaskSelectStatus = 0x0029001F;
 
 }

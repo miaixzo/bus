@@ -44,10 +44,12 @@ public class ConsistentHash<T> implements Serializable {
      * The number of virtual replicas for each physical node.
      */
     private final int numberOfReplicas;
+
     /**
      * The hash circle, a sorted map of hash values to nodes.
      */
     private final SortedMap<Integer, T> circle = new TreeMap<>();
+
     /**
      * The hash function used to map nodes and keys to the circle.
      */

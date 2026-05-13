@@ -88,22 +88,27 @@ public class Builder {
      * The default curve name for SM2 algorithm.
      */
     public static final String SM2_CURVE_NAME = "sm2p256v1";
+
     /**
      * The elliptic curve parameters for SM2 algorithm.
      */
     public static final ECParameterSpec SM2_EC_SPEC = ECNamedCurveTable.getParameterSpec(SM2_CURVE_NAME);
+
     /**
      * Recommended SM2 curve parameters (from https://github.com/ZZMarquis/gmhelper).
      */
     public static final ECDomainParameters SM2_DOMAIN_PARAMS = toDomainParams(SM2_EC_SPEC);
+
     /**
      * OID identifier for the SM2 national cryptographic algorithm public key parameters.
      */
     public static final ASN1ObjectIdentifier ID_SM2_PUBLIC_KEY_PARAM = new ASN1ObjectIdentifier("1.2.156.10197.1.301");
+
     /**
      * The length of R and S components in a signature.
      */
     private static final int RS_LEN = 32;
+
     /**
      * System property to control whether to decode Hex strings. Defaults to true.
      */

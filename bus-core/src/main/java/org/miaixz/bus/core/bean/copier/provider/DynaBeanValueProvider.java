@@ -38,6 +38,7 @@ public class DynaBeanValueProvider implements ValueProvider<String> {
      * The {@link DynaBean} instance from which values are retrieved.
      */
     private final DynaBean dynaBean;
+
     /**
      * A flag indicating whether errors during value retrieval or conversion should be ignored.
      */

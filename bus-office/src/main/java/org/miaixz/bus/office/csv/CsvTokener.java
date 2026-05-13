@@ -39,10 +39,12 @@ public class CsvTokener extends SimpleWrapper<Reader> implements Closeable {
      * The position in the Reader (index of the character parsed to).
      */
     private long index;
+
     /**
      * The previous character.
      */
     private int prev;
+
     /**
      * Whether to use the previous character.
      */

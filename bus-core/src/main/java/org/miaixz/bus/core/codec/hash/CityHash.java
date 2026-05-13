@@ -52,6 +52,7 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
     // Magic numbers for 32-bit hashing. Copied from Murmur3.
     private static final int c1 = 0xcc9e2d51;
     private static final int c2 = 0x1b873593;
+
     /**
      * Singleton instance of the CityHash.
      */

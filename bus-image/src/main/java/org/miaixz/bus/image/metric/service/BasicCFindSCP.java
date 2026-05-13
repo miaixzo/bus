@@ -28,15 +28,32 @@ import org.miaixz.bus.image.metric.Association;
 import org.miaixz.bus.image.metric.pdu.PresentationContext;
 
 /**
+ * Represents the BasicCFindSCP type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class BasicCFindSCP extends AbstractImageService {
 
+    /**
+     * Creates a new instance.
+     *
+     * @param sopClasses the sop classes.
+     */
     public BasicCFindSCP(String... sopClasses) {
         super(sopClasses);
     }
 
+    /**
+     * Executes the on dimse rq operation.
+     *
+     * @param as    the as.
+     * @param pc    the pc.
+     * @param dimse the dimse.
+     * @param rq    the rq.
+     * @param keys  the keys.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes rq, Attributes keys)
             throws IOException {
@@ -47,6 +64,15 @@ public class BasicCFindSCP extends AbstractImageService {
         as.getApplicationEntity().getDevice().execute(queryTask);
     }
 
+    /**
+     * Executes the calculate matches operation.
+     *
+     * @param as   the as.
+     * @param pc   the pc.
+     * @param rq   the rq.
+     * @param keys the keys.
+     * @return the operation result.
+     */
     protected QueryTask calculateMatches(Association as, PresentationContext pc, Attributes rq, Attributes keys) {
         return new BasicQueryTask(as, pc, rq, keys);
     }

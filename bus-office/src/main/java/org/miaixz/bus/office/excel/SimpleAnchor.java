@@ -41,14 +41,17 @@ public class SimpleAnchor implements ClientAnchor {
      * The x coordinate in EMU within the top-left cell.
      */
     private int dx1;
+
     /**
      * The y coordinate in EMU within the top-left cell.
      */
     private int dy1;
+
     /**
      * The y coordinate in EMU within the bottom-right cell.
      */
     private int dy2;
+
     /**
      * The x coordinate in EMU within the bottom-right cell.
      */
@@ -58,14 +61,17 @@ public class SimpleAnchor implements ClientAnchor {
      * The column (0 based) of the first cell.
      */
     private int col1;
+
     /**
      * The row (0 based) of the first cell.
      */
     private int row1;
+
     /**
      * The column (0 based) of the second cell.
      */
     private int col2;
+
     /**
      * The row (0 based) of the second cell.
      */

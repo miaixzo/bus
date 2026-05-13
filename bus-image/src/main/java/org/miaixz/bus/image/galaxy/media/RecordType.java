@@ -22,16 +22,164 @@ package org.miaixz.bus.image.galaxy.media;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
+ * Defines the RecordType values.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public enum RecordType {
 
-    PATIENT, STUDY, SERIES, IMAGE, OVERLAY, VOI_LUT, CURVE, STORED_PRINT, RT_DOSE, RT_STRUCTURE_SET, RT_PLAN,
-    RT_TREAT_RECORD, PRESENTATION, WAVEFORM, SR_DOCUMENT, KEY_OBJECT_DOC, SPECTROSCOPY, RAW_DATA, REGISTRATION,
-    FIDUCIAL, HANGING_PROTOCOL, ENCAP_DOC, HL7_STRUC_DOC, VALUE_MAP, STEREOMETRIC, PALETTE, IMPLANT, IMPLANT_ASSY,
-    IMPLANT_GROUP, PLAN, MEASUREMENT, SURFACE, SURFACE_SCAN, TRACT, ASSESSMENT, PRIVATE;
+    /**
+     * Constant for the patient value.
+     */
+    PATIENT,
+    /**
+     * Constant for the study value.
+     */
+    STUDY,
+    /**
+     * Constant for the series value.
+     */
+    SERIES,
+    /**
+     * Constant for the image value.
+     */
+    IMAGE,
+    /**
+     * Constant for the overlay value.
+     */
+    OVERLAY,
+    /**
+     * Constant for the voi lut value.
+     */
+    VOI_LUT,
+    /**
+     * Constant for the curve value.
+     */
+    CURVE,
+    /**
+     * Constant for the stored print value.
+     */
+    STORED_PRINT,
+    /**
+     * Constant for the rt dose value.
+     */
+    RT_DOSE,
+    /**
+     * Constant for the rt structure set value.
+     */
+    RT_STRUCTURE_SET,
+    /**
+     * Constant for the rt plan value.
+     */
+    RT_PLAN,
+    /**
+     * Constant for the rt treat record value.
+     */
+    RT_TREAT_RECORD,
+    /**
+     * Constant for the presentation value.
+     */
+    PRESENTATION,
+    /**
+     * Constant for the waveform value.
+     */
+    WAVEFORM,
+    /**
+     * Constant for the sr document value.
+     */
+    SR_DOCUMENT,
+    /**
+     * Constant for the key object doc value.
+     */
+    KEY_OBJECT_DOC,
+    /**
+     * Constant for the spectroscopy value.
+     */
+    SPECTROSCOPY,
+    /**
+     * Constant for the raw data value.
+     */
+    RAW_DATA,
+    /**
+     * Constant for the registration value.
+     */
+    REGISTRATION,
+    /**
+     * Constant for the fiducial value.
+     */
+    FIDUCIAL,
+    /**
+     * Constant for the hanging protocol value.
+     */
+    HANGING_PROTOCOL,
+    /**
+     * Constant for the encap doc value.
+     */
+    ENCAP_DOC,
+    /**
+     * Constant for the hl7 struc doc value.
+     */
+    HL7_STRUC_DOC,
+    /**
+     * Constant for the value map value.
+     */
+    VALUE_MAP,
+    /**
+     * Constant for the stereometric value.
+     */
+    STEREOMETRIC,
+    /**
+     * Constant for the palette value.
+     */
+    PALETTE,
+    /**
+     * Constant for the implant value.
+     */
+    IMPLANT,
+    /**
+     * Constant for the implant assy value.
+     */
+    IMPLANT_ASSY,
+    /**
+     * Constant for the implant group value.
+     */
+    IMPLANT_GROUP,
+    /**
+     * Constant for the plan value.
+     */
+    PLAN,
+    /**
+     * Constant for the measurement value.
+     */
+    MEASUREMENT,
+    /**
+     * Constant for the surface value.
+     */
+    SURFACE,
+    /**
+     * Constant for the surface scan value.
+     */
+    SURFACE_SCAN,
+    /**
+     * Constant for the tract value.
+     */
+    TRACT,
+    /**
+     * Constant for the assessment value.
+     */
+    ASSESSMENT,
+    /**
+     * Constant for the private value.
+     */
+    PRIVATE;
 
+    /**
+     * Executes the for code operation.
+     *
+     * @param code the code.
+     * @return the operation result.
+     */
     public static RecordType forCode(String code) {
         try {
             return RecordType.valueOf(code.replace(Symbol.C_SPACE, Symbol.C_UNDERLINE));
@@ -40,6 +188,11 @@ public enum RecordType {
         }
     }
 
+    /**
+     * Executes the code operation.
+     *
+     * @return the operation result.
+     */
     public String code() {
         return name().replace(Symbol.C_UNDERLINE, Symbol.C_SPACE);
     }

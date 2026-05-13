@@ -47,6 +47,7 @@ public class SinglePlaceholderString extends StringTemplate {
      * The default placeholder.
      */
     public static final String DEFAULT_PLACEHOLDER = Symbol.DELIM;
+
     /**
      * The placeholder, defaults to {@link Symbol#DELIM}
      */
@@ -217,6 +218,9 @@ public class SinglePlaceholderString extends StringTemplate {
 
     /**
      * Builder for {@link SinglePlaceholderString}.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class Builder extends AbstractBuilder<Builder, SinglePlaceholderString> {
 
@@ -273,6 +277,7 @@ public class SinglePlaceholderString extends StringTemplate {
         protected Builder self() {
             return this;
         }
+
     }
 
 }

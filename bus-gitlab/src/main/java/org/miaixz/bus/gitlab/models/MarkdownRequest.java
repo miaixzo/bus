@@ -22,6 +22,12 @@ package org.miaixz.bus.gitlab.models;
 import java.io.Serializable;
 import java.io.Serial;
 
+/**
+ * The markdown request class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class MarkdownRequest implements Serializable {
 
     @Serial

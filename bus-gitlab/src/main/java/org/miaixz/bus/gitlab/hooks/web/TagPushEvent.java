@@ -23,6 +23,12 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import java.io.Serial;
 
+/**
+ * The tag push event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class TagPushEvent extends AbstractPushEvent implements Event {
 
     @Serial

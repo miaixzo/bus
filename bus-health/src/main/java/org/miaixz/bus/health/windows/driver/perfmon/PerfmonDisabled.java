@@ -42,10 +42,12 @@ public final class PerfmonDisabled {
      * The PERF_OS_DISABLED constant.
      */
     public static final boolean PERF_OS_DISABLED = isDisabled(Config._WINDOWS_PERFOS_DISABLED, "PerfOS");
+
     /**
      * The PERF_PROC_DISABLED constant.
      */
     public static final boolean PERF_PROC_DISABLED = isDisabled(Config._WINDOWS_PERFPROC_DISABLED, "PerfProc");
+
     /**
      * The PERF_DISK_DISABLED constant.
      */

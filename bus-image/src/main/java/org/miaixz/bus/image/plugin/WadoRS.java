@@ -60,26 +60,32 @@ public class WadoRS {
      * A flag indicating whether to use the Accept header or a URL parameter for content negotiation.
      */
     private static boolean header;
+
     /**
      * A flag to allow connections to any HTTPS host, bypassing hostname verification.
      */
     private static boolean allowAnyHost;
+
     /**
      * A flag to disable the default SSL trust manager, effectively trusting all server certificates.
      */
     private static boolean disableTM;
+
     /**
      * The value for the HTTP Accept header.
      */
     private static String accept = "*";
+
     /**
      * The directory where retrieved files will be stored.
      */
     private static String outDir;
+
     /**
      * The value for the HTTP Authorization header.
      */
     private static String authorization;
+
     /**
      * A map of custom HTTP request properties (headers).
      */

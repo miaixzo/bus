@@ -45,22 +45,27 @@ public class Authorization implements Serializable {
      * The access token issued by the authorization server.
      */
     private String token;
+
     /**
      * The lifetime in seconds of the access token.
      */
     private int expireIn;
+
     /**
      * The refresh token, which can be used to obtain new access tokens.
      */
     private String refresh;
+
     /**
      * The lifetime in seconds of the refresh token.
      */
     private int refreshExpireIn;
+
     /**
      * User ID, typically from the third-party platform.
      */
     private String uid;
+
     /**
      * Open ID, typically from the third-party platform.
      */
@@ -75,10 +80,12 @@ public class Authorization implements Serializable {
      * Google-specific additional property: scope of the granted access.
      */
     private String scope;
+
     /**
      * Google-specific additional property: type of the token issued.
      */
     private String token_type;
+
     /**
      * Google-specific additional property: ID Token, a JSON Web Token (JWT) that contains claims about the
      * authentication of an end-user.
@@ -89,6 +96,7 @@ public class Authorization implements Serializable {
      * Xiaomi-specific additional property: MAC algorithm used for signing.
      */
     private String macAlgorithm;
+
     /**
      * Xiaomi-specific additional property: MAC key used for signing.
      */
@@ -98,6 +106,7 @@ public class Authorization implements Serializable {
      * WeChat Work-specific additional property: authorization code.
      */
     private String code;
+
     /**
      * WeChat Official Account - available for web authorization login. WeChat adds a snapshot page logic for web
      * authorization login, where the uid, oid, avatar, and nickname obtained are virtual information.
@@ -108,18 +117,22 @@ public class Authorization implements Serializable {
      * Twitter-specific additional property: OAuth token.
      */
     private String oauthToken;
+
     /**
      * Twitter-specific additional property: OAuth token secret.
      */
     private String oauthTokenSecret;
+
     /**
      * Twitter-specific additional property: user ID.
      */
     private String userId;
+
     /**
      * Twitter-specific additional property: screen name.
      */
     private String screenName;
+
     /**
      * Twitter-specific additional property: indicates if the OAuth callback was confirmed.
      */

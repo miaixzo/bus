@@ -35,18 +35,34 @@ import jakarta.json.stream.JsonParser;
 import jakarta.json.stream.JsonParsingException;
 
 /**
+ * Represents the JsonConfiguration type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class JsonConfiguration {
 
+    /**
+     * The extensions value.
+     */
     private final List<JsonConfigurationExtension> extensions = new ArrayList<>();
 
+    /**
+     * Adds the json configuration extension.
+     *
+     * @param ext the ext.
+     */
     public void addJsonConfigurationExtension(JsonConfigurationExtension ext) {
         extensions.add(ext);
         ext.setJsonConfiguration(this);
     }
 
+    /**
+     * Removes the json configuration extension.
+     *
+     * @param ext the ext.
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean removeJsonConfigurationExtension(JsonConfigurationExtension ext) {
         if (!extensions.remove(ext))
             return false;
@@ -55,6 +71,12 @@ public class JsonConfiguration {
         return true;
     }
 
+    /**
+     * Gets the json configuration extension.
+     *
+     * @param clazz the clazz.
+     * @return the json configuration extension.
+     */
     public <T extends JsonConfigurationExtension> T getJsonConfigurationExtension(Class<T> clazz) {
         for (JsonConfigurationExtension extension : extensions) {
             if (clazz.isAssignableFrom(extension.getClass()))
@@ -63,6 +85,12 @@ public class JsonConfiguration {
         return null;
     }
 
+    /**
+     * Writes the to.
+     *
+     * @param deviceInfo the device info.
+     * @param gen        the gen.
+     */
     public void writeTo(Device deviceInfo, JsonGenerator gen) {
         JSONWriter writer = new JSONWriter(gen);
         gen.writeStartObject();
@@ -80,6 +108,12 @@ public class JsonConfiguration {
         gen.writeEnd();
     }
 
+    /**
+     * Writes the to.
+     *
+     * @param aetInfo the aet info.
+     * @param gen     the gen.
+     */
     public void writeTo(ApplicationEntityInfo aetInfo, JsonGenerator gen) {
         JSONWriter writer = new JSONWriter(gen);
         gen.writeStartObject();
@@ -96,10 +130,23 @@ public class JsonConfiguration {
         gen.writeEnd();
     }
 
+    /**
+     * Writes the to.
+     *
+     * @param webapp the webapp.
+     * @param gen    the gen.
+     */
     public void writeTo(WebApplication webapp, JsonGenerator gen) {
         writeTo(webapp, gen, webapp.getKeycloakClientID());
     }
 
+    /**
+     * Writes the to.
+     *
+     * @param webapp           the webapp.
+     * @param gen              the gen.
+     * @param keycloakClientID the keycloak client id.
+     */
     public void writeTo(WebApplication webapp, JsonGenerator gen, String keycloakClientID) {
         JSONWriter writer = new JSONWriter(gen);
         gen.writeStartObject();
@@ -117,6 +164,12 @@ public class JsonConfiguration {
         gen.writeEnd();
     }
 
+    /**
+     * Writes the not extended conns.
+     *
+     * @param connections the connections.
+     * @param writer      the writer.
+     */
     private void writeNotExtendedConns(List<Connection> connections, JSONWriter writer) {
         if (!connections.isEmpty()) {
             writer.writeStartArray("dicomNetworkConnection");
@@ -126,6 +179,12 @@ public class JsonConfiguration {
         }
     }
 
+    /**
+     * Writes the to.
+     *
+     * @param hl7AppInfo the hl7 app info.
+     * @param gen        the gen.
+     */
     public void writeTo(HL7ApplicationInfo hl7AppInfo, JsonGenerator gen) {
         JSONWriter writer = new JSONWriter(gen);
         gen.writeStartObject();
@@ -139,6 +198,13 @@ public class JsonConfiguration {
         gen.writeEnd();
     }
 
+    /**
+     * Writes the to.
+     *
+     * @param device   the device.
+     * @param gen      the gen.
+     * @param extended the extended.
+     */
     public void writeTo(Device device, JsonGenerator gen, boolean extended) {
         JSONWriter writer = new JSONWriter(gen);
         writer.writeStartObject();
@@ -196,6 +262,14 @@ public class JsonConfiguration {
         gen.writeEnd();
     }
 
+    /**
+     * Loads the device from.
+     *
+     * @param parser the parser.
+     * @param config the config.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     public Device loadDeviceFrom(JsonParser parser, ConfigurationDelegate config) throws InternalException {
         Device device = new Device();
         JSONReader reader = new JSONReader(parser);
@@ -404,6 +478,15 @@ public class JsonConfiguration {
         return device;
     }
 
+    /**
+     * Loads the device extension.
+     *
+     * @param device the device.
+     * @param reader the reader.
+     * @param config the config.
+     * @return true if the condition is met; otherwise false.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private boolean loadDeviceExtension(Device device, JSONReader reader, ConfigurationDelegate config)
             throws InternalException {
         for (JsonConfigurationExtension ext : extensions)
@@ -412,6 +495,13 @@ public class JsonConfiguration {
         return false;
     }
 
+    /**
+     * Writes the connections to.
+     *
+     * @param device   the device.
+     * @param writer   the writer.
+     * @param extended the extended.
+     */
     private void writeConnectionsTo(Device device, JSONWriter writer, boolean extended) {
         List<Connection> conns = device.listConnections();
         if (conns.isEmpty())
@@ -423,6 +513,13 @@ public class JsonConfiguration {
         writer.writeEnd();
     }
 
+    /**
+     * Writes the to.
+     *
+     * @param conn     the conn.
+     * @param writer   the writer.
+     * @param extended the extended.
+     */
     private void writeTo(Connection conn, JSONWriter writer, boolean extended) {
         writer.writeStartObject();
         writer.writeNotNullOrDef("cn", conn.getCommonName(), null);
@@ -469,6 +566,12 @@ public class JsonConfiguration {
         writer.writeEnd();
     }
 
+    /**
+     * Loads the connections.
+     *
+     * @param device the device.
+     * @param reader the reader.
+     */
     private void loadConnections(Device device, JSONReader reader) {
         reader.next();
         reader.expect(JsonParser.Event.START_ARRAY);
@@ -480,6 +583,12 @@ public class JsonConfiguration {
         reader.expect(JsonParser.Event.END_ARRAY);
     }
 
+    /**
+     * Loads the from.
+     *
+     * @param conn   the conn.
+     * @param reader the reader.
+     */
     private void loadFrom(Connection conn, JSONReader reader) {
         while (reader.next() == JsonParser.Event.KEY_NAME) {
             switch (reader.getString()) {
@@ -639,6 +748,13 @@ public class JsonConfiguration {
         reader.expect(JsonParser.Event.END_OBJECT);
     }
 
+    /**
+     * Writes the application a es to.
+     *
+     * @param device   the device.
+     * @param writer   the writer.
+     * @param extended the extended.
+     */
     private void writeApplicationAEsTo(Device device, JSONWriter writer, boolean extended) {
         Collection<ApplicationEntity> aes = device.getApplicationEntities();
         if (aes.isEmpty())
@@ -651,6 +767,14 @@ public class JsonConfiguration {
         writer.writeEnd();
     }
 
+    /**
+     * Writes the to.
+     *
+     * @param ae       the ae.
+     * @param conns    the conns.
+     * @param writer   the writer.
+     * @param extended the extended.
+     */
     private void writeTo(ApplicationEntity ae, List<Connection> conns, JSONWriter writer, boolean extended) {
         writer.writeStartObject();
         writer.writeNotNullOrDef("dicomAETitle", ae.getAETitle(), null);
@@ -685,6 +809,14 @@ public class JsonConfiguration {
         writer.writeEnd();
     }
 
+    /**
+     * Loads the application entities.
+     *
+     * @param device the device.
+     * @param reader the reader.
+     * @param config the config.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private void loadApplicationEntities(Device device, JSONReader reader, ConfigurationDelegate config)
             throws InternalException {
         reader.next();
@@ -697,6 +829,15 @@ public class JsonConfiguration {
         reader.expect(JsonParser.Event.END_ARRAY);
     }
 
+    /**
+     * Loads the from.
+     *
+     * @param ae     the ae.
+     * @param reader the reader.
+     * @param device the device.
+     * @param config the config.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private void loadFrom(ApplicationEntity ae, JSONReader reader, Device device, ConfigurationDelegate config)
             throws InternalException {
         List<Connection> conns = device.listConnections();
@@ -801,6 +942,16 @@ public class JsonConfiguration {
             throw new JsonParsingException("Missing property: dicomAETitle", reader.getLocation());
     }
 
+    /**
+     * Loads the application entity extension.
+     *
+     * @param device the device.
+     * @param ae     the ae.
+     * @param reader the reader.
+     * @param config the config.
+     * @return true if the condition is met; otherwise false.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private boolean loadApplicationEntityExtension(
             Device device,
             ApplicationEntity ae,
@@ -812,6 +963,13 @@ public class JsonConfiguration {
         return false;
     }
 
+    /**
+     * Writes the transfer capabilities to.
+     *
+     * @param ae       the ae.
+     * @param writer   the writer.
+     * @param extended the extended.
+     */
     private void writeTransferCapabilitiesTo(ApplicationEntity ae, JSONWriter writer, boolean extended) {
         writer.writeStartArray("dicomTransferCapability");
         for (TransferCapability tc : ae.getTransferCapabilities())
@@ -820,6 +978,13 @@ public class JsonConfiguration {
 
     }
 
+    /**
+     * Writes the to.
+     *
+     * @param tc       the tc.
+     * @param writer   the writer.
+     * @param extended the extended.
+     */
     private void writeTo(TransferCapability tc, JSONWriter writer, boolean extended) {
         writer.writeStartObject();
         writer.writeNotNullOrDef("cn", tc.getCommonName(), null);
@@ -850,6 +1015,12 @@ public class JsonConfiguration {
         writer.writeEnd();
     }
 
+    /**
+     * Loads the transfer capabilities.
+     *
+     * @param ae     the ae.
+     * @param reader the reader.
+     */
     private void loadTransferCapabilities(ApplicationEntity ae, JSONReader reader) {
         reader.next();
         reader.expect(JsonParser.Event.START_ARRAY);
@@ -861,6 +1032,12 @@ public class JsonConfiguration {
         reader.expect(JsonParser.Event.END_ARRAY);
     }
 
+    /**
+     * Loads the from.
+     *
+     * @param tc     the tc.
+     * @param reader the reader.
+     */
     private void loadFrom(TransferCapability tc, JSONReader reader) {
         while (reader.next() == JsonParser.Event.KEY_NAME) {
             switch (reader.getString()) {
@@ -959,6 +1136,12 @@ public class JsonConfiguration {
         reader.expect(JsonParser.Event.END_OBJECT);
     }
 
+    /**
+     * Writes the web applications to.
+     *
+     * @param device the device.
+     * @param writer the writer.
+     */
     private void writeWebApplicationsTo(Device device, JSONWriter writer) {
         Collection<WebApplication> webapps = device.getWebApplications();
         if (webapps.isEmpty())
@@ -971,6 +1154,13 @@ public class JsonConfiguration {
         writer.writeEnd();
     }
 
+    /**
+     * Writes the to.
+     *
+     * @param webapp the webapp.
+     * @param conns  the conns.
+     * @param writer the writer.
+     */
     private void writeTo(WebApplication webapp, List<Connection> conns, JSONWriter writer) {
         writer.writeStartObject();
         writer.writeNotNullOrDef("dcmWebAppName", webapp.getApplicationName(), null);
@@ -986,6 +1176,12 @@ public class JsonConfiguration {
         writer.writeEnd();
     }
 
+    /**
+     * Loads the web applications.
+     *
+     * @param device the device.
+     * @param reader the reader.
+     */
     private void loadWebApplications(Device device, JSONReader reader) {
         reader.next();
         reader.expect(JsonParser.Event.START_ARRAY);
@@ -997,6 +1193,13 @@ public class JsonConfiguration {
         reader.expect(JsonParser.Event.END_ARRAY);
     }
 
+    /**
+     * Loads the from.
+     *
+     * @param webapp the webapp.
+     * @param reader the reader.
+     * @param device the device.
+     */
     private void loadFrom(WebApplication webapp, JSONReader reader, Device device) {
         List<Connection> conns = device.listConnections();
         while (reader.next() == JsonParser.Event.KEY_NAME) {
@@ -1051,6 +1254,12 @@ public class JsonConfiguration {
             throw new JsonParsingException("Missing property: dcmWebAppName", reader.getLocation());
     }
 
+    /**
+     * Writes the keycloack clients to.
+     *
+     * @param device the device.
+     * @param writer the writer.
+     */
     private void writeKeycloackClientsTo(Device device, JSONWriter writer) {
         Collection<KeycloakClient> clients = device.getKeycloakClients();
         if (clients.isEmpty())
@@ -1073,6 +1282,12 @@ public class JsonConfiguration {
         writer.writeEnd();
     }
 
+    /**
+     * Loads the keycloak clients.
+     *
+     * @param device the device.
+     * @param reader the reader.
+     */
     private void loadKeycloakClients(Device device, JSONReader reader) {
         reader.next();
         reader.expect(JsonParser.Event.START_ARRAY);
@@ -1084,6 +1299,12 @@ public class JsonConfiguration {
         reader.expect(JsonParser.Event.END_ARRAY);
     }
 
+    /**
+     * Loads the from.
+     *
+     * @param client the client.
+     * @param reader the reader.
+     */
     private void loadFrom(KeycloakClient client, JSONReader reader) {
         while (reader.next() == JsonParser.Event.KEY_NAME) {
             switch (reader.getString()) {
@@ -1132,6 +1353,12 @@ public class JsonConfiguration {
             throw new JsonParsingException("Missing property: dcmKeycloakClientID", reader.getLocation());
     }
 
+    /**
+     * Writes the bulkdata descriptors.
+     *
+     * @param descriptors the descriptors.
+     * @param writer      the writer.
+     */
     public void writeBulkdataDescriptors(Map<String, BasicBulkDataDescriptor> descriptors, JSONWriter writer) {
         if (descriptors.isEmpty())
             return;
@@ -1142,6 +1369,12 @@ public class JsonConfiguration {
         writer.writeEnd();
     }
 
+    /**
+     * Writes the to.
+     *
+     * @param descriptor the descriptor.
+     * @param writer     the writer.
+     */
     private void writeTo(BasicBulkDataDescriptor descriptor, JSONWriter writer) {
         writer.writeStartObject();
         writer.writeNotNullOrDef("dcmBulkDataDescriptorID", descriptor.getBulkDataDescriptorID(), null);
@@ -1151,6 +1384,12 @@ public class JsonConfiguration {
         writer.writeEnd();
     }
 
+    /**
+     * Loads the bulkdata descriptors.
+     *
+     * @param descriptors the descriptors.
+     * @param reader      the reader.
+     */
     public void loadBulkdataDescriptors(Map<String, BasicBulkDataDescriptor> descriptors, JSONReader reader) {
         reader.next();
         reader.expect(JsonParser.Event.START_ARRAY);
@@ -1162,6 +1401,12 @@ public class JsonConfiguration {
         reader.expect(JsonParser.Event.END_ARRAY);
     }
 
+    /**
+     * Loads the from.
+     *
+     * @param descriptor the descriptor.
+     * @param reader     the reader.
+     */
     private void loadFrom(BasicBulkDataDescriptor descriptor, JSONReader reader) {
         while (reader.next() == JsonParser.Event.KEY_NAME) {
             switch (reader.getString()) {

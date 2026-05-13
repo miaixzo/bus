@@ -44,10 +44,12 @@ public final class MetadataCodec {
      * Root metadata object reserved for cortex-specific fields.
      */
     public static final String ROOT = "_cortex";
+
     /**
      * Metadata key storing the effective asset type.
      */
     public static final String TYPE = "type";
+
     /**
      * Legacy metadata key storing the effective asset type.
      */

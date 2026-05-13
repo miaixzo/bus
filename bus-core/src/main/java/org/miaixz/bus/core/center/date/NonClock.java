@@ -41,6 +41,7 @@ public class NonClock {
      * Clock update interval, in milliseconds.
      */
     private final long period;
+
     /**
      * The current time in milliseconds.
      */
@@ -98,6 +99,9 @@ public class NonClock {
 
     /**
      * Singleton holder for {@code NonClock}.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class InstanceHolder {
 
@@ -105,6 +109,7 @@ public class NonClock {
          * The singleton instance of {@code NonClock} with a 1ms update period.
          */
         public static final NonClock INSTANCE = new NonClock(1);
+
     }
 
 }

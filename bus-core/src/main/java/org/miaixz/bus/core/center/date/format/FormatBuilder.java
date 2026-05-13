@@ -44,7 +44,6 @@ import org.miaixz.bus.core.lang.exception.DateException;
  * Instances can be obtained through the following static methods: {@link #getInstance(String, TimeZone, Locale)},
  * {@link #getDateInstance(int, TimeZone, Locale)}, {@link #getTimeInstance(int, TimeZone, Locale)},
  * {@link #getDateTimeInstance(int, int, TimeZone, Locale)}
- * 
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -41,8 +41,8 @@ import org.miaixz.bus.core.codec.binary.encoder.Base32Encoder;
  * <li>"Extended Hex" Base 32 Alphabet (0123456789ABCDEFGHIJKLMNOPQRSTUV)</li>
  * </ul>
  *
- * @author Kimi Liu
  * @see <a href="https://datatracker.ietf.org/doc/html/rfc4648#section-6">RFC 4648 Section 6</a>
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class Base32Provider implements Encoder<byte[], String>, Decoder<CharSequence, byte[]>, Serializable {

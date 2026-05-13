@@ -43,6 +43,9 @@ import org.miaixz.bus.image.metric.hl7.MLLPConnection;
  */
 public class HL7Application implements Serializable {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852267135868L;
 

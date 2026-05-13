@@ -50,6 +50,7 @@ public class InvokeCrontab implements Crontab {
      * The target object on which to invoke the method. For static methods, this is {@code null}.
      */
     private final Object object;
+
     /**
      * The method to be invoked.
      */

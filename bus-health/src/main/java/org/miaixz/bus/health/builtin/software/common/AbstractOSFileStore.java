@@ -35,26 +35,32 @@ public abstract class AbstractOSFileStore implements OSFileStore {
      * The name value.
      */
     private String name;
+
     /**
      * The volume value.
      */
     private String volume;
+
     /**
      * The label value.
      */
     private String label;
+
     /**
      * The mount value.
      */
     private String mount;
+
     /**
      * The options value.
      */
     private String options;
+
     /**
      * The uuid value.
      */
     private String uuid;
+
     /**
      * The local value.
      */

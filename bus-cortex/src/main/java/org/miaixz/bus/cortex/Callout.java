@@ -194,6 +194,8 @@ public final class Callout {
      * @param body         response body snapshot
      * @param errorMessage transport or timeout failure message
      * @param timeout      whether the request timed out before receiving a response
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public record Response(int statusCode, String body, String errorMessage, boolean timeout) {
 

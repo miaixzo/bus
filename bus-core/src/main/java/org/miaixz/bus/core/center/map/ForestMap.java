@@ -38,8 +38,8 @@ import org.miaixz.bus.core.xyz.SetKit;
  *
  * @param <K> The type of the keys (node identifiers).
  * @param <V> The type of the values stored in the nodes.
- * @author Kimi Liu
  * @see TreeEntry
+ * @author Kimi Liu
  * @since Java 21+
  */
 public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {

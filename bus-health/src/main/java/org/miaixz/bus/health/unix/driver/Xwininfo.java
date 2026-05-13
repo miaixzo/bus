@@ -47,14 +47,17 @@ public final class Xwininfo {
      */
     private static final String[] NET_CLIENT_LIST_STACKING = Pattern.SPACES_PATTERN
             .split("xprop -root _NET_CLIENT_LIST_STACKING");
+
     /**
      * The XWININFO_ROOT_TREE constant.
      */
     private static final String[] XWININFO_ROOT_TREE = Pattern.SPACES_PATTERN.split("xwininfo -root -tree");
+
     /**
      * The XPROP_NET_WM_PID_ID constant.
      */
     private static final String[] XPROP_NET_WM_PID_ID = Pattern.SPACES_PATTERN.split("xprop _NET_WM_PID -id");
+
     /**
      * The WINDOW_PATTERN constant.
      */

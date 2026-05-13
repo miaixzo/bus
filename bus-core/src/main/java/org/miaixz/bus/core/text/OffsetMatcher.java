@@ -48,10 +48,12 @@ public class OffsetMatcher implements BiPredicate<CharSequence, CharSequence>, S
      * Whether to ignore case during comparison.
      */
     private final boolean ignoreCase;
+
     /**
      * Whether to ignore the case where the two strings are exactly equal.
      */
     private final boolean ignoreEquals;
+
     /**
      * The matching position. A positive number indicates an offset from the beginning, and a negative number indicates
      * an offset from the end.

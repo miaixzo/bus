@@ -39,10 +39,12 @@ public class CopyVisitor extends SimpleFileVisitor<Path> {
      * Source Path, or base path, used to calculate the relative path of the file to be copied.
      */
     private final Path source;
+
     /**
      * Target Path.
      */
     private final Path target;
+
     /**
      * Copy options, such as skipping existing files.
      */

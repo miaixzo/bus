@@ -26,6 +26,12 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+/**
+ * The jira service class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class JiraService extends NotificationService {
 
     @Serial

@@ -33,12 +33,15 @@ import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
  * Represents a DICOM Bulk Data object, typically used for storing large binary data such as pixel data. This class
  * implements the {@link Value} interface and can reference external files via URI, or contain offset and length
  * information to locate specific data segments within a file.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class BulkData implements Value, Serializable {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852261350109L;
 
@@ -79,7 +82,7 @@ public class BulkData implements Value, Serializable {
 
     /**
      * Constructs a {@code BulkData} object with a UUID, URI, and endianness.
-     * 
+     *
      * @param uuid      The UUID identifier.
      * @param uri       The URI reference to the bulk data.
      * @param bigEndian {@code true} if the data is big-endian, {@code false} otherwise.
@@ -92,7 +95,7 @@ public class BulkData implements Value, Serializable {
 
     /**
      * Constructs a {@code BulkData} object with a URI, offset, length, and endianness.
-     * 
+     *
      * @param uri       The URI reference to the bulk data.
      * @param offset    The offset of the data within the resource.
      * @param length    The length of the data within the resource.
@@ -109,7 +112,7 @@ public class BulkData implements Value, Serializable {
 
     /**
      * Returns the UUID identifier of the bulk data.
-     * 
+     *
      * @return The UUID identifier.
      */
     public String getUUID() {
@@ -118,7 +121,7 @@ public class BulkData implements Value, Serializable {
 
     /**
      * Returns the URI reference to the bulk data.
-     * 
+     *
      * @return The URI reference.
      */
     public String getURI() {
@@ -128,7 +131,7 @@ public class BulkData implements Value, Serializable {
     /**
      * Sets the URI reference for the bulk data. This method also parses any offset and length parameters from the URI
      * query string.
-     * 
+     *
      * @param uri The URI reference.
      */
     public void setURI(String uri) {
@@ -158,7 +161,7 @@ public class BulkData implements Value, Serializable {
 
     /**
      * Checks if the bulk data is big-endian.
-     * 
+     *
      * @return {@code true} if big-endian, {@code false} otherwise.
      */
     public boolean bigEndian() {
@@ -168,7 +171,7 @@ public class BulkData implements Value, Serializable {
     /**
      * Returns the length of the bulk data as an integer. Note that this may truncate if the length exceeds
      * {@code Integer.MAX_VALUE}.
-     * 
+     *
      * @return The length of the data.
      */
     public int length() {
@@ -177,18 +180,28 @@ public class BulkData implements Value, Serializable {
 
     /**
      * Returns the offset of the bulk data within its resource.
-     * 
+     *
      * @return The offset.
      */
     public long offset() {
         return offset;
     }
 
+    /**
+     * Determines whether empty.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean isEmpty() {
         return length == 0;
     }
 
+    /**
+     * Returns the string representation.
+     *
+     * @return the string representation.
+     */
     @Override
     public String toString() {
         return "BulkData[uuid=" + uuid + ", uri=" + uri + ", bigEndian=" + bigEndian + "]";
@@ -196,7 +209,7 @@ public class BulkData implements Value, Serializable {
 
     /**
      * Returns the {@link File} object referenced by the URI, if it's a file URI.
-     * 
+     *
      * @return The {@link File} object.
      * @throws IllegalStateException if the URI is invalid or not a file URI.
      */
@@ -210,7 +223,7 @@ public class BulkData implements Value, Serializable {
 
     /**
      * Returns the URI without any query parameters.
-     * 
+     *
      * @return The URI string without query parameters.
      * @throws IllegalStateException if the URI is {@code null}.
      */
@@ -232,7 +245,7 @@ public class BulkData implements Value, Serializable {
 
     /**
      * Opens an {@link InputStream} to the bulk data. Handles both file and URL URIs.
-     * 
+     *
      * @return An {@link InputStream} for reading the bulk data.
      * @throws IOException           if an I/O error occurs.
      * @throws IllegalStateException if the URI is {@code null}.
@@ -247,6 +260,14 @@ public class BulkData implements Value, Serializable {
         return in;
     }
 
+    /**
+     * Executes the calc length operation.
+     *
+     * @param encOpts    the enc opts.
+     * @param explicitVR the explicit vr.
+     * @param vr         the vr.
+     * @return the operation result.
+     */
     @Override
     public int calcLength(ImageEncodingOptions encOpts, boolean explicitVR, VR vr) {
         if (length == -1)
@@ -254,11 +275,27 @@ public class BulkData implements Value, Serializable {
         return (int) (length + 1) & ~1;
     }
 
+    /**
+     * Gets the encoded length.
+     *
+     * @param encOpts    the enc opts.
+     * @param explicitVR the explicit vr.
+     * @param vr         the vr.
+     * @return the encoded length.
+     */
     @Override
     public int getEncodedLength(ImageEncodingOptions encOpts, boolean explicitVR, VR vr) {
         return (int) ((length == -1) ? -1 : ((length + 1) & ~1));
     }
 
+    /**
+     * Converts this value to bytes.
+     *
+     * @param vr        the vr.
+     * @param bigEndian the big endian.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public byte[] toBytes(VR vr, boolean bigEndian) throws IOException {
         int intLength = (int) length;
@@ -279,6 +316,13 @@ public class BulkData implements Value, Serializable {
         }
     }
 
+    /**
+     * Writes the to.
+     *
+     * @param out the out.
+     * @param vr  the vr.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void writeTo(ImageOutputStream out, VR vr) throws IOException {
         InputStream in = openStream();
@@ -296,7 +340,7 @@ public class BulkData implements Value, Serializable {
 
     /**
      * Custom serialization method to write the object's state.
-     * 
+     *
      * @param oos The {@link ObjectOutputStream} to write to.
      * @throws IOException if an I/O error occurs during serialization.
      */
@@ -309,7 +353,7 @@ public class BulkData implements Value, Serializable {
 
     /**
      * Custom deserialization method to read the object's state.
-     * 
+     *
      * @param ois The {@link ObjectInputStream} to read from.
      * @throws IOException            if an I/O error occurs during deserialization.
      * @throws ClassNotFoundException if the class of a serialized object cannot be found.
@@ -321,6 +365,12 @@ public class BulkData implements Value, Serializable {
         bigEndian = ois.readBoolean();
     }
 
+    /**
+     * Compares this instance with another object for equality.
+     *
+     * @param object the object.
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean equals(Object object) {
         if (this == object)
@@ -343,6 +393,11 @@ public class BulkData implements Value, Serializable {
             return uuid.equals(other.uuid);
     }
 
+    /**
+     * Returns the hash code.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -355,7 +410,7 @@ public class BulkData implements Value, Serializable {
 
     /**
      * Returns the end position of the data segment, calculated as offset + length.
-     * 
+     *
      * @return The end position of the segment, or -1 if length is -1.
      */
     public long getSegmentEnd() {
@@ -367,7 +422,7 @@ public class BulkData implements Value, Serializable {
     /**
      * Returns the actual length of the bulk data as a long, which can represent lengths beyond
      * {@code Integer.MAX_VALUE}.
-     * 
+     *
      * @return The length of the data.
      */
     public long longLength() {
@@ -376,7 +431,7 @@ public class BulkData implements Value, Serializable {
 
     /**
      * Sets the offset of the bulk data within its resource. This also updates the URI string.
-     * 
+     *
      * @param offset The new offset.
      */
     public void setOffset(long offset) {
@@ -386,7 +441,7 @@ public class BulkData implements Value, Serializable {
 
     /**
      * Sets the length of the bulk data. This also updates the URI string.
-     * 
+     *
      * @param length The new length. Must be between -1 and 2^32-2 (inclusive).
      * @throws IllegalArgumentException if the length is out of the valid range.
      */
@@ -400,19 +455,23 @@ public class BulkData implements Value, Serializable {
 
     /**
      * Functional interface for creating {@code BulkData} objects.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FunctionalInterface
     public interface Creator {
 
         /**
          * Creates a {@code BulkData} object.
-         * 
+         *
          * @param uuid      The UUID identifier.
          * @param uri       The URI reference.
          * @param bigEndian {@code true} if big-endian, {@code false} otherwise.
          * @return A new {@code BulkData} instance.
          */
         BulkData create(String uuid, String uri, boolean bigEndian);
+
     }
 
 }

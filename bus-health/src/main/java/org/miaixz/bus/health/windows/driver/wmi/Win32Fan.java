@@ -53,9 +53,13 @@ public final class Win32Fan {
 
     /**
      * Fan speed property.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum SpeedProperty {
         DESIREDSPEED
+
     }
 
 }

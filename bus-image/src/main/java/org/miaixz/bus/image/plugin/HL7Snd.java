@@ -47,6 +47,7 @@ public class HL7Snd extends Device {
      * The local network connection configuration.
      */
     private final Connection conn = new Connection();
+
     /**
      * The remote network connection configuration.
      */
@@ -56,10 +57,12 @@ public class HL7Snd extends Device {
      * The MLLP release protocol version.
      */
     private MLLPRelease mllpRelease;
+
     /**
      * The underlying socket for the connection.
      */
     private Socket sock;
+
     /**
      * The MLLP connection handler.
      */
@@ -167,6 +170,9 @@ public class HL7Snd extends Device {
 
     /**
      * A {@link SimpleFileVisitor} that sends each visited file as an HL7 message.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class HL7Send extends SimpleFileVisitor<Path> {
 
@@ -183,6 +189,7 @@ public class HL7Snd extends Device {
             send(readFromFile(file));
             return FileVisitResult.CONTINUE;
         }
+
     }
 
 }

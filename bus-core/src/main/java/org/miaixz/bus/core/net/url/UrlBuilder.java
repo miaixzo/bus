@@ -33,15 +33,15 @@ import org.miaixz.bus.core.xyz.UrlKit;
 
 /**
  * A builder for creating URLs in the format:
- * 
+ *
  * <pre>
  * [scheme:]scheme-specific-part[#fragment]
  * [scheme:][//authority][path][?query][#fragment]
  * [scheme:][//host:port][path][?query][#fragment]
  * </pre>
  *
- * @author Kimi Liu
  * @see <a href="https://en.wikipedia.org/wiki/Uniform_Resource_Identifier">Uniform Resource Identifier</a>
+ * @author Kimi Liu
  * @since Java 21+
  */
 public final class UrlBuilder implements Builder<String> {
@@ -53,26 +53,32 @@ public final class UrlBuilder implements Builder<String> {
      * The URL scheme (e.g., "http").
      */
     private String scheme;
+
     /**
      * The host (e.g., "127.0.0.1").
      */
     private String host;
+
     /**
      * The port number (-1 for default).
      */
     private int port = -1;
+
     /**
      * The path (e.g., "/aa/bb/cc").
      */
     private UrlPath path;
+
     /**
      * The query string (e.g., "a=1&amp;b=2").
      */
     private UrlQuery query;
+
     /**
      * The fragment identifier (the part after "#").
      */
     private String fragment;
+
     /**
      * The character set for URL encoding and decoding.
      */

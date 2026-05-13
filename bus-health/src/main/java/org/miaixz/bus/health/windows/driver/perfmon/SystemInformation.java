@@ -72,6 +72,9 @@ public final class SystemInformation {
 
     /**
      * Context switch property
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum ContextSwitchProperty implements PerfCounterQuery.PdhCounterProperty {
 
@@ -81,6 +84,7 @@ public final class SystemInformation {
          * The instance value.
          */
         private final String instance;
+
         /**
          * The counter value.
          */
@@ -116,10 +120,14 @@ public final class SystemInformation {
         public String getCounter() {
             return counter;
         }
+
     }
 
     /**
      * Processor Queue Length property
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum ProcessorQueueLengthProperty implements PerfCounterQuery.PdhCounterProperty {
 
@@ -129,6 +137,7 @@ public final class SystemInformation {
          * The instance value.
          */
         private final String instance;
+
         /**
          * The counter value.
          */
@@ -164,6 +173,7 @@ public final class SystemInformation {
         public String getCounter() {
             return counter;
         }
+
     }
 
 }

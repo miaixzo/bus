@@ -48,58 +48,72 @@ public class Watch<T> implements Change<T> {
      * Namespace of the subscription that produced this event.
      */
     private String namespace_id;
+
     /**
      * Asset type scope of the subscription that produced this event, when restricted to one type.
      */
     private Type type;
+
     /**
      * Identifier of the watch subscription receiving this event.
      */
     private String watchId;
+
     /**
      * Original watch criteria used to create the subscription.
      */
     private Vector vector;
+
     /**
      * Values newly observed by the subscription.
      */
     private List<T> added = List.of();
+
     /**
      * Values removed from the subscription result set.
      */
     private List<T> removed = List.of();
+
     /**
      * Values whose content changed while remaining in the result set.
      */
     private List<T> updated = List.of();
+
     /**
      * Logical event type such as snapshot, update, delete or error.
      */
     private String eventType;
+
     /**
      * Source component that emitted the watch event.
      */
     private String source;
+
     /**
      * Optional error message attached to failure notifications.
      */
     private String errorMessage;
+
     /**
      * Human-readable event summary for logs and diagnostics.
      */
     private String summary;
+
     /**
      * Previous emitted sequence used for consumers that enforce ordering.
      */
     private long previousSequence;
+
     /**
      * Whether the event represents a synthetic snapshot instead of a live delta.
      */
     private boolean snapshot;
+
     /**
      * Ordering sequence assigned to this watch event.
      */
     private long sequence;
+
     /**
      * Creation time of this watch event in epoch milliseconds.
      */

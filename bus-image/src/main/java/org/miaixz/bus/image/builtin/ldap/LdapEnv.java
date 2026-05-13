@@ -25,14 +25,22 @@ import java.util.Hashtable;
 import javax.naming.Context;
 
 /**
+ * Represents the LdapEnv type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class LdapEnv extends Hashtable<String, Object> {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852257380532L;
 
+    /**
+     * Creates a new instance.
+     */
     public LdapEnv() {
         put(
                 Context.INITIAL_CONTEXT_FACTORY,
@@ -40,14 +48,29 @@ public class LdapEnv extends Hashtable<String, Object> {
         put("java.naming.ldap.attributes.binary", "dicomVendorData");
     }
 
+    /**
+     * Sets the url.
+     *
+     * @param ldapURL the ldap url.
+     */
     public void setUrl(String ldapURL) {
         put(Context.PROVIDER_URL, ldapURL);
     }
 
+    /**
+     * Sets the user dn.
+     *
+     * @param dn the dn.
+     */
     public void setUserDN(String dn) {
         put(Context.SECURITY_PRINCIPAL, dn);
     }
 
+    /**
+     * Sets the password.
+     *
+     * @param password the password.
+     */
     public void setPassword(String password) {
         put(Context.SECURITY_AUTHENTICATION, "simple");
         put(Context.SECURITY_CREDENTIALS, password);

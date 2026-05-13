@@ -1,6 +1,12 @@
 package org.opencv.core;
 
 //javadoc:RotatedRect_
+/**
+ * The rotated rect class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class RotatedRect {
 
     public Point center;
@@ -102,4 +108,5 @@ public class RotatedRect {
     public String toString() {
         return "{ " + center + " " + size + " * " + angle + " }";
     }
+
 }

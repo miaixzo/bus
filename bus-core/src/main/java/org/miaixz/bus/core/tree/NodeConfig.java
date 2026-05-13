@@ -43,22 +43,27 @@ public class NodeConfig implements Serializable {
      * The name of the ID property. Default is "id".
      */
     private String idKey = "id";
+
     /**
      * The name of the parent ID property. Default is "parentId".
      */
     private String parentIdKey = "parentId";
+
     /**
      * The name of the weight property. Default is "selector".
      */
     private String weightKey = "selector";
+
     /**
      * The name of the name property. Default is "name".
      */
     private String nameKey = "name";
+
     /**
      * The name of the children property. Default is "children".
      */
     private String childrenKey = "children";
+
     /**
      * The maximum depth of the tree to build, starting from 0. A null value means unlimited depth.
      */

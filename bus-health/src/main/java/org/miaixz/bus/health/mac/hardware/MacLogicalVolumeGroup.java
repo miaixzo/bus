@@ -41,14 +41,17 @@ final class MacLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
      * The DISKUTIL_CS_LIST constant.
      */
     private static final String DISKUTIL_CS_LIST = "diskutil cs list";
+
     /**
      * The LOGICAL_VOLUME_GROUP constant.
      */
     private static final String LOGICAL_VOLUME_GROUP = "Logical Volume Group";
+
     /**
      * The PHYSICAL_VOLUME constant.
      */
     private static final String PHYSICAL_VOLUME = "Physical Volume";
+
     /**
      * The LOGICAL_VOLUME constant.
      */

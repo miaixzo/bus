@@ -231,7 +231,9 @@ public class SpelCalculator {
         return null;
     }
 
-    /** Locate an operator string outside string literals. Returns -1 if not found. */
+    /**
+     * Locate an operator string outside string literals. Returns -1 if not found.
+     */
     private static int indexOfOperator(String expr, String op) {
         boolean inStr = false;
         char strChar = 0;
@@ -250,7 +252,9 @@ public class SpelCalculator {
         return -1;
     }
 
-    /** Split on {@code +} outside string literals. */
+    /**
+     * Split on {@code +} outside string literals.
+     */
     private static List<String> splitOnPlus(String expr) {
         List<String> parts = new ArrayList<>();
         boolean inStr = false;

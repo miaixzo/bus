@@ -25,15 +25,34 @@ import java.io.IOException;
 import org.miaixz.bus.image.metric.hl7.MLLPConnection;
 
 /**
+ * Represents the HL7Connection type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class HL7Connection implements Closeable {
 
+    /**
+     * The hl7 application value.
+     */
     private final HL7Application hl7Application;
+
+    /**
+     * The mllp connection value.
+     */
     private final MLLPConnection mllpConnection;
+
+    /**
+     * The monitor value.
+     */
     private final HL7ConnectionMonitor monitor;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param hl7Application the hl7 application.
+     * @param mllpConnection the mllp connection.
+     */
     public HL7Connection(HL7Application hl7Application, MLLPConnection mllpConnection) {
         this.hl7Application = hl7Application;
         this.mllpConnection = mllpConnection;
@@ -41,6 +60,12 @@ public class HL7Connection implements Closeable {
                 .getHL7ConnectionMonitor();
     }
 
+    /**
+     * Writes the message.
+     *
+     * @param msg the msg.
+     * @throws IOException if the operation cannot be completed.
+     */
     public void writeMessage(UnparsedHL7Message msg) throws IOException {
         try {
             mllpConnection.writeMessage(msg.data());
@@ -52,6 +77,13 @@ public class HL7Connection implements Closeable {
         }
     }
 
+    /**
+     * Reads the message.
+     *
+     * @param msg the msg.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     public UnparsedHL7Message readMessage(UnparsedHL7Message msg) throws IOException {
         try {
             byte[] b = mllpConnection.readMessage();
@@ -64,6 +96,11 @@ public class HL7Connection implements Closeable {
         }
     }
 
+    /**
+     * Executes the close operation.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void close() throws IOException {
         mllpConnection.close();

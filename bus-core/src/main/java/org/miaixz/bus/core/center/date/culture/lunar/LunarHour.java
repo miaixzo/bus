@@ -307,4 +307,5 @@ public class LunarHour extends SecondParts {
     public MinorRen getMinorRen() {
         return getLunarDay().getMinorRen().next(getIndexInDay());
     }
+
 }

@@ -43,10 +43,12 @@ public class StringTrimer implements UnaryOperator<CharSequence>, Serializable {
      * Trimmer instance to remove leading and trailing blank characters.
      */
     public static final StringTrimer TRIM_BLANK = new StringTrimer(TrimMode.BOTH, CharKit::isBlankChar);
+
     /**
      * Trimmer instance to remove leading blank characters.
      */
     public static final StringTrimer TRIM_PREFIX_BLANK = new StringTrimer(TrimMode.PREFIX, CharKit::isBlankChar);
+
     /**
      * Trimmer instance to remove trailing blank characters.
      */
@@ -56,6 +58,7 @@ public class StringTrimer implements UnaryOperator<CharSequence>, Serializable {
      * The trimming mode, specifying whether to trim from the prefix, suffix, or both.
      */
     private final TrimMode mode;
+
     /**
      * The predicate used to determine if a character should be trimmed. Returns {@code true} if the character should be
      * filtered out, {@code false} otherwise.
@@ -114,6 +117,9 @@ public class StringTrimer implements UnaryOperator<CharSequence>, Serializable {
 
     /**
      * Trimming mode enumeration.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum TrimMode {
         /**
@@ -128,6 +134,7 @@ public class StringTrimer implements UnaryOperator<CharSequence>, Serializable {
          * Trim from both the head and tail of the string.
          */
         BOTH
+
     }
 
 }

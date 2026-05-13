@@ -26,6 +26,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * Enum for the various Build status values.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public enum BuildStatus {
 

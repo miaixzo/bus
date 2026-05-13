@@ -20,38 +20,61 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_SMS_AX__QUANT_1_0;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS SMS-AX QUANT 1.0";
 
-    /** (0023,xx00) VR=DS VM=2 Horizontal Calibration Pixel Size */
+    /**
+     * (0023,xx00) VR=DS VM=2 Horizontal Calibration Pixel Size
+     */
     public static final int HorizontalCalibrationPixelSize = 0x00230000;
 
-    /** (0023,xx01) VR=DS VM=2 Vertical Calibration Pixel Size */
+    /**
+     * (0023,xx01) VR=DS VM=2 Vertical Calibration Pixel Size
+     */
     public static final int VerticalCalibrationPixelSize = 0x00230001;
 
-    /** (0023,xx02) VR=LO VM=1 Calibration Object */
+    /**
+     * (0023,xx02) VR=LO VM=1 Calibration Object
+     */
     public static final int CalibrationObject = 0x00230002;
 
-    /** (0023,xx03) VR=DS VM=1 Calibration Object Size */
+    /**
+     * (0023,xx03) VR=DS VM=1 Calibration Object Size
+     */
     public static final int CalibrationObjectSize = 0x00230003;
 
-    /** (0023,xx04) VR=LO VM=1 Calibration Method */
+    /**
+     * (0023,xx04) VR=LO VM=1 Calibration Method
+     */
     public static final int CalibrationMethod = 0x00230004;
 
-    /** (0023,xx05) VR=ST VM=1 Filename */
+    /**
+     * (0023,xx05) VR=ST VM=1 Filename
+     */
     public static final int Filename = 0x00230005;
 
-    /** (0023,xx06) VR=IS VM=1 Frame Number */
+    /**
+     * (0023,xx06) VR=IS VM=1 Frame Number
+     */
     public static final int FrameNumber = 0x00230006;
 
-    /** (0023,xx07) VR=IS VM=2 Calibration Factor Multiplicity */
+    /**
+     * (0023,xx07) VR=IS VM=2 Calibration Factor Multiplicity
+     */
     public static final int CalibrationFactorMultiplicity = 0x00230007;
 
-    /** (0023,xx08) VR=IS VM=1 Calibration Table Object Distance */
+    /**
+     * (0023,xx08) VR=IS VM=1 Calibration Table Object Distance
+     */
     public static final int CalibrationTableObjectDistance = 0x00230008;
 
 }

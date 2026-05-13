@@ -26,6 +26,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * Enum to model the type of link between issues or epics
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public enum LinkType {
 

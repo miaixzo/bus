@@ -87,34 +87,42 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * The number of CPUs.
      */
     static final int NCPU = RuntimeKit.getProcessorCount();
+
     /**
      * The maximum weighted capacity of the map.
      */
     static final long MAXIMUM_CAPACITY = Long.MAX_VALUE - Integer.MAX_VALUE;
+
     /**
      * The number of read buffers to use.
      */
     static final int NUMBER_OF_READ_BUFFERS = ceilingNextPowerOfTwo(NCPU);
+
     /**
      * Mask value for indexing into the read buffers.
      */
     static final int READ_BUFFERS_MASK = NUMBER_OF_READ_BUFFERS - 1;
+
     /**
      * The number of pending read operations before attempting to drain.
      */
     static final int READ_BUFFER_THRESHOLD = 32;
+
     /**
      * The maximum number of read operations to perform per amortized drain.
      */
     static final int READ_BUFFER_DRAIN_THRESHOLD = 2 * READ_BUFFER_THRESHOLD;
+
     /**
      * The maximum number of pending reads per buffer.
      */
     static final int READ_BUFFER_SIZE = 2 * READ_BUFFER_DRAIN_THRESHOLD;
+
     /**
      * Mask value for indexing into the read buffer.
      */
     static final int READ_BUFFER_INDEX_MASK = READ_BUFFER_SIZE - 1;
+
     /**
      * The maximum number of write operations to perform per amortized drain.
      */
@@ -124,71 +132,88 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * The backing data store holding the key-value associations.
      */
     final ConcurrentMap<K, Node<K, V>> data;
+
     /**
      * The estimated number of concurrently updating threads.
      */
     final int concurrencyLevel;
+
     /**
      * The total number of reads recorded by each read buffer.
      */
     final long[] readBufferReadCount;
+
     /**
      * The eviction deque used to implement the page replacement policy.
      */
     final LinkedDeque<Node<K, V>> evictionDeque;
+
     /**
      * The total weighted size of the map.
      */
     final AtomicLong weightedSize;
+
     /**
      * The maximum weighted capacity of the map.
      */
     final AtomicLong capacity;
+
     /**
      * The lock used to protect the eviction deque.
      */
     final Lock evictionLock;
+
     /**
      * A buffer for pending write operations.
      */
     final Queue<Runnable> writeBuffer;
+
     /**
      *
      * The total number of writes recorded by each read buffer.
      */
     final AtomicLong[] readBufferWriteCount;
+
     /**
      * The write count at which the last drain of each read buffer occurred.
      */
     final AtomicLong[] readBufferDrainAtWriteCount;
+
     /**
      * A circular array of buffers for recording read operations.
      */
     final AtomicReference<Node<K, V>>[][] readBuffers;
+
     /**
      * The current draining status of the buffers.
      */
     final AtomicReference<DrainStatus> drainStatus;
+
     /**
      * The weigher used to determine the weight of each entry.
      */
     final EntryWeigher<? super K, ? super V> weigher;
+
     /**
      * A queue of evicted entries pending notification to the listener.
      */
     final Queue<Node<K, V>> pendingNotifications;
+
     /**
      * The listener to be notified when an entry is evicted.
      */
     final BiConsumer<K, V> listener;
+
     /**
      * A cached view of the key set.
      */
     transient Set<K> keySet;
+
     /**
      * A cached view of the values.
      */
     transient Collection<V> values;
+
     /**
      * A cached view of the entry set.
      */
@@ -1069,6 +1094,9 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
 
     /**
      * The draining status of the buffers.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     enum DrainStatus {
 
@@ -1136,10 +1164,14 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
          * @return if a drain should be attempted
          */
         abstract boolean shouldDrainBuffers(boolean delayable);
+
     }
 
     /**
      * A listener that ignores all notifications.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     enum DiscardingListener implements BiConsumer<Object, Object> {
 
@@ -1157,10 +1189,14 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         @Override
         public void accept(final Object key, final Object value) {
         }
+
     }
 
     /**
      * A value, its selector, and the entry's status.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static final class WeightedValue<V> {
 
@@ -1196,11 +1232,15 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         boolean isDead() {
             return weight == 0;
         }
+
     }
 
     /**
      * A node contains the data, the weighted value, and the linkage pointers on the page-replacement algorithm's data
      * structures.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static final class Node<K, V> extends AtomicReference<WeightedValue<V>> implements Linked<Node<K, V>> {
 
@@ -1272,10 +1312,14 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         V getValue() {
             return get().value;
         }
+
     }
 
     /**
      * A weigher that enforces that the selector falls within a valid range.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static final class BoundedEntryWeigher<K, V> implements EntryWeigher<K, V>, Serializable {
 
@@ -1307,12 +1351,16 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         Object writeReplace() {
             return weigher;
         }
+
     }
 
     /**
      * A proxy that is serialized instead of the map. The page-replacement algorithm's data structures are not
      * serialized so the deserialized instance contains only the entries. This is acceptable as caches hold transient
      * data that is recomputable and serialization would tend to be used as a fast warm-up process.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static final class SerializationProxy<K, V> implements Serializable {
 
@@ -1338,12 +1386,13 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
             map.putAll(data);
             return map;
         }
+
     }
 
     /**
      * A builder that creates {@link ConcurrentLinkedHashMap} instances. It provides a flexible approach for
      * constructing customized instances with a named parameter syntax. It can be used in the following manner: *
-     * 
+     *
      * <pre>{@code
      * * ConcurrentMap<Vertex, Set<Edge>> graph = new Builder<Vertex, Set<Edge>>().maximumWeightedCapacity(5000)
      * .weigher(Weighers.<Edge>set()).build();
@@ -1351,6 +1400,8 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      *
      * @param <K> the key type
      * @param <V> the value type
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static final class Builder<K, V> {
 
@@ -1464,10 +1515,14 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
             Assert.state(capacity >= 0);
             return new ConcurrentLinkedHashMap<>(this);
         }
+
     }
 
     /**
      * Adds the node to the page replacement policy.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     final class AddTask implements Runnable {
 
@@ -1495,10 +1550,14 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
                 evict();
             }
         }
+
     }
 
     /**
      * Removes a node from the page replacement policy.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     final class RemovalTask implements Runnable {
 
@@ -1520,10 +1579,14 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
             evictionDeque.remove(node);
             makeDead(node);
         }
+
     }
 
     /**
      * Updates the weighted size and evicts an entry on overflow.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     final class UpdateTask implements Runnable {
 
@@ -1547,10 +1610,14 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
             applyRead(node);
             evict();
         }
+
     }
 
     /**
      * An adapter to safely externalize the keys.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     final class KeySet extends AbstractSet<K> {
 
@@ -1642,10 +1709,14 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         public <T> T[] toArray(final T[] array) {
             return map.data.keySet().toArray(array);
         }
+
     }
 
     /**
      * An adapter to safely externalize the data iterator.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     final class KeyIterator implements Iterator<K> {
 
@@ -1689,10 +1760,14 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
             ConcurrentLinkedHashMap.this.remove(current);
             current = null;
         }
+
     }
 
     /**
      * An adapter to safely externalize the values.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     final class Values extends AbstractCollection<V> {
 
@@ -1742,10 +1817,14 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         public boolean contains(final Object o) {
             return containsValue(o);
         }
+
     }
 
     /**
      * An adapter to safely externalize the value iterator.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     final class ValueIterator implements Iterator<V> {
 
@@ -1788,10 +1867,14 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
             ConcurrentLinkedHashMap.this.remove(current.key);
             current = null;
         }
+
     }
 
     /**
      * An adapter to safely externalize the entries.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     final class EntrySet extends AbstractSet<Entry<K, V>> {
 
@@ -1878,10 +1961,14 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
             final Entry<K, V> entry = (Entry<K, V>) object;
             return map.remove(entry.getKey(), entry.getValue());
         }
+
     }
 
     /**
      * An adapter to safely externalize the entry iterator.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     final class EntryIterator implements Iterator<Entry<K, V>> {
 
@@ -1924,10 +2011,14 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
             ConcurrentLinkedHashMap.this.remove(current.key);
             current = null;
         }
+
     }
 
     /**
      * An entry that allows updates to write through to the map.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     final class WriteThroughEntry extends SimpleEntry<K, V> {
 
@@ -1955,6 +2046,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         Object writeReplace() {
             return new SimpleEntry<>(this);
         }
+
     }
 
 }

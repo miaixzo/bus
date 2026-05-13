@@ -20,23 +20,36 @@
 package org.miaixz.bus.image.galaxy.dict.GEMS_SERS_01;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEMS_SERS_01";
 
-    /** (0025,xx06) VR=SS VM=1 Last Pulse Sequence Used */
+    /**
+     * (0025,xx06) VR=SS VM=1 Last Pulse Sequence Used
+     */
     public static final int LastPulseSequenceUsed = 0x00250006;
 
-    /** (0025,xx07) VR=SL VM=1 Images In Series */
+    /**
+     * (0025,xx07) VR=SL VM=1 Images In Series
+     */
     public static final int ImagesInSeries = 0x00250007;
 
-    /** (0025,xx10) VR=SL VM=1 Landmark Counter */
+    /**
+     * (0025,xx10) VR=SL VM=1 Landmark Counter
+     */
     public static final int LandmarkCounter = 0x00250010;
 
-    /** (0025,xx11) VR=SS VM=1 Number Of Acquisitions */
+    /**
+     * (0025,xx11) VR=SS VM=1 Number Of Acquisitions
+     */
     public static final int NumberOfAcquisitions = 0x00250011;
 
     /**
@@ -44,19 +57,29 @@ public class PrivateTag {
      */
     public static final int IndicatesNumberOfUpdatesToHeader = 0x00250014;
 
-    /** (0025,xx17) VR=SL VM=1 Series Complete Flag */
+    /**
+     * (0025,xx17) VR=SL VM=1 Series Complete Flag
+     */
     public static final int SeriesCompleteFlag = 0x00250017;
 
-    /** (0025,xx18) VR=SL VM=1 Number Of Images Archived */
+    /**
+     * (0025,xx18) VR=SL VM=1 Number Of Images Archived
+     */
     public static final int NumberOfImagesArchived = 0x00250018;
 
-    /** (0025,xx19) VR=SL VM=1 Last Instance Number Used */
+    /**
+     * (0025,xx19) VR=SL VM=1 Last Instance Number Used
+     */
     public static final int LastInstanceNumberUsed = 0x00250019;
 
-    /** (0025,xx1A) VR=SH VM=1 Primary Receiver Suite And Host */
+    /**
+     * (0025,xx1A) VR=SH VM=1 Primary Receiver Suite And Host
+     */
     public static final int PrimaryReceiverSuiteAndHost = 0x0025001A;
 
-    /** (0025,xx1B) VR=OB VM=1 Protocol Data Block (compressed) */
+    /**
+     * (0025,xx1B) VR=OB VM=1 Protocol Data Block (compressed)
+     */
     public static final int ProtocolDataBlockCompressed = 0x0025001B;
 
 }

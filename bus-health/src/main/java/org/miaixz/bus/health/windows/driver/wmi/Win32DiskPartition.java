@@ -53,9 +53,13 @@ public final class Win32DiskPartition {
 
     /**
      * Disk partition properties
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum DiskPartitionProperty {
         INDEX, DESCRIPTION, DEVICEID, DISKINDEX, NAME, SIZE, TYPE
+
     }
 
 }

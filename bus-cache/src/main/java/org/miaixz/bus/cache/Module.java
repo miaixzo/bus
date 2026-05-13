@@ -250,6 +250,9 @@ public class Module {
      * <p>
      * This pattern ensures lazy and thread-safe initialization without using explicit synchronization.
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class ModuleHolder {
 
@@ -257,6 +260,7 @@ public class Module {
          * The singleton instance of Module.
          */
         private static final Module INSTANCE = new Module();
+
     }
 
 }

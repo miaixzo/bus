@@ -89,6 +89,9 @@ public interface Errors {
     /**
      * An inner class representing an error code entry, which stores the error code and message. This class implements
      * the {@link Errors} interface.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class Entry implements Errors {
 
@@ -96,6 +99,7 @@ public interface Errors {
          * The unique error code.
          */
         private final String key;
+
         /**
          * The detailed error message.
          */
@@ -131,6 +135,7 @@ public interface Errors {
         public String getValue() {
             return value;
         }
+
     }
 
 }

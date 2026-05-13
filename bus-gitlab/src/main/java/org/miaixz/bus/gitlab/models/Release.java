@@ -30,6 +30,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serial;
 
+/**
+ * The release class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Release implements Serializable {
 
     @Serial

@@ -20,35 +20,56 @@
 package org.miaixz.bus.image.galaxy.dict.SPI_P_Private_DCI_Release_1;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SPI-P-Private-DCI Release 1";
 
-    /** (0019,xx10) VR=UN VM=1 ? */
+    /**
+     * (0019,xx10) VR=UN VM=1 ?
+     */
     public static final int ECGTimeMapDataBitsAllocated = 0x00190010;
 
-    /** (0019,xx11) VR=UN VM=1 ? */
+    /**
+     * (0019,xx11) VR=UN VM=1 ?
+     */
     public static final int ECGTimeMapDataBitsStored = 0x00190011;
 
-    /** (0019,xx12) VR=UN VM=1 ? */
+    /**
+     * (0019,xx12) VR=UN VM=1 ?
+     */
     public static final int ECGTimeMapDataHighBit = 0x00190012;
 
-    /** (0019,xx13) VR=UN VM=1 ? */
+    /**
+     * (0019,xx13) VR=UN VM=1 ?
+     */
     public static final int ECGTimeMapDataRepresentation = 0x00190013;
 
-    /** (0019,xx14) VR=UN VM=1 ? */
+    /**
+     * (0019,xx14) VR=UN VM=1 ?
+     */
     public static final int ECGTimeMapDataSmallestDataValue = 0x00190014;
 
-    /** (0019,xx15) VR=UN VM=1 ? */
+    /**
+     * (0019,xx15) VR=UN VM=1 ?
+     */
     public static final int ECGTimeMapDataLargestDataValue = 0x00190015;
 
-    /** (0019,xx16) VR=UN VM=1 ? */
+    /**
+     * (0019,xx16) VR=UN VM=1 ?
+     */
     public static final int ECGTimeMapDataNumberOfDataValues = 0x00190016;
 
-    /** (0019,xx17) VR=UN VM=1 ? */
+    /**
+     * (0019,xx17) VR=UN VM=1 ?
+     */
     public static final int ECGTimeMapData = 0x00190017;
 
 }

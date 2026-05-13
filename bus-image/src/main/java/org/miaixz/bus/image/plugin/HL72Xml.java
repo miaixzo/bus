@@ -47,14 +47,17 @@ public class HL72Xml {
      * The URL of the XSLT stylesheet to apply.
      */
     private URL xslt;
+
     /**
      * Whether to format the XML output with indentation.
      */
     private boolean indent = false;
+
     /**
      * Whether to include the XML namespace declaration.
      */
     private boolean includeNamespaceDeclaration = false;
+
     /**
      * The character set to use if not specified in the MSH segment.
      */

@@ -34,8 +34,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  * binary and 39 in hexadecimal. Languages like Java and C use the prefix "0x" to distinguish hexadecimal from decimal
  * numbers, for example, 0x20 is decimal 32, not decimal 20.
  *
- * @author Kimi Liu
  * @see Base16Provider
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class Hex {

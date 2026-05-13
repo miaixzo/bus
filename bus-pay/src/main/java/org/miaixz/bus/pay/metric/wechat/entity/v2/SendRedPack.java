@@ -43,74 +43,92 @@ public class SendRedPack extends Voucher {
      * Random string.
      */
     private String nonce_str;
+
     /**
      * Signature.
      */
     private String sign;
+
     /**
      * Merchant's bill number.
      */
     private String mch_billno;
+
     /**
      * Merchant ID.
      */
     private String mch_id;
+
     /**
      * Sub-merchant ID.
      */
     private String sub_mch_id;
+
     /**
      * App ID of the Official Account.
      */
     private String wxappid;
+
     /**
      * App ID for receiving messages (for service providers).
      */
     private String msgappid;
+
     /**
      * Sender's name.
      */
     private String send_name;
+
     /**
      * Recipient's OpenID.
      */
     private String re_openid;
+
     /**
      * Total amount in cents.
      */
     private String total_amount;
+
     /**
      * Total number of red packets.
      */
     private String total_num;
+
     /**
      * Amount type for group red packets (ALL_RAND).
      */
     private String amt_type;
+
     /**
      * Wishing message for the red packet.
      */
     private String wishing;
+
     /**
      * Client IP address.
      */
     private String client_ip;
+
     /**
      * Activity name.
      */
     private String act_name;
+
     /**
      * Remark.
      */
     private String remark;
+
     /**
      * Scene ID for specific red packet scenarios.
      */
     private String scene_id;
+
     /**
      * Risk control information in JSON format.
      */
     private String risk_info;
+
     /**
      * Notification method.
      */

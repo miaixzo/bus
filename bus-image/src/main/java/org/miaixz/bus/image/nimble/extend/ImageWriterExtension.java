@@ -25,31 +25,59 @@ import org.miaixz.bus.image.metric.net.DeviceExtension;
 import org.miaixz.bus.image.nimble.codec.ImageWriterFactory;
 
 /**
+ * Represents the ImageWriterExtension type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class ImageWriterExtension extends DeviceExtension {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852289637107L;
 
+    /**
+     * The factory value.
+     */
     public volatile ImageWriterFactory factory;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param factory the factory.
+     */
     public ImageWriterExtension(ImageWriterFactory factory) {
         if (factory == null)
             throw new NullPointerException();
         this.factory = factory;
     }
 
+    /**
+     * Gets the image writer factory.
+     *
+     * @return the image writer factory.
+     */
     public final ImageWriterFactory getImageWriterFactory() {
         return factory;
     }
 
+    /**
+     * Executes the reconfigure operation.
+     *
+     * @param from the from.
+     */
     @Override
     public void reconfigure(DeviceExtension from) {
         reconfigureImageWriter((ImageWriterExtension) from);
     }
 
+    /**
+     * Executes the reconfigure image writer operation.
+     *
+     * @param from the from.
+     */
     private void reconfigureImageWriter(ImageWriterExtension from) {
         factory = from.factory;
     }

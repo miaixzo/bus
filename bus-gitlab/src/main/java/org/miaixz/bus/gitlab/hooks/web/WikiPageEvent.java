@@ -23,6 +23,12 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import java.io.Serial;
 
+/**
+ * The wiki page event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class WikiPageEvent extends AbstractEvent {
 
     @Serial
@@ -77,6 +83,12 @@ public class WikiPageEvent extends AbstractEvent {
         this.objectAttributes = objectAttributes;
     }
 
+    /**
+     * The wiki class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public static class Wiki {
 
         private String webUrl;
@@ -124,6 +136,7 @@ public class WikiPageEvent extends AbstractEvent {
         public void setDefaultBranch(String defaultBranch) {
             this.defaultBranch = defaultBranch;
         }
+
     }
 
     @Override
@@ -131,6 +144,12 @@ public class WikiPageEvent extends AbstractEvent {
         return (JacksonJson.toJsonString(this));
     }
 
+    /**
+     * The object attributes class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public static class ObjectAttributes {
 
         private String title;
@@ -214,6 +233,7 @@ public class WikiPageEvent extends AbstractEvent {
         public void setVersionId(String versionId) {
             this.versionId = versionId;
         }
+
     }
 
 }

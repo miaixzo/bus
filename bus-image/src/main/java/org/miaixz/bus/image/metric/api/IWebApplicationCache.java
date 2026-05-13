@@ -23,19 +23,48 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.metric.WebApplication;
 
 /**
+ * Defines the IWebApplicationCache contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface IWebApplicationCache {
 
+    /**
+     * Gets the stale timeout.
+     *
+     * @return the stale timeout.
+     */
     int getStaleTimeout();
 
+    /**
+     * Sets the stale timeout.
+     *
+     * @param staleTimeout the stale timeout.
+     */
     void setStaleTimeout(int staleTimeout);
 
+    /**
+     * Executes the clear operation.
+     */
     void clear();
 
+    /**
+     * Executes the get operation.
+     *
+     * @param aet the aet.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     WebApplication get(String aet) throws InternalException;
 
+    /**
+     * Finds the web application.
+     *
+     * @param name the name.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     WebApplication findWebApplication(String name) throws InternalException;
 
 }

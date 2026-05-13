@@ -41,26 +41,32 @@ public abstract class AbstractUsbDevice implements UsbDevice {
      * The name value.
      */
     private final String name;
+
     /**
      * The vendor value.
      */
     private final String vendor;
+
     /**
      * The vendorId value.
      */
     private final String vendorId;
+
     /**
      * The productId value.
      */
     private final String productId;
+
     /**
      * The serialNumber value.
      */
     private final String serialNumber;
+
     /**
      * The uniqueDeviceId value.
      */
     private final String uniqueDeviceId;
+
     /**
      * The connectedDevices value.
      */

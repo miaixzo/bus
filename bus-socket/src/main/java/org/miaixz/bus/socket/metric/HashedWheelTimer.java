@@ -46,23 +46,28 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
      * The duration between ticks.
      */
     private final long tickDuration;
+
     /**
      * The buckets of the hashed wheel.
      */
     private final HashedWheelBucket[] wheel;
     private final int mask;
+
     /**
      * Queue for newly scheduled tasks.
      */
     private final Queue<HashedWheelSocketTask> newTimeouts = new ConcurrentLinkedQueue<>();
+
     /**
      * Queue for cancelled tasks.
      */
     private final Queue<HashedWheelSocketTask> cancelledTimeouts = new ConcurrentLinkedQueue<>();
+
     /**
      * Number of pending timeouts.
      */
     private final AtomicLong pendingTimeouts = new AtomicLong(0);
+
     /**
      * The start time of the timer.
      */
@@ -225,6 +230,12 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
         }
     }
 
+    /**
+     * The hashed wheel socket task class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     private static final class HashedWheelSocketTask implements SocketTask {
 
         private static final int ST_INIT = 0;
@@ -335,10 +346,14 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
 
             return buf.append(", task: ").append(runnable).append(')').toString();
         }
+
     }
 
     /**
      * A bucket in the hashed wheel timer, which holds a linked list of tasks.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static final class HashedWheelBucket {
 
@@ -396,6 +411,7 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
             timeout.timer.pendingTimeouts.decrementAndGet();
             return next;
         }
+
     }
 
 }

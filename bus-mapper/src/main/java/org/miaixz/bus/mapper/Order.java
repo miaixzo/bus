@@ -48,7 +48,7 @@ import org.miaixz.bus.core.lang.Normal;
  * <p>
  * Example usage:
  * </p>
- * 
+ *
  * <pre>{@code
  *
  * // Traditional usage (unchanged)
@@ -221,6 +221,9 @@ public interface Order extends org.miaixz.bus.core.Order {
 
     /**
      * Simple implementation of the Order interface that provides complete sorting capabilities.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class SimpleOrder implements Order, Serializable {
 
@@ -372,6 +375,7 @@ public interface Order extends org.miaixz.bus.core.Order {
             }
             return property + ": " + direction;
         }
+
     }
 
 }

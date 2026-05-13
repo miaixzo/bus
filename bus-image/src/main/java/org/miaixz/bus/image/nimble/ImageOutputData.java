@@ -42,15 +42,36 @@ import org.opencv.core.MatOfInt;
 import org.opencv.imgcodecs.Imgcodecs;
 
 /**
+ * Represents the ImageOutputData type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class ImageOutputData {
 
+    /**
+     * The images value.
+     */
     private final List<SupplierEx<PlanarImage, IOException>> images;
+
+    /**
+     * The desc value.
+     */
     private final ImageDescriptor desc;
+
+    /**
+     * The tsuid value.
+     */
     private final String tsuid;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param images the images.
+     * @param desc   the desc.
+     * @param tsuid  the tsuid.
+     * @throws IOException if the operation cannot be completed.
+     */
     public ImageOutputData(List<SupplierEx<PlanarImage, IOException>> images, ImageDescriptor desc, String tsuid)
             throws IOException {
         if (Objects.requireNonNull(images).isEmpty()) {
@@ -65,15 +86,38 @@ public class ImageOutputData {
         }
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param image the image.
+     * @param desc  the desc.
+     * @param tsuid the tsuid.
+     * @throws IOException if the operation cannot be completed.
+     */
     public ImageOutputData(SupplierEx<PlanarImage, IOException> image, ImageDescriptor desc, String tsuid)
             throws IOException {
         this(Collections.singletonList(image), desc, tsuid);
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param image the image.
+     * @param desc  the desc.
+     * @param tsuid the tsuid.
+     * @throws IOException if the operation cannot be completed.
+     */
     public ImageOutputData(PlanarImage image, ImageDescriptor desc, String tsuid) throws IOException {
         this(Collections.singletonList(() -> image), desc, tsuid);
     }
 
+    /**
+     * Executes the adapt tags to raw image operation.
+     *
+     * @param data the data.
+     * @param img  the img.
+     * @param desc the desc.
+     */
     public static void adaptTagsToRawImage(Attributes data, PlanarImage img, ImageDescriptor desc) {
         int cvType = img.type();
         int channels = CvType.channels(cvType);
@@ -93,6 +137,14 @@ public class ImageOutputData {
         data.setString(Tag.PhotometricInterpretation, VR.CS, pmi);
     }
 
+    /**
+     * Executes the adapt suitable syntax operation.
+     *
+     * @param bitStored the bit stored.
+     * @param type      the type.
+     * @param dstTsuid  the dst tsuid.
+     * @return the operation result.
+     */
     public static String adaptSuitableSyntax(int bitStored, int type, String dstTsuid) {
         switch (UID.from(dstTsuid)) {
             case UID.ImplicitVRLittleEndian:
@@ -122,6 +174,12 @@ public class ImageOutputData {
         }
     }
 
+    /**
+     * Determines whether adaptable syntax.
+     *
+     * @param uid the uid.
+     * @return true if the condition is met; otherwise false.
+     */
     public static boolean isAdaptableSyntax(String uid) {
         switch (UID.from(uid)) {
             case UID.JPEGBaseline8Bit:
@@ -135,6 +193,12 @@ public class ImageOutputData {
         }
     }
 
+    /**
+     * Determines whether native syntax.
+     *
+     * @param uid the uid.
+     * @return true if the condition is met; otherwise false.
+     */
     public static boolean isNativeSyntax(String uid) {
         switch (UID.from(uid)) {
             case UID.ImplicitVRLittleEndian:
@@ -146,6 +210,12 @@ public class ImageOutputData {
         }
     }
 
+    /**
+     * Determines whether supported syntax.
+     *
+     * @param uid the uid.
+     * @return true if the condition is met; otherwise false.
+     */
     public static boolean isSupportedSyntax(String uid) {
         switch (UID.from(uid)) {
             case UID.ImplicitVRLittleEndian:
@@ -169,18 +239,41 @@ public class ImageOutputData {
         }
     }
 
+    /**
+     * Gets the first image.
+     *
+     * @return the first image.
+     */
     public SupplierEx<PlanarImage, IOException> getFirstImage() {
         return images.get(0);
     }
 
+    /**
+     * Gets the images.
+     *
+     * @return the images.
+     */
     public List<SupplierEx<PlanarImage, IOException>> getImages() {
         return images;
     }
 
+    /**
+     * Gets the tsuid.
+     *
+     * @return the tsuid.
+     */
     public String getTsuid() {
         return tsuid;
     }
 
+    /**
+     * Writes the compressed image data.
+     *
+     * @param dos     the dos.
+     * @param dataSet the data set.
+     * @param params  the params.
+     * @throws IOException if the operation cannot be completed.
+     */
     public void writeCompressedImageData(ImageOutputStream dos, Attributes dataSet, int[] params) throws IOException {
         Mat buf = null;
         MatOfInt dicomParams = null;
@@ -224,6 +317,13 @@ public class ImageOutputData {
         }
     }
 
+    /**
+     * Executes the adapt compression ratio operation.
+     *
+     * @param dataSet the data set.
+     * @param params  the params.
+     * @param ratio   the ratio.
+     */
     private void adaptCompressionRatio(Attributes dataSet, int[] params, double ratio) {
         int compressType = params[Imgcodecs.DICOM_PARAM_COMPRESSION];
         int jpeglsNLE = params[Imgcodecs.DICOM_PARAM_JPEGLS_LOSSY_ERROR];
@@ -259,6 +359,12 @@ public class ImageOutputData {
         }
     }
 
+    /**
+     * Executes the writ raw image data operation.
+     *
+     * @param dos  the dos.
+     * @param data the data.
+     */
     public void writRawImageData(ImageOutputStream dos, Attributes data) {
         try {
             PlanarImage fistImage = getFirstImage().get();
@@ -326,6 +432,15 @@ public class ImageOutputData {
         }
     }
 
+    /**
+     * Executes the adapt tags to compressed image operation.
+     *
+     * @param data  the data.
+     * @param img   the img.
+     * @param desc  the desc.
+     * @param param the param.
+     * @return the operation result.
+     */
     public int[] adaptTagsToCompressedImage(
             Attributes data,
             PlanarImage img,

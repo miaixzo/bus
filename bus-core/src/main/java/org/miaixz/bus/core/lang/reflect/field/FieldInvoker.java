@@ -34,13 +34,13 @@ import org.miaixz.bus.core.xyz.ReflectKit;
  * Field invoker for reading or setting field values using reflection.
  * <p>
  * To read a field value:
- * 
+ *
  * <pre>{@code
  * FieldInvoker.of(Field).invoke(object);
  * }</pre>
  * <p>
  * To set a field value:
- * 
+ *
  * <pre>{@code
  * FieldInvoker.of(Field).invoke(object, value);
  * }</pre>
@@ -54,6 +54,7 @@ public class FieldInvoker implements Invoker {
      * The field to be invoked.
      */
     private final Field field;
+
     /**
      * The converter used to convert the value before setting it to the field. If {@code null}, no conversion is
      * performed.

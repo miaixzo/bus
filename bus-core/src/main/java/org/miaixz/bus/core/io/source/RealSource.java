@@ -48,10 +48,12 @@ public class RealSource implements BufferSource {
      * The internal buffer that stores data read from the source.
      */
     public final Buffer buffer = new Buffer();
+
     /**
      * The underlying source from which data is read.
      */
     public final Source source;
+
     /**
      * A flag indicating whether this source has been closed.
      */

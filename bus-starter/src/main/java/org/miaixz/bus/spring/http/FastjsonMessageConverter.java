@@ -93,6 +93,9 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
      * A custom {@link org.springframework.http.converter.AbstractHttpMessageConverter} for Fastjson2. It configures
      * serialization using {@link JSONWriter.Feature} and deserialization using {@link JSONReader.Feature}, and enables
      * {@code autoType} based on the constructor parameter.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static class FastJson2HttpMessageConverter
             extends org.springframework.http.converter.AbstractHttpMessageConverter<Object> {
@@ -226,6 +229,12 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
             }
         }
 
+        /**
+         * The pattern auto type before handler class.
+         *
+         * @author Kimi Liu
+         * @since Java 21+
+         */
         private static class PatternAutoTypeBeforeHandler implements JSONReader.AutoTypeBeforeHandler {
 
             private final AutoBindingTypeMatcher autoTypeMatcher;
@@ -278,7 +287,9 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
                 }
                 return Class.forName(typeName);
             }
+
         }
+
     }
 
 }

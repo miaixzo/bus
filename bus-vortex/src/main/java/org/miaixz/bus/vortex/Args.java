@@ -39,12 +39,12 @@ import org.miaixz.bus.vortex.strategy.vetting.RestVettingStrategy;
  * "language" of the gateway. It also contains nested static classes that serve as models for type-safe configuration
  * binding from application properties (e.g., YAML or .properties files) using {@code @ConfigurationProperties}.
  *
- * @author Kimi Liu
  * @see RestQualifierStrategy
  * @see McpQualifierStrategy
  * @see RestVettingStrategy
  * @see McpVettingStrategy
  * @see RequestStrategy
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class Args extends Specifics {
@@ -285,6 +285,9 @@ public class Args extends Specifics {
     /**
      * A configuration properties model for rate limiting settings, typically bound from application properties under a
      * prefix like {@code vortex.limit}.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @Setter
@@ -303,6 +306,7 @@ public class Args extends Specifics {
          * Whether rate limiting is globally enabled.
          */
         private boolean enabled;
+
     }
 
 }

@@ -38,6 +38,7 @@ public final class CsvRow extends ListWrapper<String> {
      * Header map, mapping header names to their column indices.
      */
     final Map<String, Integer> headerMap;
+
     /**
      * The original line number in the CSV file. For multi-line rows, this is the line number of the first line. Comment
      * lines are ignored.

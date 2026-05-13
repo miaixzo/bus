@@ -43,18 +43,22 @@ public class NamedPlaceholderString extends StringTemplate {
      * Default prefix for placeholders.
      */
     public static final String DEFAULT_PREFIX = Symbol.BRACE_LEFT;
+
     /**
      * Default suffix for placeholders.
      */
     public static final String DEFAULT_SUFFIX = Symbol.BRACE_RIGHT;
+
     /**
      * Placeholder prefix, defaults to {@link #DEFAULT_PREFIX}
      */
     protected String prefix;
+
     /**
      * Placeholder suffix, defaults to {@link #DEFAULT_SUFFIX}
      */
     protected String suffix;
+
     /**
      * In indexed placeholders, the maximum index value.
      */
@@ -569,6 +573,9 @@ public class NamedPlaceholderString extends StringTemplate {
 
     /**
      * Builder for {@link NamedPlaceholderString}.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class Builder extends AbstractBuilder<Builder, NamedPlaceholderString> {
 
@@ -576,6 +583,7 @@ public class NamedPlaceholderString extends StringTemplate {
          * Placeholder prefix, defaults to {@link NamedPlaceholderString#DEFAULT_PREFIX}, cannot be an empty string.
          */
         protected String prefix;
+
         /**
          * Placeholder suffix, defaults to {@link NamedPlaceholderString#DEFAULT_SUFFIX}, cannot be an empty string.
          */
@@ -638,6 +646,7 @@ public class NamedPlaceholderString extends StringTemplate {
         protected Builder self() {
             return this;
         }
+
     }
 
 }

@@ -41,6 +41,7 @@ public abstract class AbstractFilter implements BloomFilter {
      * bit array.
      */
     protected final BitSet bitSet;
+
     /**
      * The capacity of the Bloom filter, representing the number of bits in the {@link BitSet}.
      */

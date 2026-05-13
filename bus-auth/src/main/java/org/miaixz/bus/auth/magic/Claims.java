@@ -47,50 +47,62 @@ public class Claims implements Serializable {
      * identified by combining uuid + source.
      */
     private String uuid;
+
     /**
      * User's username.
      */
     private String username;
+
     /**
      * User's nickname.
      */
     private String nickname;
+
     /**
      * User's avatar URL.
      */
     private String avatar;
+
     /**
      * User's blog or personal website URL.
      */
     private String blog;
+
     /**
      * User's company.
      */
     private String company;
+
     /**
      * User's location.
      */
     private String location;
+
     /**
      * User's email address.
      */
     private String email;
+
     /**
      * User's remarks (personal introduction from various platforms).
      */
     private String remark;
+
     /**
      * User's gender.
      */
     private Gender gender;
+
     /**
      * User's source platform.
      */
     private String source;
+
     /**
      * User's authorization token information.
      */
     private Authorization token;
+
     /**
      * Raw user information returned by the third-party platform.
      */

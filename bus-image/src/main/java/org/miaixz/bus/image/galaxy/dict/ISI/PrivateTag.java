@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.ISI;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "ISI";
 
-    /** (0009,xx01) VR=UN VM=1 SIENET General Purpose IMGEF */
+    /**
+     * (0009,xx01) VR=UN VM=1 SIENET General Purpose IMGEF
+     */
     public static final int SIENETGeneralPurposeIMGEF = 0x00090001;
 
 }

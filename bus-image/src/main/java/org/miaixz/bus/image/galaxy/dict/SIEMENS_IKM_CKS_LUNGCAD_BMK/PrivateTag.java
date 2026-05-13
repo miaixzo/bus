@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_IKM_CKS_LUNGCAD_BMK;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS IKM CKS LUNGCAD BMK";
 
-    /** (0029,xx01) VR=UT VM=1 ? */
+    /**
+     * (0029,xx01) VR=UT VM=1 ?
+     */
     public static final int _0029_xx01_ = 0x00290001;
 
 }

@@ -22,11 +22,19 @@ package org.miaixz.bus.image.galaxy.data;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
+ * Represents the Keyword type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class Keyword {
 
+    /**
+     * Executes the value of operation.
+     *
+     * @param tag the tag.
+     * @return the operation result.
+     */
     public static String valueOf(int tag) {
         if ((tag & '\uffff') == 0 && (tag & -196608) != 0) {
             return "GroupLength";

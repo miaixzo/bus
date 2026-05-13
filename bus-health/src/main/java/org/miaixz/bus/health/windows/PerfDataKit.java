@@ -55,10 +55,12 @@ public final class PerfDataKit {
      * The PZERO constant.
      */
     private static final DWORD_PTR PZERO = new DWORD_PTR(0);
+
     /**
      * The PDH_FMT_RAW constant.
      */
     private static final DWORDByReference PDH_FMT_RAW = new DWORDByReference(new DWORD(Pdh.PDH_FMT_RAW));
+
     /**
      * The PDH constant.
      */
@@ -230,6 +232,9 @@ public final class PerfDataKit {
 
     /**
      * Encapsulates the three string components of a performance counter
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Immutable
     public static final class PerfCounter {
@@ -238,14 +243,17 @@ public final class PerfDataKit {
          * The object value.
          */
         private final String object;
+
         /**
          * The instance value.
          */
         private final String instance;
+
         /**
          * The counter value.
          */
         private final String counter;
+
         /**
          * The baseCounter value.
          */
@@ -364,6 +372,7 @@ public final class PerfDataKit {
         public int hashCode() {
             return Objects.hash(object, instance, counter, baseCounter);
         }
+
     }
 
 }

@@ -23,6 +23,12 @@ import java.io.Serial;
 
 import org.miaixz.bus.gitlab.hooks.web.MergeRequestEvent;
 
+/**
+ * The merge request system hook event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class MergeRequestSystemHookEvent extends MergeRequestEvent implements SystemHookEvent {
 
     @Serial

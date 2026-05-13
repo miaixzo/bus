@@ -51,6 +51,7 @@ public final class GpuTicks {
      * The activeTicks value.
      */
     private final long activeTicks;
+
     /**
      * The idleTicks value.
      */
@@ -90,4 +91,5 @@ public final class GpuTicks {
     public String toString() {
         return "GpuTicks{activeTicks=" + activeTicks + ", idleTicks=" + idleTicks + '}';
     }
+
 }

@@ -359,6 +359,9 @@ public interface CentralProcessor {
     /**
      * Index of CPU tick counters in the {@link #getSystemCpuLoadTicks()} and {@link #getProcessorCpuLoadTicks()}
      * arrays.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     enum TickType {
 
@@ -416,11 +419,15 @@ public interface CentralProcessor {
         public int getIndex() {
             return index;
         }
+
     }
 
     /**
      * A class representing a Logical Processor and its replationship to physical processors, physical packages, and
      * logical groupings such as NUMA Nodes and Processor groups, useful for identifying processor topology.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Immutable
     class LogicalProcessor {
@@ -429,18 +436,22 @@ public interface CentralProcessor {
          * The processorNumber value.
          */
         private final int processorNumber;
+
         /**
          * The physicalProcessorNumber value.
          */
         private final int physicalProcessorNumber;
+
         /**
          * The physicalPackageNumber value.
          */
         private final int physicalPackageNumber;
+
         /**
          * The numaNode value.
          */
         private final int numaNode;
+
         /**
          * The processorGroup value.
          */
@@ -543,11 +554,15 @@ public interface CentralProcessor {
                     + ", packageNumber=" + physicalPackageNumber + ", numaNode=" + numaNode + ", processorGroup="
                     + processorGroup + "]";
         }
+
     }
 
     /**
      * A class representing a Physical Processor (a core) providing per-core statistics that may vary, particularly in
      * hybrid/modular processors.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Immutable
     class PhysicalProcessor {
@@ -556,14 +571,17 @@ public interface CentralProcessor {
          * The physicalPackageNumber value.
          */
         private final int physicalPackageNumber;
+
         /**
          * The physicalProcessorNumber value.
          */
         private final int physicalProcessorNumber;
+
         /**
          * The efficiency value.
          */
         private final int efficiency;
+
         /**
          * The idString value.
          */
@@ -670,10 +688,14 @@ public interface CentralProcessor {
             return "PhysicalProcessor [package/core=" + physicalPackageNumber + "/" + physicalProcessorNumber
                     + ", efficiency=" + efficiency + ", idString=" + idString + "]";
         }
+
     }
 
     /**
      * A class representing CPU Cache Memory.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Immutable
     class ProcessorCache {
@@ -682,18 +704,22 @@ public interface CentralProcessor {
          * The level value.
          */
         private final byte level;
+
         /**
          * The associativity value.
          */
         private final byte associativity;
+
         /**
          * The lineSize value.
          */
         private final short lineSize;
+
         /**
          * The cacheSize value.
          */
         private final int cacheSize;
+
         /**
          * The type value.
          */
@@ -817,6 +843,9 @@ public interface CentralProcessor {
 
         /**
          * The type of cache.
+         *
+         * @author Kimi Liu
+         * @since Java 21+
          */
         public enum Type {
 
@@ -831,12 +860,17 @@ public interface CentralProcessor {
             public String toString() {
                 return name().charAt(0) + name().substring(1).toLowerCase(Locale.ROOT);
             }
+
         }
+
     }
 
     /**
      * A class encapsulating ghe CPU's identifier strings ,including name, vendor, stepping, model, and family
      * information (also called the signature of a CPU)
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Immutable
     final class ProcessorIdentifier {
@@ -846,34 +880,42 @@ public interface CentralProcessor {
          * The cpuVendor value.
          */
         private final String cpuVendor;
+
         /**
          * The cpuName value.
          */
         private final String cpuName;
+
         /**
          * The cpuFamily value.
          */
         private final String cpuFamily;
+
         /**
          * The cpuModel value.
          */
         private final String cpuModel;
+
         /**
          * The cpuStepping value.
          */
         private final String cpuStepping;
+
         /**
          * The processorID value.
          */
         private final String processorID;
+
         /**
          * The cpuIdentifier value.
          */
         private final String cpuIdentifier;
+
         /**
          * The cpu64bit value.
          */
         private final boolean cpu64bit;
+
         /**
          * The cpuVendorFreq value.
          */
@@ -1121,6 +1163,7 @@ public interface CentralProcessor {
         public String toString() {
             return getIdentifier();
         }
+
     }
 
 }

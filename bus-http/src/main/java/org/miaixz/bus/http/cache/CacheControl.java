@@ -52,14 +52,17 @@ public class CacheControl {
      * In a request, this means that a cache should not be used to satisfy the request.
      */
     private final boolean noCache;
+
     /**
      * If true, this response should not be cached.
      */
     private final boolean noStore;
+
     /**
      * The duration past the response's served date that it can be served without validation.
      */
     private final int maxAgeSeconds;
+
     /**
      * The "s-maxage" directive is the max age for shared caches. Not to be confused with "max-age" for non-shared
      * caches, this directive is not honored by this cache.
@@ -70,6 +73,7 @@ public class CacheControl {
     private final boolean mustRevalidate;
     private final int maxStaleSeconds;
     private final int minFreshSeconds;
+
     /**
      * The "only-if-cached" directive is misleading. It actually means "do not use the network". It is set by a client
      * who only wants to be served from the cache. Cached responses will require validation (i.e. conditional GETs are
@@ -378,6 +382,9 @@ public class CacheControl {
 
     /**
      * A builder for creating {@code Cache-Control} request headers.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static final class Builder {
 
@@ -501,6 +508,7 @@ public class CacheControl {
         public CacheControl build() {
             return new CacheControl(this);
         }
+
     }
 
 }

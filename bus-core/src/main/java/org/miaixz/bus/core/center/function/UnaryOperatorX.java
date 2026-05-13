@@ -29,8 +29,8 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
  * A serializable {@link UnaryOperator} interface that supports throwing exceptions and type casting operations.
  *
  * @param <T> The type of the input and output of the operator.
- * @author Kimi Liu
  * @see UnaryOperator
+ * @author Kimi Liu
  * @since Java 21+
  */
 @FunctionalInterface

@@ -43,6 +43,7 @@ public class Dcm2String extends SimpleFileVisitor<Path> {
      * The format string for the output.
      */
     private final Format format;
+
     /**
      * Additional attributes to be merged into the dataset before printing.
      */

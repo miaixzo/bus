@@ -52,6 +52,7 @@ public final class MacPowerSource extends AbstractPowerSource {
      * CoreFoundation instance for JNA calls.
      */
     private static final CoreFoundation CF = CoreFoundation.INSTANCE;
+
     /**
      * IOKit instance for JNA calls.
      */

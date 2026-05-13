@@ -25,6 +25,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serial;
 
+/**
+ * The email on push service class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class EmailOnPushService extends NotificationService {
 
     @Serial

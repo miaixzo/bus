@@ -20,17 +20,26 @@
 package org.miaixz.bus.image.galaxy.dict.PHILIPS_XCT__Private;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "PHILIPS XCT -Private";
 
-    /** (7051,xx01) VR=DS VM=1 Attenuation Threshold */
+    /**
+     * (7051,xx01) VR=DS VM=1 Attenuation Threshold
+     */
     public static final int AttenuationThreshold = 0x70510001;
 
-    /** (7051,xx02) VR=DS VM=1 DLPEstimate */
+    /**
+     * (7051,xx02) VR=DS VM=1 DLPEstimate
+     */
     public static final int DLPEstimate = 0x70510002;
 
 }

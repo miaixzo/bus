@@ -38,22 +38,27 @@ public class NativeHistogram implements Histogram {
      * Metric name used in snapshots and registry keys.
      */
     private final String name;
+
     /**
      * Tags associated with this histogram instance.
      */
     private final Tag[] tags;
+
     /**
      * T-Digest for accurate quantile estimation over the lifetime of this histogram.
      */
     private final TDigest digest = new TDigest();
+
     /**
      * Total number of recorded values.
      */
     private final AtomicLong countTotal = new AtomicLong();
+
     /**
      * Running sum of all recorded values.
      */
     private final DoubleAdder sumTotal = new DoubleAdder();
+
     /**
      * Maximum recorded value; updated on each {@link #record(double)} call.
      */
@@ -87,19 +92,25 @@ public class NativeHistogram implements Histogram {
         }
     }
 
-    /** Returns the total number of recorded values. */
+    /**
+     * Returns the total number of recorded values.
+     */
     @Override
     public long count() {
         return countTotal.get();
     }
 
-    /** Returns the sum of all recorded values. */
+    /**
+     * Returns the sum of all recorded values.
+     */
     @Override
     public double totalAmount() {
         return sumTotal.sum();
     }
 
-    /** Returns the maximum recorded value. */
+    /**
+     * Returns the maximum recorded value.
+     */
     @Override
     public double max() {
         return maxValue;
@@ -116,7 +127,9 @@ public class NativeHistogram implements Histogram {
         return digest.quantile(p);
     }
 
-    /** Returns an atomic snapshot for cross-instance aggregation. */
+    /**
+     * Returns an atomic snapshot for cross-instance aggregation.
+     */
     @Override
     public TimerSnapshot snapshot() {
         return new TimerSnapshot(name, tags, countTotal.get(), sumTotal.sum(), maxValue, new long[0], new double[0]);

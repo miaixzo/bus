@@ -29,7 +29,7 @@ import org.miaixz.bus.image.galaxy.data.VR;
  * Interface for describing which DICOM attributes should be treated as Bulk Data. Implementations of this interface
  * define the criteria for identifying bulk data elements, which are typically large data items that might be stored
  * externally or handled specially.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -50,7 +50,7 @@ public interface BulkDataDescriptor {
 
     /**
      * Determines if a given DICOM attribute should be treated as bulk data.
-     * 
+     *
      * @param itemPointer    A list of {@link ItemPointer} objects indicating the path to the attribute within nested
      *                       sequences.
      * @param privateCreator The private creator of the attribute, or {@code null} if it's a standard attribute.

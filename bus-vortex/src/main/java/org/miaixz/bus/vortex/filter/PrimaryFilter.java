@@ -158,6 +158,9 @@ public class PrimaryFilter extends AbstractFilter {
      * {@code PrimaryChain} instance (with an incremented index) to it. This process continues until the end of the
      * strategy list is reached, at which point it delegates control back to the main Spring WebFlux
      * {@link WebFilterChain}.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public class Chain implements Strategy.Chain {
 
@@ -165,10 +168,12 @@ public class PrimaryFilter extends AbstractFilter {
          * The current position in the strategy list that this chain link is responsible for executing.
          */
         private final int index;
+
         /**
          * The complete, ordered list of strategies to be executed for the current request.
          */
         private final List<Strategy> list;
+
         /**
          * The original WebFlux filter chain, to be invoked after all strategies in this primary chain have been
          * executed.
@@ -223,6 +228,7 @@ public class PrimaryFilter extends AbstractFilter {
             }
             return this.chain.filter(exchange);
         }
+
     }
 
     /**

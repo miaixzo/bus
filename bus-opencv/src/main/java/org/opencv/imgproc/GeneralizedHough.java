@@ -10,6 +10,9 @@ import org.opencv.core.Point;
 // C++: class GeneralizedHough
 /**
  * finds arbitrary template in the grayscale image using Generalized Hough Transform
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class GeneralizedHough extends Algorithm {
 

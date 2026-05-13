@@ -51,10 +51,12 @@ public class ConditionWrapper<T, I extends Serializable> {
      * The underlying mapper instance for executing queries.
      */
     private final BasicMapper<T, I> basicMapper;
+
     /**
      * The condition object that stores the query criteria.
      */
     private final Condition<T> condition;
+
     /**
      * The current criteria being built.
      */

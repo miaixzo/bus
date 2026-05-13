@@ -20,17 +20,26 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_3D_FUSION_MATRIX;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS SYNGO 3D FUSION MATRIX";
 
-    /** (0029,xx08) VR=UI VM=1 Object Series Instance UID */
+    /**
+     * (0029,xx08) VR=UI VM=1 Object Series Instance UID
+     */
     public static final int ObjectSeriesInstanceUID = 0x00290008;
 
-    /** (0029,xx09) VR=UI VM=1 Model Series Instance UID */
+    /**
+     * (0029,xx09) VR=UI VM=1 Model Series Instance UID
+     */
     public static final int ModelSeriesInstanceUID = 0x00290009;
 
     /**

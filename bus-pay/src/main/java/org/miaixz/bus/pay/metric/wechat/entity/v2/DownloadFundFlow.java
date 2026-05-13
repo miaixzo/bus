@@ -44,26 +44,32 @@ public class DownloadFundFlow extends Voucher {
      * Merchant ID.
      */
     private String mch_id;
+
     /**
      * Random string.
      */
     private String nonce_str;
+
     /**
      * Signature.
      */
     private String sign;
+
     /**
      * Signature type.
      */
     private String sign_type;
+
     /**
      * Bill date.
      */
     private String bill_date;
+
     /**
      * Account type.
      */
     private String account_type;
+
     /**
      * Tar type.
      */

@@ -37,26 +37,32 @@ public final class DistinguishedNameParser {
      * The distinguished name string.
      */
     private final String dn;
+
     /**
      * The length of the DN string.
      */
     private final int length;
+
     /**
      * The current parsing position.
      */
     private int pos;
+
     /**
      * The beginning position of the current token.
      */
     private int beg;
+
     /**
      * The end position of the current token.
      */
     private int end;
+
     /**
      * The current position within the character array being built.
      */
     private int cur;
+
     /**
      * The character array of the distinguished name.
      */

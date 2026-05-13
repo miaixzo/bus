@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.GEMS_IT_Centricity_RA600_7_0;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEMS-IT/Centricity RA600/7.0";
 
-    /** (4113,xx10) VR=UI VM=1 Number of images in study */
+    /**
+     * (4113,xx10) VR=UI VM=1 Number of images in study
+     */
     public static final int NumberOfImagesInStudy = 0x41130010;
 
 }

@@ -37,6 +37,8 @@ import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
@@ -74,6 +76,7 @@ public class Builder {
             'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
             'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4',
             '5', '6', '7', '8', '9', '+', '/' };
+
     /**
      * Lookup table for Base64 decoding.
      */
@@ -82,6 +85,7 @@ public class Builder {
             -1, -1, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8,
             9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, -1, -1, 26, 27, 28, 29,
             30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51 };
+
     /**
      * The system-dependent line separator string.
      */
@@ -247,6 +251,30 @@ public class Builder {
                 Logger.error(false, "Image", "ExecutorService shutdown failed", e);
             }
         }
+    }
+
+    /**
+     * Creates a thread factory whose threads are prefixed with the supplied service name.
+     *
+     * @param name the thread name prefix.
+     * @return a thread factory using the requested prefix.
+     */
+    public static ThreadFactory getThreadFactory(String name) {
+        Objects.requireNonNull(name, "Thread factory name cannot be null");
+        return runnable -> {
+            Thread thread = Executors.defaultThreadFactory().newThread(runnable);
+            thread.setName(name + "-" + thread.getName());
+            return thread;
+        };
+    }
+
+    /**
+     * Alias for service-style callers that use the Weasis utility naming.
+     *
+     * @param executorService the executor service to shut down.
+     */
+    public static void shutdownService(ExecutorService executorService) {
+        shutdown(executorService);
     }
 
     /**
@@ -1302,6 +1330,22 @@ public class Builder {
     }
 
     /**
+     * Correctly spelled alias for {@link #notifyProgession(ImageProgress, Attributes, ProgressStatus, int)}.
+     *
+     * @param p                     the progress tracking object.
+     * @param cmd                   the DIMSE command dataset.
+     * @param ps                    the status of the current sub-operation.
+     * @param numberOfSuboperations the initial total number of sub-operations.
+     */
+    public static void notifyProgression(
+            ImageProgress p,
+            Attributes cmd,
+            ProgressStatus ps,
+            int numberOfSuboperations) {
+        notifyProgession(p, cmd, ps, numberOfSuboperations);
+    }
+
+    /**
      * Notifies progress by updating the {@link Status} object and its associated {@link ImageProgress}.
      *
      * @param state                 the operation status object.
@@ -1328,6 +1372,26 @@ public class Builder {
             notifyProgession(p, cmd, ps, numberOfSuboperations);
             p.setAttributes(cmd);
         }
+    }
+
+    /**
+     * Correctly spelled alias for {@link #notifyProgession(Status, String, String, int, ProgressStatus, int)}.
+     *
+     * @param state                 the operation status object.
+     * @param iuid                  the Affected SOP Instance UID.
+     * @param cuid                  the Affected SOP Class UID.
+     * @param status                the DICOM status code.
+     * @param ps                    the status of the sub-operation.
+     * @param numberOfSuboperations the initial total number of sub-operations.
+     */
+    public static void notifyProgression(
+            Status state,
+            String iuid,
+            String cuid,
+            int status,
+            ProgressStatus ps,
+            int numberOfSuboperations) {
+        notifyProgession(state, iuid, cuid, status, ps, numberOfSuboperations);
     }
 
     /**

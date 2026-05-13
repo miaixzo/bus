@@ -290,6 +290,9 @@ public class LlmExecutor extends Coordinator {
      *   ]
      * }
      * </pre>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static class ProviderConfig {
 
@@ -340,6 +343,7 @@ public class LlmExecutor extends Coordinator {
             this.apiKey = apiKey;
             this.model = model;
         }
+
     }
 
 }

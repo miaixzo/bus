@@ -1,6 +1,12 @@
 package org.opencv.core;
 
 //javadoc:Rect_
+/**
+ * The rect class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Rect {
 
     public int x, y, width, height;
@@ -103,4 +109,5 @@ public class Rect {
     public String toString() {
         return "{" + x + ", " + y + ", " + width + "x" + height + "}";
     }
+
 }

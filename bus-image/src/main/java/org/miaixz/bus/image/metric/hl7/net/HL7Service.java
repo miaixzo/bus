@@ -20,11 +20,18 @@
 package org.miaixz.bus.image.metric.hl7.net;
 
 /**
+ * Defines the HL7Service contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface HL7Service extends HL7MessageListener {
 
+    /**
+     * Gets the message types.
+     *
+     * @return the message types.
+     */
     String[] getMessageTypes();
 
 }

@@ -22,17 +22,37 @@ package org.miaixz.bus.image.metric.net;
 import org.miaixz.bus.image.Device;
 
 /**
+ * Defines the DeviceServiceInterface contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface DeviceServiceInterface {
 
+    /**
+     * Gets the device.
+     *
+     * @return the device.
+     */
     Device getDevice();
 
+    /**
+     * Determines whether running.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     boolean isRunning();
 
+    /**
+     * Executes the start operation.
+     *
+     * @throws Exception if the operation cannot be completed.
+     */
     void start() throws Exception;
 
+    /**
+     * Executes the stop operation.
+     */
     void stop();
 
 }

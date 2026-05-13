@@ -33,9 +33,9 @@ import org.miaixz.bus.core.xyz.MapKit;
  * map creation and initialization.
  * <p>
  * Example:
- * 
+ *
  * <pre>{@code
- * 
+ *
  * Map<String, Integer> map = MapBuilder.<String, Integer>of().put("one", 1).put("two", 2).build();
  * }</pre>
  *

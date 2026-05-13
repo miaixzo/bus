@@ -42,10 +42,12 @@ public class ServerSSLContextFactory implements SSLContextFactory {
      * The input stream for the key store file.
      */
     private final InputStream keyStoreInputStream;
+
     /**
      * The password for the key store.
      */
     private final String keyStorePassword;
+
     /**
      * The password for the private key within the key store.
      */

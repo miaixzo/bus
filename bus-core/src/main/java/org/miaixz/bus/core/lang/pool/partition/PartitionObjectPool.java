@@ -48,6 +48,7 @@ public class PartitionObjectPool<T> implements ObjectPool<T> {
      * The configuration for this partitioned object pool.
      */
     private final PartitionPoolConfig config;
+
     /**
      * An array of {@link PartitionPool} instances, representing the individual partitions of the pool. This array is
      * initialized once and remains thread-safe.

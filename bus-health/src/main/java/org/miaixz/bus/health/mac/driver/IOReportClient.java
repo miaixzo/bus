@@ -55,22 +55,27 @@ public final class IOReportClient {
      * The GROUP_GPU_STATS constant.
      */
     private static final String GROUP_GPU_STATS = "GPU Stats";
+
     /**
      * The GROUP_ENERGY constant.
      */
     private static final String GROUP_ENERGY = "Energy Model";
+
     /**
      * The CHANNEL_GPU_ENERGY constant.
      */
     private static final String CHANNEL_GPU_ENERGY = "GPU Energy";
+
     /**
      * The SUBGROUP_GPU_PERF_STATES constant.
      */
     private static final String SUBGROUP_GPU_PERF_STATES = "GPU Performance States";
+
     /**
      * The STATE_OFF constant.
      */
     private static final String STATE_OFF = "OFF";
+
     /**
      * The KEY_CHANNELS constant.
      */
@@ -80,10 +85,12 @@ public final class IOReportClient {
      * The ioReport value.
      */
     private final IOReport ioReport;
+
     /**
      * The subscription value.
      */
     private final IOReport.IOReportSubscriptionRef subscription;
+
     /**
      * The subscribedChannels value.
      */
@@ -100,6 +107,7 @@ public final class IOReportClient {
      * The prevSamplePower value.
      */
     private CFDictionaryRef prevSamplePower;
+
     /**
      * The prevSamplePowerNanos value.
      */
@@ -373,7 +381,12 @@ public final class IOReportClient {
         return -1L;
     }
 
-    /** Holds the merged state-residency map and the number of IOReport channels that contributed to it. */
+    /**
+     * Holds the merged state-residency map and the number of IOReport channels that contributed to it.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     private static final class ChannelStates {
 
         /**
@@ -398,6 +411,7 @@ public final class IOReportClient {
         Map<String, Long> getStates() {
             return states;
         }
+
     }
 
     /**
@@ -452,4 +466,5 @@ public final class IOReportClient {
             channelsKey.release();
         }
     }
+
 }

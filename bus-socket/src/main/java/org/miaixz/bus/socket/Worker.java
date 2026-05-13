@@ -50,23 +50,28 @@ public final class Worker implements Runnable {
     };
     private static final Runnable SHUTDOWN_CHANNEL = () -> {
     };
+
     /**
      * The Selector bound to this worker.
      */
     private final Selector selector;
+
     /**
      * Task queue for processing decoded messages.
      */
     private final BlockingQueue<Runnable> requestQueue = new ArrayBlockingQueue<>(256);
+
     /**
      * Queue for pending channel registration events.
      */
     private final ConcurrentLinkedQueue<Consumer<Selector>> registers = new ConcurrentLinkedQueue<>();
     private final ExecutorService executorService;
+
     /**
      * Buffer pool for write operations.
      */
     private BufferPagePool writeBufferPool = null;
+
     /**
      * Buffer page for read operations.
      */

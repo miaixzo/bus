@@ -47,14 +47,17 @@ public final class Handshake {
      * The TLS version used for this handshake.
      */
     private final TlsVersion tlsVersion;
+
     /**
      * The cipher suite used for this handshake.
      */
     private final CipherSuite cipherSuite;
+
     /**
      * The list of certificates presented by the peer.
      */
     private final List<Certificate> peerCertificates;
+
     /**
      * The list of certificates presented by the local party.
      */

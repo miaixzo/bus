@@ -30,7 +30,7 @@ import java.util.function.Supplier;
  * trimmed string values.
  * <p>
  * Example: Creating a case-insensitive map for keys.
- * 
+ *
  * <pre>{@code
  * Map<String, String> map = new FunctionMap<>(new HashMap<>(), (key) -> key.toString().toLowerCase(), // Key function
  *         null // No value transformation
@@ -53,6 +53,7 @@ public class FunctionMap<K, V> extends TransMap<K, V> {
      * The function used to transform keys.
      */
     private final Function<Object, K> keyFunc;
+
     /**
      * The function used to transform values.
      */

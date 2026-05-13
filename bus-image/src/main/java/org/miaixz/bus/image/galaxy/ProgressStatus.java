@@ -20,10 +20,23 @@
 package org.miaixz.bus.image.galaxy;
 
 /**
+ * Defines the ProgressStatus values.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public enum ProgressStatus {
-    FAILED, WARNING, COMPLETED
+    /**
+     * Constant for the failed value.
+     */
+    FAILED,
+    /**
+     * Constant for the warning value.
+     */
+    WARNING,
+    /**
+     * Constant for the completed value.
+     */
+    COMPLETED
 
 }

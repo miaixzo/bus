@@ -50,6 +50,9 @@ public interface ColumnSchemaBuilder extends Order {
 
     /**
      * A factory chain interface for invoking column information creation logic in a chained manner.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     interface Chain {
 
@@ -63,6 +66,7 @@ public interface ColumnSchemaBuilder extends Order {
          *         indicates that the field is not a column in the entity.
          */
         Optional<List<ColumnMeta>> createColumn(TableMeta tableMeta, FieldMeta fieldMeta);
+
     }
 
 }

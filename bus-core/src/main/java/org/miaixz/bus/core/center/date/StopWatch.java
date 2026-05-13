@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * <p>
  * This tool is inspired by:
  * https://github.com/spring-projects/spring-framework/blob/master/spring-core/src/main/java/org/springframework/util/StopWatch.java
- * 
+ *
  * Usage example:
  *
  * <pre>{@code
@@ -65,26 +65,32 @@ public class StopWatch {
      * Unique ID for the StopWatch, used to distinguish between multiple StopWatch objects.
      */
     private final String id;
+
     /**
      * List of tasks.
      */
     private List<TaskInfo> taskList;
+
     /**
      * Current task name.
      */
     private String currentTaskName;
+
     /**
      * Start time of the current task in nanoseconds.
      */
     private long startTimeNanos;
+
     /**
      * Information about the last completed task.
      */
     private TaskInfo lastTaskInfo;
+
     /**
      * Total number of tasks.
      */
     private int taskCount;
+
     /**
      * Total elapsed time in nanoseconds.
      */
@@ -462,6 +468,9 @@ public class StopWatch {
 
     /**
      * Represents information about a single task, including its name and elapsed time.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static final class TaskInfo {
 
@@ -537,6 +546,7 @@ public class StopWatch {
         public double getTimeSeconds() {
             return DateKit.nanosToSeconds(this.timeNanos);
         }
+
     }
 
 }

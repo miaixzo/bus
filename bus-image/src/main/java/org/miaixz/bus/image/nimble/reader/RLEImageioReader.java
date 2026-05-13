@@ -36,38 +36,91 @@ import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the RLEImageioReader type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class RLEImageioReader extends ImageReader {
 
+    /**
+     * The unknown image type value.
+     */
     private static final String UNKNOWN_IMAGE_TYPE = "RLE Image Reader needs ImageReadParam.destination or "
             + "ImageReadParam.destinationType specified";
+
+    /**
+     * The unsupported data type value.
+     */
     private static final String UNSUPPORTED_DATA_TYPE = "Unsupported Data Type of ImageReadParam.destination or "
             + "ImageReadParam.destinationType: ";
+
+    /**
+     * The mismatch num rle segments value.
+     */
     private static final String MISMATCH_NUM_RLE_SEGMENTS = "Number of RLE Segments does not match image type: ";
+
+    /**
+     * The header value.
+     */
     private final int[] header = new int[16];
 
+    /**
+     * The buf value.
+     */
     private final byte[] buf = new byte[8192];
 
+    /**
+     * The header pos value.
+     */
     private long headerPos;
 
+    /**
+     * The buf off value.
+     */
     private long bufOff;
 
+    /**
+     * The buf pos value.
+     */
     private int bufPos;
 
+    /**
+     * The buf len value.
+     */
     private int bufLen;
 
+    /**
+     * The iis value.
+     */
     private ImageInputStream iis;
 
+    /**
+     * The width value.
+     */
     private int width;
 
+    /**
+     * The height value.
+     */
     private int height;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param originatingProvider the originating provider.
+     */
     protected RLEImageioReader(ImageReaderSpi originatingProvider) {
         super(originatingProvider);
     }
 
+    /**
+     * Sets the input.
+     *
+     * @param input           the input.
+     * @param seekForwardOnly the seek forward only.
+     * @param ignoreMetadata  the ignore metadata.
+     */
     @Override
     public void setInput(Object input, boolean seekForwardOnly, boolean ignoreMetadata) {
         super.setInput(input, seekForwardOnly, ignoreMetadata);
@@ -80,46 +133,99 @@ public class RLEImageioReader extends ImageReader {
         }
     }
 
+    /**
+     * Resets the internal state.
+     */
     private void resetInternalState() {
         width = 0;
         height = 0;
     }
 
+    /**
+     * Gets the num images.
+     *
+     * @param allowSearch the allow search.
+     * @return the num images.
+     */
     @Override
     public int getNumImages(boolean allowSearch) {
         return 1;
     }
 
+    /**
+     * Gets the width.
+     *
+     * @param imageIndex the image index.
+     * @return the width.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int getWidth(int imageIndex) throws IOException {
         return width;
     }
 
+    /**
+     * Gets the height.
+     *
+     * @param imageIndex the image index.
+     * @return the height.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int getHeight(int imageIndex) throws IOException {
         return height;
     }
 
+    /**
+     * Gets the image types.
+     *
+     * @param imageIndex the image index.
+     * @return the image types.
+     */
     @Override
     public Iterator<ImageTypeSpecifier> getImageTypes(int imageIndex) {
         return null;
     }
 
+    /**
+     * Gets the stream metadata.
+     *
+     * @return the stream metadata.
+     */
     @Override
     public IIOMetadata getStreamMetadata() {
         return null;
     }
 
+    /**
+     * Gets the image metadata.
+     *
+     * @param imageIndex the image index.
+     * @return the image metadata.
+     */
     @Override
     public IIOMetadata getImageMetadata(int imageIndex) {
         return null;
     }
 
+    /**
+     * Determines whether read raster.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean canReadRaster() {
         return true;
     }
 
+    /**
+     * Reads the raster.
+     *
+     * @param imageIndex the image index.
+     * @param param      the param.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public Raster readRaster(int imageIndex, ImageReadParam param) throws IOException {
         checkIndex(imageIndex);
@@ -129,6 +235,14 @@ public class RLEImageioReader extends ImageReader {
         return raster;
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @param imageIndex the image index.
+     * @param param      the param.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public BufferedImage read(int imageIndex, ImageReadParam param) throws IOException {
         checkIndex(imageIndex);
@@ -138,11 +252,22 @@ public class RLEImageioReader extends ImageReader {
         return bi;
     }
 
+    /**
+     * Executes the check index operation.
+     *
+     * @param imageIndex the image index.
+     */
     private void checkIndex(int imageIndex) {
         if (imageIndex != 0)
             throw new IndexOutOfBoundsException("imageIndex: " + imageIndex);
     }
 
+    /**
+     * Gets the destination.
+     *
+     * @param param the param.
+     * @return the destination.
+     */
     private BufferedImage getDestination(ImageReadParam param) {
         if (param == null)
             throw new IllegalArgumentException(UNKNOWN_IMAGE_TYPE);
@@ -164,6 +289,12 @@ public class RLEImageioReader extends ImageReader {
         throw new IllegalArgumentException(UNKNOWN_IMAGE_TYPE);
     }
 
+    /**
+     * Gets the destination raster.
+     *
+     * @param param the param.
+     * @return the destination raster.
+     */
     private WritableRaster getDestinationRaster(ImageReadParam param) {
         if (param == null)
             throw new IllegalArgumentException(UNKNOWN_IMAGE_TYPE);
@@ -185,6 +316,12 @@ public class RLEImageioReader extends ImageReader {
         throw new IllegalArgumentException(UNKNOWN_IMAGE_TYPE);
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @param db the db.
+     * @throws IOException if the operation cannot be completed.
+     */
     private void read(DataBuffer db) throws IOException {
         switch (db.getDataType()) {
             case DataBuffer.TYPE_BYTE:
@@ -204,12 +341,24 @@ public class RLEImageioReader extends ImageReader {
         }
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @param bands the bands.
+     * @throws IOException if the operation cannot be completed.
+     */
     private void read(byte[][] bands) throws IOException {
         readRLEHeader(bands.length);
         for (int i = 0; i < bands.length; i++)
             unrle(i + 1, bands[i]);
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @param data the data.
+     * @throws IOException if the operation cannot be completed.
+     */
     private void read(short[] data) throws IOException {
         readRLEHeader(2);
         Arrays.fill(data, (short) 0);
@@ -217,6 +366,12 @@ public class RLEImageioReader extends ImageReader {
         unrle(2, data);
     }
 
+    /**
+     * Executes the seek segment operation.
+     *
+     * @param seg the seg.
+     * @throws IOException if the operation cannot be completed.
+     */
     private void seekSegment(int seg) throws IOException {
         long streamPos = headerPos + (header[seg] & 0xffffffffL);
         int bufPos = (int) (streamPos - bufOff);
@@ -228,6 +383,12 @@ public class RLEImageioReader extends ImageReader {
         }
     }
 
+    /**
+     * Reads the rle header.
+     *
+     * @param numSegments the num segments.
+     * @throws IOException if the operation cannot be completed.
+     */
     private void readRLEHeader(int numSegments) throws IOException {
         fillBuffer();
         if (bufLen < 64)
@@ -239,6 +400,13 @@ public class RLEImageioReader extends ImageReader {
             throw new IOException(MISMATCH_NUM_RLE_SEGMENTS + header[0]);
     }
 
+    /**
+     * Executes the unrle operation.
+     *
+     * @param seg  the seg.
+     * @param data the data.
+     * @throws IOException if the operation cannot be completed.
+     */
     private void unrle(int seg, byte[] data) throws IOException {
         seekSegment(seg);
         int pos = 0;
@@ -265,6 +433,14 @@ public class RLEImageioReader extends ImageReader {
         }
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @param data the data.
+     * @param pos  the pos.
+     * @param len  the len.
+     * @throws IOException if the operation cannot be completed.
+     */
     private void read(byte[] data, int pos, int len) throws IOException {
         int remaining = len;
         int n;
@@ -282,6 +458,13 @@ public class RLEImageioReader extends ImageReader {
         }
     }
 
+    /**
+     * Executes the unrle operation.
+     *
+     * @param seg  the seg.
+     * @param data the data.
+     * @throws IOException if the operation cannot be completed.
+     */
     private void unrle(int seg, short[] data) throws IOException {
         seekSegment(seg);
         int pos = 0;
@@ -309,6 +492,15 @@ public class RLEImageioReader extends ImageReader {
         }
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @param data  the data.
+     * @param pos   the pos.
+     * @param len   the len.
+     * @param shift the shift.
+     * @throws IOException if the operation cannot be completed.
+     */
     private void read(short[] data, int pos, int len, int shift) throws IOException {
         int remaining = len;
         int n;
@@ -325,6 +517,11 @@ public class RLEImageioReader extends ImageReader {
         }
     }
 
+    /**
+     * Executes the fill buffer operation.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     private void fillBuffer() throws IOException {
         bufOff = iis.getStreamPosition();
         bufPos = 0;
@@ -333,6 +530,12 @@ public class RLEImageioReader extends ImageReader {
             throw new EOFException();
     }
 
+    /**
+     * Executes the next byte operation.
+     *
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     private byte nextByte() throws IOException {
         if (bufPos >= bufLen)
             fillBuffer();

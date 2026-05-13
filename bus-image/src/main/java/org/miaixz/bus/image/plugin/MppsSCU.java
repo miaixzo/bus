@@ -56,18 +56,22 @@ public class MppsSCU {
      * The standard DICOM element dictionary.
      */
     private static final ElementDictionary dict = ElementDictionary.getStandardElementDictionary();
+
     /**
      * Constant for the "IN PROGRESS" status.
      */
     private static final String IN_PROGRESS = "IN PROGRESS";
+
     /**
      * Constant for the "COMPLETED" status.
      */
     private static final String COMPLETED = "COMPLETED";
+
     /**
      * Constant for the "DISCONTINUED" status.
      */
     private static final String DISCONTINUED = "DISCONTINUED";
+
     /**
      * Tags for top-level MPPS attributes.
      */
@@ -78,6 +82,7 @@ public class MppsSCU {
             Tag.IssuerOfServiceEpisodeID, Tag.ServiceEpisodeDescription, Tag.PerformedProcedureStepStartDate,
             Tag.PerformedProcedureStepStartTime, Tag.PerformedProcedureStepID, Tag.PerformedProcedureStepDescription,
             Tag.PerformedProtocolCodeSequence, Tag.CommentsOnThePerformedProcedureStep, };
+
     /**
      * Tags for Type 2 top-level MPPS attributes.
      */
@@ -85,18 +90,21 @@ public class MppsSCU {
             Tag.PatientName, Tag.PatientID, Tag.PatientBirthDate, Tag.PatientSex, Tag.StudyID, Tag.PerformedStationName,
             Tag.PerformedLocation, Tag.PerformedProcedureStepDescription, Tag.PerformedProcedureTypeDescription,
             Tag.PerformedProtocolCodeSequence, };
+
     /**
      * Tags for attributes that should be empty in an N-CREATE request.
      */
     private static final int[] CREATE_MPPS_TOP_LEVEL_EMPTY_ATTRS = { Tag.PerformedProcedureStepEndDate,
             Tag.PerformedProcedureStepEndTime, Tag.PerformedProcedureStepDiscontinuationReasonCodeSequence,
             Tag.PerformedSeriesSequence };
+
     /**
      * Tags for attributes relevant to the final state of an MPPS.
      */
     private static final int[] FINAL_MPPS_TOP_LEVEL_ATTRS = { Tag.SpecificCharacterSet,
             Tag.PerformedProcedureStepEndDate, Tag.PerformedProcedureStepEndTime, Tag.PerformedProcedureStepStatus,
             Tag.PerformedProcedureStepDiscontinuationReasonCodeSequence, Tag.PerformedSeriesSequence };
+
     /**
      * Tags for Scheduled Step Attributes.
      */
@@ -106,26 +114,31 @@ public class MppsSCU {
             Tag.ScheduledProtocolCodeSequence, Tag.ScheduledProcedureStepID, Tag.OrderPlacerIdentifierSequence,
             Tag.OrderFillerIdentifierSequence, Tag.RequestedProcedureID, Tag.PlacerOrderNumberImagingServiceRequest,
             Tag.FillerOrderNumberImagingServiceRequest, };
+
     /**
      * Tags for Type 2 Scheduled Step Attributes.
      */
     private static final int[] SSA_TYPE_2_ATTRS = { Tag.AccessionNumber, Tag.ReferencedStudySequence,
             Tag.StudyInstanceUID, Tag.RequestedProcedureDescription, Tag.RequestedProcedureID,
             Tag.ScheduledProcedureStepDescription, Tag.ScheduledProtocolCodeSequence, Tag.ScheduledProcedureStepID, };
+
     /**
      * Tags for Performed Series Attributes.
      */
     private static final int[] PERF_SERIES_ATTRS = { Tag.SeriesDescription, Tag.PerformingPhysicianName,
             Tag.OperatorsName, Tag.ProtocolName, Tag.SeriesInstanceUID };
+
     /**
      * Tags for Type 2 Performed Series Attributes.
      */
     private static final int[] PERF_SERIES_TYPE_2_ATTRS = { Tag.RetrieveAETitle, Tag.SeriesDescription,
             Tag.PerformingPhysicianName, Tag.OperatorsName, Tag.ReferencedNonImageCompositeSOPInstanceSequence };
+
     /**
      * The start date of the performed procedure step, initialized at class loading.
      */
     private static final String ppsStartDate;
+
     /**
      * The start time of the performed procedure step, initialized at class loading.
      */
@@ -141,74 +154,92 @@ public class MppsSCU {
      * The Application Entity of this SCU.
      */
     private final ApplicationEntity ae;
+
     /**
      * The remote connection configuration.
      */
     private final Connection remote;
+
     /**
      * The A-ASSOCIATE-RQ message.
      */
     private final AAssociateRQ rq = new AAssociateRQ();
+
     /**
      * A map to hold MPPS objects, keyed by Study Instance UID.
      */
     private final HashMap<String, MppsWithIUID> map = new HashMap<>();
+
     /**
      * A list of successfully created MPPS instances.
      */
     private final ArrayList<MppsWithIUID> created = new ArrayList<>();
+
     /**
      * Additional attributes to be merged into the MPPS objects.
      */
     private Attributes attrs;
+
     /**
      * A suffix for generated UIDs.
      */
     private String uidSuffix;
+
     /**
      * A flag to force creation of a new Performed Procedure Step ID.
      */
     private boolean newPPSID;
+
     /**
      * A serial number for generating unique PPS IDs.
      */
     private int serialNo = (int) (System.currentTimeMillis() & 0x7FFFFFFFL);
+
     /**
      * The SOP Instance UID for the MPPS object.
      */
     private String ppsuid;
+
     /**
      * The Performed Procedure Step ID.
      */
     private String ppsid;
+
     /**
      * A formatter for generating PPS IDs.
      */
     private DecimalFormat ppsidFormat = new DecimalFormat("PPS-0000000000");
+
     /**
      * The name of the protocol performed.
      */
     private String protocolName = "UNKNOWN";
+
     /**
      * The archive requested status.
      */
     private String archiveRequested;
+
     /**
      * The final status of the MPPS (e.g., COMPLETED or DISCONTINUED).
      */
     private String finalStatus = COMPLETED;
+
     /**
      * Attributes for the discontinuation reason.
      */
     private Attributes discontinuationReason;
+
     /**
      * A properties object for mapping discontinuation reason codes to meanings.
      */
     private Properties codes;
+
     /**
      * The active DICOM association.
      */
     private Association as;
+
     /**
      * A factory for creating DIMSE response handlers.
      */
@@ -694,6 +725,9 @@ public class MppsSCU {
 
     /**
      * A factory for creating DIMSE response handlers for MPPS N-CREATE and N-SET operations.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public interface RSPHandlerFactory {
 
@@ -711,10 +745,14 @@ public class MppsSCU {
          * @return A new {@link DimseRSPHandler}.
          */
         DimseRSPHandler createDimseRSPHandlerForNSet();
+
     }
 
     /**
      * A simple container class to hold an MPPS dataset along with its SOP Instance UID.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static final class MppsWithIUID {
 
@@ -722,6 +760,7 @@ public class MppsSCU {
          * The SOP Instance UID of the MPPS object.
          */
         public String iuid;
+
         /**
          * The attributes of the MPPS object.
          */
@@ -737,6 +776,7 @@ public class MppsSCU {
             this.iuid = iuid;
             this.mpps = mpps;
         }
+
     }
 
 }

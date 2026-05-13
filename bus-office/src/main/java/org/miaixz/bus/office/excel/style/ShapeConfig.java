@@ -41,18 +41,22 @@ public class ShapeConfig implements Serializable {
      * The type of the shape, such as rectangle, circle, etc. Default is a line.
      */
     private ShapeType shapeType = ShapeType.LINE;
+
     /**
      * The line style, such as solid, dashed, etc. Default is solid.
      */
     private LineStyle lineStyle = LineStyle.SOLID;
+
     /**
      * The width of the line, in points.
      */
     private int lineWidth = 1;
+
     /**
      * The color of the line.
      */
     private Color lineColor = Color.BLACK;
+
     /**
      * The fill color. {@code null} indicates no filling.
      */

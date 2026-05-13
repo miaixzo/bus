@@ -172,6 +172,9 @@ public class BootClassLoader extends LaunchedClassLoader {
 
     /**
      * An internal enumeration wrapper that applies the custom {@link BootURLHandler} to each URL.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private class XBootEnumeration implements Enumeration<URL> {
 
@@ -221,6 +224,7 @@ public class BootClassLoader extends LaunchedClassLoader {
                 return url;
             }
         }
+
     }
 
 }

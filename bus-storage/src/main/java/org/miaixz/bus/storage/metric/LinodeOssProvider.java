@@ -38,7 +38,7 @@ import org.miaixz.bus.storage.Context;
  * </ul>
  * <p>
  * <strong>Endpoint Format:</strong>
- * 
+ *
  * <pre>
  * Standard Endpoint:
  * https://{cluster-id}.linodeobjects.com
@@ -51,7 +51,7 @@ import org.miaixz.bus.storage.Context;
  * </pre>
  * <p>
  * <strong>Usage Example:</strong>
- * 
+ *
  * <pre>{@code
  * Context context = Context.builder().endpoint("https://us-east-1.linodeobjects.com").bucket("my-bucket")
  *         .accessKey("your-access-key").secretKey("your-secret-key").region("us-east-1").build();
@@ -94,7 +94,7 @@ import org.miaixz.bus.storage.Context;
  * </ul>
  * <p>
  * <strong>Akamai Integration:</strong>
- * 
+ *
  * <pre>
  * Since Linode is now part of Akamai, you get:
  * - Access to Akamai's global CDN network

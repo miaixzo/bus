@@ -92,6 +92,9 @@ public interface ClassMetaResolver extends Order {
 
     /**
      * Represents a combination of a Mapper interface and a method, used as a cache key.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class MapperTypeMethod {
 
@@ -152,10 +155,14 @@ public interface ClassMetaResolver extends Order {
             return (mapperType != null ? mapperType.getSimpleName() + "." : "")
                     + (mapperMethod != null ? mapperMethod.getName() : "");
         }
+
     }
 
     /**
      * Manages instances of entity class finders.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class ClassFinderInstance {
 
@@ -170,12 +177,17 @@ public interface ClassMetaResolver extends Order {
 
         /**
          * Initialization-on-demand holder idiom.
+         *
+         * @author Kimi Liu
+         * @since Java 21+
          */
         private static class ClassMetaResolverHolder {
 
             private static final List<ClassMetaResolver> INSTANCES = NormalSpiLoader
                     .loadList(false, ClassMetaResolver.class);
+
         }
+
     }
 
 }

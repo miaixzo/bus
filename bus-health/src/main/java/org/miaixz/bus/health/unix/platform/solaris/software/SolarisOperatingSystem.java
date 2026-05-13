@@ -60,23 +60,28 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
      * This static field identifies if the kstat2 library (available in Solaris 11.4 or greater) can be loaded.
      */
     public static final boolean HAS_KSTAT2;
+
     /**
      * The VERSION constant.
      */
     private static final String VERSION;
+
     /**
      * The BUILD_NUMBER constant.
      */
     private static final String BUILD_NUMBER;
+
     /**
      * The ALLOW_KSTAT2 constant.
      */
     private static final boolean ALLOW_KSTAT2 = Config.get(Config._UNIX_SOLARIS_ALLOWKSTAT2, true);
+
     /**
      * The BOOT_UPTIME constant.
      */
     private static final Supplier<Pair<Long, Long>> BOOT_UPTIME = Memoizer
             .memoize(SolarisOperatingSystem::queryBootAndUptime, Memoizer.defaultExpiration());
+
     /**
      * The BOOTTIME constant.
      */

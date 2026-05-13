@@ -45,12 +45,14 @@ public enum TemplateType implements Serializable {
     @Getter
     @Setter
     private String templateDir;
+
     /**
      * The implementation class for the template engine.
      */
     @Getter
     @Setter
     private Class<? extends TemplateEngine> implClass;
+
     /**
      * The file extension for templates of this type.
      */

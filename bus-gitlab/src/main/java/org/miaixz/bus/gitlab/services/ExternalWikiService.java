@@ -23,6 +23,12 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
 
 import java.io.Serial;
 
+/**
+ * The external wiki service class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class ExternalWikiService extends NotificationService {
 
     @Serial

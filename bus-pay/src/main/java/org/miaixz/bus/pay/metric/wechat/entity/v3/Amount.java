@@ -42,6 +42,7 @@ public class Amount {
      * The total amount in cents.
      */
     private int total;
+
     /**
      * The currency type, e.g., "CNY".
      */

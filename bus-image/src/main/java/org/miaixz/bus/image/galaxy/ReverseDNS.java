@@ -24,17 +24,31 @@ import java.net.InetAddress;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the ReverseDNS type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class ReverseDNS {
 
+    /**
+     * The disabled value.
+     */
     static final boolean DISABLED = isFalse(ReverseDNS.class.getName());
 
+    /**
+     * Creates a new instance.
+     */
     private ReverseDNS() {
 
     }
 
+    /**
+     * Determines whether false.
+     *
+     * @param name the name.
+     * @return true if the condition is met; otherwise false.
+     */
     private static boolean isFalse(String name) {
         try {
             String s = System.getProperty(name);
@@ -44,6 +58,12 @@ public class ReverseDNS {
         return false;
     }
 
+    /**
+     * Executes the host name of operation.
+     *
+     * @param inetAddress the inet address.
+     * @return the operation result.
+     */
     public static String hostNameOf(InetAddress inetAddress) {
         if (DISABLED)
             return inetAddress.getHostAddress();

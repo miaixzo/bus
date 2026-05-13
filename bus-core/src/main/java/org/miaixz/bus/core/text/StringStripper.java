@@ -42,14 +42,17 @@ public class StringStripper implements UnaryOperator<CharSequence>, Serializable
      * The prefix to strip.
      */
     private final CharSequence prefix;
+
     /**
      * The suffix to strip.
      */
     private final CharSequence suffix;
+
     /**
      * Whether to ignore case during stripping.
      */
     private final boolean ignoreCase;
+
     /**
      * Whether to strip all occurrences of the prefix/suffix.
      */

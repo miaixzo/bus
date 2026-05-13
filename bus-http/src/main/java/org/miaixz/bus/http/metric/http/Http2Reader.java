@@ -44,14 +44,17 @@ public class Http2Reader implements Closeable {
      * The HPACK reader for decoding headers.
      */
     public final Hpack.Reader hpackReader;
+
     /**
      * The underlying source from which frames are read.
      */
     public final BufferSource source;
+
     /**
      * A source that reads continuation frames.
      */
     public final ContinuationSource continuation;
+
     /**
      * True if this is a client endpoint.
      */
@@ -489,6 +492,9 @@ public class Http2Reader implements Closeable {
 
     /**
      * Handler for HTTP/2 frames.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     interface Handler {
 
@@ -604,11 +610,15 @@ public class Http2Reader implements Closeable {
          * @param maxAge   The time in seconds that this option is considered fresh.
          */
         void alternateService(int streamId, String origin, ByteString protocol, String host, int port, long maxAge);
+
     }
 
     /**
      * Decompression of the header block occurs above the frame layer. When {@link Hpack.Reader#readHeaders()} needs
      * continuation frames, this class lazily reads them.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static class ContinuationSource implements Source {
 
@@ -622,10 +632,12 @@ public class Http2Reader implements Closeable {
          * The length of the current frame.
          */
         int length;
+
         /**
          * The flags of the current frame.
          */
         byte flags;
+
         /**
          * The stream ID of the current frame.
          */
@@ -635,6 +647,7 @@ public class Http2Reader implements Closeable {
          * The number of bytes left to read in the current frame.
          */
         int left;
+
         /**
          * The padding length of the current frame.
          */

@@ -35,22 +35,27 @@ public class Http2Header {
      * The ":" prefix used for pseudo-headers.
      */
     public static final ByteString PSEUDO_PREFIX = ByteString.encodeUtf8(Symbol.COLON);
+
     /**
      * The ":status" pseudo-header.
      */
     public static final ByteString RESPONSE_STATUS = ByteString.encodeUtf8(HTTP.RESPONSE_STATUS_UTF8);
+
     /**
      * The ":method" pseudo-header.
      */
     public static final ByteString TARGET_METHOD = ByteString.encodeUtf8(HTTP.TARGET_METHOD_UTF8);
+
     /**
      * The ":path" pseudo-header.
      */
     public static final ByteString TARGET_PATH = ByteString.encodeUtf8(HTTP.TARGET_PATH_UTF8);
+
     /**
      * The ":scheme" pseudo-header.
      */
     public static final ByteString TARGET_SCHEME = ByteString.encodeUtf8(HTTP.TARGET_SCHEME_UTF8);
+
     /**
      * The ":authority" pseudo-header.
      */
@@ -60,10 +65,12 @@ public class Http2Header {
      * Name in case-insensitive ASCII encoding.
      */
     public final ByteString name;
+
     /**
      * Value in UTF-8 encoding.
      */
     public final ByteString value;
+
     /**
      * The size of this header in HPACK's format.
      */

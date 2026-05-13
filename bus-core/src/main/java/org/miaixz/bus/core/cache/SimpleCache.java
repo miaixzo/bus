@@ -58,10 +58,12 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
      * A map of locks for each key to reduce lock granularity during write operations.
      */
     protected final Map<K, Lock> keyLockMap = new ConcurrentHashMap<>();
+
     /**
      * The underlying map that stores the cache data.
      */
     private final Map<Mutable<K>, V> rawMap;
+
     /**
      * A read-write lock for thread-safe access to the cache.
      */

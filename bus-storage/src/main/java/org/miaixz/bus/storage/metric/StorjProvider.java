@@ -46,7 +46,7 @@ import org.miaixz.bus.storage.Context;
  * <strong>Configuration Example:</strong>
  *
  * <pre>{@code
- * 
+ *
  * Context context = Context.builder().endpoint("https://gateway.storjshare.io").bucket("my-bucket")
  *         .accessKey("STORJ_ACCESS_KEY").secretKey("STORJ_SECRET_KEY").region("global").build();
  *

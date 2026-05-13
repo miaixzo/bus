@@ -51,6 +51,7 @@ public class JschSession implements Session {
      * The underlying raw JSch session object.
      */
     private final com.jcraft.jsch.Session raw;
+
     /**
      * The connection timeout duration in milliseconds.
      */

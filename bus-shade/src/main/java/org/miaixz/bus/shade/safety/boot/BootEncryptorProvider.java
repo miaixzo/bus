@@ -71,6 +71,7 @@ public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntr
      * The compression level to use for the output JAR archive.
      */
     private final int level;
+
     /**
      * The encryption mode, which can include flags like {@link Builder#FLAG_DANGER}.
      */

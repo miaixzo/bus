@@ -190,6 +190,9 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
     /**
      * Builder for {@link PercentCodec}. Since {@link PercentCodec} itself should be an immutable object, its
      * construction is handled by this Builder.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class Builder implements org.miaixz.bus.core.Builder<PercentCodec> {
 
@@ -308,6 +311,7 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
         public PercentCodec build() {
             return codec;
         }
+
     }
 
 }

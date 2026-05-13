@@ -27,14 +27,31 @@ import org.miaixz.bus.image.metric.net.PDVInputStream;
 import org.miaixz.bus.image.metric.pdu.PresentationContext;
 
 /**
+ * Defines the DimseRQHandler contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface DimseRQHandler {
 
+    /**
+     * Executes the on dimse rq operation.
+     *
+     * @param as    the as.
+     * @param pc    the pc.
+     * @param dimse the dimse.
+     * @param cmd   the cmd.
+     * @param data  the data.
+     * @throws IOException if the operation cannot be completed.
+     */
     void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes cmd, PDVInputStream data)
             throws IOException;
 
+    /**
+     * Executes the on close operation.
+     *
+     * @param as the as.
+     */
     void onClose(Association as);
 
 }

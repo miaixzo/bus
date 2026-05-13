@@ -30,20 +30,40 @@ import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.hl7.HL7Exception;
 
 /**
+ * Represents the HL7ServiceRegistry type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class HL7ServiceRegistry extends DefaultHL7MessageListener {
 
+    /**
+     * The services value.
+     */
     private final List<HL7Service> services = new ArrayList<>();
+
+    /**
+     * The listeners value.
+     */
     private final Map<String, HL7MessageListener> listeners = new HashMap<>();
 
+    /**
+     * Adds the hl7 service.
+     *
+     * @param service the service.
+     */
     public synchronized void addHL7Service(HL7Service service) {
         services.add(service);
         for (String messageType : service.getMessageTypes())
             listeners.put(messageType, service);
     }
 
+    /**
+     * Removes the hl7 service.
+     *
+     * @param service the service.
+     * @return true if the condition is met; otherwise false.
+     */
     public synchronized boolean removeHL7Service(HL7Service service) {
         if (!services.remove(service))
             return false;
@@ -54,6 +74,16 @@ public class HL7ServiceRegistry extends DefaultHL7MessageListener {
         return true;
     }
 
+    /**
+     * Executes the on message operation.
+     *
+     * @param hl7App the hl7 app.
+     * @param conn   the conn.
+     * @param s      the s.
+     * @param msg    the msg.
+     * @return the operation result.
+     * @throws HL7Exception if the operation cannot be completed.
+     */
     @Override
     public UnparsedHL7Message onMessage(HL7Application hl7App, Connection conn, Socket s, UnparsedHL7Message msg)
             throws HL7Exception {

@@ -58,6 +58,7 @@ public enum PayPalApi implements Matcher {
      * The API endpoint.
      */
     private final String method;
+
     /**
      * The description of the API.
      */

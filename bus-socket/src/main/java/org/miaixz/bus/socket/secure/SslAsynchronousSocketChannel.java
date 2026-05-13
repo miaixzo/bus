@@ -48,16 +48,19 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
     private final VirtualBuffer netWriteBuffer;
     private final VirtualBuffer netReadBuffer;
     private final VirtualBuffer appReadBuffer;
+
     /**
      * The SSL service managing this session.
      */
     private final SslService sslService;
     private SSLEngine sslEngine;
+
     /**
      * Handshake model, set to null after the handshake is complete.
      */
     private HandshakeModel handshakeModel;
     private boolean handshake = true;
+
     /**
      * Adaptive size for write operations.
      */

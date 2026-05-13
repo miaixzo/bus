@@ -31,7 +31,7 @@ import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.nimble.opencv.ImageCV;
-import org.miaixz.bus.image.nimble.opencv.ImageProcessor;
+import org.miaixz.bus.image.nimble.opencv.ImageTransformer;
 import org.miaixz.bus.image.nimble.opencv.LookupTableCV;
 import org.miaixz.bus.image.nimble.opencv.PlanarImage;
 import org.miaixz.bus.image.nimble.opencv.lut.LutParameters;
@@ -41,11 +41,19 @@ import org.opencv.core.CvType;
 import org.opencv.imgproc.Imgproc;
 
 /**
+ * Represents the RGBImageVoiLut type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class RGBImageVoiLut {
 
+    /**
+     * Executes the BGR 2 RGB operation.
+     *
+     * @param img the img.
+     * @return the operation result.
+     */
     public static PlanarImage bgr2rgb(PlanarImage img) {
         if (img != null && img.channels() > 1) {
             ImageCV dstImg = new ImageCV();
@@ -55,6 +63,12 @@ public class RGBImageVoiLut {
         return img;
     }
 
+    /**
+     * Returns the modality.
+     *
+     * @param dcm the DCM.
+     * @return the modality.
+     */
     public static String getModality(Attributes dcm) {
         String modality = dcm.getString(Tag.Modality);
         if (modality == null) {
@@ -70,6 +84,13 @@ public class RGBImageVoiLut {
         return modality;
     }
 
+    /**
+     * Returns the min max.
+     *
+     * @param bitsStored the bits stored.
+     * @param signed     the signed.
+     * @return the min max.
+     */
     public static Pair<Double, Double> getMinMax(int bitsStored, boolean signed) {
         double minValue, maxValue;
         int stored = (bitsStored > 16) ? 16 : Math.max(bitsStored, 1);
@@ -83,6 +104,13 @@ public class RGBImageVoiLut {
         return new Pair<>(minValue, maxValue);
     }
 
+    /**
+     * Returns the RGB image from palette color model.
+     *
+     * @param source the source.
+     * @param ds     the ds.
+     * @return the RGB image from palette color model.
+     */
     public static PlanarImage getRGBImageFromPaletteColorModel(PlanarImage source, Attributes ds) {
         // Convert images with PaletteColorModel to RGB model
         if (ds != null) {
@@ -107,7 +135,7 @@ public class RGBImageVoiLut {
 
             if (source.depth() <= CvType.CV_8S && rDesc[1] == 0 && gDesc[1] == 0 && bDesc[1] == 0) {
                 // Replace the original image with the RGB image.
-                return ImageProcessor.applyLUT(source.toMat(), new byte[][] { b, g, r });
+                return ImageTransformer.applyLUT(source.toMat(), new byte[][] { b, g, r });
             } else {
                 LookupTableCV lookup = new LookupTableCV(new byte[][] { b, g, r },
                         new int[] { bDesc[1], gDesc[1], rDesc[1] }, true);
@@ -118,8 +146,10 @@ public class RGBImageVoiLut {
     }
 
     /**
-     * @param dicomLutObject defines LUT data dicom structure
-     * @return LookupTableJAI object if Data Element and Descriptors are consistent
+     * Creates the LUT.
+     *
+     * @param dicomLutObject the DICOM LUT object.
+     * @return the operation result.
      */
     public static Optional<LookupTableCV> createLut(Attributes dicomLutObject) {
         if (dicomLutObject == null || dicomLutObject.isEmpty()) {
@@ -228,21 +258,17 @@ public class RGBImageVoiLut {
     }
 
     /**
-     * Minimum output is given for input value below (level - window/2) Maximum output is given for input value above
-     * (level + window/2) These Minimum and Maximum values depends on bitsStored and signed given attributes. ie : -
-     * when bitsStored=8 bits unsigned => minOutValue=0 and maxOutValue=255 - when bitsStored=8 bits signed =>
-     * minOutValue=-128 and maxOutValue=127 - when bitsStored=16 bits unsigned => minOutValue= 0 and maxOutValue= 65535
-     * - when bitsStored=16 bits signed => minOutValue= -32768 and maxOutValue= 32767
+     * Creates the VOI LUT.
      *
-     * @param lutShape   the LUT shape
-     * @param window     the window width
-     * @param level      the window center
-     * @param minValue   the minimum input value
-     * @param maxValue   the maximum input value
-     * @param bitsStored the number of bits stored
-     * @param isSigned   true if the data is signed
-     * @param inverse    true if the LUT should be inverted
-     * @return a LookupTableJAI for data between minValue and maxValue according to all given parameters
+     * @param lutShape   the LUT shape.
+     * @param window     the window.
+     * @param level      the level.
+     * @param minValue   the min value.
+     * @param maxValue   the max value.
+     * @param bitsStored the bits stored.
+     * @param isSigned   the is signed.
+     * @param inverse    the inverse.
+     * @return the operation result.
      */
     public static LookupTableCV createVoiLut(
             LutShape lutShape,
@@ -315,8 +341,10 @@ public class RGBImageVoiLut {
     }
 
     /**
-     * @return LookupTable with full range of possible input entries according to bitStored. Note that isSigned is
-     *         relevant for both input and output values
+     * Creates the rescale ramp LUT.
+     *
+     * @param params the params.
+     * @return the operation result.
      */
     public static LookupTableCV createRescaleRampLut(LutParameters params) {
         return createRescaleRampLut(
@@ -328,6 +356,17 @@ public class RGBImageVoiLut {
                 params.getBitsOutput());
     }
 
+    /**
+     * Creates the rescale ramp LUT.
+     *
+     * @param intercept    the intercept.
+     * @param slope        the slope.
+     * @param bitsStored   the bits stored.
+     * @param isSigned     the is signed.
+     * @param outputSigned the output signed.
+     * @param bitsOutput   the bits output.
+     * @return the operation result.
+     */
     public static LookupTableCV createRescaleRampLut(
             double intercept,
             double slope,
@@ -348,6 +387,20 @@ public class RGBImageVoiLut {
                 bitsOutput);
     }
 
+    /**
+     * Creates the rescale ramp LUT.
+     *
+     * @param intercept    the intercept.
+     * @param slope        the slope.
+     * @param minValue     the min value.
+     * @param maxValue     the max value.
+     * @param bitsStored   the bits stored.
+     * @param isSigned     the is signed.
+     * @param inverse      the inverse.
+     * @param outputSigned the output signed.
+     * @param bitsOutput   the bits output.
+     * @return the operation result.
+     */
     public static LookupTableCV createRescaleRampLut(
             double intercept,
             double slope,
@@ -393,7 +446,10 @@ public class RGBImageVoiLut {
     }
 
     /**
-     * Apply the pixel padding to the modality LUT
+     * Applies the pixel padding to modality LUT.
+     *
+     * @param modalityLookup the modality lookup.
+     * @param lutparams      the lutparams.
      */
     public static void applyPixelPaddingToModalityLUT(LookupTableCV modalityLookup, LutParameters lutparams) {
         if (modalityLookup != null && lutparams.isApplyPadding() && lutparams.getPaddingMinValue() != null
@@ -442,6 +498,17 @@ public class RGBImageVoiLut {
         }
     }
 
+    /**
+     * Sets the window level linear LUT legacy.
+     *
+     * @param window      the window.
+     * @param level       the level.
+     * @param minInValue  the min in value.
+     * @param outLut      the out LUT.
+     * @param minOutValue the min out value.
+     * @param maxOutValue the max out value.
+     * @param inverse     the inverse.
+     */
     private static void setWindowLevelLinearLutLegacy(
             double window,
             double level,
@@ -451,7 +518,6 @@ public class RGBImageVoiLut {
             int maxOutValue,
             boolean inverse) {
 
-        /** Pseudo code defined in Dicom Standard 2011 - PS 3.3 § C.11.2 VOI LUT Module */
         double lowLevel = (level - 0.5) - (window - 1.0) / 2.0;
         double highLevel = (level - 0.5) + (window - 1.0) / 2.0;
 
@@ -471,6 +537,16 @@ public class RGBImageVoiLut {
         }
     }
 
+    /**
+     * Sets the LUT value.
+     *
+     * @param outLut      the out LUT.
+     * @param minOutValue the min out value.
+     * @param maxOutValue the max out value.
+     * @param inverse     the inverse.
+     * @param i           the i.
+     * @param value       the value.
+     */
     private static void setLutValue(
             Object outLut,
             int minOutValue,
@@ -488,6 +564,17 @@ public class RGBImageVoiLut {
         }
     }
 
+    /**
+     * Sets the window level linear LUT.
+     *
+     * @param window      the window.
+     * @param level       the level.
+     * @param minInValue  the min in value.
+     * @param outLut      the out LUT.
+     * @param minOutValue the min out value.
+     * @param maxOutValue the max out value.
+     * @param inverse     the inverse.
+     */
     private static void setWindowLevelLinearLut(
             double window,
             double level,
@@ -506,6 +593,17 @@ public class RGBImageVoiLut {
         }
     }
 
+    /**
+     * Sets the window level sigmoid LUT.
+     *
+     * @param width       the width.
+     * @param center      the center.
+     * @param minInValue  the min in value.
+     * @param outLut      the out LUT.
+     * @param minOutValue the min out value.
+     * @param maxOutValue the max out value.
+     * @param inverse     the inverse.
+     */
     private static void setWindowLevelSigmoidLut(
             double width,
             double center,
@@ -518,6 +616,18 @@ public class RGBImageVoiLut {
         setWindowLevelSigmoidLut(width, center, minInValue, outLut, minOutValue, maxOutValue, inverse, false);
     }
 
+    /**
+     * Sets the window level sigmoid LUT.
+     *
+     * @param width       the width.
+     * @param center      the center.
+     * @param minInValue  the min in value.
+     * @param outLut      the out LUT.
+     * @param minOutValue the min out value.
+     * @param maxOutValue the max out value.
+     * @param inverse     the inverse.
+     * @param normalize   the normalize.
+     */
     private static void setWindowLevelSigmoidLut(
             double width,
             double center,
@@ -550,6 +660,17 @@ public class RGBImageVoiLut {
         }
     }
 
+    /**
+     * Sets the window level exponential LUT.
+     *
+     * @param width       the width.
+     * @param center      the center.
+     * @param minInValue  the min in value.
+     * @param outLut      the out LUT.
+     * @param minOutValue the min out value.
+     * @param maxOutValue the max out value.
+     * @param inverse     the inverse.
+     */
     private static void setWindowLevelExponentialLut(
             double width,
             double center,
@@ -562,6 +683,18 @@ public class RGBImageVoiLut {
         setWindowLevelExponentialLut(width, center, minInValue, outLut, minOutValue, maxOutValue, inverse, true);
     }
 
+    /**
+     * Sets the window level exponential LUT.
+     *
+     * @param width       the width.
+     * @param center      the center.
+     * @param minInValue  the min in value.
+     * @param outLut      the out LUT.
+     * @param minOutValue the min out value.
+     * @param maxOutValue the max out value.
+     * @param inverse     the inverse.
+     * @param normalize   the normalize.
+     */
     private static void setWindowLevelExponentialLut(
             double width,
             double center,
@@ -593,6 +726,17 @@ public class RGBImageVoiLut {
         }
     }
 
+    /**
+     * Sets the window level logarithmic LUT.
+     *
+     * @param width       the width.
+     * @param center      the center.
+     * @param minInValue  the min in value.
+     * @param outLut      the out LUT.
+     * @param minOutValue the min out value.
+     * @param maxOutValue the max out value.
+     * @param inverse     the inverse.
+     */
     private static void setWindowLevelLogarithmicLut(
             double width,
             double center,
@@ -605,6 +749,18 @@ public class RGBImageVoiLut {
         setWindowLevelLogarithmicLut(width, center, minInValue, outLut, minOutValue, maxOutValue, inverse, true);
     }
 
+    /**
+     * Sets the window level logarithmic LUT.
+     *
+     * @param width       the width.
+     * @param center      the center.
+     * @param minInValue  the min in value.
+     * @param outLut      the out LUT.
+     * @param minOutValue the min out value.
+     * @param maxOutValue the max out value.
+     * @param inverse     the inverse.
+     * @param normalize   the normalize.
+     */
     private static void setWindowLevelLogarithmicLut(
             double width,
             double center,
@@ -637,6 +793,19 @@ public class RGBImageVoiLut {
         }
     }
 
+    /**
+     * Sets the LUT value.
+     *
+     * @param outLut          the out LUT.
+     * @param minOutValue     the min out value.
+     * @param maxOutValue     the max out value.
+     * @param inverse         the inverse.
+     * @param normalize       the normalize.
+     * @param minValue        the min value.
+     * @param outRescaleRatio the out rescale ratio.
+     * @param i               the i.
+     * @param value           the value.
+     */
     private static void setLutValue(
             Object outLut,
             int minOutValue,
@@ -662,6 +831,12 @@ public class RGBImageVoiLut {
         }
     }
 
+    /**
+     * Returns the LUT data array.
+     *
+     * @param lookup the lookup.
+     * @return the LUT data array.
+     */
     private static Object getLutDataArray(LookupTableCV lookup) {
         Object lutDataArray = null;
         if (lookup != null) {
@@ -674,6 +849,19 @@ public class RGBImageVoiLut {
         return lutDataArray;
     }
 
+    /**
+     * Sets the window level sequence LUT.
+     *
+     * @param width          the width.
+     * @param center         the center.
+     * @param lookupSequence the lookup sequence.
+     * @param minInValue     the min in value.
+     * @param maxInValue     the max in value.
+     * @param outLut         the out LUT.
+     * @param minOutValue    the min out value.
+     * @param maxOutValue    the max out value.
+     * @param inverse        the inverse.
+     */
     private static void setWindowLevelSequenceLut(
             double width,
             double center,
@@ -752,6 +940,13 @@ public class RGBImageVoiLut {
         }
     }
 
+    /**
+     * Executes the pixel 2 rescale operation.
+     *
+     * @param lookup     the lookup.
+     * @param pixelValue the pixel value.
+     * @return the operation result.
+     */
     public static double pixel2rescale(LookupTableCV lookup, double pixelValue) {
         if (lookup != null) {
             if (pixelValue >= lookup.getOffset() && pixelValue <= lookup.getOffset() + lookup.getNumEntries() - 1) {
@@ -761,6 +956,13 @@ public class RGBImageVoiLut {
         return pixelValue;
     }
 
+    /**
+     * Executes the pixel 2 rescale operation.
+     *
+     * @param dcm        the DCM.
+     * @param pixelValue the pixel value.
+     * @return the operation result.
+     */
     public static double pixel2rescale(Attributes dcm, double pixelValue) {
         if (dcm != null) {
             // value = pixelValue * rescale slope + intercept value
@@ -773,10 +975,25 @@ public class RGBImageVoiLut {
         return pixelValue;
     }
 
+    /**
+     * Returns the byte data.
+     *
+     * @param dicom the DICOM.
+     * @param tag   the tag.
+     * @return the byte data.
+     */
     public static Optional<byte[]> getByteData(Attributes dicom, int tag) {
         return getByteData(dicom, null, tag);
     }
 
+    /**
+     * Returns the byte data.
+     *
+     * @param dicom          the DICOM.
+     * @param privateCreator the private creator.
+     * @param tag            the tag.
+     * @return the byte data.
+     */
     public static Optional<byte[]> getByteData(Attributes dicom, String privateCreator, int tag) {
         if (dicom == null) {
             return Optional.empty();
@@ -793,6 +1010,13 @@ public class RGBImageVoiLut {
         return Optional.ofNullable(bData);
     }
 
+    /**
+     * Executes the LUT descriptor operation.
+     *
+     * @param ds      the ds.
+     * @param descTag the desc tag.
+     * @return the operation result.
+     */
     public static int[] lutDescriptor(Attributes ds, int descTag) {
         int[] desc = ds.getInts(descTag);
         if (desc == null) {
@@ -811,6 +1035,15 @@ public class RGBImageVoiLut {
         return desc;
     }
 
+    /**
+     * Executes the LUT data operation.
+     *
+     * @param ds      the ds.
+     * @param desc    the desc.
+     * @param dataTag the data tag.
+     * @param segmTag the segm tag.
+     * @return the operation result.
+     */
     public static byte[] lutData(Attributes ds, int[] desc, int dataTag, int segmTag) {
         int len = desc[0] <= 0 ? desc[0] + 0x10000 : desc[0];
         int bits = desc[2];
@@ -844,6 +1077,13 @@ public class RGBImageVoiLut {
         return data;
     }
 
+    /**
+     * Executes the half length operation.
+     *
+     * @param data the data.
+     * @param hilo the hilo.
+     * @return the operation result.
+     */
     private static byte[] halfLength(byte[] data, int hilo) {
         byte[] bs = new byte[data.length >> 1];
         for (int i = 0; i < bs.length; i++)
@@ -852,13 +1092,42 @@ public class RGBImageVoiLut {
         return bs;
     }
 
+    /**
+     * Represents the InflateSegmentedLut type.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     private static class InflateSegmentedLut {
 
+        /**
+         * The segm value.
+         */
         final int[] segm;
+
+        /**
+         * The data value.
+         */
         final byte[] data;
+
+        /**
+         * The read pos value.
+         */
         int readPos;
+
+        /**
+         * The write pos value.
+         */
         int writePos;
 
+        /**
+         * Creates a new instance.
+         *
+         * @param segm     the segm.
+         * @param readPos  the read pos.
+         * @param data     the data.
+         * @param writePos the write pos.
+         */
         private InflateSegmentedLut(int[] segm, int readPos, byte[] data, int writePos) {
             this.segm = segm;
             this.data = data;
@@ -866,6 +1135,13 @@ public class RGBImageVoiLut {
             this.writePos = writePos;
         }
 
+        /**
+         * Executes the inflate operation.
+         *
+         * @param segs the segs.
+         * @param y0   the y 0.
+         * @return the operation result.
+         */
         private int inflate(int segs, int y0) {
             while (segs < 0 ? (readPos < segm.length) : segs-- > 0) {
                 int segPos = readPos;
@@ -895,6 +1171,11 @@ public class RGBImageVoiLut {
             return y0;
         }
 
+        /**
+         * Reads the read.
+         *
+         * @return the operation result.
+         */
         private int read() {
             if (readPos >= segm.length) {
                 throw new IllegalArgumentException("Running out of data inflating segmented LUT");
@@ -902,6 +1183,11 @@ public class RGBImageVoiLut {
             return segm[readPos++] & 0xffff;
         }
 
+        /**
+         * Writes the write.
+         *
+         * @param y the y.
+         */
         private void write(int y) {
             if (writePos >= data.length) {
                 throw new IllegalArgumentException(
@@ -911,12 +1197,26 @@ public class RGBImageVoiLut {
             data[writePos++] = (byte) (y >> 8);
         }
 
+        /**
+         * Executes the discrete segment operation.
+         *
+         * @param n the n.
+         * @return the operation result.
+         */
         private int discreteSegment(int n) {
             while (n-- > 0)
                 write(read());
             return segm[readPos - 1] & 0xffff;
         }
 
+        /**
+         * Executes the linear segment operation.
+         *
+         * @param n  the n.
+         * @param y0 the y 0.
+         * @param y1 the y 1.
+         * @return the operation result.
+         */
         private int linearSegment(int n, int y0, int y1) {
             int dy = y1 - y0;
             for (int j = 1; j <= n; j++)
@@ -924,10 +1224,18 @@ public class RGBImageVoiLut {
             return y1;
         }
 
+        /**
+         * Executes the indirect segment operation.
+         *
+         * @param n  the n.
+         * @param y0 the y 0.
+         * @return the operation result.
+         */
         private int indirectSegment(int n, int y0) {
             int readPos = read() | (read() << 16);
             return new InflateSegmentedLut(segm, readPos, data, writePos).inflate(n, y0);
         }
+
     }
 
 }

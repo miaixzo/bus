@@ -74,6 +74,9 @@ public final class IdleStatePlugin<T> extends AbstractPlugin<T> {
 
     /**
      * A proxy channel that monitors idle time.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class IdleMonitorChannel extends AsynchronousSocketChannelProxy {
 
@@ -151,6 +154,7 @@ public final class IdleStatePlugin<T> extends AbstractPlugin<T> {
             }
             super.close();
         }
+
     }
 
 }

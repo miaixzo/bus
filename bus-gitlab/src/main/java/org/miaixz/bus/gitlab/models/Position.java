@@ -28,11 +28,23 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.io.Serial;
 
+/**
+ * The position class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Position implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 2852270036770L;
 
+    /**
+     * The position type enum.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public static enum PositionType {
 
         TEXT, IMAGE, FILE;
@@ -54,6 +66,7 @@ public class Position implements Serializable {
         public String toString() {
             return (enumHelper.toString(this));
         }
+
     }
 
     private String baseSha;

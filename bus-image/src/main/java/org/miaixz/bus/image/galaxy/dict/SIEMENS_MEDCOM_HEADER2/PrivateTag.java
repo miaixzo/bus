@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MEDCOM_HEADER2;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS MEDCOM HEADER2";
 
-    /** (0029,xx60) VR=LO VM=1 Series Work Flow Statu */
+    /**
+     * (0029,xx60) VR=LO VM=1 Series Work Flow Statu
+     */
     public static final int SeriesWorkFlowStatus = 0x00290060;
 
 }

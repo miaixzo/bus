@@ -41,6 +41,7 @@ public class PeekSource implements Source {
      * The upstream {@link BufferSource} from which data is peeked.
      */
     private final BufferSource upstream;
+
     /**
      * The internal buffer of the upstream source, used for peeking.
      */
@@ -51,14 +52,17 @@ public class PeekSource implements Source {
      * reset.
      */
     private SectionBuffer expectedSegment;
+
     /**
      * The expected position within the {@link #expectedSegment} of the upstream buffer.
      */
     private int expectedPos;
+
     /**
      * A flag indicating whether this peek source has been closed.
      */
     private boolean closed;
+
     /**
      * The current position within the peeked data, relative to the start of the upstream buffer.
      */

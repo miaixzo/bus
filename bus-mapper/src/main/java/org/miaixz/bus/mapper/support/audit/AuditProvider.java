@@ -49,8 +49,11 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * <p>
  * <b>Example 1: Only logging, use configuration file</b>
  *
- * <pre>{@code
- * @Component
+ * <pre>
+ * {@code
+ *
+ * &#64;author Kimi Liu
+ * &#64;Component
  * public class SimpleAuditProvider implements AuditProvider {
  *
  *     public void logSlowSql(AuditRecord record) {
@@ -60,7 +63,8 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  *
  *     // No getConfig() method - configuration from application.yml
  * }
- * }</pre>
+ * }
+ * </pre>
  *
  * <p>
  * <b>Example 2: Full configuration from Provider</b>
@@ -131,7 +135,6 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * }</pre>
  *
  * @author Kimi Liu
- *
  * @since Java 21+
  */
 public interface AuditProvider extends MapperProvider<AuditConfig> {

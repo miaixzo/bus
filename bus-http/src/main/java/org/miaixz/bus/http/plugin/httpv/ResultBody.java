@@ -50,42 +50,52 @@ public class ResultBody implements CoverResult.Body {
      * The underlying Httpd response.
      */
     private final Response response;
+
     /**
      * The executor for handling callbacks and data conversions.
      */
     protected CoverTasks.Executor executor;
+
     /**
      * The character set of the response body.
      */
     protected java.nio.charset.Charset charset;
+
     /**
      * Flag to determine if the next callback should be executed on an I/O thread.
      */
     private boolean onIO = false;
+
     /**
      * The callback for download progress updates.
      */
     private Callback<Progress> onProcess;
+
     /**
      * The progress update interval in bytes.
      */
     private long stepBytes = 0;
+
     /**
      * The progress update interval as a percentage of the total size (0.0 to 1.0).
      */
     private double stepRate = -1;
+
     /**
      * Flag to ignore the HTTP Range header when calculating total download size.
      */
     private boolean rangeIgnored = false;
+
     /**
      * The original HTTP task that produced this result.
      */
     private CoverHttp<?> coverHttp;
+
     /**
      * Flag indicating if the response body should be cached in memory after the first read.
      */
     private boolean cached = false;
+
     /**
      * The byte array used to cache the response body.
      */

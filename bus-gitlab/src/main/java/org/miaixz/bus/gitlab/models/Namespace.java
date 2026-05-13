@@ -24,6 +24,12 @@ import java.io.Serializable;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import java.io.Serial;
 
+/**
+ * The namespace class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Namespace implements Serializable {
 
     @Serial

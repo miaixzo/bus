@@ -35,30 +35,37 @@ public abstract class AbstractPrinter implements Printer {
      * The name value.
      */
     private final String name;
+
     /**
      * The driverName value.
      */
     private final String driverName;
+
     /**
      * The description value.
      */
     private final String description;
+
     /**
      * The status value.
      */
     private final PrinterStatus status;
+
     /**
      * The statusReason value.
      */
     private final String statusReason;
+
     /**
      * The isDefault value.
      */
     private final boolean isDefault;
+
     /**
      * The isLocal value.
      */
     private final boolean isLocal;
+
     /**
      * The portName value.
      */

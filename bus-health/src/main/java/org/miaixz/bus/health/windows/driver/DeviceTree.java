@@ -47,10 +47,12 @@ public final class DeviceTree {
      * The MAX_PATH constant.
      */
     private static final int MAX_PATH = 260;
+
     /**
      * The SA constant.
      */
     private static final SetupApi SA = SetupApi.INSTANCE;
+
     /**
      * The C32 constant.
      */

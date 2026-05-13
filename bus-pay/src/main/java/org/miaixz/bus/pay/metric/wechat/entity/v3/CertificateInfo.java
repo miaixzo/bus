@@ -48,14 +48,17 @@ public class CertificateInfo implements Serializable {
      * The serial number of the certificate.
      */
     private String serial_no;
+
     /**
      * The effective time of the certificate.
      */
     private String effective_time;
+
     /**
      * The expiration time of the certificate.
      */
     private String expire_time;
+
     /**
      * The encrypted certificate details.
      */

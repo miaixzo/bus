@@ -71,6 +71,7 @@ public class Keys {
      * The version of the operating system.
      */
     public static final String OS_VERSION = "os.version";
+
     /**
      * The user's account name.
      */
@@ -85,31 +86,38 @@ public class Keys {
      * The current working directory.
      */
     public static final String USER_DIR = "user.dir";
+
     /**
      * The default character encoding for files.
      */
     public static final String FILE_ENCODING = "file.encoding";
+
     /**
      * The current user's language.
      */
     public static final String USER_LANGUAGE = "user.language";
+
     /**
      * The current user's country or region.
      */
     public static final String USER_COUNTRY = "user.country";
+
     /**
      * The current user's region.
      */
     public static final String USER_REGION = "user.region";
+
     /**
      * The file path separator. On Unix and Linux, it is {@code '/'}; on Windows, it is {@code '\'}.
      */
     public static final String FILE_SEPARATOR = "file.separator";
+
     /**
      * The path separator used between multiple paths. On Unix and Linux, it is {@code ':'}; on Windows, it is
      * {@code ';'}.
      */
     public static final String PATH_SEPARATOR = "path.separator";
+
     /**
      * The line separator. On Unix, it is {@code '\n'}.
      */
@@ -164,6 +172,7 @@ public class Keys {
      * The Java Virtual Machine implementation name.
      */
     public static final String JAVA_VM_NAME = "java.vm.name";
+
     /**
      * Additional information about the Java Virtual Machine implementation.
      */
@@ -213,50 +222,62 @@ public class Keys {
      * The path to one or more extension directories.
      */
     public static final String JAVA_EXT_DIRS = "java.ext.dirs";
+
     /**
      * The name of the Java Runtime Environment.
      */
     public static final String JAVA_RUNTIME_NAME = " java.runtime.name";
+
     /**
      * The version of the Java Runtime Environment.
      */
     public static final String JAVA_RUNTIME_VERSION = "java.runtime.version";
+
     /**
      * The directory for endorsed standards override mechanism.
      */
     public static final String JAVA_ENDORSED_DIRS = "java.endorsed.dirs";
+
     /**
      * The class name of the {@code Transient} annotation in Java Beans.
      */
     public static final String JAVA_BEANS_TRANSIENT = "java.beans.Transient";
+
     /**
      * The boot classpath used by the BootstrapClassLoader.
      */
     public static final String SUN_BOOT_CLASS_PATH = "sun.boot.class.path";
+
     /**
      * The bitness of the JVM system (e.g., "32" or "64").
      */
     public static final String SUN_ARCH_DATA_MODEL = "sun.arch.data.model";
+
     /**
      * The base name for resource bundles, typically "messages".
      */
     public static final String BUNDLE_NAME = "messages";
+
     /**
      * Custom system property: whether to parse date strings in strict mode.
      */
     public static final String DATE_LENIENT = "bus.date.lenient";
+
     /**
      * The major version of the JVM (e.g., 8 for Java 8, 17 for Java 25).
      */
     public static final int JVM_VERSION;
+
     /**
      * Indicates whether the current JVM version is 25 or later.
      */
     public static final boolean IS_AT_LEAST_JDK25;
+
     /**
      * Indicates whether the current environment is Android.
      */
     public static final boolean IS_ANDROID;
+
     /**
      * Indicates whether the current JVM is OpenJ9.
      */

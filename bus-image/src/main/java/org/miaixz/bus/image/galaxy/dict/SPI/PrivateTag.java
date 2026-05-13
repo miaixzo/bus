@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.SPI;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SPI";
 
-    /** (0029,xx60) VR=LO VM=1 Compression Algorithm */
+    /**
+     * (0029,xx60) VR=LO VM=1 Compression Algorithm
+     */
     public static final int CompressionAlgorithm = 0x00290060;
 
 }

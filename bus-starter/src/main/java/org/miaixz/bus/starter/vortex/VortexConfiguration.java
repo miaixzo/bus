@@ -99,11 +99,11 @@ import java.util.Map;
  * <li>LLM (protocol 6): Large language model proxying</li>
  * </ul>
  *
- * @author Kimi Liu
- * @since Java 21+
  * @see Router
  * @see Executor
  * @see Strategy
+ * @author Kimi Liu
+ * @since Java 21+
  */
 @EnableConfigurationProperties(value = { VortexProperties.class })
 @ConditionalOnProperty(prefix = GeniusBuilder.VORTEX, name = "enabled", havingValue = "true", matchIfMissing = true)

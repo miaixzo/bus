@@ -20,11 +20,18 @@
 package org.miaixz.bus.image.metric;
 
 /**
+ * Defines the AssociationListener contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface AssociationListener {
 
+    /**
+     * Executes the on close operation.
+     *
+     * @param association the association.
+     */
     void onClose(Association association);
 
 }

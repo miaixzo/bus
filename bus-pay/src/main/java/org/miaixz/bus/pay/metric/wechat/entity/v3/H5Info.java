@@ -42,18 +42,22 @@ public class H5Info {
      * The scene type (e.g., "iOS", "Android", "Wap").
      */
     private String type;
+
     /**
      * The application name.
      */
     private String app_name;
+
     /**
      * The website URL.
      */
     private String app_url;
+
     /**
      * The Bundle ID for the iOS platform.
      */
     private String bundle_id;
+
     /**
      * The Package Name for the Android platform.
      */

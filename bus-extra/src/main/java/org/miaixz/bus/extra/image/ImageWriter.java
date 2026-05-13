@@ -53,10 +53,12 @@ public class ImageWriter implements Flushable {
      * The image to be written, rendered as a {@link RenderedImage}.
      */
     private final RenderedImage image;
+
     /**
      * The underlying {@link javax.imageio.ImageWriter} used for output.
      */
     private final javax.imageio.ImageWriter writer;
+
     /**
      * The write parameters, used for setting compression quality, etc.
      */

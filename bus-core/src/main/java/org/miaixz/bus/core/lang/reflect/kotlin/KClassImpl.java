@@ -39,6 +39,7 @@ public class KClassImpl {
      * The {@link Class} object for {@code kotlin.reflect.jvm.internal.KClassImpl}.
      */
     private static final Class<?> KCLASS_IMPL_CLASS;
+
     /**
      * The {@link Method} object for {@code KClassImpl.getConstructors()}.
      */

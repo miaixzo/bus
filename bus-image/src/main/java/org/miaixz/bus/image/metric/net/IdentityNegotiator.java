@@ -25,11 +25,21 @@ import org.miaixz.bus.image.metric.pdu.IdentityAC;
 import org.miaixz.bus.image.metric.pdu.IdentityRQ;
 
 /**
+ * Defines the IdentityNegotiator contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface IdentityNegotiator {
 
+    /**
+     * Executes the negotiate operation.
+     *
+     * @param as           the as.
+     * @param userIdentity the user identity.
+     * @return the operation result.
+     * @throws AAssociateRJ if the operation cannot be completed.
+     */
     default IdentityAC negotiate(Association as, IdentityRQ userIdentity) throws AAssociateRJ {
         return userIdentity != null && userIdentity.isPositiveResponseRequested()
                 ? new IdentityAC(userIdentity.getType() > 2 ? userIdentity.getPrimaryField() : new byte[] {})

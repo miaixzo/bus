@@ -30,11 +30,23 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.xml.sax.SAXException;
 
 /**
+ * Represents the SAXReader type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class SAXReader {
 
+    /**
+     * Executes the parse operation.
+     *
+     * @param uri   the uri.
+     * @param attrs the attrs.
+     * @return the operation result.
+     * @throws ParserConfigurationException if the operation cannot be completed.
+     * @throws SAXException                 if the operation cannot be completed.
+     * @throws IOException                  if the operation cannot be completed.
+     */
     public static Attributes parse(String uri, Attributes attrs)
             throws ParserConfigurationException, SAXException, IOException {
         if (attrs == null)
@@ -45,6 +57,16 @@ public class SAXReader {
         return attrs;
     }
 
+    /**
+     * Executes the parse operation.
+     *
+     * @param is    the is.
+     * @param attrs the attrs.
+     * @return the operation result.
+     * @throws ParserConfigurationException if the operation cannot be completed.
+     * @throws SAXException                 if the operation cannot be completed.
+     * @throws IOException                  if the operation cannot be completed.
+     */
     public static Attributes parse(InputStream is, Attributes attrs)
             throws ParserConfigurationException, SAXException, IOException {
         if (attrs == null)
@@ -55,10 +77,28 @@ public class SAXReader {
         return attrs;
     }
 
+    /**
+     * Executes the parse operation.
+     *
+     * @param uri the uri.
+     * @return the operation result.
+     * @throws ParserConfigurationException if the operation cannot be completed.
+     * @throws SAXException                 if the operation cannot be completed.
+     * @throws IOException                  if the operation cannot be completed.
+     */
     public static Attributes parse(String uri) throws ParserConfigurationException, SAXException, IOException {
         return parse(uri, null);
     }
 
+    /**
+     * Executes the parse operation.
+     *
+     * @param is the is.
+     * @return the operation result.
+     * @throws ParserConfigurationException if the operation cannot be completed.
+     * @throws SAXException                 if the operation cannot be completed.
+     * @throws IOException                  if the operation cannot be completed.
+     */
     public static Attributes parse(InputStream is) throws ParserConfigurationException, SAXException, IOException {
         return parse(is, null);
     }

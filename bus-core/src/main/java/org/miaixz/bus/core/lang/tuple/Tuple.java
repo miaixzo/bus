@@ -46,10 +46,12 @@ public class Tuple implements Iterable<Object>, Serializable, Cloneable {
      * The elements of this tuple.
      */
     private final Object[] members;
+
     /**
      * The cached hash code.
      */
     private int hashCode;
+
     /**
      * Whether the hash code is cached.
      */

@@ -40,6 +40,7 @@ public class PictureCellSetter implements CellSetter {
      * The picture data as a byte array.
      */
     private final byte[] pictureData;
+
     /**
      * The picture type.
      */

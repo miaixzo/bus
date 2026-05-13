@@ -42,6 +42,7 @@ public class ImageRender implements BitMatrixRender {
      * The QR code configuration used for rendering.
      */
     private final QrConfig config;
+
     /**
      * The image type (e.g., "png", "jpg").
      */

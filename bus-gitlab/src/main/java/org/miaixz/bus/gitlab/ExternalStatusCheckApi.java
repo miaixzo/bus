@@ -35,6 +35,9 @@ import jakarta.ws.rs.core.Response;
 /**
  * This class implements the client side API for the GitLab external status checks. See
  * <a href="https://docs.gitlab.com/ee/api/status_checks.html">External Status Checks API</a> for more information.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class ExternalStatusCheckApi extends AbstractApi {
 

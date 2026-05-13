@@ -23,6 +23,12 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import java.io.Serial;
 
+/**
+ * The deployment event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class DeploymentEvent extends AbstractEvent {
 
     @Serial

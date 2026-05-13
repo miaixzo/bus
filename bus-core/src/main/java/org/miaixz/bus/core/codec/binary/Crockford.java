@@ -36,9 +36,9 @@ import org.miaixz.bus.core.lang.Symbol;
  * <p>
  * This class operates directly on byte streams, and not character streams.
  *
- * @author Kimi Liu
  * @see <a href="http://www.ietf.org/rfc/rfc4648.txt">RFC 4648</a>
  * @see <a href="http://www.crockford.com/wrmg/base32.html">Douglas Crockford's Base32 Encoding</a>
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class Crockford {
@@ -49,10 +49,12 @@ public class Crockford {
     protected static final int MASK_8BITS = 0xff;
     private static final java.nio.charset.Charset DEFAULT_CHARSET = Charset.UTF_8;
     private static final int DEFAULT_BUFFER_RESIZE_FACTOR = 2;
+
     /**
      * Mask used to extract 5 bits, used when encoding Base32 bytes
      */
     private static final int MASK_5BITS = 0x1f;
+
     /**
      * BASE32 characters are 5 bits in length. They are formed by taking a block of five octets to form a 40-bit string,
      * which is converted into eight BASE32 characters.
@@ -60,44 +62,53 @@ public class Crockford {
     private static final int BITS_PER_ENCODED_BYTE = 5;
     private static final int BYTES_PER_ENCODED_BLOCK = 8;
     private static final int BYTES_PER_UNENCODED_BLOCK = 5;
+
     /**
      * This array is a lookup table that translates 5-bit positive integer index values into their "Base32 Alphabet"
      * equivalents as specified in Table 3 of RFC 2045.
      */
     private static final byte[] ENCODE_TABLE = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D',
             'E', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z' };
+
     /**
      * Convenience variable to help us determine when our buffer is going to run out of room and needs resizing.
      * {@code decodeSize = BYTES_PER_ENCODED_BLOCK - 1;}
      */
     private final int decodeSize;
+
     /**
      * Convenience variable to help us determine when our buffer is going to run out of room and needs resizing.
      * {@code encodeSize = BYTES_PER_ENCODED_BLOCK;}
      */
     private final int encodeSize;
+
     /**
      * Whether this encoder should use a padding character at the end of encoded Strings.
      */
     private final boolean usePaddingCharacter;
+
     /**
      * Buffer for streaming.
      */
     protected byte[] buffer;
+
     /**
      * Position where next character should be written in the buffer.
      */
     protected int pos;
+
     /**
      * Boolean flag to indicate the EOF has been reached. Once EOF has been reached, this object becomes useless, and
      * must be thrown away.
      */
     protected boolean eof;
+
     /**
      * Writes to the buffer only occur after every 5 reads when encoding, and every 8 reads when decoding. This variable
      * helps track that.
      */
     protected int modulus;
+
     /**
      * Place holder for the bytes we're dealing with for our based logic. Bitwise operations store and extract the
      * encoding or decoding from this variable.

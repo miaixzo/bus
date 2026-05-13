@@ -32,6 +32,9 @@ import jakarta.ws.rs.core.Response;
 /**
  * This class implements the client side API for the GitLab Applications API. See
  * <a href="https://docs.gitlab.com/ce/api/applications.html">Applications API at GitLab</a> for more information.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class ApplicationsApi extends AbstractApi {
 

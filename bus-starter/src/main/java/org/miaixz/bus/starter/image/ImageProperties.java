@@ -62,6 +62,9 @@ public class ImageProperties {
 
     /**
      * Nested class for DICOM server (node) information.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @Setter

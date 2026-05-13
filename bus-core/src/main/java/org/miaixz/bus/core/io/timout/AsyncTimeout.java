@@ -56,6 +56,7 @@ public class AsyncTimeout extends Timeout {
      * The duration in milliseconds that the watchdog thread will remain idle before shutting down.
      */
     private static final long IDLE_TIMEOUT_MILLIS = TimeUnit.SECONDS.toMillis(60);
+
     /**
      * The duration in nanoseconds that the watchdog thread will remain idle before shutting down.
      */
@@ -459,6 +460,9 @@ public class AsyncTimeout extends Timeout {
     /**
      * A daemon thread that monitors scheduled {@link AsyncTimeout} instances and calls their {@link #timedOut()} method
      * when their timeout expires.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static final class Watchdog extends Thread {
 
@@ -500,6 +504,7 @@ public class AsyncTimeout extends Timeout {
                 }
             }
         }
+
     }
 
 }

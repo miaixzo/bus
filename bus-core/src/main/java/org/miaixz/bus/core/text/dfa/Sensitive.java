@@ -44,6 +44,7 @@ public class Sensitive {
      * The default separator used for sensitive words in a string, typically a comma.
      */
     public static final String DEFAULT_SEPARATOR = Symbol.COMMA;
+
     /**
      * The underlying {@link WordTree} instance used to store and search for sensitive words.
      */

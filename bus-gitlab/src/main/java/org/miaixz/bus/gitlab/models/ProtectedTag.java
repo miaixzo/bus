@@ -25,11 +25,23 @@ import java.util.List;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+/**
+ * The protected tag class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class ProtectedTag implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 2852275572097L;
 
+    /**
+     * The create access level class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public static class CreateAccessLevel implements Serializable {
 
         @Serial
@@ -53,6 +65,7 @@ public class ProtectedTag implements Serializable {
         public void setAccessLevelDescription(String accessLevelDescription) {
             this.accessLevelDescription = accessLevelDescription;
         }
+
     }
 
     private String name;

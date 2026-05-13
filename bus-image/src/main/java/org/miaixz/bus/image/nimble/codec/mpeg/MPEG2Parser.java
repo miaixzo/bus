@@ -32,30 +32,100 @@ import org.miaixz.bus.image.nimble.codec.XPEGParser;
 import org.miaixz.bus.image.nimble.codec.mp4.MP4FileType;
 
 /**
+ * Represents the MPEG2Parser type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class MPEG2Parser implements XPEGParser {
 
+    /**
+     * The buffer size value.
+     */
     private static final int BUFFER_SIZE = 8162;
+
+    /**
+     * The sequence header stream id value.
+     */
     private static final int SEQUENCE_HEADER_STREAM_ID = (byte) 0xb3;
+
+    /**
+     * The gop header stream id value.
+     */
     private static final int GOP_HEADER_STREAM_ID = (byte) 0xb8;
+
+    /**
+     * The aspect ratio 1 1 value.
+     */
     private static final String[] ASPECT_RATIO_1_1 = { "1", "1" };
+
+    /**
+     * The aspect ratio 4 3 value.
+     */
     private static final String[] ASPECT_RATIO_4_3 = { "4", "3" };
+
+    /**
+     * The aspect ratio 16 9 value.
+     */
     private static final String[] ASPECT_RATIO_16_9 = { "16", "9" };
+
+    /**
+     * The aspect ratio 221 100 value.
+     */
     private static final String[] ASPECT_RATIO_221_100 = { "221", "100" };
+
+    /**
+     * The aspect ratios value.
+     */
     private static final String[][] ASPECT_RATIOS = { ASPECT_RATIO_1_1, ASPECT_RATIO_4_3, ASPECT_RATIO_16_9,
             ASPECT_RATIO_221_100 };
+
+    /**
+     * The fps value.
+     */
     private static final int[] FPS = { 24, 1001, 24, 1000, 25, 1000, 30, 1001, 30, 1000, 50, 1000, 60, 1001, 60, 1000 };
 
+    /**
+     * The data value.
+     */
     private final byte[] data = new byte[BUFFER_SIZE];
+
+    /**
+     * The buf value.
+     */
     private final ByteBuffer buf = ByteBuffer.wrap(data);
+
+    /**
+     * The columns value.
+     */
     private final int columns;
+
+    /**
+     * The rows value.
+     */
     private final int rows;
+
+    /**
+     * The aspect ratio value.
+     */
     private final int aspectRatio;
+
+    /**
+     * The frame rate value.
+     */
     private final int frameRate;
+
+    /**
+     * The duration value.
+     */
     private final int duration;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param channel the channel.
+     * @throws IOException if the operation cannot be completed.
+     */
     public MPEG2Parser(SeekableByteChannel channel) throws IOException {
         int startCode = readStartCode(channel);
         if (!isSequenceHeader(startCode)) {
@@ -78,33 +148,72 @@ public class MPEG2Parser implements XPEGParser {
         duration = hh * 3600 + mm * 60 + ss;
     }
 
+    /**
+     * Determines whether pack header.
+     *
+     * @param startCode the start code.
+     * @return true if the condition is met; otherwise false.
+     */
     private static boolean isPackHeader(int startCode) {
         return startCode == 0x1ba;
     }
 
+    /**
+     * Determines whether sequence header.
+     *
+     * @param startCode the start code.
+     * @return true if the condition is met; otherwise false.
+     */
     private static boolean isSequenceHeader(int startCode) {
         return startCode == 0x1b3;
     }
 
+    /**
+     * Determines whether video stream.
+     *
+     * @param startCode the start code.
+     * @return true if the condition is met; otherwise false.
+     */
     private static boolean isVideoStream(int startCode) {
         return (startCode & 0xfffff0) == 0x1e0;
     }
 
+    /**
+     * Gets the code stream position.
+     *
+     * @return the code stream position.
+     */
     @Override
     public long getCodeStreamPosition() {
         return 0;
     }
 
+    /**
+     * Gets the position after app segments.
+     *
+     * @return the position after app segments.
+     */
     @Override
     public long getPositionAfterAPPSegments() {
         return -1L;
     }
 
+    /**
+     * Gets the mp4 file type.
+     *
+     * @return the mp4 file type.
+     */
     @Override
     public MP4FileType getMP4FileType() {
         return null;
     }
 
+    /**
+     * Gets the attributes.
+     *
+     * @param attrs the attrs.
+     * @return the attributes.
+     */
     @Override
     public Attributes getAttributes(Attributes attrs) {
         if (attrs == null)
@@ -131,12 +240,25 @@ public class MPEG2Parser implements XPEGParser {
         return attrs;
     }
 
+    /**
+     * Gets the transfer syntax uid.
+     *
+     * @param fragmented the fragmented.
+     * @return the transfer syntax uid.
+     */
     @Override
     public String getTransferSyntaxUID(boolean fragmented) {
         return frameRate <= 5 && columns <= 720 ? fragmented ? UID.MPEG2MPMLF.uid : UID.MPEG2MPML.uid
                 : fragmented ? UID.MPEG2MPHLF.uid : UID.MPEG2MPHL.uid;
     }
 
+    /**
+     * Finds the sequence header.
+     *
+     * @param channel the channel.
+     * @param length  the length.
+     * @throws IOException if the operation cannot be completed.
+     */
     private void findSequenceHeader(SeekableByteChannel channel, int length) throws IOException {
         int remaining = length;
         SafeBuffer.clear(buf).limit(3);
@@ -158,10 +280,24 @@ public class MPEG2Parser implements XPEGParser {
         throw new IOException("MPEG2 sequence header not found");
     }
 
+    /**
+     * Executes the skip operation.
+     *
+     * @param channel the channel.
+     * @param n       the n.
+     * @throws IOException if the operation cannot be completed.
+     */
     private void skip(SeekableByteChannel channel, long n) throws IOException {
         channel.position(channel.position() + n);
     }
 
+    /**
+     * Finds the last gop.
+     *
+     * @param channel the channel.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     private int findLastGOP(SeekableByteChannel channel) throws IOException {
         long pos = channel.size() - 8;
         do {
@@ -181,6 +317,13 @@ public class MPEG2Parser implements XPEGParser {
         throw new IOException("last MPEG2 Group of Pictures not found");
     }
 
+    /**
+     * Reads the start code.
+     *
+     * @param channel the channel.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     private int readStartCode(SeekableByteChannel channel) throws IOException {
         SafeBuffer.clear(buf).limit(4);
         channel.read(buf);
@@ -193,6 +336,14 @@ public class MPEG2Parser implements XPEGParser {
         return startCode;
     }
 
+    /**
+     * Executes the packet length operation.
+     *
+     * @param channel   the channel.
+     * @param startCode the start code.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     private int packetLength(SeekableByteChannel channel, int startCode) throws IOException {
         SafeBuffer.clear(buf).limit(2);
         channel.read(buf);

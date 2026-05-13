@@ -44,82 +44,102 @@ public class CustomerPay extends Voucher {
      * Version number.
      */
     private String version;
+
     /**
      * Signature.
      */
     private String sign;
+
     /**
      * Merchant number.
      */
     private String merchant;
+
     /**
      * Payment merchant number.
      */
     private String payMerchant;
+
     /**
      * Device information.
      */
     private String device;
+
     /**
      * Transaction number.
      */
     private String tradeNum;
+
     /**
      * Transaction name.
      */
     private String tradeName;
+
     /**
      * Transaction description.
      */
     private String tradeDesc;
+
     /**
      * Transaction time.
      */
     private String tradeTime;
+
     /**
      * Transaction amount.
      */
     private String amount;
+
     /**
      * Order type.
      */
     private String orderType;
+
     /**
      * Industry category code.
      */
     private String industryCategoryCode;
+
     /**
      * Currency.
      */
     private String currency;
+
     /**
      * Note.
      */
     private String note;
+
     /**
      * Callback URL.
      */
     private String callbackUrl;
+
     /**
      * Asynchronous notification URL.
      */
     private String notifyUrl;
+
     /**
      * IP address.
      */
     private String ip;
+
     /**
      * Expiration time.
      */
     private String expireTime;
+
     /**
      * Risk information.
      */
     private String riskInfo;
+
     /**
      * Goods information.
      */
     private String goodsInfo;
+
     /**
      * Business type.
      */

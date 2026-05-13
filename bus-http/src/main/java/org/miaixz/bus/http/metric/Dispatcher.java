@@ -57,18 +57,22 @@ public class Dispatcher {
      * Running synchronous calls. Includes canceled calls that haven't finished yet.
      */
     private final Deque<RealCall> runningSyncCalls = new ArrayDeque<>();
+
     /**
      * Maximum number of simultaneous requests.
      */
     private int maxRequests = Normal._64;
+
     /**
      * Maximum number of simultaneous requests per host.
      */
     private int maxRequestsPerHost = 5;
+
     /**
      * A callback to be invoked when the dispatcher is idle.
      */
     private Runnable idleCallback;
+
     /**
      * The executor service that runs calls.
      */

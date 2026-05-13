@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MR_IMA;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS MR IMA";
 
-    /** (0021,xx01) VR=SQ VM=1 MR Image Sequence */
+    /**
+     * (0021,xx01) VR=SQ VM=1 MR Image Sequence
+     */
     public static final int MRImageSequence = 0x00210001;
 
 }

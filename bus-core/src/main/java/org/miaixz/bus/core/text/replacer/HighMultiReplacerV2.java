@@ -102,6 +102,9 @@ public class HighMultiReplacerV2 extends StringReplacer {
 
     /**
      * Inner class implementing the Aho-Corasick automaton for efficient multi-string searching and replacement.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     protected static class AhoCorasickAutomaton extends MultiStringFinder {
 
@@ -186,6 +189,7 @@ public class HighMultiReplacerV2 extends StringReplacer {
                 temp.append(ch);
             }
         }
+
     }
 
 }

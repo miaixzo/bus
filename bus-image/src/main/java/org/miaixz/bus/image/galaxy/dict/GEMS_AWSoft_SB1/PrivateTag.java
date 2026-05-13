@@ -20,23 +20,36 @@
 package org.miaixz.bus.image.galaxy.dict.GEMS_AWSoft_SB1;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEMS_AWSoft_SB1";
 
-    /** (0039,xx50) VR=UI VM=1 Reference to Study UID */
+    /**
+     * (0039,xx50) VR=UI VM=1 Reference to Study UID
+     */
     public static final int ReferenceToStudyUID = 0x00390050;
 
-    /** (0039,xx51) VR=UI VM=1 Reference to Series UID */
+    /**
+     * (0039,xx51) VR=UI VM=1 Reference to Series UID
+     */
     public static final int ReferenceToSeriesUID = 0x00390051;
 
-    /** (0039,xx52) VR=IS VM=1 Reference to Original Instance Number */
+    /**
+     * (0039,xx52) VR=IS VM=1 Reference to Original Instance Number
+     */
     public static final int ReferenceToOriginalInstance = 0x00390052;
 
-    /** (0039,xx95) VR=LO VM=1 Private Entity Launch Command */
+    /**
+     * (0039,xx95) VR=LO VM=1 Private Entity Launch Command
+     */
     public static final int PrivateEntityLaunchCommand = 0x00390095;
 
 }

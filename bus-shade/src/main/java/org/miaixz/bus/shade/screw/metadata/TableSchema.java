@@ -43,10 +43,12 @@ public class TableSchema implements Serializable {
      * Table name.
      */
     private String tableName;
+
     /**
      * Remarks on the table.
      */
     private String remarks;
+
     /**
      * List of columns in the table.
      */

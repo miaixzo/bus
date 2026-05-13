@@ -43,6 +43,7 @@ public class No128 extends Number implements Comparable<No128> {
      * The Most Significant Bit (MSB) of the 128-bit number, occupying 64 bits (8 bytes).
      */
     private long mostSigBits;
+
     /**
      * The Least Significant Bit (LSB) of the 128-bit number, occupying 64 bits (8 bytes).
      */

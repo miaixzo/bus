@@ -44,7 +44,7 @@ import org.miaixz.bus.core.net.url.UrlQuery;
  *
  * <p>
  * A Uniform Resource Locator describes the specific location of a resource on a particular server. URL composition:
- * 
+ *
  * <pre>
  *   protocol://hostname[:port]/path/[:parameters][?query]#Fragment
  * </pre>

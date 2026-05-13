@@ -43,30 +43,37 @@ public class ProgressBody extends RequestBody {
      * The original, underlying request body.
      */
     private final RequestBody requestBody;
+
     /**
      * The callback to be invoked with progress updates.
      */
     private final Callback<Progress> onProcess;
+
     /**
      * The executor on which the progress callback will be executed.
      */
     private final Executor callbackExecutor;
+
     /**
      * The minimum number of bytes that must be transferred before a progress update is triggered.
      */
     private final long stepBytes;
+
     /**
      * An internal counter to track progress steps.
      */
     private long step = 0;
+
     /**
      * The object that holds the current progress state (total and transferred bytes).
      */
     private final Progress progress;
+
     /**
      * A flag to ensure the final "done" progress update is only sent once.
      */
     private boolean doneCalled = false;
+
     /**
      * The buffered sink that performs the progress tracking.
      */

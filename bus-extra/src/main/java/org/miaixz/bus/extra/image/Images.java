@@ -59,22 +59,27 @@ public class Images implements Flushable, Serializable {
      * The source image.
      */
     private final BufferedImage srcImage;
+
     /**
      * The target image.
      */
     private Image targetImage;
+
     /**
      * The target image type.
      */
     private String targetImageType;
+
     /**
      * Whether to position from the center.
      */
     private boolean positionBaseCentre = true;
+
     /**
      * The quality of the output image.
      */
     private float quality = -1;
+
     /**
      * The background color.
      */

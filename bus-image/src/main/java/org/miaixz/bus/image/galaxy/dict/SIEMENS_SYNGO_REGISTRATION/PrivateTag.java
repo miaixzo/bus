@@ -20,17 +20,26 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_REGISTRATION;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS SYNGO REGISTRATION";
 
-    /** (0071,xx20) VR=SQ VM=1 Registered Image Sequence */
+    /**
+     * (0071,xx20) VR=SQ VM=1 Registered Image Sequence
+     */
     public static final int RegisteredImageSequence = 0x00710020;
 
-    /** (0071,xx21) VR=CS VM=1 Registration Is Validated Flag */
+    /**
+     * (0071,xx21) VR=CS VM=1 Registration Is Validated Flag
+     */
     public static final int RegistrationIsValidatedFlag = 0x00710021;
 
 }

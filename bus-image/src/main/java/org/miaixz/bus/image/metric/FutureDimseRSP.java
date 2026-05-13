@@ -27,21 +27,54 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the FutureDimseRSP type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class FutureDimseRSP extends DimseRSPHandler implements DimseRSP {
 
+    /**
+     * The entry value.
+     */
     private Entry entry = new Entry(null, null);
+
+    /**
+     * The finished value.
+     */
     private boolean finished;
+
+    /**
+     * The auto cancel value.
+     */
     private int autoCancel;
+
+    /**
+     * The remaining capacity value.
+     */
     private int remainingCapacity = Integer.MAX_VALUE;
+
+    /**
+     * The ex value.
+     */
     private IOException ex;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param msgID the msg id.
+     */
     public FutureDimseRSP(int msgID) {
         super(msgID);
     }
 
+    /**
+     * Executes the on dimse rsp operation.
+     *
+     * @param as   the as.
+     * @param cmd  the cmd.
+     * @param data the data.
+     */
     @Override
     public synchronized void onDimseRSP(Association as, Attributes cmd, Attributes data) {
         super.onDimseRSP(as, cmd, data);
@@ -74,6 +107,11 @@ public class FutureDimseRSP extends DimseRSPHandler implements DimseRSP {
         }
     }
 
+    /**
+     * Executes the on close operation.
+     *
+     * @param as the as.
+     */
     @Override
     public synchronized void onClose(Association as) {
         super.onClose(as);
@@ -86,16 +124,32 @@ public class FutureDimseRSP extends DimseRSPHandler implements DimseRSP {
         }
     }
 
+    /**
+     * Sets the auto cancel.
+     *
+     * @param autoCancel the auto cancel.
+     */
     public synchronized void setAutoCancel(int autoCancel) {
         this.autoCancel = autoCancel;
     }
 
+    /**
+     * Sets the capacity.
+     *
+     * @param capacity the capacity.
+     */
     public void setCapacity(int capacity) {
         if (capacity <= 0)
             throw new IllegalArgumentException("capacity: " + capacity);
         this.remainingCapacity = capacity;
     }
 
+    /**
+     * Determines whether cel.
+     *
+     * @param a the a.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void cancel(Association a) throws IOException {
         if (ex != null)
@@ -104,14 +158,31 @@ public class FutureDimseRSP extends DimseRSPHandler implements DimseRSP {
             super.cancel(a);
     }
 
+    /**
+     * Gets the command.
+     *
+     * @return the command.
+     */
     public final Attributes getCommand() {
         return entry.command;
     }
 
+    /**
+     * Gets the dataset.
+     *
+     * @return the dataset.
+     */
     public final Attributes getDataset() {
         return entry.dataset;
     }
 
+    /**
+     * Executes the next operation.
+     *
+     * @return true if the condition is met; otherwise false.
+     * @throws IOException          if the operation cannot be completed.
+     * @throws InterruptedException if the operation cannot be completed.
+     */
     public synchronized boolean next() throws IOException, InterruptedException {
         if (entry.next == null) {
             if (finished)
@@ -134,16 +205,40 @@ public class FutureDimseRSP extends DimseRSPHandler implements DimseRSP {
         return true;
     }
 
+    /**
+     * Represents the Entry type.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     private static class Entry {
 
+        /**
+         * The command value.
+         */
         final Attributes command;
+
+        /**
+         * The dataset value.
+         */
         final Attributes dataset;
+
+        /**
+         * The next value.
+         */
         Entry next;
 
+        /**
+         * Creates a new instance.
+         *
+         * @param command the command.
+         * @param dataset the dataset.
+         */
         public Entry(Attributes command, Attributes dataset) {
             this.command = command;
             this.dataset = dataset;
         }
+
     }
 
 }

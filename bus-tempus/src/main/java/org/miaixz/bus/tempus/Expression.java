@@ -43,34 +43,42 @@ public final class Expression implements Serializable, Cloneable {
      * The maximum year value for cron expressions. Set to the current year plus 100.
      */
     public static final int MAX_YEAR = Calendar.getInstance().get(Calendar.YEAR) + 100;
+
     /**
      * Constant representing the second field index.
      */
     protected static final int SECOND = 0;
+
     /**
      * Constant representing the minute field index.
      */
     protected static final int MINUTE = 1;
+
     /**
      * Constant representing the hour field index.
      */
     protected static final int HOUR = 2;
+
     /**
      * Constant representing the day of month field index.
      */
     protected static final int DAY_OF_MONTH = 3;
+
     /**
      * Constant representing the month field index.
      */
     protected static final int MONTH = 4;
+
     /**
      * Constant representing the day of week field index.
      */
     protected static final int DAY_OF_WEEK = 5;
+
     /**
      * Constant representing the year field index.
      */
     protected static final int YEAR = 6;
+
     /**
      * Special value representing '*' in cron expressions.
      */
@@ -83,14 +91,17 @@ public final class Expression implements Serializable, Cloneable {
      * Integer wrapper for ALL_SPEC_INT.
      */
     protected static final Integer ALL_SPEC = ALL_SPEC_INT;
+
     /**
      * Integer wrapper for NO_SPEC_INT.
      */
     protected static final Integer NO_SPEC = NO_SPEC_INT;
+
     /**
      * Map of month name abbreviations to their numeric values.
      */
     protected static final Map<String, Integer> monthMap = new HashMap<>(20);
+
     /**
      * Map of day name abbreviations to their numeric values.
      */
@@ -123,30 +134,37 @@ public final class Expression implements Serializable, Cloneable {
      * The original cron expression string.
      */
     private final String cronExpression;
+
     /**
      * Set of valid second values.
      */
     protected transient TreeSet<Integer> seconds;
+
     /**
      * Set of valid minute values.
      */
     protected transient TreeSet<Integer> minutes;
+
     /**
      * Set of valid hour values.
      */
     protected transient TreeSet<Integer> hours;
+
     /**
      * Set of valid day of month values.
      */
     protected transient TreeSet<Integer> daysOfMonth;
+
     /**
      * Set of valid month values.
      */
     protected transient TreeSet<Integer> months;
+
     /**
      * Set of valid day of week values.
      */
     protected transient TreeSet<Integer> daysOfWeek;
+
     /**
      * Set of valid year values.
      */
@@ -156,26 +174,32 @@ public final class Expression implements Serializable, Cloneable {
      * Flag indicating if the last day of week should be used.
      */
     protected transient boolean lastdayOfWeek = false;
+
     /**
      * The Nth day of week (e.g., 3rd Friday).
      */
     protected transient int nthdayOfWeek = 0;
+
     /**
      * Flag indicating if the last day of month should be used.
      */
     protected transient boolean lastdayOfMonth = false;
+
     /**
      * Flag indicating if the nearest weekday should be used.
      */
     protected transient boolean nearestWeekday = false;
+
     /**
      * Offset from the last day of month.
      */
     protected transient int lastdayOffset = 0;
+
     /**
      * Flag indicating if the expression has been parsed.
      */
     protected transient boolean expressionParsed = false;
+
     /**
      * The time zone for this cron expression.
      */
@@ -1585,6 +1609,7 @@ public final class Expression implements Serializable, Cloneable {
          * The current position in the expression string.
          */
         public int pos;
+
     }
 
 }

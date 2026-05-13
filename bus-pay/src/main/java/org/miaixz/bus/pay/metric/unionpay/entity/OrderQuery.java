@@ -44,42 +44,52 @@ public class OrderQuery extends Voucher {
      * Service name.
      */
     private String service;
+
     /**
      * Version number.
      */
     private String version;
+
     /**
      * Character set.
      */
     private String charset;
+
     /**
      * Signature type.
      */
     private String sign_type;
+
     /**
      * Merchant ID.
      */
     private String mch_id;
+
     /**
      * Merchant order number.
      */
     private String out_trade_no;
+
     /**
      * Transaction ID.
      */
     private String transaction_id;
+
     /**
      * Agent signature number.
      */
     private String sign_agentno;
+
     /**
      * Group number.
      */
     private String groupno;
+
     /**
      * Random string.
      */
     private String nonce_str;
+
     /**
      * Signature.
      */

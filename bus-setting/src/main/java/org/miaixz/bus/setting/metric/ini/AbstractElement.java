@@ -33,14 +33,17 @@ public abstract class AbstractElement implements IniElement {
      * value of comment text.
      */
     private String value;
+
     /**
      * the line number.
      */
     private int lineNumber;
+
     /**
      * the originalValue
      */
     private String originalValue;
+
     /**
      * comment, nullable
      */

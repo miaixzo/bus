@@ -25,31 +25,59 @@ import org.miaixz.bus.image.metric.net.DeviceExtension;
 import org.miaixz.bus.image.nimble.codec.ImageReaderFactory;
 
 /**
+ * Represents the ImageReaderExtension type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class ImageReaderExtension extends DeviceExtension {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852289507228L;
 
+    /**
+     * The factory value.
+     */
     public volatile ImageReaderFactory factory;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param factory the factory.
+     */
     public ImageReaderExtension(ImageReaderFactory factory) {
         if (factory == null)
             throw new NullPointerException();
         this.factory = factory;
     }
 
+    /**
+     * Gets the image reader factory.
+     *
+     * @return the image reader factory.
+     */
     public final ImageReaderFactory getImageReaderFactory() {
         return factory;
     }
 
+    /**
+     * Executes the reconfigure operation.
+     *
+     * @param from the from.
+     */
     @Override
     public void reconfigure(DeviceExtension from) {
         reconfigureImageReader((ImageReaderExtension) from);
     }
 
+    /**
+     * Executes the reconfigure image reader operation.
+     *
+     * @param from the from.
+     */
     private void reconfigureImageReader(ImageReaderExtension from) {
         factory = from.factory;
     }

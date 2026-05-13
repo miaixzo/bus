@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.Siemens_Ultrasound_Miscellaneous;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "Siemens Ultrasound Miscellaneous";
 
-    /** (0019,xx20) VR=SH VM=1 ? */
+    /**
+     * (0019,xx20) VR=SH VM=1 ?
+     */
     public static final int _0019_xx20_ = 0x00190020;
 
 }

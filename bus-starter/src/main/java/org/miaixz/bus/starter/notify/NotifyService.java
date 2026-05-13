@@ -62,7 +62,7 @@ import org.miaixz.bus.notify.metric.yunpian.YunpianSmsProvider;
  *
  * <p>
  * <strong>Usage Example:</strong>
- * 
+ *
  * <pre>{@code
  * // Create configuration
  * NotifyProperties properties = new NotifyProperties();

@@ -42,10 +42,12 @@ public class ItemQueryService {
      * Curator application service used for read operations.
      */
     private final ItemCuratorService settingCuratorService;
+
     /**
      * Secret masker used for management-safe inspection payloads.
      */
     private final SecretMasker secretMasker;
+
     /**
      * Optional runtime overlay service consulted before durable setting resolution.
      */

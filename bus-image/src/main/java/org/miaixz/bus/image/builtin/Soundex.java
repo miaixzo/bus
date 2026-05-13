@@ -37,6 +37,7 @@ public class Soundex implements FuzzyString {
     protected static final String MAP_6 =
             // A BCD E FG H I JKLMN O PQRST U V W X Y Z
             "\000123\00012\001\00022455\00012623\0001\0012\0002";
+
     /**
      * Soundex mapping table for 9-digit codes. Maps characters to their Soundex digits or special control characters.
      */
@@ -48,14 +49,17 @@ public class Soundex implements FuzzyString {
      * Flag indicating whether the first letter of the input string should be encoded.
      */
     private final boolean encodeFirst;
+
     /**
      * The desired length of the Soundex code.
      */
     private final int codeLength;
+
     /**
      * The minimum length to which the Soundex code should be padded with '0's.
      */
     private final int padLength;
+
     /**
      * The character mapping array used for Soundex encoding.
      */

@@ -58,6 +58,7 @@ final class LinuxSensors extends AbstractSensors {
      * </ul>
      */
     public static final String HWMON_NAME_PRIORITY_CONFIG = Config._LINUX_HWMON_NAME_PRIORITY;
+
     /**
      * The THERMAL_ZONE_TYPE_PRIORITY_CONFIG constant.
      */
@@ -69,6 +70,7 @@ final class LinuxSensors extends AbstractSensors {
     private static final List<String> HWMON_NAME_PRIORITY = Stream.of(
             Config.get(HWMON_NAME_PRIORITY_CONFIG, "coretemp,k10temp,zenpower,k8temp,via-cputemp,acpitz").split(","))
             .filter((s) -> !s.isEmpty()).collect(Collectors.toList());
+
     /**
      * The THERMAL_ZONE_TYPE_PRIORITY constant.
      */
@@ -80,6 +82,7 @@ final class LinuxSensors extends AbstractSensors {
      * The TYPE constant.
      */
     private static final String TYPE = "type";
+
     /**
      * The NAME constant.
      */
@@ -89,10 +92,12 @@ final class LinuxSensors extends AbstractSensors {
      * The TEMP constant.
      */
     private static final String TEMP = "temp";
+
     /**
      * The FAN constant.
      */
     private static final String FAN = "fan";
+
     /**
      * The VOLTAGE constant.
      */
@@ -102,6 +107,7 @@ final class LinuxSensors extends AbstractSensors {
      * The INPUT_SUFFIX constant.
      */
     private static final String INPUT_SUFFIX = "_input";
+
     /**
      * The TEMP_INPUT_PATTERN constant.
      */
@@ -112,6 +118,7 @@ final class LinuxSensors extends AbstractSensors {
      * The HWMON constant.
      */
     private static final String HWMON = "hwmon";
+
     /**
      * The THERMAL_ZONE constant.
      */
@@ -121,10 +128,12 @@ final class LinuxSensors extends AbstractSensors {
      * The hwmonPath value.
      */
     private final String hwmonPath;
+
     /**
      * The thermalZonePath value.
      */
     private final String thermalZonePath;
+
     /**
      * The isPi value.
      */

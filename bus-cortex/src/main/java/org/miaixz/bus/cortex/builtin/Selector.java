@@ -66,16 +66,19 @@ public class Selector {
          * Key value is not contained in the given set.
          */
         NOTIN
+
     }
 
     /**
      * Metadata key to match against.
      */
     private String key;
+
     /**
      * Comparison operator to apply.
      */
     private Op op;
+
     /**
      * Set of values used in the comparison.
      */

@@ -38,6 +38,9 @@ import jakarta.ws.rs.core.StreamingOutput;
 /**
  * This class is the base class for all the sub API classes. It provides implementations of delete(), get(), post() and
  * put() that are re-used by all the sub-classes.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public abstract class AbstractApi implements Constants {
 

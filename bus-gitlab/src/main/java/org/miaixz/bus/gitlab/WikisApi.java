@@ -35,6 +35,9 @@ import org.miaixz.bus.logger.Logger;
 /**
  * This class implements the client side API for the GitLab Wikis API. See
  * <a href="https://docs.gitlab.com/ce/api/wikis.html">Wikis API at GitLab</a> for more information.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class WikisApi extends AbstractApi {
 

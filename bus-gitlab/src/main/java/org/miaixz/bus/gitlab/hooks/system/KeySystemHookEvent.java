@@ -24,6 +24,12 @@ import java.util.Date;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+/**
+ * The key system hook event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class KeySystemHookEvent extends AbstractSystemHookEvent {
 
     @Serial

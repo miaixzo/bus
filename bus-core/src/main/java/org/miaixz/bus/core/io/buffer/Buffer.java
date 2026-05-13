@@ -68,7 +68,7 @@ import org.miaixz.bus.core.xyz.IoKit;
  *
  * <p>
  * Example usage:
- * 
+ *
  * <pre>{@code
  * Buffer buffer = new Buffer();
  * buffer.writeUtf8("Hello, World!");
@@ -2785,7 +2785,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      *
      * <p>
      * Example usage:
-     * 
+     *
      * <pre>{@code
      * try (UnsafeCursor cursor = buffer.readUnsafe()) {
      *     while (cursor.next() != -1) {
@@ -2793,6 +2793,9 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      *     }
      * }
      * }</pre>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static final class UnsafeCursor implements Closeable {
 
@@ -3086,6 +3089,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
             start = -1;
             end = -1;
         }
+
     }
 
 }

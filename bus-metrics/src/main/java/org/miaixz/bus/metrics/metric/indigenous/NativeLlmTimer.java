@@ -39,10 +39,12 @@ public class NativeLlmTimer implements LlmTimer {
      * Base metric name; suffixes are appended for each derived instrument.
      */
     private final String name;
+
     /**
      * Tags applied to all derived metrics created by this timer.
      */
     private final Tag[] baseTags;
+
     /**
      * NativeProvider used to create sub-metrics (timers, counters).
      */
@@ -75,24 +77,34 @@ public class NativeLlmTimer implements LlmTimer {
         return new NativeLlmSample(startNs, model, provider_, operation);
     }
 
+    /**
+     * The native llm sample class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     private class NativeLlmSample implements LlmSample {
 
         /**
          * Nanosecond timestamp when this sample was started.
          */
         private final long startNs;
+
         /**
          * Model identifier, e.g. "claude-sonnet-4-6".
          */
         private final String model;
+
         /**
          * Provider name, e.g. "anthropic".
          */
         private final String providerName;
+
         /**
          * Operation type, e.g. "chat" or "embeddings".
          */
         private final String operation;
+
         /**
          * Nanosecond timestamp of the first token; -1 if not yet recorded.
          */
@@ -195,6 +207,7 @@ public class NativeLlmTimer implements LlmTimer {
                     Tag.of(Builder.TAG_ERROR_TYPE, t.getClass().getSimpleName())).increment();
             stop(0, 0, "error");
         }
+
     }
 
 }

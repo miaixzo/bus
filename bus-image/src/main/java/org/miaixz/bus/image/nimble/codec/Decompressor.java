@@ -43,34 +43,129 @@ import org.miaixz.bus.image.nimble.stream.SegmentedInputImageStream;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the Decompressor type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class Decompressor {
 
+    /**
+     * The dataset value.
+     */
     protected final Attributes dataset;
+
+    /**
+     * The tsuid value.
+     */
     protected final String tsuid;
+
+    /**
+     * The tstype value.
+     */
     protected final TransferSyntaxType tstype;
+
+    /**
+     * The pixeldata fragments value.
+     */
     protected Fragments pixeldataFragments;
+
+    /**
+     * The file value.
+     */
     protected File file;
+
+    /**
+     * The rows value.
+     */
     protected int rows;
+
+    /**
+     * The cols value.
+     */
     protected int cols;
+
+    /**
+     * The samples value.
+     */
     protected int samples;
+
+    /**
+     * The pmi value.
+     */
     protected Photometric pmi;
+
+    /**
+     * The pmi after decompression value.
+     */
     protected Photometric pmiAfterDecompression;
+
+    /**
+     * The bits allocated value.
+     */
     protected int bitsAllocated;
+
+    /**
+     * The bits stored value.
+     */
     protected int bitsStored;
+
+    /**
+     * The banded value.
+     */
     protected boolean banded;
+
+    /**
+     * The signed value.
+     */
     protected boolean signed;
+
+    /**
+     * The frames value.
+     */
     protected int frames;
+
+    /**
+     * The frame length value.
+     */
     protected int frameLength;
+
+    /**
+     * The length value.
+     */
     protected int length;
+
+    /**
+     * The bi value.
+     */
     protected BufferedImage bi;
+
+    /**
+     * The decompressor value.
+     */
     protected ImageReader decompressor;
+
+    /**
+     * The read param value.
+     */
     protected ImageReadParam readParam;
+
+    /**
+     * The patch jpeg ls value.
+     */
     protected PatchJPEGLS patchJpegLS;
+
+    /**
+     * The image descriptor value.
+     */
     protected ImageDescriptor imageDescriptor;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param dataset the dataset.
+     * @param tsuid   the tsuid.
+     */
     public Decompressor(Attributes dataset, String tsuid) {
         if (tsuid == null)
             throw new NullPointerException("tsuid");
@@ -124,15 +219,33 @@ public class Decompressor {
         }
     }
 
+    /**
+     * Executes the decompress operation.
+     *
+     * @param dataset the dataset.
+     * @param tsuid   the tsuid.
+     * @return true if the condition is met; otherwise false.
+     */
     public static boolean decompress(Attributes dataset, String tsuid) {
         return new Decompressor(dataset, tsuid).decompress();
     }
 
+    /**
+     * Executes the size of operation.
+     *
+     * @param bi the bi.
+     * @return the operation result.
+     */
     static int sizeOf(BufferedImage bi) {
         DataBuffer db = bi.getData().getDataBuffer();
         return db.getSize() * db.getNumBanks() * (DataBuffer.getDataTypeSize(db.getDataType()) >>> 3);
     }
 
+    /**
+     * Executes the bgr2rgb operation.
+     *
+     * @param bs the bs.
+     */
     private static void bgr2rgb(byte[] bs) {
         for (int i = 0, j = 2; j < bs.length; i += 3, j += 3) {
             byte b = bs[i];
@@ -141,6 +254,14 @@ public class Decompressor {
         }
     }
 
+    /**
+     * Writes the to.
+     *
+     * @param sm   the sm.
+     * @param data the data.
+     * @param out  the out.
+     * @throws IOException if the operation cannot be completed.
+     */
     private static void writeTo(SampleModel sm, short[] data, OutputStream out) throws IOException {
         int h = sm.getHeight();
         int w = sm.getWidth();
@@ -156,6 +277,14 @@ public class Decompressor {
         }
     }
 
+    /**
+     * Writes the to.
+     *
+     * @param sm   the sm.
+     * @param data the data.
+     * @param out  the out.
+     * @throws IOException if the operation cannot be completed.
+     */
     private static void writeTo(SampleModel sm, int[] data, OutputStream out) throws IOException {
         int h = sm.getHeight();
         int w = sm.getWidth();
@@ -172,6 +301,9 @@ public class Decompressor {
         }
     }
 
+    /**
+     * Executes the dispose operation.
+     */
     public void dispose() {
         if (decompressor != null)
             decompressor.dispose();
@@ -179,6 +311,11 @@ public class Decompressor {
         decompressor = null;
     }
 
+    /**
+     * Executes the decompress operation.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean decompress() {
         if (decompressor == null)
             return false;
@@ -223,6 +360,14 @@ public class Decompressor {
         return true;
     }
 
+    /**
+     * Creates the buffered image.
+     *
+     * @param bitsStored the bits stored.
+     * @param banded     the banded.
+     * @param signed     the signed.
+     * @return the operation result.
+     */
     protected BufferedImage createBufferedImage(int bitsStored, boolean banded, boolean signed) {
         int dataType = bitsAllocated > 8 ? (signed ? DataBuffer.TYPE_SHORT : DataBuffer.TYPE_USHORT)
                 : DataBuffer.TYPE_BYTE;
@@ -241,6 +386,11 @@ public class Decompressor {
         return new BufferedImage(cm, raster, false, null);
     }
 
+    /**
+     * Executes the band offsets operation.
+     *
+     * @return the operation result.
+     */
     private int[] bandOffsets() {
         int[] offsets = new int[samples];
         for (int i = 0; i < samples; i++)
@@ -248,6 +398,12 @@ public class Decompressor {
         return offsets;
     }
 
+    /**
+     * Writes the to.
+     *
+     * @param out the out.
+     * @throws IOException if the operation cannot be completed.
+     */
     public void writeTo(OutputStream out) throws IOException {
         ImageInputStream iis = createImageInputStream();
         try {
@@ -264,14 +420,36 @@ public class Decompressor {
         }
     }
 
+    /**
+     * Creates the image input stream.
+     *
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     public FileImageInputStream createImageInputStream() throws IOException {
         return new FileImageInputStream(file);
     }
 
+    /**
+     * Writes the frame to.
+     *
+     * @param iis        the iis.
+     * @param frameIndex the frame index.
+     * @param out        the out.
+     * @throws IOException if the operation cannot be completed.
+     */
     public void writeFrameTo(ImageInputStream iis, int frameIndex, OutputStream out) throws IOException {
         writeTo(decompressFrame(iis, frameIndex).getRaster(), out);
     }
 
+    /**
+     * Executes the decompress frame operation.
+     *
+     * @param iis   the iis.
+     * @param index the index.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     protected BufferedImage decompressFrame(ImageInputStream iis, int index) throws IOException {
         SegmentedInputImageStream siis = new SegmentedInputImageStream(iis, pixeldataFragments, index);
         siis.setImageDescriptor(imageDescriptor);
@@ -291,6 +469,13 @@ public class Decompressor {
         return bi;
     }
 
+    /**
+     * Writes the to.
+     *
+     * @param raster the raster.
+     * @param out    the out.
+     * @throws IOException if the operation cannot be completed.
+     */
     private void writeTo(Raster raster, OutputStream out) throws IOException {
         SampleModel sm = raster.getSampleModel();
         DataBuffer db = raster.getDataBuffer();
@@ -316,6 +501,14 @@ public class Decompressor {
         }
     }
 
+    /**
+     * Writes the to.
+     *
+     * @param sm       the sm.
+     * @param bankData the bank data.
+     * @param out      the out.
+     * @throws IOException if the operation cannot be completed.
+     */
     private void writeTo(SampleModel sm, byte[][] bankData, OutputStream out) throws IOException {
         int h = sm.getHeight();
         int w = sm.getWidth();
@@ -341,6 +534,16 @@ public class Decompressor {
         }
     }
 
+    /**
+     * Converts this value to 16 bits allocated.
+     *
+     * @param b   the b.
+     * @param off the off.
+     * @param len the len.
+     * @param buf the buf.
+     * @param j0  the j0.
+     * @return the operation result.
+     */
     private byte[] to16BitsAllocated(byte[] b, int off, int len, byte[] buf, int j0) {
         for (int i = 0, j = j0; i < len; i++, j++, j++) {
             buf[j] = b[off + i];

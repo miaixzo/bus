@@ -951,6 +951,9 @@ public class Httpx {
 
     /**
      * An internal builder class for configuring HTTP requests in a fluent way.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @lombok.Builder
     @lombok.ToString
@@ -960,22 +963,27 @@ public class Httpx {
          * The request URL.
          */
         private String url;
+
         /**
          * The HTTP method (e.g., GET, POST).
          */
         private String method;
+
         /**
          * The raw request body data.
          */
         private String data;
+
         /**
          * The content type of the request body.
          */
         private String contentType;
+
         /**
          * A map of form data parameters.
          */
         private Map<String, String> formMap;
+
         /**
          * A map of header parameters.
          */
@@ -985,14 +993,17 @@ public class Httpx {
          * The character set for the request body.
          */
         private String requestCharset;
+
         /**
          * The character set for the response body.
          */
         private String responseCharset;
+
         /**
          * Whether to enable logging for this request.
          */
         private boolean tracer;
+
     }
 
 }

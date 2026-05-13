@@ -48,15 +48,18 @@ public class TinyLoggingProvider extends AbstractProvider {
      * the current class name.
      */
     private static final int DEPTH = 5;
+
     /**
      * The underlying tinylog logging provider.
      */
     private static final LoggingProvider provider = ProviderRegistry.getLoggingProvider();
+
     /**
      * The message formatter for formatting log messages.
      */
     private static final MessageFormatter formatter = new AdvancedMessageFormatter(Configuration.getLocale(),
             Configuration.isEscapingEnabled());
+
     /**
      * The minimum logging level.
      */

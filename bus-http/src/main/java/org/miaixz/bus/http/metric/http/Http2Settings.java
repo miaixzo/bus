@@ -36,10 +36,12 @@ public final class Http2Settings {
      * The total number of settings.
      */
     public static final int COUNT = 10;
+
     /**
      * The array of setting values.
      */
     private final int[] values = new int[COUNT];
+
     /**
      * A bitfield of which settings are set.
      */

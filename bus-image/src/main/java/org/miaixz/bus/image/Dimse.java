@@ -134,18 +134,22 @@ public enum Dimse {
      * The command field value (0000,0100) for this DIMSE message.
      */
     private final int commandField;
+
     /**
      * The tag for the SOP Class UID in this message (e.g., AffectedSOPClassUID or RequestedSOPClassUID).
      */
     private final int tagOfSOPClassUID;
+
     /**
      * The tag for the SOP Instance UID in this message (e.g., AffectedSOPInstanceUID or RequestedSOPInstanceUID).
      */
     private final int tagOfSOPInstanceUID;
+
     /**
      * The tag for the message ID in this message (e.g., MessageID or MessageIDBeingRespondedTo).
      */
     private final int tagOfMessageID;
+
     /**
      * A short string representation of the command for logging purposes.
      */

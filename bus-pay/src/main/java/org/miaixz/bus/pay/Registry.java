@@ -251,6 +251,9 @@ public enum Registry implements Complex {
 
         /**
          * Wechat Pay API URLs for different regions.
+         *
+         * @author Kimi Liu
+         * @since Java 21+
          */
         enum R {
 
@@ -291,6 +294,7 @@ public enum Registry implements Complex {
             R(String url) {
                 this.url = url;
             }
+
         }
     };
 

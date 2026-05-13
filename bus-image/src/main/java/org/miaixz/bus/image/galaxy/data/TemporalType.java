@@ -27,11 +27,16 @@ import java.util.TimeZone;
 import org.miaixz.bus.image.Format;
 
 /**
+ * Defines the TemporalType values.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 enum TemporalType {
 
+    /**
+     * The da value.
+     */
     DA {
 
         @Override
@@ -51,6 +56,9 @@ enum TemporalType {
             return Format.formatDA(tz, date);
         }
     },
+    /**
+     * The dt value.
+     */
     DT {
 
         public Temporal parseTemporal(String s, DatePrecision precision) {
@@ -67,6 +75,9 @@ enum TemporalType {
             return Format.formatDT(tz, date, precision);
         }
     },
+    /**
+     * The tm value.
+     */
     TM {
 
         @Override
@@ -85,10 +96,34 @@ enum TemporalType {
         }
     };
 
+    /**
+     * Parses the temporal.
+     *
+     * @param s         the s.
+     * @param precision the precision.
+     * @return the operation result.
+     */
     public abstract Temporal parseTemporal(String s, DatePrecision precision);
 
+    /**
+     * Executes the parse operation.
+     *
+     * @param tz        the tz.
+     * @param val       the val.
+     * @param ceil      the ceil.
+     * @param precision the precision.
+     * @return the operation result.
+     */
     public abstract Date parse(TimeZone tz, String val, boolean ceil, DatePrecision precision);
 
+    /**
+     * Executes the format operation.
+     *
+     * @param tz        the tz.
+     * @param date      the date.
+     * @param precision the precision.
+     * @return the operation result.
+     */
     public abstract String format(TimeZone tz, Date date, DatePrecision precision);
 
 }

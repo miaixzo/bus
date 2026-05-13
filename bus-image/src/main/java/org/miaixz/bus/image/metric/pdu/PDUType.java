@@ -20,17 +20,46 @@
 package org.miaixz.bus.image.metric.pdu;
 
 /**
+ * Represents the PDUType type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 class PDUType {
 
+    /**
+     * The a associate rq value.
+     */
     public static final int A_ASSOCIATE_RQ = 0x01;
+
+    /**
+     * The a associate ac value.
+     */
     public static final int A_ASSOCIATE_AC = 0x02;
+
+    /**
+     * The a associate rj value.
+     */
     public static final int A_ASSOCIATE_RJ = 0x03;
+
+    /**
+     * The p data tf value.
+     */
     public static final int P_DATA_TF = 0x04;
+
+    /**
+     * The a release rq value.
+     */
     public static final int A_RELEASE_RQ = 0x05;
+
+    /**
+     * The a release rp value.
+     */
     public static final int A_RELEASE_RP = 0x06;
+
+    /**
+     * The a abort value.
+     */
     public static final int A_ABORT = 0x07;
 
 }

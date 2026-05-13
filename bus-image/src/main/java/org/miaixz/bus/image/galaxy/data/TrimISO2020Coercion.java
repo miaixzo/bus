@@ -23,22 +23,45 @@ import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the TrimISO2020Coercion type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class TrimISO2020Coercion implements AttributesCoercion {
 
+    /**
+     * The next value.
+     */
     private final AttributesCoercion next;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param next the next.
+     */
     public TrimISO2020Coercion(AttributesCoercion next) {
         this.next = next;
     }
 
+    /**
+     * Executes the remap uid operation.
+     *
+     * @param uid the uid.
+     * @return the operation result.
+     */
     @Override
     public String remapUID(String uid) {
         return next != null ? next.remapUID(uid) : uid;
     }
 
+    /**
+     * Executes the coerce operation.
+     *
+     * @param attrs    the attrs.
+     * @param modified the modified.
+     * @throws Exception if the operation cannot be completed.
+     */
     @Override
     public void coerce(Attributes attrs, Attributes modified) throws Exception {
         Logger.info(false, "Image", "ISO 2022 Character Set trimmed by coercion {}", this);

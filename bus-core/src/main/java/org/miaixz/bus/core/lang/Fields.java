@@ -65,6 +65,7 @@ public class Fields {
      * Year format: yyyy
      */
     public static final String NORM_YEAR = "yyyy";
+
     /**
      * Year and month format: yyyy-MM
      */
@@ -134,6 +135,7 @@ public class Fields {
      * Pure hour and minute format: HHmm
      */
     public static final String PURE_HOUR_MINUTE = "HHmm";
+
     /**
      * Pure time format: HHmmss
      */
@@ -214,6 +216,7 @@ public class Fields {
      * Format: seconds timestamp (Unix timestamp)
      */
     public static final String FORMAT_SECONDS = "#sss";
+
     /**
      * Format: milliseconds timestamp
      */

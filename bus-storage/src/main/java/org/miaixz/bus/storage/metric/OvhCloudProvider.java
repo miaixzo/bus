@@ -50,7 +50,7 @@ import org.miaixz.bus.storage.Context;
  * <strong>Configuration Example:</strong>
  *
  * <pre>{@code
- * 
+ *
  * Context context = Context.builder().endpoint("https://s3.gra.io.cloud.ovh.net") // or sbg, uk, de, waw, bhs, syd, sgp
  *         .bucket("my-bucket").accessKey("OVH_ACCESS_KEY").secretKey("OVH_SECRET_KEY").region("gra") // or sbg, uk, de,
  *                                                                                                    // waw, bhs, syd,

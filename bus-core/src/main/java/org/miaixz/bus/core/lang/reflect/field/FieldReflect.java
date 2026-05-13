@@ -38,11 +38,13 @@ public class FieldReflect {
      * The class for which fields are being reflected.
      */
     private final Class<?> clazz;
+
     /**
      * Cached array of declared fields for the current class (excluding inherited fields). This cache is volatile to
      * ensure visibility across threads.
      */
     private volatile Field[] declaredFields;
+
     /**
      * Cached array of all fields (declared and inherited) for the current class. This cache is volatile to ensure
      * visibility across threads.

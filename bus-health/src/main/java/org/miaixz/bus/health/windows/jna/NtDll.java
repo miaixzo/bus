@@ -65,6 +65,9 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
      * This class maps to the native Windows structure: {@code typedef struct _PROCESS_BASIC_INFORMATION { PVOID
      * Reserved1; PVOID PebBaseAddress; PVOID Reserved2[4]; } PROCESS_BASIC_INFORMATION; }
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "Reserved1", "PebBaseAddress", "Reserved2" })
     class PROCESS_BASIC_INFORMATION extends Structure {
@@ -73,14 +76,17 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
          * The Reserved1 value.
          */
         public Pointer Reserved1;
+
         /**
          * The PebBaseAddress value.
          */
         public Pointer PebBaseAddress;
+
         /**
          * The Reserved2 value.
          */
         public Pointer[] Reserved2 = new Pointer[4];
+
     }
 
     /**
@@ -89,6 +95,9 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
      * This class maps to the native Windows structure: {@code typedef struct _PEB { BYTE pad[4]; PVOID pad2[3]; PVOID
      * ProcessParameters; } PEB; }
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "pad", "pad2", "ProcessParameters" })
     class PEB extends Structure {
@@ -97,14 +106,17 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
          * The pad value.
          */
         public byte[] pad = new byte[4];
+
         /**
          * The pad2 value.
          */
         public Pointer[] pad2 = new Pointer[3];
+
         /**
          * The ProcessParameters value.
          */
         public Pointer ProcessParameters; // RTL_USER_PROCESS_PARAMETERS
+
     }
 
     /**
@@ -113,6 +125,9 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
      * This class maps to the native Windows RTL_USER_PROCESS_PARAMETERS structure which contains process parameters
      * including command line, environment, and other startup information.
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "MaximumLength", "Length", "Flags", "DebugFlags", "ConsoleHandle", "ConsoleFlags", "StandardInput",
             "StandardOutput", "StandardError", "CurrentDirectory", "DllPath", "ImagePathName", "CommandLine",
@@ -127,150 +142,187 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
          * The MaximumLength value.
          */
         public int MaximumLength;
+
         /**
          * The Length value.
          */
         public int Length;
+
         /**
          * The Flags value.
          */
         public int Flags;
+
         /**
          * The DebugFlags value.
          */
         public int DebugFlags;
+
         /**
          * The ConsoleHandle value.
          */
         public HANDLE ConsoleHandle;
+
         /**
          * The ConsoleFlags value.
          */
         public int ConsoleFlags;
+
         /**
          * The StandardInput value.
          */
         public HANDLE StandardInput;
+
         /**
          * The StandardOutput value.
          */
         public HANDLE StandardOutput;
+
         /**
          * The StandardError value.
          */
         public HANDLE StandardError;
+
         /**
          * The CurrentDirectory value.
          */
         public CURDIR CurrentDirectory;
+
         /**
          * The DllPath value.
          */
         public UNICODE_STRING DllPath;
+
         /**
          * The ImagePathName value.
          */
         public UNICODE_STRING ImagePathName;
+
         /**
          * The CommandLine value.
          */
         public UNICODE_STRING CommandLine;
+
         /**
          * The Environment value.
          */
         public Pointer Environment;
+
         /**
          * The StartingX value.
          */
         public int StartingX;
+
         /**
          * The StartingY value.
          */
         public int StartingY;
+
         /**
          * The CountX value.
          */
         public int CountX;
+
         /**
          * The CountY value.
          */
         public int CountY;
+
         /**
          * The CountCharsX value.
          */
         public int CountCharsX;
+
         /**
          * The CountCharsY value.
          */
         public int CountCharsY;
+
         /**
          * The FillAttribute value.
          */
         public int FillAttribute;
+
         /**
          * The WindowFlags value.
          */
         public int WindowFlags;
+
         /**
          * The ShowWindowFlags value.
          */
         public int ShowWindowFlags;
+
         /**
          * The WindowTitle value.
          */
         public UNICODE_STRING WindowTitle;
+
         /**
          * The DesktopInfo value.
          */
         public UNICODE_STRING DesktopInfo;
+
         /**
          * The ShellInfo value.
          */
         public UNICODE_STRING ShellInfo;
+
         /**
          * The RuntimeData value.
          */
         public UNICODE_STRING RuntimeData;
+
         /**
          * The CurrentDirectories value.
          */
         public RTL_DRIVE_LETTER_CURDIR[] CurrentDirectories = new RTL_DRIVE_LETTER_CURDIR[32];
+
         /**
          * The EnvironmentSize value.
          */
         public ULONG_PTR EnvironmentSize;
+
         /**
          * The EnvironmentVersion value.
          */
         public ULONG_PTR EnvironmentVersion;
+
         /**
          * The PackageDependencyData value.
          */
         public Pointer PackageDependencyData;
+
         /**
          * The ProcessGroupId value.
          */
         public int ProcessGroupId;
+
         /**
          * The LoaderThreads value.
          */
         public int LoaderThreads;
+
         /**
          * The RedirectionDllName value.
          */
         public UNICODE_STRING RedirectionDllName;
+
         /**
          * The HeapPartitionName value.
          */
         public UNICODE_STRING HeapPartitionName;
+
         /**
          * The DefaultThreadpoolCpuSetMasks value.
          */
         public ULONG_PTR DefaultThreadpoolCpuSetMasks;
+
         /**
          * The DefaultThreadpoolCpuSetMaskCount value.
          */
         public int DefaultThreadpoolCpuSetMaskCount;
+
     }
 
     /**
@@ -279,6 +331,9 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
      * This class maps to the native Windows structure: {@code typedef struct _UNICODE_STRING { USHORT Length; USHORT
      * MaximumLength; PWSTR Buffer; } UNICODE_STRING; }
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "Length", "MaximumLength", "Buffer" })
     class UNICODE_STRING extends Structure {
@@ -287,14 +342,17 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
          * The Length value.
          */
         public short Length;
+
         /**
          * The MaximumLength value.
          */
         public short MaximumLength;
+
         /**
          * The Buffer value.
          */
         public Pointer Buffer;
+
     }
 
     /**
@@ -303,6 +361,9 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
      * This class maps to the native Windows structure: {@code typedef struct _STRING { USHORT Length; USHORT
      * MaximumLength; PCHAR Buffer; } STRING; }
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "Length", "MaximumLength", "Buffer" })
     class STRING extends Structure {
@@ -311,14 +372,17 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
          * The Length value.
          */
         public short Length;
+
         /**
          * The MaximumLength value.
          */
         public short MaximumLength;
+
         /**
          * The Buffer value.
          */
         public Pointer Buffer;
+
     }
 
     /**
@@ -326,6 +390,9 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
      * <p>
      * This class maps to the native Windows structure for current directory information.
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "DosPath", "Handle" })
     class CURDIR extends Structure {
@@ -334,10 +401,12 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
          * The DosPath value.
          */
         public UNICODE_STRING DosPath;
+
         /**
          * The Handle value.
          */
         public Pointer Handle;
+
     }
 
     /**
@@ -345,6 +414,9 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
      * <p>
      * This class maps to the native Windows structure for drive letter current directory information.
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "Flags", "Length", "TimeStamp", "DosPath" })
     class RTL_DRIVE_LETTER_CURDIR extends Structure {
@@ -353,18 +425,22 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
          * The Flags value.
          */
         public short Flags;
+
         /**
          * The Length value.
          */
         public short Length;
+
         /**
          * The TimeStamp value.
          */
         public int TimeStamp;
+
         /**
          * The DosPath value.
          */
         public STRING DosPath;
+
     }
 
 }

@@ -24,20 +24,42 @@ import org.miaixz.bus.core.lang.exception.NotFoundException;
 import org.miaixz.bus.image.Device;
 
 /**
+ * Represents the DeviceCache type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class DeviceCache extends ConfigurationCache<DicomConfiguration, Device> implements IDeviceCache {
 
+    /**
+     * Creates a new instance.
+     *
+     * @param conf the conf.
+     */
     public DeviceCache(DicomConfiguration conf) {
         super(conf);
     }
 
+    /**
+     * Executes the find operation.
+     *
+     * @param conf the conf.
+     * @param key  the key.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     protected Device find(DicomConfiguration conf, String key) throws InternalException {
         return conf.findDevice(key);
     }
 
+    /**
+     * Finds the device.
+     *
+     * @param deviceName the device name.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public Device findDevice(String deviceName) throws InternalException {
         Device device = get(deviceName);

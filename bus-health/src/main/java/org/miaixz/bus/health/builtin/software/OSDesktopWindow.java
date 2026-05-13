@@ -38,26 +38,32 @@ public class OSDesktopWindow {
      * The windowId value.
      */
     private final long windowId;
+
     /**
      * The title value.
      */
     private final String title;
+
     /**
      * The command value.
      */
     private final String command;
+
     /**
      * The locAndSize value.
      */
     private final Rectangle locAndSize;
+
     /**
      * The owningProcessId value.
      */
     private final long owningProcessId;
+
     /**
      * The order value.
      */
     private final int order;
+
     /**
      * The visible value.
      */

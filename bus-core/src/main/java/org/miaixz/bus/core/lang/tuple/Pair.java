@@ -45,6 +45,7 @@ public class Pair<L, R> implements Serializable, Cloneable {
      * The left element of this pair.
      */
     protected L left;
+
     /**
      * The right element of this pair.
      */

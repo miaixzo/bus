@@ -31,64 +31,155 @@ import org.miaixz.bus.image.galaxy.CountingOutputStream;
 import org.miaixz.bus.image.galaxy.data.*;
 
 /**
+ * Represents the ImageOutputStream type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class ImageOutputStream extends FilterOutputStream {
 
+    /**
+     * The dicm value.
+     */
     private static final byte[] DICM = { 'D', 'I', 'C', 'M' };
+
+    /**
+     * The buf value.
+     */
     private final byte[] buf = new byte[12];
+
+    /**
+     * The preamble value.
+     */
     private byte[] preamble = new byte[Normal._128];
+
+    /**
+     * The explicit vr value.
+     */
     private boolean explicitVR;
+
+    /**
+     * The big endian value.
+     */
     private boolean bigEndian;
+
+    /**
+     * The counting output stream value.
+     */
     private CountingOutputStream countingOutputStream;
+
+    /**
+     * The enc opts value.
+     */
     private ImageEncodingOptions encOpts = ImageEncodingOptions.DEFAULT;
+
+    /**
+     * The deflater value.
+     */
     private Deflater deflater;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param out   the out.
+     * @param tsuid the tsuid.
+     * @throws IOException if the operation cannot be completed.
+     */
     public ImageOutputStream(OutputStream out, String tsuid) throws IOException {
         super(out);
         switchTransferSyntax(tsuid);
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param file the file.
+     * @throws IOException if the operation cannot be completed.
+     */
     public ImageOutputStream(File file) throws IOException {
         this(new BufferedOutputStream(new FileOutputStream(file)), UID.ExplicitVRLittleEndian.uid);
     }
 
+    /**
+     * Sets the preamble.
+     *
+     * @param preamble the preamble.
+     */
     public final void setPreamble(byte[] preamble) {
         if (preamble.length != Normal._128)
             throw new IllegalArgumentException("preamble.length=" + preamble.length);
         this.preamble = preamble.clone();
     }
 
+    /**
+     * Determines whether explicit vr.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public final boolean isExplicitVR() {
         return explicitVR;
     }
 
+    /**
+     * Determines whether big endian.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public final boolean isBigEndian() {
         return bigEndian;
     }
 
+    /**
+     * Gets the encoding options.
+     *
+     * @return the encoding options.
+     */
     public final ImageEncodingOptions getEncodingOptions() {
         return encOpts;
     }
 
+    /**
+     * Sets the encoding options.
+     *
+     * @param encOpts the enc opts.
+     */
     public final void setEncodingOptions(ImageEncodingOptions encOpts) {
         if (encOpts == null)
             throw new NullPointerException();
         this.encOpts = encOpts;
     }
 
+    /**
+     * Executes the write operation.
+     *
+     * @param b   the b.
+     * @param off the off.
+     * @param len the len.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void write(byte[] b, int off, int len) throws IOException {
         out.write(b, off, len);
     }
 
+    /**
+     * Writes the command.
+     *
+     * @param cmd the cmd.
+     * @throws IOException if the operation cannot be completed.
+     */
     public void writeCommand(Attributes cmd) throws IOException {
         if (explicitVR || bigEndian)
             throw new IllegalStateException("explicitVR=" + explicitVR + ", bigEndian=" + bigEndian);
         cmd.writeGroupTo(this, Tag.CommandGroupLength);
     }
 
+    /**
+     * Writes the file meta information.
+     *
+     * @param fmi the fmi.
+     * @throws IOException if the operation cannot be completed.
+     */
     public void writeFileMetaInformation(Attributes fmi) throws IOException {
         if (!explicitVR || bigEndian || countingOutputStream != null)
             throw new IllegalStateException("explicitVR=" + explicitVR + ", bigEndian=" + bigEndian + ", deflated="
@@ -98,6 +189,13 @@ public class ImageOutputStream extends FilterOutputStream {
         fmi.writeGroupTo(this, Tag.FileMetaInformationGroupLength);
     }
 
+    /**
+     * Writes the dataset.
+     *
+     * @param fmi     the fmi.
+     * @param dataset the dataset.
+     * @throws IOException if the operation cannot be completed.
+     */
     public void writeDataset(Attributes fmi, Attributes dataset) throws IOException {
         if (fmi != null) {
             writeFileMetaInformation(fmi);
@@ -111,6 +209,11 @@ public class ImageOutputStream extends FilterOutputStream {
         dataset.writeTo(this);
     }
 
+    /**
+     * Executes the switch transfer syntax operation.
+     *
+     * @param tsuid the tsuid.
+     */
     public void switchTransferSyntax(String tsuid) {
         bigEndian = tsuid.equals(UID.ExplicitVRBigEndian.uid);
         explicitVR = !tsuid.equals(UID.ImplicitVRLittleEndian.uid);
@@ -122,6 +225,14 @@ public class ImageOutputStream extends FilterOutputStream {
         }
     }
 
+    /**
+     * Writes the header.
+     *
+     * @param tag the tag.
+     * @param vr  the vr.
+     * @param len the len.
+     * @throws IOException if the operation cannot be completed.
+     */
     public void writeHeader(int tag, VR vr, int len) throws IOException {
         byte[] b = buf;
         ByteKit.tagToBytes(tag, b, 0, bigEndian);
@@ -143,6 +254,15 @@ public class ImageOutputStream extends FilterOutputStream {
         out.write(b, 0, headerLen);
     }
 
+    /**
+     * Writes the attribute.
+     *
+     * @param tag   the tag.
+     * @param vr    the vr.
+     * @param value the value.
+     * @param cs    the cs.
+     * @throws IOException if the operation cannot be completed.
+     */
     public void writeAttribute(int tag, VR vr, Object value, SpecificCharacterSet cs) throws IOException {
         if (value instanceof Value)
             writeAttribute(tag, vr, (Value) value);
@@ -150,6 +270,14 @@ public class ImageOutputStream extends FilterOutputStream {
             writeAttribute(tag, vr, (value instanceof byte[]) ? (byte[]) value : vr.toBytes(value, cs));
     }
 
+    /**
+     * Writes the attribute.
+     *
+     * @param tag the tag.
+     * @param vr  the vr.
+     * @param val the val.
+     * @throws IOException if the operation cannot be completed.
+     */
     public void writeAttribute(int tag, VR vr, byte[] val) throws IOException {
         int padlen = val.length & 1;
         writeHeader(tag, vr, val.length + padlen);
@@ -158,6 +286,14 @@ public class ImageOutputStream extends FilterOutputStream {
             out.write(vr.paddingByte());
     }
 
+    /**
+     * Writes the attribute.
+     *
+     * @param tag the tag.
+     * @param vr  the vr.
+     * @param val the val.
+     * @throws IOException if the operation cannot be completed.
+     */
     public void writeAttribute(int tag, VR vr, Value val) throws IOException {
         if (val instanceof BulkData && super.out instanceof ObjectOutputStream) {
             writeHeader(tag, vr, BulkData.MAGIC_LEN);
@@ -171,6 +307,13 @@ public class ImageOutputStream extends FilterOutputStream {
         }
     }
 
+    /**
+     * Writes the group length.
+     *
+     * @param tag the tag.
+     * @param len the len.
+     * @throws IOException if the operation cannot be completed.
+     */
     public void writeGroupLength(int tag, int len) throws IOException {
         byte[] b = buf;
         ByteKit.tagToBytes(tag, b, 0, bigEndian);
@@ -184,6 +327,11 @@ public class ImageOutputStream extends FilterOutputStream {
         out.write(b, 0, 12);
     }
 
+    /**
+     * Executes the finish operation.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     public void finish() throws IOException {
         if (countingOutputStream != null) {
             ((DeflaterOutputStream) out).finish();
@@ -192,6 +340,11 @@ public class ImageOutputStream extends FilterOutputStream {
         }
     }
 
+    /**
+     * Executes the close operation.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     public void close() throws IOException {
         try {
             finish();

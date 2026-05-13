@@ -270,6 +270,8 @@ public interface Table<R, C, V> extends Iterable<Table.Cell<R, C, V>> {
      * @param <R> The type of the row key.
      * @param <C> The type of the column key.
      * @param <V> The type of the value.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     interface Cell<R, C, V> {
 
@@ -293,6 +295,7 @@ public interface Table<R, C, V> extends Iterable<Table.Cell<R, C, V>> {
          * @return The value.
          */
         V getValue();
+
     }
 
 }

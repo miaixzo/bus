@@ -39,6 +39,7 @@ public class FilterIterator<E> implements Iterator<E> {
      * The underlying iterator being filtered.
      */
     private final Iterator<? extends E> iterator;
+
     /**
      * The predicate used to filter elements.
      */
@@ -48,6 +49,7 @@ public class FilterIterator<E> implements Iterator<E> {
      * The next element that matches the predicate.
      */
     private E nextObject;
+
     /**
      * A flag indicating whether the next element has been calculated.
      */

@@ -25,11 +25,20 @@ import java.net.Socket;
 import org.miaixz.bus.image.metric.Connection;
 
 /**
+ * Defines the TCPProtocolHandler contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface TCPProtocolHandler {
 
+    /**
+     * Executes the on accept operation.
+     *
+     * @param conn the conn.
+     * @param s    the s.
+     * @throws IOException if the operation cannot be completed.
+     */
     void onAccept(Connection conn, Socket s) throws IOException;
 
 }

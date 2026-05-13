@@ -69,6 +69,9 @@ public interface SystemConfiguration extends Library {
 
     /**
      * A reference to an SCNetworkInterface object.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class SCNetworkInterfaceRef extends CFTypeRef {
 
@@ -87,6 +90,7 @@ public interface SystemConfiguration extends Library {
         public SCNetworkInterfaceRef(Pointer p) {
             super(p);
         }
+
     }
 
 }

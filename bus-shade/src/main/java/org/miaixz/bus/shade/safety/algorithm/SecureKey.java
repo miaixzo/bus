@@ -38,14 +38,17 @@ public abstract class SecureKey implements Key, Serializable {
      * The name of the cryptographic algorithm used with this key.
      */
     protected final String algorithm;
+
     /**
      * The size of the key in bits.
      */
     protected final int keysize;
+
     /**
      * The size of the initialization vector (IV) in bits.
      */
     protected final int ivsize;
+
     /**
      * The password associated with this key, if any.
      */

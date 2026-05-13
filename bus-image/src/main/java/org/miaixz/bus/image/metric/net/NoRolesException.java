@@ -26,18 +26,36 @@ import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.metric.TransferCapability;
 
 /**
+ * Represents the NoRolesException type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class NoRolesException extends IOException {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852273231891L;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param cuid the cuid.
+     * @param role the role.
+     */
     public NoRolesException(String cuid, TransferCapability.Role role) {
         super(toMessage(cuid, role));
     }
 
+    /**
+     * Converts this value to message.
+     *
+     * @param cuid the cuid.
+     * @param role the role.
+     * @return the operation result.
+     */
     private static String toMessage(String cuid, TransferCapability.Role role) {
         StringBuilder sb = new StringBuilder();
         sb.append("No Role Selection for SOP Class ");

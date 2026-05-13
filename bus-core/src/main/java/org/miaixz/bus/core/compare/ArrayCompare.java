@@ -39,6 +39,7 @@ public class ArrayCompare<T> implements Comparator<T> {
      * Whether to place elements not found in the array at the end of the sort order.
      */
     private final boolean atEndIfMiss;
+
     /**
      * The array that defines the sort order for elements.
      */

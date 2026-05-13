@@ -25,16 +25,41 @@ import java.util.concurrent.TimeUnit;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the Timeout type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class Timeout implements Runnable {
 
+    /**
+     * The as value.
+     */
     private final Association as;
+
+    /**
+     * The expired msg value.
+     */
     private final String expiredMsg;
+
+    /**
+     * The cancel msg value.
+     */
     private final String cancelMsg;
+
+    /**
+     * The future value.
+     */
     private final ScheduledFuture<?> future;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param as         the as.
+     * @param expiredMsg the expired msg.
+     * @param cancelMsg  the cancel msg.
+     * @param timeout    the timeout.
+     */
     private Timeout(Association as, String expiredMsg, String cancelMsg, int timeout) {
         this.as = as;
         this.expiredMsg = expiredMsg;
@@ -42,16 +67,32 @@ public class Timeout implements Runnable {
         this.future = as.getDevice().schedule(this, timeout, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * Executes the start operation.
+     *
+     * @param as         the as.
+     * @param startMsg   the start msg.
+     * @param expiredMsg the expired msg.
+     * @param cancelMsg  the cancel msg.
+     * @param timeout    the timeout.
+     * @return the operation result.
+     */
     public static Timeout start(Association as, String startMsg, String expiredMsg, String cancelMsg, int timeout) {
         Logger.debug(true, "Image", startMsg, as, timeout);
         return new Timeout(as, expiredMsg, cancelMsg, timeout);
     }
 
+    /**
+     * Executes the stop operation.
+     */
     public void stop() {
         Logger.debug(false, "Image", cancelMsg, as);
         future.cancel(false);
     }
 
+    /**
+     * Executes the run operation.
+     */
     @Override
     public void run() {
         synchronized (as) {

@@ -56,7 +56,14 @@ public class SystemMetrics {
     }
 
     // Holder to allow weak reference in gauge
+    /**
+     * The runtime mx bean holder class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     private static final class RuntimeMXBeanHolder {
+
     }
 
 }

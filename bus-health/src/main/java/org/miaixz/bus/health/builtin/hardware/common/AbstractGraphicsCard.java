@@ -38,18 +38,22 @@ public abstract class AbstractGraphicsCard implements GraphicsCard {
      * The name value.
      */
     private final String name;
+
     /**
      * The deviceId value.
      */
     private final String deviceId;
+
     /**
      * The vendor value.
      */
     private final String vendor;
+
     /**
      * The versionInfo value.
      */
     private final String versionInfo;
+
     /**
      * The vram value.
      */

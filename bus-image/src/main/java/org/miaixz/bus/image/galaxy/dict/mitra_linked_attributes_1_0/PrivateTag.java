@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.mitra_linked_attributes_1_0;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "MITRA LINKED ATTRIBUTES 1.0";
 
-    /** (0031,xx20) VR=IS VM=1 ? */
+    /**
+     * (0031,xx20) VR=IS VM=1 ?
+     */
     public static final int _0031_xx20_ = 0x00310020;
 
 }

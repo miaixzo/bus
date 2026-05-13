@@ -36,6 +36,9 @@ import java.io.Serial;
 
 /**
  * This class is used to filter Groups when getting lists of epics.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class EpicFilter implements Serializable {
 
@@ -273,6 +276,12 @@ public class EpicFilter implements Serializable {
         return (this);
     }
 
+    /**
+     * The epic field enum.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public enum EpicField {
 
         AUTHOR_ID, AUTHOR_USERNAME, LABELS;
@@ -293,6 +302,7 @@ public class EpicFilter implements Serializable {
         public String toString() {
             return (enumHelper.toString(this));
         }
+
     }
 
     private Map<String, Object> toStringMap(Map<EpicField, Object> map) {

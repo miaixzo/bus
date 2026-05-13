@@ -56,10 +56,12 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
      * The BLOCK constant.
      */
     private static final String BLOCK = "block";
+
     /**
      * The DISK constant.
      */
     private static final String DISK = "disk";
+
     /**
      * The PARTITION constant.
      */
@@ -69,14 +71,17 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
      * The STAT constant.
      */
     private static final String STAT = "stat";
+
     /**
      * The SIZE constant.
      */
     private static final String SIZE = "size";
+
     /**
      * The MINOR constant.
      */
     private static final String MINOR = "MINOR";
+
     /**
      * The MAJOR constant.
      */
@@ -86,18 +91,22 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
      * The ID_FS_TYPE constant.
      */
     private static final String ID_FS_TYPE = "ID_FS_TYPE";
+
     /**
      * The ID_FS_UUID constant.
      */
     private static final String ID_FS_UUID = "ID_FS_UUID";
+
     /**
      * The ID_FS_LABEL constant.
      */
     private static final String ID_FS_LABEL = "ID_FS_LABEL";
+
     /**
      * The ID_MODEL constant.
      */
     private static final String ID_MODEL = "ID_MODEL";
+
     /**
      * The ID_SERIAL_SHORT constant.
      */
@@ -107,14 +116,17 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
      * The DM_UUID constant.
      */
     private static final String DM_UUID = "DM_UUID";
+
     /**
      * The DM_VG_NAME constant.
      */
     private static final String DM_VG_NAME = "DM_VG_NAME";
+
     /**
      * The DM_LV_NAME constant.
      */
     private static final String DM_LV_NAME = "DM_LV_NAME";
+
     /**
      * The LOGICAL_VOLUME_GROUP constant.
      */
@@ -156,30 +168,37 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
      * The reads value.
      */
     private long reads = 0L;
+
     /**
      * The readBytes value.
      */
     private long readBytes = 0L;
+
     /**
      * The writes value.
      */
     private long writes = 0L;
+
     /**
      * The writeBytes value.
      */
     private long writeBytes = 0L;
+
     /**
      * The currentQueueLength value.
      */
     private long currentQueueLength = 0L;
+
     /**
      * The transferTime value.
      */
     private long transferTime = 0L;
+
     /**
      * The timeStamp value.
      */
     private long timeStamp = 0L;
+
     /**
      * The partitionList value.
      */
@@ -547,6 +566,9 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
     // Order the field is in udev stats
     /**
      * The UdevStat enum.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     enum UdevStat {
 
@@ -576,6 +598,7 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
         public int getOrder() {
             return this.order;
         }
+
     }
 
 }

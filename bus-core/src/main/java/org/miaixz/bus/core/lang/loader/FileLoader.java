@@ -44,6 +44,7 @@ public class FileLoader extends ResourceLoader implements Loader {
      * The context URL for resources within the file system.
      */
     private final URL context;
+
     /**
      * The root directory from which to load files.
      */
@@ -101,6 +102,9 @@ public class FileLoader extends ResourceLoader implements Loader {
 
     /**
      * An {@link Enumeration} implementation for iterating over resources within a file system directory.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class Enumerator extends ResourceEnumerator implements Enumeration<Resource> {
 
@@ -108,14 +112,17 @@ public class FileLoader extends ResourceLoader implements Loader {
          * The context URL for resources within the file system.
          */
         private final URL context;
+
         /**
          * Whether to search for resources in subdirectories recursively.
          */
         private final boolean recursively;
+
         /**
          * The filter to apply to resources.
          */
         private final Filter filter;
+
         /**
          * A queue of files and directories to be processed.
          */
@@ -185,6 +192,7 @@ public class FileLoader extends ResourceLoader implements Loader {
             }
             return false;
         }
+
     }
 
 }

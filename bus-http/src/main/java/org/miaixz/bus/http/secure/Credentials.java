@@ -31,7 +31,9 @@ import org.miaixz.bus.core.lang.Symbol;
  */
 public final class Credentials {
 
-    /** Private constructor to prevent instantiation. */
+    /**
+     * Private constructor to prevent instantiation.
+     */
     private Credentials() {
 
     }

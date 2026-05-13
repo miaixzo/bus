@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.Philips_EV_Imaging_DD_022;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "Philips EV Imaging DD 022";
 
-    /** (2007,xx00) VR=ST VM=1 ? */
+    /**
+     * (2007,xx00) VR=ST VM=1 ?
+     */
     public static final int _2007_xx00_ = 0x20070000;
 
 }

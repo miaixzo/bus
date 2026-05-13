@@ -48,10 +48,12 @@ public abstract class SrcToDestCopier<T, C extends SrcToDestCopier<T, C>> implem
      * The source object from which data will be copied.
      */
     protected T src;
+
     /**
      * The target object to which data will be copied.
      */
     protected T target;
+
     /**
      * A predicate used to filter which parts of the source should be copied. If the predicate evaluates to
      * {@code false} for a given element, that element will not be copied.

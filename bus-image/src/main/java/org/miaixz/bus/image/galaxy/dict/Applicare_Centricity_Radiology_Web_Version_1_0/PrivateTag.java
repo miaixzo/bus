@@ -20,20 +20,31 @@
 package org.miaixz.bus.image.galaxy.dict.Applicare_Centricity_Radiology_Web_Version_1_0;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "Applicare/Centricity Radiology Web/Version 1.0";
 
-    /** (4109,xx01) VR=SH VM=1 Mammography Laterality */
+    /**
+     * (4109,xx01) VR=SH VM=1 Mammography Laterality
+     */
     public static final int MammographyLaterality = 0x41090001;
 
-    /** (4109,xx02) VR=SH VM=1 Mammography View Name */
+    /**
+     * (4109,xx02) VR=SH VM=1 Mammography View Name
+     */
     public static final int MammographyViewName = 0x41090002;
 
-    /** (4109,xx03) VR=SH VM=1 Mammography View Modifier */
+    /**
+     * (4109,xx03) VR=SH VM=1 Mammography View Modifier
+     */
     public static final int MammographyViewModifier = 0x41090003;
 
 }

@@ -87,6 +87,8 @@ public interface Broker<T> {
      * File-backed {@link Broker} implementation.
      *
      * @param <T> item type
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class FileBroker<T> implements Broker<T> {
 
@@ -622,6 +624,8 @@ public interface Broker<T> {
          * Streaming archive session.
          *
          * @param <T> item type
+         * @author Kimi Liu
+         * @since Java 21+
          */
         public static final class Session<T> {
 
@@ -795,10 +799,14 @@ public interface Broker<T> {
             private void markFinished() {
                 this.finished = true;
             }
+
         }
 
         /**
          * Mutable session segment state.
+         *
+         * @author Kimi Liu
+         * @since Java 21+
          */
         private static final class SessionSegmentState {
 
@@ -860,7 +868,9 @@ public interface Broker<T> {
                 this.totalItems += Math.max(items, 0L);
                 this.totalBytes += Math.max(bytes, 0L);
             }
+
         }
+
     }
 
 }

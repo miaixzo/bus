@@ -306,6 +306,12 @@ public abstract class EventListener {
 
     }
 
+    /**
+     * The factory interface.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public interface Factory {
 
         /**
@@ -320,6 +326,7 @@ public abstract class EventListener {
          * @return The listener.
          */
         EventListener of(NewCall call);
+
     }
 
 }

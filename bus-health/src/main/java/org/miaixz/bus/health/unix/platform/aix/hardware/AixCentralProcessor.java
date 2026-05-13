@@ -54,20 +54,24 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
      * Jiffies per second, used for process time counters.
      */
     private static final long USER_HZ = Parsing.parseLongOrDefault(Executor.getFirstAnswer("getconf CLK_TCK"), 100L);
+
     /**
      * The SBITS constant.
      */
     private static final int SBITS = querySbits();
+
     /**
      * The cpuTotal value.
      */
     private final Supplier<perfstat_cpu_total_t> cpuTotal = Memoizer
             .memoize(PerfstatCpu::queryCpuTotal, Memoizer.defaultExpiration());
+
     /**
      * The cpuProc value.
      */
     private final Supplier<perfstat_cpu_t[]> cpuProc = Memoizer
             .memoize(PerfstatCpu::queryCpu, Memoizer.defaultExpiration());
+
     /**
      * The config value.
      */

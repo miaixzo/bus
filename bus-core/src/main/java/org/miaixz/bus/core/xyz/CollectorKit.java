@@ -50,6 +50,7 @@ public class CollectorKit {
      */
     public static final Set<Collector.Characteristics> CH_ID = Collections
             .unmodifiableSet(EnumSet.of(Collector.Characteristics.IDENTITY_FINISH));
+
     /**
      * Collector characteristics indicating no IDENTITY_FINISH.
      */

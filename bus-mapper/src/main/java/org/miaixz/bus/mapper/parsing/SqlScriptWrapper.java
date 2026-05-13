@@ -60,6 +60,9 @@ public interface SqlScriptWrapper extends Order {
 
     /**
      * A holder class that manages {@link SqlScriptWrapper} SPI implementations.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class Holder {
 
@@ -67,6 +70,7 @@ public interface SqlScriptWrapper extends Order {
          * A list of {@link SqlScriptWrapper} implementations loaded via SPI.
          */
         static final List<SqlScriptWrapper> sqlScriptWrappers = NormalSpiLoader.loadList(false, SqlScriptWrapper.class);
+
     }
 
 }

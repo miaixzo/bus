@@ -42,6 +42,7 @@ public class BooleanKit {
      * A set of strings that represent the boolean value {@code true}.
      */
     private static final Set<String> TRUE_SET = SetKit.of(Normal.TRUE_ARRAY);
+
     /**
      * A set of strings that represent the boolean value {@code false}.
      */

@@ -25,6 +25,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serial;
 
+/**
+ * The mattermost service class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class MattermostService extends NotificationService {
 
     @Serial

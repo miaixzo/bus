@@ -42,10 +42,12 @@ public class RefundAmount {
      * Total amount.
      */
     private int total;
+
     /**
      * Currency type.
      */
     private String currency;
+
     /**
      * Refund amount.
      */

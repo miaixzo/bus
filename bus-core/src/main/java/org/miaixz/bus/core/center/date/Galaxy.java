@@ -38,14 +38,17 @@ public class Galaxy {
      * Represents 2 * PI.
      */
     public static final double PI_2 = 2 * Math.PI;
+
     /**
      * Represents the value of one-third.
      */
     public static final double ONE_THIRD = 1D / 3;
+
     /**
      * The number of seconds in one day.
      */
     public static final int SECOND_PER_DAY = 86400;
+
     /**
      * The number of arcseconds per radian.
      */
@@ -58,6 +61,7 @@ public class Galaxy {
             1.3375, 16799.4182, -51e-6, -23, 10, 4.3649, -67.5141, 72e-6, 21, -9, 0.04, -628.302, 0, -14, 0, 2.36,
             8328.691, 0, 7, 0, 3.46, 1884.966, 0, -5, 2, 5.44, 16833.175, 0, -4, 2, 3.69, 25128.110, 0, -3, 0, 3.55,
             628.362, 0, 2, 0 };
+
     /**
      * Predefined constants for Delta T (difference between Terrestrial Time and Universal Time) calculations.
      */
@@ -69,6 +73,7 @@ public class Galaxy {
             0.169, -0.0135, 1920, 21.2, 1.69, -0.304, 0.0167, 1940, 24.2, 1.22, -0.064, 0.0031, 1960, 33.2, 0.51, 0.231,
             -0.0109, 1980, 51.0, 1.29, -0.026, 0.0032, 2000, 63.87, 0.1, 0, 0, 2005, 64.7, 0.21, 0, 0, 2012, 66.8, 0.22,
             0, 0, 2018, 73.6, 0.40, 0, 0, 2021, 78.1, 0.44, 0, 0, 2024, 83.1, 0.55, 0, 0, 2028, 98.6 };
+
     /**
      * Predefined constants for longitude calculations.
      */
@@ -259,6 +264,7 @@ public class Galaxy {
             2.80, 6286.60, 386, 2.564, 6283.076, 31, 2.27, 12566.15, 5, 3.44, 5573.14, 2, 2.05, 18849.23, 1, 2.06,
             77713.77, 1, 4.41, 161000.69, 1, 3.82, 149854.40, 1, 4.08, 6127.66, 1, 5.26, 6438.50, 9, 1.22, 6283.08, 1,
             0.66, 12566.15 };
+
     /**
      * Periodic term coefficients used by the lunar longitude calculation model.
      */
@@ -497,6 +503,7 @@ public class Galaxy {
                     15542.754, -0.7, 6, 0, 0.000027, 4.43, 7211.762, -0.7, 6, 0, 0.000026, 0.51, 15540.453, 0.9, 31, 0,
                     0.000026, 1.44, 15545.055, -2.2, -19, 0, 0.000025, 5.37, 7216.364, -3.7, -44, 0 },
             { 0.00001200, 1.041, -2.3012, 1.52, 25, -0.1, 0.00000170, 0.31, -0.711, 0, 0, 0 } };
+
     /**
      * Historical correction parameters for solar-term calculations.
      */
@@ -511,6 +518,7 @@ public class Galaxy {
             2156099.495538, 15.218425000, 2159021.324663, 15.218425000, 2162308.575254, 15.218461742, 2178485.706538,
             15.218425000, 2178759.662849, 15.218445786, 2185334.020800, 15.218425000, 2187525.481425, 15.218425000,
             2188621.191481, 15.218437494, 2322147.76 };
+
     /**
      * Historical correction parameters for new-moon calculations.
      */
@@ -518,11 +526,13 @@ public class Galaxy {
             29.53060000, 1642472.151543, 29.53085439, 1683430.509300, 29.53086148, 1752148.041079, 29.53085097,
             1807665.420323, 29.53059851, 1883618.114100, 29.53060000, 1907360.704700, 29.53060000, 1936596.224900,
             29.53060000, 1939135.675300, 29.53060000, 1947168.00 };
+
     /**
      * Encoded solar-term correction data used by the astronomical decoder.
      */
     private static final String QB = decode(
             "FrcFs22AFsckF2tsDtFqEtF1posFdFgiFseFtmelpsEfhkF2anmelpFlF1ikrotcnEqEq2FfqmcDsrFor22FgFrcgDscFs22FgEeFtE2sfFs22sCoEsaF2tsD1FpeE2eFsssEciFsFnmelpFcFhkF2tcnEqEpFgkrotcnEqrEtFermcDsrE222FgBmcmr22DaEfnaF222sD1FpeForeF2tssEfiFpEoeFssD1iFstEqFppDgFstcnEqEpFg11FscnEqrAoAF2ClAEsDmDtCtBaDlAFbAEpAAAAAD2FgBiBqoBbnBaBoAAAAAAAEgDqAdBqAFrBaBoACdAAf1AACgAAAeBbCamDgEifAE2AABa1C1BgFdiAAACoCeE1ADiEifDaAEqAAFe1AcFbcAAAAAF1iFaAAACpACmFmAAAAAAAACrDaAAADG0");
+
     /**
      * Encoded new-moon correction data used by the astronomical decoder.
      */

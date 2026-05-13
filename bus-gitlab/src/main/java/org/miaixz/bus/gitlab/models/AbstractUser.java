@@ -27,6 +27,12 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serial;
 
+/**
+ * The abstract user class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class AbstractUser<U extends AbstractUser<U>> implements Serializable {
 

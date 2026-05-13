@@ -34,6 +34,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class provides utility methods for parsing and formatting ISO8601 formatted dates.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class ISO8601 {
 
@@ -178,6 +181,12 @@ public class ISO8601 {
     }
 
     // Set up ThreadLocal storage to save a thread local SimpleDateFormat keyed with the format string
+    /**
+     * The safe date formatter class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     private static final class SafeDateFormatter {
 
         private static final ThreadLocal<Map<String, SimpleDateFormat>> safeFormats = ThreadLocal
@@ -196,6 +205,7 @@ public class ISO8601 {
 
             return (format);
         }
+
     }
 
     /**

@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.Applicare_Centricity_Radiology_Web_Version_2_0;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "Applicare/Centricity Radiology Web/Version 2.0";
 
-    /** (4111,xx01) VR=CS VM=1 Secondary Spine Label */
+    /**
+     * (4111,xx01) VR=CS VM=1 Secondary Spine Label
+     */
     public static final int SecondarySpineLabel = 0x41110001;
 
     /**

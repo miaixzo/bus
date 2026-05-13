@@ -43,15 +43,18 @@ public class RouteSelector {
     private final RouteDatabase routeDatabase;
     private final NewCall call;
     private final EventListener eventListener;
+
     /**
      * The state of the failed routes.
      */
     private final List<Route> postponedRoutes = new ArrayList<>();
+
     /**
      * The state for negotiating the next proxy to use.
      */
     private List<Proxy> proxies = Collections.emptyList();
     private int nextProxyIndex;
+
     /**
      * The state for negotiating the next socket address to use.
      */
@@ -232,6 +235,9 @@ public class RouteSelector {
 
     /**
      * A selection of routes to try.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class Selection {
 
@@ -271,6 +277,7 @@ public class RouteSelector {
         public List<Route> getAll() {
             return new ArrayList<>(routes);
         }
+
     }
 
 }

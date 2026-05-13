@@ -2,6 +2,12 @@ package org.opencv.core;
 
 import java.lang.ref.Cleaner;
 
+/**
+ * The cleanable mat class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public abstract class CleanableMat {
 
     // A native memory cleaner for the OpenCV library
@@ -21,4 +27,5 @@ public abstract class CleanableMat {
     private static native void n_delete(long nativeObj);
 
     public final long nativeObj;
+
 }

@@ -70,42 +70,52 @@ public class CGetForward implements AutoCloseable {
      * The DICOM device for the C-GET operation.
      */
     private final Device device = new Device("getscu");
+
     /**
      * The Application Entity for the C-GET operation.
      */
     private final ApplicationEntity ae;
+
     /**
      * The local connection settings.
      */
     private final Connection conn = new Connection();
+
     /**
      * The remote connection settings for the C-GET source.
      */
     private final Connection remote = new Connection();
+
     /**
      * The A-ASSOCIATE-RQ message for the C-GET operation.
      */
     private final AAssociateRQ rq = new AAssociateRQ();
+
     /**
      * The query keys for the C-GET operation.
      */
     private final Attributes keys = new Attributes();
+
     /**
      * The StreamSCU instance for forwarding the images.
      */
     private final StreamSCU streamSCU;
+
     /**
      * The arguments for the forwarding operation.
      */
     private final Args args;
+
     /**
      * The service for the StreamSCU.
      */
     private final Centre streamSCUService;
+
     /**
      * The priority of the C-GET operation.
      */
     private int priority;
+
     /**
      * The C-STORE SCP to handle incoming images.
      */
@@ -216,6 +226,9 @@ public class CGetForward implements AutoCloseable {
 
         /**
          * Custom exception to indicate an association abort.
+         *
+         * @author Kimi Liu
+         * @since Java 21+
          */
         class AbortException extends IllegalStateException {
 
@@ -230,12 +243,15 @@ public class CGetForward implements AutoCloseable {
             public AbortException(String s) {
                 super(s);
             }
+
         }
     };
+
     /**
      * The information model for the C-GET operation.
      */
     private InformationModel model;
+
     /**
      * The association for the C-GET operation.
      */
@@ -618,6 +634,12 @@ public class CGetForward implements AutoCloseable {
         as = ae.connect(conn, remote, rq);
     }
 
+    /**
+     * Executes the close operation.
+     *
+     * @throws IOException          if the operation cannot be completed.
+     * @throws InterruptedException if the operation cannot be completed.
+     */
     @Override
     public void close() throws IOException, InterruptedException {
         if (as != null && as.isReadyForDataTransfer()) {
@@ -720,6 +742,9 @@ public class CGetForward implements AutoCloseable {
 
     /**
      * Enumeration of the DICOM Information Models for C-GET.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum InformationModel {
 
@@ -756,6 +781,7 @@ public class CGetForward implements AutoCloseable {
          * The SOP Class UID for the information model.
          */
         final String cuid;
+
         /**
          * The default query retrieve level for the information model.
          */
@@ -771,6 +797,7 @@ public class CGetForward implements AutoCloseable {
             this.cuid = cuid;
             this.level = level;
         }
+
     }
 
 }

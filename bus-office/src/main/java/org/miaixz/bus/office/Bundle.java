@@ -44,6 +44,8 @@ public final class Bundle {
      * Generic codec used to convert items to and from archive payloads.
      *
      * @param <T> item type
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public interface Codec<T> {
 
@@ -64,6 +66,7 @@ public final class Bundle {
          * @throws Exception if decoding fails
          */
         T decode(byte[] payload) throws Exception;
+
     }
 
     /**
@@ -74,6 +77,8 @@ public final class Bundle {
      * @param segmentName  segment name
      * @param attributes   optional segment attributes
      * @param items        ordered items
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public record Segment<T>(int segmentIndex, String segmentName, Map<String, String> attributes, List<T> items) {
 
@@ -83,6 +88,8 @@ public final class Bundle {
      * Generic paged bundle payload.
      *
      * @param <T> item type
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @Setter
@@ -159,6 +166,7 @@ public final class Bundle {
         public boolean hasItems() {
             return items != null && !items.isEmpty();
         }
+
     }
 
 }

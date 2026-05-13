@@ -20,26 +20,41 @@
 package org.miaixz.bus.image.galaxy.dict.Applicare_RadWorks_Version_6_0_Summary;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "Applicare/RadWorks/Version 6.0/Summary";
 
-    /** (3109,xx01) VR=SH VM=1 Status */
+    /**
+     * (3109,xx01) VR=SH VM=1 Status
+     */
     public static final int Status = 0x31090001;
 
-    /** (3109,xx11) VR=ST VM=1 Receive Origin Site Name */
+    /**
+     * (3109,xx11) VR=ST VM=1 Receive Origin Site Name
+     */
     public static final int ReceiveOriginSiteName = 0x31090011;
 
-    /** (3109,xx12) VR=ST VM=1 Receive Origin Description */
+    /**
+     * (3109,xx12) VR=ST VM=1 Receive Origin Description
+     */
     public static final int ReceiveOriginDescription = 0x31090012;
 
-    /** (3109,xx15) VR=DA VM=1 Receive Date */
+    /**
+     * (3109,xx15) VR=DA VM=1 Receive Date
+     */
     public static final int ReceiveDate = 0x31090015;
 
-    /** (3109,xx16) VR=TM VM=1 Receive Time */
+    /**
+     * (3109,xx16) VR=TM VM=1 Receive Time
+     */
     public static final int ReceiveTime = 0x31090016;
 
 }

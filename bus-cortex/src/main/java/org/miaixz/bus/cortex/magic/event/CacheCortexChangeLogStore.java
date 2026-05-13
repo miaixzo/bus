@@ -40,22 +40,27 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
      * Root cache-key prefix for Cortex outbox data.
      */
     private static final String PREFIX = "outbox:cortex:";
+
     /**
      * Cache-key prefix for serialized outbox records.
      */
     private static final String RECORD_PREFIX = PREFIX + "record:";
+
     /**
      * Cache-key prefix for idempotency lookups.
      */
     private static final String IDEMPOTENCY_PREFIX = PREFIX + "idempotency:";
+
     /**
      * Default number of failed delivery attempts before dead lettering.
      */
     private static final int DEFAULT_MAX_RETRIES = 3;
+
     /**
      * Default retry backoff in milliseconds.
      */
     private static final long DEFAULT_RETRY_BACKOFF_MS = 1000L;
+
     /**
      * Maximum retry backoff in milliseconds.
      */
@@ -65,10 +70,12 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
      * Cache facade used to persist outbox records.
      */
     private final CacheX<String, Object> cacheX;
+
     /**
      * Maximum retry count before a record becomes dead letter.
      */
     private final int maxRetries;
+
     /**
      * Base retry backoff in milliseconds.
      */

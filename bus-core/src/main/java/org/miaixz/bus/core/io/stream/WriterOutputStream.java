@@ -48,18 +48,22 @@ public class WriterOutputStream extends OutputStream {
      * The target {@link Writer} to which character data is written.
      */
     private final Writer writer;
+
     /**
      * The {@link CharsetDecoder} used to decode byte data into character data.
      */
     private final CharsetDecoder decoder;
+
     /**
      * A flag indicating whether data should be written immediately to the writer without buffering.
      */
     private final boolean writeImmediately;
+
     /**
      * The {@link ByteBuffer} used as input for the decoder.
      */
     private final ByteBuffer decoderIn;
+
     /**
      * The {@link CharBuffer} used as output for the decoder.
      */

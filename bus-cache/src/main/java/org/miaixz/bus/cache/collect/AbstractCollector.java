@@ -403,6 +403,9 @@ public abstract class AbstractCollector implements Collector, AutoCloseable {
      * Each {@code Tally} maps one cache pattern to its cumulative hit and request counts, plus an optimistic-locking
      * {@code version} field used by the CAS update loop.
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     protected static final class Tally {
 
@@ -497,6 +500,7 @@ public abstract class AbstractCollector implements Collector, AutoCloseable {
         public void setVersion(long version) {
             this.version = version;
         }
+
     }
 
 }

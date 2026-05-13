@@ -53,9 +53,13 @@ public final class Win32LogicalDiskToPartition {
 
     /**
      * Links disk drives to partitions
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum DiskToPartitionProperty {
         ANTECEDENT, DEPENDENT, ENDINGADDRESS, STARTINGADDRESS
+
     }
 
 }

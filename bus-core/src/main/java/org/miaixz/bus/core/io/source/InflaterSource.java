@@ -44,6 +44,7 @@ public final class InflaterSource implements Source {
      * The underlying {@link BufferSource} providing the compressed data.
      */
     private final BufferSource source;
+
     /**
      * The {@link Inflater} instance used for decompression.
      */
@@ -55,6 +56,7 @@ public final class InflaterSource implements Source {
      * them.
      */
     private int bufferBytesHeldByInflater;
+
     /**
      * A flag indicating whether this source has been closed.
      */

@@ -15,6 +15,12 @@ import org.opencv.utils.Converters;
 
 // C++: class Subdiv2D
 
+/**
+ * The subdiv 2 d class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Subdiv2D {
 
     protected final long nativeObj;
@@ -356,7 +362,6 @@ public class Subdiv2D {
      * Returns next edge around the edge origin.
      *
      * @param edge Subdivision edge ID.
-     *
      * @return an integer which is next edge ID around the edge origin: eOnext on the picture above if e is the input
      *         edge).
      */
@@ -404,7 +409,6 @@ public class Subdiv2D {
      *
      * @param edge  Subdivision edge ID.
      * @param orgpt Output vertex location.
-     *
      * @return vertex ID.
      */
     public int edgeOrg(int edge, Point orgpt) {
@@ -421,7 +425,6 @@ public class Subdiv2D {
      * Returns the edge origin.
      *
      * @param edge Subdivision edge ID.
-     *
      * @return vertex ID.
      */
     public int edgeOrg(int edge) {
@@ -437,7 +440,6 @@ public class Subdiv2D {
      *
      * @param edge  Subdivision edge ID.
      * @param dstpt Output vertex location.
-     *
      * @return vertex ID.
      */
     public int edgeDst(int edge, Point dstpt) {
@@ -454,7 +456,6 @@ public class Subdiv2D {
      * Returns the edge destination.
      *
      * @param edge Subdivision edge ID.
-     *
      * @return vertex ID.
      */
     public int edgeDst(int edge) {

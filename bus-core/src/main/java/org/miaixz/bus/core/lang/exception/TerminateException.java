@@ -25,7 +25,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 
 /**
  * Represents an exception that indicates a termination or an intentional stop of an operation.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */

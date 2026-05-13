@@ -27,7 +27,7 @@ import org.miaixz.bus.image.Tag;
 /**
  * Represents a DICOM identifier along with its optional issuer information. This class is commonly used for patient
  * IDs, accession numbers, and other identifiers that may be qualified by an issuing authority.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -42,14 +42,17 @@ public class IDWithIssuer {
      * The actual identifier string.
      */
     private final String id;
+
     /**
      * The Type of Patient ID (0008,0005) if applicable.
      */
     private String typeOfPatientID;
+
     /**
      * The Identifier Type Code (0040,0032) if applicable.
      */
     private String identifierTypeCode;
+
     /**
      * The {@link Issuer} of this identifier.
      */
@@ -57,7 +60,7 @@ public class IDWithIssuer {
 
     /**
      * Constructs an {@code IDWithIssuer} with the specified ID and {@link Issuer}.
-     * 
+     *
      * @param id     The identifier string. Must not be empty.
      * @param issuer The {@link Issuer} of the ID. Can be {@code null}.
      * @throws IllegalArgumentException if the ID is empty.
@@ -72,7 +75,7 @@ public class IDWithIssuer {
     /**
      * Constructs an {@code IDWithIssuer} with the specified ID and issuer string. The issuer string is parsed using the
      * '&amp;' separator.
-     * 
+     *
      * @param id     The identifier string.
      * @param issuer The issuer string, or {@code null}.
      */
@@ -83,7 +86,7 @@ public class IDWithIssuer {
 
     /**
      * Constructs an {@code IDWithIssuer} by parsing a DICOM CX (Composite Person Name) formatted string.
-     * 
+     *
      * @param cx The CX formatted string.
      */
     public IDWithIssuer(String cx) {
@@ -100,7 +103,7 @@ public class IDWithIssuer {
     /**
      * Creates an {@code IDWithIssuer} instance from {@link Attributes} containing the ID and Issuer of Patient ID
      * Sequence.
-     * 
+     *
      * @param attrs        The {@link Attributes} to extract information from.
      * @param idTag        The tag for the identifier (e.g., {@link Tag#PatientID}).
      * @param issuerSeqTag The tag for the Issuer of Patient ID Sequence (e.g., {@link Tag#IssuerOfPatientID}).
@@ -118,7 +121,7 @@ public class IDWithIssuer {
      * Creates an {@code IDWithIssuer} instance representing a Patient ID from the given {@link Attributes}. This method
      * extracts Patient ID (0010,0020), Issuer of Patient ID (0010,0021), Type of Patient ID (0008,0005), and Identifier
      * Type Code (0040,0032) from the attributes.
-     * 
+     *
      * @param attrs The {@link Attributes} to extract patient ID information from.
      * @return An {@code IDWithIssuer} instance for the Patient ID, or {@code null} if Patient ID is not found.
      */
@@ -135,7 +138,7 @@ public class IDWithIssuer {
 
     /**
      * Extracts the Identifier Type Code (0040,0032) from the Issuer of Patient ID Qualifiers Sequence (0040,0033).
-     * 
+     *
      * @param attrs The {@link Attributes} containing the sequence.
      * @return The Identifier Type Code string, or {@code null} if not found.
      */
@@ -146,7 +149,7 @@ public class IDWithIssuer {
 
     /**
      * Retrieves all Patient IDs (including Other Patient IDs) from the given {@link Attributes}.
-     * 
+     *
      * @param attrs The {@link Attributes} to extract patient IDs from.
      * @return A {@link Set} of {@code IDWithIssuer} objects representing all patient IDs.
      */
@@ -169,7 +172,7 @@ public class IDWithIssuer {
 
     /**
      * Retrieves Other Patient IDs from the given {@link Attributes}.
-     * 
+     *
      * @param attrs The {@link Attributes} to extract other patient IDs from.
      * @return A {@link Set} of {@code IDWithIssuer} objects representing other patient IDs.
      */
@@ -187,7 +190,7 @@ public class IDWithIssuer {
     /**
      * Adds an {@code IDWithIssuer} to a set, handling potential duplicates and qualification. If a less qualified
      * matching ID already exists in the set, it is replaced by the more qualified one.
-     * 
+     *
      * @param pid  The {@code IDWithIssuer} to add.
      * @param pids The {@link Set} to add to.
      */
@@ -210,7 +213,7 @@ public class IDWithIssuer {
 
     /**
      * Returns a new {@code IDWithIssuer} instance with the same ID but without any issuer information.
-     * 
+     *
      * @return A new {@code IDWithIssuer} instance.
      */
     public IDWithIssuer withoutIssuer() {
@@ -219,7 +222,7 @@ public class IDWithIssuer {
 
     /**
      * Returns the identifier string.
-     * 
+     *
      * @return The ID string.
      */
     public final String getID() {
@@ -228,7 +231,7 @@ public class IDWithIssuer {
 
     /**
      * Returns the Type of Patient ID (0008,0005).
-     * 
+     *
      * @return The Type of Patient ID string, or {@code null}.
      */
     public String getTypeOfPatientID() {
@@ -237,7 +240,7 @@ public class IDWithIssuer {
 
     /**
      * Sets the Type of Patient ID (0008,0005).
-     * 
+     *
      * @param typeOfPatientID The Type of Patient ID string to set.
      */
     public void setTypeOfPatientID(String typeOfPatientID) {
@@ -246,7 +249,7 @@ public class IDWithIssuer {
 
     /**
      * Returns the Identifier Type Code (0040,0032).
-     * 
+     *
      * @return The Identifier Type Code string, or {@code null}.
      */
     public final String getIdentifierTypeCode() {
@@ -255,7 +258,7 @@ public class IDWithIssuer {
 
     /**
      * Sets the Identifier Type Code (0040,0032).
-     * 
+     *
      * @param identifierTypeCode The Identifier Type Code string to set.
      */
     public final void setIdentifierTypeCode(String identifierTypeCode) {
@@ -264,7 +267,7 @@ public class IDWithIssuer {
 
     /**
      * Returns the {@link Issuer} of this identifier.
-     * 
+     *
      * @return The {@link Issuer} object, or {@code null}.
      */
     public final Issuer getIssuer() {
@@ -273,13 +276,18 @@ public class IDWithIssuer {
 
     /**
      * Sets the {@link Issuer} of this identifier.
-     * 
+     *
      * @param issuer The {@link Issuer} object to set.
      */
     public final void setIssuer(Issuer issuer) {
         this.issuer = issuer;
     }
 
+    /**
+     * Returns the string representation.
+     *
+     * @return the string representation.
+     */
     @Override
     public String toString() {
         if (issuer == null && identifierTypeCode == null)
@@ -294,6 +302,11 @@ public class IDWithIssuer {
         return sb.toString();
     }
 
+    /**
+     * Returns the hash code.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public int hashCode() {
         int result = id.hashCode();
@@ -306,6 +319,12 @@ public class IDWithIssuer {
         return result;
     }
 
+    /**
+     * Compares this instance with another object for equality.
+     *
+     * @param object the object.
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean equals(Object object) {
         if (this == object)
@@ -320,7 +339,7 @@ public class IDWithIssuer {
     /**
      * Tests if this ID equals another ID and this issuer matches the other issuer. If this ID equals the other ID but
      * only this or the other is qualified by an issuer, the test fails.
-     * 
+     *
      * @param other The {@code IDWithIssuer} to compare.
      * @return {@code true} if this ID equals the other ID and this issuer matches the other issuer, otherwise
      *         {@code false}.
@@ -333,7 +352,7 @@ public class IDWithIssuer {
      * Tests if this ID equals another ID and this issuer matches the other issuer. If this ID equals the other ID but
      * only this or the other is qualified by an issuer, the test returns the value passed by parameter
      * {@code matchNoIssuer}.
-     * 
+     *
      * @param other             The {@code IDWithIssuer} to compare.
      * @param matchNoIssuer     Value returned if only this or the other is qualified by an issuer.
      * @param matchOnNoMismatch Value returned if the issuer of this and the other includes different types of
@@ -349,7 +368,7 @@ public class IDWithIssuer {
     /**
      * Exports the Patient ID and its associated issuer information into the given {@link Attributes}. If {@code attrs}
      * is {@code null}, a new {@link Attributes} object is created.
-     * 
+     *
      * @param attrs The {@link Attributes} object to export to. Can be {@code null}.
      * @return The {@link Attributes} object containing the Patient ID and issuer information.
      */

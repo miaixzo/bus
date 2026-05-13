@@ -57,6 +57,7 @@ public final class Who {
      */
     private static final Pattern WHO_FORMAT_LINUX = Pattern
             .compile("(\\S+)\\s+(\\S+)\\s+(\\d{4}-\\d{2}-\\d{2})\\s+(\\d{2}:\\d{2})\\s*(?:\\((.+)\\))?");
+
     /**
      * The WHO_DATE_FORMAT_LINUX constant.
      */
@@ -69,6 +70,7 @@ public final class Who {
      */
     private static final Pattern WHO_FORMAT_UNIX = Pattern
             .compile("(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\d+)\\s+(\\d{2}:\\d{2})\\s*(?:\\((.+)\\))?");
+
     /**
      * The WHO_DATE_FORMAT_UNIX constant.
      */

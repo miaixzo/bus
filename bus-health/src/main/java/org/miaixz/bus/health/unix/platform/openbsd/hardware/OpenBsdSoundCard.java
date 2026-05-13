@@ -44,6 +44,7 @@ final class OpenBsdSoundCard extends AbstractSoundCard {
      * The AUDIO_AT constant.
      */
     private static final Pattern AUDIO_AT = Pattern.compile("audio\\d+ at (.+)");
+
     /**
      * The PCI_AT constant.
      */

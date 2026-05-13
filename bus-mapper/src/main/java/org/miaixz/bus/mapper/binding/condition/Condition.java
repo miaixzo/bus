@@ -58,30 +58,37 @@ public class Condition<T> {
      * The Order BY clause for the query.
      */
     protected String orderByClause;
+
     /**
      * Whether to use the DISTINCT keyword in the query.
      */
     protected boolean distinct;
+
     /**
      * The specific columns to be selected in the query.
      */
     protected String selectColumns;
+
     /**
      * The specific columns to be selected, without "column AS alias" aliases.
      */
     protected String simpleSelectColumns;
+
     /**
      * SQL to be prepended to the main query.
      */
     protected String startSql;
+
     /**
      * SQL to be appended to the main query.
      */
     protected String endSql;
+
     /**
      * A list of criteria groups connected by OR.
      */
     protected List<Criteria<T>> oredCriteria;
+
     /**
      * A list of fields to be set in an UPDATE statement.
      */

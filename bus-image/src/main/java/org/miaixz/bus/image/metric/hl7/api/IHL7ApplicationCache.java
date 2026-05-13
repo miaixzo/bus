@@ -23,19 +23,48 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.metric.hl7.net.HL7Application;
 
 /**
+ * Defines the IHL7ApplicationCache contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface IHL7ApplicationCache {
 
+    /**
+     * Gets the stale timeout.
+     *
+     * @return the stale timeout.
+     */
     int getStaleTimeout();
 
+    /**
+     * Sets the stale timeout.
+     *
+     * @param staleTimeout the stale timeout.
+     */
     void setStaleTimeout(int staleTimeout);
 
+    /**
+     * Executes the clear operation.
+     */
     void clear();
 
+    /**
+     * Executes the get operation.
+     *
+     * @param name the name.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     HL7Application get(String name) throws InternalException;
 
+    /**
+     * Finds the hl7 application.
+     *
+     * @param name the name.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     HL7Application findHL7Application(String name) throws InternalException;
 
 }

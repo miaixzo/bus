@@ -46,4 +46,5 @@ public enum CortexChangeStatus {
      * Record reached a terminal failure state.
      */
     DEAD
+
 }

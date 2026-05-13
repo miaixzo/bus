@@ -31,7 +31,7 @@ import lombok.experimental.SuperBuilder;
 /**
  * Notice for Alibaba Cloud notification services.
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 21+
  */
 @Getter

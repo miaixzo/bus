@@ -39,18 +39,22 @@ public class Connector {
      * The hostname or IP address of the server.
      */
     private String host;
+
     /**
      * The port number for the connection.
      */
     private int port;
+
     /**
      * The username for authentication, defaulting to "root".
      */
     private String user = "root";
+
     /**
      * The password for authentication.
      */
     private String password;
+
     /**
      * The connection timeout duration in milliseconds.
      */

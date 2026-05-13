@@ -40,14 +40,17 @@ public abstract class FastBuffer {
      * The total number of chunks (buffers) currently allocated.
      */
     protected int buffersCount;
+
     /**
      * The index of the currently active buffer chunk.
      */
     protected int currentBufferIndex = -1;
+
     /**
      * The current offset within the active buffer chunk.
      */
     protected int offset;
+
     /**
      * The total size of the data currently stored in the buffer.
      */

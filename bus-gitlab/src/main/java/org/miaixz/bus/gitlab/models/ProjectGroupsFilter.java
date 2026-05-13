@@ -25,6 +25,9 @@ import java.io.Serial;
 
 /**
  * This class is used to filter Groups when getting lists of groups for a specified project.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class ProjectGroupsFilter implements Serializable {
 

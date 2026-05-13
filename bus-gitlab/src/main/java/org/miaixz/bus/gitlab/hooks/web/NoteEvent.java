@@ -29,6 +29,12 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+/**
+ * The note event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class NoteEvent extends AbstractEvent {
 
     @Serial
@@ -129,6 +135,12 @@ public class NoteEvent extends AbstractEvent {
         this.snippet = snippet;
     }
 
+    /**
+     * The noteable type enum.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public static enum NoteableType {
 
         ISSUE, MERGE_REQUEST, SNIPPET, COMMIT;
@@ -150,13 +162,24 @@ public class NoteEvent extends AbstractEvent {
         public String toString() {
             return (enumHelper.toString(this));
         }
+
     }
 
+    /**
+     * The object attributes class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public static class ObjectAttributes {
 
         private Long id;
         private String note;
         private String discussionId;
+
+        /**
+         * The type field.
+         */
         private String type;
         private NoteableType noteableType;
         private Long authorId;
@@ -298,6 +321,7 @@ public class NoteEvent extends AbstractEvent {
         public void setUrl(String url) {
             this.url = url;
         }
+
     }
 
     @Override

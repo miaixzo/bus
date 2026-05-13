@@ -8,6 +8,12 @@ import org.opencv.utils.Converters;
 
 // C++: class Core
 
+/**
+ * The core class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Core {
 
     // these constants are wrapped inside functions to prevent inlining
@@ -961,7 +967,6 @@ public class Core {
      *
      * @param src input array.
      * @param dst output array.
-     *
      * @deprecated Use Mat::convertTo with CV_16F instead.
      */
     @Deprecated
@@ -5296,6 +5301,12 @@ public class Core {
     }
 
 // manual port
+    /**
+     * The min max loc result class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public static class MinMaxLocResult {
 
         public double minVal;
@@ -5309,6 +5320,7 @@ public class Core {
             minLoc = new Point();
             maxLoc = new Point();
         }
+
     }
 
 // C++: minMaxLoc(Mat src, double* minVal, double* maxVal=0, Point* minLoc=0, Point* maxLoc=0, InputArray mask=noArray())

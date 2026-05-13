@@ -42,6 +42,9 @@ import org.miaixz.bus.logger.Logger;
  *
  * <a href="https://docs.gitlab.com/ce/api/repositories.html">Repositories API</a>
  * <a href="https://docs.gitlab.com/ce/api/branches.html">Branches API</a>
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class RepositoryApi extends AbstractApi {
 
@@ -115,7 +118,6 @@ public class RepositoryApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param itemsPerPage    the number of Project instances that will be fetched per page
      * @return the list of repository branches for the specified project ID
-     *
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<Branch> getBranches(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
@@ -188,7 +190,6 @@ public class RepositoryApi extends AbstractApi {
      * @param search          the branch name search term
      * @param itemsPerPage    the number of Project instances that will be fetched per page
      * @return the list of repository branches for the specified project ID and search term
-     *
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<Branch> getBranches(Object projectIdOrPath, String search, int itemsPerPage)
@@ -210,7 +211,6 @@ public class RepositoryApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param search          the branch name search term
      * @return the Stream of repository branches for the specified project ID and search term
-     *
      * @throws GitLabApiException if any exception occurs
      */
     public Stream<Branch> getBranchesStream(Object projectIdOrPath, String search) throws GitLabApiException {

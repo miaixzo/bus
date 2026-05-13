@@ -36,7 +36,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Decodes URL-encoded strings of the {@code application/x-www-form-urlencoded} type.
  * <p>
  * The decoding process includes:
- * 
+ *
  * <pre>
  * 1. Converting "%20" to a space.
  * 2. Converting "%xy" to its corresponding character, where "xy" is a two-digit hexadecimal number.

@@ -33,6 +33,7 @@ public class SimplePoolable<T> implements Poolable<T> {
      * The raw object wrapped by this poolable instance.
      */
     private final T raw;
+
     /**
      * The timestamp in milliseconds when this object was last returned to the pool.
      */

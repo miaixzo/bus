@@ -41,6 +41,7 @@ public class ValidateObjectInputStream extends ObjectInputStream {
      * A set of class names that are explicitly allowed for deserialization (whitelist).
      */
     private Set<String> whiteClassSet;
+
     /**
      * A set of class names that are explicitly forbidden for deserialization (blacklist).
      */

@@ -33,15 +33,36 @@ import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the TCPListener type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class TCPListener implements Listener {
 
+    /**
+     * The conn value.
+     */
     private final Connection conn;
+
+    /**
+     * The handler value.
+     */
     private final TCPProtocolHandler handler;
+
+    /**
+     * The ss value.
+     */
     private final ServerSocket ss;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param conn    the conn.
+     * @param handler the handler.
+     * @throws IOException              if the operation cannot be completed.
+     * @throws GeneralSecurityException if the operation cannot be completed.
+     */
     public TCPListener(Connection conn, TCPProtocolHandler handler) throws IOException, GeneralSecurityException {
         try {
 
@@ -67,6 +88,14 @@ public class TCPListener implements Listener {
         }
     }
 
+    /**
+     * Creates the tls server socket.
+     *
+     * @param conn the conn.
+     * @return the operation result.
+     * @throws IOException              if the operation cannot be completed.
+     * @throws GeneralSecurityException if the operation cannot be completed.
+     */
     public ServerSocket createTLSServerSocket(Connection conn) throws IOException, GeneralSecurityException {
         SSLContext sslContext = conn.getDevice().sslContext();
         SSLServerSocketFactory ssf = sslContext.getServerSocketFactory();
@@ -77,6 +106,9 @@ public class TCPListener implements Listener {
         return ss;
     }
 
+    /**
+     * Executes the listen operation.
+     */
     public void listen() {
         SocketAddress sockAddr = ss.getLocalSocketAddress();
         Logger.info(true, "Image", "Start TCP Listener on {}", sockAddr);
@@ -131,11 +163,21 @@ public class TCPListener implements Listener {
         Logger.info(false, "Image", "Stop TCP Listener on {}", sockAddr);
     }
 
+    /**
+     * Gets the end point.
+     *
+     * @return the end point.
+     */
     @Override
     public SocketAddress getEndPoint() {
         return ss.getLocalSocketAddress();
     }
 
+    /**
+     * Executes the close operation.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void close() throws IOException {
         try {

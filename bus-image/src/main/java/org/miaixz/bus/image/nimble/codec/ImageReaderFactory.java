@@ -39,21 +39,44 @@ import org.miaixz.bus.image.nimble.codec.jpeg.PatchJPEGLS;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the ImageReaderFactory type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class ImageReaderFactory implements Serializable {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852288677583L;
 
+    /**
+     * The default factory value.
+     */
     private static volatile ImageReaderFactory defaultFactory;
+
+    /**
+     * The map value.
+     */
     private final TreeMap<String, ImageReaderParam> map = new TreeMap<>();
 
+    /**
+     * Executes the nullify operation.
+     *
+     * @param s the s.
+     * @return the operation result.
+     */
     private static String nullify(String s) {
         return null == s || s.isEmpty() || s.equals(Symbol.STAR) ? null : s;
     }
 
+    /**
+     * Gets the default.
+     *
+     * @return the default.
+     */
     public static ImageReaderFactory getDefault() {
         if (defaultFactory == null)
             defaultFactory = init();
@@ -61,6 +84,11 @@ public class ImageReaderFactory implements Serializable {
         return defaultFactory;
     }
 
+    /**
+     * Sets the default.
+     *
+     * @param factory the factory.
+     */
     public static void setDefault(ImageReaderFactory factory) {
         if (factory == null)
             throw new NullPointerException();
@@ -68,24 +96,51 @@ public class ImageReaderFactory implements Serializable {
         defaultFactory = factory;
     }
 
+    /**
+     * Resets the default.
+     */
     public static void resetDefault() {
         defaultFactory = null;
     }
 
+    /**
+     * Gets the image reader param.
+     *
+     * @param tsuid the tsuid.
+     * @return the image reader param.
+     */
     public static ImageReaderParam getImageReaderParam(String tsuid) {
         return getDefault().get(tsuid);
     }
 
+    /**
+     * Determines whether decompress.
+     *
+     * @param tsuid the tsuid.
+     * @return true if the condition is met; otherwise false.
+     */
     public static boolean canDecompress(String tsuid) {
         return getDefault().contains(tsuid);
     }
 
+    /**
+     * Gets the image reader.
+     *
+     * @param param the param.
+     * @return the image reader.
+     */
     public static ImageReader getImageReader(ImageReaderParam param) {
         return Boolean.getBoolean("org.miaixz.bus.image.nimble.codec.useServiceLoader")
                 ? getImageReaderFromServiceLoader(param)
                 : getImageReaderFromImageIOServiceRegistry(param);
     }
 
+    /**
+     * Gets the image reader from image io service registry.
+     *
+     * @param param the param.
+     * @return the image reader from image io service registry.
+     */
     public static ImageReader getImageReaderFromImageIOServiceRegistry(ImageReaderParam param) {
         Iterator<ImageReader> iter = ImageIO.getImageReadersByFormatName(param.formatName);
         if (!iter.hasNext())
@@ -111,6 +166,12 @@ public class ImageReaderFactory implements Serializable {
         return reader;
     }
 
+    /**
+     * Gets the image reader from service loader.
+     *
+     * @param param the param.
+     * @return the image reader from service loader.
+     */
     public static ImageReader getImageReaderFromServiceLoader(ImageReaderParam param) {
         try {
             return getImageReaderSpi(param).createReaderInstance();
@@ -119,6 +180,12 @@ public class ImageReaderFactory implements Serializable {
         }
     }
 
+    /**
+     * Gets the image reader spi.
+     *
+     * @param param the param.
+     * @return the image reader spi.
+     */
     private static ImageReaderSpi getImageReaderSpi(ImageReaderParam param) {
         Iterator<ImageReaderSpi> iter = new FormatNameFilterIterator<>(
                 ServiceLoader.load(ImageReaderSpi.class).iterator(), param.formatName);
@@ -145,6 +212,11 @@ public class ImageReaderFactory implements Serializable {
         return spi;
     }
 
+    /**
+     * Executes the init operation.
+     *
+     * @return the operation result.
+     */
     public static ImageReaderFactory init() {
         ImageReaderFactory factory = new ImageReaderFactory();
         URL url = ResourceKit.getResourceUrl("ImageReaderFactory.properties", ImageReaderFactory.class);
@@ -164,40 +236,105 @@ public class ImageReaderFactory implements Serializable {
         return factory;
     }
 
+    /**
+     * Executes the get operation.
+     *
+     * @param tsuid the tsuid.
+     * @return the operation result.
+     */
     public ImageReaderParam get(String tsuid) {
         return map.get(tsuid);
     }
 
+    /**
+     * Executes the contains operation.
+     *
+     * @param tsuid the tsuid.
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean contains(String tsuid) {
         return map.containsKey(tsuid);
     }
 
+    /**
+     * Executes the put operation.
+     *
+     * @param tsuid the tsuid.
+     * @param param the param.
+     * @return the operation result.
+     */
     public ImageReaderParam put(String tsuid, ImageReaderParam param) {
         return map.put(tsuid, param);
     }
 
+    /**
+     * Executes the remove operation.
+     *
+     * @param tsuid the tsuid.
+     * @return the operation result.
+     */
     public ImageReaderParam remove(String tsuid) {
         return map.remove(tsuid);
     }
 
+    /**
+     * Gets the entries.
+     *
+     * @return the entries.
+     */
     public Set<Entry<String, ImageReaderParam>> getEntries() {
         return Collections.unmodifiableMap(map).entrySet();
     }
 
+    /**
+     * Executes the clear operation.
+     */
     public void clear() {
         map.clear();
     }
 
+    /**
+     * Represents the ImageReaderParam type.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public static class ImageReaderParam implements Serializable {
 
+        /**
+         * The serial version uid value.
+         */
         @Serial
         private static final long serialVersionUID = 2852288722533L;
 
+        /**
+         * The format name value.
+         */
         public final String formatName;
+
+        /**
+         * The class name value.
+         */
         public final String className;
+
+        /**
+         * The patch jpegls value.
+         */
         public final PatchJPEGLS patchJPEGLS;
+
+        /**
+         * The image read params value.
+         */
         public final Property[] imageReadParams;
 
+        /**
+         * Creates a new instance.
+         *
+         * @param formatName      the format name.
+         * @param className       the class name.
+         * @param patchJPEGLS     the patch jpegls.
+         * @param imageReadParams the image read params.
+         */
         public ImageReaderParam(String formatName, String className, PatchJPEGLS patchJPEGLS,
                 Property[] imageReadParams) {
             this.formatName = formatName;
@@ -206,16 +343,35 @@ public class ImageReaderFactory implements Serializable {
             this.imageReadParams = imageReadParams;
         }
 
+        /**
+         * Creates a new instance.
+         *
+         * @param formatName       the format name.
+         * @param className        the class name.
+         * @param patchJPEGLS      the patch jpegls.
+         * @param imageWriteParams the image write params.
+         */
         public ImageReaderParam(String formatName, String className, String patchJPEGLS, String... imageWriteParams) {
             this(formatName, className,
                     patchJPEGLS != null && !patchJPEGLS.isEmpty() ? PatchJPEGLS.valueOf(patchJPEGLS) : null,
                     Property.valueOf(imageWriteParams));
         }
 
+        /**
+         * Gets the image read params.
+         *
+         * @return the image read params.
+         */
         public Property[] getImageReadParams() {
             return imageReadParams;
         }
 
+        /**
+         * Compares this instance with another object for equality.
+         *
+         * @param o the o.
+         * @return true if the condition is met; otherwise false.
+         */
         @Override
         public boolean equals(Object o) {
             if (this == o)
@@ -235,6 +391,11 @@ public class ImageReaderFactory implements Serializable {
 
         }
 
+        /**
+         * Returns the hash code.
+         *
+         * @return true if the condition is met; otherwise false.
+         */
         @Override
         public int hashCode() {
             int result = formatName.hashCode();
@@ -244,12 +405,18 @@ public class ImageReaderFactory implements Serializable {
             return result;
         }
 
+        /**
+         * Returns the string representation.
+         *
+         * @return the string representation.
+         */
         @Override
         public String toString() {
             return "ImageReaderParam{" + "formatName='" + formatName + Symbol.C_SINGLE_QUOTE + ", className='"
                     + className + Symbol.C_SINGLE_QUOTE + ", patchJPEGLS=" + patchJPEGLS + ", imageReadParams="
                     + Arrays.toString(imageReadParams) + '}';
         }
+
     }
 
 }

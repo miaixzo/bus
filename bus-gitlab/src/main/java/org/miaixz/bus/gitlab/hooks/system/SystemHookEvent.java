@@ -26,6 +26,12 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.io.Serial;
 
+/**
+ * The system hook event interface.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, visible = true, property = "event_name")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = CreateProjectSystemHookEvent.class, name = ProjectSystemHookEvent.PROJECT_CREATE_EVENT),
@@ -68,112 +74,238 @@ public interface SystemHookEvent extends Serializable {
 
     @JsonIgnore
     String getRequestSecretToken();
+
 }
 
 // All of the following class definitions are needed to make the above work.
 // Jackson has a tough time mapping the same class to multiple IDs
+/**
+ * The create project system hook event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 class CreateProjectSystemHookEvent extends ProjectSystemHookEvent {
 
     @Serial
     private static final long serialVersionUID = 2852228078820L;
+
 }
 
+/**
+ * The destroy project system hook event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 class DestroyProjectSystemHookEvent extends ProjectSystemHookEvent {
 
     @Serial
     private static final long serialVersionUID = 2852228251132L;
+
 }
 
+/**
+ * The rename project system hook event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 class RenameProjectSystemHookEvent extends ProjectSystemHookEvent {
 
     @Serial
     private static final long serialVersionUID = 2852228370569L;
+
 }
 
+/**
+ * The transfer project system hook event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 class TransferProjectSystemHookEvent extends ProjectSystemHookEvent {
 
     @Serial
     private static final long serialVersionUID = 2852228576607L;
+
 }
 
+/**
+ * The update project system hook event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 class UpdateProjectSystemHookEvent extends ProjectSystemHookEvent {
 
     @Serial
     private static final long serialVersionUID = 2852228633920L;
+
 }
 
+/**
+ * The new team member system hook event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 class NewTeamMemberSystemHookEvent extends TeamMemberSystemHookEvent {
 
     @Serial
     private static final long serialVersionUID = 2852228695353L;
+
 }
 
+/**
+ * The remove team member system hook event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 class RemoveTeamMemberSystemHookEvent extends TeamMemberSystemHookEvent {
 
     @Serial
     private static final long serialVersionUID = 2852228711072L;
+
 }
 
+/**
+ * The create user system hook event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 class CreateUserSystemHookEvent extends UserSystemHookEvent {
 
     @Serial
     private static final long serialVersionUID = 2852228769923L;
+
 }
 
+/**
+ * The destroy user system hook event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 class DestroyUserSystemHookEvent extends UserSystemHookEvent {
 
     @Serial
     private static final long serialVersionUID = 2852228833780L;
+
 }
 
+/**
+ * The rename user system hook event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 class RenameUserSystemHookEvent extends UserSystemHookEvent {
 
     @Serial
     private static final long serialVersionUID = 2852228918310L;
+
 }
 
+/**
+ * The user failed login system hook event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 class UserFailedLoginSystemHookEvent extends UserSystemHookEvent {
 
     @Serial
     private static final long serialVersionUID = 2852229056099L;
+
 }
 
+/**
+ * The create key system hook event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 class CreateKeySystemHookEvent extends KeySystemHookEvent {
 
     @Serial
     private static final long serialVersionUID = 2852229066130L;
+
 }
 
+/**
+ * The destroy key system hook event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 class DestroyKeySystemHookEvent extends KeySystemHookEvent {
 
     @Serial
     private static final long serialVersionUID = 2852229156110L;
+
 }
 
+/**
+ * The create group system hook event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 class CreateGroupSystemHookEvent extends GroupSystemHookEvent {
 
     @Serial
     private static final long serialVersionUID = 2852229213926L;
+
 }
 
+/**
+ * The destroy group system hook event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 class DestroyGroupSystemHookEvent extends GroupSystemHookEvent {
 
     @Serial
     private static final long serialVersionUID = 2852229266109L;
+
 }
 
+/**
+ * The rename group system hook event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 class RenameGroupSystemHookEvent extends GroupSystemHookEvent {
 
     @Serial
     private static final long serialVersionUID = 2852229331677L;
+
 }
 
+/**
+ * The new group member system hook event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 class NewGroupMemberSystemHookEvent extends GroupMemberSystemHookEvent {
 
     @Serial
     private static final long serialVersionUID = 2852229395085L;
+
 }
 
+/**
+ * The remove group member system hook event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 class RemoveGroupMemberSystemHookEvent extends GroupMemberSystemHookEvent {
 
     @Serial

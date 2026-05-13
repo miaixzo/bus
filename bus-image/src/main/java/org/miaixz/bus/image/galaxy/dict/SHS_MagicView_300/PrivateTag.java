@@ -20,17 +20,26 @@
 package org.miaixz.bus.image.galaxy.dict.SHS_MagicView_300;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SHS MagicView 300";
 
-    /** (0029,xx02) VR=FD VM=1 ? */
+    /**
+     * (0029,xx02) VR=FD VM=1 ?
+     */
     public static final int _0029_xx02_ = 0x00290002;
 
-    /** (0029,xx03) VR=FD VM=1 ? */
+    /**
+     * (0029,xx03) VR=FD VM=1 ?
+     */
     public static final int _0029_xx03_ = 0x00290003;
 
 }

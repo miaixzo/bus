@@ -172,6 +172,9 @@ public class RequestBodyAdvice extends BaseAdvice
 
     /**
      * A custom {@link HttpInputMessage} that wraps the original message and provides a decrypted body stream.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class InputMessage implements HttpInputMessage {
 
@@ -248,6 +251,7 @@ public class RequestBodyAdvice extends BaseAdvice
         public HttpHeaders getHeaders() {
             return headers;
         }
+
     }
 
 }

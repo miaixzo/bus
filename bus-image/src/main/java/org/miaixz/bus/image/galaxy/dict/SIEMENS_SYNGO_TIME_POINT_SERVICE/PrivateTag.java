@@ -20,20 +20,31 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_TIME_POINT_SERVICE;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS SYNGO TIME POINT SERVICE";
 
-    /** (0029,xx01) VR=LO VM=1 Time Point I */
+    /**
+     * (0029,xx01) VR=LO VM=1 Time Point I
+     */
     public static final int TimePointID = 0x00290001;
 
-    /** (0029,xx02) VR=LO VM=1 Time Point Information */
+    /**
+     * (0029,xx02) VR=LO VM=1 Time Point Information
+     */
     public static final int TimePointInformation = 0x00290002;
 
-    /** (0029,xx50) VR=SQ VM=1 Studies in Time Point Sequence */
+    /**
+     * (0029,xx50) VR=SQ VM=1 Studies in Time Point Sequence
+     */
     public static final int StudiesinTimePointSequence = 0x00290050;
 
 }

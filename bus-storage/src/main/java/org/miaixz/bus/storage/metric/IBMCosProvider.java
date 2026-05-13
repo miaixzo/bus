@@ -38,7 +38,7 @@ import org.miaixz.bus.storage.Context;
  * </ul>
  * <p>
  * <strong>Endpoint Format:</strong>
- * 
+ *
  * <pre>
  * Public Endpoints:
  * https://s3.{region}.cloud-object-storage.appdomain.cloud
@@ -58,7 +58,7 @@ import org.miaixz.bus.storage.Context;
  * </pre>
  * <p>
  * <strong>Usage Example:</strong>
- * 
+ *
  * <pre>{@code
  * Context context = Context.builder().endpoint("https://s3.us-south.cloud-object-storage.appdomain.cloud")
  *         .bucket("my-bucket").accessKey("your-hmac-access-key").secretKey("your-hmac-secret-key").region("us-south")

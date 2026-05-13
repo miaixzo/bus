@@ -66,22 +66,27 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
      * Lock for thread-safe operations.
      */
     private final Lock lock = new ReentrantLock();
+
     /**
      * The cipher.
      */
     private JceCipher cipher;
+
     /**
      * Algorithm parameter specifications.
      */
     private AlgorithmParameterSpec algorithmParameterSpec;
+
     /**
      * Custom SecureRandom.
      */
     private SecureRandom random;
+
     /**
      * SecretKey responsible for storing the symmetric key.
      */
     private SecretKey secretKey;
+
     /**
      * Whether to use ZeroPadding.
      */

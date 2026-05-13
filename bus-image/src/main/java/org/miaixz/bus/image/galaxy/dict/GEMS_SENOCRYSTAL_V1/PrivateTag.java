@@ -20,35 +20,56 @@
 package org.miaixz.bus.image.galaxy.dict.GEMS_SENOCRYSTAL_V1;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEMS_SENOCRYSTAL_V1";
 
-    /** (0055,xx00) VR=CS VM=1 Clinical View */
+    /**
+     * (0055,xx00) VR=CS VM=1 Clinical View
+     */
     public static final int ClinicalView = 0x00550000;
 
-    /** (0055,xx01) VR=IS VM=1 Exposure Dose */
+    /**
+     * (0055,xx01) VR=IS VM=1 Exposure Dose
+     */
     public static final int ExposureDose = 0x00550001;
 
-    /** (0055,xx02) VR=IS VM=1 Implant Displacement */
+    /**
+     * (0055,xx02) VR=IS VM=1 Implant Displacement
+     */
     public static final int ImplantDisplacement = 0x00550002;
 
-    /** (0055,xx03) VR=IS VM=1 Paddle Type */
+    /**
+     * (0055,xx03) VR=IS VM=1 Paddle Type
+     */
     public static final int PaddleType = 0x00550003;
 
-    /** (0055,xx04) VR=IS VM=1 Processing Type */
+    /**
+     * (0055,xx04) VR=IS VM=1 Processing Type
+     */
     public static final int ProcessingType = 0x00550004;
 
-    /** (0055,xx05) VR=IS VM=1 Windowing Type */
+    /**
+     * (0055,xx05) VR=IS VM=1 Windowing Type
+     */
     public static final int WindowingType = 0x00550005;
 
-    /** (0055,xx06) VR=IS VM=1 Saturation */
+    /**
+     * (0055,xx06) VR=IS VM=1 Saturation
+     */
     public static final int Saturation = 0x00550006;
 
-    /** (0055,xx07) VR=IS VM=1 Clip */
+    /**
+     * (0055,xx07) VR=IS VM=1 Clip
+     */
     public static final int Clip = 0x00550007;
 
 }

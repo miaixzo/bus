@@ -52,7 +52,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class HttpBuilder {
 
-    /** The underlying builder from the core HTTP client. */
+    /**
+     * The underlying builder from the core HTTP client.
+     */
     private final Httpd.Builder builder;
 
     /**

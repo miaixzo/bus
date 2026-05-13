@@ -57,6 +57,7 @@ public class QrCodeKit {
      * SVG vector graphic format.
      */
     public static final String QR_TYPE_SVG = "svg";
+
     /**
      * Ascii Art character text format.
      */

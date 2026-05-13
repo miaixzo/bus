@@ -78,6 +78,9 @@ public class VortexProperties {
 
     /**
      * Asset registry refresh settings.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @Setter

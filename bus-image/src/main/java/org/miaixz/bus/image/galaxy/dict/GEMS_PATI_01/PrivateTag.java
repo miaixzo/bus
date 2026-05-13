@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.GEMS_PATI_01;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEMS_PATI_01";
 
-    /** (0011,xx10) VR=SS VM=1 Patient Status */
+    /**
+     * (0011,xx10) VR=SS VM=1 Patient Status
+     */
     public static final int PatientStatus = 0x00110010;
 
 }

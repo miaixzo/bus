@@ -26,51 +26,106 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.w3c.dom.Node;
 
 /**
+ * Represents the ImageioMetaData type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class ImageioMetaData extends IIOMetadata {
 
+    /**
+     * The file meta information value.
+     */
     private final Attributes fileMetaInformation;
+
+    /**
+     * The attributes value.
+     */
     private final Attributes attributes;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param fileMetaInformation the file meta information.
+     * @param attributes          the attributes.
+     */
     public ImageioMetaData(Attributes fileMetaInformation, Attributes attributes) {
         this.fileMetaInformation = fileMetaInformation;
         this.attributes = attributes;
     }
 
+    /**
+     * Gets the file meta information.
+     *
+     * @return the file meta information.
+     */
     public final Attributes getFileMetaInformation() {
         return fileMetaInformation;
     }
 
+    /**
+     * Gets the attributes.
+     *
+     * @return the attributes.
+     */
     public final Attributes getAttributes() {
         return attributes;
     }
 
+    /**
+     * Determines whether read only.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean isReadOnly() {
         return true;
     }
 
+    /**
+     * Gets the as tree.
+     *
+     * @param formatName the format name.
+     * @return the as tree.
+     */
     @Override
     public Node getAsTree(String formatName) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Executes the merge tree operation.
+     *
+     * @param formatName the format name.
+     * @param root       the root.
+     */
     @Override
     public void mergeTree(String formatName, Node root) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Executes the reset operation.
+     */
     @Override
     public void reset() {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Gets the transfer syntax uid.
+     *
+     * @return the transfer syntax uid.
+     */
     public String getTransferSyntaxUID() {
         return getFileMetaInformation().getString(Tag.TransferSyntaxUID);
     }
 
+    /**
+     * Executes the big endian operation.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean bigEndian() {
         return getAttributes().bigEndian();
     }

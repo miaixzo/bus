@@ -42,26 +42,32 @@ public class Status {
      * Whether the instance is considered healthy.
      */
     private boolean healthy;
+
     /**
      * Probe round-trip latency in milliseconds.
      */
     private long latencyMs;
+
     /**
      * Human-readable status or error description.
      */
     private String message;
+
     /**
      * Logical probe source or component name.
      */
     private String source;
+
     /**
      * Probe timestamp in epoch milliseconds.
      */
     private long timestamp;
+
     /**
      * Logical lifecycle state derived from the probe result.
      */
     private String state;
+
     /**
      * Optional structured probe details.
      */

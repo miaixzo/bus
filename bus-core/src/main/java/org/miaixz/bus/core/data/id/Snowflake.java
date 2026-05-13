@@ -58,31 +58,38 @@ public class Snowflake implements Serializable {
      */
     public static final long DEFAULT_TWEPOCH = 1288834974657L;
     private static final long WORKER_ID_BITS = 5L;
+
     /**
      * Maximum supported machine nodes: 0~31, for a total of 32.
      */
     private static final long MAX_WORKER_ID = ~(-1L << WORKER_ID_BITS);
     private static final long DATA_CENTER_ID_BITS = 5L;
+
     /**
      * Maximum supported data center nodes: 0~31, for a total of 32.
      */
     private static final long MAX_DATA_CENTER_ID = ~(-1L << DATA_CENTER_ID_BITS);
+
     /**
      * Sequence number is 12 bits (meaning the sequence can range from 0 to 4095).
      */
     private static final long SEQUENCE_BITS = 12L;
+
     /**
      * Machine node left shift 12 bits.
      */
     private static final long WORKER_ID_SHIFT = SEQUENCE_BITS;
+
     /**
      * Data center node left shift 17 bits.
      */
     private static final long DATA_CENTER_ID_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS;
+
     /**
      * Timestamp in milliseconds left shift 22 bits.
      */
     private static final long TIMESTAMP_LEFT_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS + DATA_CENTER_ID_BITS;
+
     /**
      * Sequence mask, used to limit the maximum sequence value to not exceed 4095.
      */
@@ -92,18 +99,22 @@ public class Snowflake implements Serializable {
      * The start timestamp.
      */
     private final long twepoch;
+
     /**
      * The worker ID.
      */
     private final long workerId;
+
     /**
      * The data center ID.
      */
     private final long dataCenterId;
+
     /**
      * Whether to use the system clock.
      */
     private final boolean useSystemClock;
+
     /**
      * When in low-frequency mode, the sequence number is always 0, causing the generated ID to always be even. This
      * property is used to limit a random upper bound. When generating a sequence number in a different millisecond, a
@@ -118,6 +129,7 @@ public class Snowflake implements Serializable {
      * number is incremented to avoid ID duplication.
      */
     private long sequence = 0L;
+
     /**
      * The last timestamp.
      */

@@ -22,25 +22,60 @@ package org.miaixz.bus.image.metric.hl7;
 import java.io.*;
 
 /**
+ * Represents the MLLPInputStream type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class MLLPInputStream extends BufferedInputStream {
 
+    /**
+     * The som value.
+     */
     private static final int SOM = 0x0b; // Message Start
+    /**
+     * The eom1 value.
+     */
     private static final int EOM1 = 0x1c; // End of Message Byte 1
+    /**
+     * The eom2 value.
+     */
     private static final int EOM2 = 0x0d; // End of Message Byte 2
+    /**
+     * The read buffer value.
+     */
     private final ByteArrayOutputStream readBuffer = new ByteArrayOutputStream();
+
+    /**
+     * The eom value.
+     */
     private boolean eom = true;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param in the in.
+     */
     public MLLPInputStream(InputStream in) {
         super(in);
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param in   the in.
+     * @param size the size.
+     */
     public MLLPInputStream(InputStream in, int size) {
         super(in, size);
     }
 
+    /**
+     * Determines whether more input.
+     *
+     * @return true if the condition is met; otherwise false.
+     * @throws IOException if the operation cannot be completed.
+     */
     public synchronized boolean hasMoreInput() throws IOException {
         if (!eom)
             throw new IllegalStateException();
@@ -56,6 +91,12 @@ public class MLLPInputStream extends BufferedInputStream {
         return true;
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public synchronized int read() throws IOException {
         if (eom)
@@ -72,6 +113,15 @@ public class MLLPInputStream extends BufferedInputStream {
         return -1;
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @param b   the b.
+     * @param off the off.
+     * @param len the len.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public synchronized int read(byte[] b, int off, int len) throws IOException {
         if (b == null)
@@ -103,6 +153,13 @@ public class MLLPInputStream extends BufferedInputStream {
         return remaining + 1;
     }
 
+    /**
+     * Copies the to.
+     *
+     * @param out the out.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     public synchronized int copyTo(OutputStream out) throws IOException {
         if (eom)
             throw new IllegalStateException();
@@ -126,6 +183,12 @@ public class MLLPInputStream extends BufferedInputStream {
         return totlen;
     }
 
+    /**
+     * Reads the message.
+     *
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     public synchronized byte[] readMessage() throws IOException {
         if (!hasMoreInput())
             return null;
@@ -135,6 +198,11 @@ public class MLLPInputStream extends BufferedInputStream {
         return readBuffer.toByteArray();
     }
 
+    /**
+     * Executes the eom operation.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     private void eom() throws IOException {
         int b = super.read();
         if (b != EOM2)
@@ -142,6 +210,12 @@ public class MLLPInputStream extends BufferedInputStream {
         eom = true;
     }
 
+    /**
+     * Executes the remaining operation.
+     *
+     * @param count the count.
+     * @return the operation result.
+     */
     private int remaining(int count) {
         for (int i = pos; i < count; i++)
             if (buf[i] == EOM1)

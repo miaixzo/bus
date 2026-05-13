@@ -65,6 +65,9 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
      * <p>
      * This class maps to the native macOS SMC version data structure which holds the return value of SMC version query.
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "major", "minor", "build", "reserved", "release" })
     class SMCKeyDataVers extends Structure {
@@ -73,22 +76,27 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
          * Major version number.
          */
         public byte major;
+
         /**
          * Minor version number.
          */
         public byte minor;
+
         /**
          * Build number.
          */
         public byte build;
+
         /**
          * Reserved byte.
          */
         public byte reserved;
+
         /**
          * Release version.
          */
         public short release;
+
     }
 
     /**
@@ -97,6 +105,9 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
      * This class maps to the native macOS SMC power limit data structure which holds the return value of SMC pLimit
      * query.
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "version", "length", "cpuPLimit", "gpuPLimit", "memPLimit" })
     class SMCKeyDataPLimitData extends Structure {
@@ -105,22 +116,27 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
          * Version of the power limit data structure.
          */
         public short version;
+
         /**
          * Length of the power limit data structure.
          */
         public short length;
+
         /**
          * CPU power limit.
          */
         public int cpuPLimit;
+
         /**
          * GPU power limit.
          */
         public int gpuPLimit;
+
         /**
          * Memory power limit.
          */
         public int memPLimit;
+
     }
 
     /**
@@ -129,6 +145,9 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
      * This class maps to the native macOS SMC key information structure which holds the return value of SMC KeyInfo
      * query.
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "dataSize", "dataType", "dataAttributes" })
     class SMCKeyDataKeyInfo extends Structure {
@@ -137,14 +156,17 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
          * Size of the data.
          */
         public int dataSize;
+
         /**
          * Type of the data.
          */
         public int dataType;
+
         /**
          * Attributes of the data.
          */
         public byte dataAttributes;
+
     }
 
     /**
@@ -152,6 +174,9 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
      * <p>
      * This class maps to the native macOS SMC data structure which holds the return value of SMC query.
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "key", "vers", "pLimitData", "keyInfo", "result", "status", "data8", "data32", "bytes" })
     class SMCKeyData extends Structure implements AutoCloseable {
@@ -160,34 +185,42 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
          * The SMC key.
          */
         public int key;
+
         /**
          * SMC version data.
          */
         public SMCKeyDataVers vers;
+
         /**
          * SMC power limit data.
          */
         public SMCKeyDataPLimitData pLimitData;
+
         /**
          * SMC key information.
          */
         public SMCKeyDataKeyInfo keyInfo;
+
         /**
          * Result code.
          */
         public byte result;
+
         /**
          * Status code.
          */
         public byte status;
+
         /**
          * 8-bit data.
          */
         public byte data8;
+
         /**
          * 32-bit data.
          */
         public int data32;
+
         /**
          * Raw bytes of data.
          */
@@ -200,6 +233,7 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
     /**
@@ -207,6 +241,9 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
      * <p>
      * This class maps to the native macOS SMC value structure which holds SMC key-value data.
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @FieldOrder({ "key", "dataSize", "dataType", "bytes" })
     class SMCVal extends Structure implements AutoCloseable {
@@ -215,14 +252,17 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
          * The SMC key.
          */
         public byte[] key = new byte[5];
+
         /**
          * Size of the data.
          */
         public int dataSize;
+
         /**
          * Type of the data.
          */
         public byte[] dataType = new byte[5];
+
         /**
          * Raw bytes of data.
          */
@@ -235,6 +275,7 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
         public void close() {
             Builder.freeMemory(getPointer());
         }
+
     }
 
 }

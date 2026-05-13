@@ -22,30 +22,61 @@ package org.miaixz.bus.image.metric.pdu;
 import org.miaixz.bus.image.Builder;
 
 /**
+ * Represents the IdentityAC type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class IdentityAC {
 
+    /**
+     * The server response value.
+     */
     private final byte[] serverResponse;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param serverResponse the server response.
+     */
     public IdentityAC(byte[] serverResponse) {
         this.serverResponse = serverResponse.clone();
     }
 
+    /**
+     * Gets the server response.
+     *
+     * @return the server response.
+     */
     public final byte[] getServerResponse() {
         return serverResponse.clone();
     }
 
+    /**
+     * Executes the length operation.
+     *
+     * @return the operation result.
+     */
     public int length() {
         return 2 + serverResponse.length;
     }
 
+    /**
+     * Returns the string representation.
+     *
+     * @return the string representation.
+     */
     @Override
     public String toString() {
         return promptTo(new StringBuilder()).toString();
     }
 
+    /**
+     * Executes the prompt to operation.
+     *
+     * @param sb the sb.
+     * @return the operation result.
+     */
     StringBuilder promptTo(StringBuilder sb) {
         return sb.append("  UserIdentity[").append(Builder.LINE_SEPARATOR).append("    serverResponse: byte[")
                 .append(serverResponse.length).append(']').append(Builder.LINE_SEPARATOR).append("  ]");

@@ -35,14 +35,17 @@ public final class UnixBaseboard extends AbstractBaseboard {
      * The manufacturer value.
      */
     private final String manufacturer;
+
     /**
      * The model value.
      */
     private final String model;
+
     /**
      * The serialNumber value.
      */
     private final String serialNumber;
+
     /**
      * The version value.
      */

@@ -47,6 +47,9 @@ import org.miaixz.bus.logger.Logger;
  */
 public class Attributes implements Serializable {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852260209995L;
 

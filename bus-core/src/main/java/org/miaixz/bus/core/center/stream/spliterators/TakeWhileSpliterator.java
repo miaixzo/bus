@@ -39,10 +39,12 @@ public class TakeWhileSpliterator<T> implements Spliterator<T> {
      * The source Spliterator from which elements are obtained.
      */
     private final Spliterator<T> source;
+
     /**
      * The predicate to apply to elements. Elements are taken as long as this predicate is true.
      */
     private final Predicate<? super T> predicate;
+
     /**
      * A flag indicating whether the predicate has returned {@code false} for an element, signaling that no more
      * elements should be taken.

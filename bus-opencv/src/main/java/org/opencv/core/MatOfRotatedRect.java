@@ -3,6 +3,12 @@ package org.opencv.core;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The mat of rotated rect class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class MatOfRotatedRect extends Mat {
 
     // 32FC5
@@ -80,4 +86,5 @@ public class MatOfRotatedRect extends Mat {
         RotatedRect[] ar = toArray();
         return Arrays.asList(ar);
     }
+
 }

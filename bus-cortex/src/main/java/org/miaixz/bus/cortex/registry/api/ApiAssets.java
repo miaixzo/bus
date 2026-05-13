@@ -206,6 +206,9 @@ public class ApiAssets extends Assets {
 
     /**
      * API-specific metadata payload stored directly in the raw asset metadata JSON payload.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @Setter
@@ -215,10 +218,12 @@ public class ApiAssets extends Assets {
          * Heartbeat interval in milliseconds expected for runtime instances of this service.
          */
         private Long heartbeatIntervalMs;
+
         /**
          * Lease timeout in seconds for runtime instances of this service.
          */
         private Integer leaseSeconds;
+
         /**
          * Stable public route alias used by admin and bridge paths, for example {@code dp.license.get:1.0:1}.
          */

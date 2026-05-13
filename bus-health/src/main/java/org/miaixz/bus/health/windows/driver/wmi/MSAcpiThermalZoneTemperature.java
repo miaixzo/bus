@@ -59,9 +59,13 @@ public final class MSAcpiThermalZoneTemperature {
 
     /**
      * Current temperature property.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum TemperatureProperty {
         CURRENTTEMPERATURE
+
     }
 
 }

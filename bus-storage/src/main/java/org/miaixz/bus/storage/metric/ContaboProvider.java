@@ -45,7 +45,7 @@ import org.miaixz.bus.storage.Context;
  * <strong>Configuration Example:</strong>
  *
  * <pre>{@code
- * 
+ *
  * Context context = Context.builder().endpoint("https://eu2.contabostorage.com") // or usc1, ap1
  *         .bucket("my-bucket").accessKey("CONTABO_ACCESS_KEY").secretKey("CONTABO_SECRET_KEY").region("eu2") // or
  *                                                                                                            // usc1,

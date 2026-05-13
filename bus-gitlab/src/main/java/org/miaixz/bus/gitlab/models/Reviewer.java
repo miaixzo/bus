@@ -21,6 +21,12 @@ package org.miaixz.bus.gitlab.models;
 
 import java.io.Serial;
 
+/**
+ * The reviewer class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Reviewer extends AbstractUser<Reviewer> {
 
     @Serial

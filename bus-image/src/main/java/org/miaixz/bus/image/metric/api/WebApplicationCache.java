@@ -24,21 +24,43 @@ import org.miaixz.bus.core.lang.exception.NotFoundException;
 import org.miaixz.bus.image.metric.WebApplication;
 
 /**
+ * Represents the WebApplicationCache type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class WebApplicationCache extends ConfigurationCache<DicomConfiguration, WebApplication>
         implements IWebApplicationCache {
 
+    /**
+     * Creates a new instance.
+     *
+     * @param conf the conf.
+     */
     public WebApplicationCache(DicomConfiguration conf) {
         super(conf);
     }
 
+    /**
+     * Executes the find operation.
+     *
+     * @param conf the conf.
+     * @param key  the key.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     protected WebApplication find(DicomConfiguration conf, String key) throws InternalException {
         return conf.findWebApplication(key);
     }
 
+    /**
+     * Finds the web application.
+     *
+     * @param name the name.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public WebApplication findWebApplication(String name) throws InternalException {
         WebApplication webApp = get(name);

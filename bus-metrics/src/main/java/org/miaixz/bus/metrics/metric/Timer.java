@@ -56,7 +56,9 @@ public interface Timer {
      */
     void record(long amount, TimeUnit unit);
 
-    /** Returns the total number of recordings. */
+    /**
+     * Returns the total number of recordings.
+     */
     long count();
 
     /**
@@ -115,19 +117,33 @@ public interface Timer {
             int checkEvery,
             Consumer<ViolationEvent> callback);
 
-    /** Returns an atomic snapshot of histogram state for cross-instance aggregation. */
+    /**
+     * Returns an atomic snapshot of histogram state for cross-instance aggregation.
+     */
     TimerSnapshot snapshot();
 
     // ── Rolling window constants ───────────────────────────────────────────
 
-    /** Rolling time window used for multi-window percentile queries. */
+    /**
+     * Rolling time window used for multi-window percentile queries.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     enum Window {
-        /** Last 60 seconds. */
+        /**
+         * Last 60 seconds.
+         */
         ONE_MINUTE,
-        /** Last 300 seconds. */
+        /**
+         * Last 300 seconds.
+         */
         FIVE_MINUTES,
-        /** All recordings since creation. */
+        /**
+         * All recordings since creation.
+         */
         LIFETIME
+
     }
 
     // ── ViolationEvent record ──────────────────────────────────────────────
@@ -141,19 +157,26 @@ public interface Timer {
      * @param actualNanos    observed percentile value in nanoseconds
      * @param thresholdNanos configured threshold in nanoseconds
      * @param violatedAt     wall-clock instant of detection
+     * @author Kimi Liu
+     * @since Java 21+
      */
     record ViolationEvent(String metricName, Tag[] tags, double percentile, long actualNanos, long thresholdNanos,
             Instant violatedAt) {
 
-        /** Returns {@link #actualNanos} converted to milliseconds. */
+        /**
+         * Returns {@link #actualNanos} converted to milliseconds.
+         */
         public double actualMillis() {
             return actualNanos / 1_000_000.0;
         }
 
-        /** Returns {@link #thresholdNanos} converted to milliseconds. */
+        /**
+         * Returns {@link #thresholdNanos} converted to milliseconds.
+         */
         public double thresholdMillis() {
             return thresholdNanos / 1_000_000.0;
         }
+
     }
 
 }

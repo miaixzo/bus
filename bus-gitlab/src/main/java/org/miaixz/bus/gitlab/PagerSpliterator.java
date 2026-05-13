@@ -24,6 +24,12 @@ import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 
+/**
+ * The pager spliterator class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 class PagerSpliterator<T> implements Spliterator<T> {
 
     private Pager<T> pager;

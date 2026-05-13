@@ -29,15 +29,31 @@ import javax.imageio.stream.ImageInputStream;
 import org.miaixz.bus.core.Version;
 
 /**
+ * Represents the NativeJ2kImageReaderSpi type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class NativeJ2kImageReaderSpi extends ImageReaderSpi {
 
+    /**
+     * The suffixes value.
+     */
     static final String[] SUFFIXES = { "jp2", "jp2k", "j2k", "j2c" };
+
+    /**
+     * The names value.
+     */
     static final String[] NAMES = { "jpeg2000-cv", "jpeg2000", "JP2KSimpleBox", "jpeg 2000", "JPEG 2000", "JPEG2000" };
+
+    /**
+     * The mimes value.
+     */
     static final String[] MIMES = { "image/jp2", "image/jp2k", "image/j2k", "image/j2c" };
 
+    /**
+     * Creates a new instance.
+     */
     public NativeJ2kImageReaderSpi() {
         super("Miaixz Team", Version._VERSION, NAMES, SUFFIXES, MIMES, NativeImageReader.class.getName(),
                 new Class[] { ImageInputStream.class }, new String[] {}, false, // supportsStandardStreamMetadataFormat
@@ -49,11 +65,24 @@ public class NativeJ2kImageReaderSpi extends ImageReaderSpi {
                 null, null, null, null);
     }
 
+    /**
+     * Gets the description.
+     *
+     * @param locale the locale.
+     * @return the description.
+     */
     @Override
     public String getDescription(Locale locale) {
         return "Natively-accelerated JPEG2000 Image Reader (OpenJPEG based)";
     }
 
+    /**
+     * Determines whether decode input.
+     *
+     * @param source the source.
+     * @return true if the condition is met; otherwise false.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public boolean canDecodeInput(Object source) throws IOException {
         // NativeImageReader.read() eventually instantiates a StreamSegment,
@@ -93,6 +122,12 @@ public class NativeJ2kImageReaderSpi extends ImageReaderSpi {
         }
     }
 
+    /**
+     * Creates the reader instance.
+     *
+     * @param extension the extension.
+     * @return the operation result.
+     */
     @Override
     public ImageReader createReaderInstance(Object extension) {
         return new NativeImageReader(this, true);

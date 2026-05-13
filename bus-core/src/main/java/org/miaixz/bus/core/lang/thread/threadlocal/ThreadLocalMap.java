@@ -41,24 +41,29 @@ public final class ThreadLocalMap {
      * {@code null}).
      */
     public static final Object UNSET = new Object();
+
     /**
      * A {@link ThreadLocal} used to store {@link ThreadLocalMap} instances for regular {@link Thread}s that are not
      * {@link SpecificThread}s.
      */
     private static final ThreadLocal<ThreadLocalMap> SLOW_THREAD_LOCAL_MAP = new ThreadLocal<>();
+
     /**
      * An atomic integer used to generate unique indices for {@link FastThreadLocal} variables.
      */
     private static final AtomicInteger NEXT_INDEX = new AtomicInteger();
+
     /**
      * The index reserved for storing a {@link Set} of {@link FastThreadLocal} variables that need to be removed.
      */
     public static final int VARIABLES_TO_REMOVE_INDEX = nextVariableIndex();
+
     /**
      * An array to store the values of {@link FastThreadLocal} variables. The index in this array corresponds to the
      * unique index assigned to each {@link FastThreadLocal}.
      */
     private Object[] indexedVariables;
+
     /**
      * A {@link BitSet} used to track which {@link FastThreadLocal} variables have initiated a cleanup thread for this
      * {@code ThreadLocalMap}. Setting a bit to {@code true} at a specific index indicates that a cleanup thread has

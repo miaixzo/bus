@@ -37,14 +37,28 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class SeekableInMemoryByteChannel implements SeekableByteChannel {
 
+    /**
+     * The naive resize limit value.
+     */
     private static final int NAIVE_RESIZE_LIMIT = Integer.MAX_VALUE >> 1;
+
+    /**
+     * The closed value.
+     */
     private final AtomicBoolean closed = new AtomicBoolean();
+
+    /**
+     * The data value.
+     */
     private byte[] data;
+
+    /**
+     * Constants for the position, size values.
+     */
     private int position, size;
 
     /**
      * Constructor taking a byte array.
-     *
      * <p>
      * This constructor is intended to be used with pre-allocated buffer or when reading from a given byte array.
      *
@@ -82,6 +96,13 @@ public class SeekableInMemoryByteChannel implements SeekableByteChannel {
         return position;
     }
 
+    /**
+     * Executes the position operation.
+     *
+     * @param newPosition the new position.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public SeekableByteChannel position(long newPosition) throws IOException {
         ensureOpen();
@@ -120,6 +141,13 @@ public class SeekableInMemoryByteChannel implements SeekableByteChannel {
         return this;
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @param buf the buf.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int read(ByteBuffer buf) throws IOException {
         ensureOpen();
@@ -136,16 +164,31 @@ public class SeekableInMemoryByteChannel implements SeekableByteChannel {
         return wanted;
     }
 
+    /**
+     * Executes the close operation.
+     */
     @Override
     public void close() {
         closed.set(true);
     }
 
+    /**
+     * Determines whether open.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean isOpen() {
         return !closed.get();
     }
 
+    /**
+     * Executes the write operation.
+     *
+     * @param b the b.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int write(ByteBuffer b) throws IOException {
         ensureOpen();
@@ -168,6 +211,11 @@ public class SeekableInMemoryByteChannel implements SeekableByteChannel {
         return wanted;
     }
 
+    /**
+     * Executes the resize operation.
+     *
+     * @param newLength the new length.
+     */
     private void resize(int newLength) {
         int len = data.length;
         if (len <= 0) {
@@ -183,6 +231,11 @@ public class SeekableInMemoryByteChannel implements SeekableByteChannel {
         data = Arrays.copyOf(data, len);
     }
 
+    /**
+     * Executes the ensure open operation.
+     *
+     * @throws ClosedChannelException if the operation cannot be completed.
+     */
     private void ensureOpen() throws ClosedChannelException {
         if (!isOpen()) {
             throw new ClosedChannelException();

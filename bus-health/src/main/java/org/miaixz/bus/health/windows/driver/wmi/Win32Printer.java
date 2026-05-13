@@ -43,9 +43,13 @@ public final class Win32Printer {
 
     /**
      * Printer properties from WMI
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum PrinterProperty {
         NAME, DRIVERNAME, PRINTERSTATUS, DETECTEDERRORSTATE, DEFAULT, LOCAL, PORTNAME, DESCRIPTION;
+
     }
 
     /**

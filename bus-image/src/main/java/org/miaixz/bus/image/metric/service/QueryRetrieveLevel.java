@@ -27,11 +27,16 @@ import org.miaixz.bus.image.galaxy.data.VR;
 import org.miaixz.bus.image.galaxy.data.ValidationResult;
 
 /**
+ * Defines the QueryRetrieveLevel values.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public enum QueryRetrieveLevel {
 
+    /**
+     * The patient value.
+     */
     PATIENT {
 
         @Override
@@ -51,6 +56,9 @@ public enum QueryRetrieveLevel {
         }
 
     },
+    /**
+     * The study value.
+     */
     STUDY {
 
         @Override
@@ -73,6 +81,9 @@ public enum QueryRetrieveLevel {
             return iod;
         }
     },
+    /**
+     * The series value.
+     */
     SERIES {
 
         @Override
@@ -97,6 +108,9 @@ public enum QueryRetrieveLevel {
             return iod;
         }
     },
+    /**
+     * The image value.
+     */
     IMAGE {
 
         @Override
@@ -123,6 +137,9 @@ public enum QueryRetrieveLevel {
             return iod;
         }
     },
+    /**
+     * The frame value.
+     */
     FRAME {
 
         @Override
@@ -136,6 +153,14 @@ public enum QueryRetrieveLevel {
         }
     };
 
+    /**
+     * Executes the value of operation.
+     *
+     * @param attrs    the attrs.
+     * @param qrLevels the qr levels.
+     * @return the operation result.
+     * @throws ImageServiceException if the operation cannot be completed.
+     */
     public static QueryRetrieveLevel valueOf(Attributes attrs, String[] qrLevels) throws ImageServiceException {
         ValidationResult result = new ValidationResult();
         attrs.validate(
@@ -146,24 +171,60 @@ public enum QueryRetrieveLevel {
         return QueryRetrieveLevel.valueOf(attrs.getString(Tag.QueryRetrieveLevel));
     }
 
+    /**
+     * Executes the check operation.
+     *
+     * @param result the result.
+     * @throws ImageServiceException if the operation cannot be completed.
+     */
     private static void check(ValidationResult result) throws ImageServiceException {
         if (!result.isValid())
             throw new ImageServiceException(Status.IdentifierDoesNotMatchSOPClass, result.getErrorComment())
                     .setOffendingElements(result.getOffendingElements());
     }
 
+    /**
+     * Validates the query keys.
+     *
+     * @param attrs      the attrs.
+     * @param rootLevel  the root level.
+     * @param relational the relational.
+     * @throws ImageServiceException if the operation cannot be completed.
+     */
     public void validateQueryKeys(Attributes attrs, QueryRetrieveLevel rootLevel, boolean relational)
             throws ImageServiceException {
         check(attrs.validate(queryKeysIOD(rootLevel, relational)));
     }
 
+    /**
+     * Validates the retrieve keys.
+     *
+     * @param attrs      the attrs.
+     * @param rootLevel  the root level.
+     * @param relational the relational.
+     * @throws ImageServiceException if the operation cannot be completed.
+     */
     public void validateRetrieveKeys(Attributes attrs, QueryRetrieveLevel rootLevel, boolean relational)
             throws ImageServiceException {
         check(attrs.validate(retrieveKeysIOD(rootLevel, relational)));
     }
 
+    /**
+     * Executes the query keys iod operation.
+     *
+     * @param rootLevel  the root level.
+     * @param relational the relational.
+     * @return the operation result.
+     */
     protected abstract IOD queryKeysIOD(QueryRetrieveLevel rootLevel, boolean relational);
 
+    /**
+     * Executes the retrieve keys iod operation.
+     *
+     * @param rootLevel  the root level.
+     * @param relational the relational.
+     * @return the operation result.
+     */
     protected abstract IOD retrieveKeysIOD(QueryRetrieveLevel rootLevel, boolean relational);
 
 }

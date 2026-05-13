@@ -39,6 +39,7 @@ public class TransIterator<F, T> implements Iterator<T> {
      * The backing iterator providing the source elements.
      */
     private final Iterator<? extends F> backingIterator;
+
     /**
      * The function used to transform elements from type F to type T.
      */

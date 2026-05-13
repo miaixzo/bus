@@ -1825,6 +1825,7 @@ public enum FileMagicNumber {
      * The MIME type of the file.
      */
     private final String mimeType;
+
     /**
      * The file extension.
      */

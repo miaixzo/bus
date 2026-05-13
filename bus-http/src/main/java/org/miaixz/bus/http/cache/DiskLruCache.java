@@ -63,6 +63,7 @@ public class DiskLruCache implements Closeable, Flushable {
     private static final String REMOVE = "REMOVE";
     private static final String READ = "READ";
     final DiskFile diskFile;
+
     /**
      * The directory where the cache stores its data.
      */
@@ -78,20 +79,24 @@ public class DiskLruCache implements Closeable, Flushable {
     int redundantOpCount;
     boolean hasJournalErrors;
     boolean initialized;
+
     /**
      * True if the cache is closed.
      */
     boolean closed;
     boolean mostRecentTrimFailed;
     boolean mostRecentRebuildFailed;
+
     /**
      * The maximum number of bytes this cache should use to store its data.
      */
     private long maxSize;
+
     /**
      * The number of bytes currently being used to store the values in this cache.
      */
     private long size = 0;
+
     /**
      * To differentiate between old and current snapshots, each entry is given a sequence number when an edit is
      * committed. A snapshot is stale if its sequence number is not equal to its entry's sequence number.
@@ -845,6 +850,9 @@ public class DiskLruCache implements Closeable, Flushable {
      * This interface is less ambitious than {@link java.nio.file.FileSystem} introduced in Java 7. It lacks important
      * features like file watching, metadata, permissions, and disk space information. In exchange for these
      * limitations, this interface is easier to implement and works on all versions of Java and Android.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public interface DiskFile {
 
@@ -1012,6 +1020,9 @@ public class DiskLruCache implements Closeable, Flushable {
 
     /**
      * A snapshot of the values for an entry.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public final class Snapshot implements Closeable {
 
@@ -1075,10 +1086,14 @@ public class DiskLruCache implements Closeable, Flushable {
                 IoKit.close(in);
             }
         }
+
     }
 
     /**
      * Edits the values for an entry.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public final class Editor {
 
@@ -1259,25 +1274,36 @@ public class DiskLruCache implements Closeable, Flushable {
                 }
             }
         }
+
     }
 
+    /**
+     * The entry class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     private class Entry {
 
         final String key;
+
         /**
          * Lengths of this entry's files.
          */
         final long[] lengths;
         final File[] cleanFiles;
         final File[] dirtyFiles;
+
         /**
          * True if this entry has ever been published.
          */
         boolean readable;
+
         /**
          * The ongoing edit or null if this entry is not being edited.
          */
         Editor currentEditor;
+
         /**
          * The sequence number of the most recently committed edit to this entry.
          */
@@ -1396,6 +1422,7 @@ public class DiskLruCache implements Closeable, Flushable {
                 return null;
             }
         }
+
     }
 
 }

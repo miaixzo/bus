@@ -44,18 +44,22 @@ public class DiagnosticsSnapshot {
      * Runtime component name.
      */
     private String component;
+
     /**
      * Runtime component status.
      */
     private String status;
+
     /**
      * Component-specific diagnostic metrics.
      */
     private Map<String, Object> metrics;
+
     /**
      * Last observed error message.
      */
     private String lastError;
+
     /**
      * Snapshot update timestamp in epoch milliseconds.
      */

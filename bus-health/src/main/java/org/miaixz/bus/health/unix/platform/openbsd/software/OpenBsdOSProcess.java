@@ -59,6 +59,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
      */
     static final String PS_THREAD_COLUMNS = Arrays.stream(PsThreadColumns.values()).map(Enum::name)
             .map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(Symbol.COMMA));
+
     /**
      * The ARGMAX constant.
      */
@@ -87,19 +88,23 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
      * The arguments value.
      */
     private final Supplier<List<String>> arguments = Memoizer.memoize(this::queryArguments);
+
     /**
      * The os value.
      */
     private final OpenBsdOperatingSystem os;
+
     /**
      * The environmentVariables value.
      */
     private final Supplier<Map<String, String>> environmentVariables = Memoizer
             .memoize(this::queryEnvironmentVariables);
+
     /**
      * The bitness value.
      */
     private final int bitness;
+
     /**
      * The state value.
      */
@@ -109,94 +114,117 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
      * The name value.
      */
     private String name;
+
     /**
      * The path value.
      */
     private String path = Normal.EMPTY;
+
     /**
      * The user value.
      */
     private String user;
+
     /**
      * The userID value.
      */
     private String userID;
+
     /**
      * The group value.
      */
     private String group;
+
     /**
      * The groupID value.
      */
     private String groupID;
+
     /**
      * The commandLineBackup value.
      */
     private String commandLineBackup;
+
     /**
      * The commandLine value.
      */
     private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
+
     /**
      * The parentProcessID value.
      */
     private int parentProcessID;
+
     /**
      * The threadCount value.
      */
     private int threadCount;
+
     /**
      * The priority value.
      */
     private int priority;
+
     /**
      * The virtualSize value.
      */
     private long virtualSize;
+
     /**
      * The residentSetSize value.
      */
     private long residentSetSize;
+
     /**
      * The kernelTime value.
      */
     private long kernelTime;
+
     /**
      * The userTime value.
      */
     private long userTime;
+
     /**
      * The startTime value.
      */
     private long startTime;
+
     /**
      * The upTime value.
      */
     private long upTime;
+
     /**
      * The bytesRead value.
      */
     private long bytesRead;
+
     /**
      * The bytesWritten value.
      */
     private long bytesWritten;
+
     /**
      * The minorFaults value.
      */
     private long minorFaults;
+
     /**
      * The majorFaults value.
      */
     private long majorFaults;
+
     /**
      * The contextSwitches value.
      */
     private long contextSwitches;
+
     /**
      * The voluntaryContextSwitches value.
      */
     private long voluntaryContextSwitches;
+
     /**
      * The involuntaryContextSwitches value.
      */
@@ -780,9 +808,13 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
 
     /**
      * Package-private for use by OpenBsdOSThread
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     enum PsThreadColumns {
         TID, STATE, ETIME, CPUTIME, NIVCSW, NVCSW, MAJFLT, MINFLT, PRI, ARGS
+
     }
 
 }

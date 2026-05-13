@@ -54,11 +54,13 @@ public class MQConfig implements Serializable {
      * The URL or address of the MQ broker.
      */
     private String brokerUrl;
+
     /**
      * Additional properties for configuring the MQ connection or specific provider settings. These properties can be
      * used to pass vendor-specific configurations.
      */
     private Properties properties;
+
     /**
      * Specifies a custom {@link MQProvider} implementation to be used. This is useful when multiple MQ provider JARs
      * are present, allowing explicit selection of the desired engine.

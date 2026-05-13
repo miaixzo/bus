@@ -75,9 +75,13 @@ public final class OhmSensor {
 
     /**
      * Sensor value property
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum ValueProperty {
         VALUE
+
     }
 
 }

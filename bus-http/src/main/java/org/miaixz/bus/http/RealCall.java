@@ -62,18 +62,22 @@ public final class RealCall implements NewCall {
      * The HTTP client that created this call.
      */
     public final Httpd client;
+
     /**
      * The original, unmodified request that initiated this call.
      */
     public final Request originalRequest;
+
     /**
      * True if this call is for a WebSocket connection.
      */
     public final boolean forWebSocket;
+
     /**
      * The transmitter for this call, which manages the connection and exchange.
      */
     public Transmitter transmitter;
+
     /**
      * True if this call has been executed.
      */
@@ -394,6 +398,9 @@ public final class RealCall implements NewCall {
 
     /**
      * An asynchronous call that can be executed on a background thread.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public final class AsyncCall extends NamedRunnable {
 
@@ -401,6 +408,7 @@ public final class RealCall implements NewCall {
          * The callback for the response.
          */
         private final Callback responseCallback;
+
         /**
          * The number of calls per host.
          */
@@ -556,6 +564,7 @@ public final class RealCall implements NewCall {
                 client.dispatcher().finished(RealCall.this);
             }
         }
+
     }
 
 }

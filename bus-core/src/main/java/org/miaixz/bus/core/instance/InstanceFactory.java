@@ -41,6 +41,7 @@ public final class InstanceFactory implements Instance {
      * Singleton map object. The key is the fully qualified class name.
      */
     private final Map<String, Object> singletonMap = new ConcurrentHashMap<>();
+
     /**
      * Thread-local map object.
      */
@@ -204,6 +205,9 @@ public final class InstanceFactory implements Instance {
 
     /**
      * Static inner class for singleton implementation.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class SingletonHolder {
 
@@ -211,6 +215,7 @@ public final class InstanceFactory implements Instance {
          * The singleton instance of the factory.
          */
         private static final InstanceFactory INSTANCE_FACTORY = new InstanceFactory();
+
     }
 
 }

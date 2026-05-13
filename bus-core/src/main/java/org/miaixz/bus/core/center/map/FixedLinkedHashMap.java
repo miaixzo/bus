@@ -45,6 +45,7 @@ public class FixedLinkedHashMap<K, V> extends LinkedHashMap<K, V> {
      * The maximum capacity of the map. When the size exceeds this, the eldest entry is removed.
      */
     private int capacity;
+
     /**
      * An optional listener that is called when an entry is removed due to the capacity being exceeded.
      */

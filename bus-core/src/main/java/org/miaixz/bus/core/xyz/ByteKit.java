@@ -63,6 +63,7 @@ public class ByteKit {
      * Default byte order: Little Endian.
      */
     public static final ByteOrder DEFAULT_ORDER = ByteOrder.LITTLE_ENDIAN;
+
     /**
      * The byte order of the current CPU.
      */

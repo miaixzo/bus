@@ -20,23 +20,48 @@
 package org.miaixz.bus.image.metric;
 
 /**
+ * Represents the Compatible type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class Compatible {
 
+    /**
+     * The local conn value.
+     */
     private final Connection localConn;
+
+    /**
+     * The remote conn value.
+     */
     private final Connection remoteConn;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param localConn  the local conn.
+     * @param remoteConn the remote conn.
+     */
     public Compatible(Connection localConn, Connection remoteConn) {
         this.localConn = localConn;
         this.remoteConn = remoteConn;
     }
 
+    /**
+     * Gets the local connection.
+     *
+     * @return the local connection.
+     */
     public final Connection getLocalConnection() {
         return localConn;
     }
 
+    /**
+     * Gets the remote connection.
+     *
+     * @return the remote connection.
+     */
     public final Connection getRemoteConnection() {
         return remoteConn;
     }

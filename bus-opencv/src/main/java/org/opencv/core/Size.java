@@ -1,6 +1,12 @@
 package org.opencv.core;
 
 //javadoc:Size_
+/**
+ * The size class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Size {
 
     public double width, height;

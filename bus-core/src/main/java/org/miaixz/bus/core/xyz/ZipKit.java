@@ -45,8 +45,8 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 /**
  * Compression utility class.
  *
- * @author Kimi Liu
  * @see ZipWriter
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class ZipKit {

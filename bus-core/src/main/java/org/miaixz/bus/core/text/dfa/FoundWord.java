@@ -35,6 +35,7 @@ public class FoundWord extends DefaultSegment<Integer> {
      * The effective word from the dictionary (the keyword that was matched).
      */
     private final String word;
+
     /**
      * The actual content matched in the text, which might include stop characters if the filter allows.
      */

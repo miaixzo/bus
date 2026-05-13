@@ -33,6 +33,8 @@ import jakarta.ws.rs.core.Response;
  * This class implements the client side API for the GitLab Deployments API calls. See
  * https://docs.gitlab.com/ee/api/deployments.html
  *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class DeploymentsApi extends AbstractApi {
 

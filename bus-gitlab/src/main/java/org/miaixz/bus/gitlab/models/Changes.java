@@ -29,6 +29,12 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * The changes class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Changes implements Serializable {
 
     @Serial

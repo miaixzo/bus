@@ -53,14 +53,17 @@ public class Message extends org.miaixz.bus.core.basic.entity.Message {
      * The body of the message.
      */
     private String body;
+
     /**
      * The body of the message as a byte array.
      */
     private byte[] bodyByte;
+
     /**
      * The HTTP status code of the response.
      */
     private int status;
+
     /**
      * The headers of the message.
      */

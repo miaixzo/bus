@@ -553,6 +553,9 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
 
     /**
      * A singleton scheduler for handling periodic cache maintenance tasks.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private enum CacheScheduler {
 
@@ -598,10 +601,14 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
         public void schedule(Runnable task, long delay) {
             this.scheduler.scheduleAtFixedRate(task, delay, delay, TimeUnit.MILLISECONDS);
         }
+
     }
 
     /**
      * An internal class to hold the cached value along with its metadata.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @Setter
@@ -657,6 +664,7 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
             }
             return globalExpireAfterAccess > 0 && currentTime > this.lastAccessTime + globalExpireAfterAccess;
         }
+
     }
 
 }

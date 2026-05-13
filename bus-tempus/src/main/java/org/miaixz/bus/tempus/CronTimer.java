@@ -42,14 +42,17 @@ public class CronTimer extends Thread implements Serializable {
      * Timer unit in milliseconds for a second.
      */
     private final long TIMER_UNIT_SECOND = Chrono.SECOND.getMillis();
+
     /**
      * Timer unit in milliseconds for a minute.
      */
     private final long TIMER_UNIT_MINUTE = Chrono.MINUTE.getMillis();
+
     /**
      * The scheduler instance for managing cron tasks.
      */
     private final Scheduler scheduler;
+
     /**
      * A flag indicating whether the timer has been forcibly stopped.
      */

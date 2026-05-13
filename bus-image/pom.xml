@@ -85,6 +85,12 @@
     <dependencies>
         <dependency>
             <groupId>org.miaixz</groupId>
+            <artifactId>bus-crypto</artifactId>
+            <version>${bus.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-health</artifactId>
             <version>${bus.version}</version>
             <optional>true</optional>

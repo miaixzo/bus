@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_CT_APPL_TMP_DATAMODEL;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS CT APPL TMP DATAMODEL";
 
-    /** (0029,xx00) VR=OB VM=1 CT Task Common DataModel */
+    /**
+     * (0029,xx00) VR=OB VM=1 CT Task Common DataModel
+     */
     public static final int CTTaskCommonDataModel = 0x00290000;
 
 }

@@ -47,7 +47,7 @@ import org.miaixz.bus.mapper.Order;
  * Example usage:
  * </p>
  * *
- * 
+ *
  * <pre>{@code
  *
  * // Create a single sort order
@@ -219,6 +219,9 @@ public final class Sort implements Serializable, Iterable<Order> {
 
     /**
      * Builder for creating Sort instances with a fluent API.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class SortBuilder {
 
@@ -248,6 +251,7 @@ public final class Sort implements Serializable, Iterable<Order> {
         public Sort descending() {
             return new Sort(Collections.singletonList(Order.descending(property)));
         }
+
     }
 
 }

@@ -37,42 +37,52 @@ public class ColumnSchema {
      * The 1-based index of the column within the table.
      */
     private String ordinalPosition;
+
     /**
      * The name of the column.
      */
     private String columnName;
+
     /**
      * The SQL data type, including length or precision (e.g., VARCHAR(255)).
      */
     private String columnType;
+
     /**
      * The name of the SQL data type (e.g., VARCHAR).
      */
     private String typeName;
+
     /**
      * The length of the column.
      */
     private String columnLength;
+
     /**
      * The size of the column (precision for numeric types, length for character types).
      */
     private String columnSize;
+
     /**
      * The number of fractional digits for numeric types.
      */
     private String decimalDigits;
+
     /**
      * Indicates whether the column can contain null values.
      */
     private String nullable;
+
     /**
      * Indicates if the column is part of the primary key.
      */
     private String primaryKey;
+
     /**
      * The default value of the column.
      */
     private String columnDef;
+
     /**
      * The comment or description of the column.
      */

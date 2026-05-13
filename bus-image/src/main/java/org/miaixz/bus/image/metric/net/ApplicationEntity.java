@@ -39,170 +39,174 @@ import org.miaixz.bus.image.metric.pdu.*;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * DICOM Part 15 附录H中定义的符合DICOM网络服务规范的应用实体描述。 网络应用实体(AE)是在网络上提供服务的应用实体。无论使用何种特定网络连接， 网络AE都具有相同的功能能力。如果基于选定的网络连接存在功能差异，
- * 则这些是独立的网络AE。如果基于其他内部结构存在功能差异，则这些也是独立的网络AE。
+ * Provides DICOM processing details. Provides DICOM processing details.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class ApplicationEntity implements Serializable {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852269956092L;
 
     /**
-     * 已接受的调用应用实体标题集合
+     * Provides DICOM processing details.
      */
     private final LinkedHashSet<String> acceptedCallingAETs = new LinkedHashSet<>();
 
     /**
-     * 其他应用实体标题集合
+     * Provides DICOM processing details.
      */
     private final LinkedHashSet<String> otherAETs = new LinkedHashSet<>();
 
-    /** Collection of called application entity titles with asynchronous mode disabled */
+    /**
+     * Collection of called application entity titles with asynchronous mode disabled
+     */
     private final LinkedHashSet<String> noAsyncModeCalledAETs = new LinkedHashSet<>();
 
     /**
-     * 伪装调用应用实体标题映射
+     * Provides DICOM processing details.
      */
     private final LinkedHashMap<String, String> masqueradeCallingAETs = new LinkedHashMap<>();
 
     /**
-     * 伪装被调用应用实体标题映射
+     * Provides DICOM processing details.
      */
     private final LinkedHashMap<String, String> masqueradeCalledAETs = new LinkedHashMap<>();
 
     /**
-     * 网络连接列表
+     * Provides DICOM processing details.
      */
     private final List<Connection> conns = new ArrayList<>(1);
 
     /**
-     * SCU（服务类用户）传输能力映射
+     * Provides DICOM processing details.
      */
     private final LinkedHashMap<String, TransferCapability> scuTCs = new LinkedHashMap<>();
 
     /**
-     * SCP（服务类提供者）传输能力映射
+     * Provides DICOM processing details.
      */
     private final LinkedHashMap<String, TransferCapability> scpTCs = new LinkedHashMap<>();
 
     /**
-     * 应用实体扩展映射
+     * Provides DICOM processing details.
      */
     private final LinkedHashMap<Class<? extends AEExtension>, AEExtension> extensions = new LinkedHashMap<>();
 
     /**
-     * 关联的设备
+     * Provides DICOM processing details.
      */
     private Device device;
 
     /**
-     * 应用实体标题
+     * Provides DICOM processing details.
      */
     private String aet;
 
     /**
-     * 应用实体描述
+     * Provides DICOM processing details.
      */
     private String description;
 
     /**
-     * 供应商数据
+     * Provides DICOM processing details.
      */
     private byte[][] vendorData = {};
 
     /**
-     * 应用程序集群
+     * Provides DICOM processing details.
      */
     private String[] applicationClusters = {};
 
     /**
-     * 首选被调用应用实体标题
+     * Provides DICOM processing details.
      */
     private String[] prefCalledAETs = {};
 
     /**
-     * 首选调用应用实体标题
+     * Provides DICOM processing details.
      */
     private String[] prefCallingAETs = {};
 
     /**
-     * 首选传输语法
+     * Provides DICOM processing details.
      */
     private String[] prefTransferSyntaxes = {};
 
     /**
-     * 支持的字符集
+     * Provides DICOM processing details.
      */
     private String[] supportedCharacterSets = {};
 
     /**
-     * 是否作为关联接受者
+     * Determines whether the condition is met.
      */
     private boolean acceptor = true;
 
     /**
-     * 是否作为关联发起者
+     * Determines whether the condition is met.
      */
     private boolean initiator = true;
 
     /**
-     * 是否已安装
+     * Determines whether the condition is met.
      */
     private Boolean installed;
 
     /**
-     * 角色选择协商是否宽松
+     * Determines whether the condition is met.
      */
     private Boolean roleSelectionNegotiationLenient;
 
     /**
-     * 共享传输能力的应用实体标题
+     * Provides DICOM processing details.
      */
     private String shareTransferCapabilitiesFromAETitle;
 
     /**
-     * HL7应用程序名称
+     * Provides DICOM processing details.
      */
     private String hl7ApplicationName;
 
     /**
-     * DIMSE请求处理器
+     * Provides DICOM processing details.
      */
     private transient DimseRQHandler dimseRQHandler;
 
     /**
-     * 构造一个空的应用实体
+     * Creates a new instance.
      */
     public ApplicationEntity() {
 
     }
 
     /**
-     * 使用指定的应用实体标题构造应用实体
+     * Creates a new instance.
      *
-     * @param aeTitle 应用实体标题
+     * @param aeTitle the ae title.
      */
     public ApplicationEntity(String aeTitle) {
         setAETitle(aeTitle);
     }
 
     /**
-     * 获取此应用实体标识的设备
+     * Gets the related value.
      *
-     * @return 关联的设备
+     * @return the result.
      */
     public final Device getDevice() {
         return device;
     }
 
     /**
-     * 设置此应用实体标识的设备
+     * Sets the related value.
      *
-     * @param device 要关联的设备
-     * @throws IllegalStateException 如果应用实体已被其他设备拥有或连接不属于指定设备
+     * @param device the device.
+     * @throws IllegalStateException if the operation cannot be completed.
      */
     public void setDevice(Device device) {
         if (device != null) {
@@ -216,19 +220,19 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 获取此网络AE的应用实体标题
+     * Gets the related value.
      *
-     * @return 包含应用实体标题的字符串
+     * @return the result.
      */
     public final String getAETitle() {
         return aet;
     }
 
     /**
-     * 设置此网络AE的应用实体标题
+     * Sets the related value.
      *
-     * @param aet 包含应用实体标题的字符串
-     * @throws IllegalArgumentException 如果应用实体标题为空
+     * @param aet the aet.
+     * @throws IllegalArgumentException if the operation cannot be completed.
      */
     public void setAETitle(String aet) {
         if (aet.isEmpty())
@@ -242,127 +246,127 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 获取此网络AE的描述
+     * Gets the related value.
      *
-     * @return 包含描述的字符串
+     * @return the result.
      */
     public final String getDescription() {
         return description;
     }
 
     /**
-     * 设置此网络AE的描述
+     * Sets the related value.
      *
-     * @param description 包含描述的字符串
+     * @param description the description.
      */
     public final void setDescription(String description) {
         this.description = description;
     }
 
     /**
-     * 获取任何特定于此网络AE的供应商信息或配置
+     * Gets the related value.
      *
-     * @return 供应商数据
+     * @return the result.
      */
     public final byte[][] getVendorData() {
         return vendorData;
     }
 
     /**
-     * 设置任何特定于此网络AE的供应商信息或配置
+     * Sets the related value.
      *
-     * @param vendorData 供应商数据
+     * @param vendorData the vendor data.
      */
     public final void setVendorData(byte[]... vendorData) {
         this.vendorData = vendorData;
     }
 
     /**
-     * 获取相关应用程序子集的本地定义名称（例如神经放射学）
+     * Gets the related value.
      *
-     * @return 包含名称的字符串数组
+     * @return the result.
      */
     public String[] getApplicationClusters() {
         return applicationClusters;
     }
 
     /**
-     * 设置相关应用程序子集的本地定义名称
+     * Sets the related value.
      *
-     * @param clusters 应用程序集群名称
+     * @param clusters the clusters.
      */
     public void setApplicationClusters(String... clusters) {
         applicationClusters = clusters;
     }
 
     /**
-     * 获取从此网络AE发起关联所需的AE标题
+     * Gets the related value.
      *
-     * @return 首选被调用AE标题的字符串数组
+     * @return the result.
      */
     public String[] getPreferredCalledAETitles() {
         return prefCalledAETs;
     }
 
     /**
-     * 设置从此网络AE发起关联所需的AE标题
+     * Sets the related value.
      *
-     * @param aets 首选被调用AE标题数组
+     * @param aets the aets.
      */
     public void setPreferredCalledAETitles(String... aets) {
         prefCalledAETs = aets;
     }
 
     /**
-     * 获取通过此网络AE接受关联的首选AE标题
+     * Gets the related value.
      *
-     * @return 包含首选调用AE标题的字符串数组
+     * @return the result.
      */
     public String[] getPreferredCallingAETitles() {
         return prefCallingAETs;
     }
 
     /**
-     * 设置通过此网络AE接受关联的首选AE标题
+     * Sets the related value.
      *
-     * @param aets 首选调用AE标题数组
+     * @param aets the aets.
      */
     public void setPreferredCallingAETitles(String... aets) {
         prefCallingAETs = aets;
     }
 
     /**
-     * 获取首选传输语法
+     * Gets the related value.
      *
-     * @return 首选传输语法数组
+     * @return the result.
      */
     public String[] getPreferredTransferSyntaxes() {
         return prefTransferSyntaxes;
     }
 
     /**
-     * 设置首选传输语法
+     * Sets the related value.
      *
-     * @param transferSyntaxes 传输语法数组
-     * @throws IllegalArgumentException 如果传输语法为空
+     * @param transferSyntaxes the transfer syntaxes.
+     * @throws IllegalArgumentException if the operation cannot be completed.
      */
     public void setPreferredTransferSyntaxes(String... transferSyntaxes) {
         this.prefTransferSyntaxes = Builder.requireContainsNoEmpty(transferSyntaxes, "empty transferSyntax");
     }
 
     /**
-     * 获取接受的调用应用实体标题
+     * Gets the related value.
      *
-     * @return 接受的调用应用实体标题数组
+     * @return the result.
      */
     public String[] getAcceptedCallingAETitles() {
         return acceptedCallingAETs.toArray(new String[acceptedCallingAETs.size()]);
     }
 
     /**
-     * 设置接受的调用应用实体标题
+     * Sets the related value.
      *
-     * @param aets 接受的调用应用实体标题数组
+     * @param aets the aets.
      */
     public void setAcceptedCallingAETitles(String... aets) {
         acceptedCallingAETs.clear();
@@ -370,28 +374,28 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 检查指定的应用实体标题是否被接受
+     * Determines whether the condition is met.
      *
-     * @param aet 要检查的应用实体标题
-     * @return 如果接受则返回true，否则返回false
+     * @param aet the aet.
+     * @return true if the condition is met; otherwise false.
      */
     public boolean isAcceptedCallingAETitle(String aet) {
         return acceptedCallingAETs.isEmpty() || acceptedCallingAETs.contains(aet);
     }
 
     /**
-     * 获取其他应用实体标题
+     * Gets the related value.
      *
-     * @return 其他应用实体标题数组
+     * @return the result.
      */
     public String[] getOtherAETitles() {
         return otherAETs.toArray(new String[otherAETs.size()]);
     }
 
     /**
-     * 设置其他应用实体标题
+     * Sets the related value.
      *
-     * @param aets 其他应用实体标题数组
+     * @param aets the aets.
      */
     public void setOtherAETitles(String... aets) {
         otherAETs.clear();
@@ -399,28 +403,28 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 检查指定的应用实体标题是否在其他应用实体标题列表中
+     * Determines whether the condition is met.
      *
-     * @param aet 要检查的应用实体标题
-     * @return 如果存在则返回true，否则返回false
+     * @param aet the aet.
+     * @return true if the condition is met; otherwise false.
      */
     public boolean isOtherAETitle(String aet) {
         return otherAETs.contains(aet);
     }
 
     /**
-     * 获取禁用异步模式的被调用应用实体标题
+     * Gets the related value.
      *
-     * @return 禁用异步模式的被调用应用实体标题数组
+     * @return the result.
      */
     public String[] getNoAsyncModeCalledAETitles() {
         return noAsyncModeCalledAETs.toArray(new String[noAsyncModeCalledAETs.size()]);
     }
 
     /**
-     * 设置禁用异步模式的被调用应用实体标题
+     * Sets the related value.
      *
-     * @param aets 禁用异步模式的被调用应用实体标题数组
+     * @param aets the aets.
      */
     public void setNoAsyncModeCalledAETitles(String... aets) {
         noAsyncModeCalledAETs.clear();
@@ -428,19 +432,19 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 检查指定的被调用应用实体标题是否禁用异步模式
+     * Determines whether the condition is met.
      *
-     * @param calledAET 被调用应用实体标题
-     * @return 如果禁用则返回true，否则返回false
+     * @param calledAET the called aet.
+     * @return true if the condition is met; otherwise false.
      */
     public boolean isNoAsyncModeCalledAETitle(String calledAET) {
         return noAsyncModeCalledAETs.contains(calledAET);
     }
 
     /**
-     * 获取伪装调用应用实体标题
+     * Gets the related value.
      *
-     * @return 伪装调用应用实体标题数组
+     * @return the result.
      */
     public String[] getMasqueradeCallingAETitles() {
         String[] aets = new String[masqueradeCallingAETs.size()];
@@ -453,9 +457,9 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 设置伪装调用应用实体标题
+     * Sets the related value.
      *
-     * @param aets 伪装调用应用实体标题数组
+     * @param aets the aets.
      */
     public void setMasqueradeCallingAETitles(String... aets) {
         masqueradeCallingAETs.clear();
@@ -471,9 +475,9 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 获取伪装被调用应用实体标题
+     * Gets the related value.
      *
-     * @return 伪装被调用应用实体标题数组
+     * @return the result.
      */
     public String[] getMasqueradeCalledAETitles() {
         String[] aets = new String[masqueradeCalledAETs.size()];
@@ -485,9 +489,9 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 设置伪装被调用应用实体标题
+     * Sets the related value.
      *
-     * @param aets 伪装被调用应用实体标题数组
+     * @param aets the aets.
      */
     public void setMasqueradeCalledAETitles(String... aets) {
         masqueradeCalledAETs.clear();
@@ -499,10 +503,10 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 获取指定被调用应用实体标题对应的调用应用实体标题
+     * Gets the related value.
      *
-     * @param calledAET 被调用应用实体标题
-     * @return 调用应用实体标题
+     * @param calledAET the called aet.
+     * @return the result.
      */
     public String getCallingAETitle(String calledAET) {
         String callingAET = masqueradeCallingAETs.get(calledAET);
@@ -515,110 +519,110 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 检查是否存在指定被调用应用实体标题的伪装调用应用实体标题
+     * Determines whether the condition is met.
      *
-     * @param calledAET 被调用应用实体标题
-     * @return 如果存在则返回true，否则返回false
+     * @param calledAET the called aet.
+     * @return true if the condition is met; otherwise false.
      */
     public boolean isMasqueradeCallingAETitle(String calledAET) {
         return masqueradeCallingAETs.containsKey(calledAET) || masqueradeCallingAETs.containsKey("*");
     }
 
     /**
-     * 获取指定被调用应用实体标题的伪装被调用应用实体标题
+     * Gets the related value.
      *
-     * @param calledAET 被调用应用实体标题
-     * @return 伪装被调用应用实体标题
+     * @param calledAET the called aet.
+     * @return the result.
      */
     public String masqueradeCalledAETitle(String calledAET) {
         return masqueradeCalledAETs.getOrDefault(calledAET, calledAET);
     }
 
     /**
-     * 获取网络AE支持的字符集（用于接收的数据集） 该值应从PS3.3中的"特定字符集定义"条款(0008,0005)中选择。 如果没有值，表示网络AE仅支持默认字符集(ISO IR 6)
+     * Gets the related value.
      *
-     * @return 支持的字符集数组
+     * @return the result.
      */
     public String[] getSupportedCharacterSets() {
         return supportedCharacterSets;
     }
 
     /**
-     * 设置网络AE支持的字符集（用于接收的数据集） 该值应从PS3.3中的"特定字符集定义"条款(0008,0005)中选择。 如果没有值，表示网络AE仅支持默认字符集(ISO IR 6)
+     * Sets the related value.
      *
-     * @param characterSets 支持的字符集数组
+     * @param characterSets the character sets.
      */
     public void setSupportedCharacterSets(String... characterSets) {
         supportedCharacterSets = characterSets;
     }
 
     /**
-     * 确定此网络AE是否可以接受关联
+     * Determines whether the condition is met.
      *
-     * @return 如果网络AE可以接受关联则返回true，否则返回false
+     * @return true if the condition is met; otherwise false.
      */
     public final boolean isAssociationAcceptor() {
         return acceptor;
     }
 
     /**
-     * 设置此网络AE是否可以接受关联
+     * Sets the related value.
      *
-     * @param acceptor 如果网络AE可以接受关联则设为true，否则设为false
+     * @param acceptor the acceptor.
      */
     public final void setAssociationAcceptor(boolean acceptor) {
         this.acceptor = acceptor;
     }
 
     /**
-     * 确定此网络AE是否可以发起关联
+     * Determines whether the condition is met.
      *
-     * @return 如果网络AE可以发起关联则返回true，否则返回false
+     * @return true if the condition is met; otherwise false.
      */
     public final boolean isAssociationInitiator() {
         return initiator;
     }
 
     /**
-     * 设置此网络AE是否可以发起关联
+     * Sets the related value.
      *
-     * @param initiator 如果网络AE可以发起关联则设为true，否则设为false
+     * @param initiator the initiator.
      */
     public final void setAssociationInitiator(boolean initiator) {
         this.initiator = initiator;
     }
 
     /**
-     * 确定此网络AE是否已安装到网络上
+     * Determines whether the condition is met.
      *
-     * @return 布尔值。如果AE已安装到网络上则返回true， 如果不存在，则从设备继承有关AE安装状态的信息
+     * @return true if the condition is met; otherwise false.
      */
     public boolean isInstalled() {
         return device != null && device.isInstalled() && (installed == null || installed.booleanValue());
     }
 
     /**
-     * 获取此网络AE的安装状态
+     * Gets the related value.
      *
-     * @return 安装状态（true表示已安装，false表示未安装，null表示继承设备状态）
+     * @return true if the condition is met; otherwise false.
      */
     public final Boolean getInstalled() {
         return installed;
     }
 
     /**
-     * 设置此网络AE是否已安装到网络上
+     * Sets the related value.
      *
-     * @param installed 如果AE已安装到网络上则设为true， 如果不存在，则AE的安装状态信息将从设备继承
+     * @param installed the installed.
      */
     public void setInstalled(Boolean installed) {
         this.installed = installed;
     }
 
     /**
-     * 检查角色选择协商是否宽松
+     * Determines whether the condition is met.
      *
-     * @return 如果角色选择协商宽松则返回true，否则返回false
+     * @return true if the condition is met; otherwise false.
      */
     public boolean isRoleSelectionNegotiationLenient() {
         return roleSelectionNegotiationLenient != null ? roleSelectionNegotiationLenient.booleanValue()
@@ -626,45 +630,45 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 获取角色选择协商是否宽松的设置
+     * Gets the related value.
      *
-     * @return 角色选择协商是否宽松的设置（true表示宽松，false表示严格，null表示继承设备设置）
+     * @return true if the condition is met; otherwise false.
      */
     public final Boolean getRoleSelectionNegotiationLenient() {
         return roleSelectionNegotiationLenient;
     }
 
     /**
-     * 设置角色选择协商是否宽松
+     * Sets the related value.
      *
-     * @param roleSelectionNegotiationLenient 角色选择协商是否宽松的设置
+     * @param roleSelectionNegotiationLenient the role selection negotiation lenient.
      */
     public void setRoleSelectionNegotiationLenient(Boolean roleSelectionNegotiationLenient) {
         this.roleSelectionNegotiationLenient = roleSelectionNegotiationLenient;
     }
 
     /**
-     * 获取共享传输能力的应用实体标题
+     * Gets the related value.
      *
-     * @return 共享传输能力的应用实体标题
+     * @return the result.
      */
     public String getShareTransferCapabilitiesFromAETitle() {
         return shareTransferCapabilitiesFromAETitle;
     }
 
     /**
-     * 设置共享传输能力的应用实体标题
+     * Sets the related value.
      *
-     * @param shareTransferCapabilitiesFromAETitle 共享传输能力的应用实体标题
+     * @param shareTransferCapabilitiesFromAETitle the share transfer capabilities from aetitle.
      */
     public void setShareTransferCapabilitiesFromAETitle(String shareTransferCapabilitiesFromAETitle) {
         this.shareTransferCapabilitiesFromAETitle = shareTransferCapabilitiesFromAETitle;
     }
 
     /**
-     * 获取共享传输能力的应用实体
+     * Gets the related value.
      *
-     * @return 共享传输能力的应用实体
+     * @return the result.
      */
     public ApplicationEntity transferCapabilitiesAE() {
         return shareTransferCapabilitiesFromAETitle != null
@@ -673,27 +677,27 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 获取HL7应用程序名称
+     * Gets the related value.
      *
-     * @return HL7应用程序名称
+     * @return the result.
      */
     public String getHl7ApplicationName() {
         return hl7ApplicationName;
     }
 
     /**
-     * 设置HL7应用程序名称
+     * Sets the related value.
      *
-     * @param hl7ApplicationName HL7应用程序名称
+     * @param hl7ApplicationName the hl7 application name.
      */
     public void setHl7ApplicationName(String hl7ApplicationName) {
         this.hl7ApplicationName = hl7ApplicationName;
     }
 
     /**
-     * 获取DIMSE请求处理器
+     * Gets the related value.
      *
-     * @return DIMSE请求处理器
+     * @return the result.
      */
     public DimseRQHandler getDimseRQHandler() {
         DimseRQHandler handler = dimseRQHandler;
@@ -704,18 +708,18 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 设置DIMSE请求处理器
+     * Sets the related value.
      *
-     * @param dimseRQHandler DIMSE请求处理器
+     * @param dimseRQHandler the dimse rqhandler.
      */
     public final void setDimseRQHandler(DimseRQHandler dimseRQHandler) {
         this.dimseRQHandler = dimseRQHandler;
     }
 
     /**
-     * 检查应用实体是否已安装
+     * Determines whether the condition is met.
      *
-     * @throws IllegalStateException 如果应用实体未安装
+     * @throws IllegalStateException if the operation cannot be completed.
      */
     private void checkInstalled() {
         if (!isInstalled())
@@ -723,9 +727,9 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 检查应用实体是否已关联到设备
+     * Determines whether the condition is met.
      *
-     * @throws IllegalStateException 如果应用实体未关联到设备
+     * @throws IllegalStateException if the operation cannot be completed.
      */
     private void checkDevice() {
         if (device == null)
@@ -733,14 +737,14 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 处理DIMSE请求
+     * Provides DICOM processing details.
      *
-     * @param as       关联
-     * @param pc       表示上下文
-     * @param cmd      DIMSE命令
-     * @param cmdAttrs 命令属性
-     * @param data     数据流
-     * @throws IOException 如果发生I/O错误
+     * @param as       the as.
+     * @param pc       the pc.
+     * @param cmd      the cmd.
+     * @param cmdAttrs the cmd attrs.
+     * @param data     the data.
+     * @throws IOException if the operation cannot be completed.
      */
     public void onDimseRQ(Association as, PresentationContext pc, Dimse cmd, Attributes cmdAttrs, PDVInputStream data)
             throws IOException {
@@ -753,11 +757,11 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 添加网络连接到此应用实体
+     * Adds the related value.
      *
-     * @param conn 要添加的网络连接
-     * @throws IllegalArgumentException 如果连接协议不是DICOM
-     * @throws IllegalStateException    如果连接不属于指定设备
+     * @param conn the conn.
+     * @throws IllegalArgumentException if the operation cannot be completed.
+     * @throws IllegalStateException    if the operation cannot be completed.
      */
     public void addConnection(Connection conn) {
         if (conn.getProtocol() != Connection.Protocol.DICOM)
@@ -768,29 +772,29 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 从此应用实体移除网络连接
+     * Removes the related value.
      *
-     * @param conn 要移除的网络连接
-     * @return 如果连接被移除则返回true，否则返回false
+     * @param conn the conn.
+     * @return true if the condition is met; otherwise false.
      */
     public boolean removeConnection(Connection conn) {
         return conns.remove(conn);
     }
 
     /**
-     * 获取此应用实体的所有网络连接
+     * Gets the related value.
      *
-     * @return 网络连接列表
+     * @return the result.
      */
     public List<Connection> getConnections() {
         return conns;
     }
 
     /**
-     * 添加传输能力到此应用实体
+     * Adds the related value.
      *
-     * @param tc 要添加的传输能力
-     * @return 之前具有相同SOP类和角色的传输能力，如果没有则返回null
+     * @param tc the tc.
+     * @return true if the condition is met; otherwise false.
      */
     public TransferCapability addTransferCapability(TransferCapability tc) {
         tc.setApplicationEntity(this);
@@ -802,11 +806,11 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 从此应用实体移除指定SOP类和角色的传输能力
+     * Removes the related value.
      *
-     * @param sopClass SOP类
-     * @param role     角色（SCU或SCP）
-     * @return 被移除的传输能力，如果没有则返回null
+     * @param sopClass the sop class.
+     * @param role     the role.
+     * @return true if the condition is met; otherwise false.
      */
     public TransferCapability removeTransferCapabilityFor(String sopClass, TransferCapability.Role role) {
         TransferCapability tc = (role == TransferCapability.Role.SCU ? scuTCs : scpTCs).remove(sopClass);
@@ -816,9 +820,9 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 获取此应用实体的所有传输能力
+     * Gets the related value.
      *
-     * @return 传输能力集合
+     * @return the result.
      */
     public Collection<TransferCapability> getTransferCapabilities() {
         ArrayList<TransferCapability> tcs = new ArrayList<>(scuTCs.size() + scpTCs.size());
@@ -828,44 +832,44 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 获取具有指定角色的传输能力
+     * Gets the related value.
      *
-     * @param role（SCU或SCP）
-     * @return 具有指定角色的传输能力集合
+     * @param role the role, either SCU or SCP.
+     * @return the result.
      */
     public Collection<TransferCapability> getTransferCapabilitiesWithRole(TransferCapability.Role role) {
         return (role == TransferCapability.Role.SCU ? scuTCs : scpTCs).values();
     }
 
     /**
-     * 获取指定SOP类和角色的传输能力
+     * Gets the related value.
      *
-     * @param sopClass SOP类
-     * @param role     角色（SCU或SCP）
-     * @return 匹配的传输能力，如果没有则返回null
+     * @param sopClass the sop class.
+     * @param role     the role.
+     * @return true if the condition is met; otherwise false.
      */
     public TransferCapability getTransferCapabilityFor(String sopClass, TransferCapability.Role role) {
         return (role == TransferCapability.Role.SCU ? scuTCs : scpTCs).get(sopClass);
     }
 
     /**
-     * 检查是否存在指定SOP类和角色的传输能力
+     * Determines whether the condition is met.
      *
-     * @param sopClass SOP类
-     * @param role     角色（SCU或SCP）
-     * @return 如果存在则返回true，否则返回false
+     * @param sopClass the sop class.
+     * @param role     the role.
+     * @return true if the condition is met; otherwise false.
      */
     public boolean hasTransferCapabilityFor(String sopClass, TransferCapability.Role role) {
         return (role == TransferCapability.Role.SCU ? scuTCs : scpTCs).containsKey(sopClass);
     }
 
     /**
-     * 协商表示上下文
+     * Provides DICOM processing details.
      *
      * @param rq   A-ASSOCIATE-RQ PDU
      * @param ac   A-ASSOCIATE-AC PDU
-     * @param rqpc 请求的表示上下文
-     * @return 协商后的表示上下文
+     * @param rqpc the rqpc.
+     * @return the result.
      */
     public PresentationContext negotiate(AAssociateRQ rq, AAssociateAC ac, PresentationContext rqpc) {
         String as = rqpc.getAbstractSyntax();
@@ -885,12 +889,12 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 执行角色选择
+     * Provides DICOM processing details.
      *
      * @param rq    A-ASSOCIATE-RQ PDU
      * @param ac    A-ASSOCIATE-AC PDU
-     * @param asuid 抽象语法UID
-     * @return 选择的传输能力
+     * @param asuid the asuid.
+     * @return the result.
      */
     private TransferCapability roleSelection(AAssociateRQ rq, AAssociateAC ac, String asuid) {
         RoleSelection rqrs = rq.getRoleSelectionFor(asuid);
@@ -908,12 +912,12 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 获取传输能力
+     * Gets the related value.
      *
-     * @param tcs   传输能力映射
-     * @param asuid 抽象语法UID
+     * @param tcs   the tcs.
+     * @param asuid the asuid.
      * @param rq    A-ASSOCIATE-RQ PDU
-     * @return 匹配的传输能力，如果没有则返回null
+     * @return true if the condition is met; otherwise false.
      */
     private TransferCapability getTC(HashMap<String, TransferCapability> tcs, String asuid, AAssociateRQ rq) {
         TransferCapability tc = tcs.get(asuid);
@@ -934,11 +938,11 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 协商扩展协商信息
+     * Provides DICOM processing details.
      *
-     * @param exneg 扩展协商
-     * @param tc    传输能力
-     * @return 协商后的信息，如果没有则返回null
+     * @param exneg the exneg.
+     * @param tc    the tc.
+     * @return true if the condition is met; otherwise false.
      */
     private byte[] negotiate(ExtendedNegotiation exneg, TransferCapability tc) {
         if (exneg == null)
@@ -956,16 +960,16 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 连接到远程应用实体
+     * Provides DICOM processing details.
      *
-     * @param local  本地连接
-     * @param remote 远程连接
+     * @param local  the local.
+     * @param remote the remote.
      * @param rq     A-ASSOCIATE-RQ PDU
-     * @return 建立的关联
-     * @throws IOException              如果发生I/O错误
-     * @throws InterruptedException     如果线程被中断
-     * @throws InternalException        如果发生内部错误
-     * @throws GeneralSecurityException 如果发生安全错误
+     * @return the result.
+     * @throws IOException              if the operation cannot be completed.
+     * @throws InterruptedException     if the operation cannot be completed.
+     * @throws InternalException        if the operation cannot be completed.
+     * @throws GeneralSecurityException if the operation cannot be completed.
      */
     public Association connect(Connection local, Connection remote, AAssociateRQ rq)
             throws IOException, InterruptedException, InternalException, GeneralSecurityException {
@@ -997,15 +1001,15 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 使用指定的远程连接连接到远程应用实体
+     * Provides DICOM processing details.
      *
-     * @param remote 远程连接
+     * @param remote the remote.
      * @param rq     A-ASSOCIATE-RQ PDU
-     * @return 建立的关联
-     * @throws IOException              如果发生I/O错误
-     * @throws InterruptedException     如果线程被中断
-     * @throws InternalException        如果发生内部错误
-     * @throws GeneralSecurityException 如果发生安全错误
+     * @return the result.
+     * @throws IOException              if the operation cannot be completed.
+     * @throws InterruptedException     if the operation cannot be completed.
+     * @throws InternalException        if the operation cannot be completed.
+     * @throws GeneralSecurityException if the operation cannot be completed.
      */
     public Association connect(Connection remote, AAssociateRQ rq)
             throws IOException, InterruptedException, InternalException, GeneralSecurityException {
@@ -1013,11 +1017,11 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 查找与指定远程连接兼容的本地连接
+     * Provides DICOM processing details.
      *
-     * @param remoteConn 远程连接
-     * @return 兼容的本地连接
-     * @throws InternalException 如果没有可用的兼容连接
+     * @param remoteConn the remote conn.
+     * @return the result.
+     * @throws InternalException if the operation cannot be completed.
      */
     public Connection findCompatibleConnection(Connection remoteConn) throws InternalException {
         for (Connection conn : conns)
@@ -1027,11 +1031,11 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 查找与指定远程应用实体兼容的连接
+     * Provides DICOM processing details.
      *
-     * @param remote 远程应用实体
-     * @return 兼容的连接对（本地连接和远程连接）
-     * @throws InternalException 如果没有可用的兼容连接
+     * @param remote the remote.
+     * @return the result.
+     * @throws InternalException if the operation cannot be completed.
      */
     public Compatible findCompatibleConnection(ApplicationEntity remote) throws InternalException {
         for (Connection remoteConn : remote.conns)
@@ -1043,15 +1047,15 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 连接到远程应用实体
+     * Provides DICOM processing details.
      *
-     * @param remote 远程应用实体
+     * @param remote the remote.
      * @param rq     A-ASSOCIATE-RQ PDU
-     * @return 建立的关联
-     * @throws IOException              如果发生I/O错误
-     * @throws InterruptedException     如果线程被中断
-     * @throws InternalException        如果发生内部错误
-     * @throws GeneralSecurityException 如果发生安全错误
+     * @return the result.
+     * @throws IOException              if the operation cannot be completed.
+     * @throws InterruptedException     if the operation cannot be completed.
+     * @throws InternalException        if the operation cannot be completed.
+     * @throws GeneralSecurityException if the operation cannot be completed.
      */
     public Association connect(ApplicationEntity remote, AAssociateRQ rq)
             throws IOException, InterruptedException, InternalException, GeneralSecurityException {
@@ -1062,9 +1066,9 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 返回此应用实体的字符串表示
+     * Returns the related value.
      *
-     * @return 应用实体的字符串表示
+     * @return the result.
      */
     @Override
     public String toString() {
@@ -1072,11 +1076,11 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 将此应用实体的提示信息追加到指定的字符串构建器
+     * Adds the related value.
      *
-     * @param sb     字符串构建器
-     * @param indent 缩进字符串
-     * @return 追加后的字符串构建器
+     * @param sb     the sb.
+     * @param indent the indent.
+     * @return the result.
      */
     public StringBuilder promptTo(StringBuilder sb, String indent) {
         String indent2 = indent + Symbol.SPACE;
@@ -1093,9 +1097,9 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 从指定的源应用实体重新配置此应用实体
+     * Provides DICOM processing details.
      *
-     * @param src 源应用实体
+     * @param src the src.
      */
     public void reconfigure(ApplicationEntity src) {
         setApplicationEntityAttributes(src);
@@ -1105,9 +1109,9 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 从指定的源应用实体重新配置传输能力
+     * Provides DICOM processing details.
      *
-     * @param src 源应用实体
+     * @param src the src.
      */
     private void reconfigureTransferCapabilities(ApplicationEntity src) {
         scuTCs.clear();
@@ -1117,9 +1121,9 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 从指定的源应用实体重新配置应用实体扩展
+     * Provides DICOM processing details.
      *
-     * @param from 源应用实体
+     * @param from the from.
      */
     private void reconfigureAEExtensions(ApplicationEntity from) {
         extensions.keySet().removeIf(aClass -> !from.extensions.containsKey(aClass));
@@ -1137,9 +1141,9 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 从指定的源应用实体设置应用实体属性
+     * Sets the related value.
      *
-     * @param from 源应用实体
+     * @param from the from.
      */
     protected void setApplicationEntityAttributes(ApplicationEntity from) {
         description = from.description;
@@ -1166,10 +1170,10 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 添加应用实体扩展
+     * Adds the related value.
      *
-     * @param ext 要添加的应用实体扩展
-     * @throws IllegalStateException 如果已存在相同类型的应用实体扩展
+     * @param ext the ext.
+     * @throws IllegalStateException if the operation cannot be completed.
      */
     public void addAEExtension(AEExtension ext) {
         Class<? extends AEExtension> clazz = ext.getClass();
@@ -1180,10 +1184,10 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 移除应用实体扩展
+     * Removes the related value.
      *
-     * @param ext 要移除的应用实体扩展
-     * @return 如果扩展被移除则返回true，否则返回false
+     * @param ext the ext.
+     * @return true if the condition is met; otherwise false.
      */
     public boolean removeAEExtension(AEExtension ext) {
         if (extensions.remove(ext.getClass()) == null)
@@ -1193,32 +1197,32 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 列出所有应用实体扩展
+     * Provides DICOM processing details.
      *
-     * @return 应用实体扩展集合
+     * @return the result.
      */
     public Collection<AEExtension> listAEExtensions() {
         return extensions.values();
     }
 
     /**
-     * 获取指定类型的应用实体扩展
+     * Gets the related value.
      *
-     * @param <T>   扩展类型
-     * @param clazz 扩展类
-     * @return 匹配的应用实体扩展，如果没有则返回null
+     * @param <T>   the t type.
+     * @param clazz the clazz.
+     * @return true if the condition is met; otherwise false.
      */
     public <T extends AEExtension> T getAEExtension(Class<T> clazz) {
         return (T) extensions.get(clazz);
     }
 
     /**
-     * 获取指定类型的应用实体扩展，如果不存在则抛出异常
+     * Gets the related value.
      *
-     * @param <T>   扩展类型
-     * @param clazz 扩展类
-     * @return 匹配的应用实体扩展
-     * @throws IllegalStateException 如果不存在指定类型的扩展
+     * @param <T>   the t type.
+     * @param clazz the clazz.
+     * @return the result.
+     * @throws IllegalStateException if the operation cannot be completed.
      */
     public <T extends AEExtension> T getAEExtensionNotNull(Class<T> clazz) {
         T aeExt = getAEExtension(clazz);

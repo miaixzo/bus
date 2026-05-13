@@ -47,11 +47,13 @@ public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats 
      */
     private final Supplier<Pair<Long, Long>> establishedv4v6 = Memoizer
             .memoize(NetStat::queryTcpnetstat, Memoizer.defaultExpiration());
+
     /**
      * The tcpstat value.
      */
     private final Supplier<CLibrary.BsdTcpstat> tcpstat = Memoizer
             .memoize(FreeBsdInternetProtocolStats::queryTcpstat, Memoizer.defaultExpiration());
+
     /**
      * The udpstat value.
      */

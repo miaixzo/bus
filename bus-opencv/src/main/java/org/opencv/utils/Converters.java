@@ -21,6 +21,12 @@ import org.opencv.core.Rect2d;
 import org.opencv.core.DMatch;
 import org.opencv.core.KeyPoint;
 
+/**
+ * The converters class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Converters {
 
     public static Mat vector_Point_to_Mat(List<Point> pts) {
@@ -902,4 +908,5 @@ public class Converters {
         }
         mats.clear();
     }
+
 }

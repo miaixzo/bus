@@ -342,6 +342,9 @@ public class Console {
 
     /**
      * Utility class for printing tables to the console.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class Table {
 
@@ -360,15 +363,18 @@ public class Console {
          * List of header rows for the table.
          */
         private final List<List<String>> headerList = new ArrayList<>();
+
         /**
          * List of body rows for the table.
          */
         private final List<List<String>> bodyList = new ArrayList<>();
+
         /**
          * Flag indicating whether to use full-width character mode. When set to true, all characters are converted to
          * full-width to ensure alignment when Chinese characters are present.
          */
         private boolean isSBCMode = true;
+
         /**
          * Maximum character count for each column.
          */
@@ -537,6 +543,7 @@ public class Console {
 
             return count;
         }
+
     }
 
 }

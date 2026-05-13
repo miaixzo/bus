@@ -43,14 +43,17 @@ public class NeuQuant {
      * First of four primes near 500, used for sampling.
      */
     protected static final int prime1 = 499;
+
     /**
      * Second of four primes near 500, used for sampling.
      */
     protected static final int prime2 = 491;
+
     /**
      * Third of four primes near 500, used for sampling.
      */
     protected static final int prime3 = 487;
+
     /**
      * Fourth of four primes near 500, used for sampling.
      */
@@ -65,10 +68,12 @@ public class NeuQuant {
      * The maximum network position.
      */
     protected static final int maxnetpos = netsize - 1;
+
     /**
      * Bias for color values.
      */
     protected static final int netbiasshift = 4;
+
     /**
      * Number of learning cycles.
      */
@@ -78,10 +83,12 @@ public class NeuQuant {
      * Bias for fractions.
      */
     protected static final int intbiasshift = 16;
+
     /**
      * Integer bias constant.
      */
     protected static final int intbias = 1 << intbiasshift;
+
     /**
      * Gamma shift value.
      */
@@ -90,6 +97,7 @@ public class NeuQuant {
      * Gamma constant.
      */
     protected static final int gamma = 1 << gammashift;
+
     /**
      * Beta shift value.
      */
@@ -99,18 +107,22 @@ public class NeuQuant {
      * Initial radius for convergence.
      */
     protected static final int initrad = (netsize >> 3);
+
     /**
      * Radius bias shift value.
      */
     protected static final int radiusbiasshift = 6;
+
     /**
      * Radius bias constant.
      */
     protected static final int radiusbias = 1 << radiusbiasshift;
+
     /**
      * Initial radius value.
      */
     protected static final int initradius = (initrad * radiusbias);
+
     /**
      * Radius decrease factor.
      */
@@ -120,26 +132,32 @@ public class NeuQuant {
      * Alpha bias shift value for learning rate.
      */
     protected static final int alphabiasshift = 10;
+
     /**
      * Initial alpha (learning rate) value.
      */
     protected static final int initalpha = 1 << alphabiasshift;
+
     /**
      * Rad bias shift value.
      */
     protected static final int radbiasshift = 8;
+
     /**
      * Rad bias constant.
      */
     protected static final int radbias = 1 << radbiasshift;
+
     /**
      * Alpha-rad bias shift value.
      */
     protected static final int alpharadbshift = alphabiasshift + radbiasshift;
+
     /**
      * Alpha-rad bias constant.
      */
     protected static final int alpharadbias = 1 << alpharadbshift;
+
     /**
      * Biased alpha decrease factor.
      */
@@ -149,6 +167,7 @@ public class NeuQuant {
      * The input image itself as a byte array.
      */
     protected byte[] thepicture;
+
     /**
      * The total number of bytes in the input image (H*W*3).
      */
@@ -173,10 +192,12 @@ public class NeuQuant {
      * Bias array for learning.
      */
     protected int[] bias = new int[netsize];
+
     /**
      * Frequency array for learning.
      */
     protected int[] freq = new int[netsize];
+
     /**
      * Precomputed values for radpower calculation.
      */

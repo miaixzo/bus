@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_SIENET;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS SIENET";
 
-    /** (0019,xx01) VR=DS VM=1 ? */
+    /**
+     * (0019,xx01) VR=DS VM=1 ?
+     */
     public static final int _0019_xx01_ = 0x00190001;
 
 }

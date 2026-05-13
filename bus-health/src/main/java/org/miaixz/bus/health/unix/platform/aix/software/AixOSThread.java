@@ -38,34 +38,42 @@ public class AixOSThread extends AbstractOSThread {
      * The threadId value.
      */
     private int threadId;
+
     /**
      * The state value.
      */
     private OSProcess.State state = OSProcess.State.INVALID;
+
     /**
      * The startMemoryAddress value.
      */
     private long startMemoryAddress;
+
     /**
      * The contextSwitches value.
      */
     private long contextSwitches;
+
     /**
      * The kernelTime value.
      */
     private long kernelTime;
+
     /**
      * The userTime value.
      */
     private long userTime;
+
     /**
      * The startTime value.
      */
     private long startTime;
+
     /**
      * The upTime value.
      */
     private long upTime;
+
     /**
      * The priority value.
      */

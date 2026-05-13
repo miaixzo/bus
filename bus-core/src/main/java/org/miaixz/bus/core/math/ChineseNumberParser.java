@@ -293,6 +293,9 @@ public class ChineseNumberParser {
 
     /**
      * Represents a unit in the Chinese number system.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class ChineseUnit {
 
@@ -300,10 +303,12 @@ public class ChineseNumberParser {
          * The Chinese character for the unit.
          */
         private final char name;
+
         /**
          * The numeric value of the unit (a power of 10).
          */
         private final int value;
+
         /**
          * Indicates if it is a section unit (e.g., 万, 亿). It's not a multiplier for the adjacent digit, but for the
          * entire section. For example, in "二十三万" (230,000), "万" (10,000) is a section unit related to "二十三" (23), not
@@ -323,6 +328,7 @@ public class ChineseNumberParser {
             this.value = value;
             this.secUnit = secUnit;
         }
+
     }
 
 }

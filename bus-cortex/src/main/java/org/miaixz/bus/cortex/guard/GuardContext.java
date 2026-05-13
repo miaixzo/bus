@@ -47,18 +47,22 @@ public class GuardContext {
      * Namespace identifier of the protected asset.
      */
     private String namespace_id;
+
     /**
      * Protected domain such as registry, setting, or version.
      */
     private String domain;
+
     /**
      * Protected action such as publish, delete, or rollback.
      */
     private String action;
+
     /**
      * Protected resource type.
      */
     private String resourceType;
+
     /**
      * Protected resource identifier.
      */
@@ -68,10 +72,12 @@ public class GuardContext {
      * Logical asset identifier.
      */
     private String assetId;
+
     /**
      * Application identifier when available.
      */
     private String app_id;
+
     /**
      * Profile identifier when available.
      */
@@ -91,10 +97,12 @@ public class GuardContext {
      * API key credential presented by the caller, when available.
      */
     private String apiKey;
+
     /**
      * Caller user identifier when already resolved upstream.
      */
     private String userId;
+
     /**
      * Caller tenant identifier when already resolved upstream.
      */

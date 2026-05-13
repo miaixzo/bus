@@ -8,6 +8,9 @@ package org.opencv.img_hash;
  * Marr-Hildreth Operator Based Hash, slowest but more discriminative.
  *
  * See CITE: zauner2010implementation for details.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class MarrHildrethHash extends ImgHashBase {
 

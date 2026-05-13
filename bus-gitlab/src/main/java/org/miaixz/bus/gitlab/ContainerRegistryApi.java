@@ -35,6 +35,9 @@ import jakarta.ws.rs.core.Response;
  * <a href="https://docs.gitlab.com/ee/api/container_registry.html">Container Registry API at GitLab</a> for more
  * information.
  * </p>
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class ContainerRegistryApi extends AbstractApi {
 

@@ -40,14 +40,17 @@ public class Registry {
      * Identifier for local conversion services.
      */
     public static final String LOCAL = "LOCAL";
+
     /**
      * Identifier for online conversion services.
      */
     public static final String ONLINE = "ONLINE";
+
     /**
      * Cache for storing registered service providers, mapped by name or simple class name.
      */
     private static final Map<String, Object> COMPLEX_CACHE = new ConcurrentHashMap<>();
+
     /**
      * Singleton instance of the Registry.
      */

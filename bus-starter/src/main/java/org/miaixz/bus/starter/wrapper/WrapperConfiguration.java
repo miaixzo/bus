@@ -221,6 +221,9 @@ public class WrapperConfiguration implements WebMvcRegistrations {
     /**
      * A custom {@link RequestMappingHandlerMapping} that supports automatic URL prefix generation based on package
      * names.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class RequestMappingHandler extends RequestMappingHandlerMapping {
 
@@ -280,6 +283,7 @@ public class WrapperConfiguration implements WebMvcRegistrations {
             }
             return requestMappingInfo;
         }
+
     }
 
 }

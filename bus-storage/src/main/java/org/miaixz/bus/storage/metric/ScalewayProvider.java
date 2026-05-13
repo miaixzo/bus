@@ -44,7 +44,7 @@ import org.miaixz.bus.storage.Context;
  * <strong>Configuration Example:</strong>
  *
  * <pre>{@code
- * 
+ *
  * Context context = Context.builder().endpoint("https://s3.fr-par.scw.cloud") // or nl-ams, pl-waw
  *         .bucket("my-bucket").accessKey("SCW_ACCESS_KEY").secretKey("SCW_SECRET_KEY").region("fr-par") // or nl-ams,
  *                                                                                                       // pl-waw

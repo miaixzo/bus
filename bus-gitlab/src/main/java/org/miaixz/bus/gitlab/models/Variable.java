@@ -32,6 +32,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.io.Serial;
 
+/**
+ * The variable class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Variable implements Serializable {
 
     @Serial
@@ -129,6 +135,9 @@ public class Variable implements Serializable {
 
     /**
      * Enum for the various Commit build status values.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum Type {
 
@@ -150,6 +159,7 @@ public class Variable implements Serializable {
         public String toString() {
             return (enumHelper.toString(this));
         }
+
     }
 
 }

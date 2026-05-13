@@ -36,6 +36,7 @@ public class DeIdentificationCoercion implements AttributesCoercion {
      * The de-identifier instance used to perform de-identification operations.
      */
     private final DeIdentifier deIdentifier;
+
     /**
      * The next {@link AttributesCoercion} in the chain, or {@code null} if this is the last one.
      */

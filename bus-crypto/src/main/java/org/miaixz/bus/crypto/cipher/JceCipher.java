@@ -290,6 +290,9 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
     /**
      * A wrapper class for JCE's {@link AlgorithmParameterSpec} and related parameters. This class holds the key,
      * algorithm parameter specification, and secure random generator required for initializing a JCE cipher.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class JceParameters implements Parameters {
 
@@ -297,10 +300,12 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
          * The cryptographic key.
          */
         private final Key key;
+
         /**
          * The algorithm-specific parameter specification.
          */
         private final AlgorithmParameterSpec parameterSpec;
+
         /**
          * The secure random number generator, which can be customized with a seed.
          */
@@ -319,6 +324,7 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
             this.parameterSpec = parameterSpec;
             this.random = random;
         }
+
     }
 
 }

@@ -41,54 +41,67 @@ public class Stomp {
      * The supported STOMP protocol versions.
      */
     public static final String SUPPORTED_VERSIONS = "1.1,1.2";
+
     /**
      * The automatic acknowledgment mode.
      */
     public static final String AUTO_ACK = "auto";
+
     /**
      * The client-side acknowledgment mode.
      */
     public static final String CLIENT_ACK = "client";
+
     /**
      * The prefix for topic subscriptions.
      */
     private static final String TOPIC = "/topic";
+
     /**
      * The prefix for queue subscriptions.
      */
     private static final String QUEUE = "/queue";
+
     /**
      * Whether to automatically acknowledge messages.
      */
     private final boolean autoAck;
+
     /**
      * The underlying WebSocket client.
      */
     private final CoverCall.Client cover;
+
     /**
      * A map of subscribers, keyed by destination.
      */
     private final Map<String, Subscriber> subscribers;
+
     /**
      * Whether the client is connected to the server.
      */
     private boolean connected;
+
     /**
      * The WebSocket connection instance.
      */
     private CoverCall websocket;
+
     /**
      * Whether to use legacy whitespace formatting.
      */
     private boolean legacyWhitespace = false;
+
     /**
      * The callback for when the connection is successfully established.
      */
     private Callback<Stomp> onConnected;
+
     /**
      * The callback for when the connection is disconnected.
      */
     private Callback<CoverCall.Close> onDisconnected;
+
     /**
      * The callback for error messages.
      */
@@ -458,6 +471,9 @@ public class Stomp {
 
     /**
      * Represents a STOMP header.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class Header {
 
@@ -465,26 +481,32 @@ public class Stomp {
          * The STOMP protocol version header.
          */
         public static final String VERSION = "accept-version";
+
         /**
          * The heart-beat interval header.
          */
         public static final String HEART_BEAT = "heart-beat";
+
         /**
          * The destination header.
          */
         public static final String DESTINATION = "destination";
+
         /**
          * The message ID header.
          */
         public static final String MESSAGE_ID = "message-id";
+
         /**
          * The subscription ID header.
          */
         public static final String ID = "id";
+
         /**
          * The subscription identifier header.
          */
         public static final String SUBSCRIPTION = "subscription";
+
         /**
          * The acknowledgment mode header.
          */
@@ -494,6 +516,7 @@ public class Stomp {
          * The header key.
          */
         private final String key;
+
         /**
          * The header value.
          */
@@ -537,10 +560,14 @@ public class Stomp {
         public String toString() {
             return key + Symbol.C_COLON + value;
         }
+
     }
 
     /**
      * Represents a STOMP message.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class Message {
 
@@ -548,10 +575,12 @@ public class Stomp {
          * The message command.
          */
         private final String command;
+
         /**
          * The list of message headers.
          */
         private final List<Header> headers;
+
         /**
          * The message payload.
          */
@@ -697,10 +726,14 @@ public class Stomp {
         public String toString() {
             return "Message {command='" + command + "', headers=" + headers + ", payload='" + payload + "'}";
         }
+
     }
 
     /**
      * Represents a subscriber that manages a message subscription.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class Subscriber {
 
@@ -708,18 +741,22 @@ public class Stomp {
          * The unique ID of the subscriber.
          */
         private final String id;
+
         /**
          * The destination to subscribe to.
          */
         private final String destination;
+
         /**
          * The callback for received messages.
          */
         private final Callback<Message> callback;
+
         /**
          * Additional headers for the subscription.
          */
         private final List<Header> headers;
+
         /**
          * Whether the subscriber is currently subscribed.
          */
@@ -776,6 +813,7 @@ public class Stomp {
             send(new Message(Builder.UNSUBSCRIBE, headers, null));
             subscribed = false;
         }
+
     }
 
 }

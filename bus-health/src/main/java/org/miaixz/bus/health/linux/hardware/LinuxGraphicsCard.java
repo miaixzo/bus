@@ -71,6 +71,9 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
 
     /**
      * Parsed graphics card attributes used to construct graphics card instances.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static final class Attrs {
 
@@ -78,30 +81,37 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
          * The name value.
          */
         private final String name;
+
         /**
          * The deviceId value.
          */
         private final String deviceId;
+
         /**
          * The vendor value.
          */
         private final String vendor;
+
         /**
          * The versionInfo value.
          */
         private final String versionInfo;
+
         /**
          * The vram value.
          */
         private final long vram;
+
         /**
          * The drmDevicePath value.
          */
         private final String drmDevicePath;
+
         /**
          * The driverName value.
          */
         private final String driverName;
+
         /**
          * The pciBusId value.
          */
@@ -202,6 +212,7 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
         String getPciBusId() {
             return pciBusId;
         }
+
     }
 
     /**

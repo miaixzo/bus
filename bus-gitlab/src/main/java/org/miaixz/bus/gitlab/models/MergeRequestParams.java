@@ -28,6 +28,9 @@ import java.io.Serial;
 
 /**
  * This class provides the form parameters for creating and updating merge requests.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class MergeRequestParams implements Serializable {
 

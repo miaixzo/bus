@@ -36,10 +36,18 @@ import org.miaixz.bus.core.Version;
  */
 public class NativeJXLImageWriterSpi extends ImageWriterSpi {
 
+    /**
+     * Creates a new instance.
+     */
     public NativeJXLImageWriterSpi() {
         this(NativeJXLImageWriter.class);
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param writer the writer.
+     */
     public NativeJXLImageWriterSpi(Class<? extends NativeJXLImageWriter> writer) {
         super("Miaixz Team", Version._VERSION, NativeJXLImageReaderSpi.NAMES, NativeJXLImageReaderSpi.SUFFIXES,
                 NativeJXLImageReaderSpi.MIMES, writer.getName(), new Class[] { ImageOutputStream.class },
@@ -47,16 +55,34 @@ public class NativeJXLImageWriterSpi extends ImageWriterSpi {
                 null, null, null);
     }
 
+    /**
+     * Determines whether encode image.
+     *
+     * @param type the type.
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean canEncodeImage(ImageTypeSpecifier type) {
         return NativeJPEGImageWriterSpi.checkCommonJpgRequirement(type);
     }
 
+    /**
+     * Gets the description.
+     *
+     * @param locale the locale.
+     * @return the description.
+     */
     @Override
     public String getDescription(Locale locale) {
         return "Natively-accelerated JPEG XL Image Writer";
     }
 
+    /**
+     * Creates the writer instance.
+     *
+     * @param extension the extension.
+     * @return the operation result.
+     */
     @Override
     public ImageWriter createWriterInstance(Object extension) {
         return new NativeJXLImageWriter(this);

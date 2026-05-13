@@ -25,15 +25,35 @@ import java.io.InputStream;
 import java.util.Objects;
 
 /**
+ * Represents the LimitedInputStream type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public final class LimitedInputStream extends FilterInputStream {
 
+    /**
+     * The close source value.
+     */
     private final boolean closeSource;
+
+    /**
+     * The remaining value.
+     */
     private long remaining;
+
+    /**
+     * The mark value.
+     */
     private long mark = -1;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param in          the in.
+     * @param limit       the limit.
+     * @param closeSource the close source.
+     */
     public LimitedInputStream(InputStream in, long limit, boolean closeSource) {
         super(Objects.requireNonNull(in));
         if (limit <= 0)
@@ -42,6 +62,12 @@ public final class LimitedInputStream extends FilterInputStream {
         this.closeSource = closeSource;
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int read() throws IOException {
         int result;
@@ -53,6 +79,15 @@ public final class LimitedInputStream extends FilterInputStream {
         return result;
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @param b   the b.
+     * @param off the off.
+     * @param len the len.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
         int result;
@@ -64,6 +99,13 @@ public final class LimitedInputStream extends FilterInputStream {
         return result;
     }
 
+    /**
+     * Executes the skip operation.
+     *
+     * @param n the n.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public long skip(long n) throws IOException {
         long result = in.skip(Math.min(n, remaining));
@@ -71,29 +113,55 @@ public final class LimitedInputStream extends FilterInputStream {
         return result;
     }
 
+    /**
+     * Executes the available operation.
+     *
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int available() throws IOException {
         return (int) Math.min(in.available(), remaining);
     }
 
+    /**
+     * Executes the mark operation.
+     *
+     * @param readlimit the readlimit.
+     */
     @Override
     public synchronized void mark(int readlimit) {
         in.mark(readlimit);
         mark = remaining;
     }
 
+    /**
+     * Executes the reset operation.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public synchronized void reset() throws IOException {
         in.reset();
         remaining = mark;
     }
 
+    /**
+     * Executes the close operation.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void close() throws IOException {
         if (closeSource)
             in.close();
     }
 
+    /**
+     * Gets the remaining.
+     *
+     * @return the remaining.
+     */
     public long getRemaining() {
         return remaining;
     }

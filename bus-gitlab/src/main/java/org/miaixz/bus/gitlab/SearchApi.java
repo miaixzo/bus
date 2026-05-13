@@ -24,8 +24,10 @@ import java.util.stream.Stream;
 
 /**
  * This class provides an entry point to all the GitLab API Search API calls.
- * 
+ *
  * @see <a href="https://gitlab.com/help/api/search.md">Search API</a>
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class SearchApi extends AbstractApi {
 

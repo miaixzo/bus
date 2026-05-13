@@ -48,14 +48,17 @@ public class BCCipher implements Cipher, Wrapper<Object> {
      * {@link BufferedBlockCipher}, for block ciphers, including engine, mode, and padding.
      */
     private BufferedBlockCipher bufferedBlockCipher;
+
     /**
      * {@link BlockCipher}, for block ciphers, generally used for symmetric encryption like AES.
      */
     private BlockCipher blockCipher;
+
     /**
      * {@link AEADBlockCipher}, for Authenticated Encryption with Associated Data.
      */
     private AEADBlockCipher aeadBlockCipher;
+
     /**
      * {@link StreamCipher} for stream-based encryption.
      */
@@ -281,6 +284,9 @@ public class BCCipher implements Cipher, Wrapper<Object> {
 
     /**
      * A wrapper for BouncyCastle's {@link CipherParameters}.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class BCParameters implements Parameters {
 
@@ -297,6 +303,7 @@ public class BCCipher implements Cipher, Wrapper<Object> {
         public BCParameters(final CipherParameters parameters) {
             this.parameters = parameters;
         }
+
     }
 
 }

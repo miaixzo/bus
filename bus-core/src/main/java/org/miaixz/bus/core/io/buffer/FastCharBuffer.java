@@ -40,6 +40,7 @@ public class FastCharBuffer extends FastBuffer implements CharSequence, Appendab
      * The collection of character array chunks that store the buffer's data.
      */
     private char[][] buffers = new char[16][];
+
     /**
      * The currently active character array chunk for writing.
      */

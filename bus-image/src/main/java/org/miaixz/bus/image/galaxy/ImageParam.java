@@ -19,6 +19,9 @@
 */
 package org.miaixz.bus.image.galaxy;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
 
 /**
@@ -34,10 +37,12 @@ public class ImageParam {
      * The tag of the image parameter.
      */
     private final int tag;
+
     /**
      * The values associated with the image parameter.
      */
     private final String[] values;
+
     /**
      * Optional parent sequence tags for the image parameter.
      */
@@ -63,8 +68,8 @@ public class ImageParam {
      */
     public ImageParam(int[] parentSeqTags, int tag, String... values) {
         this.tag = tag;
-        this.values = values;
-        this.parentSeqTags = parentSeqTags;
+        this.values = values == null ? new String[0] : values.clone();
+        this.parentSeqTags = parentSeqTags == null ? null : parentSeqTags.clone();
     }
 
     /**
@@ -82,7 +87,7 @@ public class ImageParam {
      * @return An array of strings representing the values of the image parameter.
      */
     public String[] getValues() {
-        return values;
+        return values.clone();
     }
 
     /**
@@ -91,7 +96,7 @@ public class ImageParam {
      * @return An array of integers representing the parent sequence tags, or {@code null} if not present.
      */
     public int[] getParentSeqTags() {
-        return parentSeqTags;
+        return parentSeqTags == null ? null : parentSeqTags.clone();
     }
 
     /**
@@ -101,6 +106,39 @@ public class ImageParam {
      */
     public String getTagName() {
         return ElementDictionary.keywordOf(tag, null);
+    }
+
+    /**
+     * Compares this instance with another object for equality.
+     *
+     * @param obj the obj.
+     * @return true if the condition is met; otherwise false.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj || (obj instanceof ImageParam other && tag == other.tag
+                && Arrays.equals(values, other.values) && Arrays.equals(parentSeqTags, other.parentSeqTags));
+    }
+
+    /**
+     * Returns the hash code.
+     *
+     * @return the hash code.
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(tag, Arrays.hashCode(values), Arrays.hashCode(parentSeqTags));
+    }
+
+    /**
+     * Returns the string representation.
+     *
+     * @return the string representation.
+     */
+    @Override
+    public String toString() {
+        return "ImageParam{" + "tag=" + String.format("0x%08X", tag) + ", tagName='" + getTagName() + '\'' + ", values="
+                + Arrays.toString(values) + ", parentSeqTags=" + Arrays.toString(parentSeqTags) + '}';
     }
 
 }

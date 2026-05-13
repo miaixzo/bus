@@ -7,6 +7,12 @@ import org.opencv.core.Mat;
 
 // C++: class Img_hash
 
+/**
+ * The img hash class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Img_hash {
 
     // C++: enum BlockMeanHashMode (cv.img_hash.BlockMeanHashMode)

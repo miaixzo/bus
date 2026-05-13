@@ -60,6 +60,9 @@ public final class AdlKit {
 
     /**
      * The Holder class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static final class Holder {
 
@@ -67,6 +70,7 @@ public final class AdlKit {
          * The LIB constant.
          */
         static final Adl.AdlLibrary LIB;
+
         /**
          * The LIBRARY_LOADED constant.
          */
@@ -105,6 +109,7 @@ public final class AdlKit {
             LIBRARY_LOADED = loaded;
             MALLOC_CB = cb;
         }
+
     }
 
     /**
@@ -119,6 +124,7 @@ public final class AdlKit {
      * The adaptersEnumerated value.
      */
     private static volatile boolean adaptersEnumerated = false;
+
     /**
      * The BUS_TO_INDEX constant.
      */

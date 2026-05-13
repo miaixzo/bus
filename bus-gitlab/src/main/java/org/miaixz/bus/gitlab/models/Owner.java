@@ -21,6 +21,12 @@ package org.miaixz.bus.gitlab.models;
 
 import java.io.Serial;
 
+/**
+ * The owner class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Owner extends AbstractUser<Owner> {
 
     @Serial

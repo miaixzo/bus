@@ -49,15 +49,18 @@ final class AixGlobalMemory extends AbstractGlobalMemory {
      * The PAGESIZE constant.
      */
     private static final long PAGESIZE = 4096L;
+
     /**
      * The perfstatMem value.
      */
     private final Supplier<perfstat_memory_total_t> perfstatMem = Memoizer
             .memoize(AixGlobalMemory::queryPerfstat, Memoizer.defaultExpiration());
+
     /**
      * The lscfg value.
      */
     private final Supplier<List<String>> lscfg;
+
     /**
      * The vm value.
      */

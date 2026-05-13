@@ -85,22 +85,27 @@ public class Hpack {
             new Http2Header(HTTP.TRANSFER_ENCODING, Normal.EMPTY), new Http2Header(HTTP.USER_AGENT, Normal.EMPTY),
             new Http2Header(HTTP.VARY, Normal.EMPTY), new Http2Header(HTTP.VIA, Normal.EMPTY),
             new Http2Header(HTTP.WWW_AUTHENTICATE, Normal.EMPTY) };
+
     /**
      * A map from header name to the first index in the static table.
      */
     static final Map<ByteString, Integer> NAME_TO_FIRST_INDEX = nameToFirstIndex();
+
     /**
      * Prefix for 4-bit integers.
      */
     private static final int PREFIX_4_BITS = 0x0f;
+
     /**
      * Prefix for 5-bit integers.
      */
     private static final int PREFIX_5_BITS = 0x1f;
+
     /**
      * Prefix for 6-bit integers.
      */
     private static final int PREFIX_6_BITS = 0x3f;
+
     /**
      * Prefix for 7-bit integers.
      */
@@ -138,36 +143,49 @@ public class Hpack {
         return name;
     }
 
+    /**
+     * The reader class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     static class Reader {
 
         /**
          * A list to hold the decoded headers.
          */
         private final List<Http2Header> headerList = new ArrayList<>();
+
         /**
          * The source of HPACK data.
          */
         private final BufferSource source;
+
         /**
          * The size of the header table as defined by the settings.
          */
         private final int headerTableSizeSetting;
+
         /**
          * The dynamic header table.
          */
         Http2Header[] dynamicTable = new Http2Header[8];
+
         /**
          * The index of the next header to be added to the dynamic table.
          */
         int nextHeaderIndex = dynamicTable.length - 1;
+
         /**
          * The number of headers in the dynamic table.
          */
         int headerCount = 0;
+
         /**
          * The current size of the dynamic table in bytes.
          */
         int dynamicTableByteCount = 0;
+
         /**
          * The maximum size of the dynamic table in bytes.
          */
@@ -417,14 +435,22 @@ public class Hpack {
                 return source.readByteString(length);
             }
         }
+
     }
 
+    /**
+     * The writer class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     static class Writer {
 
         /**
          * Default header table size.
          */
         private static final int SETTINGS_HEADER_TABLE_SIZE = 4096;
+
         /**
          * The decoder has ultimate control of the maximum size of the dynamic table but we can choose to use less.
          * We'll put a cap at 16K. This is arbitrary but should be enough for most purposes.
@@ -435,39 +461,48 @@ public class Hpack {
          * The output buffer.
          */
         private final Buffer out;
+
         /**
          * Whether to use Huffman compression.
          */
         private final boolean useCompression;
+
         /**
          * The current header table size setting.
          */
         int headerTableSizeSetting;
+
         /**
          * The maximum dynamic table size in bytes.
          */
         int maxDynamicTableByteCount;
+
         /**
          * The dynamic header table. Array is populated back to front, so new entries always have lowest index.
          */
         Http2Header[] dynamicTable = new Http2Header[8];
+
         /**
          * The index of the next header to be added.
          */
         int nextHeaderIndex = dynamicTable.length - 1;
+
         /**
          * The number of headers in the dynamic table.
          */
         int headerCount = 0;
+
         /**
          * The current size of the dynamic table in bytes.
          */
         int dynamicTableByteCount = 0;
+
         /**
          * In the scenario where the dynamic table size changes multiple times between transmission of header blocks, we
          * need to keep track of the smallest value in that interval.
          */
         private int smallestHeaderTableSizeSetting = Integer.MAX_VALUE;
+
         /**
          * Flag to indicate if a dynamic table size update should be emitted.
          */

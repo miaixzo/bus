@@ -45,18 +45,22 @@ public class CFind {
      * Represents the Patient ID (0010,0020) DICOM tag.
      */
     public static final ImageParam PatientID = new ImageParam(Tag.PatientID);
+
     /**
      * Represents the Issuer of Patient ID (0010,0021) DICOM tag.
      */
     public static final ImageParam IssuerOfPatientID = new ImageParam(Tag.IssuerOfPatientID);
+
     /**
      * Represents the Patient's Name (0010,0010) DICOM tag.
      */
     public static final ImageParam PatientName = new ImageParam(Tag.PatientName);
+
     /**
      * Represents the Patient's Birth Date (0010,0030) DICOM tag.
      */
     public static final ImageParam PatientBirthDate = new ImageParam(Tag.PatientBirthDate);
+
     /**
      * Represents the Patient's Sex (0010,0040) DICOM tag.
      */
@@ -66,31 +70,38 @@ public class CFind {
      * Represents the Study Instance UID (0020,000D) DICOM tag.
      */
     public static final ImageParam StudyInstanceUID = new ImageParam(Tag.StudyInstanceUID);
+
     /**
      * Represents the Accession Number (0008,0050) DICOM tag.
      */
     public static final ImageParam AccessionNumber = new ImageParam(Tag.AccessionNumber);
+
     /**
      * Represents the Issuer of Accession Number Sequence (0008,0051) DICOM tag.
      */
     public static final ImageParam IssuerOfAccessionNumberSequence = new ImageParam(
             Tag.IssuerOfAccessionNumberSequence);
+
     /**
      * Represents the Study ID (0020,0010) DICOM tag.
      */
     public static final ImageParam StudyID = new ImageParam(Tag.StudyID);
+
     /**
      * Represents the Referring Physician's Name (0008,0090) DICOM tag.
      */
     public static final ImageParam ReferringPhysicianName = new ImageParam(Tag.ReferringPhysicianName);
+
     /**
      * Represents the Study Description (0008,1030) DICOM tag.
      */
     public static final ImageParam StudyDescription = new ImageParam(Tag.StudyDescription);
+
     /**
      * Represents the Study Date (0008,0020) DICOM tag.
      */
     public static final ImageParam StudyDate = new ImageParam(Tag.StudyDate);
+
     /**
      * Represents the Study Time (0008,0030) DICOM tag.
      */
@@ -100,22 +111,27 @@ public class CFind {
      * Represents the Series Instance UID (0020,000E) DICOM tag.
      */
     public static final ImageParam SeriesInstanceUID = new ImageParam(Tag.SeriesInstanceUID);
+
     /**
      * Represents the Modality (0008,0060) DICOM tag.
      */
     public static final ImageParam Modality = new ImageParam(Tag.Modality);
+
     /**
      * Represents the Series Number (0020,0011) DICOM tag.
      */
     public static final ImageParam SeriesNumber = new ImageParam(Tag.SeriesNumber);
+
     /**
      * Represents the Series Description (0008,103E) DICOM tag.
      */
     public static final ImageParam SeriesDescription = new ImageParam(Tag.SeriesDescription);
+
     /**
      * Represents the Series Date (0008,0021) DICOM tag.
      */
     public static final ImageParam SeriesDate = new ImageParam(Tag.SeriesDate);
+
     /**
      * Represents the Series Time (0008,0031) DICOM tag.
      */
@@ -125,10 +141,12 @@ public class CFind {
      * Represents the SOP Instance UID (0008,0018) DICOM tag.
      */
     public static final ImageParam SOPInstanceUID = new ImageParam(Tag.SOPInstanceUID);
+
     /**
      * Represents the Instance Number (0020,0013) DICOM tag.
      */
     public static final ImageParam InstanceNumber = new ImageParam(Tag.InstanceNumber);
+
     /**
      * Represents the SOP Class UID (0008,0016) DICOM tag.
      */

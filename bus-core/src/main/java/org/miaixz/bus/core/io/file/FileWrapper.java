@@ -45,6 +45,7 @@ public class FileWrapper implements Wrapper<File>, Serializable {
      * The wrapped {@link File} object.
      */
     protected File file;
+
     /**
      * The character set used for the file, typically for reading or writing text content.
      */

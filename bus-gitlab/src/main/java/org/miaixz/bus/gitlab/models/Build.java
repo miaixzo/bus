@@ -24,6 +24,12 @@ import java.util.Date;
 import org.miaixz.bus.gitlab.hooks.web.EventEnvironment;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+/**
+ * The build class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Build {
 
     private Long id;

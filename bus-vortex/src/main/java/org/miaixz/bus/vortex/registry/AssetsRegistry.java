@@ -46,9 +46,9 @@ import reactor.core.publisher.Mono;
  * lookup.
  * </p>
  *
- * @author Kimi Liu
  * @see AbstractRegistry
  * @see Assets
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class AssetsRegistry extends AbstractRegistry<Assets> {
@@ -57,10 +57,12 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
      * Route-key strategy used for canonical and compatibility key generation.
      */
     protected final Keying<Keying.RegistrySpec> keying;
+
     /**
      * Compatibility alias index from one route-key mode to the canonical route-key set.
      */
     private final Map<String, Set<String>> aliasIndex = new ConcurrentHashMap<>();
+
     /**
      * Reverse lookup from canonical route key to the registered alias keys.
      */
@@ -583,6 +585,8 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
      *
      * @param assets        matched route asset
      * @param remainingPath remaining path after the matched route prefix, or an empty string for an exact match
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public record RouteMatch(Assets assets, String remainingPath) {
 

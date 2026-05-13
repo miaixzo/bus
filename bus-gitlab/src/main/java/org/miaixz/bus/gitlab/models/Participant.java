@@ -21,6 +21,12 @@ package org.miaixz.bus.gitlab.models;
 
 import java.io.Serial;
 
+/**
+ * The participant class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Participant extends AbstractUser<Participant> {
 
     @Serial

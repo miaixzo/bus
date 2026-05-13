@@ -86,6 +86,7 @@ public class Huffman {
      * The singleton instance of the Huffman codec.
      */
     private static final Huffman INSTANCE = new Huffman();
+
     /**
      * The root of the Huffman decoding tree.
      */
@@ -243,6 +244,9 @@ public class Huffman {
 
     /**
      * A node in the Huffman decoding tree.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class Node {
 
@@ -282,6 +286,7 @@ public class Huffman {
             int b = bits & 0x07;
             this.terminalBits = b == 0 ? 8 : b;
         }
+
     }
 
 }

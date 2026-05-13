@@ -20,12 +20,22 @@
 package org.miaixz.bus.image.galaxy;
 
 /**
+ * Defines the SupplierEx contract.
+ *
+ * @param <T> the t type.
+ * @param <E> the e type.
  * @author Kimi Liu
  * @since Java 21+
  */
 @FunctionalInterface
 public interface SupplierEx<T, E extends Exception> {
 
+    /**
+     * Executes the get operation.
+     *
+     * @return the operation result.
+     * @throws E if the operation cannot be completed.
+     */
     T get() throws E;
 
 }

@@ -22,16 +22,29 @@ package org.miaixz.bus.image.metric.pdu;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
+ * Represents the AAssociateRQ type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class AAssociateRQ extends AAssociateRQAC {
 
+    /**
+     * Sets the identity ac.
+     *
+     * @param identityAC the identity ac.
+     */
     @Override
     public void setIdentityAC(IdentityAC identityAC) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Determines whether presentation context for.
+     *
+     * @param as the as.
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean containsPresentationContextFor(String as) {
         for (PresentationContext pc : pcs)
             if (as.equals(pc.getAbstractSyntax()))
@@ -39,6 +52,13 @@ public class AAssociateRQ extends AAssociateRQAC {
         return false;
     }
 
+    /**
+     * Determines whether presentation context for.
+     *
+     * @param as the as.
+     * @param ts the ts.
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean containsPresentationContextFor(String as, String ts) {
         for (PresentationContext pc : pcs)
             if (as.equals(pc.getAbstractSyntax()) && pc.containsTransferSyntax(ts))
@@ -46,6 +66,13 @@ public class AAssociateRQ extends AAssociateRQAC {
         return false;
     }
 
+    /**
+     * Adds the presentation context for.
+     *
+     * @param as the as.
+     * @param ts the ts.
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean addPresentationContextFor(String as, String ts) {
         if (containsPresentationContextFor(as, ts))
             return false;
@@ -55,11 +82,22 @@ public class AAssociateRQ extends AAssociateRQAC {
         return true;
     }
 
+    /**
+     * Returns the string representation.
+     *
+     * @return the string representation.
+     */
     @Override
     public String toString() {
         return promptTo(new StringBuilder(Normal._512)).toString();
     }
 
+    /**
+     * Executes the prompt to operation.
+     *
+     * @param sb the sb.
+     * @return the operation result.
+     */
     StringBuilder promptTo(StringBuilder sb) {
         return promptTo("A-ASSOCIATE-RQ[", sb);
     }

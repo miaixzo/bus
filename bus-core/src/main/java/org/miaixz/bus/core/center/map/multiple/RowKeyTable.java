@@ -44,6 +44,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
      * The raw underlying map that stores the table data, keyed by row.
      */
     final Map<R, Map<C, V>> raw;
+
     /**
      * A builder used to create new column maps when a new row is added.
      */
@@ -53,6 +54,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
      * A cached, lazily-initialized view of the table as a map of columns to rows.
      */
     private Map<C, Map<R, V>> columnMap;
+
     /**
      * A cached, lazily-initialized set of all unique column keys.
      */
@@ -200,6 +202,9 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
 
     /**
      * A view of the table as a map from column keys to maps of row keys to values.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private class ColumnMap extends AbstractMap<C, Map<R, V>> {
 
@@ -210,10 +215,14 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
         public Set<Entry<C, Map<R, V>>> entrySet() {
             return new ColumnMapEntrySet();
         }
+
     }
 
     /**
      * The entry set for the {@link ColumnMap} view.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private class ColumnMapEntrySet extends AbstractSet<Map.Entry<C, Map<R, V>>> {
 
@@ -232,10 +241,14 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
         public int size() {
             return columnKeySet().size();
         }
+
     }
 
     /**
      * A view of the set of unique column keys.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private class ColumnKeySet extends AbstractSet<C> {
 
@@ -254,10 +267,14 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
         public int size() {
             return IteratorKit.size(iterator());
         }
+
     }
 
     /**
      * An iterator that traverses all unique column keys in the table.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private class ColumnKeyIterator extends ComputeIterator<C> {
 
@@ -265,10 +282,12 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
          * Tracks seen column keys to ensure uniqueness.
          */
         final Map<C, V> seen = columnBuilder.build();
+
         /**
          * An iterator over all rows.
          */
         final Iterator<Map<C, V>> mapIterator = raw.values().iterator();
+
         /**
          * An iterator over the entries in the current row's column map.
          */
@@ -293,10 +312,14 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
                 }
             }
         }
+
     }
 
     /**
      * A view of a single column as a map from row keys to values.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private class Column extends AbstractMap<R, V> {
 
@@ -324,6 +347,9 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
 
         /**
          * A view of the entry set for a single column.
+         *
+         * @author Kimi Liu
+         * @since Java 21+
          */
         private class EntrySet extends AbstractSet<Map.Entry<R, V>> {
 
@@ -348,10 +374,14 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
                 }
                 return size;
             }
+
         }
 
         /**
          * An iterator that traverses all entries in a single column.
+         *
+         * @author Kimi Liu
+         * @since Java 21+
          */
         private class EntrySetIterator extends ComputeIterator<Entry<R, V>> {
 
@@ -405,7 +435,9 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
                 }
                 return null;
             }
+
         }
+
     }
 
 }

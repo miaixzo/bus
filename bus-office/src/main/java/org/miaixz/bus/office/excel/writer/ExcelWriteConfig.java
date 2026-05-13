@@ -50,43 +50,53 @@ public class ExcelWriteConfig extends ExcelConfig {
      * output.
      */
     protected boolean onlyAlias;
+
     /**
      * Whether to force row insertion. If {@code true}, existing rows below the written row will be shifted down. If
      * {@code false}, existing rows will be filled, and new rows will be created only if necessary.
      */
     protected boolean insertRow = true;
+
     /**
      * Comparator for sorting header names.
      */
     protected Comparator<String> aliasComparator;
+
     /**
      * Whether to automatically split into multiple sheets when row limit is reached.
      */
     protected boolean autoSplitSheet = true;
+
     /**
      * Maximum rows allowed in each sheet when auto split is enabled.
      */
     protected int maxRowsPerSheet = 1_000_000;
+
     /**
      * Name pattern for newly split sheets.
      */
     protected String sheetNamePattern = "sheet_%03d";
+
     /**
      * Expected total rows for routing decisions.
      */
     protected long expectedRows;
+
     /**
      * SXSSF row access window size used by big writer.
      */
     protected int bigWriterRowAccessWindowSize = 1024;
+
     /**
      * Whether to compress SXSSF temporary files.
      */
     protected boolean bigWriterCompressTmpFiles;
+
     /**
      * Whether to enable SXSSF shared strings table.
      */
     protected boolean bigWriterUseSharedStringsTable;
+
     /**
      * Big data mode flag.
      */

@@ -24,21 +24,43 @@ import org.miaixz.bus.core.lang.exception.NotFoundException;
 import org.miaixz.bus.image.metric.net.ApplicationEntity;
 
 /**
+ * Represents the ApplicationEntityCache type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class ApplicationEntityCache extends ConfigurationCache<DicomConfiguration, ApplicationEntity>
         implements IApplicationEntityCache {
 
+    /**
+     * Creates a new instance.
+     *
+     * @param conf the conf.
+     */
     public ApplicationEntityCache(DicomConfiguration conf) {
         super(conf);
     }
 
+    /**
+     * Executes the find operation.
+     *
+     * @param conf the conf.
+     * @param key  the key.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     protected ApplicationEntity find(DicomConfiguration conf, String key) throws InternalException {
         return conf.findApplicationEntity(key);
     }
 
+    /**
+     * Finds the application entity.
+     *
+     * @param aet the aet.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public ApplicationEntity findApplicationEntity(String aet) throws InternalException {
         ApplicationEntity ae = get(aet);

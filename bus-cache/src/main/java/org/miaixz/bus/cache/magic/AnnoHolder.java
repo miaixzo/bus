@@ -166,6 +166,9 @@ public class AnnoHolder {
 
     /**
      * A builder for creating {@link AnnoHolder} instances using a fluent API.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class Builder {
 
@@ -297,6 +300,7 @@ public class AnnoHolder {
         public AnnoHolder build() {
             return new AnnoHolder(method, cache, prefix, expire, cacheKeyMap, multiIndex, id);
         }
+
     }
 
 }

@@ -172,6 +172,9 @@ public class JarClassLoader extends URLClassLoader {
 
     /**
      * An internal enumeration wrapper that applies the custom {@link JarURLHandler} to each URL.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private class XJarEnumeration implements Enumeration<URL> {
 
@@ -221,6 +224,7 @@ public class JarClassLoader extends URLClassLoader {
                 return url;
             }
         }
+
     }
 
 }

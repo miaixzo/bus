@@ -42,14 +42,17 @@ final class AixBaseboard extends AbstractBaseboard {
      * The IBM constant.
      */
     private static final String IBM = "IBM";
+
     /**
      * The model value.
      */
     private final String model;
+
     /**
      * The serialNumber value.
      */
     private final String serialNumber;
+
     /**
      * The version value.
      */

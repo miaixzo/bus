@@ -69,26 +69,32 @@ final class MacGpuStats implements GpuStats {
      * The PERF_STATS_KEY constant.
      */
     private static final String PERF_STATS_KEY = "PerformanceStatistics";
+
     /**
      * The GPU_CORE_UTIL_KEY constant.
      */
     private static final String GPU_CORE_UTIL_KEY = "GPU Core Utilization";
+
     /**
      * The DEVICE_UTIL_KEY constant.
      */
     private static final String DEVICE_UTIL_KEY = "Device Utilization %";
+
     /**
      * The VRAM_USED_KEY constant.
      */
     private static final String VRAM_USED_KEY = "vramUsedBytes";
+
     /**
      * The VRAM_USED_KEY_AS constant.
      */
     private static final String VRAM_USED_KEY_AS = "In use system memory";
+
     /**
      * The GPU_UTIL_DIVISOR constant.
      */
     private static final double GPU_UTIL_DIVISOR = 0xFFFFFFFFL;
+
     /**
      * The TRADEMARK_PATTERN constant.
      */
@@ -98,6 +104,7 @@ final class MacGpuStats implements GpuStats {
      * The isAppleSilicon value.
      */
     private final boolean isAppleSilicon;
+
     /**
      * The cardName value.
      */
@@ -416,4 +423,5 @@ final class MacGpuStats implements GpuStats {
         Matcher m = Pattern.compile("\\b" + Pattern.quote(normName) + "\\b").matcher(normModel);
         return m.find();
     }
+
 }

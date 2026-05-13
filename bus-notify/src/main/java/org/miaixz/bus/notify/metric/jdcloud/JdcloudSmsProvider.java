@@ -66,22 +66,27 @@ public class JdcloudSmsProvider extends AbstractProvider<JdcloudNotice, Context>
                 entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
                 entity != null && entity.getSignature() != null);
         Map<String, String> bodys = new HashMap<>();
+
         /**
          * The region ID where the SMS service is located.
          */
         bodys.put("regionId", this.getUrl(entity));
+
         /**
          * The ID of the SMS template to be used.
          */
         bodys.put("templateId", entity.getTemplate());
+
         /**
          * The parameters for the SMS template, typically in JSON format.
          */
         bodys.put("params", entity.getParams());
+
         /**
          * A comma-separated list of recipient phone numbers.
          */
         bodys.put("phoneList", entity.getReceive());
+
         /**
          * The ID of the SMS signature.
          */

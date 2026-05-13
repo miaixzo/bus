@@ -72,6 +72,7 @@ public class OpenTelemetryProvider implements Provider {
      * The OpenTelemetry instance used to obtain the OTel Meter.
      */
     private final OpenTelemetry openTelemetry;
+
     /**
      * OTel Meter used to create all instrument instances.
      */
@@ -139,10 +140,14 @@ public class OpenTelemetryProvider implements Provider {
         LongCounter c = otelMeter.counterBuilder(name).build();
         return new org.miaixz.bus.metrics.metric.Counter() {
 
-            /** Cumulative event count; updated on each increment call. */
+            /**
+             * Cumulative event count; updated on each increment call.
+             */
             private long total = 0;
 
-            /** Increments the counter by one. */
+            /**
+             * Increments the counter by one.
+             */
             @Override
             public void increment() {
                 increment(1);
@@ -186,10 +191,14 @@ public class OpenTelemetryProvider implements Provider {
         NativeMeter nm = new NativeMeter();
         return new org.miaixz.bus.metrics.metric.Meter() {
 
-            /** Cumulative event count; updated on each increment call. */
+            /**
+             * Cumulative event count; updated on each increment call.
+             */
             private long total = 0;
 
-            /** Increments the meter by one. */
+            /**
+             * Increments the meter by one.
+             */
             @Override
             public void increment() {
                 increment(1);
@@ -273,14 +282,18 @@ public class OpenTelemetryProvider implements Provider {
         org.miaixz.bus.metrics.metric.Meter successes = meter(name + ".successes", tags);
         return new org.miaixz.bus.metrics.metric.RatePair() {
 
-            /** Records a successful event, incrementing both total and successes meters. */
+            /**
+             * Records a successful event, incrementing both total and successes meters.
+             */
             @Override
             public void recordSuccess() {
                 total.increment();
                 successes.increment();
             }
 
-            /** Records an error event, incrementing both total and errors meters. */
+            /**
+             * Records an error event, incrementing both total and errors meters.
+             */
             @Override
             public void recordError() {
                 total.increment();
@@ -583,10 +596,14 @@ public class OpenTelemetryProvider implements Provider {
             long startNs = System.nanoTime();
             return new org.miaixz.bus.metrics.metric.LlmSample() {
 
-                /** Nanosecond timestamp of the first token; -1 if not yet recorded. */
+                /**
+                 * Nanosecond timestamp of the first token; -1 if not yet recorded.
+                 */
                 private volatile long firstTokenNs = -1;
 
-                /** Records the nanosecond timestamp of the first token received. */
+                /**
+                 * Records the nanosecond timestamp of the first token received.
+                 */
                 @Override
                 public void recordFirstToken() {
                     firstTokenNs = System.nanoTime();
@@ -665,37 +682,49 @@ public class OpenTelemetryProvider implements Provider {
         return new NativeSloTracker();
     }
 
-    /** Returns an empty iterable; OTel registry enumeration is not supported. */
+    /**
+     * Returns an empty iterable; OTel registry enumeration is not supported.
+     */
     @Override
     public Iterable<org.miaixz.bus.metrics.metric.Counter> counters() {
         return Collections.emptyList();
     }
 
-    /** Returns an empty iterable; OTel registry enumeration is not supported. */
+    /**
+     * Returns an empty iterable; OTel registry enumeration is not supported.
+     */
     @Override
     public Iterable<org.miaixz.bus.metrics.metric.Meter> meters() {
         return Collections.emptyList();
     }
 
-    /** Returns an empty iterable; OTel registry enumeration is not supported. */
+    /**
+     * Returns an empty iterable; OTel registry enumeration is not supported.
+     */
     @Override
     public Iterable<org.miaixz.bus.metrics.metric.Gauge> gauges() {
         return Collections.emptyList();
     }
 
-    /** Returns an empty iterable; OTel registry enumeration is not supported. */
+    /**
+     * Returns an empty iterable; OTel registry enumeration is not supported.
+     */
     @Override
     public Iterable<org.miaixz.bus.metrics.metric.Timer> timers() {
         return Collections.emptyList();
     }
 
-    /** Returns an empty iterable; OTel registry enumeration is not supported. */
+    /**
+     * Returns an empty iterable; OTel registry enumeration is not supported.
+     */
     @Override
     public Iterable<org.miaixz.bus.metrics.metric.Histogram> histograms() {
         return Collections.emptyList();
     }
 
-    /** Returns an empty iterable; OTel registry enumeration is not supported. */
+    /**
+     * Returns an empty iterable; OTel registry enumeration is not supported.
+     */
     @Override
     public Iterable<org.miaixz.bus.metrics.metric.LlmTimer> llmTimers() {
         return Collections.emptyList();

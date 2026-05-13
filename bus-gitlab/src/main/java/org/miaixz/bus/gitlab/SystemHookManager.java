@@ -34,6 +34,9 @@ import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * This class provides a handler for processing GitLab System Hook callouts.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class SystemHookManager implements HookManager {
 

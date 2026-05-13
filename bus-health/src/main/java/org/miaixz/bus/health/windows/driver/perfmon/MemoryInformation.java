@@ -51,6 +51,9 @@ public final class MemoryInformation {
 
     /**
      * For pages in/out
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum PageSwapProperty implements PerfCounterQuery.PdhCounterProperty {
 
@@ -61,6 +64,7 @@ public final class MemoryInformation {
          * The instance value.
          */
         private final String instance;
+
         /**
          * The counter value.
          */
@@ -96,6 +100,7 @@ public final class MemoryInformation {
         public String getCounter() {
             return counter;
         }
+
     }
 
 }

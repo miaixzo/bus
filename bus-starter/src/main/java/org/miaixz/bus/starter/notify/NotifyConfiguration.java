@@ -34,7 +34,7 @@ import org.springframework.context.annotation.Bean;
  *
  * <p>
  * <strong>Usage Example:</strong>
- * 
+ *
  * <pre>{@code
  * // In application.yml:
  * bus:

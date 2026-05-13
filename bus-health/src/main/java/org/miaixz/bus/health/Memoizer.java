@@ -88,10 +88,12 @@ public final class Memoizer {
              * The original supplier.
              */
             private final Supplier<T> delegate = original;
+
             /**
              * The memoized value, which may be null.
              */
             private volatile T value;
+
             /**
              * The expiration time in nanoseconds.
              */

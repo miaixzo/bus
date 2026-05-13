@@ -42,23 +42,28 @@ public class MethodInvoker implements Invoker {
      * The underlying {@link Method} to be invoked.
      */
     private final Method method;
+
     /**
      * An array of {@link Type} objects representing the generic parameter types of the method.
      */
     private final Type[] paramTypes;
+
     /**
      * An array of {@link Class} objects representing the raw parameter types of the method.
      */
     private final Class<?>[] paramTypeClasses;
+
     /**
      * The return type of the method, or the type of the single parameter if it's a setter-like method.
      */
     private final Type type;
+
     /**
      * The raw class of the return type of the method, or the raw class of the single parameter if it's a setter-like
      * method.
      */
     private final Class<?> typeClass;
+
     /**
      * Flag indicating whether to check and potentially convert arguments before invocation.
      */

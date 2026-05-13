@@ -44,6 +44,7 @@ public class SimpleEventPublisher implements EventPublisher {
      * The list of registered subscribers.
      */
     private final List<Subscriber> subscribers;
+
     /**
      * A loader for the {@link ExecutorService} used for asynchronous event processing. Defaults to a new executor
      * created by {@link ThreadKit#newExecutor()}.

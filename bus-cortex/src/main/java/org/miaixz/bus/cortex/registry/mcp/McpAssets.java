@@ -180,6 +180,9 @@ public class McpAssets extends Assets {
 
     /**
      * MCP-specific metadata payload stored directly in the raw asset metadata JSON payload.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @Setter
@@ -189,14 +192,17 @@ public class McpAssets extends Assets {
          * Public tool name exposed by the MCP entry.
          */
         private String toolName;
+
         /**
          * Transport protocol used to reach the MCP server.
          */
         private String transport;
+
         /**
          * Input or capability schema advertised by the MCP entry.
          */
         private String schema;
+
         /**
          * Tags attached to the MCP entry for discovery.
          */

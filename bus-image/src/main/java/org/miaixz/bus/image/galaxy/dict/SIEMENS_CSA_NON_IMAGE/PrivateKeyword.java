@@ -20,13 +20,24 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_CSA_NON_IMAGE;
 
 /**
+ * Represents the PrivateKeyword type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateKeyword {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "";
 
+    /**
+     * Executes the value of operation.
+     *
+     * @param tag the tag.
+     * @return the operation result.
+     */
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {

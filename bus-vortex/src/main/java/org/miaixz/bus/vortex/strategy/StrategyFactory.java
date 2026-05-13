@@ -287,6 +287,8 @@ public class StrategyFactory {
      * @param route          route key used in logs and the chain map
      * @param pathMatcher    request path matcher
      * @param strategyFilter strategy filter for the route chain
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private record ChainSpec(String route, Predicate<String> pathMatcher, Predicate<Strategy> strategyFilter) {
 

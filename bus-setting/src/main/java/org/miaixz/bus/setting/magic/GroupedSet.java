@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.*;
  * values in a {@code []} group are merged. Duplicate group names are also merged.
  * <p>
  * Example file format:
- * 
+ *
  * <pre>
  * [group1]
  * aaa
@@ -64,6 +64,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
      * The character set used to read the settings file.
      */
     private java.nio.charset.Charset charset;
+
     /**
      * The URL of the settings file.
      */

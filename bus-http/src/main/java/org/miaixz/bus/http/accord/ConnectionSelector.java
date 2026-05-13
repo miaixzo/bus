@@ -47,14 +47,17 @@ public final class ConnectionSelector {
      * The list of connection suites to try.
      */
     private final List<ConnectionSuite> connectionSuites;
+
     /**
      * The index of the next mode to try.
      */
     private int nextModeIndex;
+
     /**
      * Whether a fallback is possible.
      */
     private boolean isFallbackPossible;
+
     /**
      * Whether this is a fallback attempt.
      */

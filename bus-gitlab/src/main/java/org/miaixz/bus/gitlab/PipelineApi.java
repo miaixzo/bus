@@ -39,6 +39,9 @@ import jakarta.ws.rs.core.Response;
  * <a href="https://docs.gitlab.com/ee/api/pipelines.html">Pipelines API</a>
  * <a href="https://docs.gitlab.com/ee/api/pipeline_schedules.html">Pipeline Schedules API</a>
  * <a href="https://docs.gitlab.com/ee/api/pipeline_triggers.html">Pipeline Triggers API</a>
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class PipelineApi extends AbstractApi implements Constants {
 
@@ -434,6 +437,12 @@ public class PipelineApi extends AbstractApi implements Constants {
 
         // The create pipeline REST API expects the variable data in an unusual format, this
         // class is used to create the JSON for the POST data.
+        /**
+         * The create pipeline form class.
+         *
+         * @author Kimi Liu
+         * @since Java 21+
+         */
         class CreatePipelineForm {
 
             public String ref;
@@ -443,6 +452,7 @@ public class PipelineApi extends AbstractApi implements Constants {
                 this.ref = ref;
                 this.variables = variables;
             }
+
         }
 
         CreatePipelineForm pipelineForm = new CreatePipelineForm(ref, variables);

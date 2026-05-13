@@ -68,6 +68,7 @@ public final class Http2 {
      */
     static final String[] FLAGS = new String[0x40];
     static final String[] BINARY = new String[Normal._256];
+
     /**
      * A lookup table for valid frame types.
      */

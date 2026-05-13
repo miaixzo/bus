@@ -27,8 +27,8 @@ import org.miaixz.bus.core.lang.Charset;
  * String resource, treating a string as a resource. This class extends {@link CharSequenceResource} to specifically
  * handle {@link String} objects as resources.
  *
- * @author Kimi Liu
  * @see CharSequenceResource
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class StringResource extends CharSequenceResource {

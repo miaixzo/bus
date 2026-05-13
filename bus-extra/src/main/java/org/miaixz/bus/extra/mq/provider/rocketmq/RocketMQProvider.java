@@ -45,10 +45,12 @@ public class RocketMQProvider implements MQProvider {
      * The message queue configuration object, holding connection details like broker URL.
      */
     private MQConfig config;
+
     /**
      * The name of the producer group for RocketMQ. Defaults to {@link MixAll#DEFAULT_PRODUCER_GROUP}.
      */
     private String producerGroup;
+
     /**
      * The name of the consumer group for RocketMQ. Defaults to {@link MixAll#DEFAULT_CONSUMER_GROUP}.
      */

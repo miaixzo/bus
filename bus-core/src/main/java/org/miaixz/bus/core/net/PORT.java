@@ -523,10 +523,12 @@ public enum PORT {
      * Stores the integer port number (e.g., 22, 8080).
      */
     private final int port;
+
     /**
      * Stores the common name of the service (e.g., "SSH", "MongoDB").
      */
     private final String name;
+
     /**
      * Stores the detailed description of the port's purpose.
      */
@@ -536,6 +538,7 @@ public enum PORT {
      * A static map for efficient lookup of PORT by port number. This is lazily initialized on the first call to get().
      */
     private static volatile Map<Integer, PORT> PORT_MAP;
+
     /**
      * A private static lock object used for thread-safe lazy initialization of the {@code portMap}.
      */

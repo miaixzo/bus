@@ -47,18 +47,22 @@ public final class HkeyUserData {
      * The PATH_DELIMITER constant.
      */
     private static final String PATH_DELIMITER = "\\";
+
     /**
      * The DEFAULT_DEVICE constant.
      */
     private static final String DEFAULT_DEVICE = "Console";
+
     /**
      * The VOLATILE_ENV_SUBKEY constant.
      */
     private static final String VOLATILE_ENV_SUBKEY = "Volatile Environment";
+
     /**
      * The CLIENTNAME constant.
      */
     private static final String CLIENTNAME = "CLIENTNAME";
+
     /**
      * The SESSIONNAME constant.
      */

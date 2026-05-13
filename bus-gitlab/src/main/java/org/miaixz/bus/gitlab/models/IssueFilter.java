@@ -39,6 +39,9 @@ import java.io.Serial;
 
 /**
  * This class is used to filter issues when getting lists of them.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class IssueFilter implements Serializable {
 
@@ -511,6 +514,12 @@ public class IssueFilter implements Serializable {
                         .withParam("iteration_title", iterationTitle).withParam("not", toStringMap(not), false);
     }
 
+    /**
+     * The issue field enum.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public enum IssueField {
 
         ASSIGNEE_ID, ASSIGNEE_USERNAME, AUTHOR_ID, AUTHOR_USERNAME, IIDS, ITERATION_ID, ITERATION_TITLE, LABELS,
@@ -532,6 +541,7 @@ public class IssueFilter implements Serializable {
         public String toString() {
             return (enumHelper.toString(this));
         }
+
     }
 
     private Map<String, Object> toStringMap(Map<IssueField, Object> map) {

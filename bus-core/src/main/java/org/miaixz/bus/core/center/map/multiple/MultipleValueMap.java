@@ -36,21 +36,20 @@ import org.miaixz.bus.core.xyz.CollKit;
  * {@link #putValue(Object, Object)}), the implementing class ensures consistency of the collection type. However, if
  * the underlying map's {@code put} or {@code putAll} methods are used directly with arbitrary {@code Collection} types,
  * the consistency of the value collection type cannot be guaranteed.
- * 
+ *
  * <p>
  * <strong>Modifying Value Collections:</strong> When a value collection is retrieved via {@link #get(Object)} or
  * {@link #getValues(Object)}, modifications to this returned collection will directly affect the
  * {@code MultipleValueMap} instance, and vice versa. Therefore, when iterating over the map or its value collections,
  * if write operations are performed, care must be taken to avoid potential {@link ConcurrentModificationException}s.
- * 
  *
  * @param <K> The type of keys in the map.
  * @param <V> The type of values stored in the collections.
- * @author Kimi Liu
  * @see AbstractCollValueMap
  * @see CollectionValueMap
  * @see ListValueMap
  * @see SetValueMap
+ * @author Kimi Liu
  * @since Java 21+
  */
 public interface MultipleValueMap<K, V> extends Map<K, Collection<V>> {

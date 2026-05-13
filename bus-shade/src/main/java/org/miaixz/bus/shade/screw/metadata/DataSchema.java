@@ -39,18 +39,22 @@ public class DataSchema extends DatabaseSchema {
      * The title of the generated document.
      */
     private String title;
+
     /**
      * The name of the organization.
      */
     private String organization;
+
     /**
      * The URL of the organization.
      */
     private String organizationUrl;
+
     /**
      * The version number of the document.
      */
     private String version;
+
     /**
      * A description for the document.
      */

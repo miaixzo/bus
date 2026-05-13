@@ -34,6 +34,9 @@ import org.miaixz.bus.health.builtin.hardware.HWPartition;
 
 /**
  * Utility class parsing partition information from disklabel command
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 @ThreadSafe
 public final class Disklabel {

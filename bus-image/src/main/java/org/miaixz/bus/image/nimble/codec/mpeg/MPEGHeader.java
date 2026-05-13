@@ -24,21 +24,59 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.VR;
 
 /**
+ * Represents the MPEGHeader type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class MPEGHeader {
 
+    /**
+     * The aspect ratio 1 1 value.
+     */
     private static final String[] ASPECT_RATIO_1_1 = { "1", "1" };
+
+    /**
+     * The aspect ratio 4 3 value.
+     */
     private static final String[] ASPECT_RATIO_4_3 = { "4", "3" };
+
+    /**
+     * The aspect ratio 16 9 value.
+     */
     private static final String[] ASPECT_RATIO_16_9 = { "16", "9" };
+
+    /**
+     * The aspect ratio 221 100 value.
+     */
     private static final String[] ASPECT_RATIO_221_100 = { "221", "100" };
+
+    /**
+     * The aspect ratios value.
+     */
     private static final String[][] ASPECT_RATIOS = { ASPECT_RATIO_1_1, ASPECT_RATIO_4_3, ASPECT_RATIO_16_9,
             ASPECT_RATIO_221_100 };
+
+    /**
+     * The fps value.
+     */
     static final int[] FPS = { 24, 1001, 24, 1000, 25, 1000, 30, 1001, 30, 1000, 50, 1000, 60, 1001, 60, 1000 };
+
+    /**
+     * The data value.
+     */
     private final byte[] data;
+
+    /**
+     * The seq header offset value.
+     */
     private final int seqHeaderOffset;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param data the data.
+     */
     public MPEGHeader(byte[] data) {
         this.data = data;
         this.seqHeaderOffset = findSequenceHeaderOffset(data);
@@ -65,6 +103,11 @@ public class MPEGHeader {
         return -1;
     }
 
+    /**
+     * Determines whether valid.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean isValid() {
         return seqHeaderOffset != -1;
     }
@@ -102,6 +145,15 @@ public class MPEGHeader {
         return setImageAttributes(attrs, numFrames, y, x);
     }
 
+    /**
+     * Sets the image attributes.
+     *
+     * @param attrs     the attrs.
+     * @param numFrames the num frames.
+     * @param rows      the rows.
+     * @param columns   the columns.
+     * @return the operation result.
+     */
     public static Attributes setImageAttributes(Attributes attrs, int numFrames, int rows, int columns) {
         attrs.setInt(Tag.SamplesPerPixel, VR.US, 3);
         attrs.setString(Tag.PhotometricInterpretation, VR.CS, "YBR_PARTIAL_420");

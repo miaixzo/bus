@@ -29,7 +29,7 @@ import java.net.ProtocolException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 
+ *
  * A reader for WebSocket protocol frames. This class parses frames from a source, handling control frames (ping, pong,
  * close) and message frames (text, binary). This class is not thread-safe and must be operated from a single thread.
  *
@@ -42,46 +42,57 @@ public final class WebSocketReader {
      * True if this is a client-side reader.
      */
     final boolean isClient;
+
     /**
      * The source from which to read frames.
      */
     final BufferSource source;
+
     /**
      * The callback for frame events.
      */
     final FrameCallback frameCallback;
+
     /**
      * A buffer for reading control frames.
      */
     private final Buffer controlFrameBuffer = new Buffer();
+
     /**
      * A buffer for reading message frames.
      */
     private final Buffer messageFrameBuffer = new Buffer();
+
     /**
      * The mask key for unmasking client frames. Only used on the server side.
      */
     private final byte[] maskKey;
+
     /**
      * A cursor for efficiently applying the mask. Only used on the server side.
      */
     private final Buffer.UnsafeCursor maskCursor;
+
     /**
      * True if the reader has been closed.
      */
     boolean closed;
+
     /**
      * The opcode of the current frame.
      */
     int opcode;
+
     /**
      * The length of the current frame.
      */
     long frameLength;
+
     /**
      * True if the current frame is the final frame of a message.
      */
     boolean isFinalFrame;
+
     /**
      * True if the current frame is a control frame.
      */
@@ -313,8 +324,11 @@ public final class WebSocketReader {
     }
 
     /**
-     * 
+     *
      * A callback interface for WebSocket frame events.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public interface FrameCallback {
 
@@ -360,6 +374,7 @@ public final class WebSocketReader {
          * @param reason The close reason.
          */
         void onReadClose(int code, String reason);
+
     }
 
 }

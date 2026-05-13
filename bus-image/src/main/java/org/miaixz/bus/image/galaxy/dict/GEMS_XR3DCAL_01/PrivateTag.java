@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.GEMS_XR3DCAL_01;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEMS_XR3DCAL_01";
 
-    /** (0021,xx20) VR=LT VM=1 Generalized Calibration */
+    /**
+     * (0021,xx20) VR=LT VM=1 Generalized Calibration
+     */
     public static final int GeneralizedCalibration = 0x00210020;
 
 }

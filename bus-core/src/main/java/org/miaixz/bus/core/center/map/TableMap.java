@@ -56,6 +56,7 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
      * The internal list for storing keys, allowing duplicates.
      */
     private final List<K> keys;
+
     /**
      * The internal list for storing values.
      */

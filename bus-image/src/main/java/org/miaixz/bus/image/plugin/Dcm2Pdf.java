@@ -118,29 +118,53 @@ public class Dcm2Pdf {
 
     /**
      * An enumeration of supported encapsulated file types, mapping SOP Class UIDs to file extensions.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     enum FileType {
 
-        /** Encapsulated PDF Storage. */
+        /**
+         * Encapsulated PDF Storage.
+         */
         PDF(UID.EncapsulatedPDFStorage.uid, ".pdf"),
-        /** Encapsulated CDA Storage. */
+        /**
+         * Encapsulated CDA Storage.
+         */
         CDA(UID.EncapsulatedCDAStorage.uid, ".xml"),
-        /** Encapsulated MTL Storage. */
+        /**
+         * Encapsulated MTL Storage.
+         */
         MTL(UID.EncapsulatedMTLStorage.uid, ".mtl"),
-        /** Encapsulated OBJ Storage. */
+        /**
+         * Encapsulated OBJ Storage.
+         */
         OBJ(UID.EncapsulatedOBJStorage.uid, ".obj"),
-        /** Encapsulated STL Storage. */
+        /**
+         * Encapsulated STL Storage.
+         */
         STL(UID.EncapsulatedSTLStorage.uid, ".stl"),
-        /** Private Encapsulated Genozip Storage. */
+        /**
+         * Private Encapsulated Genozip Storage.
+         */
         GENOZIP(UID.PrivateEncapsulatedGenozipStorage.uid, ".genozip"),
-        /** Private Encapsulated Bzip2 VCF Storage. */
+        /**
+         * Private Encapsulated Bzip2 VCF Storage.
+         */
         VCF_BZIP2(UID.PrivateEncapsulatedBzip2VCFStorage.uid, ".vcfbz2"),
-        /** Private Encapsulated Bzip2 Document Storage. */
+        /**
+         * Private Encapsulated Bzip2 Document Storage.
+         */
         DOC_BZIP2(UID.PrivateEncapsulatedBzip2DocumentStorage.uid, ".bz2");
 
-        /** The SOP Class UID for the file type. */
+        /**
+         * The SOP Class UID for the file type.
+         */
         private final String sopClass;
-        /** The file extension for the file type. */
+
+        /**
+         * The file extension for the file type.
+         */
         private final String fileExt;
 
         /**
@@ -184,18 +208,30 @@ public class Dcm2Pdf {
         private String getFileExt() {
             return fileExt;
         }
+
     }
 
     /**
      * A {@link SimpleFileVisitor} that walks a file tree and converts DICOM files containing encapsulated documents.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class Dcm2PdfFileVisitor extends SimpleFileVisitor<Path> {
 
-        /** The source root path. */
+        /**
+         * The source root path.
+         */
         private final Path srcPath;
-        /** The destination root path. */
+
+        /**
+         * The destination root path.
+         */
         private final Path destPath;
-        /** Flag indicating if the destination is a directory. */
+
+        /**
+         * Flag indicating if the destination is a directory.
+         */
         private final boolean destIsDir;
 
         /**
@@ -242,6 +278,7 @@ public class Dcm2Pdf {
 
             return destPath.resolve(srcFilePath.subpath(srcPathNameCount, srcFilePathNameCount));
         }
+
     }
 
 }

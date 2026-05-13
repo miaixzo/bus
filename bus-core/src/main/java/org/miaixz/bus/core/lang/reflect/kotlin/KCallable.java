@@ -39,6 +39,7 @@ public class KCallable {
      * The {@link Method} object for {@code KCallable.getParameters()}.
      */
     private static final Method METHOD_GET_PARAMETERS;
+
     /**
      * The {@link Method} object for {@code KCallable.call()}.
      */

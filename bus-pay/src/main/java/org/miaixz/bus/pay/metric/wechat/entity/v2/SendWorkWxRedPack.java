@@ -43,58 +43,72 @@ public class SendWorkWxRedPack extends Voucher {
      * Random string.
      */
     private String nonce_str;
+
     /**
      * Signature.
      */
     private String sign;
+
     /**
      * Merchant's bill number.
      */
     private String mch_billno;
+
     /**
      * Merchant ID.
      */
     private String mch_id;
+
     /**
      * App ID of the WeCom application.
      */
     private String wxappid;
+
     /**
      * Sender's name.
      */
     private String sender_name;
+
     /**
      * WeCom application agent ID.
      */
     private String agentid;
+
     /**
      * Media ID for the sender's header image.
      */
     private String sender_header_media_id;
+
     /**
      * Recipient's OpenID.
      */
     private String re_openid;
+
     /**
      * Total amount in cents.
      */
     private String total_amount;
+
     /**
      * Wishing message.
      */
     private String wishing;
+
     /**
      * Activity name.
      */
     private String act_name;
+
     /**
      * Remark.
      */
     private String remark;
+
     /**
      * Scene ID.
      */
     private String scene_id;
+
     /**
      * WeCom-specific signature.
      */

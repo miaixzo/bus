@@ -28,26 +28,54 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
+ * Represents the HL7Message type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class HL7Message extends ArrayList<HL7Segment> {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852265013889L;
 
+    /**
+     * Creates a new instance.
+     */
     public HL7Message() {
 
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param initialCapacity the initial capacity.
+     */
     public HL7Message(int initialCapacity) {
         super(initialCapacity);
     }
 
+    /**
+     * Executes the parse operation.
+     *
+     * @param b          the b.
+     * @param defCharset the def charset.
+     * @return the operation result.
+     */
     public static HL7Message parse(byte[] b, String defCharset) {
         return parse(b, b.length, defCharset);
     }
 
+    /**
+     * Executes the parse operation.
+     *
+     * @param b          the b.
+     * @param size       the size.
+     * @param defCharset the def charset.
+     * @return the operation result.
+     */
     public static HL7Message parse(byte[] b, int size, String defCharset) {
         ParsePosition pos = new ParsePosition(0);
         HL7Message msg = new HL7Message();
@@ -62,6 +90,14 @@ public class HL7Message extends ArrayList<HL7Segment> {
         return msg;
     }
 
+    /**
+     * Executes the make ack operation.
+     *
+     * @param msh     the msh.
+     * @param ackCode the ack code.
+     * @param text    the text.
+     * @return the operation result.
+     */
     public static HL7Message makeACK(HL7Segment msh, String ackCode, String text) {
         int size = msh.size();
         HL7Segment ackmsh = HL7Segment.makeMSH(size, msh.getFieldSeparator(), msh.getEncodingCharacters());
@@ -83,11 +119,24 @@ public class HL7Message extends ArrayList<HL7Segment> {
         return ack;
     }
 
+    /**
+     * Executes the event type operation.
+     *
+     * @param msh the msh.
+     * @return the operation result.
+     */
     public static String eventType(HL7Segment msh) {
         String messageType = msh.getMessageType();
         return messageType == null || messageType.equals("") ? messageType : messageType.substring(4, 7);
     }
 
+    /**
+     * Executes the make pix query operation.
+     *
+     * @param pid     the pid.
+     * @param domains the domains.
+     * @return the operation result.
+     */
     public static HL7Message makePixQuery(String pid, String... domains) {
         HL7Segment msh = HL7Segment.makeMSH();
         msh.setField(8, "QBP^Q23^QBP_Q21");
@@ -107,6 +156,13 @@ public class HL7Message extends ArrayList<HL7Segment> {
         return qbp;
     }
 
+    /**
+     * Executes the make pdq query operation.
+     *
+     * @param queryParams the query params.
+     * @param domains     the domains.
+     * @return the operation result.
+     */
     public static HL7Message makePdqQuery(String[] queryParams, String... domains) {
         HL7Segment msh = HL7Segment.makeMSH();
         msh.setField(8, "QBP^Q22^QBP_Q21");
@@ -126,6 +182,13 @@ public class HL7Message extends ArrayList<HL7Segment> {
         return qbp;
     }
 
+    /**
+     * Executes the make ack operation.
+     *
+     * @param msh the msh.
+     * @param e   the e.
+     * @return the operation result.
+     */
     public static HL7Message makeACK(HL7Segment msh, HL7Exception e) {
         HL7Message ack = makeACK(msh, e.getAcknowledgmentCode(), e.getErrorMessage());
         HL7Segment err = e.getErrorSegment();
@@ -134,6 +197,12 @@ public class HL7Message extends ArrayList<HL7Segment> {
         return ack;
     }
 
+    /**
+     * Gets the segment.
+     *
+     * @param name the name.
+     * @return the segment.
+     */
     public HL7Segment getSegment(String name) {
         for (HL7Segment seg : this)
             if (name.equals(seg.getField(0, null)))
@@ -141,11 +210,22 @@ public class HL7Message extends ArrayList<HL7Segment> {
         return null;
     }
 
+    /**
+     * Returns the string representation.
+     *
+     * @return the string representation.
+     */
     @Override
     public String toString() {
         return toString('\r');
     }
 
+    /**
+     * Returns the string representation.
+     *
+     * @param segdelim the segdelim.
+     * @return the string representation.
+     */
     public String toString(char segdelim) {
         int len = size();
         for (HL7Segment seg : this) {
@@ -176,6 +256,12 @@ public class HL7Message extends ArrayList<HL7Segment> {
         return new String(cs);
     }
 
+    /**
+     * Gets the bytes.
+     *
+     * @param defCharset the def charset.
+     * @return the bytes.
+     */
     public byte[] getBytes(String defCharset) {
         try {
             return toString().getBytes(HL7Charset.toCharsetName(get(0).getField(17, defCharset)));

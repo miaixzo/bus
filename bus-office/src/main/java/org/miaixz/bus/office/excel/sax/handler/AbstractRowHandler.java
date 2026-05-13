@@ -38,10 +38,12 @@ public abstract class AbstractRowHandler<T> implements RowHandler {
      * The starting row index (inclusive, 0-based) for reading.
      */
     protected final int startRowIndex;
+
     /**
      * The ending row index (inclusive, 0-based) for reading.
      */
     protected final int endRowIndex;
+
     /**
      * Function to convert raw row data to type T.
      */

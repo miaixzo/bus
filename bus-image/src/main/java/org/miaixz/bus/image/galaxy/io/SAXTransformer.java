@@ -28,41 +28,103 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.xml.sax.SAXException;
 
 /**
+ * Represents the SAXTransformer type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public abstract class SAXTransformer {
 
+    /**
+     * The factory value.
+     */
     private static final SAXTransformerFactory factory = (SAXTransformerFactory) TransformerFactory.newInstance();
 
+    /**
+     * Gets the sax writer.
+     *
+     * @param templates the templates.
+     * @param result    the result.
+     * @return the sax writer.
+     * @throws TransformerConfigurationException if the operation cannot be completed.
+     */
     public static SAXWriter getSAXWriter(Templates templates, Attributes result)
             throws TransformerConfigurationException {
         return getSAXWriter(templates, result, null);
     }
 
+    /**
+     * Gets the sax writer.
+     *
+     * @param templates the templates.
+     * @param result    the result.
+     * @param setup     the setup.
+     * @return the sax writer.
+     * @throws TransformerConfigurationException if the operation cannot be completed.
+     */
     public static SAXWriter getSAXWriter(Templates templates, Attributes result, SetupTransformer setup)
             throws TransformerConfigurationException {
         return getSAXWriter(templates, new SAXResult(new ContentHandlerAdapter(result)), setup);
     }
 
+    /**
+     * Gets the sax writer.
+     *
+     * @param templates the templates.
+     * @param result    the result.
+     * @return the sax writer.
+     * @throws TransformerConfigurationException if the operation cannot be completed.
+     */
     public static SAXWriter getSAXWriter(Templates templates, Result result) throws TransformerConfigurationException {
         return getSAXWriter(templates, result, null);
     }
 
+    /**
+     * Gets the sax writer.
+     *
+     * @param templates the templates.
+     * @param result    the result.
+     * @param setup     the setup.
+     * @return the sax writer.
+     * @throws TransformerConfigurationException if the operation cannot be completed.
+     */
     public static SAXWriter getSAXWriter(Templates templates, Result result, SetupTransformer setup)
             throws TransformerConfigurationException {
         return getSAXWriter(factory.newTransformerHandler(templates), result, setup);
     }
 
+    /**
+     * Gets the sax writer.
+     *
+     * @param result the result.
+     * @return the sax writer.
+     * @throws TransformerConfigurationException if the operation cannot be completed.
+     */
     public static SAXWriter getSAXWriter(Result result) throws TransformerConfigurationException {
         return getSAXWriter(result, null);
     }
 
+    /**
+     * Gets the sax writer.
+     *
+     * @param result the result.
+     * @param setup  the setup.
+     * @return the sax writer.
+     * @throws TransformerConfigurationException if the operation cannot be completed.
+     */
     public static SAXWriter getSAXWriter(Result result, SetupTransformer setup)
             throws TransformerConfigurationException {
         return getSAXWriter(factory.newTransformerHandler(), result, setup);
     }
 
+    /**
+     * Gets the sax writer.
+     *
+     * @param th     the th.
+     * @param result the result.
+     * @param setup  the setup.
+     * @return the sax writer.
+     */
     private static SAXWriter getSAXWriter(TransformerHandler th, Result result, SetupTransformer setup) {
         th.setResult(result);
         if (setup != null)
@@ -70,6 +132,17 @@ public abstract class SAXTransformer {
         return new SAXWriter(th);
     }
 
+    /**
+     * Executes the transform operation.
+     *
+     * @param ds                          the ds.
+     * @param templates                   the templates.
+     * @param includeNameSpaceDeclaration the include name space declaration.
+     * @param includeKeword               the include keword.
+     * @return the operation result.
+     * @throws SAXException                      if the operation cannot be completed.
+     * @throws TransformerConfigurationException if the operation cannot be completed.
+     */
     public static Attributes transform(
             Attributes ds,
             Templates templates,
@@ -78,6 +151,18 @@ public abstract class SAXTransformer {
         return transform(ds, templates, includeNameSpaceDeclaration, includeKeword, null);
     }
 
+    /**
+     * Executes the transform operation.
+     *
+     * @param ds                          the ds.
+     * @param templates                   the templates.
+     * @param includeNameSpaceDeclaration the include name space declaration.
+     * @param includeKeword               the include keword.
+     * @param setup                       the setup.
+     * @return the operation result.
+     * @throws SAXException                      if the operation cannot be completed.
+     * @throws TransformerConfigurationException if the operation cannot be completed.
+     */
     public static Attributes transform(
             Attributes ds,
             Templates templates,
@@ -92,13 +177,32 @@ public abstract class SAXTransformer {
         return modify;
     }
 
+    /**
+     * Executes the new templates operation.
+     *
+     * @param source the source.
+     * @return the operation result.
+     * @throws TransformerConfigurationException if the operation cannot be completed.
+     */
     public static Templates newTemplates(Source source) throws TransformerConfigurationException {
         return factory.newTemplates(source);
     }
 
+    /**
+     * Defines the SetupTransformer contract.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public interface SetupTransformer {
 
+        /**
+         * Sets the up.
+         *
+         * @param transformer the transformer.
+         */
         void setup(Transformer transformer);
+
     }
 
 }

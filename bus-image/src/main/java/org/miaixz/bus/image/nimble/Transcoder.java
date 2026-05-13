@@ -35,7 +35,7 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
 import org.miaixz.bus.image.metric.Editable;
 import org.miaixz.bus.image.nimble.opencv.ImageCV;
-import org.miaixz.bus.image.nimble.opencv.ImageProcessor;
+import org.miaixz.bus.image.nimble.opencv.ImageIOHandler;
 import org.miaixz.bus.image.nimble.opencv.PlanarImage;
 import org.miaixz.bus.image.nimble.opencv.op.MaskArea;
 import org.miaixz.bus.image.nimble.stream.ImageDescriptor;
@@ -46,12 +46,21 @@ import org.opencv.core.MatOfInt;
 import org.opencv.imgcodecs.Imgcodecs;
 
 /**
+ * Represents the Transcoder type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class Transcoder {
 
+    /**
+     * The image reader spi value.
+     */
     public static final ImageReaderSpi IMAGE_READER_SPI = new ImageReaderSpi();
+
+    /**
+     * The image read param value.
+     */
     private static final ImageReadParam IMAGE_READ_PARAM = new ImageReadParam();
 
     static {
@@ -172,6 +181,12 @@ public class Transcoder {
         }
     }
 
+    /**
+     * Gets the masked image.
+     *
+     * @param m the m.
+     * @return the masked image.
+     */
     public static Editable<PlanarImage> getMaskedImage(MaskArea m) {
         if (m != null) {
             return img -> {
@@ -186,11 +201,24 @@ public class Transcoder {
         return null;
     }
 
+    /**
+     * Gets the mask.
+     *
+     * @param dataSet the data set.
+     * @param params  the params.
+     * @return the mask.
+     */
     private static Editable<PlanarImage> getMask(Attributes dataSet, TranscodeParam params) {
         String stationName = dataSet.getString(Tag.StationName, "*");
         return getMaskedImage(params.getMask(stationName));
     }
 
+    /**
+     * Gets the compression ratio.
+     *
+     * @param params the params.
+     * @return the compression ratio.
+     */
     private static int getCompressionRatio(TranscodeParam params) {
         if (params == null) {
             return 80;
@@ -198,6 +226,14 @@ public class Transcoder {
         return params.getJpegCompressionQuality().orElse(80);
     }
 
+    /**
+     * Determines whether preserve raw image.
+     *
+     * @param params the params.
+     * @param format the format.
+     * @param cvType the cv type.
+     * @return true if the condition is met; otherwise false.
+     */
     private static boolean isPreserveRawImage(TranscodeParam params, Format format, int cvType) {
         if (params == null) {
             return false;
@@ -219,6 +255,14 @@ public class Transcoder {
         return value;
     }
 
+    /**
+     * Executes the adapt file extension operation.
+     *
+     * @param path   the path.
+     * @param inExt  the in ext.
+     * @param outExt the out ext.
+     * @return the operation result.
+     */
     private static Path adaptFileExtension(Path path, String inExt, String outExt) {
         String fname = path.getFileName().toString();
         String suffix = FileName.getSuffix(fname);
@@ -232,16 +276,27 @@ public class Transcoder {
         return path.resolveSibling(fname + outExt);
     }
 
+    /**
+     * Writes the image.
+     *
+     * @param img       the img.
+     * @param path      the path.
+     * @param ext       the ext.
+     * @param map       the map.
+     * @param index     the index.
+     * @param indexSize the index size.
+     * @return the operation result.
+     */
     private static Path writeImage(PlanarImage img, Path path, Format ext, MatOfInt map, int index, int indexSize) {
         Path outPath = adaptFileExtension(path, ".dcm", ext.extension);
         outPath = addFileIndex(outPath, index, indexSize);
         if (map == null) {
-            if (!ImageProcessor.writeImage(img.toMat(), outPath.toFile())) {
+            if (!ImageIOHandler.writeImage(img.toMat(), outPath)) {
                 Logger.error(false, "Image", "Cannot Transform to {} {}", ext, img);
                 FileKit.remove(outPath);
             }
         } else {
-            if (!ImageProcessor.writeImage(img.toMat(), outPath.toFile(), map)) {
+            if (!ImageIOHandler.writeImage(img.toMat(), outPath, map)) {
                 Logger.error(false, "Image", "Cannot Transform to {} {}", ext, img);
                 FileKit.remove(outPath);
             }
@@ -282,19 +337,77 @@ public class Transcoder {
         return path.resolveSibling(path.getFileName().toString().replaceFirst("(.*?)(\\.[^.]+)?$", insert));
     }
 
+    /**
+     * Defines the Format values.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public enum Format {
 
-        JPEG(".jpg", false, false, false, false), PNG(".png", true, false, false, false),
-        TIF(".tif", true, false, true, true), JP2(".jp2", true, false, false, false),
-        PNM(".pnm", true, false, false, false), BMP(".bmp", false, false, false, false),
+        /**
+         * Constant for the jpeg value.
+         */
+        JPEG(".jpg", false, false, false, false),
+        /**
+         * Constant for the png value.
+         */
+        PNG(".png", true, false, false, false),
+        /**
+         * Constant for the tif value.
+         */
+        TIF(".tif", true, false, true, true),
+        /**
+         * Constant for the jp2 value.
+         */
+        JP2(".jp2", true, false, false, false),
+        /**
+         * Constant for the pnm value.
+         */
+        PNM(".pnm", true, false, false, false),
+        /**
+         * Constant for the bmp value.
+         */
+        BMP(".bmp", false, false, false, false),
+        /**
+         * The hdr value.
+         */
         HDR(".hdr", false, false, false, true);
 
+        /**
+         * The extension value.
+         */
         final String extension;
+
+        /**
+         * The support16 u value.
+         */
         final boolean support16U;
+
+        /**
+         * The support16 s value.
+         */
         final boolean support16S;
+
+        /**
+         * The support32 f value.
+         */
         final boolean support32F;
+
+        /**
+         * The support64 f value.
+         */
         final boolean support64F;
 
+        /**
+         * Creates a new instance.
+         *
+         * @param ext        the ext.
+         * @param support16U the support16 u.
+         * @param support16S the support16 s.
+         * @param support32F the support32 f.
+         * @param support64F the support64 f.
+         */
         Format(String ext, boolean support16U, boolean support16S, boolean support32F, boolean support64F) {
             this.extension = ext;
             this.support16U = support16U;
@@ -302,6 +415,7 @@ public class Transcoder {
             this.support32F = support32F;
             this.support64F = support64F;
         }
+
     }
 
 }

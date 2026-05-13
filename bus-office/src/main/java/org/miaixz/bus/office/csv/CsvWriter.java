@@ -46,15 +46,18 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
      * The underlying writer for CSV data.
      */
     private final Writer writer;
+
     /**
      * The configuration for CSV writing.
      */
     private final CsvWriteConfig config;
+
     /**
      * Flag indicating whether the writer is at the beginning of a new line. This is used to determine whether to write
      * a field separator before writing a field.
      */
     private boolean newline = true;
+
     /**
      * Flag indicating whether this is the first line being written. Initially {@code true}, becomes {@code false} after
      * content is written. Used to determine whether to add a newline character.

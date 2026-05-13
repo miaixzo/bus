@@ -52,14 +52,17 @@ public class SettingPublisher {
      * Watch-event source name used for durable setting mutations.
      */
     public static final String SETTING_DURABLE_SOURCE = "setting-durable";
+
     /**
      * Watch-event type emitted after a durable publish.
      */
     private static final String DURABLE_PUBLISH_EVENT = "durable-publish";
+
     /**
      * Watch-event type emitted after a rollback publish.
      */
     private static final String ROLLBACK_EVENT = "rollback";
+
     /**
      * Watch-event type emitted after durable deletion.
      */
@@ -69,26 +72,32 @@ public class SettingPublisher {
      * Current-state setting store.
      */
     private final StoreBackedItemStore entryStore;
+
     /**
      * ItemRevision history store.
      */
     private final ItemRevisionStore revisionStore;
+
     /**
      * Watch manager notified after publish and delete operations.
      */
     private final WatchManager watchManager;
+
     /**
      * Secret codec used when the entry stores encrypted content.
      */
     private final SecretCodec secretCodec;
+
     /**
      * Maximum number of retained revisions per setting entry.
      */
     private final int maxRevisions;
+
     /**
      * Optional reliable change log used as a first-stage outbox.
      */
     private final CortexChangeLogStore changeLogStore;
+
     /**
      * Setting-domain key strategy.
      */

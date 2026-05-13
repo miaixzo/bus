@@ -40,6 +40,8 @@ import org.miaixz.bus.logger.Logger;
  * This class provides an entry point to all the GitLab API users calls.
  *
  * @see <a href="https://docs.gitlab.com/ce/api/users.html">Users API at GitLab</a>
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class UserApi extends AbstractApi {
 

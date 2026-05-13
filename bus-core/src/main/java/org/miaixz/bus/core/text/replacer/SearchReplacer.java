@@ -41,18 +41,22 @@ public class SearchReplacer extends StringReplacer {
      * The starting index (inclusive) for the search operation.
      */
     private final int fromIndex;
+
     /**
      * The character sequence to search for.
      */
     private final CharSequence searchText;
+
     /**
      * The length of the search text.
      */
     private final int searchTextLength;
+
     /**
      * The character sequence to replace the search text with.
      */
     private final CharSequence replacement;
+
     /**
      * Indicates whether the search should ignore case.
      */

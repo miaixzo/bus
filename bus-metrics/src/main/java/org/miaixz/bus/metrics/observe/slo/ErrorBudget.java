@@ -31,18 +31,22 @@ public class ErrorBudget {
      * SLO target fraction, e.g. 0.999 for 99.9%.
      */
     private final double target;
+
     /**
      * Observation window length in milliseconds.
      */
     private final long windowMillis;
+
     /**
      * Cumulative count of good (successful) requests.
      */
     private long goodRequests = 0;
+
     /**
      * Cumulative count of all requests (good + bad).
      */
     private long totalRequests = 0;
+
     /**
      * Epoch millisecond timestamp when this budget was created.
      */
@@ -59,13 +63,17 @@ public class ErrorBudget {
         this.windowMillis = windowMillis;
     }
 
-    /** Record one good (successful) request. */
+    /**
+     * Record one good (successful) request.
+     */
     public synchronized void recordGood() {
         goodRequests++;
         totalRequests++;
     }
 
-    /** Record one bad (failed) request. */
+    /**
+     * Record one bad (failed) request.
+     */
     public synchronized void recordBad() {
         totalRequests++;
     }

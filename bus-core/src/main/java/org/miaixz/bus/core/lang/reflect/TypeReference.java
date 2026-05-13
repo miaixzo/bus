@@ -28,9 +28,9 @@ import org.miaixz.bus.core.xyz.TypeKit;
  * {@code TypeReference}, the actual generic type arguments can be captured and retrieved.
  * <p>
  * Example usage:
- * 
+ *
  * <pre>{@code
- * 
+ *
  * TypeReference<List<String>> listRef = new TypeReference<List<String>>() {
  * };
  * Type type = listRef.getType(); // type will be ParameterizedType representing List<String>

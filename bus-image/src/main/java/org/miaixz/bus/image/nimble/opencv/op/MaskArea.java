@@ -23,30 +23,57 @@ import java.awt.*;
 import java.util.List;
 import java.util.Objects;
 
+import org.miaixz.bus.image.nimble.opencv.ImageAnalyzer;
 import org.miaixz.bus.image.nimble.opencv.ImageCV;
-import org.miaixz.bus.image.nimble.opencv.ImageProcessor;
 import org.miaixz.bus.logger.Logger;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 
 /**
+ * Represents the MaskArea type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class MaskArea {
 
+    /**
+     * The color value.
+     */
     private final Color color;
+
+    /**
+     * The shape list value.
+     */
     private final List<Shape> shapeList;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param shapeList the shape list.
+     */
     public MaskArea(List<Shape> shapeList) {
         this(shapeList, null);
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param shapeList the shape list.
+     * @param color     the color.
+     */
     public MaskArea(List<Shape> shapeList, Color color) {
         this.shapeList = Objects.requireNonNull(shapeList);
         this.color = color;
     }
 
+    /**
+     * Executes the draw shape operation.
+     *
+     * @param srcImg   the src img.
+     * @param maskArea the mask area.
+     * @return the operation result.
+     */
     public static ImageCV drawShape(Mat srcImg, MaskArea maskArea) {
         if (maskArea != null && !maskArea.getShapeList().isEmpty()) {
             Color c = maskArea.getColor();
@@ -63,19 +90,29 @@ public class MaskArea {
                         Imgproc.blur(srcImg.submat(rect2d), dstImg.submat(rect2d), new Size(7, 7));
                     }
                 } else {
-                    List<MatOfPoint> pts = ImageProcessor.transformShapeToContour(shape, true);
+                    List<MatOfPoint> pts = ImageAnalyzer.transformShapeToContour(shape, true);
                     Imgproc.fillPoly(dstImg, pts, color);
                 }
             }
             return dstImg;
         }
-        return ImageCV.toImageCV(srcImg);
+        return ImageCV.fromMat(srcImg);
     }
 
+    /**
+     * Gets the color.
+     *
+     * @return the color.
+     */
     public Color getColor() {
         return color;
     }
 
+    /**
+     * Gets the shape list.
+     *
+     * @return the shape list.
+     */
     public List<Shape> getShapeList() {
         return shapeList;
     }

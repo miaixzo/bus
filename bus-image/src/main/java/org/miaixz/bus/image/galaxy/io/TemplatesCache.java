@@ -26,15 +26,28 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.stream.StreamSource;
 
 /**
+ * Represents the TemplatesCache type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class TemplatesCache {
 
+    /**
+     * The default cache value.
+     */
     private static TemplatesCache defaultCache;
 
+    /**
+     * The map value.
+     */
     private final HashMap<String, Templates> map = new HashMap<>();
 
+    /**
+     * Gets the default.
+     *
+     * @return the default.
+     */
     public static synchronized TemplatesCache getDefault() {
         if (defaultCache == null) {
             defaultCache = new TemplatesCache();
@@ -42,6 +55,11 @@ public class TemplatesCache {
         return defaultCache;
     }
 
+    /**
+     * Sets the default.
+     *
+     * @param cache the cache.
+     */
     public static synchronized void setDefault(TemplatesCache cache) {
         if (cache == null) {
             throw new NullPointerException();
@@ -49,10 +67,20 @@ public class TemplatesCache {
         defaultCache = cache;
     }
 
+    /**
+     * Executes the clear operation.
+     */
     public void clear() {
         map.clear();
     }
 
+    /**
+     * Executes the get operation.
+     *
+     * @param uri the uri.
+     * @return the operation result.
+     * @throws TransformerConfigurationException if the operation cannot be completed.
+     */
     public Templates get(String uri) throws TransformerConfigurationException {
         Templates tpl = map.get(uri);
         if (tpl == null)

@@ -39,14 +39,12 @@ import org.miaixz.bus.core.xyz.StringKit;
  * This collection can be viewed as a {@link LinkedHashMap} where the key is {@link TreeEntryNode#getKey()} and the
  * value is a {@link TreeEntryNode} instance. Each key-value pair is treated as a {@link TreeEntryNode}, and using the
  * same key will always access the same node.
- * 
  *
  * <p>
  * Nodes form parent-child relationships through their keys, ultimately creating a multi-way tree structure. Multiple
  * parallel multi-way trees constitute a forest within this collection. Users can manipulate or access the forest
  * through the methods of {@link ForestMap} itself, or by obtaining a {@link TreeEntry} and using the node's own
  * methods.
- * 
  *
  * @param <K> The type of the keys.
  * @param <V> The type of the values.
@@ -323,6 +321,8 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
      *
      * @param <K> The type of the key.
      * @param <V> The type of the value.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class TreeEntryNode<K, V> implements TreeEntry<K, V> {
 
@@ -330,22 +330,27 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
          * A map of child nodes, keyed by their unique key.
          */
         private final Map<K, TreeEntryNode<K, V>> children;
+
         /**
          * The unique key of this node.
          */
         private final K key;
+
         /**
          * The root of the tree this node belongs to.
          */
         private TreeEntryNode<K, V> root;
+
         /**
          * The direct parent of this node.
          */
         private TreeEntryNode<K, V> parent;
+
         /**
          * The distance from the root node (depth).
          */
         private int weight;
+
         /**
          * The value associated with this node.
          */
@@ -683,6 +688,8 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
      * @param <K> The key type.
      * @param <V> The value type.
      * @param <N> The type of the wrapped {@link TreeEntry}.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class EntryNodeWrapper<K, V, N extends TreeEntry<K, V>>
             implements Map.Entry<K, TreeEntry<K, V>>, Wrapper<N> {
@@ -736,6 +743,7 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
         public N getRaw() {
             return entryNode;
         }
+
     }
 
 }

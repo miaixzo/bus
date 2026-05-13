@@ -40,6 +40,7 @@ public class StreamReader {
      * The underlying input stream to read from.
      */
     private final InputStream in;
+
     /**
      * Flag indicating whether the input stream should be closed after reading operations.
      */

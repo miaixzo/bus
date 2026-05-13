@@ -55,6 +55,7 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
      */
     private static final java.util.regex.Pattern DMESG_CPU = java.util.regex.Pattern
             .compile("cpu(\\d+): smt (\\d+), core (\\d+), package (\\d+)");
+
     /**
      * The vmStats value.
      */

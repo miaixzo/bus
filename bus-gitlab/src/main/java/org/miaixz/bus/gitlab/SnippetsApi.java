@@ -31,6 +31,9 @@ import jakarta.ws.rs.core.Response;
 
 /**
  * This class provides an entry point to all the GitLab Snippets API project calls.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class SnippetsApi extends AbstractApi {
 

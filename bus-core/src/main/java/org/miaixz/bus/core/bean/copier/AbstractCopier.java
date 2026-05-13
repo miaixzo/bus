@@ -39,10 +39,12 @@ public abstract class AbstractCopier<S, T> implements Copier<T> {
      * The source object from which properties are copied.
      */
     protected final S source;
+
     /**
      * The target object to which properties are copied.
      */
     protected final T target;
+
     /**
      * The options governing the copying process.
      */

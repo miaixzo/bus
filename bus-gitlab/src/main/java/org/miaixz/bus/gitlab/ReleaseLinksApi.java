@@ -30,8 +30,10 @@ import jakarta.ws.rs.core.Response;
 
 /**
  * This class provides an entry point to all the GitLab ReleaseLinks API calls.
- * 
+ *
  * @see <a href="https://docs.gitlab.com/ce/api/releases/links.html">ReleaseLinks API at GitLab</a>
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class ReleaseLinksApi extends AbstractApi {
 

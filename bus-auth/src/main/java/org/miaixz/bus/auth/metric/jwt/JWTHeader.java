@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * JWT Header information. This class extends {@link Claims} to specifically handle the header part of a JSON Web Token,
  * defining standard header parameters like algorithm, type, content type, and key ID.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -39,14 +39,17 @@ public class JWTHeader extends Claims {
      * SHA256).
      */
     public static String ALGORITHM = "alg";
+
     /**
      * The type of the token, typically "JWT".
      */
     public static String TYPE = "typ";
+
     /**
      * The content type of the JWT.
      */
     public static String CONTENT_TYPE = "cty";
+
     /**
      * The Key ID (kid) parameter, used to hint which key was used to secure the JWS.
      */

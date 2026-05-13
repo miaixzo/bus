@@ -47,6 +47,8 @@ import org.miaixz.bus.logger.Logger;
  *      events API</a>
  * @see <a href="https://docs.gitlab.com/ce/api/custom_attributes.html">Custom Attributes API</a>
  * @see <a href="https://docs.gitlab.com/ce/api/remote_mirrors.html">Project remote mirrors API</a>
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class ProjectApi extends AbstractApi implements Constants {
 

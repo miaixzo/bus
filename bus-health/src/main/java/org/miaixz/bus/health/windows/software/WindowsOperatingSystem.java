@@ -69,23 +69,28 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
      * The IS_VISTA_OR_GREATER constant.
      */
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
+
     /**
      * OSProcess code will need to know bitness of current process
      */
     private static final boolean X86 = isCurrentX86();
+
     /**
      * Windows event log name
      */
     private static final Supplier<String> systemLog = Memoizer
             .memoize(WindowsOperatingSystem::querySystemLog, TimeUnit.HOURS.toNanos(1));
+
     /**
      * The BOOTTIME constant.
      */
     private static final long BOOTTIME = querySystemBootTime();
+
     /**
      * The WOW constant.
      */
     private static final boolean WOW = isCurrentWow();
+
     /**
      * The installedAppsSupplier value.
      */
@@ -104,6 +109,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
      */
     private final Supplier<Map<Integer, ProcessPerformanceData.PerfCounterBlock>> processMapFromRegistry = Memoizer
             .memoize(WindowsOperatingSystem::queryProcessMapFromRegistry, Memoizer.defaultExpiration());
+
     /**
      * The processMapFromPerfCounters value.
      */
@@ -118,6 +124,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
      */
     private final Supplier<Map<Integer, ThreadPerformanceData.PerfCounterBlock>> threadMapFromRegistry = Memoizer
             .memoize(WindowsOperatingSystem::queryThreadMapFromRegistry, Memoizer.defaultExpiration());
+
     /**
      * The threadMapFromPerfCounters value.
      */

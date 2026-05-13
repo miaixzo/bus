@@ -43,34 +43,42 @@ public class DownloadBill extends Voucher {
      * Sub-merchant App ID.
      */
     private String sub_appid;
+
     /**
      * Merchant ID.
      */
     private String mch_id;
+
     /**
      * Sub-merchant ID.
      */
     private String sub_mch_id;
+
     /**
      * Random string.
      */
     private String nonce_str;
+
     /**
      * Signature.
      */
     private String sign;
+
     /**
      * Signature type.
      */
     private String sign_type;
+
     /**
      * The date of the bill in YYYYMMDD format.
      */
     private String bill_date;
+
     /**
      * The type of bill to download (e.g., ALL, SUCCESS, REFUND).
      */
     private String bill_type;
+
     /**
      * The compression type for the bill file (e.g., GZIP).
      */

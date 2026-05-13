@@ -44,14 +44,17 @@ public class UserRelation extends Voucher {
      * Version number.
      */
     private String version;
+
     /**
      * Merchant number.
      */
     private String merchant;
+
     /**
      * User ID.
      */
     private String userId;
+
     /**
      * Signature.
      */

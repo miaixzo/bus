@@ -20,23 +20,36 @@
 package org.miaixz.bus.image.galaxy.dict.PHILIPS_MR_1;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "PHILIPS-MR-1";
 
-    /** (0019,xx11) VR=IS VM=1 Chemical Shift Number */
+    /**
+     * (0019,xx11) VR=IS VM=1 Chemical Shift Number
+     */
     public static final int ChemicalShiftNumber = 0x00190011;
 
-    /** (0019,xx12) VR=IS VM=1 Phase Number */
+    /**
+     * (0019,xx12) VR=IS VM=1 Phase Number
+     */
     public static final int PhaseNumber = 0x00190012;
 
-    /** (0021,xx01) VR=IS VM=1 Reconstruction Number */
+    /**
+     * (0021,xx01) VR=IS VM=1 Reconstruction Number
+     */
     public static final int ReconstructionNumber = 0x00210001;
 
-    /** (0021,xx02) VR=IS VM=1 Slice Number */
+    /**
+     * (0021,xx02) VR=IS VM=1 Slice Number
+     */
     public static final int SliceNumber = 0x00210002;
 
 }

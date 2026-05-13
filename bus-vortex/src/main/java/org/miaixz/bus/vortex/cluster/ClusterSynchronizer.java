@@ -59,7 +59,7 @@ import java.util.Collection;
  * <p>
  * <b>Implementation Naming Examples:</b>
  * </p>
- * 
+ *
  * <pre>{@code
  * // Implementation class naming
  * public class DatabaseClusterSynchronizer implements ClusterSynchronizer<Assets> {

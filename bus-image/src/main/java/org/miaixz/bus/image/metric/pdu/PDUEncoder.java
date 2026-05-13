@@ -43,48 +43,125 @@ import org.miaixz.bus.image.metric.net.PDVType;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the PDUEncoder type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PDUEncoder extends PDVOutputStream {
 
+    /**
+     * The as value.
+     */
     private final Association as;
+
+    /**
+     * The out value.
+     */
     private final OutputStream out;
+
+    /**
+     * The dimse lock value.
+     */
     private final Object dimseLock = new Object();
+
+    /**
+     * The write lock value.
+     */
     private final Lock writeLock = new ReentrantLock(true);
+
+    /**
+     * The buf value.
+     */
     private byte[] buf = new byte[Connection.DEF_MAX_PDU_LENGTH + 6];
+
+    /**
+     * The pos value.
+     */
     private int pos;
+
+    /**
+     * The pdvpcid value.
+     */
     private int pdvpcid;
+
+    /**
+     * The pdvcmd value.
+     */
     private int pdvcmd;
+
+    /**
+     * The pdvpos value.
+     */
     private int pdvpos;
+
+    /**
+     * The maxpdulen value.
+     */
     private int maxpdulen;
+
+    /**
+     * The th value.
+     */
     private Thread th;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param as  the as.
+     * @param out the out.
+     */
     public PDUEncoder(Association as, OutputStream out) {
         this.as = as;
         this.out = out;
     }
 
+    /**
+     * Executes the write operation.
+     *
+     * @param rq the rq.
+     * @throws IOException if the operation cannot be completed.
+     */
     public void write(AAssociateRQ rq) throws IOException {
         encode(rq, PDUType.A_ASSOCIATE_RQ, ItemType.RQ_PRES_CONTEXT);
         writePDU(pos - 6);
     }
 
+    /**
+     * Executes the write operation.
+     *
+     * @param ac the ac.
+     * @throws IOException if the operation cannot be completed.
+     */
     public void write(AAssociateAC ac) throws IOException {
         encode(ac, PDUType.A_ASSOCIATE_AC, ItemType.AC_PRES_CONTEXT);
         writePDU(pos - 6);
     }
 
+    /**
+     * Executes the write operation.
+     *
+     * @param rj the rj.
+     * @throws IOException if the operation cannot be completed.
+     */
     public void write(AAssociateRJ rj) throws IOException {
         write(PDUType.A_ASSOCIATE_RJ, rj.getResult(), rj.getSource(), rj.getReason(), true);
     }
 
+    /**
+     * Writes the a release rq.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     public void writeAReleaseRQ() throws IOException {
         synchronized (dimseLock) {
             write(PDUType.A_RELEASE_RQ, 0, 0, 0, true);
         }
     }
 
+    /**
+     * Writes the a release rp.
+     */
     public void writeAReleaseRP() {
         try {
             write(PDUType.A_RELEASE_RP, 0, 0, 0, false);
@@ -100,6 +177,11 @@ public class PDUEncoder extends PDVOutputStream {
         }
     }
 
+    /**
+     * Executes the write operation.
+     *
+     * @param aa the aa.
+     */
     public void write(AAbort aa) {
         try {
             write(PDUType.A_ABORT, 0, aa.getSource(), aa.getReason(), false);
@@ -117,6 +199,16 @@ public class PDUEncoder extends PDVOutputStream {
         }
     }
 
+    /**
+     * Executes the write operation.
+     *
+     * @param pdutype  the pdutype.
+     * @param result   the result.
+     * @param source   the source.
+     * @param reason   the reason.
+     * @param blocking the blocking.
+     * @throws IOException if the operation cannot be completed.
+     */
     private void write(int pdutype, int result, int source, int reason, boolean blocking) throws IOException {
         if (blocking) {
             writeLock.lock();
@@ -158,6 +250,12 @@ public class PDUEncoder extends PDVOutputStream {
         }
     }
 
+    /**
+     * Writes the pdu.
+     *
+     * @param pdulen the pdulen.
+     * @throws IOException if the operation cannot be completed.
+     */
     private void writePDU(int pdulen) throws IOException {
         writeLock.lock();
         try {
@@ -182,6 +280,13 @@ public class PDUEncoder extends PDVOutputStream {
         pos = 12;
     }
 
+    /**
+     * Executes the encode operation.
+     *
+     * @param rqac       the rqac.
+     * @param pduType    the pdu type.
+     * @param pcItemType the pc item type.
+     */
     private void encode(AAssociateRQAC rqac, int pduType, int pcItemType) {
         rqac.checkCallingAET();
         rqac.checkCalledAET();
@@ -205,24 +310,51 @@ public class PDUEncoder extends PDVOutputStream {
         encodeUserInfo(rqac);
     }
 
+    /**
+     * Executes the put operation.
+     *
+     * @param ch the ch.
+     */
     private void put(int ch) {
         buf[pos++] = (byte) ch;
     }
 
+    /**
+     * Executes the put operation.
+     *
+     * @param b the b.
+     */
     private void put(byte[] b) {
         put(b, 0, b.length);
     }
 
+    /**
+     * Executes the put operation.
+     *
+     * @param b   the b.
+     * @param off the off.
+     * @param len the len.
+     */
     private void put(byte[] b, int off, int len) {
         System.arraycopy(b, off, buf, pos, len);
         pos += len;
     }
 
+    /**
+     * Executes the put short operation.
+     *
+     * @param v the v.
+     */
     private void putShort(int v) {
         buf[pos++] = (byte) (v >> 8);
         buf[pos++] = (byte) v;
     }
 
+    /**
+     * Executes the put int operation.
+     *
+     * @param v the v.
+     */
     private void putInt(int v) {
         buf[pos++] = (byte) (v >> 24);
         buf[pos++] = (byte) (v >> 16);
@@ -230,22 +362,42 @@ public class PDUEncoder extends PDVOutputStream {
         buf[pos++] = (byte) v;
     }
 
+    /**
+     * Executes the put string operation.
+     *
+     * @param s the s.
+     */
     private void putString(String s) {
         int len = s.length();
         s.getBytes(0, len, buf, pos);
         pos += len;
     }
 
+    /**
+     * Executes the encode operation.
+     *
+     * @param b the b.
+     */
     private void encode(byte[] b) {
         putShort(b.length);
         put(b, 0, b.length);
     }
 
+    /**
+     * Executes the encode operation.
+     *
+     * @param s the s.
+     */
     private void encode(String s) {
         putShort(s.length());
         putString(s);
     }
 
+    /**
+     * Executes the encode aet operation.
+     *
+     * @param aet the aet.
+     */
     private void encodeAET(String aet) {
         int endpos = pos + 16;
         putString(aet);
@@ -253,12 +405,24 @@ public class PDUEncoder extends PDVOutputStream {
             put(0x20);
     }
 
+    /**
+     * Executes the encode item header operation.
+     *
+     * @param type the type.
+     * @param len  the len.
+     */
     private void encodeItemHeader(int type, int len) {
         put(type);
         put(0);
         putShort(len);
     }
 
+    /**
+     * Executes the encode string item operation.
+     *
+     * @param type the type.
+     * @param s    the s.
+     */
     private void encodeStringItem(int type, String s) {
         if (s == null)
             return;
@@ -267,6 +431,12 @@ public class PDUEncoder extends PDVOutputStream {
         putString(s);
     }
 
+    /**
+     * Executes the encode operation.
+     *
+     * @param pc         the pc.
+     * @param pcItemType the pc item type.
+     */
     private void encode(PresentationContext pc, int pcItemType) {
         encodeItemHeader(pcItemType, pc.length());
         put(pc.getPCID());
@@ -278,6 +448,11 @@ public class PDUEncoder extends PDVOutputStream {
             encodeStringItem(ItemType.TRANSFER_SYNTAX, ts);
     }
 
+    /**
+     * Executes the encode user info operation.
+     *
+     * @param rqac the rqac.
+     */
     private void encodeUserInfo(AAssociateRQAC rqac) {
         encodeItemHeader(ItemType.USER_INFO, rqac.userInfoLength());
         encodeMaxPDULength(rqac.getMaxPDULength());
@@ -295,17 +470,32 @@ public class PDUEncoder extends PDVOutputStream {
         encode(rqac.getUserIdentityAC());
     }
 
+    /**
+     * Executes the encode max pdu length operation.
+     *
+     * @param maxPDULength the max pdu length.
+     */
     private void encodeMaxPDULength(int maxPDULength) {
         encodeItemHeader(ItemType.MAX_PDU_LENGTH, 4);
         putInt(maxPDULength);
     }
 
+    /**
+     * Executes the encode async ops window operation.
+     *
+     * @param rqac the rqac.
+     */
     private void encodeAsyncOpsWindow(AAssociateRQAC rqac) {
         encodeItemHeader(ItemType.ASYNC_OPS_WINDOW, 4);
         putShort(rqac.getMaxOpsInvoked());
         putShort(rqac.getMaxOpsPerformed());
     }
 
+    /**
+     * Executes the encode operation.
+     *
+     * @param rs the rs.
+     */
     private void encode(RoleSelection rs) {
         encodeItemHeader(ItemType.ROLE_SELECTION, rs.length());
         encode(rs.getSOPClassUID());
@@ -313,12 +503,22 @@ public class PDUEncoder extends PDVOutputStream {
         put(rs.isSCP() ? 1 : 0);
     }
 
+    /**
+     * Executes the encode operation.
+     *
+     * @param extNeg the ext neg.
+     */
     private void encode(ExtendedNegotiation extNeg) {
         encodeItemHeader(ItemType.EXT_NEG, extNeg.length());
         encode(extNeg.getSOPClassUID());
         put(extNeg.getInformation());
     }
 
+    /**
+     * Executes the encode operation.
+     *
+     * @param extNeg the ext neg.
+     */
     private void encode(CommonExtended extNeg) {
         encodeItemHeader(ItemType.COMMON_EXT_NEG, extNeg.length());
         encode(extNeg.getSOPClassUID());
@@ -328,6 +528,11 @@ public class PDUEncoder extends PDVOutputStream {
             encode(cuid);
     }
 
+    /**
+     * Executes the encode operation.
+     *
+     * @param userIdentity the user identity.
+     */
     private void encode(IdentityRQ userIdentity) {
         if (userIdentity == null)
             return;
@@ -339,6 +544,11 @@ public class PDUEncoder extends PDVOutputStream {
         encode(userIdentity.getSecondaryField());
     }
 
+    /**
+     * Executes the encode operation.
+     *
+     * @param userIdentity the user identity.
+     */
     private void encode(IdentityAC userIdentity) {
         if (userIdentity == null)
             return;
@@ -347,6 +557,12 @@ public class PDUEncoder extends PDVOutputStream {
         encode(userIdentity.getServerResponse());
     }
 
+    /**
+     * Executes the write operation.
+     *
+     * @param b the b.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void write(int b) throws IOException {
         checkThread();
@@ -354,6 +570,14 @@ public class PDUEncoder extends PDVOutputStream {
         put(b);
     }
 
+    /**
+     * Executes the write operation.
+     *
+     * @param b   the b.
+     * @param off the off.
+     * @param len the len.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void write(byte[] b, int off, int len) throws IOException {
         checkThread();
@@ -368,12 +592,22 @@ public class PDUEncoder extends PDVOutputStream {
         }
     }
 
+    /**
+     * Executes the close operation.
+     */
     @Override
     public void close() {
         checkThread();
         encodePDVHeader(PDVType.LAST);
     }
 
+    /**
+     * Copies the from.
+     *
+     * @param in  the in.
+     * @param len the len.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void copyFrom(InputStream in, int len) throws IOException {
         checkThread();
@@ -388,6 +622,12 @@ public class PDUEncoder extends PDVOutputStream {
         }
     }
 
+    /**
+     * Copies the from.
+     *
+     * @param in the in.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void copyFrom(InputStream in) throws IOException {
         checkThread();
@@ -400,15 +640,28 @@ public class PDUEncoder extends PDVOutputStream {
         }
     }
 
+    /**
+     * Executes the check thread operation.
+     */
     private void checkThread() {
         if (th != Thread.currentThread())
             throw new IllegalStateException("Entered by wrong thread");
     }
 
+    /**
+     * Executes the free operation.
+     *
+     * @return the operation result.
+     */
     private int free() {
         return maxpdulen + 6 - pos;
     }
 
+    /**
+     * Executes the flush p data tf operation.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     private void flushPDataTF() throws IOException {
         if (free() > 0)
             return;
@@ -416,6 +669,11 @@ public class PDUEncoder extends PDVOutputStream {
         as.writePDataTF();
     }
 
+    /**
+     * Executes the encode pdv header operation.
+     *
+     * @param last the last.
+     */
     private void encodePDVHeader(int last) {
         final int endpos = pos;
         final int pdvlen = endpos - pdvpos - 4;
@@ -434,6 +692,11 @@ public class PDUEncoder extends PDVOutputStream {
                 (pdvcmd | last));
     }
 
+    /**
+     * Writes the p data tf.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     public void writePDataTF() throws IOException {
         int pdulen = pos - 6;
         pos = 0;
@@ -444,6 +707,14 @@ public class PDUEncoder extends PDVOutputStream {
         writePDU(pdulen);
     }
 
+    /**
+     * Writes the dimse.
+     *
+     * @param pc         the pc.
+     * @param cmd        the cmd.
+     * @param dataWriter the data writer.
+     * @throws IOException if the operation cannot be completed.
+     */
     public void writeDIMSE(PresentationContext pc, Attributes cmd, DataWriter dataWriter) throws IOException {
         synchronized (dimseLock) {
             int pcid = pc.getPCID();

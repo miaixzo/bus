@@ -40,22 +40,27 @@ public class Http2Writer implements Closeable {
      * The HPACK writer for encoding headers.
      */
     final Hpack.Writer hpackWriter;
+
     /**
      * The underlying sink to which frames are written.
      */
     private final BufferSink sink;
+
     /**
      * True if this writer is for a client endpoint.
      */
     private final boolean client;
+
     /**
      * A buffer used for HPACK encoding.
      */
     private final Buffer hpackBuffer;
+
     /**
      * The maximum number of bytes that may be sent in a single DATA frame.
      */
     private int maxFrameSize;
+
     /**
      * True if this writer has been closed.
      */

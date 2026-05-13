@@ -20,20 +20,31 @@
 package org.miaixz.bus.image.galaxy.dict.SMIO_PB7D;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SMIO_PB7D";
 
-    /** (007D,xx01) VR=UL VM=1 Geometry */
+    /**
+     * (007D,xx01) VR=UL VM=1 Geometry
+     */
     public static final int Geometry = 0x007D0001;
 
-    /** (007D,xx02) VR=FL VM=1 Spacing */
+    /**
+     * (007D,xx02) VR=FL VM=1 Spacing
+     */
     public static final int Spacing = 0x007D0002;
 
-    /** (007D,xx03) VR=FL VM=1 Origin */
+    /**
+     * (007D,xx03) VR=FL VM=1 Origin
+     */
     public static final int Origin = 0x007D0003;
 
 }

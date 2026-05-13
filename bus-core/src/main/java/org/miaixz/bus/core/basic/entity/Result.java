@@ -51,6 +51,7 @@ public class Result<T> implements Serializable {
      * The total number of records.
      */
     protected long total;
+
     /**
      * The list of records for the current query.
      */

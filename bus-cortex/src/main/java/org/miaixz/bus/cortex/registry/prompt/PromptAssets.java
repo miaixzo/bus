@@ -160,6 +160,9 @@ public class PromptAssets extends Assets {
 
     /**
      * Prompt-specific metadata payload stored directly in the raw asset metadata JSON payload.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @Setter
@@ -169,10 +172,12 @@ public class PromptAssets extends Assets {
          * Prompt template content.
          */
         private String template;
+
         /**
          * Declared template variables accepted by the prompt.
          */
         private List<String> variables;
+
         /**
          * Tags attached to the prompt for discovery.
          */

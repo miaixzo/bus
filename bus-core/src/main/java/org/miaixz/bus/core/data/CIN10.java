@@ -41,14 +41,17 @@ public class CIN10 {
      * Regex for Taiwan ID card number.
      */
     private static final Pattern PATTERN_TW = Pattern.compile("^[a-zA-Z][0-9]{9}$");
+
     /**
      * Regex for Macau ID card number.
      */
     private static final Pattern PATTERN_MC = Pattern.compile("^[157][0-9]{6}\\(?[0-9A-Z]\\)?$");
+
     /**
      * Regex for Hong Kong ID card number.
      */
     private static final Pattern PATTERN_HK = Pattern.compile("^[A-Z]{1,2}[0-9]{6}\\(?[0-9A]\\)?$");
+
     /**
      * Mapping of the first letter of a Taiwan ID card to a number.
      */
@@ -87,14 +90,17 @@ public class CIN10 {
      * The ID card number.
      */
     private final String code;
+
     /**
      * The province.
      */
     private final String province;
+
     /**
      * The gender.
      */
     private final Gender gender;
+
     /**
      * Whether the ID card number has been verified.
      */

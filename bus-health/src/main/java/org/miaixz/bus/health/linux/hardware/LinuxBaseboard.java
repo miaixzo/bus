@@ -42,18 +42,22 @@ final class LinuxBaseboard extends AbstractBaseboard {
      * The manufacturerModelVersionSerial value.
      */
     private final Supplier<Tuple> manufacturerModelVersionSerial = Memoizer.memoize(CpuInfo::queryBoardInfo);
+
     /**
      * The manufacturer value.
      */
     private final Supplier<String> manufacturer = Memoizer.memoize(this::queryManufacturer);
+
     /**
      * The model value.
      */
     private final Supplier<String> model = Memoizer.memoize(this::queryModel);
+
     /**
      * The version value.
      */
     private final Supplier<String> version = Memoizer.memoize(this::queryVersion);
+
     /**
      * The serialNumber value.
      */

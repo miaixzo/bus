@@ -31,7 +31,7 @@ import java.lang.annotation.*;
  * Elasticsearch cluster, including the {@link org.elasticsearch.client.RestClient} and the modern
  * {@link co.elastic.clients.elasticsearch.ElasticsearchClient}.
  *
- * @author <a href="mailto:congchun.zheng@gmail.com">Sixawn.ZHENG</a>
+ * @author Kimi Liu
  * @since Java 21+
  */
 @Inherited

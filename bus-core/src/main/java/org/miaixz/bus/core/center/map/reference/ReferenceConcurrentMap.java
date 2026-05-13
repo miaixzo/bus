@@ -39,7 +39,6 @@ import org.miaixz.bus.core.xyz.ReferKit;
  * <p>
  * Subclasses must implement {@link #wrapKey(Object, ReferenceQueue)} and {@link #wrapValue(Object, ReferenceQueue)} to
  * define the specific type of reference (e.g., soft, weak, strong) used for keys and values.
- * 
  *
  * @param <K> The type of keys in the map.
  * @param <V> The type of values in the map.
@@ -56,14 +55,17 @@ public abstract class ReferenceConcurrentMap<K, V>
      * The underlying {@link ConcurrentMap} that stores the wrapped keys and values.
      */
     final ConcurrentMap<Ref<K>, Ref<V>> raw;
+
     /**
      * The {@link ReferenceQueue} for keys that have been garbage-collected.
      */
     private final ReferenceQueue<K> lastKeyQueue;
+
     /**
      * The {@link ReferenceQueue} for values that have been garbage-collected.
      */
     private final ReferenceQueue<V> lastValueQueue;
+
     /**
      * An optional listener that is invoked when a key or value is purged from the map due to garbage collection.
      */
@@ -672,6 +674,9 @@ public abstract class ReferenceConcurrentMap<K, V>
     /**
      * A special {@link Ref} implementation for representing {@code null} values. This is used internally to distinguish
      * between a key/value that was explicitly mapped to {@code null} and a key/value that has been garbage-collected.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class NullRef implements Ref {
 

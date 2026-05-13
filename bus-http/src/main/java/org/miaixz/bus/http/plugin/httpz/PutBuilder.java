@@ -41,10 +41,12 @@ public class PutBuilder extends RequestBuilder<PutBuilder> {
      * The raw request body string (e.g., for JSON or XML).
      */
     private String body;
+
     /**
      * A pre-built multipart body.
      */
     private MultipartBody multipartBody;
+
     /**
      * A list of files to be included in the multipart request.
      */

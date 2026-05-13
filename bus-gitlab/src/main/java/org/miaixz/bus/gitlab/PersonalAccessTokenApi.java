@@ -32,6 +32,8 @@ import jakarta.ws.rs.core.Response;
  * This class provides an entry point to all the GitLab API personal access token calls.
  *
  * @see <a href="https://docs.gitlab.com/ce/api/personal_access_tokens.html">Personal access token API at GitLab</a>
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class PersonalAccessTokenApi extends AbstractApi {
 

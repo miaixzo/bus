@@ -31,6 +31,9 @@ import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * This class provides a handler for processing GitLab WebHook callouts.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class WebHookManager implements HookManager {
 

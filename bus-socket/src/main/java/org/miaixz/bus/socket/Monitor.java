@@ -29,13 +29,13 @@ import java.nio.channels.AsynchronousSocketChannel;
  * processor, if the service detects that the processor also implements the {@code Monitor} interface, then this monitor
  * will become active.
  * </p>
- * 
+ *
  * <pre>
  * public class MessageProcessorImpl implements Handler, Monitor {
  *
  * }
  * </pre>
- * 
+ *
  * Note: When implementing this interface, pay attention to the return value of the {@code shouldAccept} method. If
  * there are no special requirements, return {@code true} directly; otherwise, returning {@code false} will reject the
  * connection.

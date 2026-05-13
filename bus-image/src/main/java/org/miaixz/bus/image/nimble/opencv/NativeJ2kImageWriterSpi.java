@@ -29,15 +29,25 @@ import javax.imageio.stream.ImageOutputStream;
 import org.miaixz.bus.core.Version;
 
 /**
+ * Represents the NativeJ2kImageWriterSpi type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class NativeJ2kImageWriterSpi extends ImageWriterSpi {
 
+    /**
+     * Creates a new instance.
+     */
     public NativeJ2kImageWriterSpi() {
         this(NativeJLSImageWriter.class);
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param writer the writer.
+     */
     public NativeJ2kImageWriterSpi(Class<? extends NativeJLSImageWriter> writer) {
         super("Miaixz Team", Version._VERSION, NativeJ2kImageReaderSpi.NAMES, NativeJ2kImageReaderSpi.SUFFIXES,
                 NativeJ2kImageReaderSpi.MIMES, writer.getName(), new Class[] { ImageOutputStream.class },
@@ -45,16 +55,34 @@ public class NativeJ2kImageWriterSpi extends ImageWriterSpi {
                 null, null, null);
     }
 
+    /**
+     * Determines whether encode image.
+     *
+     * @param type the type.
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean canEncodeImage(ImageTypeSpecifier type) {
         return NativeJPEGImageWriterSpi.checkCommonJpgRequirement(type);
     }
 
+    /**
+     * Gets the description.
+     *
+     * @param locale the locale.
+     * @return the description.
+     */
     @Override
     public String getDescription(Locale locale) {
         return "Natively-accelerated JPEG2000 Image Writer (OpenJPEG based)";
     }
 
+    /**
+     * Creates the writer instance.
+     *
+     * @param extension the extension.
+     * @return the operation result.
+     */
     @Override
     public ImageWriter createWriterInstance(Object extension) {
         return new NativeJ2kImageWriter(this);

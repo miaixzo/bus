@@ -46,6 +46,7 @@ public class TransCollection<F, T> extends AbstractCollection<T> {
      * The underlying source collection that provides the original elements.
      */
     private final Collection<F> from;
+
     /**
      * The function used to transform each element from the source type {@code F} to the target type {@code T}.
      */

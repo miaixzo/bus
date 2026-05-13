@@ -26,6 +26,12 @@ import org.miaixz.bus.gitlab.models.Assignee;
 import org.miaixz.bus.gitlab.models.Reviewer;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+/**
+ * The merge request event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class MergeRequestEvent extends AbstractEvent {
 
     @Serial
@@ -116,7 +122,14 @@ public class MergeRequestEvent extends AbstractEvent {
         this.reviewers = reviewers;
     }
 
+    /**
+     * The object attributes class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public static class ObjectAttributes extends EventMergeRequest {
+
     }
 
     @Override

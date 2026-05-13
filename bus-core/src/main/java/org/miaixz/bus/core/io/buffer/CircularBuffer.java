@@ -34,14 +34,17 @@ public class CircularBuffer {
      * The underlying byte array that stores the buffer's data.
      */
     private final byte[] buffer;
+
     /**
      * The starting offset (read position) within the buffer.
      */
     private int startOffset;
+
     /**
      * The ending offset (write position) within the buffer.
      */
     private int endOffset;
+
     /**
      * The current number of bytes stored in the buffer.
      */

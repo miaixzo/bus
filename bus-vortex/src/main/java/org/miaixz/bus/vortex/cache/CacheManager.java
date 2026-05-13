@@ -72,6 +72,7 @@ public class CacheManager<K, V> {
      * Level-2 cache configuration.
      */
     private final long cacheSize;
+
     /**
      * Level-2 cache expiration in milliseconds.
      */
@@ -81,6 +82,7 @@ public class CacheManager<K, V> {
      * Access statistics.
      */
     private final AtomicLong hitCount = new AtomicLong(0);
+
     /**
      * Cache miss statistics.
      */

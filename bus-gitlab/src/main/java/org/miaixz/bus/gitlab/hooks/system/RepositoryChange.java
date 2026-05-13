@@ -21,6 +21,12 @@ package org.miaixz.bus.gitlab.hooks.system;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+/**
+ * The repository change class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class RepositoryChange {
 
     private String after;

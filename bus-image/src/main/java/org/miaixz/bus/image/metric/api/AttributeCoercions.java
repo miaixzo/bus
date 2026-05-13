@@ -30,16 +30,29 @@ import org.miaixz.bus.image.Dimse;
 import org.miaixz.bus.image.metric.TransferCapability;
 
 /**
+ * Represents the AttributeCoercions type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class AttributeCoercions implements Iterable<AttributeCoercion>, Serializable {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852262865573L;
 
+    /**
+     * The list value.
+     */
     private final List<AttributeCoercion> list = new ArrayList<>();
 
+    /**
+     * Executes the add operation.
+     *
+     * @param ac the ac.
+     */
     public void add(AttributeCoercion ac) {
         if (findByCommonName(ac.getCommonName()) != null)
             throw new IllegalStateException("AttributeCoercion with cn: '" + ac.getCommonName() + "' already exists");
@@ -49,19 +62,39 @@ public class AttributeCoercions implements Iterable<AttributeCoercion>, Serializ
         list.add(index, ac);
     }
 
+    /**
+     * Executes the add operation.
+     *
+     * @param acs the acs.
+     */
     public void add(AttributeCoercions acs) {
         for (AttributeCoercion ac : acs.list)
             add(ac);
     }
 
+    /**
+     * Executes the remove operation.
+     *
+     * @param ac the ac.
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean remove(AttributeCoercion ac) {
         return list.remove(ac);
     }
 
+    /**
+     * Executes the clear operation.
+     */
     public void clear() {
         list.clear();
     }
 
+    /**
+     * Finds the by common name.
+     *
+     * @param commonName the common name.
+     * @return the operation result.
+     */
     public AttributeCoercion findByCommonName(String commonName) {
         for (AttributeCoercion ac : list)
             if (commonName.equals(ac.getCommonName()))
@@ -69,6 +102,15 @@ public class AttributeCoercions implements Iterable<AttributeCoercion>, Serializ
         return null;
     }
 
+    /**
+     * Finds the attribute coercion.
+     *
+     * @param sopClass the sop class.
+     * @param dimse    the dimse.
+     * @param role     the role.
+     * @param aeTitle  the ae title.
+     * @return the operation result.
+     */
     public AttributeCoercion findAttributeCoercion(
             String sopClass,
             Dimse dimse,
@@ -80,6 +122,11 @@ public class AttributeCoercions implements Iterable<AttributeCoercion>, Serializ
         return null;
     }
 
+    /**
+     * Executes the iterator operation.
+     *
+     * @return the operation result.
+     */
     @Override
     public Iterator<AttributeCoercion> iterator() {
         return list.iterator();

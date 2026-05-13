@@ -715,6 +715,9 @@ public class Platform {
 
     /**
      * Enum of supported operating systems, consistent with JNA platform type constants.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum OS {
 
@@ -820,6 +823,7 @@ public class Platform {
         public String getName() {
             return name;
         }
+
     }
 
 }

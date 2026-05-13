@@ -319,6 +319,9 @@ public class GenericSynthesizedAggregateAnnotation extends AbstractAnnotationSyn
     /**
      * Wrapper for an annotation object from the source list or from its meta-annotation hierarchy, used to represent
      * all related annotations in the hierarchical structure of {@link #source}.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class MetaAnnotation extends GenericSynthesizedAnnotation<Annotation, Annotation> {
 

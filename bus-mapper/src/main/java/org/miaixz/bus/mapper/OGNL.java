@@ -60,6 +60,7 @@ public class OGNL {
      * A string containing SQL syntax keywords for injection checks, delimited by '|'.
      */
     public static final String SQL_SYNTAX_KEYWORD = "and |exec |peformance_schema|information_schema|extractvalue|updatexml|geohash|gtid_subset|gtid_subtract|insert |select |delete |update |drop |count |chr |mid |master |truncate |char |declare |;|or |+|--";
+
     /**
      * An array of regular expression patterns for detecting sensitive SQL functions commonly used in injection attacks.
      */
@@ -74,6 +75,7 @@ public class OGNL {
             Pattern.compile(".*show\\s+databases.*", Pattern.CASE_INSENSITIVE),
             Pattern.compile(".*sleep\\(\\d*\\).*", Pattern.CASE_INSENSITIVE),
             Pattern.compile(".*sleep\\(.*\\).*", Pattern.CASE_INSENSITIVE) };
+
     /**
      * Template for logging SQL injection warning messages. Uses '{}' as placeholders for the suspicious value and the
      * detected keyword.
@@ -94,15 +96,18 @@ public class OGNL {
      */
     public static final Pattern SQL_COMMENT_PATTERN = Pattern
             .compile("'.*(or|union|--|#|/\\*|;)", Pattern.CASE_INSENSITIVE);
+
     /**
      * Cache for the serialized result of {@link Fn} lambda expressions, avoiding repeated and expensive reflection
      * operations.
      */
     private static final ConcurrentHashMap<Fn<?, ?>, ClassField> LAMBDA_CACHE = new ConcurrentHashMap<>();
+
     /**
      * Class loading cache, avoiding repeated {@code Class.forName} calls.
      */
     private static final ConcurrentHashMap<String, Class<?>> CLASS_CACHE = new ConcurrentHashMap<>();
+
     /**
      * Cache for the {@code writeReplace} method used for lambda serialization, avoiding repeated method lookups.
      */
@@ -785,6 +790,9 @@ public class OGNL {
 
     /**
      * Cache statistics class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class CacheStats {
 
@@ -855,6 +863,7 @@ public class OGNL {
                     methodCacheSize,
                     getTotalSize());
         }
+
     }
 
 }

@@ -34,20 +34,46 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
+ * Represents the HL7Segment type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class HL7Segment implements Serializable {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852265199583L;
 
+    /**
+     * The next message control id value.
+     */
     private static final AtomicInteger nextMessageControlID = new AtomicInteger(new Random().nextInt());
 
+    /**
+     * The field separator value.
+     */
     private final char fieldSeparator;
+
+    /**
+     * The encoding characters value.
+     */
     private final String encodingCharacters;
+
+    /**
+     * The fields value.
+     */
     private String[] fields;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param size               the size.
+     * @param fieldSeparator     the field separator.
+     * @param encodingCharacters the encoding characters.
+     */
     public HL7Segment(int size, char fieldSeparator, String encodingCharacters) {
         if (size <= 0)
             throw new IllegalArgumentException("size: " + size);
@@ -56,16 +82,35 @@ public class HL7Segment implements Serializable {
         this.fields = new String[size];
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param size the size.
+     */
     public HL7Segment(int size) {
         this(size, Symbol.C_OR, "^~\\&");
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param s                  the s.
+     * @param fieldSeparator     the field separator.
+     * @param encodingCharacters the encoding characters.
+     */
     public HL7Segment(String s, char fieldSeparator, String encodingCharacters) {
         this.fieldSeparator = fieldSeparator;
         this.encodingCharacters = encodingCharacters;
         this.fields = split(s, fieldSeparator);
     }
 
+    /**
+     * Executes the concat operation.
+     *
+     * @param ss    the ss.
+     * @param delim the delim.
+     * @return the operation result.
+     */
     public static String concat(String[] ss, char delim) {
         int n = ss.length;
         if (n == 0)
@@ -92,6 +137,13 @@ public class HL7Segment implements Serializable {
         return new String(cs);
     }
 
+    /**
+     * Executes the split operation.
+     *
+     * @param s     the s.
+     * @param delim the delim.
+     * @return the operation result.
+     */
     public static String[] split(String s, char delim) {
         int count = 1;
         int delimPos = -1;
@@ -111,10 +163,25 @@ public class HL7Segment implements Serializable {
         return ss;
     }
 
+    /**
+     * Parses the msh.
+     *
+     * @param b    the b.
+     * @param size the size.
+     * @return the operation result.
+     */
     public static HL7Segment parseMSH(byte[] b, int size) {
         return parseMSH(b, size, new ParsePosition(0));
     }
 
+    /**
+     * Parses the msh.
+     *
+     * @param b    the b.
+     * @param size the size.
+     * @param pos  the pos.
+     * @return the operation result.
+     */
     public static HL7Segment parseMSH(byte[] b, int size, ParsePosition pos) {
         String s = parse(b, size, pos, null);
         if (s.length() < 8)
@@ -122,6 +189,17 @@ public class HL7Segment implements Serializable {
         return new HL7Segment(s, s.charAt(3), s.substring(4, 8));
     }
 
+    /**
+     * Executes the parse operation.
+     *
+     * @param b                  the b.
+     * @param size               the size.
+     * @param pos                the pos.
+     * @param fieldSeparator     the field separator.
+     * @param encodingCharacters the encoding characters.
+     * @param charsetName        the charset name.
+     * @return the operation result.
+     */
     static HL7Segment parse(
             byte[] b,
             int size,
@@ -133,6 +211,15 @@ public class HL7Segment implements Serializable {
         return s != null ? new HL7Segment(s, fieldSeparator, encodingCharacters) : null;
     }
 
+    /**
+     * Executes the parse operation.
+     *
+     * @param b           the b.
+     * @param size        the size.
+     * @param pos         the pos.
+     * @param charsetName the charset name.
+     * @return the operation result.
+     */
     private static String parse(byte[] b, int size, ParsePosition pos, String charsetName) {
         int off = pos.getIndex();
         int end = off;
@@ -154,18 +241,42 @@ public class HL7Segment implements Serializable {
         }
     }
 
+    /**
+     * Executes the next message control id operation.
+     *
+     * @return the operation result.
+     */
     public static String nextMessageControlID() {
         return Integer.toString(nextMessageControlID.getAndIncrement() & 0x7FFFFFFF);
     }
 
+    /**
+     * Executes the time stamp operation.
+     *
+     * @param date the date.
+     * @return the operation result.
+     */
     public static String timeStamp(Date date) {
         return new SimpleDateFormat(Fields.PURE_DATETIME_TIP_PATTERN).format(date);
     }
 
+    /**
+     * Executes the make msh operation.
+     *
+     * @return the operation result.
+     */
     public static HL7Segment makeMSH() {
         return makeMSH(21, Symbol.C_OR, "^~\\&");
     }
 
+    /**
+     * Executes the make msh operation.
+     *
+     * @param size               the size.
+     * @param fieldSeparator     the field separator.
+     * @param encodingCharacters the encoding characters.
+     * @return the operation result.
+     */
     public static HL7Segment makeMSH(int size, char fieldSeparator, String encodingCharacters) {
         HL7Segment msh = new HL7Segment(size, fieldSeparator, encodingCharacters);
         msh.setField(0, "MSH");
@@ -177,49 +288,107 @@ public class HL7Segment implements Serializable {
         return msh;
     }
 
+    /**
+     * Gets the field separator.
+     *
+     * @return the field separator.
+     */
     public final char getFieldSeparator() {
         return fieldSeparator;
     }
 
+    /**
+     * Gets the component separator.
+     *
+     * @return the component separator.
+     */
     public final char getComponentSeparator() {
         return encodingCharacters.charAt(0);
     }
 
+    /**
+     * Gets the repetition separator.
+     *
+     * @return the repetition separator.
+     */
     public final char getRepetitionSeparator() {
         return encodingCharacters.charAt(1);
     }
 
+    /**
+     * Gets the escape character.
+     *
+     * @return the escape character.
+     */
     public final char getEscapeCharacter() {
         return encodingCharacters.charAt(2);
     }
 
+    /**
+     * Gets the subcomponent separator.
+     *
+     * @return the subcomponent separator.
+     */
     public final char getSubcomponentSeparator() {
         return encodingCharacters.charAt(3);
     }
 
+    /**
+     * Gets the encoding characters.
+     *
+     * @return the encoding characters.
+     */
     public final String getEncodingCharacters() {
         return encodingCharacters;
     }
 
+    /**
+     * Sets the field.
+     *
+     * @param index the index.
+     * @param value the value.
+     */
     public void setField(int index, String value) {
         if (index >= fields.length)
             fields = Arrays.copyOf(fields, index + 1);
         fields[index] = value;
     }
 
+    /**
+     * Gets the field.
+     *
+     * @param index  the index.
+     * @param defVal the def val.
+     * @return the field.
+     */
     public String getField(int index, String defVal) {
         String val = index < fields.length ? fields[index] : null;
         return val != null && !val.isEmpty() ? val : defVal;
     }
 
+    /**
+     * Executes the size operation.
+     *
+     * @return the operation result.
+     */
     public int size() {
         return fields.length;
     }
 
+    /**
+     * Gets the sending application with facility.
+     *
+     * @return the sending application with facility.
+     */
     public String getSendingApplicationWithFacility() {
         return getField(2, Normal.EMPTY) + Symbol.C_OR + getField(3, Normal.EMPTY);
     }
 
+    /**
+     * Sets the sending application with facility.
+     *
+     * @param s the s.
+     */
     public void setSendingApplicationWithFacility(String s) {
         String[] ss = split(s, Symbol.C_OR);
         setField(2, ss[0]);
@@ -227,10 +396,20 @@ public class HL7Segment implements Serializable {
             setField(3, ss[1]);
     }
 
+    /**
+     * Gets the receiving application with facility.
+     *
+     * @return the receiving application with facility.
+     */
     public String getReceivingApplicationWithFacility() {
         return getField(4, Normal.EMPTY) + Symbol.C_OR + getField(5, Normal.EMPTY);
     }
 
+    /**
+     * Sets the receiving application with facility.
+     *
+     * @param s the s.
+     */
     public void setReceivingApplicationWithFacility(String s) {
         String[] ss = split(s, Symbol.C_OR);
         setField(4, ss[0]);
@@ -238,16 +417,31 @@ public class HL7Segment implements Serializable {
             setField(5, ss[1]);
     }
 
+    /**
+     * Gets the message type.
+     *
+     * @return the message type.
+     */
     public String getMessageType() {
         String s = getField(8, Normal.EMPTY).replace(getComponentSeparator(), Symbol.C_CARET);
         int end = s.indexOf(Symbol.C_CARET, s.indexOf(Symbol.C_CARET) + 1);
         return end > 0 ? s.substring(0, end) : s;
     }
 
+    /**
+     * Gets the message control id.
+     *
+     * @return the message control id.
+     */
     public String getMessageControlID() {
         return getField(9, null);
     }
 
+    /**
+     * Returns the string representation.
+     *
+     * @return the string representation.
+     */
     public String toString() {
         return concat(fields, fieldSeparator);
     }

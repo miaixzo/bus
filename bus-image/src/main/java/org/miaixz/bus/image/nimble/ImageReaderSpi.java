@@ -29,16 +29,36 @@ import org.miaixz.bus.image.nimble.stream.BytesWithImageDescriptor;
 import org.miaixz.bus.image.nimble.stream.ImageFileInputStream;
 
 /**
+ * Represents the ImageReaderSpi type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class ImageReaderSpi extends javax.imageio.spi.ImageReaderSpi {
 
+    /**
+     * The dicom format names value.
+     */
     private static final String[] dicomFormatNames = { "dicom", "DICOM" };
+
+    /**
+     * The dicom ext value.
+     */
     private static final String[] dicomExt = { "dcm", "dic", "dicm", "dicom" };
+
+    /**
+     * The dicom mime type value.
+     */
     private static final String[] dicomMimeType = { "application/dicom" };
+
+    /**
+     * The dicom input types value.
+     */
     private static final Class<?>[] dicomInputTypes = { ImageFileInputStream.class, BytesWithImageDescriptor.class };
 
+    /**
+     * Creates a new instance.
+     */
     public ImageReaderSpi() {
         super("image", Implementation.getVersionName(), dicomFormatNames, dicomExt, dicomMimeType,
                 ImageReader.class.getName(), dicomInputTypes, null, // writerSpiNames
@@ -54,11 +74,24 @@ public class ImageReaderSpi extends javax.imageio.spi.ImageReaderSpi {
                 null); // extraImageMetadataFormatClassNames
     }
 
+    /**
+     * Gets the description.
+     *
+     * @param locale the locale.
+     * @return the description.
+     */
     @Override
     public String getDescription(Locale locale) {
         return "DICOM Image Reader";
     }
 
+    /**
+     * Determines whether decode input.
+     *
+     * @param source the source.
+     * @return true if the condition is met; otherwise false.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public boolean canDecodeInput(Object source) throws IOException {
         ImageInputStream iis = (ImageInputStream) source;
@@ -72,6 +105,12 @@ public class ImageReaderSpi extends javax.imageio.spi.ImageReaderSpi {
         }
     }
 
+    /**
+     * Creates the reader instance.
+     *
+     * @param extension the extension.
+     * @return the operation result.
+     */
     @Override
     public javax.imageio.ImageReader createReaderInstance(Object extension) {
         return new ImageReader(this);

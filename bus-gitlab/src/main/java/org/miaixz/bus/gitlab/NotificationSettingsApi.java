@@ -24,6 +24,12 @@ import org.miaixz.bus.gitlab.models.NotificationSettings.Events;
 
 import jakarta.ws.rs.core.Response;
 
+/**
+ * The notification settings API class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class NotificationSettingsApi extends AbstractApi {
 
     public NotificationSettingsApi(GitLabApi gitLabApi) {

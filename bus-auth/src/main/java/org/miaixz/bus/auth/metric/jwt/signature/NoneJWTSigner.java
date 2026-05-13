@@ -29,9 +29,9 @@ import org.miaixz.bus.core.xyz.StringKit;
  * identifier is "none"). This signer returns an empty signature and verifies if the provided signature is empty.
  * </p>
  *
+ * @see JWTSigner
  * @author Kimi Liu
  * @since Java 21+
- * @see JWTSigner
  */
 public class NoneJWTSigner implements JWTSigner {
 

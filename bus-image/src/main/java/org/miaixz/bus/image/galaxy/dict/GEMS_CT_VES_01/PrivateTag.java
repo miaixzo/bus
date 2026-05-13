@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.GEMS_CT_VES_01;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEMS_CT_VES_01";
 
-    /** (0051,xx01) VR=SQ VM=1 CTVESequence */
+    /**
+     * (0051,xx01) VR=SQ VM=1 CTVESequence
+     */
     public static final int CTVESSequence = 0x00510001;
 
 }

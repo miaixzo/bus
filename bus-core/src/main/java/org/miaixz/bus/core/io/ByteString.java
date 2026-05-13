@@ -54,14 +54,17 @@ public class ByteString implements Serializable, Comparable<ByteString> {
      * A singleton empty {@code ByteString}.
      */
     public static final ByteString EMPTY = ByteString.of();
+
     /**
      * The raw byte data of this ByteString.
      */
     public final byte[] data;
+
     /**
      * Lazily computed hash code; 0 if unknown.
      */
     public transient int hashCode;
+
     /**
      * Lazily computed UTF-8 string representation.
      */

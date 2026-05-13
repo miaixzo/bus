@@ -34,15 +34,18 @@ public class NFA {
      * The root node of the Aho-Corasick tree.
      */
     private final Node root;
+
     /**
      * A lock to prevent concurrent builds of the Aho-Corasick automaton, which could lead to unpredictable results.
      */
     private final Object buildAcLock;
+
     /**
      * A lock to prevent concurrent insertions, which could cause new nodes to be modified before they are properly
      * linked into the tree.
      */
     private final Object insertTreeLock;
+
     /**
      * A flag indicating whether the Aho-Corasick automaton needs to be rebuilt. This is set to true when new words are
      * inserted.
@@ -189,6 +192,9 @@ public class NFA {
 
     /**
      * Represents a node in the Aho-Corasick tree.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class Node {
 
@@ -196,14 +202,17 @@ public class NFA {
          * If true, this node marks the end of a complete word.
          */
         boolean flag;
+
         /**
          * The failure link, pointing to the next node to check upon a character mismatch.
          */
         Node fail;
+
         /**
          * The full word if this node is the end of a word.
          */
         String text;
+
         /**
          * The children of this node, keyed by character (as an integer).
          */
@@ -216,6 +225,7 @@ public class NFA {
             this.flag = false;
             next = new HashMap<>();
         }
+
     }
 
 }

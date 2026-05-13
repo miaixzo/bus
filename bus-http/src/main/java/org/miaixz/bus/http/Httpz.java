@@ -122,6 +122,9 @@ public class Httpz {
 
     /**
      * The inner client class that manages the execution and cancellation of HTTP requests.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class Client {
 
@@ -269,6 +272,7 @@ public class Httpz {
         public void setHttpd(Httpd httpd) {
             this.httpd = httpd;
         }
+
     }
 
 }

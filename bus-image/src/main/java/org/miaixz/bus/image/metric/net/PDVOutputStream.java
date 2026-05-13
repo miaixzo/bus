@@ -24,13 +24,28 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * Represents the PDVOutputStream type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public abstract class PDVOutputStream extends OutputStream {
 
+    /**
+     * Copies the from.
+     *
+     * @param in     the in.
+     * @param length the length.
+     * @throws IOException if the operation cannot be completed.
+     */
     public abstract void copyFrom(InputStream in, int length) throws IOException;
 
+    /**
+     * Copies the from.
+     *
+     * @param in the in.
+     * @throws IOException if the operation cannot be completed.
+     */
     public abstract void copyFrom(InputStream in) throws IOException;
 
 }

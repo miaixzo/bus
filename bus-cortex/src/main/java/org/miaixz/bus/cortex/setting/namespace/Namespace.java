@@ -50,6 +50,7 @@ public class Namespace extends Setting {
      * Legacy namespace code kept only for compatibility and display. {@code id} remains the authoritative identifier.
      */
     private String code;
+
     /**
      * Display name.
      */

@@ -55,10 +55,12 @@ public class SieveCache<K, V> extends LockedCache<K, V> {
      * The head node of the doubly linked list.
      */
     private SieveCacheObject<K, V> head;
+
     /**
      * The tail node of the doubly linked list.
      */
     private SieveCacheObject<K, V> tail;
+
     /**
      * The 'hand' pointer used for the SIEVE eviction scan.
      */
@@ -299,19 +301,25 @@ public class SieveCache<K, V> extends LockedCache<K, V> {
 
     /**
      * Cache object wrapper extending {@link CacheObject} to include SIEVE-specific attributes.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class SieveCacheObject<K, V> extends CacheObject<K, V> {
 
         @Serial
         private static final long serialVersionUID = 2852232053891L;
+
         /**
          * Indicates if the node has been accessed recently.
          */
         boolean visited = false;
+
         /**
          * Pointer to the previous node in the linked list.
          */
         SieveCacheObject<K, V> prev;
+
         /**
          * Pointer to the next node in the linked list.
          */
@@ -327,6 +335,7 @@ public class SieveCache<K, V> extends LockedCache<K, V> {
         protected SieveCacheObject(final K key, final V obj, final long ttl) {
             super(key, obj, ttl);
         }
+
     }
 
 }

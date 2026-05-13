@@ -27,7 +27,7 @@ import java.util.Objects;
 /**
  * An {@link OutputStream} that counts the number of bytes written to the underlying output stream. This class can be
  * used to monitor the progress or size of data being written.
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -40,7 +40,7 @@ public class CountingOutputStream extends FilterOutputStream {
 
     /**
      * Creates a {@code CountingOutputStream} by decorating the given output stream.
-     * 
+     *
      * @param out The underlying output stream to be decorated. Must not be {@code null}.
      * @throws NullPointerException if {@code out} is {@code null}.
      */
@@ -50,19 +50,33 @@ public class CountingOutputStream extends FilterOutputStream {
 
     /**
      * Returns the total number of bytes written to this output stream.
-     * 
+     *
      * @return The total count of bytes written.
      */
     public long getCount() {
         return count;
     }
 
+    /**
+     * Executes the write operation.
+     *
+     * @param b the b.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void write(int b) throws IOException {
         out.write(b);
         count++;
     }
 
+    /**
+     * Executes the write operation.
+     *
+     * @param b   the b.
+     * @param off the off.
+     * @param len the len.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void write(byte[] b, int off, int len) throws IOException {
         out.write(b, off, len);

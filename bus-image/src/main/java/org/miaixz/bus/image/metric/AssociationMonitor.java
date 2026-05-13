@@ -22,17 +22,41 @@ package org.miaixz.bus.image.metric;
 import org.miaixz.bus.image.metric.pdu.AAssociateRJ;
 
 /**
+ * Defines the AssociationMonitor contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface AssociationMonitor {
 
+    /**
+     * Executes the on association established operation.
+     *
+     * @param as the as.
+     */
     void onAssociationEstablished(Association as);
 
+    /**
+     * Executes the on association failed operation.
+     *
+     * @param as the as.
+     * @param e  the e.
+     */
     void onAssociationFailed(Association as, Throwable e);
 
+    /**
+     * Executes the on association rejected operation.
+     *
+     * @param as   the as.
+     * @param aarj the aarj.
+     */
     void onAssociationRejected(Association as, AAssociateRJ aarj);
 
+    /**
+     * Executes the on association accepted operation.
+     *
+     * @param as the as.
+     */
     void onAssociationAccepted(Association as);
 
 }

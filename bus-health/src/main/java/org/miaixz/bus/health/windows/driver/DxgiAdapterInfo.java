@@ -42,22 +42,27 @@ public final class DxgiAdapterInfo {
      * The description value.
      */
     private final String description;
+
     /**
      * The vendorId value.
      */
     private final int vendorId;
+
     /**
      * The deviceId value.
      */
     private final int deviceId;
+
     /**
      * The dedicatedVideoMemory value.
      */
     private final long dedicatedVideoMemory;
+
     /**
      * The luidLowPart value.
      */
     private final int luidLowPart;
+
     /**
      * The luidHighPart value.
      */
@@ -152,4 +157,5 @@ public final class DxgiAdapterInfo {
                 luidHighPart,
                 luidLowPart);
     }
+
 }

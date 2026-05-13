@@ -24,21 +24,43 @@ import org.miaixz.bus.image.metric.api.ConfigurationCache;
 import org.miaixz.bus.image.metric.hl7.net.HL7Application;
 
 /**
+ * Represents the HL7ApplicationCache type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class HL7ApplicationCache extends ConfigurationCache<HL7Configuration, HL7Application>
         implements IHL7ApplicationCache {
 
+    /**
+     * Creates a new instance.
+     *
+     * @param conf the conf.
+     */
     public HL7ApplicationCache(HL7Configuration conf) {
         super(conf);
     }
 
+    /**
+     * Executes the find operation.
+     *
+     * @param conf the conf.
+     * @param key  the key.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     protected HL7Application find(HL7Configuration conf, String key) throws InternalException {
         return conf.findHL7Application(key);
     }
 
+    /**
+     * Finds the hl7 application.
+     *
+     * @param hl7AppFacility the hl7 app facility.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     public HL7Application findHL7Application(String hl7AppFacility) throws InternalException {
         HL7Application hl7App = get(hl7AppFacility);
         if (hl7App == null)

@@ -23,6 +23,12 @@ import java.util.Date;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+/**
+ * The build commit class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class BuildCommit {
 
     private Long id;

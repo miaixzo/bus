@@ -47,6 +47,7 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
      * Configuration for the tree node.
      */
     private final NodeConfig nodeConfig;
+
     /**
      * The parent node of this node.
      */

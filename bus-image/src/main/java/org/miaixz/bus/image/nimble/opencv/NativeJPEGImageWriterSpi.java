@@ -32,15 +32,25 @@ import javax.imageio.stream.ImageOutputStream;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
+ * Represents the NativeJPEGImageWriterSpi type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class NativeJPEGImageWriterSpi extends ImageWriterSpi {
 
+    /**
+     * Creates a new instance.
+     */
     public NativeJPEGImageWriterSpi() {
         this(NativeJPEGImageWriter.class);
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param writer the writer.
+     */
     public NativeJPEGImageWriterSpi(Class<? extends NativeJPEGImageWriter> writer) {
         super("Miaixz Team", "1.0", NativeJPEGImageReaderSpi.NAMES, NativeJPEGImageReaderSpi.SUFFIXES,
                 NativeJPEGImageReaderSpi.MIMES, writer.getName(), new Class[] { ImageOutputStream.class },
@@ -48,6 +58,12 @@ public class NativeJPEGImageWriterSpi extends ImageWriterSpi {
                 null, null, null);
     }
 
+    /**
+     * Executes the check common jpg requirement operation.
+     *
+     * @param type the type.
+     * @return true if the condition is met; otherwise false.
+     */
     public static boolean checkCommonJpgRequirement(ImageTypeSpecifier type) {
         ColorModel colorModel = type.getColorModel();
 
@@ -88,16 +104,34 @@ public class NativeJPEGImageWriterSpi extends ImageWriterSpi {
         return numBands == 1 || numBands == 3 || numBands == 4;
     }
 
+    /**
+     * Determines whether encode image.
+     *
+     * @param type the type.
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean canEncodeImage(ImageTypeSpecifier type) {
         return checkCommonJpgRequirement(type);
     }
 
+    /**
+     * Gets the description.
+     *
+     * @param locale the locale.
+     * @return the description.
+     */
     @Override
     public String getDescription(Locale locale) {
         return "Natively-accelerated JPEG Image Writer (8/12/16 bits, IJG 6b based)";
     }
 
+    /**
+     * Creates the writer instance.
+     *
+     * @param extension the extension.
+     * @return the operation result.
+     */
     @Override
     public ImageWriter createWriterInstance(Object extension) {
         return new NativeJPEGImageWriter(this);

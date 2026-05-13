@@ -24,25 +24,53 @@ import org.miaixz.bus.image.metric.hl7.net.HL7Application;
 import org.miaixz.bus.image.metric.hl7.net.HL7ApplicationInfo;
 
 /**
+ * Defines the HL7Configuration contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface HL7Configuration {
 
+    /**
+     * Executes the register hl7 application operation.
+     *
+     * @param name the name.
+     * @return true if the condition is met; otherwise false.
+     * @throws InternalException if the operation cannot be completed.
+     */
     boolean registerHL7Application(String name) throws InternalException;
 
+    /**
+     * Executes the unregister hl7 application operation.
+     *
+     * @param name the name.
+     * @throws InternalException if the operation cannot be completed.
+     */
     void unregisterHL7Application(String name) throws InternalException;
 
+    /**
+     * Finds the hl7 application.
+     *
+     * @param name the name.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     HL7Application findHL7Application(String name) throws InternalException;
 
+    /**
+     * Executes the list registered hl7 application names operation.
+     *
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     String[] listRegisteredHL7ApplicationNames() throws InternalException;
 
     /**
-     * 查询具有指定属性的HL7应用程序
+     * Provides DICOM processing details.
      *
-     * @param keys HL7应用程序属性，该属性应匹配或为*以获取所有已配置的HL7应用程序的信息
-     * @return 具有匹配属性的已配置HL7 Application *的HL7ApplicationInfo对象的数组
-     * @throws InternalException 异常
+     * @param keys the keys.
+     * @return the result.
+     * @throws InternalException if the operation cannot be completed.
      */
     HL7ApplicationInfo[] listHL7AppInfos(HL7ApplicationInfo keys) throws InternalException;
 

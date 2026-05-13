@@ -57,9 +57,9 @@ import java.util.function.Predicate;
  * </ul>
  *
  * @param <T> the type of the boundary value, which must be comparable
- * @author Kimi Liu
  * @see BoundType
  * @see BoundedRange
+ * @author Kimi Liu
  * @since Java 21+
  */
 public interface Bound<T extends Comparable<? super T>> extends Predicate<T>, Comparable<Bound<T>> {

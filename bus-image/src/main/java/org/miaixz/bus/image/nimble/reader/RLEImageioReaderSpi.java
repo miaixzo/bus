@@ -29,18 +29,46 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.galaxy.data.Implementation;
 
 /**
+ * Represents the RLEImageioReaderSpi type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class RLEImageioReaderSpi extends ImageReaderSpi {
 
+    /**
+     * The vendor name value.
+     */
     private static final String vendorName = "org.miaixz";
+
+    /**
+     * The version value.
+     */
     private static final String version = Implementation.getVersionName();
+
+    /**
+     * The format names value.
+     */
     private static final String[] formatNames = { "rle", "RLE" };
+
+    /**
+     * The input types value.
+     */
     private static final Class<?>[] inputTypes = { ImageInputStream.class };
+
+    /**
+     * The entensions value.
+     */
     private static final String[] entensions = { Normal.EMPTY };
+
+    /**
+     * The mime type value.
+     */
     private static final String[] mimeType = { Normal.EMPTY };
 
+    /**
+     * Creates a new instance.
+     */
     public RLEImageioReaderSpi() {
         super(vendorName, version, formatNames, entensions, // suffixes
                 mimeType, // MIMETypes
@@ -57,16 +85,34 @@ public class RLEImageioReaderSpi extends ImageReaderSpi {
                 null); // extraImageMetadataFormatClassNames
     }
 
+    /**
+     * Gets the description.
+     *
+     * @param locale the locale.
+     * @return the description.
+     */
     @Override
     public String getDescription(Locale locale) {
         return "RLE Image Reader";
     }
 
+    /**
+     * Determines whether decode input.
+     *
+     * @param source the source.
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean canDecodeInput(Object source) {
         return false;
     }
 
+    /**
+     * Creates the reader instance.
+     *
+     * @param extension the extension.
+     * @return the operation result.
+     */
     @Override
     public ImageReader createReaderInstance(Object extension) {
         return new RLEImageioReader(this);

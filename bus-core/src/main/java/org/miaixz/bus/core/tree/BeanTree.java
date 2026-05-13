@@ -47,9 +47,9 @@ import org.miaixz.bus.core.xyz.ListKit;
  * </ul>
  * <p>
  * To use this class, create an instance via the static factory method {@code BeanTree.of()}, for example:
- * 
+ *
  * <pre>{@code
- * 
+ *
  * BeanTree<JavaBean, Long> beanTree = BeanTree.of(
  *         JavaBean::getId,
  *         JavaBean::getParentId,
@@ -60,16 +60,16 @@ import org.miaixz.bus.core.xyz.ListKit;
  * }</pre>
  * <p>
  * Once you have a {@code BeanTree} instance, you can convert a flat list into a tree:
- * 
+ *
  * <pre>{@code
- * 
+ *
  * List<JavaBean> tree = beanTree.toTree(flatList);
  * }</pre>
  * <p>
  * You can also flatten an existing tree structure back into a list:
- * 
+ *
  * <pre>{@code
- * 
+ *
  * List<JavaBean> flatList = beanTree.flat(tree);
  * }</pre>
  *
@@ -84,22 +84,27 @@ public class BeanTree<T, R extends Comparable<R>> {
      * The getter for the primary key.
      */
     private final FunctionX<T, R> idGetter;
+
     /**
      * The getter for the parent ID (foreign key).
      */
     private final FunctionX<T, R> pidGetter;
+
     /**
      * The value of the parent ID for root nodes. Using this is slightly more performant than a predicate.
      */
     private final R pidValue;
+
     /**
      * The predicate to identify root nodes.
      */
     private final PredicateX<T> parentPredicate;
+
     /**
      * The getter for the list of children.
      */
     private final FunctionX<T, List<T>> childrenGetter;
+
     /**
      * The setter for the list of children.
      */

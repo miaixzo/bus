@@ -43,7 +43,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * </ul>
  * <p>
  * Example usage:
- * 
+ *
  * <pre>{@code
  * String enc = "UTF-8"; // or NULL to use systemdefault
  * FileInputStream fis = new FileInputStream(file);
@@ -63,18 +63,22 @@ public class BOMInputStream extends InputStream {
      * The maximum number of bytes to check for a BOM.
      */
     private static final int BOM_SIZE = 4;
+
     /**
      * The underlying {@link PushbackInputStream} used for reading and pushing back bytes.
      */
     private final PushbackInputStream in;
+
     /**
      * The default character set to use if no BOM is detected.
      */
     private final String defaultCharset;
+
     /**
      * A flag indicating whether the BOM detection and charset initialization has been performed.
      */
     private boolean initialized = false;
+
     /**
      * The detected character set, or the default character set if no BOM is found.
      */

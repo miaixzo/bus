@@ -42,6 +42,7 @@ public class InputStreamResource implements Resource, Serializable {
      * The underlying {@link InputStream}.
      */
     private final InputStream in;
+
     /**
      * The name of the resource.
      */

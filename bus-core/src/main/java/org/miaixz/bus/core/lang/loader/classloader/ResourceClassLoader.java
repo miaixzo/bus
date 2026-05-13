@@ -40,6 +40,7 @@ public class ResourceClassLoader<T extends Resource> extends SecureClassLoader {
      * The map of resource names to resource objects.
      */
     private final Map<String, T> resourceMap;
+
     /**
      * Cache for already loaded classes.
      */

@@ -43,16 +43,17 @@ import org.miaixz.bus.cache.Collector;
  * {@code bus-cache.Collector} without creating a circular dependency.
  * <p>
  * Typical Spring usage:
- * 
+ *
  * <pre>
  * {@code
- * 
+ *
  * &#64;Bean
  * public CacheMetricsAdapter cacheMetricsAdapter() {
  *     return new CacheMetricsAdapter();
  * }
  *
- * @Bean
+ * &#64;author Kimi Liu
+ * &#64;Bean
  * public Context cacheContext(CacheMetricsAdapter adapter) {
  *     return Context.newBuilder().hitting(adapter).build();
  * }

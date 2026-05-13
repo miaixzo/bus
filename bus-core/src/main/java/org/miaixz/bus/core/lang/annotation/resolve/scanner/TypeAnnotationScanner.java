@@ -119,6 +119,9 @@ public class TypeAnnotationScanner extends AbstractTypeAnnotationScanner<TypeAnn
 
     /**
      * Converts a JDK proxy class to its original proxied class, if applicable.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class JdkProxyClassConverter implements UnaryOperator<Class<?>> {
 
@@ -133,6 +136,7 @@ public class TypeAnnotationScanner extends AbstractTypeAnnotationScanner<TypeAnn
         public Class<?> apply(final Class<?> sourceClass) {
             return Proxy.isProxyClass(sourceClass) ? apply(sourceClass.getSuperclass()) : sourceClass;
         }
+
     }
 
 }

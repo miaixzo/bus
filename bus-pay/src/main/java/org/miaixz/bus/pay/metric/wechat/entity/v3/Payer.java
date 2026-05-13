@@ -42,14 +42,17 @@ public class Payer {
      * The user's unique identifier under the merchant's AppID.
      */
     private String openid;
+
     /**
      * The user's unique identifier under the service provider's AppID.
      */
     private String sp_openid;
+
     /**
      * The user's unique identifier under the sub-merchant's AppID.
      */
     private String sub_openid;
+
     /**
      * The authorization code from the user's payment screen (for micropay).
      */

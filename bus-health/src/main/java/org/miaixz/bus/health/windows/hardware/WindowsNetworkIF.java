@@ -48,6 +48,7 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
      * The IS_VISTA_OR_GREATER constant.
      */
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
+
     /**
      * The CONNECTOR_PRESENT_BIT constant.
      */
@@ -57,58 +58,72 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
      * The ifType value.
      */
     private int ifType;
+
     /**
      * The ndisPhysicalMediumType value.
      */
     private int ndisPhysicalMediumType;
+
     /**
      * The connectorPresent value.
      */
     private boolean connectorPresent;
+
     /**
      * The bytesRecv value.
      */
     private long bytesRecv;
+
     /**
      * The bytesSent value.
      */
     private long bytesSent;
+
     /**
      * The packetsRecv value.
      */
     private long packetsRecv;
+
     /**
      * The packetsSent value.
      */
     private long packetsSent;
+
     /**
      * The inErrors value.
      */
     private long inErrors;
+
     /**
      * The outErrors value.
      */
     private long outErrors;
+
     /**
      * The inDrops value.
      */
     private long inDrops;
+
     /**
      * The collisions value.
      */
     private long collisions;
+
     /**
      * The speed value.
      */
     private long speed;
+
     /**
      * The timeStamp value.
      */
     private long timeStamp;
+
     /**
      * The ifAlias value.
      */
     private String ifAlias;
+
     /**
      * The ifOperStatus value.
      */

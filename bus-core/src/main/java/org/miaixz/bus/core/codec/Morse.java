@@ -112,10 +112,12 @@ public class Morse {
      * The character representing a short mark or dot (dit) in Morse code.
      */
     private final char dit;
+
     /**
      * The character representing a longer mark or dash (dah) in Morse code.
      */
     private final char dah;
+
     /**
      * The character used as a separator between Morse code characters.
      */

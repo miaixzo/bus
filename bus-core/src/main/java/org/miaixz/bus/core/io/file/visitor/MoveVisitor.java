@@ -39,14 +39,17 @@ public class MoveVisitor extends SimpleFileVisitor<Path> {
      * The source path for the move operation.
      */
     private final Path source;
+
     /**
      * The target path for the move operation.
      */
     private final Path target;
+
     /**
      * Copy options for the move operation.
      */
     private final CopyOption[] copyOptions;
+
     /**
      * Flag indicating whether the target directory has been created.
      */

@@ -33,50 +33,62 @@ public class ExcelReadConfig extends ExcelConfig {
      * Read mode.
      */
     protected ReadMode readMode = ReadMode.AUTO;
+
     /**
      * Whether to ignore empty rows.
      */
     protected boolean ignoreEmptyRow = true;
+
     /**
      * Start row index (global in streaming reads).
      */
     protected long startRow;
+
     /**
      * End row index (global in streaming reads), inclusive.
      */
     protected long endRow = Long.MAX_VALUE;
+
     /**
      * Included column indexes for projection.
      */
     protected int[] includeColumns;
+
     /**
      * Batch size for callbacks. 0 means row-by-row.
      */
     protected int batchSize;
+
     /**
      * Whether to pad row cells to include trailing empty cells.
      */
     protected boolean padCellAtEndOfRow;
+
     /**
      * Queue capacity for transfer pipeline. Non-positive means auto sizing.
      */
     protected int transferQueueCapacity;
+
     /**
      * Poll timeout in milliseconds for transfer pipeline. Non-positive means default timeout.
      */
     protected long transferPollTimeoutMs;
+
     /**
      * Estimated column count for transfer auto tuning.
      */
     protected int transferEstimatedColumnCount = 80;
+
     /**
      * Preview row limit per sheet. Non-positive means unlimited.
      */
     protected int previewRowsPerSheet;
+
     /**
      * Progress callback interval in processed rows. Non-positive means disabled.
      */
     protected long progressReportIntervalRows;
+
     /**
      * Optional streaming listener.
      */
@@ -84,6 +96,9 @@ public class ExcelReadConfig extends ExcelConfig {
 
     /**
      * Read mode enum.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum ReadMode {
         /**
@@ -98,6 +113,7 @@ public class ExcelReadConfig extends ExcelConfig {
          * Force SAX streaming mode.
          */
         STREAMING
+
     }
 
     /**

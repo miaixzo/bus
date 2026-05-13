@@ -42,10 +42,12 @@ public class SecureRandom extends java.security.SecureRandom {
      * The byte array containing the seed data for random number generation.
      */
     private byte[] _data;
+
     /**
      * The current index within the {@code _data} array, indicating the next byte to be used.
      */
     private int _index;
+
     /**
      * A padding value used for integer generation, ensuring proper byte alignment.
      */

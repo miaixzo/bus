@@ -20,23 +20,36 @@
 package org.miaixz.bus.image.galaxy.dict.CARDIO_D_R__1_0_siemens;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "CARDIO-D.R. 1.0";
 
-    /** (0029,xx00) VR=SQ VM=1 Edge Enhancement Sequence */
+    /**
+     * (0029,xx00) VR=SQ VM=1 Edge Enhancement Sequence
+     */
     public static final int EdgeEnhancementSequence = 0x00290000;
 
-    /** (0029,xx01) VR=US VM=2 Convolution Kernel Size */
+    /**
+     * (0029,xx01) VR=US VM=2 Convolution Kernel Size
+     */
     public static final int ConvolutionKernelSize = 0x00290001;
 
-    /** (0029,xx02) VR=US VM=1-n Convolution Kernel Coefficients */
+    /**
+     * (0029,xx02) VR=US VM=1-n Convolution Kernel Coefficients
+     */
     public static final int ConvolutionKernelCoefficients = 0x00290002;
 
-    /** (0029,xx03) VR=FL VM=1 Edge Enhancement Gain */
+    /**
+     * (0029,xx03) VR=FL VM=1 Edge Enhancement Gain
+     */
     public static final int EdgeEnhancementGain = 0x00290003;
 
     /**

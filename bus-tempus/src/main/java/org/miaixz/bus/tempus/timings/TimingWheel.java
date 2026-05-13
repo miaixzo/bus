@@ -53,14 +53,17 @@ public class TimingWheel {
      * The array of slots, where each slot is a list of tasks.
      */
     private final TimerTaskList[] timerTaskLists;
+
     /**
      * The handler for processing expired task lists.
      */
     private final Consumer<TimerTaskList> consumer;
+
     /**
      * The current time of the wheel, aligned to the nearest {@code tickMs}.
      */
     private long currentTime;
+
     /**
      * The next-level (overflow) timing wheel for tasks with delays beyond this wheel's interval.
      */

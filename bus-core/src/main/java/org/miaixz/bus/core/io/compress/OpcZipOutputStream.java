@@ -39,22 +39,27 @@ public class OpcZipOutputStream extends ZipOutputStream {
      * The Zip64 specification handler.
      */
     private final Zip64 spec;
+
     /**
      * List of Zip64 entries.
      */
     private final List<Zip64.Entry> entries = new ArrayList<>();
+
     /**
      * CRC32 checksum calculator.
      */
     private final CRC32 crc = new CRC32();
+
     /**
      * The current Zip64 entry being processed.
      */
     private Zip64.Entry current;
+
     /**
      * The total number of bytes written to the output stream.
      */
     private int written = 0;
+
     /**
      * Flag indicating whether the output stream has been finished.
      */

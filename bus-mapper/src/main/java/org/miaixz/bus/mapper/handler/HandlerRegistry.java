@@ -75,6 +75,7 @@ public class HandlerRegistry {
      * Cache of handler classes to their overridden methods to avoid repeated reflection checks
      */
     private static final Map<Class<?>, EnumSet<HandlerType>> METHOD_CACHE = new ConcurrentHashMap<>();
+
     /**
      * Handler list indexed by operation type, using EnumMap for optimal performance
      */
@@ -322,6 +323,9 @@ public class HandlerRegistry {
 
     /**
      * Handler type enumeration.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum HandlerType {
         /**
@@ -343,6 +347,7 @@ public class HandlerRegistry {
          * GetBoundSql operation (getBoundSql method)
          */
         GET_BOUND_SQL
+
     }
 
 }

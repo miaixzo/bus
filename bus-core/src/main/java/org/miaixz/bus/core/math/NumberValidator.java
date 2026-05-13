@@ -36,6 +36,7 @@ public class NumberValidator {
      * less than this value.
      */
     public static final double DOUBLE_EPSILON = 1e-6;
+
     /**
      * The tolerance value for float comparison. Two float values are considered equal if their absolute difference is
      * less than this value.

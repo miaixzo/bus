@@ -44,18 +44,22 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
      * Shared CacheX backend for reading and writing entries.
      */
     protected final CacheX<String, Object> cacheX;
+
     /**
      * Watch subscription manager shared with the registry.
      */
     protected final WatchManager watchManager;
+
     /**
      * Concrete Java type of managed entries, used for deserialization.
      */
     protected final Class<T> type;
+
     /**
      * Stable registry type handled by this registrar.
      */
     protected final Type registryType;
+
     /**
      * Key strategy shared by registry persistence and runtime routing.
      */

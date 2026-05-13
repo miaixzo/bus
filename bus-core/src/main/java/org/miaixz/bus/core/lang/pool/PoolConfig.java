@@ -38,20 +38,24 @@ public class PoolConfig implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 2852272106223L;
+
     /**
      * The minimum (initial) size of the object pool. This defines the number of objects the pool will start with or try
      * to maintain as a minimum.
      */
     private int minSize = 5;
+
     /**
      * The maximum size of the object pool. The pool will not create more objects than this limit.
      */
     private int maxSize = 20;
+
     /**
      * The maximum time in milliseconds to wait for an object to become available when borrowing from the pool. The
      * default wait time is 5 seconds.
      */
     private long maxWait = 5000;
+
     /**
      * The maximum idle time in milliseconds for an object in the pool. If an object remains idle for longer than this
      * duration, it may be evicted from the pool.

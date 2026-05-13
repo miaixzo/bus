@@ -30,7 +30,7 @@ import lombok.experimental.SuperBuilder;
 /**
  * Represents the notice or content of a message template.
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 21+
  */
 @Getter
@@ -44,6 +44,7 @@ public class Notice {
      * The URL associated with the notice, if any.
      */
     protected String url;
+
     /**
      * The sender of the message.
      */
@@ -96,6 +97,9 @@ public class Notice {
 
     /**
      * Enumerates the types of content that can be sent.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum Type {
         /**
@@ -118,10 +122,14 @@ public class Notice {
          * Other content type not explicitly defined.
          */
         OTHER
+
     }
 
     /**
      * Enumerates the sending modes for messages.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum Mode {
         /**
@@ -132,6 +140,7 @@ public class Notice {
          * Batch message sending mode.
          */
         BATCH
+
     }
 
 }

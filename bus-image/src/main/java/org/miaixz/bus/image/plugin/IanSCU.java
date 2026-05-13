@@ -51,62 +51,77 @@ public class IanSCU {
      * The DICOM device for this SCU.
      */
     private final Device device = new Device("ianscu");
+
     /**
      * The Application Entity for this SCU.
      */
     private final ApplicationEntity ae = new ApplicationEntity("IANSCU");
+
     /**
      * The local network connection configuration.
      */
     private final Connection conn = new Connection();
+
     /**
      * The remote network connection configuration.
      */
     private final Connection remote = new Connection();
+
     /**
      * The A-ASSOCIATE-RQ message to be sent.
      */
     private final AAssociateRQ rq = new AAssociateRQ();
+
     /**
      * The attributes for the IAN message (not directly used, kept for potential future use).
      */
     private final Attributes attrs = new Attributes();
+
     /**
      * A map to hold IAN datasets, keyed by Study Instance UID.
      */
     private final HashMap<String, Attributes> map = new HashMap<>();
+
     /**
      * A suffix for generated UIDs.
      */
     private String uidSuffix;
+
     /**
      * The SOP Instance UID of the referenced Performed Procedure Step.
      */
     private String refPpsIUID;
+
     /**
      * The SOP Class UID of the referenced Performed Procedure Step.
      */
     private String refPpsCUID = UID.ModalityPerformedProcedureStep.uid;
+
     /**
      * The availability status of the instances (e.g., "ONLINE").
      */
     private String availability = "ONLINE";
+
     /**
      * The AET of the location from which instances can be retrieved.
      */
     private String retrieveAET;
+
     /**
      * The URI for retrieving the instances.
      */
     private String retrieveURI;
+
     /**
      * The URL for retrieving the instances.
      */
     private String retrieveURL;
+
     /**
      * The Retrieve Location UID.
      */
     private String retrieveUID;
+
     /**
      * The active DICOM association.
      */

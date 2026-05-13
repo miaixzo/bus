@@ -32,19 +32,49 @@ import org.miaixz.bus.image.nimble.codec.XPEGParser;
 import org.miaixz.bus.image.nimble.codec.mp4.MP4FileType;
 
 /**
+ * Represents the JPEGParser type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class JPEGParser implements XPEGParser {
 
+    /**
+     * The jpeg2000 signature box value.
+     */
     private static final long JPEG2000_SIGNATURE_BOX = 0x6a5020200d0a870aL; // jP\040\040<CR><LF><0x87><LF>;
+
+    /**
+     * The contiguous codestream box value.
+     */
     private static final int CONTIGUOUS_CODESTREAM_BOX = 0x6a703263; // jp2c;
 
+    /**
+     * The buf value.
+     */
     private final ByteBuffer buf = ByteBuffer.allocate(8);
+
+    /**
+     * The code stream position value.
+     */
     private final long codeStreamPosition;
+
+    /**
+     * The params value.
+     */
     private final Params params;
+
+    /**
+     * The position after app value.
+     */
     private long positionAfterAPP = -1L;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param channel the channel.
+     * @throws IOException if the operation cannot be completed.
+     */
     public JPEGParser(SeekableByteChannel channel) throws IOException {
         seekCodeStream(channel);
         codeStreamPosition = channel.position();
@@ -62,31 +92,62 @@ public class JPEGParser implements XPEGParser {
         }
     }
 
+    /**
+     * Returns the string representation.
+     *
+     * @return the string representation.
+     */
     @Override
     public String toString() {
         return "JPEGParser{" + "codeStreamPos=" + codeStreamPosition + ", posAfterAPP=" + positionAfterAPP + ", "
                 + params + '}';
     }
 
+    /**
+     * Gets the params.
+     *
+     * @return the params.
+     */
     public Params getParams() {
         return params;
     }
 
+    /**
+     * Gets the code stream position.
+     *
+     * @return the code stream position.
+     */
     @Override
     public long getCodeStreamPosition() {
         return codeStreamPosition;
     }
 
+    /**
+     * Gets the position after app segments.
+     *
+     * @return the position after app segments.
+     */
     @Override
     public long getPositionAfterAPPSegments() {
         return positionAfterAPP;
     }
 
+    /**
+     * Gets the mp4 file type.
+     *
+     * @return the mp4 file type.
+     */
     @Override
     public MP4FileType getMP4FileType() {
         return null;
     }
 
+    /**
+     * Gets the attributes.
+     *
+     * @param attrs the attrs.
+     * @return the attributes.
+     */
     @Override
     public Attributes getAttributes(Attributes attrs) {
         if (attrs == null)
@@ -112,11 +173,24 @@ public class JPEGParser implements XPEGParser {
         return attrs;
     }
 
+    /**
+     * Gets the transfer syntax uid.
+     *
+     * @param fragmented the fragmented.
+     * @return the transfer syntax uid.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public String getTransferSyntaxUID(boolean fragmented) throws IOException {
         return params.transferSyntaxUID();
     }
 
+    /**
+     * Executes the seek code stream operation.
+     *
+     * @param channel the channel.
+     * @throws IOException if the operation cannot be completed.
+     */
     private void seekCodeStream(SeekableByteChannel channel) throws IOException {
         long startPos = channel.position();
         if (readInt(channel) != 12 || readLong(channel) != JPEG2000_SIGNATURE_BOX) {
@@ -139,6 +213,13 @@ public class JPEGParser implements XPEGParser {
         }
     }
 
+    /**
+     * Reads the u short.
+     *
+     * @param channel the channel.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     private int readUShort(SeekableByteChannel channel) throws IOException {
         SafeBuffer.clear(buf).limit(2);
         channel.read(buf);
@@ -146,6 +227,13 @@ public class JPEGParser implements XPEGParser {
         return buf.getShort() & 0xffff;
     }
 
+    /**
+     * Reads the int.
+     *
+     * @param channel the channel.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     private int readInt(SeekableByteChannel channel) throws IOException {
         SafeBuffer.clear(buf).limit(4);
         channel.read(buf);
@@ -153,6 +241,13 @@ public class JPEGParser implements XPEGParser {
         return buf.getInt();
     }
 
+    /**
+     * Reads the long.
+     *
+     * @param channel the channel.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     private long readLong(SeekableByteChannel channel) throws IOException {
         SafeBuffer.clear(buf);
         channel.read(buf);
@@ -160,10 +255,24 @@ public class JPEGParser implements XPEGParser {
         return buf.getLong();
     }
 
+    /**
+     * Executes the skip operation.
+     *
+     * @param channel the channel.
+     * @param n       the n.
+     * @throws IOException if the operation cannot be completed.
+     */
     private void skip(SeekableByteChannel channel, long n) throws IOException {
         channel.position(channel.position() + n);
     }
 
+    /**
+     * Executes the next segment operation.
+     *
+     * @param channel the channel.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     private Segment nextSegment(SeekableByteChannel channel) throws IOException {
         int v = readInt(channel);
         requiresFF(channel, v >>> 24);
@@ -176,49 +285,155 @@ public class JPEGParser implements XPEGParser {
         return new Segment(marker, (v & 0xffff) - 2);
     }
 
+    /**
+     * Executes the requires ff operation.
+     *
+     * @param channel the channel.
+     * @param v       the v.
+     * @throws IOException if the operation cannot be completed.
+     */
     private void requiresFF(SeekableByteChannel channel, int v) throws IOException {
         if (v != 0xff)
             throw new IOException(String.format("unexpected %2XH on position %d", v, channel.position() - 4));
     }
 
+    /**
+     * Defines the Params contract.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public interface Params {
 
+        /**
+         * Executes the samples per pixel operation.
+         *
+         * @return the operation result.
+         */
         int samplesPerPixel();
 
+        /**
+         * Executes the rows operation.
+         *
+         * @return the operation result.
+         */
         int rows();
 
+        /**
+         * Executes the columns operation.
+         *
+         * @return the operation result.
+         */
         int columns();
 
+        /**
+         * Executes the bits stored operation.
+         *
+         * @return the operation result.
+         */
         int bitsStored();
 
+        /**
+         * Executes the pixel representation operation.
+         *
+         * @return the operation result.
+         */
         int pixelRepresentation();
 
+        /**
+         * Executes the lossy image compression operation.
+         *
+         * @return true if the condition is met; otherwise false.
+         */
         boolean lossyImageCompression();
 
+        /**
+         * Executes the color photometric interpretation operation.
+         *
+         * @return the operation result.
+         */
         String colorPhotometricInterpretation();
 
+        /**
+         * Executes the transfer syntax uid operation.
+         *
+         * @return the operation result.
+         * @throws IOException if the operation cannot be completed.
+         */
         String transferSyntaxUID() throws IOException;
+
     }
 
+    /**
+     * Represents the Segment type.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     private static class Segment {
 
+        /**
+         * The marker value.
+         */
         final int marker;
+
+        /**
+         * The content size value.
+         */
         final int contentSize;
 
+        /**
+         * Creates a new instance.
+         *
+         * @param marker      the marker.
+         * @param contentSize the content size.
+         */
         private Segment(int marker, int contentSize) {
             this.marker = marker;
             this.contentSize = contentSize;
         }
+
     }
 
+    /**
+     * Represents the JPEGParams type.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     private class JPEGParams implements Params {
 
+        /**
+         * The sof value.
+         */
         final int sof;
+
+        /**
+         * The sof params value.
+         */
         final ByteBuffer sofParams;
+
+        /**
+         * The sos params value.
+         */
         final ByteBuffer sosParams;
+
+        /**
+         * The rgb value.
+         */
         boolean rgb = false;
+
+        /**
+         * The jfif value.
+         */
         boolean jfif = false;
 
+        /**
+         * Creates a new instance.
+         *
+         * @param channel the channel.
+         * @throws IOException if the operation cannot be completed.
+         */
         JPEGParams(SeekableByteChannel channel) throws IOException {
             Segment segment;
             while (JPEG.isAPP((segment = nextSegment(channel)).marker)) {
@@ -252,36 +467,71 @@ public class JPEGParser implements XPEGParser {
             channel.read(sosParams = ByteBuffer.allocate(segment.contentSize));
         }
 
+        /**
+         * Executes the samples per pixel operation.
+         *
+         * @return the operation result.
+         */
         @Override
         public int samplesPerPixel() {
             return sofParams.get(5) & 0xff;
         }
 
+        /**
+         * Executes the rows operation.
+         *
+         * @return the operation result.
+         */
         @Override
         public int rows() {
             return sofParams.getShort(1) & 0xffff;
         }
 
+        /**
+         * Executes the columns operation.
+         *
+         * @return the operation result.
+         */
         @Override
         public int columns() {
             return sofParams.getShort(3) & 0xffff;
         }
 
+        /**
+         * Executes the bits stored operation.
+         *
+         * @return the operation result.
+         */
         @Override
         public int bitsStored() {
             return sofParams.get(0) & 0xff;
         }
 
+        /**
+         * Executes the pixel representation operation.
+         *
+         * @return the operation result.
+         */
         @Override
         public int pixelRepresentation() {
             return 0;
         }
 
+        /**
+         * Executes the lossy image compression operation.
+         *
+         * @return true if the condition is met; otherwise false.
+         */
         @Override
         public boolean lossyImageCompression() {
             return !(sof == JPEG.SOF3 || (sof == JPEG.SOF55 && sosParams.get(3) == 0));
         }
 
+        /**
+         * Determines whether rgb.
+         *
+         * @return true if the condition is met; otherwise false.
+         */
         public boolean isRgb() {
             // Not JFIF or has RGB Components, see
             // https://entropymine.wordpress.com/2018/10/22/how-is-a-jpeg-images-color-type-determined/
@@ -289,6 +539,11 @@ public class JPEGParser implements XPEGParser {
                     && (sofParams.get(9) & 0xff) == 0x47 && (sofParams.get(12) & 0xff) == 0x42));
         }
 
+        /**
+         * Executes the color photometric interpretation operation.
+         *
+         * @return the operation result.
+         */
         @Override
         public String colorPhotometricInterpretation() {
             if (samplesPerPixel() < 3) {
@@ -301,6 +556,12 @@ public class JPEGParser implements XPEGParser {
             return sof == JPEG.SOF0 ? "YBR_FULL_422" : "YBR_FULL";
         }
 
+        /**
+         * Executes the transfer syntax uid operation.
+         *
+         * @return the operation result.
+         * @throws IOException if the operation cannot be completed.
+         */
         @Override
         public String transferSyntaxUID() throws IOException {
             switch (sof) {
@@ -321,14 +582,38 @@ public class JPEGParser implements XPEGParser {
             }
             throw new IOException(String.format("JPEG SOF%d not supported", sof & 0xf));
         }
+
     }
 
+    /**
+     * Represents the JPEG2000Params type.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     private class JPEG2000Params implements Params {
 
+        /**
+         * The siz params value.
+         */
         final ByteBuffer sizParams;
+
+        /**
+         * The cod params value.
+         */
         final ByteBuffer codParams;
+
+        /**
+         * The tlm value.
+         */
         final boolean tlm;
 
+        /**
+         * Creates a new instance.
+         *
+         * @param channel the channel.
+         * @throws IOException if the operation cannot be completed.
+         */
         JPEG2000Params(SeekableByteChannel channel) throws IOException {
             ByteBuffer sizParams = null;
             ByteBuffer codParams = null;
@@ -356,42 +641,82 @@ public class JPEGParser implements XPEGParser {
             this.tlm = tlm;
         }
 
+        /**
+         * Executes the samples per pixel operation.
+         *
+         * @return the operation result.
+         */
         @Override
         public int samplesPerPixel() {
             return sizParams.getShort(34) & 0xffff; // Csiz
         }
 
+        /**
+         * Executes the rows operation.
+         *
+         * @return the operation result.
+         */
         @Override
         public int rows() {
             return sizParams.getInt(6) - sizParams.getInt(14); // Ysiz - YOsiz;
         }
 
+        /**
+         * Executes the columns operation.
+         *
+         * @return the operation result.
+         */
         @Override
         public int columns() {
             return sizParams.getInt(2) - sizParams.getInt(10); // Xsiz - XOsiz;
         }
 
+        /**
+         * Executes the bits stored operation.
+         *
+         * @return the operation result.
+         */
         @Override
         public int bitsStored() {
             return (sizParams.get(36) & 0x7f) + 1; // Ssiz
         }
 
+        /**
+         * Executes the pixel representation operation.
+         *
+         * @return the operation result.
+         */
         @Override
         public int pixelRepresentation() {
             return sizParams.get(36) < 0 ? 1 : 0; // Ssiz
         }
 
+        /**
+         * Executes the lossy image compression operation.
+         *
+         * @return true if the condition is met; otherwise false.
+         */
         @Override
         public boolean lossyImageCompression() {
             return codParams.get(9) == 0; // Wavelet Transformation
         }
 
+        /**
+         * Executes the color photometric interpretation operation.
+         *
+         * @return the operation result.
+         */
         @Override
         public String colorPhotometricInterpretation() {
             return codParams.get(4) == 0 ? "RGB" // Multiple component transformation
                     : lossyImageCompression() ? "YBR_ICT" : "YBR_RCT";
         }
 
+        /**
+         * Executes the transfer syntax uid operation.
+         *
+         * @return the operation result.
+         */
         @Override
         public String transferSyntaxUID() {
             return (sizParams.getShort(0) & 0b0100_0000_0000_0000) != 0
@@ -400,6 +725,11 @@ public class JPEGParser implements XPEGParser {
                     : lossyImageCompression() ? UID.JPEG2000.uid : UID.JPEG2000Lossless.uid;
         }
 
+        /**
+         * Returns the string representation.
+         *
+         * @return the string representation.
+         */
         @Override
         public String toString() {
             StringBuilder sb = new StringBuilder(512);
@@ -448,6 +778,12 @@ public class JPEGParser implements XPEGParser {
             return sb.toString();
         }
 
+        /**
+         * Converts this value to transformation.
+         *
+         * @param i the i.
+         * @return the operation result.
+         */
         private String toTransformation(int i) {
             switch (i) {
                 case 0:
@@ -459,6 +795,12 @@ public class JPEGParser implements XPEGParser {
             return Integer.toString(i);
         }
 
+        /**
+         * Converts this value to progression order.
+         *
+         * @param i the i.
+         * @return the operation result.
+         */
         private String toProgressionOrder(int i) {
             switch (i) {
                 case 0:
@@ -479,6 +821,12 @@ public class JPEGParser implements XPEGParser {
             return Integer.toString(i);
         }
 
+        /**
+         * Converts this value to binary string.
+         *
+         * @param i the i.
+         * @return the operation result.
+         */
         private String toBinaryString(int i) {
             String s = Integer.toBinaryString(i);
             int l = s.length();
@@ -490,36 +838,75 @@ public class JPEGParser implements XPEGParser {
             return sb.toString();
         }
 
+        /**
+         * Determines whether rpcl.
+         *
+         * @return true if the condition is met; otherwise false.
+         */
         private boolean isRPCL() {
             return tlm && isProgressionOrderRPCL() && isBlockSize64x64() && numXTiles() == 1 && numYTiles() == 1
                     && (Math.min(rows(), columns()) >>> decompositions()) <= 64;
         }
 
+        /**
+         * Determines whether progression order rpcl.
+         *
+         * @return true if the condition is met; otherwise false.
+         */
         private boolean isProgressionOrderRPCL() {
             return codParams.get(1) == 2;
         }
 
+        /**
+         * Executes the decompositions operation.
+         *
+         * @return the operation result.
+         */
         private int decompositions() {
             return codParams.get(5) & 0xff;
         }
 
+        /**
+         * Determines whether block size64x64.
+         *
+         * @return true if the condition is met; otherwise false.
+         */
         private boolean isBlockSize64x64() {
             return (codParams.get(6) & 0xff) == 4 && (codParams.get(7) & 0xff) == 4;
         }
 
+        /**
+         * Executes the num x tiles operation.
+         *
+         * @return the operation result.
+         */
         private int numXTiles() {
             return numTiles(2, 18, 26);
         }
 
+        /**
+         * Executes the num y tiles operation.
+         *
+         * @return the operation result.
+         */
         private int numYTiles() {
             return numTiles(6, 22, 30);
         }
 
+        /**
+         * Executes the num tiles operation.
+         *
+         * @param iSize  the i size.
+         * @param iTsiz  the i tsiz.
+         * @param iTOsiz the i t osiz.
+         * @return the operation result.
+         */
         private int numTiles(int iSize, int iTsiz, int iTOsiz) {
             long tSize = sizParams.getInt(iTsiz) & 0xffffffffL;
             return (int) (((sizParams.getInt(iSize) & 0xffffffffL) - (sizParams.getInt(iTOsiz) & 0xffffffffL) + tSize
                     - 1) / tSize);
         }
+
     }
 
 }

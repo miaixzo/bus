@@ -40,6 +40,7 @@ public class IndexedCompare<T> implements Comparator<T> {
      * Whether to place elements not in the list at the end.
      */
     private final boolean atEndIfMiss;
+
     /**
      * A map storing the position of each object, where the key is the object and the value is its index.
      */

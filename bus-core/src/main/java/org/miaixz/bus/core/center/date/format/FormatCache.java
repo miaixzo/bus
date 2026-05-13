@@ -49,6 +49,7 @@ public abstract class FormatCache<F extends Format> {
      * Cache for date/time instance patterns, used for parameters similar to DateFormat.SHORT or DateFormat.LONG.
      */
     private static final ConcurrentMap<Tuple, String> C_DATE_TIME_INSTANCE_CACHE = new ConcurrentHashMap<>(7);
+
     /**
      * Cache for formatter instances.
      */

@@ -54,7 +54,9 @@ public class NativeCounter implements Counter {
         adder.add(amount);
     }
 
-    /** Returns the cumulative count since creation. */
+    /**
+     * Returns the cumulative count since creation.
+     */
     @Override
     public long count() {
         return adder.sum();

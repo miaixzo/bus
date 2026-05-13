@@ -72,6 +72,7 @@ public class Cache implements Closeable, Flushable {
     private int networkCount;
     private int hitCount;
     private int requestCount;
+
     /**
      * The internal cache implementation for use by the HTTP client.
      */
@@ -606,6 +607,9 @@ public class Cache implements Closeable, Flushable {
 
     /**
      * An immutable snapshot of the metadata of a cached response.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static final class Entry {
 
@@ -842,10 +846,14 @@ public class Cache implements Closeable, Flushable {
                     .handshake(handshake).sentRequestAtMillis(sentRequestMillis)
                     .receivedResponseAtMillis(receivedResponseMillis).build();
         }
+
     }
 
     /**
      * A response body sourced from the cache.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class CacheResponseBody extends ResponseBody {
 
@@ -923,10 +931,14 @@ public class Cache implements Closeable, Flushable {
         public BufferSource source() {
             return bodySource;
         }
+
     }
 
     /**
      * A cache request that writes to the cache.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private final class CacheRequestImpl implements CacheRequest {
 
@@ -1001,6 +1013,7 @@ public class Cache implements Closeable, Flushable {
         public Sink body() {
             return body;
         }
+
     }
 
 }

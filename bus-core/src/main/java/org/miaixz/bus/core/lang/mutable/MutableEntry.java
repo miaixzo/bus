@@ -42,6 +42,7 @@ public class MutableEntry<K, V> extends AbstractEntry<K, V> implements Mutable<M
      * The mutable key of this entry.
      */
     protected K key;
+
     /**
      * The mutable value of this entry.
      */

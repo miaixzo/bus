@@ -29,46 +29,116 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
+ * Represents the SAXWriter type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class SAXWriter implements ImageInputHandler {
 
+    /**
+     * The namespace value.
+     */
     private static final String NAMESPACE = "http://dicom.nema.org/PS3.19/models/NativeDICOM";
+
+    /**
+     * The base64 chunk length value.
+     */
     private static final int BASE64_CHUNK_LENGTH = 256 * 3;
+
+    /**
+     * The buffer length value.
+     */
     private static final int BUFFER_LENGTH = 256 * 4;
+
+    /**
+     * The ch value.
+     */
     private final ContentHandler ch;
+
+    /**
+     * The atts value.
+     */
     private final AttributesImpl atts = new AttributesImpl();
+
+    /**
+     * The buffer value.
+     */
     private final char[] buffer = new char[BUFFER_LENGTH];
+
+    /**
+     * The include keyword value.
+     */
     private boolean includeKeyword = true;
+
+    /**
+     * The namespace value.
+     */
     private String namespace = "";
 
+    /**
+     * Creates a new instance.
+     *
+     * @param ch the ch.
+     */
     public SAXWriter(ContentHandler ch) {
         this.ch = ch;
     }
 
+    /**
+     * Determines whether include keyword.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public final boolean isIncludeKeyword() {
         return includeKeyword;
     }
 
+    /**
+     * Sets the include keyword.
+     *
+     * @param includeKeyword the include keyword.
+     */
     public final void setIncludeKeyword(boolean includeKeyword) {
         this.includeKeyword = includeKeyword;
     }
 
+    /**
+     * Determines whether include namespace declaration.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public final boolean isIncludeNamespaceDeclaration() {
         return namespace == NAMESPACE;
     }
 
+    /**
+     * Sets the include namespace declaration.
+     *
+     * @param includeNameSpaceDeclaration the include name space declaration.
+     */
     public final void setIncludeNamespaceDeclaration(boolean includeNameSpaceDeclaration) {
         this.namespace = includeNameSpaceDeclaration ? NAMESPACE : "";
     }
 
+    /**
+     * Executes the write operation.
+     *
+     * @param attrs the attrs.
+     * @throws SAXException if the operation cannot be completed.
+     */
     public void write(Attributes attrs) throws SAXException {
         startDocument();
         writeItem(attrs);
         endDocument();
     }
 
+    /**
+     * Writes the item.
+     *
+     * @param item the item.
+     * @throws SAXException if the operation cannot be completed.
+     */
     private void writeItem(final Attributes item) throws SAXException {
         final SpecificCharacterSet cs = item.getSpecificCharacterSet();
         try {
@@ -87,6 +157,12 @@ public class SAXWriter implements ImageInputHandler {
         }
     }
 
+    /**
+     * Executes the start dataset operation.
+     *
+     * @param dis the dis.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void startDataset(ImageInputStream dis) throws IOException {
         try {
@@ -96,6 +172,12 @@ public class SAXWriter implements ImageInputHandler {
         }
     }
 
+    /**
+     * Executes the end dataset operation.
+     *
+     * @param dis the dis.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void endDataset(ImageInputStream dis) throws IOException {
         try {
@@ -105,39 +187,93 @@ public class SAXWriter implements ImageInputHandler {
         }
     }
 
+    /**
+     * Executes the start document operation.
+     *
+     * @throws SAXException if the operation cannot be completed.
+     */
     private void startDocument() throws SAXException {
         ch.startDocument();
         atts.addAttribute("", "space", "xml:space", "NMTOKEN", "preserve");
         startElement("NativeDicomModel");
     }
 
+    /**
+     * Executes the end document operation.
+     *
+     * @throws SAXException if the operation cannot be completed.
+     */
     private void endDocument() throws SAXException {
         endElement("NativeDicomModel");
         ch.endDocument();
     }
 
+    /**
+     * Executes the start element operation.
+     *
+     * @param name      the name.
+     * @param attrName  the attr name.
+     * @param attrValue the attr value.
+     * @throws SAXException if the operation cannot be completed.
+     */
     private void startElement(String name, String attrName, int attrValue) throws SAXException {
         startElement(name, attrName, Integer.toString(attrValue));
     }
 
+    /**
+     * Executes the start element operation.
+     *
+     * @param name      the name.
+     * @param attrName  the attr name.
+     * @param attrValue the attr value.
+     * @throws SAXException if the operation cannot be completed.
+     */
     private void startElement(String name, String attrName, String attrValue) throws SAXException {
         addAttribute(attrName, attrValue);
         startElement(name);
     }
 
+    /**
+     * Executes the start element operation.
+     *
+     * @param name the name.
+     * @throws SAXException if the operation cannot be completed.
+     */
     private void startElement(String name) throws SAXException {
         ch.startElement(namespace, name, name, atts);
         atts.clear();
     }
 
+    /**
+     * Executes the end element operation.
+     *
+     * @param name the name.
+     * @throws SAXException if the operation cannot be completed.
+     */
     private void endElement(String name) throws SAXException {
         ch.endElement(namespace, name, name);
     }
 
+    /**
+     * Adds the attribute.
+     *
+     * @param name  the name.
+     * @param value the value.
+     */
     private void addAttribute(String name, String value) {
         atts.addAttribute(namespace, name, name, "NMTOKEN", value);
     }
 
+    /**
+     * Writes the attribute.
+     *
+     * @param tag   the tag.
+     * @param vr    the vr.
+     * @param value the value.
+     * @param cs    the cs.
+     * @param attrs the attrs.
+     * @throws SAXException if the operation cannot be completed.
+     */
     private void writeAttribute(int tag, VR vr, Object value, SpecificCharacterSet cs, Attributes attrs)
             throws SAXException {
         if (Tag.isGroupLength(tag) || Tag.isPrivateCreator(tag))
@@ -157,6 +293,13 @@ public class SAXWriter implements ImageInputHandler {
         endElement("DicomAttribute");
     }
 
+    /**
+     * Writes the attribute.
+     *
+     * @param value     the value.
+     * @param bigEndian the big endian.
+     * @throws SAXException if the operation cannot be completed.
+     */
     private void writeAttribute(Value value, boolean bigEndian) throws SAXException {
         if (value.isEmpty())
             return;
@@ -190,6 +333,13 @@ public class SAXWriter implements ImageInputHandler {
         }
     }
 
+    /**
+     * Reads the value.
+     *
+     * @param dis   the dis.
+     * @param attrs the attrs.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void readValue(ImageInputStream dis, Attributes attrs) throws IOException {
         int tag = dis.tag();
@@ -229,6 +379,13 @@ public class SAXWriter implements ImageInputHandler {
             }
     }
 
+    /**
+     * Adds the attributes.
+     *
+     * @param tag            the tag.
+     * @param vr             the vr.
+     * @param privateCreator the private creator.
+     */
     private void addAttributes(int tag, VR vr, String privateCreator) {
         if (includeKeyword) {
             String keyword = ElementDictionary.keywordOf(tag, privateCreator);
@@ -243,6 +400,13 @@ public class SAXWriter implements ImageInputHandler {
         addAttribute("vr", vr.name());
     }
 
+    /**
+     * Reads the value.
+     *
+     * @param dis the dis.
+     * @param seq the seq.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void readValue(ImageInputStream dis, Sequence seq) throws IOException {
         try {
@@ -254,6 +418,13 @@ public class SAXWriter implements ImageInputHandler {
         }
     }
 
+    /**
+     * Reads the value.
+     *
+     * @param dis   the dis.
+     * @param frags the frags.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void readValue(ImageInputStream dis, Fragments frags) throws IOException {
         long len = dis.unsignedLength();
@@ -279,6 +450,15 @@ public class SAXWriter implements ImageInputHandler {
             }
     }
 
+    /**
+     * Writes the values.
+     *
+     * @param vr        the vr.
+     * @param val       the val.
+     * @param bigEndian the big endian.
+     * @param cs        the cs.
+     * @throws SAXException if the operation cannot be completed.
+     */
     private void writeValues(VR vr, Object val, boolean bigEndian, SpecificCharacterSet cs) throws SAXException {
         if (vr.isStringType())
             val = vr.toStrings(val, bigEndian, cs);
@@ -302,6 +482,12 @@ public class SAXWriter implements ImageInputHandler {
         }
     }
 
+    /**
+     * Writes the inline binary.
+     *
+     * @param b the b.
+     * @throws SAXException if the operation cannot be completed.
+     */
     private void writeInlineBinary(byte[] b) throws SAXException {
         startElement("InlineBinary");
         char[] buf = buffer;
@@ -314,6 +500,12 @@ public class SAXWriter implements ImageInputHandler {
         endElement("InlineBinary");
     }
 
+    /**
+     * Writes the bulk data.
+     *
+     * @param bulkData the bulk data.
+     * @throws SAXException if the operation cannot be completed.
+     */
     private void writeBulkData(BulkData bulkData) throws SAXException {
         if (bulkData.getUUID() != null)
             addAttribute("uuid", bulkData.getUUID());
@@ -323,6 +515,13 @@ public class SAXWriter implements ImageInputHandler {
         endElement("BulkData");
     }
 
+    /**
+     * Writes the element.
+     *
+     * @param qname the qname.
+     * @param s     the s.
+     * @throws SAXException if the operation cannot be completed.
+     */
     private void writeElement(String qname, String s) throws SAXException {
         if (s != null) {
             startElement(qname);
@@ -331,6 +530,12 @@ public class SAXWriter implements ImageInputHandler {
         }
     }
 
+    /**
+     * Writes the text.
+     *
+     * @param s the s.
+     * @throws SAXException if the operation cannot be completed.
+     */
     private void writeText(String s) throws SAXException {
         char[] buf = buffer;
         for (int off = 0, totlen = s.length(); off < totlen;) {
@@ -340,6 +545,14 @@ public class SAXWriter implements ImageInputHandler {
         }
     }
 
+    /**
+     * Writes the pn group.
+     *
+     * @param qname the qname.
+     * @param pn    the pn.
+     * @param group the group.
+     * @throws SAXException if the operation cannot be completed.
+     */
     private void writePNGroup(String qname, PersonName pn, PersonName.Group group) throws SAXException {
         if (pn.contains(group)) {
             startElement(qname);

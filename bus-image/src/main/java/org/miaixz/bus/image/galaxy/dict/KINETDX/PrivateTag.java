@@ -20,32 +20,51 @@
 package org.miaixz.bus.image.galaxy.dict.KINETDX;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "KINETDX";
 
-    /** (0021,xxA6) VR=OB VM=1 */
+    /**
+     * (0021,xxA6) VR=OB VM=1
+     */
     public static final int _0021_xxA6_ = 0x002100A6;
 
-    /** (0021,xxA5) VR=US VM=1 ? */
+    /**
+     * (0021,xxA5) VR=US VM=1 ?
+     */
     public static final int _0021_xxA5_ = 0x002100A5;
 
-    /** (0021,xxA8) VR=LO VM=1 ? */
+    /**
+     * (0021,xxA8) VR=LO VM=1 ?
+     */
     public static final int _0021_xxA8_ = 0x002100A8;
 
-    /** (0021,xxAA) VR=OB VM=1 */
+    /**
+     * (0021,xxAA) VR=OB VM=1
+     */
     public static final int _0021_xxAA_ = 0x002100AA;
 
-    /** (0021,xxAB) VR=LO VM=1 ? */
+    /**
+     * (0021,xxAB) VR=LO VM=1 ?
+     */
     public static final int _0021_xxAB_ = 0x002100AB;
 
-    /** (0021,xxAC) VR=LO VM=1 ? */
+    /**
+     * (0021,xxAC) VR=LO VM=1 ?
+     */
     public static final int _0021_xxAC_ = 0x002100AC;
 
-    /** (0021,xxB4) VR=LO VM=1 ? */
+    /**
+     * (0021,xxB4) VR=LO VM=1 ?
+     */
     public static final int _0021_xxB4_ = 0x002100B4;
 
 }

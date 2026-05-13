@@ -44,6 +44,7 @@ public class ThymeleafProvider implements TemplateProvider {
      * The underlying Thymeleaf template engine object.
      */
     TemplateEngine engine;
+
     /**
      * The template configuration.
      */

@@ -20,44 +20,71 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_CT_APPL_PRESENTATION;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS CT APPL PRESENTATION";
 
-    /** (0029,xx00) VR=US VM=1 Translucent Mode */
+    /**
+     * (0029,xx00) VR=US VM=1 Translucent Mode
+     */
     public static final int TranslucentMode = 0x00290000;
 
-    /** (0029,xx01) VR=FD VM=1 Translucent Window Size */
+    /**
+     * (0029,xx01) VR=FD VM=1 Translucent Window Size
+     */
     public static final int TranslucentWindowSize = 0x00290001;
 
-    /** (0029,xx02) VR=US VM=1 Panoramic Mode */
+    /**
+     * (0029,xx02) VR=US VM=1 Panoramic Mode
+     */
     public static final int PanoramicMode = 0x00290002;
 
-    /** (0029,xx03) VR=FD VM=1 Panoramic Inner Width */
+    /**
+     * (0029,xx03) VR=FD VM=1 Panoramic Inner Width
+     */
     public static final int PanoramicInnerWidth = 0x00290003;
 
-    /** (0029,xx04) VR=US VM=1 Display Unseen Areas */
+    /**
+     * (0029,xx04) VR=US VM=1 Display Unseen Areas
+     */
     public static final int DisplayUnseenAreas = 0x00290004;
 
-    /** (0029,xx05) VR=US VM=4 Unseen Areas Color */
+    /**
+     * (0029,xx05) VR=US VM=4 Unseen Areas Color
+     */
     public static final int UnseenAreasColor = 0x00290005;
 
-    /** (0029,xx06) VR=US VM=1 Display Tagged Data */
+    /**
+     * (0029,xx06) VR=US VM=1 Display Tagged Data
+     */
     public static final int DisplayTaggedData = 0x00290006;
 
-    /** (0029,xx07) VR=US VM=4 Tagged Color */
+    /**
+     * (0029,xx07) VR=US VM=4 Tagged Color
+     */
     public static final int TaggedColor = 0x00290007;
 
-    /** (0029,xx08) VR=UL VM=1 Tagged Sample Thickness */
+    /**
+     * (0029,xx08) VR=UL VM=1 Tagged Sample Thickness
+     */
     public static final int TaggedSampleThickness = 0x00290008;
 
-    /** (0029,xx09) VR=SL VM=1 Tagged Threshold */
+    /**
+     * (0029,xx09) VR=SL VM=1 Tagged Threshold
+     */
     public static final int TaggedThreshold = 0x00290009;
 
-    /** (0029,xx10) VR=US VM=1 Kernel Filter */
+    /**
+     * (0029,xx10) VR=US VM=1 Kernel Filter
+     */
     public static final int KernelFilter = 0x00290010;
 
 }

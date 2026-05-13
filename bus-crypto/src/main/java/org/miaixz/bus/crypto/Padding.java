@@ -23,9 +23,10 @@ package org.miaixz.bus.crypto;
  * Enumeration for various padding schemes used in block ciphers. Padding is applied when the plaintext data length is
  * not a multiple of the block size, ensuring that the last block is filled to the required length.
  *
- * @author Kimi Liu
  * @see <a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#Cipher"> Cipher
  *      section in Java Cryptography Architecture Standard Algorithm Name Documentation</a>
+ *
+ * @author Kimi Liu
  * @since Java 21+
  */
 public enum Padding {

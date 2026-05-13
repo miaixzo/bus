@@ -37,6 +37,9 @@ import jakarta.ws.rs.core.Response;
  * </p>
  *
  * NOTE: This API is not available in the Community edition of GitLab.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class PackagesApi extends AbstractApi {
 

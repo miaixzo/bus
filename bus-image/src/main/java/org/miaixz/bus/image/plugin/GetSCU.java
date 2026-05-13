@@ -62,70 +62,87 @@ public class GetSCU implements AutoCloseable {
      * Default filter for attributes to be read from an input file.
      */
     private static final int[] DEF_IN_FILTER = { Tag.SOPInstanceUID, Tag.StudyInstanceUID, Tag.SeriesInstanceUID };
+
     /**
      * Temporary directory name for storing files during transfer.
      */
     private static final String TMP_DIR = "tmp";
+
     /**
      * The DICOM device associated with this SCU.
      */
     private final Device device = new Device("getscu");
+
     /**
      * The Application Entity used by this SCU.
      */
     private final ApplicationEntity ae;
+
     /**
      * The local network connection configuration.
      */
     private final Connection conn = new Connection();
+
     /**
      * The remote network connection configuration.
      */
     private final Connection remote = new Connection();
+
     /**
      * The A-ASSOCIATE-RQ message to be sent.
      */
     private final AAssociateRQ rq = new AAssociateRQ();
+
     /**
      * The query keys (matching attributes) for the C-GET request.
      */
     private final Attributes keys = new Attributes();
+
     /**
      * The overall status of the C-GET operation.
      */
     private final Status state;
+
     /**
      * The priority of the C-GET request.
      */
     private int priority;
+
     /**
      * The information model to be used for the query.
      */
     private InformationModel model;
+
     /**
      * The directory to store the retrieved DICOM files.
      */
     private File storageDir;
+
     /**
      * A filter for attributes to be included from an input file.
      */
     private int[] inFilter = DEF_IN_FILTER;
+
     /**
      * The active DICOM association.
      */
     private Association as;
+
     /**
      * The number of milliseconds after which to cancel the request.
      */
     private int cancelAfter;
+
     /**
      * The handler for DIMSE responses.
      */
     private DimseRSPHandler rspHandler;
+
     /**
      * The total size in bytes of all retrieved files.
      */
     private long totalSize = 0;
+
     /**
      * The C-STORE SCP implementation to handle incoming storage requests.
      */
@@ -538,6 +555,9 @@ public class GetSCU implements AutoCloseable {
 
     /**
      * Enumeration of the supported DICOM Information Models for C-GET.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum InformationModel {
 
@@ -574,6 +594,7 @@ public class GetSCU implements AutoCloseable {
          * The default query/retrieve level for the model.
          */
         final String level;
+
         /**
          * The SOP Class UID for the information model.
          */
@@ -598,6 +619,7 @@ public class GetSCU implements AutoCloseable {
         public String getCuid() {
             return cuid;
         }
+
     }
 
 }

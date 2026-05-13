@@ -43,9 +43,9 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  *
  * <p>
  * Usage example:
- * 
+ *
  * <pre>
- * 
+ *
  * FileInputStream fis = new FileInputStream(file);
  * BomReader uin = new BomReader(fis);
  * </pre>

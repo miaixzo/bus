@@ -28,20 +28,51 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
+ * Represents the HL7ContentHandler type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class HL7ContentHandler extends DefaultHandler {
 
+    /**
+     * The writer value.
+     */
     private final Writer writer;
+
+    /**
+     * The escape value.
+     */
     private final char[] escape = { Symbol.C_BACKSLASH, 0, Symbol.C_BACKSLASH };
+
+    /**
+     * The delimiters value.
+     */
     private final char[] delimiters = Delimiter.DEFAULT.toCharArray();
+
+    /**
+     * The ignore characters value.
+     */
     private boolean ignoreCharacters = true;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param writer the writer.
+     */
     public HL7ContentHandler(Writer writer) {
         this.writer = writer;
     }
 
+    /**
+     * Executes the start element operation.
+     *
+     * @param uri       the uri.
+     * @param localName the local name.
+     * @param qName     the q name.
+     * @param atts      the atts.
+     * @throws SAXException if the operation cannot be completed.
+     */
     @Override
     public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
         try {
@@ -117,6 +148,13 @@ public class HL7ContentHandler extends DefaultHandler {
         }
     }
 
+    /**
+     * Executes the start header segment operation.
+     *
+     * @param seg  the seg.
+     * @param atts the atts.
+     * @throws IOException if the operation cannot be completed.
+     */
     private void startHeaderSegment(String seg, Attributes atts) throws IOException {
         Delimiter[] values = Delimiter.values();
         for (int i = 0; i < values.length; i++) {
@@ -129,6 +167,14 @@ public class HL7ContentHandler extends DefaultHandler {
         writer.write(delimiters);
     }
 
+    /**
+     * Executes the end element operation.
+     *
+     * @param uri       the uri.
+     * @param localName the local name.
+     * @param qName     the q name.
+     * @throws SAXException if the operation cannot be completed.
+     */
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         ignoreCharacters = true;
@@ -174,6 +220,14 @@ public class HL7ContentHandler extends DefaultHandler {
         }
     }
 
+    /**
+     * Executes the characters operation.
+     *
+     * @param cbuf   the cbuf.
+     * @param start  the start.
+     * @param length the length.
+     * @throws SAXException if the operation cannot be completed.
+     */
     @Override
     public void characters(char[] cbuf, int start, int length) throws SAXException {
         if (ignoreCharacters)
@@ -201,6 +255,12 @@ public class HL7ContentHandler extends DefaultHandler {
         }
     }
 
+    /**
+     * Executes the escape operation.
+     *
+     * @param delimIndex the delim index.
+     * @throws IOException if the operation cannot be completed.
+     */
     private void escape(int delimIndex) throws IOException {
         escape[1] = Delimiter.ESCAPE.charAt(delimIndex);
         writer.write(escape);

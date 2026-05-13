@@ -48,6 +48,7 @@ public class XMLGregorianCalendarConverter extends AbstractConverter {
      * Factory used to create {@link XMLGregorianCalendar} instances from converted calendar values.
      */
     private final DatatypeFactory datatypeFactory;
+
     /**
      * Date format pattern
      */

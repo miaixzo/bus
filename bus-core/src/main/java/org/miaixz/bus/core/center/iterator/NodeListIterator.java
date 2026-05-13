@@ -30,8 +30,8 @@ import org.w3c.dom.NodeList;
  * An {@link Iterator} wrapper for {@link NodeList}. This iterator allows iterating over the nodes in a
  * {@link NodeList}. The {@link #remove()} method is not supported by this iterator.
  *
- * @author Kimi Liu
  * @see NodeList
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class NodeListIterator implements ResettableIterator<Node> {
@@ -40,6 +40,7 @@ public class NodeListIterator implements ResettableIterator<Node> {
      * The underlying {@link NodeList} to iterate over.
      */
     private final NodeList nodeList;
+
     /**
      * The current index of the iterator within the {@link NodeList}.
      */

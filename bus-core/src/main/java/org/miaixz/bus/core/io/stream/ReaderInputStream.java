@@ -48,22 +48,27 @@ public class ReaderInputStream extends InputStream {
      * The underlying {@link Reader} providing character data.
      */
     private final Reader reader;
+
     /**
      * The {@link CharsetEncoder} used to convert characters to bytes.
      */
     private final CharsetEncoder encoder;
+
     /**
      * The {@link CharBuffer} used as input for the encoder.
      */
     private final CharBuffer encoderIn;
+
     /**
      * The {@link ByteBuffer} used as output for the encoder.
      */
     private final ByteBuffer encoderOut;
+
     /**
      * The result of the last encoding operation.
      */
     private CoderResult lastCoderResult;
+
     /**
      * Flag indicating whether the end of the input {@link Reader} has been reached.
      */

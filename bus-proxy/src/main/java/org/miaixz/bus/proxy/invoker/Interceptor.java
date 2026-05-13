@@ -35,9 +35,14 @@ public class Interceptor implements Serializable {
     @Serial
     private static final long serialVersionUID = 2852259600626L;
 
-    /** The original object being proxied. */
+    /**
+     * The original object being proxied.
+     */
     protected final Object target;
-    /** The aspect containing the advice logic. */
+
+    /**
+     * The aspect containing the advice logic.
+     */
     protected final Aspect aspect;
 
     /**

@@ -43,6 +43,9 @@ public interface TableSchemaBuilder extends Order {
 
     /**
      * A factory chain interface for invoking table information creation logic in a chained manner.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     interface Chain {
 
@@ -54,6 +57,7 @@ public interface TableSchemaBuilder extends Order {
          * @return The entity class table information.
          */
         TableMeta createTable(Class<?> entityClass);
+
     }
 
 }

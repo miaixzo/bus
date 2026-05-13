@@ -24,6 +24,12 @@ import java.util.Date;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import java.io.Serial;
 
+/**
+ * The member class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Member extends AbstractUser<Member> {
 
     @Serial

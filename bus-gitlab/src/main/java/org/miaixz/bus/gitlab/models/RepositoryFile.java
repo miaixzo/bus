@@ -28,6 +28,12 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serial;
 
+/**
+ * The repository file class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class RepositoryFile implements Serializable {
 
     @Serial

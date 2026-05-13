@@ -45,10 +45,12 @@ public class ItemValueResolver {
      * Source adapters keyed by their supported source.
      */
     private final Map<String, ItemSourceAdapter> adapters;
+
     /**
      * Gray-rule matcher used for conditional delivery.
      */
     private final GrayRuleMatcher grayRuleMatcher;
+
     /**
      * Secret codec used to decrypt protected resolved values.
      */

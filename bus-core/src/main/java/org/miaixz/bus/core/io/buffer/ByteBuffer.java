@@ -43,6 +43,7 @@ public class ByteBuffer extends ByteString {
      * content is derived from the buffer.
      */
     private transient byte[][] segments;
+
     /**
      * An array of integers that serves as a directory for the segments. The first half stores the cumulative sizes of
      * the segments, and the second half stores the starting positions within each segment. This field is transient

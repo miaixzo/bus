@@ -39,22 +39,27 @@ public class DelimiterFrameDecoder implements SocketDecoder {
      * The position to reposition the buffer if a partial delimiter is found.
      */
     private final int reposition;
+
     /**
      * A list of ByteBuffers storing the data that has been parsed so far.
      */
     private final List<ByteBuffer> bufferList;
+
     /**
      * The byte sequence marking the end of a message.
      */
     private byte[] endFLag;
+
     /**
      * The expected index within the {@code endFLag} for the current byte being checked.
      */
     private int exceptIndex;
+
     /**
      * A flag indicating whether the current message has been fully read.
      */
     private boolean finishRead;
+
     /**
      * The current position in the {@code bufferList}.
      */

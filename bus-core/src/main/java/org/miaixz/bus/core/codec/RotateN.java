@@ -42,22 +42,27 @@ public class RotateN {
      * Represents the character 'a', used as a reference for lowercase letters.
      */
     private static final char aCHAR = 'a';
+
     /**
      * Represents the character 'z', used as a reference for lowercase letters.
      */
     private static final char zCHAR = 'z';
+
     /**
      * Represents the character 'A', used as a reference for uppercase letters.
      */
     private static final char ACHAR = 'A';
+
     /**
      * Represents the character 'Z', used as a reference for uppercase letters.
      */
     private static final char ZCHAR = 'Z';
+
     /**
      * Represents the character '0', used as a reference for digits.
      */
     private static final char CHAR0 = '0';
+
     /**
      * Represents the character '9', used as a reference for digits.
      */

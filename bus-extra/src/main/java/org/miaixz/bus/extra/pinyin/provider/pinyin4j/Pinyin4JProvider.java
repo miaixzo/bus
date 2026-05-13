@@ -61,6 +61,7 @@ public class Pinyin4JProvider implements PinyinProvider {
      * marks.
      */
     private static final HanyuPinyinOutputFormat WITH_TONE_MARK;
+
     /**
      * HanyuPinyinOutputFormat instance for Pinyin without tone marks. Configured for lowercase, 'v' for 'ü', and no
      * tone marks.

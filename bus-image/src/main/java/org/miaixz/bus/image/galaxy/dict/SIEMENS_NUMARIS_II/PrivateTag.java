@@ -20,20 +20,31 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_NUMARIS_II;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS NUMARIS II";
 
-    /** (7FE3,xx00) VR=LO VM=1 Image Graphics Format Code */
+    /**
+     * (7FE3,xx00) VR=LO VM=1 Image Graphics Format Code
+     */
     public static final int ImageGraphicsFormatCode = 0x7FE30000;
 
-    /** (7FE3,xx10) VR=OB VM=1 Image Graphics */
+    /**
+     * (7FE3,xx10) VR=OB VM=1 Image Graphics
+     */
     public static final int ImageGraphics = 0x7FE30010;
 
-    /** (7FE3,xx20) VR=OB VM=1 Image Graphics Dummy */
+    /**
+     * (7FE3,xx20) VR=OB VM=1 Image Graphics Dummy
+     */
     public static final int ImageGraphicsDummy = 0x7FE30020;
 
 }

@@ -26,6 +26,12 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serial;
 
+/**
+ * The issues statistics class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class IssuesStatistics implements Serializable {
 
     @Serial
@@ -51,6 +57,12 @@ public class IssuesStatistics implements Serializable {
         return (JacksonJson.toJsonString(this));
     }
 
+    /**
+     * The statistics class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public static class Statistics implements Serializable {
 
         @Serial
@@ -65,8 +77,15 @@ public class IssuesStatistics implements Serializable {
         public void setCounts(Counts counts) {
             this.counts = counts;
         }
+
     }
 
+    /**
+     * The counts class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public static class Counts implements Serializable {
 
         @Serial
@@ -99,6 +118,7 @@ public class IssuesStatistics implements Serializable {
         public void setOpened(Integer opened) {
             this.opened = opened;
         }
+
     }
 
 }

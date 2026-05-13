@@ -53,14 +53,17 @@ final class MacGlobalMemory extends AbstractGlobalMemory {
      * The total value.
      */
     private final Supplier<Long> total = Memoizer.memoize(MacGlobalMemory::queryPhysMem);
+
     /**
      * The pageSize value.
      */
     private final Supplier<Long> pageSize = Memoizer.memoize(MacGlobalMemory::queryPageSize);
+
     /**
      * The available value.
      */
     private final Supplier<Long> available = Memoizer.memoize(this::queryVmStats, Memoizer.defaultExpiration());
+
     /**
      * The vm value.
      */

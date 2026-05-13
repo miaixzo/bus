@@ -20,29 +20,58 @@
 package org.miaixz.bus.image.nimble.opencv.lut;
 
 /**
- * Implementation of {@link WlPresentation}. No test is required for this class
+ * Default immutable record implementation of the {@link WlPresentation} interface.
+ * <p>
+ * This record provides a concrete implementation for managing window/level presentation parameters in medical image
+ * processing. It encapsulates:
+ * <ul>
+ * <li>Pixel padding behavior configuration
+ * <li>DICOM Presentation State lookup table information
+ * </ul>
+ * <p>
+ * As a record, this class is inherently immutable and thread-safe, making it suitable for concurrent image processing
+ * operations.
+ * <p>
+ * <b>Usage Example:</b>
  *
+ * <pre>{@code
+ * var prLut = // ... obtain presentation state LUT
+ * var presentation = new DefaultWlPresentation(prLut, true);
+ *
+ * if (presentation.isPixelPadding()) {
+ *     // Apply pixel padding during transformation
+ * }
+ * }</pre>
+ *
+ * @param presentationState the DICOM presentation state LUT configuration, may be {@code null} if no presentation state
+ *                          is available
+ * @param pixelPadding      {@code true} to enable pixel padding during image processing, {@code false} to disable it
+ * @see WlPresentation
+ * @see PresentationStateLut
  * @author Kimi Liu
  * @since Java 21+
  */
-public class DefaultWlPresentation implements WlPresentation {
+public record DefaultWlPresentation(PresentationStateLut presentationState, boolean pixelPadding)
+        implements WlPresentation {
 
-    private final boolean pixelPadding;
-    private final PresentationStateLut dcmPR;
-
-    public DefaultWlPresentation(PresentationStateLut dcmPR, boolean pixelPadding) {
-        this.dcmPR = dcmPR;
-        this.pixelPadding = pixelPadding;
-    }
-
+    /**
+     * Determines whether pixel padding.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean isPixelPadding() {
         return pixelPadding;
     }
 
+    /**
+     * Gets the presentation state.
+     *
+     * @return the presentation state.
+     */
     @Override
     public PresentationStateLut getPresentationState() {
-        return dcmPR;
+        return presentationState;
     }
 
 }

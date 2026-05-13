@@ -33,6 +33,12 @@ package org.miaixz.bus.image.metric;
 @FunctionalInterface
 public interface Editable<T> {
 
+    /**
+     * Executes the process operation.
+     *
+     * @param t the t.
+     * @return the operation result.
+     */
     T process(T t);
 
 }

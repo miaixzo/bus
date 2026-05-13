@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.agfa_xeroverse;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "agfa/xeroverse";
 
-    /** (7FDB,xx99) VR=LO VM=1 ? */
+    /**
+     * (7FDB,xx99) VR=LO VM=1 ?
+     */
     public static final int _7FDB_xx99_ = 0x7FDB0099;
 
 }

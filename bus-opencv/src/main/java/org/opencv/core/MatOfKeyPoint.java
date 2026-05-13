@@ -3,6 +3,12 @@ package org.opencv.core;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The mat of key point class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class MatOfKeyPoint extends Mat {
 
     // 32FC7
@@ -83,4 +89,5 @@ public class MatOfKeyPoint extends Mat {
         KeyPoint[] akp = toArray();
         return Arrays.asList(akp);
     }
+
 }

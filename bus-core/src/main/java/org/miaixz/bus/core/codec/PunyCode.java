@@ -41,30 +41,37 @@ public class PunyCode {
      * Minimum value for T.
      */
     private static final int TMIN = 1;
+
     /**
      * Maximum value for T.
      */
     private static final int TMAX = 26;
+
     /**
      * Base for Punycode encoding, typically 36 (26 letters + 10 digits).
      */
     private static final int BASE = 36;
+
     /**
      * Initial value for n, the smallest code point that has not yet been seen in the output.
      */
     private static final int INITIAL_N = 128;
+
     /**
      * Initial bias value for the Punycode algorithm.
      */
     private static final int INITIAL_BIAS = 72;
+
     /**
      * Dampening factor used in the adapt function.
      */
     private static final int DAMP = 700;
+
     /**
      * Skew factor used in the adapt function.
      */
     private static final int SKEW = 38;
+
     /**
      * The prefix for Punycode encoded domain names.
      */

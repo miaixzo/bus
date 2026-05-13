@@ -38,22 +38,27 @@ public final class Context {
      * The size of the read buffer for message bodies, in bytes.
      */
     private int readBufferSize = Normal._512;
+
     /**
      * The size limit for individual memory chunks in the write buffer.
      */
     private int writeBufferSize = Normal._128;
+
     /**
      * The capacity of the write buffer queue.
      */
     private int writeBufferCapacity = Normal._16;
+
     /**
      * The IP address of the remote server.
      */
     private String host;
+
     /**
      * The message interceptor for monitoring server events.
      */
     private Monitor monitor;
+
     /**
      * The port number for the server.
      */
@@ -68,6 +73,7 @@ public final class Context {
      * The message handler for processing incoming data.
      */
     private Handler processor;
+
     /**
      * The message codec for encoding and decoding data.
      */

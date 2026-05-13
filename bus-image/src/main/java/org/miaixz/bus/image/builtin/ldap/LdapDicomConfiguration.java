@@ -49,48 +49,149 @@ import org.miaixz.bus.image.metric.net.KeycloakClient;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the LdapDicomConfiguration type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public final class LdapDicomConfiguration implements DicomConfiguration {
 
+    /**
+     * The ae attrs value.
+     */
     static final String[] AE_ATTRS = { "dicomDeviceName", "dicomAETitle", "dcmOtherAETitle", "dicomDescription",
             "dicomAssociationInitiator", "dicomAssociationAcceptor", "dicomApplicationCluster", "dicomInstalled",
             "hl7ApplicationName", "dicomNetworkConnectionReference" };
+
+    /**
+     * The webapp attrs value.
+     */
     static final String[] WEBAPP_ATTRS = { "dicomDeviceName", "dcmWebAppName", "dcmWebServicePath",
             "dcmWebServiceClass", "dcmKeycloakClientID", "dicomAETitle", "dicomDescription", "dicomApplicationCluster",
             "dcmProperty", "dicomInstalled", "dicomNetworkConnectionReference" };
+
+    /**
+     * The cn unique ae titles registry value.
+     */
     private static final String CN_UNIQUE_AE_TITLES_REGISTRY = "cn=Unique AE Titles Registry,";
+
+    /**
+     * The cn unique web app names registry value.
+     */
     private static final String CN_UNIQUE_WEB_APP_NAMES_REGISTRY = "cn=Unique Web Application Names Registry,";
+
+    /**
+     * The cn devices value.
+     */
     private static final String CN_DEVICES = "cn=Devices,";
+
+    /**
+     * The dicom configuration value.
+     */
     private static final String DICOM_CONFIGURATION = "DICOM Configuration";
+
+    /**
+     * The dicom configuration root value.
+     */
     private static final String DICOM_CONFIGURATION_ROOT = "dicomConfigurationRoot";
+
+    /**
+     * The pki user value.
+     */
     private static final String PKI_USER = "pkiUser";
+
+    /**
+     * The user certificate binary value.
+     */
     private static final String USER_CERTIFICATE_BINARY = "userCertificate;binary";
+
+    /**
+     * The empty x509 certificates value.
+     */
     private static final X509Certificate[] EMPTY_X509_CERTIFICATES = {};
+
+    /**
+     * The ctx value.
+     */
     private final ReconnectDirContext ctx;
+
+    /**
+     * The base dn value.
+     */
     private final String baseDN;
+
+    /**
+     * The extensions value.
+     */
     private final List<LdapDicomConfigurationExtension> extensions = new ArrayList<>();
+
     /**
      * Needed for avoiding infinite loops when dealing with extensions containing circular references e.g., one device
      * extension references another device which has an extension that references the former device. Devices that have
      * been created but not fully loaded are added to this threadlocal. See loadDevice.
      */
     private final ThreadLocal<Map<String, Device>> currentlyLoadedDevicesLocal = new ThreadLocal<>();
+
+    /**
+     * The configuration dn value.
+     */
     private String configurationDN;
+
+    /**
+     * The devices dn value.
+     */
     private String devicesDN;
+
+    /**
+     * The aets registry dn value.
+     */
     private String aetsRegistryDN;
+
+    /**
+     * The web apps registry dn value.
+     */
     private String webAppsRegistryDN;
+
+    /**
+     * The configuration cn value.
+     */
     private String configurationCN = DICOM_CONFIGURATION;
+
+    /**
+     * The configuration root value.
+     */
     private String configurationRoot = DICOM_CONFIGURATION_ROOT;
+
+    /**
+     * The pki user value.
+     */
     private String pkiUser = PKI_USER;
+
+    /**
+     * The user certificate value.
+     */
     private String userCertificate = USER_CERTIFICATE_BINARY;
+
+    /**
+     * The extended value.
+     */
     private boolean extended = true;
 
+    /**
+     * Creates a new instance.
+     *
+     * @throws InternalException if the operation cannot be completed.
+     */
     public LdapDicomConfiguration() throws InternalException {
         this(ResourceManager.getInitialEnvironment());
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param env the env.
+     * @throws InternalException if the operation cannot be completed.
+     */
     public LdapDicomConfiguration(Hashtable<?, ?> env) throws InternalException {
         Hashtable<String, String> map = new Hashtable();
         for (Map.Entry<?, ?> entry : env.entrySet())
@@ -119,6 +220,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Executes the append filter operation.
+     *
+     * @param attrid the attrid.
+     * @param value  the value.
+     * @param sb     the sb.
+     */
     private static <T> void appendFilter(String attrid, T value, StringBuilder sb) {
         if (value == null)
             return;
@@ -126,6 +234,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         sb.append('(').append(attrid).append('=').append(LdapBuilder.toString(value)).append(')');
     }
 
+    /**
+     * Executes the append filter operation.
+     *
+     * @param attrid the attrid.
+     * @param values the values.
+     * @param sb     the sb.
+     */
     private static <T> void appendFilter(String attrid, T[] values, StringBuilder sb) {
         if (values.length == 0)
             return;
@@ -141,6 +256,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         sb.append(")");
     }
 
+    /**
+     * Converts this value to query options.
+     *
+     * @param attrs the attrs.
+     * @return the operation result.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private static EnumSet<QueryOption> toQueryOptions(Attributes attrs) throws NamingException {
         Attribute relational = attrs.get("dcmRelationalQueries");
         Attribute datetime = attrs.get("dcmCombinedDateTimeMatching");
@@ -160,6 +282,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return opts;
     }
 
+    /**
+     * Converts this value to storage options.
+     *
+     * @param attrs the attrs.
+     * @return the operation result.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private static StorageOptions toStorageOptions(Attributes attrs) throws NamingException {
         Attribute levelOfSupport = attrs.get("dcmStorageConformance");
         Attribute signatureSupport = attrs.get("dcmDigitalSignatureSupport");
@@ -174,6 +303,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return opts;
     }
 
+    /**
+     * Executes the byte arrays operation.
+     *
+     * @param attr the attr.
+     * @return the operation result.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private static byte[][] byteArrays(Attribute attr) throws NamingException {
         if (attr == null)
             return new byte[0][];
@@ -185,6 +321,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return bb;
     }
 
+    /**
+     * Finds the by dn.
+     *
+     * @param aeDN the ae dn.
+     * @param tcs  the tcs.
+     * @param dn   the dn.
+     * @return the operation result.
+     */
     private static TransferCapability findByDN(String aeDN, Collection<TransferCapability> tcs, String dn) {
         for (TransferCapability tc : tcs)
             if (dn.equals(dnOf(tc, aeDN)))
@@ -192,6 +336,15 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return null;
     }
 
+    /**
+     * Stores the diff.
+     *
+     * @param ldapObj the ldap obj.
+     * @param mods    the mods.
+     * @param attrId  the attr id.
+     * @param prevs   the prevs.
+     * @param vals    the vals.
+     */
     private static void storeDiff(
             ConfigurationChanges.ModifiedObject ldapObj,
             List<ModificationItem> mods,
@@ -213,6 +366,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Compares this instance with another object for equality.
+     *
+     * @param a  the a.
+     * @param a2 the a2.
+     * @return true if the condition is met; otherwise false.
+     */
     private static boolean equals(byte[][] a, byte[][] a2) {
         int length = a.length;
         if (a2.length != length)
@@ -227,18 +387,46 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return true;
     }
 
+    /**
+     * Executes the aet dn operation.
+     *
+     * @param aet      the aet.
+     * @param parentDN the parent dn.
+     * @return the operation result.
+     */
     private static String aetDN(String aet, String parentDN) {
         return LdapBuilder.dnOf("dicomAETitle", aet, parentDN);
     }
 
+    /**
+     * Executes the web app dn operation.
+     *
+     * @param webAppName the web app name.
+     * @param parentDN   the parent dn.
+     * @return the operation result.
+     */
     private static String webAppDN(String webAppName, String parentDN) {
         return LdapBuilder.dnOf("dcmWebAppName", webAppName, parentDN);
     }
 
+    /**
+     * Executes the keycloak client dn operation.
+     *
+     * @param keycloakClientID the keycloak client id.
+     * @param parentDN         the parent dn.
+     * @return the operation result.
+     */
     private static String keycloakClientDN(String keycloakClientID, String parentDN) {
         return LdapBuilder.dnOf("dcmKeycloakClientID", keycloakClientID, parentDN);
     }
 
+    /**
+     * Executes the dn of operation.
+     *
+     * @param tc   the tc.
+     * @param aeDN the ae dn.
+     * @return the operation result.
+     */
     private static String dnOf(TransferCapability tc, String aeDN) {
         String cn = tc.getCommonName();
         return (cn != null) ? LdapBuilder.dnOf("cn", cn, aeDN)
@@ -246,6 +434,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
                         .dnOf("dicomSOPClass", tc.getSopClass(), "dicomTransferRole", tc.getRole().toString(), aeDN);
     }
 
+    /**
+     * Stores the not empty.
+     *
+     * @param ldapObj the ldap obj.
+     * @param attrs   the attrs.
+     * @param attrID  the attr id.
+     * @param vals    the vals.
+     */
     private static void storeNotEmpty(
             ConfigurationChanges.ModifiedObject ldapObj,
             Attributes attrs,
@@ -262,6 +458,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Executes the attr operation.
+     *
+     * @param attrID the attr id.
+     * @param vals   the vals.
+     * @return the operation result.
+     */
     private static Attribute attr(String attrID, byte[]... vals) {
         Attribute attr = new BasicAttribute(attrID);
         for (byte[] val : vals)
@@ -269,6 +472,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return attr;
     }
 
+    /**
+     * Stores the to.
+     *
+     * @param ldapObj    the ldap obj.
+     * @param descriptor the descriptor.
+     * @param attrs      the attrs.
+     * @return the operation result.
+     */
     private static Attributes storeTo(
             ConfigurationChanges.ModifiedObject ldapObj,
             BasicBulkDataDescriptor descriptor,
@@ -290,6 +501,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return attrs;
     }
 
+    /**
+     * Stores the to.
+     *
+     * @param ac    the ac.
+     * @param attrs the attrs.
+     * @return the operation result.
+     */
     private static Attributes storeTo(AttributeCoercion ac, BasicAttributes attrs) {
         attrs.put("objectclass", "dcmAttributeCoercion");
         attrs.put("cn", ac.getCommonName());
@@ -301,6 +519,12 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return attrs;
     }
 
+    /**
+     * Converts this value to filter.
+     *
+     * @param keys the keys.
+     * @return the operation result.
+     */
     private static String toFilter(ApplicationEntityInfo keys) {
         if (keys == null)
             return "(objectclass=dicomNetworkAE)";
@@ -321,6 +545,12 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return sb.toString();
     }
 
+    /**
+     * Converts this value to filter.
+     *
+     * @param keys the keys.
+     * @return the operation result.
+     */
     private static String toFilter(WebApplication keys) {
         if (keys == null)
             return "(objectclass=dcmWebApp)";
@@ -338,51 +568,112 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return sb.toString();
     }
 
+    /**
+     * Determines whether extended.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean isExtended() {
         return extended;
     }
 
+    /**
+     * Sets the extended.
+     *
+     * @param extended the extended.
+     */
     public void setExtended(boolean extended) {
         this.extended = extended;
     }
 
+    /**
+     * Gets the configuration cn.
+     *
+     * @return the configuration cn.
+     */
     public String getConfigurationCN() {
         return configurationCN;
     }
 
+    /**
+     * Sets the configuration cn.
+     *
+     * @param configurationCN the configuration cn.
+     */
     public void setConfigurationCN(String configurationCN) {
         this.configurationCN = configurationCN;
     }
 
+    /**
+     * Gets the configuration root.
+     *
+     * @return the configuration root.
+     */
     public String getConfigurationRoot() {
         return configurationRoot;
     }
 
+    /**
+     * Sets the configuration root.
+     *
+     * @param configurationRoot the configuration root.
+     */
     public void setConfigurationRoot(String configurationRoot) {
         this.configurationRoot = configurationRoot;
     }
 
+    /**
+     * Gets the pki user.
+     *
+     * @return the pki user.
+     */
     public String getPkiUser() {
         return pkiUser;
     }
 
+    /**
+     * Sets the pki user.
+     *
+     * @param pkiUser the pki user.
+     */
     public void setPkiUser(String pkiUser) {
         this.pkiUser = pkiUser;
     }
 
+    /**
+     * Gets the user certificate.
+     *
+     * @return the user certificate.
+     */
     public String getUserCertificate() {
         return userCertificate;
     }
 
+    /**
+     * Sets the user certificate.
+     *
+     * @param userCertificate the user certificate.
+     */
     public void setUserCertificate(String userCertificate) {
         this.userCertificate = userCertificate;
     }
 
+    /**
+     * Adds the dicom configuration extension.
+     *
+     * @param ext the ext.
+     */
     public void addDicomConfigurationExtension(LdapDicomConfigurationExtension ext) {
         ext.setDicomConfiguration(this);
         extensions.add(ext);
     }
 
+    /**
+     * Removes the dicom configuration extension.
+     *
+     * @param ext the ext.
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean removeDicomConfigurationExtension(LdapDicomConfigurationExtension ext) {
         if (!extensions.remove(ext))
             return false;
@@ -391,6 +682,12 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return true;
     }
 
+    /**
+     * Gets the dicom configuration extension.
+     *
+     * @param clazz the clazz.
+     * @return the dicom configuration extension.
+     */
     @Override
     public <T> T getDicomConfigurationExtension(Class<T> clazz) {
         for (LdapDicomConfigurationExtension ext : extensions) {
@@ -400,16 +697,32 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return null;
     }
 
+    /**
+     * Executes the close operation.
+     */
     @Override
     public synchronized void close() {
         ctx.close();
     }
 
+    /**
+     * Executes the configuration exists operation.
+     *
+     * @return true if the condition is met; otherwise false.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public synchronized boolean configurationExists() throws InternalException {
         return configurationDN != null || findConfiguration();
     }
 
+    /**
+     * Executes the exists operation.
+     *
+     * @param dn the dn.
+     * @return true if the condition is met; otherwise false.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public boolean exists(String dn) throws NamingException {
         try {
             ctx.getAttributes(dn);
@@ -429,6 +742,12 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Executes the purge configuration operation.
+     *
+     * @return true if the condition is met; otherwise false.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public synchronized boolean purgeConfiguration() throws InternalException {
         if (!configurationExists())
@@ -455,6 +774,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return true;
     }
 
+    /**
+     * Executes the register ae title operation.
+     *
+     * @param aet the aet.
+     * @return true if the condition is met; otherwise false.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public synchronized boolean registerAETitle(String aet) throws InternalException {
         ensureConfigurationExists();
@@ -476,6 +802,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Executes the register web app name operation.
+     *
+     * @param webAppName the web app name.
+     * @return true if the condition is met; otherwise false.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public synchronized boolean registerWebAppName(String webAppName) throws InternalException {
         ensureConfigurationExists();
@@ -497,6 +830,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Executes the register aet operation.
+     *
+     * @param aet the aet.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private String registerAET(String aet) throws InternalException {
         try {
             String dn = aetDN(aet, aetsRegistryDN);
@@ -530,6 +870,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Executes the register web app operation.
+     *
+     * @param webAppName the web app name.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private String registerWebApp(String webAppName) throws InternalException {
         try {
             String dn = webAppDN(webAppName, webAppsRegistryDN);
@@ -563,6 +910,12 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Executes the unregister ae title operation.
+     *
+     * @param aet the aet.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public synchronized void unregisterAETitle(String aet) throws InternalException {
         if (configurationExists())
@@ -595,6 +948,12 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             }
     }
 
+    /**
+     * Executes the unregister web app name operation.
+     *
+     * @param webAppName the web app name.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public synchronized void unregisterWebAppName(String webAppName) throws InternalException {
         if (configurationExists())
@@ -627,16 +986,38 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             }
     }
 
+    /**
+     * Finds the application entity.
+     *
+     * @param aet the aet.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public synchronized ApplicationEntity findApplicationEntity(String aet) throws InternalException {
         return findDevice("(&(objectclass=dicomNetworkAE)(dicomAETitle=" + aet + "))", aet).getApplicationEntity(aet);
     }
 
+    /**
+     * Finds the web application.
+     *
+     * @param name the name.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public synchronized WebApplication findWebApplication(String name) throws InternalException {
         return findDevice("(&(objectclass=dcmWebApp)(dcmWebAppName=" + name + "))", name).getWebApplication(name);
     }
 
+    /**
+     * Finds the device.
+     *
+     * @param filter    the filter.
+     * @param childName the child name.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     public synchronized Device findDevice(String filter, String childName) throws InternalException {
         if (!configurationExists())
             throw new NotFoundException();
@@ -670,6 +1051,15 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return loadDevice(deviceDN);
     }
 
+    /**
+     * Finds the connection.
+     *
+     * @param connDN the conn dn.
+     * @param cache  the cache.
+     * @return the operation result.
+     * @throws NamingException   if the operation cannot be completed.
+     * @throws InternalException if the operation cannot be completed.
+     */
     public Connection findConnection(String connDN, Map<String, Connection> cache)
             throws NamingException, InternalException {
         Connection conn = cache.get(connDN);
@@ -696,6 +1086,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return conn;
     }
 
+    /**
+     * Executes the search control subtree scope operation.
+     *
+     * @param countLimit       the count limit.
+     * @param returningAttrs   the returning attrs.
+     * @param returningObjFlag the returning obj flag.
+     * @return the operation result.
+     */
     private SearchControls searchControlSubtreeScope(
             int countLimit,
             String[] returningAttrs,
@@ -708,6 +1106,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return ctls;
     }
 
+    /**
+     * Finds the device.
+     *
+     * @param name the name.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public synchronized Device findDevice(String name) throws InternalException {
         if (!configurationExists())
@@ -716,6 +1121,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return loadDevice(deviceRef(name));
     }
 
+    /**
+     * Executes the list device infos operation.
+     *
+     * @param keys the keys.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public synchronized Device[] listDeviceInfos(Device keys) throws InternalException {
         if (!configurationExists())
@@ -762,6 +1174,12 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return results.toArray(new Device[results.size()]);
     }
 
+    /**
+     * Converts this value to filter.
+     *
+     * @param keys the keys.
+     * @return the operation result.
+     */
     private String toFilter(Device keys) {
         if (keys == null)
             return "(objectclass=dicomDevice)";
@@ -782,6 +1200,16 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return sb.toString();
     }
 
+    /**
+     * Loads the from.
+     *
+     * @param aetInfo    the aet info.
+     * @param attrs      the attrs.
+     * @param deviceName the device name.
+     * @param connCache  the conn cache.
+     * @throws NamingException   if the operation cannot be completed.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private void loadFrom(
             ApplicationEntityInfo aetInfo,
             Attributes attrs,
@@ -800,6 +1228,17 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             aetInfo.getConnections().add(findConnection(connDN, connCache));
     }
 
+    /**
+     * Loads the from.
+     *
+     * @param keys                the keys.
+     * @param attrs               the attrs.
+     * @param deviceName          the device name.
+     * @param connCache           the conn cache.
+     * @param keycloakClientCache the keycloak client cache.
+     * @throws NamingException   if the operation cannot be completed.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private void loadFrom(
             WebApplication keys,
             Attributes attrs,
@@ -824,6 +1263,16 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             keys.setKeycloakClient(findKeycloakClient(keycloakClientID, deviceName, keycloakClientCache));
     }
 
+    /**
+     * Finds the keycloak client.
+     *
+     * @param clientID   the client id.
+     * @param deviceName the device name.
+     * @param cache      the cache.
+     * @return the operation result.
+     * @throws NamingException   if the operation cannot be completed.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private KeycloakClient findKeycloakClient(String clientID, String deviceName, Map<String, KeycloakClient> cache)
             throws NamingException, InternalException {
         String keycloakClientDN = keycloakClientDN(clientID, deviceRef(deviceName));
@@ -850,6 +1299,12 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return keycloakClient;
     }
 
+    /**
+     * Executes the list device names operation.
+     *
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public synchronized String[] listDeviceNames() throws InternalException {
         if (!configurationExists())
@@ -858,6 +1313,12 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return list(devicesDN, "(objectclass=dicomDevice)", "dicomDeviceName");
     }
 
+    /**
+     * Executes the list registered ae titles operation.
+     *
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public synchronized String[] listRegisteredAETitles() throws InternalException {
         if (!configurationExists())
@@ -866,6 +1327,12 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return list(aetsRegistryDN, "(objectclass=dicomUniqueAETitle)", "dicomAETitle");
     }
 
+    /**
+     * Executes the list registered web app names operation.
+     *
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public synchronized String[] listRegisteredWebAppNames() throws InternalException {
         if (!configurationExists())
@@ -874,6 +1341,15 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return list(webAppsRegistryDN, "(objectclass=dcmUniqueWebAppName)", "dcmWebAppName");
     }
 
+    /**
+     * Executes the list operation.
+     *
+     * @param dn     the dn.
+     * @param filter the filter.
+     * @param attrID the attr id.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     public synchronized String[] list(String dn, String filter, String attrID) throws InternalException {
         List<String> values = new ArrayList<>();
         NamingEnumeration<SearchResult> ne = null;
@@ -903,6 +1379,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return values.toArray(new String[values.size()]);
     }
 
+    /**
+     * Executes the persist operation.
+     *
+     * @param device  the device.
+     * @param options the options.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public synchronized ConfigurationChanges persist(Device device, EnumSet<Option> options) throws InternalException {
         ensureConfigurationExists();
@@ -981,6 +1465,12 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Executes the configuration changes of operation.
+     *
+     * @param options the options.
+     * @return the operation result.
+     */
     private ConfigurationChanges configurationChangesOf(EnumSet<Option> options) {
         return options != null && (options.contains(Option.CONFIGURATION_CHANGES)
                 || options.contains(Option.CONFIGURATION_CHANGES_VERBOSE))
@@ -988,6 +1478,11 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
                         : null;
     }
 
+    /**
+     * Executes the unregister operation.
+     *
+     * @param destroyDNs the destroy d ns.
+     */
     private void unregister(ArrayList<String> destroyDNs) {
         for (String dn : destroyDNs) {
             try {
@@ -998,6 +1493,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Executes the register operation.
+     *
+     * @param device the device.
+     * @param dns    the dns.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private void register(Device device, List<String> dns) throws InternalException {
         for (String aet : device.getApplicationAETitles())
             if (!aet.equals("*"))
@@ -1009,6 +1511,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             ext.register(device, dns);
     }
 
+    /**
+     * Updates the certificates.
+     *
+     * @param device the device.
+     * @throws CertificateException if the operation cannot be completed.
+     * @throws NamingException      if the operation cannot be completed.
+     */
     private void updateCertificates(Device device) throws CertificateException, NamingException {
         for (String dn : device.getAuthorizedNodeCertificateRefs())
             updateCertificates(dn, loadCertificates(dn), device.getAuthorizedNodeCertificates(dn));
@@ -1016,12 +1525,30 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             updateCertificates(dn, loadCertificates(dn), device.getThisNodeCertificates(dn));
     }
 
+    /**
+     * Updates the certificates.
+     *
+     * @param dn    the dn.
+     * @param prev  the prev.
+     * @param certs the certs.
+     * @throws CertificateEncodingException if the operation cannot be completed.
+     * @throws NamingException              if the operation cannot be completed.
+     */
     private void updateCertificates(String dn, X509Certificate[] prev, X509Certificate[] certs)
             throws CertificateEncodingException, NamingException {
         if (!LdapBuilder.equals(prev, certs))
             storeCertificates(dn, certs);
     }
 
+    /**
+     * Stores the childs.
+     *
+     * @param diffs    the diffs.
+     * @param deviceDN the device dn.
+     * @param device   the device.
+     * @throws NamingException   if the operation cannot be completed.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private void storeChilds(ConfigurationChanges diffs, String deviceDN, Device device)
             throws NamingException, InternalException {
         for (Connection conn : device.listConnections()) {
@@ -1042,6 +1569,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Executes the store operation.
+     *
+     * @param diffs    the diffs.
+     * @param ae       the ae.
+     * @param deviceDN the device dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void store(ConfigurationChanges diffs, ApplicationEntity ae, String deviceDN) throws NamingException {
         String aeDN = aetDN(ae.getAETitle(), deviceDN);
         ConfigurationChanges.ModifiedObject ldapObj = ConfigurationChanges
@@ -1056,6 +1591,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         storeChilds(ConfigurationChanges.nullifyIfNotVerbose(diffs, diffs), aeDN, ae);
     }
 
+    /**
+     * Executes the store operation.
+     *
+     * @param diffs    the diffs.
+     * @param webapp   the webapp.
+     * @param deviceDN the device dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void store(ConfigurationChanges diffs, WebApplication webapp, String deviceDN) throws NamingException {
         String webappDN = webAppDN(webapp.getApplicationName(), deviceDN);
         ConfigurationChanges.ModifiedObject ldapObj = ConfigurationChanges
@@ -1069,6 +1612,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
                         new BasicAttributes(true)));
     }
 
+    /**
+     * Executes the store operation.
+     *
+     * @param diffs    the diffs.
+     * @param client   the client.
+     * @param deviceDN the device dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void store(ConfigurationChanges diffs, KeycloakClient client, String deviceDN) throws NamingException {
         String clientDN = keycloakClientDN(client.getKeycloakClientID(), deviceDN);
         ConfigurationChanges.ModifiedObject ldapObj = ConfigurationChanges
@@ -1078,6 +1629,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
                 storeTo(ConfigurationChanges.nullifyIfNotVerbose(diffs, ldapObj), client, new BasicAttributes(true)));
     }
 
+    /**
+     * Stores the childs.
+     *
+     * @param diffs the diffs.
+     * @param aeDN  the ae dn.
+     * @param ae    the ae.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void storeChilds(ConfigurationChanges diffs, String aeDN, ApplicationEntity ae) throws NamingException {
         for (TransferCapability tc : ae.getTransferCapabilities()) {
             ConfigurationChanges.ModifiedObject ldapObj = ConfigurationChanges
@@ -1089,6 +1648,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
                 ext.storeChilds(diffs, aeDN, ae);
     }
 
+    /**
+     * Executes the merge operation.
+     *
+     * @param device  the device.
+     * @param options the options.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public ConfigurationChanges merge(Device device, EnumSet<Option> options) throws InternalException {
         ConfigurationChanges diffs = configurationChangesOf(options);
@@ -1096,6 +1663,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return diffs;
     }
 
+    /**
+     * Executes the merge operation.
+     *
+     * @param device  the device.
+     * @param options the options.
+     * @param diffs   the diffs.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private synchronized void merge(Device device, EnumSet<Option> options, ConfigurationChanges diffs)
             throws InternalException {
         if (!configurationExists())
@@ -1164,6 +1739,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Executes the register diff operation.
+     *
+     * @param prev   the prev.
+     * @param device the device.
+     * @param dns    the dns.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private void registerDiff(Device prev, Device device, List<String> dns) throws InternalException {
         for (String aet : device.getApplicationAETitles())
             if (!aet.equals("*") && prev.getApplicationEntity(aet) == null)
@@ -1175,6 +1758,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             ext.registerDiff(prev, device, dns);
     }
 
+    /**
+     * Executes the mark for unregister operation.
+     *
+     * @param prev   the prev.
+     * @param device the device.
+     * @param dns    the dns.
+     */
     private void markForUnregister(Device prev, Device device, List<String> dns) {
         for (String aet : prev.getApplicationAETitles())
             if (!aet.equals("*") && device.getApplicationEntity(aet) == null)
@@ -1186,6 +1776,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             ext.markForUnregister(prev, device, dns);
     }
 
+    /**
+     * Updates the certificates.
+     *
+     * @param prev   the prev.
+     * @param device the device.
+     * @throws CertificateException if the operation cannot be completed.
+     * @throws NamingException      if the operation cannot be completed.
+     */
     private void updateCertificates(Device prev, Device device) throws CertificateException, NamingException {
         for (String dn : device.getAuthorizedNodeCertificateRefs()) {
             X509Certificate[] prevCerts = prev.getAuthorizedNodeCertificates(dn);
@@ -1203,6 +1801,17 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Executes the merge childs operation.
+     *
+     * @param diffs              the diffs.
+     * @param prev               the prev.
+     * @param device             the device.
+     * @param deviceDN           the device dn.
+     * @param preserveVendorData the preserve vendor data.
+     * @throws NamingException   if the operation cannot be completed.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private void mergeChilds(
             ConfigurationChanges diffs,
             Device prev,
@@ -1217,6 +1826,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             ext.mergeChilds(diffs, prev, device, deviceDN);
     }
 
+    /**
+     * Removes the device.
+     *
+     * @param name    the name.
+     * @param options the options.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public synchronized ConfigurationChanges removeDevice(String name, EnumSet<Option> options)
             throws InternalException {
@@ -1230,6 +1847,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return diffs;
     }
 
+    /**
+     * Executes the mark for unregister operation.
+     *
+     * @param deviceDN the device dn.
+     * @param dns      the dns.
+     * @throws NamingException   if the operation cannot be completed.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private void markForUnregister(String deviceDN, List<String> dns) throws NamingException, InternalException {
         NamingEnumeration<SearchResult> aets = search(
                 deviceDN,
@@ -1260,6 +1885,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             ext.markForUnregister(deviceDN, dns);
     }
 
+    /**
+     * Removes the device with dn.
+     *
+     * @param deviceDN   the device dn.
+     * @param unregister the unregister.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private void removeDeviceWithDN(String deviceDN, boolean unregister) throws InternalException {
         try {
             ArrayList<String> destroyDNs = new ArrayList<>();
@@ -1295,14 +1927,33 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Creates the subcontext.
+     *
+     * @param name  the name.
+     * @param attrs the attrs.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public synchronized void createSubcontext(String name, Attributes attrs) throws NamingException {
         ctx.createSubcontextAndClose(name, attrs);
     }
 
+    /**
+     * Executes the destroy subcontext operation.
+     *
+     * @param dn the dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public synchronized void destroySubcontext(String dn) throws NamingException {
         ctx.destroySubcontext(dn);
     }
 
+    /**
+     * Executes the destroy subcontext with childs operation.
+     *
+     * @param name the name.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public synchronized void destroySubcontextWithChilds(String name) throws NamingException {
         NamingEnumeration<NameClassPair> list = ctx.list(name);
         try {
@@ -1314,10 +1965,20 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         ctx.destroySubcontext(name);
     }
 
+    /**
+     * Gets the configuration dn.
+     *
+     * @return the configuration dn.
+     */
     public String getConfigurationDN() {
         return configurationDN;
     }
 
+    /**
+     * Sets the configuration dn.
+     *
+     * @param configurationDN the configuration dn.
+     */
     private void setConfigurationDN(String configurationDN) {
         this.configurationDN = configurationDN;
         this.devicesDN = CN_DEVICES + configurationDN;
@@ -1325,6 +1986,9 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         this.webAppsRegistryDN = CN_UNIQUE_WEB_APP_NAMES_REGISTRY + configurationDN;
     }
 
+    /**
+     * Executes the clear configuration dn operation.
+     */
     private void clearConfigurationDN() {
         this.configurationDN = null;
         this.devicesDN = null;
@@ -1332,11 +1996,21 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         this.webAppsRegistryDN = null;
     }
 
+    /**
+     * Executes the ensure configuration exists operation.
+     *
+     * @throws InternalException if the operation cannot be completed.
+     */
     public void ensureConfigurationExists() throws InternalException {
         if (!configurationExists())
             initConfiguration();
     }
 
+    /**
+     * Executes the init configuration operation.
+     *
+     * @throws InternalException if the operation cannot be completed.
+     */
     private void initConfiguration() throws InternalException {
         setConfigurationDN("cn=" + configurationCN + ',' + baseDN);
         try {
@@ -1367,6 +2041,12 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Finds the configuration.
+     *
+     * @return true if the condition is met; otherwise false.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private boolean findConfiguration() throws InternalException {
         NamingEnumeration<SearchResult> ne = null;
         try {
@@ -1395,6 +2075,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Stores the to.
+     *
+     * @param ldapObj the ldap obj.
+     * @param device  the device.
+     * @param attrs   the attrs.
+     * @return the operation result.
+     */
     private Attributes storeTo(ConfigurationChanges.ModifiedObject ldapObj, Device device, Attributes attrs) {
         BasicAttribute objectclass = new BasicAttribute("objectclass", "dicomDevice");
         attrs.put(objectclass);
@@ -1510,6 +2198,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return attrs;
     }
 
+    /**
+     * Stores the to.
+     *
+     * @param ldapObj the ldap obj.
+     * @param conn    the conn.
+     * @param attrs   the attrs.
+     * @return the operation result.
+     */
     private Attributes storeTo(ConfigurationChanges.ModifiedObject ldapObj, Connection conn, Attributes attrs) {
         BasicAttribute objectclass = new BasicAttribute("objectclass", "dicomNetworkConnection");
         attrs.put(objectclass);
@@ -1596,6 +2292,15 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return attrs;
     }
 
+    /**
+     * Stores the to.
+     *
+     * @param ldapObj  the ldap obj.
+     * @param ae       the ae.
+     * @param deviceDN the device dn.
+     * @param attrs    the attrs.
+     * @return the operation result.
+     */
     private Attributes storeTo(
             ConfigurationChanges.ModifiedObject ldapObj,
             ApplicationEntity ae,
@@ -1645,6 +2350,15 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return attrs;
     }
 
+    /**
+     * Stores the to.
+     *
+     * @param ldapObj  the ldap obj.
+     * @param webapp   the webapp.
+     * @param deviceDN the device dn.
+     * @param attrs    the attrs.
+     * @return the operation result.
+     */
     private Attributes storeTo(
             ConfigurationChanges.ModifiedObject ldapObj,
             WebApplication webapp,
@@ -1665,6 +2379,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return attrs;
     }
 
+    /**
+     * Stores the to.
+     *
+     * @param ldapObj the ldap obj.
+     * @param client  the client.
+     * @param attrs   the attrs.
+     * @return the operation result.
+     */
     private Attributes storeTo(ConfigurationChanges.ModifiedObject ldapObj, KeycloakClient client, Attributes attrs) {
         attrs.put("objectclass", "dcmKeycloakClient");
         attrs.put("dcmKeycloakClientID", client.getKeycloakClientID());
@@ -1685,6 +2407,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return attrs;
     }
 
+    /**
+     * Stores the to.
+     *
+     * @param ldapObj the ldap obj.
+     * @param tc      the tc.
+     * @param attrs   the attrs.
+     * @return the operation result.
+     */
     private Attributes storeTo(ConfigurationChanges.ModifiedObject ldapObj, TransferCapability tc, Attributes attrs) {
         BasicAttribute objectclass = new BasicAttribute("objectclass", "dicomTransferCapability");
         attrs.put(objectclass);
@@ -1741,6 +2471,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return attrs;
     }
 
+    /**
+     * Executes the persist certificates operation.
+     *
+     * @param dn    the dn.
+     * @param certs the certs.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public synchronized void persistCertificates(String dn, X509Certificate... certs) throws InternalException {
         try {
@@ -1786,6 +2523,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Stores the certificates.
+     *
+     * @param dn    the dn.
+     * @param certs the certs.
+     * @throws CertificateEncodingException if the operation cannot be completed.
+     * @throws NamingException              if the operation cannot be completed.
+     */
     private void storeCertificates(String dn, X509Certificate... certs)
             throws CertificateEncodingException, NamingException {
         byte[][] vals = new byte[certs.length][];
@@ -1800,6 +2545,12 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
                                 LdapBuilder.attr("objectClass", pkiUser)), replaceCert });
     }
 
+    /**
+     * Removes the certificates.
+     *
+     * @param dn the dn.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public synchronized void removeCertificates(String dn) throws InternalException {
         try {
@@ -1834,6 +2585,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Finds the certificates.
+     *
+     * @param dn the dn.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public synchronized X509Certificate[] findCertificates(String dn) throws InternalException {
         try {
@@ -1879,6 +2637,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Loads the certificates.
+     *
+     * @param dn the dn.
+     * @return the operation result.
+     * @throws NamingException      if the operation cannot be completed.
+     * @throws CertificateException if the operation cannot be completed.
+     */
     private X509Certificate[] loadCertificates(String dn) throws NamingException, CertificateException {
         Attributes attrs = ctx.getAttributes(dn, new String[] { userCertificate });
         Attribute attr = attrs.get(userCertificate);
@@ -1892,6 +2658,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return certs;
     }
 
+    /**
+     * Loads the device vendor data.
+     *
+     * @param deviceName the device name.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public byte[][] loadDeviceVendorData(String deviceName) throws InternalException {
         if (!configurationExists())
@@ -1928,6 +2701,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Updates the device vendor data.
+     *
+     * @param deviceName the device name.
+     * @param vendorData the vendor data.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public ConfigurationChanges updateDeviceVendorData(String deviceName, byte[]... vendorData)
             throws InternalException {
@@ -1973,6 +2754,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return diffs;
     }
 
+    /**
+     * Loads the device.
+     *
+     * @param deviceDN the device dn.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     public Device loadDevice(String deviceDN) throws InternalException {
         // get the device cache for this loading phase
         Map<String, Device> deviceCache = currentlyLoadedDevicesLocal.get();
@@ -2034,14 +2822,37 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
 
     }
 
+    /**
+     * Gets the attributes.
+     *
+     * @param name the name.
+     * @return the attributes.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public Attributes getAttributes(String name) throws NamingException {
         return ctx.getAttributes(name);
     }
 
+    /**
+     * Gets the attributes.
+     *
+     * @param name    the name.
+     * @param attrIDs the attr i ds.
+     * @return the attributes.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public Attributes getAttributes(String name, String[] attrIDs) throws NamingException {
         return ctx.getAttributes(name, attrIDs);
     }
 
+    /**
+     * Loads the childs.
+     *
+     * @param device   the device.
+     * @param deviceDN the device dn.
+     * @throws NamingException   if the operation cannot be completed.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private void loadChilds(Device device, String deviceDN) throws NamingException, InternalException {
         loadConnections(device, deviceDN);
         loadApplicationEntities(device, deviceDN);
@@ -2051,6 +2862,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             ext.loadChilds(device, deviceDN);
     }
 
+    /**
+     * Loads the from.
+     *
+     * @param tc    the tc.
+     * @param attrs the attrs.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void loadFrom(TransferCapability tc, Attributes attrs) throws NamingException {
         tc.setCommonName(LdapBuilder.stringValue(attrs.get("cn"), null));
         tc.setSopClass(LdapBuilder.stringValue(attrs.get("dicomSOPClass"), null));
@@ -2065,6 +2883,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         tc.setStorageOptions(toStorageOptions(attrs));
     }
 
+    /**
+     * Loads the from.
+     *
+     * @param device the device.
+     * @param attrs  the attrs.
+     * @throws NamingException      if the operation cannot be completed.
+     * @throws CertificateException if the operation cannot be completed.
+     */
     private void loadFrom(Device device, Attributes attrs) throws NamingException, CertificateException {
         device.setDeviceName(LdapBuilder.stringValue(attrs.get("dicomDeviceName"), null));
         device.setDescription(LdapBuilder.stringValue(attrs.get("dicomDescription"), null));
@@ -2117,6 +2943,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             ext.loadFrom(device, attrs);
     }
 
+    /**
+     * Loads the connections.
+     *
+     * @param device   the device.
+     * @param deviceDN the device dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void loadConnections(Device device, String deviceDN) throws NamingException {
         NamingEnumeration<SearchResult> ne = search(deviceDN, "(objectclass=dicomNetworkConnection)");
         try {
@@ -2132,10 +2965,27 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Executes the search operation.
+     *
+     * @param dn     the dn.
+     * @param filter the filter.
+     * @return the operation result.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public NamingEnumeration<SearchResult> search(String dn, String filter) throws NamingException {
         return search(dn, filter, (String[]) null);
     }
 
+    /**
+     * Executes the search operation.
+     *
+     * @param dn     the dn.
+     * @param filter the filter.
+     * @param attrs  the attrs.
+     * @return the operation result.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public NamingEnumeration<SearchResult> search(String dn, String filter, String... attrs) throws NamingException {
         SearchControls ctls = new SearchControls();
         ctls.setSearchScope(SearchControls.ONELEVEL_SCOPE);
@@ -2144,6 +2994,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return ctx.search(dn, filter, ctls);
     }
 
+    /**
+     * Loads the from.
+     *
+     * @param conn     the conn.
+     * @param attrs    the attrs.
+     * @param extended the extended.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void loadFrom(Connection conn, Attributes attrs, boolean extended) throws NamingException {
         conn.setCommonName(LdapBuilder.stringValue(attrs.get("cn"), null));
         conn.setHostname(LdapBuilder.stringValue(attrs.get("dicomHostname"), null));
@@ -2190,6 +3048,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         conn.setPackPDV(LdapBuilder.booleanValue(attrs.get("dcmPackPDV"), true));
     }
 
+    /**
+     * Loads the application entities.
+     *
+     * @param device   the device.
+     * @param deviceDN the device dn.
+     * @throws NamingException   if the operation cannot be completed.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private void loadApplicationEntities(Device device, String deviceDN) throws NamingException, InternalException {
         NamingEnumeration<SearchResult> ne = search(deviceDN, "(objectclass=dicomNetworkAE)");
         try {
@@ -2201,6 +3067,16 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Loads the application entity.
+     *
+     * @param sr       the sr.
+     * @param deviceDN the device dn.
+     * @param device   the device.
+     * @return the operation result.
+     * @throws NamingException   if the operation cannot be completed.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private ApplicationEntity loadApplicationEntity(SearchResult sr, String deviceDN, Device device)
             throws NamingException, InternalException {
         Attributes attrs = sr.getAttributes();
@@ -2212,6 +3088,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return ae;
     }
 
+    /**
+     * Loads the from.
+     *
+     * @param ae    the ae.
+     * @param attrs the attrs.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void loadFrom(ApplicationEntity ae, Attributes attrs) throws NamingException {
         ae.setDescription(LdapBuilder.stringValue(attrs.get("dicomDescription"), null));
         ae.setVendorData(byteArrays(attrs.get("dicomVendorData")));
@@ -2240,12 +3123,28 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             ext.loadFrom(ae, attrs);
     }
 
+    /**
+     * Loads the childs.
+     *
+     * @param ae   the ae.
+     * @param aeDN the ae dn.
+     * @throws NamingException   if the operation cannot be completed.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private void loadChilds(ApplicationEntity ae, String aeDN) throws NamingException, InternalException {
         loadTransferCapabilities(ae, aeDN);
         for (LdapDicomConfigurationExtension ext : extensions)
             ext.loadChilds(ae, aeDN);
     }
 
+    /**
+     * Loads the web applications.
+     *
+     * @param device   the device.
+     * @param deviceDN the device dn.
+     * @throws NamingException   if the operation cannot be completed.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private void loadWebApplications(Device device, String deviceDN) throws NamingException, InternalException {
         NamingEnumeration<SearchResult> ne = search(deviceDN, "(objectclass=dcmWebApp)");
         try {
@@ -2257,6 +3156,15 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Loads the web application.
+     *
+     * @param sr       the sr.
+     * @param deviceDN the device dn.
+     * @param device   the device.
+     * @return the operation result.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private WebApplication loadWebApplication(SearchResult sr, String deviceDN, Device device) throws NamingException {
         Attributes attrs = sr.getAttributes();
         WebApplication webapp = new WebApplication(LdapBuilder.stringValue(attrs.get("dcmWebAppName"), null));
@@ -2266,6 +3174,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return webapp;
     }
 
+    /**
+     * Loads the from.
+     *
+     * @param webapp the webapp.
+     * @param attrs  the attrs.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void loadFrom(WebApplication webapp, Attributes attrs) throws NamingException {
         webapp.setDescription(LdapBuilder.stringValue(attrs.get("dicomDescription"), null));
         webapp.setServicePath(LdapBuilder.stringValue(attrs.get("dcmWebServicePath"), null));
@@ -2278,6 +3193,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         webapp.setInstalled(LdapBuilder.booleanValue(attrs.get("dicomInstalled"), null));
     }
 
+    /**
+     * Loads the keycloak clients.
+     *
+     * @param device   the device.
+     * @param deviceDN the device dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void loadKeycloakClients(Device device, String deviceDN) throws NamingException {
         NamingEnumeration<SearchResult> ne = search(deviceDN, "(objectclass=dcmKeycloakClient)");
         try {
@@ -2289,6 +3211,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Loads the keycloak client.
+     *
+     * @param sr the sr.
+     * @return the operation result.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private KeycloakClient loadKeycloakClient(SearchResult sr) throws NamingException {
         Attributes attrs = sr.getAttributes();
         KeycloakClient client = new KeycloakClient(LdapBuilder.stringValue(attrs.get("dcmKeycloakClientID"), null));
@@ -2296,6 +3225,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return client;
     }
 
+    /**
+     * Loads the from.
+     *
+     * @param client the client.
+     * @param attrs  the attrs.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void loadFrom(KeycloakClient client, Attributes attrs) throws NamingException {
         client.setKeycloakServerURL(LdapBuilder.stringValue(attrs.get("dcmURI"), null));
         client.setKeycloakRealm(LdapBuilder.stringValue(attrs.get("dcmKeycloakRealm"), null));
@@ -2311,6 +3247,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         client.setPassword(LdapBuilder.stringValue(attrs.get("userPassword"), null));
     }
 
+    /**
+     * Loads the transfer capabilities.
+     *
+     * @param ae   the ae.
+     * @param aeDN the ae dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void loadTransferCapabilities(ApplicationEntity ae, String aeDN) throws NamingException {
         NamingEnumeration<SearchResult> ne = search(aeDN, "(objectclass=dicomTransferCapability)");
         try {
@@ -2321,6 +3264,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Loads the transfer capability.
+     *
+     * @param sr the sr.
+     * @return the operation result.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private TransferCapability loadTransferCapability(SearchResult sr) throws NamingException {
         Attributes attrs = sr.getAttributes();
         TransferCapability tc = new TransferCapability();
@@ -2328,6 +3278,16 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return tc;
     }
 
+    /**
+     * Stores the diffs.
+     *
+     * @param ldapObj            the ldap obj.
+     * @param a                  the a.
+     * @param b                  the b.
+     * @param mods               the mods.
+     * @param preserveVendorData the preserve vendor data.
+     * @return the operation result.
+     */
     private List<ModificationItem> storeDiffs(
             ConfigurationChanges.ModifiedObject ldapObj,
             Device a,
@@ -2527,6 +3487,15 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return mods;
     }
 
+    /**
+     * Stores the diffs.
+     *
+     * @param ldapObj the ldap obj.
+     * @param a       the a.
+     * @param b       the b.
+     * @param mods    the mods.
+     * @return the operation result.
+     */
     private List<ModificationItem> storeDiffs(
             ConfigurationChanges.ModifiedObject ldapObj,
             Connection a,
@@ -2709,6 +3678,17 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return mods;
     }
 
+    /**
+     * Stores the diffs.
+     *
+     * @param ldapObj            the ldap obj.
+     * @param a                  the a.
+     * @param b                  the b.
+     * @param deviceDN           the device dn.
+     * @param mods               the mods.
+     * @param preserveVendorData the preserve vendor data.
+     * @return the operation result.
+     */
     private List<ModificationItem> storeDiffs(
             ConfigurationChanges.ModifiedObject ldapObj,
             ApplicationEntity a,
@@ -2819,6 +3799,15 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return mods;
     }
 
+    /**
+     * Stores the diffs.
+     *
+     * @param ldapObj the ldap obj.
+     * @param a       the a.
+     * @param b       the b.
+     * @param mods    the mods.
+     * @return the operation result.
+     */
     private List<ModificationItem> storeDiffs(
             ConfigurationChanges.ModifiedObject ldapObj,
             TransferCapability a,
@@ -2841,6 +3830,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return mods;
     }
 
+    /**
+     * Stores the diffs.
+     *
+     * @param ldapObj the ldap obj.
+     * @param prev    the prev.
+     * @param val     the val.
+     * @param mods    the mods.
+     */
     private void storeDiffs(
             ConfigurationChanges.ModifiedObject ldapObj,
             EnumSet<QueryOption> prev,
@@ -2879,6 +3876,14 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
                 false);
     }
 
+    /**
+     * Stores the diffs.
+     *
+     * @param ldapObj the ldap obj.
+     * @param prev    the prev.
+     * @param val     the val.
+     * @param mods    the mods.
+     */
     private void storeDiffs(
             ConfigurationChanges.ModifiedObject ldapObj,
             StorageOptions prev,
@@ -2910,6 +3915,16 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
                 -1);
     }
 
+    /**
+     * Stores the diffs.
+     *
+     * @param ldapObj  the ldap obj.
+     * @param a        the a.
+     * @param b        the b.
+     * @param deviceDN the device dn.
+     * @param mods     the mods.
+     * @return the operation result.
+     */
     private List<ModificationItem> storeDiffs(
             ConfigurationChanges.ModifiedObject ldapObj,
             WebApplication a,
@@ -2945,6 +3960,15 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return mods;
     }
 
+    /**
+     * Stores the diffs.
+     *
+     * @param ldapObj the ldap obj.
+     * @param a       the a.
+     * @param b       the b.
+     * @param mods    the mods.
+     * @return the operation result.
+     */
     private List<ModificationItem> storeDiffs(
             ConfigurationChanges.ModifiedObject ldapObj,
             KeycloakClient a,
@@ -2986,6 +4010,16 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return mods;
     }
 
+    /**
+     * Executes the merge a es operation.
+     *
+     * @param diffs              the diffs.
+     * @param prevDev            the prev dev.
+     * @param dev                the dev.
+     * @param deviceDN           the device dn.
+     * @param preserveVendorData the preserve vendor data.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void mergeAEs(
             ConfigurationChanges diffs,
             Device prevDev,
@@ -3010,6 +4044,16 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Executes the merge operation.
+     *
+     * @param diffs              the diffs.
+     * @param prev               the prev.
+     * @param ae                 the ae.
+     * @param deviceDN           the device dn.
+     * @param preserveVendorData the preserve vendor data.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void merge(
             ConfigurationChanges diffs,
             ApplicationEntity prev,
@@ -3026,6 +4070,15 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         mergeChilds(diffs, prev, ae, aeDN);
     }
 
+    /**
+     * Executes the merge childs operation.
+     *
+     * @param diffs the diffs.
+     * @param prev  the prev.
+     * @param ae    the ae.
+     * @param aeDN  the ae dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void mergeChilds(ConfigurationChanges diffs, ApplicationEntity prev, ApplicationEntity ae, String aeDN)
             throws NamingException {
         merge(diffs, prev.getTransferCapabilities(), ae.getTransferCapabilities(), aeDN);
@@ -3033,6 +4086,15 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             ext.mergeChilds(diffs, prev, ae, aeDN);
     }
 
+    /**
+     * Executes the merge web apps operation.
+     *
+     * @param diffs    the diffs.
+     * @param prevDev  the prev dev.
+     * @param dev      the dev.
+     * @param deviceDN the device dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void mergeWebApps(ConfigurationChanges diffs, Device prevDev, Device dev, String deviceDN)
             throws NamingException {
         Collection<String> names = dev.getWebApplicationNames();
@@ -3053,6 +4115,15 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Executes the merge operation.
+     *
+     * @param diffs    the diffs.
+     * @param prev     the prev.
+     * @param webapp   the webapp.
+     * @param deviceDN the device dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void merge(ConfigurationChanges diffs, WebApplication prev, WebApplication webapp, String deviceDN)
             throws NamingException {
         String webappDN = webAppDN(webapp.getApplicationName(), deviceDN);
@@ -3062,6 +4133,15 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         ConfigurationChanges.removeLastIfEmpty(diffs, ldapObj);
     }
 
+    /**
+     * Executes the merge keycloak clients operation.
+     *
+     * @param diffs    the diffs.
+     * @param prevDev  the prev dev.
+     * @param dev      the dev.
+     * @param deviceDN the device dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void mergeKeycloakClients(ConfigurationChanges diffs, Device prevDev, Device dev, String deviceDN)
             throws NamingException {
         Collection<String> clientIDs = dev.getKeycloakClientIDs();
@@ -3082,6 +4162,15 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Executes the merge operation.
+     *
+     * @param diffs    the diffs.
+     * @param prev     the prev.
+     * @param client   the client.
+     * @param deviceDN the device dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void merge(ConfigurationChanges diffs, KeycloakClient prev, KeycloakClient client, String deviceDN)
             throws NamingException {
         String clientDN = keycloakClientDN(client.getKeycloakClientID(), deviceDN);
@@ -3091,15 +4180,38 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         ConfigurationChanges.removeLastIfEmpty(diffs, ldapObj);
     }
 
+    /**
+     * Executes the modify attributes operation.
+     *
+     * @param dn   the dn.
+     * @param mods the mods.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public void modifyAttributes(String dn, List<ModificationItem> mods) throws NamingException {
         if (!mods.isEmpty())
             ctx.modifyAttributes(dn, mods.toArray(new ModificationItem[mods.size()]));
     }
 
+    /**
+     * Executes the replace attributes operation.
+     *
+     * @param dn    the dn.
+     * @param attrs the attrs.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public void replaceAttributes(String dn, Attributes attrs) throws NamingException {
         ctx.modifyAttributes(dn, DirContext.REPLACE_ATTRIBUTE, attrs);
     }
 
+    /**
+     * Executes the merge operation.
+     *
+     * @param diffs the diffs.
+     * @param prevs the prevs.
+     * @param tcs   the tcs.
+     * @param aeDN  the ae dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void merge(
             ConfigurationChanges diffs,
             Collection<TransferCapability> prevs,
@@ -3133,6 +4245,15 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Executes the merge connections operation.
+     *
+     * @param diffs    the diffs.
+     * @param prevDev  the prev dev.
+     * @param device   the device.
+     * @param deviceDN the device dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void mergeConnections(ConfigurationChanges diffs, Device prevDev, Device device, String deviceDN)
             throws NamingException {
         List<Connection> prevs = prevDev.listConnections();
@@ -3165,11 +4286,25 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Executes the device ref operation.
+     *
+     * @param name the name.
+     * @return the operation result.
+     */
     @Override
     public String deviceRef(String name) {
         return LdapBuilder.dnOf("dicomDeviceName", name, devicesDN);
     }
 
+    /**
+     * Executes the store operation.
+     *
+     * @param diffs       the diffs.
+     * @param descriptors the descriptors.
+     * @param parentDN    the parent dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public void store(ConfigurationChanges diffs, Map<String, BasicBulkDataDescriptor> descriptors, String parentDN)
             throws NamingException {
         for (BasicBulkDataDescriptor descriptor : descriptors.values()) {
@@ -3180,6 +4315,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Executes the load operation.
+     *
+     * @param descriptors the descriptors.
+     * @param parentDN    the parent dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public void load(Map<String, BasicBulkDataDescriptor> descriptors, String parentDN) throws NamingException {
         NamingEnumeration<SearchResult> ne = search(parentDN, "(objectclass=dcmBulkDataDescriptor)");
         try {
@@ -3192,6 +4334,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Loads the bulk data descriptor.
+     *
+     * @param sr the sr.
+     * @return the operation result.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private BasicBulkDataDescriptor loadBulkDataDescriptor(SearchResult sr) throws NamingException {
         Attributes attrs = sr.getAttributes();
         BasicBulkDataDescriptor descriptor = new BasicBulkDataDescriptor(
@@ -3202,6 +4351,15 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return descriptor;
     }
 
+    /**
+     * Executes the merge operation.
+     *
+     * @param diffs       the diffs.
+     * @param prevs       the prevs.
+     * @param descriptors the descriptors.
+     * @param parentDN    the parent dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public void merge(
             ConfigurationChanges diffs,
             Map<String, BasicBulkDataDescriptor> prevs,
@@ -3230,6 +4388,15 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Stores the diffs.
+     *
+     * @param ldapObj    the ldap obj.
+     * @param prev       the prev.
+     * @param descriptor the descriptor.
+     * @param mods       the mods.
+     * @return the operation result.
+     */
     private List<ModificationItem> storeDiffs(
             ConfigurationChanges.ModifiedObject ldapObj,
             BasicBulkDataDescriptor prev,
@@ -3257,6 +4424,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return mods;
     }
 
+    /**
+     * Executes the store operation.
+     *
+     * @param coercions the coercions.
+     * @param parentDN  the parent dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public void store(AttributeCoercions coercions, String parentDN) throws NamingException {
         for (AttributeCoercion ac : coercions)
             createSubcontext(
@@ -3264,6 +4438,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
                     storeTo(ac, new BasicAttributes(true)));
     }
 
+    /**
+     * Executes the load operation.
+     *
+     * @param acs the acs.
+     * @param dn  the dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public void load(AttributeCoercions acs, String dn) throws NamingException {
         NamingEnumeration<SearchResult> ne = search(dn, "(objectclass=dcmAttributeCoercion)");
         try {
@@ -3284,6 +4465,15 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Executes the merge operation.
+     *
+     * @param diffs    the diffs.
+     * @param prevs    the prevs.
+     * @param acs      the acs.
+     * @param parentDN the parent dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public void merge(ConfigurationChanges diffs, AttributeCoercions prevs, AttributeCoercions acs, String parentDN)
             throws NamingException {
         for (AttributeCoercion prev : prevs) {
@@ -3311,6 +4501,15 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         }
     }
 
+    /**
+     * Stores the diffs.
+     *
+     * @param ldapObj the ldap obj.
+     * @param prev    the prev.
+     * @param ac      the ac.
+     * @param mods    the mods.
+     * @return the operation result.
+     */
     private List<ModificationItem> storeDiffs(
             ConfigurationChanges.ModifiedObject ldapObj,
             AttributeCoercion prev,
@@ -3324,11 +4523,23 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return mods;
     }
 
+    /**
+     * Executes the sync operation.
+     *
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public void sync() throws InternalException {
         // NOOP
     }
 
+    /**
+     * Executes the list aet infos operation.
+     *
+     * @param keys the keys.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public synchronized ApplicationEntityInfo[] listAETInfos(ApplicationEntityInfo keys) throws InternalException {
         if (!configurationExists())
@@ -3381,6 +4592,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return results.toArray(new ApplicationEntityInfo[results.size()]);
     }
 
+    /**
+     * Executes the list web application infos operation.
+     *
+     * @param keys the keys.
+     * @return the operation result.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public synchronized WebApplication[] listWebApplicationInfos(WebApplication keys) throws InternalException {
         if (!configurationExists())
@@ -3435,6 +4653,15 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         return results.toArray(new WebApplication[results.size()]);
     }
 
+    /**
+     * Executes the search operation.
+     *
+     * @param deviceName the device name.
+     * @param attrsArray the attrs array.
+     * @param filter     the filter.
+     * @return the operation result.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public NamingEnumeration<SearchResult> search(String deviceName, String[] attrsArray, String filter)
             throws NamingException {
         return deviceName != null ? search(deviceRef(deviceName), filter, attrsArray)

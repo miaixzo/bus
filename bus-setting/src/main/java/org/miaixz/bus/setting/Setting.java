@@ -68,26 +68,32 @@ public class Setting extends AbstractSetting implements Map<String, String> {
      * The default character set (UTF-8).
      */
     public static final java.nio.charset.Charset DEFAULT_CHARSET = Charset.UTF_8;
+
     /**
      * The default file extension for settings files.
      */
     public static final String EXT_NAME = "setting";
+
     /**
      * The character set for this settings instance.
      */
     protected java.nio.charset.Charset charset;
+
     /**
      * Whether variable substitution is enabled.
      */
     protected boolean isUseVariable;
+
     /**
      * The resource representing the settings file.
      */
     protected Resource resource;
+
     /**
      * The underlying storage for key-value pairs, organized by group.
      */
     private GroupedMap groupedMap;
+
     /**
      * Whether to log a debug message when a requested key is not found.
      */
@@ -97,6 +103,7 @@ public class Setting extends AbstractSetting implements Map<String, String> {
      * The loader responsible for parsing the file.
      */
     private Loader loader;
+
     /**
      * The monitor for watching file changes to support auto-reloading.
      */

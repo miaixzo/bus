@@ -44,38 +44,47 @@ public class DcmLdap implements Closeable {
      * Default LDAP URI if not specified.
      */
     private static final String DEFAULT_LDAP_URI = "ldap://localhost:389/dc=miaixz,dc=org";
+
     /**
      * Default Bind DN for LDAP authentication.
      */
     private static final String DEFAULT_BIND_DN = "cn=admin,dc=miaixz,dc=org";
+
     /**
      * Default password for LDAP authentication.
      */
     private static final String DEFAULT_PASSWORD = "secret";
+
     /**
      * The LDAP DICOM configuration handler.
      */
     private final LdapDicomConfiguration conf;
+
     /**
      * The name of the device.
      */
     private String deviceName;
+
     /**
      * The description of the device.
      */
     private String deviceDesc;
+
     /**
      * The type of the device.
      */
     private String deviceType;
+
     /**
      * The Application Entity title.
      */
     private String aeTitle;
+
     /**
      * The description of the Application Entity.
      */
     private String aeDesc;
+
     /**
      * The network connection details.
      */

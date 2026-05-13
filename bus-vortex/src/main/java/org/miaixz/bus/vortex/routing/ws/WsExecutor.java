@@ -314,6 +314,9 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
 
     /**
      * Metadata for a WebSocket session.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class SessionMetadata {
 
@@ -321,14 +324,17 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
          * Gateway WebSocket session identifier.
          */
         private final String sessionId;
+
         /**
          * Connection timestamp in milliseconds since epoch.
          */
         private final long connectedAt;
+
         /**
          * Upstream WebSocket target URI.
          */
         private final String upstreamTarget;
+
         /**
          * Logical method associated with the upstream route.
          */
@@ -384,6 +390,7 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
         public String getMethod() {
             return method;
         }
+
     }
 
 }

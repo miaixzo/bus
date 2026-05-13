@@ -42,10 +42,12 @@ public class Label {
      * Label key name.
      */
     private String key;
+
     /**
      * Label value.
      */
     private String value;
+
     /**
      * Optional category used for grouping labels.
      */

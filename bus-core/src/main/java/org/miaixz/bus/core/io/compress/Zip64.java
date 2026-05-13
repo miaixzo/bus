@@ -37,14 +37,17 @@ class Zip64 {
      * Signature for Central File Header.
      */
     private static final long PK0102 = 0x02014b50L;
+
     /**
      * Signature for Local File Header.
      */
     private static final long PK0304 = 0x04034b50L;
+
     /**
      * Signature for End of Central Directory Record.
      */
     private static final long PK0506 = 0x06054b50L;
+
     /**
      * Signature for Data Descriptor.
      */
@@ -54,18 +57,22 @@ class Zip64 {
      * Version 2.0 of the ZIP format specification.
      */
     private static final int VERSION_20 = 20;
+
     /**
      * Version 4.5 of the ZIP format specification, required for Zip64.
      */
     private static final int VERSION_45 = 45;
+
     /**
      * Flag indicating that a data descriptor is used.
      */
     private static final int DATA_DESCRIPTOR_USED = 0x08;
+
     /**
      * Extra field ID for Zip64 extended information.
      */
     private static final int ZIP64_FIELD = 0x0001;
+
     /**
      * Maximum 32-bit unsigned integer value.
      */
@@ -75,6 +82,7 @@ class Zip64 {
      * The output stream to which ZIP data is written.
      */
     private final OutputStream out;
+
     /**
      * The number of bytes written in the current operation.
      */
@@ -239,6 +247,9 @@ class Zip64 {
 
     /**
      * Represents an entry within the ZIP archive.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     static class Entry {
 
@@ -246,18 +257,22 @@ class Zip64 {
          * The filename of the entry.
          */
         final String filename;
+
         /**
          * The CRC-32 checksum of the uncompressed data.
          */
         long crc;
+
         /**
          * The uncompressed size of the entry data.
          */
         long size;
+
         /**
          * The compressed size of the entry data.
          */
         int compressedSize;
+
         /**
          * The offset of the local file header from the start of the archive.
          */
@@ -271,6 +286,7 @@ class Zip64 {
         Entry(final String filename) {
             this.filename = filename;
         }
+
     }
 
 }

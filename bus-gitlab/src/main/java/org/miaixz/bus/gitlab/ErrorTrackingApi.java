@@ -10,6 +10,9 @@ import jakarta.ws.rs.core.Response;
 /**
  * This class provides an entry point to the GitLab API error tracking.
  * <a href="https://docs.gitlab.com/api/error_tracking/">GitLab Error tracking API Documentation</a>
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class ErrorTrackingApi extends AbstractApi {
 

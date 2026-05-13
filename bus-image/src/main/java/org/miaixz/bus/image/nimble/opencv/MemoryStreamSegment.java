@@ -29,18 +29,35 @@ import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the MemoryStreamSegment type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class MemoryStreamSegment extends StreamSegment {
 
+    /**
+     * The cache value.
+     */
     private final ByteBuffer cache;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param b               the b.
+     * @param imageDescriptor the image descriptor.
+     */
     MemoryStreamSegment(ByteBuffer b, ImageDescriptor imageDescriptor) {
         super(new long[] { 0 }, new long[] { b.limit() }, imageDescriptor);
         this.cache = b;
     }
 
+    /**
+     * Gets the byte array input stream.
+     *
+     * @param inputStream the input stream.
+     * @return the byte array input stream.
+     */
     public static ByteArrayInputStream getByteArrayInputStream(MemoryCacheImageInputStream inputStream) {
         if (inputStream != null) {
             try {
@@ -56,6 +73,11 @@ public class MemoryStreamSegment extends StreamSegment {
         return null;
     }
 
+    /**
+     * Gets the cache.
+     *
+     * @return the cache.
+     */
     public ByteBuffer getCache() {
         return cache;
     }

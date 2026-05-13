@@ -70,10 +70,12 @@ public class HealthMetrics {
      * bus-health Provider used to access hardware and OS data.
      */
     private final Provider provider;
+
     /**
      * Interval in seconds between background CPU tick refreshes.
      */
     private final int refreshSeconds;
+
     /**
      * Background daemon scheduler for CPU tick-based metric refresh.
      */
@@ -83,12 +85,15 @@ public class HealthMetrics {
      * Previous CPU tick snapshot; used to compute delta-based usage percentages.
      */
     private final AtomicReference<long[]> prevTicks = new AtomicReference<>(null);
+
     /**
      * Latest computed CPU usage snapshot; updated on each refresh cycle.
      */
     private final AtomicReference<CpuSnapshot> cpuSnapshot = new AtomicReference<>(new CpuSnapshot(0, 0, 0, 0));
 
-    /** Creates a HealthMetrics instance using the default bus-health Provider and refresh interval. */
+    /**
+     * Creates a HealthMetrics instance using the default bus-health Provider and refresh interval.
+     */
     public HealthMetrics() {
         this(new Provider(), DEFAULT_REFRESH_SECONDS);
     }
@@ -181,7 +186,9 @@ public class HealthMetrics {
         Logger.info(false, "Metrics", "Health metrics registration finished: refreshSeconds={}", refreshSeconds);
     }
 
-    /** Stops the background CPU refresh scheduler. */
+    /**
+     * Stops the background CPU refresh scheduler.
+     */
     public void stop() {
         Logger.info(
                 true,
@@ -286,8 +293,11 @@ public class HealthMetrics {
      * @param sysUsage   system CPU usage percentage
      * @param ioWait     I/O wait CPU usage percentage
      * @param totalUsage total CPU usage percentage
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private record CpuSnapshot(double userUsage, double sysUsage, double ioWait, double totalUsage) {
+
     }
 
 }

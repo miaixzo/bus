@@ -38,18 +38,22 @@ public class CharSequenceReader extends Reader {
      * The starting position (inclusive) for reading.
      */
     private final int start;
+
     /**
      * The ending position (exclusive) for reading.
      */
     private final int end;
+
     /**
      * The character sequence to read from.
      */
     private final CharSequence text;
+
     /**
      * The current reading position.
      */
     private int next;
+
     /**
      * The marked position.
      */

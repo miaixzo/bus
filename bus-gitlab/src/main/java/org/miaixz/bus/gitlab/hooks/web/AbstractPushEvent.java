@@ -23,6 +23,12 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+/**
+ * The abstract push event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public abstract class AbstractPushEvent {
 
     private static final String REFS_HEADS = "refs/heads/";

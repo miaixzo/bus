@@ -35,6 +35,9 @@ public class Builder {
 
     /**
      * Defines the type of cache to be used for notification services.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @ToString
@@ -51,6 +54,7 @@ public class Builder {
          * Uses a custom cache implementation.
          */
         CUSTOM
+
     }
 
 }

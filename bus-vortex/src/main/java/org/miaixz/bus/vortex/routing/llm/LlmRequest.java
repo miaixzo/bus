@@ -99,6 +99,9 @@ public class LlmRequest {
 
     /**
      * Represents a single message in the conversation.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     @Getter
     @Setter
@@ -124,6 +127,7 @@ public class LlmRequest {
          * Optional name of the author.
          */
         private String name;
+
     }
 
 }

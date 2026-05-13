@@ -47,7 +47,7 @@ import java.util.List;
  * This class sets up the {@link RestClientBuilder} and the new {@link ElasticsearchClient} based on the properties
  * defined in {@link ElasticProperties}.
  *
- * @author <a href="mailto:congchun.zheng@gmail.com">Sixawn.ZHENG</a>
+ * @author Kimi Liu
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { ElasticProperties.class })

@@ -5,6 +5,9 @@ package org.opencv.core;
 /**
  * Structure for matching: query descriptor index, train descriptor index, train image index and distance between
  * descriptors.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class DMatch {
 
@@ -12,10 +15,12 @@ public class DMatch {
      * Query descriptor index.
      */
     public int queryIdx;
+
     /**
      * Train descriptor index.
      */
     public int trainIdx;
+
     /**
      * Train image index.
      */

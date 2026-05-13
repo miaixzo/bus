@@ -27,6 +27,12 @@ import org.miaixz.bus.gitlab.models.Assignee;
 import org.miaixz.bus.gitlab.models.Duration;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+/**
+ * The event merge request class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class EventMergeRequest {
 
     private Long assigneeId;

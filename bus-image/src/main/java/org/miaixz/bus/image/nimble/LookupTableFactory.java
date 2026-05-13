@@ -45,42 +45,52 @@ public class LookupTableFactory {
      */
     private static final String[] XA_XRF_CUIDS = { UID.XRayAngiographicImageStorage.uid,
             UID.XRayRadiofluoroscopicImageStorage.uid, UID.XRayAngiographicBiPlaneImageStorage.uid };
+
     /**
      * Keywords for Pixel Intensity Relationship that indicate special LUT processing.
      */
     private static final String[] LOG_DISP = { "LOG", "DISP" };
+
     /**
      * Describes the properties of the stored pixel values (bits stored, signed/unsigned).
      */
     private final StoredValue storedValue;
+
     /**
      * The Rescale Slope value from the DICOM attributes.
      */
     private float rescaleSlope = 1;
+
     /**
      * The Rescale Intercept value from the DICOM attributes.
      */
     private float rescaleIntercept = 0;
+
     /**
      * The Modality LUT.
      */
     private LookupTable modalityLUT;
+
     /**
      * The Window Center value for VOI transformation.
      */
     private float windowCenter;
+
     /**
      * The Window Width value for VOI transformation.
      */
     private float windowWidth;
+
     /**
      * The VOI (Value of Interest) LUT.
      */
     private LookupTable voiLUT;
+
     /**
      * The Presentation LUT.
      */
     private LookupTable presentationLUT;
+
     /**
      * A flag indicating if the final output should be inverted.
      */

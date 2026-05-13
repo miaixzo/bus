@@ -239,6 +239,9 @@ public class Arrangement implements Serializable {
      * Provides a non-recursive way to traverse permutations, which is memory efficient compared to generating all
      * results at once. This simulates the Depth-First Search (DFS) stack behavior using arrays.
      * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class ArrangementIterator implements Iterator<String[]> {
 
@@ -445,6 +448,7 @@ public class Arrangement implements Serializable {
             nextItem = null;
             nextPrepared = true;
         }
+
     }
 
 }

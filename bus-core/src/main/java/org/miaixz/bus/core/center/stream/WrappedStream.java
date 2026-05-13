@@ -33,12 +33,12 @@ import java.util.stream.*;
  *
  * @param <T> the type of the elements in the stream
  * @param <S> the type of the {@link WrappedStream} implementation itself
- * @author Kimi Liu
  * @see TerminableWrappedStream
  * @see TransformableWrappedStream
  * @see EnhancedWrappedStream
  * @see EasyStream
  * @see EntryStream
+ * @author Kimi Liu
  * @since Java 21+
  */
 public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<T>, Iterable<T> {

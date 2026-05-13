@@ -64,16 +64,24 @@ public final class Win32Bios {
 
     /**
      * Serial number property.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum BiosSerialProperty {
         SERIALNUMBER
+
     }
 
     /**
      * BIOS description properties.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum BiosProperty {
         MANUFACTURER, NAME, DESCRIPTION, VERSION, RELEASEDATE
+
     }
 
 }

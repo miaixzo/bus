@@ -20,17 +20,26 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_INSTANCE_MANIFEST;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS SYNGO INSTANCE MANIFEST";
 
-    /** (0009,xx00) VR=SQ VM=1 Temporary Original Header Sequence */
+    /**
+     * (0009,xx00) VR=SQ VM=1 Temporary Original Header Sequence
+     */
     public static final int TemporaryOriginalHeaderSequence = 0x00090000;
 
-    /** (0009,xx10) VR=AE VM=1 syngo Index Source AE Title */
+    /**
+     * (0009,xx10) VR=AE VM=1 syngo Index Source AE Title
+     */
     public static final int syngoIndexSourceAETitle = 0x00090010;
 
 }

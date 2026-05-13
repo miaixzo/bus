@@ -45,6 +45,7 @@ final class SolarisSoundCard extends AbstractSoundCard {
      * The LSHAL constant.
      */
     private static final String LSHAL = "lshal";
+
     /**
      * The DEFAULT_AUDIO_DRIVER constant.
      */

@@ -51,14 +51,17 @@ public class Asymmetric<T extends Asymmetric<T>> implements Serializable {
      * The algorithm.
      */
     protected String algorithm;
+
     /**
      * The public key.
      */
     protected PublicKey publicKey;
+
     /**
      * The private key.
      */
     protected PrivateKey privateKey;
+
     /**
      * The lock for thread safety.
      */

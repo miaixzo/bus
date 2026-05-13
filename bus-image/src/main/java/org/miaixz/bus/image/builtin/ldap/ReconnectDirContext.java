@@ -28,29 +28,59 @@ import javax.naming.directory.*;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the ReconnectDirContext type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 class ReconnectDirContext implements Closeable {
 
+    /**
+     * The env value.
+     */
     private final Hashtable env;
 
+    /**
+     * The ctx value.
+     */
     private volatile DirContext ctx;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param env the env.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public ReconnectDirContext(Hashtable<?, ?> env) throws NamingException {
         this.env = (Hashtable) env.clone();
         this.ctx = new InitialDirContext(env);
     }
 
+    /**
+     * Determines whether ldap connection has been closed.
+     *
+     * @param e the e.
+     * @return true if the condition is met; otherwise false.
+     */
     private static boolean isLdap_connection_has_been_closed(NamingException e) {
         return e instanceof CommunicationException || e instanceof ServiceUnavailableException
                 || e instanceof NotContextException || e.getMessage().startsWith("LDAP connection has been closed");
     }
 
+    /**
+     * Gets the dir ctx.
+     *
+     * @return the dir ctx.
+     */
     public DirContext getDirCtx() {
         return ctx;
     }
 
+    /**
+     * Executes the reconnect operation.
+     *
+     * @throws NamingException if the operation cannot be completed.
+     */
     private void reconnect() throws NamingException {
         Logger.info(
                 true,
@@ -64,6 +94,9 @@ class ReconnectDirContext implements Closeable {
         ctx = new InitialDirContext(env);
     }
 
+    /**
+     * Executes the close operation.
+     */
     @Override
     public void close() {
         try {
@@ -81,6 +114,13 @@ class ReconnectDirContext implements Closeable {
         }
     }
 
+    /**
+     * Gets the attributes.
+     *
+     * @param name the name.
+     * @return the attributes.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public Attributes getAttributes(String name) throws NamingException {
         try {
             return ctx.getAttributes(name);
@@ -101,6 +141,14 @@ class ReconnectDirContext implements Closeable {
         }
     }
 
+    /**
+     * Gets the attributes.
+     *
+     * @param name    the name.
+     * @param attrIds the attr ids.
+     * @return the attributes.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public Attributes getAttributes(String name, String[] attrIds) throws NamingException {
         try {
             return ctx.getAttributes(name, attrIds);
@@ -121,6 +169,12 @@ class ReconnectDirContext implements Closeable {
         }
     }
 
+    /**
+     * Executes the destroy subcontext operation.
+     *
+     * @param name the name.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public void destroySubcontext(String name) throws NamingException {
         try {
             ctx.destroySubcontext(name);
@@ -141,6 +195,15 @@ class ReconnectDirContext implements Closeable {
         }
     }
 
+    /**
+     * Executes the search operation.
+     *
+     * @param name   the name.
+     * @param filter the filter.
+     * @param cons   the cons.
+     * @return the operation result.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public NamingEnumeration<SearchResult> search(String name, String filter, SearchControls cons)
             throws NamingException {
         try {
@@ -162,6 +225,13 @@ class ReconnectDirContext implements Closeable {
         }
     }
 
+    /**
+     * Creates the subcontext and close.
+     *
+     * @param name  the name.
+     * @param attrs the attrs.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public void createSubcontextAndClose(String name, Attributes attrs) throws NamingException {
         try {
             ctx.createSubcontext(name, attrs).close();
@@ -182,6 +252,13 @@ class ReconnectDirContext implements Closeable {
         }
     }
 
+    /**
+     * Executes the list operation.
+     *
+     * @param name the name.
+     * @return the operation result.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public NamingEnumeration<NameClassPair> list(String name) throws NamingException {
         try {
             return ctx.list(name);
@@ -202,6 +279,13 @@ class ReconnectDirContext implements Closeable {
         }
     }
 
+    /**
+     * Executes the modify attributes operation.
+     *
+     * @param name the name.
+     * @param mods the mods.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public void modifyAttributes(String name, ModificationItem... mods) throws NamingException {
         try {
             ctx.modifyAttributes(name, mods);
@@ -222,6 +306,14 @@ class ReconnectDirContext implements Closeable {
         }
     }
 
+    /**
+     * Executes the modify attributes operation.
+     *
+     * @param name   the name.
+     * @param mod_op the mod op.
+     * @param attrs  the attrs.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public void modifyAttributes(String name, int mod_op, Attributes attrs) throws NamingException {
         try {
             ctx.modifyAttributes(name, mod_op, attrs);

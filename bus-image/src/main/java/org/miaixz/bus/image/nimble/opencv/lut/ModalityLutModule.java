@@ -31,21 +31,45 @@ import org.miaixz.bus.image.nimble.opencv.LookupTableCV;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the ModalityLutModule type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class ModalityLutModule {
 
+    /**
+     * The rescale slope value.
+     */
     private OptionalDouble rescaleSlope;
+
+    /**
+     * The rescale intercept value.
+     */
     private OptionalDouble rescaleIntercept;
+
+    /**
+     * The rescale type value.
+     */
     private Optional<String> rescaleType;
+
+    /**
+     * The lut type value.
+     */
     private Optional<String> lutType;
+
+    /**
+     * The lut explanation value.
+     */
     private Optional<String> lutExplanation;
+
+    /**
+     * The lut value.
+     */
     private Optional<LookupTableCV> lut;
 
     /**
      * Modality LUT Module
-     *
      * <p>
      * Note: Either a Modality LUT Sequence containing a single Item or Rescale Slope and Intercept values shall be
      * present but not both. This implementation only applies a warning in such a case.
@@ -63,6 +87,11 @@ public class ModalityLutModule {
         init(Objects.requireNonNull(dcm));
     }
 
+    /**
+     * Executes the init operation.
+     *
+     * @param dcm the dcm.
+     */
     private void init(Attributes dcm) {
         String modality = RGBImageVoiLut.getModality(dcm);
         if (dcm.containsValue(Tag.RescaleIntercept) && dcm.containsValue(Tag.RescaleSlope)) {
@@ -76,6 +105,12 @@ public class ModalityLutModule {
         logModalityLutConsistency();
     }
 
+    /**
+     * Executes the init modality lut sequence operation.
+     *
+     * @param dcm      the dcm.
+     * @param modality the modality.
+     */
     private void initModalityLUTSequence(Attributes dcm, String modality) {
         Attributes dcmLut = dcm.getNestedDataset(Tag.ModalityLUTSequence);
         if (dcmLut != null && dcmLut.containsValue(Tag.ModalityLUTType) && dcmLut.containsValue(Tag.LUTDescriptor)
@@ -84,6 +119,13 @@ public class ModalityLutModule {
         }
     }
 
+    /**
+     * Applies the mlut.
+     *
+     * @param dcm      the dcm.
+     * @param modality the modality.
+     * @param dcmLut   the dcm lut.
+     */
     private void applyMLUT(Attributes dcm, String modality, Attributes dcmLut) {
         boolean canApplyMLUT = true;
 
@@ -102,6 +144,9 @@ public class ModalityLutModule {
         }
     }
 
+    /**
+     * Executes the log modality lut consistency operation.
+     */
     private void logModalityLutConsistency() {
         if (rescaleIntercept.isPresent() && lut.isPresent()) {
             Logger.warn(
@@ -127,30 +172,65 @@ public class ModalityLutModule {
         }
     }
 
+    /**
+     * Gets the rescale slope.
+     *
+     * @return the rescale slope.
+     */
     public OptionalDouble getRescaleSlope() {
         return rescaleSlope;
     }
 
+    /**
+     * Gets the rescale intercept.
+     *
+     * @return the rescale intercept.
+     */
     public OptionalDouble getRescaleIntercept() {
         return rescaleIntercept;
     }
 
+    /**
+     * Gets the rescale type.
+     *
+     * @return the rescale type.
+     */
     public Optional<String> getRescaleType() {
         return rescaleType;
     }
 
+    /**
+     * Gets the lut type.
+     *
+     * @return the lut type.
+     */
     public Optional<String> getLutType() {
         return lutType;
     }
 
+    /**
+     * Gets the lut explanation.
+     *
+     * @return the lut explanation.
+     */
     public Optional<String> getLutExplanation() {
         return lutExplanation;
     }
 
+    /**
+     * Gets the lut.
+     *
+     * @return the lut.
+     */
     public Optional<LookupTableCV> getLut() {
         return lut;
     }
 
+    /**
+     * Executes the adapt with overlay bit mask operation.
+     *
+     * @param shiftHighBit the shift high bit.
+     */
     public void adaptWithOverlayBitMask(int shiftHighBit) {
         // Combine to the slope value
         double rs = 1.0; // FIXME: 1.0 should we use rescaleSlope.orElse(1.0) instead?

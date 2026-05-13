@@ -247,6 +247,9 @@ public class Coordinate {
 
     /**
      * Represents a point with longitude and latitude.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public static class Point implements Serializable {
 
@@ -257,6 +260,7 @@ public class Coordinate {
          * The longitude.
          */
         private double lng;
+
         /**
          * The latitude.
          */
@@ -362,6 +366,7 @@ public class Coordinate {
         public String toString() {
             return "Point{" + "lng=" + lng + ", lat=" + lat + '}';
         }
+
     }
 
 }

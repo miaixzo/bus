@@ -22,15 +22,34 @@ package org.miaixz.bus.image.nimble.codec.jpeg;
 import org.miaixz.bus.core.xyz.ByteKit;
 
 /**
+ * Represents the SOSSegment type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class SOSSegment {
 
+    /**
+     * The data value.
+     */
     private final byte[] data;
+
+    /**
+     * The offset value.
+     */
     private final int offset;
+
+    /**
+     * The num components value.
+     */
     private final int numComponents;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param data   the data.
+     * @param offset the offset.
+     */
     public SOSSegment(byte[] data, int offset) {
         this.data = data;
         this.offset = offset;
@@ -38,58 +57,131 @@ public class SOSSegment {
         getAl();
     }
 
+    /**
+     * Executes the offset operation.
+     *
+     * @return the operation result.
+     */
     public int offset() {
         return offset;
     }
 
+    /**
+     * Gets the marker.
+     *
+     * @return the marker.
+     */
     public int getMarker() {
         return data[offset] & 255;
     }
 
+    /**
+     * Gets the header length.
+     *
+     * @return the header length.
+     */
     public int getHeaderLength() {
         return ByteKit.bytesToUShortBE(data, offset + 1);
     }
 
+    /**
+     * Gets the num components.
+     *
+     * @return the num components.
+     */
     public int getNumComponents() {
         return numComponents;
     }
 
+    /**
+     * Gets the component id.
+     *
+     * @param index the index.
+     * @return the component id.
+     */
     public int getComponentID(int index) {
         return data[offset + 4 + index * 2] & 255;
     }
 
+    /**
+     * Gets the ta.
+     *
+     * @param index the index.
+     * @return the ta.
+     */
     public int getTa(int index) {
         return (data[offset + 5 + index * 2] >> 4) & 15;
     }
 
+    /**
+     * Gets the td.
+     *
+     * @param index the index.
+     * @return the td.
+     */
     public int getTd(int index) {
         return (data[offset + 5 + index * 2]) & 15;
     }
 
+    /**
+     * Gets the ss.
+     *
+     * @return the ss.
+     */
     public int getSs() {
         return data[offset + 4 + numComponents * 2] & 255;
     }
 
+    /**
+     * Gets the se.
+     *
+     * @return the se.
+     */
     public int getSe() {
         return data[offset + 5 + numComponents * 2] & 255;
     }
 
+    /**
+     * Gets the ah.
+     *
+     * @return the ah.
+     */
     public int getAh() {
         return (data[offset + 6 + numComponents * 2] >> 4) & 15;
     }
 
+    /**
+     * Gets the al.
+     *
+     * @return the al.
+     */
     public int getAl() {
         return (data[offset + 6 + numComponents * 2]) & 15;
     }
 
+    /**
+     * Gets the near.
+     *
+     * @return the near.
+     */
     public int getNear() {
         return getSs();
     }
 
+    /**
+     * Gets the ilv.
+     *
+     * @return the ilv.
+     */
     public int getILV() {
         return getSe();
     }
 
+    /**
+     * Returns the string representation.
+     *
+     * @return the string representation.
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

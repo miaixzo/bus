@@ -51,6 +51,9 @@ import org.miaixz.bus.logger.Logger;
 
 /**
  * This class utilizes the Jersey client package to communicate with a GitLab API endpoint.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class GitLabApiClient implements AutoCloseable {
 

@@ -43,26 +43,32 @@ public class CloseOrder extends Voucher {
      * Sub-merchant App ID (for service providers).
      */
     private String sub_appid;
+
     /**
      * Merchant ID.
      */
     private String mch_id;
+
     /**
      * Sub-merchant ID (for service providers).
      */
     private String sub_mch_id;
+
     /**
      * Merchant's order number (out_trade_no).
      */
     private String out_trade_no;
+
     /**
      * Random string.
      */
     private String nonce_str;
+
     /**
      * Signature.
      */
     private String sign;
+
     /**
      * Signature type.
      */

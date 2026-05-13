@@ -27,6 +27,8 @@ import java.util.Set;
 import org.miaixz.bus.health.builtin.hardware.LogicalVolumeGroup;
 
 /**
+ * The abstract logical volume group class.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -36,10 +38,12 @@ public class AbstractLogicalVolumeGroup implements LogicalVolumeGroup {
      * The name value.
      */
     private final String name;
+
     /**
      * The lvMap value.
      */
     private final Map<String, Set<String>> lvMap;
+
     /**
      * The pvSet value.
      */

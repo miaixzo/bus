@@ -46,30 +46,37 @@ public final class SysPath {
      * The CPU constant.
      */
     public static final String CPU = SYS + "devices/system/cpu/";
+
     /**
      * The DMI_ID constant.
      */
     public static final String DMI_ID = SYS + "devices/virtual/dmi/id/";
+
     /**
      * The NET constant.
      */
     public static final String NET = SYS + "class/net/";
+
     /**
      * The MODEL constant.
      */
     public static final String MODEL = SYS + "firmware/devicetree/base/model";
+
     /**
      * The POWER_SUPPLY constant.
      */
     public static final String POWER_SUPPLY = SYS + "class/power_supply";
+
     /**
      * The HWMON constant.
      */
     public static final String HWMON = SYS + "class/hwmon/";
+
     /**
      * The THERMAL constant.
      */
     public static final String THERMAL = SYS + "class/thermal/";
+
     /**
      * The CGROUP constant.
      */

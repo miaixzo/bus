@@ -43,6 +43,7 @@ public class RabbitMQProducer implements Producer {
      * The RabbitMQ communication channel, used for declaring queues, publishing messages, etc.
      */
     private final Channel channel;
+
     /**
      * The name of the exchange to which messages will be published. Defaults to {@link Normal#EMPTY}, which corresponds
      * to the default exchange in RabbitMQ (direct exchange to queue named by routing key).

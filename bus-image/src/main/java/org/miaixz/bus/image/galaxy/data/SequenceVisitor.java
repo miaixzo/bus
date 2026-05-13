@@ -20,18 +20,37 @@
 package org.miaixz.bus.image.galaxy.data;
 
 /**
+ * Defines the SequenceVisitor contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface SequenceVisitor extends Visitor {
 
+    /**
+     * Executes the start item operation.
+     *
+     * @param sqTag     the sq tag.
+     * @param itemIndex the item index.
+     */
     void startItem(int sqTag, int itemIndex);
 
+    /**
+     * Executes the end item operation.
+     */
     void endItem();
 
+    /**
+     * Executes the start sequence operation.
+     *
+     * @param sqTag the sq tag.
+     */
     default void startSequence(int sqTag) {
     }
 
+    /**
+     * Executes the end sequence operation.
+     */
     default void endSequence() {
     }
 

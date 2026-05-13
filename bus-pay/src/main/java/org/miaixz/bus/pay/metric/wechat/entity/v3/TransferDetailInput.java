@@ -43,23 +43,28 @@ public class TransferDetailInput {
      * uppercase/lowercase letters.
      */
     private String out_detail_no;
+
     /**
      * The transfer amount in cents.
      */
     private Integer transfer_amount;
+
     /**
      * A remark for this specific transfer, which the recipient will see. UTF-8 encoded, up to 32 characters.
      */
     private String transfer_remark;
+
     /**
      * The user's OpenID under the merchant's AppID.
      */
     private String openid;
+
     /**
      * The recipient's real name. This field must be encrypted. It is not allowed for transfers less than 0.3 yuan. It
      * is required for transfers greater than or equal to 2,000 yuan.
      */
     private String user_name;
+
     /**
      * The recipient's ID card number. This field is optional and must be encrypted if provided. If this field is
      * provided, the user_name must also be provided.

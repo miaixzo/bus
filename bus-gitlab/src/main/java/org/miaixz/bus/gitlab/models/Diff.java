@@ -27,6 +27,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serial;
 
+/**
+ * The diff class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Diff implements Serializable {
 
     @Serial

@@ -37,6 +37,7 @@ public class FixedLengthFrameDecoder implements SocketDecoder {
      * The internal buffer to accumulate bytes until the fixed length is reached.
      */
     private ByteBuffer buffer;
+
     /**
      * A flag indicating whether the fixed-length frame has been fully read.
      */

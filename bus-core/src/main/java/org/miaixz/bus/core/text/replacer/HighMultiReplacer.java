@@ -102,6 +102,9 @@ public class HighMultiReplacer extends StringReplacer {
 
     /**
      * Implements the Aho-Corasick automaton for efficient keyword searching and replacement.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class AhoCorasickAutomaton {
 
@@ -236,6 +239,9 @@ public class HighMultiReplacer extends StringReplacer {
 
         /**
          * Represents a node in the Aho-Corasick automaton, corresponding to a state in the Trie tree.
+         *
+         * @author Kimi Liu
+         * @since Java 21+
          */
         private static class Node {
 
@@ -263,7 +269,9 @@ public class HighMultiReplacer extends StringReplacer {
             public boolean isWord() {
                 return text != null;
             }
+
         }
+
     }
 
 }

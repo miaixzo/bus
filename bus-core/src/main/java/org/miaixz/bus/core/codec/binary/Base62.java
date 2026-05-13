@@ -42,8 +42,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  * {@code 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz}. The inverted alphabet is
  * {@code 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ}.
  *
- * @author Kimi Liu
  * @see Base62Provider
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class Base62 {

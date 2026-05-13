@@ -22,6 +22,12 @@ package org.miaixz.bus.gitlab.models;
 import java.io.Serializable;
 import java.io.Serial;
 
+/**
+ * The group hook params class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class GroupHookParams implements Serializable {
 
     @Serial

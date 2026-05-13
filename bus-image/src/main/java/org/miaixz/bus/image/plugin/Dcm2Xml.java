@@ -49,50 +49,62 @@ public class Dcm2Xml {
      * Constant for XML version 1.0.
      */
     private static final String XML_1_0 = "1.0";
+
     /**
      * Constant for XML version 1.1.
      */
     private static final String XML_1_1 = "1.1";
+
     /**
      * Describes how to handle bulk data.
      */
     private final BasicBulkDataDescriptor bulkDataDescriptor = new BasicBulkDataDescriptor();
+
     /**
      * URL of the XSLT stylesheet to apply.
      */
     private String xsltURL;
+
     /**
      * Whether to format the XML output with indentation.
      */
     private boolean indent = false;
+
     /**
      * Whether to include the DICOM keyword in the XML elements.
      */
     private boolean includeKeyword = true;
+
     /**
      * Whether to include the XML namespace declaration.
      */
     private boolean includeNamespaceDeclaration = false;
+
     /**
      * Specifies how to include bulk data in the output.
      */
     private ImageInputStream.IncludeBulkData includeBulkData = ImageInputStream.IncludeBulkData.URI;
+
     /**
      * Whether to concatenate bulk data into a single file.
      */
     private boolean catBlkFiles = false;
+
     /**
      * The prefix for bulk data file names.
      */
     private String blkFilePrefix = "blk";
+
     /**
      * The suffix for bulk data file names.
      */
     private String blkFileSuffix;
+
     /**
      * The directory to store bulk data files.
      */
     private File blkDirectory;
+
     /**
      * The XML version to be used in the output.
      */

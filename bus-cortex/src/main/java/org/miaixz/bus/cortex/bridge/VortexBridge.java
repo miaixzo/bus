@@ -55,6 +55,7 @@ public class VortexBridge
      * Outbox domain used for Vortex bridge delivery records.
      */
     public static final String OUTBOX_DOMAIN = "bridge";
+
     /**
      * Outbox resource type used for registry synchronization delivery records.
      */
@@ -64,58 +65,72 @@ public class VortexBridge
      * Base gateway URL used for registry sync callbacks.
      */
     private final String syncUrl;
+
     /**
      * Event source identity.
      */
     private final String source;
+
     /**
      * Maximum number of delivery retries for a single sync event.
      */
     private final int maxRetries;
+
     /**
      * Delivery timeout in milliseconds.
      */
     private final long timeoutMs;
+
     /**
      * Optional reliable outbox used as the source of truth for sync delivery.
      */
     private final CortexChangeLogStore changeLogStore;
+
     /**
      * Owner name used when claiming outbox records.
      */
     private final String outboxOwner;
+
     /**
      * Bounded queue holding pending registry sync events.
      */
     private final LinkedBlockingQueue<RegistryChange<Assets>> queue = new LinkedBlockingQueue<>(10000);
+
     /**
      * Whether the background worker should keep processing events.
      */
     private volatile boolean running = true;
+
     /**
      * Dropped event count caused by queue overflow or exhausted retries.
      */
     private final AtomicLong droppedCount = new AtomicLong();
+
     /**
      * Delivered event count.
      */
     private final AtomicLong deliveredCount = new AtomicLong();
+
     /**
      * Failed delivery attempt count.
      */
     private final AtomicLong failedAttemptCount = new AtomicLong();
+
     /**
      * Outbox records claimed by this bridge worker.
      */
     private final AtomicLong claimedCount = new AtomicLong();
+
     /**
      * Outbox records moved to dead letter by this bridge worker.
      */
     private final AtomicLong deadCount = new AtomicLong();
+
     /**
      * Last delivery failure message.
      */
     private volatile String lastError;
+
     /**
      * Background worker thread responsible for delivering sync events.
      */
@@ -698,8 +713,11 @@ public class VortexBridge
      * @param success   whether the delivery completed successfully
      * @param retryable whether the failure may be retried
      * @param error     delivery error message
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private record DeliveryResult(boolean success, boolean retryable, String error) {
+
     }
 
 }

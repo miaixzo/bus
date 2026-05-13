@@ -38,14 +38,17 @@ public abstract class AbstractServiceLoader<S> implements ServiceLoader<S> {
      * The path prefix for the service files.
      */
     protected final String pathPrefix;
+
     /**
      * The service interface class.
      */
     protected final Class<S> serviceClass;
+
     /**
      * The class loader to use.
      */
     protected final ClassLoader classLoader;
+
     /**
      * The character set for reading service files.
      */

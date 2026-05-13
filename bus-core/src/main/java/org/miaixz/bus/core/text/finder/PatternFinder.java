@@ -40,6 +40,7 @@ public class PatternFinder extends TextFinder {
      * The compiled regular expression pattern.
      */
     private final java.util.regex.Pattern pattern;
+
     /**
      * The matcher object used for performing match operations.
      */

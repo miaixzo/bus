@@ -33,7 +33,7 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
  * (e.g. from Spring auto-configuration).
  * <p>
  * Usage examples:
- * 
+ *
  * <pre>{@code
  * // Counter
  * Metrics.counter("order.created", "region", "cn").increment();

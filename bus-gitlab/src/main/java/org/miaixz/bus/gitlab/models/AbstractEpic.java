@@ -34,6 +34,12 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serial;
 
+/**
+ * The abstract epic class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic<E> implements Serializable {
 
     @Serial
@@ -169,6 +175,12 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
         this.endDate = endDate;
     }
 
+    /**
+     * The epic state enum.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public enum EpicState {
 
         OPENED, CLOSED, ALL;
@@ -189,6 +201,7 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
         public String toString() {
             return (enumHelper.toString(this));
         }
+
     }
 
     public Date getCreatedAt() {

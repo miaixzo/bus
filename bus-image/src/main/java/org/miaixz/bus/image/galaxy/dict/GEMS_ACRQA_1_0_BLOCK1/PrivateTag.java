@@ -20,41 +20,66 @@
 package org.miaixz.bus.image.galaxy.dict.GEMS_ACRQA_1_0_BLOCK1;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEMS_ACRQA_1.0 BLOCK1";
 
-    /** (0023,xx00) VR=LO VM=1 CR Exposure Menu Code */
+    /**
+     * (0023,xx00) VR=LO VM=1 CR Exposure Menu Code
+     */
     public static final int CRExposureMenuCode = 0x00230000;
 
-    /** (0023,xx10) VR=LO VM=1 CR Exposure Menu String */
+    /**
+     * (0023,xx10) VR=LO VM=1 CR Exposure Menu String
+     */
     public static final int CRExposureMenuString = 0x00230010;
 
-    /** (0023,xx20) VR=LO VM=1 CR EDR Mode */
+    /**
+     * (0023,xx20) VR=LO VM=1 CR EDR Mode
+     */
     public static final int CREDRMode = 0x00230020;
 
-    /** (0023,xx30) VR=LO VM=1 CR Latitude */
+    /**
+     * (0023,xx30) VR=LO VM=1 CR Latitude
+     */
     public static final int CRLatitude = 0x00230030;
 
-    /** (0023,xx40) VR=LO VM=1 CR Group Number */
+    /**
+     * (0023,xx40) VR=LO VM=1 CR Group Number
+     */
     public static final int CRGroupNumber = 0x00230040;
 
-    /** (0023,xx50) VR=US VM=1 CR Image Serial Number */
+    /**
+     * (0023,xx50) VR=US VM=1 CR Image Serial Number
+     */
     public static final int CRImageSerialNumber = 0x00230050;
 
-    /** (0023,xx60) VR=LO VM=1 CR Bar Code Number */
+    /**
+     * (0023,xx60) VR=LO VM=1 CR Bar Code Number
+     */
     public static final int CRBarCodeNumber = 0x00230060;
 
-    /** (0023,xx70) VR=LO VM=1 CR Film Output Exposure */
+    /**
+     * (0023,xx70) VR=LO VM=1 CR Film Output Exposure
+     */
     public static final int CRFilmOutputExposure = 0x00230070;
 
-    /** (0023,xx80) VR=LO VM=1 CR Film Format */
+    /**
+     * (0023,xx80) VR=LO VM=1 CR Film Format
+     */
     public static final int CRFilmFormat = 0x00230080;
 
-    /** (0023,xx90) VR=LO VM=1 CR S Shift String */
+    /**
+     * (0023,xx90) VR=LO VM=1 CR S Shift String
+     */
     public static final int CRSShiftString = 0x00230090;
 
 }

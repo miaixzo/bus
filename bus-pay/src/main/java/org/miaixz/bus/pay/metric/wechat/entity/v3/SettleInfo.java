@@ -42,6 +42,7 @@ public class SettleInfo {
      * Whether to enable profit sharing for this order.
      */
     private boolean profit_sharing;
+
     /**
      * The subsidy amount in cents.
      */

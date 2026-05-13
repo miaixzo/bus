@@ -28,6 +28,12 @@ import org.miaixz.bus.gitlab.models.Job;
 import org.miaixz.bus.gitlab.models.Variable;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+/**
+ * The pipeline event class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class PipelineEvent extends AbstractEvent {
 
     @Serial
@@ -114,6 +120,12 @@ public class PipelineEvent extends AbstractEvent {
         return (JacksonJson.toJsonString(this));
     }
 
+    /**
+     * The object attributes class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public static class ObjectAttributes {
 
         private Long id;
@@ -269,6 +281,7 @@ public class PipelineEvent extends AbstractEvent {
         public void setUrl(String url) {
             this.url = url;
         }
+
     }
 
 }

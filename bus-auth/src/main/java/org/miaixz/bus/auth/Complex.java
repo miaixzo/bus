@@ -29,13 +29,13 @@ import org.miaixz.bus.core.net.Protocol;
  * API configuration interface for OAuth and other protocol platforms. Provides specific configurations and provider
  * classes for protocols like OAuth2, SAML, LDAP, etc., to achieve a unified authentication framework. Implementations
  * of this interface should provide the following functionalities:
- * 
+ *
  * <pre>
  * 1) {@link #endpoint()}: Returns protocol-specific configurations (e.g., OAuth2 endpoints, LDAP server information, SAML SSO endpoints).
  * 2) {@link #getProtocol()}: Returns the protocol type (e.g., OAUTH2, SAML, LDAP).
  * 3) {@link #getTargetClass()}: Returns the corresponding provider implementation class.
  * </pre>
- * 
+ *
  * Note: When extending third-party authorization, this interface must be implemented and registered in the
  * {@link Registry} enum.
  *

@@ -24,13 +24,36 @@ import java.util.EnumSet;
 import org.miaixz.bus.image.metric.pdu.ExtendedNegotiation;
 
 /**
+ * Defines the QueryOption values.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public enum QueryOption {
 
-    RELATIONAL, DATETIME, FUZZY, TIMEZONE;
+    /**
+     * Constant for the relational value.
+     */
+    RELATIONAL,
+    /**
+     * Constant for the datetime value.
+     */
+    DATETIME,
+    /**
+     * Constant for the fuzzy value.
+     */
+    FUZZY,
+    /**
+     * Constant for the timezone value.
+     */
+    TIMEZONE;
 
+    /**
+     * Converts this value to extended negotiation information.
+     *
+     * @param opts the opts.
+     * @return the operation result.
+     */
     public static byte[] toExtendedNegotiationInformation(EnumSet<QueryOption> opts) {
         byte[] info = new byte[opts.contains(TIMEZONE) ? 4 : opts.contains(FUZZY) || opts.contains(DATETIME) ? 3 : 1];
         for (QueryOption query : opts)
@@ -38,6 +61,12 @@ public enum QueryOption {
         return info;
     }
 
+    /**
+     * Converts this value to options.
+     *
+     * @param extNeg the ext neg.
+     * @return the operation result.
+     */
     public static EnumSet<QueryOption> toOptions(ExtendedNegotiation extNeg) {
         EnumSet<QueryOption> opts = EnumSet.noneOf(QueryOption.class);
         if (extNeg != null) {
@@ -49,6 +78,13 @@ public enum QueryOption {
         return opts;
     }
 
+    /**
+     * Executes the to option operation.
+     *
+     * @param extNeg the ext neg.
+     * @param opt    the opt.
+     * @param opts   the opts.
+     */
     private static void toOption(ExtendedNegotiation extNeg, QueryOption opt, EnumSet<QueryOption> opts) {
         if (extNeg.getField(opt.ordinal(), (byte) 0) == 1)
             opts.add(opt);

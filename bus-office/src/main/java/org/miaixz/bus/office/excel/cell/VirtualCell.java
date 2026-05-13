@@ -42,10 +42,12 @@ public class VirtualCell extends CellBase {
      * The row this virtual cell belongs to.
      */
     private final Row row;
+
     /**
      * The column index (0-based).
      */
     private final int columnIndex;
+
     /**
      * The row index (0-based).
      */
@@ -55,14 +57,17 @@ public class VirtualCell extends CellBase {
      * The cell type.
      */
     private CellType cellType;
+
     /**
      * The cell value.
      */
     private Object value;
+
     /**
      * The cell style.
      */
     private CellStyle style;
+
     /**
      * The cell comment.
      */

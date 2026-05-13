@@ -68,63 +68,167 @@ import org.miaixz.bus.logger.Logger;
  */
 public class ImageioReader extends ImageReader implements Closeable {
 
+    /**
+     * The post pixel data value.
+     */
     public static final String POST_PIXEL_DATA = "postPixelData";
+
+    /**
+     * The s rgb value.
+     */
     private static final ColorSpace sRGB = ColorSpace.getInstance(ColorSpace.CS_sRGB);
+
+    /**
+     * The iis value.
+     */
     private javax.imageio.stream.ImageInputStream iis;
 
+    /**
+     * The dis value.
+     */
     private ImageInputStream dis;
 
+    /**
+     * The epdiis value.
+     */
     private EncapsulatedPixelDataImageInputStream epdiis;
 
+    /**
+     * The metadata value.
+     */
     private ImageioMetaData metadata;
 
+    /**
+     * The pixel data value.
+     */
     private BulkData pixelData;
 
+    /**
+     * The pixel data fragments value.
+     */
     private Fragments pixelDataFragments;
 
+    /**
+     * The pixeldata bytes value.
+     */
     private byte[] pixeldataBytes;
 
+    /**
+     * The pixel data length value.
+     */
     private long pixelDataLength;
 
+    /**
+     * The pixel data vr value.
+     */
     private VR pixelDataVR;
 
+    /**
+     * The pixel data file value.
+     */
     private File pixelDataFile;
 
+    /**
+     * The frames value.
+     */
     private int frames;
 
+    /**
+     * The flushed frames value.
+     */
     private int flushedFrames;
 
+    /**
+     * The width value.
+     */
     private int width;
 
+    /**
+     * The height value.
+     */
     private int height;
 
+    /**
+     * The decompressor value.
+     */
     private ImageReader decompressor;
 
+    /**
+     * The rle value.
+     */
     private boolean rle;
 
+    /**
+     * The patch jpeg ls value.
+     */
     private PatchJPEGLS patchJpegLS;
 
+    /**
+     * The samples value.
+     */
     private int samples;
 
+    /**
+     * The banded value.
+     */
     private boolean banded;
 
+    /**
+     * The bits stored value.
+     */
     private int bitsStored;
 
+    /**
+     * The bits allocated value.
+     */
     private int bitsAllocated;
 
+    /**
+     * The data type value.
+     */
     private int dataType;
 
+    /**
+     * The frame length value.
+     */
     private int frameLength;
 
+    /**
+     * The pmi value.
+     */
     private Photometric pmi;
+
+    /**
+     * The pmi after decompression value.
+     */
     private Photometric pmiAfterDecompression;
+
+    /**
+     * The image descriptor value.
+     */
     private ImageDescriptor imageDescriptor;
+
+    /**
+     * The color space factory value.
+     */
     private ICCProfile.ColorSpaceFactory colorSpaceFactory;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param originatingProvider the originating provider.
+     */
     public ImageioReader(ImageReaderSpi originatingProvider) {
         super(originatingProvider);
     }
 
+    /**
+     * Executes the ignore invalid overlay operation.
+     *
+     * @param overlayGroupOffset the overlay group offset.
+     * @param e                  the e.
+     * @return the operation result.
+     */
     private static String ignoreInvalidOverlay(int overlayGroupOffset, IllegalArgumentException e) {
         return String.format("Ignore invalid Overlay (60%02X,eeee) with %s", overlayGroupOffset, e.getMessage());
     }
@@ -165,6 +269,13 @@ public class ImageioReader extends ImageReader implements Closeable {
         }
     }
 
+    /**
+     * Sets the input.
+     *
+     * @param input           the input.
+     * @param seekForwardOnly the seek forward only.
+     * @param ignoreMetadata  the ignore metadata.
+     */
     @Override
     public void setInput(Object input, boolean seekForwardOnly, boolean ignoreMetadata) {
         super.setInput(input, seekForwardOnly, ignoreMetadata);
@@ -185,6 +296,11 @@ public class ImageioReader extends ImageReader implements Closeable {
         }
     }
 
+    /**
+     * Executes the init pixel data from attributes operation.
+     *
+     * @param ds the ds.
+     */
     private void initPixelDataFromAttributes(Attributes ds) {
         VR.Holder holder = new VR.Holder();
         Object value = ds.getValue(Tag.PixelData, holder);
@@ -204,6 +320,9 @@ public class ImageioReader extends ImageReader implements Closeable {
         }
     }
 
+    /**
+     * Executes the init pixel data file operation.
+     */
     private void initPixelDataFile() {
         if (pixelData != null)
             pixelDataFile = pixelData.getFile();
@@ -211,6 +330,12 @@ public class ImageioReader extends ImageReader implements Closeable {
             pixelDataFile = pixelDataFragmentsFile(pixelDataFragments);
     }
 
+    /**
+     * Executes the pixel data fragments file operation.
+     *
+     * @param pixelDataFragments the pixel data fragments.
+     * @return the operation result.
+     */
     private File pixelDataFragmentsFile(Fragments pixelDataFragments) {
         File f = null;
         for (Object frag : pixelDataFragments) {
@@ -224,12 +349,26 @@ public class ImageioReader extends ImageReader implements Closeable {
         return f;
     }
 
+    /**
+     * Gets the num images.
+     *
+     * @param allowSearch the allow search.
+     * @return the num images.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int getNumImages(boolean allowSearch) throws IOException {
         readMetadata();
         return frames;
     }
 
+    /**
+     * Gets the width.
+     *
+     * @param frameIndex the frame index.
+     * @return the width.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int getWidth(int frameIndex) throws IOException {
         readMetadata();
@@ -237,6 +376,13 @@ public class ImageioReader extends ImageReader implements Closeable {
         return width;
     }
 
+    /**
+     * Gets the height.
+     *
+     * @param frameIndex the frame index.
+     * @return the height.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public int getHeight(int frameIndex) throws IOException {
         readMetadata();
@@ -244,6 +390,13 @@ public class ImageioReader extends ImageReader implements Closeable {
         return height;
     }
 
+    /**
+     * Gets the raw image type.
+     *
+     * @param frameIndex the frame index.
+     * @return the raw image type.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public ImageTypeSpecifier getRawImageType(int frameIndex) throws IOException {
         readMetadata();
@@ -264,6 +417,13 @@ public class ImageioReader extends ImageReader implements Closeable {
         }
     }
 
+    /**
+     * Gets the image types.
+     *
+     * @param frameIndex the frame index.
+     * @return the image types.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public Iterator<ImageTypeSpecifier> getImageTypes(int frameIndex) throws IOException {
         readMetadata();
@@ -289,6 +449,11 @@ public class ImageioReader extends ImageReader implements Closeable {
         return Collections.singletonList(imageType).iterator();
     }
 
+    /**
+     * Opens the iis.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     private void openiis() throws IOException {
         if (iis == null) {
             if (pixelDataFile != null) {
@@ -299,6 +464,11 @@ public class ImageioReader extends ImageReader implements Closeable {
         }
     }
 
+    /**
+     * Closes the iis.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     private void closeiis() throws IOException {
         if ((pixelDataFile != null || pixeldataBytes != null) && iis != null) {
             iis.close();
@@ -306,6 +476,11 @@ public class ImageioReader extends ImageReader implements Closeable {
         }
     }
 
+    /**
+     * Gets the default read param.
+     *
+     * @return the default read param.
+     */
     @Override
     public ImageReadParam getDefaultReadParam() {
         return new ImageioReadParam();
@@ -336,16 +511,35 @@ public class ImageioReader extends ImageReader implements Closeable {
         return ret;
     }
 
+    /**
+     * Gets the image metadata.
+     *
+     * @param frameIndex the frame index.
+     * @return the image metadata.
+     */
     @Override
     public IIOMetadata getImageMetadata(int frameIndex) {
         return null;
     }
 
+    /**
+     * Determines whether read raster.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean canReadRaster() {
         return true;
     }
 
+    /**
+     * Reads the raster.
+     *
+     * @param frameIndex the frame index.
+     * @param param      the param.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public Raster readRaster(int frameIndex, ImageReadParam param) throws IOException {
         readMetadata();
@@ -399,14 +593,30 @@ public class ImageioReader extends ImageReader implements Closeable {
         }
     }
 
+    /**
+     * Executes the big endian operation.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     private boolean bigEndian() {
         return metadata.bigEndian();
     }
 
+    /**
+     * Gets the transfer syntax uid.
+     *
+     * @return the transfer syntax uid.
+     */
     private String getTransferSyntaxUID() {
         return metadata.getTransferSyntaxUID();
     }
 
+    /**
+     * Executes the decompress param operation.
+     *
+     * @param param the param.
+     * @return the operation result.
+     */
     private ImageReadParam decompressParam(ImageReadParam param) {
         ImageReadParam decompressParam = decompressor.getDefaultReadParam();
         ImageTypeSpecifier imageType = null;
@@ -422,6 +632,14 @@ public class ImageioReader extends ImageReader implements Closeable {
         return decompressParam;
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @param frameIndex the frame index.
+     * @param param      the param.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public BufferedImage read(int frameIndex, ImageReadParam param) throws IOException {
         readMetadata();
@@ -451,6 +669,14 @@ public class ImageioReader extends ImageReader implements Closeable {
                 : applyColorTransformations(frameIndex, param, raster, bi);
     }
 
+    /**
+     * Applies the grayscale transformations.
+     *
+     * @param frameIndex the frame index.
+     * @param param      the param.
+     * @param raster     the raster.
+     * @return the operation result.
+     */
     private BufferedImage applyGrayscaleTransformations(int frameIndex, ImageReadParam param, WritableRaster raster) {
         int[] overlayGroupOffsets = getActiveOverlayGroupOffsets(param);
         byte[][] overlayData = new byte[overlayGroupOffsets.length][];
@@ -471,6 +697,15 @@ public class ImageioReader extends ImageReader implements Closeable {
         return bi;
     }
 
+    /**
+     * Applies the color transformations.
+     *
+     * @param frameIndex the frame index.
+     * @param param      the param.
+     * @param raster     the raster.
+     * @param bi         the bi.
+     * @return the operation result.
+     */
     private BufferedImage applyColorTransformations(
             int frameIndex,
             ImageReadParam param,
@@ -517,6 +752,13 @@ public class ImageioReader extends ImageReader implements Closeable {
         return bi;
     }
 
+    /**
+     * Executes the extract overlay operation.
+     *
+     * @param gg0000 the gg0000.
+     * @param raster the raster.
+     * @return the operation result.
+     */
     private byte[] extractOverlay(int gg0000, WritableRaster raster) {
         Attributes attrs = metadata.getAttributes();
 
@@ -566,6 +808,12 @@ public class ImageioReader extends ImageReader implements Closeable {
         return patchJpegLS != null ? new PatchJPEGLSInputStream(iisOfFrame, patchJpegLS) : iisOfFrame;
     }
 
+    /**
+     * Executes the color space of frame operation.
+     *
+     * @param frameIndex the frame index.
+     * @return the operation result.
+     */
     public Optional<ColorSpace> colorSpaceOfFrame(int frameIndex) {
         ICCProfile.ColorSpaceFactory colorSpaceFactory = this.colorSpaceFactory;
         if (colorSpaceFactory == null) {
@@ -574,6 +822,12 @@ public class ImageioReader extends ImageReader implements Closeable {
         return colorSpaceFactory.getColorSpace(frameIndex);
     }
 
+    /**
+     * Executes the seek frame operation.
+     *
+     * @param frameIndex the frame index.
+     * @throws IOException if the operation cannot be completed.
+     */
     private void seekFrame(int frameIndex) throws IOException {
         assert frameIndex >= flushedFrames;
         if (frameIndex == flushedFrames)
@@ -587,6 +841,15 @@ public class ImageioReader extends ImageReader implements Closeable {
             }
     }
 
+    /**
+     * Applies the overlay monochrome.
+     *
+     * @param gg0000     the gg0000.
+     * @param raster     the raster.
+     * @param frameIndex the frame index.
+     * @param param      the param.
+     * @param ovlyData   the ovly data.
+     */
     private void applyOverlayMonochrome(
             int gg0000,
             WritableRaster raster,
@@ -607,6 +870,15 @@ public class ImageioReader extends ImageReader implements Closeable {
         Overlays.applyOverlay(ovlyData != null ? 0 : frameIndex, raster, ovlyAttrs, gg0000, pixelValue, ovlyData);
     }
 
+    /**
+     * Applies the overlay color.
+     *
+     * @param gg0000     the gg0000.
+     * @param raster     the raster.
+     * @param frameIndex the frame index.
+     * @param param      the param.
+     * @param cspace     the cspace.
+     */
     private void applyOverlayColor(
             int gg0000,
             WritableRaster raster,
@@ -627,6 +899,12 @@ public class ImageioReader extends ImageReader implements Closeable {
         Overlays.applyOverlay(frameIndex, raster, ovlyAttrs, gg0000, pixelValue, null);
     }
 
+    /**
+     * Gets the active overlay group offsets.
+     *
+     * @param param the param.
+     * @return the active overlay group offsets.
+     */
     private int[] getActiveOverlayGroupOffsets(ImageReadParam param) {
         if (param instanceof ImageioReadParam dParam) {
             Attributes psAttrs = dParam.getPresentationState();
@@ -639,6 +917,16 @@ public class ImageioReader extends ImageReader implements Closeable {
         return Overlays.getActiveOverlayGroupOffsets(metadata.getAttributes(), 0xffff);
     }
 
+    /**
+     * Applies the lu ts.
+     *
+     * @param raster     the raster.
+     * @param frameIndex the frame index.
+     * @param param      the param.
+     * @param sm         the sm.
+     * @param outBits    the out bits.
+     * @return the operation result.
+     */
     private WritableRaster applyLUTs(
             WritableRaster raster,
             int frameIndex,
@@ -685,6 +973,15 @@ public class ImageioReader extends ImageReader implements Closeable {
         return destRaster;
     }
 
+    /**
+     * Executes the select fct group operation.
+     *
+     * @param imgAttrs        the img attrs.
+     * @param sharedFctGroups the shared fct groups.
+     * @param frameFctGroups  the frame fct groups.
+     * @param tag             the tag.
+     * @return the operation result.
+     */
     private Attributes selectFctGroup(
             Attributes imgAttrs,
             Attributes sharedFctGroups,
@@ -700,6 +997,14 @@ public class ImageioReader extends ImageReader implements Closeable {
         return group != null ? group : imgAttrs;
     }
 
+    /**
+     * Executes the select voilut operation.
+     *
+     * @param psAttrs the ps attrs.
+     * @param iuid    the iuid.
+     * @param frame   the frame.
+     * @return the operation result.
+     */
     private Attributes selectVOILUT(Attributes psAttrs, String iuid, int frame) {
         Sequence voiLUTs = psAttrs.getSequence(Tag.SoftcopyVOILUTSequence);
         if (voiLUTs != null)
@@ -722,6 +1027,11 @@ public class ImageioReader extends ImageReader implements Closeable {
         return null;
     }
 
+    /**
+     * Reads the metadata.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     private void readMetadata() throws IOException {
         if (metadata != null)
             return;
@@ -789,6 +1099,11 @@ public class ImageioReader extends ImageReader implements Closeable {
         generateOffsetLengths(pixelDataFragments, frames, b, start);
     }
 
+    /**
+     * Sets the metadata.
+     *
+     * @param metadata the metadata.
+     */
     private void setMetadata(ImageioMetaData metadata) {
         this.metadata = metadata;
         Attributes ds = metadata.getAttributes();
@@ -835,18 +1150,45 @@ public class ImageioReader extends ImageReader implements Closeable {
         }
     }
 
+    /**
+     * Creates the sample model.
+     *
+     * @param dataType the data type.
+     * @param banded   the banded.
+     * @return the operation result.
+     */
     private SampleModel createSampleModel(int dataType, boolean banded) {
         return pmi.createSampleModel(dataType, width, height, samples, banded);
     }
 
+    /**
+     * Creates the image type.
+     *
+     * @param bits     the bits.
+     * @param dataType the data type.
+     * @param banded   the banded.
+     * @param cspace   the cspace.
+     * @return the operation result.
+     */
     private ImageTypeSpecifier createImageType(int bits, int dataType, boolean banded, ColorSpace cspace) {
         return new ImageTypeSpecifier(createColorModel(bits, dataType, cspace), createSampleModel(dataType, banded));
     }
 
+    /**
+     * Creates the color model.
+     *
+     * @param bits     the bits.
+     * @param dataType the data type.
+     * @param cspace   the cspace.
+     * @return the operation result.
+     */
     private ColorModel createColorModel(int bits, int dataType, ColorSpace cspace) {
         return pmiAfterDecompression.createColorModel(bits, dataType, cspace, metadata.getAttributes());
     }
 
+    /**
+     * Resets the internal state.
+     */
     private void resetInternalState() {
         dis = null;
         metadata = null;
@@ -869,6 +1211,11 @@ public class ImageioReader extends ImageReader implements Closeable {
         colorSpaceFactory = null;
     }
 
+    /**
+     * Executes the check index operation.
+     *
+     * @param frameIndex the frame index.
+     */
     private void checkIndex(int frameIndex) {
         if (frames == 0)
             throw new IllegalStateException("Missing Pixel Data");
@@ -911,6 +1258,13 @@ public class ImageioReader extends ImageReader implements Closeable {
         return readPostAttr(dis);
     }
 
+    /**
+     * Reads the post attr.
+     *
+     * @param dis the dis.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     private Attributes readPostAttr(ImageInputStream dis) throws IOException {
         Attributes postAttr = dis.readDataset();
         postAttr.addAll(metadata.getAttributes());
@@ -918,11 +1272,17 @@ public class ImageioReader extends ImageReader implements Closeable {
         return postAttr;
     }
 
+    /**
+     * Executes the dispose operation.
+     */
     @Override
     public void dispose() {
         resetInternalState();
     }
 
+    /**
+     * Executes the close operation.
+     */
     @Override
     public void close() {
         dispose();

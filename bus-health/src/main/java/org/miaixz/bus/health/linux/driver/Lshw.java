@@ -39,10 +39,12 @@ public final class Lshw {
      * The MODEL constant.
      */
     private static final String MODEL;
+
     /**
      * The SERIAL constant.
      */
     private static final String SERIAL;
+
     /**
      * The UUID constant.
      */

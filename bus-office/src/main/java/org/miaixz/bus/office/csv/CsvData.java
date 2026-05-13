@@ -41,6 +41,7 @@ public class CsvData implements Iterable<CsvRow>, Serializable {
      * The header information of the CSV data.
      */
     private final List<String> header;
+
     /**
      * The list of rows in the CSV data.
      */

@@ -230,6 +230,9 @@ final class SolarisComputerSystem extends AbstractComputerSystem {
 
     /**
      * The SmbType enum.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum SmbType {
         /**
@@ -244,10 +247,14 @@ final class SolarisComputerSystem extends AbstractComputerSystem {
          * Baseboard
          */
         SMB_TYPE_BASEBOARD
+
     }
 
     /**
      * The SmbiosStrings class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static final class SmbiosStrings {
 
@@ -255,10 +262,12 @@ final class SolarisComputerSystem extends AbstractComputerSystem {
          * The biosVendor value.
          */
         private final String biosVendor;
+
         /**
          * The biosVersion value.
          */
         private final String biosVersion;
+
         /**
          * The biosDate value.
          */
@@ -268,14 +277,17 @@ final class SolarisComputerSystem extends AbstractComputerSystem {
          * The manufacturer value.
          */
         private final String manufacturer;
+
         /**
          * The model value.
          */
         private final String model;
+
         /**
          * The serialNumber value.
          */
         private final String serialNumber;
+
         /**
          * The uuid value.
          */
@@ -285,14 +297,17 @@ final class SolarisComputerSystem extends AbstractComputerSystem {
          * The boardManufacturer value.
          */
         private final String boardManufacturer;
+
         /**
          * The boardModel value.
          */
         private final String boardModel;
+
         /**
          * The boardVersion value.
          */
         private final String boardVersion;
+
         /**
          * The boardSerialNumber value.
          */
@@ -329,6 +344,7 @@ final class SolarisComputerSystem extends AbstractComputerSystem {
             this.boardVersion = Parsing.getValueOrUnknown(smbTypeBaseboardStrings, versionMarker);
             this.boardSerialNumber = Parsing.getValueOrUnknown(smbTypeBaseboardStrings, serialNumMarker);
         }
+
     }
 
 }

@@ -42,22 +42,67 @@ import org.miaixz.bus.image.metric.net.ApplicationEntity;
  */
 public class TransferCapability implements Serializable {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852261961377L;
 
+    /**
+     * The ae value.
+     */
     private ApplicationEntity ae;
+
+    /**
+     * The common name value.
+     */
     private String commonName;
+
+    /**
+     * The sop class value.
+     */
     private String sopClass;
+
+    /**
+     * The role value.
+     */
     private Role role;
+
+    /**
+     * The transfer syntaxes value.
+     */
     private String[] transferSyntaxes;
+
+    /**
+     * The pref transfer syntaxes value.
+     */
     private String[] prefTransferSyntaxes = {};
+
+    /**
+     * The query options value.
+     */
     private EnumSet<QueryOption> queryOptions;
+
+    /**
+     * The storage options value.
+     */
     private StorageOptions storageOptions;
 
+    /**
+     * Creates a new instance.
+     */
     public TransferCapability() {
         this(null, UID.Verification.uid, Role.SCU, UID.ImplicitVRLittleEndian.uid);
     }
 
+    /**
+     * Creates a new instance.
+     *
+     * @param commonName       the common name.
+     * @param sopClass         the sop class.
+     * @param role             the role.
+     * @param transferSyntaxes the transfer syntaxes.
+     */
     public TransferCapability(String commonName, String sopClass, Role role, String... transferSyntaxes) {
         setCommonName(commonName);
         setSopClass(sopClass);
@@ -65,6 +110,11 @@ public class TransferCapability implements Serializable {
         setTransferSyntaxes(transferSyntaxes);
     }
 
+    /**
+     * Sets the application entity.
+     *
+     * @param ae the ae.
+     */
     public void setApplicationEntity(ApplicationEntity ae) {
         if (ae != null) {
             if (this.ae != null)
@@ -74,27 +124,37 @@ public class TransferCapability implements Serializable {
     }
 
     /**
-     * 获取传输能力对象的名称,可以是有意义的名称或任何唯一的字符序列
+     * Gets the related value.
      *
-     * @return 包含常用名称的字符串
+     * @return the result.
      */
     public String getCommonName() {
         return commonName;
     }
 
+    /**
+     * Sets the common name.
+     *
+     * @param commonName the common name.
+     */
     public void setCommonName(String commonName) {
         this.commonName = commonName;
     }
 
     /**
-     * 获取这个TransferCapability实例的角色
+     * Gets the related value.
      *
-     * @return 角色(SCU或SCP)
+     * @return the result.
      */
     public Role getRole() {
         return role;
     }
 
+    /**
+     * Sets the role.
+     *
+     * @param role the role.
+     */
     public void setRole(Role role) {
         if (role == null)
             throw new NullPointerException();
@@ -113,14 +173,19 @@ public class TransferCapability implements Serializable {
     }
 
     /**
-     * 获取此传输能力对象的SOP类
+     * Gets the related value.
      *
-     * @return 包含SOP类UID的字符串
+     * @return the result.
      */
     public String getSopClass() {
         return sopClass;
     }
 
+    /**
+     * Sets the sop class.
+     *
+     * @param sopClass the sop class.
+     */
     public void setSopClass(String sopClass) {
         if (sopClass.isEmpty())
             throw new IllegalArgumentException("empty sopClass");
@@ -139,32 +204,59 @@ public class TransferCapability implements Serializable {
     }
 
     /**
-     * 获取可能作为SCU请求或作为SCP提供的传输语法
+     * Gets the related value.
      *
-     * @return 传输语法列表
+     * @return the result.
      */
     public String[] getTransferSyntaxes() {
         return transferSyntaxes;
     }
 
+    /**
+     * Sets the transfer syntaxes.
+     *
+     * @param transferSyntaxes the transfer syntaxes.
+     */
     public void setTransferSyntaxes(String... transferSyntaxes) {
         this.transferSyntaxes = Builder.requireContainsNoEmpty(
                 Builder.requireNotEmpty(transferSyntaxes, "missing transferSyntax"),
                 "empty transferSyntax");
     }
 
+    /**
+     * Gets the preferred transfer syntaxes.
+     *
+     * @return the preferred transfer syntaxes.
+     */
     public String[] getPreferredTransferSyntaxes() {
         return prefTransferSyntaxes;
     }
 
+    /**
+     * Sets the preferred transfer syntaxes.
+     *
+     * @param transferSyntaxes the transfer syntaxes.
+     */
     public void setPreferredTransferSyntaxes(String... transferSyntaxes) {
         this.prefTransferSyntaxes = Builder.requireContainsNoEmpty(transferSyntaxes, "empty transferSyntax");
     }
 
+    /**
+     * Determines whether transfer syntax.
+     *
+     * @param ts the ts.
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean containsTransferSyntax(String ts) {
         return Symbol.STAR.equals(transferSyntaxes[0]) || Builder.contains(transferSyntaxes, ts);
     }
 
+    /**
+     * Executes the select transfer syntax operation.
+     *
+     * @param transferSyntaxes the transfer syntaxes.
+     * @return the operation result.
+     */
     public String selectTransferSyntax(String... transferSyntaxes) {
         if (transferSyntaxes.length == 1)
             return containsTransferSyntax(transferSyntaxes[0]) ? transferSyntaxes[0] : null;
@@ -181,6 +273,12 @@ public class TransferCapability implements Serializable {
         return acceptable.get(0);
     }
 
+    /**
+     * Executes the retain acceptable operation.
+     *
+     * @param transferSyntaxes the transfer syntaxes.
+     * @return the operation result.
+     */
     private List<String> retainAcceptable(String[] transferSyntaxes) {
         List<String> acceptable = new ArrayList<>(transferSyntaxes.length);
         for (String transferSyntax : transferSyntaxes) {
@@ -190,27 +288,59 @@ public class TransferCapability implements Serializable {
         return acceptable;
     }
 
+    /**
+     * Gets the query options.
+     *
+     * @return the query options.
+     */
     public EnumSet<QueryOption> getQueryOptions() {
         return queryOptions;
     }
 
+    /**
+     * Sets the query options.
+     *
+     * @param queryOptions the query options.
+     */
     public void setQueryOptions(EnumSet<QueryOption> queryOptions) {
         this.queryOptions = queryOptions;
     }
 
+    /**
+     * Gets the storage options.
+     *
+     * @return the storage options.
+     */
     public StorageOptions getStorageOptions() {
         return storageOptions;
     }
 
+    /**
+     * Sets the storage options.
+     *
+     * @param storageOptions the storage options.
+     */
     public void setStorageOptions(StorageOptions storageOptions) {
         this.storageOptions = storageOptions;
     }
 
+    /**
+     * Returns the string representation.
+     *
+     * @return the string representation.
+     */
     @Override
     public String toString() {
         return promptTo(new StringBuilder(Normal._512), Normal.EMPTY).toString();
     }
 
+    /**
+     * Executes the prompt to operation.
+     *
+     * @param sb     the sb.
+     * @param indent the indent.
+     * @return the operation result.
+     */
     public StringBuilder promptTo(StringBuilder sb, String indent) {
         String indent2 = indent + Symbol.SPACE;
         Builder.appendLine(sb, indent, "TransferCapability[cn: ", commonName);
@@ -228,8 +358,22 @@ public class TransferCapability implements Serializable {
         return sb.append(indent).append(Symbol.C_BRACKET_RIGHT);
     }
 
+    /**
+     * Defines the Role values.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public enum Role {
-        SCU, SCP
+        /**
+         * Constant for the scu value.
+         */
+        SCU,
+        /**
+         * Constant for the scp value.
+         */
+        SCP
+
     }
 
 }

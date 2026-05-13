@@ -27,6 +27,12 @@ import org.miaixz.bus.gitlab.models.Constants.DeploymentStatus;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import java.io.Serial;
 
+/**
+ * The deployable class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Deployable implements Serializable {
 
     @Serial

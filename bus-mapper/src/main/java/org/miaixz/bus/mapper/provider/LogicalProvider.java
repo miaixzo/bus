@@ -635,6 +635,9 @@ public class LogicalProvider {
 
     /**
      * An SQL script interface that adds logical deletion conditions.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private interface LogicalSqlScript extends SqlScript {
 
@@ -665,6 +668,7 @@ public class LogicalProvider {
                 return " AND " + columnNotEqualsValueCondition(logicalColumn, deleteValue(logicalColumn)) + Symbol.LF;
             }
         }
+
     }
 
 }

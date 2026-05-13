@@ -20,17 +20,26 @@
 package org.miaixz.bus.image.galaxy.dict.agfa_pacs_archive_mirroring_1_0;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "AGFA PACS Archive Mirroring 1.0";
 
-    /** (0031,xx00) VR=CS VM=1 ? */
+    /**
+     * (0031,xx00) VR=CS VM=1 ?
+     */
     public static final int _0031_xx00_ = 0x00310000;
 
-    /** (0031,xx01) VR=UL VM=1 ? */
+    /**
+     * (0031,xx01) VR=UL VM=1 ?
+     */
     public static final int _0031_xx01_ = 0x00310001;
 
 }

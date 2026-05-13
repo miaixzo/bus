@@ -42,18 +42,22 @@ public class GoodsDetail {
      * The merchant's internal goods ID.
      */
     private String merchant_goods_id;
+
     /**
      * The WeChat Pay goods ID, used for promotions.
      */
     private String wechatpay_goods_id;
+
     /**
      * The name of the goods.
      */
     private String goods_name;
+
     /**
      * The quantity of the goods.
      */
     private int quantity;
+
     /**
      * The unit price of the goods in cents.
      */

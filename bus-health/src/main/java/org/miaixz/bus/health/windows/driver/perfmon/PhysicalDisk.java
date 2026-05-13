@@ -54,6 +54,9 @@ public final class PhysicalDisk {
 
     /**
      * Physical Disk performance counters.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum PhysicalDiskProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 
@@ -90,6 +93,7 @@ public final class PhysicalDisk {
         public String getCounter() {
             return counter;
         }
+
     }
 
 }

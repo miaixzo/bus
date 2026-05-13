@@ -35,21 +35,43 @@ import org.miaixz.bus.image.metric.json.JsonConfigurationExtension;
 import jakarta.json.stream.JsonParser;
 
 /**
+ * Represents the JsonHL7Configuration type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class JsonHL7Configuration extends JsonConfigurationExtension {
 
+    /**
+     * The extensions value.
+     */
     private final List<JsonHL7ConfigurationExtension> extensions = new ArrayList<>();
 
+    /**
+     * Adds the hl7 configuration extension.
+     *
+     * @param ext the ext.
+     */
     public void addHL7ConfigurationExtension(JsonHL7ConfigurationExtension ext) {
         extensions.add(ext);
     }
 
+    /**
+     * Removes the hl7 configuration extension.
+     *
+     * @param ext the ext.
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean removeHL7ConfigurationExtension(JsonHL7ConfigurationExtension ext) {
         return extensions.remove(ext);
     }
 
+    /**
+     * Stores the to.
+     *
+     * @param device the device.
+     * @param writer the writer.
+     */
     @Override
     protected void storeTo(Device device, JSONWriter writer) {
         HL7DeviceExtension ext = device.getDeviceExtension(HL7DeviceExtension.class);
@@ -63,6 +85,15 @@ public class JsonHL7Configuration extends JsonConfigurationExtension {
         writer.writeEnd();
     }
 
+    /**
+     * Loads the device extension.
+     *
+     * @param device the device.
+     * @param reader the reader.
+     * @param config the config.
+     * @return true if the condition is met; otherwise false.
+     * @throws InternalException if the operation cannot be completed.
+     */
     @Override
     public boolean loadDeviceExtension(Device device, JSONReader reader, ConfigurationDelegate config)
             throws InternalException {
@@ -75,6 +106,13 @@ public class JsonHL7Configuration extends JsonConfigurationExtension {
         return true;
     }
 
+    /**
+     * Writes the to.
+     *
+     * @param device the device.
+     * @param hl7App the hl7 app.
+     * @param writer the writer.
+     */
     private void writeTo(Device device, HL7Application hl7App, JSONWriter writer) {
         writer.writeStartObject();
         writer.writeNotNullOrDef("hl7ApplicationName", hl7App.getApplicationName(), null);
@@ -93,6 +131,15 @@ public class JsonHL7Configuration extends JsonConfigurationExtension {
         writer.writeEnd();
     }
 
+    /**
+     * Loads the from.
+     *
+     * @param ext    the ext.
+     * @param reader the reader.
+     * @param device the device.
+     * @param config the config.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private void loadFrom(HL7DeviceExtension ext, JSONReader reader, Device device, ConfigurationDelegate config)
             throws InternalException {
         List<Connection> conns = device.listConnections();
@@ -107,6 +154,16 @@ public class JsonHL7Configuration extends JsonConfigurationExtension {
         reader.expect(JsonParser.Event.END_ARRAY);
     }
 
+    /**
+     * Loads the from.
+     *
+     * @param hl7App the hl7 app.
+     * @param reader the reader.
+     * @param device the device.
+     * @param conns  the conns.
+     * @param config the config.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private void loadFrom(
             HL7Application hl7App,
             JSONReader reader,
@@ -167,6 +224,16 @@ public class JsonHL7Configuration extends JsonConfigurationExtension {
         }
     }
 
+    /**
+     * Loads the hl7 application extension.
+     *
+     * @param device the device.
+     * @param hl7App the hl7 app.
+     * @param reader the reader.
+     * @param config the config.
+     * @return true if the condition is met; otherwise false.
+     * @throws InternalException if the operation cannot be completed.
+     */
     private boolean loadHL7ApplicationExtension(
             Device device,
             HL7Application hl7App,

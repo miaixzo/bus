@@ -42,26 +42,32 @@ public class AccessToken implements Serializable, Callback {
      * The access token.
      */
     private String access_token;
+
     /**
      * The type of the token (e.g., "Bearer").
      */
     private String token_type;
+
     /**
      * The application ID.
      */
     private String app_id;
+
     /**
      * The lifetime of the token in seconds.
      */
     private Integer expires_in;
+
     /**
      * The calculated expiration time in milliseconds since the epoch.
      */
     private Long expiredTime;
+
     /**
      * The original JSON response string.
      */
     private String json;
+
     /**
      * The HTTP status code of the response.
      */

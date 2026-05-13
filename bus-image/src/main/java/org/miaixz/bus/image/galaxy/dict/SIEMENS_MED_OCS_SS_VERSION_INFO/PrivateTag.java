@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_OCS_SS_VERSION_INFO;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS MED OCS SS VERSION INFO";
 
-    /** (0039,xx76) VR=LO VM=1 Structure Set Predecessor */
+    /**
+     * (0039,xx76) VR=LO VM=1 Structure Set Predecessor
+     */
     public static final int StructureSetPredecessor = 0x00390076;
 
 }

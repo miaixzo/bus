@@ -28,6 +28,12 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+/**
+ * The project fetches class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class ProjectFetches implements Serializable {
 
     @Serial
@@ -47,6 +53,12 @@ public class ProjectFetches implements Serializable {
         return (JacksonJson.toJsonString(this));
     }
 
+    /**
+     * The date count class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public static class DateCount implements Serializable {
 
         @Serial
@@ -72,8 +84,15 @@ public class ProjectFetches implements Serializable {
         public void setDate(Date date) {
             this.date = date;
         }
+
     }
 
+    /**
+     * The fetches class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public static class Fetches implements Serializable {
 
         @Serial
@@ -97,6 +116,7 @@ public class ProjectFetches implements Serializable {
         public void setDays(List<DateCount> days) {
             this.days = days;
         }
+
     }
 
 }

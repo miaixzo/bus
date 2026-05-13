@@ -27,9 +27,9 @@ import java.util.stream.Stream;
  *
  * @param <T> the type of the elements in the stream
  * @param <S> the type of the {@link EnhancedWrappedStream} implementation itself
- * @author Kimi Liu
  * @see EasyStream
  * @see EntryStream
+ * @author Kimi Liu
  * @since Java 21+
  */
 public abstract class EnhancedWrappedStream<T, S extends EnhancedWrappedStream<T, S>>

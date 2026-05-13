@@ -46,18 +46,22 @@ class TDigest {
      * Read/write lock guarding centroid list and aggregate fields.
      */
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+
     /**
      * Sorted list of centroids; size bounded by {@code COMPRESSION * 2} before compression.
      */
     private final List<Centroid> centroids = new ArrayList<>(COMPRESSION * 2);
+
     /**
      * Running sum of all added values.
      */
     private final DoubleAdder sumTotal = new DoubleAdder();
+
     /**
      * Total number of values added.
      */
     private final AtomicLong countTotal = new AtomicLong();
+
     /**
      * Maximum value added; updated on each {@link #add(double)} call.
      */
@@ -252,6 +256,9 @@ class TDigest {
 
     /**
      * A centroid is a cluster of values approximated by their weighted mean.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static final class Centroid {
 
@@ -259,6 +266,7 @@ class TDigest {
          * Weighted mean of all values in this centroid.
          */
         double mean;
+
         /**
          * Number of values merged into this centroid.
          */
@@ -274,6 +282,7 @@ class TDigest {
             this.mean = mean;
             this.count = count;
         }
+
     }
 
 }

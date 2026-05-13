@@ -51,6 +51,7 @@ public class Base62Encoder implements Encoder<byte[], byte[]> {
      * The GMP-style Base62 encoder.
      */
     public static Base62Encoder GMP_ENCODER = new Base62Encoder(GMP);
+
     /**
      * The inverted-style Base62 encoder.
      */

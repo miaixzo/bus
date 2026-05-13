@@ -41,6 +41,7 @@ public class Slf4jLoggingProvider extends AbstractProvider {
      * The underlying SLF4J logger instance.
      */
     private final transient Logger logger;
+
     /**
      * Whether the underlying logger is a {@link LocationAwareLogger}. This is used to determine if the FQCN can be
      * passed.

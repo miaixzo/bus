@@ -38,10 +38,12 @@ public class RealResponseBody extends ResponseBody {
      * The media type as a string.
      */
     private final String contentType;
+
     /**
      * The content length.
      */
     private final long length;
+
     /**
      * The data source.
      */

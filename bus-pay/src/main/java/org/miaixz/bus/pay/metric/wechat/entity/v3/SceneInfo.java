@@ -42,14 +42,17 @@ public class SceneInfo {
      * The payer's client IP address.
      */
     private String payer_client_ip;
+
     /**
      * The merchant's terminal device ID.
      */
     private String device_id;
+
     /**
      * Information about the merchant's store.
      */
     private StoreInfo store_info;
+
     /**
      * Information for H5 payment scenarios.
      */

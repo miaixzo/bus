@@ -51,14 +51,17 @@ public class ItemQuery extends ItemScope {
      * Setting data identifier.
      */
     private String data_id;
+
     /**
      * Optional fallback content returned when the target entry cannot be resolved.
      */
     private String fallbackValue;
+
     /**
      * Whether overlay content should be preferred during resolution.
      */
     private boolean preferOverlay = true;
+
     /**
      * Request context used for gray-release evaluation after namespace, profile, and application matching.
      */

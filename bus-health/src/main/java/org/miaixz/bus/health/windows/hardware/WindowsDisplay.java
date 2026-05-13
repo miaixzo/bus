@@ -44,6 +44,7 @@ final class WindowsDisplay extends AbstractDisplay {
      * The SU constant.
      */
     private static final SetupApi SU = SetupApi.INSTANCE;
+
     /**
      * The ADV constant.
      */

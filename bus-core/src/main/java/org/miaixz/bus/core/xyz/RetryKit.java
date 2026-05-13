@@ -28,8 +28,8 @@ import org.miaixz.bus.core.lang.thread.RetryableTask;
 /**
  * Retry utility class. For more advanced custom functionality, please use the {@link RetryableTask} class.
  *
- * @author Kimi Liu
  * @see RetryableTask
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class RetryKit {

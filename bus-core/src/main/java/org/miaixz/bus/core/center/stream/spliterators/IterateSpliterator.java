@@ -39,22 +39,27 @@ public class IterateSpliterator<T> extends Spliterators.AbstractSpliterator<T> {
      * The initial value of the iteration.
      */
     private final T seed;
+
     /**
      * A predicate to determine if there are more elements.
      */
     private final Predicate<? super T> hasNext;
+
     /**
      * A unary operator to produce the next element from the previous one.
      */
     private final UnaryOperator<T> next;
+
     /**
      * The previous element in the iteration.
      */
     private T prev;
+
     /**
      * Flag indicating if the iteration has started.
      */
     private boolean started;
+
     /**
      * Flag indicating if the iteration has finished.
      */

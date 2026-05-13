@@ -59,6 +59,7 @@ public class Jpg2Dcm {
      * The buffer size for copying data.
      */
     private static final int BUFFER_SIZE = 8162;
+
     /**
      * The standard DICOM element dictionary.
      */
@@ -73,30 +74,37 @@ public class Jpg2Dcm {
      * Type 2 tags that need to be present, even if with a null value.
      */
     private static final int[] TYPE2_TAGS = { Tag.ContentDate, Tag.ContentTime };
+
     /**
      * A set of static metadata to be merged into every created DICOM object.
      */
     private final Attributes staticMetadata = new Attributes();
+
     /**
      * A buffer for file I/O operations.
      */
     private final byte[] buf = new byte[BUFFER_SIZE];
+
     /**
      * A flag to exclude APPn segments from JPEG streams.
      */
     private boolean noAPPn;
+
     /**
      * A flag to indicate if the content is a VL Photographic Image.
      */
     private boolean photo;
+
     /**
      * The target Transfer Syntax UID.
      */
     private String tsuid;
+
     /**
      * The content type of the source file (e.g., image/jpeg).
      */
     private ContentType contentType;
+
     /**
      * The maximum length for each fragment of the encapsulated pixel data.
      */
@@ -282,6 +290,9 @@ public class Jpg2Dcm {
 
     /**
      * An enumeration of supported content types for encapsulation.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private enum ContentType {
 
@@ -382,21 +393,46 @@ public class Jpg2Dcm {
          * @throws IOException if an I/O error occurs.
          */
         abstract XPEGParser newParser(SeekableByteChannel channel) throws IOException;
+
     }
 
     /**
      * A file visitor to recursively find and convert media files in a directory.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class Jpg2DcmFileVisitor extends SimpleFileVisitor<Path> {
 
+        /**
+         * The src path value.
+         */
         private final Path srcPath;
+
+        /**
+         * The dest path value.
+         */
         private final Path destPath;
 
+        /**
+         * Creates a new instance.
+         *
+         * @param srcPath  the src path.
+         * @param destPath the dest path.
+         */
         Jpg2DcmFileVisitor(Path srcPath, Path destPath) {
             this.srcPath = srcPath;
             this.destPath = destPath;
         }
 
+        /**
+         * Executes the visit file operation.
+         *
+         * @param srcFilePath the src file path.
+         * @param attrs       the attrs.
+         * @return the operation result.
+         * @throws IOException if the operation cannot be completed.
+         */
         @Override
         public FileVisitResult visitFile(Path srcFilePath, BasicFileAttributes attrs) throws IOException {
             Path destFilePath = resolveDestFilePath(srcFilePath);
@@ -440,6 +476,12 @@ public class Jpg2Dcm {
             return FileVisitResult.CONTINUE;
         }
 
+        /**
+         * Executes the resolve dest file path operation.
+         *
+         * @param srcFilePath the src file path.
+         * @return the operation result.
+         */
         private Path resolveDestFilePath(Path srcFilePath) {
             int srcPathNameCount = srcPath.getNameCount();
             int srcFilePathNameCount = srcFilePath.getNameCount() - 1;
@@ -448,6 +490,7 @@ public class Jpg2Dcm {
 
             return destPath.resolve(srcFilePath.subpath(srcPathNameCount, srcFilePathNameCount));
         }
+
     }
 
 }

@@ -42,9 +42,9 @@ import java.util.Objects;
  * This class holds the configuration for a connection, including the server's hostname, port, proxy, and security
  * settings. HTTP requests that share the same {@code Address} may also share the same underlying {@link Connection}.
  *
- * @author Kimi Liu
  * @see Connection
  * @see UnoUrl
+ * @author Kimi Liu
  * @since Java 21+
  */
 public final class Address {

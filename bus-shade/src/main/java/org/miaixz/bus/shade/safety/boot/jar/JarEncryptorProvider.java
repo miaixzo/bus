@@ -53,6 +53,7 @@ public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry
      * The compression level to use for the output JAR archive.
      */
     private final int level;
+
     /**
      * The encryption mode, which can include flags like {@link Builder#FLAG_DANGER}.
      */

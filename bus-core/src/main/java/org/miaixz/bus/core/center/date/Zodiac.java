@@ -91,6 +91,7 @@ public enum Zodiac {
      * The code of the zodiac.
      */
     private final long code;
+
     /**
      * The name of the zodiac.
      */

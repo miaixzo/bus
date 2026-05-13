@@ -36,17 +36,34 @@ import org.miaixz.bus.image.nimble.codec.CompressionRule;
 import org.miaixz.bus.image.nimble.codec.CompressionRules;
 
 /**
+ * Represents the LdapCompressionRulesConfiguration type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class LdapCompressionRulesConfiguration {
 
+    /**
+     * The config value.
+     */
     private final LdapDicomConfiguration config;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param config the config.
+     */
     public LdapCompressionRulesConfiguration(LdapDicomConfiguration config) {
         this.config = config;
     }
 
+    /**
+     * Stores the to.
+     *
+     * @param rule  the rule.
+     * @param attrs the attrs.
+     * @return the operation result.
+     */
     private static Attributes storeTo(CompressionRule rule, BasicAttributes attrs) {
         attrs.put("objectclass", "dcmCompressionRule");
         attrs.put("cn", rule.getCommonName());
@@ -61,6 +78,13 @@ public class LdapCompressionRulesConfiguration {
         return attrs;
     }
 
+    /**
+     * Executes the store operation.
+     *
+     * @param rules    the rules.
+     * @param parentDN the parent dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public void store(CompressionRules rules, String parentDN) throws NamingException {
         for (CompressionRule rule : rules)
             config.createSubcontext(
@@ -68,6 +92,13 @@ public class LdapCompressionRulesConfiguration {
                     storeTo(rule, new BasicAttributes(true)));
     }
 
+    /**
+     * Executes the load operation.
+     *
+     * @param rules the rules.
+     * @param dn    the dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public void load(CompressionRules rules, String dn) throws NamingException {
         NamingEnumeration<SearchResult> ne = config.search(dn, "(objectclass=dcmCompressionRule)");
         try {
@@ -78,6 +109,13 @@ public class LdapCompressionRulesConfiguration {
         }
     }
 
+    /**
+     * Executes the compression rule operation.
+     *
+     * @param attrs the attrs.
+     * @return the operation result.
+     * @throws NamingException if the operation cannot be completed.
+     */
     private CompressionRule compressionRule(Attributes attrs) throws NamingException {
         return new CompressionRule(LdapBuilder.stringValue(attrs.get("cn"), null),
                 LdapBuilder.stringArray(attrs.get("dcmPhotometricInterpretation")),
@@ -89,6 +127,15 @@ public class LdapCompressionRulesConfiguration {
                 LdapBuilder.stringArray(attrs.get("dcmImageWriteParam")));
     }
 
+    /**
+     * Executes the merge operation.
+     *
+     * @param diffs     the diffs.
+     * @param prevRules the prev rules.
+     * @param rules     the rules.
+     * @param parentDN  the parent dn.
+     * @throws NamingException if the operation cannot be completed.
+     */
     public void merge(ConfigurationChanges diffs, CompressionRules prevRules, CompressionRules rules, String parentDN)
             throws NamingException {
         for (CompressionRule prevRule : prevRules) {
@@ -116,6 +163,15 @@ public class LdapCompressionRulesConfiguration {
         }
     }
 
+    /**
+     * Stores the diffs.
+     *
+     * @param ldapObj the ldap obj.
+     * @param prev    the prev.
+     * @param rule    the rule.
+     * @param mods    the mods.
+     * @return the operation result.
+     */
     private List<ModificationItem> storeDiffs(
             ConfigurationChanges.ModifiedObject ldapObj,
             CompressionRule prev,

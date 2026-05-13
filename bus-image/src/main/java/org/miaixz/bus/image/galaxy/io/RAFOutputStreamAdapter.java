@@ -24,22 +24,46 @@ import java.io.OutputStream;
 import java.io.RandomAccessFile;
 
 /**
+ * Represents the RAFOutputStreamAdapter type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class RAFOutputStreamAdapter extends OutputStream {
 
+    /**
+     * The raf value.
+     */
     private final RandomAccessFile raf;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param raf the raf.
+     */
     public RAFOutputStreamAdapter(RandomAccessFile raf) {
         this.raf = raf;
     }
 
+    /**
+     * Executes the write operation.
+     *
+     * @param b   the b.
+     * @param off the off.
+     * @param len the len.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void write(byte[] b, int off, int len) throws IOException {
         raf.write(b, off, len);
     }
 
+    /**
+     * Executes the write operation.
+     *
+     * @param b the b.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public void write(int b) throws IOException {
         raf.write(b);

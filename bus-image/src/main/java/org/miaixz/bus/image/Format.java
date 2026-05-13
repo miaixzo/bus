@@ -61,6 +61,9 @@ import org.miaixz.bus.image.galaxy.data.DatePrecision;
  */
 public class Format extends java.text.Format {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852253785600L;
 
@@ -69,21 +72,25 @@ public class Format extends java.text.Format {
      */
     private static final char[] CHARS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e',
             'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v' };
+
     /**
      * Number of bytes in a Java long primitive type.
      */
     private static final int LONG_BYTES = 8;
+
     /**
      * Parser for DICOM Date (DA) strings. Handles "YYYYMMDD" and "YYYY.MM.DD".
      */
     private static final DateTimeFormatter DA_PARSER = new DateTimeFormatterBuilder().appendValue(YEAR, 4)
             .optionalStart().appendLiteral('.').optionalEnd().appendValue(MONTH_OF_YEAR, 2).optionalStart()
             .appendLiteral('.').optionalEnd().appendValue(DAY_OF_MONTH, 2).toFormatter();
+
     /**
      * Formatter for DICOM Date (DA) strings to "YYYYMMDD".
      */
     private static final DateTimeFormatter DA_FORMATTER = new DateTimeFormatterBuilder().appendValue(YEAR, 4)
             .appendValue(MONTH_OF_YEAR, 2).appendValue(DAY_OF_MONTH, 2).toFormatter();
+
     /**
      * Parser for DICOM Time (TM) strings. Handles "HHMMSS.FFFFFF".
      */
@@ -91,12 +98,14 @@ public class Format extends java.text.Format {
             .optionalStart().optionalStart().appendLiteral(':').optionalEnd().appendValue(MINUTE_OF_HOUR, 2)
             .optionalStart().optionalStart().appendLiteral(':').optionalEnd().appendValue(SECOND_OF_MINUTE, 2)
             .optionalStart().appendFraction(NANO_OF_SECOND, 0, 6, true).toFormatter();
+
     /**
      * Formatter for DICOM Time (TM) strings to "HHMMSS.FFFFFF".
      */
     private static final DateTimeFormatter TM_FORMATTER = new DateTimeFormatterBuilder().appendValue(HOUR_OF_DAY, 2)
             .appendValue(MINUTE_OF_HOUR, 2).appendValue(SECOND_OF_MINUTE, 2).appendFraction(NANO_OF_SECOND, 6, 6, true)
             .toFormatter();
+
     /**
      * Parser for DICOM DateTime (DT) strings. Handles "YYYYMMDDHHMMSS.FFFFFF&ZZXX".
      */
@@ -106,6 +115,7 @@ public class Format extends java.text.Format {
             .appendValue(SECOND_OF_MINUTE, 2).optionalStart().appendFraction(NANO_OF_SECOND, 0, 6, true).optionalEnd()
             .optionalEnd().optionalEnd().optionalEnd().optionalEnd().optionalEnd().optionalStart()
             .appendOffset("+HHMM", "+0000").toFormatter();
+
     /**
      * Formatter for DICOM DateTime (DT) strings to "YYYYMMDDHHMMSS.FFFFFF&ZZXX".
      */
@@ -113,19 +123,23 @@ public class Format extends java.text.Format {
             .appendValue(MONTH_OF_YEAR, 2).appendValue(DAY_OF_MONTH, 2).appendValue(HOUR_OF_DAY, 2)
             .appendValue(MINUTE_OF_HOUR, 2).appendValue(SECOND_OF_MINUTE, 2).appendFraction(NANO_OF_SECOND, 6, 6, true)
             .optionalStart().appendOffset("+HHMM", "+0000").toFormatter();
+
     /**
      * A default date formatter for localized display (e.g., "Jan 1, 2025").
      */
     private static final DateTimeFormatter defaultDateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM);
+
     /**
      * A default time formatter for localized display (e.g., "10:30:00 AM").
      */
     private static final DateTimeFormatter defaultTimeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM);
+
     /**
      * A default date-time formatter for localized display.
      */
     private static final DateTimeFormatter defaultDateTimeFormatter = DateTimeFormatter
             .ofLocalizedDateTime(FormatStyle.MEDIUM);
+
     /**
      * A cache for the last used TimeZone to avoid repeated lookups.
      */
@@ -135,30 +149,37 @@ public class Format extends java.text.Format {
      * The original format pattern string.
      */
     private final String pattern;
+
     /**
      * An array of parsed DICOM tag paths from the pattern.
      */
     private final int[][] tagPaths;
+
     /**
      * An array of value indices for multi-valued attributes.
      */
     private final int[] index;
+
     /**
      * An array of numeric offsets for number formatting.
      */
     private final int[] offsets;
+
     /**
      * An array of Period or Duration objects for date/time calculations.
      */
     private final Object[] dateTimeOffsets;
+
     /**
      * An array of string slice operators.
      */
     private final UnaryOperator<String>[] slices;
+
     /**
      * An array of format types for each placeholder in the pattern.
      */
     private final Type[] types;
+
     /**
      * The underlying MessageFormat instance that performs the final formatting.
      */
@@ -1396,10 +1417,15 @@ public class Format extends java.text.Format {
 
     /**
      * Defines the various formatting types supported by the pattern language.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private enum Type {
 
-        /** No special formatting, returns the raw string value. */
+        /**
+         * No special formatting, returns the raw string value.
+         */
         none {
 
             @Override
@@ -1413,7 +1439,9 @@ public class Format extends java.text.Format {
                 return attrs.getString(tag, index, "");
             }
         },
-        /** Converts the string value to uppercase. */
+        /**
+         * Converts the string value to uppercase.
+         */
         upper {
 
             @Override
@@ -1427,7 +1455,9 @@ public class Format extends java.text.Format {
                 return attrs.getString(tag, index, "").toUpperCase();
             }
         },
-        /** Extracts a substring from the value. */
+        /**
+         * Extracts a substring from the value.
+         */
         slice {
 
             @Override
@@ -1441,7 +1471,9 @@ public class Format extends java.text.Format {
                 return slice.apply(attrs.getString(tag, index));
             }
         },
-        /** Formats the value as a number. */
+        /**
+         * Formats the value as a number.
+         */
         number {
 
             @Override
@@ -1455,7 +1487,9 @@ public class Format extends java.text.Format {
                 return attrs.getDouble(tag, index, 0.);
             }
         },
-        /** Adds a numeric offset to an integer value. */
+        /**
+         * Adds a numeric offset to an integer value.
+         */
         offset {
 
             @Override
@@ -1469,7 +1503,9 @@ public class Format extends java.text.Format {
                 return Integer.toString(attrs.getInt(tag, index, 0) + offset);
             }
         },
-        /** Formats the value as a date, with optional period offset. */
+        /**
+         * Formats the value as a date, with optional period offset.
+         */
         date {
 
             @Override
@@ -1491,7 +1527,9 @@ public class Format extends java.text.Format {
                 return cal.getTime();
             }
         },
-        /** Formats the value as a time, with optional duration offset. */
+        /**
+         * Formats the value as a time, with optional duration offset.
+         */
         time {
 
             @Override
@@ -1511,7 +1549,9 @@ public class Format extends java.text.Format {
                 return cal.getTime();
             }
         },
-        /** Formats a numeric value using a choice pattern. */
+        /**
+         * Formats a numeric value using a choice pattern.
+         */
         choice {
 
             @Override
@@ -1525,7 +1565,9 @@ public class Format extends java.text.Format {
                 return attrs.getDouble(tag, index, 0.);
             }
         },
-        /** Computes the hash code of the string value. */
+        /**
+         * Computes the hash code of the string value.
+         */
         hash {
 
             @Override
@@ -1540,7 +1582,9 @@ public class Format extends java.text.Format {
                 return s != null ? Tag.toHexString(s.hashCode()) : null;
             }
         },
-        /** Computes the MD5 hash of the string value. */
+        /**
+         * Computes the MD5 hash of the string value.
+         */
         md5 {
 
             @Override
@@ -1555,7 +1599,9 @@ public class Format extends java.text.Format {
                 return s != null ? getMD5String(s) : null;
             }
         },
-        /** URL-encodes the string value. */
+        /**
+         * URL-encodes the string value.
+         */
         urlencoded {
 
             @Override
@@ -1570,7 +1616,9 @@ public class Format extends java.text.Format {
                 return s != null ? URLEncoder.encode(s, Charset.UTF_8) : null;
             }
         },
-        /** Generates a random integer and formats it as hex. */
+        /**
+         * Generates a random integer and formats it as hex.
+         */
         rnd {
 
             @Override
@@ -1584,7 +1632,9 @@ public class Format extends java.text.Format {
                 return Tag.toHexString(ThreadLocalRandom.current().nextInt());
             }
         },
-        /** Generates a random UUID. */
+        /**
+         * Generates a random UUID.
+         */
         uuid {
 
             @Override
@@ -1598,7 +1648,9 @@ public class Format extends java.text.Format {
                 return UUID.randomUUID();
             }
         },
-        /** Generates a new DICOM UID. */
+        /**
+         * Generates a new DICOM UID.
+         */
         uid {
 
             @Override
@@ -1689,10 +1741,14 @@ public class Format extends java.text.Format {
                 return s;
             }
         }
+
     }
 
     /**
      * An operator for extracting a slice (substring) from a string.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private class Slice implements UnaryOperator<String> {
 
@@ -1700,6 +1756,7 @@ public class Format extends java.text.Format {
          * The starting index of the slice.
          */
         final int beginIndex;
+
         /**
          * The ending index of the slice.
          */
@@ -1741,6 +1798,7 @@ public class Format extends java.text.Format {
                 return "";
             }
         }
+
     }
 
 }

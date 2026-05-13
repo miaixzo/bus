@@ -30,6 +30,12 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+/**
+ * The artifact class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Artifact implements Serializable {
 
     @Serial
@@ -77,6 +83,12 @@ public class Artifact implements Serializable {
         return (JacksonJson.toJsonString(this));
     }
 
+    /**
+     * The file type enum.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public enum FileType {
 
         ARCHIVE, METADATA, TRACE, JUNIT;
@@ -97,6 +109,7 @@ public class Artifact implements Serializable {
         public String toString() {
             return (enumHelper.toString(this));
         }
+
     }
 
 }

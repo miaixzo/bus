@@ -30,16 +30,40 @@ import org.opencv.core.Rect;
  */
 public class TiledAlgorithm {
 
+    /**
+     * The m tile size value.
+     */
     private final int mTileSize;
+
+    /**
+     * The m padding value.
+     */
     private final int mPadding;
+
+    /**
+     * The m border type value.
+     */
     private final int mBorderType;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param tileSize   the tile size.
+     * @param padding    the padding.
+     * @param borderType the border type.
+     */
     TiledAlgorithm(int tileSize, int padding, int borderType) {
         this.mTileSize = tileSize;
         this.mPadding = padding;
         this.mBorderType = borderType;
     }
 
+    /**
+     * Executes the process operation.
+     *
+     * @param sourceImage the source image.
+     * @param resultImage the result image.
+     */
     void process(Mat sourceImage, Mat resultImage) {
         if (sourceImage.rows() != resultImage.rows() || sourceImage.cols() != resultImage.cols()) {
             throw new IllegalStateException("");
@@ -64,6 +88,13 @@ public class TiledAlgorithm {
         }
     }
 
+    /**
+     * Copies the tile to result image.
+     *
+     * @param tileOutput  the tile output.
+     * @param resultImage the result image.
+     * @param dstTile     the dst tile.
+     */
     private void copyTileToResultImage(Mat tileOutput, Mat resultImage, Rect dstTile) {
         Rect srcTile = new Rect(mPadding, mPadding, mTileSize, mTileSize);
 
@@ -89,11 +120,24 @@ public class TiledAlgorithm {
         tileView.copyTo(dstView);
     }
 
+    /**
+     * Processes the tile impl.
+     *
+     * @param tileInput  the tile input.
+     * @param tileOutput the tile output.
+     */
     private void processTileImpl(Mat tileInput, Mat tileOutput) {
         // TODO Auto-generated method stub
 
     }
 
+    /**
+     * Copies the source tile.
+     *
+     * @param sourceImage the source image.
+     * @param tileInput   the tile input.
+     * @param tile        the tile.
+     */
     private void copySourceTile(Mat sourceImage, Mat tileInput, Rect tile) {
         TiledProcessor.copyTileFromSource(sourceImage, tileInput, tile, mBorderType, tile.x, tile.y);
     }

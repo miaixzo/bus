@@ -44,6 +44,7 @@ public class StreamWriter {
      * The underlying output stream to write to.
      */
     private final OutputStream out;
+
     /**
      * Flag indicating whether the output stream should be closed after write operations.
      */

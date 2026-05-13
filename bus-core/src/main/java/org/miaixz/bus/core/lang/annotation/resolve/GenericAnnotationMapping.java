@@ -42,10 +42,12 @@ public class GenericAnnotationMapping implements AnnotationMapping<Annotation> {
      * The wrapped annotation object.
      */
     private final Annotation annotation;
+
     /**
      * Indicates whether this is a root annotation.
      */
     private final boolean isRoot;
+
     /**
      * The attributes (methods) of the annotation.
      */

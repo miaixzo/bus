@@ -146,6 +146,9 @@ public final class ProcessorInformation {
 
     /**
      * System interrupts counters
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum InterruptsProperty implements PerfCounterQuery.PdhCounterProperty {
 
@@ -155,6 +158,7 @@ public final class ProcessorInformation {
          * The instance value.
          */
         private final String instance;
+
         /**
          * The counter value.
          */
@@ -190,10 +194,14 @@ public final class ProcessorInformation {
         public String getCounter() {
             return counter;
         }
+
     }
 
     /**
      * Processor Frequency counters. Requires Win7 or greater
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum ProcessorFrequencyProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 
@@ -225,10 +233,14 @@ public final class ProcessorInformation {
         public String getCounter() {
             return counter;
         }
+
     }
 
     /**
      * Processor performance counters from the WMI formatted data table.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum ProcessorPerformanceProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 
@@ -260,10 +272,14 @@ public final class ProcessorInformation {
         public String getCounter() {
             return counter;
         }
+
     }
 
     /**
      * Processor performance counters
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum ProcessorTickCountProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 
@@ -299,10 +315,14 @@ public final class ProcessorInformation {
         public String getCounter() {
             return counter;
         }
+
     }
 
     /**
      * Processor performance counters including utility counters
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum ProcessorUtilityTickCountProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 
@@ -344,10 +364,14 @@ public final class ProcessorInformation {
         public String getCounter() {
             return counter;
         }
+
     }
 
     /**
      * System performance counters
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum SystemTickCountProperty implements PerfCounterQuery.PdhCounterProperty {
 
@@ -358,6 +382,7 @@ public final class ProcessorInformation {
          * The instance value.
          */
         private final String instance;
+
         /**
          * The counter value.
          */
@@ -393,6 +418,7 @@ public final class ProcessorInformation {
         public String getCounter() {
             return counter;
         }
+
     }
 
 }

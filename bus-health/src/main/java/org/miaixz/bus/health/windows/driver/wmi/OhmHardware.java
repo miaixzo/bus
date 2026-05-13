@@ -77,9 +77,13 @@ public final class OhmHardware {
 
     /**
      * HW Identifier Property
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum IdentifierProperty {
         IDENTIFIER
+
     }
 
 }

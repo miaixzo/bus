@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.KRETZ_US;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "KRETZ_US";
 
-    /** (7FE1,xx01) VR=OB VM=1 ? */
+    /**
+     * (7FE1,xx01) VR=OB VM=1 ?
+     */
     public static final int _7FE1_xx01_ = 0x7FE10001;
 
 }

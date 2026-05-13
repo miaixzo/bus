@@ -58,30 +58,37 @@ public class Dcm2Dcm {
      * List of compression parameters.
      */
     private final List<Property> params = new ArrayList<>();
+
     /**
      * The target Transfer Syntax UID.
      */
     private String tsuid;
+
     /**
      * The target Transfer Syntax type.
      */
     private TransferSyntaxType tstype;
+
     /**
      * Flag to retain the original File Meta Information.
      */
     private boolean retainfmi;
+
     /**
      * Flag to exclude the File Meta Information from the output.
      */
     private boolean nofmi;
+
     /**
      * Flag to use the legacy transcoding method.
      */
     private boolean legacy;
+
     /**
      * Encoding options for writing the DICOM file.
      */
     private ImageEncodingOptions encOpts = ImageEncodingOptions.DEFAULT;
+
     /**
      * The maximum number of threads to use for transcoding.
      */

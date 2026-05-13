@@ -27,8 +27,8 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
 /**
  * A serializable {@link Runnable} interface that supports throwing exceptions and combining multiple runnables.
  *
- * @author Kimi Liu
  * @see Runnable
+ * @author Kimi Liu
  * @since Java 21+
  */
 @FunctionalInterface

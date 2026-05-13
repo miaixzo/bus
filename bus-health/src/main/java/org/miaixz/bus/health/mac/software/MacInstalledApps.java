@@ -35,6 +35,8 @@ import org.miaixz.bus.health.builtin.software.ApplicationInfo;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * The mac installed apps class.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */

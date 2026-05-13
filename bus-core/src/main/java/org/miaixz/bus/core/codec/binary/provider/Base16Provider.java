@@ -43,10 +43,12 @@ public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequ
      * The lowercase Base16 codec.
      */
     public static final Base16Provider CODEC_LOWER = new Base16Provider(true);
+
     /**
      * The uppercase Base16 codec.
      */
     public static final Base16Provider CODEC_UPPER = new Base16Provider(false);
+
     /**
      * The character alphabet used for encoding.
      */

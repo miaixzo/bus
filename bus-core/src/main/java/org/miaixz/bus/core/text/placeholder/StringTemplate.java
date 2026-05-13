@@ -64,34 +64,42 @@ public abstract class StringTemplate {
      * default is specified.
      */
     protected static UnaryOperator<String> globalDefaultValueHandler;
+
     /**
      * The escape character, default is '\'.
      */
     protected final char escape;
+
     /**
      * A fixed default value to use when a placeholder's corresponding value is not found.
      */
     protected final String defaultValue;
+
     /**
      * The default value handler for this specific template instance.
      */
     protected final UnaryOperator<String> defaultValueHandler;
+
     /**
      * The raw template string.
      */
     private final String template;
+
     /**
      * The feature flags for this specific template instance.
      */
     private final int features;
+
     /**
      * A list of all segments (both literal text and placeholders) parsed from the template.
      */
     protected List<StringSegment> segments;
+
     /**
      * A list of all placeholder segments.
      */
     protected List<AbstractSegment> placeholderSegments;
+
     /**
      * The total length of all literal (fixed) text segments.
      */
@@ -623,6 +631,9 @@ public abstract class StringTemplate {
 
     /**
      * Features for controlling formatting and parsing behavior.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum Feature {
 
@@ -716,6 +727,7 @@ public abstract class StringTemplate {
          * The bitmask for this feature.
          */
         private final int mask;
+
         /**
          * The bitmask to clear other features in the same group.
          */
@@ -772,6 +784,7 @@ public abstract class StringTemplate {
         public int clear(final int features) {
             return (features & ~mask);
         }
+
     }
 
     /**
@@ -779,6 +792,8 @@ public abstract class StringTemplate {
      *
      * @param <B> The type of the concrete builder subclass.
      * @param <T> The type of the concrete template subclass.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     protected static abstract class AbstractBuilder<B extends AbstractBuilder<B, T>, T extends StringTemplate> {
 
@@ -786,22 +801,27 @@ public abstract class StringTemplate {
          * The raw template string.
          */
         protected final String template;
+
         /**
          * The default value for missing placeholders.
          */
         protected String defaultValue;
+
         /**
          * A handler for providing default values dynamically.
          */
         protected UnaryOperator<String> defaultValueHandler;
+
         /**
          * Whether the escape character has been explicitly set.
          */
         protected boolean escape$set;
+
         /**
          * The escape character.
          */
         protected char escape;
+
         /**
          * The feature flags for the template.
          */
@@ -917,6 +937,7 @@ public abstract class StringTemplate {
          * @return The new template instance.
          */
         protected abstract T buildInstance();
+
     }
 
 }

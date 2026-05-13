@@ -25,21 +25,57 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.nimble.codec.mp4.MP4FileType;
 
 /**
+ * Defines the XPEGParser contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface XPEGParser {
 
+    /**
+     * Gets the code stream position.
+     *
+     * @return the code stream position.
+     */
     long getCodeStreamPosition();
 
+    /**
+     * Gets the position after app segments.
+     *
+     * @return the position after app segments.
+     */
     long getPositionAfterAPPSegments();
 
+    /**
+     * Gets the mp4 file type.
+     *
+     * @return the mp4 file type.
+     */
     MP4FileType getMP4FileType();
 
+    /**
+     * Gets the attributes.
+     *
+     * @param attrs the attrs.
+     * @return the attributes.
+     */
     Attributes getAttributes(Attributes attrs);
 
+    /**
+     * Gets the transfer syntax uid.
+     *
+     * @param fragmented the fragmented.
+     * @return the transfer syntax uid.
+     * @throws IOException if the operation cannot be completed.
+     */
     String getTransferSyntaxUID(boolean fragmented) throws IOException;
 
+    /**
+     * Gets the transfer syntax uid.
+     *
+     * @return the transfer syntax uid.
+     * @throws IOException if the operation cannot be completed.
+     */
     default String getTransferSyntaxUID() throws IOException {
         return getTransferSyntaxUID(false);
     }

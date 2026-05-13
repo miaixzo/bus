@@ -42,6 +42,7 @@ public class FormatManager {
      * Map of date formatting rules.
      */
     private final Map<CharSequence, Function<Date, String>> formatterMap;
+
     /**
      * Map of date parsing rules.
      */
@@ -171,11 +172,17 @@ public class FormatManager {
 
     /**
      * Singleton holder class, implementing lazy loading.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class SingletonHolder {
 
-        /** Static singleton instance, thread-safe guaranteed by JVM. */
+        /**
+         * Static singleton instance, thread-safe guaranteed by JVM.
+         */
         private static final FormatManager INSTANCE = new FormatManager();
+
     }
 
 }

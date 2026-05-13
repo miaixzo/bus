@@ -56,11 +56,22 @@ public class CacheMetrics {
         return instrumented;
     }
 
+    /**
+     * The instrumented cache class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     private static class InstrumentedCache<K, V> implements CacheX<K, V> {
 
-        /** The underlying cache being instrumented. */
+        /**
+         * The underlying cache being instrumented.
+         */
         private final CacheX<K, V> delegate;
-        /** Logical cache name used as a tag value on all emitted metrics. */
+
+        /**
+         * Logical cache name used as a tag value on all emitted metrics.
+         */
         private final String cacheName;
 
         /**

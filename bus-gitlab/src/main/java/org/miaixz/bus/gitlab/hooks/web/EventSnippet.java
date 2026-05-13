@@ -24,6 +24,12 @@ import java.util.Date;
 import org.miaixz.bus.gitlab.models.AccessLevel;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+/**
+ * The event snippet class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class EventSnippet {
 
     private Long id;
@@ -35,6 +41,10 @@ public class EventSnippet {
     private Date updatedAt;
     private String fileName;
     private Date expiresAt;
+
+    /**
+     * The type field.
+     */
     private String type;
     private AccessLevel visibilityLevel;
 

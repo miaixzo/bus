@@ -46,7 +46,7 @@ import org.miaixz.bus.storage.Context;
  * <strong>Configuration Example:</strong>
  *
  * <pre>{@code
- * 
+ *
  * Context context = Context.builder().endpoint("https://kr1-api-object-storage.nhncloudservice.com")
  *         .bucket("my-bucket").accessKey("NHN_ACCESS_KEY").secretKey("NHN_SECRET_KEY").region("KR1").build();
  *

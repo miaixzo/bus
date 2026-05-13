@@ -48,10 +48,12 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
      * The tcpColon value.
      */
     private final String tcpColon = "Tcp:";
+
     /**
      * The udpColon value.
      */
     private final String udpColon = "Udp:";
+
     /**
      * The udp6 value.
      */
@@ -59,17 +61,25 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
 
     /**
      * The TcpStat enum.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private enum TcpStat {
         RtoAlgorithm, RtoMin, RtoMax, MaxConn, ActiveOpens, PassiveOpens, AttemptFails, EstabResets, CurrEstab, InSegs,
         OutSegs, RetransSegs, InErrs, OutRsts, InCsumErrors;
+
     }
 
     /**
      * The UdpStat enum.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private enum UdpStat {
         OutDatagrams, InDatagrams, NoPorts, InErrors, RcvbufErrors, SndbufErrors, InCsumErrors, IgnoredMulti, MemErrors;
+
     }
 
     /**

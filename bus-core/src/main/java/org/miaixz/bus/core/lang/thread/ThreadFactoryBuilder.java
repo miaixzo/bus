@@ -49,18 +49,22 @@ public class ThreadFactoryBuilder implements Builder<ThreadFactory> {
      * The backing `ThreadFactory` to be used for thread creation.
      */
     private ThreadFactory backingThreadFactory;
+
     /**
      * The prefix for thread names.
      */
     private String namePrefix;
+
     /**
      * Whether the threads should be daemon threads.
      */
     private Boolean daemon;
+
     /**
      * The priority for created threads.
      */
     private Integer priority;
+
     /**
      * The handler for uncaught exceptions.
      */

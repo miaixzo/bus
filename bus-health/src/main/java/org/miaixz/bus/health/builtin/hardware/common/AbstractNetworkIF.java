@@ -50,42 +50,52 @@ public abstract class AbstractNetworkIF implements NetworkIF {
      * The vmMacAddrProps value.
      */
     private final Supplier<Properties> vmMacAddrProps = Memoizer.memoize(AbstractNetworkIF::queryVmMacAddrProps);
+
     /**
      * The networkInterface value.
      */
     private final NetworkInterface networkInterface;
+
     /**
      * The name value.
      */
     private final String name;
+
     /**
      * The displayName value.
      */
     private final String displayName;
+
     /**
      * The index value.
      */
     private final int index;
+
     /**
      * The mtu value.
      */
     private final long mtu;
+
     /**
      * The mac value.
      */
     private final String mac;
+
     /**
      * The ipv4 value.
      */
     private final String[] ipv4;
+
     /**
      * The subnetMasks value.
      */
     private final Short[] subnetMasks;
+
     /**
      * The ipv6 value.
      */
     private final String[] ipv6;
+
     /**
      * The prefixLengths value.
      */

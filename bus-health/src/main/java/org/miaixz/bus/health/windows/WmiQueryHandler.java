@@ -50,6 +50,7 @@ public class WmiQueryHandler {
      * The EMPTY_CLASS_ARRAY constant.
      */
     private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
+
     /**
      * The EMPTY_OBJECT_ARRAY constant.
      */

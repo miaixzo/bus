@@ -132,6 +132,9 @@ public final class Egress {
      * The holder uses double-checked locking so the connection provider is not touched during class loading. This
      * avoids creating HTTP resources before {@link Holder#of(org.miaixz.bus.vortex.magic.Performance)} has applied the
      * runtime performance configuration.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static final class ResourcesHolder {
 
@@ -185,6 +188,8 @@ public final class Egress {
      *
      * @param httpClient The shared Reactor Netty HTTP client.
      * @param webClient  The shared Spring WebClient built on top of {@code httpClient}.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private record Resources(HttpClient httpClient, WebClient webClient) {
 

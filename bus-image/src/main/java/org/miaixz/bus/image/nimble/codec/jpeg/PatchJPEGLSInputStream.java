@@ -33,15 +33,35 @@ import org.miaixz.bus.image.nimble.stream.SegmentedInputImageStream;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * Represents the PatchJPEGLSInputStream type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PatchJPEGLSInputStream extends ImageInputStreamImpl implements BytesWithImageImageDescriptor {
 
+    /**
+     * The iis value.
+     */
     private final ImageInputStream iis;
+
+    /**
+     * The patch pos value.
+     */
     private long patchPos;
+
+    /**
+     * The patch value.
+     */
     private byte[] patch;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param iis         the iis.
+     * @param patchJPEGLS the patch jpegls.
+     * @throws IOException if the operation cannot be completed.
+     */
     public PatchJPEGLSInputStream(ImageInputStream iis, PatchJPEGLS patchJPEGLS) throws IOException {
         if (iis == null)
             throw new NullPointerException("iis");
@@ -60,6 +80,11 @@ public class PatchJPEGLSInputStream extends ImageInputStreamImpl implements Byte
         }
     }
 
+    /**
+     * Gets the image descriptor.
+     *
+     * @return the image descriptor.
+     */
     @Override
     public ImageDescriptor getImageDescriptor() {
         return (iis instanceof EncapsulatedPixelDataImageInputStream)
@@ -68,6 +93,13 @@ public class PatchJPEGLSInputStream extends ImageInputStreamImpl implements Byte
                         : null;
     }
 
+    /**
+     * Executes the first bytes of operation.
+     *
+     * @param iis the iis.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     private byte[] firstBytesOf(ImageInputStream iis) throws IOException {
         byte[] b = new byte[256];
         int n, off = 0, len = b.length;
@@ -80,16 +112,33 @@ public class PatchJPEGLSInputStream extends ImageInputStreamImpl implements Byte
         return len > 0 ? Arrays.copyOf(b, b.length - len) : b;
     }
 
+    /**
+     * Executes the close operation.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     public void close() throws IOException {
         super.close();
         iis.close();
     }
 
+    /**
+     * Executes the flush before operation.
+     *
+     * @param pos the pos.
+     * @throws IOException if the operation cannot be completed.
+     */
     public void flushBefore(long pos) throws IOException {
         super.flushBefore(pos);
         iis.flushBefore(adjustStreamPosition(pos));
     }
 
+    /**
+     * Executes the adjust stream position operation.
+     *
+     * @param pos the pos.
+     * @return the operation result.
+     */
     private long adjustStreamPosition(long pos) {
         if (patch == null)
             return pos;
@@ -97,18 +146,38 @@ public class PatchJPEGLSInputStream extends ImageInputStreamImpl implements Byte
         return index < 0 ? pos : index < patch.length ? patchPos : pos - patch.length;
     }
 
+    /**
+     * Determines whether cached.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean isCached() {
         return iis.isCached();
     }
 
+    /**
+     * Determines whether cached file.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean isCachedFile() {
         return iis.isCachedFile();
     }
 
+    /**
+     * Determines whether cached memory.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     public boolean isCachedMemory() {
         return iis.isCachedMemory();
     }
 
+    /**
+     * Executes the length operation.
+     *
+     * @return the operation result.
+     */
     public long length() {
         try {
             long len = iis.length();
@@ -118,6 +187,12 @@ public class PatchJPEGLSInputStream extends ImageInputStreamImpl implements Byte
         }
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     public int read() throws IOException {
         int ch;
         long index;
@@ -130,6 +205,15 @@ public class PatchJPEGLSInputStream extends ImageInputStreamImpl implements Byte
         return ch;
     }
 
+    /**
+     * Executes the read operation.
+     *
+     * @param b   the b.
+     * @param off the off.
+     * @param len the len.
+     * @return the operation result.
+     * @throws IOException if the operation cannot be completed.
+     */
     public int read(byte[] b, int off, int len) throws IOException {
         int r = 0;
         if (patch != null && streamPos < patchPos + patch.length) {
@@ -161,21 +245,41 @@ public class PatchJPEGLSInputStream extends ImageInputStreamImpl implements Byte
         return r;
     }
 
+    /**
+     * Executes the mark operation.
+     */
     public void mark() {
         super.mark();
         iis.mark();
     }
 
+    /**
+     * Executes the reset operation.
+     *
+     * @throws IOException if the operation cannot be completed.
+     */
     public void reset() throws IOException {
         super.reset();
         iis.reset();
     }
 
+    /**
+     * Executes the seek operation.
+     *
+     * @param pos the pos.
+     * @throws IOException if the operation cannot be completed.
+     */
     public void seek(long pos) throws IOException {
         super.seek(pos);
         iis.seek(adjustStreamPosition(pos));
     }
 
+    /**
+     * Gets the bytes.
+     *
+     * @return the bytes.
+     * @throws IOException if the operation cannot be completed.
+     */
     @Override
     public ByteBuffer getBytes() throws IOException {
         byte[] array = new byte[8192];

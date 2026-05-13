@@ -53,6 +53,7 @@ public class UpsSCU {
      * The default status to be returned in N-EVENT-REPORT responses.
      */
     private static int status;
+
     /**
      * A service to handle incoming N-EVENT-REPORT requests from a UPS SCP.
      */
@@ -88,22 +89,27 @@ public class UpsSCU {
             throw new UnsupportedOperationException();
         }
     };
+
     /**
      * The Application Entity for this SCU.
      */
     private final ApplicationEntity ae;
+
     /**
      * The remote connection configuration.
      */
     private final Connection remote;
+
     /**
      * The A-ASSOCIATE-RQ message.
      */
     private final AAssociateRQ rq = new AAssociateRQ();
+
     /**
      * The active DICOM association.
      */
     private Association as;
+
     /**
      * A factory for creating DIMSE response handlers.
      */
@@ -164,34 +170,42 @@ public class UpsSCU {
             };
         }
     };
+
     /**
      * The path to an XML file containing UPS data.
      */
     private String xmlFile;
+
     /**
      * An array of query key strings.
      */
     private String[] keys;
+
     /**
      * An array of attribute tags to retrieve with N-GET.
      */
     private int[] tags;
+
     /**
      * The SOP Instance UID of the target UPS instance.
      */
     private String upsiuid;
+
     /**
      * The UPS operation to be performed.
      */
     private Operation operation;
+
     /**
      * Attributes for a "Request Cancel" N-ACTION.
      */
     private Attributes requestCancel;
+
     /**
      * Attributes for a "Change State" N-ACTION.
      */
     private Attributes changeState;
+
     /**
      * Attributes for a "Subscription" N-ACTION.
      */
@@ -389,56 +403,152 @@ public class UpsSCU {
 
     /**
      * An enumeration of the various UPS operations supported by this SCU.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     enum Operation {
 
-        create(UID.UnifiedProcedureStepPush.uid, false), update(UID.UnifiedProcedureStepPull.uid, true),
-        get(UID.UnifiedProcedureStepPush.uid, true), changeState(UID.UnifiedProcedureStepPull.uid, true),
+        /**
+         * Constant for the create value.
+         */
+        create(UID.UnifiedProcedureStepPush.uid, false),
+        /**
+         * Constant for the update value.
+         */
+        update(UID.UnifiedProcedureStepPull.uid, true),
+        /**
+         * Constant for the get value.
+         */
+        get(UID.UnifiedProcedureStepPush.uid, true),
+        /**
+         * Constant for the change state value.
+         */
+        changeState(UID.UnifiedProcedureStepPull.uid, true),
+        /**
+         * The request cancel value.
+         */
         requestCancel(UID.UnifiedProcedureStepPush.uid, true),
-        subscriptionAction(UID.UnifiedProcedureStepWatch.uid, false), receive(UID.UnifiedProcedureStepEvent.uid, false);
+        /**
+         * Constant for the subscription action value.
+         */
+        subscriptionAction(UID.UnifiedProcedureStepWatch.uid, false),
+        /**
+         * Constant for the receive value.
+         */
+        receive(UID.UnifiedProcedureStepEvent.uid, false);
 
+        /**
+         * The check upsiuid value.
+         */
         private final boolean checkUPSIUID;
+
+        /**
+         * The negotiating sop class uid value.
+         */
         private String negotiatingSOPClassUID;
+
+        /**
+         * The action type id value.
+         */
         private int actionTypeID;
 
+        /**
+         * Creates a new instance.
+         *
+         * @param negotiatingSOPClassUID the negotiating sop class uid.
+         * @param checkUPSIUID           the check upsiuid.
+         */
         Operation(String negotiatingSOPClassUID, boolean checkUPSIUID) {
             this.negotiatingSOPClassUID = negotiatingSOPClassUID;
             this.checkUPSIUID = checkUPSIUID;
         }
 
+        /**
+         * Gets the negotiating sop class uid.
+         *
+         * @return the negotiating sop class uid.
+         */
         String getNegotiatingSOPClassUID() {
             return negotiatingSOPClassUID;
         }
 
+        /**
+         * Sets the negotiating sop class uid.
+         *
+         * @param val the val.
+         * @return the operation result.
+         */
         Operation setNegotiatingSOPClassUID(String val) {
             this.negotiatingSOPClassUID = val;
             return this;
         }
 
+        /**
+         * Gets the action type id.
+         *
+         * @return the action type id.
+         */
         int getActionTypeID() {
             return actionTypeID;
         }
 
+        /**
+         * Sets the action type id.
+         *
+         * @param val the val.
+         * @return the operation result.
+         */
         Operation setActionTypeID(int val) {
             this.actionTypeID = val;
             return this;
         }
+
     }
 
     /**
      * A factory for creating DIMSE response handlers for various DICOM operations.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public interface RSPHandlerFactory {
 
+        /**
+         * Creates the dimse rsp handler for c find.
+         *
+         * @return the operation result.
+         */
         DimseRSPHandler createDimseRSPHandlerForCFind();
 
+        /**
+         * Creates the dimse rsp handler for n create.
+         *
+         * @return the operation result.
+         */
         DimseRSPHandler createDimseRSPHandlerForNCreate();
 
+        /**
+         * Creates the dimse rsp handler for n set.
+         *
+         * @return the operation result.
+         */
         DimseRSPHandler createDimseRSPHandlerForNSet();
 
+        /**
+         * Creates the dimse rsp handler for n get.
+         *
+         * @return the operation result.
+         */
         DimseRSPHandler createDimseRSPHandlerForNGet();
 
+        /**
+         * Creates the dimse rsp handler for n action.
+         *
+         * @return the operation result.
+         */
         DimseRSPHandler createDimseRSPHandlerForNAction();
+
     }
 
 }

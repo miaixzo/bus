@@ -20,14 +20,21 @@
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_DATA_PADDING;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "SIEMENS SYNGO DATA PADDING";
 
-    /** (7FDF,xxFC) VR=OB VM=1 Pixel Data Leading Padding */
+    /**
+     * (7FDF,xxFC) VR=OB VM=1 Pixel Data Leading Padding
+     */
     public static final int PixelDataLeadingPadding = 0x7FDF00FC;
 
 }

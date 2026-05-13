@@ -47,22 +47,27 @@ public class Context implements Serializable {
      * Application ID.
      */
     private String appId;
+
     /**
      * Corresponds to the appKey/apiKey of each platform.
      */
     private String appKey;
+
     /**
      * Corresponds to the appSecret of each platform.
      */
     private String appSecret;
+
     /**
      * Application domain name, which will be used in callbacks.
      */
     private String domain;
+
     /**
      * Whether it is in certificate mode.
      */
     private boolean certMode;
+
     /**
      * Custom scope content for the authorization platform.
      */
@@ -72,10 +77,12 @@ public class Context implements Serializable {
      * p12 in the API certificate.
      */
     private String p12;
+
     /**
      * key.pem in the API certificate.
      */
     private String privateKey;
+
     /**
      * cert.pem in the API certificate.
      */
@@ -95,26 +102,32 @@ public class Context implements Serializable {
      * Merchant ID.
      */
     private String mchId;
+
     /**
      * Service provider application ID.
      */
     private String slAppId;
+
     /**
      * Service provider merchant ID.
      */
     private String slMchId;
+
     /**
      * Service provider merchant key.
      */
     private String partnerKey;
+
     /**
      * Chain merchant ID.
      */
     private String groupMchId;
+
     /**
      * Authorized transaction institution code.
      */
     private String agentMchId;
+
     /**
      * WeChat platform certificate path.
      */

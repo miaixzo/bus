@@ -35,10 +35,12 @@ final class SolarisFirmware extends AbstractFirmware {
      * The manufacturer value.
      */
     private final String manufacturer;
+
     /**
      * The version value.
      */
     private final String version;
+
     /**
      * The releaseDate value.
      */

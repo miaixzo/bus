@@ -43,42 +43,52 @@ public class DepositConsume extends Voucher {
      * Sub-merchant App ID.
      */
     private String sub_appid;
+
     /**
      * Merchant ID.
      */
     private String mch_id;
+
     /**
      * Sub-merchant ID.
      */
     private String sub_mch_id;
+
     /**
      * WeChat's order number.
      */
     private String transaction_id;
+
     /**
      * Merchant's order number.
      */
     private String out_trade_no;
+
     /**
      * Total fee of the original order.
      */
     private String total_fee;
+
     /**
      * The amount of the deposit to be consumed.
      */
     private String consume_fee;
+
     /**
      * Currency type.
      */
     private String fee_type;
+
     /**
      * Random string.
      */
     private String nonce_str;
+
     /**
      * Signature.
      */
     private String sign;
+
     /**
      * Signature type.
      */

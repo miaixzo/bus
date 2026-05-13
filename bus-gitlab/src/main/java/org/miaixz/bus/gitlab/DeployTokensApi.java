@@ -33,6 +33,8 @@ import jakarta.ws.rs.core.Response;
  *
  * Since GitLab 12.9
  *
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class DeployTokensApi extends AbstractApi {
 

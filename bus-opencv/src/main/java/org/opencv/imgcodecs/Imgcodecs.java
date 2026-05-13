@@ -13,6 +13,12 @@ import org.opencv.utils.Converters;
 
 // C++: class Imgcodecs
 
+/**
+ * The imgcodecs class.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
 public class Imgcodecs {
 
     // C++: enum DicomCompression (cv.DicomCompression)
@@ -467,7 +473,6 @@ public class Imgcodecs {
      * @param metadataTypes Output vector with types of metadata chunks returned in metadata, see ImageMetadataType.
      * @param metadata      Output vector of vectors or vector of matrices to store the retrieved metadata.
      * @param flags         Flag that can take values of cv::ImreadModes, default with cv::IMREAD_UNCHANGED.
-     *
      * @return The loaded image as a cv::Mat object. If the image cannot be read, the function returns an empty matrix.
      */
     public static Mat imreadWithMetadata(String filename, MatOfInt metadataTypes, List<Mat> metadata, int flags) {
@@ -492,7 +497,6 @@ public class Imgcodecs {
      * @param filename      Name of the file to be loaded.
      * @param metadataTypes Output vector with types of metadata chunks returned in metadata, see ImageMetadataType.
      * @param metadata      Output vector of vectors or vector of matrices to store the retrieved metadata.
-     *
      * @return The loaded image as a cv::Mat object. If the image cannot be read, the function returns an empty matrix.
      */
     public static Mat imreadWithMetadata(String filename, MatOfInt metadataTypes, List<Mat> metadata) {
@@ -603,7 +607,6 @@ public class Imgcodecs {
      *                  initialized before the function is called.
      * @param start     The index of the first frame to load. This is optional and defaults to 0.
      * @param count     The number of frames to load. This is optional and defaults to 32767.
-     *
      * @return Returns true if the file was successfully loaded and frames were extracted; returns false otherwise.
      */
     public static boolean imreadanimation(String filename, Animation animation, int start, int count) {
@@ -620,7 +623,6 @@ public class Imgcodecs {
      * @param animation A reference to an Animation structure where the loaded frames will be stored. It should be
      *                  initialized before the function is called.
      * @param start     The index of the first frame to load. This is optional and defaults to 0.
-     *
      * @return Returns true if the file was successfully loaded and frames were extracted; returns false otherwise.
      */
     public static boolean imreadanimation(String filename, Animation animation, int start) {
@@ -658,7 +660,6 @@ public class Imgcodecs {
      *                  initialized before the function is called.
      * @param start     The index of the first frame to load. This is optional and defaults to 0.
      * @param count     The number of frames to load. This is optional and defaults to 32767.
-     *
      * @return Returns true if the buffer was successfully loaded and frames were extracted; returns false otherwise.
      */
     public static boolean imdecodeanimation(Mat buf, Animation animation, int start, int count) {
@@ -675,7 +676,6 @@ public class Imgcodecs {
      * @param animation A reference to an Animation structure where the loaded frames will be stored. It should be
      *                  initialized before the function is called.
      * @param start     The index of the first frame to load. This is optional and defaults to 0.
-     *
      * @return Returns true if the buffer was successfully loaded and frames were extracted; returns false otherwise.
      */
     public static boolean imdecodeanimation(Mat buf, Animation animation, int start) {
@@ -1104,7 +1104,6 @@ public class Imgcodecs {
      * @param metadataTypes Output vector with types of metadata chucks returned in metadata, see cv::ImageMetadataType
      * @param metadata      Output vector of vectors or vector of matrices to store the retrieved metadata
      * @param flags         Flag that can take values of cv::ImreadModes, default with cv::IMREAD_ANYCOLOR.
-     *
      * @return The decoded image as a cv::Mat object. If decoding fails, the function returns an empty matrix.
      */
     public static Mat imdecodeWithMetadata(Mat buf, MatOfInt metadataTypes, List<Mat> metadata, int flags) {
@@ -1130,7 +1129,6 @@ public class Imgcodecs {
      * @param buf           Input array or vector of bytes containing the encoded image data.
      * @param metadataTypes Output vector with types of metadata chucks returned in metadata, see cv::ImageMetadataType
      * @param metadata      Output vector of vectors or vector of matrices to store the retrieved metadata
-     *
      * @return The decoded image as a cv::Mat object. If decoding fails, the function returns an empty matrix.
      */
     public static Mat imdecodeWithMetadata(Mat buf, MatOfInt metadataTypes, List<Mat> metadata) {

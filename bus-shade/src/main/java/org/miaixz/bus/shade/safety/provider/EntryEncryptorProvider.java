@@ -37,6 +37,7 @@ public abstract class EntryEncryptorProvider<E> extends WrappedEncryptorProvider
      * The filter used to determine whether an entry should be encrypted.
      */
     protected final Complex<E> filter;
+
     /**
      * A no-operation encryptor provider, used when an entry is filtered out.
      */

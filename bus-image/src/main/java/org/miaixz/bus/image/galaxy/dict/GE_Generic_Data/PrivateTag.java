@@ -20,20 +20,31 @@
 package org.miaixz.bus.image.galaxy.dict.GE_Generic_Data;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GE Generic Data";
 
-    /** (6001,xx50) VR=SQ VM=1 ? */
+    /**
+     * (6001,xx50) VR=SQ VM=1 ?
+     */
     public static final int _6001_xx50_ = 0x60010050;
 
-    /** (6001,xx51) VR=LT VM=1 ? */
+    /**
+     * (6001,xx51) VR=LT VM=1 ?
+     */
     public static final int _6001_xx51_ = 0x60010051;
 
-    /** (6001,xx52) VR=LT VM=1 ? */
+    /**
+     * (6001,xx52) VR=LT VM=1 ?
+     */
     public static final int _6001_xx52_ = 0x60010052;
 
 }

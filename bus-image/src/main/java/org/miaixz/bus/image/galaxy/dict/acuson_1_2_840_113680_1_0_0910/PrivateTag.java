@@ -20,29 +20,46 @@
 package org.miaixz.bus.image.galaxy.dict.acuson_1_2_840_113680_1_0_0910;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "ACUSON:1.2.840.113680.1.0:0910";
 
-    /** (0009,xx00) VR=IS VM=1 ? */
+    /**
+     * (0009,xx00) VR=IS VM=1 ?
+     */
     public static final int _0009_xx00_ = 0x00090000;
 
-    /** (0009,xx01) VR=IS VM=1 ? */
+    /**
+     * (0009,xx01) VR=IS VM=1 ?
+     */
     public static final int _0009_xx01_ = 0x00090001;
 
-    /** (0009,xx02) VR=LO VM=1 Patient Registration Custom Field 1 */
+    /**
+     * (0009,xx02) VR=LO VM=1 Patient Registration Custom Field 1
+     */
     public static final int PatientRegistrationCustomField1 = 0x00090002;
 
-    /** (0009,xx03) VR=LO VM=1 Patient Registration Custom Field 2 */
+    /**
+     * (0009,xx03) VR=LO VM=1 Patient Registration Custom Field 2
+     */
     public static final int PatientRegistrationCustomField2 = 0x00090003;
 
-    /** (0009,xx04) VR=LO VM=1 Indications */
+    /**
+     * (0009,xx04) VR=LO VM=1 Indications
+     */
     public static final int Indications = 0x00090004;
 
-    /** (0009,xx0f) VR=LT VM=1 ? */
+    /**
+     * (0009,xx0f) VR=LT VM=1 ?
+     */
     public static final int _0009_xx0f_ = 0x0009000f;
 
 }

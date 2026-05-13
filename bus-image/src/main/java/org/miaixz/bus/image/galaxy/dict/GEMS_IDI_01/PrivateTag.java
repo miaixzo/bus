@@ -20,26 +20,41 @@
 package org.miaixz.bus.image.galaxy.dict.GEMS_IDI_01;
 
 /**
+ * Represents the PrivateTag type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class PrivateTag {
 
+    /**
+     * The private creator value.
+     */
     public static final String PrivateCreator = "GEMS_IDI_01";
 
-    /** (0073,xx20) VR=DS VM=1 Height Map Plane Distance */
+    /**
+     * (0073,xx20) VR=DS VM=1 Height Map Plane Distance
+     */
     public static final int HeightMapPlaneDistance = 0x00730020;
 
-    /** (0073,xx21) VR=DS VM=1 Height Map Plane Offset */
+    /**
+     * (0073,xx21) VR=DS VM=1 Height Map Plane Offset
+     */
     public static final int HeightMapPlaneOffset = 0x00730021;
 
-    /** (0073,xx30) VR=OW VM=1 Height Map Plane Indices */
+    /**
+     * (0073,xx30) VR=OW VM=1 Height Map Plane Indices
+     */
     public static final int HeightMapPlaneIndices = 0x00730030;
 
-    /** (0073,xx31) VR=OW VM=1 X Map Plane Indices */
+    /**
+     * (0073,xx31) VR=OW VM=1 X Map Plane Indices
+     */
     public static final int XMapPlaneIndices = 0x00730031;
 
-    /** (0073,xx32) VR=OW VM=1 Y Map Plane Indices */
+    /**
+     * (0073,xx32) VR=OW VM=1 Y Map Plane Indices
+     */
     public static final int YMapPlaneIndices = 0x00730032;
 
     /**
@@ -47,7 +62,9 @@ public class PrivateTag {
      */
     public static final int CentralProjectionDetectorSecondaryAngle = 0x00730040;
 
-    /** (0073,xx50) VR=DS VM=2 Detector Active Dimensions */
+    /**
+     * (0073,xx50) VR=DS VM=2 Detector Active Dimensions
+     */
     public static final int DetectorActiveDimensions = 0x00730050;
 
 }

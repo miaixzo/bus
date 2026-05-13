@@ -20,11 +20,23 @@
 package org.miaixz.bus.image.galaxy.data;
 
 /**
+ * Defines the Visitor contract.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public interface Visitor {
 
+    /**
+     * Executes the visit operation.
+     *
+     * @param attrs the attrs.
+     * @param tag   the tag.
+     * @param vr    the vr.
+     * @param value the value.
+     * @return true if the condition is met; otherwise false.
+     * @throws Exception if the operation cannot be completed.
+     */
     boolean visit(Attributes attrs, int tag, VR vr, Object value) throws Exception;
 
 }

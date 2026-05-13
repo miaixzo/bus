@@ -24,28 +24,53 @@ import java.util.Locale;
 import javax.imageio.ImageWriteParam;
 
 /**
+ * Represents the JPEGLSImageWriteParam type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class JPEGLSImageWriteParam extends ImageWriteParam {
 
+    /**
+     * The near lossless value.
+     */
     private int nearLossless;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param locale the locale.
+     */
     public JPEGLSImageWriteParam(Locale locale) {
         super(locale);
         super.canWriteCompressed = true;
     }
 
+    /**
+     * Gets the near lossless.
+     *
+     * @return the near lossless.
+     */
     public int getNearLossless() {
         return nearLossless;
     }
 
+    /**
+     * Sets the near lossless.
+     *
+     * @param nearLossless the near lossless.
+     */
     public void setNearLossless(int nearLossless) {
         if (nearLossless < 0)
             throw new IllegalArgumentException("nearLossless: " + nearLossless);
         this.nearLossless = nearLossless;
     }
 
+    /**
+     * Determines whether compression lossless.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean isCompressionLossless() {
         return nearLossless == 0;

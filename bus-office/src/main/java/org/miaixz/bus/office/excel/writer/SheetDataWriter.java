@@ -52,18 +52,22 @@ public class SheetDataWriter {
      * The sheet being written to.
      */
     private final Sheet sheet;
+
     /**
      * Excel output configuration.
      */
     private final ExcelWriteConfig config;
+
     /**
      * The current row, used to mark the initial writable row and the current row after partial writing.
      */
     private final AtomicInteger currentRow;
+
     /**
      * Style set, defining styles for different data types.
      */
     private StyleSet styleSet;
+
     /**
      * Header item to column number mapping cache. This cache is updated each time a header is written. This cache is
      * used to find the header position when the user writes multiple times.

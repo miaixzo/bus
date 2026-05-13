@@ -26,4 +26,5 @@ package org.miaixz.bus.metrics.observe;
  * @since Java 21+
  */
 public class Test {
+
 }

@@ -69,10 +69,12 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      * Style set, defining styles for different data types.
      */
     private StyleSet styleSet;
+
     /**
      * Sheet data writer.
      */
     private SheetDataWriter sheetDataWriter;
+
     /**
      * Template Excel writer.
      */

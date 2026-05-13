@@ -187,6 +187,8 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
      *
      * @param <T> The entity type.
      * @param <R> The return type.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class FnType<T, R> implements Fn<T, R> {
 
@@ -194,6 +196,7 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
          * The original method reference.
          */
         public final Fn<T, R> fn;
+
         /**
          * The entity class type.
          */
@@ -246,6 +249,7 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
         public int hashCode() {
             return Objects.hash(entityClass, fn);
         }
+
     }
 
     /**
@@ -253,6 +257,8 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
      *
      * @param <T> The entity type.
      * @param <R> The return type.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class FnName<T, R> implements Fn<T, R> {
 
@@ -260,10 +266,12 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
          * The entity class type.
          */
         public final Class<?> entityClass;
+
         /**
          * The name of the field or column.
          */
         public final String name;
+
         /**
          * Indicates whether the name is a column name (true) or a field name (false).
          */
@@ -340,12 +348,15 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
         public int hashCode() {
             return Objects.hash(entityClass, name, column);
         }
+
     }
 
     /**
      * Represents a virtual table with a subset of fields, defined by an array of method references.
      *
      * @param <E> The entity type.
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class FnArray<E> extends TableMeta {
 
@@ -397,6 +408,7 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
         public boolean isNotEmpty() {
             return !columns().isEmpty();
         }
+
     }
 
 }

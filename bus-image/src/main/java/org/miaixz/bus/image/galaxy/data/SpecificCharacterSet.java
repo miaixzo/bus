@@ -33,8 +33,7 @@ import org.miaixz.bus.image.galaxy.SafeBuffer;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * 特定字符集类，用于处理DICOM中的各种字符编码。 该类提供了字符集的编码、解码、转换等功能，支持多种DICOM标准中定义的字符集， 包括ASCII、ISO-8859系列、JIS系列、GB系列、UTF-8等。 该类还支持ISO
- * 2022字符集切换机制，允许在同一文本中使用多种字符集。
+ * Decodes the related value. Provides DICOM processing details.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -42,40 +41,40 @@ import org.miaixz.bus.logger.Logger;
 public class SpecificCharacterSet {
 
     /**
-     * ASCII字符集实例
+     * Provides DICOM processing details.
      */
     public static final SpecificCharacterSet ASCII = new SpecificCharacterSet(new Codec[] { Codec.ISO_646 });
 
     /**
-     * 缓存编码器1的线程局部变量
+     * Encodes the related value.
      */
     private static final ThreadLocal<SoftReference<Encoder>> cachedEncoder1 = new ThreadLocal<>();
 
     /**
-     * 缓存编码器2的线程局部变量
+     * Encodes the related value.
      */
     private static final ThreadLocal<SoftReference<Encoder>> cachedEncoder2 = new ThreadLocal<>();
 
     /**
-     * 默认字符集
+     * Provides DICOM processing details.
      */
     private static SpecificCharacterSet DEFAULT = ASCII;
 
     /**
-     * 编解码器数组
+     * Decodes the related value.
      */
     protected final Codec[] codecs;
 
     /**
-     * DICOM字符集代码数组
+     * Provides DICOM processing details.
      */
     protected final String[] dicomCodes;
 
     /**
-     * 构造一个特定字符集
+     * Creates a new instance.
      *
-     * @param codecs 编解码器数组
-     * @param codes  DICOM字符集代码数组
+     * @param codecs the codecs.
+     * @param codes  the codes.
      */
     protected SpecificCharacterSet(Codec[] codecs, String... codes) {
         this.codecs = codecs;
@@ -83,19 +82,19 @@ public class SpecificCharacterSet {
     }
 
     /**
-     * 获取默认字符集
+     * Gets the related value.
      *
-     * @return 默认字符集
+     * @return the result.
      */
     public static SpecificCharacterSet getDefaultCharacterSet() {
         return DEFAULT;
     }
 
     /**
-     * 设置默认字符集
+     * Sets the related value.
      *
-     * @param code 字符集代码
-     * @throws IllegalArgumentException 如果默认字符集不包含ASCII
+     * @param code the code.
+     * @throws IllegalArgumentException if the operation cannot be completed.
      */
     public static void setDefaultCharacterSet(String code) {
         SpecificCharacterSet cs = code != null ? valueOf(code) : ASCII;
@@ -105,37 +104,34 @@ public class SpecificCharacterSet {
     }
 
     /**
-     * 覆盖DICOM特定字符集(0008,0005)的值到命名字符集的映射。
+     * Provides DICOM processing details.
      * <p>
-     * 例如，{@code SpecificCharacterSet.setCharsetNameMapping("ISO_IR 100", "ISO-8859-15")}将 ISO-8859-15
-     * (Latin-9)，{@code SpecificCharacterSet.setCharsetNameMapping("ISO_IR 100", "windows-1252")} Windows-1252
-     * (CP-1252)，与DICOM特定字符集(0008,0005)代码值{@code ISO_IR 100}关联 - 替换 默认映射到ISO-8859-1 (Latin-1) -
-     * 两者(ISO-8859-15和Windows-1252)都包含拉丁语1中没有的字符Š/š 和Ž/ž，但在爱沙尼亚语和芬兰语中用于转录外国名称。
+     * Provides DICOM processing details.
+     * (Latin-9)，{@code SpecificCharacterSet.setCharsetNameMapping("ISO_IR 100", "windows-1252")} Windows-1252 Provides
+     * DICOM processing details. Provides DICOM processing details.
      *
-     * @param code        DICOM特定字符集(0008,0005)的值
-     * @param charsetName 映射的字符集名称
-     * @throws IllegalCharsetNameException 如果给定的代码或字符集名称不合法
-     * @throws IllegalArgumentException    如果给定的{@code charsetName}为null
-     * @throws UnsupportedCharsetException 如果Java虚拟机实例中不支持命名字符集
+     * @param code        the code.
+     * @param charsetName the charset name.
+     * @throws IllegalCharsetNameException if the operation cannot be completed.
+     * @throws IllegalArgumentException    if the operation cannot be completed.
+     * @throws UnsupportedCharsetException if the operation cannot be completed.
      */
     public static void setCharsetNameMapping(String code, String charsetName) {
         Codec.forCode(code, false).setCharsetName(checkCharsetName(charsetName));
     }
 
     /**
-     * 重置DICOM特定字符集(0008,0005)值到命名字符集的映射，按照
-     * <a href="http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.12.html#table_C.12-2"> DICOM PS
-     * 3.3 表 C.12-2</a>的规范。
+     * Resets DICOM specific character set mappings to the default DICOM PS 3.3 C.12-2 table.
      */
     public static void resetCharsetNameMappings() {
         Codec.resetCharsetNames();
     }
 
     /**
-     * 检查特定字符集代码是否有效
+     * Determines whether the condition is met.
      *
-     * @param code 字符集代码
-     * @return 有效的字符集代码
+     * @param code the code.
+     * @return the result.
      */
     public static String checkSpecificCharacterSet(String code) {
         Codec.forCode(code, false);
@@ -143,11 +139,11 @@ public class SpecificCharacterSet {
     }
 
     /**
-     * 检查字符集名称是否有效
+     * Determines whether the condition is met.
      *
-     * @param charsetName 字符集名称
-     * @return 有效的字符集名称
-     * @throws UnsupportedCharsetException 如果不支持该字符集
+     * @param charsetName the charset name.
+     * @return the result.
+     * @throws UnsupportedCharsetException if the operation cannot be completed.
      */
     public static String checkCharsetName(String charsetName) {
         if (!Charset.isSupported(charsetName))
@@ -156,10 +152,10 @@ public class SpecificCharacterSet {
     }
 
     /**
-     * 根据字符集代码创建特定字符集实例
+     * Provides DICOM processing details.
      *
-     * @param codes 字符集代码数组
-     * @return 特定字符集实例
+     * @param codes the codes.
+     * @return the result.
      */
     public static SpecificCharacterSet valueOf(String... codes) {
         if (codes == null || codes.length == 0)
@@ -180,10 +176,10 @@ public class SpecificCharacterSet {
     }
 
     /**
-     * 将带代码扩展的单字节字符集的单个代码替换为不带代码扩展的单字节字符集的代码。
+     * Provides DICOM processing details.
      *
-     * @param codes 代码数组
-     * @return 如果代码被替换则返回true
+     * @param codes the codes.
+     * @return true if the condition is met; otherwise false.
      */
     public static boolean trimISO2022(String[] codes) {
         if (codes != null && codes.length == 1 && codes[0].startsWith("ISO 2022")) {
@@ -241,10 +237,10 @@ public class SpecificCharacterSet {
     }
 
     /**
-     * 检查并修正ISO 2022字符集代码
+     * Determines whether the condition is met.
      *
-     * @param codes 字符集代码数组
-     * @return 修正后的字符集代码数组
+     * @param codes the codes.
+     * @return the result.
      */
     private static String[] checkISO2022(String[] codes) {
         String[] results = codes;
@@ -289,10 +285,10 @@ public class SpecificCharacterSet {
     }
 
     /**
-     * 确保第一个字符集包含ASCII
+     * Provides DICOM processing details.
      *
-     * @param codes 字符集代码数组
-     * @return 修正后的字符集代码数组
+     * @param codes the codes.
+     * @return the result.
      */
     private static String[] ensureFirstContainsASCII(String[] codes) {
         for (int i = 0; i < codes.length; i++) {
@@ -324,11 +320,11 @@ public class SpecificCharacterSet {
     }
 
     /**
-     * 获取线程局部变量中的编码器
+     * Gets the related value.
      *
-     * @param tl    线程局部变量
-     * @param codec 编解码器
-     * @return 编码器
+     * @param tl    the tl.
+     * @param codec the codec.
+     * @return the result.
      */
     private static Encoder encoder(ThreadLocal<SoftReference<Encoder>> tl, Codec codec) {
         SoftReference<Encoder> sr;
@@ -339,83 +335,89 @@ public class SpecificCharacterSet {
     }
 
     /**
-     * 获取DICOM字符集代码数组
+     * Gets the related value.
      *
-     * @return DICOM字符集代码数组
+     * @return the result.
      */
     public String[] toCodes() {
         return dicomCodes;
     }
 
     /**
-     * 将字符串编码为字节数组
+     * Encodes the related value.
      *
-     * @param val        要编码的字符串
-     * @param delimiters 分隔符
-     * @return 编码后的字节数组
+     * @param val        the val.
+     * @param delimiters the delimiters.
+     * @return the result.
      */
     public byte[] encode(String val, String delimiters) {
         return codecs[0].encode(val);
     }
 
     /**
-     * 将字节数组解码为字符串
+     * Decodes the related value.
      *
-     * @param val        要解码的字节数组
-     * @param delimiters 分隔符
-     * @return 解码后的字符串
+     * @param val        the val.
+     * @param delimiters the delimiters.
+     * @return the result.
      */
     public String decode(byte[] val, String delimiters) {
         return codecs[0].decode(val, 0, val.length);
     }
 
     /**
-     * 检查是否为UTF-8字符集
+     * Determines whether the condition is met.
      *
-     * @return 如果是UTF-8字符集则返回true，否则返回false
+     * @return true if the condition is met; otherwise false.
      */
     public boolean isUTF8() {
         return codecs[0].equals(Codec.UTF_8);
     }
 
     /**
-     * 检查是否为ASCII字符集
+     * Determines whether the condition is met.
      *
-     * @return 如果是ASCII字符集则返回true，否则返回false
+     * @return true if the condition is met; otherwise false.
      */
     public boolean isASCII() {
         return codecs[0].equals(Codec.ISO_646);
     }
 
     /**
-     * 检查是否包含ASCII字符集
+     * Determines whether the condition is met.
      *
-     * @return 如果包含ASCII字符集则返回true，否则返回false
+     * @return true if the condition is met; otherwise false.
      */
     public boolean containsASCII() {
         return codecs[0].containsASCII();
     }
 
     /**
-     * 检查是否包含指定的字符集
+     * Determines whether the condition is met.
      *
-     * @param other 要检查的字符集
-     * @return 如果包含指定的字符集则返回true，否则返回false
+     * @param other the other.
+     * @return true if the condition is met; otherwise false.
      */
     public boolean contains(SpecificCharacterSet other) {
         return Arrays.equals(codecs, other.codecs) || (other.isASCII() || other == ASCII) && containsASCII();
     }
 
     /**
-     * 将字符串转换为文本格式
+     * Provides DICOM processing details.
      *
-     * @param s 要转换的字符串
-     * @return 转换后的文本
+     * @param s the s.
+     * @return the result.
      */
     public String toText(String s) {
         return codecs[0].toText(s);
     }
 
+    /**
+     * Compares this instance with another object for equality.
+     *
+     * @param other the other.
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public boolean equals(Object other) {
         if (other == null) {
@@ -428,6 +430,11 @@ public class SpecificCharacterSet {
         return Arrays.equals(this.codecs, othercs.codecs);
     }
 
+    /**
+     * Returns the hash code.
+     *
+     * @return true if the condition is met; otherwise false.
+     */
     @Override
     public int hashCode() {
         return Arrays.hashCode(this.codecs);
@@ -435,40 +442,65 @@ public class SpecificCharacterSet {
 
     /**
      * Codec enumeration defining various character sets supported in DICOM
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private enum Codec {
 
-        /** ISO 646 (ASCII) Character Set */
+        /**
+         * ISO 646 (ASCII) Character Set
+         */
         ISO_646(true, 0x2842, 0, 1),
 
-        /** ISO 8859-1 (Latin-1) Character Set */
+        /**
+         * ISO 8859-1 (Latin-1) Character Set
+         */
         ISO_8859_1(true, 0x2842, 0x2d41, 1),
 
-        /** ISO 8859-2 (Latin-2) Character Set */
+        /**
+         * ISO 8859-2 (Latin-2) Character Set
+         */
         ISO_8859_2(true, 0x2842, 0x2d42, 1),
 
-        /** ISO 8859-3 (Latin-3) Character Set */
+        /**
+         * ISO 8859-3 (Latin-3) Character Set
+         */
         ISO_8859_3(true, 0x2842, 0x2d43, 1),
 
-        /** ISO 8859-4 (Latin-4) Character Set */
+        /**
+         * ISO 8859-4 (Latin-4) Character Set
+         */
         ISO_8859_4(true, 0x2842, 0x2d44, 1),
 
-        /** ISO 8859-5 (Cyrillic) Character Set */
+        /**
+         * ISO 8859-5 (Cyrillic) Character Set
+         */
         ISO_8859_5(true, 0x2842, 0x2d4c, 1),
 
-        /** ISO 8859-6 (Arabic) Character Set */
+        /**
+         * ISO 8859-6 (Arabic) Character Set
+         */
         ISO_8859_6(true, 0x2842, 0x2d47, 1),
 
-        /** ISO 8859-7 (Greek) Character Set */
+        /**
+         * ISO 8859-7 (Greek) Character Set
+         */
         ISO_8859_7(true, 0x2842, 0x2d46, 1),
 
-        /** ISO 8859-8 (Hebrew) Character Set */
+        /**
+         * ISO 8859-8 (Hebrew) Character Set
+         */
         ISO_8859_8(true, 0x2842, 0x2d48, 1),
 
-        /** ISO 8859-9 (Latin-5) Character Set */
+        /**
+         * ISO 8859-9 (Latin-5) Character Set
+         */
         ISO_8859_9(true, 0x2842, 0x2d4d, 1),
 
-        /** JIS X 0201 Character Set */
+        /**
+         * JIS X 0201 Character Set
+         */
         JIS_X_201(true, 0x284a, 0x2949, 1) {
 
             @Override
@@ -477,49 +509,73 @@ public class SpecificCharacterSet {
             }
         },
 
-        /** TIS-620 (Thai) Character Set */
+        /**
+         * TIS-620 (Thai) Character Set
+         */
         TIS_620(true, 0x2842, 0x2d54, 1),
 
-        /** JIS X 0208 Character Set */
+        /**
+         * JIS X 0208 Character Set
+         */
         JIS_X_208(false, 0x2442, 0, 1),
 
-        /** JIS X 0212 Character Set */
+        /**
+         * JIS X 0212 Character Set
+         */
         JIS_X_212(false, 0x242844, 0, 2),
 
-        /** KS X 1001 (Korean) Character Set */
+        /**
+         * KS X 1001 (Korean) Character Set
+         */
         KS_X_1001(false, 0, 0x242943, -1),
 
-        /** GB2312 (Simplified Chinese) Character Set */
+        /**
+         * GB2312 (Simplified Chinese) Character Set
+         */
         GB2312(false, 0, 0x242941, -1),
 
-        /** UTF-8 Character Set */
+        /**
+         * UTF-8 Character Set
+         */
         UTF_8(true, 0, 0, -1),
 
-        /** GB18030 Character Set */
+        /**
+         * GB18030 Character Set
+         */
         GB18030(false, 0, 0, -1);
 
-        /** Character Set Name Array */
+        /**
+         * Character Set Name Array
+         */
         private static final String[] charsetNames = resetCharsetNames(new String[18]);
 
-        /** Whether Contains ASCII Flag */
+        /**
+         * Whether Contains ASCII Flag
+         */
         private final boolean containsASCII;
 
-        /** Escape Sequence 0 */
+        /**
+         * Escape Sequence 0
+         */
         private final int escSeq0;
 
-        /** Escape Sequence 1 */
+        /**
+         * Escape Sequence 1
+         */
         private final int escSeq1;
 
-        /** Bytes Per Character */
+        /**
+         * Bytes Per Character
+         */
         private final int bytesPerChar;
 
         /**
-         * 构造一个编解码器
+         * Creates a new instance.
          *
-         * @param containsASCII 是否包含ASCII
-         * @param escSeq0       转义序列0
-         * @param escSeq1       转义序列1
-         * @param bytesPerChar  每个字符的字节数
+         * @param containsASCII the contains ascii.
+         * @param escSeq0       the esc seq0.
+         * @param escSeq1       the esc seq1.
+         * @param bytesPerChar  the bytes per char.
          */
         Codec(boolean containsASCII, int escSeq0, int escSeq1, int bytesPerChar) {
             this.containsASCII = containsASCII;
@@ -529,17 +585,17 @@ public class SpecificCharacterSet {
         }
 
         /**
-         * 重置字符集名称
+         * Resets the related value.
          */
         private static void resetCharsetNames() {
             resetCharsetNames(charsetNames);
         }
 
         /**
-         * 重置字符集名称数组
+         * Resets the related value.
          *
-         * @param charsetNames 字符集名称数组
-         * @return 重置后的字符集名称数组
+         * @param charsetNames the charset names.
+         * @return the result.
          */
         private static String[] resetCharsetNames(String[] charsetNames) {
             charsetNames[0] = "US-ASCII";
@@ -564,33 +620,33 @@ public class SpecificCharacterSet {
         }
 
         /**
-         * 根据代码获取编解码器
+         * Gets the related value.
          *
-         * @param code 字符集代码
-         * @return 编解码器
+         * @param code the code.
+         * @return the result.
          */
         public static Codec forCode(String code) {
             return forCode(code, true);
         }
 
         /**
-         * 根据代码获取编解码器
+         * Gets the related value.
          *
-         * @param code    字符集代码
-         * @param lenient 是否宽松模式
-         * @return 编解码器
+         * @param code    the code.
+         * @param lenient the lenient.
+         * @return the result.
          */
         private static Codec forCode(String code, boolean lenient) {
             return forCode(code, lenient, SpecificCharacterSet.DEFAULT.codecs[0]);
         }
 
         /**
-         * 根据代码获取编解码器
+         * Gets the related value.
          *
-         * @param code     字符集代码
-         * @param lenient  是否宽松模式
-         * @param defCodec 默认编解码器
-         * @return 编解码器
+         * @param code     the code.
+         * @param lenient  the lenient.
+         * @param defCodec the def codec.
+         * @return the result.
          */
         private static Codec forCode(String code, boolean lenient, Codec defCodec) {
             switch (code != null ? code : Normal.EMPTY) {
@@ -667,10 +723,10 @@ public class SpecificCharacterSet {
         }
 
         /**
-         * 将字符串编码为字节数组
+         * Encodes the related value.
          *
-         * @param val 要编码的字符串
-         * @return 编码后的字节数组
+         * @param val the val.
+         * @return the result.
          */
         public byte[] encode(String val) {
             try {
@@ -681,30 +737,30 @@ public class SpecificCharacterSet {
         }
 
         /**
-         * 获取字符集名称
+         * Gets the related value.
          *
-         * @return 字符集名称
+         * @return the result.
          */
         private String charsetName() {
             return charsetNames[ordinal()];
         }
 
         /**
-         * 设置字符集名称
+         * Sets the related value.
          *
-         * @param charsetName 字符集名称
+         * @param charsetName the charset name.
          */
         private void setCharsetName(String charsetName) {
             charsetNames[ordinal()] = charsetName;
         }
 
         /**
-         * 将字节数组解码为字符串
+         * Decodes the related value.
          *
-         * @param b   字节数组
-         * @param off 偏移量
-         * @param len 长度
-         * @return 解码后的字符串
+         * @param b   the b.
+         * @param off the off.
+         * @param len the len.
+         * @return the result.
          */
         public String decode(byte[] b, int off, int len) {
             try {
@@ -715,79 +771,97 @@ public class SpecificCharacterSet {
         }
 
         /**
-         * 检查是否包含ASCII
+         * Determines whether the condition is met.
          *
-         * @return 如果包含ASCII则返回true，否则返回false
+         * @return true if the condition is met; otherwise false.
          */
         public boolean containsASCII() {
             return containsASCII;
         }
 
         /**
-         * 获取转义序列0
+         * Gets the related value.
          *
-         * @return 转义序列0
+         * @return the result.
          */
         public int getEscSeq0() {
             return escSeq0;
         }
 
         /**
-         * 获取转义序列1
+         * Gets the related value.
          *
-         * @return 转义序列1
+         * @return the result.
          */
         public int getEscSeq1() {
             return escSeq1;
         }
 
         /**
-         * 获取每个字符的字节数
+         * Gets the related value.
          *
-         * @return 每个字符的字节数
+         * @return the result.
          */
         public int getBytesPerChar() {
             return bytesPerChar;
         }
 
         /**
-         * 将字符串转换为文本格式
+         * Provides DICOM processing details.
          *
-         * @param s 要转换的字符串
-         * @return 转换后的文本
+         * @param s the s.
+         * @return the result.
          */
         public String toText(String s) {
             return s;
         }
+
     }
 
     /**
      * G0/G1 Character Set Range Enumeration
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private enum G0G1 {
-        /** G0 Only */
+        /**
+         * G0 Only
+         */
         G0,
-        /** G1 Only */
+        /**
+         * G1 Only
+         */
         G1,
-        /** G0 and G1 */
+        /**
+         * G0 and G1
+         */
         Both
+
     }
 
     /**
      * Encoder class for encoding characters into bytes
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static final class Encoder {
 
-        /** Codec */
+        /**
+         * Codec
+         */
         final Codec codec;
 
-        /** Character Set Encoder */
+        /**
+         * Character Set Encoder
+         */
         final CharsetEncoder encoder;
 
         /**
-         * 构造一个编码器
+         * Creates a new instance.
          *
-         * @param codec 编解码器
+         * @param codec the codec.
          */
         public Encoder(Codec codec) {
             this.codec = codec;
@@ -795,10 +869,10 @@ public class SpecificCharacterSet {
         }
 
         /**
-         * 添加转义序列到字节缓冲区
+         * Adds the related value.
          *
-         * @param bb  字节缓冲区
-         * @param seq 转义序列
+         * @param bb  the bb.
+         * @param seq the seq.
          */
         private static void escSeq(ByteBuffer bb, int seq) {
             if (seq == 0)
@@ -812,14 +886,14 @@ public class SpecificCharacterSet {
         }
 
         /**
-         * 编码字符缓冲区到字节缓冲区
+         * Encodes the related value.
          *
-         * @param cb          字符缓冲区
-         * @param bb          字节缓冲区
-         * @param escSeq      转义序列
-         * @param useRange    使用的范围
-         * @param errorAction 错误处理动作
-         * @return 如果编码成功则返回true，否则返回false
+         * @param cb          the cb.
+         * @param bb          the bb.
+         * @param escSeq      the esc seq.
+         * @param useRange    the use range.
+         * @param errorAction the error action.
+         * @return true if the condition is met; otherwise false.
          */
         public boolean encode(CharBuffer cb, ByteBuffer bb, int escSeq, G0G1 useRange, CodingErrorAction errorAction) {
             encoder.onMalformedInput(errorAction).onUnmappableCharacter(errorAction).reset();
@@ -857,30 +931,41 @@ public class SpecificCharacterSet {
         }
 
         /**
-         * 获取替换字节
+         * Gets the related value.
          *
-         * @return 替换字节
+         * @return the result.
          */
         public byte[] replacement() {
             return encoder.replacement();
         }
+
     }
 
     /**
-     * ISO 2022字符集类，支持在同一文本中使用多种字符集
+     * Provides DICOM processing details.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static final class ISO2022 extends SpecificCharacterSet {
 
         /**
-         * 构造一个ISO 2022字符集
+         * Creates a new instance.
          *
-         * @param charsetInfos 字符集信息数组
-         * @param codes        DICOM字符集代码数组
+         * @param charsetInfos the charset infos.
+         * @param codes        the codes.
          */
         private ISO2022(Codec[] charsetInfos, String... codes) {
             super(charsetInfos, codes);
         }
 
+        /**
+         * Executes the encode operation.
+         *
+         * @param val        the val.
+         * @param delimiters the delimiters.
+         * @return the operation result.
+         */
         @Override
         public byte[] encode(String val, String delimiters) {
             int strlen = val.length();
@@ -916,12 +1001,12 @@ public class SpecificCharacterSet {
         }
 
         /**
-         * 编码组件
+         * Encodes the related value.
          *
-         * @param encs 编码器数组
-         * @param cb   字符缓冲区
-         * @param bb   字节缓冲区
-         * @param cur  当前字符集索引
+         * @param encs the encs.
+         * @param cb   the cb.
+         * @param bb   the bb.
+         * @param cur  the cur.
          */
         private void encodeComponent(Encoder[] encs, CharBuffer cb, ByteBuffer bb, int[] cur) {
             // Try to encode component using G1's current active character set
@@ -963,10 +1048,10 @@ public class SpecificCharacterSet {
         }
 
         /**
-         * 激活初始字符集
+         * Provides DICOM processing details.
          *
-         * @param bb  字节缓冲区
-         * @param cur 当前字符集索引
+         * @param bb  the bb.
+         * @param cur the cur.
          */
         private void activateInitialCharacterSet(ByteBuffer bb, int[] cur) {
             if (cur[0] != 0) {
@@ -979,6 +1064,13 @@ public class SpecificCharacterSet {
             }
         }
 
+        /**
+         * Executes the decode operation.
+         *
+         * @param b          the b.
+         * @param delimiters the delimiters.
+         * @return the operation result.
+         */
         @Override
         public String decode(byte[] b, String delimiters) {
             Codec[] codec = { codecs[0], codecs[0] };
@@ -1013,7 +1105,7 @@ public class SpecificCharacterSet {
                                     switchCodec(codec, 1, Codec.KS_X_1001);
                                     break;
 
-                                default: // 将无效的ESC序列解码为字符
+                                default: // DICOMESCDICOM
                                     sb.append(codec[0].decode(b, esc0, cur - esc0));
                             }
                             break;
@@ -1076,7 +1168,7 @@ public class SpecificCharacterSet {
                             switchCodec(codec, 1, Codec.TIS_620);
                             break;
 
-                        default: // 将无效的ESC序列解码为字符
+                        default: // DICOMESCDICOM
                             sb.append(codec[0].decode(b, esc0, cur - esc0));
                     }
                     off = cur;
@@ -1101,17 +1193,18 @@ public class SpecificCharacterSet {
         }
 
         /**
-         * 切换编解码器
+         * Decodes the related value.
          *
-         * @param codecs 编解码器数组
-         * @param i      索引
-         * @param codec  要切换到的编解码器
+         * @param codecs the codecs.
+         * @param i      the i.
+         * @param codec  the codec.
          */
         private void switchCodec(Codec[] codecs, int i, Codec codec) {
             codecs[i] = codec;
             if (codecs[0].getEscSeq0() == codecs[1].getEscSeq0())
                 codecs[0] = codecs[1];
         }
+
     }
 
 }

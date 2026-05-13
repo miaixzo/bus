@@ -55,103 +55,128 @@ public abstract class Builder {
      * Path to WEB-INF/classes/ directory.
      */
     public static final String WEB_INF_CLASSES = "WEB-INF/classes/";
+
     /**
      * Path to WEB-INF/lib/ directory.
      */
     public static final String WEB_INF_LIB = "WEB-INF/lib/";
+
     /**
      * Path to META-INF/MANIFEST.MF file.
      */
     public static final String META_INF_MANIFEST = Normal.META_INF + "/MANIFEST.MF";
+
     /**
      * Source directory for xjar classes.
      */
     public static final String XJAR_SRC_DIR = Builder.class.getPackage().getName().replace(Symbol.C_DOT, Symbol.C_SLASH)
             + Symbol.SLASH;
+
     /**
      * Info directory for xjar.
      */
     public static final String XJAR_INF_DIR = Normal.META_INF + Symbol.SLASH;
+
     /**
      * Index file for xjar.
      */
     public static final String XJAR_INF_IDX = "FOREST.MF";
+
     /**
      * Command line argument prefix for algorithm.
      */
     public static final String XJAR_ALGORITHM = "--xjar.algorithm=";
+
     /**
      * Command line argument prefix for key size.
      */
     public static final String XJAR_KEYSIZE = "--xjar.keysize=";
+
     /**
      * Command line argument prefix for IV size.
      */
     public static final String XJAR_IVSIZE = "--xjar.ivsize=";
+
     /**
      * Command line argument prefix for password.
      */
     public static final String XJAR_PASSWORD = "--xjar.password=";
+
     /**
      * Command line argument prefix for key file.
      */
     public static final String XJAR_KEYFILE = "--xjar.keyfile=";
+
     /**
      * Manifest attribute key for algorithm.
      */
     public static final String XJAR_ALGORITHM_KEY = "Jar-Algorithm";
+
     /**
      * Manifest attribute key for key size.
      */
     public static final String XJAR_KEYSIZE_KEY = "Jar-Keysize";
+
     /**
      * Manifest attribute key for IV size.
      */
     public static final String XJAR_IVSIZE_KEY = "Jar-Ivsize";
+
     /**
      * Manifest attribute key for password.
      */
     public static final String XJAR_PASSWORD_KEY = "Jar-Password";
+
     /**
      * Key for algorithm in key properties.
      */
     public static final String XJAR_KEY_ALGORITHM = "algorithm";
+
     /**
      * Key for key size in key properties.
      */
     public static final String XJAR_KEY_KEYSIZE = "keysize";
+
     /**
      * Key for IV size in key properties.
      */
     public static final String XJAR_KEY_IVSIZE = "ivsize";
+
     /**
      * Key for password in key properties.
      */
     public static final String XJAR_KEY_PASSWORD = "password";
+
     /**
      * Key for hold in key properties.
      */
     public static final String XJAR_KEY_HOLD = "hold";
+
     /**
      * Path to BOOT-INF/classes/ directory.
      */
     public static final String BOOT_INF_CLASSES = "BOOT-INF/classes/";
+
     /**
      * Path to BOOT-INF/lib/ directory.
      */
     public static final String BOOT_INF_LIB = "BOOT-INF/lib/";
+
     /**
      * System-dependent line separator.
      */
     public static final String CRLF = System.getProperty(Keys.LINE_SEPARATOR);
+
     /**
      * Default encryption algorithm.
      */
     public static final String ALGORITHM = "AES";
+
     /**
      * Default key size for encryption.
      */
     public static int DEFAULT_KEYSIZE = Normal._128;
+
     /**
      * Default IV size for encryption.
      */
@@ -161,10 +186,12 @@ public abstract class Builder {
      * Danger flag: retain key in META-INF/MANIFEST.MF, no password required at startup.
      */
     public static int FLAG_DANGER = 1;
+
     /**
      * Danger mode: key is retained.
      */
     public static int MODE_DANGER = FLAG_DANGER;
+
     /**
      * Normal mode.
      */

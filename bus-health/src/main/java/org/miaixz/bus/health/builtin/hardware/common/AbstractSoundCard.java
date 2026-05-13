@@ -35,10 +35,12 @@ public abstract class AbstractSoundCard implements SoundCard {
      * The kernelVersion value.
      */
     private final String kernelVersion;
+
     /**
      * The name value.
      */
     private final String name;
+
     /**
      * The codec value.
      */

@@ -43,14 +43,17 @@ public class Simhash implements Hash64<Collection<? extends CharSequence>> {
      * The number of bits in the Simhash, typically 64.
      */
     private final int bitNum = 64;
+
     /**
      * The number of segments to divide the Simhash into for storage, defaulting to 4.
      */
     private final int fracCount;
+
     /**
      * The number of bits in each segment of the Simhash.
      */
     private final int fracBitNum;
+
     /**
      * The Hamming distance threshold. Hashes with a distance less than this are considered similar.
      */
@@ -61,6 +64,7 @@ public class Simhash implements Hash64<Collection<? extends CharSequence>> {
      * fraction of the hash as a key.
      */
     private final List<Map<String, List<Long>>> storage;
+
     /**
      * A lock to ensure thread-safe access to the storage.
      */

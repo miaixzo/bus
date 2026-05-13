@@ -40,10 +40,12 @@ public class DropWhileSpliterator<T> implements Spliterator<T> {
      * The source Spliterator from which elements are obtained.
      */
     private final Spliterator<T> source;
+
     /**
      * The predicate to apply to elements. Elements are dropped as long as this predicate is true.
      */
     private final Predicate<? super T> predicate;
+
     /**
      * A flag indicating whether the first element for which the predicate returned false has been found.
      */

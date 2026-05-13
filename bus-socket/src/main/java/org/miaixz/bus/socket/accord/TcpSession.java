@@ -67,27 +67,33 @@ public class TcpSession extends Session {
      * The underlying asynchronous socket channel for communication.
      */
     private final AsynchronousSocketChannel channel;
+
     /**
      * The buffer for handling outgoing data.
      */
     private final WriteBuffer byteBuf;
+
     /**
      * The server or client context.
      */
     private final Context context;
+
     /**
      * A supplier for providing read buffers.
      */
     private final Supplier<VirtualBuffer> readBufferSupplier;
+
     /**
      * The buffer for reading incoming data. Its size is determined by the `setReadBufferSize` setting in
      * AioClient/AioServer.
      */
     private VirtualBuffer readBuffer;
+
     /**
      * The buffer for writing outgoing data.
      */
     private VirtualBuffer writeBuffer;
+
     /**
      * The input stream for synchronous reading.
      */
@@ -453,6 +459,9 @@ public class TcpSession extends Session {
 
     /**
      * An inner class providing a synchronous InputStream for the session.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private class InnerInputStream extends InputStream {
 
@@ -538,6 +547,7 @@ public class TcpSession extends Session {
                 TcpSession.this.inputStream = null;
             }
         }
+
     }
 
     /**

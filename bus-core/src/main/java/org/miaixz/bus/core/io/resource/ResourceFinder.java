@@ -48,6 +48,7 @@ public class ResourceFinder {
      * The class loader used to define the scope of resource lookup.
      */
     private final ClassLoader classLoader;
+
     /**
      * The Ant-style path matcher used for filtering resources.
      */

@@ -30,7 +30,8 @@ import jakarta.ws.rs.core.Response;
  * This class implements the client side API for the GitLab Award Emoji API calls.
  *
  * @see <a href="https://docs.gitlab.com/ce/api/award_emoji.html">GitLab Award Emoji API Documentaion</a>
- * @since v4.8.31
+ * @author Kimi Liu
+ * @since Java 21+
  */
 public class AwardEmojiApi extends AbstractApi {
 

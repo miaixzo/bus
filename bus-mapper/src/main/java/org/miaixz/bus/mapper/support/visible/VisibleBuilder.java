@@ -50,10 +50,12 @@ public class VisibleBuilder {
      */
     private static final Pattern FROM_PATTERN = Pattern
             .compile("\\bFROM\\s+(\\w+)(?:\\s+(?:AS\\s+)?(\\w+))?", Pattern.CASE_INSENSITIVE);
+
     /**
      * Cache for entity visibility metadata.
      */
     private final Map<Class<?>, Boolean> visibilityCache = new ConcurrentHashMap<>();
+
     /**
      * Visibility configuration.
      */
@@ -210,6 +212,9 @@ public class VisibleBuilder {
 
     /**
      * Table information holder.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     private static class TableInfo {
 

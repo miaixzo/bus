@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  *
  * <p>
  * For example, if the random pool contains four objects with weights 4, 5, 1, and 6, the pool can be visualized as:
- * 
+ *
  * <pre>{@code
  *     [obj1,  obj2,   obj3,   obj4  ]
  *     [----, -----,    -  ,  ------]

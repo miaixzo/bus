@@ -53,8 +53,8 @@ import org.miaixz.bus.core.xyz.CollKit;
  * will be returned.
  *
  * @param <T> The type of {@link AnnotationMapping}.
- * @author Kimi Liu
  * @see RepeatableAnnotationCollector
+ * @author Kimi Liu
  * @since Java 21+
  */
 public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotation>>
@@ -319,6 +319,9 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
     /**
      * Represents an aggregation of a root annotation and its meta-annotations. This inner class is used to manage the
      * hierarchy of annotations stemming from a single root annotation.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     class Aggregation {
 
@@ -326,10 +329,12 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
          * The root annotation of this aggregation.
          */
         private final T root;
+
         /**
          * Indicates whether this root annotation was directly declared on the {@link #element}.
          */
         private final boolean isDirect;
+
         /**
          * A lazy-loaded map of annotation types to their {@link AnnotationMapping} instances within this aggregation.
          * This map is {@code null} by default and initialized upon first access.
@@ -424,6 +429,7 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
         public T getRoot() {
             return root;
         }
+
     }
 
 }

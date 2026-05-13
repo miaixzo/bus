@@ -34,6 +34,7 @@ public class WeightObject<T> {
      * The weight of the object.
      */
     protected int weight;
+
     /**
      * The wrapped object.
      */

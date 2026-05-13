@@ -66,6 +66,7 @@ public class BaiduBosProvider extends AbstractProvider {
      * S3 client instance for interacting with the S3-compatible service.
      */
     private final S3Client client;
+
     /**
      * S3 presigner for generating pre-signed URLs with limited validity.
      */

@@ -34,15 +34,29 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.Sequence;
 
 /**
+ * Represents the ICCProfile type.
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
 public final class ICCProfile {
 
+    /**
+     * Determines whether present in.
+     *
+     * @param attrs the attrs.
+     * @return true if the condition is met; otherwise false.
+     */
     public static boolean isPresentIn(Attributes attrs) {
         return attrs.containsValue(Tag.ICCProfile) || attrs.containsValue(Tag.OpticalPathSequence);
     }
 
+    /**
+     * Executes the color space factory of operation.
+     *
+     * @param attrs the attrs.
+     * @return the operation result.
+     */
     public static ColorSpaceFactory colorSpaceFactoryOf(Attributes attrs) {
         byte[] b = attrs.getSafeBytes(Tag.ICCProfile);
         if (b == null) {
@@ -61,6 +75,14 @@ public final class ICCProfile {
         return frameIndex -> cs;
     }
 
+    /**
+     * Gets the color space.
+     *
+     * @param attrs               the attrs.
+     * @param opticalPathSequence the optical path sequence.
+     * @param frameIndex          the frame index.
+     * @return the color space.
+     */
     private static Optional<ColorSpace> getColorSpace(Attributes attrs, Sequence opticalPathSequence, int frameIndex) {
         Attributes functionGroup = attrs.getFunctionGroup(Tag.OpticalPathIdentificationSequence, frameIndex);
         if (functionGroup != null) {
@@ -78,8 +100,17 @@ public final class ICCProfile {
         return Optional.empty();
     }
 
+    /**
+     * Defines the Option values.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     public enum Option {
 
+        /**
+         * The none value.
+         */
         none {
 
             @Override
@@ -87,6 +118,9 @@ public final class ICCProfile {
                 return isCS_sRGB(bi) ? bi : BufferedImages.convertColor(bi, CM_sRGB);
             }
         },
+        /**
+         * The no value.
+         */
         no {
 
             @Override
@@ -94,64 +128,140 @@ public final class ICCProfile {
                 return isCS_sRGB(bi) ? bi : BufferedImages.replaceColorModel(bi, CM_sRGB);
             }
         },
+        /**
+         * The yes value.
+         */
         yes {
 
             @Override
             protected BufferedImage convertColor(BufferedImage bi) {
-                return isCS_sRGB(bi) ? BufferedImages.replaceColorModel(bi, srgb.colorModel) : bi;
+                ColorModel model = srgb.getColorModel() == null ? CM_sRGB : srgb.getColorModel();
+                return isCS_sRGB(bi) ? BufferedImages.replaceColorModel(bi, model) : bi;
             }
         },
-        srgb("sRGB.icc") {
+        /**
+         * Constant for the srgb value.
+         */
+        srgb("sRGB.icc"),
+        /**
+         * Constant for the adobergb value.
+         */
+        adobergb("adobeRGB.icc"),
+        /**
+         * Constant for the rommrgb value.
+         */
+        rommrgb("rommRGB.icc");
 
-            @Override
-            protected BufferedImage convertColor(BufferedImage bi) {
-                return isCS_sRGB(bi) ? BufferedImages.replaceColorModel(bi, srgb.colorModel)
-                        : BufferedImages.convertColor(bi, srgb.colorModel);
-            }
-        },
-        adobergb("adobeRGB.icc"), rommrgb("rommRGB.icc");
-
+        /**
+         * The cm s rgb value.
+         */
         private static final ColorModel CM_sRGB = ColorModelFactory
                 .createRGBColorModel(8, DataBuffer.TYPE_BYTE, ColorSpace.getInstance(ColorSpace.CS_sRGB));
+
+        /**
+         * The color model value.
+         */
         private final ColorModel colorModel;
 
+        /**
+         * Creates a new instance.
+         */
         Option() {
             colorModel = null;
         }
 
+        /**
+         * Creates a new instance.
+         *
+         * @param fileName the file name.
+         */
         Option(String fileName) {
+            ColorModel model = null;
             try (InputStream is = ICCProfile.class.getResourceAsStream(fileName)) {
-                colorModel = ColorModelFactory
-                        .createRGBColorModel(8, DataBuffer.TYPE_BYTE, new ICC_ColorSpace(ICC_Profile.getInstance(is)));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                if (is != null) {
+                    model = ColorModelFactory.createRGBColorModel(
+                            8,
+                            DataBuffer.TYPE_BYTE,
+                            new ICC_ColorSpace(ICC_Profile.getInstance(is)));
+                }
+            } catch (IOException | RuntimeException e) {
+                model = null;
             }
+            colorModel = model;
         }
 
+        /**
+         * Determines whether cs s rgb.
+         *
+         * @param bi the bi.
+         * @return true if the condition is met; otherwise false.
+         */
         private static boolean isCS_sRGB(BufferedImage bi) {
             return bi.getColorModel().getColorSpace().isCS_sRGB();
         }
 
+        /**
+         * Converts this value to rgb.
+         *
+         * @param bi the bi.
+         * @param cm the cm.
+         * @return the operation result.
+         */
         private static BufferedImage toRGB(BufferedImage bi, ColorModel cm) {
             return cm instanceof PaletteColorModel ? BufferedImages.convertPalettetoRGB(bi, null)
                     : cm.getColorSpace().getType() == ColorSpace.TYPE_YCbCr ? BufferedImages.convertYBRtoRGB(bi, null)
                             : bi;
         }
 
+        /**
+         * Gets the color model.
+         *
+         * @return the color model.
+         */
+        private ColorModel getColorModel() {
+            return colorModel;
+        }
+
+        /**
+         * Executes the adjust operation.
+         *
+         * @param bi the bi.
+         * @return the operation result.
+         */
         public BufferedImage adjust(BufferedImage bi) {
             ColorModel cm = bi.getColorModel();
             return cm.getNumColorComponents() == 3 ? convertColor(toRGB(bi, cm)) : bi;
         }
 
+        /**
+         * Executes the convert color operation.
+         *
+         * @param bi the bi.
+         * @return the operation result.
+         */
         protected BufferedImage convertColor(BufferedImage bi) {
-            return BufferedImages.convertColor(bi, colorModel);
+            return colorModel == null ? none.convertColor(bi) : BufferedImages.convertColor(bi, colorModel);
         }
+
     }
 
+    /**
+     * Defines the ColorSpaceFactory contract.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
     @FunctionalInterface
     public interface ColorSpaceFactory {
 
+        /**
+         * Gets the color space.
+         *
+         * @param frameIndex the frame index.
+         * @return the color space.
+         */
         Optional<ColorSpace> getColorSpace(int frameIndex);
+
     }
 
 }

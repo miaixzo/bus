@@ -77,9 +77,13 @@ public final class Win32LogicalDisk {
 
     /**
      * Logical disk properties.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
      */
     public enum LogicalDiskProperty {
         ACCESS, DESCRIPTION, DRIVETYPE, FILESYSTEM, FREESPACE, NAME, PROVIDERNAME, SIZE, VOLUMENAME
+
     }
 
 }

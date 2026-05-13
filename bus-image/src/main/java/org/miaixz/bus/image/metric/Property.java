@@ -25,10 +25,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
 
 /**
- * 属性类，用于表示名称-值对属性。
- *
+ * Provides DICOM processing details.
  * <p>
- * 该类用于存储和操作属性，支持字符串、布尔值和数值类型的属性值。 它提供了从字符串数组创建属性数组、从属性数组中获取特定属性值， 以及通过反射将属性值设置到对象中的方法。
+ * Gets the related value.
  * </p>
  *
  * @author Kimi Liu
@@ -36,25 +35,29 @@ import java.util.Locale;
  */
 public class Property implements Serializable {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852261138619L;
 
     /**
-     * 属性名称
+     * Provides DICOM processing details.
      */
     private final String name;
+
     /**
-     * 属性值
+     * Provides DICOM processing details.
      */
     private final Object value;
 
     /**
-     * 构造方法
+     * Creates a new instance.
      *
-     * @param name  属性名称
-     * @param value 属性值
-     * @throws NullPointerException     如果名称或值为null
-     * @throws IllegalArgumentException 如果值不是字符串、布尔值或数值类型
+     * @param name  the name.
+     * @param value the value.
+     * @throws NullPointerException     if the operation cannot be completed.
+     * @throws IllegalArgumentException if the operation cannot be completed.
      */
     public Property(String name, Object value) {
         if (name == null)
@@ -68,9 +71,9 @@ public class Property implements Serializable {
     }
 
     /**
-     * 从字符串构造属性
+     * Creates a new instance.
      *
-     * @param s 格式为"name=value"的字符串
+     * @param s the s.
      */
     public Property(String s) {
         int endParamName = s.indexOf('=');
@@ -79,10 +82,10 @@ public class Property implements Serializable {
     }
 
     /**
-     * 将字符串转换为适当的值类型
+     * Provides DICOM processing details.
      *
-     * @param s 输入字符串
-     * @return 转换后的值（Double、Boolean或String）
+     * @param s the s.
+     * @return the result.
      */
     private static Object valueOf(String s) {
         try {
@@ -93,10 +96,10 @@ public class Property implements Serializable {
     }
 
     /**
-     * 从字符串数组创建属性数组
+     * Provides DICOM processing details.
      *
-     * @param ss 字符串数组，每个元素格式为"name=value"
-     * @return 属性数组
+     * @param ss the ss.
+     * @return the result.
      */
     public static Property[] valueOf(String[] ss) {
         Property[] properties = new Property[ss.length];
@@ -107,13 +110,13 @@ public class Property implements Serializable {
     }
 
     /**
-     * 从属性数组中获取指定名称的属性值
+     * Gets the related value.
      *
-     * @param <T>    值的类型
-     * @param props  属性数组
-     * @param name   属性名称
-     * @param defVal 默认值
-     * @return 找到的属性值，如果未找到则返回默认值
+     * @param <T>    the t type.
+     * @param props  the props.
+     * @param name   the name.
+     * @param defVal the def val.
+     * @return true if the condition is met; otherwise false.
      */
     public static <T> T getFrom(Property[] props, String name, T defVal) {
         for (Property prop : props)
@@ -123,27 +126,27 @@ public class Property implements Serializable {
     }
 
     /**
-     * 获取属性名称
+     * Gets the related value.
      *
-     * @return 属性名称
+     * @return the result.
      */
     public final String getName() {
         return name;
     }
 
     /**
-     * 获取属性值
+     * Gets the related value.
      *
-     * @return 属性值
+     * @return the result.
      */
     public final Object getValue() {
         return value;
     }
 
     /**
-     * 计算哈希码
+     * Provides DICOM processing details.
      *
-     * @return 哈希码
+     * @return the result.
      */
     @Override
     public int hashCode() {
@@ -151,10 +154,10 @@ public class Property implements Serializable {
     }
 
     /**
-     * 判断对象是否相等
+     * Determines whether the condition is met.
      *
-     * @param object 要比较的对象
-     * @return 如果相等返回true，否则返回false
+     * @param object the object.
+     * @return true if the condition is met; otherwise false.
      */
     @Override
     public boolean equals(Object object) {
@@ -169,9 +172,9 @@ public class Property implements Serializable {
     }
 
     /**
-     * 返回字符串表示
+     * Returns the related value.
      *
-     * @return 格式为"name=value"的字符串
+     * @return the result.
      */
     @Override
     public String toString() {
@@ -179,10 +182,10 @@ public class Property implements Serializable {
     }
 
     /**
-     * 通过反射将属性值设置到指定对象中
+     * Sets the related value.
      *
-     * @param o 目标对象
-     * @throws IllegalArgumentException 如果找不到合适的setter方法或调用失败
+     * @param o the o.
+     * @throws IllegalArgumentException if the operation cannot be completed.
      */
     public void setAt(Object o) {
         String setterName = "set" + name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);

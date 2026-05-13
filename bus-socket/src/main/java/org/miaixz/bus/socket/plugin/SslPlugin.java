@@ -48,6 +48,7 @@ public final class SslPlugin<T> extends AbstractPlugin<T> {
      * The SSL service responsible for managing SSL/TLS operations.
      */
     private final SslService sslService;
+
     /**
      * The buffer page pool used for allocating buffers for SSL/TLS operations.
      */

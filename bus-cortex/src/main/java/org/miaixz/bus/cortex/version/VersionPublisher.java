@@ -43,22 +43,27 @@ public class VersionPublisher {
      * Change event emitted when a release draft is saved.
      */
     public static final String VERSION_DRAFT_EVENT = "version-draft";
+
     /**
      * Change event emitted when a release is published.
      */
     public static final String VERSION_PUBLISH_EVENT = "version-publish";
+
     /**
      * Change event emitted when a release is rolled back to a prior version.
      */
     public static final String VERSION_ROLLBACK_EVENT = "version-rollback";
+
     /**
      * Change event emitted when a release is deprecated.
      */
     public static final String VERSION_DEPRECATE_EVENT = "version-deprecate";
+
     /**
      * Change event emitted when a release is deleted.
      */
     public static final String VERSION_DELETE_EVENT = "version-delete";
+
     /**
      * Watch source identifier used for version-domain notifications.
      */
@@ -68,14 +73,17 @@ public class VersionPublisher {
      * Durable version store.
      */
     private final VersionStore store;
+
     /**
      * Optional change-log store used for publication events.
      */
     private final CortexChangeLogStore changeLogStore;
+
     /**
      * Optional guard used to enforce version-domain policy.
      */
     private final CortexGuard cortexGuard;
+
     /**
      * Optional watch manager used to publish version notifications.
      */

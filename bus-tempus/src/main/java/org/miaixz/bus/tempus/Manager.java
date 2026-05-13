@@ -52,6 +52,7 @@ public class Manager implements Serializable {
      * List of task launchers.
      */
     protected final List<Launcher> launchers = new ArrayList<>();
+
     /**
      * The scheduler that this manager belongs to.
      */
