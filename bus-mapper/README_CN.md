@@ -343,8 +343,8 @@ public class MapperConfiguration {
         };
 
         // 创建审计配置
-        org.miaixz.bus.mapper.support.audit.AuditConfig config =
-            org.miaixz.bus.mapper.support.audit.AuditConfig.builder()
+        org.miaixz.bus.mapper.feature.audit.AuditConfig config =
+            org.miaixz.bus.mapper.feature.audit.AuditConfig.builder()
                 .enabled(true)
                 .slowSqlThreshold(1000)  // 慢 SQL 阈值: 1 秒
                 .logParameters(true)     // 记录 SQL 参数

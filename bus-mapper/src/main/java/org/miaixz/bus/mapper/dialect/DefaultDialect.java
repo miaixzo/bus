@@ -21,7 +21,7 @@ package org.miaixz.bus.mapper.dialect;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.mapper.Charter.Behavior;
-import org.miaixz.bus.mapper.support.paging.Pageable;
+import org.miaixz.bus.mapper.feature.paging.Pageable;
 
 /**
  * Default dialect for unknown databases.

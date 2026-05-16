@@ -37,9 +37,9 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.binding.condition.Condition;
 import org.miaixz.bus.mapper.binding.condition.ConditionWrapper;
 import org.miaixz.bus.mapper.binding.function.Fn;
-import org.miaixz.bus.mapper.support.paging.Page;
-import org.miaixz.bus.mapper.support.paging.PageContext;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.mapper.feature.paging.Page;
+import org.miaixz.bus.mapper.feature.paging.PageContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**

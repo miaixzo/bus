@@ -21,6 +21,7 @@ package org.miaixz.bus.starter.mapper;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.miaixz.bus.spring.GeniusBuilder;
+
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -55,9 +56,9 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.binding.basic.ClassMapper;
 import org.miaixz.bus.mapper.builder.GenericTypeResolver;
-import org.miaixz.bus.mapper.support.schema.EntitySchemaInitializer;
-import org.miaixz.bus.mapper.support.schema.SchemaConfig;
-import org.miaixz.bus.mapper.support.schema.SchemaReport;
+import org.miaixz.bus.mapper.feature.schema.EntitySchemaInitializer;
+import org.miaixz.bus.mapper.feature.schema.SchemaConfig;
+import org.miaixz.bus.mapper.feature.schema.SchemaReport;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
@@ -354,13 +355,9 @@ public class MapperConfiguration implements InitializingBean {
     }
 
     private SchemaConfig toSchemaConfig(MapperProperties.SchemaProperties schemaProperties) {
-        return new SchemaConfig()
-                .enabled(schemaProperties.isEnabled())
-                .mode(schemaProperties.getMode())
-                .dryRun(schemaProperties.isDryRun())
-                .printSql(schemaProperties.isPrintSql())
-                .failFast(schemaProperties.isFailFast())
-                .continueOnError(schemaProperties.isContinueOnError())
+        return new SchemaConfig().enabled(schemaProperties.isEnabled()).mode(schemaProperties.getMode())
+                .dryRun(schemaProperties.isDryRun()).printSql(schemaProperties.isPrintSql())
+                .failFast(schemaProperties.isFailFast()).continueOnError(schemaProperties.isContinueOnError())
                 .includeTables(copySet(schemaProperties.getIncludeTables()))
                 .excludeTables(copySet(schemaProperties.getExcludeTables()))
                 .includeEntities(copySet(schemaProperties.getIncludeEntities()))
@@ -427,10 +424,9 @@ public class MapperConfiguration implements InitializingBean {
         if (mapperInterface == null || !ClassMapper.class.isAssignableFrom(mapperInterface)) {
             return null;
         }
-        Class<?> entityClass = GenericTypeResolver.resolveTypeToClass(GenericTypeResolver.resolveType(
-                ClassMapper.class.getTypeParameters()[0],
-                mapperInterface,
-                ClassMapper.class));
+        Class<?> entityClass = GenericTypeResolver.resolveTypeToClass(
+                GenericTypeResolver
+                        .resolveType(ClassMapper.class.getTypeParameters()[0], mapperInterface, ClassMapper.class));
         return entityClass == Object.class ? null : entityClass;
     }
 

@@ -24,8 +24,8 @@ import java.util.EnumSet;
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
-import org.miaixz.bus.mapper.support.paging.Pageable;
-import org.miaixz.bus.mapper.support.schema.SqlTypeDescriptor;
+import org.miaixz.bus.mapper.feature.paging.Pageable;
+import org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor;
 
 /**
  * Dialect implementation for Oscar databases.

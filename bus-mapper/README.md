@@ -343,8 +343,8 @@ public class MapperConfiguration {
         };
 
         // Create Audit Configuration
-        org.miaixz.bus.mapper.support.audit.AuditConfig config =
-            org.miaixz.bus.mapper.support.audit.AuditConfig.builder()
+        org.miaixz.bus.mapper.feature.audit.AuditConfig config =
+            org.miaixz.bus.mapper.feature.audit.AuditConfig.builder()
                 .enabled(true)
                 .slowSqlThreshold(1000)  // Slow SQL threshold: 1 second
                 .logParameters(true)     // Record SQL parameters

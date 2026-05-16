@@ -29,7 +29,7 @@ import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.mapper.support.keygen.GenId;
+import org.miaixz.bus.mapper.feature.keygen.GenId;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.GenerationType;

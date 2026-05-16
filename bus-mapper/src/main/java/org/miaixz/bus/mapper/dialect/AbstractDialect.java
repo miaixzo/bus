@@ -43,10 +43,10 @@ import org.miaixz.bus.mapper.Charter.Modify;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.IndexMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
-import org.miaixz.bus.mapper.support.paging.Pageable;
-import org.miaixz.bus.mapper.support.schema.ColumnSnapshot;
-import org.miaixz.bus.mapper.support.schema.SqlTypeDescriptor;
-import org.miaixz.bus.mapper.support.schema.TableSnapshot;
+import org.miaixz.bus.mapper.feature.paging.Pageable;
+import org.miaixz.bus.mapper.feature.schema.ColumnSnapshot;
+import org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor;
+import org.miaixz.bus.mapper.feature.schema.TableSnapshot;
 
 import jakarta.persistence.EnumType;
 

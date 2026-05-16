@@ -21,11 +21,11 @@ package org.miaixz.bus.mapper;
 
 import java.util.function.Supplier;
 
-import org.miaixz.bus.mapper.support.audit.AuditConfig;
-import org.miaixz.bus.mapper.support.populate.PopulateConfig;
-import org.miaixz.bus.mapper.support.prefix.TablePrefixConfig;
-import org.miaixz.bus.mapper.support.tenant.TenantConfig;
-import org.miaixz.bus.mapper.support.visible.VisibleConfig;
+import org.miaixz.bus.mapper.feature.audit.AuditConfig;
+import org.miaixz.bus.mapper.feature.populate.PopulateConfig;
+import org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig;
+import org.miaixz.bus.mapper.feature.tenant.TenantConfig;
+import org.miaixz.bus.mapper.feature.visible.VisibleConfig;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -169,8 +169,10 @@ public class Context extends org.miaixz.bus.core.Context {
             config.setTenant(tenantConfig);
         } else {
             // Update existing config with new tenant ID
-            tenantConfig = TenantConfig.builder().column(tenantConfig.getColumn()).ignore(tenantConfig.getIgnore())
-                    .ignoreMappers(tenantConfig.getIgnoreMappers()).provider(() -> tenantId).build();
+            tenantConfig = TenantConfig.builder().mode(tenantConfig.getMode()).column(tenantConfig.getColumn())
+                    .ignore(tenantConfig.getIgnore()).ignoreMappers(tenantConfig.getIgnoreMappers())
+                    .tablePrefix(tenantConfig.getTablePrefix()).enableSqlCache(tenantConfig.isEnableSqlCache())
+                    .provider(() -> tenantId).build();
             config.setTenant(tenantConfig);
         }
     }
@@ -190,6 +192,15 @@ public class Context extends org.miaixz.bus.core.Context {
 
         TablePrefixConfig tablePrefixConfig = TablePrefixConfig.builder().provider(() -> prefix).build();
         config.setPrefix(tablePrefixConfig);
+
+        TenantConfig tenantConfig = config.getTenant();
+        if (tenantConfig != null) {
+            config.setTenant(
+                    TenantConfig.builder().mode(tenantConfig.getMode()).column(tenantConfig.getColumn())
+                            .ignore(tenantConfig.getIgnore()).ignoreMappers(tenantConfig.getIgnoreMappers())
+                            .tablePrefix(prefix).enableSqlCache(tenantConfig.isEnableSqlCache())
+                            .provider(tenantConfig.getProvider()).build());
+        }
     }
 
     /**

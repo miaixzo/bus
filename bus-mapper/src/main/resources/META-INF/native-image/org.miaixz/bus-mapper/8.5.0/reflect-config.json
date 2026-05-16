@@ -2590,7 +2590,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.audit.AuditBuilder",
+    "name": "org.miaixz.bus.mapper.feature.audit.AuditBuilder",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2601,7 +2601,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.audit.AuditConfig",
+    "name": "org.miaixz.bus.mapper.feature.audit.AuditConfig",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2612,7 +2612,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.audit.AuditContext",
+    "name": "org.miaixz.bus.mapper.feature.audit.AuditContext",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2623,7 +2623,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.audit.AuditHandler",
+    "name": "org.miaixz.bus.mapper.feature.audit.AuditHandler",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2634,7 +2634,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.audit.AuditProvider",
+    "name": "org.miaixz.bus.mapper.feature.audit.AuditProvider",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2645,7 +2645,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.audit.AuditRecord",
+    "name": "org.miaixz.bus.mapper.feature.audit.AuditRecord",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2656,7 +2656,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.keygen.GenId",
+    "name": "org.miaixz.bus.mapper.feature.keygen.GenId",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2667,7 +2667,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.keygen.GenId$NULL",
+    "name": "org.miaixz.bus.mapper.feature.keygen.GenId$NULL",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2678,7 +2678,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.keygen.GenIdKeyGenerator",
+    "name": "org.miaixz.bus.mapper.feature.keygen.GenIdKeyGenerator",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2689,7 +2689,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.keygen.GenIdSqlSource",
+    "name": "org.miaixz.bus.mapper.feature.keygen.GenIdSqlSource",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2700,7 +2700,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.keygen.KeySqlRegistry",
+    "name": "org.miaixz.bus.mapper.feature.keygen.KeySqlRegistry",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2711,7 +2711,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.keygen.PrimaryKeyEnhancer",
+    "name": "org.miaixz.bus.mapper.feature.keygen.PrimaryKeyEnhancer",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2722,7 +2722,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.operation.OperationHandler",
+    "name": "org.miaixz.bus.mapper.feature.operation.OperationHandler",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2733,7 +2733,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.paging.Page",
+    "name": "org.miaixz.bus.mapper.feature.paging.Page",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2744,7 +2744,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.paging.Page$Builder",
+    "name": "org.miaixz.bus.mapper.feature.paging.Page$Builder",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2755,7 +2755,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.paging.PageBuilder",
+    "name": "org.miaixz.bus.mapper.feature.paging.PageBuilder",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2766,7 +2766,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.paging.PageBuilder$PaginationResult",
+    "name": "org.miaixz.bus.mapper.feature.paging.PageBuilder$PaginationResult",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2777,7 +2777,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.paging.PageContext",
+    "name": "org.miaixz.bus.mapper.feature.paging.PageContext",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2788,7 +2788,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.paging.PageContext$PageSelector",
+    "name": "org.miaixz.bus.mapper.feature.paging.PageContext$PageSelector",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2799,7 +2799,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.paging.PageHandler",
+    "name": "org.miaixz.bus.mapper.feature.paging.PageHandler",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2810,7 +2810,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.paging.PageHandler$CountSqlSource",
+    "name": "org.miaixz.bus.mapper.feature.paging.PageHandler$CountSqlSource",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2821,7 +2821,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.paging.Pageable",
+    "name": "org.miaixz.bus.mapper.feature.paging.Pageable",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2832,7 +2832,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.paging.Pageable$PageRequest",
+    "name": "org.miaixz.bus.mapper.feature.paging.Pageable$PageRequest",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2843,7 +2843,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.paging.Sort",
+    "name": "org.miaixz.bus.mapper.feature.paging.Sort",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2854,7 +2854,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.paging.Sort$SortBuilder",
+    "name": "org.miaixz.bus.mapper.feature.paging.Sort$SortBuilder",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2865,7 +2865,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.populate.PopulateBuilder",
+    "name": "org.miaixz.bus.mapper.feature.populate.PopulateBuilder",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2876,7 +2876,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.populate.PopulateBuilder$EntityMetadata",
+    "name": "org.miaixz.bus.mapper.feature.populate.PopulateBuilder$EntityMetadata",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2887,7 +2887,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.populate.PopulateConfig",
+    "name": "org.miaixz.bus.mapper.feature.populate.PopulateConfig",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2898,7 +2898,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.populate.PopulateHandler",
+    "name": "org.miaixz.bus.mapper.feature.populate.PopulateHandler",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2909,7 +2909,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.populate.PopulateProvider",
+    "name": "org.miaixz.bus.mapper.feature.populate.PopulateProvider",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2920,7 +2920,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.prefix.TablePrefixBuilder",
+    "name": "org.miaixz.bus.mapper.feature.prefix.TablePrefixBuilder",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2931,7 +2931,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.prefix.TablePrefixConfig",
+    "name": "org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2942,7 +2942,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.prefix.TablePrefixHandler",
+    "name": "org.miaixz.bus.mapper.feature.prefix.TablePrefixHandler",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2953,7 +2953,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.prefix.TablePrefixProvider",
+    "name": "org.miaixz.bus.mapper.feature.prefix.TablePrefixProvider",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2964,7 +2964,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.schema.ColumnSnapshot",
+    "name": "org.miaixz.bus.mapper.feature.schema.ColumnSnapshot",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2975,7 +2975,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.schema.EntitySchemaInitializer",
+    "name": "org.miaixz.bus.mapper.feature.schema.EntitySchemaInitializer",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2986,7 +2986,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.schema.SchemaConfig",
+    "name": "org.miaixz.bus.mapper.feature.schema.SchemaConfig",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -2997,7 +2997,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.schema.SchemaDiff",
+    "name": "org.miaixz.bus.mapper.feature.schema.SchemaDiff",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3008,7 +3008,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.schema.SchemaDiffer",
+    "name": "org.miaixz.bus.mapper.feature.schema.SchemaDiffer",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3019,7 +3019,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.schema.SchemaReport",
+    "name": "org.miaixz.bus.mapper.feature.schema.SchemaReport",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3030,7 +3030,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.schema.SqlTypeDescriptor",
+    "name": "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3041,7 +3041,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.schema.TableSnapshot",
+    "name": "org.miaixz.bus.mapper.feature.schema.TableSnapshot",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3052,7 +3052,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.tenant.TenantBuilder",
+    "name": "org.miaixz.bus.mapper.feature.tenant.TenantBuilder",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3063,7 +3063,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.tenant.TenantConfig",
+    "name": "org.miaixz.bus.mapper.feature.tenant.TenantConfig",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3074,7 +3074,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.tenant.TenantContext",
+    "name": "org.miaixz.bus.mapper.feature.tenant.TenantContext",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3085,7 +3085,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.tenant.TenantHandler",
+    "name": "org.miaixz.bus.mapper.feature.tenant.TenantHandler",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3107,7 +3107,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.tenant.TenantProvider",
+    "name": "org.miaixz.bus.mapper.feature.tenant.TenantProvider",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3118,7 +3118,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.visible.VisibleBuilder",
+    "name": "org.miaixz.bus.mapper.feature.visible.VisibleBuilder",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3129,7 +3129,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.visible.VisibleBuilder$TableInfo",
+    "name": "org.miaixz.bus.mapper.feature.visible.VisibleBuilder$TableInfo",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3140,7 +3140,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.visible.VisibleConfig",
+    "name": "org.miaixz.bus.mapper.feature.visible.VisibleConfig",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3151,7 +3151,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.visible.VisibleContext",
+    "name": "org.miaixz.bus.mapper.feature.visible.VisibleContext",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3162,7 +3162,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.visible.VisibleContext$Ignore",
+    "name": "org.miaixz.bus.mapper.feature.visible.VisibleContext$Ignore",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3173,7 +3173,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.visible.VisibleHandler",
+    "name": "org.miaixz.bus.mapper.feature.visible.VisibleHandler",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3184,7 +3184,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.visible.VisibleProvider",
+    "name": "org.miaixz.bus.mapper.feature.visible.VisibleProvider",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3481,7 +3481,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.audit.AuditConfig$AuditConfigBuilder",
+    "name": "org.miaixz.bus.mapper.feature.audit.AuditConfig$AuditConfigBuilder",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3492,7 +3492,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.audit.AuditConfig$AuditConfigBuilderImpl",
+    "name": "org.miaixz.bus.mapper.feature.audit.AuditConfig$AuditConfigBuilderImpl",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3503,7 +3503,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.paging.PageHandler$CountStatementKey",
+    "name": "org.miaixz.bus.mapper.feature.paging.PageHandler$CountStatementKey",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3514,7 +3514,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.populate.PopulateConfig$PopulateConfigBuilder",
+    "name": "org.miaixz.bus.mapper.feature.populate.PopulateConfig$PopulateConfigBuilder",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3525,7 +3525,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.populate.PopulateConfig$PopulateConfigBuilderImpl",
+    "name": "org.miaixz.bus.mapper.feature.populate.PopulateConfig$PopulateConfigBuilderImpl",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3536,7 +3536,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.prefix.TablePrefixConfig$TablePrefixConfigBuilder",
+    "name": "org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig$TablePrefixConfigBuilder",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3547,7 +3547,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.prefix.TablePrefixConfig$TablePrefixConfigBuilderImpl",
+    "name": "org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig$TablePrefixConfigBuilderImpl",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3558,7 +3558,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.schema.SchemaInitializationLock",
+    "name": "org.miaixz.bus.mapper.feature.schema.SchemaInitializationLock",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3569,7 +3569,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.schema.SchemaInitializationLock$LockHandle",
+    "name": "org.miaixz.bus.mapper.feature.schema.SchemaInitializationLock$LockHandle",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3580,7 +3580,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.schema.SchemaInitializationLock$SchemaLockKey",
+    "name": "org.miaixz.bus.mapper.feature.schema.SchemaInitializationLock$SchemaLockKey",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3591,7 +3591,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.tenant.TenantConfig$TenantConfigBuilder",
+    "name": "org.miaixz.bus.mapper.feature.tenant.TenantConfig$TenantConfigBuilder",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3602,7 +3602,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.tenant.TenantConfig$TenantConfigBuilderImpl",
+    "name": "org.miaixz.bus.mapper.feature.tenant.TenantConfig$TenantConfigBuilderImpl",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3613,7 +3613,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.visible.VisibleConfig$VisibleConfigBuilder",
+    "name": "org.miaixz.bus.mapper.feature.visible.VisibleConfig$VisibleConfigBuilder",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -3624,7 +3624,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.mapper.support.visible.VisibleConfig$VisibleConfigBuilderImpl",
+    "name": "org.miaixz.bus.mapper.feature.visible.VisibleConfig$VisibleConfigBuilderImpl",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,

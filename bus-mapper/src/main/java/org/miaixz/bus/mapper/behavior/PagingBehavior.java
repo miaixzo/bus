@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.mapper.behavior;
 
-import org.miaixz.bus.mapper.support.paging.Pageable;
+import org.miaixz.bus.mapper.feature.paging.Pageable;
 
 /**
  * Paging behavior exposed by a database dialect.
