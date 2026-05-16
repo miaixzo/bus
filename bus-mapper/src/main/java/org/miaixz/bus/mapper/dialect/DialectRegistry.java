@@ -22,11 +22,11 @@ package org.miaixz.bus.mapper.dialect;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.sql.DataSource;
 
@@ -81,7 +81,7 @@ public final class DialectRegistry {
     /**
      * Registered dialects (in registration order for priority)
      */
-    private static final List<Dialect> DIALECTS = new ArrayList<>();
+    private static final CopyOnWriteArrayList<Dialect> DIALECTS = new CopyOnWriteArrayList<>();
 
     /**
      * DataSource to Dialect cache
@@ -159,7 +159,7 @@ public final class DialectRegistry {
      *
      * @param dialect the dialect to register
      */
-    public static synchronized void registerDialect(Dialect dialect) {
+    public static void registerDialect(Dialect dialect) {
         Assert.notNull(dialect, "Dialect cannot be null");
         // Add at the beginning for priority
         DIALECTS.add(0, dialect);
@@ -404,8 +404,17 @@ public final class DialectRegistry {
      *
      * @return a list of all registered dialects
      */
+    public static List<Dialect> getDialects() {
+        return List.copyOf(DIALECTS);
+    }
+
+    /**
+     * Gets all registered dialects.
+     *
+     * @return an immutable snapshot of all registered dialects
+     */
     public static List<Dialect> getAllDialects() {
-        return new ArrayList<>(DIALECTS);
+        return getDialects();
     }
 
 }

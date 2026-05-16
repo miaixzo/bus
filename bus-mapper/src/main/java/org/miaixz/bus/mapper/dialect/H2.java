@@ -91,6 +91,22 @@ public class H2 extends AbstractDialect {
     }
 
     /**
+     * Builds the H2 DDL used to change a column nullable constraint.
+     *
+     * @param table        the mapper table metadata
+     * @param column       the mapper column metadata
+     * @param actualColumn the column metadata currently present in the database
+     * @return the generated nullable modification SQL
+     */
+    @Override
+    public String modifyColumnNullable(
+            TableMeta table,
+            ColumnMeta column,
+            org.miaixz.bus.mapper.support.schema.ColumnSnapshot actualColumn) {
+        return alterColumnNullable(table, column);
+    }
+
+    /**
      * Builds paginated SQL using standard {@code LIMIT/OFFSET} syntax.
      *
      * @param originalSql the original SQL statement

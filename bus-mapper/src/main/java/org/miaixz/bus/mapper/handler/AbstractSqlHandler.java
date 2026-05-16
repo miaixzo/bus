@@ -199,4 +199,24 @@ public abstract class AbstractSqlHandler {
         }
     }
 
+    /**
+     * Reads the request-scoped SQL rewrite for a mapped statement.
+     *
+     * @param ms the mapped statement
+     * @return the rewritten SQL, or {@code null} when no rewrite exists
+     */
+    protected String getSqlRewrite(MappedStatement ms) {
+        return SqlRewriteContext.get(ms.getId());
+    }
+
+    /**
+     * Stores the request-scoped SQL rewrite for a mapped statement.
+     *
+     * @param ms  the mapped statement
+     * @param sql the rewritten SQL
+     */
+    protected void putSqlRewrite(MappedStatement ms, String sql) {
+        SqlRewriteContext.put(ms.getId(), sql);
+    }
+
 }

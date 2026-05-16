@@ -46,6 +46,11 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 /**
  * Entity schema initializer.
  *
+ * <p>
+ * This initializer is designed for application startup only. It performs metadata reads and optional DDL execution and
+ * must not be called from request hot paths.
+ * </p>
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -79,19 +84,73 @@ public class EntitySchemaInitializer {
                 if (excluded(table, config)) {
                     continue;
                 }
+                initializeTable(dataSource, connection, dialect, operations, config, report, scriptSqls, table);
+            }
+        }
+        writeScript(config, scriptSqls);
+        return report;
+    }
+
+    /**
+     * Initializes one table while holding JVM-local and database-native temporary locks.
+     *
+     * @param dataSource the datasource being initialized
+     * @param connection the active database connection
+     * @param dialect    the active dialect
+     * @param operations the schema behavior
+     * @param config     the schema configuration
+     * @param report     the execution report
+     * @param scriptSqls the generated script SQL collector
+     * @param table      the table metadata
+     * @throws SQLException when metadata reads, lock handling, or DDL execution fails
+     */
+    private void initializeTable(
+            DataSource dataSource,
+            Connection connection,
+            Dialect dialect,
+            SchemaBehavior operations,
+            SchemaConfig config,
+            SchemaReport report,
+            List<String> scriptSqls,
+            TableMeta table) throws SQLException {
+        AutoCloseable jvmLock = SchemaInitializationLock.acquire(dataSource, table);
+        try {
+            AutoCloseable databaseLock = operations.acquireSchemaInitializationLock(connection, table);
+            try {
                 TableSnapshot snapshot = operations.readTable(connection, table);
                 if (config.mode() == Schema.CREATE && snapshot.exists()) {
                     report.skippedSqls().add("Table already exists: " + table.tableName());
-                    continue;
+                    return;
                 }
                 List<SchemaDiff> diffs = new SchemaDiffer(operations, config).diff(table, snapshot);
                 for (SchemaDiff diff : diffs) {
                     handleDiff(connection, dialect, operations, config, report, scriptSqls, diff);
                 }
+            } finally {
+                closeLock(databaseLock);
             }
+        } finally {
+            closeLock(jvmLock);
         }
-        writeScript(config, scriptSqls);
-        return report;
+    }
+
+    /**
+     * Closes a schema initialization lock.
+     *
+     * @param lock the lock to close
+     * @throws SQLException when lock release fails
+     */
+    private void closeLock(AutoCloseable lock) throws SQLException {
+        if (lock == null) {
+            return;
+        }
+        try {
+            lock.close();
+        } catch (SQLException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new SQLException("Schema initialization lock release failed", e);
+        }
     }
 
     /**

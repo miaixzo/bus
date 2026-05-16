@@ -22,6 +22,7 @@ package org.miaixz.bus.mapper.handler;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Charter.Handler;
@@ -78,22 +79,20 @@ public class HandlerRegistry {
     private static final Map<Class<?>, EnumSet<Handler>> METHOD_CACHE = new ConcurrentHashMap<>();
 
     /**
-     * Handler list indexed by operation type, using EnumMap for optimal performance
-     */
-    private final EnumMap<Handler, List<MapperHandler>> handlerIndex = new EnumMap<>(Handler.class);
-
-    /**
      * Set of all handlers (deduplicated)
      */
     private final Set<MapperHandler> handlers = new LinkedHashSet<>();
 
     /**
+     * Immutable handler snapshot published to runtime readers.
+     */
+    private final AtomicReference<HandlerSnapshot> snapshot = new AtomicReference<>(HandlerSnapshot.empty());
+
+    /**
      * Constructor that initializes the index table.
      */
     public HandlerRegistry() {
-        for (Handler type : Handler.values()) {
-            handlerIndex.put(type, new ArrayList<>());
-        }
+        publishSnapshot();
     }
 
     /**
@@ -106,7 +105,7 @@ public class HandlerRegistry {
      *
      * @param handler the handler instance
      */
-    public void addHandler(MapperHandler handler) {
+    public synchronized void addHandler(MapperHandler handler) {
         if (handler == null) {
             return;
         }
@@ -116,36 +115,19 @@ public class HandlerRegistry {
             return;
         }
 
-        // Detect which methods the handler overrides
-        EnumSet<Handler> overriddenTypes = detectOverriddenMethods(handler);
-
-        // Build index based on overridden method types
-        for (Handler type : overriddenTypes) {
-            handlerIndex.get(type).add(handler);
-        }
-
-        // Sort all handler lists by order value
-        sortHandlers();
+        publishSnapshot();
+        HandlerSnapshot current = snapshot.get();
         Logger.debug(
                 false,
                 "Mapper",
                 "Mapper handler registered: handler={}, order={}, queryHandlers={}, updateHandlers={}, prepareHandlers={}, boundSqlHandlers={}, totalHandlers={}",
                 handler.getClass().getName(),
                 handler.getOrder(),
-                handlerIndex.get(Handler.QUERY).size(),
-                handlerIndex.get(Handler.UPDATE).size(),
-                handlerIndex.get(Handler.PREPARE).size(),
-                handlerIndex.get(Handler.GET_BOUND_SQL).size(),
-                handlers.size());
-    }
-
-    /**
-     * Sorts all handler lists by their order values.
-     */
-    private void sortHandlers() {
-        for (List<MapperHandler> handlers : handlerIndex.values()) {
-            handlers.sort(Comparator.comparingInt(MapperHandler::getOrder));
-        }
+                current.getHandlers(Handler.QUERY).size(),
+                current.getHandlers(Handler.UPDATE).size(),
+                current.getHandlers(Handler.PREPARE).size(),
+                current.getHandlers(Handler.GET_BOUND_SQL).size(),
+                current.size());
     }
 
     /**
@@ -153,9 +135,18 @@ public class HandlerRegistry {
      *
      * @param handlers the handler list
      */
-    public void addHandlers(Collection<MapperHandler> handlers) {
-        if (handlers != null) {
-            handlers.forEach(this::addHandler);
+    public synchronized void addHandlers(Collection<MapperHandler> handlers) {
+        if (handlers == null || handlers.isEmpty()) {
+            return;
+        }
+        boolean changed = false;
+        for (MapperHandler handler : handlers) {
+            if (handler != null) {
+                changed |= this.handlers.add(handler);
+            }
+        }
+        if (changed) {
+            publishSnapshot();
         }
     }
 
@@ -166,8 +157,7 @@ public class HandlerRegistry {
      * @return an unmodifiable list of handlers
      */
     public List<MapperHandler> getHandlers(Handler type) {
-        List<MapperHandler> handlers = handlerIndex.get(type);
-        return handlers != null ? Collections.unmodifiableList(handlers) : Collections.emptyList();
+        return snapshot.get().getHandlers(type);
     }
 
     /**
@@ -176,15 +166,15 @@ public class HandlerRegistry {
      * @return an unmodifiable set of all handlers
      */
     public Set<MapperHandler> getHandlers() {
-        return Collections.unmodifiableSet(handlers);
+        return snapshot.get().getHandlers();
     }
 
     /**
      * Clears all handlers.
      */
-    public void clear() {
+    public synchronized void clear() {
         handlers.clear();
-        handlerIndex.values().forEach(List::clear);
+        publishSnapshot();
         Logger.debug(false, "Mapper", "Mapper handler registry cleared");
     }
 
@@ -194,7 +184,27 @@ public class HandlerRegistry {
      * @return the total number of handlers
      */
     public int size() {
-        return handlers.size();
+        return snapshot.get().size();
+    }
+
+    /**
+     * Builds and publishes a new immutable runtime snapshot.
+     */
+    private void publishSnapshot() {
+        EnumMap<Handler, List<MapperHandler>> index = new EnumMap<>(Handler.class);
+        for (Handler type : Handler.values()) {
+            index.put(type, new ArrayList<>());
+        }
+        for (MapperHandler handler : handlers) {
+            EnumSet<Handler> overriddenTypes = detectOverriddenMethods(handler);
+            for (Handler type : overriddenTypes) {
+                index.get(type).add(handler);
+            }
+        }
+        for (List<MapperHandler> indexedHandlers : index.values()) {
+            indexedHandlers.sort(Comparator.comparingInt(MapperHandler::getOrder));
+        }
+        snapshot.set(new HandlerSnapshot(index, handlers));
     }
 
     /**
@@ -301,12 +311,13 @@ public class HandlerRegistry {
      * @return statistics information string
      */
     public String getStatistics() {
+        HandlerSnapshot current = snapshot.get();
         StringBuilder sb = new StringBuilder();
         sb.append("HandlerRegistry Statistics:\n");
-        sb.append("  Total handlers: ").append(handlers.size()).append("\n");
+        sb.append("  Total handlers: ").append(current.size()).append("\n");
 
         for (Handler type : Handler.values()) {
-            int count = handlerIndex.get(type).size();
+            int count = current.getHandlers(type).size();
             sb.append("  ").append(type).append(": ").append(count).append(" handlers\n");
         }
 
@@ -320,10 +331,89 @@ public class HandlerRegistry {
      */
     @Override
     public String toString() {
-        return "HandlerRegistry{" + "totalHandlers=" + handlers.size() + ", queryHandlers="
-                + handlerIndex.get(Handler.QUERY).size() + ", updateHandlers=" + handlerIndex.get(Handler.UPDATE).size()
-                + ", prepareHandlers=" + handlerIndex.get(Handler.PREPARE).size() + ", getBoundSqlHandlers="
-                + handlerIndex.get(Handler.GET_BOUND_SQL).size() + '}';
+        HandlerSnapshot current = snapshot.get();
+        return "HandlerRegistry{" + "totalHandlers=" + current.size() + ", queryHandlers="
+                + current.getHandlers(Handler.QUERY).size() + ", updateHandlers="
+                + current.getHandlers(Handler.UPDATE).size() + ", prepareHandlers="
+                + current.getHandlers(Handler.PREPARE).size() + ", getBoundSqlHandlers="
+                + current.getHandlers(Handler.GET_BOUND_SQL).size() + '}';
+    }
+
+    /**
+     * Immutable runtime view of registered handlers.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    private static final class HandlerSnapshot {
+
+        /**
+         * Handler lists indexed by operation type.
+         */
+        private final Map<Handler, List<MapperHandler>> handlerIndex;
+
+        /**
+         * All registered handlers.
+         */
+        private final Set<MapperHandler> handlers;
+
+        /**
+         * Creates a snapshot from mutable handler state.
+         *
+         * @param handlerIndex the indexed handler lists
+         * @param handlers     all registered handlers
+         */
+        private HandlerSnapshot(Map<Handler, List<MapperHandler>> handlerIndex, Set<MapperHandler> handlers) {
+            EnumMap<Handler, List<MapperHandler>> index = new EnumMap<>(Handler.class);
+            for (Handler type : Handler.values()) {
+                List<MapperHandler> indexedHandlers = handlerIndex.get(type);
+                index.put(type, indexedHandlers == null ? List.of() : List.copyOf(indexedHandlers));
+            }
+            this.handlerIndex = Map.copyOf(index);
+            this.handlers = Set.copyOf(handlers);
+        }
+
+        /**
+         * Creates an empty snapshot.
+         *
+         * @return the empty snapshot
+         */
+        private static HandlerSnapshot empty() {
+            EnumMap<Handler, List<MapperHandler>> index = new EnumMap<>(Handler.class);
+            for (Handler type : Handler.values()) {
+                index.put(type, List.of());
+            }
+            return new HandlerSnapshot(index, Set.of());
+        }
+
+        /**
+         * Gets handlers of the specified type.
+         *
+         * @param type the handler type
+         * @return the immutable handler list
+         */
+        private List<MapperHandler> getHandlers(Handler type) {
+            return handlerIndex.getOrDefault(type, List.of());
+        }
+
+        /**
+         * Gets all registered handlers.
+         *
+         * @return the immutable handler set
+         */
+        private Set<MapperHandler> getHandlers() {
+            return handlers;
+        }
+
+        /**
+         * Gets the total handler count.
+         *
+         * @return the handler count
+         */
+        private int size() {
+            return handlers.size();
+        }
+
     }
 
 }

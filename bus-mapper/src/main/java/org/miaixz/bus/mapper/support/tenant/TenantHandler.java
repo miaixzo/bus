@@ -361,17 +361,15 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
                 getHandler(),
                 ms.getId(),
                 ms.getSqlCommandType());
-        // Get BoundSql and process SQL by modifying MappedStatement's SqlSource
-        BoundSql boundSql = ms.getBoundSql(parameter);
-        handleSqlInMappedStatement(ms, parameter, boundSql);
+        handleSqlInMappedStatement(ms, parameter, null);
     }
 
     /**
-     * Process SQL by modifying the MappedStatement's SqlSource.
+     * Processes SQL by updating the current BoundSql or the request scoped rewrite context.
      *
      * @param ms        the MappedStatement
      * @param parameter the parameter object
-     * @param boundSql  the BoundSql from interceptor (will be modified directly)
+     * @param boundSql  the BoundSql from interceptor, or {@code null} for update interception
      */
     private void handleSqlInMappedStatement(MappedStatement ms, Object parameter, BoundSql boundSql) {
         // Get current configuration
@@ -391,14 +389,12 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
             return;
         }
 
-        // Get FRESH SQL from original SqlSource (to avoid stale SQL)
-        BoundSql freshBoundSql = getFreshBoundSql(ms, parameter);
-        String originalSql = freshBoundSql.getSql();
+        String originalSql = currentSql(ms, parameter, boundSql);
 
         // Check if SQL already contains tenant_id condition (e.g., from previous processing)
         // This prevents duplicate tenant conditions and avoids unnecessary re-processing
         String tenantColumn = currentConfig.getColumn();
-        if (originalSql.contains(tenantColumn + " =") || originalSql.contains(tenantColumn + "=")) {
+        if (hasTenantWhereCondition(originalSql, tenantColumn)) {
             Logger.debug(
                     false,
                     "Mapper",
@@ -470,9 +466,7 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
                 true,
                 ms.getSqlCommandType());
 
-        // Step 1: Modify the BoundSql parameter using reflection
-        // This ensures the current BoundSql instance is modified for current execution
-        if (!setBoundSql(boundSql, actualSql)) {
+        if (boundSql != null && !setBoundSql(boundSql, actualSql)) {
             Logger.warn(
                     false,
                     "Mapper",
@@ -480,12 +474,48 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
                     getHandler(),
                     ms.getId(),
                     ms.getSqlCommandType());
-            // Fallback: continue with SqlSource replacement only
         }
+        putSqlRewrite(ms, actualSql);
+    }
 
-        // Step 2: Replace the SqlSource in MappedStatement
-        // This ensures subsequent getBoundSql() calls return the actual SQL
-        replaceSqlSource(ms, boundSql, actualSql);
+    /**
+     * Tests whether the SQL WHERE clause already contains the tenant condition.
+     *
+     * @param sql          the SQL to inspect
+     * @param tenantColumn the tenant column
+     * @return {@code true} when the WHERE clause contains the tenant condition
+     */
+    private boolean hasTenantWhereCondition(String sql, String tenantColumn) {
+        if (sql == null || tenantColumn == null || tenantColumn.isBlank()) {
+            return false;
+        }
+        String lowerSql = sql.toLowerCase(java.util.Locale.ROOT);
+        int whereIndex = lowerSql.indexOf(" where ");
+        if (whereIndex < 0) {
+            return false;
+        }
+        String whereClause = lowerSql.substring(whereIndex);
+        String column = tenantColumn.toLowerCase(java.util.Locale.ROOT);
+        return whereClause.contains(column + " =") || whereClause.contains(column + "=");
+    }
+
+    /**
+     * Resolves the SQL text that should be used as the next rewrite input.
+     *
+     * @param ms        the mapped statement
+     * @param parameter the statement parameter
+     * @param boundSql  the current bound SQL, or {@code null}
+     * @return the SQL text to rewrite
+     */
+    private String currentSql(MappedStatement ms, Object parameter, BoundSql boundSql) {
+        if (boundSql != null) {
+            return boundSql.getSql();
+        }
+        String rewrittenSql = getSqlRewrite(ms);
+        if (rewrittenSql != null) {
+            return rewrittenSql;
+        }
+        return getFreshBoundSql(ms, parameter).getSql();
     }
 
 }

@@ -223,6 +223,9 @@
                         </format>
                     </formats>
                     <java>
+                        <licenseHeader>
+                            <file>../.github/scripts/miaixz.org</file>
+                        </licenseHeader>
                         <eclipse>
                             <file>../.github/scripts/format.xml</file>
                         </eclipse>

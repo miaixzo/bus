@@ -260,9 +260,7 @@ public class VisibleHandler<T> extends ConditionHandler<T, VisibleConfig> {
 
         String mapperId = ms.getId();
 
-        // Get FRESH SQL from original SqlSource (to avoid stale SQL)
-        BoundSql freshBoundSql = getFreshBoundSql(ms, parameter);
-        String originalSql = freshBoundSql.getSql();
+        String originalSql = boundSql.getSql();
 
         // Create builder for current config and apply perimeter condition
         VisibleBuilder builder = new VisibleBuilder(currentConfig);
@@ -278,10 +276,7 @@ public class VisibleHandler<T> extends ConditionHandler<T, VisibleConfig> {
                 // If reflection fails, log warning and continue with original SQL
                 Logger.warn(false, "Mapper", "Failed to update SQL");
             }
-
-            // Step 2: Replace the SqlSource in MappedStatement
-            // This ensures subsequent getBoundSql() calls return the actual SQL
-            replaceSqlSource(ms, boundSql, actualSql);
+            putSqlRewrite(ms, actualSql);
         } else {
             Logger.debug(false, "Mapper", "SQL unchanged: method={}", mapperId);
         }

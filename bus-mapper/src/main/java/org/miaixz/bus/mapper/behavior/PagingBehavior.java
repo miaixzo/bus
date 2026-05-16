@@ -22,12 +22,12 @@ package org.miaixz.bus.mapper.behavior;
 import org.miaixz.bus.mapper.support.paging.Pageable;
 
 /**
- * Pagination behavior exposed by a database dialect.
+ * Paging behavior exposed by a database dialect.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public interface PaginationBehavior {
+public interface PagingBehavior {
 
     /**
      * Gets the SQL keyword for limiting results.
@@ -56,10 +56,10 @@ public interface PaginationBehavior {
     String buildCountSql(String originalSql);
 
     /**
-     * Builds pagination SQL for the specified query.
+     * Builds paging SQL for the specified query.
      *
      * @param originalSql the original SQL query
-     * @param pageable    the pagination information
+     * @param pageable    the paging information
      * @return the paginated SQL query
      */
     String buildPaginationSql(String originalSql, Pageable pageable);

@@ -867,7 +867,7 @@ int delete(T entity);                      // 根据实体属性删除
 ## 实体表结构初始化
 
 Bus Mapper 支持根据实体元数据初始化数据表结构。能力由 `bus-mapper` 实现，Spring Boot 只负责绑定
-`bus.mapper.schema` 配置并在启动时触发执行。`Dialect` 是唯一数据库能力入口，由 `PaginationBehavior`、
+`bus.mapper.schema` 配置并在启动时触发执行。`Dialect` 是唯一数据库能力入口，由 `PagingBehavior`、
 `OptionsBehavior`、`SchemaBehavior` 三类行为组成。
 
 默认关闭：

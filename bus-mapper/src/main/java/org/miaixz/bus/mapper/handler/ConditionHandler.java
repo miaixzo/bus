@@ -19,7 +19,11 @@
 */
 package org.miaixz.bus.mapper.handler;
 
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -60,6 +64,16 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
      * </p>
      */
     protected Properties properties;
+
+    /**
+     * Cache for datasource-derived configuration values.
+     */
+    private final ConcurrentMap<DerivedConfigKey, Optional<C>> derivedConfigCache = new ConcurrentHashMap<>();
+
+    /**
+     * Properties instance currently associated with the derived configuration cache.
+     */
+    private volatile Properties cachedProperties;
 
     /**
      * Get the configuration key for this handler (e.g., {@link Args#TENANT_KEY}, {@link Args#POPULATE_KEY}).
@@ -124,12 +138,18 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
 
         // 2. Medium priority: Datasource configuration (from properties file for current datasource)
         if (properties != null) {
+            Properties currentProperties = properties;
+            refreshDerivedConfigCache(currentProperties);
             String key = Holder.getKey();
             if (StringKit.isEmpty(key)) {
                 key = "default";
             }
 
-            C derived = derived(key, properties);
+            String datasourceKey = key;
+            DerivedConfigKey cacheKey = new DerivedConfigKey(scope(), datasourceKey, currentProperties);
+            C derived = derivedConfigCache.computeIfAbsent(
+                    cacheKey,
+                    ignored -> Optional.ofNullable(derived(datasourceKey, currentProperties))).orElse(null);
             if (derived != null) {
                 Logger.debug(false, "Mapper", "Using Datasource configuration");
                 return derived;
@@ -143,7 +163,24 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
         } else {
             Logger.debug(true, "Mapper", "No configuration available");
         }
-        return defaults();
+        return defaults;
+    }
+
+    /**
+     * Clears the derived configuration cache when the properties instance changes.
+     *
+     * @param currentProperties the current properties instance
+     */
+    private void refreshDerivedConfigCache(Properties currentProperties) {
+        if (cachedProperties == currentProperties) {
+            return;
+        }
+        synchronized (this) {
+            if (cachedProperties != currentProperties) {
+                derivedConfigCache.clear();
+                cachedProperties = currentProperties;
+            }
+        }
     }
 
     /**
@@ -254,6 +291,26 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
     }
 
     /**
+     * Reads the request-scoped SQL rewrite for a mapped statement.
+     *
+     * @param ms the mapped statement
+     * @return the rewritten SQL, or {@code null} when no rewrite exists
+     */
+    protected String getSqlRewrite(MappedStatement ms) {
+        return SqlRewriteContext.get(ms.getId());
+    }
+
+    /**
+     * Stores the request-scoped SQL rewrite for a mapped statement.
+     *
+     * @param ms  the mapped statement
+     * @param sql the rewritten SQL
+     */
+    protected void putSqlRewrite(MappedStatement ms, String sql) {
+        SqlRewriteContext.put(ms.getId(), sql);
+    }
+
+    /**
      * Replaces the SqlSource in a MappedStatement with a custom SqlSource that preserves SQL modifications.
      * <p>
      * This method creates a new custom SqlSource that:
@@ -264,6 +321,11 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
      * <li>Parameter mappings are dynamically generated based on current parameters</li>
      * <li>Subsequent interceptors can process the modified SQL correctly</li>
      * </ul>
+     * <p>
+     * Built-in handlers no longer use this shared-state propagation path for request-scoped SQL rewrites. They now pass
+     * rewritten SQL through {@link SqlRewriteContext} and the current {@link BoundSql}. This method remains available
+     * for source and binary compatibility with custom handler subclasses.
+     * </p>
      *
      * @param ms        the MappedStatement
      * @param boundSql  the current BoundSql
@@ -285,6 +347,72 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
         } catch (Exception e) {
             Logger.warn(false, "Mapper", "Failed to replace SqlSource: {}", e.getMessage());
         }
+    }
+
+    /**
+     * Cache key for datasource-derived configuration.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    private static final class DerivedConfigKey {
+
+        /**
+         * Handler configuration scope.
+         */
+        private final String scope;
+
+        /**
+         * Datasource key.
+         */
+        private final String datasourceKey;
+
+        /**
+         * Properties instance compared by identity.
+         */
+        private final Properties properties;
+
+        /**
+         * Creates a derived configuration key.
+         *
+         * @param scope         the handler configuration scope
+         * @param datasourceKey the datasource key
+         * @param properties    the properties instance
+         */
+        private DerivedConfigKey(String scope, String datasourceKey, Properties properties) {
+            this.scope = scope;
+            this.datasourceKey = datasourceKey;
+            this.properties = properties;
+        }
+
+        /**
+         * Tests equality using properties identity and value fields.
+         *
+         * @param object the object to compare
+         * @return {@code true} when both keys identify the same derived configuration
+         */
+        @Override
+        public boolean equals(Object object) {
+            if (this == object) {
+                return true;
+            }
+            if (!(object instanceof DerivedConfigKey that)) {
+                return false;
+            }
+            return properties == that.properties && Objects.equals(scope, that.scope)
+                    && Objects.equals(datasourceKey, that.datasourceKey);
+        }
+
+        /**
+         * Returns a hash code based on properties identity and value fields.
+         *
+         * @return the hash code
+         */
+        @Override
+        public int hashCode() {
+            return Objects.hash(scope, datasourceKey, System.identityHashCode(properties));
+        }
+
     }
 
 }

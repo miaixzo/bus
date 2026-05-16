@@ -88,6 +88,24 @@ public interface SchemaBehavior {
     }
 
     /**
+     * Acquires a database-native temporary lock for schema initialization.
+     *
+     * <p>
+     * The default implementation returns a no-op lock. Dialects with database-native temporary lock support may
+     * override this method. Implementations must not create persistent version or migration tables.
+     * </p>
+     *
+     * @param connection the active database connection
+     * @param table      the table metadata
+     * @return the acquired lock handle
+     * @throws SQLException when lock acquisition fails
+     */
+    default AutoCloseable acquireSchemaInitializationLock(Connection connection, TableMeta table) throws SQLException {
+        return () -> {
+        };
+    }
+
+    /**
      * Resolves a column SQL type.
      *
      * @param column the column metadata

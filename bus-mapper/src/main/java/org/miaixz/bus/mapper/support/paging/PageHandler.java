@@ -31,6 +31,7 @@ import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.*;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
+import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.miaixz.bus.core.lang.exception.MapperException;
@@ -77,6 +78,11 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
      * Cache for database dialect detection (JDBC URL -> Dialect)
      */
     private final ConcurrentMap<String, Dialect> dialectCache = new ConcurrentHashMap<>();
+
+    /**
+     * Cache for internally generated count mapped statements.
+     */
+    private final ConcurrentMap<CountStatementKey, MappedStatement> countMappedStatementCache = new ConcurrentHashMap<>();
 
     /**
      * Pagination builder for sorting and SQL generation
@@ -222,14 +228,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
             return;
         }
 
-        Logger.debug(
-                false,
-                "Mapper",
-                "Pagination sorting applied during getBoundSql: method={}, sorted={}",
-                ms.getId(),
-                pageable.getSort() != null && pageable.getSort().isSorted());
-        // Apply sorting to SQL
-        applySorting(boundSql, ms, pageable);
+        Logger.debug(true, "Mapper", "Pagination getBoundSql observed without SQL mutation: method={}", ms.getId());
     }
 
     /**
@@ -258,17 +257,13 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
             return;
         }
 
-        // Apply sorting modifications if needed
-        if (pageable.getSort() != null && pageable.getSort().isSorted()) {
-            Logger.debug(
-                    false,
-                    "Mapper",
-                    "Pagination sorting applied during prepare: method={}, pageNo={}, pageSize={}",
-                    ms != null ? ms.getId() : "unknown",
-                    pageable.getPageNo(),
-                    pageable.getPageSize());
-            applySorting(boundSql, ms, pageable);
-        }
+        Logger.debug(
+                true,
+                "Mapper",
+                "Pagination prepare observed without SQL mutation: method={}, pageNo={}, pageSize={}",
+                ms != null ? ms.getId() : "unknown",
+                pageable.getPageNo(),
+                pageable.getPageSize());
     }
 
     /**
@@ -330,9 +325,6 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
             }
         }
 
-        // Re-get BoundSql from MappedStatement to get the latest SQL modified by previous handlers
-        BoundSql latestBoundSql = mappedStatement.getBoundSql(parameter);
-
         Logger.debug(
                 false,
                 "Mapper",
@@ -358,7 +350,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
             boolean performCount = PageContext.getLocalCount();
             if (performCount) {
                 Logger.debug(true, "Mapper", "Pagination count query started: method={}", mappedStatement.getId());
-                total = executeCountQuery(executor, mappedStatement, parameter, latestBoundSql, dialect);
+                total = executeCountQuery(executor, mappedStatement, parameter, boundSql, dialect);
                 Logger.debug(
                         false,
                         "Mapper",
@@ -404,7 +396,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
                     mappedStatement,
                     parameter,
                     resultHandler,
-                    latestBoundSql,
+                    boundSql,
                     pageable,
                     dialect);
 
@@ -648,7 +640,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
         }
 
         // Create count statement
-        MappedStatement countMs = buildCountMappedStatement(ms, countStatementId, countSql);
+        MappedStatement countMs = countMappedStatement(ms, countStatementId);
         BoundSql countBoundSql = new BoundSql(ms.getConfiguration(), countSql, boundSql.getParameterMappings(),
                 parameter);
 
@@ -721,6 +713,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
         List<Object> result;
         internalPaginationQuery.set(true);
         try {
+            putSqlRewrite(ms, paginatedSql);
             result = executor.query(ms, parameter, RowBounds.DEFAULT, resultHandler, cacheKey, paginatedBoundSql);
         } finally {
             internalPaginationQuery.remove();
@@ -732,14 +725,27 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
     /**
      * Builds a MappedStatement for count queries.
      *
-     * @param ms          the original mapped statement
-     * @param statementId the count statement ID
-     * @param countSql    the count SQL
+     * @param ms               the original mapped statement
+     * @param countStatementId the count statement ID
      * @return the count mapped statement
      */
-    private MappedStatement buildCountMappedStatement(MappedStatement ms, String statementId, String countSql) {
+    private MappedStatement countMappedStatement(MappedStatement ms, String countStatementId) {
+        CountStatementKey key = new CountStatementKey(ms.getConfiguration(), ms.getId(), countStatementId,
+                Long.class.getName());
+        return countMappedStatementCache
+                .computeIfAbsent(key, ignored -> buildCountMappedStatement(ms, countStatementId));
+    }
+
+    /**
+     * Builds a count mapped statement on cache miss.
+     *
+     * @param ms          the original mapped statement
+     * @param statementId the count statement ID
+     * @return the count mapped statement
+     */
+    private MappedStatement buildCountMappedStatement(MappedStatement ms, String statementId) {
         MappedStatement.Builder builder = new MappedStatement.Builder(ms.getConfiguration(), statementId,
-                new CountSqlSource(ms, countSql), ms.getSqlCommandType());
+                new CountSqlSource(ms), ms.getSqlCommandType());
 
         builder.resource(ms.getResource());
         builder.fetchSize(ms.getFetchSize());
@@ -790,28 +796,6 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
     }
 
     /**
-     * Applies sorting to the SQL using the PageBuilder.
-     *
-     * @param boundSql the BoundSql object
-     * @param ms       the MappedStatement
-     * @param pageable the pagination information
-     */
-    private void applySorting(BoundSql boundSql, MappedStatement ms, Pageable pageable) {
-        Sort sort = pageable.getSort();
-        if (sort == null || !sort.isSorted()) {
-            return;
-        }
-
-        String originalSql = boundSql.getSql();
-        String sortedSql = applySorting(originalSql, pageable);
-
-        if (!originalSql.equals(sortedSql)) {
-            // Update the SQL in BoundSql using parent class method
-            setBoundSql(boundSql, sortedSql);
-        }
-    }
-
-    /**
      * Applies sorting to the given SQL text when the pageable contains sort orders.
      *
      * @param sql      the original SQL text
@@ -840,19 +824,12 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
         private final MappedStatement ms;
 
         /**
-         * Count SQL text returned by this SQL source.
-         */
-        private final String countSql;
-
-        /**
          * Creates a count SQL source.
          *
-         * @param ms       the mapped statement used for parameter metadata
-         * @param countSql the count SQL text
+         * @param ms the mapped statement used for parameter metadata
          */
-        public CountSqlSource(MappedStatement ms, String countSql) {
+        public CountSqlSource(MappedStatement ms) {
             this.ms = ms;
-            this.countSql = countSql;
         }
 
         /**
@@ -863,19 +840,82 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
          */
         @Override
         public BoundSql getBoundSql(Object parameterObject) {
-            BoundSql originalBoundSql = ms.getBoundSql(parameterObject);
-            BoundSql countBoundSql = new BoundSql(ms.getConfiguration(), countSql,
-                    originalBoundSql.getParameterMappings(), parameterObject);
+            return ms.getBoundSql(parameterObject);
+        }
 
-            // Copy additional parameters
-            for (ParameterMapping mapping : originalBoundSql.getParameterMappings()) {
-                String prop = mapping.getProperty();
-                if (originalBoundSql.hasAdditionalParameter(prop)) {
-                    countBoundSql.setAdditionalParameter(prop, originalBoundSql.getAdditionalParameter(prop));
-                }
+    }
+
+    /**
+     * Cache key for an internally generated count mapped statement.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    private static final class CountStatementKey {
+
+        /**
+         * MyBatis configuration compared by identity.
+         */
+        private final Configuration configuration;
+
+        /**
+         * Original mapped statement id.
+         */
+        private final String statementId;
+
+        /**
+         * Count mapped statement id.
+         */
+        private final String countStatementId;
+
+        /**
+         * Count result type name.
+         */
+        private final String resultType;
+
+        /**
+         * Creates a count statement cache key.
+         *
+         * @param configuration    the MyBatis configuration
+         * @param statementId      the original mapped statement id
+         * @param countStatementId the count mapped statement id
+         * @param resultType       the count result type name
+         */
+        private CountStatementKey(Configuration configuration, String statementId, String countStatementId,
+                String resultType) {
+            this.configuration = configuration;
+            this.statementId = statementId;
+            this.countStatementId = countStatementId;
+            this.resultType = resultType;
+        }
+
+        /**
+         * Tests equality using configuration identity and value fields.
+         *
+         * @param object the object to compare
+         * @return {@code true} when both keys represent the same count statement
+         */
+        @Override
+        public boolean equals(Object object) {
+            if (this == object) {
+                return true;
             }
+            if (!(object instanceof CountStatementKey that)) {
+                return false;
+            }
+            return configuration == that.configuration && Objects.equals(statementId, that.statementId)
+                    && Objects.equals(countStatementId, that.countStatementId)
+                    && Objects.equals(resultType, that.resultType);
+        }
 
-            return countBoundSql;
+        /**
+         * Returns a hash code based on configuration identity and value fields.
+         *
+         * @return the hash code
+         */
+        @Override
+        public int hashCode() {
+            return Objects.hash(System.identityHashCode(configuration), statementId, countStatementId, resultType);
         }
 
     }

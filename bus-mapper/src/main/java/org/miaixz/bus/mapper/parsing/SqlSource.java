@@ -20,6 +20,9 @@
 package org.miaixz.bus.mapper.parsing;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.sql.DataSource;
 
@@ -109,6 +112,16 @@ public class SqlSource implements org.apache.ibatis.mapping.SqlSource {
     private final SqlMetaCache cache;
 
     /**
+     * Mapper SQL cache key, normally the mapped statement id.
+     */
+    private final String cacheKey;
+
+    /**
+     * Cache of parsed dynamic MyBatis SQL sources.
+     */
+    private final ConcurrentMap<DynamicSqlSourceKey, org.apache.ibatis.mapping.SqlSource> dynamicSqlSourceCache = new ConcurrentHashMap<>();
+
+    /**
      * Constructs a SqlSource with actual SQL and original SqlSource (static SQL).
      *
      * @param ms        the MappedStatement
@@ -133,6 +146,7 @@ public class SqlSource implements org.apache.ibatis.mapping.SqlSource {
         this.actualSql = actualSql;
         this.sqlSource = sqlSource;
         this.cache = cache;
+        this.cacheKey = ms.getId();
     }
 
     /**
@@ -161,11 +175,16 @@ public class SqlSource implements org.apache.ibatis.mapping.SqlSource {
             // Get dialect for current datasource and generate SQL dynamically
             Dialect dialect = resolveDialect();
             String dynamicSql = cache.getSqlScript(dialect);
+            Class<?> parameterType = parameterObject == null ? Object.class : parameterObject.getClass();
+            DynamicSqlSourceKey key = new DynamicSqlSourceKey(configuration, cacheKey,
+                    dialect == null ? "Unknown" : dialect.getDatabase(), parameterType,
+                    dynamicSql == null ? 0 : dynamicSql.hashCode());
 
-            // Parse the dynamic SQL through XMLLanguageDriver to handle <foreach>, <if>, etc.
-            XMLLanguageDriver xmlLanguageDriver = new XMLLanguageDriver();
-            org.apache.ibatis.mapping.SqlSource dynamicSqlSource = xmlLanguageDriver
-                    .createSqlSource(this.configuration, dynamicSql, parameterObject.getClass());
+            org.apache.ibatis.mapping.SqlSource dynamicSqlSource = dynamicSqlSourceCache
+                    .computeIfAbsent(key, ignored -> {
+                        XMLLanguageDriver xmlLanguageDriver = new XMLLanguageDriver();
+                        return xmlLanguageDriver.createSqlSource(this.configuration, dynamicSql, parameterType);
+                    });
 
             // Get BoundSql from the dynamically created SqlSource
             return dynamicSqlSource.getBoundSql(parameterObject);
@@ -214,6 +233,88 @@ public class SqlSource implements org.apache.ibatis.mapping.SqlSource {
      */
     private boolean isResolvedDialect(Dialect dialect) {
         return dialect != null && !"Unknown".equalsIgnoreCase(dialect.getDatabase());
+    }
+
+    /**
+     * Cache key for parsed dynamic MyBatis SQL sources.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    private static final class DynamicSqlSourceKey {
+
+        /**
+         * MyBatis configuration compared by identity.
+         */
+        private final Configuration configuration;
+
+        /**
+         * Mapper cache key.
+         */
+        private final String cacheKey;
+
+        /**
+         * Database dialect name.
+         */
+        private final String dialectName;
+
+        /**
+         * Runtime parameter type used to parse the dynamic SQL source.
+         */
+        private final Class<?> parameterType;
+
+        /**
+         * Hash of the dynamic SQL script.
+         */
+        private final int sqlHash;
+
+        /**
+         * Creates a dynamic SQL source cache key.
+         *
+         * @param configuration the MyBatis configuration
+         * @param cacheKey      the mapper cache key
+         * @param dialectName   the database dialect name
+         * @param parameterType the runtime parameter type
+         * @param sqlHash       the SQL script hash
+         */
+        private DynamicSqlSourceKey(Configuration configuration, String cacheKey, String dialectName,
+                Class<?> parameterType, int sqlHash) {
+            this.configuration = configuration;
+            this.cacheKey = cacheKey;
+            this.dialectName = dialectName;
+            this.parameterType = parameterType;
+            this.sqlHash = sqlHash;
+        }
+
+        /**
+         * Tests equality using configuration identity and value fields.
+         *
+         * @param object the object to compare
+         * @return {@code true} when both keys identify the same parsed SQL source
+         */
+        @Override
+        public boolean equals(Object object) {
+            if (this == object) {
+                return true;
+            }
+            if (!(object instanceof DynamicSqlSourceKey that)) {
+                return false;
+            }
+            return configuration == that.configuration && sqlHash == that.sqlHash
+                    && Objects.equals(cacheKey, that.cacheKey) && Objects.equals(dialectName, that.dialectName)
+                    && Objects.equals(parameterType, that.parameterType);
+        }
+
+        /**
+         * Returns a hash code based on configuration identity and value fields.
+         *
+         * @return the hash code
+         */
+        @Override
+        public int hashCode() {
+            return Objects.hash(System.identityHashCode(configuration), cacheKey, dialectName, parameterType, sqlHash);
+        }
+
     }
 
 }

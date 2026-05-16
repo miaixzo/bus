@@ -20,7 +20,7 @@
 package org.miaixz.bus.mapper.dialect;
 
 import org.miaixz.bus.mapper.behavior.OptionsBehavior;
-import org.miaixz.bus.mapper.behavior.PaginationBehavior;
+import org.miaixz.bus.mapper.behavior.PagingBehavior;
 import org.miaixz.bus.mapper.behavior.SchemaBehavior;
 
 /**
@@ -29,7 +29,7 @@ import org.miaixz.bus.mapper.behavior.SchemaBehavior;
  * @author Kimi Liu
  * @since Java 21+
  */
-public interface Dialect extends PaginationBehavior, OptionsBehavior, SchemaBehavior {
+public interface Dialect extends PagingBehavior, OptionsBehavior, SchemaBehavior {
 
     /**
      * Gets the database product name.

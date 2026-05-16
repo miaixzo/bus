@@ -164,6 +164,8 @@ public class SqlTypeDescriptor {
             case "INT4" -> "INTEGER";
             case "INT8" -> "BIGINT";
             case "BOOL" -> "BOOLEAN";
+            case "CHARACTER VARYING", "VARCHAR2" -> "VARCHAR";
+            case "CHARACTER" -> "CHAR";
             case "DOUBLE PRECISION" -> "DOUBLE";
             default -> type;
         };

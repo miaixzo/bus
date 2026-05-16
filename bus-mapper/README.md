@@ -870,7 +870,7 @@ int delete(T entity);                      // Delete by entity properties
 
 Bus Mapper can initialize table structures from entity metadata. The capability is implemented by `bus-mapper`; Spring
 Boot only binds `bus.mapper.schema` configuration and triggers startup execution. `Dialect` is the single database
-capability entrypoint and is composed of `PaginationBehavior`, `OptionsBehavior`, and `SchemaBehavior`.
+capability entrypoint and is composed of `PagingBehavior`, `OptionsBehavior`, and `SchemaBehavior`.
 
 The default is disabled:
 

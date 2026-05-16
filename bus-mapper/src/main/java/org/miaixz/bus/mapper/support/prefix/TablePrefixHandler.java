@@ -252,7 +252,7 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
         }
 
         Logger.debug(false, "Mapper", "Processing query: method={}", ms.getId());
-        processSqlInMappedStatement(ms, boundSql, currentConfig);
+        processSqlInMappedStatement(ms, boundSql, parameter, currentConfig);
     }
 
     /**
@@ -271,18 +271,22 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
         }
 
         Logger.debug(false, "Mapper", "Processing insert/update: method={}", ms.getId());
-        BoundSql boundSql = ms.getBoundSql(parameter);
-        processSqlInMappedStatement(ms, boundSql, currentConfig);
+        processSqlInMappedStatement(ms, null, parameter, currentConfig);
     }
 
     /**
-     * Process SQL by modifying the BoundSql parameter and replacing MappedStatement's SqlSource.
+     * Processes SQL by updating the current BoundSql or the request scoped rewrite context.
      *
-     * @param ms       the MappedStatement
-     * @param boundSql the BoundSql from interceptor (will be modified directly)
-     * @param config   the prefix configuration
+     * @param ms        the MappedStatement
+     * @param boundSql  the BoundSql from interceptor, or {@code null} for update interception
+     * @param parameter the parameter object
+     * @param config    the prefix configuration
      */
-    private void processSqlInMappedStatement(MappedStatement ms, BoundSql boundSql, TablePrefixConfig config) {
+    private void processSqlInMappedStatement(
+            MappedStatement ms,
+            BoundSql boundSql,
+            Object parameter,
+            TablePrefixConfig config) {
         String prefix = config.getProvider().getPrefix();
         if (StringKit.isEmpty(prefix)) {
             Logger.debug(true, "Mapper", "Prefix is empty, skipping");
@@ -290,9 +294,7 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
         }
 
         try {
-            // Get FRESH SQL from original SqlSource (to avoid stale SQL)
-            BoundSql freshBoundSql = getFreshBoundSql(ms, boundSql.getParameterObject());
-            String originalSql = freshBoundSql.getSql();
+            String originalSql = currentSql(ms, parameter, boundSql);
 
             // Apply prefix to fresh SQL
             TablePrefixBuilder builder = new TablePrefixBuilder(prefix, config.getIgnore());
@@ -301,12 +303,10 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
             if (!originalSql.equals(actualSql)) {
                 // Step 1: Modify the BoundSql parameter using reflection
                 // This ensures the current BoundSql instance is modified for current execution
-                if (!setBoundSql(boundSql, actualSql)) {
+                if (boundSql != null && !setBoundSql(boundSql, actualSql)) {
                     Logger.warn(false, "Mapper", "Failed to modify BoundSql");
                 }
-                // Step 2: Replace the SqlSource in MappedStatement
-                // This ensures subsequent getBoundSql() calls return the actual SQL
-                replaceSqlSource(ms, boundSql, actualSql);
+                putSqlRewrite(ms, actualSql);
                 Logger.debug(false, "Mapper", "Applied: prefix={}, method={}", prefix, ms.getId());
             } else {
                 // SQL unchanged (table in ignore list or no match)
@@ -315,6 +315,25 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
         } catch (Exception e) {
             Logger.warn(false, "Mapper", "Failed to apply prefix: {}", e.getMessage());
         }
+    }
+
+    /**
+     * Resolves the SQL text that should be used as the next rewrite input.
+     *
+     * @param ms        the mapped statement
+     * @param parameter the statement parameter
+     * @param boundSql  the current bound SQL, or {@code null}
+     * @return the SQL text to rewrite
+     */
+    private String currentSql(MappedStatement ms, Object parameter, BoundSql boundSql) {
+        if (boundSql != null) {
+            return boundSql.getSql();
+        }
+        String rewrittenSql = getSqlRewrite(ms);
+        if (rewrittenSql != null) {
+            return rewrittenSql;
+        }
+        return getFreshBoundSql(ms, parameter).getSql();
     }
 
 }

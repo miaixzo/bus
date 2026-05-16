@@ -241,6 +241,9 @@ public class SchemaDiffer {
             }
         }
         for (IndexMeta actual : snapshot.indexes()) {
+            if (primaryKeyIndex(table, actual)) {
+                continue;
+            }
             if (!expectedNames.contains(TableSnapshot.normalizeIdentifier(actual.name()))) {
                 diffs.add(
                         SchemaDiff.of(
@@ -250,6 +253,23 @@ public class SchemaDiffer {
                                 "Database index is not mapped: " + actual.name()).index(actual));
             }
         }
+    }
+
+    /**
+     * Tests whether a database index represents the table primary key.
+     *
+     * @param table the table metadata
+     * @param index the database index metadata
+     * @return {@code true} when the index covers the primary key columns
+     */
+    private boolean primaryKeyIndex(TableMeta table, IndexMeta index) {
+        if (index == null || index.columns() == null || index.columns().isEmpty()) {
+            return false;
+        }
+        List<String> primaryKeys = table.idColumns().stream().map(ColumnMeta::column)
+                .map(TableSnapshot::normalizeIdentifier).toList();
+        List<String> indexColumns = index.columns().stream().map(TableSnapshot::normalizeIdentifier).toList();
+        return !primaryKeys.isEmpty() && primaryKeys.equals(indexColumns);
     }
 
     /**

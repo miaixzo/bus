@@ -19,7 +19,11 @@
 */
 package org.miaixz.bus.mapper.dialect;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.EnumSet;
+import java.util.Locale;
 
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
@@ -152,6 +156,84 @@ public class PostgreSql extends AbstractDialect {
     @Override
     public String buildPaginationSql(String originalSql, Pageable pageable) {
         return buildPaginatedSql(originalSql, pageable);
+    }
+
+    /**
+     * Acquires a PostgreSQL advisory lock for schema initialization.
+     *
+     * @param connection the active database connection
+     * @param table      the table metadata
+     * @return the advisory lock handle
+     * @throws SQLException when the lock cannot be acquired
+     */
+    @Override
+    public AutoCloseable acquireSchemaInitializationLock(Connection connection, TableMeta table) throws SQLException {
+        long lockKey = advisoryLockKey(connection, table);
+        try (PreparedStatement statement = connection.prepareStatement("SELECT pg_advisory_lock(?)")) {
+            statement.setLong(1, lockKey);
+            statement.execute();
+        }
+        return () -> {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT pg_advisory_unlock(?)")) {
+                statement.setLong(1, lockKey);
+                statement.execute();
+            }
+        };
+    }
+
+    /**
+     * Builds a stable PostgreSQL advisory lock key.
+     *
+     * @param connection the active database connection
+     * @param table      the table metadata
+     * @return the advisory lock key
+     * @throws SQLException when catalog or schema lookup fails
+     */
+    private long advisoryLockKey(Connection connection, TableMeta table) throws SQLException {
+        String catalog = firstNonBlank(table.catalog(), connection.getCatalog());
+        String schema = firstNonBlank(table.schema(), connection.getSchema());
+        String tableName = table.tableName();
+        return stableHash(normalize(catalog) + ":" + normalize(schema) + ":" + normalize(tableName));
+    }
+
+    /**
+     * Returns the first non-blank value.
+     *
+     * @param values the candidate values
+     * @return the first non-blank value, or an empty string
+     */
+    private String firstNonBlank(String... values) {
+        for (String value : values) {
+            if (value != null && !value.isBlank()) {
+                return value;
+            }
+        }
+        return "";
+    }
+
+    /**
+     * Normalizes lock key text.
+     *
+     * @param value the value to normalize
+     * @return the normalized value
+     */
+    private String normalize(String value) {
+        return value == null ? "" : value.toLowerCase(Locale.ROOT);
+    }
+
+    /**
+     * Computes a stable 64-bit FNV-1a hash.
+     *
+     * @param value the value to hash
+     * @return the stable hash
+     */
+    private long stableHash(String value) {
+        long hash = 0xcbf29ce484222325L;
+        for (int i = 0; i < value.length(); i++) {
+            hash ^= value.charAt(i);
+            hash *= 0x100000001b3L;
+        }
+        return hash;
     }
 
 }

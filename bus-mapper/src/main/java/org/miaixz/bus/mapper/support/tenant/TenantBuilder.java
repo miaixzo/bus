@@ -72,7 +72,7 @@ public class TenantBuilder {
     /**
      * WHERE clause regex.
      */
-    private static final Pattern WHERE_PATTERN = Pattern.compile("\\s+WHERE\\s+", Pattern.CASE_INSENSITIVE);
+    private static final Pattern WHERE_PATTERN = Pattern.compile("\\bWHERE\\b\\s*", Pattern.CASE_INSENSITIVE);
 
     /**
      * Tenant configuration.
@@ -176,10 +176,10 @@ public class TenantBuilder {
             // WHERE exists, add tenant filtering after WHERE keyword
             int whereStart = whereMatcher.start();
             int whereEnd = whereMatcher.end();
-            String beforeWhere = rest.substring(0, whereEnd); // Includes "WHERE "
+            String beforeWhere = rest.substring(0, whereStart);
             String afterWhere = rest.substring(whereEnd); // Original WHERE conditions
             return String.format(
-                    "SELECT %s FROM %s%s%s AND (%s)",
+                    "SELECT %s FROM %s%s WHERE %s AND (%s)",
                     extractSelectColumns(sql),
                     tableName,
                     beforeWhere,
