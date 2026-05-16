@@ -25,6 +25,10 @@ import java.util.*;
 
 import org.miaixz.bus.mapper.Order;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 /**
  * Sort option for queries.
  *
@@ -67,6 +71,7 @@ import org.miaixz.bus.mapper.Order;
  * @author Kimi Liu
  * @since Java 21+
  */
+@Getter
 public final class Sort implements Serializable, Iterable<Order> {
 
     /**
@@ -155,15 +160,6 @@ public final class Sort implements Serializable, Iterable<Order> {
     }
 
     /**
-     * Gets the sort orders.
-     *
-     * @return an unmodifiable list of sort orders
-     */
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    /**
      * Creates a new Sort by combining this Sort with the specified Sort.
      * <p>
      * Returns a new instance containing orders from both this instance and the provided argument.
@@ -195,6 +191,12 @@ public final class Sort implements Serializable, Iterable<Order> {
         return orders.iterator();
     }
 
+    /**
+     * Compares this sort definition with another object.
+     *
+     * @param obj the object to compare with this instance
+     * @return {@code true} when both objects are equal
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -207,11 +209,21 @@ public final class Sort implements Serializable, Iterable<Order> {
         return orders.equals(sort.orders);
     }
 
+    /**
+     * Returns the hash code for this sort definition.
+     *
+     * @return the hash code value
+     */
     @Override
     public int hashCode() {
         return orders.hashCode();
     }
 
+    /**
+     * Returns a readable representation of this sort definition.
+     *
+     * @return the string representation
+     */
     @Override
     public String toString() {
         return orders.isEmpty() ? "UNSORTED" : orders.toString();
@@ -223,16 +235,13 @@ public final class Sort implements Serializable, Iterable<Order> {
      * @author Kimi Liu
      * @since Java 21+
      */
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class SortBuilder {
 
         /**
          * The property name to be sorted.
          */
         private final String property;
-
-        private SortBuilder(String property) {
-            this.property = property;
-        }
 
         /**
          * Sets the direction to ascending.

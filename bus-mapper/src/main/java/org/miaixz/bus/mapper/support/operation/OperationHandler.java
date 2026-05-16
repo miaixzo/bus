@@ -32,6 +32,9 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.handler.AbstractSqlHandler;
 import org.miaixz.bus.mapper.handler.MapperHandler;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Operation handler to prevent full table updates and deletes. This handler intercepts UPDATE and DELETE statements to
  * ensure they have a valid WHERE clause, preventing accidental modification or deletion of all records in a table.
@@ -44,6 +47,8 @@ import org.miaixz.bus.mapper.handler.MapperHandler;
  * @author Kimi Liu
  * @since Java 21+
  */
+@Getter
+@Setter
 public class OperationHandler<T> extends AbstractSqlHandler implements MapperHandler<T> {
 
     /**
@@ -69,7 +74,15 @@ public class OperationHandler<T> extends AbstractSqlHandler implements MapperHan
      * Pre-compiled patterns for SQL normalization (performance optimization)
      */
     private static final Pattern SINGLE_LINE_COMMENT_PATTERN = Pattern.compile("--[^\\r\\n]*");
+
+    /**
+     * Pattern matching SQL block comments.
+     */
     private static final Pattern MULTI_LINE_COMMENT_PATTERN = Pattern.compile("/\\*.*?\\*/");
+
+    /**
+     * Pattern matching repeated whitespace.
+     */
     private static final Pattern WHITESPACE_PATTERN = Pattern.compile("\\s+");
 
     /**
@@ -87,6 +100,11 @@ public class OperationHandler<T> extends AbstractSqlHandler implements MapperHan
         return "Operation";
     }
 
+    /**
+     * Returns the execution order for the operation safety handler in the mapper interceptor chain.
+     *
+     * @return the handler order value
+     */
     @Override
     public int getOrder() {
         return MIN_VALUE + 3;
@@ -168,24 +186,6 @@ public class OperationHandler<T> extends AbstractSqlHandler implements MapperHan
         sql = WHITESPACE_PATTERN.matcher(sql).replaceAll(Symbol.SPACE);
 
         return sql.trim();
-    }
-
-    /**
-     * Checks if strict mode is enabled.
-     *
-     * @return true if strict mode is enabled, false otherwise
-     */
-    public boolean isStrictMode() {
-        return strictMode;
-    }
-
-    /**
-     * Sets whether to enable strict mode.
-     *
-     * @param strictMode true to enable strict mode, false otherwise
-     */
-    public void setStrictMode(boolean strictMode) {
-        this.strictMode = strictMode;
     }
 
 }

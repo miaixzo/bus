@@ -27,6 +27,9 @@ import org.miaixz.bus.mapper.support.prefix.TablePrefixConfig;
 import org.miaixz.bus.mapper.support.tenant.TenantConfig;
 import org.miaixz.bus.mapper.support.visible.VisibleConfig;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Extends the core context to provide a specific context for the mapper module with unified configuration override
  * mechanism.
@@ -195,12 +198,33 @@ public class Context extends org.miaixz.bus.core.Context {
      * @author Kimi Liu
      * @since Java 21+
      */
+    @Getter
+    @Setter
     public static class MapperConfig {
 
+        /**
+         * Tenant isolation configuration.
+         */
         private TenantConfig tenant;
+
+        /**
+         * SQL audit configuration.
+         */
         private AuditConfig audit;
+
+        /**
+         * Automatic field population configuration.
+         */
         private PopulateConfig populate;
+
+        /**
+         * Data visibility filtering configuration.
+         */
         private VisibleConfig visible;
+
+        /**
+         * Table prefix rewriting configuration.
+         */
         private TablePrefixConfig prefix;
 
         /**
@@ -212,46 +236,6 @@ public class Context extends org.miaixz.bus.core.Context {
             return new Builder();
         }
 
-        public TenantConfig getTenant() {
-            return tenant;
-        }
-
-        public void setTenant(TenantConfig tenant) {
-            this.tenant = tenant;
-        }
-
-        public AuditConfig getAudit() {
-            return audit;
-        }
-
-        public void setAudit(AuditConfig audit) {
-            this.audit = audit;
-        }
-
-        public PopulateConfig getPopulate() {
-            return populate;
-        }
-
-        public void setPopulate(PopulateConfig populate) {
-            this.populate = populate;
-        }
-
-        public VisibleConfig getVisible() {
-            return visible;
-        }
-
-        public void setVisible(VisibleConfig visible) {
-            this.visible = visible;
-        }
-
-        public TablePrefixConfig getPrefix() {
-            return prefix;
-        }
-
-        public void setPrefix(TablePrefixConfig prefix) {
-            this.prefix = prefix;
-        }
-
         /**
          * Fluent builder for MapperConfig.
          *
@@ -260,6 +244,9 @@ public class Context extends org.miaixz.bus.core.Context {
          */
         public static class Builder {
 
+            /**
+             * Mutable configuration instance assembled by this builder.
+             */
             private final MapperConfig config = new MapperConfig();
 
             /**

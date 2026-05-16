@@ -26,6 +26,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.Args;
+import org.miaixz.bus.mapper.Charter.Isolation;
 import org.miaixz.bus.mapper.Holder;
 
 import lombok.AllArgsConstructor;
@@ -70,7 +71,7 @@ import lombok.experimental.SuperBuilder;
  * TenantConfig config = TenantConfig.ofDefault();
  *
  * // Method 3: Full configuration with custom provider
- * TenantConfig config = TenantConfig.builder().mode(TenantMode.COLUMN).column("tenant_id")
+ * TenantConfig config = TenantConfig.builder().mode(Isolation.COLUMN).column("tenant_id")
  *         .ignoreTables("sys_config", "sys_dict").provider(() -> SecurityContextHolder.getTenantId()).build();
  *
  * // Method 4: Configuration file-based (auto-load from application.yml)
@@ -87,10 +88,10 @@ import lombok.experimental.SuperBuilder;
 public class TenantConfig {
 
     /**
-     * Multi-tenancy mode.
+     * Multi-tenancy data isolation strategy.
      */
     @Builder.Default
-    private final TenantMode mode = TenantMode.COLUMN;
+    private final Isolation mode = Isolation.COLUMN;
 
     /**
      * Tenant ID column name (used in COLUMN mode).

@@ -64,7 +64,7 @@ public interface SqlScript {
      */
     static String caching(ProviderContext context, BiFunctionX<TableMeta, SqlScript, String> sqlScriptBuilder) {
         TableMeta entity = MapperFactory.of(context.getMapperType(), context.getMapperMethod());
-        SqlScript wrapper = SqlScriptWrapper.wrapSqlScript(context, entity, null);
+        SqlScript wrapper = SqlScriptWrapper.wrapSqlScript(context, entity, ignored -> "");
         return Caching.cache(
                 context,
                 entity,

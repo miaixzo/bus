@@ -103,10 +103,38 @@ public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
             if (!column.name().isEmpty()) {
                 columnMeta.column(column.name());
             }
-            columnMeta.insertable(column.insertable()).updatable(column.updatable());
+            columnMeta.insertable(column.insertable()).updatable(column.updatable()).nullable(column.nullable())
+                    .length(column.length()).precision(column.precision()).scale(column.scale())
+                    .unique(column.unique());
             if (column.scale() != 0) {
                 columnMeta.numericScale(String.valueOf(column.scale()));
             }
+            if (!column.columnDefinition().isBlank()) {
+                columnMeta.columnDefinition(column.columnDefinition());
+            }
+        }
+
+        // Process the basic annotation.
+        if (fieldMeta.isAnnotationPresent(Basic.class)) {
+            Basic basic = fieldMeta.getAnnotation(Basic.class);
+            columnMeta.nullable(basic.optional());
+        }
+
+        // Process the LOB annotation.
+        if (fieldMeta.isAnnotationPresent(Lob.class)) {
+            columnMeta.lob(true);
+        }
+
+        // Process the enum annotation.
+        if (fieldMeta.isAnnotationPresent(Enumerated.class)) {
+            Enumerated enumerated = fieldMeta.getAnnotation(Enumerated.class);
+            columnMeta.enumType(enumerated.value());
+        }
+
+        // Process the generated value annotation.
+        if (fieldMeta.isAnnotationPresent(GeneratedValue.class)) {
+            GeneratedValue generatedValue = fieldMeta.getAnnotation(GeneratedValue.class);
+            columnMeta.generationType(generatedValue.strategy());
         }
 
         // Process the order-by annotation.

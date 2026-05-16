@@ -38,6 +38,8 @@ import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Context;
 import org.miaixz.bus.mapper.handler.ConditionHandler;
 
+import lombok.Getter;
+
 /**
  * Multi-tenancy handler.
  *
@@ -51,7 +53,7 @@ import org.miaixz.bus.mapper.handler.ConditionHandler;
  *
  * <pre>{@code
  * // 1. Create tenant configuration
- * TenantConfig config = TenantConfig.builder().mode(TenantMode.COLUMN).column("tenant_id")
+ * TenantConfig config = TenantConfig.builder().mode(Isolation.COLUMN).column("tenant_id")
  *         .ignoreTables("sys_config", "sys_dict").enabled(true).build();
  *
  * // 2. Create tenant handler
@@ -62,7 +64,7 @@ import org.miaixz.bus.mapper.handler.ConditionHandler;
  * interceptor.addHandler(tenantHandler);
  *
  * // Or with custom tenant ID resolver
- * TenantConfig config2 = TenantConfig.builder().mode(TenantMode.COLUMN).tenantIdResolver(() -> {
+ * TenantConfig config2 = TenantConfig.builder().mode(Isolation.COLUMN).tenantIdResolver(() -> {
  *     // Custom logic to get tenant ID
  *     return SecurityContextHolder.getTenantId();
  * }).enabled(true).build();
@@ -72,6 +74,7 @@ import org.miaixz.bus.mapper.handler.ConditionHandler;
  * @author Kimi Liu
  * @since Java 21+
  */
+@Getter
 public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
 
     /**
@@ -483,15 +486,6 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
         // Step 2: Replace the SqlSource in MappedStatement
         // This ensures subsequent getBoundSql() calls return the actual SQL
         replaceSqlSource(ms, boundSql, actualSql);
-    }
-
-    /**
-     * Get tenant configuration from file (lowest priority).
-     *
-     * @return the tenant configuration
-     */
-    public TenantConfig getConfig() {
-        return config;
     }
 
 }

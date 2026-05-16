@@ -25,6 +25,9 @@ import org.miaixz.bus.core.text.PooledStringBuilder;
 import org.miaixz.bus.core.text.StringBuilderPool;
 import org.miaixz.bus.mapper.Order;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 /**
  * Pagination SQL builder that handles sorting and pagination SQL generation.
  *
@@ -101,6 +104,16 @@ public class PageBuilder {
         }
         builder.append(orderByClause);
         return builder.toString();
+    }
+
+    /**
+     * Removes the top-level sorting clause from the given SQL query.
+     *
+     * @param originalSql the original SQL query
+     * @return the SQL query without a top-level Order BY clause
+     */
+    public String removeSort(String originalSql) {
+        return removeExistingOrderBy(originalSql);
     }
 
     /**
@@ -298,51 +311,24 @@ public class PageBuilder {
      * @author Kimi Liu
      * @since Java 21+
      */
+    @Getter
+    @RequiredArgsConstructor
     public static class PaginationResult {
 
+        /**
+         * SQL statement with pagination applied.
+         */
         private final String sql;
+
+        /**
+         * SQL statement used for count queries.
+         */
         private final String countSql;
+
+        /**
+         * Whether a count query must be executed.
+         */
         private final boolean countRequired;
-
-        /**
-         * Creates a new PaginationResult.
-         *
-         * @param sql           the paginated SQL
-         * @param countSql      the count SQL
-         * @param countRequired whether a count query is required
-         */
-        public PaginationResult(String sql, String countSql, boolean countRequired) {
-            this.sql = sql;
-            this.countSql = countSql;
-            this.countRequired = countRequired;
-        }
-
-        /**
-         * Gets the paginated SQL.
-         *
-         * @return the paginated SQL
-         */
-        public String getSql() {
-            return sql;
-        }
-
-        /**
-         * Gets the count SQL.
-         *
-         * @return the count SQL
-         */
-        public String getCountSql() {
-            return countSql;
-        }
-
-        /**
-         * Checks if a count query is required.
-         *
-         * @return true if count query is required
-         */
-        public boolean isCountRequired() {
-            return countRequired;
-        }
 
     }
 

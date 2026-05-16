@@ -19,7 +19,15 @@
 */
 package org.miaixz.bus.mapper.dialect;
 
+import java.util.EnumSet;
+
+import org.miaixz.bus.mapper.Charter.Behavior;
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
+import org.miaixz.bus.mapper.parsing.IndexMeta;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 import org.miaixz.bus.mapper.support.paging.Pageable;
+import org.miaixz.bus.mapper.support.schema.ColumnSnapshot;
+import org.miaixz.bus.mapper.support.schema.SqlTypeDescriptor;
 
 /**
  * Dialect resolver and final dialect implementation for Polardb product-family endpoints.
@@ -47,7 +55,21 @@ public final class Polardb extends AbstractDialect {
      * @since Java 21+
      */
     private enum Engine {
-        UNKNOWN, MYSQL, POSTGRESQL
+
+        /**
+         * Engine family has not been resolved.
+         */
+        UNKNOWN,
+
+        /**
+         * MySQL-compatible Polardb engine.
+         */
+        MYSQL,
+
+        /**
+         * PostgreSQL-compatible Polardb engine.
+         */
+        POSTGRESQL
 
     }
 
@@ -97,15 +119,132 @@ public final class Polardb extends AbstractDialect {
     /**
      * Returns the UPSERT type used by the resolved internal engine family.
      *
-     * @return {@link Dialect.Type#INSERT_ON_DUPLICATE} for MySQL-compatible Polardb, or
-     *         {@link Dialect.Type#INSERT_ON_CONFLICT} for PostgreSQL-compatible Polardb
+     * @return {@link Behavior#INSERT_ON_DUPLICATE} for MySQL-compatible Polardb, or {@link Behavior#INSERT_ON_CONFLICT}
+     *         for PostgreSQL-compatible Polardb
      */
     @Override
-    public Dialect.Type getUpsertType() {
+    public Behavior getUpsertType() {
         return switch (engine) {
-            case MYSQL -> Dialect.Type.INSERT_ON_DUPLICATE;
-            case POSTGRESQL -> Dialect.Type.INSERT_ON_CONFLICT;
+            case MYSQL -> Behavior.INSERT_ON_DUPLICATE;
+            case POSTGRESQL -> Behavior.INSERT_ON_CONFLICT;
             case UNKNOWN -> throw new IllegalStateException("Polardb template instance must be resolved before use");
+        };
+    }
+
+    /**
+     * Returns the database behavior set advertised by this dialect.
+     *
+     * @return the supported behavior set
+     */
+    @Override
+    public EnumSet<Behavior> types() {
+        return engine == Engine.UNKNOWN ? EnumSet.noneOf(Behavior.class) : schemaTypes(getUpsertType());
+    }
+
+    /**
+     * Resolves the SQL type descriptor used by this dialect for the supplied mapper column.
+     *
+     * @param column the mapper column metadata
+     * @return the SQL type descriptor for the column
+     */
+    @Override
+    public SqlTypeDescriptor resolveType(ColumnMeta column) {
+        return switch (engine) {
+            case MYSQL -> mysqlType(column);
+            case POSTGRESQL -> postgresqlType(column);
+            case UNKNOWN -> throw unresolved();
+        };
+    }
+
+    /**
+     * Builds the DDL used to change the SQL type of a column.
+     *
+     * @param table        the mapper table metadata
+     * @param column       the mapper column metadata
+     * @param actualColumn the column metadata currently present in the database
+     * @return the generated type-change SQL
+     */
+    @Override
+    public String modifyColumnType(TableMeta table, ColumnMeta column, ColumnSnapshot actualColumn) {
+        return switch (engine) {
+            case MYSQL -> mysqlModifyColumn(table, column);
+            case POSTGRESQL -> postgresqlModifyColumnType(table, column);
+            case UNKNOWN -> throw unresolved();
+        };
+    }
+
+    /**
+     * Builds the DDL used to change the character length of a column.
+     *
+     * @param table        the mapper table metadata
+     * @param column       the mapper column metadata
+     * @param actualColumn the column metadata currently present in the database
+     * @return the generated length-change SQL
+     */
+    @Override
+    public String modifyColumnLength(TableMeta table, ColumnMeta column, ColumnSnapshot actualColumn) {
+        return modifyColumnType(table, column, actualColumn);
+    }
+
+    /**
+     * Builds the DDL used to change the numeric precision or scale of a column.
+     *
+     * @param table        the mapper table metadata
+     * @param column       the mapper column metadata
+     * @param actualColumn the column metadata currently present in the database
+     * @return the generated decimal-change SQL
+     */
+    @Override
+    public String modifyColumnDecimal(TableMeta table, ColumnMeta column, ColumnSnapshot actualColumn) {
+        return modifyColumnType(table, column, actualColumn);
+    }
+
+    /**
+     * Builds the DDL used to change the nullable flag for a column.
+     *
+     * @param table        the mapper table metadata
+     * @param column       the mapper column metadata
+     * @param actualColumn the column metadata currently present in the database
+     * @return the generated nullable-change SQL
+     */
+    @Override
+    public String modifyColumnNullable(TableMeta table, ColumnMeta column, ColumnSnapshot actualColumn) {
+        return switch (engine) {
+            case MYSQL -> mysqlModifyColumn(table, column);
+            case POSTGRESQL -> postgresqlModifyColumnNullable(table, column);
+            case UNKNOWN -> throw unresolved();
+        };
+    }
+
+    /**
+     * Builds the DDL used to drop an index from a table.
+     *
+     * @param table the mapper table metadata
+     * @param index the mapper index metadata
+     * @return the generated drop-index SQL
+     */
+    @Override
+    public String dropIndex(TableMeta table, IndexMeta index) {
+        return switch (engine) {
+            case MYSQL -> mysqlDropIndex(table, index);
+            case POSTGRESQL -> super.dropIndex(table, index);
+            case UNKNOWN -> throw unresolved();
+        };
+    }
+
+    /**
+     * Builds the dialect-specific DDL used to replace or modify a column definition.
+     *
+     * @param table  the mapper table metadata
+     * @param column the mapper column metadata
+     * @return the generated column modification SQL
+     */
+    @Override
+    protected String modifyColumn(TableMeta table, ColumnMeta column) {
+        return switch (engine) {
+            case MYSQL -> mysqlModifyColumn(table, column);
+            case POSTGRESQL -> postgresqlModifyColumnType(table, column);
+            case UNKNOWN -> throw unresolved();
         };
     }
 
@@ -122,6 +261,15 @@ public final class Polardb extends AbstractDialect {
             throw new IllegalStateException("Polardb template instance must be resolved from a JDBC URL before use");
         }
         return buildPaginatedSql(originalSql, pageable);
+    }
+
+    /**
+     * Creates the exception used when the template instance is used before URL resolution.
+     *
+     * @return the unresolved template exception
+     */
+    private IllegalStateException unresolved() {
+        return new IllegalStateException("Polardb template instance must be resolved before use");
     }
 
 }

@@ -21,13 +21,18 @@ package org.miaixz.bus.mapper.parsing;
 
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.scripting.xmltags.XMLLanguageDriver;
 import org.apache.ibatis.session.Configuration;
 import org.miaixz.bus.mapper.dialect.Dialect;
 import org.miaixz.bus.mapper.dialect.DialectRegistry;
+
+import lombok.Getter;
 
 /**
  * A custom {@link org.apache.ibatis.mapping.SqlSource} that wraps a modified SQL while ensuring parameter mappings
@@ -69,6 +74,7 @@ import org.miaixz.bus.mapper.dialect.DialectRegistry;
  * @author Kimi Liu
  * @since Java 21+
  */
+@Getter
 public class SqlSource implements org.apache.ibatis.mapping.SqlSource {
 
     /**
@@ -153,7 +159,7 @@ public class SqlSource implements org.apache.ibatis.mapping.SqlSource {
         // For dynamic SQL, we need to regenerate SqlSource at runtime based on dialect
         if (cache != null && cache.isDynamic()) {
             // Get dialect for current datasource and generate SQL dynamically
-            Dialect dialect = DialectRegistry.getDialect();
+            Dialect dialect = resolveDialect();
             String dynamicSql = cache.getSqlScript(dialect);
 
             // Parse the dynamic SQL through XMLLanguageDriver to handle <foreach>, <if>, etc.
@@ -180,21 +186,34 @@ public class SqlSource implements org.apache.ibatis.mapping.SqlSource {
     }
 
     /**
-     * Gets the MyBatis configuration.
+     * Resolves the dialect for dynamic SQL generation.
      *
-     * @return the configuration object
+     * @return the dialect resolved from the datasource key or MyBatis environment datasource
      */
-    public Configuration getConfiguration() {
-        return configuration;
+    private Dialect resolveDialect() {
+        Dialect dialect = DialectRegistry.getDialect();
+        if (isResolvedDialect(dialect)) {
+            return dialect;
+        }
+        Environment environment = this.configuration.getEnvironment();
+        if (environment == null) {
+            return dialect;
+        }
+        DataSource dataSource = environment.getDataSource();
+        if (dataSource == null) {
+            return dialect;
+        }
+        return DialectRegistry.getDialect(dataSource);
     }
 
     /**
-     * Gets the actual SQL.
+     * Tests whether the dialect represents a concrete database implementation.
      *
-     * @return the actual SQL string
+     * @param dialect the dialect to test
+     * @return {@code true} when the dialect is concrete
      */
-    public String getActualSql() {
-        return actualSql;
+    private boolean isResolvedDialect(Dialect dialect) {
+        return dialect != null && !"Unknown".equalsIgnoreCase(dialect.getDatabase());
     }
 
 }

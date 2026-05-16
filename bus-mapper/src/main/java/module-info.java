@@ -19,7 +19,7 @@
 */
 /**
  * bus.mapper
- * 
+ *
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -27,6 +27,7 @@ module bus.mapper {
 
     requires java.compiler;
     requires java.desktop;
+    requires java.sql;
 
     requires bus.core;
     requires bus.logger;
@@ -38,6 +39,7 @@ module bus.mapper {
 
     exports org.miaixz.bus.mapper;
     exports org.miaixz.bus.mapper.annotation;
+    exports org.miaixz.bus.mapper.behavior;
     exports org.miaixz.bus.mapper.binding;
     exports org.miaixz.bus.mapper.builder;
     exports org.miaixz.bus.mapper.criteria;
@@ -56,9 +58,10 @@ module bus.mapper {
     exports org.miaixz.bus.mapper.support.keygen;
     exports org.miaixz.bus.mapper.support.operation;
     exports org.miaixz.bus.mapper.support.paging;
-    exports org.miaixz.bus.mapper.support.tenant;
     exports org.miaixz.bus.mapper.support.populate;
-    exports org.miaixz.bus.mapper.support.visible;
     exports org.miaixz.bus.mapper.support.prefix;
+    exports org.miaixz.bus.mapper.support.schema;
+    exports org.miaixz.bus.mapper.support.tenant;
+    exports org.miaixz.bus.mapper.support.visible;
 
 }

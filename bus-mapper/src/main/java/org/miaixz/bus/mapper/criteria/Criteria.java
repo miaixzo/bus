@@ -599,15 +599,6 @@ public class Criteria<T> {
     }
 
     /**
-     * Gets the list of criteria.
-     *
-     * @return The list of criteria.
-     */
-    public List<Criterion> getCriteria() {
-        return criteria;
-    }
-
-    /**
      * Checks if the criteria are valid (i.e., not empty).
      *
      * @return {@code true} if valid, {@code false} otherwise.

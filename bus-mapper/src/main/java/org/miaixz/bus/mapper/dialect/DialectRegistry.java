@@ -35,7 +35,6 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Holder;
-import org.miaixz.bus.mapper.support.paging.Pageable;
 
 /**
  * Registry for database dialects, providing automatic detection and caching.
@@ -108,6 +107,9 @@ public final class DialectRegistry {
      */
     private static final Dialect UNKNOWN = new DefaultDialect();
 
+    /**
+     * Registers all built-in dialects during class initialization.
+     */
     static {
         // Register all built-in dialects
         // Mainstream databases
@@ -141,6 +143,9 @@ public final class DialectRegistry {
         registerDialect(new CirroData());
     }
 
+    /**
+     * Prevents instantiation of the dialect registry.
+     */
     private DialectRegistry() {
 
     }
@@ -401,56 +406,6 @@ public final class DialectRegistry {
      */
     public static List<Dialect> getAllDialects() {
         return new ArrayList<>(DIALECTS);
-    }
-
-    /**
-     * Default dialect for unknown databases
-     *
-     * @author Kimi Liu
-     * @since Java 21+
-     */
-    private static class DefaultDialect extends AbstractDialect {
-
-        /**
-         * Creates the fallback dialect used when no concrete JDBC URL match is available.
-         */
-        public DefaultDialect() {
-            super("Unknown", Normal.EMPTY);
-        }
-
-        /**
-         * Indicates that the fallback dialect never resolves any JDBC URL.
-         *
-         * @param jdbcUrl the JDBC URL to inspect
-         * @return always {@code null}
-         */
-        @Override
-        public Dialect resolve(String jdbcUrl) {
-            return null;
-        }
-
-        /**
-         * Returns the UPSERT kind for the fallback dialect.
-         *
-         * @return {@link Dialect.Type#NONE}
-         */
-        @Override
-        public Dialect.Type getUpsertType() {
-            return Dialect.Type.NONE;
-        }
-
-        /**
-         * Returns the original SQL unchanged because the unknown dialect cannot safely apply pagination rules.
-         *
-         * @param originalSql the original SQL statement
-         * @param pageable    the requested pagination information
-         * @return the original SQL statement
-         */
-        @Override
-        public String buildPaginationSql(String originalSql, Pageable pageable) {
-            return originalSql;
-        }
-
     }
 
 }

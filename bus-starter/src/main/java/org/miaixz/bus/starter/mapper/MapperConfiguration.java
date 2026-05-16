@@ -53,6 +53,11 @@ import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.mapper.binding.basic.ClassMapper;
+import org.miaixz.bus.mapper.builder.GenericTypeResolver;
+import org.miaixz.bus.mapper.support.schema.EntitySchemaInitializer;
+import org.miaixz.bus.mapper.support.schema.SchemaConfig;
+import org.miaixz.bus.mapper.support.schema.SchemaReport;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
@@ -77,16 +82,19 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.context.annotation.Role;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
 import jakarta.annotation.Resource;
+import jakarta.persistence.Entity;
 
 /**
  * Unified auto-configuration for MyBatis with comprehensive Native Image support.
@@ -291,6 +299,198 @@ public class MapperConfiguration implements InitializingBean {
             Logger.info(false, "Starter", "Created SqlSessionTemplate with default executor type");
         }
         return template;
+    }
+
+    /**
+     * Runs mapper entity schema initialization after the {@link DataSource} has been created.
+     *
+     * @param dataSource  The primary data source.
+     * @param beanFactory The Spring bean factory used to discover mapper definitions.
+     * @return schema initialization report
+     * @throws Exception if schema initialization fails
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public SchemaReport mapperSchemaReport(DataSource dataSource, ConfigurableListableBeanFactory beanFactory)
+            throws Exception {
+        MapperProperties.SchemaProperties schemaProperties = this.properties.getSchema();
+        if (schemaProperties == null || !schemaProperties.isEnabled()) {
+            return new SchemaReport();
+        }
+
+        Set<Class<?>> entityClasses = new LinkedHashSet<>();
+        entityClasses.addAll(resolveMapperEntityClasses(beanFactory));
+        entityClasses.addAll(scanSchemaEntityPackages(schemaProperties));
+
+        DataSource schemaDataSource = resolveSchemaDataSource(dataSource, beanFactory, schemaProperties);
+        SchemaConfig schemaConfig = toSchemaConfig(schemaProperties);
+        Logger.info(
+                true,
+                "Starter",
+                "Mapper schema initialization started: mode={}, datasourceKey={}, entityCount={}",
+                schemaConfig.mode(),
+                schemaConfig.datasourceKey(),
+                entityClasses.size());
+        SchemaReport report = new EntitySchemaInitializer().initialize(schemaDataSource, entityClasses, schemaConfig);
+        Logger.info(
+                false,
+                "Starter",
+                "Mapper schema initialization finished: executedSqlCount={}, skippedSqlCount={}, failedDiffCount={}",
+                report.executedSqls().size(),
+                report.skippedSqls().size(),
+                report.failedDiffs().size());
+        return report;
+    }
+
+    private DataSource resolveSchemaDataSource(
+            DataSource primaryDataSource,
+            ConfigurableListableBeanFactory beanFactory,
+            MapperProperties.SchemaProperties schemaProperties) {
+        String datasourceKey = StringKit.trim(schemaProperties.getDatasourceKey());
+        if (StringKit.isEmpty(datasourceKey)) {
+            return primaryDataSource;
+        }
+        return beanFactory.getBean(datasourceKey, DataSource.class);
+    }
+
+    private SchemaConfig toSchemaConfig(MapperProperties.SchemaProperties schemaProperties) {
+        return new SchemaConfig()
+                .enabled(schemaProperties.isEnabled())
+                .mode(schemaProperties.getMode())
+                .dryRun(schemaProperties.isDryRun())
+                .printSql(schemaProperties.isPrintSql())
+                .failFast(schemaProperties.isFailFast())
+                .continueOnError(schemaProperties.isContinueOnError())
+                .includeTables(copySet(schemaProperties.getIncludeTables()))
+                .excludeTables(copySet(schemaProperties.getExcludeTables()))
+                .includeEntities(copySet(schemaProperties.getIncludeEntities()))
+                .excludeEntities(copySet(schemaProperties.getExcludeEntities()))
+                .allowCreateTable(schemaProperties.isAllowCreateTable())
+                .allowAddColumn(schemaProperties.isAllowAddColumn())
+                .allowModifyType(schemaProperties.isAllowModifyType())
+                .allowExpandLength(schemaProperties.isAllowExpandLength())
+                .allowShrinkLength(schemaProperties.isAllowShrinkLength())
+                .allowExpandDecimal(schemaProperties.isAllowExpandDecimal())
+                .allowShrinkDecimal(schemaProperties.isAllowShrinkDecimal())
+                .allowModifyNullable(schemaProperties.isAllowModifyNullable())
+                .allowDropColumn(schemaProperties.isAllowDropColumn())
+                .allowRenameColumn(schemaProperties.isAllowRenameColumn())
+                .allowCreateIndex(schemaProperties.isAllowCreateIndex())
+                .allowDropIndex(schemaProperties.isAllowDropIndex())
+                .allowCreateUnique(schemaProperties.isAllowCreateUnique())
+                .allowDropUnique(schemaProperties.isAllowDropUnique())
+                .allowDangerous(schemaProperties.isAllowDangerous())
+                .dangerousWhitelist(copySet(schemaProperties.getDangerousWhitelist()))
+                .renameMappings(copyMap(schemaProperties.getRenameMappings()))
+                .scriptLocation(StringKit.trim(schemaProperties.getScriptLocation()))
+                .datasourceKey(StringKit.trim(schemaProperties.getDatasourceKey()));
+    }
+
+    private Set<Class<?>> resolveMapperEntityClasses(ConfigurableListableBeanFactory beanFactory) {
+        Set<Class<?>> entityClasses = new LinkedHashSet<>();
+        for (String beanName : beanFactory.getBeanDefinitionNames()) {
+            BeanDefinition beanDefinition = beanFactory.getBeanDefinition(beanName);
+            PropertyValue propertyValue = beanDefinition.getPropertyValues().getPropertyValue("mapperInterface");
+            if (propertyValue == null || propertyValue.getValue() == null) {
+                continue;
+            }
+            Class<?> mapperInterface = resolveMapperInterface(beanFactory, propertyValue.getValue());
+            Class<?> entityClass = resolveMapperEntityClass(mapperInterface);
+            if (entityClass != null) {
+                entityClasses.add(entityClass);
+            }
+        }
+        return entityClasses;
+    }
+
+    private Class<?> resolveMapperInterface(ConfigurableListableBeanFactory beanFactory, Object mapperInterfaceValue) {
+        if (mapperInterfaceValue instanceof Class<?>) {
+            return (Class<?>) mapperInterfaceValue;
+        }
+        if (mapperInterfaceValue instanceof String mapperInterfaceName) {
+            try {
+                return ClassUtils.forName(mapperInterfaceName, beanFactory.getBeanClassLoader());
+            } catch (ClassNotFoundException e) {
+                Logger.warn(
+                        false,
+                        "Starter",
+                        e,
+                        "Mapper schema skipped mapper interface: mapperInterface={}, exception={}",
+                        mapperInterfaceName,
+                        e.getClass().getSimpleName());
+            }
+        }
+        return null;
+    }
+
+    private Class<?> resolveMapperEntityClass(Class<?> mapperInterface) {
+        if (mapperInterface == null || !ClassMapper.class.isAssignableFrom(mapperInterface)) {
+            return null;
+        }
+        Class<?> entityClass = GenericTypeResolver.resolveTypeToClass(GenericTypeResolver.resolveType(
+                ClassMapper.class.getTypeParameters()[0],
+                mapperInterface,
+                ClassMapper.class));
+        return entityClass == Object.class ? null : entityClass;
+    }
+
+    private Set<Class<?>> scanSchemaEntityPackages(MapperProperties.SchemaProperties schemaProperties) {
+        Set<Class<?>> entityClasses = new LinkedHashSet<>();
+        Set<String> packages = splitPackages(schemaProperties.getEntityPackages());
+        if (packages.isEmpty()) {
+            return entityClasses;
+        }
+        ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
+        scanner.setEnvironment(this.environment);
+        scanner.setResourceLoader(this.resourceLoader);
+        scanner.addIncludeFilter(new AnnotationTypeFilter(Entity.class));
+        ClassLoader classLoader = this.resourceLoader.getClassLoader();
+        for (String basePackage : packages) {
+            for (BeanDefinition beanDefinition : scanner.findCandidateComponents(basePackage)) {
+                String className = beanDefinition.getBeanClassName();
+                if (StringKit.isEmpty(className)) {
+                    continue;
+                }
+                try {
+                    entityClasses.add(ClassUtils.forName(className, classLoader));
+                } catch (ClassNotFoundException e) {
+                    Logger.warn(
+                            false,
+                            "Starter",
+                            e,
+                            "Mapper schema skipped entity class: className={}, exception={}",
+                            className,
+                            e.getClass().getSimpleName());
+                }
+            }
+        }
+        return entityClasses;
+    }
+
+    private Set<String> splitPackages(String[] packages) {
+        Set<String> result = new LinkedHashSet<>();
+        if (packages == null) {
+            return result;
+        }
+        for (String value : packages) {
+            if (StringKit.isEmpty(value)) {
+                continue;
+            }
+            for (String packageName : value.split("[,;\\s]+")) {
+                if (StringKit.isNotEmpty(packageName)) {
+                    result.add(packageName);
+                }
+            }
+        }
+        return result;
+    }
+
+    private Set<String> copySet(Set<String> values) {
+        return values == null ? new LinkedHashSet<>() : new LinkedHashSet<>(values);
+    }
+
+    private Map<String, String> copyMap(Map<String, String> values) {
+        return values == null ? new LinkedHashMap<>() : new LinkedHashMap<>(values);
     }
 
     /**

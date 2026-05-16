@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.mapper.Charter.Schema;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
@@ -176,6 +177,12 @@ public class MapperProperties {
      */
     @NestedConfigurationProperty
     private PrefixProperties prefix;
+
+    /**
+     * Entity schema initialization configuration.
+     */
+    @NestedConfigurationProperty
+    private SchemaProperties schema = new SchemaProperties();
 
     /**
      * Resolves mapper configuration properties into the flat Properties contract consumed by mapper handlers.
@@ -411,6 +418,77 @@ public class MapperProperties {
          * Tables to ignore prefix (comma-separated).
          */
         private String ignore;
+
+    }
+
+    /**
+     * Entity schema initialization configuration class.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    @Getter
+    @Setter
+    public static class SchemaProperties {
+
+        /**
+         * Enable/disable entity schema initialization (default: false).
+         */
+        private boolean enabled = false;
+
+        /**
+         * Schema initialization mode.
+         */
+        private Schema mode = Schema.NONE;
+
+        /**
+         * Whether to only collect SQL without executing DDL.
+         */
+        private boolean dryRun = true;
+
+        /**
+         * Whether to print generated SQL.
+         */
+        private boolean printSql = true;
+
+        /**
+         * Whether to fail immediately on the first DDL error.
+         */
+        private boolean failFast = true;
+
+        /**
+         * Whether to continue after a DDL error when failFast is false.
+         */
+        private boolean continueOnError = false;
+
+        /**
+         * Packages to scan for {@link jakarta.persistence.Entity}.
+         */
+        private String[] entityPackages;
+
+        private Set<String> includeTables = new HashSet<>();
+        private Set<String> excludeTables = new HashSet<>();
+        private Set<String> includeEntities = new HashSet<>();
+        private Set<String> excludeEntities = new HashSet<>();
+        private boolean allowCreateTable = false;
+        private boolean allowAddColumn = false;
+        private boolean allowModifyType = false;
+        private boolean allowExpandLength = false;
+        private boolean allowShrinkLength = false;
+        private boolean allowExpandDecimal = false;
+        private boolean allowShrinkDecimal = false;
+        private boolean allowModifyNullable = false;
+        private boolean allowDropColumn = false;
+        private boolean allowRenameColumn = false;
+        private boolean allowCreateIndex = false;
+        private boolean allowDropIndex = false;
+        private boolean allowCreateUnique = false;
+        private boolean allowDropUnique = false;
+        private boolean allowDangerous = false;
+        private Set<String> dangerousWhitelist = new HashSet<>();
+        private Map<String, String> renameMappings = new LinkedHashMap<>();
+        private String scriptLocation = "";
+        private String datasourceKey = "";
 
     }
 

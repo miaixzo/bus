@@ -37,12 +37,15 @@ import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * A primary key generator responsible for generating primary key values before or after an insert operation.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
+@RequiredArgsConstructor
 public class GenIdKeyGenerator implements KeyGenerator {
 
     /**
@@ -80,24 +83,6 @@ public class GenIdKeyGenerator implements KeyGenerator {
      * A counter to track the number of times primary keys have been generated.
      */
     private final AtomicInteger count = new AtomicInteger(0);
-
-    /**
-     * Constructs a new primary key generator.
-     *
-     * @param genId         The {@link GenId} interface instance.
-     * @param table         The entity table information.
-     * @param column        The primary key column information.
-     * @param configuration The MyBatis configuration object.
-     * @param executeBefore Whether to generate the primary key before insertion.
-     */
-    public GenIdKeyGenerator(GenId<?> genId, TableMeta table, ColumnMeta column, Configuration configuration,
-            boolean executeBefore) {
-        this.genId = genId;
-        this.table = table;
-        this.column = column;
-        this.configuration = configuration;
-        this.executeBefore = executeBefore;
-    }
 
     /**
      * Gets the concurrency level. Defaults to 1000, loaded from global configuration.

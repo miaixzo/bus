@@ -27,6 +27,8 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Normal;
 
+import lombok.Getter;
+
 /**
  * An interface that defines sorting order and priority to control execution sequence.
  *
@@ -225,12 +227,23 @@ public interface Order extends org.miaixz.bus.core.Order {
      * @author Kimi Liu
      * @since Java 21+
      */
+    @Getter
     class SimpleOrder implements Order, Serializable {
 
+        /**
+         * Serialization version for {@link SimpleOrder}.
+         */
         @Serial
         private static final long serialVersionUID = 2852292629090L;
 
+        /**
+         * Sort direction for this order item.
+         */
         private final EnumValue.Sort direction;
+
+        /**
+         * Property name used by this order item.
+         */
         private final String property;
 
         /**
@@ -242,26 +255,6 @@ public interface Order extends org.miaixz.bus.core.Order {
         public SimpleOrder(EnumValue.Sort direction, String property) {
             this.direction = Assert.notNull(direction, "Direction cannot be null");
             this.property = property != null ? property : "";
-        }
-
-        /**
-         * Gets the sort direction.
-         *
-         * @return the sort direction
-         */
-        @Override
-        public EnumValue.Sort getDirection() {
-            return direction;
-        }
-
-        /**
-         * Gets the property name.
-         *
-         * @return the property name
-         */
-        @Override
-        public String getProperty() {
-            return property;
         }
 
         /**

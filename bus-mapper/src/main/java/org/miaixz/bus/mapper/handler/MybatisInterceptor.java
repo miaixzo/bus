@@ -46,6 +46,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.StringBuilderPool;
 import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.mapper.Charter.Handler;
 import org.miaixz.bus.mapper.Context;
 
 /**
@@ -204,11 +205,11 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
             throws Throwable {
         if (args == null) {
             // Handle getBoundSql
-            List<MapperHandler> handlers = handlerRegistry.getHandlers(HandlerRegistry.HandlerType.GET_BOUND_SQL);
+            List<MapperHandler> handlers = handlerRegistry.getHandlers(Handler.GET_BOUND_SQL);
             handlers.forEach(handler -> handler.getBoundSql(statementHandler));
         } else {
             // Handle prepare
-            List<MapperHandler> handlers = handlerRegistry.getHandlers(HandlerRegistry.HandlerType.PREPARE);
+            List<MapperHandler> handlers = handlerRegistry.getHandlers(Handler.PREPARE);
             handlers.forEach(handler -> handler.prepare(statementHandler));
         }
 
@@ -239,7 +240,7 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
         CacheKey cacheKey = executor.createCacheKey(ms, parameter, rowBounds, boundSql);
 
         // O(1) lookup: only get handlers that actually override query methods
-        List<MapperHandler> queryHandlers = handlerRegistry.getHandlers(HandlerRegistry.HandlerType.QUERY);
+        List<MapperHandler> queryHandlers = handlerRegistry.getHandlers(Handler.QUERY);
         Logger.debug(
                 true,
                 "Mapper",
@@ -302,7 +303,7 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
             Invocation invocation,
             BoundSql boundSql) throws Throwable {
         // O(1) lookup: only get handlers that actually override update methods
-        List<MapperHandler> updateHandlers = handlerRegistry.getHandlers(HandlerRegistry.HandlerType.UPDATE);
+        List<MapperHandler> updateHandlers = handlerRegistry.getHandlers(Handler.UPDATE);
         Logger.debug(
                 true,
                 "Mapper",

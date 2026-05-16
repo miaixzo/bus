@@ -19,15 +19,17 @@
 */
 package org.miaixz.bus.mapper.dialect;
 
-import org.miaixz.bus.mapper.support.paging.Pageable;
+import org.miaixz.bus.mapper.behavior.OptionsBehavior;
+import org.miaixz.bus.mapper.behavior.PaginationBehavior;
+import org.miaixz.bus.mapper.behavior.SchemaBehavior;
 
 /**
- * Database dialect interface providing database-specific pagination and UPSERT capabilities.
+ * Database dialect interface providing database-specific pagination, UPSERT, and schema capabilities.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public interface Dialect {
+public interface Dialect extends PaginationBehavior, OptionsBehavior, SchemaBehavior {
 
     /**
      * Gets the database product name.
@@ -50,102 +52,5 @@ public interface Dialect {
      * @return the resolved dialect instance, or {@code null} if the URL does not belong to this dialect
      */
     Dialect resolve(String jdbcUrl);
-
-    /**
-     * Returns the UPSERT type used by this dialect.
-     *
-     * <p>
-     * The returned value identifies which SQL shape the provider should build for UPSERT operations on the current
-     * database family.
-     * </p>
-     *
-     * @return the UPSERT type for the dialect
-     */
-    Type getUpsertType();
-
-    /**
-     * Gets the SQL keyword for limiting results.
-     *
-     * @return the LIMIT keyword
-     */
-    default String getLimitKeyword() {
-        return "LIMIT";
-    }
-
-    /**
-     * Gets the SQL keyword for offset.
-     *
-     * @return the OFFSET keyword
-     */
-    default String getOffsetKeyword() {
-        return "OFFSET";
-    }
-
-    /**
-     * Builds count SQL for the specified query.
-     *
-     * @param originalSql the original SQL query
-     * @return the count SQL query
-     */
-    String buildCountSql(String originalSql);
-
-    /**
-     * Builds pagination SQL for the specified query.
-     *
-     * @param originalSql the original SQL query
-     * @param pageable    the pagination information
-     * @return the paginated SQL query
-     */
-    String buildPaginationSql(String originalSql, Pageable pageable);
-
-    /**
-     * Enumerates the UPSERT types recognized by the dialect layer.
-     *
-     * <p>
-     * Each constant represents a stable SQL shape that providers can switch on when building UPSERT statements for a
-     * specific database family.
-     * </p>
-     *
-     * @author Kimi Liu
-     * @since Java 21+
-     */
-    enum Type {
-
-        /**
-         * UPSERT is not supported.
-         */
-        NONE,
-
-        /**
-         * MySQL style: INSERT ... ON DUPLICATE KEY UPDATE.
-         */
-        INSERT_ON_DUPLICATE,
-
-        /**
-         * PostgreSQL style: INSERT ... ON CONFLICT (...) DO UPDATE.
-         */
-        INSERT_ON_CONFLICT,
-
-        /**
-         * SQLite style: INSERT OR REPLACE.
-         */
-        INSERT_OR_REPLACE,
-
-        /**
-         * Firebird style: UPDATE OR INSERT ... MATCHING (...).
-         */
-        UPDATE_OR_INSERT,
-
-        /**
-         * MERGE using VALUES source rows.
-         */
-        MERGE_USING_VALUES,
-
-        /**
-         * MERGE using DUAL / source select.
-         */
-        MERGE_USING_DUAL
-
-    }
 
 }

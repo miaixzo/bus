@@ -42,6 +42,9 @@ import org.miaixz.bus.mapper.binding.function.Fn;
 import org.miaixz.bus.mapper.parsing.ClassColumn;
 import org.miaixz.bus.mapper.parsing.ClassField;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 /**
  * A utility class providing static methods for OGNL expressions, type registration, SPI instance retrieval, and
  * functional field name conversion.
@@ -794,51 +797,24 @@ public class OGNL {
      * @author Kimi Liu
      * @since Java 21+
      */
+    @Getter
+    @RequiredArgsConstructor
     public static class CacheStats {
 
+        /**
+         * Number of cached lambda expressions.
+         */
         private final int lambdaCacheSize;
+
+        /**
+         * Number of cached class descriptors.
+         */
         private final int classCacheSize;
+
+        /**
+         * Number of cached method descriptors.
+         */
         private final int methodCacheSize;
-
-        /**
-         * Constructs a CacheStats instance.
-         *
-         * @param lambdaCacheSize The size of the lambda serialization cache.
-         * @param classCacheSize  The size of the class loading cache.
-         * @param methodCacheSize The size of the method lookup cache.
-         */
-        public CacheStats(int lambdaCacheSize, int classCacheSize, int methodCacheSize) {
-            this.lambdaCacheSize = lambdaCacheSize;
-            this.classCacheSize = classCacheSize;
-            this.methodCacheSize = methodCacheSize;
-        }
-
-        /**
-         * Gets the size of the lambda serialization cache.
-         *
-         * @return The lambda cache size.
-         */
-        public int getLambdaCacheSize() {
-            return lambdaCacheSize;
-        }
-
-        /**
-         * Gets the size of the class loading cache.
-         *
-         * @return The class cache size.
-         */
-        public int getClassCacheSize() {
-            return classCacheSize;
-        }
-
-        /**
-         * Gets the size of the method lookup cache.
-         *
-         * @return The method cache size.
-         */
-        public int getMethodCacheSize() {
-            return methodCacheSize;
-        }
 
         /**
          * Gets the total size of all caches.

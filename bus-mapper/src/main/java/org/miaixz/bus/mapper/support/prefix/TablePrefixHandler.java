@@ -124,22 +124,44 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
         return true;
     }
 
+    /**
+     * Returns the property scope key used to resolve table prefix configuration.
+     *
+     * @return the property scope key
+     */
     @Override
     protected String scope() {
         return Args.TABLE_KEY;
     }
 
+    /**
+     * Returns the default table prefix configuration loaded for this handler.
+     *
+     * @return the default configuration, or {@code null} when unavailable
+     */
     @Override
     protected TablePrefixConfig defaults() {
         return config;
     }
 
+    /**
+     * Captures the current thread-local table prefix configuration override.
+     *
+     * @return the captured configuration, or {@code null} when no override is active
+     */
     @Override
     protected TablePrefixConfig capture() {
         Context.MapperConfig contextConfig = Context.getMapperConfig();
         return contextConfig != null ? contextConfig.getPrefix() : null;
     }
 
+    /**
+     * Builds datasource-specific table prefix configuration from the supplied properties.
+     *
+     * @param datasourceKey the datasource key used to resolve scoped configuration
+     * @param properties    the configuration properties used to build the scoped configuration
+     * @return the derived configuration, or {@code null} when the datasource is not configured
+     */
     @Override
     protected TablePrefixConfig derived(String datasourceKey, Properties properties) {
         // Try to get provider from properties
@@ -193,11 +215,27 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
         return TablePrefixConfig.builder().provider(finalProvider).ignore(ignoreTables).build();
     }
 
+    /**
+     * Returns the execution order for the table prefix handler in the mapper interceptor chain.
+     *
+     * @return the handler order value
+     */
     @Override
     public int getOrder() {
         return MIN_VALUE + 1;
     }
 
+    /**
+     * Applies configured table-prefix rewriting to a query statement before execution.
+     *
+     * @param result        the mutable result holder used by the interceptor chain
+     * @param executor      the MyBatis executor
+     * @param ms            the mapped statement being processed
+     * @param parameter     the statement parameter object
+     * @param rowBounds     the MyBatis row bounds
+     * @param resultHandler the MyBatis result handler
+     * @param boundSql      the bound SQL being processed
+     */
     @Override
     public void query(
             Object result,
@@ -217,6 +255,13 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
         processSqlInMappedStatement(ms, boundSql, currentConfig);
     }
 
+    /**
+     * Applies configured table-prefix rewriting to an update statement before execution.
+     *
+     * @param executor  the MyBatis executor
+     * @param ms        the mapped statement being processed
+     * @param parameter the statement parameter object
+     */
     @Override
     public void update(Executor executor, MappedStatement ms, Object parameter) {
         TablePrefixConfig currentConfig = current();

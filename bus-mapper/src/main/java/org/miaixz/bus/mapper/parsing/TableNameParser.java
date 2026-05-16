@@ -25,6 +25,10 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 /**
  * SQL table name parser, used to extract table names from SQL statements.
  * <p>
@@ -476,6 +480,8 @@ public final class TableNameParser {
      * @author Kimi Liu
      * @since Java 21+
      */
+    @Getter
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class SqlToken implements Comparable<SqlToken> {
 
         /**
@@ -492,46 +498,6 @@ public final class TableNameParser {
          * The value of the token.
          */
         private final String value;
-
-        /**
-         * Constructs a new SqlToken.
-         *
-         * @param start The starting position.
-         * @param end   The ending position.
-         * @param value The token value.
-         */
-        private SqlToken(int start, int end, String value) {
-            this.start = start;
-            this.end = end;
-            this.value = value;
-        }
-
-        /**
-         * Gets the starting position of the token.
-         *
-         * @return The starting position.
-         */
-        public int getStart() {
-            return start;
-        }
-
-        /**
-         * Gets the ending position of the token.
-         *
-         * @return The ending position.
-         */
-        public int getEnd() {
-            return end;
-        }
-
-        /**
-         * Gets the value of the token.
-         *
-         * @return The token value.
-         */
-        public String getValue() {
-            return value;
-        }
 
         /**
          * Compares this token with another for ordering based on their starting positions.

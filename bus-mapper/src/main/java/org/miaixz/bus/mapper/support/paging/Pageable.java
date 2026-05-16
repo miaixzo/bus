@@ -22,6 +22,8 @@ package org.miaixz.bus.mapper.support.paging;
 import java.io.Serial;
 import java.io.Serializable;
 
+import lombok.Getter;
+
 /**
  * Pageable interface for pagination request information.
  *
@@ -201,15 +203,37 @@ public interface Pageable extends Serializable {
      * @author Kimi Liu
      * @since Java 21+
      */
+    @Getter
     final class PageRequest implements Pageable {
 
+        /**
+         * Serialization version for {@link PageRequest}.
+         */
         @Serial
         private static final long serialVersionUID = 2852289758690L;
 
+        /**
+         * One-based page number.
+         */
         private final int pageNo;
+
+        /**
+         * Number of rows requested per page.
+         */
         private final int pageSize;
+
+        /**
+         * Sort definition for the page request.
+         */
         private final Sort sort;
 
+        /**
+         * Creates a page request.
+         *
+         * @param pageNo   the requested one-based page number
+         * @param pageSize the requested page size
+         * @param sort     the sort definition
+         */
         private PageRequest(int pageNo, int pageSize, Sort sort) {
             this.pageNo = Math.max(1, pageNo);
             this.pageSize = Math.max(1, pageSize);
@@ -246,36 +270,6 @@ public interface Pageable extends Serializable {
          */
         public static PageRequest unpaged() {
             return new PageRequest(1, UNPAGED_SIZE, Sort.unsorted());
-        }
-
-        /**
-         * Gets the page number.
-         *
-         * @return the page number
-         */
-        @Override
-        public int getPageNo() {
-            return pageNo;
-        }
-
-        /**
-         * Gets the page size.
-         *
-         * @return the page size
-         */
-        @Override
-        public int getPageSize() {
-            return pageSize;
-        }
-
-        /**
-         * Gets the sorting information.
-         *
-         * @return the sorting information
-         */
-        @Override
-        public Sort getSort() {
-            return sort;
         }
 
         /**

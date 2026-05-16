@@ -218,9 +218,22 @@ public class VisibleBuilder {
      */
     private static class TableInfo {
 
+        /**
+         * Resolved table name.
+         */
         final String tableName;
+
+        /**
+         * Resolved table alias.
+         */
         final String tableAlias;
 
+        /**
+         * Creates table information.
+         *
+         * @param tableName  the resolved table name
+         * @param tableAlias the resolved table alias
+         */
         TableInfo(String tableName, String tableAlias) {
             this.tableName = tableName;
             this.tableAlias = tableAlias;

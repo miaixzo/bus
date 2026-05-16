@@ -30,12 +30,15 @@ import org.apache.ibatis.reflection.ParamNameResolver;
 import org.apache.ibatis.scripting.xmltags.DynamicContext;
 import org.miaixz.bus.mapper.parsing.SqlScriptWrapper;
 
+import lombok.Getter;
+
 /**
  * An annotation-based {@link SqlScriptWrapper} that provides SQL script wrapping functionality based on annotations.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
+@Getter
 public abstract class SchemaSqlBuilder implements SqlScriptWrapper {
 
     /**
@@ -64,33 +67,6 @@ public abstract class SchemaSqlBuilder implements SqlScriptWrapper {
         this.type = type;
         this.target = target;
         this.annotations = annotations;
-    }
-
-    /**
-     * Gets the target element type of the annotation.
-     *
-     * @return The element type.
-     */
-    public ElementType getType() {
-        return type;
-    }
-
-    /**
-     * Gets the target object of the annotation.
-     *
-     * @return The target object.
-     */
-    public Object getTarget() {
-        return target;
-    }
-
-    /**
-     * Gets the array of annotations.
-     *
-     * @return The array of annotations.
-     */
-    public Annotation[] getAnnotations() {
-        return annotations;
     }
 
     /**

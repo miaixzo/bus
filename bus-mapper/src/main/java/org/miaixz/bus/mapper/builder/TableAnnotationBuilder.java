@@ -20,11 +20,13 @@
 package org.miaixz.bus.mapper.builder;
 
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.mapper.parsing.IndexMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 import org.miaixz.bus.mapper.provider.NamingProvider;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 /**
  * The default table builder, which supports processing entity classes annotated with `jakarta.persistence` annotations.
@@ -80,10 +82,43 @@ public class TableAnnotationBuilder implements TableSchemaBuilder {
             if (StringKit.isNotEmpty(table.schema())) {
                 tableMeta.schema(table.schema());
             }
+            for (jakarta.persistence.Index index : table.indexes()) {
+                IndexMeta definition = IndexMeta.of(
+                        StringKit.isNotEmpty(index.name()) ? index.name()
+                                : tableMeta.table() + "_" + index.columnList().replace(",", "_") + "_idx",
+                        index.unique(),
+                        splitColumns(index.columnList()));
+                tableMeta.addIndex(definition);
+            }
+            for (UniqueConstraint unique : table.uniqueConstraints()) {
+                IndexMeta definition = IndexMeta.of(
+                        StringKit.isNotEmpty(unique.name()) ? unique.name()
+                                : tableMeta.table() + "_" + String.join("_", unique.columnNames()) + "_uk",
+                        true,
+                        unique.columnNames());
+                tableMeta.addIndex(definition);
+            }
         } else if (StringKit.isEmpty(tableMeta.table())) {
             // If the table name is not set, use the default naming convention (class name to underscore format).
             tableMeta.table(NamingProvider.getDefaultStyle().tableName(entityClass));
         }
+    }
+
+    /**
+     * Splits a comma-separated column list into trimmed column names.
+     *
+     * @param columnList the comma-separated column list
+     * @return the trimmed column names, or an empty array when the input is blank
+     */
+    private String[] splitColumns(String columnList) {
+        if (StringKit.isEmpty(columnList)) {
+            return new String[0];
+        }
+        String[] columns = columnList.split(",");
+        for (int i = 0; i < columns.length; i++) {
+            columns[i] = columns[i].trim();
+        }
+        return columns;
     }
 
 }

@@ -118,22 +118,44 @@ public class VisibleHandler<T> extends ConditionHandler<T, VisibleConfig> {
         return true;
     }
 
+    /**
+     * Returns the property scope key used to resolve visible configuration.
+     *
+     * @return the property scope key
+     */
     @Override
     protected String scope() {
         return Args.VISIBLE_KEY;
     }
 
+    /**
+     * Returns the default visible configuration loaded for this handler.
+     *
+     * @return the default configuration, or {@code null} when unavailable
+     */
     @Override
     protected VisibleConfig defaults() {
         return config;
     }
 
+    /**
+     * Captures the current thread-local visible configuration override.
+     *
+     * @return the captured configuration, or {@code null} when no override is active
+     */
     @Override
     protected VisibleConfig capture() {
         Context.MapperConfig context = Context.getMapperConfig();
         return context != null ? context.getVisible() : null;
     }
 
+    /**
+     * Builds datasource-specific visible configuration from the supplied properties.
+     *
+     * @param datasourceKey the datasource key used to resolve scoped configuration
+     * @param properties    the configuration properties used to build the scoped configuration
+     * @return the derived configuration, or {@code null} when the datasource is not configured
+     */
     @Override
     protected VisibleConfig derived(String datasourceKey, Properties properties) {
         // Try to get provider from properties
@@ -169,6 +191,11 @@ public class VisibleHandler<T> extends ConditionHandler<T, VisibleConfig> {
         return VisibleConfig.builder().provider(provider).ignore(ignoreTables).build();
     }
 
+    /**
+     * Returns the execution order for the visible handler in the mapper interceptor chain.
+     *
+     * @return the handler order value
+     */
     @Override
     public int getOrder() {
         return MIN_VALUE + 4;

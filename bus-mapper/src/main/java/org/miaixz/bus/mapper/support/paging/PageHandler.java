@@ -89,6 +89,11 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
     private final Map<String, String> paramsMap = new HashMap<>();
 
     /**
+     * Thread-local flag used to skip secondary statement handling for internally generated pagination queries.
+     */
+    private final ThreadLocal<Boolean> internalPaginationQuery = ThreadLocal.withInitial(() -> false);
+
+    /**
      * Whether to enable pagination reasonableness. If enabled, page numbers will be adjusted to be within valid ranges.
      */
     private boolean reasonable = false;
@@ -115,6 +120,11 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
         return "Page";
     }
 
+    /**
+     * Returns the execution order for the pagination handler in the mapper interceptor chain.
+     *
+     * @return the handler order value
+     */
     @Override
     public int getOrder() {
         return MIN_VALUE + 6;
@@ -175,12 +185,21 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
         }
     }
 
+    /**
+     * Applies pagination sorting while MyBatis exposes the bound SQL.
+     *
+     * @param statementHandler the MyBatis statement handler
+     */
     @Override
     public void getBoundSql(StatementHandler statementHandler) {
         // Check if pagination is enabled for this thread
         Pageable pageable = PageContext.getLocalPage();
         if (pageable == null || pageable.isUnpaged()) {
             Logger.debug(true, "Mapper", "Pagination getBoundSql skipped: reason=pageMissing");
+            return;
+        }
+        if (isInternalPaginationQuery()) {
+            Logger.debug(true, "Mapper", "Pagination getBoundSql skipped: reason=internalQuery");
             return;
         }
 
@@ -198,6 +217,10 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
             Logger.debug(true, "Mapper", "Pagination getBoundSql skipped: reason=mappedStatementMissing");
             return;
         }
+        if (isCountMappedStatement(ms)) {
+            Logger.debug(true, "Mapper", "Pagination getBoundSql skipped: method={}, reason=countQuery", ms.getId());
+            return;
+        }
 
         Logger.debug(
                 false,
@@ -209,6 +232,11 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
         applySorting(boundSql, ms, pageable);
     }
 
+    /**
+     * Applies pagination sorting before the JDBC statement is prepared.
+     *
+     * @param statementHandler the MyBatis statement handler
+     */
     @Override
     public void prepare(StatementHandler statementHandler) {
         // Apply pagination SQL modifications
@@ -217,10 +245,18 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
             Logger.debug(true, "Mapper", "Pagination prepare skipped: reason=pageMissing");
             return;
         }
+        if (isInternalPaginationQuery()) {
+            Logger.debug(true, "Mapper", "Pagination prepare skipped: reason=internalQuery");
+            return;
+        }
 
         MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
         BoundSql boundSql = (BoundSql) metaObject.getValue("delegate.boundSql");
         MappedStatement ms = (MappedStatement) metaObject.getValue("delegate.mappedStatement");
+        if (ms != null && isCountMappedStatement(ms)) {
+            Logger.debug(true, "Mapper", "Pagination prepare skipped: method={}, reason=countQuery", ms.getId());
+            return;
+        }
 
         // Apply sorting modifications if needed
         if (pageable.getSort() != null && pageable.getSort().isSorted()) {
@@ -235,6 +271,17 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
         }
     }
 
+    /**
+     * Executes a paginated query when a page request is active and writes the page result into the result holder.
+     *
+     * @param result          the mutable result holder used by the interceptor chain
+     * @param executor        the MyBatis executor
+     * @param mappedStatement the mapped statement being processed
+     * @param parameter       the statement parameter object
+     * @param rowBounds       the MyBatis row bounds
+     * @param resultHandler   the MyBatis result handler
+     * @param boundSql        the bound SQL being processed
+     */
     @Override
     public void query(
             Object result,
@@ -592,7 +639,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
             BoundSql boundSql,
             Dialect dialect) throws Exception {
         // Generate count SQL
-        String countSql = dialect.buildCountSql(boundSql.getSql());
+        String countSql = dialect.buildCountSql(paginationBuilder.removeSort(boundSql.getSql()));
 
         // Create count statement ID based on params mapping
         String countStatementId = ms.getId() + "_COUNT";
@@ -615,7 +662,13 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
 
         // Execute count query
         CacheKey cacheKey = executor.createCacheKey(countMs, parameter, RowBounds.DEFAULT, countBoundSql);
-        List<Object> countResult = executor.query(countMs, parameter, RowBounds.DEFAULT, null, cacheKey, countBoundSql);
+        List<Object> countResult;
+        internalPaginationQuery.set(true);
+        try {
+            countResult = executor.query(countMs, parameter, RowBounds.DEFAULT, null, cacheKey, countBoundSql);
+        } finally {
+            internalPaginationQuery.remove();
+        }
 
         if (countResult != null && !countResult.isEmpty()) {
             Object count = countResult.get(0);
@@ -649,7 +702,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
             Pageable pageable,
             Dialect dialect) throws Exception {
         // Generate pagination SQL
-        String paginatedSql = dialect.buildPaginationSql(boundSql.getSql(), pageable);
+        String paginatedSql = dialect.buildPaginationSql(applySorting(boundSql.getSql(), pageable), pageable);
 
         // Create bound SQL for pagination
         BoundSql paginatedBoundSql = new BoundSql(ms.getConfiguration(), paginatedSql, boundSql.getParameterMappings(),
@@ -665,8 +718,13 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
 
         // Execute pagination query
         CacheKey cacheKey = executor.createCacheKey(ms, parameter, RowBounds.DEFAULT, paginatedBoundSql);
-        List<Object> result = executor
-                .query(ms, parameter, RowBounds.DEFAULT, resultHandler, cacheKey, paginatedBoundSql);
+        List<Object> result;
+        internalPaginationQuery.set(true);
+        try {
+            result = executor.query(ms, parameter, RowBounds.DEFAULT, resultHandler, cacheKey, paginatedBoundSql);
+        } finally {
+            internalPaginationQuery.remove();
+        }
 
         return result != null ? result : Collections.emptyList();
     }
@@ -712,6 +770,26 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
     }
 
     /**
+     * Tests whether the mapped statement belongs to the internal count query.
+     *
+     * @param ms the mapped statement
+     * @return {@code true} when the mapped statement is an internal count query
+     */
+    private boolean isCountMappedStatement(MappedStatement ms) {
+        String countSuffix = paramsMap.containsKey("count") ? "_" + paramsMap.get("count") : "_COUNT";
+        return ms != null && ms.getId().endsWith(countSuffix);
+    }
+
+    /**
+     * Tests whether the current thread is executing an internally generated pagination query.
+     *
+     * @return {@code true} when statement-level pagination handling must be skipped
+     */
+    private boolean isInternalPaginationQuery() {
+        return Boolean.TRUE.equals(internalPaginationQuery.get());
+    }
+
+    /**
      * Applies sorting to the SQL using the PageBuilder.
      *
      * @param boundSql the BoundSql object
@@ -725,12 +803,27 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
         }
 
         String originalSql = boundSql.getSql();
-        String sortedSql = paginationBuilder.applySort(originalSql, sort);
+        String sortedSql = applySorting(originalSql, pageable);
 
         if (!originalSql.equals(sortedSql)) {
             // Update the SQL in BoundSql using parent class method
             setBoundSql(boundSql, sortedSql);
         }
+    }
+
+    /**
+     * Applies sorting to the given SQL text when the pageable contains sort orders.
+     *
+     * @param sql      the original SQL text
+     * @param pageable the pagination information
+     * @return the sorted SQL text
+     */
+    private String applySorting(String sql, Pageable pageable) {
+        Sort sort = pageable.getSort();
+        if (sort == null || !sort.isSorted()) {
+            return sql;
+        }
+        return paginationBuilder.applySort(sql, sort);
     }
 
     /**
@@ -741,14 +834,33 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
      */
     private static class CountSqlSource implements SqlSource {
 
+        /**
+         * Mapped statement used to build the original bound SQL.
+         */
         private final MappedStatement ms;
+
+        /**
+         * Count SQL text returned by this SQL source.
+         */
         private final String countSql;
 
+        /**
+         * Creates a count SQL source.
+         *
+         * @param ms       the mapped statement used for parameter metadata
+         * @param countSql the count SQL text
+         */
         public CountSqlSource(MappedStatement ms, String countSql) {
             this.ms = ms;
             this.countSql = countSql;
         }
 
+        /**
+         * Creates bound SQL for the generated pagination count statement.
+         *
+         * @param parameterObject the parameter object used to build bound SQL
+         * @return the bound SQL for the count query
+         */
         @Override
         public BoundSql getBoundSql(Object parameterObject) {
             BoundSql originalBoundSql = ms.getBoundSql(parameterObject);

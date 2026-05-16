@@ -32,6 +32,8 @@ import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Context;
 import org.miaixz.bus.mapper.handler.ConditionHandler;
 
+import lombok.Getter;
+
 /**
  * SQL Audit Interceptor
  *
@@ -68,6 +70,7 @@ import org.miaixz.bus.mapper.handler.ConditionHandler;
  * @author Kimi Liu
  * @since Java 21+
  */
+@Getter
 public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
 
     /**
@@ -383,15 +386,6 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
      */
     public void clear() {
         // No-op: builder is created on-demand per SQL execution
-    }
-
-    /**
-     * Get audit configuration from file (lowest priority).
-     *
-     * @return the audit configuration
-     */
-    public AuditConfig getConfig() {
-        return this.config;
     }
 
 }

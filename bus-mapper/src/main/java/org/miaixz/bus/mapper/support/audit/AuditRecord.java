@@ -22,6 +22,8 @@ package org.miaixz.bus.mapper.support.audit;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+import lombok.Getter;
+
 /**
  * SQL Audit Record, used to record detailed information about SQL execution
  *
@@ -40,6 +42,7 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 21+
  */
+@Getter
 public class AuditRecord {
 
     /**
@@ -156,91 +159,88 @@ public class AuditRecord {
         return this;
     }
 
-    // Getter and Setter methods
-
-    public String getSqlId() {
-        return sqlId;
-    }
-
+    /**
+     * Sets the mapped statement identifier.
+     *
+     * @param sqlId the mapped statement identifier
+     * @return the current audit record
+     */
     public AuditRecord sqlId(String sqlId) {
         this.sqlId = sqlId;
         return this;
     }
 
-    public String getSql() {
-        return sql;
-    }
-
+    /**
+     * Sets the SQL text.
+     *
+     * @param sql the SQL text
+     * @return the current audit record
+     */
     public AuditRecord sql(String sql) {
         this.sql = sql;
         return this;
     }
 
-    public String getSqlType() {
-        return sqlType;
-    }
-
+    /**
+     * Sets the SQL operation type.
+     *
+     * @param sqlType the SQL operation type
+     * @return the current audit record
+     */
     public AuditRecord sqlType(String sqlType) {
         this.sqlType = sqlType;
         return this;
     }
 
-    public Object getParameter() {
-        return parameter;
-    }
-
+    /**
+     * Sets the SQL parameter object.
+     *
+     * @param parameter the SQL parameter object
+     * @return the current audit record
+     */
     public AuditRecord parameter(Object parameter) {
         this.parameter = parameter;
         return this;
     }
 
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
-
-    public long getElapsedTime() {
-        return elapsedTime;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public int getAffectedRows() {
-        return affectedRows;
-    }
-
+    /**
+     * Sets the affected row count.
+     *
+     * @param affectedRows the affected row count
+     * @return the current audit record
+     */
     public AuditRecord affectedRows(int affectedRows) {
         this.affectedRows = affectedRows;
         return this;
     }
 
-    public int getResultCount() {
-        return resultCount;
-    }
-
+    /**
+     * Sets the returned result count.
+     *
+     * @param resultCount the returned result count
+     * @return the current audit record
+     */
     public AuditRecord resultCount(int resultCount) {
         this.resultCount = resultCount;
         return this;
     }
 
-    public Throwable getException() {
-        return exception;
-    }
-
-    public Map<String, Object> getContext() {
-        return context;
-    }
-
+    /**
+     * Sets additional audit context values.
+     *
+     * @param context additional audit context values
+     * @return the current audit record
+     */
     public AuditRecord context(Map<String, Object> context) {
         this.context = context;
         return this;
     }
 
+    /**
+     * Returns a readable representation of this audit record.
+     *
+     * @return the string representation
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

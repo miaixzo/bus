@@ -28,6 +28,10 @@ import org.apache.ibatis.annotations.ResultType;
 import org.apache.ibatis.cursor.Cursor;
 import org.miaixz.bus.core.lang.Optional;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 /**
  * A utility class for resolving generic types, based on the source code of MyBatis 3. It adds the
  * {@code resolveMapperTypes} method to support resolving generic types of interfaces. This class primarily handles the
@@ -579,6 +583,8 @@ public class GenericTypeResolver {
      * @author Kimi Liu
      * @since Java 21+
      */
+    @Getter
+    @RequiredArgsConstructor
     public static class ParameterizedTypes implements ParameterizedType {
 
         /**
@@ -595,50 +601,6 @@ public class GenericTypeResolver {
          * The actual type arguments (e.g., {@code [String.class]} for {@code List<String>}).
          */
         private final Type[] actualTypeArguments;
-
-        /**
-         * Constructs a new ParameterizedTypes instance.
-         *
-         * @param rawType             The raw type.
-         * @param ownerType           The owner type (can be null).
-         * @param actualTypeArguments The actual type arguments.
-         */
-        public ParameterizedTypes(Class<?> rawType, Type ownerType, Type[] actualTypeArguments) {
-            super();
-            this.rawType = rawType;
-            this.ownerType = ownerType;
-            this.actualTypeArguments = actualTypeArguments;
-        }
-
-        /**
-         * Gets the actual type arguments.
-         *
-         * @return The array of actual type arguments.
-         */
-        @Override
-        public Type[] getActualTypeArguments() {
-            return actualTypeArguments;
-        }
-
-        /**
-         * Gets the owner type.
-         *
-         * @return The owner type.
-         */
-        @Override
-        public Type getOwnerType() {
-            return ownerType;
-        }
-
-        /**
-         * Gets the raw type.
-         *
-         * @return The raw type.
-         */
-        @Override
-        public Type getRawType() {
-            return rawType;
-        }
 
         /**
          * Returns a string representation of this parameterized type, mainly for debugging purposes.
@@ -660,6 +622,8 @@ public class GenericTypeResolver {
      * @author Kimi Liu
      * @since Java 21+
      */
+    @Getter
+    @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
     public static class WildcardTypes implements WildcardType {
 
         /**
@@ -672,38 +636,6 @@ public class GenericTypeResolver {
          */
         private final Type[] upperBounds;
 
-        /**
-         * Constructs a new WildcardTypes instance.
-         *
-         * @param lowerBounds The array of lower bounds.
-         * @param upperBounds The array of upper bounds.
-         */
-        WildcardTypes(Type[] lowerBounds, Type[] upperBounds) {
-            super();
-            this.lowerBounds = lowerBounds;
-            this.upperBounds = upperBounds;
-        }
-
-        /**
-         * Gets the lower bounds.
-         *
-         * @return The array of lower bounds.
-         */
-        @Override
-        public Type[] getLowerBounds() {
-            return lowerBounds;
-        }
-
-        /**
-         * Gets the upper bounds.
-         *
-         * @return The array of upper bounds.
-         */
-        @Override
-        public Type[] getUpperBounds() {
-            return upperBounds;
-        }
-
         // Omitted toString(), hashCode(), equals() for brevity, but should typically be included in production code
 
     }
@@ -715,32 +647,14 @@ public class GenericTypeResolver {
      * @author Kimi Liu
      * @since Java 21+
      */
+    @Getter
+    @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
     public static class GenericArrayTypes implements GenericArrayType {
 
         /**
          * The generic component type (e.g., {@code T} in {@code T[]}).
          */
         private final Type genericComponentType;
-
-        /**
-         * Constructs a new GenericArrayTypes instance.
-         *
-         * @param genericComponentType The generic component type.
-         */
-        GenericArrayTypes(Type genericComponentType) {
-            super();
-            this.genericComponentType = genericComponentType;
-        }
-
-        /**
-         * Gets the generic component type.
-         *
-         * @return The generic component type.
-         */
-        @Override
-        public Type getGenericComponentType() {
-            return genericComponentType;
-        }
 
     }
 

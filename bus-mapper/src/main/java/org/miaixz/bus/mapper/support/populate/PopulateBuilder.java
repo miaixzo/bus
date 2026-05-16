@@ -360,9 +360,24 @@ public class PopulateBuilder {
      */
     private static class EntityMetadata {
 
+        /**
+         * Field used to store the creation timestamp.
+         */
         Field createTimeField;
+
+        /**
+         * Field used to store the modification timestamp.
+         */
         Field updateTimeField;
+
+        /**
+         * Field used to store the creator identifier.
+         */
         Field createdByField;
+
+        /**
+         * Field used to store the modifier identifier.
+         */
         Field updatedByField;
 
     }

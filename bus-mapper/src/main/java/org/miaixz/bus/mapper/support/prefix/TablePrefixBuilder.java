@@ -26,6 +26,8 @@ import java.util.regex.Pattern;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * SQL table name prefix builder using regex-based approach.
  *
@@ -47,6 +49,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  * @since Java 21+
  */
+@RequiredArgsConstructor
 public class TablePrefixBuilder {
 
     /**
@@ -100,17 +103,6 @@ public class TablePrefixBuilder {
      * </p>
      */
     private final List<String> ignore;
-
-    /**
-     * Constructs a TablePrefixBuilder with the specified prefix and ignore list.
-     *
-     * @param prefix the table prefix to apply (e.g., "db_")
-     * @param ignore list of table names that should not receive prefix (can be null)
-     */
-    public TablePrefixBuilder(String prefix, List<String> ignore) {
-        this.prefix = prefix;
-        this.ignore = ignore;
-    }
 
     /**
      * Apply prefix to all table names in the SQL statement.

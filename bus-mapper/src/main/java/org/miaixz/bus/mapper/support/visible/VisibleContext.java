@@ -175,6 +175,9 @@ public class VisibleContext {
     @FunctionalInterface
     public interface Ignore extends AutoCloseable {
 
+        /**
+         * Restores the previous visibility ignore state.
+         */
         @Override
         void close();
 

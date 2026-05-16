@@ -22,12 +22,15 @@ package org.miaixz.bus.mapper.support.keygen;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.SqlSource;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * Wraps an {@link SqlSource} to enable primary key generation before insertion.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
+@RequiredArgsConstructor
 public class GenIdSqlSource implements SqlSource {
 
     /**
@@ -39,17 +42,6 @@ public class GenIdSqlSource implements SqlSource {
      * The primary key generator.
      */
     private final GenIdKeyGenerator keyGenerator;
-
-    /**
-     * Constructs a new GenIdSqlSource, initializing the SQL source and key generator.
-     *
-     * @param sqlSource    The original SQL source.
-     * @param keyGenerator The primary key generator.
-     */
-    public GenIdSqlSource(SqlSource sqlSource, GenIdKeyGenerator keyGenerator) {
-        this.sqlSource = sqlSource;
-        this.keyGenerator = keyGenerator;
-    }
 
     /**
      * Gets the bound SQL and generates the primary key if necessary before execution.

@@ -259,15 +259,6 @@ public class Condition<T> {
     }
 
     /**
-     * Gets the string of selected columns.
-     *
-     * @return The selected columns string.
-     */
-    public String getSelectColumns() {
-        return selectColumns;
-    }
-
-    /**
      * Sets the string of selected columns.
      *
      * @param selectColumns The string of columns to select.
@@ -276,15 +267,6 @@ public class Condition<T> {
     public Condition<T> setSelectColumns(String selectColumns) {
         this.selectColumns = selectColumns;
         return this;
-    }
-
-    /**
-     * Gets the string of selected columns without aliases.
-     *
-     * @return The simple selected columns string.
-     */
-    public String getSimpleSelectColumns() {
-        return simpleSelectColumns;
     }
 
     /**
@@ -299,15 +281,6 @@ public class Condition<T> {
     }
 
     /**
-     * Gets the starting SQL fragment.
-     *
-     * @return The starting SQL string.
-     */
-    public String getStartSql() {
-        return startSql;
-    }
-
-    /**
      * Sets the starting SQL fragment.
      *
      * @param startSql The starting SQL string.
@@ -316,15 +289,6 @@ public class Condition<T> {
     public Condition<T> setStartSql(String startSql) {
         this.startSql = startSql;
         return this;
-    }
-
-    /**
-     * Gets the ending SQL fragment.
-     *
-     * @return The ending SQL string.
-     */
-    public String getEndSql() {
-        return endSql;
     }
 
     /**
@@ -416,15 +380,6 @@ public class Condition<T> {
     }
 
     /**
-     * Gets the Order BY clause.
-     *
-     * @return The Order BY clause string.
-     */
-    public String getOrderByClause() {
-        return orderByClause;
-    }
-
-    /**
      * Sets the Order BY clause.
      *
      * @param orderByClause The Order BY clause string.
@@ -433,24 +388,6 @@ public class Condition<T> {
     public Condition<T> setOrderByClause(String orderByClause) {
         this.orderByClause = orderByClause;
         return this;
-    }
-
-    /**
-     * Gets the list of all OR criteria groups.
-     *
-     * @return A list of {@link Criteria} objects.
-     */
-    public List<Criteria<T>> getOredCriteria() {
-        return oredCriteria;
-    }
-
-    /**
-     * Gets the list of values to be set in an UPDATE statement.
-     *
-     * @return A list of {@link Criterion} objects for the SET clause.
-     */
-    public List<Criterion> getSetValues() {
-        return setValues;
     }
 
     /**
@@ -463,15 +400,6 @@ public class Condition<T> {
             return true;
         }
         return oredCriteria.stream().allMatch(criteria -> criteria.getCriteria().isEmpty());
-    }
-
-    /**
-     * Checks if the DISTINCT keyword is enabled.
-     *
-     * @return {@code true} if DISTINCT is enabled, {@code false} otherwise.
-     */
-    public boolean isDistinct() {
-        return distinct;
     }
 
     /**

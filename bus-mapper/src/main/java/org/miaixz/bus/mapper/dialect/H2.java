@@ -19,14 +19,20 @@
 */
 package org.miaixz.bus.mapper.dialect;
 
+import java.util.EnumSet;
+
+import org.miaixz.bus.mapper.Charter.Behavior;
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 import org.miaixz.bus.mapper.support.paging.Pageable;
+import org.miaixz.bus.mapper.support.schema.SqlTypeDescriptor;
 
 /**
  * Dialect implementation for H2 databases.
  *
  * <p>
- * H2 is aligned with the framework's {@code ON CONFLICT} UPSERT branch and supports standard multi-values insert
- * statements.
+ * H2 is aligned with the framework's {@code MERGE INTO ... KEY (...)} UPSERT branch and supports standard multi-values
+ * insert statements.
  * </p>
  *
  * @author Kimi Liu
@@ -44,11 +50,44 @@ public class H2 extends AbstractDialect {
     /**
      * Returns the UPSERT family used by H2 in this framework.
      *
-     * @return {@link Dialect.Type#INSERT_ON_CONFLICT}
+     * @return {@link Behavior#MERGE_INTO_KEY}
      */
     @Override
-    public Dialect.Type getUpsertType() {
-        return Dialect.Type.INSERT_ON_CONFLICT;
+    public Behavior getUpsertType() {
+        return Behavior.MERGE_INTO_KEY;
+    }
+
+    /**
+     * Returns the database behavior set advertised by this dialect.
+     *
+     * @return the supported behavior set
+     */
+    @Override
+    public EnumSet<Behavior> types() {
+        return schemaTypes(getUpsertType());
+    }
+
+    /**
+     * Resolves the SQL type descriptor used by this dialect for the supplied mapper column.
+     *
+     * @param column the mapper column metadata
+     * @return the SQL type descriptor for the column
+     */
+    @Override
+    public SqlTypeDescriptor resolveType(ColumnMeta column) {
+        return commonType(column, "INTEGER", "TIMESTAMP", "TIMESTAMP WITH TIME ZONE", "BLOB", "CLOB", "DECIMAL");
+    }
+
+    /**
+     * Builds the dialect-specific DDL used to replace or modify a column definition.
+     *
+     * @param table  the mapper table metadata
+     * @param column the mapper column metadata
+     * @return the generated column modification SQL
+     */
+    @Override
+    protected String modifyColumn(TableMeta table, ColumnMeta column) {
+        return "ALTER TABLE " + tableName(table) + " ALTER COLUMN " + columnDefinition(column);
     }
 
     /**

@@ -123,22 +123,44 @@ public class PopulateHandler<T> extends ConditionHandler<T, PopulateConfig> {
         return true;
     }
 
+    /**
+     * Returns the property scope key used to resolve populate configuration.
+     *
+     * @return the property scope key
+     */
     @Override
     protected String scope() {
         return Args.POPULATE_KEY;
     }
 
+    /**
+     * Returns the default populate configuration loaded for this handler.
+     *
+     * @return the default configuration, or {@code null} when unavailable
+     */
     @Override
     protected PopulateConfig defaults() {
         return config;
     }
 
+    /**
+     * Captures the current thread-local populate configuration override.
+     *
+     * @return the captured configuration, or {@code null} when no override is active
+     */
     @Override
     protected PopulateConfig capture() {
         Context.MapperConfig contextConfig = Context.getMapperConfig();
         return contextConfig != null ? contextConfig.getPopulate() : null;
     }
 
+    /**
+     * Builds datasource-specific populate configuration from the supplied properties.
+     *
+     * @param datasourceKey the datasource key used to resolve scoped configuration
+     * @param properties    the configuration properties used to build the scoped configuration
+     * @return the derived configuration, or {@code null} when the datasource is not configured
+     */
     @Override
     protected PopulateConfig derived(String datasourceKey, Properties properties) {
         // Try to get provider from properties
@@ -185,6 +207,11 @@ public class PopulateHandler<T> extends ConditionHandler<T, PopulateConfig> {
                 .provider(provider).build();
     }
 
+    /**
+     * Returns the execution order for the populate handler in the mapper interceptor chain.
+     *
+     * @return the handler order value
+     */
     @Override
     public int getOrder() {
         return MIN_VALUE + 5;

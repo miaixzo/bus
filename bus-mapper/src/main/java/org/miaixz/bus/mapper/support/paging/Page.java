@@ -75,6 +75,9 @@ import java.util.List;
  */
 public class Page<T> extends ArrayList<T> {
 
+    /**
+     * Serialization version for {@link Page}.
+     */
     @Serial
     private static final long serialVersionUID = 2852289758798L;
 
@@ -339,6 +342,12 @@ public class Page<T> extends ArrayList<T> {
 
     // ==================== Object Methods ====================
 
+    /**
+     * Compares this page result with another object.
+     *
+     * @param obj the object to compare with this instance
+     * @return {@code true} when both objects are equal
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -355,6 +364,11 @@ public class Page<T> extends ArrayList<T> {
         return total == that.total;
     }
 
+    /**
+     * Returns the hash code for this page result.
+     *
+     * @return the hash code value
+     */
     @Override
     public int hashCode() {
         int result = super.hashCode();
@@ -363,6 +377,11 @@ public class Page<T> extends ArrayList<T> {
         return result;
     }
 
+    /**
+     * Returns a readable representation of this page result.
+     *
+     * @return the string representation
+     */
     @Override
     public String toString() {
         String contentType = "UNKNOWN";
@@ -383,10 +402,24 @@ public class Page<T> extends ArrayList<T> {
      */
     public static class Builder<T> {
 
+        /**
+         * Page content collected by the builder.
+         */
         private List<T> result = Collections.emptyList();
+
+        /**
+         * Pagination request collected by the builder.
+         */
         private Pageable pageable = Pageable.unpaged();
+
+        /**
+         * Total element count collected by the builder.
+         */
         private long total = 0;
 
+        /**
+         * Creates a page builder.
+         */
         private Builder() {
         }
 
