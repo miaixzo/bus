@@ -83,6 +83,11 @@ public final class SysPath {
     public static final String CGROUP = SYS + "fs/cgroup/";
 
     /**
+     * The DRM constant.
+     */
+    public static final String DRM = SYS + "class/drm/";
+
+    /**
      * Queries the sys config.
      *
      * @return the query sys config result

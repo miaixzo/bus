@@ -20,12 +20,14 @@
 package org.miaixz.bus.health.linux.hardware;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.*;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer;
-import org.miaixz.bus.health.unix.hardware.UnixDisplay;
+import org.miaixz.bus.health.linux.driver.DrmEdid;
 import org.miaixz.bus.health.unix.hardware.CupsPrinter;
+import org.miaixz.bus.health.unix.hardware.UnixDisplay;
 
 /**
  * LinuxHardwareAbstractionLayer class.
@@ -113,6 +115,10 @@ public final class LinuxHardwareAbstractionLayer extends AbstractHardwareAbstrac
      */
     @Override
     public List<Display> getDisplays() {
+        List<byte[]> edids = DrmEdid.getEdidArrays();
+        if (!edids.isEmpty()) {
+            return edids.stream().map(UnixDisplay::new).collect(Collectors.toList());
+        }
         return UnixDisplay.getDisplays();
     }
 

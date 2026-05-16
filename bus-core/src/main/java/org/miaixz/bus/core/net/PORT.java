@@ -211,6 +211,20 @@ public enum PORT {
     _7199(7199, "Cassandra JMX", "A conventional port for JMX monitoring of Cassandra databases."),
 
     /**
+     * <b>Temporal</b>: 7233
+     * <p>
+     * The default gRPC frontend service port for Temporal.
+     */
+    _7233(7233, "Temporal", "The default gRPC frontend service port for Temporal."),
+
+    /**
+     * <b>Temporal</b>: 7234
+     * <p>
+     * An additional service port for Temporal.
+     */
+    _7234(7234, "Temporal", "An additional service port for Temporal."),
+
+    /**
      * <b>Neo4j Bolt</b>: 7687
      * <p>
      * The Bolt protocol port for the Neo4j graph database.
