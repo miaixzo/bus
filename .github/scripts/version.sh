@@ -24,6 +24,19 @@
 # 2. Updating the VERSION file.
 # 3. Updating the Version class _VERSION constant.
 # 4. Adding the version to native-image index.json tested-versions.
+#
+# Usage:
+#   bash .github/scripts/version.sh <new-version>
+#
+# Examples:
+#   bash .github/scripts/version.sh 8.6.8
+#   bash .github/scripts/version.sh 8.6.8-SNAPSHOT
+#
+# Notes:
+#   The first argument is required.
+#   When the new version ends with "-SNAPSHOT", the stored project version
+#   uses the release part before "-SNAPSHOT".
+#   The script can be executed from any directory inside or outside the project.
 #-------------------------------------------------------------------
 
 set -o errexit

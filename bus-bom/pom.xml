@@ -30,7 +30,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-bom</artifactId>
-    <version>8.6.6</version>
+    <version>8.6.8</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
@@ -1456,6 +1456,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
